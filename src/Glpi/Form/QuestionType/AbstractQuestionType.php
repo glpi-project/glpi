@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,17 +35,17 @@
 
 namespace Glpi\Form\QuestionType;
 
-use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
+use Glpi\Form\Condition\ConditionHandler\VisibilityConditionHandler;
 use Glpi\Form\Question;
 use Override;
 
 abstract class AbstractQuestionType implements QuestionTypeInterface
 {
-    #[Override]
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     #[Override]
     public function formatDefaultValueForDB(mixed $value): ?string
@@ -62,7 +62,7 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     #[Override]
     public function validateExtraDataInput(array $input): bool
     {
-        return empty($input); // No extra data by default
+        return $input === []; // No extra data by default
     }
 
     #[Override]
@@ -91,16 +91,13 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     }
 
     #[Override]
-    public function renderAnswerTemplate(mixed $answer): string
+    public function renderAdvancedConfigurationTemplate(?Question $question): ?string
     {
-        return TemplateRenderer::getInstance()->renderFromStringTemplate(
-            '<div class="form-control-plaintext">{{ answer }}</div>',
-            ['answer' => $this->formatRawAnswer($answer)]
-        );
+        return null; // No advanced configuration by default
     }
 
     #[Override]
-    public function formatRawAnswer(mixed $answer): string
+    public function formatRawAnswer(mixed $answer, Question $question): string
     {
         // By default only return the string answer
         if (!is_string($answer) && !is_numeric($answer)) {
@@ -146,7 +143,7 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     public function getExtraDataConfig(array $serialized_data): ?JsonFieldInterface
     {
         $config_class = $this->getExtraDataConfigClass();
-        if ($config_class === null || empty($serialized_data)) {
+        if ($config_class === null || $serialized_data === []) {
             return null;
         }
 
@@ -163,10 +160,90 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     public function getDefaultValueConfig(array $serialized_data): ?JsonFieldInterface
     {
         $config_class = $this->getDefaultValueConfigClass();
-        if ($config_class === null || empty($serialized_data)) {
+        if ($config_class === null || $serialized_data === []) {
             return null;
         }
 
         return $config_class::jsonDeserialize($serialized_data);
+    }
+
+    #[Override]
+    public function getSubTypes(): array
+    {
+        return [];
+    }
+
+    #[Override]
+    public function getSubTypeFieldName(): string
+    {
+        return 'sub_type';
+    }
+
+    #[Override]
+    public function getSubTypeFieldAriaLabel(): string
+    {
+        return __('Question sub type');
+    }
+
+    #[Override]
+    public function getSubTypeDefaultValue(?Question $question): ?string
+    {
+        return '';
+    }
+
+    #[Override]
+    public function formatPredefinedValue(string $value): ?string
+    {
+        // Do nothing by default
+        return null;
+    }
+
+    #[Override]
+    public function exportDynamicExtraData(
+        ?JsonFieldInterface $extra_data_config,
+    ): DynamicExportDataField {
+        if ($extra_data_config !== null) {
+            $extra_data_config = $extra_data_config->jsonSerialize();
+        }
+
+        return new DynamicExportDataField($extra_data_config, []);
+    }
+
+    #[Override]
+    public function exportDynamicDefaultValue(
+        ?JsonFieldInterface $extra_data_config,
+        array|int|float|bool|string|null $default_value_config,
+    ): DynamicExportDataField {
+        return new DynamicExportDataField($default_value_config, []);
+    }
+
+    #[Override]
+    public static function prepareDynamicExtraDataForImport(
+        ?array $extra_data,
+        DatabaseMapper $mapper,
+    ): ?array {
+        return $extra_data;
+    }
+
+    #[Override]
+    public static function prepareDynamicDefaultValueForImport(
+        ?array $extra_data,
+        array|int|float|bool|string|null $default_value_data,
+        DatabaseMapper $mapper,
+    ): array|int|float|bool|string|null {
+        return $default_value_data;
+    }
+
+    /**
+     * Get all condition handlers that can process this question type
+     *
+     * @param JsonFieldInterface|null $question_config Configuration for the question
+     * @return array<ConditionHandlerInterface> List of applicable condition handlers
+     */
+    #[Override]
+    public function getConditionHandlers(
+        ?JsonFieldInterface $question_config
+    ): array {
+        return [new VisibilityConditionHandler()];
     }
 }

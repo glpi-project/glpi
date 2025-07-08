@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,10 +42,10 @@ use Glpi\DBAL\QueryFunction;
  */
 class CalendarSegment extends CommonDBChild
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory       = true;
 
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype = 'Calendar';
     public static $items_id = 'calendars_id';
 
@@ -65,10 +65,15 @@ class CalendarSegment extends CommonDBChild
         return _n('Time range', 'Time ranges', $nb);
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-calendar-time';
+    }
+
     public function prepareInputForAdd($input)
     {
 
-       // Check override of segment : do not add
+        // Check override of segment : do not add
         if (
             count(self::getSegmentsBetween(
                 $input['calendars_id'],
@@ -100,7 +105,7 @@ class CalendarSegment extends CommonDBChild
     public function post_deleteFromDB()
     {
 
-       // Update calendar cache
+        // Update calendar cache
         $cal = new Calendar();
         $cal->updateDurationCache($this->fields['calendars_id']);
 
@@ -119,7 +124,7 @@ class CalendarSegment extends CommonDBChild
     public static function getSegmentsBetween($calendars_id, $begin_day, $begin_time, $end_day, $end_time)
     {
 
-       // Do not check hour if day before the end day of after the begin day
+        // Do not check hour if day before the end day of after the begin day
         return getAllDataFromTable(
             'glpi_calendarsegments',
             [
@@ -128,14 +133,14 @@ class CalendarSegment extends CommonDBChild
                 ['day'          => ['<=', $end_day]],
                 ['OR'          => [
                     'begin'  => ['<', $end_time],
-                    'day'    => ['<', $end_day]
-                ]
+                    'day'    => ['<', $end_day],
+                ],
                 ],
                 ['OR'          => [
                     'end'    => ['>=', $begin_time],
-                    'day'    => ['>', $begin_day]
-                ]
-                ]
+                    'day'    => ['>', $begin_day],
+                ],
+                ],
             ]
         );
     }
@@ -156,7 +161,7 @@ class CalendarSegment extends CommonDBChild
         global $DB;
 
         $sum = 0;
-       // Do not check hour if day before the end day of after the begin day
+        // Do not check hour if day before the end day of after the begin day
         $iterator = $DB->request([
             'SELECT' => [
                 QueryFunction::timediff(
@@ -170,13 +175,13 @@ class CalendarSegment extends CommonDBChild
                 'calendars_id' => $calendars_id,
                 'day'          => $day,
                 'begin'        => ['<', $end_time],
-                'end'          => ['>', $begin_time]
-            ]
+                'end'          => ['>', $begin_time],
+            ],
         ]);
 
         foreach ($iterator as $data) {
-            list($hour, $minute ,$second) = explode(':', $data['TDIFF']);
-            $sum += (int)$hour * HOUR_TIMESTAMP + (int)$minute * MINUTE_TIMESTAMP + (int)$second;
+            [$hour, $minute, $second] = explode(':', $data['TDIFF']);
+            $sum += (int) $hour * HOUR_TIMESTAMP + (int) $minute * MINUTE_TIMESTAMP + (int) $second;
         }
         return $sum;
     }
@@ -239,24 +244,24 @@ class CalendarSegment extends CommonDBChild
             'SELECT' => $SELECT,
             'FROM'   => self::getTable(),
             'WHERE'  => $WHERE,
-            'ORDER'  => !$negative_delay ? 'begin' : 'end DESC'
+            'ORDER'  => !$negative_delay ? 'begin' : 'end DESC',
         ]);
 
         foreach ($iterator as $data) {
             [$hour, $minute, $second] = explode(':', $data['TDIFF']);
-            $tstamp = (int)$hour * HOUR_TIMESTAMP + (int)$minute * MINUTE_TIMESTAMP + (int)$second;
+            $tstamp = (int) $hour * HOUR_TIMESTAMP + (int) $minute * MINUTE_TIMESTAMP + (int) $second;
 
             // Delay is completed
             if ($delay <= $tstamp) {
                 if (!$negative_delay) {
                     // Add time
                     [$begin_hour, $begin_minute, $begin_second] = explode(':', $data['BEGIN']);
-                    $beginstamp = (int)$begin_hour * HOUR_TIMESTAMP + (int)$begin_minute * MINUTE_TIMESTAMP + (int)$begin_second;
+                    $beginstamp = (int) $begin_hour * HOUR_TIMESTAMP + (int) $begin_minute * MINUTE_TIMESTAMP + (int) $begin_second;
                     $endstamp = $beginstamp + $delay;
                 } else {
                     // Substract time
                     [$begin_hour, $begin_minute, $begin_second] = explode(':', $data['END']);
-                    $beginstamp = (int)$begin_hour * HOUR_TIMESTAMP + (int)$begin_minute * MINUTE_TIMESTAMP + (int)$begin_second;
+                    $beginstamp = (int) $begin_hour * HOUR_TIMESTAMP + (int) $begin_minute * MINUTE_TIMESTAMP + (int) $begin_second;
                     $endstamp = $beginstamp - $delay;
                 }
                 $units      = Toolbox::getTimestampTimeUnits($endstamp);
@@ -283,14 +288,14 @@ class CalendarSegment extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-       // Do not check hour if day before the end day of after the begin day
+        // Do not check hour if day before the end day of after the begin day
         $result = $DB->request([
             'SELECT' => ['MIN' => 'begin AS minb'],
             'FROM'   => 'glpi_calendarsegments',
             'WHERE'  => [
                 'calendars_id' => $calendars_id,
-                'day'          => $day
-            ]
+                'day'          => $day,
+            ],
         ])->current();
         return $result['minb'];
     }
@@ -308,14 +313,14 @@ class CalendarSegment extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-       // Do not check hour if day before the end day of after the begin day
+        // Do not check hour if day before the end day of after the begin day
         $result = $DB->request([
             'SELECT' => ['MAX' => 'end AS mend'],
             'FROM'   => 'glpi_calendarsegments',
             'WHERE'  => [
                 'calendars_id' => $calendars_id,
-                'day'          => $day
-            ]
+                'day'          => $day,
+            ],
         ])->current();
         return $result['mend'];
     }
@@ -334,7 +339,7 @@ class CalendarSegment extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-       // Do not check hour if day before the end day of after the begin day
+        // Do not check hour if day before the end day of after the begin day
         $result = $DB->request([
             'COUNT'  => 'cpt',
             'FROM'   => 'glpi_calendarsegments',
@@ -342,8 +347,8 @@ class CalendarSegment extends CommonDBChild
                 'calendars_id' => $calendars_id,
                 'day'          => $day,
                 'begin'        => ['<=', $hour],
-                'end'          => ['>=', $hour]
-            ]
+                'end'          => ['>=', $hour],
+            ],
         ])->current();
         return $result['cpt'] > 0;
     }
@@ -370,26 +375,30 @@ class CalendarSegment extends CommonDBChild
             'SELECT' => ['id', 'day', 'begin', 'end'],
             'FROM'   => 'glpi_calendarsegments',
             'WHERE'  => [
-                'calendars_id' => $ID
+                'calendars_id' => $ID,
             ],
             'ORDER'  => [
                 'day',
                 'begin',
-                'end'
-            ]
+                'end',
+            ],
         ]);
 
         $daysofweek = Toolbox::getDaysOfWeekArray();
         if ($canedit) {
+            $segment = new self();
+            $options[self::$items_id] = $ID;
+            $segment->check(-1, CREATE, $options);
             TemplateRenderer::getInstance()->display('pages/setup/calendarsegment.html.twig', [
-                'item' => new self(),
+                'item' => $segment,
                 'calendars_id' => $ID,
                 'days_of_week' => $daysofweek,
                 'begin' => date('H') . ":00",
                 'end' => ((int) date('H') + 1) . ":00",
                 'params' => [
                     'canedit' => true,
-                ]
+                ],
+                'no_header' => true,
             ]);
         }
 
@@ -400,7 +409,7 @@ class CalendarSegment extends CommonDBChild
                 'id'    => $data['id'],
                 'day'   => $daysofweek[$data['day']],
                 'begin' => $data['begin'],
-                'end'   => $data['end']
+                'end'   => $data['end'],
             ];
         }
 
@@ -410,7 +419,7 @@ class CalendarSegment extends CommonDBChild
             'columns' => [
                 'day' => _n('Day', 'Days', 1),
                 'begin' => __('Start'),
-                'end' => __('End')
+                'end' => __('End'),
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -418,7 +427,8 @@ class CalendarSegment extends CommonDBChild
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
-                'container'     => 'mass' . __CLASS__ . $rand
+                'specific_actions' => ['purge' => _x('button', 'Delete permanently')],
+                'container'     => 'mass' . __CLASS__ . $rand,
             ],
         ]);
     }

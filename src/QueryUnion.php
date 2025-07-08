@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,7 +40,7 @@ class QueryUnion extends Glpi\DBAL\QueryUnion
 {
     public function __construct($expression)
     {
-        Toolbox::deprecated();
+        Toolbox::deprecated('\QueryUnion is deprecated, use \Glpi\DBAL\QueryUnion instead');
         parent::__construct($expression);
     }
 }

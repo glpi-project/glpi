@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,10 +32,13 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\preg_match;
+use function Safe\scandir;
+
 /**
  * Update from 10.0.x to 11.0.0
  *
- * @return bool for success (will die for most error)
+ * @return bool
  */
 function update100xto1100()
 {
@@ -52,8 +54,6 @@ function update100xto1100()
     $DELFROMDISPLAYPREF        = [];
     $update_dir                = __DIR__ . '/update_10.0.x_to_11.0.0/';
 
-    //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '11.0.0'));
     $migration->setVersion('11.0.0');
 
     $update_scripts = scandir($update_dir);
@@ -71,7 +71,7 @@ function update100xto1100()
             $DB->updateOrInsert(
                 'glpi_displaypreferences',
                 [
-                    'rank'      => $rank++
+                    'rank'      => $rank++,
                 ],
                 [
                     'users_id'  => '0',
@@ -87,7 +87,7 @@ function update100xto1100()
             $DB->updateOrInsert(
                 'glpi_displaypreferences',
                 [
-                    'rank'      => $rank++
+                    'rank'      => $rank++,
                 ],
                 [
                     'users_id'  => '0',
@@ -103,7 +103,7 @@ function update100xto1100()
             'glpi_displaypreferences',
             [
                 'itemtype'  => $type,
-                'num'       => $tab
+                'num'       => $tab,
             ]
         );
     }

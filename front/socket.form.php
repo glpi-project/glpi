@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
 use Glpi\Socket;
@@ -102,7 +104,7 @@ if (isset($_POST["add"]) || isset($_POST["execute_single"]) || isset($_POST["exe
         );
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $socket->check($_POST["id"], PURGE);
 
     if ($socket->delete($_POST, 1)) {
@@ -116,7 +118,7 @@ if (isset($_POST["add"]) || isset($_POST["execute_single"]) || isset($_POST["exe
         );
     }
     $socket->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $socket->check($_POST["id"], UPDATE);
 
     if ($socket->update($_POST)) {
@@ -137,16 +139,16 @@ if (isset($_POST["add"]) || isset($_POST["execute_single"]) || isset($_POST["exe
     }
     if (!$socket->isNewItem()) {
         $itemtype = $socket->fields['itemtype'];
-    } else if ($_GET['itemtype'] != '') {
+    } elseif ($_GET['itemtype'] != '') {
         $itemtype = $_GET['itemtype'];
     }
 
     $options = [];
-    if (isset($_GET["id"])) {
+    if ($_GET["id"]) {
         $options['id'] = $_GET["id"];
     }
 
-    if (isset($_GET["items_id"])) {
+    if ($_GET["items_id"]) {
         $options['items_id'] = $_GET["items_id"];
     }
 
@@ -158,7 +160,7 @@ if (isset($_POST["add"]) || isset($_POST["execute_single"]) || isset($_POST["exe
         $options['several'] = $_GET["several"];
     }
 
-   // Add a socket from item : format data
+    // Add a socket from item : format data
     if (
         isset($_REQUEST['_add_fromitem'])
         && isset($_REQUEST['_from_itemtype'])

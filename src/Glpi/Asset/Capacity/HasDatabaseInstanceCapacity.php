@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,6 +37,8 @@ namespace Glpi\Asset\Capacity;
 use CommonGLPI;
 use Database;
 use DatabaseInstance;
+use Glpi\Asset\CapacityConfig;
+use Override;
 use Session;
 
 class HasDatabaseInstanceCapacity extends AbstractCapacity
@@ -50,6 +51,20 @@ class HasDatabaseInstanceCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return Database::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("List database instances found by automatic inventory");
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [
+            // FIXME DatabaseInstance must be a CommonDBChild to be clonable
+            // DatabaseInstance::class,
+        ];
     }
 
     public function isUsed(string $classname): bool
@@ -67,14 +82,14 @@ class HasDatabaseInstanceCapacity extends AbstractCapacity
         );
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         $this->registerToTypeConfig('databaseinstance_types', $classname);
 
         CommonGLPI::registerStandardTab($classname, DatabaseInstance::class, 150);
     }
 
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
         /** @var \DBmysql $DB */
         global $DB;

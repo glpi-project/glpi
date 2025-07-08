@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -54,7 +53,7 @@ class PCIVendorTest extends DbTestCase
             $vendors->add([
                 'name'  => 'Something to test',
                 'vendorid'  => '01ef',
-                'deviceid'  => '02ef'
+                'deviceid'  => '02ef',
             ])
         );
 
@@ -78,7 +77,7 @@ class PCIVendorTest extends DbTestCase
             0,
             $vendors->add([
                 'name'  => "UnAllied Telesis, Inc (Good ID)",
-                'vendorid'  => '0010'
+                'vendorid'  => '0010',
             ])
         );
         $this->assertSame(
@@ -104,7 +103,7 @@ class PCIVendorTest extends DbTestCase
             $vendors->add([
                 'name'  => 'not the good one',
                 'vendorid'  => '0002',
-                'deviceid'  => '8139'
+                'deviceid'  => '8139',
             ])
         );
         $this->assertGreaterThan(
@@ -112,7 +111,7 @@ class PCIVendorTest extends DbTestCase
             $vendors->add([
                 'name'  => 'Yeah, that works',
                 'vendorid'  => '0010',
-                'deviceid'  => '8139'
+                'deviceid'  => '8139',
             ])
         );
         $this->assertSame(

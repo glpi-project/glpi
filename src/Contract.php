@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,7 +36,6 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
-use Glpi\Search\SearchEngine;
 
 /**
  *  Contract class
@@ -46,7 +45,7 @@ class Contract extends CommonDBTM
     use Glpi\Features\Clonable;
     use Glpi\Features\State;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                   = true;
     protected static $forward_entity_to = ['ContractCost'];
 
@@ -63,6 +62,8 @@ class Contract extends CommonDBTM
             Contract_Item::class,
             Contract_Supplier::class,
             ContractCost::class,
+            KnowbaseItem_Item::class,
+            ManualLink::class,
         ];
     }
 
@@ -104,7 +105,7 @@ class Contract extends CommonDBTM
             ]
         );
 
-       // Alert does not extends CommonDBConnexity
+        // Alert does not extends CommonDBConnexity
         $alert = new Alert();
         $alert->cleanDBonItemDelete(static::class, $this->fields['id']);
     }
@@ -114,15 +115,15 @@ class Contract extends CommonDBTM
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addImpactTab($ong, $options);
-        $this->addStandardTab('ContractCost', $ong, $options);
-        $this->addStandardTab('Contract_Supplier', $ong, $options);
-        $this->addStandardTab('Contract_Item', $ong, $options);
-        $this->addStandardTab('Document_Item', $ong, $options);
-        $this->addStandardTab('ManualLink', $ong, $options);
-        $this->addStandardTab('Notepad', $ong, $options);
-        $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
+        $this->addStandardTab(ContractCost::class, $ong, $options);
+        $this->addStandardTab(Contract_Supplier::class, $ong, $options);
+        $this->addStandardTab(Contract_Item::class, $ong, $options);
+        $this->addStandardTab(Document_Item::class, $ong, $options);
+        $this->addStandardTab(ManualLink::class, $ong, $options);
+        $this->addStandardTab(Notepad::class, $ong, $options);
+        $this->addStandardTab(KnowbaseItem_Item::class, $ong, $options);
         $this->addStandardTab(Ticket_Contract::class, $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
@@ -141,9 +142,9 @@ class Contract extends CommonDBTM
             $alert->clear(static::class, $this->fields['id'], Alert::END);
         }
 
-       // Clean notice alert if begin_date is after old one
-       // Or if duration is greater than old one
-       // Or if notice is lesser than old one
+        // Clean notice alert if begin_date is after old one
+        // Or if duration is greater than old one
+        // Or if notice is lesser than old one
         if (
             (isset($this->oldvalues['begin_date'])
             && ($this->oldvalues['begin_date'] < $this->fields['begin_date']))
@@ -180,22 +181,22 @@ class Contract extends CommonDBTM
             'beforejoin' => [
                 'table'      => 'glpi_contracts_items',
                 'joinparams' => [
-                    'jointype' => 'itemtype_item'
-                ]
-            ]
+                    'jointype' => 'itemtype_item',
+                ],
+            ],
         ];
 
         $joinparamscost = [
             'jointype'   => 'child',
             'beforejoin' => [
                 'table'      => 'glpi_contracts',
-                'joinparams' => $joinparams
-            ]
+                'joinparams' => $joinparams,
+            ],
         ];
 
         $tab[] = [
             'id'                 => 'contract',
-            'name'               => self::getTypeName(Session::getPluralNumber())
+            'name'               => self::getTypeName(Session::getPluralNumber()),
         ];
 
         $tab[] = [
@@ -208,8 +209,8 @@ class Contract extends CommonDBTM
             'datatype'           => 'count',
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -220,7 +221,7 @@ class Contract extends CommonDBTM
             'forcegroupby'       => true,
             'datatype'           => 'itemlink',
             'massiveaction'      => false,
-            'joinparams'         => $joinparams
+            'joinparams'         => $joinparams,
         ];
 
         $tab[] = [
@@ -231,7 +232,7 @@ class Contract extends CommonDBTM
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => $joinparams,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -244,9 +245,9 @@ class Contract extends CommonDBTM
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => 'glpi_contracts',
-                    'joinparams'         => $joinparams
-                ]
-            ]
+                    'joinparams'         => $joinparams,
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -259,30 +260,26 @@ class Contract extends CommonDBTM
             'unit'               => 'month',
             'forcegroupby'       => true,
             'massiveaction'      => false,
-            'joinparams'         => $joinparams
+            'joinparams'         => $joinparams,
         ];
 
         $tab[] = [
             'id'                 => '131',
             'table'              => 'glpi_contracts',
             'field'              => 'periodicity',
-                                 //TRANS: %1$s is Contract, %2$s is field name
+            //TRANS: %1$s is Contract, %2$s is field name
             'name'               => __('Periodicity'),
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => $joinparams,
             'datatype'           => 'number',
-            'min'                => '12',
+            'min'                => '1',
             'max'                => '60',
-            'step'               => '12',
+            'step'               => '1',
             'toadd'              => [
                 0 => Dropdown::EMPTY_VALUE,
-                1 => sprintf(_n('%d month', '%d months', 1), 1),
-                2 => sprintf(_n('%d month', '%d months', 2), 2),
-                3 => sprintf(_n('%d month', '%d months', 3), 3),
-                6 => sprintf(_n('%d month', '%d months', 6), 6)
             ],
-            'unit'               => 'month'
+            'unit'               => 'month',
         ];
 
         $tab[] = [
@@ -294,7 +291,7 @@ class Contract extends CommonDBTM
             'datatype'           => 'date',
             'maybefuture'        => true,
             'massiveaction'      => false,
-            'joinparams'         => $joinparams
+            'joinparams'         => $joinparams,
         ];
 
         $tab[] = [
@@ -318,12 +315,12 @@ class Contract extends CommonDBTM
             'maybefuture'        => true,
             'datafields'         => [
                 '1'                  => 'begin_date',
-                '2'                  => 'duration'
+                '2'                  => 'duration',
             ],
             'searchunit'         => 'MONTH',
             'delayunit'          => 'MONTH',
             'massiveaction'      => false,
-            'joinparams'         => $joinparams
+            'joinparams'         => $joinparams,
         ];
 
         $tab[] = [
@@ -336,7 +333,7 @@ class Contract extends CommonDBTM
             'unit'               => 'month',
             'forcegroupby'       => true,
             'massiveaction'      => false,
-            'joinparams'         => $joinparams
+            'joinparams'         => $joinparams,
         ];
 
         $tab[] = [
@@ -364,17 +361,13 @@ class Contract extends CommonDBTM
             'massiveaction'      => false,
             'joinparams'         => $joinparams,
             'datatype'           => 'number',
-            'min'                => '12',
+            'min'                => '1',
             'max'                => '60',
-            'step'               => '12',
+            'step'               => '1',
             'toadd'              => [
                 0 => Dropdown::EMPTY_VALUE,
-                1 => sprintf(_n('%d month', '%d months', 1), 1),
-                2 => sprintf(_n('%d month', '%d months', 2), 2),
-                3 => sprintf(_n('%d month', '%d months', 3), 3),
-                6 => sprintf(_n('%d month', '%d months', 6), 6)
             ],
-            'unit'               => 'month'
+            'unit'               => 'month',
         ];
 
         $tab[] = [
@@ -385,7 +378,7 @@ class Contract extends CommonDBTM
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => $joinparams,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -398,9 +391,9 @@ class Contract extends CommonDBTM
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => 'glpi_contracts',
-                    'joinparams'         => $joinparams
-                ]
-            ]
+                    'joinparams'         => $joinparams,
+                ],
+            ],
         ];
 
         return $tab;
@@ -413,10 +406,10 @@ class Contract extends CommonDBTM
 
         if ($isadmin) {
             $prefix                    = 'Contract_Item' . MassiveAction::CLASS_ACTION_SEPARATOR;
-            $actions[$prefix . 'add']    = _sx('button', 'Add an item');
-            $actions[$prefix . 'remove'] = _sx('button', 'Remove an item');
+            $actions[$prefix . 'add']    = "<i class='ti ti-package'></i>" . _sx('button', 'Add an item');
+            $actions[$prefix . 'remove'] = "<i class='ti ti-package-off'></i>" . _sx('button', 'Remove an item');
             $actions['Contract_Supplier' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-               = _sx('button', 'Add a supplier');
+               = "<i class='" . Supplier::getIcon() . "'></i>" . _sx('button', 'Add a supplier');
         }
 
         return $actions;
@@ -451,7 +444,7 @@ class Contract extends CommonDBTM
             'renewal' => self::getContractRenewalName((int) $values[$field]),
             '_virtual_expiration' => Infocom::getWarrantyExpir(
                 $values['begin_date'],
-                $values['duration'],
+                $values['renewal'] == self::RENEWAL_EXPRESS ? $values['duration'] + $values['periodicity'] : $values['duration'],
                 0,
                 true,
                 (int) $values['renewal'] === self::RENEWAL_TACIT,
@@ -467,7 +460,7 @@ class Contract extends CommonDBTM
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -485,7 +478,7 @@ class Contract extends CommonDBTM
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $locations_sos = Location::rawSearchOptionsToAdd();
@@ -511,7 +504,7 @@ class Contract extends CommonDBTM
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => $this->getStateVisibilityCriteria()
+            'condition'          => $this->getStateVisibilityCriteria(),
         ];
 
         $tab[] = [
@@ -519,7 +512,7 @@ class Contract extends CommonDBTM
             'table'              => 'glpi_contracttypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -528,7 +521,7 @@ class Contract extends CommonDBTM
             'field'              => 'begin_date',
             'name'               => __('Start date'),
             'datatype'           => 'date',
-            'maybefuture'        => true
+            'maybefuture'        => true,
         ];
 
         $tab[] = [
@@ -538,7 +531,7 @@ class Contract extends CommonDBTM
             'name'               => __('Duration'),
             'datatype'           => 'number',
             'max'                => 120,
-            'unit'               => 'month'
+            'unit'               => 'month',
         ];
 
         $tab[] = [
@@ -547,7 +540,7 @@ class Contract extends CommonDBTM
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -556,7 +549,7 @@ class Contract extends CommonDBTM
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -567,12 +560,12 @@ class Contract extends CommonDBTM
             'datatype'           => 'date_delay',
             'datafields'         => [
                 '1'                  => 'begin_date',
-                '2'                  => 'duration'
+                '2'                  => 'duration',
             ],
             'searchunit'         => 'MONTH',
             'delayunit'          => 'MONTH',
             'maybefuture'        => true,
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -582,7 +575,7 @@ class Contract extends CommonDBTM
             'name'               => __('Notice'),
             'datatype'           => 'number',
             'max'                => 120,
-            'unit'               => 'month'
+            'unit'               => 'month',
         ];
 
         $tab[] = [
@@ -591,17 +584,13 @@ class Contract extends CommonDBTM
             'field'              => 'periodicity',
             'name'               => __('Periodicity'),
             'datatype'           => 'number',
-            'min'                => 12,
+            'min'                => 1,
             'max'                => 60,
-            'step'               => 12,
+            'step'               => 1,
             'toadd'              => [
                 0 => Dropdown::EMPTY_VALUE,
-                1 => sprintf(_n('%d month', '%d months', 1), 1),
-                2 => sprintf(_n('%d month', '%d months', 2), 2),
-                3 => sprintf(_n('%d month', '%d months', 3), 3),
-                6 => sprintf(_n('%d month', '%d months', 6), 6)
             ],
-            'unit'               => 'month'
+            'unit'               => 'month',
         ];
 
         $tab[] = [
@@ -610,17 +599,13 @@ class Contract extends CommonDBTM
             'field'              => 'billing',
             'name'               => __('Invoice period'),
             'datatype'           => 'number',
-            'min'                => 12,
+            'min'                => 1,
             'max'                => 60,
-            'step'               => 12,
+            'step'               => 1,
             'toadd'              => [
                 0 => Dropdown::EMPTY_VALUE,
-                1 => sprintf(_n('%d month', '%d months', 1), 1),
-                2 => sprintf(_n('%d month', '%d months', 2), 2),
-                3 => sprintf(_n('%d month', '%d months', 3), 3),
-                6 => sprintf(_n('%d month', '%d months', 6), 6)
             ],
-            'unit'               => 'month'
+            'unit'               => 'month',
         ];
 
         $tab[] = [
@@ -628,7 +613,7 @@ class Contract extends CommonDBTM
             'table'              => static::getTable(),
             'field'              => 'accounting_number',
             'name'               => __('Account number'),
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -637,7 +622,7 @@ class Contract extends CommonDBTM
             'field'              => 'renewal',
             'name'               => __('Renewal'),
             'datatype'           => 'specific',
-            'searchtype'         => ['equals', 'notequals']
+            'searchtype'         => ['equals', 'notequals'],
         ];
 
         $tab[] = [
@@ -648,13 +633,13 @@ class Contract extends CommonDBTM
                 'begin_date',
                 'duration',
                 'renewal',
-                'periodicity'
+                'periodicity',
             ],
             'name'               => __('Expiration'),
             'datatype'           => 'specific',
             'nosearch'           => true,
             'nosort'             => true,
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -666,20 +651,20 @@ class Contract extends CommonDBTM
             'datafields'         => [
                 '1'                  => 'begin_date',
                 '2'                  => 'duration',
-                '3'                  => 'notice'
+                '3'                  => 'notice',
             ],
             'searchunit'         => 'DAY',
             'delayunit'          => 'MONTH',
             'maybefuture'        => true,
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
             'id'                 => '16',
             'table'              => static::getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -688,7 +673,7 @@ class Contract extends CommonDBTM
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -697,7 +682,7 @@ class Contract extends CommonDBTM
             'field'              => 'alert',
             'name'               => __('Email alarms'),
             'datatype'           => 'specific',
-            'searchtype'         => ['equals', 'notequals']
+            'searchtype'         => ['equals', 'notequals'],
         ];
 
         $tab[] = [
@@ -705,7 +690,7 @@ class Contract extends CommonDBTM
             'table'              => static::getTable(),
             'field'              => 'is_recursive',
             'name'               => __('Child entities'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -718,8 +703,8 @@ class Contract extends CommonDBTM
             'datatype'           => 'count',
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
-            ]
+                'jointype'           => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -738,10 +723,10 @@ class Contract extends CommonDBTM
                 'beforejoin'         => [
                     'table'              => 'glpi_contracts_suppliers',
                     'joinparams'         => [
-                        'jointype'           => 'child'
-                    ]
-                ]
-            ]
+                        'jointype'           => 'child',
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -762,7 +747,7 @@ class Contract extends CommonDBTM
 
         $tab[] = [
             'id'                 => 'cost',
-            'name'               => _n('Cost', 'Costs', 1)
+            'name'               => _n('Cost', 'Costs', 1),
         ];
 
         $tab[] = [
@@ -775,7 +760,7 @@ class Contract extends CommonDBTM
             'usehaving'          => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
             'computation'        => '(' . QueryFunction::sum('TABLE.cost') . ' / ' .
                 QueryFunction::count('TABLE.id') . ') * ' .
@@ -792,8 +777,8 @@ class Contract extends CommonDBTM
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
-            ]
+                'jointype'           => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -805,8 +790,8 @@ class Contract extends CommonDBTM
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
-            ]
+                'jointype'           => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -818,8 +803,8 @@ class Contract extends CommonDBTM
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
-            ]
+                'jointype'           => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -830,9 +815,9 @@ class Contract extends CommonDBTM
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -847,10 +832,10 @@ class Contract extends CommonDBTM
                 'beforejoin'         => [
                     'table'              => 'glpi_contractcosts',
                     'joinparams'         => [
-                        'jointype'           => 'child'
-                    ]
-                ]
-            ]
+                        'jointype'           => 'child',
+                    ],
+                ],
+            ],
         ];
 
         return $tab;
@@ -897,7 +882,7 @@ class Contract extends CommonDBTM
                 'is_deleted'   => 0,
                 new QueryExpression("$end_date_diff_now  > -30"),
                 new QueryExpression("$end_date_diff_now < 0"),
-            ] + getEntitiesRestrictCriteria($table)
+            ] + getEntitiesRestrictCriteria($table),
         ])->current();
         $contract0 = $result['cpt'];
 
@@ -908,8 +893,8 @@ class Contract extends CommonDBTM
             'WHERE'  => [
                 'is_deleted'   => 0,
                 new QueryExpression("$end_date_diff_now > 0"),
-                new QueryExpression("$end_date_diff_now  <= 7")
-            ] + getEntitiesRestrictCriteria($table)
+                new QueryExpression("$end_date_diff_now  <= 7"),
+            ] + getEntitiesRestrictCriteria($table),
         ])->current();
         $contract7 = $result['cpt'];
 
@@ -920,8 +905,8 @@ class Contract extends CommonDBTM
             'WHERE'  => [
                 'is_deleted'   => 0,
                 new QueryExpression("$end_date_diff_now > 7"),
-                new QueryExpression("$end_date_diff_now < 30")
-            ] + getEntitiesRestrictCriteria($table)
+                new QueryExpression("$end_date_diff_now < 30"),
+            ] + getEntitiesRestrictCriteria($table),
         ])->current();
         $contract30 = $result['cpt'];
 
@@ -944,12 +929,12 @@ class Contract extends CommonDBTM
                 'is_deleted'   => 0,
                 'notice'       => ['<>', 0],
                 new QueryExpression("$end_date_diff_notice > 0"),
-                new QueryExpression("$end_date_diff_notice <= 7")
-            ] + getEntitiesRestrictCriteria($table)
+                new QueryExpression("$end_date_diff_notice <= 7"),
+            ] + getEntitiesRestrictCriteria($table),
         ])->current();
         $contractpre7 = $result['cpt'];
 
-       // contrats avec pr??avis echeance j -30
+        // contrats avec pr??avis echeance j -30
         $result = $DB->request([
             'COUNT'  => 'cpt',
             'FROM'   => $table,
@@ -957,8 +942,8 @@ class Contract extends CommonDBTM
                 'is_deleted'   => 0,
                 'notice'       => ['<>', 0],
                 new QueryExpression("$end_date_diff_notice > 7"),
-                new QueryExpression("$end_date_diff_notice < 30")
-            ] + getEntitiesRestrictCriteria($table)
+                new QueryExpression("$end_date_diff_notice < 30"),
+            ] + getEntitiesRestrictCriteria($table),
         ])->current();
         $contractpre30 = $result['cpt'];
 
@@ -968,7 +953,7 @@ class Contract extends CommonDBTM
                 'text'   =>  self::getTypeName(1),
                 'icon'   => self::getIcon(),
             ],
-            'items'     => []
+            'items'     => [],
         ];
 
         $options = [
@@ -987,14 +972,14 @@ class Contract extends CommonDBTM
                     'link'       => 'AND',
                     'searchtype' => 'morethan',
                     'value'      => '-1MONTH',
-                ]
-            ]
+                ],
+            ],
         ];
 
         $twig_params['items'][] = [
             'link'   => $CFG_GLPI["root_doc"] . "/front/contract.php?" . Toolbox::append_params($options),
             'text'   => __('Contracts expired in the last 30 days'),
-            'count'  => $contract0
+            'count'  => $contract0,
         ];
 
         $options['criteria'][0]['searchtype'] = 'morethan';
@@ -1004,7 +989,7 @@ class Contract extends CommonDBTM
         $twig_params['items'][] = [
             'link'   => $CFG_GLPI["root_doc"] . "/front/contract.php?" . Toolbox::append_params($options),
             'text'   => __('Contracts expiring in less than 7 days'),
-            'count'  => $contract7
+            'count'  => $contract7,
         ];
 
         $options['criteria'][0]['searchtype'] = 'morethan';
@@ -1014,7 +999,7 @@ class Contract extends CommonDBTM
         $twig_params['items'][] = [
             'link'   => $CFG_GLPI["root_doc"] . "/front/contract.php?" . Toolbox::append_params($options),
             'text'   => __('Contracts expiring in less than 30 days'),
-            'count'  => $contract30
+            'count'  => $contract30,
         ];
 
         $options['criteria'][0]['field'] = 13;
@@ -1026,7 +1011,7 @@ class Contract extends CommonDBTM
         $twig_params['items'][] = [
             'link'   => $CFG_GLPI["root_doc"] . "/front/contract.php?" . Toolbox::append_params($options),
             'text'   => __('Contracts where notice begins in less than 7 days'),
-            'count'  => $contractpre7
+            'count'  => $contractpre7,
         ];
 
         $options['criteria'][0]['value'] = '6DAY';
@@ -1034,7 +1019,7 @@ class Contract extends CommonDBTM
         $twig_params['items'][] = [
             'link'   => $CFG_GLPI["root_doc"] . "/front/contract.php?" . Toolbox::append_params($options),
             'text'   => __('Contracts where notice begins in less than 30 days'),
-            'count'  => $contractpre30
+            'count'  => $contractpre30,
         ];
 
         $output = TemplateRenderer::getInstance()->render('central/lists/itemtype_count.html.twig', $twig_params);
@@ -1062,11 +1047,11 @@ class Contract extends CommonDBTM
                 'glpi_contracts_suppliers' => [
                     'ON' => [
                         'glpi_contracts_suppliers' => 'suppliers_id',
-                        'glpi_suppliers'           => 'id'
-                    ]
-                ]
+                        'glpi_suppliers'           => 'id',
+                    ],
+                ],
             ],
-            'WHERE'        => ['contracts_id' => $this->fields['id']]
+            'WHERE'        => ['contracts_id' => $this->fields['id']],
         ]);
         $out    = "";
         foreach ($iterator as $data) {
@@ -1150,14 +1135,14 @@ class Contract extends CommonDBTM
                                     'glpi_alerts.type'     => Alert::NOTICE,
                                 ],
                             ],
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 'WHERE'     => [
                     [
                         'RAW' => [
-                            DBmysql::quoteName('glpi_contracts.alert') . ' & ' . pow(2, Alert::NOTICE) => ['>', 0]
-                        ]
+                            DBmysql::quoteName('glpi_contracts.alert') . ' & ' . pow(2, Alert::NOTICE) => ['>', 0],
+                        ],
                     ],
                     'glpi_alerts.date'           => null,
                     'glpi_contracts.is_deleted'  => 0,
@@ -1188,14 +1173,14 @@ class Contract extends CommonDBTM
                                     'glpi_alerts.type'     => Alert::END,
                                 ],
                             ],
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 'WHERE'     => [
                     [
                         'RAW' => [
-                            DBmysql::quoteName('glpi_contracts.alert') . ' & ' . pow(2, Alert::END) => ['>', 0]
-                        ]
+                            DBmysql::quoteName('glpi_contracts.alert') . ' & ' . pow(2, Alert::END) => ['>', 0],
+                        ],
                     ],
                     'glpi_alerts.date'           => null,
                     'glpi_contracts.is_deleted'  => 0,
@@ -1209,7 +1194,7 @@ class Contract extends CommonDBTM
             ];
 
             $querys = ['notice' => $query_notice,
-                'end'    => $query_end
+                'end'    => $query_end,
             ];
 
             foreach ($querys as $type => $query) {
@@ -1237,7 +1222,7 @@ class Contract extends CommonDBTM
                                 break;
 
                             case 'end':
-                                 $contract_messages[$type][$entity] = __('Contract ended') . "<br>";
+                                $contract_messages[$type][$entity] = __('Contract ended') . "<br>";
                                 break;
                         }
                     }
@@ -1250,8 +1235,8 @@ class Contract extends CommonDBTM
             $query_periodicity = ['FROM' => 'glpi_contracts',
                 'WHERE' => ['alert' => ['&', $valPow],
                     'entities_id' => $entity,
-                    'is_deleted' => 0
-                ]
+                    'is_deleted' => 0,
+                ],
             ];
 
             // Foreach ones :
@@ -1276,7 +1261,7 @@ class Contract extends CommonDBTM
                         ];
                         // If alert never occurs...
                         if (empty($previous_alert[$type])) {
-                           // We define it a long time ago [in a galaxy far, far away... ;-)]
+                            // We define it a long time ago [in a galaxy far, far away... ;-)]
                             $previous_alert[$type] = date('Y-m-d', 0);
                         }
 
@@ -1290,13 +1275,13 @@ class Contract extends CommonDBTM
                         ];
                         // If a notice is defined
                         if ($event == Alert::NOTICE) {
-                           // Will decrease of the Contract notice duration
+                            // Will decrease of the Contract notice duration
                             $next_alert[$type] = date('Y-m-d', strtotime($next_alert[$type] . " -" . ($data['notice']) . " month"));
                         }
 
                         // Computation of contract renewal
                         while ($next_alert[$type] < $previous_alert[$type]) {
-                           // Increasing of Contract periodicity...
+                            // Increasing of Contract periodicity...
                             $next_alert[$type] = date('Y-m-d', strtotime($next_alert[$type] . " +" . ($data['periodicity']) . " month"));
                         }
 
@@ -1304,7 +1289,7 @@ class Contract extends CommonDBTM
                         if ($next_alert[$type] <= date('Y-m-d')) {
                             $alert = new Alert();
                             $alert->clear(__CLASS__, $data['id'], $event);
-                           // Computation of the real date => add Config [alert xxx days before]
+                            // Computation of the real date => add Config [alert xxx days before]
                             $real_alert_date = date('Y-m-d', strtotime($next_alert[$type] . " +" . ($before) . " day"));
                             $message = sprintf(__('%1$s: %2$s') . "<br>\n", $data["name"], Html::convDate($real_alert_date));
                             $data['alert_date'] = $real_alert_date;
@@ -1312,7 +1297,7 @@ class Contract extends CommonDBTM
 
                             switch ($type) {
                                 case 'periodicitynotice':
-                                      $contract_messages[$type][$entity] = __('Contract entered in notice time for period') . "<br>";
+                                    $contract_messages[$type][$entity] = __('Contract entered in notice time for period') . "<br>";
                                     break;
 
                                 case 'periodicity':
@@ -1330,7 +1315,7 @@ class Contract extends CommonDBTM
                 'notice'            => Alert::NOTICE,
                 'end'               => Alert::END,
                 'periodicity'       => Alert::PERIODICITY,
-                'periodicitynotice' => Alert::NOTICE
+                'periodicitynotice' => Alert::NOTICE,
             ] as $event => $type
         ) {
             if (isset($contract_infos[$event]) && count($contract_infos[$event])) {
@@ -1340,7 +1325,7 @@ class Contract extends CommonDBTM
                             $event,
                             new self(),
                             ['entities_id' => $entity,
-                                'items'       => $contracts
+                                'items'       => $contracts,
                             ]
                         )
                     ) {
@@ -1363,7 +1348,7 @@ class Contract extends CommonDBTM
                             'itemtype' => __CLASS__,
                             'type'     => $type,
                         ];
-                        foreach ($contracts as $id => $contract) {
+                        foreach (array_keys($contracts) as $id) {
                             $input["items_id"] = $id;
 
                             $alert->add($input);
@@ -1371,7 +1356,7 @@ class Contract extends CommonDBTM
                         }
                     } else {
                         $entityname = Dropdown::getDropdownName('glpi_entities', $entity);
-                     //TRANS: %1$s is entity name, %2$s is the message
+                        //TRANS: %1$s is entity name, %2$s is the message
                         $msg = sprintf(__('%1$s: %2$s'), $entityname, __('send contract alert failed'));
                         if ($task) {
                             $task->log($msg);
@@ -1438,7 +1423,7 @@ class Contract extends CommonDBTM
         }
 
         if (
-            !($p['entity'] < 0)
+            $p['entity'] >= 0
             && $p['entity_sons']
         ) {
             if (is_array($p['entity'])) {
@@ -1466,19 +1451,19 @@ class Contract extends CommonDBTM
                 'glpi_entities'   => [
                     'ON' => [
                         'glpi_contracts'  => 'entities_id',
-                        'glpi_entities'   => 'id'
-                    ]
-                ]
+                        'glpi_entities'   => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => array_merge([
                 'glpi_contracts.is_deleted'   => 0,
-                'glpi_contracts.is_template'  => 0
+                'glpi_contracts.is_template'  => 0,
             ], $WHERE),
             'ORDERBY'   => [
                 'glpi_entities.completename',
                 'glpi_contracts.name ASC',
-                'glpi_contracts.begin_date DESC'
-            ]
+                'glpi_contracts.begin_date DESC',
+            ],
         ]);
 
         if ($p['hide_if_no_elements'] && $iterator->count() === 0) {
@@ -1544,7 +1529,7 @@ class Contract extends CommonDBTM
             self::RENEWAL_EXPRESS => __('Express'),
         ];
         return Dropdown::showFromArray($name, $values, ['value'   => $value,
-            'display' => $display
+            'display' => $display,
         ]);
     }
 
@@ -1633,7 +1618,7 @@ class Contract extends CommonDBTM
                 'begin_date', 'duration', 'entities_id', 'sunday_begin_hour',
                 'sunday_end_hour', 'saturday_begin_hour', 'saturday_end_hour',
                 'week_begin_hour',
-                'week_end_hour'
+                'week_end_hour',
             ]
         );
     }
@@ -1650,7 +1635,7 @@ class Contract extends CommonDBTM
         if (in_array($itemtype, $CFG_GLPI["contract_types"], true)) {
             if (self::canUpdate()) {
                 $action_prefix                    = 'Contract_Item' . MassiveAction::CLASS_ACTION_SEPARATOR;
-                $actions[$action_prefix . 'add']    = "<i class='fa-fw " . self::getIcon() . "'></i>" .
+                $actions[$action_prefix . 'add']    = "<i class='" . self::getIcon() . "'></i>" .
                                                 _sx('button', 'Add a contract');
                 $actions[$action_prefix . 'remove'] = _sx('button', 'Remove a contract');
             }
@@ -1679,7 +1664,7 @@ class Contract extends CommonDBTM
                         expression2: QueryFunction::curDate()
                     ) . ' > 0'
                 ),
-            ]
+            ],
         ];
     }
 }

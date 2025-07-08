@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -63,8 +63,8 @@ class DropdownType extends AbstractType
             if (!is_array($value)) {
                 $value = [$value];
             }
-            $value = array_filter($value, static fn ($val) => (int) $val > 0);
-            $value = array_map(static fn ($val) => (int) $val, $value);
+            $value = array_filter($value, static fn($val) => (int) $val > 0);
+            $value = array_map(static fn($val) => (int) $val, $value);
             return $value;
         }
 
@@ -87,7 +87,7 @@ class DropdownType extends AbstractType
         $is_multiple = $this->getOptionValues()['multiple'] ?? false;
         if ($is_multiple && !is_array($value)) {
             $value = [$value];
-        } else if (!$is_multiple && is_array($value)) {
+        } elseif (!$is_multiple && is_array($value)) {
             $value = $value[0] ?? '';
         }
         return $value;
@@ -147,18 +147,18 @@ TWIG, $twig_params);
                     'NEWTABLE.' . $DB->quoteName('id') . ' = ' . QueryFunction::jsonUnquote(
                         expression: QueryFunction::jsonExtract([
                             'glpi_assets_assets.custom_fields',
-                            new QueryExpression($DB::quoteValue('$."' . $this->custom_field->fields['id'] . '"'))
+                            new QueryExpression($DB::quoteValue('$."' . $this->custom_field->fields['id'] . '"')),
                         ])
                     )
-                )
+                ),
             ];
         } else {
             $opt['joinparams']['condition'] = [
                 QueryFunction::jsonContains([
                     'glpi_assets_assets.custom_fields',
                     QueryFunction::cast('NEWTABLE.id', 'JSON'),
-                    new QueryExpression($DB::quoteValue('$."' . $this->custom_field->fields['id'] . '"'))
-                ])
+                    new QueryExpression($DB::quoteValue('$."' . $this->custom_field->fields['id'] . '"')),
+                ]),
             ];
             $opt['forcegroupby'] = true;
             $opt['usehaving'] = true;

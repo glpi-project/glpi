@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -96,7 +96,7 @@ class NotificationTargetController extends NotificationTarget
     {
         //Tags with just lang
         $tags = [
-            'plugins_updates_available' => __('Some updates are available for your installed plugins!')
+            'plugins_updates_available' => __('Some updates are available for your installed plugins!'),
         ];
 
         foreach ($tags as $tag => $label) {
@@ -104,7 +104,7 @@ class NotificationTargetController extends NotificationTarget
                 'tag'   => $tag,
                 'label' => $label,
                 'value' => false,
-                'lang'  => true
+                'lang'  => true,
             ]);
         }
 

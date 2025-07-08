@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,7 +33,16 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ErrorHandler;
+require_once(__DIR__ . '/_check_webserver_config.php');
+
+use Glpi\Application\Environment;
+use Glpi\Error\ErrorHandler;
+
+use function Safe\fopen;
+use function Safe\json_encode;
+use function Safe\preg_match;
+use function Safe\preg_replace;
+use function Safe\session_write_close;
 
 /**
  * @var array $CFG_GLPI
@@ -45,14 +54,9 @@ session_write_close(); // Unlocks session to permit concurrent calls
 
 header("Content-Type: application/json; charset=UTF-8");
 
-$is_cacheable = GLPI_ENVIRONMENT_TYPE !== GLPI::ENV_DEVELOPMENT; // do not use browser cache on development env
-if (!Update::isDbUpToDate()) {
-   // Make sure to not cache if in the middle of a GLPI update
-    $is_cacheable = false;
-}
+$is_cacheable = Environment::get()->shouldForceExtraBrowserCache();
 if ($is_cacheable) {
-    // Makes CSS cacheable by browsers and proxies,
-    // unless when we are in the middle of a GLPI update.
+    // Makes CSS cacheable by browsers and proxies.
     $max_age = WEEK_TIMESTAMP;
     header_remove('Pragma');
     header('Cache-Control: public');
@@ -78,11 +82,11 @@ try {
     $messages = $TRANSLATE->getAllMessages($_GET['domain']);
 } catch (\Throwable $e) {
     // Error may happen when overrided translation files does not use same plural rules as GLPI.
-    ErrorHandler::getInstance()->handleException($e, true);
+    ErrorHandler::logCaughtException($e);
 }
 if (!($messages instanceof \Laminas\I18n\Translator\TextDomain)) {
-   // No TextDomain found means that there is no translations for given domain.
-   // It is mostly related to plugins that does not provide any translations.
+    // No TextDomain found means that there is no translations for given domain.
+    // It is mostly related to plugins that does not provide any translations.
     echo $default_response;
     return;
 }

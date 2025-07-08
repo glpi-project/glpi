@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,10 +32,13 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\preg_match;
+use function Safe\scandir;
+
 /**
  * Update from 10.0.12 to 10.0.13
  *
- * @return bool for success (will die for most error)
+ * @return bool
  **/
 function update10012to10013()
 {
@@ -51,8 +53,6 @@ function update10012to10013()
     $DELFROMDISPLAYPREF = [];
     $update_dir = __DIR__ . '/update_10.0.12_to_10.0.13/';
 
-    //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '10.0.13'));
     $migration->setVersion('10.0.13');
 
     $update_scripts = scandir($update_dir);

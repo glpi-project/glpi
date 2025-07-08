@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,9 +38,11 @@ namespace Glpi\Form\Destination\CommonITILField;
 use Entity;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\QuestionType\QuestionTypeItem;
+use Session;
 
 enum EntityFieldStrategy: string
 {
+    case FORM_FILLER          = 'form_filler';
     case FROM_FORM            = 'from_form';
     case SPECIFIC_VALUE       = 'specific_value';
     case SPECIFIC_ANSWER      = 'specific_answer';
@@ -49,6 +51,7 @@ enum EntityFieldStrategy: string
     public function getLabel(): string
     {
         return match ($this) {
+            self::FORM_FILLER          => __("Active entity of the form filler"),
             self::FROM_FORM            => __("From form"),
             self::SPECIFIC_VALUE       => __("Specific entity"),
             self::SPECIFIC_ANSWER      => __("Answer from a specific question"),
@@ -59,10 +62,11 @@ enum EntityFieldStrategy: string
     public function getEntityID(
         EntityFieldConfig $config,
         AnswersSet $answers_set,
-    ): ?int {
+    ): int {
         return match ($this) {
+            self::FORM_FILLER          => $this->getFormFillerEntityID(),
             self::FROM_FORM            => $answers_set->getItem()->fields['entities_id'],
-            self::SPECIFIC_VALUE       => $config->getSpecificEntityId(),
+            self::SPECIFIC_VALUE       => $config->getSpecificEntityId() ?? $this->getFormFillerEntityID(),
             self::SPECIFIC_ANSWER      => $this->getEntityIDForSpecificAnswer(
                 $config->getSpecificQuestionId(),
                 $answers_set
@@ -71,22 +75,31 @@ enum EntityFieldStrategy: string
         };
     }
 
+    private function getFormFillerEntityID(): int
+    {
+        if (Session::isAuthenticated()) {
+            return Session::getActiveEntity();
+        } else {
+            return 0;
+        }
+    }
+
     private function getEntityIDForSpecificAnswer(
         ?int $question_id,
         AnswersSet $answers_set,
-    ): ?int {
+    ): int {
         if ($question_id === null) {
-            return null;
+            return $this->getFormFillerEntityID();
         }
 
         $answer = $answers_set->getAnswerByQuestionId($question_id);
         if ($answer === null) {
-            return null;
+            return $this->getFormFillerEntityID();
         }
 
         $value = $answer->getRawAnswer();
         if ($value['itemtype'] !== Entity::getType() || !is_numeric($value['items_id'])) {
-            return null;
+            return $this->getFormFillerEntityID();
         }
 
         return (int) $value['items_id'];
@@ -94,7 +107,7 @@ enum EntityFieldStrategy: string
 
     public function getEntityIDForLastValidAnswer(
         AnswersSet $answers_set,
-    ): ?int {
+    ): int {
         $valid_answers = array_filter(
             $answers_set->getAnswersByType(
                 QuestionTypeItem::class
@@ -103,13 +116,13 @@ enum EntityFieldStrategy: string
         );
 
         if (count($valid_answers) == 0) {
-            return null;
+            return $this->getFormFillerEntityID();
         }
 
         $answer = end($valid_answers);
         $value = $answer->getRawAnswer();
         if (!is_numeric($value['items_id'])) {
-            return null;
+            return $this->getFormFillerEntityID();
         }
 
         return (int) $value['items_id'];

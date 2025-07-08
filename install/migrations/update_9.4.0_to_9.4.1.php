@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,10 +32,12 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\preg_replace;
+
 /**
  * Update from 9.4.0 to 9.4.1
  *
- * @return bool for success (will die for most error)
+ * @return bool
  **/
 function update940to941()
 {
@@ -48,8 +49,6 @@ function update940to941()
 
     $updateresult     = true;
 
-   //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '9.4.1'));
     $migration->setVersion('9.4.1');
 
     /** Add a search option for profile id */
@@ -58,11 +57,11 @@ function update940to941()
         $migration->addPostQuery($DB->buildUpdate(
             'glpi_displaypreferences',
             [
-                'num' => '5'
+                'num' => '5',
             ],
             [
                 'num' => '2',
-                'itemtype' => 'Profile'
+                'itemtype' => 'Profile',
             ]
         ));
 
@@ -74,7 +73,7 @@ function update940to941()
                 'WHERE'  => [
                     'itemtype'  => 'Profile',
                     'users_id'  => '0',
-                ]
+                ],
             ]
         )->current();
         $migration->addPostQuery(
@@ -92,17 +91,17 @@ function update940to941()
     /** /Add a search option for profile id */
 
     /** Fix URL of images inside ITIL objects contents */
-   // There is an exact copy of this process in "update941to942()".
-   // First version of this migration was working
-   // on MariaDB but not on MySQL due to usage of "\d" in a REGEXP expression.
-   // It has been fixed here for people who had not yet updated to 9.4.1 but have been put there
-   // for people already having updated to 9.4.1.
-    $migration->displayMessage(sprintf(__('Fix URL of images in ITIL tasks, followups and solutions.')));
+    // There is an exact copy of this process in "update941to942()".
+    // First version of this migration was working
+    // on MariaDB but not on MySQL due to usage of "\d" in a REGEXP expression.
+    // It has been fixed here for people who had not yet updated to 9.4.1 but have been put there
+    // for people already having updated to 9.4.1.
+    $migration->displayMessage(__('Fix URL of images in ITIL tasks, followups and solutions.'));
 
-   // Search for contents that does not contains the itil object parameter after the docid parameter
-   // (i.e. having a quote that ends the href just after the docid param value).
-   // 1st capturing group is the end of href attribute value
-   // 2nd capturing group is the href attribute ending quote
+    // Search for contents that does not contains the itil object parameter after the docid parameter
+    // (i.e. having a quote that ends the href just after the docid param value).
+    // 1st capturing group is the end of href attribute value
+    // 2nd capturing group is the href attribute ending quote
     $quotes_possible_exp   = ['\'', '&apos;', '&#39;', '&#x27;', '"', '&quot', '&#34;', '&#x22;'];
     $missing_param_pattern = '(document\.send\.php\?docid=[0-9]+)(' . implode('|', $quotes_possible_exp) . ')';
 
@@ -125,7 +124,7 @@ function update940to941()
     ];
 
     $fix_content_fct = function ($content, $itil_id, $itil_fkey) use ($missing_param_pattern) {
-       // Add itil object param between docid param ($1) and ending quote ($2)
+        // Add itil object param between docid param ($1) and ending quote ($2)
         return preg_replace(
             '/' . $missing_param_pattern . '/',
             '$1&amp;' . http_build_query([$itil_fkey => $itil_id]) . '$2',
@@ -137,7 +136,7 @@ function update940to941()
         $itil_fkey  = $itil_specs['itil_fkey'];
         $task_table = $itil_specs['task_table'];
 
-       // Fix followups and solutions
+        // Fix followups and solutions
         foreach (['glpi_itilfollowups', 'glpi_itilsolutions'] as $itil_element_table) {
             $elements_to_fix = $DB->request(
                 [
@@ -146,23 +145,23 @@ function update940to941()
                     'WHERE'     => [
                         'itemtype' => $itil_type,
                         'content'  => ['REGEXP', $missing_param_pattern],
-                    ]
+                    ],
                 ]
             );
             foreach ($elements_to_fix as $data) {
-                 $data['content'] = $fix_content_fct($data['content'], $data['items_id'], $itil_fkey);
-                 $DB->update($itil_element_table, $data, ['id' => $data['id']]);
+                $data['content'] = $fix_content_fct($data['content'], $data['items_id'], $itil_fkey);
+                $DB->update($itil_element_table, $data, ['id' => $data['id']]);
             }
         }
 
-       // Fix tasks
+        // Fix tasks
         $tasks_to_fix = $DB->request(
             [
                 'SELECT'    => ['id', $itil_fkey, 'content'],
                 'FROM'      => $task_table,
                 'WHERE'     => [
                     'content'  => ['REGEXP', $missing_param_pattern],
-                ]
+                ],
             ]
         );
         foreach ($tasks_to_fix as $data) {
@@ -172,13 +171,13 @@ function update940to941()
     }
     /** /Fix URL of images inside ITIL objects contents */
 
-   // Create a dedicated token for rememberme process
+    // Create a dedicated token for rememberme process
     if (!$DB->fieldExists('glpi_users', 'cookie_token')) {
         $migration->addField('glpi_users', 'cookie_token', 'string', ['after' => 'api_token_date']);
         $migration->addField('glpi_users', 'cookie_token_date', 'datetime', ['after' => 'cookie_token']);
     }
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->executeMigration();
 
     return $updateresult;

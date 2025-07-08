@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -54,12 +54,12 @@ class LineOperator extends CommonDropdown
         return [['name'  => 'mcc',
             'label' => __('Mobile Country Code'),
             'type'  => 'integer',
-            'list'  => true
+            'list'  => true,
         ],
             ['name'  => 'mnc',
                 'label' => __('Mobile Network Code'),
                 'type'  => 'integer',
-                'list'  => true
+                'list'  => true,
             ],
         ];
     }
@@ -101,14 +101,14 @@ class LineOperator extends CommonDropdown
             $input['mnc'] = 0;
         }
 
-       //check for mcc/mnc unicity
+        //check for mcc/mnc unicity
         $result = $DB->request([
             'COUNT'  => 'cpt',
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'mcc' => $input['mcc'],
-                'mnc' => $input['mnc']
-            ]
+                'mnc' => $input['mnc'],
+            ],
         ])->current();
 
         if ($result['cpt'] > 0) {

@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -37,7 +36,6 @@ namespace tests\units\Glpi\Form\QuestionType;
 
 use CommonITILObject;
 use DbTestCase;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
@@ -50,7 +48,6 @@ final class QuestionTypeUrgencyTest extends DbTestCase
     {
         $builder = new FormBuilder();
         $builder->addQuestion("What is the urgency", QuestionTypeUrgency::class);
-        $builder->addDestination(FormDestinationTicket::class, "My ticket");
         $form = $this->createForm($builder);
 
         $ticket = $this->sendFormAndGetCreatedTicket($form, [

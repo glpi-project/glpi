@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -62,6 +62,12 @@ use Toolbox;
 use GLPIKey;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 
+use function Safe\file_get_contents;
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\preg_match;
+use function Safe\simplexml_load_string;
+
 /**
  * Inventory configuration
  * @property int $import_software
@@ -99,7 +105,7 @@ use wapmorgan\UnifiedArchive\UnifiedArchive;
  * @property int $import_peripheral
  * @property int $import_env
  * @property string $auth_required
- *
+ * @property bool $enabled_inventory
  */
 class Conf extends CommonGLPI
 {
@@ -117,8 +123,8 @@ class Conf extends CommonGLPI
 
     public static $rightname = 'inventory';
 
-    const IMPORTFROMFILE     = 1024;
-    const UPDATECONFIG       = 2048;
+    public const IMPORTFROMFILE     = 1024;
+    public const UPDATECONFIG       = 2048;
 
     /**
      * Display form for import the XML
@@ -128,7 +134,7 @@ class Conf extends CommonGLPI
     public function showUploadForm()
     {
         TemplateRenderer::getInstance()->display('pages/admin/inventory/upload_form.html.twig', [
-            'inventory_extensions' => $this->knownInventoryExtensions()
+            'inventory_extensions' => $this->knownInventoryExtensions(),
         ]);
     }
 
@@ -142,7 +148,7 @@ class Conf extends CommonGLPI
         return [
             'json',
             'xml',
-            'ocs'
+            'ocs',
         ];
     }
 
@@ -176,7 +182,7 @@ class Conf extends CommonGLPI
                         sprintf('`%s` format is not supported', pathinfo($filename, PATHINFO_EXTENSION))
                     ),
                     'items'   => [],
-                    'request' => null
+                    'request' => null,
                 ];
             }
         }
@@ -191,7 +197,7 @@ class Conf extends CommonGLPI
      */
     public function isInventoryFile($name): bool
     {
-        return preg_match('/\.(' . implode('|', $this->knownInventoryExtensions()) . ')/i', $name);
+        return (bool) preg_match('/\.(' . implode('|', $this->knownInventoryExtensions()) . ')/i', $name);
     }
 
     /**
@@ -209,7 +215,7 @@ class Conf extends CommonGLPI
             'success' => false,
             'message' => null,
             'items'   => [],
-            'request' => null
+            'request' => null,
         ];
 
         try {
@@ -222,7 +228,7 @@ class Conf extends CommonGLPI
             }
 
             $inventory_request->handleContentType($mime);
-            $inventory_request->handleRequest($contents);
+            $inventory_request->setLocal()->handleRequest($contents);
             if ($inventory_request->inError()) {
                 $response = $inventory_request->getResponse();
                 if ($inventory_request->getMode() === Request::JSON_MODE) {
@@ -271,7 +277,7 @@ class Conf extends CommonGLPI
         }
 
         TemplateRenderer::getInstance()->display('pages/admin/inventory/upload_result.html.twig', [
-            'imported_files' => $this->importFiles($to_import)
+            'imported_files' => $this->importFiles($to_import),
         ]);
 
         Html::displayMessageAfterRedirect(true);
@@ -301,18 +307,17 @@ class Conf extends CommonGLPI
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        switch ($item->getType()) {
-            case __CLASS__:
-                $tabs = [];
-                if (Session::haveRight(self::$rightname, self::UPDATECONFIG)) {
-                    $tabs[1] = self::createTabEntry(__('Configuration'), 0, $item::getType());
-                }
-                if ($item->enabled_inventory && Session::haveRight(self::$rightname, self::IMPORTFROMFILE)) {
-                    $icon = "<i class='ti ti-upload me-2'></i>";
-                    $text = '<span>' . $icon . __s('Import from file') . '</span>';
-                    $tabs[2] = $text;
-                }
-                return $tabs;
+        if ($item instanceof self) {
+            $tabs = [];
+            if (Session::haveRight(self::$rightname, self::UPDATECONFIG)) {
+                $tabs[1] = self::createTabEntry(__('Configuration'), 0, $item::getType());
+            }
+            if ($item->enabled_inventory && Session::haveRight(self::$rightname, self::IMPORTFROMFILE)) {
+                $icon = "<i class='ti ti-upload me-2'></i>";
+                $text = '<span>' . $icon . __s('Import from file') . '</span>';
+                $tabs[2] = $text;
+            }
+            return $tabs;
         }
         return '';
     }
@@ -374,14 +379,14 @@ class Conf extends CommonGLPI
         Html::showCheckbox([
             'name'      => 'enabled_inventory',
             'id'        => 'enabled_inventory',
-            'checked'   => $config['enabled_inventory']
+            'checked'   => $config['enabled_inventory'],
         ]);
         echo '</div>';
         echo '<div class="col">';
         if ($config['enabled_inventory'] == false) {
             echo "<div class='alert alert-info d-flex align-items-center m-0' role='alert'>";
             echo "<span class='ms-2'>";
-            echo "<i class='fas fa-info-circle'> </i> &nbsp;";
+            echo "<i class='ti ti-info-circle'> </i> &nbsp;";
             echo __s("The inventory is disabled, remember to activate it if necessary");
             echo "</span>";
             echo "</div>";
@@ -401,7 +406,7 @@ class Conf extends CommonGLPI
                 self::CLIENT_CREDENTIALS => __s('OAuth - Client credentials'),
                 self::BASIC_AUTH => __s('Basic Authentication'),
             ], [
-                'value' => $config['auth_required'] ?? 'none'
+                'value' => $config['auth_required'] ?? 'none',
             ]);
             echo "</td></tr>";
             echo "<tr class='tab_bg_1' id='basic_auth_login_row'>";
@@ -464,7 +469,7 @@ class Conf extends CommonGLPI
             Html::showCheckbox([
                 'name'      => 'import_volume',
                 'id'        => 'import_volume',
-                'checked'   => $config['import_volume']
+                'checked'   => $config['import_volume'],
             ]);
             echo "</td>";
 
@@ -477,7 +482,7 @@ class Conf extends CommonGLPI
             Html::showCheckbox([
                 'name'      => 'component_networkdrive',
                 'id'        => 'component_networkdrive',
-                'checked'   => $config['component_networkdrive']
+                'checked'   => $config['component_networkdrive'],
             ]);
             echo "</td>";
             echo "</tr>";
@@ -492,7 +497,7 @@ class Conf extends CommonGLPI
             Html::showCheckbox([
                 'name'      => 'component_removablemedia',
                 'id'        => 'component_removablemedia',
-                'checked'   => $config['component_removablemedia']
+                'checked'   => $config['component_removablemedia'],
             ]);
             echo "</td>";
 
@@ -505,7 +510,7 @@ class Conf extends CommonGLPI
             Html::showCheckbox([
                 'name'      => 'import_software',
                 'id'        => 'import_software',
-                'checked'   => $config['import_software']
+                'checked'   => $config['import_software'],
             ]);
             echo "</td>";
             echo "</tr>";
@@ -520,7 +525,7 @@ class Conf extends CommonGLPI
             Html::showCheckbox([
                 'name'      => 'import_monitor',
                 'id'        => 'import_monitor',
-                'checked'   => $config['import_monitor']
+                'checked'   => $config['import_monitor'],
             ]);
             echo "</td>";
 
@@ -534,7 +539,7 @@ class Conf extends CommonGLPI
             Html::showCheckbox([
                 'name'      => 'import_printer',
                 'id'        => 'import_printer',
-                'checked'   => $config['import_printer']
+                'checked'   => $config['import_printer'],
             ]);
             echo "</td>";
             echo "</tr>";
@@ -549,7 +554,7 @@ class Conf extends CommonGLPI
             Html::showCheckbox([
                 'name'      => 'import_peripheral',
                 'id'        => 'import_peripheral',
-                'checked'   => $config['import_peripheral']
+                'checked'   => $config['import_peripheral'],
             ]);
             echo "</td>";
 
@@ -563,7 +568,7 @@ class Conf extends CommonGLPI
             Html::showCheckbox([
                 'name'      => 'import_antivirus',
                 'id'        => 'import_antivirus',
-                'checked'   => $config['import_antivirus']
+                'checked'   => $config['import_antivirus'],
             ]);
             echo "</td>";
             echo "</tr>";
@@ -578,7 +583,7 @@ class Conf extends CommonGLPI
             Html::showCheckbox([
                 'name'      => 'import_process',
                 'id'        => 'import_process',
-                'checked'   => $config['import_process']
+                'checked'   => $config['import_process'],
             ]);
             echo "</td>";
             echo "<td>";
@@ -590,7 +595,7 @@ class Conf extends CommonGLPI
             Html::showCheckbox([
                 'name'      => 'import_env',
                 'id'        => 'import_env',
-                'checked'   => $config['import_env']
+                'checked'   => $config['import_env'],
             ]);
             echo "</td>";
             echo "</tr>";
@@ -605,7 +610,7 @@ class Conf extends CommonGLPI
             Html::showCheckbox([
                 'name'      => 'import_unmanaged',
                 'id'        => 'import_unmanaged',
-                'checked'   => $config['import_unmanaged'] ?? 1
+                'checked'   => $config['import_unmanaged'] ?? 1,
             ]);
             echo "</td>";
 
@@ -629,7 +634,7 @@ class Conf extends CommonGLPI
                     'id'     => 'states_id_default',
                     'value'  => $config['states_id_default'],
                     'toadd'  => ['-1' => __('Do not change')],
-                    'rand' => $rand
+                    'rand' => $rand,
                 ]
             );
             echo "</td>";
@@ -643,7 +648,7 @@ class Conf extends CommonGLPI
                     'value' => $config['inventory_frequency'],
                     'min' => 1,
                     'max' => 240,
-                    'rand' => $rand
+                    'rand' => $rand,
                 ]
             );
 
@@ -665,7 +670,7 @@ class Conf extends CommonGLPI
                     'name'   => 'entities_id_default',
                     'id'     => 'entities_id_default',
                     'value'  => $config['entities_id_default'] ?? 0,
-                    'rand' => $rand
+                    'rand' => $rand,
                 ]
             );
             echo "</td>";
@@ -679,7 +684,7 @@ class Conf extends CommonGLPI
             Html::showCheckbox([
                 'name'      => 'import_monitor_on_partial_sn',
                 'id'        => 'import_monitor_on_partial_sn',
-                'checked'   => $config['import_monitor_on_partial_sn']
+                'checked'   => $config['import_monitor_on_partial_sn'],
             ]);
 
             echo "</td>";
@@ -690,24 +695,16 @@ class Conf extends CommonGLPI
             echo __s('Related configurations');
             echo "</th>";
             echo "</tr>";
-            echo "<tr class='tab_bg_1'>";
-
-            foreach (['Asset', 'Entity'] as $col_name) {
-                $col_class = 'RuleImport' . $col_name . 'Collection';
-                $collection = new $col_class();
-                $rules = $collection->getRuleClass();
-                echo "<td colspan='2'>";
-                echo sprintf(
-                    '<a href="%s">%s</a>',
-                    $rules::getSearchURL(),
-                    \Rule::createTabEntry($collection->getTitle(), 0, \Rule::getType())
-                );
-                echo "</td>";
-            }
-            echo "</tr>";
 
             echo "<tr class='tab_bg_1'>";
-            echo "<td>";
+            echo "<td colspan='2'>";
+            echo sprintf(
+                '<a href="%s">%s</a>',
+                \Rule::getSearchURL(),
+                \Rule::createTabEntry(\Rule::getTypeName(\Session::getPluralNumber()), 0, \Rule::getType())
+            );
+            echo "</td>";
+            echo "<td colspan='2'>";
 
             echo sprintf(
                 '<a href="%s">%s</a>',
@@ -733,7 +730,7 @@ class Conf extends CommonGLPI
             Html::showCheckbox([
                 'name'      => 'import_vm',
                 'id'        => 'import_vm',
-                'checked'   => $config['import_vm']
+                'checked'   => $config['import_vm'],
             ]);
             echo "</td>";
             echo "<td>";
@@ -748,7 +745,7 @@ class Conf extends CommonGLPI
                     'name'   => 'vm_type',
                     'id'     => 'vm_type',
                     'value'  => $config['vm_type'],
-                    'rand' => $rand
+                    'rand' => $rand,
                 ]
             );
             echo "</td>";
@@ -764,7 +761,7 @@ class Conf extends CommonGLPI
             Html::showCheckbox([
                 'name'      => 'vm_as_computer',
                 'id'        => 'vm_as_computer',
-                'checked'   => $config['vm_as_computer']
+                'checked'   => $config['vm_as_computer'],
             ]);
             echo "</td>";
             echo "<td>";
@@ -776,7 +773,7 @@ class Conf extends CommonGLPI
             Html::showCheckbox([
                 'name'      => 'vm_components',
                 'id'        => 'vm_components',
-                'checked'   => $config['vm_components']
+                'checked'   => $config['vm_components'],
             ]);
             echo "</td>";
             echo "</tr>";
@@ -803,7 +800,7 @@ class Conf extends CommonGLPI
             Html::showCheckbox([
                 'name'      => 'component_processor',
                 'id'        => 'component_processor',
-                'checked'   => $config['component_processor']
+                'checked'   => $config['component_processor'],
             ]);
             echo "</td>";
 
@@ -816,7 +813,7 @@ class Conf extends CommonGLPI
             Html::showCheckbox([
                 'name'      => 'component_harddrive',
                 'id'        => 'component_harddrive',
-                'checked'   => $config['component_harddrive']
+                'checked'   => $config['component_harddrive'],
             ]);
             echo "</td>";
             echo "</tr>";
@@ -831,7 +828,7 @@ class Conf extends CommonGLPI
             Html::showCheckbox([
                 'name'      => 'component_memory',
                 'id'        => 'component_memory',
-                'checked'   => $config['component_memory']
+                'checked'   => $config['component_memory'],
             ]);
             echo "</td>";
 
@@ -844,7 +841,7 @@ class Conf extends CommonGLPI
             Html::showCheckbox([
                 'name'      => 'component_soundcard',
                 'id'        => 'component_soundcard',
-                'checked'   => $config['component_soundcard']
+                'checked'   => $config['component_soundcard'],
             ]);
 
             echo "</td>";
@@ -860,7 +857,7 @@ class Conf extends CommonGLPI
             Html::showCheckbox([
                 'name'      => 'component_networkcard',
                 'id'        => 'component_networkcard',
-                'checked'   => $config['component_networkcard']
+                'checked'   => $config['component_networkcard'],
             ]);
             echo "</td>";
 
@@ -873,7 +870,7 @@ class Conf extends CommonGLPI
             Html::showCheckbox([
                 'name'      => 'component_networkcardvirtual',
                 'id'        => 'component_networkcardvirtual',
-                'checked'   => $config['component_networkcardvirtual']
+                'checked'   => $config['component_networkcardvirtual'],
             ]);
 
             echo "</td>";
@@ -889,7 +886,7 @@ class Conf extends CommonGLPI
             Html::showCheckbox([
                 'name'      => 'component_graphiccard',
                 'id'        => 'component_graphiccard',
-                'checked'   => $config['component_graphiccard']
+                'checked'   => $config['component_graphiccard'],
             ]);
             echo "</td>";
 
@@ -902,7 +899,7 @@ class Conf extends CommonGLPI
             Html::showCheckbox([
                 'name'      => 'component_simcard',
                 'id'        => 'component_simcard',
-                'checked'   => $config['component_simcard']
+                'checked'   => $config['component_simcard'],
             ]);
             echo "</td>";
 
@@ -918,7 +915,7 @@ class Conf extends CommonGLPI
             Html::showCheckbox([
                 'name'      => 'component_drive',
                 'id'        => 'component_drive',
-                'checked'   => $config['component_drive']
+                'checked'   => $config['component_drive'],
             ]);
             echo "</td>";
 
@@ -931,7 +928,7 @@ class Conf extends CommonGLPI
             Html::showCheckbox([
                 'name'      => 'component_powersupply',
                 'id'        => 'component_powersupply',
-                'checked'   => $config['component_powersupply']
+                'checked'   => $config['component_powersupply'],
             ]);
             echo "</td>";
 
@@ -947,7 +944,7 @@ class Conf extends CommonGLPI
             Html::showCheckbox([
                 'name'      => 'component_control',
                 'id'        => 'component_control',
-                'checked'   => $config['component_control']
+                'checked'   => $config['component_control'],
             ]);
             echo "</td>";
 
@@ -961,7 +958,7 @@ class Conf extends CommonGLPI
             Html::showCheckbox([
                 'name'      => 'component_battery',
                 'id'        => 'component_battery',
-                'checked'   => $config['component_battery']
+                'checked'   => $config['component_battery'],
             ]);
             echo "</td>";
             echo "</tr>";
@@ -978,7 +975,7 @@ class Conf extends CommonGLPI
                     'min'   => 1,
                     'max'   => 1000,
                     'toadd' => ['0' => __('Disabled')],
-                    'rand'  => $rand
+                    'rand'  => $rand,
                 ]
             );
             echo "</td><td><label for='dropdown_stale_agents_action$rand'>";
@@ -996,7 +993,7 @@ class Conf extends CommonGLPI
                     'values' => importArrayFromDB($action),
                     'on_change' => 'changestatus();',
                     'multiple' => true,
-                    'rand' => $rand
+                    'rand' => $rand,
                 ]
             );
             //if action == action_status => show blocation else hide blocaction
@@ -1156,8 +1153,8 @@ class Conf extends CommonGLPI
 
         if (isset($values['auth_required']) && $values['auth_required'] === Conf::BASIC_AUTH) {
             if (
-                    !empty($values['basic_auth_password']) &&
-                    !empty($values['basic_auth_login'])
+                !empty($values['basic_auth_password']) &&
+                !empty($values['basic_auth_login'])
             ) {
                 $values['basic_auth_password'] = (new GLPIKey())->encrypt($values['basic_auth_password']);
             } else {
@@ -1184,7 +1181,7 @@ class Conf extends CommonGLPI
                 } elseif ($prop == 'stale_agents_status_condition') {
                     $to_process[$prop] = ArrayNormalizer::normalizeValues(
                         $to_process[$prop],
-                        fn (mixed $val) => $val === 'all' ? 'all' : intval($val)
+                        fn(mixed $val) => $val === 'all' ? 'all' : intval($val)
                     );
                 }
                 $to_process[$prop] = exportArrayToDB($to_process[$prop]);
@@ -1212,8 +1209,8 @@ class Conf extends CommonGLPI
         }
         if (in_array($name, array_keys(self::getDefaults()))) {
             return $this->currents[$name];
-        } else if ($name == 'fields') {
-           //no fields here
+        } elseif ($name == 'fields') {
+            //no fields here
             return;
         } else {
             $msg = sprintf(
@@ -1233,10 +1230,10 @@ class Conf extends CommonGLPI
     {
         $values = [ READ => __('Read')];
         $values[self::IMPORTFROMFILE] = ['short' => __('Import'),
-            'long'  => __('Import from file')
+            'long'  => __('Import from file'),
         ];
         $values[self::UPDATECONFIG] = ['short' => __('Configure'),
-            'long'  => __('Import configuration')
+            'long'  => __('Import configuration'),
         ];
 
         return $values;
@@ -1308,7 +1305,7 @@ class Conf extends CommonGLPI
             'import_env'                     => 0,
             'auth_required'                  => 'none',
             'basic_auth_login'                     => '',
-            'basic_auth_password'                  => ''
+            'basic_auth_password'                  => '',
         ];
     }
 

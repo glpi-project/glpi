@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -60,7 +60,7 @@ class Consumable extends CommonDBChild
     public function getCloneRelations(): array
     {
         return [
-            Infocom::class
+            Infocom::class,
         ];
     }
 
@@ -97,7 +97,7 @@ class Consumable extends CommonDBChild
         if ($item->getFromDB($input["consumableitems_id"])) {
             return ["consumableitems_id" => $item->fields["id"],
                 "entities_id"        => $item->getEntityID(),
-                "date_in"            => date("Y-m-d")
+                "date_in"            => date("Y-m-d"),
             ];
         }
         return [];
@@ -111,7 +111,7 @@ class Consumable extends CommonDBChild
             $infocom = reset($infocoms);
             $infocom->clone([
                 'itemtype'  => self::getType(),
-                'items_id'  => $this->getID()
+                'items_id'  => $this->getID(),
             ]);
         }
 
@@ -134,10 +134,10 @@ class Consumable extends CommonDBChild
         $result = $DB->update(
             static::getTable(),
             [
-                'date_out' => 'NULL'
+                'date_out' => 'NULL',
             ],
             [
-                'id' => $input['id']
+                'id' => $input['id'],
             ]
         );
         if ($result) {
@@ -180,10 +180,10 @@ class Consumable extends CommonDBChild
                 [
                     'date_out'  => date('Y-m-d'),
                     'itemtype'  => $itemtype,
-                    'items_id'  => $items_id
+                    'items_id'  => $items_id,
                 ],
                 [
-                    'id' => $ID
+                    'id' => $ID,
                 ]
             );
             if ($result) {
@@ -197,7 +197,7 @@ class Consumable extends CommonDBChild
         array &$actions,
         $itemtype,
         $is_deleted = 0,
-        CommonDBTM $checkitem = null
+        ?CommonDBTM $checkitem = null
     ) {
         // Special actions only for self
         if ($itemtype !== static::class) {
@@ -236,7 +236,7 @@ class Consumable extends CommonDBChild
                     'itemtype_name'   => 'give_itemtype',
                     'items_id_name'   => 'give_items_id',
                     'entity_restrict' => $entity_restrict,
-                    'itemtypes'       => $CFG_GLPI["consumables_types"]
+                    'itemtypes'       => $CFG_GLPI["consumables_types"],
                 ]);
                 echo "<br><br>" . Html::submit(
                     _x('button', 'Give'),
@@ -284,8 +284,8 @@ class Consumable extends CommonDBChild
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                             $ma->itemDone($item::class, $key, MassiveAction::ACTION_NORIGHT);
-                             $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            $ma->itemDone($item::class, $key, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         }
                     }
                     Event::log(
@@ -319,9 +319,9 @@ class Consumable extends CommonDBChild
         $result = $DB->request([
             'COUNT'  => 'cpt',
             'FROM'   => 'glpi_consumables',
-            'WHERE'  => ['consumableitems_id' => $tID]
+            'WHERE'  => ['consumableitems_id' => $tID],
         ])->current();
-        return (int)$result['cpt'];
+        return (int) $result['cpt'];
     }
 
     /**
@@ -341,10 +341,10 @@ class Consumable extends CommonDBChild
             'FROM'   => 'glpi_consumables',
             'WHERE'  => [
                 'consumableitems_id' => $tID,
-                'NOT'                => ['date_out' => null]
-            ]
+                'NOT'                => ['date_out' => null],
+            ],
         ])->current();
-        return (int)$result['cpt'];
+        return (int) $result['cpt'];
     }
 
     /**
@@ -364,8 +364,8 @@ class Consumable extends CommonDBChild
             'FROM'   => 'glpi_consumables',
             'WHERE'  => [
                 'consumableitems_id' => $tID,
-                'date_out'           => null
-            ]
+                'date_out'           => null,
+            ],
         ])->current();
         return(int) $result['cpt'];
     }
@@ -386,8 +386,8 @@ class Consumable extends CommonDBChild
             'SELECT'  => ['stock_target'],
             'FROM'   => ConsumableItem::getTable(),
             'WHERE'  => [
-                'id'  => $tID
-            ]
+                'id'  => $tID,
+            ],
         ]);
         if ($it->count()) {
             return $it->current()['stock_target'];
@@ -410,8 +410,8 @@ class Consumable extends CommonDBChild
             'SELECT'  => ['alarm_threshold'],
             'FROM'   => ConsumableItem::getTable(),
             'WHERE'  => [
-                'id'  => $tID
-            ]
+                'id'  => $tID,
+            ],
         ]);
         if ($it->count()) {
             return $it->current()['alarm_threshold'];
@@ -441,7 +441,7 @@ class Consumable extends CommonDBChild
             if ($unused <= $alarm_threshold) {
                 $highlight = "class='tab_bg_1_2'";
             }
-           //TRANS: For consumable. %1$d is total number, %2$d is unused number, %3$d is old number
+            //TRANS: For consumable. %1$d is total number, %2$d is unused number, %3$d is old number
             $tmptxt = sprintf(__('Total: %1$d, New: %2$d, Used: %3$d'), $total, $unused, $old);
             if ($nohtml) {
                 $out = $tmptxt;
@@ -475,8 +475,8 @@ class Consumable extends CommonDBChild
             'FROM'   => 'glpi_consumables',
             'WHERE'  => [
                 'id'        => $cID,
-                'date_out'  => null
-            ]
+                'date_out'  => null,
+            ],
         ])->current();
         return $result['cpt'] === 1;
     }
@@ -498,8 +498,8 @@ class Consumable extends CommonDBChild
             'FROM'   => 'glpi_consumables',
             'WHERE'  => [
                 'id'     => $cID,
-                'NOT'   => ['date_out' => null]
-            ]
+                'NOT'   => ['date_out' => null],
+            ],
         ])->current();
         return $result['cpt'] === 1;
     }
@@ -515,7 +515,7 @@ class Consumable extends CommonDBChild
     {
         if (self::isNew($cID)) {
             return _nx('consumable', 'New', 'New', 1);
-        } else if (self::isOld($cID)) {
+        } elseif (self::isOld($cID)) {
             return _nx('consumable', 'Used', 'Used', 1);
         }
         return '';
@@ -605,16 +605,16 @@ class Consumable extends CommonDBChild
                 'glpi_consumableitems.name AS itemname',
                 'glpi_consumableitems.ref AS ref',
                 'glpi_consumableitems.entities_id AS entities_id',
-                'glpi_consumableitems.is_recursive AS is_recursive'
+                'glpi_consumableitems.is_recursive AS is_recursive',
             ],
             'FROM' => self::getTable(),
             'LEFT JOIN' => [
                 'glpi_consumableitems' => [
                     'ON' => [
                         'glpi_consumableitems' => 'id',
-                        'glpi_consumables'     => 'consumableitems_id'
-                    ]
-                ]
+                        'glpi_consumables'     => 'consumableitems_id',
+                    ],
+                ],
             ],
             'WHERE'  => [
                 'glpi_consumables.items_id' => $items_id,
@@ -623,8 +623,8 @@ class Consumable extends CommonDBChild
             ] + getEntitiesRestrictCriteria('glpi_consumableitems', '', '', true),
         ];
 
-        $total_number = (int)$DB->request($query + [
-            'COUNT'  => 'cpt'
+        $total_number = (int) $DB->request($query + [
+            'COUNT'  => 'cpt',
         ])->current()['cpt'];
 
         $filtered_query = $query;
@@ -635,8 +635,8 @@ class Consumable extends CommonDBChild
             'ORDER' => "$sort $order",
         ]);
 
-        $filtered_number = (int)$DB->request($filtered_query + [
-            'COUNT'  => 'cpt'
+        $filtered_number = (int) $DB->request($filtered_query + [
+            'COUNT'  => 'cpt',
         ])->current()['cpt'];
 
         $envs = [];
@@ -650,7 +650,7 @@ class Consumable extends CommonDBChild
             'sort' => $sort,
             'order' => $order,
             'additional_params' => $is_filtered ? http_build_query([
-                'filters' => $filters
+                'filters' => $filters,
             ]) : "",
             'is_tab' => true,
             'items_id' => $items_id,
@@ -672,7 +672,7 @@ class Consumable extends CommonDBChild
                 'specific_actions' => [
                     'delete' => __('Delete permanently'),
                     'Consumable' . MassiveAction::CLASS_ACTION_SEPARATOR . 'backtostock' => __('Back to stock'),
-                ]
+                ],
             ],
         ]);
     }
@@ -696,7 +696,7 @@ class Consumable extends CommonDBChild
                 'COUNT'  => ['* AS count'],
                 'consumableitems_id',
                 'itemtype',
-                'items_id'
+                'items_id',
             ],
             'FROM'   => 'glpi_consumables',
             'WHERE'  => [
@@ -704,10 +704,10 @@ class Consumable extends CommonDBChild
                 'consumableitems_id' => new QuerySubQuery([
                     'SELECT' => 'id',
                     'FROM'   => 'glpi_consumableitems',
-                    'WHERE'  => getEntitiesRestrictCriteria('glpi_consumableitems')
-                ])
+                    'WHERE'  => getEntitiesRestrictCriteria('glpi_consumableitems'),
+                ]),
             ],
-            'GROUP'  => ['itemtype', 'items_id', 'consumableitems_id']
+            'GROUP'  => ['itemtype', 'items_id', 'consumableitems_id'],
         ]);
         $used = [];
 
@@ -726,10 +726,10 @@ class Consumable extends CommonDBChild
                 'consumableitems_id' => new QuerySubQuery([
                     'SELECT' => 'id',
                     'FROM'   => 'glpi_consumableitems',
-                    'WHERE'  => getEntitiesRestrictCriteria('glpi_consumableitems')
-                ])
+                    'WHERE'  => getEntitiesRestrictCriteria('glpi_consumableitems'),
+                ]),
             ],
-            'GROUP'  => ['consumableitems_id']
+            'GROUP'  => ['consumableitems_id'],
         ]);
         $new = [];
 
@@ -739,10 +739,10 @@ class Consumable extends CommonDBChild
 
         $iterator = $DB->request([
             'FROM'   => 'glpi_consumableitems',
-            'WHERE'  => getEntitiesRestrictCriteria('glpi_consumableitems')
+            'WHERE'  => getEntitiesRestrictCriteria('glpi_consumableitems'),
         ]);
         $columns = [
-            'give_to' => __('Give to')
+            'give_to' => __('Give to'),
         ];
         $formatters = [];
         $entries = [];
@@ -762,9 +762,9 @@ class Consumable extends CommonDBChild
 
         $new_entry = [
             'give_to' => __('In stock'),
-            'total'   => 0
+            'total'   => 0,
         ];
-        foreach ($types as $id_type => $type) {
+        foreach (array_keys($types) as $id_type) {
             if (!isset($new[$id_type])) {
                 $new[$id_type] = 0;
             }
@@ -775,7 +775,7 @@ class Consumable extends CommonDBChild
 
         foreach ($used as $itemtype_items_id => $val) {
             [$itemtype, $items_id] = explode('####', $itemtype_items_id);
-            $item = new $itemtype();
+            $item = getItemForItemtype($itemtype);
             $item_name = '';
             if ($item->getFromDB($items_id)) {
                 //TRANS: %1$s is a type name - %2$s is a name
@@ -783,10 +783,10 @@ class Consumable extends CommonDBChild
             }
             $entry = [
                 'give_to' => $item_name,
-                'total'   => 0
+                'total'   => 0,
             ];
 
-            foreach ($types as $id_type => $type) {
+            foreach (array_keys($types) as $id_type) {
                 if (!isset($val[$id_type])) {
                     $val[$id_type] = 0;
                 }
@@ -797,14 +797,13 @@ class Consumable extends CommonDBChild
         }
 
         $footer = [__('Total')];
-        foreach ($types as $id_type => $type) {
+        foreach (array_keys($types) as $id_type) {
             $footer[] = array_sum(array_column($entries, $id_type));
         }
         $footer[] = array_sum(array_column($entries, 'total'));
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => $columns,
@@ -814,7 +813,7 @@ class Consumable extends CommonDBChild
             'footer_class' => 'fw-bold',
             'total_number' => count($entries),
             'filtered_number' => count($entries),
-            'showmassiveactions' => false
+            'showmassiveactions' => false,
         ]);
     }
 
@@ -915,7 +914,7 @@ class Consumable extends CommonDBChild
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $options[] = [
@@ -934,7 +933,7 @@ class Consumable extends CommonDBChild
             'field'              => 'date_in',
             'name'               => __('Add date'),
             'massiveaction'      => false,
-            'datatype'           => 'date'
+            'datatype'           => 'date',
         ];
 
         $options[] = [
@@ -943,7 +942,7 @@ class Consumable extends CommonDBChild
             'field'              => 'date_out',
             'name'               => __('Use date'),
             'massiveaction'      => false,
-            'datatype'           => 'date'
+            'datatype'           => 'date',
         ];
 
         $options[] = [

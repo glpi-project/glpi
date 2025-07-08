@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,7 +42,6 @@ use Glpi\System\Requirement\DirectoryWriteAccess;
 use Glpi\System\Requirement\Extension;
 use Glpi\System\Requirement\ExtensionConstant;
 use Glpi\System\Requirement\ExtensionGroup;
-use Glpi\System\Requirement\InstallationNotOverriden;
 use Glpi\System\Requirement\IntegerSize;
 use Glpi\System\Requirement\LogsWriteAccess;
 use Glpi\System\Requirement\MemoryLimit;
@@ -51,7 +50,6 @@ use Glpi\System\Requirement\PhpVersion;
 use Glpi\System\Requirement\SeLinux;
 use Glpi\System\Requirement\SessionsConfiguration;
 use Glpi\System\Requirement\SessionsSecurityConfiguration;
-use Glpi\System\Requirement\DatabaseTablesEngine;
 
 /**
  * @since 9.5.0
@@ -84,8 +82,8 @@ class RequirementsManager
                 'fileinfo',
                 'filter',
                 'libxml',
-                'json',
                 'simplexml',
+                'tokenizer', // required by `\Symfony\Component\Routing\Loader\AttributeFileLoader`
                 'xmlreader', // required/used by simplepie/simplepie and sabre/xml
                 'xmlwriter', // required/used by sabre/xml
             ]
@@ -136,14 +134,12 @@ class RequirementsManager
         $requirements[] = new Extension(
             'openssl',
             false,
-            __('Required for handling of encrypted communication with inventory agents and OAuth 2.0 authentication.')
+            __('Required for email sending using SSL/TLS, handling of encrypted communication with inventory agents and OAuth 2.0 authentication.')
         );
 
         if ($db instanceof \DBmysql) {
             $requirements[] = new DbEngine($db);
         }
-
-        $requirements[] = new InstallationNotOverriden($db);
 
         /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
         global $PHPLOGGER;
@@ -175,11 +171,6 @@ class RequirementsManager
             'ldap',
             true,
             __('Enable usage of authentication through remote LDAP server.')
-        );
-        $requirements[] = new Extension(
-            'openssl',
-            true,
-            __('Enable email sending using SSL/TLS.')
         );
         $requirements[] = new ExtensionGroup(
             __('PHP extensions for marketplace'),

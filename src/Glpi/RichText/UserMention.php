@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -44,10 +44,18 @@ use DOMDocument;
 use ITILFollowup;
 use ITILSolution;
 use NotificationEvent;
+use Profile;
 use User;
+
+use function Safe\preg_replace;
+use function Safe\simplexml_import_dom;
 
 final class UserMention
 {
+    public const USER_MENTION_DISABLED = 0;
+    public const USER_MENTION_FULL = 1;
+    public const USER_MENTION_RESTRICTED = 2;
+
     /**
      * Handle user mentions.
      * Add newly mention users to observers and send them a notification.
@@ -72,13 +80,13 @@ final class UserMention
             }
 
             if (array_key_exists($content_field, $item->oldvalues)) {
-               // Update case: content field was updated
+                // Update case: content field was updated
                 $previous_value = $item->oldvalues[$content_field];
-            } else if (count($item->updates) > 0) {
-               // Update case: content field was not updated
+            } elseif (count($item->updates) > 0) {
+                // Update case: content field was not updated
                 $previous_value = $item->fields[$content_field];
             } else {
-               // Creation case
+                // Creation case
                 $previous_value = null;
             }
 
@@ -99,14 +107,14 @@ final class UserMention
             }
         }
 
-       // Keep only newly mentioned actors
+        // Keep only newly mentioned actors
         $mentionned_actors_ids = array_diff($mentionned_actors_ids, $previously_mentionned_actors_ids);
 
-        if (empty($mentionned_actors_ids)) {
+        if ($mentionned_actors_ids === []) {
             return;
         }
 
-       // Retrieve main item
+        // Retrieve main item
         $main_item = $item;
         $options = [];
         if ($item instanceof CommonITILTask) {
@@ -116,15 +124,15 @@ final class UserMention
             ];
 
             $main_item = $item->getItem();
-        } else if ($item instanceof CommonITILValidation) {
+        } elseif ($item instanceof CommonITILValidation) {
             $options = [
                 'validation_id'     => $item->fields['id'],
-                'validation_status' => $item->fields['status']
+                'validation_status' => $item->fields['status'],
             ];
 
             $main_item = getItemForItemtype($item::getItilObjectItemType());
             $main_item->getFromDB($item->fields[$item::$items_id]);
-        } else if ($item instanceof ITILFollowup) {
+        } elseif ($item instanceof ITILFollowup) {
             $options = [
                 'followup_id' => $item->fields['id'],
                 'is_private'  => $item->isPrivate(),
@@ -132,12 +140,12 @@ final class UserMention
 
             $main_item = getItemForItemtype($item->fields['itemtype']);
             $main_item->getFromDB($item->fields['items_id']);
-        } else if ($item instanceof ITILSolution) {
+        } elseif ($item instanceof ITILSolution) {
             $main_item = getItemForItemtype($item->fields['itemtype']);
             $main_item->getFromDB($item->fields['items_id']);
         }
 
-       // Send a "you have been mentioned" notification
+        // Send a "you have been mentioned" notification
         foreach ($mentionned_actors_ids as $user_id) {
             $options['users_id'] = $user_id;
             NotificationEvent::raiseEvent('user_mention', $main_item, $options, $item);
@@ -148,8 +156,8 @@ final class UserMention
                 return; // Cannot add observers
             }
 
-           // Retrieve current actors list
-            $userlink = new $main_item->userlinkclass();
+            // Retrieve current actors list
+            $userlink = $main_item->getActorObjectForItem(User::class);
             $current_actors_ids = [];
             $current_actors = $userlink->getActors($main_item->fields['id']);
             foreach ($current_actors as $actors) {
@@ -158,7 +166,7 @@ final class UserMention
                 }
             }
 
-           // Add newly mentioned actors as observers
+            // Add newly mentioned actors as observers
             foreach ($mentionned_actors_ids as $user_id) {
                 if (in_array($user_id, $current_actors_ids)) {
                     continue;
@@ -195,23 +203,23 @@ final class UserMention
             $dom = new DOMDocument();
             libxml_use_internal_errors(true);
             $dom->loadHTML($content);
-            // TODO In GLPI 11.0, find a way to remove usage of this `@` operator
-            // that was added to prevent Error E_WARNING simplexml_import_dom(): Invalid Nodetype to import
-            // with bad HTML content.
-            $content_as_xml = @simplexml_import_dom($dom);
+            if (!libxml_get_errors()) {
+                $content_as_xml = simplexml_import_dom($dom);
+            }
+            libxml_clear_errors();
         } catch (\Throwable $e) {
-           // Sanitize process does not handle correctly `<` and `>` chars that are not surrounding html tags.
-           // This generates invalid HTML that cannot be loaded by `SimpleXMLElement`.
+            // Sanitize process does not handle correctly `<` and `>` chars that are not surrounding html tags.
+            // This generates invalid HTML that cannot be loaded by `SimpleXMLElement`.
             return [];
         }
 
-        if ($content_as_xml === null) {
+        if (!isset($content_as_xml)) {
             return [];
         }
 
         $mention_elements = $content_as_xml->xpath('//*[@data-user-mention="true"]');
         foreach ($mention_elements as $mention_element) {
-            $ids[] = (int)$mention_element->attributes()->{'data-user-id'};
+            $ids[] = (int) $mention_element->attributes()->{'data-user-id'};
         }
 
         return $ids;
@@ -260,5 +268,43 @@ final class UserMention
         }
 
         return $content;
+    }
+
+    /**
+     * Get the options to pass to the `UserMention` javascript module.
+     *
+     * @param CommonITILObject $item
+     *
+     * @return array{enabled: bool, full: bool, users: array<int, int>}
+     */
+    public static function getMentionOptions(CommonITILObject $item): array
+    {
+        $profile = Profile::getById($_SESSION['glpiactiveprofile']['id']);
+        $use_mentions = $profile->fields['use_mentions'];
+
+        $data = [
+            'enabled' => $use_mentions !== self::USER_MENTION_DISABLED,
+            'full'    => $use_mentions === self::USER_MENTION_FULL,
+            'users'   => [],
+        ];
+
+        if ($use_mentions !== self::USER_MENTION_RESTRICTED) {
+            return $data;
+        }
+
+        $items_id = $item->getID();
+
+        //get actors from item
+        $userlink = $item->getActorObjectForItem(User::class);
+        $actors = $userlink->getActors($items_id);
+
+        $data['users'] = [];
+
+        foreach ($actors as $actor) {
+            foreach ($actor as $a) {
+                $data['users'][] = $a['users_id'];
+            }
+        }
+        return $data;
     }
 }

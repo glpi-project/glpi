@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,11 +35,51 @@
 namespace tests\units;
 
 use DbTestCase;
-
-/* Test for inc/item_operatingsystem.class.php */
+use Glpi\Asset\Capacity;
+use Glpi\Asset\Capacity\HasOperatingSystemCapacity;
+use Glpi\Features\Clonable;
+use Item_OperatingSystem;
+use Toolbox;
 
 class Item_OperatingSystemTest extends DbTestCase
 {
+    public function testRelatedItemHasTab()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasOperatingSystemCapacity::class)]);
+
+        $this->login(); // tab will be available only if corresponding right is available in the current session
+
+        foreach ($CFG_GLPI['operatingsystem_types'] as $itemtype) {
+            $item = $this->createItem(
+                $itemtype,
+                $this->getMinimalCreationInput($itemtype)
+            );
+
+            $tabs = $item->defineAllTabs();
+            $this->assertArrayHasKey('Item_OperatingSystem$1', $tabs, $itemtype);
+        }
+    }
+
+    public function testRelatedItemCloneRelations()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasOperatingSystemCapacity::class)]);
+
+        foreach ($CFG_GLPI['operatingsystem_types'] as $itemtype) {
+            if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
+                continue;
+            }
+
+            $item = \getItemForItemtype($itemtype);
+            $this->assertContains(Item_OperatingSystem::class, $item->getCloneRelations(), $itemtype);
+        }
+    }
+
     public function testGetTypeName()
     {
         $this->assertSame('Item operating systems', \Item_OperatingSystem::getTypeName());
@@ -63,7 +102,7 @@ class Item_OperatingSystemTest extends DbTestCase
             $this->assertGreaterThan(
                 0,
                 $instance->add([
-                    'name' => $classname . ' ' . $this->getUniqueInteger()
+                    'name' => $classname . ' ' . $this->getUniqueInteger(),
                 ])
             );
             $this->assertTrue($instance->getFromDB($instance->getID()));
@@ -86,7 +125,7 @@ class Item_OperatingSystemTest extends DbTestCase
             'operatingsystemversions_id'        => $objects['Version']->getID(),
             'operatingsystemkernelversions_id'  => $objects['KernelVersion']->getID(),
             'licenseid'                         => $this->getUniqueString(),
-            'license_number'                    => $this->getUniqueString()
+            'license_number'                    => $this->getUniqueString(),
         ];
         $this->assertGreaterThan(
             0,
@@ -122,7 +161,7 @@ class Item_OperatingSystemTest extends DbTestCase
             'operatingsystemversions_id'        => $objects['Version']->getID(),
             'operatingsystemkernelversions_id'  => $objects['KernelVersion']->getID(),
             'licenseid'                         => $this->getUniqueString(),
-            'license_number'                    => $this->getUniqueString()
+            'license_number'                    => $this->getUniqueString(),
         ];
         $this->assertGreaterThan(
             0,
@@ -162,7 +201,7 @@ class Item_OperatingSystemTest extends DbTestCase
             'operatingsystemversions_id'        => $objects['Version']->getID(),
             'operatingsystemkernelversions_id'  => $objects['KernelVersion']->getID(),
             'licenseid'                         => $this->getUniqueString(),
-            'license_number'                    => $this->getUniqueString()
+            'license_number'                    => $this->getUniqueString(),
         ];
         $this->assertGreaterThan(
             0,
@@ -187,7 +226,7 @@ class Item_OperatingSystemTest extends DbTestCase
             'operatingsystemversions_id'        => $objects['Version']->getID(),
             'operatingsystemkernelversions_id'  => $objects['KernelVersion']->getID(),
             'licenseid'                         => $this->getUniqueString(),
-            'license_number'                    => $this->getUniqueString()
+            'license_number'                    => $this->getUniqueString(),
         ];
         $this->assertGreaterThan(
             0,
@@ -216,7 +255,7 @@ class Item_OperatingSystemTest extends DbTestCase
             $computer->add([
                 'name'         => 'Test Item/OS',
                 'entities_id'  => $eid,
-                'is_recursive' => 0
+                'is_recursive' => 0,
             ])
         );
 
@@ -224,7 +263,7 @@ class Item_OperatingSystemTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             $os->add([
-                'name' => 'Test OS'
+                'name' => 'Test OS',
             ])
         );
 
@@ -234,7 +273,7 @@ class Item_OperatingSystemTest extends DbTestCase
             $ios->add([
                 'operatingsystems_id'   => $os->getID(),
                 'itemtype'              => 'Computer',
-                'items_id'              => $computer->getID()
+                'items_id'              => $computer->getID(),
             ])
         );
         $this->assertTrue($ios->getFromDB($ios->getID()));
@@ -259,7 +298,7 @@ class Item_OperatingSystemTest extends DbTestCase
         $this->assertTrue(
             $computer->update([
                 'id'           => $computer->getID(),
-                'is_recursive' => 1
+                'is_recursive' => 1,
             ])
         );
         $this->assertTrue($ios->getFromDB($ios->getID()));

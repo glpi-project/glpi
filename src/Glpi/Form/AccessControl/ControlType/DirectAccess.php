@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,6 +41,8 @@ use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Form;
 use Override;
 
@@ -59,26 +61,27 @@ final class DirectAccess implements ControlTypeInterface
     }
 
     #[Override]
-    public function getConfigClass(): string
+    public function getConfig(): JsonFieldInterface
     {
-        return DirectAccessConfig::class;
+        return new DirectAccessConfig();
     }
 
     #[Override]
-    public function getWarnings(Form $form, array $warnings): array
+    public function getWarnings(Form $form): array
     {
-        return $this->addWarningIfFormHasBlacklistedQuestionTypes($form, $warnings);
+        return $this->getWarningIfFormHasBlacklistedQuestionTypes($form);
     }
 
-    private function addWarningIfFormHasBlacklistedQuestionTypes(
+    private function getWarningIfFormHasBlacklistedQuestionTypes(
         Form $form,
-        array $warnings
     ): array {
+        $warnings = [];
+
         if (
             FormAccessControlManager::getInstance()->allowUnauthenticatedAccess($form)
             && array_reduce(
                 $form->getQuestions(),
-                fn ($carry, $question) => $carry || !$question->getQuestionType()->isAllowedForUnauthenticatedAccess()
+                fn($carry, $question) => $carry || !$question->getQuestionType()->isAllowedForUnauthenticatedAccess()
             )
         ) {
             $warnings[] = __('This form contains question types that are not allowed for unauthenticated access. These questions will be hidden from unauthenticated users.');
@@ -130,6 +133,7 @@ final class DirectAccess implements ControlTypeInterface
 
     #[Override]
     public function canAnswer(
+        Form $form,
         JsonFieldInterface $config,
         FormAccessParameters $parameters
     ): AccessVote {
@@ -141,7 +145,7 @@ final class DirectAccess implements ControlTypeInterface
             return AccessVote::Abstain;
         }
 
-        if (!$this->validateToken($config, $parameters)) {
+        if (!$this->validateToken($form, $config, $parameters)) {
             return AccessVote::Abstain;
         };
 
@@ -160,15 +164,29 @@ final class DirectAccess implements ControlTypeInterface
     }
 
     private function validateToken(
+        Form $form,
         DirectAccessConfig $config,
         FormAccessParameters $parameters,
     ): bool {
+        // Note: it is easy to validate the token when an user is accesing the
+        // form for the first time through the /Form/Render/{id} page as the
+        // link will contain the token as a GET parameter.
+        // However, for any subsequent AJAX requests, the token is not present
+        // in the URL. Therefore, we must rely on the session to store the token
+        // and validate it on each request.
         $token = $parameters->getUrlParameters()['token'] ?? null;
         if ($token === null) {
-            return false;
+            $session_token = $_SESSION['helpdesk_form_access_control'][$form->getId()] ?? null;
+            if ($session_token === null) {
+                return false;
+            } else {
+                $token = $session_token;
+            }
+        } else {
+            $_SESSION['helpdesk_form_access_control'][$form->getId()] = $token;
         }
 
-        return $config->getToken() === $token;
+        return hash_equals($config->getToken(), $token);
     }
 
     public function allowUnauthenticated(JsonFieldInterface $config): bool
@@ -178,5 +196,20 @@ final class DirectAccess implements ControlTypeInterface
         }
 
         return $config->allowUnauthenticated();
+    }
+
+    #[Override]
+    public function exportDynamicConfig(
+        JsonFieldInterface $config
+    ): DynamicExportDataField {
+        return new DynamicExportDataField($config->jsonSerialize(), []);
+    }
+
+    #[Override]
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        DatabaseMapper $mapper,
+    ): array {
+        return $config;
     }
 }

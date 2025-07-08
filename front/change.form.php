@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,13 +33,17 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Event;
+
+use function Safe\json_decode;
 
 if (empty($_GET["id"])) {
     $_GET["id"] = '';
 }
 
-// as _actors virtual field stores json, bypass automatic escaping
+// as _actors virtual field stores JSON, bypass automatic escaping
 if (isset($_POST['_actors'])) {
     $_POST['_actors'] = json_decode($_POST['_actors'], true);
     $_REQUEST['_actors'] = $_POST['_actors'];
@@ -63,7 +67,7 @@ if (isset($_POST["add"])) {
     } else {
         Html::back();
     }
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $change->check($_POST["id"], DELETE);
 
     $change->delete($_POST);
@@ -76,7 +80,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
     );
     $change->redirectToList();
-} else if (isset($_POST["restore"])) {
+} elseif (isset($_POST["restore"])) {
     $change->check($_POST["id"], DELETE);
 
     $change->restore($_POST);
@@ -89,7 +93,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s restores an item'), $_SESSION["glpiname"])
     );
     $change->redirectToList();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $change->check($_POST["id"], PURGE);
     $change->delete($_POST, 1);
 
@@ -102,7 +106,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s purges an item'), $_SESSION["glpiname"])
     );
     $change->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $change->check($_POST["id"], UPDATE);
 
     $change->update($_POST);
@@ -116,7 +120,7 @@ if (isset($_POST["add"])) {
     );
 
     Html::back();
-} else if (isset($_POST['addme_observer'])) {
+} elseif (isset($_POST['addme_observer'])) {
     $change->check($_POST['changes_id'], READ);
     $input = array_merge($change->fields, [
         'id' => $_POST['changes_id'],
@@ -124,7 +128,7 @@ if (isset($_POST["add"])) {
             '_type' => "user",
             'users_id' => Session::getLoginUserID(),
             'use_notification' => 1,
-        ]
+        ],
     ]);
     $change->update($input);
     Event::log(
@@ -136,14 +140,14 @@ if (isset($_POST["add"])) {
         sprintf(__('%s adds an actor'), $_SESSION["glpiname"])
     );
     Html::redirect($change->getFormURLWithID($_POST['changes_id']));
-} else if (isset($_POST['addme_assign'])) {
+} elseif (isset($_POST['addme_assign'])) {
     $change_user = new Change_User();
 
     $change->check($_POST['changes_id'], READ);
     $input = ['changes_id'       => $_POST['changes_id'],
         'users_id'         => Session::getLoginUserID(),
         'use_notification' => 1,
-        'type'             => CommonITILActor::ASSIGN
+        'type'             => CommonITILActor::ASSIGN,
     ];
     $change_user->add($input);
     Event::log(
@@ -155,22 +159,22 @@ if (isset($_POST["add"])) {
         sprintf(__('%s adds an actor'), $_SESSION["glpiname"])
     );
     Html::redirect(Change::getFormURLWithID($_POST['changes_id']));
-} else if (isset($_POST['delete_document'])) {
-    $change->getFromDB((int)$_POST['changes_id']);
+} elseif (isset($_POST['delete_document'])) {
+    $change->getFromDB((int) $_POST['changes_id']);
     $doc = new Document();
     $doc->getFromDB(intval($_POST['documents_id']));
     if ($doc->can($doc->getID(), UPDATE)) {
         $document_item = new Document_Item();
         $found_document_items = $document_item->find([
             $change->getAssociatedDocumentsCriteria(),
-            'documents_id' => $doc->getID()
+            'documents_id' => $doc->getID(),
         ]);
         foreach ($found_document_items as $item) {
             $document_item->delete($item, true);
         }
     }
     Html::back();
-} else if (isset($_POST['addme_as_actor'])) {
+} elseif (isset($_POST['addme_as_actor'])) {
     $id = (int) $_POST['id'];
     $change->check($id, READ);
     $input = array_merge($change->fields, [
@@ -179,7 +183,7 @@ if (isset($_POST["add"])) {
             '_type' => "user",
             'users_id' => Session::getLoginUserID(),
             'use_notification' => 1,
-        ]
+        ],
     ]);
     $change->update($input);
     Event::log(
@@ -200,15 +204,16 @@ if (isset($_POST["add"])) {
     }
 
     if (isset($_GET['showglobalkanban']) && $_GET['showglobalkanban']) {
-        Html::header(sprintf(__('%s Kanban'), Change::getTypeName(1)), $_SERVER['PHP_SELF'], "helpdesk", "change");
+        Html::header(sprintf(__('%s Kanban'), Change::getTypeName(1)), '', "helpdesk", "change");
         $change::showKanban(0);
     } else {
         $menus = ["helpdesk", "change"];
-        Change::displayFullPageForItem($_REQUEST['id'] ?? 0, $menus, $_REQUEST);
+        Change::displayFullPageForItem((int) ($_REQUEST['id'] ?? 0), $menus, $_REQUEST);
     }
 
-    if (isset($_GET['id']) && ($_GET['id'] > 0)) {
-        $url = KnowbaseItem::getFormURLWithParam($_GET) . '&_in_modal=1&item_itemtype=Change&item_items_id=' . $_GET['id'];
+    $id = (int) $_GET['id'];
+    if ($id > 0) {
+        $url = KnowbaseItem::getFormURLWithParam($_GET) . '&_in_modal=1&item_itemtype=Change&item_items_id=' . $id;
         if (strpos($url, '_to_kb=') !== false) {
             Ajax::createIframeModalWindow(
                 'savetokb',

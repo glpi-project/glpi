@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -45,7 +45,7 @@ class Cartridge extends CommonDBRelation
 {
     use Glpi\Features\Clonable;
 
-   // From CommonDBTM
+    // From CommonDBTM
     protected static $forward_entity_to = ['Infocom'];
     public $dohistory                   = true;
     public $no_form_page                = true;
@@ -62,7 +62,7 @@ class Cartridge extends CommonDBRelation
     public function getCloneRelations(): array
     {
         return [
-            Infocom::class
+            Infocom::class,
         ];
     }
 
@@ -112,7 +112,7 @@ class Cartridge extends CommonDBRelation
         return [
             "cartridgeitems_id" => $item->fields["id"],
             "entities_id"       => $item->getEntityID(),
-            "date_in"           => date("Y-m-d")
+            "date_in"           => date("Y-m-d"),
         ];
     }
 
@@ -124,7 +124,7 @@ class Cartridge extends CommonDBRelation
             $infocom = reset($infocoms);
             $infocom->clone([
                 'itemtype'  => self::class,
-                'items_id'  => $this->getID()
+                'items_id'  => $this->getID(),
             ]);
         }
 
@@ -142,7 +142,7 @@ class Cartridge extends CommonDBRelation
             ) {
                 $printer->update([
                     'id' => $printer->getID(),
-                    'last_pages_counter' => $this->fields['pages']
+                    'last_pages_counter' => $this->fields['pages'],
                 ]);
             }
         }
@@ -204,7 +204,7 @@ class Cartridge extends CommonDBRelation
                         if ($item->can($key, UPDATE)) {
                             if (
                                 $item->update(['id' => $key,
-                                    'pages' => $input['pages']
+                                    'pages' => $input['pages'],
                                 ])
                             ) {
                                 $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
@@ -243,16 +243,16 @@ class Cartridge extends CommonDBRelation
             [
                 'date_out'     => 'NULL',
                 'date_use'     => 'NULL',
-                'printers_id'  => 0
+                'printers_id'  => 0,
             ],
             [
-                'id' => $input['id']
+                'id' => $input['id'],
             ]
         );
         return $result && ($DB->affectedRows() > 0);
     }
 
-   // SPECIFIC FUNCTIONS
+    // SPECIFIC FUNCTIONS
 
     /**
      * Link a cartridge to a printer.
@@ -275,9 +275,9 @@ class Cartridge extends CommonDBRelation
             'FROM'   => static::getTable(),
             'WHERE'  => [
                 'cartridgeitems_id'  => $tID,
-                'date_use'           => null
+                'date_use'           => null,
             ],
-            'LIMIT'  => 1
+            'LIMIT'  => 1,
         ]);
 
         if (count($iterator)) {
@@ -288,21 +288,21 @@ class Cartridge extends CommonDBRelation
                 static::getTable(),
                 [
                     'date_use'     => date('Y-m-d'),
-                    'printers_id'  => $pID
+                    'printers_id'  => $pID,
                 ],
                 [
                     'id'        => $cID,
-                    'date_use'  => null
+                    'date_use'  => null,
                 ]
             );
             if ($result && ($DB->affectedRows() > 0)) {
-                 $changes = [
-                     '0',
-                     '',
-                     __('Installing a cartridge'),
-                 ];
-                 Log::history($pID, 'Printer', $changes, 0, Log::HISTORY_LOG_SIMPLE_MESSAGE);
-                 return true;
+                $changes = [
+                    '0',
+                    '',
+                    __('Installing a cartridge'),
+                ];
+                Log::history($pID, 'Printer', $changes, 0, Log::HISTORY_LOG_SIMPLE_MESSAGE);
+                return true;
             }
         } else {
             Session::addMessageAfterRedirect(__s('No free cartridge'), false, ERROR);
@@ -332,10 +332,10 @@ class Cartridge extends CommonDBRelation
             $result = $DB->update(
                 static::getTable(),
                 [
-                    'date_out'  => date('Y-m-d')
+                    'date_out'  => date('Y-m-d'),
                 ] + $toadd,
                 [
-                    'id'  => $ID
+                    'id'  => $ID,
                 ]
             );
 
@@ -343,20 +343,20 @@ class Cartridge extends CommonDBRelation
                 $result
                 && ($DB->affectedRows() > 0)
             ) {
-                 $changes = [
-                     '0',
-                     '',
-                     __('Uninstalling a cartridge'),
-                 ];
-                 Log::history(
-                     $this->getField("printers_id"),
-                     'Printer',
-                     $changes,
-                     0,
-                     Log::HISTORY_LOG_SIMPLE_MESSAGE
-                 );
+                $changes = [
+                    '0',
+                    '',
+                    __('Uninstalling a cartridge'),
+                ];
+                Log::history(
+                    $this->getField("printers_id"),
+                    'Printer',
+                    $changes,
+                    0,
+                    Log::HISTORY_LOG_SIMPLE_MESSAGE
+                );
 
-                 return true;
+                return true;
             }
         }
         return false;
@@ -385,20 +385,20 @@ class Cartridge extends CommonDBRelation
             $counts = [
                 'new' => [
                     'label' => _nx('cartridge', 'New', 'New', $unused),
-                    'value' => $unused
+                    'value' => $unused,
                 ],
                 'used' => [
                     'label' => _nx('cartridge', 'Used', 'Used', $used),
-                    'value' => $used
+                    'value' => $used,
                 ],
                 'worn' => [
                     'label' => _nx('cartridge', 'Worn', 'Worn', $old),
-                    'value' => $old
+                    'value' => $old,
                 ],
                 'total' => [
                     'label' => __('Total'),
-                    'value' => $total
-                ]
+                    'value' => $total,
+                ],
             ];
 
             if (!$nohtml) {
@@ -420,8 +420,8 @@ class Cartridge extends CommonDBRelation
                     </table>
 TWIG, ['counts' => $counts, 'highlight' => $highlight]);
             } else {
-               //TRANS : for display cartridges count : %1$d is the total number,
-               //        %2$d the new one, %3$d the used one, %4$d worn one
+                //TRANS : for display cartridges count : %1$d is the total number,
+                //        %2$d the new one, %3$d the used one, %4$d worn one
                 $out .= sprintf(
                     __('Total: %1$d (%2$d new, %3$d used, %4$d worn)'),
                     $total,
@@ -463,16 +463,16 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
             $counts = [
                 'used' => [
                     'label' => _nx('cartridge', 'Used', 'Used', $used),
-                    'value' => $used
+                    'value' => $used,
                 ],
                 'worn' => [
                     'label' => _nx('cartridge', 'Worn', 'Worn', $old),
-                    'value' => $old
+                    'value' => $old,
                 ],
                 'total' => [
                     'label' => __('Total'),
-                    'value' => $total
-                ]
+                    'value' => $total,
+                ],
             ];
 
             if (!$nohtml) {
@@ -493,8 +493,8 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
                     </table>
 TWIG, ['counts' => $counts, 'highlight' => $highlight]);
             } else {
-               //TRANS : for display cartridges count : %1$d is the total number,
-               //        %2$d the used one, %3$d the worn one
+                //TRANS : for display cartridges count : %1$d is the total number,
+                //        %2$d the used one, %3$d the worn one
                 $out .= sprintf(__('Total: %1$d (%2$d used, %3$d worn)'), $total, $used, $old);
             }
         } else {
@@ -522,7 +522,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
         $row = $DB->request([
             'FROM'   => self::getTable(),
             'COUNT'  => 'cpt',
-            'WHERE'  => ['cartridgeitems_id' => $tID]
+            'WHERE'  => ['cartridgeitems_id' => $tID],
         ])->current();
         return $row['cpt'];
     }
@@ -544,9 +544,9 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
         $row = $DB->request([
             'FROM'   => self::getTable(),
             'COUNT'  => 'cpt',
-            'WHERE'  => ['printers_id' => $pID]
+            'WHERE'  => ['printers_id' => $pID],
         ])->current();
-        return (int)$row['cpt'];
+        return (int) $row['cpt'];
     }
 
     /**
@@ -569,11 +569,11 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
                 'cartridgeitems_id'  => $tID,
                 'date_out'           => null,
                 'NOT'                => [
-                    'date_use'  => null
-                ]
-            ]
+                    'date_use'  => null,
+                ],
+            ],
         ])->current();
-        return (int)$row['cpt'];
+        return (int) $row['cpt'];
     }
 
     /**
@@ -596,8 +596,8 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
             'WHERE'  => [
                 'printers_id'  => $pID,
                 'date_out'     => null,
-                'NOT'          => ['date_use' => null]
-            ]
+                'NOT'          => ['date_use' => null],
+            ],
         ])->current();
         return $result['cpt'];
     }
@@ -619,8 +619,8 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'cartridgeitems_id'  => $tID,
-                'NOT'                => ['date_out' => null]
-            ]
+                'NOT'                => ['date_out' => null],
+            ],
         ])->current();
         return $result['cpt'];
     }
@@ -644,8 +644,8 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'printers_id'  => $pID,
-                'NOT'          => ['date_out' => null]
-            ]
+                'NOT'          => ['date_out' => null],
+            ],
         ])->current();
         return $result['cpt'];
     }
@@ -667,8 +667,8 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'cartridgeitems_id'  => $tID,
-                'date_use'           => null
-            ]
+                'date_use'           => null,
+            ],
         ])->current();
         return $result['cpt'];
     }
@@ -689,8 +689,8 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
             'SELECT'  => ['stock_target'],
             'FROM'   => CartridgeItem::getTable(),
             'WHERE'  => [
-                'id'  => $tID
-            ]
+                'id'  => $tID,
+            ],
         ]);
         if ($it->count()) {
             return $it->current()['stock_target'];
@@ -713,8 +713,8 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
             'SELECT'  => ['alarm_threshold'],
             'FROM'   => CartridgeItem::getTable(),
             'WHERE'  => [
-                'id'  => $tID
-            ]
+                'id'  => $tID,
+            ],
         ]);
         return $it->count() ? $it->current()['alarm_threshold'] : 0;
     }
@@ -763,7 +763,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
         $order = [
             'glpi_cartridges.date_use ASC',
             'glpi_cartridges.date_out DESC',
-            'glpi_cartridges.date_in'
+            'glpi_cartridges.date_in',
         ];
 
         if (!$show_old) { // NEW
@@ -771,7 +771,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
             $order = [
                 'glpi_cartridges.date_out ASC',
                 'glpi_cartridges.date_use ASC',
-                'glpi_cartridges.date_in'
+                'glpi_cartridges.date_in',
             ];
         } else { //OLD
             $where['NOT'] = ['glpi_cartridges.date_out' => null];
@@ -787,21 +787,21 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
                 'glpi_cartridges.*',
                 'glpi_printers.id AS printID',
                 'glpi_printers.name AS printname',
-                'glpi_printers.init_pages_counter'
+                'glpi_printers.init_pages_counter',
             ],
             'FROM'   => self::getTable(),
             'LEFT JOIN' => [
                 'glpi_printers'   => [
                     'FKEY'   => [
                         self::getTable()  => 'printers_id',
-                        'glpi_printers'   => 'id'
-                    ]
-                ]
+                        'glpi_printers'   => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => $where,
             'ORDER'     => $order,
             'START'     => (int) $start,
-            'LIMIT'     => (int) $_SESSION['glpilist_limit']
+            'LIMIT'     => (int) $_SESSION['glpilist_limit'],
         ]);
 
         $number = count($iterator);
@@ -813,7 +813,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
         if ($canedit && $number) {
             $actions = [
                 'purge' => _x('button', 'Delete permanently'),
-                'Infocom' . MassiveAction::CLASS_ACTION_SEPARATOR . 'activate' => __('Enable the financial and administrative information')
+                'Infocom' . MassiveAction::CLASS_ACTION_SEPARATOR . 'activate' => __('Enable the financial and administrative information'),
             ];
             if (!$show_old) {
                 $actions['Cartridge' . MassiveAction::CLASS_ACTION_SEPARATOR . 'backtostock'] = __('Back to stock');
@@ -822,7 +822,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
         $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], $number),
             'specific_actions' => $actions,
             'container'        => 'mass' . __CLASS__ . $rand,
-            'rand'             => $rand
+            'rand'             => $rand,
         ];
 
         $pages = [];
@@ -877,7 +877,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
                 'date_use' => $data['date_use'],
                 'date_out' => $data['date_out'],
                 'printer_counter' => $pp ?? 0,
-                'infocom' => Infocom::showDisplayLink('Cartridge', $data["id"], false)
+                'infocom' => Infocom::showDisplayLink('Cartridge', $data["id"], false),
             ];
         }
 
@@ -912,7 +912,6 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'super_header' => $show_old ? __('Worn cartridges') : __('Used cartridges'),
@@ -923,7 +922,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
                 'date_use' => 'date',
                 'date_out' => 'date',
                 'printer_counter' => 'integer',
-                'infocom' => 'raw_html'
+                'infocom' => 'raw_html',
             ],
             'entries' => $entries,
             'footers' => $footers,
@@ -934,7 +933,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
-            ] + $massiveactionparams
+            ] + $massiveactionparams,
         ]);
     }
 
@@ -953,6 +952,10 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
             return false;
         }
         if ($ID > 0) {
+            $twig_params = [
+                'add_label' => __('Add cartridges'),
+                'cartridgeitems_id' => $ID,
+            ];
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 {% import 'components/form/fields_macros.html.twig' as fields %}
@@ -966,6 +969,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
                             }) }}
                             {% set btn %}
                                 <button type="submit" name="add" class="btn btn-primary">{{ add_label }}</button>
+                                <input type="hidden" name="cartridgeitems_id" value="{{ cartridgeitems_id }}">
                                 <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                             {% endset %}
                             {{ fields.htmlField('', btn, null, {
@@ -976,7 +980,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
                         </div>
                     </form>
                 </div>
-TWIG, ['add_label' => __('Add cartridges')]);
+TWIG, $twig_params);
         }
     }
 
@@ -1019,29 +1023,29 @@ TWIG, ['add_label' => __('Add cartridges')]);
                 'glpi_cartridges.date_use AS date_use',
                 'glpi_cartridges.date_out AS date_out',
                 'glpi_cartridges.date_in AS date_in',
-                'glpi_cartridgeitemtypes.name AS typename'
+                'glpi_cartridgeitemtypes.name AS typename',
             ],
             'FROM'      => self::getTable(),
             'LEFT JOIN' => [
                 'glpi_cartridgeitems'      => [
                     'FKEY'   => [
                         self::getTable()        => 'cartridgeitems_id',
-                        'glpi_cartridgeitems'   => 'id'
-                    ]
+                        'glpi_cartridgeitems'   => 'id',
+                    ],
                 ],
                 'glpi_cartridgeitemtypes'  => [
                     'FKEY'   => [
                         'glpi_cartridgeitems'      => 'cartridgeitemtypes_id',
-                        'glpi_cartridgeitemtypes'  => 'id'
-                    ]
-                ]
+                        'glpi_cartridgeitemtypes'  => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => $where,
             'ORDER'     => [
                 'glpi_cartridges.date_out ASC',
                 'glpi_cartridges.date_use DESC',
                 'glpi_cartridges.date_in',
-            ]
+            ],
         ]);
 
         $number = count($iterator);
@@ -1112,20 +1116,20 @@ TWIG, ['printer_id' => $printer->getID()]);
         if (!$old) {
             $actions = [
                 __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall' => __('End of life'),
-                __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'backtostock' => __('Back to stock')
+                __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'backtostock' => __('Back to stock'),
             ];
         } else {
             $actions = [
                 __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'updatepages' => __('Update printer counter'),
-                'purge' => _x('button', 'Delete permanently')
+                'purge' => _x('button', 'Delete permanently'),
             ];
         }
         $massiveactionparams = [
             'specific_actions' => $actions,
             'rand'             => $rand,
             'extraparams'      => [
-                'maxpages' => $printer->fields['last_pages_counter']
-            ]
+                'maxpages' => $printer->fields['last_pages_counter'],
+            ],
         ];
 
         $stock_time       = 0;
@@ -1199,7 +1203,6 @@ TWIG, ['printer_id' => $printer->getID()]);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'super_header' => $old ? __('Worn cartridges') : __('Used cartridges'),
@@ -1221,7 +1224,7 @@ TWIG, ['printer_id' => $printer->getID()]);
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
-            ] + $massiveactionparams
+            ] + $massiveactionparams,
         ]);
     }
 
@@ -1258,7 +1261,7 @@ TWIG, ['printer_id' => $printer->getID()]);
                 'canedit' => !empty($this->fields['date_use']),
                 'candel' => false,
                 'formfooter' => false,
-            ]
+            ],
         ]);
         return true;
     }

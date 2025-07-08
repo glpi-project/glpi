@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -72,7 +72,7 @@ class CalDAV extends Plugin
     public function propFind(PropFind $propFind, INode $node)
     {
 
-       // Return any requested property as long as it is defined in node.
+        // Return any requested property as long as it is defined in node.
         if ($node instanceof IProperties) {
             $properties = $node->getProperties([]);
             foreach ($properties as $property_name => $property_value) {

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,9 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
+use function Safe\json_encode;
+use function Safe\preg_match;
+
 /**
  * Ajax Class
  **/
@@ -48,7 +51,7 @@ class Ajax
      *
      * @param string   $name    name of the js object
      * @param string   $url     URL to display in modal
-     * @param string[] $options Possible options:
+     * @param array    $options Possible options:
      *     - width      (default 800)
      *     - height     (default 400)
      *     - modal      is a modal window? (default true)
@@ -70,7 +73,7 @@ class Ajax
             'title'           => '',
             'extraparams'     => [],
             'display'         => true,
-            'js_modal_fields' => ''
+            'js_modal_fields' => '',
         ];
 
         if (count($options)) {
@@ -157,7 +160,7 @@ class Ajax
             'display'       => true,
             'dialog_class'  => 'modal-lg',
             'autoopen'      => false,
-            'reloadonclose' => false
+            'reloadonclose' => false,
         ];
 
         if (count($options)) {
@@ -167,16 +170,15 @@ class Ajax
                 }
             }
         }
-        $url .= (strstr($url, '?') ? '&' :  '?') . '_in_modal=1';
+        $url .= (strstr($url, '?') ? '&' : '?') . '_in_modal=1';
 
         if (isset($options['extradata'])) {
-            $url .= (strstr($url, '?') ? '&' :  '?') . Toolbox::append_params($options['extradata'], '&');
+            $url .= (strstr($url, '?') ? '&' : '?') . Toolbox::append_params($options['extradata'], '&');
         }
 
         $rand = mt_rand();
 
-        $domid  = htmlescape($domid);
-        $url    = htmlescape($url);
+        $domid  = Html::sanitizeDomId($domid);
         $title  = htmlescape($param['title']);
         $class  = htmlescape($param['dialog_class']);
         $height = (int) $param['height'];
@@ -202,6 +204,7 @@ HTML;
 
         $reloadonclose = $param['reloadonclose'] ? "true" : "false";
         $autoopen      = $param['autoopen'] ? "true" : "false";
+        $url           = json_encode($url);
         $js = <<<JAVASCRIPT
       $(function() {
          myModalEl{$rand} = document.getElementById('{$domid}');
@@ -211,7 +214,7 @@ HTML;
          $(myModalEl{$rand}).appendTo($("body"));
 
          myModalEl{$rand}.addEventListener('show.bs.modal', function () {
-            $('#iframe{$domid}').attr('src','{$url}').removeClass('hidden');
+            $('#iframe{$domid}').attr('src', {$url}).removeClass('hidden');
          });
          myModalEl{$rand}.addEventListener('hide.bs.modal', function () {
             if ({$reloadonclose}) {
@@ -288,7 +291,7 @@ JAVASCRIPT;
 
         $active_tab = Session::getActiveTab($type);
 
-       // Compute tabs ids.
+        // Compute tabs ids.
         $active_id = null;
         foreach ($tabs as $key => $val) {
             $id = sprintf('tab-%s-%s', str_replace('$', '_', $key), mt_rand());
@@ -301,7 +304,7 @@ JAVASCRIPT;
         }
         $active_id = str_replace('\\', '_', $active_id);
 
-       // Display tabs
+        // Display tabs
         if (count($tabs) > 0) {
             if (count($tabs) == 1) {
                 $orientation = "horizontal";
@@ -400,7 +403,7 @@ HTML;
             echo "</div>"; // .container-fluid
 
             $json_type = json_encode($type);
-            $withtemplate = (int)($_GET['withtemplate'] ?? 0);
+            $withtemplate = (int) ($_GET['withtemplate'] ?? 0);
             $js = <<<JS
          var url_hash = window.location.hash;
          var loadTabContents = function (tablink, force_reload = false, update_session_tab = true) {
@@ -428,7 +431,7 @@ HTML;
                 updateCurrentTab();
                 return;
             }
-            $(target).html('<i class=\"fas fa-3x fa-spinner fa-pulse position-absolute m-5 start-50\"></i>');
+            $(target).html(`<div class="d-flex justify-content-center"><span class="spinner-border spinner-border position-absolute m-5" role="status" aria-hidden="true"></span></div>`);
 
             $.get(url, function(data) {
                $(target).html(data);
@@ -515,15 +518,15 @@ JS;
     /**
      * Javascript code for update an item when another item changed
      *
-     * @param string  $toobserve    id (or array of id) of the select to observe
-     * @param string  $toupdate     id of the item to update
-     * @param string  $url          Url to get datas to update the item
-     * @param array   $parameters   of parameters to send to ajax URL
-     * @param array   $events       of the observed events (default 'change')
-     * @param integer $minsize      minimum size of data to update content (default -1)
-     * @param integer $buffertime   minimum time to wait before reload (default -1)
-     * @param array   $forceloadfor of content which must force update content
-     * @param boolean $display      display or get string (default true)
+     * @param string|array $toobserve    id (or array of id) of the select to observe
+     * @param string       $toupdate     id of the item to update
+     * @param string       $url          Url to get datas to update the item
+     * @param array        $parameters   of parameters to send to ajax URL
+     * @param array        $events       of the observed events (default 'change')
+     * @param integer      $minsize      minimum size of data to update content (default -1)
+     * @param integer      $buffertime   minimum time to wait before reload (default -1)
+     * @param array        $forceloadfor of content which must force update content
+     * @param boolean      $display      display or get string (default true)
      *
      * @return void|string (see $display)
      */
@@ -564,11 +567,11 @@ JS;
     /**
      * Javascript code for update an item when a select item changed
      *
-     * @param string  $toobserve  id of the select to observe
-     * @param string  $toupdate   id of the item to update
-     * @param string  $url        Url to get datas to update the item
-     * @param array   $parameters of parameters to send to ajax URL
-     * @param boolean $display    display or get string (default true)
+     * @param string|array $toobserve  id of the select to observe
+     * @param string       $toupdate   id of the item to update
+     * @param string       $url        Url to get datas to update the item
+     * @param array        $parameters of parameters to send to ajax URL
+     * @param boolean      $display    display or get string (default true)
      *
      * @return void|string (see $display)
      */
@@ -597,14 +600,14 @@ JS;
     /**
      * Javascript code for update an item when a Input text item changed
      *
-     * @param string  $toobserve    id of the Input text to observe
-     * @param string  $toupdate     id of the item to update
-     * @param string  $url          Url to get datas to update the item
-     * @param array   $parameters   of parameters to send to ajax URL
-     * @param integer $minsize      minimum size of data to update content (default -1)
-     * @param integer $buffertime   minimum time to wait before reload (default -1)
-     * @param array   $forceloadfor of content which must force update content
-     * @param boolean $display      display or get string (default true)
+     * @param string|array $toobserve    id of the Input text to observe
+     * @param string       $toupdate     id of the item to update
+     * @param string       $url          Url to get datas to update the item
+     * @param array        $parameters   of parameters to send to ajax URL
+     * @param integer      $minsize      minimum size of data to update content (default -1)
+     * @param integer      $buffertime   minimum time to wait before reload (default -1)
+     * @param array        $forceloadfor of content which must force update content
+     * @param boolean      $display      display or get string (default true)
      *
      * @return void|string (see $display)
      */
@@ -622,7 +625,7 @@ JS;
         if (count($forceloadfor) == 0) {
             $forceloadfor = ['*'];
         }
-       // Need to define min size for text search
+        // Need to define min size for text search
         if ($minsize < 0) {
             $minsize = 0;
         }
@@ -646,15 +649,15 @@ JS;
     /**
      * Javascript code for update an item when another item changed (Javascript code only)
      *
-     * @param string  $toobserve    id (or array of id) of the select to observe
-     * @param string  $toupdate     id of the item to update
-     * @param string  $url          Url to get datas to update the item
-     * @param array   $parameters   of parameters to send to ajax URL
-     * @param array   $events       of the observed events (default 'change')
-     * @param integer $minsize      minimum size of data to update content (default -1)
-     * @param integer $buffertime   minimum time to wait before reload (default -1)
-     * @param array   $forceloadfor of content which must force update content
-     * @param boolean $display      display or get string (default true)
+     * @param string|array $toobserve    id (or array of id) of the select to observe
+     * @param string       $toupdate     id of the item to update
+     * @param string       $url          Url to get datas to update the item
+     * @param array        $parameters   of parameters to send to ajax URL
+     * @param array        $events       of the observed events (default 'change')
+     * @param integer      $minsize      minimum size of data to update content (default -1)
+     * @param integer      $buffertime   minimum time to wait before reload (default -1)
+     * @param array        $forceloadfor of content which must force update content
+     * @param boolean      $display      display or get string (default true)
      *
      * @return void|string (see $display)
      */
@@ -693,7 +696,7 @@ JS;
                 if (count($forceloadfor)) {
                     foreach ($forceloadfor as $value) {
                         if (!empty($condition)) {
-                             $condition .= " || ";
+                            $condition .= " || ";
                         }
                         $condition .= "$('#$zone_id').val() == '$value'";
                     }
@@ -735,14 +738,14 @@ JS;
         $field     = '';
 
         $output    = '';
-       // Old scheme
+        // Old scheme
         if (
             isset($options["update_item"])
             && (is_array($options["update_item"]) || (strlen($options["update_item"]) > 0))
         ) {
             $field     = "update_item";
         }
-       // New scheme
+        // New scheme
         if (
             isset($options["toupdate"])
             && (is_array($options["toupdate"]) || (strlen($options["toupdate"]) > 0))
@@ -753,7 +756,7 @@ JS;
         if (!empty($field)) {
             $datas = $options[$field];
             if (is_array($datas) && count($datas)) {
-               // Put it in array
+                // Put it in array
                 if (isset($datas['to_update'])) {
                     $datas = [$datas];
                 }
@@ -817,7 +820,7 @@ JS;
             $out .= ",{";
             $first = true;
             foreach ($parameters as $key => $val) {
-               // prevent xss attacks
+                // prevent xss attacks
                 if (!preg_match('/^[a-zA-Z_$][0-9a-zA-Z_$]*$/', $key)) {
                     continue;
                 }
@@ -832,7 +835,7 @@ JS;
                 $regs = [];
                 if (is_string($val) && preg_match('/^__VALUE(\d+)__$/', $val, $regs)) {
                     $out .= sprintf('$("#%s").val()', htmlescape(Html::cleanId($toobserve[$regs[1]])));
-                } else if (is_string($val) && $val === "__VALUE__") {
+                } elseif (is_string($val) && $val === "__VALUE__") {
                     $out .= sprintf('$("#%s").val()', htmlescape(Html::cleanId($toobserve)));
                 } else {
                     $out .=  json_encode($val);

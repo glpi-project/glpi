@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -95,7 +95,8 @@ function getTableNameForForeignKeyField($fkname)
  *
  * @param $table string table name
  *
- * @return string itemtype corresponding to a table name parameter
+ * @return class-string<CommonDBTM>|null itemtype corresponding to a table name parameter,
+ *      or null if no valid itemtype is attached to the table
  **/
 function getItemTypeForTable($table)
 {
@@ -104,16 +105,35 @@ function getItemTypeForTable($table)
 }
 
 /**
+ * Return an item instance for the corresponding table.
+ */
+function getItemForTable(string $table): ?CommonDBTM
+{
+    $dbu = new DbUtils();
+    return $dbu->getItemForTable($table);
+}
+
+/**
  * Return ItemType for a foreign key
  *
  * @param string $fkname
  *
- * @return class-string<CommonDBTM> Itemtype class for the fkname parameter
+ * @return class-string<CommonDBTM>|null Itemtype class for the fkname parameter,
+ *      or null if no valid itemtype is attached to the foreign key field
  */
 function getItemtypeForForeignKeyField($fkname)
 {
     $dbu = new DbUtils();
     return $dbu->getItemtypeForForeignKeyField($fkname);
+}
+
+/**
+ * Return an item instance for the corresponding foreign key field.
+ */
+function getItemForForeignKeyField(string $fkname): ?CommonDBTM
+{
+    $dbu = new DbUtils();
+    return $dbu->getItemForForeignKeyField($fkname);
 }
 
 /**
@@ -658,8 +678,8 @@ function getEntitiesRestrictRequest(
  * @param string $field             field where apply the limit (id != entities_id) (default '')
  * @param mixed $value              entity to restrict (if not set use $_SESSION['glpiactiveentities']).
  *                                  single item or array (default '')
- * @param boolean $is_recursive     need to use recursive process to find item
- *                                  (field need to be named recursive) (false by default, set to auto to automatic detection)
+ * @param boolean|'auto' $is_recursive     need to use recursive process to find item
+ *                                  (field need to be named recursive) (false by default, set to 'auto' to automatic detection)
  * @param boolean $complete_request need to use a complete request and not a simple one
  *                                  when have acces to all entities (used for reminders)
  *                                  (false by default)
@@ -682,8 +702,8 @@ function getEntitiesRestrictCriteria(
         $complete_request
     );
 
-   // Add another layer to the array to prevent losing duplicates keys if the
-   // result of the function is merged with another array
+    // Add another layer to the array to prevent losing duplicates keys if the
+    // result of the function is merged with another array
     if (count($res)) {
         $res = [crc32(serialize($res)) => $res];
     }

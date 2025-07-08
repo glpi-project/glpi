@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,30 +35,58 @@
 
 namespace Glpi\Form;
 
+use AbstractRightsDropdown;
+use Change_Item;
 use CommonDBTM;
+use CommonGLPI;
 use CronTask;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\AccessControl\ControlType\AllowList;
+use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
 use Glpi\Form\AccessControl\FormAccessControl;
+use Glpi\Form\Condition\FormData;
 use Glpi\Form\Destination\FormDestination;
+use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\Condition\ConditionableVisibilityInterface;
+use Glpi\Form\Condition\ConditionableVisibilityTrait;
 use Glpi\Form\QuestionType\QuestionTypesManager;
+use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
+use Glpi\Helpdesk\Tile\FormTile;
+use Glpi\UI\IllustrationManager;
+use Glpi\ItemTranslation\Context\TranslationHandler;
+use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Html;
+use Item_Problem;
+use Item_Ticket;
 use Log;
 use MassiveAction;
 use Override;
+use Ramsey\Uuid\Uuid;
 use ReflectionClass;
+use RuntimeException;
 use Session;
+use Ticket;
 
 /**
  * Helpdesk form
  */
-final class Form extends CommonDBTM
+final class Form extends CommonDBTM implements
+    ServiceCatalogLeafInterface,
+    ProvideTranslationsInterface,
+    ConditionableVisibilityInterface
 {
+    use ConditionableVisibilityTrait;
+
+    public const TRANSLATION_KEY_NAME = 'form_name';
+    public const TRANSLATION_KEY_HEADER = 'form_header';
+    public const TRANSLATION_KEY_DESCRIPTION = 'form_description';
+
     public static $rightname = 'form';
 
     public $dohistory = true;
@@ -81,6 +109,12 @@ final class Form extends CommonDBTM
     }
 
     #[Override]
+    public function getUUID(): string
+    {
+        return $this->fields['uuid'];
+    }
+
+    #[Override]
     public static function getIcon()
     {
         return "ti ti-forms";
@@ -96,11 +130,21 @@ final class Form extends CommonDBTM
     public function defineTabs($options = [])
     {
         $tabs = parent::defineTabs();
-        $this->addStandardTab(ServiceCatalog::getType(), $tabs, $options);
-        $this->addStandardTab(AnswersSet::getType(), $tabs, $options);
-        $this->addStandardTab(FormAccessControl::getType(), $tabs, $options);
-        $this->addStandardTab(FormDestination::getType(), $tabs, $options);
-        $this->addStandardTab(Log::getType(), $tabs, $options);
+        $this->addStandardTab(ServiceCatalog::class, $tabs, $options);
+        if (Item_Ticket::countForItemAndLinked($this) > 0) {
+            $this->addStandardTab(Item_Ticket::class, $tabs, $options);
+        }
+        if (Change_Item::countForItemAndLinked($this) > 0) {
+            $this->addStandardTab(Change_Item::class, $tabs, $options);
+        }
+        if (Item_Problem::countForItemAndLinked($this) > 0) {
+            $this->addStandardTab(Item_Problem::class, $tabs, $options);
+        }
+        $this->addStandardTab(FormAccessControl::class, $tabs, $options);
+        $this->addStandardTab(FormDestination::class, $tabs, $options);
+        $this->addStandardTab(FormTranslation::class, $tabs, $options);
+        $this->addStandardTab(Log::class, $tabs, $options);
+        $tabs['no_all_tab'] = true;
         return $tabs;
     }
 
@@ -128,6 +172,47 @@ final class Form extends CommonDBTM
     }
 
     #[Override]
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
+    {
+        if (!$item instanceof Category) {
+            return "";
+        }
+
+        $nb = 0;
+        if ($_SESSION['glpishow_count_on_tabs']) {
+            $nb = countElementsInTable(self::getTable(), [
+                'forms_categories_id' => $item->getID(),
+            ]);
+        }
+
+        return self::createTabEntry(
+            self::getTypeName(Session::getPluralNumber()),
+            $nb,
+        );
+    }
+
+    #[Override]
+    public static function displayTabContentForItem(
+        CommonGLPI $item,
+        $tabnum = 1,
+        $withtemplate = 0
+    ): bool {
+        if (!$item instanceof Category) {
+            return false;
+        }
+
+        self::displayList([
+            [
+                'link'       => 'AND',
+                'field'      => 6,  // Service catalog category
+                'searchtype' => 'equals',
+                'value'      => $item->getID(),
+            ],
+        ], 1 /* Sort by name */);
+        return true;
+    }
+
+    #[Override]
     public function rawSearchOptions()
     {
         $search_options = parent::rawSearchOptions();
@@ -138,7 +223,7 @@ final class Form extends CommonDBTM
             'field'         => 'id',
             'name'          => __('ID'),
             'massiveaction' => false,
-            'datatype'      => 'number'
+            'datatype'      => 'number',
         ];
         $search_options[] = [
             'id'            => '80',
@@ -153,7 +238,7 @@ final class Form extends CommonDBTM
             'table'    => $this->getTable(),
             'field'    => 'is_active',
             'name'     => __('Active'),
-            'datatype' => 'bool'
+            'datatype' => 'bool',
         ];
         $search_options[] = [
             'id'            => '4',
@@ -161,7 +246,7 @@ final class Form extends CommonDBTM
             'field'         => 'date_mod',
             'name'          => __('Last update'),
             'datatype'      => 'datetime',
-            'massiveaction' => false
+            'massiveaction' => false,
         ];
         $search_options[] = [
             'id'            => '5',
@@ -169,7 +254,15 @@ final class Form extends CommonDBTM
             'field'         => 'date_creation',
             'name'          => __('Creation date'),
             'datatype'      => 'datetime',
-            'massiveaction' => false
+            'massiveaction' => false,
+        ];
+        $search_options[] = [
+            'id'            => '6',
+            'table'         => Category::getTable(),
+            'field'         => 'completename',
+            'name'          => Category::getTypeName(1),
+            'datatype'      => 'dropdown',
+            'massiveaction' => true,
         ];
 
         return $search_options;
@@ -185,25 +278,72 @@ final class Form extends CommonDBTM
     #[Override]
     public function post_addItem()
     {
+        $from_import    = $this->input['_from_import']    ?? false;
+        $from_migration = $this->input['_from_migration'] ?? false;
+        if ($from_import || $from_migration) {
+            // Do not run extra process as it is not a real item creation
+            return;
+        }
+
         // Automatically create the first form section unless specified otherwise
-        if (!isset($this->input['_do_not_init_sections'])) {
+        $init_sections = $this->input['_init_sections'] ?? true;
+        if ($init_sections) {
             $this->createFirstSection();
+        }
+
+        // Add the default destinations
+        $add_default_destinations = $this->input['_init_destinations'] ?? true;
+        if ($add_default_destinations) {
+            $this->addDefaultDestinations();
+        }
+
+        // Add the default access policies unless specified otherwise
+        $init_policies = $this->input['_init_access_policies'] ?? true;
+        if ($init_policies) {
+            $this->addDefaultAccessPolicies();
         }
     }
 
     #[Override]
-    public function prepareInputForUpdate($input)
+    public function prepareInputForAdd($input)
+    {
+        if (!isset($input['uuid'])) {
+            $input['uuid'] = Uuid::uuid4();
+        }
+
+        // JSON fields must have a value when created to prevent SQL errors
+        if (!isset($input['submit_button_conditions'])) {
+            $input['submit_button_conditions'] = json_encode([]);
+        }
+
+        $input = $this->prepareInput($input);
+        return parent::prepareInputForAdd($input);
+    }
+
+    #[Override]
+    public function prepareInputForUpdate($input): array
     {
         // Insert date_mod even if the framework would handle it by itself
         // This avoid "empty" updates when the form itself is not modified but
         // its questions are
         $input['date_mod'] = $_SESSION['glpi_currenttime'];
 
+        $input = $this->prepareInput($input);
+        return parent::prepareInputForUpdate($input);
+    }
+
+    private function prepareInput($input): array
+    {
+        if (isset($input['_conditions'])) {
+            $input['submit_button_conditions'] = json_encode($input['_conditions']);
+            unset($input['_submit_button_conditions']);
+        }
+
         return $input;
     }
 
     #[Override]
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -243,6 +383,7 @@ final class Form extends CommonDBTM
                 Section::class,
                 FormDestination::class,
                 FormAccessControl::class,
+                FormTile::class,
             ]
         );
     }
@@ -263,8 +404,12 @@ final class Form extends CommonDBTM
     #[Override]
     public static function showMassiveActionsSubForm(MassiveAction $ma): bool
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $ids = array_values($ma->getItems()[Form::class]);
-        $export_url = "/Form/Export?" . http_build_query(['ids' => $ids]);
+        $export_url = $CFG_GLPI['url_base'];
+        $export_url .= "/Form/Export?" . http_build_query(['ids' => $ids]);
 
         $label = __s("Click here to download the exported forms...");
         echo "<a href=\"$export_url\">$label</a>";
@@ -273,11 +418,64 @@ final class Form extends CommonDBTM
         return true;
     }
 
+    #[Override]
+    public function listTranslationsHandlers(): array
+    {
+        $key = __('Form properties');
+        $handlers = [];
+        if (!empty($this->fields['name'])) {
+            $handlers[$key][] = new TranslationHandler(
+                item: $this,
+                key: self::TRANSLATION_KEY_NAME,
+                name: __('Form title'),
+                value: $this->fields['name'],
+            );
+        }
+
+        if (!empty($this->fields['header'])) {
+            $handlers[$key][] = new TranslationHandler(
+                item: $this,
+                key: self::TRANSLATION_KEY_HEADER,
+                name: __('Form description'),
+                value: $this->fields['header'],
+                is_rich_text: true
+            );
+        }
+
+        if (!empty($this->fields['description'])) {
+            $handlers[$key][] = new TranslationHandler(
+                item: $this,
+                key: self::TRANSLATION_KEY_DESCRIPTION,
+                name: __('Service catalog description'),
+                value: $this->fields['description'],
+                is_rich_text: true
+            );
+        }
+
+        $sections_handlers = array_map(
+            fn($section) => $section->listTranslationsHandlers(),
+            $this->getSections()
+        );
+
+        return array_merge($handlers, ...$sections_handlers);
+    }
+
+    protected function getVisibilityStrategyFieldName(): string
+    {
+        return 'submit_button_visibility_strategy';
+    }
+
+    protected function getConditionsFieldName(): string
+    {
+        return 'submit_button_conditions';
+    }
+
     public static function getAdditionalMenuLinks(): array
     {
         $links = [];
 
         if (self::canCreate()) {
+            $links['view_form_categories'] = Category::getSearchURL(false);
             $links['import_forms'] = '/Form/Import';
         }
 
@@ -358,7 +556,7 @@ final class Form extends CommonDBTM
         foreach ($this->getSections() as $section) {
             // Its important to use the "+" operator here and not array_merge
             // because the keys must be preserved
-            $questions = $questions + $section->getQuestions();
+            $questions += $section->getQuestions();
         }
         return $questions;
     }
@@ -368,13 +566,13 @@ final class Form extends CommonDBTM
      *
      * @return Comment[]
      */
-    public function getComments(): array
+    public function getFormComments(): array
     {
         $comments = [];
         foreach ($this->getSections() as $section) {
             // Its important to use the "+" operator here and not array_merge
             // because the keys must be preserved
-            $comments = $comments + $section->getComments();
+            $comments += $section->getFormComments();
         }
         return $comments;
     }
@@ -461,6 +659,24 @@ final class Form extends CommonDBTM
         return $this->getQuestionsByTypes([$type]);
     }
 
+    /** @return \Glpi\Form\Condition\SectionData[] */
+    public function getSectionsStateForConditionEditor(): array
+    {
+        return FormData::createFromForm($this)->getSectionsData();
+    }
+
+    /** @return \Glpi\Form\Condition\QuestionData[] */
+    public function getQuestionsStateForConditionEditor(): array
+    {
+        return FormData::createFromForm($this)->getQuestionsData();
+    }
+
+    /** @return \Glpi\Form\Condition\CommentData[] */
+    public function getCommentsStateForConditionEditor(): array
+    {
+        return FormData::createFromForm($this)->getCommentsData();
+    }
+
     /**
      * Update extra form data found in other tables (sections and questions)
      *
@@ -520,34 +736,30 @@ final class Form extends CommonDBTM
 
         // Parse each submitted section
         foreach ($sections as $form_data) {
-            $section = new Section();
-
-            // Newly created section, may need to be updated using temporary UUID instead of ID
-            if ($form_data['_use_uuid']) {
-                $uuid = $form_data['id'];
-                $form_data['id'] = $_SESSION['form_editor_sections_uuid'][$uuid] ?? 0;
-            } else {
-                $uuid = null;
+            // Read UUID
+            $uuid = $form_data['uuid'] ?? '';
+            if (empty($uuid)) {
+                throw new RuntimeException(
+                    "UUID is missing: " . json_encode($form_data)
+                );
             }
 
-            if ($form_data['id'] == 0) {
+            $section = Section::getByUuid($uuid);
+            if ($section === null) {
                 // Add new section
-                unset($form_data['id']);
+                $section = new Section();
                 $id = $section->add($form_data);
 
                 if (!$id) {
-                    throw new \RuntimeException("Failed to add section");
-                }
-
-                // Store temporary UUID -> ID mapping in session
-                if ($uuid !== null) {
-                    $_SESSION['form_editor_sections_uuid'][$uuid] = $id;
+                    throw new RuntimeException("Failed to add section");
                 }
             } else {
                 // Update existing section
+                $form_data['id'] = $section->getID();
+
                 $success = $section->update($form_data);
                 if (!$success) {
-                    throw new \RuntimeException("Failed to update section");
+                    throw new RuntimeException("Failed to update section");
                 }
                 $id = $section->getID();
             }
@@ -624,39 +836,43 @@ final class Form extends CommonDBTM
         foreach ($questions as $question_data) {
             $question = new Question();
 
-            if ($question_data["_use_uuid_for_sections_id"]) {
-                // This question was added to a newly created section
-                // We need to find the correct section id using the temporary UUID
-                $uuid = $question_data['forms_sections_id'];
-                $question_data['forms_sections_id'] = $_SESSION['form_editor_sections_uuid'][$uuid] ?? 0;
+            // Read uuids
+            $uuid = $question_data['uuid'] ?? '';
+            if (empty($uuid)) {
+                throw new RuntimeException(
+                    "UUID is missing: " . json_encode($question_data)
+                );
+            }
+            $section_uuid = $question_data['forms_sections_uuid'] ?? '';
+            if (empty($section_uuid)) {
+                throw new RuntimeException(
+                    "Parent section UUID is missing: " . json_encode($question_data)
+                );
             }
 
-            // Newly created question, may need to be updated using temporary UUID instead of ID
-            if ($question_data['_use_uuid']) {
-                $uuid = $question_data['id'];
-                $question_data['id'] = $_SESSION['form_editor_questions_uuid'][$uuid] ?? 0;
-            } else {
-                $uuid = null;
+            // Get parent id
+            $section = Section::getByUuid($section_uuid);
+            if ($section === null) {
+                throw new RuntimeException("Parent section not found: $section_uuid");
             }
+            $question_data['forms_sections_id'] = $section->getID();
 
-            if ($question_data['id'] == 0) {
+            $question = Question::getByUuid($uuid);
+            if ($question === null) {
                 // Add new question
-                unset($question_data['id']);
+                $question = new Question();
                 $id = $question->add($question_data);
 
                 if (!$id) {
-                    throw new \RuntimeException("Failed to add question");
-                }
-
-                // Store temporary UUID -> ID mapping in session
-                if ($uuid !== null) {
-                    $_SESSION['form_editor_questions_uuid'][$uuid] = $id;
+                    throw new RuntimeException("Failed to add question");
                 }
             } else {
-                // Update existing section
+                // Update existing question
+                $question_data['id'] = $question->getID();
+
                 $success = $question->update($question_data);
                 if (!$success) {
-                    throw new \RuntimeException("Failed to update question");
+                    throw new RuntimeException("Failed to update question");
                 }
                 $id = $question->getID();
             }
@@ -738,43 +954,47 @@ final class Form extends CommonDBTM
         foreach ($comments as $comment_data) {
             $comment = new Comment();
 
-            if ($comment_data["_use_uuid_for_sections_id"]) {
-                // This question was added to a newly created section
-                // We need to find the correct section id using the temporary UUID
-                $uuid = $comment_data['forms_sections_id'];
-                $comment_data['forms_sections_id'] = $_SESSION['form_editor_sections_uuid'][$uuid] ?? 0;
+            // Read uuids
+            $uuid = $comment_data['uuid'] ?? '';
+            if (empty($uuid)) {
+                throw new RuntimeException(
+                    "UUID is missing: " . json_decode($comment_data)
+                );
             }
 
-            // Newly created comment, may need to be updated using temporary UUID instead of ID
-            if ($comment_data['_use_uuid']) {
-                $uuid = $comment_data['id'];
-                $comment_data['id'] = $_SESSION['form_editor_comments_uuid'][$uuid] ?? 0;
-            } else {
-                $uuid = null;
+            $section_uuid = $comment_data['forms_sections_uuid'] ?? '';
+            if (empty($section_uuid)) {
+                throw new RuntimeException(
+                    "Parent section UUID is missing: " . json_decode($comment_data)
+                );
             }
 
-            if ($comment_data['id'] == 0) {
-                // Add new comment
-                unset($comment_data['id']);
+            // Get parent id
+            $section = Section::getByUuid($section_uuid);
+            if ($section === null) {
+                throw new RuntimeException("Parent section not found: $section_uuid");
+            }
+            $comment_data['forms_sections_id'] = $section->getID();
+
+            $comment = Comment::getByUuid($uuid);
+            if ($comment === null) {
+                // Add new question
+                $comment = new Comment();
                 $id = $comment->add($comment_data);
 
                 if (!$id) {
-                    throw new \RuntimeException("Failed to add comment");
-                }
-
-                // Store temporary UUID -> ID mapping in session
-                if ($uuid !== null) {
-                    $_SESSION['form_editor_comments_uuid'][$uuid] = $id;
+                    throw new RuntimeException("Failed to add comment");
                 }
             } else {
                 // Update existing comment
+                $comment_data['id'] = $comment->getID();
+
                 $success = $comment->update($comment_data);
                 if (!$success) {
-                    throw new \RuntimeException("Failed to update comment");
+                    throw new RuntimeException("Failed to update comment");
                 }
                 $id = $comment->getID();
             }
-
             // Keep track of its id
             $found_comments[] = $id;
         }
@@ -856,5 +1076,77 @@ final class Form extends CommonDBTM
             is_a($class, QuestionTypeInterface::class, true)
             && !(new ReflectionClass($class))->isAbstract()
         ;
+    }
+
+    #[Override]
+    public function getServiceCatalogItemTitle(): string
+    {
+        return FormTranslation::translate(
+            $this,
+            static::TRANSLATION_KEY_NAME
+        ) ?? '';
+    }
+
+    #[Override]
+    public function getServiceCatalogItemDescription(): string
+    {
+        return FormTranslation::translate(
+            $this,
+            static::TRANSLATION_KEY_DESCRIPTION
+        ) ?? '';
+    }
+
+    #[Override]
+    public function getServiceCatalogItemIllustration(): string
+    {
+        return $this->fields['illustration'] ?: IllustrationManager::DEFAULT_ILLUSTRATION;
+    }
+
+    #[Override]
+    public function isServiceCatalogItemPinned(): bool
+    {
+        return $this->fields['is_pinned'] ?? false;
+    }
+
+    #[Override]
+    public function getServiceCatalogLink(): string
+    {
+        return "/Form/Render/" . $this->getID();
+    }
+
+    /**
+     * Get the number of times this form has been used
+     *
+     * @return int
+     */
+    public function getUsageCount(): int
+    {
+        return $this->fields['usage_count'] ?? 0;
+    }
+
+    private function addDefaultDestinations(): void
+    {
+        $destination = new FormDestination();
+        $id = $destination->add([
+            self::getForeignKeyField() => $this->getId(),
+            'itemtype'                 => FormDestinationTicket::class,
+            'name'                     => Ticket::getTypeName(1),
+        ]);
+        if (!$id) {
+            throw new RuntimeException("Failed to initialize destinations");
+        }
+    }
+
+    private function addDefaultAccessPolicies(): void
+    {
+        $policy = new FormAccessControl();
+        $policy->add([
+            Form::getForeignKeyField() => $this->getID(),
+            'strategy' => AllowList::class,
+            '_config'   => new AllowListConfig(
+                user_ids: [AbstractRightsDropdown::ALL_USERS]
+            ),
+            'is_active' => 1,
+        ]);
     }
 }

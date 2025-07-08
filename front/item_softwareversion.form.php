@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Event;
 use Glpi\Exception\Http\BadRequestHttpException;
 
@@ -49,7 +51,7 @@ if (isset($_POST['add'])) {
             $inst->add([
                 'itemtype'        => $_POST['itemtype'],
                 'items_id'        => $_POST['items_id'],
-                'softwareversions_id' => $_POST['softwareversions_id']
+                'softwareversions_id' => $_POST['softwareversions_id'],
             ])
         ) {
             Event::log(
@@ -65,7 +67,7 @@ if (isset($_POST['add'])) {
         $message = null;
         if (!isset($_POST['softwares_id']) || !$_POST['softwares_id']) {
             $message = __s('Please select a software!');
-        } else if (!isset($_POST['softwareversions_id']) || !$_POST['softwareversions_id']) {
+        } elseif (!isset($_POST['softwareversions_id']) || !$_POST['softwareversions_id']) {
             $message = __s('Please select a version!');
         }
 

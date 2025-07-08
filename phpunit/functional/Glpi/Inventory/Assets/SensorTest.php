@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -62,7 +61,7 @@ class SensorTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"name": "LSM330DLC 3-axis Accelerometer", "manufacturer": "STMicroelectronics", "type": "ACCELEROMETER", "version": "1", "manufacturers_id": "STMicroelectronics", "devicesensortypes_id": "ACCELEROMETER", "designation": "LSM330DLC 3-axis Accelerometer", "is_dynamic": 1}'
+                'expected'  => '{"name": "LSM330DLC 3-axis Accelerometer", "manufacturer": "STMicroelectronics", "type": "ACCELEROMETER", "version": "1", "manufacturers_id": "STMicroelectronics", "devicesensortypes_id": "ACCELEROMETER", "designation": "LSM330DLC 3-axis Accelerometer", "is_dynamic": 1}',
             ], [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -79,8 +78,8 @@ class SensorTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"name": "AK8975C 3-axis Magnetic field sensor", "manufacturer": "Asahi Kasei Microdevices", "type": "MAGNETIC FIELD", "version": "1", "manufacturers_id": "Asahi Kasei Microdevices", "devicesensortypes_id": "MAGNETIC FIELD", "designation": "AK8975C 3-axis Magnetic field sensor", "is_dynamic": 1}'
-            ]
+                'expected'  => '{"name": "AK8975C 3-axis Magnetic field sensor", "manufacturer": "Asahi Kasei Microdevices", "type": "MAGNETIC FIELD", "version": "1", "manufacturers_id": "Asahi Kasei Microdevices", "devicesensortypes_id": "MAGNETIC FIELD", "designation": "AK8975C 3-axis Magnetic field sensor", "is_dynamic": 1}',
+            ],
         ];
     }
 
@@ -93,7 +92,7 @@ class SensorTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Sensor($computer, $json->content->sensors);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected), $result[0]);
     }
@@ -102,14 +101,14 @@ class SensorTest extends AbstractInventoryAsset
     {
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
-       //first, check there are no sensor linked to this computer
+        //first, check there are no sensor linked to this computer
         $ids = new \Item_DeviceSensor();
-                 $this->assertFalse(
-                     $ids->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
-                     'A sensor is already linked to computer!'
-                 );
+        $this->assertFalse(
+            $ids->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
+            'A sensor is already linked to computer!'
+        );
 
-       //convert data
+        //convert data
         $expected = $this->assetProvider()[0];
 
         $converter = new \Glpi\Inventory\Converter();
@@ -118,11 +117,11 @@ class SensorTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Sensor($computer, $json->content->sensors);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected['expected']), $result[0]);
 
-       //handle
+        //handle
         $asset->handleLinks();
         $asset->handle();
         $this->assertTrue(
@@ -166,23 +165,23 @@ class SensorTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-       //create manually a computer, with 3 sensors
+        //create manually a computer, with 3 sensors
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => 'ggheb7ne7',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
         $manufacturer = new \Manufacturer();
         $manufacturers_id = $manufacturer->add([
-            'name' => 'STMicroelectronics'
+            'name' => 'STMicroelectronics',
         ]);
         $this->assertGreaterThan(0, $manufacturers_id);
 
         $type = new \DeviceSensorType();
         $types_id = $type->add([
-            'name' => 'ACCELEROMETER'
+            'name' => 'ACCELEROMETER',
         ]);
         $this->assertGreaterThan(0, $types_id);
 
@@ -191,24 +190,24 @@ class SensorTest extends AbstractInventoryAsset
             'manufacturers_id' => $manufacturers_id,
             'devicesensortypes_id' => $types_id,
             'locations_id' => 0,
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $sensor_1_id);
 
         $item_sensor_1_id = $item_sensor->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'devicesensors_id' => $sensor_1_id
+            'devicesensors_id' => $sensor_1_id,
         ]);
         $this->assertGreaterThan(0, $item_sensor_1_id);
 
         $manufacturers_id = $manufacturer->add([
-            'name' => 'Asahi Kasei Microdevices'
+            'name' => 'Asahi Kasei Microdevices',
         ]);
         $this->assertGreaterThan(0, $manufacturers_id);
 
         $types_id = $type->add([
-            'name' => 'MAGNETIC FIELD'
+            'name' => 'MAGNETIC FIELD',
         ]);
         $this->assertGreaterThan(0, $types_id);
 
@@ -217,7 +216,7 @@ class SensorTest extends AbstractInventoryAsset
             'manufacturers_id' => $manufacturers_id,
             'devicesensortypes_id' => $types_id,
             'locations_id' => 0,
-            'entities_id'  => 0
+            'entities_id'  => 0,
 
         ]);
         $this->assertGreaterThan(0, $sensor_2_id);
@@ -225,7 +224,7 @@ class SensorTest extends AbstractInventoryAsset
         $item_sensor_2_id = $item_sensor->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'devicesensors_id' => $sensor_2_id
+            'devicesensors_id' => $sensor_2_id,
         ]);
         $this->assertGreaterThan(0, $item_sensor_2_id);
 
@@ -234,14 +233,14 @@ class SensorTest extends AbstractInventoryAsset
             'manufacturers_id' => $manufacturers_id,
             'devicesensortypes_id' => $types_id,
             'locations_id' => 0,
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $sensor_3_id);
 
         $item_sensor_3_id = $item_sensor->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'devicesensors_id' => $sensor_3_id
+            'devicesensors_id' => $sensor_3_id,
         ]);
         $this->assertGreaterThan(0, $item_sensor_3_id);
 
@@ -251,26 +250,26 @@ class SensorTest extends AbstractInventoryAsset
             $this->assertEquals(0, $sensor['is_dynamic']);
         }
 
-       //computer inventory knows only "LSM330DLC" and "AK8975C" sensors
+        //computer inventory knows only "LSM330DLC" and "AK8975C" sensors
         $this->doInventory($xml_source, true);
 
-       //we still have 3 sensors (+ 1 from bootstrap)
+        //we still have 3 sensors (+ 1 from bootstrap)
         $sensors = $device_sensor->find();
         $this->assertCount(3 + 1, $sensors);
 
-       //we still have 3 sensors items linked to the computer
+        //we still have 3 sensors items linked to the computer
         $sensors = $item_sensor->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(3, $sensors);
 
-       //sensors present in the inventory source are now dynamic
+        //sensors present in the inventory source are now dynamic
         $sensors = $item_sensor->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(2, $sensors);
 
-       //sensor not present in the inventory is still not dynamic
+        //sensor not present in the inventory is still not dynamic
         $sensors = $item_sensor->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $sensors);
 
-       //Redo inventory, but with removed "AK8975C" sensor
+        //Redo inventory, but with removed "AK8975C" sensor
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
@@ -295,19 +294,19 @@ class SensorTest extends AbstractInventoryAsset
 
         $this->doInventory($xml_source, true);
 
-       //we still have 3 sensors (+1 from bootstrap)
+        //we still have 3 sensors (+1 from bootstrap)
         $sensors = $device_sensor->find();
         $this->assertCount(3 + 1, $sensors);
 
-       //we now have 2 sensors linked to computer only
+        //we now have 2 sensors linked to computer only
         $sensors = $item_sensor->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(2, $sensors);
 
-       //sensor present in the inventory source is still dynamic
+        //sensor present in the inventory source is still dynamic
         $sensors = $item_sensor->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(1, $sensors);
 
-       //sensor not present in the inventory is still not dynamic
+        //sensor not present in the inventory is still not dynamic
         $sensors = $item_sensor->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $sensors);
     }

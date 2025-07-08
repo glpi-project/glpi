@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,8 +39,8 @@ use DBmysql;
 use Glpi\Cache\CacheManager;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
-use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Glpi\Console\Traits\TelemetryActivationTrait;
+use Glpi\Progress\ConsoleProgressIndicator;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Glpi\System\Requirement\DatabaseTablesEngine;
 use Glpi\Toolbox\DatabaseSchema;
@@ -55,7 +55,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Update;
 
-class UpdateCommand extends AbstractCommand implements ConfigurationCommandInterface, ForceNoPluginsOptionCommandInterface
+class UpdateCommand extends AbstractCommand implements ConfigurationCommandInterface
 {
     use TelemetryActivationTrait;
 
@@ -64,28 +64,35 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
      *
      * @var integer
      */
-    const ERROR_NO_UNSTABLE_UPDATE = 1;
+    public const ERROR_NO_UNSTABLE_UPDATE = 1;
 
     /**
      * Error code returned when security key file is missing.
      *
      * @var integer
      */
-    const ERROR_MISSING_SECURITY_KEY_FILE = 2;
+    public const ERROR_MISSING_SECURITY_KEY_FILE = 2;
 
     /**
      * Error code returned when database is not a valid GLPI database.
      *
      * @var integer
      */
-    const ERROR_INVALID_DATABASE = 3;
+    public const ERROR_INVALID_DATABASE = 3;
 
     /**
      * Error code returned when database integrity check failed.
      *
      * @var integer
      */
-    const ERROR_DATABASE_INTEGRITY_CHECK_FAILED = 4;
+    public const ERROR_DATABASE_INTEGRITY_CHECK_FAILED = 4;
+
+    /**
+     * Error code returned when an error occurred during the update.
+     *
+     * @var integer
+     */
+    public const ERROR_UPDATE_FAILED = 5;
 
     protected $requires_db_up_to_date = false;
 
@@ -130,11 +137,6 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
 
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
-        global $GLPI_CACHE;
-        $GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance(); // Use dedicated "installer" cache
-
         parent::initialize($input, $output);
 
         $this->outputWarningOnMissingOptionnalRequirements();
@@ -151,12 +153,12 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
 
         $update = new Update($this->db);
 
-       // Initialize entities
+        // Initialize entities
         $_SESSION['glpidefault_entity'] = 0;
         Session::initEntityProfiles(2);
         Session::changeProfile(4);
 
-       // Display current/future state information
+        // Display current/future state information
         $currents            = $update->getCurrents();
         $current_version     = $currents['version'];
         $current_db_version  = $currents['dbversion'];
@@ -189,7 +191,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
         }
 
         if (VersionParser::isStableRelease($current_version) && !VersionParser::isStableRelease(GLPI_VERSION) && !$allow_unstable) {
-           // Prevent unstable update unless explicitly asked
+            // Prevent unstable update unless explicitly asked
             $output->writeln(
                 sprintf(
                     '<error>' . __('%s is not a stable release. Please upgrade manually or add --allow-unstable option.') . '</error>',
@@ -218,16 +220,31 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
 
         $this->askForConfirmation();
 
-        /** @var \Migration $migration */
-        global $migration; // Migration scripts are using global `$migration`
-        $migration = new Migration(GLPI_VERSION);
-        $migration->setOutputHandler($output);
-        $update->setMigration($migration);
-        $update->doUpdates($current_version, $force);
+        $progress_indicator = new ConsoleProgressIndicator($output);
+
+        $update->setMigration(new Migration(GLPI_VERSION, $progress_indicator));
+        try {
+            $success = $update->doUpdates(
+                current_version: $current_version,
+                force_latest: $force,
+                progress_indicator: $progress_indicator
+            );
+            if ($success === false) {
+                $output->writeln('<error>' . __('Update failed.') . '</error>', OutputInterface::VERBOSITY_QUIET);
+                return self::ERROR_UPDATE_FAILED;
+            }
+        } catch (\Throwable $e) {
+            $progress_indicator->fail();
+
+            $message = sprintf(
+                __('An error occurred during the database update. The error was: %s'),
+                $e->getMessage()
+            );
+            $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
+            return self::ERROR_UPDATE_FAILED;
+        }
 
         (new CacheManager())->resetAllCaches(); // Ensure cache will not use obsolete data
-
-        $output->writeln('<info>' . __('Migration done.') . '</info>');
 
         $this->handTelemetryActivation($input, $output);
 
@@ -238,7 +255,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
                     '<comment>' . sprintf(
                         __('It is recommended to run the "%s" command to validate that the database schema is consistent with the current GLPI version.'),
                         'php bin/console database:check_schema_integrity'
-                    ) . '</comment>'
+                    ) . '</comment>',
                 ],
                 OutputInterface::VERBOSITY_QUIET
             );
@@ -256,7 +273,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
                     '<error>' . sprintf(
                         __('It is recommended to run the "%s" command to see the differences.'),
                         'php bin/console database:check_schema_integrity'
-                    ) . '</error>'
+                    ) . '</error>',
                 ],
                 OutputInterface::VERBOSITY_QUIET
             );
@@ -264,12 +281,6 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
         }
 
         return 0; // Success
-    }
-
-    public function getNoPluginsOptionValue()
-    {
-
-        return true;
     }
 
     /**

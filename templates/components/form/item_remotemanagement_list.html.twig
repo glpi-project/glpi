@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -29,6 +29,7 @@
  #
  # ---------------------------------------------------------------------
  #}
+
 {% import 'components/alerts_macros.html.twig' as alerts %}
 
 <h3 class="text-start mt-5">{{ __('List of remote management') }}</h3>
@@ -43,7 +44,6 @@
 {% if entries|length > 0 %}
     {{ include('components/datatable.html.twig', {
         'is_tab': true,
-        'nopager': true,
         'nofilter': true,
         'nosort': true,
         'columns': {
@@ -57,10 +57,11 @@
         'entries': entries,
         'total_number': entries|length,
         'showmassiveactions': canedit,
+        'massiveactionparams': massiveactionparams,
     }, with_context = false) }}
 {% else %}
     {{ alerts.alert_info(
-        __('No item found')
+        __('No results found')
     ) }}
 {% endif %}
 

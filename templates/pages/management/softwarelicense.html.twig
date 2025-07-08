@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -43,8 +42,12 @@
       <input type="hidden" name="softwares_id" value="{{ item.fields['softwares_id'] }}" />
 
       {% set software_link %}
-         <a href="{{ call('Software::getFormURLWithID', [item.fields['softwares_id']]) }}">
-         {{ call('Dropdown::getDropdownName', ["glpi_softwares", item.fields['softwares_id']]) }} </a>
+         {% if item.fields['softwares_id'] > 0 %}
+            <a href="{{ call('Software::getFormURLWithID', [item.fields['softwares_id']]) }}">
+            {{ call('Dropdown::getDropdownName', ["glpi_softwares", item.fields['softwares_id']]) }} </a>
+         {% else %}
+            {{ __('Not linked to any software') }}
+         {% endif %}
       {% endset %}
 
       {{ fields.field(
@@ -108,22 +111,20 @@
    {% set validity_msg = null %}
    {% if item_type == 'SoftwareLicense' %}
       {% set validity_msg %}
-         {% if item.fields['is_valid'] %}
-            <span class="green">{{ _x('adjective', 'Valid') }}</span>
-         {% elseif not item.fields['is_valid'] and item.fields['allow_overquota'] %}
-            <span class="green">{{ _x('adjective', 'Valid (Over Quota)') }}</span>
-         {% else %}
-            <span class="red">{{ _x('adjective', 'Invalid') }}</span>
-         {% endif %}
+         <div class="d-flex justify-content-around pt-2">
+            {{ include('pages/management/license_progressbar.html.twig', {
+               total: item.fields['number'],
+               licences_assigned: licences_assigned,
+            }, with_context: false) }}
+         </div>
       {% endset %}
    {% endif %}
    {{ fields.dropdownNumberField('number', item.fields['number'], _x('quantity', 'Number'), {
       'min': 1,
       'max': 10000,
       'step': 1,
-      'toadd': {'-1': __('Unlimited')},
-      'add_field_html': validity_msg
-   }) }}
+      'toadd': {'-1': __('Unlimited')}
+   }|merge(item.isNewItem() ? {} : {'add_field_html': validity_msg})) }}
 
    {{ fields.dropdownYesNo('allow_overquota', item.fields['allow_overquota'], __('Allow Over-Quota')) }}
 

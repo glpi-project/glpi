@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -43,23 +42,10 @@ use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
-use Monitor;
 
 final class FormDestinationTest extends DbTestCase
 {
     use FormTesterTrait;
-
-    public function testGetTabNameForFormWithoutDestinations()
-    {
-        $this->login();
-
-        $form = $this->createForm(
-            (new FormBuilder())
-                ->addQuestion("Name", QuestionTypeShortText::class)
-        );
-
-        $this->checkGetTabNameForItem($form, "Items to create");
-    }
 
     public function testGetTabNameForFormWithDestinations()
     {
@@ -68,7 +54,8 @@ final class FormDestinationTest extends DbTestCase
         $_SESSION['glpishow_count_on_tabs'] = true;
         $form = $this->createAndGetFormWithFourDestinations();
 
-        $this->checkGetTabNameForItem($form, "Items to create 4");
+        // 5 because 4 specific + 1 mandatory destination
+        $this->checkGetTabNameForItem($form, "Items to create 5");
     }
 
     public function testGetTabNameForFormWithDestinationsWithoutCount()
@@ -111,6 +98,28 @@ final class FormDestinationTest extends DbTestCase
         ob_end_clean();
 
         $this->assertTrue($return);
+    }
+
+    public function testWarningsAreRendereredInTabContent()
+    {
+        // Arrange: create a form and remove its default destination
+        $form = $this->createForm(new FormBuilder());
+        $destinations = $form->getDestinations();
+        foreach ($destinations as $destination) {
+            $this->deleteItem($destination::class, $destination->getId(), true);
+        }
+
+        // Act: display the destination tab
+        $destination = new FormDestination();
+        ob_start();
+        $destination->displayTabContentForItem($form);
+        $content = ob_get_clean();
+
+        // Assert: the content should contain the warning
+        $this->assertStringContainsString(
+            "This form is invalid, it must create at least one item.",
+            $content
+        );
     }
 
     private function createAndGetFormWithFourDestinations(): Form

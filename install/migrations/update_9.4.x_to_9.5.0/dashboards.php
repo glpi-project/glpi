@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -170,8 +169,8 @@ return [
                 "gridstack_id" => "count_NetworkEquipment_State_81f2ae35-b366-4065-ac26-02ea4e3704a6",
                 "card_id"      => "count_NetworkEquipment_State",
                 "card_options" => "{\"color\":\"#f5f3ef\",\"widgettype\":\"donut\",\"use_gradient\":\"1\",\"limit\":\"5\"}",
-            ]
-        ]
+            ],
+        ],
     ], [
         'key'     => 'assets',
         'name'    => "Assets",
@@ -253,8 +252,8 @@ return [
                 "gridstack_id" => "count_Monitor_Manufacturer_43b0c16b-af82-418e-aac1-f32b39705c0d",
                 "card_id"      => "count_Monitor_Manufacturer",
                 "card_options" => "{\"color\":\"#f9fbfb\",\"widgettype\":\"donut\",\"use_gradient\":\"1\",\"limit\":\"5\"}",
-            ]
-        ]
+            ],
+        ],
     ], [
         'key'     => 'assistance',
         'name'    => "Assistance",
@@ -341,8 +340,8 @@ return [
                 "gridstack_id" => "ticket_status_5b256a35-b36b-4db5-ba11-ea7c125f126e",
                 "card_id"      => "ticket_status",
                 "card_options" => "{\"color\":\"#f7f3f2\",\"widgettype\":\"stackedbars\",\"use_gradient\":\"0\",\"limit\":\"12\"}",
-            ]
-        ]
+            ],
+        ],
     ], [
         'key'     => 'mini_tickets',
         'name'    => "Mini tickets dashboard",
@@ -384,7 +383,7 @@ return [
                 "gridstack_id" => "bn_count_tickets_solved_ae2406cf-e8e8-410b-b355-46e3f5705ee8",
                 "card_id"      => "bn_count_tickets_solved",
                 "card_options" => "{\"color\":\"#d7d7d7\",\"widgettype\":\"bigNumber\",\"use_gradient\":\"0\",\"limit\":\"7\"}",
-            ]
-        ]
-    ]
+            ],
+        ],
+    ],
 ];

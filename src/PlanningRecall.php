@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,7 +41,7 @@ use Glpi\DBAL\QueryFunction;
 // @since 0.84
 class PlanningRecall extends CommonDBChild
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype        = 'itemtype';
     public static $items_id        = 'items_id';
 
@@ -111,7 +111,7 @@ class PlanningRecall extends CommonDBChild
         return $this->getFromDBByCrit([
             static::getTable() . '.itemtype'  => $itemtype,
             static::getTable() . '.items_id'  => $items_id,
-            static::getTable() . '.users_id'  => $users_id
+            static::getTable() . '.users_id'  => $users_id,
         ]);
     }
 
@@ -151,7 +151,7 @@ class PlanningRecall extends CommonDBChild
             )
         ) {
             if ($data['before_time'] !== $pr->fields['before_time']) {
-               // Recall exists and is different : update datas and clean alert
+                // Recall exists and is different : update datas and clean alert
                 if ($item = getItemForItemtype($data['itemtype'])) {
                     if (
                         $item->getFromDB($data['items_id'])
@@ -166,19 +166,19 @@ class PlanningRecall extends CommonDBChild
                             if ($pr->can($pr->fields['id'], UPDATE)) {
                                 $pr->update(['id'          => $pr->fields['id'],
                                     'before_time' => $data['before_time'],
-                                    'when'        => $when
+                                    'when'        => $when,
                                 ]);
                             }
                         } else {
                             if ($pr->can($pr->fields['id'], PURGE)) {
-                                 $pr->delete(['id' => $pr->fields['id']]);
+                                $pr->delete(['id' => $pr->fields['id']]);
                             }
                         }
                     }
                 }
             }
         } else {
-           // Recall does not exists : create it
+            // Recall does not exists : create it
             if ($pr->can(-1, CREATE, $data)) {
                 if ($item = getItemForItemtype($data['itemtype'])) {
                     $item->getFromDB($data['items_id']);
@@ -192,7 +192,7 @@ class PlanningRecall extends CommonDBChild
                             - $data['before_time']
                         );
                         if ($data['before_time'] >= 0) {
-                             $pr->add($data);
+                            $pr->add($data);
                         }
                     }
                 }
@@ -225,11 +225,11 @@ class PlanningRecall extends CommonDBChild
                     date: new QueryExpression($DB::quoteValue($begin)),
                     interval: new QueryExpression($DB::quoteName('before_time')),
                     interval_unit: 'SECOND'
-                )
+                ),
             ],
             [
                 'itemtype'  => $itemtype,
-                'items_id'  => $items_id
+                'items_id'  => $items_id,
             ]
         );
     }
@@ -377,17 +377,17 @@ TWIG, $p);
                         'glpi_alerts'           => 'items_id', [
                             'AND' => [
                                 'glpi_alerts.itemtype'  => 'PlanningRecall',
-                                'glpi_alerts.type'      => Alert::ACTION
-                            ]
-                        ]
-                    ]
-                ]
+                                'glpi_alerts.type'      => Alert::ACTION,
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'NOT'                         => ['glpi_planningrecalls.when' => null],
                 'glpi_planningrecalls.when'   => ['<', QueryFunction::now()],
-                'glpi_alerts.date'            => null
-            ]
+                'glpi_alerts.date'            => null,
+            ],
         ]);
 
         $pr = new self();

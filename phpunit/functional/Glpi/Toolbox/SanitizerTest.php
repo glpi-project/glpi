@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -619,5 +618,51 @@ TXT;
     {
         $sanitizer = new \Glpi\Toolbox\Sanitizer();
         $this->assertSame($is_class, @$sanitizer->isNsClassOrCallableIdentifier($value));
+    }
+
+    public static function stringableObjectProvider(): iterable
+    {
+        yield [
+            'value'             => new class ("' > '") {
+                private string $val;
+
+                public function __construct(string $val)
+                {
+                    $this->val = $val;
+                }
+
+                public function __toString()
+                {
+                    return $this->val;
+                }
+            },
+            'sanitized_value'   => "\' &#62; \'",
+            'htmlencoded_value' => "' &#62; '",
+            'dbescaped_value'   => "\' > \'",
+        ];
+    }
+
+    #[DataProvider('stringableObjectProvider')]
+    public function testSanitizeStringableObject(
+        $value,
+        $sanitized_value,
+        $htmlencoded_value = null,
+        $dbescaped_value = null
+    ) {
+        $sanitizer = new \Glpi\Toolbox\Sanitizer();
+
+        $this->assertEquals($sanitized_value, @$sanitizer->sanitize($value, true));
+
+        // Calling sanitize on sanitized value should have no effect
+        $this->assertEquals($sanitized_value, @$sanitizer->sanitize($sanitized_value));
+
+        // Check HTML encoding only
+        $this->assertEquals($htmlencoded_value, @$sanitizer->sanitize($value, false));
+        $this->assertEquals($htmlencoded_value, @$sanitizer->encodeHtmlSpecialChars($value));
+        $this->assertEquals([$htmlencoded_value], @$sanitizer->encodeHtmlSpecialCharsRecursive([$value]));
+
+        // Check escaping only
+        $this->assertEquals($dbescaped_value, @$sanitizer->dbEscape($value));
+        $this->assertEquals([$dbescaped_value], @$sanitizer->dbEscapeRecursive([$value]));
     }
 }

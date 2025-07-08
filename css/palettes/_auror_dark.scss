@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,16 +33,10 @@
 
 $is-dark: true;
 
-.btn-primary,
-.btn-outline-primary,
-.btn-ghost-primary {
-    --tblr-btn-color-text: red;
-}
-
 :root[data-glpi-theme="auror_dark"] {
     --tblr-dark: #232e3c;
     --tblr-light: #9ca8c0;
-    --tblr-body-bg: #1f2936;
+    --tblr-body-bg: #1f2936; // hsl(213.9deg, 27.1%, 16.7%)
     --tblr-bg-surface: #232e3c;
     --tblr-body-color: #9ca8c0;
     --tblr-primary-rgb: 254, 201, 92;
@@ -57,6 +51,9 @@ $is-dark: true;
     --glpi-form-header-border-color: transparent;
     --glpi-mainmenu-bg: #232e3c;
     --glpi-mainmenu-fg: #ffffffb3;
+    --glpi-helpdesk-header: hsl(213.9deg, 27.1%, 30.7%);
+    --glpi-helpdesk-tiles-section-bg: hsl(213.9deg, 27.1%, 25.7%);
+    --glpi-helpdesk-tabs-section-bg: hsl(213.9deg, 27.1%, 20.7%);
     --glpi-tabs-bg: #1d2531;
     --glpi-tabs-fg: var(--tblr-light);
     --glpi-tabs-border-color: transparent;
@@ -67,4 +64,13 @@ $is-dark: true;
     --glpi-timeline-fup-bg: #1c2430;
     --glpi-timeline-fup-fg: #8892a8;
     --glpi-timeline-fup-border: #2f3d50;
+    --glpi-palette-color-1: #1b2f62;
+    --glpi-palette-color-2: #131425;
+    --glpi-palette-color-3: #3a5693;
+    --glpi-palette-color-4: #fec95c;
+
+    // Helpdesk header
+    --glpi-illustrations-gradient-1: hsl(213.9deg, 27.1%, 70%);
+    --glpi-illustrations-gradient-2: hsl(213.9deg, 27.1%, 40%);
+    --glpi-illustrations-gradient-3: hsl(213.9deg, 27.1%, 20%);
 }

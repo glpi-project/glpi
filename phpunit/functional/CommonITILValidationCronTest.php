@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -86,15 +85,9 @@ class CommonITILValidationCronTest extends DbTestCase
             )
         );
 
-        // create crontask
+        // retrieve crontask
         $crontask = new \CronTask();
-        $crontask_id = $crontask->add([
-            'name'        => 'approvalreminder',
-            'itemtype'    => 'CommonITILValidationCron',
-            'frequency'   => '60',
-            'state'        => \CronTask::STATE_RUNNING,
-        ]);
-        $this->assertGreaterThan(0, $crontask_id);
+        $this->assertTrue($crontask->getFromDBbyName('CommonITILValidationCron', 'approvalreminder'));
 
         // run cron
         $this->assertEquals(1, \CommonITILValidationCron::cronApprovalReminder($crontask));
@@ -118,7 +111,7 @@ class CommonITILValidationCronTest extends DbTestCase
 
         // verify last reminder date is empty
         $this->assertTrue($ticket_validation->getFromDB($ticket_validation_id));
-        $this->assertEmpty((string)$ticket_validation->fields['last_reminder_date']);
+        $this->assertEmpty((string) $ticket_validation->fields['last_reminder_date']);
 
         // Solve ticket
         $this->assertTrue(
@@ -133,7 +126,7 @@ class CommonITILValidationCronTest extends DbTestCase
 
         // verify last reminder date is empty
         $this->assertTrue($ticket_validation->getFromDB($ticket_validation_id));
-        $this->assertEmpty((string)$ticket_validation->fields['last_reminder_date']);
+        $this->assertEmpty((string) $ticket_validation->fields['last_reminder_date']);
 
         // Close ticket
         $this->assertTrue(
@@ -148,6 +141,6 @@ class CommonITILValidationCronTest extends DbTestCase
 
         // verify last reminder date is empty
         $this->assertTrue($ticket_validation->getFromDB($ticket_validation_id));
-        $this->assertEmpty((string)$ticket_validation->fields['last_reminder_date']);
+        $this->assertEmpty((string) $ticket_validation->fields['last_reminder_date']);
     }
 }

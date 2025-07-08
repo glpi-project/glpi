@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -47,32 +46,25 @@ class GLPITestCase extends atoum
     /**
      * @var TestHandler
      */
-    private $php_log_handler;
-
-    /**
-     * @var TestHandler
-     */
-    private $sql_log_handler;
+    private $log_handler;
 
     public function beforeTestMethod($method)
     {
-       // By default, no session, not connected
+        // By default, no session, not connected
         $this->resetSession();
 
         // By default, there shouldn't be any pictures in the test files
         $this->resetPictures();
 
-       // Ensure cache is clear
+        // Ensure cache is clear
         global $GLPI_CACHE;
         $GLPI_CACHE->clear();
 
-        // Init log handlers
-        global $PHPLOGGER, $SQLLOGGER;
+        // Init log handler
+        global $PHPLOGGER;
         /** @var \Monolog\Logger $PHPLOGGER */
-        $this->php_log_handler = new TestHandler(LogLevel::DEBUG);
-        $PHPLOGGER->setHandlers([$this->php_log_handler]);
-        $this->sql_log_handler = new TestHandler(LogLevel::DEBUG);
-        $SQLLOGGER->setHandlers([$this->sql_log_handler]);
+        $this->log_handler = new TestHandler(LogLevel::DEBUG);
+        $PHPLOGGER->setHandlers([$this->log_handler]);
     }
 
     public function afterTestMethod($method)
@@ -91,27 +83,25 @@ class GLPITestCase extends atoum
         }
 
         if (!$this->has_failed) {
-            foreach ([$this->php_log_handler, $this->sql_log_handler] as $log_handler) {
-                $this->array($log_handler->getRecords());
-                $clean_logs = array_map(
-                    static function (\Monolog\LogRecord $entry): array {
-                        return [
-                            'channel' => $entry->channel,
-                            'level'   => $entry->level->name,
-                            'message' => $entry->message,
-                        ];
-                    },
-                    $log_handler->getRecords()
-                );
-                $this->array($clean_logs)->isEmpty(
-                    sprintf(
-                        "Unexpected entries in log in %s::%s:\n%s",
-                        static::class,
-                        $method,
-                        print_r($clean_logs, true)
-                    )
-                );
-            }
+            $this->array($this->log_handler->getRecords());
+            $clean_logs = array_map(
+                static function (\Monolog\LogRecord $entry): array {
+                    return [
+                        'channel' => $entry->channel,
+                        'level'   => $entry->level->name,
+                        'message' => $entry->message,
+                    ];
+                },
+                $this->log_handler->getRecords()
+            );
+            $this->array($clean_logs)->isEmpty(
+                sprintf(
+                    "Unexpected entries in log in %s::%s:\n%s",
+                    static::class,
+                    $method,
+                    print_r($clean_logs, true)
+                )
+            );
         }
     }
 
@@ -156,26 +146,6 @@ class GLPITestCase extends atoum
         $method->setAccessible(true);
 
         return $method->invoke($instance, ...$args);
-    }
-
-    /**
-     * Call a private constructor, and get the created instance.
-     *
-     * @param string    $classname  Class to instanciate
-     * @param mixed     $arg        Constructor arguments
-     *
-     * @return mixed
-     */
-    protected function callPrivateConstructor($classname, $args)
-    {
-        $class = new ReflectionClass($classname);
-        $instance = $class->newInstanceWithoutConstructor();
-
-        $constructor = $class->getConstructor();
-        $constructor->setAccessible(true);
-        $constructor->invokeArgs($instance, $args);
-
-        return $instance;
     }
 
     protected function resetSession()
@@ -236,32 +206,6 @@ class GLPITestCase extends atoum
      */
     protected function hasPhpLogRecordThatContains(string $message, string $level): void
     {
-        $this->hasLogRecordThatContains($this->php_log_handler, $message, $level);
-    }
-
-    /**
-     * Check in SQL log for a record that contains given message.
-     *
-     * @param string $message
-     * @param string $level
-     *
-     * @return void
-     */
-    protected function hasSqlLogRecordThatContains(string $message, string $level): void
-    {
-        $this->hasLogRecordThatContains($this->sql_log_handler, $message, $level);
-    }
-
-    /**
-     * Check given log handler for a record that contains given message.
-     *
-     * @param string $message
-     * @param string $level
-     *
-     * @return void
-     */
-    private function hasLogRecordThatContains(TestHandler $handler, string $message, string $level): void
-    {
         $this->has_failed = true;
 
         $records = array_map(
@@ -272,7 +216,7 @@ class GLPITestCase extends atoum
                     'message' => $record['message'],
                 ];
             },
-            $handler->getRecords()
+            $this->log_handler->getRecords()
         );
 
         $matching = null;
@@ -289,7 +233,7 @@ class GLPITestCase extends atoum
             sprintf("Message not found in log records\n- %s\n+ %s", $message, print_r($records, true))
         );
 
-        $handler->dropFromRecords($matching['message'], $matching['level']);
+        $this->log_handler->dropFromRecords($matching['message'], $matching['level']);
 
         $this->has_failed = false;
     }
@@ -304,36 +248,10 @@ class GLPITestCase extends atoum
      */
     protected function hasPhpLogRecordThatMatches(string $pattern, string $level): void
     {
-        $this->hasLogRecordThatMatches($this->php_log_handler, $pattern, $level);
-    }
-
-    /**
-     * Check in SQL log for a record that matches given pattern.
-     *
-     * @param string $message
-     * @param string $level
-     *
-     * @return void
-     */
-    protected function hasSqlLogRecordThatMatches(string $pattern, string $level): void
-    {
-        $this->hasLogRecordThatMatches($this->sql_log_handler, $pattern, $level);
-    }
-
-    /**
-     * Check given log handler for a record that matches given pattern.
-     *
-     * @param string $message
-     * @param string $level
-     *
-     * @return void
-     */
-    private function hasLogRecordThatMatches(TestHandler $handler, string $pattern, string $level): void
-    {
         $this->has_failed = true;
 
         $matching = null;
-        foreach ($handler->getRecords() as $record) {
+        foreach ($this->log_handler->getRecords() as $record) {
             if (
                 Level::fromValue($record['level']) === Level::fromName($level)
                 && preg_match($pattern, $record['message']) === 1
@@ -343,7 +261,7 @@ class GLPITestCase extends atoum
             }
         }
         $this->variable($matching)->isNotNull('No matching log found.');
-        $handler->dropFromRecords($matching['message'], $matching['level']);
+        $this->log_handler->dropFromRecords($matching['message'], $matching['level']);
 
         $this->has_failed = false;
     }
@@ -383,37 +301,5 @@ class GLPITestCase extends atoum
     protected function getTestRootEntity(bool $only_id = false)
     {
         return getItemByTypeName('Entity', '_test_root_entity', $only_id);
-    }
-
-    /**
-     * Return the minimal fields required for the creation of an item of the given field.
-     *
-     * @param string $class
-     * @return array
-     */
-    protected function getMinimalCreationInput(string $class): array
-    {
-        if (!is_a($class, CommonDBTM::class, true)) {
-            return [];
-        }
-
-        $input = [];
-
-        if ((new $class())->isField('entities_id')) {
-            $input['entities_id'] = $this->getTestRootEntity(true);
-        }
-
-        switch ($class) {
-            case Item_DeviceSimcard::class:
-                $input['itemtype']          = Computer::class;
-                $input['items_id']          = getItemByTypeName(Computer::class, '_test_pc01', true);
-                $input['devicesimcards_id'] = getItemByTypeName(DeviceSimcard::class, '_test_simcard_1', true);
-                break;
-            case SoftwareLicense::class:
-                $input['softwares_id'] = getItemByTypeName(Software::class, '_test_soft', true);
-                break;
-        }
-
-        return $input;
     }
 }

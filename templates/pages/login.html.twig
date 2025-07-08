@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -50,7 +49,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="login_name">{{ __('Login') }}</label>
-                    <input type="text" class="form-control" id="login_name" name="{{ namfield }}" placeholder="" tabindex="1"/>
+                    <input type="text" class="form-control" id="login_name" name="login_name" placeholder="" tabindex="1"/>
                 </div>
                 <div class="mb-4">
                     <div class="d-flex">
@@ -82,7 +81,7 @@
                             {% endif %}
                         {% endif %}
                     </div>
-                    <input type="password" class="form-control" id="login_password" name="{{ pwdfield }}" placeholder="" autocomplete="off" tabindex="2"/>
+                    <input type="password" class="form-control" id="login_password" name="login_password" placeholder="" autocomplete="off" tabindex="2"/>
                 </div>
 
                 {% if config('display_login_source') %}
@@ -95,7 +94,7 @@
                 {% if config('login_remember_time') %}
                     <div class="mb-2">
                         <label class="form-check" for="login_remember">
-                            <input type="checkbox" class="form-check-input" id="login_remember" name="{{ rmbfield }}" {{ config('login_remember_default') ? 'checked' : '' }}/>
+                            <input type="checkbox" class="form-check-input" id="login_remember" name="login_remember" {{ config('login_remember_default') ? 'checked' : '' }}/>
                             <span class="form-check-label">{{ __('Remember me') }}</span>
                         </label>
                     </div>
@@ -117,7 +116,7 @@
         {% if config('use_public_faq') %}
             <div class="text-center mt-4 border-top">
                 <a class="btn btn-outline-secondary mt-4" href="{{ path('front/helpdesk.faq.php') }}">
-                    <i class="fas fa-question"></i>&nbsp;
+                    <i class="ti ti-help"></i>&nbsp;
                     {{ __('FAQ') }}
                 </a>
             </div>
@@ -127,6 +126,10 @@
 
 {% block footer_block %}
     {{ copyright_message|raw }}
+
+    {% if must_call_cron %}
+        <div style="background-image: url('{{ path('/front/cron.php') }}');"></div>
+    {% endif %}
 {% endblock %}
 
 {% block javascript_block %}

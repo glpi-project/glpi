@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -93,27 +93,92 @@ header {
 
     .search-bar-container {
         padding: 3rem 0;
+
+        // Must be greater than .search-overlay but smaller than the user menu
+        // dropdown (1030).
+        z-index: 1025;
     }
 }
 
 .search-banner {
-    background:
-        url('/pics/serfservice-portal-header-1.svg') no-repeat bottom right,
-        url('/pics/serfservice-portal-header-2.svg') no-repeat bottom left
-    ;
     background-color: var(--glpi-helpdesk-header);
-    padding-top:150px;
-    padding-bottom:100px;
+    position: relative;
+
+    .search-banner-content {
+        padding-top:170px;
+        padding-bottom:80px;
+    }
+
+    .scene {
+        position:absolute;
+        bottom: 0;
+        width: 555px;
+        height:90%;
+
+        // Hide for screens smaller than 1600px
+        @media (max-width: 1600px) {
+            display: none;
+        }
+    }
+
+    .scene-left {
+        left: 0;
+    }
+
+    .scene-right {
+        right: 0;
+    }
+}
+
+.search-overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    visibility: hidden;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    z-index: 1020;
+    transition: opacity 0.4s, visibility 0.4s;
+}
+
+.search-results {
+    box-shadow:var(--tblr-box-shadow-input);
+    border-radius: var(--tblr-border-radius);
+    border:var(--tblr-border-width) solid var(--tblr-border-color);
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+    border-top: 0 !important;
+
+    // Must be greater than .search-overlay.
+    z-index:1025;
+}
+
+.richtext-strip-margin
+{
+    // Remove the last paragraph margin on rich text content.
+    p:last-of-type {
+        margin-bottom: 0 !important;
+    }
+}
+
+.search-results-title {
+    font-size:0.75rem;
+}
+
+.remove-bottom-border-radius{
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
 }
 
 .tiles-banner {
-    background: #f6f8fb;
+    background: var(--glpi-helpdesk-tiles-section-bg);
     padding-top:70px;
     padding-bottom:70px;
 }
 
 .tickets-banner {
-    background: #fff;
+    background: var(--glpi-helpdesk-tabs-section-bg);
     padding-top:70px;
     padding-bottom:70px;
     flex-grow: 1;
@@ -157,4 +222,8 @@ header {
         padding-top: 16px;
         padding-bottom: 8px;
     }
+}
+
+.search-result-container {
+    background-color: var(--glpi-tabs-bg);
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -62,8 +62,16 @@ class GLPIPDF extends TCPDF
 
     public function __construct(array $config = [], ?int $count = null, ?string $title = null, bool $addpage = true)
     {
+        if (
+            isset($config['font'])
+            && !in_array($config['font'], array_keys(self::getFontList()), true)
+        ) {
+            unset($config['font']);
+        }
+
         $config += self::$default_config;
         $this->config = $config;
+
         parent::__construct(
             $config['orientation'],
             $config['unit'],
@@ -149,8 +157,8 @@ class GLPIPDF extends TCPDF
         $include_fct = function ($font_path) use (&$list) {
             include $font_path;
 
-            $name = $name ?? null;
-            $type = $type ?? null;
+            $name ??= null;
+            $type ??= null;
             if ($name === null) {
                 return; // Not a font file
             }

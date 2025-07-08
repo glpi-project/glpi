@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -44,14 +43,14 @@ if ($DB->fieldExists(\Unmanaged::getTable(), 'domains_id')) {
     $iterator = $DB->request([
         'SELECT' => ['id', 'domains_id'],
         'FROM'   => \Unmanaged::getTable(),
-        'WHERE'  => ['domains_id' => ['>', 0]]
+        'WHERE'  => ['domains_id' => ['>', 0]],
     ]);
     if (count($iterator)) {
         foreach ($iterator as $row) {
             $DB->insert("glpi_domains_items", [
                 'domains_id'   => $row['domains_id'],
                 'itemtype'     => 'Unmanaged',
-                'items_id'     => $row['id']
+                'items_id'     => $row['id'],
             ]);
         }
     }

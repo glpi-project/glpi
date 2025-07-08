@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -36,10 +36,6 @@
 
 namespace Glpi\Inventory\Asset;
 
-use CommonDBTM;
-use DeviceFirmwareType;
-use Glpi\Inventory\Conf;
-
 class Bios extends Device
 {
     public function prepare(): array
@@ -48,10 +44,10 @@ class Bios extends Device
             'bdate'           => 'date',
             'bversion'        => 'version',
             'bmanufacturer'   => 'manufacturers_id',
-            'biosserial'      => 'serial'
+            'biosserial'      => 'serial',
         ];
 
-        $val = (object)$this->data;
+        $val = (object) $this->data;
         foreach ($mapping as $origin => $dest) {
             if (property_exists($val, $origin)) {
                 $val->$dest = $val->$origin;

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,12 +34,9 @@
 
 namespace Glpi\Dashboard\Filters;
 
-use Change;
-use Group;
-use Problem;
-use Ticket;
+use Group_Item;
 
-class GroupRequesterFilter extends AbstractFilter
+class GroupRequesterFilter extends AbstractGroupFilter
 {
     public static function getName(): string
     {
@@ -51,104 +48,18 @@ class GroupRequesterFilter extends AbstractFilter
         return "group_requester";
     }
 
-    public static function canBeApplied(string $table): bool
+    protected static function getGroupType(): int
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        return $DB->fieldExists($table, 'groups_id')
-            || in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()]);
+        return Group_item::GROUP_TYPE_NORMAL;
     }
 
-    public static function getCriteria(string $table, $value): array
+    protected static function getGroupFieldName(): string
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        $criteria = [];
-
-        $groups_id = null;
-        if ((int)$value > 0) {
-            $groups_id = (int) $value;
-        } else if ($value == 'mygroups') {
-            $groups_id = $_SESSION['glpigroups'];
-        }
-
-        if ($groups_id != null) {
-            if ($DB->fieldExists($table, 'groups_id')) {
-                $criteria["WHERE"] = [
-                    "$table.groups_id" => $groups_id
-                ];
-            } elseif (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()])) {
-                $itemtype  = getItemTypeForTable($table);
-                $main_item = getItemForItemtype($itemtype);
-                $grouplink = $main_item->grouplinkclass;
-                $gl_table  = $grouplink::getTable();
-                $fk        = $main_item->getForeignKeyField();
-
-                $criteria["JOIN"] = [
-                    "$gl_table as gl" => [
-                        'ON' => [
-                            'gl'   => $fk,
-                            $table => 'id',
-                        ]
-                    ]
-                ];
-                $criteria["WHERE"] = [
-                    "gl.type"      => \CommonITILActor::REQUESTER,
-                    "gl.groups_id" => $groups_id
-                ];
-            }
-        }
-
-        return $criteria;
+        return 'groups_id';
     }
 
-    public static function getSearchCriteria(string $table, $value): array
+    protected static function getITILSearchOptionID(): int
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        $criteria = [];
-
-        $groups_id = null;
-        if ((int) $value > 0) {
-            $groups_id =  (int) $value;
-        } else if ($value == 'mygroups') {
-            $groups_id =  'mygroups';
-        }
-
-        if ($groups_id != null) {
-            if ($DB->fieldExists($table, 'groups_id')) {
-                $criteria[] = [
-                    'link'       => 'AND',
-                    'field'      => self::getSearchOptionID($table, 'groups_id', 'glpi_groups'),
-                    'searchtype' => 'equals',
-                    'value'      => $groups_id
-                ];
-            } else if (in_array($table, [Ticket::getTable(), Change::getTable(),Problem::getTable()])) {
-                $criteria[] = [
-                    'link'       => 'AND',
-                    'field'      => 71, // requester group
-                    'searchtype' => 'equals',
-                    'value'      => $groups_id
-                ];
-            }
-        }
-
-        return $criteria;
-    }
-
-    public static function getHtml($value): string
-    {
-        return self::displayList(
-            self::getName(),
-            is_string($value) ? $value : "",
-            'group_requester',
-            Group::class,
-            [
-                'toadd' => ['mygroups' => __("My groups")],
-            ]
-        );
+        return 71;
     }
 }

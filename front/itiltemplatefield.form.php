@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Event;
 use Glpi\Exception\Http\BadRequestHttpException;
 
@@ -52,6 +54,10 @@ if (!isset($fieldtype)) {
 }
 
 $item_class = $itiltype . 'Template' . $fieldtype . 'Field';
+if (!is_a($item_class, ITILTemplateField::class, true)) {
+    throw new BadRequestHttpException();
+}
+
 $item = new $item_class();
 
 if ($fieldtype == 'Predefined') {
@@ -88,7 +94,7 @@ if (isset($_POST["add"]) || isset($_POST['massiveaction'])) {
             4,
             "maintain",
             sprintf(
-            //TRANS: %1$s is the user login, %2$s the field type
+                //TRANS: %1$s is the user login, %2$s the field type
                 __('%1$s adds %2$s field'),
                 $_SESSION["glpiname"],
                 $fieldtype_name

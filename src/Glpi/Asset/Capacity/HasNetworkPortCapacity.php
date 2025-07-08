@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,7 +35,9 @@
 namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
+use Glpi\Asset\CapacityConfig;
 use NetworkPort;
+use Override;
 use Session;
 
 class HasNetworkPortCapacity extends AbstractCapacity
@@ -58,6 +59,12 @@ class HasNetworkPortCapacity extends AbstractCapacity
         ];
     }
 
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Has network ports (like ethernet and wlan)");
+    }
+
     public function isUsed(string $classname): bool
     {
         return parent::isUsed($classname)
@@ -67,13 +74,13 @@ class HasNetworkPortCapacity extends AbstractCapacity
     public function getCapacityUsageDescription(string $classname): string
     {
         return sprintf(
-            __('%1$s networkports attached to %2$s assets'),
+            __('%1$s network ports attached to %2$s assets'),
             $this->countPeerItemsUsage($classname, NetworkPort::class),
             $this->countAssetsLinkedToPeerItem($classname, NetworkPort::class)
         );
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         $this->registerToTypeConfig('networkport_types', $classname);
 
@@ -84,7 +91,7 @@ class HasNetworkPortCapacity extends AbstractCapacity
         );
     }
 
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
         // Unregister from document types
         $this->unregisterFromTypeConfig('networkport_types', $classname);
@@ -93,7 +100,7 @@ class HasNetworkPortCapacity extends AbstractCapacity
         $networkport = new NetworkPort();
         $networkport->deleteByCriteria(
             [
-                'itemtype' => $classname
+                'itemtype' => $classname,
             ],
             force: true,
             history: false

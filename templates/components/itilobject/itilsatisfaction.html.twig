@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -31,6 +30,7 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import "components/alerts_macros.html.twig" as alerts %}
 {% import "components/form/fields_macros.html.twig" as fields %}
 
 {% block more_fields %}
@@ -40,8 +40,7 @@
             '<a href="' ~ url|escape ~ '">' ~ url|escape ~ '</a>',
             __('External survey'),
             {
-                'input_class' : 'col-xxl-9',
-                'label_class' : 'col-xxl-3'
+                full_width: true
             }
         ) }}
 
@@ -51,22 +50,14 @@
         {% else %}
             {% set message = __('After 12 hours, you can no longer modify your response.') %}
         {% endif %}
-        <div class="alert alert-info d-flex align-items-center" role="alert">
-            <div class="text-dark">
-                <span class="ms-2">
-                    <i class="fas fa-xl fa-info-circle"></i>
-                    {{ message }}
-                </span>
-            </div>
-        </div>
+        {{ alerts.alert_info(message) }}
         {% if item.fields['date_answered'] is empty and expired %}
             {{ fields.htmlField(
                 '',
                 '',
                 __('No response given'),
                 {
-                    'input_class' : 'col-xxl-9',
-                    'label_class' : 'col-xxl-3'
+                    full_width: true
                 }
             ) }}
         {% else %}
@@ -94,8 +85,7 @@
                 __('Satisfaction with the resolution of the %s')|format(parent_item.getTypeName(1)),
                 {
                     'full_width': true,
-                    'label_class': 'col-xxl-4',
-                    'input_class': 'col-xxl-8 text-start',
+                    'input_class': 'col-xxl-7 text-start',
                 }
             ) }}
 

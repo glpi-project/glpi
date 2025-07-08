@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -39,7 +38,7 @@ use DbTestCase;
 
 class AgentTest extends DbTestCase
 {
-    const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
+    public const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
 
     public function testDefineTabs()
     {
@@ -67,7 +66,7 @@ class AgentTest extends DbTestCase
                 "netinventory",
                 "remoteinventory",
                 "wakeonlan",
-            ]
+            ],
         ];
 
         $agent = new \Agent();
@@ -108,7 +107,7 @@ class AgentTest extends DbTestCase
             $DB->delete(
                 \AgentType::getTable(),
                 [
-                    'name' => 'Core'
+                    'name' => 'Core',
                 ]
             )
         );
@@ -130,7 +129,7 @@ class AgentTest extends DbTestCase
                 "wakeonlan",
                 "collect",
                 "esx",
-            ]
+            ],
         ];
 
         $agent = new \Agent();
@@ -212,7 +211,7 @@ class AgentTest extends DbTestCase
                 '[fe80::b283:4fa3:d3f2:96b1]',
                 '192.168.1.118',
                 '[fe80::92a4:26c6:99dd:2d60]',
-                '192.168.122.1'
+                '192.168.122.1',
             ],
             $agent->guessAddresses()
         );
@@ -230,7 +229,7 @@ class AgentTest extends DbTestCase
                 'https://[fe80::b283:4fa3:d3f2:96b1]:62354',
                 'https://192.168.1.118:62354',
                 'https://[fe80::92a4:26c6:99dd:2d60]:62354',
-                'https://192.168.122.1:62354'
+                'https://192.168.122.1:62354',
             ],
             $agent->getAgentURLs()
         );
@@ -238,7 +237,7 @@ class AgentTest extends DbTestCase
         //link a domain to item and see if adresses are still ok
         $domain = new \Domain();
         $did = $domain->add([
-            'name'   => 'glpi-project.org'
+            'name'   => 'glpi-project.org',
         ]);
         $this->assertGreaterThan(0, $did);
 
@@ -248,7 +247,7 @@ class AgentTest extends DbTestCase
             $ditem->add([
                 'itemtype'     => $item->getType(),
                 'items_id'     => $item->getID(),
-                'domains_id'   => $did
+                'domains_id'   => $did,
             ])
         );
 
@@ -260,7 +259,7 @@ class AgentTest extends DbTestCase
                 '192.168.1.118',
                 '[fe80::92a4:26c6:99dd:2d60]',
                 '192.168.122.1',
-                'glpixps.glpi-project.org'
+                'glpixps.glpi-project.org',
             ],
             $agent->guessAddresses()
         );
@@ -473,9 +472,9 @@ class AgentTest extends DbTestCase
                 'stale_agents_delay' => 1,
                 'stale_agents_action' => exportArrayToDB([
                     \Glpi\Inventory\Conf::STALE_AGENT_ACTION_STATUS,
-                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_TRASHBIN
+                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_TRASHBIN,
                 ]),
-                'stale_agents_status' => $states_id
+                'stale_agents_status' => $states_id,
             ]
         );
 
@@ -506,12 +505,12 @@ class AgentTest extends DbTestCase
                 'stale_agents_delay' => 1,
                 'stale_agents_action' => exportArrayToDB([
                     \Glpi\Inventory\Conf::STALE_AGENT_ACTION_STATUS,
-                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_TRASHBIN
+                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_TRASHBIN,
                 ]),
                 'stale_agents_status_condition' => json_encode([
-                    $states_id
+                    $states_id,
                 ]),
-                'stale_agents_status' => $states_id2
+                'stale_agents_status' => $states_id2,
             ]
         );
 
@@ -535,10 +534,10 @@ class AgentTest extends DbTestCase
                 'stale_agents_delay' => 1,
                 'stale_agents_action' => exportArrayToDB([
                     \Glpi\Inventory\Conf::STALE_AGENT_ACTION_STATUS,
-                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_TRASHBIN
+                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_TRASHBIN,
                 ]),
                 'stale_agents_status_condition' => json_encode(['all']), //all status
-                'stale_agents_status' => $states_id3
+                'stale_agents_status' => $states_id3,
             ]
         );
 
@@ -562,13 +561,13 @@ class AgentTest extends DbTestCase
                 'stale_agents_delay' => 1,
                 'stale_agents_action' => exportArrayToDB([
                     \Glpi\Inventory\Conf::STALE_AGENT_ACTION_STATUS,
-                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_TRASHBIN
+                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_TRASHBIN,
                 ]),
                 'stale_agents_status_condition' => json_encode([
                     $states_id,
                     $states_id2,
                 ]),
-                'stale_agents_status' => $states_id4
+                'stale_agents_status' => $states_id4,
             ]
         );
 
@@ -588,12 +587,12 @@ class AgentTest extends DbTestCase
                 'stale_agents_delay' => 1,
                 'stale_agents_action' => exportArrayToDB([
                     \Glpi\Inventory\Conf::STALE_AGENT_ACTION_STATUS,
-                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_TRASHBIN
+                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_TRASHBIN,
                 ]),
                 'stale_agents_status_condition' => json_encode([
-                    "aaaaaaa"
+                    "aaaaaaa",
                 ]),
-                'stale_agents_status' => $states_id4
+                'stale_agents_status' => $states_id4,
             ]
         );
 

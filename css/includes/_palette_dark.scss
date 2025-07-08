@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,6 +37,7 @@
     --tblr-info: #5885c0;
     --tblr-body-bg: #000;
     --tblr-body-color: #e6e6e6;
+    --tblr-body-color-rgb: 230, 230, 230;
     --tblr-bg-surface: color-mix(in srgb, var(--tblr-body-bg), black 2%);
     --tblr-border-color: color-mix(in srgb, var(--tblr-body-bg), white 33.33%);
     --tblr-gray-100: var(--tblr-dark);
@@ -49,7 +50,6 @@
     --tblr-gray-800: color-mix(in srgb, var(--tblr-dark), var(--tblr-light) 84%);
     --tblr-gray-900: var(--tblr-light);
     --tblr-gray-50: var(--tblr-gray-300);
-    --tblr-bg-surface-dark: color-mix(in srgb, var(--tblr-bg-surface), var(--tblr-light) 98.5%);
     --glpi-tabs-active-bg: color-mix(in srgb, var(--tblr-bg-surface), white 10%);
     --glpi-tabs-border-color: transparent;
     --glpi-scrollbar-thumb-color: color-mix(in srgb, var(--tblr-secondary), transparent 75%);
@@ -65,12 +65,14 @@
     --glpi-timeline-solution-bg: #3a4d55;
     --glpi-timeline-solution-fg: #89bfd3;
     --glpi-timeline-solution-border-color: #435963;
-    --glpi-timeline-badge-bg: rgba(104, 104, 104, 15%);
-    --glpi-timeline-badge-fg: rgba(236, 236, 236, 80%);
+    --glpi-timeline-document-bg: #2b4137;
+    --glpi-timeline-document-fg: #68b997;
+    --glpi-timeline-badge-bg: rgb(104, 104, 104, 15%);
+    --glpi-timeline-badge-fg: rgb(236, 236, 236, 80%);
     --glpi-badge-bg: color-mix(in srgb, var(--tblr-link-color), var(--tblr-dark) 85%);
 
     .navbar-nav.user-menu .bg-red-lt {
-        background-color: rgba(214, 57, 57, 20%) !important
+        background-color: rgb(214, 57, 57, 20%) !important
     }
 
     // missing border (TODO open a pr upstream ?)
@@ -103,10 +105,6 @@
 
         color: var(--tblr-light);
         border-color: #6d000a;
-    }
-
-    .accordion-item .accordion-button {
-        background-color: var(--tblr-dark) !important;
     }
 
     .search_page .search-container .search-card .search-results.deleted-results td {
@@ -160,5 +158,9 @@
 
     .avatar {
         color: var(--tblr-dark);
+    }
+
+    .list-group {
+        --tblr-list-group-action-active-bg: rgb(var(--tblr-secondary-rgb), 0.5);
     }
 }

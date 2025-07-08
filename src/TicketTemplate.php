@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,6 +42,12 @@ class TicketTemplate extends ITILTemplate
 {
     use Glpi\Features\Clonable;
 
+    #[Override]
+    public static function getPredefinedFields(): ITILTemplatePredefinedField
+    {
+        return new TicketTemplatePredefinedField();
+    }
+
     public static function getTypeName($nb = 0)
     {
         return _n('Ticket template', 'Ticket templates', $nb);
@@ -60,6 +66,17 @@ class TicketTemplate extends ITILTemplate
             TicketTemplatePredefinedField::class,
             TicketTemplateReadonlyField::class,
         ];
+    }
+
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb(
+            [
+                TicketTemplateHiddenField::class,
+                TicketTemplateMandatoryField::class,
+                TicketTemplatePredefinedField::class,
+            ]
+        );
     }
 
     public static function getExtraAllowedFields($withtypeandcategory = false, $withitemtype = false)

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryUnion;
 
@@ -69,7 +70,7 @@ class Item_SoftwareLicense extends CommonDBRelation
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -78,7 +79,7 @@ class Item_SoftwareLicense extends CommonDBRelation
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -87,7 +88,7 @@ class Item_SoftwareLicense extends CommonDBRelation
             'field'              => 'name',
             'name'               => _n('License', 'Licenses', 1),
             'datatype'           => 'dropdown',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -99,7 +100,7 @@ class Item_SoftwareLicense extends CommonDBRelation
             'comments'           => true,
             'nosort'             => true,
             'massiveaction'      => false,
-            'additionalfields'   => ['itemtype']
+            'additionalfields'   => ['itemtype'],
         ];
 
         $tab[] = [
@@ -107,10 +108,33 @@ class Item_SoftwareLicense extends CommonDBRelation
             'table'              => static::getTable(),
             'field'              => 'itemtype',
             'name'               => _x('software', 'Request source'),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
+    }
+
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+
+        switch ($options['searchopt']['id']) {
+            case '164':
+                $softlicense = new SoftwareLicense();
+                $softlicense->getFromDB($options['raw_data']['id']);
+                $assign_item = self::countForLicense($options['raw_data']['id']);
+                return TemplateRenderer::getInstance()->render(
+                    'pages/management/license_progressbar.html.twig',
+                    [
+                        'total' => $softlicense->fields['number'],
+                        'licences_assigned' => $assign_item,
+                    ]
+                );
+        }
+
+        return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
@@ -122,12 +146,12 @@ class Item_SoftwareLicense extends CommonDBRelation
                     if (isset($input['options']['move'])) {
                         SoftwareLicense::dropdown([
                             'condition' => [
-                                'glpi_softwarelicenses.softwares_id' => $input['options']['move']['softwares_id']
+                                'glpi_softwarelicenses.softwares_id' => $input['options']['move']['softwares_id'],
                             ],
-                            'used'      => $input['options']['move']['used']
+                            'used'      => $input['options']['move']['used'],
                         ]);
-                         echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
-                         return true;
+                        echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
+                        return true;
                     }
                 }
                 return false;
@@ -143,17 +167,50 @@ class Item_SoftwareLicense extends CommonDBRelation
             case 'add_item':
                 /** @var array $CFG_GLPI */
                 global $CFG_GLPI;
+
+                $additionaltypes = [User::class];
+                $can_add_user = true;
+
+                if (isset($input['items']) && isset($input['items']['SoftwareLicense'])) {
+                    $license_ids = array_values($input['items']['SoftwareLicense']);
+
+                    foreach ($license_ids as $license_id) {
+                        $license = new SoftwareLicense();
+                        if ($license->getFromDB($license_id)) {
+                            $number = Item_SoftwareLicense::countForLicense($license_id);
+                            $number += SoftwareLicense_User::countForLicense($license_id);
+
+                            if (
+                                $license->getField('number') != -1
+                                && $number >= $license->getField('number')
+                                && !$license->getField('allow_overquota')
+                            ) {
+                                $can_add_user = false;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (!$can_add_user) {
+                    $additionaltypes = [];
+                }
+
                 echo "<table class='tab_cadre_fixe'>";
                 echo "<tr class='tab_bg_2 center'>";
                 echo "<td>";
-                $rand = Dropdown::showItemTypes('itemtype', $CFG_GLPI['software_types'], [
-                    'width'                 => 'unset'
-                ]);
+                $rand = Dropdown::showItemTypes(
+                    'itemtype',
+                    array_merge($CFG_GLPI['software_types'], $additionaltypes),
+                    [
+                        'width'                 => 'unset',
+                    ]
+                );
 
                 $p = ['idtable'            => '__VALUE__',
                     'rand'                  => $rand,
                     'name'                  => "items_id",
-                    'width'                 => 'unset'
+                    'width'                 => 'unset',
                 ];
 
                 Ajax::updateItemOnSelectEvent(
@@ -184,14 +241,14 @@ class Item_SoftwareLicense extends CommonDBRelation
                 if (isset($input['softwarelicenses_id'])) {
                     foreach ($ids as $id) {
                         if ($item->can($id, UPDATE)) {
-                         //Process rules
+                            //Process rules
                             if (
                                 $item->update(['id'  => $id,
                                     'softwarelicenses_id'
-                                           => $input['softwarelicenses_id']
+                                           => $input['softwarelicenses_id'],
                                 ])
                             ) {
-                                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                             } else {
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
@@ -224,11 +281,11 @@ class Item_SoftwareLicense extends CommonDBRelation
                                 $params = [
                                     'items_id'  => $csl->fields['items_id'],
                                     'itemtype'  => $csl->fields['itemtype'],
-                                    'softwareversions_id' => $version
+                                    'softwareversions_id' => $version,
                                 ];
-                               //Get software name and manufacturer
+                                //Get software name and manufacturer
                                 if ($csv->can(-1, CREATE, $params)) {
-                              //Process rules
+                                    //Process rules
                                     if ($csv->add($params)) {
                                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                                     } else {
@@ -251,15 +308,43 @@ class Item_SoftwareLicense extends CommonDBRelation
             case 'add_item':
                 $item_licence = new Item_SoftwareLicense();
                 $input = $ma->getInput();
+
                 foreach ($ids as $id) {
-                    $input = [
-                        'softwarelicenses_id'   => $id,
-                        'items_id'        => $input['items_id'],
-                        'itemtype'        => $input['itemtype']
-                    ];
-                    if ($item_licence->can(-1, UPDATE, $input)) {
-                        if ($item_licence->add($input)) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    $license = new SoftwareLicense();
+                    if ($license->getFromDB($id)) {
+                        $number = Item_SoftwareLicense::countForLicense($license->getID());
+                        $number += SoftwareLicense_User::countForLicense($license->getID());
+
+                        if ($input['itemtype'] == User::class) {
+                            $item_licence = new SoftwareLicense_User();
+                            if (
+                                $license->getField('number') != -1 &&
+                                $number >= $license->getField('number') &&
+                                !$license->getField('allow_overquota')
+                            ) {
+                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->addMessage(sprintf(__('Maximum number of items reached for license "%s".'), $license->getName()));
+                                continue;
+                            }
+
+                            $input_data = [
+                                'softwarelicenses_id'   => $id,
+                                'users_id'             => $input['items_id'],
+                            ];
+                        } else {
+                            $input_data = [
+                                'softwarelicenses_id'   => $id,
+                                'items_id'        => $input['items_id'],
+                                'itemtype'        => $input['itemtype'],
+                            ];
+                        }
+
+                        if ($item_licence->can(-1, UPDATE, $input_data)) {
+                            if ($item_licence->add($input_data)) {
+                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            } else {
+                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            }
                         } else {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                         }
@@ -292,8 +377,8 @@ class Item_SoftwareLicense extends CommonDBRelation
             'DISTINCT'  => true,
             'FROM'      => static::getTable(),
             'WHERE'     => [
-                'softwarelicenses_id'   => $softwarelicenses_id
-            ]
+                'softwarelicenses_id'   => $softwarelicenses_id,
+            ],
         ]);
 
         $target_types = [];
@@ -307,6 +392,9 @@ class Item_SoftwareLicense extends CommonDBRelation
 
         $count = 0;
         foreach ($target_types as $taget_itemtype) {
+            if (!is_a($taget_itemtype, CommonDBTM::class, true)) {
+                continue;
+            }
             $itemtable = $taget_itemtype::getTable();
             $request = [
                 'FROM'         => 'glpi_items_softwarelicenses',
@@ -317,16 +405,16 @@ class Item_SoftwareLicense extends CommonDBRelation
                             $itemtable                    => 'id',
                             'glpi_items_softwarelicenses' => 'items_id', [
                                 'AND' => [
-                                    'glpi_items_softwarelicenses.itemtype' => $taget_itemtype
-                                ]
-                            ]
-                        ]
-                    ]
+                                    'glpi_items_softwarelicenses.itemtype' => $taget_itemtype,
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
                 'WHERE'        => [
                     'glpi_items_softwarelicenses.softwarelicenses_id'     => $softwarelicenses_id,
-                    'glpi_items_softwarelicenses.is_deleted'              => 0
-                ]
+                    'glpi_items_softwarelicenses.is_deleted'              => 0,
+                ],
             ];
             if ($entity !== -1) {
                 $request['WHERE'] += getEntitiesRestrictCriteria($itemtable, '', $entity);
@@ -366,18 +454,20 @@ class Item_SoftwareLicense extends CommonDBRelation
                 $license_table => [
                     'FKEY'   => [
                         $license_table       => 'id',
-                        $item_license_table  => 'softwarelicenses_id'
-                    ]
-                ]
+                        $item_license_table  => 'softwarelicenses_id',
+                    ],
+                ],
             ],
             'WHERE'     => [
-                'softwares_id'   => $softwares_id
-            ]
+                'softwares_id'   => $softwares_id,
+            ],
         ]);
 
         $target_types = [];
         foreach ($iterator as $data) {
-            $target_types[] = $data['itemtype'];
+            if (is_a($data['itemtype'], CommonDBTM::class, true)) {
+                $target_types[] = $data['itemtype'];
+            }
         }
 
         $count = 0;
@@ -390,24 +480,24 @@ class Item_SoftwareLicense extends CommonDBRelation
                     'glpi_items_softwarelicenses' => [
                         'FKEY'   => [
                             'glpi_softwarelicenses'          => 'id',
-                            'glpi_items_softwarelicenses'    => 'softwarelicenses_id'
-                        ]
+                            'glpi_items_softwarelicenses'    => 'softwarelicenses_id',
+                        ],
                     ],
                     $itemtable  => [
                         'FKEY'   => [
                             $itemtable                    => 'id',
                             'glpi_items_softwarelicenses' => 'items_id', [
                                 'AND' => [
-                                    'glpi_items_softwarelicenses.itemtype' => $itemtype
-                                ]
-                            ]
-                        ]
-                    ]
+                                    'glpi_items_softwarelicenses.itemtype' => $itemtype,
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
                 'WHERE'        => [
                     'glpi_softwarelicenses.softwares_id'      => $softwares_id,
-                    'glpi_items_softwarelicenses.is_deleted'  => 0
-                ] + getEntitiesRestrictCriteria($itemtable)
+                    'glpi_items_softwarelicenses.is_deleted'  => 0,
+                ] + getEntitiesRestrictCriteria($itemtable),
             ];
             $item = new $itemtype();
             if ($item->maybeDeleted()) {
@@ -453,7 +543,7 @@ class Item_SoftwareLicense extends CommonDBRelation
             'SELECT' => ['id', 'completename'],
             'FROM'   => 'glpi_entities',
             'WHERE'  => getEntitiesRestrictCriteria('glpi_entities'),
-            'ORDER'  => ['completename']
+            'ORDER'  => ['completename'],
         ]);
 
         $tab = "&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -466,22 +556,22 @@ class Item_SoftwareLicense extends CommonDBRelation
                     $license_table => [
                         'FKEY'   => [
                             $license_table       => 'id',
-                            $item_license_table  => 'softwarelicenses_id'
-                        ]
-                    ]
+                            $item_license_table  => 'softwarelicenses_id',
+                        ],
+                    ],
                 ],
                 'WHERE'     => [
-                    $item_license_table . '.softwarelicenses_id'   => $softwarelicense_id
-                ] + getEntitiesRestrictCriteria($license_table, '', $data['id'])
+                    $item_license_table . '.softwarelicenses_id'   => $softwarelicense_id,
+                ] + getEntitiesRestrictCriteria($license_table, '', $data['id']),
             ]);
 
             $target_types = [];
             foreach ($itemtype_iterator as $type) {
-                 $target_types[] = $type['itemtype'];
+                $target_types[] = $type['itemtype'];
             }
 
             if (count($target_types)) {
-                echo "<tr class='tab_bg_2'><td colspan='2'>{$data["completename"]}</td></tr>";
+                echo "<tr class='tab_bg_2'><td colspan='2'>{$data['completename']}</td></tr>";
                 foreach ($target_types as $itemtype) {
                     $nb = self::countForLicense($softwarelicense_id, $data['id'], $itemtype);
                     $typename = htmlescape($itemtype::getTypeName());
@@ -496,7 +586,7 @@ class Item_SoftwareLicense extends CommonDBRelation
             echo "<tr class='tab_bg_1'><td class='center b'>" . __s('Total') . "</td>";
             echo "<td class='numeric b '>" . $tot . "</td></tr>\n";
         } else {
-            echo "<tr class='tab_bg_1'><td colspan='2 b'>" . __s('No item found') . "</td></tr>\n";
+            echo "<tr class='tab_bg_1'><td colspan='2 b'>" . __s('No results found') . "</td></tr>\n";
         }
         echo "</table></div>";
     }
@@ -517,7 +607,7 @@ class Item_SoftwareLicense extends CommonDBRelation
          */
         global $CFG_GLPI, $DB;
 
-        $searchID = $license->getField('id');
+        $searchID = $license->getID();
 
         if (!Software::canView() || !$searchID) {
             return false;
@@ -531,20 +621,21 @@ class Item_SoftwareLicense extends CommonDBRelation
         $order = ($_GET['order'] ?? 'ASC') === 'DESC' ? 'DESC' : 'ASC';
 
         if (!empty($_GET["sort"])) {
-           // manage several param like location,compname : order first
+            // manage several param like location,compname : order first
             $tmp  = explode(",", $_GET["sort"]);
             $sort = "`" . implode("` $order,`", $tmp) . "`";
         } else {
             $sort = "`entity` $order, `itemname`";
         }
 
-       //SoftwareLicense ID
+        //SoftwareLicense ID
         $number = self::countForLicense($searchID);
+        $number += SoftwareLicense_User::countForLicense($searchID);
 
         echo "<div class='center'>";
 
-       //If the number of linked assets have reached the number defined in the license,
-       //and over-quota is not allowed, do not allow to add more assets
+        //If the number of linked assets have reached the number defined in the license,
+        //and over-quota is not allowed, do not allow to add more assets
         if (
             $canedit
             && ($license->getField('number') == -1 || $number < $license->getField('number')
@@ -558,17 +649,27 @@ class Item_SoftwareLicense extends CommonDBRelation
             echo "<td>";
 
             $rand = mt_rand();
-            Dropdown::showItemTypes('itemtype', $CFG_GLPI['software_types'], [
-                'value'                 => 'Computer',
-                'rand'                  => $rand,
-                'width'                 => 'unset',
-                'display_emptychoice'   => false
-            ]);
+
+            $entity_restrict = $license->fields['is_recursive']
+                    ? getSonsOf('glpi_entities', $license->fields['entities_id'])
+                    : $license->fields['entities_id'];
+
+            Dropdown::showItemTypes(
+                'itemtype',
+                array_merge($CFG_GLPI['software_types'], [User::class]),
+                [
+                    'value'                 => 'Computer',
+                    'rand'                  => $rand,
+                    'width'                 => 'unset',
+                    'display_emptychoice'   => false,
+                ]
+            );
 
             $p = ['idtable'            => '__VALUE__',
                 'rand'                  => $rand,
                 'name'                  => "items_id",
-                'width'                 => 'unset'
+                'width'                 => 'unset',
+                'entity_restrict'    => $entity_restrict,
             ];
 
             Ajax::updateItemOnSelectEvent(
@@ -578,7 +679,7 @@ class Item_SoftwareLicense extends CommonDBRelation
                 $p
             );
 
-           // We have a preselected value, so we want to trigger the item list to show immediately
+            // We have a preselected value, so we want to trigger the item list to show immediately
             $js = <<<JAVASCRIPT
 $(document).ready(function() {
    $("#dropdown_itemtype$rand").trigger({
@@ -616,12 +717,12 @@ JAVASCRIPT;
 
         if ($number < 1) {
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>" . __s('No item found') . "</th></tr>";
+            echo "<tr><th>" . __s('No results found') . "</th></tr>";
             echo "</table></div>\n";
             return;
         }
 
-       // Display the pager
+        // Display the pager
         Html::printAjaxPager(__('Affected items'), $start, $number);
 
         $queries = [];
@@ -643,26 +744,25 @@ JAVASCRIPT;
                     'glpi_softwarelicenses' => [
                         'FKEY'   => [
                             $item_license_table     => 'softwarelicenses_id',
-                            'glpi_softwarelicenses' => 'id'
-                        ]
-                    ]
+                            'glpi_softwarelicenses' => 'id',
+                        ],
+                    ],
                 ],
                 'LEFT JOIN' => [
                     $itemtable => [
                         'FKEY'   => [
                             $item_license_table     => 'items_id',
-                            $itemtable        => 'id', [
-                                'AND' => [
-                                    $item_license_table . '.itemtype'  => $itemtype
-                                ]
-                            ]
-                        ]
-                    ]
+                            $itemtable              => 'id',
+                        ],
+                        'AND' => [
+                            $item_license_table . '.itemtype'  => $itemtype,
+                        ],
+                    ],
                 ],
                 'WHERE'     => [
                     'glpi_softwarelicenses.id'                   => $searchID,
-                    'glpi_items_softwarelicenses.is_deleted'     => 0
-                ]
+                    'glpi_items_softwarelicenses.is_deleted'     => 0,
+                ],
             ];
             if ($DB->fieldExists($itemtable, 'serial')) {
                 $query['SELECT'][] = $itemtable . '.serial';
@@ -682,8 +782,8 @@ JAVASCRIPT;
                 $query['LEFT JOIN']['glpi_users'] = [
                     'FKEY'   => [
                         $itemtable     => 'users_id',
-                        'glpi_users'   => 'id'
-                    ]
+                        'glpi_users'   => 'id',
+                    ],
                 ];
             } else {
                 $query['SELECT'][] = new QueryExpression($DB::quoteValue(''), $itemtable . ".username");
@@ -698,8 +798,8 @@ JAVASCRIPT;
                 $query['LEFT JOIN'][$entity_table] = [
                     'FKEY'   => [
                         $itemtable    => $entity_fkey,
-                        $entity_table => 'id'
-                    ]
+                        $entity_table => 'id',
+                    ],
                 ];
                 $query['WHERE'] += getEntitiesRestrictCriteria($itemtable, '', '', true);
             } else {
@@ -712,8 +812,8 @@ JAVASCRIPT;
                 $query['LEFT JOIN'][$location_table] = [
                     'FKEY'   => [
                         $itemtable      => $location_fkey,
-                        $location_table => 'id'
-                    ]
+                        $location_table => 'id',
+                    ],
                 ];
             } else {
                 $query['SELECT'][] = new QueryExpression($DB::quoteValue(''), 'location');
@@ -725,8 +825,8 @@ JAVASCRIPT;
                 $query['LEFT JOIN'][$state_table] = [
                     'FKEY'   => [
                         $itemtable   => $state_fkey,
-                        $state_table => 'id'
-                    ]
+                        $state_table => 'id',
+                    ],
                 ];
             } else {
                 $query['SELECT'][] = new QueryExpression($DB::quoteValue(''), 'state');
@@ -738,8 +838,8 @@ JAVASCRIPT;
                 $query['LEFT JOIN'][$group_table] = [
                     'FKEY'   => [
                         $itemtable    => $group_fkey,
-                        $group_table  => 'id'
-                    ]
+                        $group_table  => 'id',
+                    ],
                 ];
             } else {
                 $query['SELECT'][] = new QueryExpression($DB::quoteValue(''), 'groupe');
@@ -752,15 +852,87 @@ JAVASCRIPT;
             }
             $queries[] = $query;
         }
+
+        // Add SoftwareLicense_User
+        $license_users_table = SoftwareLicense_User::getTable();
+        $users_table = User::getTable();
+        $entity_table = Entity::getTable();
+        $location_table = Location::getTable();
+
+        $user_query = [
+            'SELECT' => [
+                "$license_users_table.id",
+                "$license_users_table.users_id AS items_id",
+                new QueryExpression($DB::quoteValue(User::class), 'itemtype'),
+                "$license_users_table.softwarelicenses_id",
+                new QueryExpression($DB::quoteValue(0), 'id_deleted'),
+                new QueryExpression($DB::quoteValue(0), 'is_dynamic'),
+                'glpi_softwarelicenses.name AS license',
+                'glpi_softwarelicenses.id AS vID',
+                'glpi_softwarelicenses.softwares_id AS softid',
+                User::getFriendlyNameFields('itemname'),
+                "$users_table.id AS iID",
+                new QueryExpression($DB::quoteValue(User::class), 'item_type'),
+                new QueryExpression($DB::quoteValue(''), "serial"),
+                new QueryExpression($DB::quoteValue(''), "otherserial"),
+                new QueryExpression($DB::quoteValue(''), "username"),
+                new QueryExpression($DB::quoteValue(-1), "userid"),
+                new QueryExpression($DB::quoteValue(''), "userrealname"),
+                new QueryExpression($DB::quoteValue(''), "userfirstname"),
+                new QueryExpression($DB::quoteValue(''), "entity"),
+                Location::getFriendlyNameFields('location'),
+                new QueryExpression($DB::quoteValue(''), "state"),
+                new QueryExpression($DB::quoteValue(''), "group"),
+            ],
+            'FROM' => $users_table,
+            'LEFT JOIN' => [
+                $license_users_table => [
+                    'FKEY' => [
+                        $users_table         => 'id',
+                        $license_users_table => 'users_id',
+                    ],
+                ],
+                $entity_table => [
+                    'FKEY' => [
+                        $users_table  => 'entities_id',
+                        $entity_table => 'id',
+                    ],
+                ],
+                $location_table => [
+                    'FKEY' => [
+                        $users_table      => Location::getForeignKeyField(),
+                        $location_table   => 'id',
+                    ],
+                ],
+            ],
+            'INNER JOIN' => [
+                'glpi_softwarelicenses' => [
+                    'FKEY' => [
+                        $license_users_table     => 'softwarelicenses_id',
+                        'glpi_softwarelicenses' => 'id',
+                    ],
+                ],
+            ],
+            'WHERE' => [
+                'glpi_softwarelicenses.id' => $searchID,
+                'glpi_users.is_deleted'    => 0,
+            ],
+            'ORDER' => "$users_table.name",
+        ];
+
+        $queries[] = $user_query;
+
         $union = new QueryUnion($queries, true);
         $criteria = [
             'SELECT' => [],
             'FROM'   => $union,
-            'ORDER'        => "$sort $order",
-            'LIMIT'        => $_SESSION['glpilist_limit'],
-            'START'        => $start
+            'ORDER'  => "$sort $order",
+            'LIMIT'  => $_SESSION['glpilist_limit'],
+            'START'  => $start,
         ];
         $iterator = $DB->request($criteria);
+
+        $canshowitems[User::class] = User::canView();
 
         $rand = mt_rand();
 
@@ -769,15 +941,15 @@ JAVASCRIPT;
                 Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
                 $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], count($iterator)),
                     'container'        => 'mass' . __CLASS__ . $rand,
-                    'specific_actions' => ['purge' => _x('button', 'Delete permanently')]
+                    'specific_actions' => ['purge' => _x('button', 'Delete permanently')],
                 ];
 
-               // show transfer only if multi licenses for this software
+                // show transfer only if multi licenses for this software
                 if (self::countLicenses($data['softid']) > 1) {
                     $massiveactionparams['specific_actions'][__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_license'] = _x('button', 'Move');
                 }
 
-               // Options to update license
+                // Options to update license
                 $massiveactionparams['extraparams']['options']['move']['used'] = [$searchID];
                 $massiveactionparams['extraparams']['options']['move']['softwares_id']
                                                                   = $license->fields['softwares_id'];
@@ -785,11 +957,16 @@ JAVASCRIPT;
                 Html::showMassiveActions($massiveactionparams);
             }
 
-            $soft       = new Software();
-            $soft->getFromDB($license->fields['softwares_id']);
+            $soft = new Software();
+            if (!empty($license->fields['softwares_id'])) {
+                $soft->getFromDB($license->fields['softwares_id']);
+                $softwareName = $soft->fields["name"];
+            } else {
+                $softwareName = __('No software linked');
+            }
             $showEntity = ($license->isRecursive());
 
-            $text = sprintf(__('%1$s = %2$s'), Software::getTypeName(1), $soft->fields["name"]);
+            $text = sprintf(__('%1$s = %2$s'), Software::getTypeName(1), $softwareName);
             $text = sprintf(__('%1$s - %2$s'), $text, $data["license"]);
 
             Session::initNavigateListItems($data['item_type'], $text);
@@ -804,7 +981,7 @@ JAVASCRIPT;
                 'location,itemname' => Location::getTypeName(1),
                 'state,itemname'    => __('Status'),
                 'groupe,itemname'   => Group::getTypeName(1),
-                'username,itemname' => User::getTypeName(1)
+                'username,itemname' => User::getTypeName(1),
             ];
             if (!$showEntity) {
                 unset($columns['entity']);
@@ -823,7 +1000,7 @@ JAVASCRIPT;
 
             foreach ($columns as $key => $val) {
                 $val = htmlescape($val);
-               // Non order column
+                // Non order column
                 if ($key[0] == '_') {
                     $header_end .= "<th>$val</th>";
                 } else {
@@ -841,7 +1018,12 @@ JAVASCRIPT;
 
                 echo "<tr class='tab_bg_2'>";
                 if ($canedit) {
-                    echo "<td>" . Html::getMassiveActionCheckBox(__CLASS__, $data["id"]) . "</td>";
+                    if ($data['itemtype'] == 'User') {
+                        $class = SoftwareLicense_User::class;
+                    } else {
+                        $class = __CLASS__;
+                    }
+                    echo "<td>" . Html::getMassiveActionCheckBox($class, $data["id"]) . "</td>";
                 }
 
                 echo "<td>" . htmlescape($data['item_type']) . "</td>";
@@ -887,7 +1069,7 @@ JAVASCRIPT;
                 Html::closeForm();
             }
         } else { // Not found
-            echo __s('No item found');
+            echo __s('No results found');
         }
         Html::printAjaxPager(__s('Affected items'), $start, $number);
 
@@ -911,7 +1093,7 @@ JAVASCRIPT;
             $this->add([
                 'items_id'              => $items_id,
                 'itemtype'              => $itemtype,
-                'softwarelicenses_id'   => $softwarelicenses_id
+                'softwarelicenses_id'   => $softwarelicenses_id,
             ]);
         }
     }
@@ -936,33 +1118,33 @@ JAVASCRIPT;
         $iterator = $DB->request([
             'SELECT'       => [
                 'glpi_softwarelicenses.*',
-                'glpi_softwarelicensetypes.name AS type'
+                'glpi_softwarelicensetypes.name AS type',
             ],
             'FROM'         => 'glpi_softwarelicenses',
             'INNER JOIN'   => [
                 $item_license_table  => [
                     'FKEY'   => [
                         $item_license_table     => 'softwarelicenses_id',
-                        'glpi_softwarelicenses' => 'id'
-                    ]
-                ]
+                        'glpi_softwarelicenses' => 'id',
+                    ],
+                ],
             ],
             'LEFT JOIN'    => [
                 'glpi_softwarelicensetypes'   => [
                     'FKEY'   => [
                         'glpi_softwarelicenses'       => 'softwarelicensetypes_id',
-                        'glpi_softwarelicensetypes'   => 'id'
-                    ]
-                ]
+                        'glpi_softwarelicensetypes'   => 'id',
+                    ],
+                ],
             ],
             'WHERE'        => [
                 $item_license_table . '.itemtype'  => $itemtype,
                 $item_license_table . '.items_id'  => $items_id,
                 'OR'                                => [
                     'glpi_softwarelicenses.softwareversions_id_use' => $softwareversions_id,
-                    'glpi_softwarelicenses.softwareversions_id_buy' => $softwareversions_id
-                ]
-            ]
+                    'glpi_softwarelicenses.softwareversions_id_buy' => $softwareversions_id,
+                ],
+            ],
         ]);
 
         foreach ($iterator as $data) {
@@ -979,14 +1161,16 @@ JAVASCRIPT;
                 if (!$withtemplate) {
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForLicense($item->getID());
+                        $nb += SoftwareLicense_User::countForLicense($item->getID());
                     }
                     return [1 => self::createTabEntry(__('Summary'), 0, $item::class),
                         2 => self::createTabEntry(
-                            _n('Item', 'Items', Session::getPluralNumber()),
+                            _n('Affected item', 'Affected items', Session::getPluralNumber()),
                             $nb,
                             $item::class,
-                            'ti ti-package'
-                        )
+                            'ti ti-package',
+                            $item->fields['number'] > 0 ? $item->fields['number'] : null,
+                        ),
                     ];
                 }
                 break;
@@ -1027,8 +1211,8 @@ JAVASCRIPT;
             'FROM'   => 'glpi_softwarelicenses',
             'COUNT'  => 'cpt',
             'WHERE'  => [
-                'softwares_id' => $softwares_id
-            ] + getEntitiesRestrictCriteria('glpi_softwarelicenses')
+                'softwares_id' => $softwares_id,
+            ] + getEntitiesRestrictCriteria('glpi_softwarelicenses'),
         ])->current();
         return $result['cpt'];
     }

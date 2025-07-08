@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,15 +36,15 @@
 namespace Glpi\Controller\Form;
 
 use Glpi\Controller\AbstractController;
-use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Controller\Form\Utils\CanCheckAccessPolicies;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
-use Glpi\Form\AccessControl\FormAccessControlManager;
-use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\DelegationData;
 use Glpi\Form\EndUserInputNameProvider;
 use Glpi\Form\Form;
+use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Session;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -54,7 +54,9 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class SubmitAnswerController extends AbstractController
 {
-    #[SecurityStrategy('no_check')] // Some forms can be accessed anonymously
+    use CanCheckAccessPolicies;
+
+    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)] // Some forms can be accessed anonymously
     #[Route(
         "/Form/SubmitAnswers",
         name: "glpi_form_submit_answers",
@@ -88,41 +90,39 @@ final class SubmitAnswerController extends AbstractController
         return $form;
     }
 
-    private function checkFormAccessPolicies(Form $form, Request $request)
-    {
-        $form_access_manager = FormAccessControlManager::getInstance();
-
-        if (Session::haveRight(Form::$rightname, READ)) {
-            // Form administrators can bypass restrictions while previewing forms.
-            $parameters = new FormAccessParameters(bypass_restriction: true);
-        } else {
-            // Load current user session info and URL parameters.
-            $parameters = new FormAccessParameters(
-                session_info: Session::getCurrentSessionInfo(),
-                url_parameters: $request->query->all(),
-            );
-        }
-
-        if (!$form_access_manager->canAnswerForm($form, $parameters)) {
-            throw new AccessDeniedHttpException();
-        }
-    }
-
     private function saveSubmittedAnswers(
         Form $form,
         Request $request
     ): AnswersSet {
         $post = $request->request->all();
-        $answers = (new EndUserInputNameProvider())->getAnswers($post);
-        if (empty($answers)) {
+        $provider = new EndUserInputNameProvider();
+
+        $delegation = new DelegationData(
+            $request->request->getInt('delegation_users_id', 0) ?: null,
+            $request->request->getBoolean('delegation_use_notification', false) ?: null,
+            $request->request->getString('delegation_alternative_email', '') ?: null
+        );
+        $answers    = $provider->getAnswers($post);
+        $files      = $provider->getFiles($post, $answers);
+        if ($answers === []) {
             throw new BadRequestHttpException();
         }
 
         $handler = AnswersHandler::getInstance();
-        return $handler->saveAnswers(
+
+        // Check if answers are valid
+        if (!$handler->validateAnswers($form, $answers)->isValid()) {
+            throw new BadRequestHttpException();
+        }
+
+        $answers = $handler->saveAnswers(
             $form,
             $answers,
-            Session::getLoginUserID()
+            Session::getLoginUserID(),
+            $files,
+            $delegation
         );
+
+        return $answers;
     }
 }

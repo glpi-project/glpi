@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -45,7 +45,7 @@ class ItemtypeFormRoute extends Route
     public function __construct(string $itemtype)
     {
         parent::__construct(
-            path: '/' . $itemtype . '/Form',
+            path: $itemtype::getFormURL(false),
             name: 'glpi_itemtype_' . \strtolower($itemtype) . '_form',
         );
     }

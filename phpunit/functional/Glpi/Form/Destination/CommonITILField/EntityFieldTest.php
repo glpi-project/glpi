@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,19 +34,20 @@
 
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
-use DbTestCase;
 use Entity;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\EntityField;
 use Glpi\Form\Destination\CommonITILField\EntityFieldConfig;
 use Glpi\Form\Destination\CommonITILField\EntityFieldStrategy;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Override;
 
-final class EntityFieldTest extends DbTestCase
+include_once __DIR__ . '/../../../../../abstracts/AbstractDestinationFieldTest.php';
+
+final class EntityFieldTest extends AbstractDestinationFieldTest
 {
     use FormTesterTrait;
 
@@ -76,10 +76,34 @@ final class EntityFieldTest extends DbTestCase
                 "Entity 2"    => [
                     'itemtype' => Entity::getType(),
                     'items_id' => $entities[1]->getId(),
-                ]
+                ],
             ],
-            'entities' => $entities
+            'entities' => $entities,
         ];
+    }
+
+    public function testEntityFormFiller()
+    {
+        $form = $this->createAndGetFormWithMultipleEntityAndRequesterQuestions();
+        $answers = $this->getAnswers();
+        $this->sendFormAndAssertTicketEntity(
+            form: $form,
+            config: new EntityFieldConfig(
+                EntityFieldStrategy::FORM_FILLER
+            ),
+            answers: $answers['answers'],
+            expected_entity_id: $this->getTestRootEntity(true)
+        );
+
+        $this->setEntity($answers['entities'][0]->getName(), false);
+        $this->sendFormAndAssertTicketEntity(
+            form: $form,
+            config: new EntityFieldConfig(
+                EntityFieldStrategy::FORM_FILLER
+            ),
+            answers: $answers['answers'],
+            expected_entity_id: $answers['entities'][0]->getId()
+        );
     }
 
     public function testEntityFromForm()
@@ -211,15 +235,105 @@ final class EntityFieldTest extends DbTestCase
     {
         $form = $this->createAndGetFormWithMultipleEntityAndRequesterQuestions();
 
-        // No answers, fallback to default value db value
+        // No answers, fallback to current entity
         $this->sendFormAndAssertTicketEntity(
             form: $form,
             config: new EntityFieldConfig(
                 EntityFieldStrategy::LAST_VALID_ANSWER
             ),
             answers: [],
-            expected_entity_id: 0
+            expected_entity_id: $this->getTestRootEntity(only_id: true)
         );
+    }
+
+    #[Override]
+    public static function provideConvertFieldConfigFromFormCreator(): iterable
+    {
+        yield 'Current active entity strategy' => [
+            'field_key'     => EntityField::getKey(),
+            'fields_to_set' => [
+                'destination_entity' => 1, // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_CURRENT
+            ],
+            'field_config' => new EntityFieldConfig(
+                EntityFieldStrategy::FORM_FILLER
+            ),
+        ];
+
+        yield 'Default requester user\'s entity' => [
+            'field_key'     => EntityField::getKey(),
+            'fields_to_set' => [
+                'destination_entity' => 2, // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_REQUESTER
+            ],
+            'field_config' => new EntityFieldConfig(
+                EntityFieldStrategy::FORM_FILLER
+            ),
+        ];
+
+        yield 'First dynamic requester user\'s entity (alphabetical)' => [
+            'field_key'     => EntityField::getKey(),
+            'fields_to_set' => [
+                'destination_entity' => 3, // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_REQUESTER_DYN_FIRST
+            ],
+            'field_config' => fn($migration, $form) => (new EntityField())->getDefaultConfig($form),
+        ];
+
+        yield 'Last dynamic requester user\'s entity (alphabetical)' => [
+            'field_key'     => EntityField::getKey(),
+            'fields_to_set' => [
+                'destination_entity' => 4, // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_REQUESTER_DYN_LAST
+            ],
+            'field_config' => fn($migration, $form) => (new EntityField())->getDefaultConfig($form),
+        ];
+
+        yield 'The form entity' => [
+            'field_key'     => EntityField::getKey(),
+            'fields_to_set' => [
+                'destination_entity' => 5, // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_FORM
+            ],
+            'field_config' => new EntityFieldConfig(
+                EntityFieldStrategy::FROM_FORM
+            ),
+        ];
+
+        yield 'Default entity of the validator' => [
+            'field_key'     => EntityField::getKey(),
+            'fields_to_set' => [
+                'destination_entity' => 6, // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_VALIDATOR
+            ],
+            'field_config' => fn($migration, $form) => (new EntityField())->getDefaultConfig($form),
+        ];
+
+        yield 'Specific entity' => [
+            'field_key'     => EntityField::getKey(),
+            'fields_to_set' => [
+                'destination_entity'       => 7, // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_SPECIFIC
+                'destination_entity_value' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+            ],
+            'field_config' => new EntityFieldConfig(
+                strategy: EntityFieldStrategy::SPECIFIC_VALUE,
+                specific_entity_id: getItemByTypeName(Entity::class, '_test_root_entity', true)
+            ),
+        ];
+
+        yield 'Default entity of a user type question answer' => [
+            'field_key'     => EntityField::getKey(),
+            'fields_to_set' => [
+                'destination_entity' => 8, // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_USER
+            ],
+            'field_config' => fn($migration, $form) => (new EntityField())->getDefaultConfig($form),
+        ];
+
+        yield 'From a GLPI object > Entity type question answer' => [
+            'field_key'     => EntityField::getKey(),
+            'fields_to_set' => [
+                'destination_entity'       => 9, // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_ENTITY_FROM_OBJECT
+                'destination_entity_value' => 71, // Question ID
+            ],
+            'field_config' => fn($migration, $form) => new EntityFieldConfig(
+                strategy: EntityFieldStrategy::SPECIFIC_ANSWER,
+                specific_question_id: $migration->getMappedItemTarget('PluginFormcreatorQuestion', 71)['items_id'] ?? throw new \Exception("Question not found")
+            ),
+        ];
     }
 
     private function sendFormAndAssertTicketEntity(
@@ -273,10 +387,6 @@ final class EntityFieldTest extends DbTestCase
         $builder->addQuestion("Entity 2", QuestionTypeItem::class, 0, json_encode([
             'itemtype' => Entity::getType(),
         ]));
-        $builder->addDestination(
-            FormDestinationTicket::class,
-            "My ticket",
-        );
         return $this->createForm($builder);
     }
 }

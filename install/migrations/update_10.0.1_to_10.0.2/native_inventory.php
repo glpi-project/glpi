@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,9 +32,15 @@
  * ---------------------------------------------------------------------
  */
 
-CronTask::register('Agent', 'Cleanoldagents', DAY_TIMESTAMP, [
-    'comment' => 'Clean old agents',
-    'state' => CronTask::STATE_WAITING,
-    'mode' => CronTask::MODE_EXTERNAL,
-    'logs_lifetime' => 30
-]);
+/**
+ * @var \Migration $migration
+ */
+
+$migration->addCrontask(
+    'Agent',
+    'Cleanoldagents',
+    DAY_TIMESTAMP,
+    options: [
+        'comment' => 'Clean old agents',
+    ]
+);

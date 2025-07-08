@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+use function Safe\json_encode;
 
 // follow download progress of a plugin with a minimal loading of files
 // So we get a ajax answer in 5ms instead 100ms
@@ -77,7 +79,7 @@ if (isset($_POST['key']) && isset($_POST["action"])) {
     }
 
     echo MarketplaceView::getButtons($_POST['key']);
-} else if (($_GET["action"] ?? null) == "refresh_plugin_list") {
+} elseif (($_GET["action"] ?? null) == "refresh_plugin_list") {
     switch ($_GET['tab']) {
         default:
         case 'discover':
@@ -94,7 +96,7 @@ if (isset($_POST['key']) && isset($_POST["action"])) {
             MarketplaceView::installed(true, true, $_GET['filter'] ?? "");
             break;
     }
-} else if (($_GET["action"] ?? null) == "getPagination") {
+} elseif (($_GET["action"] ?? null) == "getPagination") {
     echo MarketplaceView::getPaginationHtml(
         (int) $_GET['page'],
         (int) $_GET['total'],

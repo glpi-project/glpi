@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Event;
 
 /**
@@ -40,23 +42,14 @@ use Glpi\Event;
  */
 global $CFG_GLPI;
 
-// avoid reloading js libs
-if (isset($_GET['ajax']) && $_GET['ajax']) {
-    /** @var \Glpi\Controller\LegacyFileLoadController $this */
-    $this->setAjax();
-}
-
 Session::checkRight("reservation", ReservationItem::RESERVEANITEM);
 
 $rr = new Reservation();
 
-if (isset($_REQUEST['ajax'])) {
-    Html::header_nocache();
-    Html::popHeader(__('Simplified interface'));
-} else if (Session::getCurrentInterface() == "helpdesk") {
+if (Session::getCurrentInterface() == "helpdesk") {
     Html::helpHeader(__('Simplified interface'));
 } else {
-    Html::header(Reservation::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "reservationitem");
+    Html::header(Reservation::getTypeName(Session::getPluralNumber()), '', "tools", "reservationitem");
 }
 
 if (isset($_POST["update"])) {
@@ -65,14 +58,13 @@ if (isset($_POST["update"])) {
         Session::haveRight("reservation", UPDATE)
         || (Session::getLoginUserID() == $_POST["users_id"])
     ) {
-        $_POST['_target'] = $_SERVER['PHP_SELF'];
         $_POST['_item']   = key($_POST["items"]);
         $_POST['begin']   = $_POST['resa']["begin"];
         $_POST['end']     = $_POST['resa']["end"];
         $rr->update($_POST);
         Html::back();
     }
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $reservationitems_id = key($_POST["items"]);
     if ($rr->delete($_POST, 1)) {
         Event::log(
@@ -81,27 +73,27 @@ if (isset($_POST["update"])) {
             4,
             "inventory",
             //TRANS: %s is the user login
-                 sprintf(
-                     __('%1$s purges the reservation for item %2$s'),
-                     $_SESSION["glpiname"],
-                     $reservationitems_id
-                 )
+            sprintf(
+                __('%1$s purges the reservation for item %2$s'),
+                $_SESSION["glpiname"],
+                $reservationitems_id
+            )
         );
     }
 
-    list($begin_year,$begin_month) = explode("-", $rr->fields["begin"]);
+    [$begin_year, $begin_month] = explode("-", $rr->fields["begin"]);
     Html::redirect($CFG_GLPI["root_doc"] . "/front/reservation.php?reservationitems_id=" .
                   "$reservationitems_id&mois_courant=$begin_month&annee_courante=$begin_year");
-} else if (isset($_POST["add"])) {
+} elseif (isset($_POST["add"])) {
     Reservation::handleAddForm($_POST);
     Html::back();
-} else if (isset($_GET["id"])) {
+} elseif (isset($_GET["id"])) {
     if (!isset($_GET['begin'])) {
         $_GET['begin'] = date('Y-m-d H:00:00');
     }
     if (
         empty($_GET["id"])
-        && (!isset($_GET['item']) || (count($_GET['item']) == 0 ))
+        && (!isset($_GET['item']) || (count($_GET['item']) == 0))
     ) {
         Html::back();
     }
@@ -113,9 +105,7 @@ if (isset($_POST["update"])) {
     }
 }
 
-if (isset($_REQUEST['ajax'])) {
-    Html::popFooter();
-} else if (Session::getCurrentInterface() == "helpdesk") {
+if (Session::getCurrentInterface() == "helpdesk") {
     Html::helpFooter();
 } else {
     Html::footer();

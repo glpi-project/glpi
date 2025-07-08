@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * Item_Project Class
  *
@@ -42,7 +44,7 @@
  **/
 class Item_Project extends CommonDBRelation
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1          = 'Project';
     public static $items_id_1          = 'projects_id';
 
@@ -67,11 +69,11 @@ class Item_Project extends CommonDBRelation
     public function prepareInputForAdd($input)
     {
 
-       // Avoid duplicate entry
+        // Avoid duplicate entry
         if (
             countElementsInTable($this->getTable(), ['projects_id' => $input['projects_id'],
                 'itemtype'    => $input['itemtype'],
-                'items_id'    => $input['items_id']
+                'items_id'    => $input['items_id'],
             ]) > 0
         ) {
             return false;
@@ -120,7 +122,7 @@ class Item_Project extends CommonDBRelation
                                                               'glpi_entities',
                                                               $project->fields['entities_id']
                                                           )
-                                                          : $project->fields['entities_id'])
+                                                          : $project->fields['entities_id']),
             ]);
             echo "</td><td class='center' width='30%'>";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
@@ -222,6 +224,8 @@ class Item_Project extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
 
         if (!$withtemplate) {
             $nb = 0;
@@ -233,21 +237,21 @@ class Item_Project extends CommonDBRelation
                     return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
 
                 default:
-                   // Not used now
                     if (
-                        Session::haveRight("project", Project::READALL)
-                        && ($item instanceof CommonDBTM)
+                        Project::canView()
+                        && $item instanceof CommonDBTM
+                        && in_array($item->getType(), $CFG_GLPI["project_asset_types"])
                     ) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
-                              // Direct one
-                              $nb = self::countForItem($item);
+                            // Direct one
+                            $nb = self::countForItem($item);
 
-                              // Linked items
-                              $linkeditems = $item->getLinkedItems();
+                            // Linked items
+                            $linkeditems = $item->getLinkedItems();
 
                             if (count($linkeditems)) {
                                 foreach ($linkeditems as $type => $tab) {
-                                    $typeitem = new $type();
+                                    $typeitem = getItemForItemtype($type);
                                     foreach ($tab as $ID) {
                                         $typeitem->getFromDB($ID);
                                         $nb += self::countForItem($typeitem);
@@ -265,6 +269,8 @@ class Item_Project extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
 
         switch ($item->getType()) {
             case 'Project':
@@ -272,9 +278,99 @@ class Item_Project extends CommonDBRelation
                 break;
 
             default:
-               // Not defined and used now
-               // Project::showListForItem($item);
+                if (
+                    Project::canView()
+                    && $item instanceof CommonDBTM
+                    && in_array($item->getType(), $CFG_GLPI["project_asset_types"])
+                ) {
+                    self::showForAsset($item);
+                }
+                break;
         }
         return true;
+    }
+
+    private static function showForAsset(CommonDBTM $item): void
+    {
+
+        $item_project = new self();
+        $item_projects = $item_project->find([
+            'itemtype' => $item->getType(),
+            'items_id' => $item->getID(),
+        ]);
+
+        $used = $entries = [];
+
+        foreach ($item_projects as $value) {
+            $used[] = $value['projects_id'];
+            $project = new Project();
+            $result = $project->getFromDB($value['projects_id']);
+
+            if ($result === false) {
+                continue;
+            }
+
+            $priority = CommonITILObject::getPriorityName($project->fields['priority']);
+            $prioritycolor  = $_SESSION["glpipriority_" . $project->fields['priority']];
+            $state = ProjectState::getById($project->fields['projectstates_id']);
+
+            if (!$project->can($project->fields['id'], READ)) {
+                $data = [
+                    'name' => $project->getLink(),
+                    'projectstates_id' => '',
+                    'priority' => '',
+                    'percent_done' => '',
+                ];
+            } else {
+                $data = [
+                    'name' => $project->getLink(),
+                    'projectstates_id' => $state !== false
+                        ? [
+                            'content' => $state->fields['name'],
+                            'color' => $state->fields['color'],
+                        ] : '',
+                    'priority' => [
+                        'content' => $priority,
+                        'color' => $prioritycolor,
+                    ],
+                    'percent_done' => Html::getProgressBar((float) $project->fields['percent_done']),
+                ];
+            }
+            $entries[] = array_merge($project->fields, $data);
+        }
+
+        $cols = [
+            'columns' => [
+                "name" => __('Name'),
+                "priority" => __('Priority'),
+                "code" => __('Code'),
+                "projectstates_id" => _n('State', 'States', 1),
+                "percent_done" => __('Percent done'),
+                "creation_date" => __('Creation date'),
+                "content" => __('Description'),
+            ],
+            'formatters' => [
+                'name' => 'raw_html',
+                'priority' => 'badge',
+                'projectstates_id' => 'badge',
+                'percent_done' => 'raw_html',
+                'creation_date' => 'date',
+            ],
+        ];
+
+        TemplateRenderer::getInstance()->display('pages/tools/item_project.html.twig', [
+            'item' => $item,
+            'used' => $used,
+            'datatable_params' => [
+                'is_tab' => true,
+                'nofilter' => true,
+                'nosort' => true,
+                'columns' => $cols['columns'],
+                'formatters' => $cols['formatters'],
+                'entries' => $entries,
+                'total_number' => count($entries),
+                'filtered_number' => count($entries),
+            ],
+        ]);
     }
 }

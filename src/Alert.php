@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,13 +38,13 @@
  **/
 class Alert extends CommonDBTM
 {
-   // ALERTS TYPE
-    const THRESHOLD   = 1;
-    const END         = 2;
-    const NOTICE      = 3;
-    const NOTCLOSED   = 4;
-    const ACTION      = 5;
-    const PERIODICITY = 6;
+    // ALERTS TYPE
+    public const THRESHOLD   = 1;
+    public const END         = 2;
+    public const NOTICE      = 3;
+    public const NOTCLOSED   = 4;
+    public const ACTION      = 5;
+    public const PERIODICITY = 6;
 
     public function prepareInputForAdd($input)
     {
@@ -285,11 +285,11 @@ class Alert extends CommonDBTM
                 'ORDER'    => 'date DESC',
                 'LIMIT'    => 1,
                 'itemtype' => $itemtype,
-                'items_id' => $items_id
+                'items_id' => $items_id,
             ]);
             if ($row = $iter->current()) {
-                 //TRANS: %s is the date
-                 echo sprintf(__('Alert sent on %s'), Html::convDateTime($row['date']));
+                //TRANS: %s is the date
+                echo sprintf(__('Alert sent on %s'), Html::convDateTime($row['date']));
             }
         }
     }

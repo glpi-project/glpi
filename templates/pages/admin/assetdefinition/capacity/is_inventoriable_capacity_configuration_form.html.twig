@@ -1,0 +1,52 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<div class="alert alert-info alert-important d-flex align-items-center" role="alert">
+    <i class="ti ti-info-circle me-3 fa-2x"></i>
+    <div>
+        <h4 class="alert-title">{{ __("Please select the type that represents the best the asset.") }}</h4>
+        {{ __("We need this information to send the inventory file in the correct inventory engine of the GLPI framework.") }}
+    </div>
+
+</div>
+
+{{ fields.dropdownArrayField(
+    fieldname_prefix ~ '[inventory_mainasset]',
+    current_config.getValue('inventory_mainasset'),
+    itemtype_choices,
+    '',
+    {
+        'no_label': true,
+    }
+) }}

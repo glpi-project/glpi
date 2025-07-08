@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,8 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
+use function Safe\json_encode;
+
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
@@ -49,14 +51,14 @@ echo Html::css("lib/monaco.css");
 
 $twig_params = [
     'info' => json_encode(Telemetry::getTelemetryInfos($hide_sensitive_data), JSON_PRETTY_PRINT),
-    'description' => __("We only collect the following data: plugins usage, performance and responsiveness statistics about user interface features, memory, and hardware configuration.")
+    'description' => __("We only collect the following data: plugins usage, performance and responsiveness statistics about user interface features, memory, and hardware configuration."),
 ];
 // language=Twig
 echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
     <p>{{ description }}</p>
     <div id='telemetry-preview' style="height: 400px"></div>
     <script type="module">
-        import('{{ path("js/modules/Monaco/MonacoEditor.js") }}').then(() => {
+        import('/js/modules/Monaco/MonacoEditor.js').then(() => {
             window.GLPI.Monaco.createEditor('telemetry-preview', 'javascript', `{{ info|escape('js') }}`, [], {
                 readOnly: true,
                 minimap: {

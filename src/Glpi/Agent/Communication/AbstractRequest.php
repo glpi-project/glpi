@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,13 +38,29 @@ namespace Glpi\Agent\Communication;
 use DOMDocument;
 use DOMElement;
 use Glpi\Agent\Communication\Headers\Common;
+use Glpi\Exception\OAuth2KeyException;
 use Glpi\Inventory\Conf;
-use Glpi\Application\ErrorHandler;
 use Glpi\Http\Request;
 use Glpi\OAuth\Server;
 use League\OAuth2\Server\Exception\OAuthServerException;
+use Safe\Exceptions\SimplexmlException;
 use Toolbox;
 use GLPIKey;
+
+use function Safe\base64_decode;
+use function Safe\gzcompress;
+use function Safe\gzdeflate;
+use function Safe\gzencode;
+use function Safe\gzdecode;
+use function Safe\gzinflate;
+use function Safe\gzuncompress;
+use function Safe\iconv;
+use function Safe\ini_get;
+use function Safe\ini_set;
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\preg_match;
+use function Safe\simplexml_load_string;
 
 /**
  * Handle agent requests
@@ -54,45 +70,45 @@ use GLPIKey;
  */
 abstract class AbstractRequest
 {
-    const DEFAULT_FREQUENCY = 24;
+    public const DEFAULT_FREQUENCY = 24;
 
-    const XML_MODE    = 0;
-    const JSON_MODE   = 1;
+    public const XML_MODE    = 0;
+    public const JSON_MODE   = 1;
 
-   //FusionInventory agent
-    const PROLOG_QUERY = 'prolog';
-    const INVENT_QUERY = 'inventory';
-    const SNMP_QUERY   = 'snmp';
-    const OLD_SNMP_QUERY   = 'snmpquery';
+    //FusionInventory agent
+    public const PROLOG_QUERY = 'prolog';
+    public const INVENT_QUERY = 'inventory';
+    public const SNMP_QUERY   = 'snmp';
+    public const OLD_SNMP_QUERY   = 'snmpquery';
 
-   //GLPI AGENT ACTION
-    const CONTACT_ACTION = 'contact';
-    const REGISTER_ACTION = 'register';
-    const CONFIG_ACTION = 'configuration';
-    const INVENT_ACTION = 'inventory';
-    const NETDISCOVERY_ACTION = 'netdiscovery';
-    const NETINV_ACTION = 'netinventory';
-    const ESX_ACTION = 'esx';
-    const COLLECT_ACTION = 'collect';
-    const DEPLOY_ACTION = 'deploy';
-    const WOL_ACTION = 'wakeonlan';
-    const GET_PARAMS = 'get_params';
+    //GLPI AGENT ACTION
+    public const CONTACT_ACTION = 'contact';
+    public const REGISTER_ACTION = 'register';
+    public const CONFIG_ACTION = 'configuration';
+    public const INVENT_ACTION = 'inventory';
+    public const NETDISCOVERY_ACTION = 'netdiscovery';
+    public const NETINV_ACTION = 'netinventory';
+    public const ESX_ACTION = 'esx';
+    public const COLLECT_ACTION = 'collect';
+    public const DEPLOY_ACTION = 'deploy';
+    public const WOL_ACTION = 'wakeonlan';
+    public const GET_PARAMS = 'get_params';
 
-   //GLPI AGENT TASK
-    const INVENT_TASK = 'inventory';
-    const NETDISCOVERY_TASK = 'netdiscovery';
-    const NETINV_TASK = 'netinventory';
-    const ESX_TASK = 'esx';
-    const COLLECT_TASK = 'collect';
-    const DEPLOY_TASK = 'deploy';
-    const WOL_TASK = 'wakeonlan';
-    const REMOTEINV_TASK = 'remoteinventory';
+    //GLPI AGENT TASK
+    public const INVENT_TASK = 'inventory';
+    public const NETDISCOVERY_TASK = 'netdiscovery';
+    public const NETINV_TASK = 'netinventory';
+    public const ESX_TASK = 'esx';
+    public const COLLECT_TASK = 'collect';
+    public const DEPLOY_TASK = 'deploy';
+    public const WOL_TASK = 'wakeonlan';
+    public const REMOTEINV_TASK = 'remoteinventory';
 
-    const COMPRESS_NONE = 0;
-    const COMPRESS_ZLIB = 1;
-    const COMPRESS_GZIP = 2;
-    const COMPRESS_BR   = 3;
-    const COMPRESS_DEFLATE = 4;
+    public const COMPRESS_NONE = 0;
+    public const COMPRESS_ZLIB = 1;
+    public const COMPRESS_GZIP = 2;
+    public const COMPRESS_BR   = 3;
+    public const COMPRESS_DEFLATE = 4;
 
     /** @var ?integer */
     protected ?int $mode = null;
@@ -112,6 +128,7 @@ abstract class AbstractRequest
     private int $http_response_code = 200;
     /** @var string */
     protected string $query;
+    protected bool $local = false;
 
     public function __construct()
     {
@@ -211,18 +228,27 @@ abstract class AbstractRequest
      */
     public function handleRequest(mixed $data): bool
     {
-        $auth_required = \Config::getConfigurationValue('inventory', 'auth_required');
+        $base_mode = $this->mode;
+        $guess_mode = ($base_mode === null);
+        $this->setMode(self::JSON_MODE);
+
+        $auth_required = false;
+        if (!$this->isLocal()) {
+            $auth_required = \Config::getConfigurationValue('inventory', 'auth_required');
+        }
         if ($auth_required === Conf::CLIENT_CREDENTIALS) {
             $request = new Request('POST', $_SERVER['REQUEST_URI'], $this->headers->getHeaders());
             try {
                 $client = Server::validateAccessToken($request);
-                // Agent must authenticate both using client credentials (and therefore no valid user ID associated) and have the "inventory" OAuth scope
-                if (!\User::isNewID($client['user_id']) || !in_array('inventory', $client['scopes'], true)) {
+                if (!in_array('inventory', $client['scopes'], true)) {
                     $this->addError('Access denied. Agent must authenticate using client credentials and have the "inventory" OAuth scope', 401);
                     return false;
                 }
+            } catch (OAuth2KeyException $e) {
+                \Glpi\Error\ErrorHandler::logCaughtException($e);
+                $this->addError($e->getMessage());
+                return false;
             } catch (OAuthServerException) {
-                $this->setMode(self::JSON_MODE);
                 $this->addError('Authorization header required to send an inventory', 401);
                 return false;
             }
@@ -231,7 +257,6 @@ abstract class AbstractRequest
         if ($auth_required === Conf::BASIC_AUTH) {
             $authorization_header = $this->headers->getHeader('Authorization');
             if (is_null($authorization_header)) {
-                $this->setMode(self::JSON_MODE);
                 $this->headers->setHeader("www-authenticate", 'Basic realm="basic"');
                 $this->addError('Authorization header required to send an inventory', 401);
                 return false;
@@ -243,7 +268,7 @@ abstract class AbstractRequest
                     $inventory_password = (new GLPIKey())
                         ->decrypt(\Config::getConfigurationValue('inventory', 'basic_auth_password'));
                     $agent_credential = base64_decode($matches[1]);
-                    list($agent_login, $agent_password) = explode(':', $agent_credential, 2);
+                    [$agent_login, $agent_password] = explode(':', $agent_credential, 2);
                     if (
                         $inventory_login == $agent_login &&
                         $inventory_password == $agent_password
@@ -252,7 +277,6 @@ abstract class AbstractRequest
                     }
                 }
                 if (!$allowed) {
-                    $this->setMode(self::JSON_MODE);
                     $this->addError('Access denied. Wrong login or password for basic authentication.', 401);
                     return false;
                 }
@@ -265,7 +289,7 @@ abstract class AbstractRequest
         // and may take up to 2 minutes on server that has low performances.
         //
         // Setting limits to 1GB / 5 minutes should permit to handle any inventories request.
-        $memory_limit       = (int)Toolbox::getMemoryLimit();
+        $memory_limit       = (int) Toolbox::getMemoryLimit();
         $max_execution_time = ini_get('max_execution_time');
         if ($memory_limit > 0 && $memory_limit < (1024 * 1024 * 1024)) {
             ini_set('memory_limit', '1024M');
@@ -300,11 +324,13 @@ abstract class AbstractRequest
             }
         }
 
-        if ($this->mode === null) {
+        if ($guess_mode) {
             $this->guessMode($data);
+        } else {
+            $this->setMode($base_mode);
         }
 
-       //load and check data
+        //load and check data
         return match ($this->mode) {
             self::XML_MODE => $this->handleXMLRequest($data),
             self::JSON_MODE => $this->handleJSONRequest($data),
@@ -345,26 +371,32 @@ abstract class AbstractRequest
         if (mb_detect_encoding($data, 'UTF-8', true) === false) {
             $data = iconv('ISO-8859-1', 'UTF-8', $data);
         }
-        $xml = simplexml_load_string($data, 'SimpleXMLElement', LIBXML_NOCDATA);
-        if (!$xml) {
+        try {
+            $xml = simplexml_load_string($data, 'SimpleXMLElement', LIBXML_NOCDATA);
+        } catch (SimplexmlException $e) {
             $xml_errors = libxml_get_errors();
-           /* @var \LibXMLError $xml_error */
+            /* @var \LibXMLError $xml_error */
             foreach ($xml_errors as $xml_error) {
-                ErrorHandler::getInstance()->handleError(
-                    E_USER_WARNING,
-                    $xml_error->message,
-                    $xml_error->file,
-                    $xml_error->line
+                \trigger_error(
+                    \sprintf(
+                        'XML error `%s` at line %d.',
+                        $xml_error->message,
+                        $xml_error->line
+                    ),
+                    E_USER_WARNING
                 );
             }
             $this->addError('XML not well formed!', 400);
             return false;
+        } finally {
+            libxml_clear_errors();
         }
-        $this->deviceid = (string)$xml->DEVICEID;
+
+        $this->deviceid = (string) $xml->DEVICEID;
         //query is not mandatory. Defaults to inventory
         $action = self::INVENT_QUERY;
         if (property_exists($xml, 'QUERY')) {
-            $action = strtolower((string)$xml->QUERY);
+            $action = strtolower((string) $xml->QUERY);
         }
 
         return $this->handleAction($action, $xml);
@@ -390,7 +422,7 @@ abstract class AbstractRequest
         $action = self::INVENT_ACTION;
         if (property_exists($jdata, 'action')) {
             $action = $jdata->action;
-        } else if (property_exists($jdata, 'query')) {
+        } elseif (property_exists($jdata, 'query')) {
             $action = $jdata->query;
         }
 
@@ -427,7 +459,7 @@ abstract class AbstractRequest
                 $this->addToResponse([
                     'status' => 'error',
                     'message' => $message,
-                    'expiration' => self::DEFAULT_FREQUENCY
+                    'expiration' => self::DEFAULT_FREQUENCY,
                 ]);
             } else {
                 $this->addToResponse([
@@ -435,7 +467,7 @@ abstract class AbstractRequest
                         'content'    => $message,
                         'attributes' => [],
                         'type'       => XML_CDATA_SECTION_NODE,
-                    ]
+                    ],
                 ]);
             }
         }
@@ -459,7 +491,7 @@ abstract class AbstractRequest
             foreach ($entries as $name => $content) {
                 if ($name == "message" && isset($this->response[$name])) {
                     $this->response[$name] .= ";$content";
-                } else if ($name == "disabled") {
+                } elseif ($name == "disabled") {
                     $this->response[$name][] = $content;
                 } else {
                     $this->response[$name] = $content;
@@ -626,7 +658,9 @@ abstract class AbstractRequest
             case 'application/x-br':
             case 'application/x-compress-br':
                 if (!function_exists('brotli_compress')) {
-                    $this->addError('Brotli PHP extension is missing!', 415);
+                    $exception = new \Glpi\Exception\Http\HttpException(415, 'Brotli PHP extension is missing!');
+                    $exception->setMessageToDisplay('Unsupported compression');
+                    throw $exception;
                 } else {
                     $this->compression = self::COMPRESS_BR;
                 }
@@ -675,7 +709,7 @@ abstract class AbstractRequest
     {
         $encodings = [
             'gzip',
-            'deflate'
+            'deflate',
         ];
 
         if (!function_exists('brotli_compress')) {
@@ -743,5 +777,25 @@ abstract class AbstractRequest
                 }
             }
         }
+    }
+
+    /**
+     * Mark inventory as local
+     * @return $this
+     */
+    public function setLocal(): self
+    {
+        $this->local = true;
+        return $this;
+    }
+
+    /**
+     * Is inventory local?
+     *
+     * @return boolean
+     */
+    public function isLocal(): bool
+    {
+        return $this->local;
     }
 }

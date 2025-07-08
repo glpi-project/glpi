@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,25 +33,30 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Stat\Data\Sglobal\StatDataAverageSatisfaction;
 use Glpi\Stat\Data\Sglobal\StatDataSatisfaction;
 use Glpi\Stat\Data\Sglobal\StatDataTicketAverageTime;
 use Glpi\Stat\Data\Sglobal\StatDataTicketNumber;
 
-Html::header(__('Statistics'), $_SERVER['PHP_SELF'], "helpdesk", "stat");
+use function Safe\mktime;
+use function Safe\preg_match;
+
+Html::header(__('Statistics'), '', "helpdesk", "stat");
 
 Session::checkRight("statistic", READ);
 
 //sanitize dates
 foreach (['date1', 'date2'] as $key) {
-    if (array_key_exists($key, $_GET) && preg_match('/^\d{4}-\d{2}-\d{2}$/', (string)$_GET[$key]) !== 1) {
+    if (array_key_exists($key, $_GET) && preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) $_GET[$key]) !== 1) {
         unset($_GET[$key]);
     }
 }
 if (empty($_GET["date1"]) && empty($_GET["date2"])) {
     $year          = date("Y") - 1;
-    $_GET["date1"] = date("Y-m-d", mktime(1, 0, 0, (int)date("m"), (int)date("d"), $year));
+    $_GET["date1"] = date("Y-m-d", mktime(1, 0, 0, (int) date("m"), (int) date("d"), $year));
     $_GET["date2"] = date("Y-m-d");
 }
 

@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -103,7 +102,7 @@ if (!$DB->tableExists('glpi_oauthclients')) {
     $migration->changeField('glpi_oauthclients', 'redirect_uri', 'redirect_uri', 'TEXT NOT NULL');
 
     $migration->addField('glpi_oauthclients', 'allowed_ips', 'TEXT DEFAULT NULL', [
-        'after' => 'is_confidential'
+        'after' => 'is_confidential',
     ]);
 }
 

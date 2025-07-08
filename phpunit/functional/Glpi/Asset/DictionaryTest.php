@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -63,7 +63,7 @@ class DictionaryTest extends DbTestCase
                         break;
                     }
                 }
-            } else if ($group['type'] === 'Types') {
+            } elseif ($group['type'] === 'Types') {
                 foreach ($group['entries'] as $entry) {
                     if (
                         $entry['label'] === $definition->getAssetTypeClassName()::getTypeName(Session::getPluralNumber())

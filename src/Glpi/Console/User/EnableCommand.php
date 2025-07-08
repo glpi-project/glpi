@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,8 +34,6 @@
 
 namespace Glpi\Console\User;
 
-use Glpi\Console\AbstractCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -56,7 +54,7 @@ class EnableCommand extends AbstractUserCommand
         if ($user->getFromDBbyName($username)) {
             $user->update([
                 'id' => $user->getID(),
-                'is_active' => 1
+                'is_active' => 1,
             ]);
             $output->writeln('<info>' . __('User enabled') . '</info>');
             return 0;

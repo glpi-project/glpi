@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,11 +35,15 @@
 
 namespace Glpi\Security;
 
+use DateInterval;
 use Glpi\Application\View\TemplateRenderer;
 use RobThree\Auth\Algorithm;
 use RobThree\Auth\Providers\Qr\BaconQrCodeProvider;
 use RobThree\Auth\TwoFactorAuth;
 use RobThree\Auth\TwoFactorAuthException;
+use Safe\DateTimeImmutable;
+
+use function Safe\json_encode;
 
 final class TOTPManager
 {
@@ -188,9 +192,9 @@ final class TOTPManager
             'SELECT' => ['2fa'],
             'FROM' => 'glpi_users',
             'WHERE' => [
-                'id' => $users_id
+                'id' => $users_id,
             ],
-            'LIMIT' => 1
+            'LIMIT' => 1,
         ]);
 
         if (count($it) === 0) {
@@ -209,7 +213,13 @@ final class TOTPManager
                 return $config;
             }
         } catch (\SodiumException $e) {
-            trigger_error("Unreadable TOTP secret for user ID {$users_id}: " . $e->getMessage(), E_USER_WARNING);
+            /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+            global $PHPLOGGER;
+            $PHPLOGGER->error(
+                "Unreadable TOTP secret for user ID {$users_id}: " . $e->getMessage(),
+                ['exception' => $e]
+            );
+
             return null;
         }
     }
@@ -272,9 +282,9 @@ final class TOTPManager
             'SELECT' => ['2fa'],
             'FROM' => 'glpi_users',
             'WHERE' => [
-                'id' => $users_id
+                'id' => $users_id,
             ],
-            'LIMIT' => 1
+            'LIMIT' => 1,
         ])->current()['2fa'] ?? null;
 
         if ($tfa === null) {
@@ -313,9 +323,9 @@ final class TOTPManager
             'SELECT' => ['2fa'],
             'FROM' => 'glpi_users',
             'WHERE' => [
-                'id' => $users_id
+                'id' => $users_id,
             ],
-            'LIMIT' => 1
+            'LIMIT' => 1,
         ])->current()['2fa'] ?? null;
         if ($tfa === null) {
             return [];
@@ -325,7 +335,7 @@ final class TOTPManager
         $DB->update('glpi_users', [
             '2fa' => json_encode($tfa, JSON_THROW_ON_ERROR),
         ], [
-            'id' => $users_id
+            'id' => $users_id,
         ]);
         return $random_codes;
     }
@@ -347,9 +357,9 @@ final class TOTPManager
             'SELECT' => ['2fa'],
             'FROM' => 'glpi_users',
             'WHERE' => [
-                'id' => $users_id
+                'id' => $users_id,
             ],
-            'LIMIT' => 1
+            'LIMIT' => 1,
         ])->current()['2fa'] ?? null;
         if ($tfa === null) {
             return false;
@@ -365,7 +375,7 @@ final class TOTPManager
                     $DB->update('glpi_users', [
                         '2fa' => json_encode($tfa, JSON_THROW_ON_ERROR),
                     ], [
-                        'id' => $users_id
+                        'id' => $users_id,
                     ]);
                 }
                 return true;
@@ -393,9 +403,9 @@ final class TOTPManager
             'SELECT' => ['2fa_unenforced'],
             'FROM' => 'glpi_users',
             'WHERE' => [
-                'id' => $users_id
+                'id' => $users_id,
             ],
-            'LIMIT' => 1
+            'LIMIT' => 1,
         ])->current()['2fa_unenforced'] ?? 0;
 
         if ($user_optional) {
@@ -423,15 +433,15 @@ final class TOTPManager
                         'FROM' => 'glpi_profiles',
                         'WHERE' => [
                             'id' => $profiles,
-                            '2fa_enforced' => 1
-                        ]
+                            '2fa_enforced' => 1,
+                        ],
                     ])->count() > 0;
                 }
             }
             if (!$enforced) {
                 // Check group configuration
                 $groups = \Group_User::getUserGroups($users_id);
-                $enforced = count(array_filter($groups, static fn ($group) => $group['2fa_enforced'])) > 0;
+                $enforced = count(array_filter($groups, static fn($group) => $group['2fa_enforced'])) > 0;
             }
         }
 
@@ -455,9 +465,9 @@ final class TOTPManager
         $grace_start_date = $CFG_GLPI['2fa_grace_date_start'] ?? null;
 
         if ($grace_days > 0 && $grace_start_date !== null) {
-            $grace_start_date = new \DateTimeImmutable($grace_start_date);
+            $grace_start_date = new DateTimeImmutable($grace_start_date);
             $grace_end_date = $grace_start_date->add(new \DateInterval("P{$grace_days}D"));
-            $now = new \DateTimeImmutable();
+            $now = new DateTimeImmutable();
             if ($now < $grace_end_date) {
                 return $now->diff($grace_end_date)->days;
             }
@@ -472,7 +482,9 @@ final class TOTPManager
      */
     public function showTOTPPrompt(int $users_id): void
     {
-        TemplateRenderer::getInstance()->display('pages/2fa/2fa_request.html.twig');
+        TemplateRenderer::getInstance()->display('pages/2fa/2fa_request.html.twig', [
+            'redirect' => $_GET['redirect'] ?? '',
+        ]);
     }
 
     /**
@@ -493,8 +505,8 @@ final class TOTPManager
             $grace_period_end = null;
             $enforcement = $this->get2FAEnforcement($users_id);
             if ($enforcement === self::ENFORCEMENT_MANDATORY_GRACE_PERIOD) {
-                $grace_period_end = (new \DateTimeImmutable($CFG_GLPI['2fa_grace_date_start']))
-                    ->add(new \DateInterval("P{$CFG_GLPI['2fa_grace_days']}D"));
+                $grace_period_end = (new DateTimeImmutable($CFG_GLPI['2fa_grace_date_start']))
+                    ->add(new DateInterval("P{$CFG_GLPI['2fa_grace_days']}D"));
                 // Get the date as a string
                 $grace_period_end = $grace_period_end->format('Y-m-d H:i:s');
             }
@@ -526,7 +538,7 @@ final class TOTPManager
         $name = self::$brand_label;
         if (isset($_SESSION['mfa_pre_auth'])) {
             $name = $_SESSION['mfa_pre_auth']['user']['name'];
-        } else if (isset($_SESSION['glpiname'])) {
+        } elseif (isset($_SESSION['glpiname'])) {
             $name = $_SESSION['glpiname'];
         }
         $qr = $tfa->getQRCodeImageAsDataUri($name, $secret);

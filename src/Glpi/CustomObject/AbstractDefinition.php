@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -40,6 +40,7 @@ use Gettext\Languages\Category as Language_Category;
 use Gettext\Languages\CldrData as Language_CldrData;
 use Gettext\Languages\Language;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\CustomFieldDefinition;
 use Profile;
 use ProfileRight;
 use Session;
@@ -50,7 +51,22 @@ use Session;
  */
 abstract class AbstractDefinition extends CommonDBTM
 {
+    /**
+     * System name regex pattern.
+     *
+     * 1. Must start with a letter.
+     * 2. Must contain only letters, numbers, or underscores.
+     * 3. Must not end with an underscore.
+     */
+    public const SYSTEM_NAME_PATTERN = '[A-Za-z][A-Za-z0-9_]*[A-Za-z0-9]';
+
     public static $rightname = 'config';
+
+    /**
+     * @var CustomFieldDefinition[]|null
+     * @see self::getCustomFieldDefinitions()
+     */
+    protected ?array $custom_field_definitions = null;
 
     /**
      * Get the base class for custom objects of this type.
@@ -63,6 +79,12 @@ abstract class AbstractDefinition extends CommonDBTM
      * @return string
      */
     abstract public static function getCustomObjectNamespace(): string;
+
+    /**
+     * Get the suffix to add to custom object classes.
+     * @return string
+     */
+    abstract public static function getCustomObjectClassSuffix(): string;
 
     /**
      * Get the class name for the definition manager of this type.
@@ -89,13 +111,27 @@ abstract class AbstractDefinition extends CommonDBTM
      */
     public function getCustomObjectClassName(bool $with_namespace = true): string
     {
-        $classname = $this->fields['system_name'];
+        $classname = $this->fields['system_name'] . static::getCustomObjectClassSuffix();
 
         if ($with_namespace) {
             $classname = static::getCustomObjectNamespace() . '\\' . $classname;
         }
 
         return $classname;
+    }
+
+    /**
+     * @phpstan-return ConcreteClass
+     */
+    public function getCustomObjectClassInstance(): CommonDBTM
+    {
+        $classname = $this->getCustomObjectClassName();
+
+        if (!is_a($classname, CommonDBTM::class, true)) {
+            throw new \LogicException();
+        }
+
+        return new $classname();
     }
 
     /**
@@ -110,8 +146,12 @@ abstract class AbstractDefinition extends CommonDBTM
      */
     protected function getPossibleCustomObjectRights(): array
     {
-        $class = $this->getCustomObjectClassName();
-        return (new $class())->getRights();
+        return $this->getCustomObjectClassInstance()->getRights();
+    }
+
+    public static function getNameField()
+    {
+        return 'label';
     }
 
     public static function getIcon()
@@ -165,7 +205,7 @@ abstract class AbstractDefinition extends CommonDBTM
 
         if (!self::isNewID($ID)) {
             $count_conditions = [
-                static::getForeignKeyField() => $ID
+                static::getForeignKeyField() => $ID,
             ];
             if ($DB->fieldExists($item_type::getTable(), 'is_template')) {
                 $count_conditions['is_template'] = 0;
@@ -181,7 +221,7 @@ abstract class AbstractDefinition extends CommonDBTM
                     'icon' => 'ti ti-trash',
                     'text' => _x('button', 'Delete permanently'),
                     'type' => 'submit',
-                ]
+                ],
             ];
         }
 
@@ -192,7 +232,11 @@ abstract class AbstractDefinition extends CommonDBTM
                 'item'                  => $this,
                 'params'                => $options,
                 'has_rights_enabled'    => $this->hasRightsEnabled(),
-                'reserved_system_names' => $definition_manager->getReservedSystemNames(),
+                'reserved_system_names_pattern' => $definition_manager->getReservedSystemNamesPattern(),
+                'existing_system_names' => array_values(array_filter(array_map(
+                    static fn(self $definition) => $definition->fields['system_name'],
+                    $definition_manager->getDefinitions()
+                ), fn($name) => $name !== $this->fields['system_name'])),
                 'item_count'            => $item_count,
             ]
         );
@@ -213,25 +257,27 @@ abstract class AbstractDefinition extends CommonDBTM
 
         $profiles_data = iterator_to_array(
             $DB->request([
-                'SELECT' => ['id', 'name'],
-                'FROM'   => Profile::getTable(),
-                'WHERE'  => [
-                    ['NOT' => ['interface' => 'helpdesk']],
-                ]
+                'FROM'  => Profile::getTable(),
+                'ORDER' => 'name ASC',
             ])
+        );
+
+        $central_profiles = \array_filter(
+            $profiles_data,
+            static fn(array $profile) => $profile['interface'] !== 'heldesk'
         );
 
         $nb_cb_per_col = array_fill_keys(
             array_keys($possible_rights),
             [
                 'checked' => 0,
-                'total' => count($profiles_data),
+                'total' => count($central_profiles),
             ]
         );
         $nb_cb_per_row = [];
 
         $matrix_rows = [];
-        foreach ($profiles_data as $profile_data) {
+        foreach ($central_profiles as $profile_data) {
             $profile_id = $profile_data['id'];
             $profile_rights = $this->getRightsForProfile($profile_id);
 
@@ -244,7 +290,7 @@ abstract class AbstractDefinition extends CommonDBTM
 
             $row = [
                 'label' => $profile_data['name'],
-                'columns' => []
+                'columns' => [],
             ];
             foreach (array_keys($possible_rights) as $right_value) {
                 $checked = $profile_rights & $right_value;
@@ -268,6 +314,7 @@ abstract class AbstractDefinition extends CommonDBTM
                 'matrix_rows'    => $matrix_rows,
                 'nb_cb_per_col'  => $nb_cb_per_col,
                 'nb_cb_per_row'  => $nb_cb_per_row,
+                'extra_fields'   => $this->getExtraProfilesFields($profiles_data),
             ]
         );
     }
@@ -282,10 +329,35 @@ abstract class AbstractDefinition extends CommonDBTM
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $translations = $this->getDecodedTranslationsField();
-        uksort(
+        $asset_name_translations = $this->getDecodedTranslationsField();
+
+        $translations = [];
+        foreach ($asset_name_translations as $lang => $plurals) {
+            $translations[] = [
+                'id' => 0,
+                'name' => __('Asset name'),
+                'language' => $lang,
+                'translation' => $plurals,
+            ];
+        }
+
+        $custom_fields = [];
+        $custom_field_definitions = $this->getCustomFieldDefinitions();
+        foreach ($custom_field_definitions as $custom_field) {
+            $custom_fields[$custom_field->getID()] = $custom_field->fields['system_name'];
+            foreach ($custom_field->getDecodedTranslationsField() as $language => $translation) {
+                $translations[] = [
+                    'id' => $custom_field->getID(),
+                    'name' => $custom_field->fields['system_name'],
+                    'language' => $language,
+                    'translation' => ['one' => $translation],
+                ];
+            }
+        }
+
+        usort(
             $translations,
-            static fn (string $lang_a, string $lang_b) => strnatcasecmp($CFG_GLPI['languages'][$lang_a][0], $CFG_GLPI['languages'][$lang_b][0])
+            static fn(array $a, array $b) => strnatcasecmp($CFG_GLPI['languages'][$a['language']][0], $CFG_GLPI['languages'][$b['language']][0])
         );
 
         $rand = mt_rand();
@@ -296,11 +368,16 @@ abstract class AbstractDefinition extends CommonDBTM
                 'item' => $this,
                 'classname' => $this->getCustomObjectClassName(),
                 'translations' => $translations,
+                'fields_dropdown' => Dropdown::showFromArray('field', [0 => __('Asset name')] + $custom_fields, [
+                    'display'             => false,
+                    'display_emptychoice' => false,
+                    'width'               => '100%',
+                    'rand'                => $rand,
+                ]),
                 'languages_dropdown' => Dropdown::showLanguages('language', [
                     'display'             => false,
                     'display_emptychoice' => true,
                     'width'               => '100%',
-                    'on_change'           => 'setModalLanguagePlural(this.value);',
                     'rand'                => $rand,
                 ]),
                 'rand' => $rand,
@@ -317,6 +394,48 @@ abstract class AbstractDefinition extends CommonDBTM
                 ERROR
             );
             return false;
+        }
+
+        if (
+            !is_string($input['system_name'])
+            || preg_match('/^' . self::SYSTEM_NAME_PATTERN . '$/', $input['system_name']) !== 1
+        ) {
+            Session::addMessageAfterRedirect(
+                htmlescape(sprintf(
+                    __('The following field has an incorrect value: "%s".'),
+                    __('System name')
+                )),
+                false,
+                ERROR
+            );
+            return false;
+        } elseif (preg_match(static::getDefinitionManagerClass()::getInstance()->getReservedSystemNamesPattern(), $input['system_name']) === 1) {
+            Session::addMessageAfterRedirect(
+                htmlescape(sprintf(
+                    __('The system name is a reserved name.'),
+                    $input['system_name']
+                )),
+                false,
+                ERROR
+            );
+            return false;
+        } else {
+            $existing_system_names = array_map(static fn($d) => strtolower($d->fields['system_name'] ?? ''), static::getDefinitionManagerClass()::getInstance()->getDefinitions());
+            if (in_array(strtolower($input['system_name']), $existing_system_names, true)) {
+                Session::addMessageAfterRedirect(
+                    htmlescape(sprintf(
+                        __('The system name must be unique.'),
+                        $input['system_name']
+                    )),
+                    false,
+                    ERROR
+                );
+                return false;
+            }
+        }
+
+        if (empty($input['label'])) {
+            $input['label'] = $input['system_name'];
         }
         return $this->prepareInput($input);
     }
@@ -336,16 +455,40 @@ abstract class AbstractDefinition extends CommonDBTM
         }
 
         if (isset($input['_save_translation'], $input['language'], $input['plurals'])) {
-            $translations = $this->getDecodedTranslationsField();
-            $translations[$input['language']] = $input['plurals'];
-            unset($input['_save_translation'], $input['language'], $input['plurals']);
-            $input['translations'] = $translations;
+            if (empty($input['field'] ?? null)) {
+                $translations = $this->getDecodedTranslationsField();
+                $translations[$input['language']] = $input['plurals'];
+                unset($input['_save_translation'], $input['language'], $input['plurals']);
+                $input['translations'] = $translations;
+            } elseif (array_key_exists('one', $input['plurals'])) {
+                $custom_field = new CustomFieldDefinition();
+                if ($custom_field->getFromDB($input['field']) && $custom_field->fields[static::getForeignKeyField()] === $this->getID()) {
+                    $translations = $custom_field->getDecodedTranslationsField();
+                    $translations[$input['language']] = $input['plurals']['one'];
+                    $custom_field->update([
+                        'id' => $input['field'],
+                        'translations' => $translations,
+                    ]);
+                }
+            }
         }
 
         if (isset($input['_delete_translation'], $input['language'])) {
-            $translations = $this->getDecodedTranslationsField();
-            unset($translations[$input['language']], $input['_delete_translation'], $input['language']);
-            $input['translations'] = $translations;
+            if (empty($input['field'] ?? null)) {
+                $translations = $this->getDecodedTranslationsField();
+                unset($translations[$input['language']], $input['_delete_translation'], $input['language']);
+                $input['translations'] = $translations;
+            } else {
+                $custom_field = new CustomFieldDefinition();
+                if ($custom_field->getFromDB($input['field']) && $custom_field->fields[static::getForeignKeyField()] === $this->getID()) {
+                    $translations = $custom_field->getDecodedTranslationsField();
+                    unset($translations[$input['language']]);
+                    $custom_field->update([
+                        'id' => $input['field'],
+                        'translations' => $translations,
+                    ]);
+                }
+            }
         }
 
         return $this->prepareInput($input);
@@ -360,37 +503,6 @@ abstract class AbstractDefinition extends CommonDBTM
     protected function prepareInput(array $input): array|bool
     {
         $has_errors = false;
-
-        if (array_key_exists('system_name', $input)) {
-            if (!is_string($input['system_name']) || preg_match('/^[A-Za-z]+$/i', $input['system_name']) !== 1) {
-                Session::addMessageAfterRedirect(
-                    htmlescape(sprintf(
-                        __('The following field has an incorrect value: "%s".'),
-                        __('System name')
-                    )),
-                    false,
-                    ERROR
-                );
-                $has_errors = true;
-            } else if (in_array($input['system_name'], static::getDefinitionManagerClass()::getInstance()->getReservedSystemNames(), true)) {
-                Session::addMessageAfterRedirect(
-                    htmlescape(sprintf(
-                        __('The system name must not be the reserved word "%s".'),
-                        $input['system_name']
-                    )),
-                    false,
-                    ERROR
-                );
-                $has_errors = true;
-            } else if (preg_match('/(Model|Type)$/i', $input['system_name']) === 1) {
-                Session::addMessageAfterRedirect(
-                    __s('The system name must not end with the word "Model" or the word "Type".'),
-                    false,
-                    ERROR
-                );
-                $has_errors = true;
-            }
-        }
 
         if (array_key_exists('profiles', $input)) {
             if (!$this->validateProfileArray($input['profiles'])) {
@@ -429,6 +541,13 @@ abstract class AbstractDefinition extends CommonDBTM
 
     public function post_addItem()
     {
+        // Clear the definitions cache to ensure that the code triggerred by the capacities hooks
+        // will not use an outdated definition list.
+        static::getDefinitionManagerClass()::getInstance()->clearDefinitionsCache();
+
+        // Bootstrap the definition to make it usable right now.
+        static::getDefinitionManagerClass()::getInstance()->bootstrapDefinition($this);
+
         if ($this->isActive()) {
             $this->syncProfilesRights();
             unset($_SESSION['menu']);
@@ -437,14 +556,49 @@ abstract class AbstractDefinition extends CommonDBTM
 
     public function post_updateItem($history = true)
     {
+        // Clear the definitions cache to ensure that the code triggerred by the capacities hooks
+        // will not use an outdated definition list.
+        static::getDefinitionManagerClass()::getInstance()->clearDefinitionsCache();
+
+        // Bootstrap the definition to make it usable right now.
+        static::getDefinitionManagerClass()::getInstance()->bootstrapDefinition($this);
+
         if (in_array('is_active', $this->updates, true)) {
             // Force menu refresh when active state change
             unset($_SESSION['menu']);
         }
 
-        if (in_array('is_active', $this->updates, true) || in_array('profiles', $this->updates, true)) {
+        if (
+            in_array('is_active', $this->updates, true)
+            || in_array('profiles', $this->updates, true)
+            || array_key_exists('_profiles_extra', $this->input)
+        ) {
             $this->syncProfilesRights();
         }
+    }
+
+    public function cleanDBonPurge()
+    {
+        $this->purgeConcreteClassFromDb($this->getCustomObjectClassName());
+    }
+
+    /**
+     * Delete from the database all the data related to the given concrete class.
+     *
+     * @param class-string<\CommonDBTM> $concrete_classname
+     */
+    final protected function purgeConcreteClassFromDb(string $concrete_classname): void
+    {
+        if (!\is_a($concrete_classname, CommonDBTM::class, true)) {
+            throw new \LogicException();
+        }
+
+        (new $concrete_classname())->deleteByCriteria(
+            [static::getForeignKeyField() => $this->getID()],
+            force: true,
+            history: false
+        );
+        (new \DisplayPreference())->deleteByCriteria(['itemtype' => $concrete_classname]);
     }
 
     /**
@@ -552,7 +706,7 @@ abstract class AbstractDefinition extends CommonDBTM
         $language = Session::getLanguage();
         $current_translation = $translations[$language] ?? null;
         if ($current_translation === null) {
-            return $this->fields['system_name'];
+            return $this->fields['label'];
         }
 
         // retrieve the formulas associated to the language
@@ -566,7 +720,7 @@ abstract class AbstractDefinition extends CommonDBTM
         $found_category = $gettext_language->categories[$category_index_number] ?? $gettext_language->categories[0];
         $category_index_string = $found_category->id;
 
-        return $current_translation[$category_index_string] ?? $this->fields['system_name'];
+        return $current_translation[$category_index_string] ?? $this->fields['label'];
     }
 
     public function rawSearchOptions()
@@ -583,11 +737,20 @@ abstract class AbstractDefinition extends CommonDBTM
         ];
 
         $search_options[] = [
+            'id'            => 2,
+            'table'         => self::getTable(),
+            'field'         => 'label',
+            'name'          => __('Label'),
+            'datatype'      => 'itemlink',
+            'massiveaction' => false,
+        ];
+
+        $search_options[] = [
             'id'            => 3,
             'table'         => self::getTable(),
             'field'         => 'is_active',
             'name'          => __('Active'),
-            'datatype'      => 'bool'
+            'datatype'      => 'bool',
         ];
 
         $search_options[] = [
@@ -596,7 +759,7 @@ abstract class AbstractDefinition extends CommonDBTM
             'field'         => 'date_mod',
             'name'          => __('Last update'),
             'datatype'      => 'datetime',
-            'massiveaction' => false
+            'massiveaction' => false,
         ];
 
         $search_options[] = [
@@ -605,7 +768,7 @@ abstract class AbstractDefinition extends CommonDBTM
             'field'         => 'date_creation',
             'name'          => __('Creation date'),
             'datatype'      => 'datetime',
-            'massiveaction' => false
+            'massiveaction' => false,
         ];
 
         $search_options[] = [
@@ -621,8 +784,8 @@ abstract class AbstractDefinition extends CommonDBTM
             'id'            => 7,
             'table'         => self::getTable(),
             'field'         => 'comment',
-            'name'          => __('Comments'),
-            'datatype'      => 'text'
+            'name'          => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'datatype'      => 'text',
         ];
 
         $search_options[] = [
@@ -630,7 +793,7 @@ abstract class AbstractDefinition extends CommonDBTM
             'table'         => self::getTable(),
             'field'         => 'translations',
             'name'          => __('Translations'),
-            'datatype'      => 'specific'
+            'datatype'      => 'specific',
         ];
 
         return $search_options;
@@ -703,6 +866,17 @@ TWIG, ['name' => $name, 'value' => $value]);
     }
 
     /**
+     * Return extra fields to append to the profiles configuration form.
+     *
+     * @param array[] $profile_data
+     * @return string HTML string to append to the profiles configuration form.
+     */
+    protected function getExtraProfilesFields(array $profile_data): string
+    {
+        return '';
+    }
+
+    /**
      * Return the decoded value of the `translations` field.
      *
      * @return array
@@ -745,7 +919,7 @@ TWIG, ['name' => $name, 'value' => $value]);
             }
 
             $available_categories = array_map(
-                fn (Language_Category $category) => $category->id,
+                fn(Language_Category $category) => $category->id,
                 self::getPluralFormsForLanguage($language)
             );
             foreach ($values as $category => $translation) {
@@ -843,7 +1017,7 @@ TWIG, ['name' => $name, 'value' => $value]);
                 $is_valid = false;
                 break;
             }
-            if ($check_values && !in_array((int)$profile_id, $available_profiles, true)) {
+            if ($check_values && !in_array((int) $profile_id, $available_profiles, true)) {
                 $is_valid = false;
                 break;
             }
@@ -854,5 +1028,13 @@ TWIG, ['name' => $name, 'value' => $value]);
         }
 
         return $is_valid;
+    }
+
+    /**
+     * @return CustomFieldDefinition[]
+     */
+    public function getCustomFieldDefinitions(): array
+    {
+        return [];
     }
 }

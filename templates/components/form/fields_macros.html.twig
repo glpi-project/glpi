@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -42,7 +41,7 @@
          <h4 class="card-title {{ icon|length ? 'ms-5' : '' }}">
             {% if icon|length %}
                <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
-                  <i class="fa-2x {{ icon }}"></i>
+                  <i class="fs-2x {{ icon }}"></i>
                </div>
             {% endif %}
             {{ label }}
@@ -64,7 +63,7 @@
          <h4 class="card-subtitle {{ icon|length ? 'ms-4' : '' }}">
             {% if icon|length %}
                <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
-                  <i class="fa-2x {{ icon }}"></i>
+                  <i class="fs-2x {{ icon }}"></i>
                </div>
             {% endif %}
              <span class="ms-2">{{ label }}</span>
@@ -77,15 +76,15 @@
    </div>
 {% endmacro %}
 
-{% macro autoNameField(name, item, label = '', withtemplate, options = {}) %}
-   {% set tpl_value = option.value|length > 0 ? option.value : item.fields[name] %}
+{% macro autoNameField(name, item, label = '', withtemplate = 0, options = {}) %}
+   {% set tpl_value = (options.value ?? '')|length > 0 ? options.value : item.fields[name] %}
    {% if item.isTemplate() %} {# TODO exluded types #}
        {% set options = options|merge({
            tpl_mark: item.getAutofillMark(name, {'withtemplate': withtemplate}, tpl_value)
        }) %}
    {% endif %}
    {% if item.fields[name] is defined and item.fields[name] is not null %}
-      {% set value = call('autoName', [item.fields[name], name, (withtemplate == 2), item.getType(), item.fields['entities_id']]) %}
+      {% set value = call('autoName', [item.fields[name], name, (withtemplate == 2), item.getType(), item.fields['entities_id'] ?? null]) %}
    {% else %}
       {% set value = null %}
    {% endif %}
@@ -138,17 +137,22 @@
 
 
 {% macro sliderField(name, value, label = '', options = {}) %}
-   {% if options.fields_template.isMandatoryField(name) %}
+   {% if options.fields_template.isMandatoryField(name)|default(false) %}
       {% set options = {
          'required': true
       }|merge(options) %}
    {% endif %}
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
    {% set options = {
       'no_value': 0,
       'yes_value': 1,
+      'readonly': false,
+      'required': false,
+      'disabled': false,
+      'additional_attributes': [],
+      'label2': '',
    }|merge(options) %}
 
    {% set field %}
@@ -189,7 +193,7 @@
 {% macro readOnlyField(name, value, label = '', options = {}) %}
    {% set options = options|merge({'readonly': true}) %}
    {% set value %}
-      <span class="form-control {{ options.input_addclass }}" readonly>
+      <span class="form-control {{ options.input_addclass ?? '' }}" readonly>
          {% if value|length == 0 %}
             &nbsp;
          {% else %}
@@ -207,10 +211,15 @@
       'enable_richtext': false,
       'enable_images': true,
       'enable_fileupload': false,
-      'enable_mentions': false,
+      'mention_options': {
+         'enabled': options.enable_mentions is defined and options.enable_mentions,
+         'full': true,
+         'users': [],
+      },
       'entities_id': session('glpiactive_entity'),
       'uploads': [],
       'rows': 3,
+      'readonly': false,
    }|merge(options) %}
 
    {% if options.id is not defined %}
@@ -230,7 +239,7 @@
              'editor_id': options.id,
              'multiple': true,
              'uploads': options.uploads,
-             'required': options.fields_template.isMandatoryField('_documents_id')
+             'required': options.fields_template.isMandatoryField('_documents_id')|default(false)
          }]) %}
       {% endset %}
    {% elseif not options.readonly and not options.enable_fileupload and options.enable_richtext and options.enable_images %}
@@ -240,7 +249,7 @@
              'name': name,
              'only_uploaded_files': true,
              'uploads': options.uploads,
-             'required': options.fields_template.isMandatoryField('_documents_id')
+             'required': options.fields_template.isMandatoryField('_documents_id')|default(false)
          }]) %}
       {% endset %}
    {% endif %}
@@ -293,8 +302,8 @@
 {% macro passwordField(name, value, label = '', options = {}) %}
    {% set options = {
       'id': '%id%',
-      'can_regenerate': options.can_regenerate,
-      'clearable': options.clearable is defined ? options.clearable : not options.is_disclosable,
+      'can_regenerate': options.can_regenerate ?? false,
+      'clearable': options.clearable is defined ? options.clearable : not (options.is_disclosable ?? false),
       'is_copyable': options.is_disclosable ?? false
    }|merge(options) %}
 
@@ -363,7 +372,7 @@
          {% endif %}
       </div>
    {% endset %}
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
    {{ _self.field(name, field, label, options) }}
@@ -389,11 +398,11 @@
       }) }}
    {% endset %}
 
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
-   {% set id = options.id|length > 0 ? options.id : (name ~ '_' ~ options.rand) %}
+   {% set id = (options.id is defined and options.id|length > 0) ? options.id : (name ~ '_' ~ (options.rand ?? "")) %}
    {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
    {{ _inputs.label(label, id, options) }}
    {{ _self.field(name, field, label, options|merge({
@@ -403,7 +412,7 @@
 {% endmacro %}
 
 {% macro hiddenField(name, value, label = '', options = {}) %}
-   {% if options.no_label %}
+   {% if options.no_label ?? false %}
       {% set options = {
          mb: 'mb-0'
       }|merge(options) %}
@@ -419,23 +428,24 @@
     {% set options = {
         'rand': random(),
         'width': '100%',
+        'disabled': false,
     }|merge(options) %}
 
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
    {% if options.disabled %}
       {% set options = options|merge({specific_tags: {'disabled': 'disabled'}}) %}
    {% endif %}
-   {% if options.fields_template.isMandatoryField(name) %}
+   {% if options.fields_template.isMandatoryField(name)|default(false) %}
       {% set options = {'specific_tags': {'required': true}}|merge(options) %}
    {% endif %}
 
    {% set field %}
       {% do call('Dropdown::showNumber', [name, {
          'value': value,
-         'rand': rand
+         'rand': options.rand
       }|merge(options)]) %}
    {% endset %}
 
@@ -445,10 +455,11 @@
 {% macro dropdownArrayField(name, value, elements, label = '', options = {}) %}
     {% set options = {
         'rand': random(),
+        'disabled': false,
         'width': '100%',
     }|merge(options) %}
 
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
@@ -456,14 +467,14 @@
       {% set options = options|merge({specific_tags: {'disabled': 'disabled'}}) %}
    {% endif %}
 
-   {% if options.fields_template.isMandatoryField(name) %}
+   {% if options.fields_template.isMandatoryField(name)|default(false) %}
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
 
    {% set field %}
       {% do call('Dropdown::showFromArray', [name, elements, {
          'value': value,
-         'rand': rand,
+         'rand': options.rand,
       }|merge(options)]) %}
    {% endset %}
 
@@ -474,12 +485,13 @@
     {% set options = {
         'rand': random(),
         'width': '100%',
+        'disabled': false,
     }|merge(options) %}
-   {% if options.fields_template.isMandatoryField(name) %}
+   {% if options.fields_template.isMandatoryField(name)|default(false) %}
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
 
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
@@ -489,8 +501,7 @@
 
    {% set field %}
       {% do call('Dropdown::showTimestamp', [name, {
-         'value': value,
-         'rand': rand,
+         'value': value
       }|merge(options)]) %}
    {% endset %}
 
@@ -501,12 +512,13 @@
     {% set options = {
         'rand': random(),
         'width': '100%',
+        'disabled': false
     }|merge(options) %}
-   {% if options.fields_template.isMandatoryField(name) %}
+   {% if options.fields_template.isMandatoryField(name)|default(false) %}
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
 
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
@@ -515,9 +527,7 @@
    {% endif %}
 
    {% set field %}
-      {% do call('Dropdown::showYesNo', [name, value, -1, {
-         'rand': rand,
-      }|merge(options)]) %}
+      {% do call('Dropdown::showYesNo', [name, value, -1, options]) %}
    {% endset %}
 
    {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand})) }}
@@ -527,12 +537,13 @@
     {% set options = {
         'rand': random(),
         'width': '100%',
+        'disabled': false,
     }|merge(options) %}
-   {% if options.fields_template.isMandatoryField(name) %}
+   {% if options.fields_template.isMandatoryField(name)|default(false) %}
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
 
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
@@ -544,7 +555,7 @@
 
    {% set field %}
       {% do call('Dropdown::showItemTypes', [name, types, {
-         'rand': rand,
+         'rand': options.rand,
          'value': value
       }|merge(options)]) %}
    {% endset %}
@@ -557,7 +568,7 @@
       'rand': random()
    }|merge(options) %}
 
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
@@ -572,11 +583,11 @@
         'rand': random(),
         'width': '100%',
     }|merge(options) %}
-   {% if options.fields_template.isMandatoryField(name) %}
+   {% if options.fields_template.isMandatoryField(name)|default(false) %}
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
 
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
@@ -585,9 +596,7 @@
    {% endif %}
 
    {% set field %}
-      {% do call('Dropdown::dropdownIcons', [name, value, constant('GLPI_ROOT') ~ '/pics/icones', {
-         'rand': rand,
-      }|merge(options)]) %}
+      {% do call('Dropdown::dropdownIcons', [name, value, '', options]) %}
    {% endset %}
 
    {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand})) }}
@@ -604,7 +613,7 @@
 
     {{ _self.dropdownArrayField(name, value, {(value): value}, label, options) }}
     <script type="module">
-        import('{{ js_path('js/modules/Form/WebIconSelector.js') }}').then((m) => {
+        import('/js/modules/Form/WebIconSelector.js').then((m) => {
             const dropdown_id = '{{ ('dropdown_' ~ name ~ options.rand)|replace({'[': '_', ']': '_'}) }}';
             const selector = new m.default(document.getElementById(dropdown_id));
             selector.init();
@@ -616,12 +625,13 @@
     {% set options = {
         'rand': random(),
         'width': '100%',
+        'disabled': false,
     }|merge(options) %}
-   {% if options.fields_template.isMandatoryField(name) %}
+   {% if options.fields_template.isMandatoryField(name)|default(false) %}
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
 
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
@@ -631,7 +641,6 @@
 
    {% set field %}
       {% do call('Dropdown::showHours', [name, {
-         'rand': rand,
          'value': value
       }|merge(options)]) %}
    {% endset %}
@@ -640,12 +649,15 @@
 {% endmacro %}
 
 {% macro dropdownFrequency(name, value, label = '', options = {}) %}
-   {% set options = {'rand': random()}|merge(options) %}
-   {% if options.fields_template.isMandatoryField(name) %}
+   {% set options = {
+       'rand': random(),
+       'disabled': false,
+   }|merge(options) %}
+   {% if options.fields_template.isMandatoryField(name)|default(false) %}
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
 
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
@@ -655,7 +667,6 @@
 
    {% set field %}
       {% do call('Dropdown::showFrequency', [name, value, {
-         'rand': rand,
          'width': '100%',
          'value': value
       }|merge(options)]) %}
@@ -665,7 +676,7 @@
 {% endmacro %}
 
 {% macro dropdownField(itemtype, name, value, label = '', options = {}) %}
-   {% if options.multiple %}
+   {% if options.multiple ?? false %}
       {# Needed for empty value as the input wont be sent in this case... we need something to know the input was displayed AND empty #}
       {% set defined_input_name = "_#{name}_defined" %}
       <input type="hidden" name="{{ defined_input_name }}" value="1"></input>
@@ -676,12 +687,13 @@
     {% set options = {
         'rand': random(),
         'width': '100%',
+        'disabled': false,
     }|merge(options) %}
-   {% if options.fields_template.isMandatoryField(name) %}
+   {% if options.fields_template.isMandatoryField(name)|default(false) %}
       {% set options = {'specific_tags': {'required': true}}|merge(options) %}
    {% endif %}
 
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
@@ -693,13 +705,50 @@
       {{ itemtype|itemtype_dropdown({
          'name': name,
          'value': value,
-         'rand': rand,
       }|merge(options)) }}
    {% endset %}
 
    {% if field|trim is not empty %}
       {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand})) }}
    {% endif %}
+{% endmacro %}
+
+{% macro dropdownAjaxField(url, name, value, label = '', options = {}) %}
+    {% if options.multiple %}
+        {# Needed for empty value as the input wont be sent in this case... we need something to know the input was displayed AND empty #}
+        {% set defined_input_name = "_#{name}_defined" %}
+        <input type="hidden" name="{{ defined_input_name }}" value="1"></input>
+
+        {# Multiple values will be set, input need to be an array #}
+        {% set name = "#{name}[]" %}
+    {% endif %}
+    {% set options = {
+        'rand': random(),
+        'width': '100%',
+    }|merge(options) %}
+    {% if options.fields_template.isMandatoryField(name)|default(false) %}
+        {% set options = {'specific_tags': {'required': true}}|merge(options) %}
+    {% endif %}
+
+    {% if options.fields_template.isReadonlyField(name)|default(false) %}
+        {% set options = options|merge({'readonly': true}) %}
+    {% endif %}
+
+    {% if options.disabled %}
+        {% set options = options|merge({'specific_tags': {'disabled': 'disabled'}}) %}
+    {% endif %}
+
+    {% set options = options|merge({
+        'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand
+    }) %}
+    {% set field %}
+        {% set ajax_opts = options|filter((v, k) => k in ['templateResult', 'templateSelection', 'rand']) %}
+        {{ call('Html::jsAjaxDropdown', [name, options.id, url, ajax_opts])|raw }}
+    {% endset %}
+
+    {% if field|trim is not empty %}
+        {{ _self.field(name, field, label, options) }}
+    {% endif %}
 {% endmacro %}
 
 {% macro htmlField(name, value, label = '', options = {}) %}
@@ -710,7 +759,7 @@
       wrapper_class: 'form-control-plaintext'
    }|merge(options) %}
 
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
@@ -728,6 +777,7 @@
       'add_field_html': '',
       'locked': false,
       'locked_fields': [],
+       'no_label': false,
    }|merge(options) %}
 
    {% if options.locked_fields[name] is defined %}
@@ -736,18 +786,18 @@
       {% set options = options|merge({'locked': true}) %}
    {% endif %}
 
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
    {% if not options.include_field %}
       {{ field }}
    {% else %}
-      {% set id    = options.id|length > 0 and options.id != '%id%' ? options.id : (name|slug ~ '_' ~ options.rand) %}
+      {% set id    = (options.id ?? '')|length > 0 and options.id != '%id%' ? options.id : (name|slug ~ '_' ~ options.rand) %}
       {% set field = field|replace({'%id%': id}) %}
       {% set add_field_html = options.add_field_html|length > 0 ? options.add_field_html : '' %}
 
-      {% if options.fields_template is not defined or not options.fields_template.isHiddenField(name) %}
+      {% if not options.fields_template.isHiddenField(name)|default(false) %}
          {% if options.no_label %}
             {{ _self.noLabelField(field, id, add_field_html, options) }}
          {% elseif options.is_horizontal %}
@@ -767,16 +817,16 @@
          {% endif %}
       </div>
    {% endset %}
-   {{ _self.field(id, field, label, options|merge({'id': id ~ '_' ~ options.rand})) }}
+   {{ _self.field(id, field, label, options|merge({'id': id ~ '_' ~ options.rand ?? random()})) }}
 {% endmacro %}
 
 {% macro nullField(options = {}) %}
    {% set options = {'is_horizontal': true}|merge(options) %}
 
    {% if options.is_horizontal %}
-      {{ _self.horizontalField(label, field, id, add_field_html, options) }}
+      {{ _self.horizontalField(null, null, null, null, options) }}
    {% else %}
-      {{ _self.verticalField(label, field, id, add_field_html, options) }}
+      {{ _self.verticalField(null, null, null, null, options) }}
    {% endif %}
 {% endmacro %}
 
@@ -787,6 +837,7 @@
       'mb': 'mb-3',
       'add_field_class': '',
       'add_field_attribs': {},
+      'inline_add_field_html': false,
    }|merge(options) %}
 
    {% set class = options.field_class ?? 'col-12 col-sm-6' %}
@@ -801,7 +852,7 @@
       {% set extra_attribs = '' %}
    {% endif %}
 
-   <div class="{{ class }} {{ options.mb }}" {{ extra_attribs|raw }}>
+   <div class="{{ class }} {{ options.mb }} {{ options.inline_add_field_html ? 'd-flex' : '' }}" {{ extra_attribs|raw }}>
       {{ field|raw }}
       {{ add_field_html|raw }}
    </div>
@@ -820,6 +871,8 @@
       'add_field_attribs': {},
       'center': false,
       'label_align': 'end',
+      'inline_add_field_html': false,
+       'icon_label': false,
    }|merge(options) %}
 
    {% if options.icon_label %}
@@ -862,9 +915,7 @@
    <div class="form-field row align-items-center {{ options.field_class }} {{ options.add_field_class }} {{ options.mb }}" {{ extra_attribs|raw }}>
       {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
       {{ _inputs.label(label, id, options, 'col-form-label ' ~ options.label_class ~ ' ' ~ options.add_label_class) }}
-      {% if options.center %}
-         {% set flex_class = "d-flex align-items-center" %}
-      {% endif %}
+      {% set flex_class = options.center ? 'd-flex align-items-center' : (options.inline_add_field_html ? 'd-flex' : '') %}
       <div {{ container_id }} class="{{ options.input_class }} {{ flex_class }} field-container">
          {{ field|raw }}
          {{ add_field_html|raw }}
@@ -881,6 +932,8 @@
       'add_field_class': '',
       'add_field_attribs': {},
       'insert_content_after_label': '',
+      'label_class': '',
+      'input_class': '',
    }|merge(options) %}
 
    {% if options.full_width %}
@@ -937,7 +990,7 @@
     <script>
         $(() => {
             const editor_options = {{ options.single_line ? 'true' : 'false' }} ? window.GLPI.Monaco.getSingleLineEditorOptions() : {};
-            window.GLPI.Monaco.createEditor('{{ code_container_id }}', 'twig', "{{ value|e('js') }}", {{ options.completions|json_encode|raw }}, editor_options).then(() => {
+            window.GLPI.Monaco.createEditor('{{ code_container_id }}', '{{ options.language }}', "{{ value|e('js') }}", {{ options.completions|json_encode|raw }}, editor_options).then(() => {
                 $('#{{ code_container_id }}').closest('form').on('formdata', (e) => {
                     const editors = window.monaco.editor.getEditors().filter((editor) => {
                         return editor._domElement.id === '{{ code_container_id }}';
@@ -950,4 +1003,94 @@
             });
         });
     </script>
+{% endmacro %}
+
+{% macro illustrationField(name, value, label = '', options = {}) %}
+    {% set options = {
+        extra_css_classes: "",
+        backdrop: true,
+    }|merge(options) %}
+    {% set custom_icon_prefix = constant(
+        'Glpi\\UI\\IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX'
+    ) %}
+    {% set field %}
+        {% set container_id = "container-" ~ random() %}
+
+        <div id="{{ container_id }}">
+            <input
+                name="{{ name }}"
+                type="hidden"
+                value="{{ value }}"
+                data-glpi-icon-picker-value
+            >
+
+            {# Display the illustration, trigger the modal on click #}
+            {% set modal_id = "illustration-modal-" ~ random() %}
+            <div
+                class="illustration-selector d-flex align-items-center card border-1 {{ options.extra_css_classes }}"
+                role="button"
+                aria-label="{{ __("Select an illustration") }}"
+                data-bs-toggle="modal"
+                data-bs-target="#{{ modal_id }}"
+                data-glpi-icon-picker-value-preview
+            >
+                <div class="card-body aspect-ratio-1">
+                    {% set is_custom_file = value starts with custom_icon_prefix %}
+                    <div
+                        {% if is_custom_file %}
+                            data-glpi-icon-picker-value-preview-custom
+                        {% else %}
+                            data-glpi-icon-picker-value-preview-native
+                        {% endif %}
+                    >
+                        {{ render_illustration(value, 100) }}
+                    </div>
+
+                    {# Keep the other format (native/custom) that wasn't used
+                    in a dedicated div that we can show later if the format
+                    is changed #}
+                    {% if is_custom_file %}
+                        <div
+                            class="d-none"
+                            data-glpi-icon-picker-value-preview-native
+                        >
+                           {{ render_illustration('', 100) }}
+                        </div>
+                    {% else %}
+                        <div
+                            class="d-none"
+                            data-glpi-icon-picker-value-preview-custom
+                        >
+                           {{ render_illustration(custom_icon_prefix, 100) }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {# Render the modal content #}
+            {{ include('components/illustration/icon_picker_modal.html.twig', {
+                'id': modal_id,
+                'backdrop': options.backdrop,
+            }, with_context: false) }}
+
+            {# Start js controller #}
+            <script defer type="module">
+                (async () => {
+                    const module = await import(
+                        "/js/modules/IllustrationPicker/Controller.js"
+                    );
+                    new module.GlpiIllustrationPickerController(
+                        document.getElementById('{{ container_id }}'),
+                        document.getElementById('{{ modal_id }}'),
+                        "{{ custom_icon_prefix }}",
+                    );
+                })();
+            </script>
+        </div>
+    {% endset %}
+
+    {% set options = {
+        'id': '%id%',
+    }|merge(options) %}
+    {{ _self.field(name, field, label, options) }}
 {% endmacro %}

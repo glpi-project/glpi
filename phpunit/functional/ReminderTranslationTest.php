@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -55,12 +54,12 @@ class ReminderTranslationTest extends DbTestCase
 
         $data = [
             'name'         => '_test_reminder01',
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ];
 
         $reminder = new \Reminder();
         $added = $reminder->add($data);
-        $this->assertGreaterThan(0, (int)$added);
+        $this->assertGreaterThan(0, (int) $added);
 
         $reminder1 = getItemByTypeName(\Reminder::getType(), '_test_reminder01');
 
@@ -101,8 +100,8 @@ class ReminderTranslationTest extends DbTestCase
             'reminders_id' => $reminder->getID(),
             'users_id'     => getItemByTypeName('User', TU_USER, true),
             'text'         => $text,
-            'language'     => $lang
+            'language'     => $lang,
         ];
-        $this->assertGreaterThan(0, (int)$trans->add($input));
+        $this->assertGreaterThan(0, (int) $trans->add($input));
     }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,7 +37,7 @@ use Glpi\Asset\Asset_PeripheralAsset;
 
 class RuleDictionnaryPrinterCollection extends RuleCollection
 {
-   // From RuleCollection
+    // From RuleCollection
 
     public $stop_on_first_match = true;
     public $can_replay_rules    = true;
@@ -54,12 +54,20 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
     public function cleanTestOutputCriterias(array $output)
     {
         //If output array contains keys begining with _ : drop it
-        foreach ($output as $criteria => $value) {
+        foreach (array_keys($output) as $criteria) {
             if (($criteria[0] == '_') && ($criteria != '_ignore_import')) {
                 unset($output[$criteria]);
             }
         }
         return $output;
+    }
+
+    public function countTotalItemsForRulesReplay(array $params = []): int
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        return $DB->request($this->getIteratorCriteriaForRulesReplay())->count();
     }
 
     public function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = [])
@@ -73,57 +81,18 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
         $nb = 0;
         $i  = $offset;
 
-       //Select all the differents software
-        $criteria = [
-            'SELECT' => [
-                'glpi_printers.name',
-                'glpi_manufacturers.name AS manufacturer',
-                'glpi_printers.manufacturers_id AS manufacturers_id',
-                'glpi_printers.comment AS comment'
-            ],
-            'DISTINCT'  => true,
-            'FROM'      => 'glpi_printers',
-            'LEFT JOIN' => [
-                'glpi_manufacturers' => [
-                    'ON'  => [
-                        'glpi_manufacturers' => 'id',
-                        'glpi_printers'      => 'manufacturers_id'
-                    ]
-                ]
-            ],
-            'WHERE'     => [
-            // Do not replay on trashbin and templates
-                'glpi_printers.is_deleted'    => 0,
-                'glpi_printers.is_template'   => 0
-            ]
-        ];
+        $criteria = $this->getIteratorCriteriaForRulesReplay();
 
         if ($offset) {
-            $criteria['START'] = (int)$offset;
-            $criteria['LIMIT'] = 999999999;
+            $criteria['START'] = (int) $offset;
+            $criteria['LIMIT'] = 2 ** 32; // MySQL requires a limit, set it to an unreachable value
         }
 
         $iterator = $DB->request($criteria);
         $nb   = count($iterator) + $offset;
-        $step = (($nb > 1000) ? 50 : (($nb > 20) ? floor(count($iterator) / 20) : 1));
 
         foreach ($iterator as $input) {
-            if (!($i % $step)) {
-                if (isCommandLine()) {
-                    //TRANS: %1$s is a date, %2$s is a row, %3$s is total row, %4$s is memory
-                    printf(
-                        __('%1$s - replay rules on existing database: %2$s/%3$s (%4$s Mio)') . "\n",
-                        date("H:i:s"),
-                        $i,
-                        $nb,
-                        round(memory_get_usage() / (1024 * 1024), 2)
-                    );
-                } else {
-                    Html::changeProgressBarPosition($i, $nb, "$i / $nb");
-                }
-            }
-
-           //Replay printer dictionary rules
+            //Replay printer dictionary rules
             $res_rule = $this->processAllRules($input, [], []);
 
             foreach (['manufacturer', 'is_global', 'name'] as $attr) {
@@ -132,49 +101,64 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
                 }
             }
 
-           //If the software's name or version has changed
+            //If the software's name or version has changed
             if (self::somethingHasChanged($res_rule, $input)) {
                 $IDs = [];
-               //Find all the printers in the database with the same name and manufacturer
+                //Find all the printers in the database with the same name and manufacturer
                 $print_iterator = $DB->request([
                     'SELECT' => 'id',
                     'FROM'   => 'glpi_printers',
                     'WHERE'  => [
                         'name'               => $input['name'],
-                        'manufacturers_id'   => $input['manufacturers_id']
-                    ]
+                        'manufacturers_id'   => $input['manufacturers_id'],
+                    ],
                 ]);
 
                 if (count($print_iterator)) {
-                     //Store all the printer's IDs in an array
+                    //Store all the printer's IDs in an array
                     foreach ($print_iterator as $result) {
                         $IDs[] = $result["id"];
                     }
-                     //Replay dictionary on all the printers
-                     $this->replayDictionnaryOnPrintersByID($IDs, $res_rule);
+                    //Replay dictionary on all the printers
+                    $this->replayDictionnaryOnPrintersByID($IDs, $res_rule);
                 }
             }
             $i++;
 
-            if ($maxtime) {
-                $crt = explode(" ", microtime());
-                if (((float)$crt[0] + (float)$crt[1]) > $maxtime) {
-                    break;
-                }
+            if ($maxtime && microtime(true) > $maxtime) {
+                break;
             }
         }
 
-        if (isCommandLine()) {
-            printf(__('Replay rules on existing database: %1$s/%2$s') . "\n", $i, $nb);
-        } else {
-            Html::changeProgressBarPosition($i, $nb, "$i / $nb");
-        }
-
-        if (isCommandLine()) {
-            printf(__('Replay rules on existing database ended on %s') . "\n", date("r"));
-        }
-
         return (($i == $nb) ? -1 : $i);
+    }
+
+    private function getIteratorCriteriaForRulesReplay(): array
+    {
+        //Select all the differents software
+        return [
+            'SELECT' => [
+                'glpi_printers.name',
+                'glpi_manufacturers.name AS manufacturer',
+                'glpi_printers.manufacturers_id AS manufacturers_id',
+                'glpi_printers.comment AS comment',
+            ],
+            'DISTINCT'  => true,
+            'FROM'      => 'glpi_printers',
+            'LEFT JOIN' => [
+                'glpi_manufacturers' => [
+                    'ON'  => [
+                        'glpi_manufacturers' => 'id',
+                        'glpi_printers'      => 'manufacturers_id',
+                    ],
+                ],
+            ],
+            'WHERE'     => [
+                // Do not replay on trashbin and templates
+                'glpi_printers.is_deleted'    => 0,
+                'glpi_printers.is_template'   => 0,
+            ],
+        ];
     }
 
 
@@ -218,21 +202,21 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
                 'glpi_printers.name',
                 'glpi_printers.entities_id AS entities_id',
                 'glpi_printers.is_global AS is_global',
-                'glpi_manufacturers.name AS manufacturer'
+                'glpi_manufacturers.name AS manufacturer',
             ],
             'FROM'      => 'glpi_printers',
             'LEFT JOIN' => [
                 'glpi_manufacturers'  => [
                     'FKEY'   => [
                         'glpi_printers'      => 'manufacturers_id',
-                        'glpi_manufacturers' => 'id'
-                    ]
-                ]
+                        'glpi_manufacturers' => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'glpi_printers.is_template'   => 0,
-                'glpi_printers.id'            => $IDs
-            ]
+                'glpi_printers.id'            => $IDs,
+            ],
         ]);
 
         foreach ($iterator as $printer) {
@@ -240,7 +224,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
             $this->replayDictionnaryOnOnePrinter($new_printers, $res_rule, $printer, $delete_ids);
         }
 
-       //Delete printer if needed
+        //Delete printer if needed
         $this->putOldPrintersInTrash($delete_ids);
     }
 
@@ -281,13 +265,13 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
         $input["name"]         = $p['name'];
         $input["manufacturer"] = $p['manufacturer'];
 
-        if (empty($res_rule)) {
+        if ($res_rule === []) {
             $res_rule = $this->processAllRules($input, [], []);
         }
 
         $printer = new Printer();
 
-       //Printer's name has changed
+        //Printer's name has changed
         if (
             isset($res_rule["name"])
             && ($res_rule["name"] != $p['name'])
@@ -303,9 +287,9 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
                 $manufacturer = $p['manufacturer'];
             }
 
-           //New printer not already present in this entity
+            //New printer not already present in this entity
             if (!isset($new_printers[$p['entity']][$res_rule["name"]])) {
-               // create new printer or restore it from trashbin
+                // create new printer or restore it from trashbin
                 $new_printer_id = $printer->addOrRestoreFromTrash(
                     $res_rule["name"],
                     $manufacturer,
@@ -316,7 +300,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
                 $new_printer_id = $new_printers[$p['entity']][$res_rule["name"]];
             }
 
-           // Move direct connections
+            // Move direct connections
             $this->moveDirectConnections($p['id'], $new_printer_id);
         } else {
             $new_printer_id  = $p['id'];
@@ -331,7 +315,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
             $printer->update($res_rule);
         }
 
-       // Add to printer to deleted list
+        // Add to printer to deleted list
         if ($new_printer_id != $p['id']) {
             $printers_ids[] = $p['id'];
         }
@@ -356,7 +340,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
             $relation_table,
             [
                 'itemtype_peripheral' => 'Printer',
-                'items_id_peripheral' => $ID
+                'items_id_peripheral' => $ID,
             ]
         );
         foreach ($connections as $connection) {
@@ -375,7 +359,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
                 // Direct connection doesn't exists in the target printer : move it
                 $conn->update([
                     'id'                  => $connection['id'],
-                    'items_id_peripheral' => $new_printers_id
+                    'items_id_peripheral' => $new_printers_id,
                 ]);
             } else {
                 // Direct connection already exists in the target printer : delete it

@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -63,7 +62,7 @@ if (!$DB->tableExists('glpi_dropdownvisibilities')) {
         'appliance',
         'databaseinstance',
         'cable',
-        'unmanaged'
+        'unmanaged',
     ];
 
     $query = "CREATE TABLE `glpi_dropdownvisibilities` (
@@ -100,7 +99,7 @@ if (!$DB->tableExists('glpi_dropdownvisibilities')) {
         }
     }
 }
-$migration->displayWarning(
+$migration->addInfoMessage(
     'States dropdown in devices items forms are now filtered, and, by default, existing states are not visible.'
 );
 

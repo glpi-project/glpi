@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -42,6 +42,8 @@ interface TypeInterface
      * Get the field type name.
      */
     public static function getName(): string;
+
+    public function getLabel(): string;
 
     /**
      * Get the HTML code to use to display the custom field input in the asset form.
@@ -85,6 +87,11 @@ interface TypeInterface
      * @return OptionInterface[]
      */
     public function getOptions(): array;
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getOptionValues(bool $default_field = false): array;
 
     /**
      * Defines configured default value.

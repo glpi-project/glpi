@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -48,7 +47,7 @@ class DropdownTranslationTest extends DbTestCase
         $category = $this->createItem(
             ITILCategory::class,
             [
-                'name' => 'Root category'
+                'name' => 'Root category',
             ]
         );
         $sub_category = $this->createItem(
@@ -86,7 +85,7 @@ class DropdownTranslationTest extends DbTestCase
                     'language' => 'fr_FR',
                     'field'    => 'name',
                     'value'    => 'Catégorie racine',
-                ]
+                ],
             ],
             'category_id'   => $category->getID(),
             'language'      => 'fr_FR',
@@ -102,7 +101,7 @@ class DropdownTranslationTest extends DbTestCase
                     'language' => 'fr_FR',
                     'field'    => 'name',
                     'value'    => 'Catégorie racine',
-                ]
+                ],
             ],
             'category_id'   => $sub_category->getID(),
             'language'      => 'fr_FR',
@@ -118,7 +117,7 @@ class DropdownTranslationTest extends DbTestCase
                     'language' => 'fr_FR',
                     'field'    => 'name',
                     'value'    => 'Sous catégorie',
-                ]
+                ],
             ],
             'category_id'   => $sub_category->getID(),
             'language'      => 'fr_FR',
@@ -141,7 +140,7 @@ class DropdownTranslationTest extends DbTestCase
                     'language' => 'fr_FR',
                     'field'    => 'name',
                     'value'    => 'Sous catégorie',
-                ]
+                ],
             ],
             'category_id'   => $sub_category->getID(),
             'language'      => 'fr_FR',
@@ -157,7 +156,7 @@ class DropdownTranslationTest extends DbTestCase
                     'language' => 'fr_FR',
                     'field'    => 'name',
                     'value'    => 'Sous catégorie',
-                ]
+                ],
             ],
             'category_id'   => $sub_sub_category->getID(),
             'language'      => 'fr_FR',

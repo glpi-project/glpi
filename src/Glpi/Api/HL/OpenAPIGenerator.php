@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,10 +35,10 @@
 
 namespace Glpi\Api\HL;
 
-use Glpi\Api\HL\Controller\ProjectController;
-use Glpi\Api\HL\Doc\Response;
+use CommonGLPI;
 use Glpi\Api\HL\Doc\Schema;
 use Glpi\Api\HL\Doc\SchemaReference;
+use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\OAuth\Server;
 
 /**
@@ -163,8 +163,9 @@ EOT;
                         unset($schemas[$schema_name]);
                     }
                     if (!isset($known_schema['description']) && isset($known_schema['x-itemtype'])) {
+                        /** @var class-string<CommonGLPI> $itemtype */
                         $itemtype = $known_schema['x-itemtype'];
-                        $known_schema['description'] = method_exists($itemtype, 'getTypeName') ? $itemtype::getTypeName(1) : 'No description available';
+                        $known_schema['description'] = $itemtype::getTypeName(1);
                     }
                     $schemas[$calculated_name] = $known_schema;
                     $schemas[$calculated_name]['x-controller'] = $controller::class;
@@ -185,7 +186,7 @@ EOT;
         if ($is_ref_array) {
             $name = substr($name, 0, -2);
         }
-        if ($name === '{itemtype}') {
+        if (preg_match('/\{\w+}/', $name)) {
             // Placeholder that will be replaced after route paths are expanded
             $match = $name;
         }
@@ -213,12 +214,12 @@ EOT;
             return [
                 'type' => 'array',
                 'items' => [
-                    '$ref' => '#/components/schemas/' . $match,
+                    '$ref' => '#/components/schemas/' . preg_replace('/({\w+})/', '$1', $match),
                 ],
             ];
         }
         return [
-            '$ref' => '#/components/schemas/' . $match,
+            '$ref' => '#/components/schemas/' . preg_replace('/({\w+})/', '$1', $match),
         ];
     }
 
@@ -238,13 +239,13 @@ EOT;
             'servers' => [
                 [
                     'url' => $CFG_GLPI['url_base'] . '/api.php',
-                    'description' => 'GLPI High-Level REST API'
-                ]
+                    'description' => 'GLPI High-Level REST API',
+                ],
             ],
             'components' => [
                 'securitySchemes' => $this->getSecuritySchemeComponents(),
                 'schemas' => $component_schemas,
-            ]
+            ],
         ];
 
         $routes = $this->router->getAllRoutes();
@@ -273,19 +274,20 @@ EOT;
                 continue;
             }
             foreach ($response['content'] as $content_type => &$content) {
+                $is_array = isset($content['schema']['items']['$ref']);
+                if (!$is_array && !isset($content['schema']['$ref'])) {
+                    continue;
+                }
+                $original_ref = $is_array ? $content['schema']['items']['$ref'] : $content['schema']['$ref'];
+                $new_ref = $original_ref;
                 foreach ($placeholders as $placeholder_name => $placeholder_value) {
-                    if (isset($content['schema']['$ref']) && $content['schema']['$ref'] === '#/components/schemas/{' . $placeholder_name . '}') {
-                        $new_schema = $this->getComponentReference($placeholder_value, $controller);
-                        if ($new_schema !== null) {
-                            $content['schema']['$ref'] = $new_schema['$ref'];
-                        }
+                    if (str_contains($original_ref, '{' . $placeholder_name . '}')) {
+                        $new_ref = str_replace('{' . $placeholder_name . '}', $placeholder_value, $new_ref);
                     }
-                    // Handle array types
-                    if (isset($content['schema']['items']['$ref']) && $content['schema']['items']['$ref'] === '#/components/schemas/{' . $placeholder_name . '}') {
-                        $new_schema = $this->getComponentReference($placeholder_value, $controller);
-                        if ($new_schema !== null) {
-                            $content['schema']['items']['$ref'] = $new_schema['$ref'];
-                        }
+                    if ($is_array) {
+                        $content['schema']['items']['$ref'] = $new_ref;
+                    } else {
+                        $content['schema']['$ref'] = $new_ref;
                     }
                 }
             }
@@ -299,19 +301,20 @@ EOT;
     {
         $new_parameters = $parameters;
         foreach ($new_parameters as &$parameter) {
+            $is_array = isset($parameter['schema']['items']['$ref']);
+            if (!$is_array && !isset($parameter['schema']['$ref'])) {
+                continue;
+            }
+            $original_ref = $is_array ? $parameter['schema']['items']['$ref'] : $parameter['schema']['$ref'];
+            $new_ref = $original_ref;
             foreach ($placeholders as $placeholder_name => $placeholder_value) {
-                if (isset($parameter['schema']['$ref']) && $parameter['schema']['$ref'] === '#/components/schemas/{' . $placeholder_name . '}') {
-                    $new_schema = $this->getComponentReference($placeholder_value, $controller);
-                    if ($new_schema !== null) {
-                        $parameter['schema']['$ref'] = $new_schema['$ref'];
-                    }
+                if (str_contains($original_ref, '{' . $placeholder_name . '}')) {
+                    $new_ref = str_replace('{' . $placeholder_name . '}', $placeholder_value, $new_ref);
                 }
-                // Handle array types
-                if (isset($parameter['schema']['items']['$ref']) && $parameter['schema']['items']['$ref'] === '#/components/schemas/{' . $placeholder_name . '}') {
-                    $new_schema = $this->getComponentReference($placeholder_value, $controller);
-                    if ($new_schema !== null) {
-                        $parameter['schema']['items']['$ref'] = $new_schema['$ref'];
-                    }
+                if ($is_array) {
+                    $parameter['schema']['items']['$ref'] = $new_ref;
+                } else {
+                    $parameter['schema']['$ref'] = $new_ref;
                 }
             }
         }
@@ -326,19 +329,20 @@ EOT;
             return $new_request_body;
         }
         foreach ($new_request_body['content'] as $content_type => &$content) {
+            $is_array = isset($content['schema']['items']['$ref']);
+            if (!$is_array && !isset($content['schema']['$ref'])) {
+                continue;
+            }
+            $original_ref = $is_array ? $content['schema']['items']['$ref'] : $content['schema']['$ref'];
+            $new_ref = $original_ref;
             foreach ($placeholders as $placeholder_name => $placeholder_value) {
-                if (isset($content['schema']['$ref']) && $content['schema']['$ref'] === '#/components/schemas/{' . $placeholder_name . '}') {
-                    $new_schema = $this->getComponentReference($placeholder_value, $controller);
-                    if ($new_schema !== null) {
-                        $content['schema']['$ref'] = $new_schema['$ref'];
-                    }
+                if (str_contains($original_ref, '{' . $placeholder_name . '}')) {
+                    $new_ref = str_replace('{' . $placeholder_name . '}', $placeholder_value, $new_ref);
                 }
-                // Handle array types
-                if (isset($content['schema']['items']['$ref']) && $content['schema']['items']['$ref'] === '#/components/schemas/{' . $placeholder_name . '}') {
-                    $new_schema = $this->getComponentReference($placeholder_value, $controller);
-                    if ($new_schema !== null) {
-                        $content['schema']['items']['$ref'] = $new_schema['$ref'];
-                    }
+                if ($is_array) {
+                    $content['schema']['items']['$ref'] = $new_ref;
+                } else {
+                    $content['schema']['$ref'] = $new_ref;
                 }
             }
         }
@@ -356,9 +360,6 @@ EOT;
     {
         $expanded = [];
         foreach ($paths as $path_url => $path) {
-            if (str_contains($path_url, 'Timeline')) {
-                $t = '';
-            }
             foreach ($path as $method => $route) {
                 $new_urls = [];
                 /** @var array $all_expansions All path expansions where the keys are the placeholder name and the values are arrays of possible replacements */
@@ -387,25 +388,26 @@ EOT;
                 foreach ($combinations as $combination) {
                     $new_url = $path_url;
                     $temp_expanded = $route;
+                    $temp_expanded['responses'] = $this->replaceRefPlaceholdersInResponses(
+                        $route['responses'],
+                        $combination,
+                        $route['x-controller']
+                    );
+                    $temp_expanded['parameters'] = $this->replaceRefPlaceholdersInParameters(
+                        $route['parameters'],
+                        $combination,
+                        $route['x-controller']
+                    );
+                    if (isset($route['requestBody'])) {
+                        $temp_expanded['requestBody'] = $this->replaceRefPlaceholdersInRequestBody(
+                            $route['requestBody'],
+                            $combination,
+                            $route['x-controller']
+                        );
+                    }
+
                     foreach ($combination as $placeholder => $value) {
                         $new_url = str_replace("{{$placeholder}}", $value, $new_url);
-                        $temp_expanded['responses'] = $this->replaceRefPlaceholdersInResponses(
-                            $route['responses'],
-                            [$placeholder => $value],
-                            $route['x-controller']
-                        );
-                        $temp_expanded['parameters'] = $this->replaceRefPlaceholdersInParameters(
-                            $route['parameters'],
-                            [$placeholder => $value],
-                            $route['x-controller']
-                        );
-                        if (isset($route['requestBody'])) {
-                            $temp_expanded['requestBody'] = $this->replaceRefPlaceholdersInRequestBody(
-                                $route['requestBody'],
-                                [$placeholder => $value],
-                                $route['x-controller']
-                            );
-                        }
                         // Remove the itemtype path parameter now that it is a static value
                         foreach ($temp_expanded['parameters'] as $param_key => $param) {
                             if ($param['name'] === $placeholder) {
@@ -438,6 +440,9 @@ EOT;
      */
     private function getSecuritySchemeComponents(): array
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $scopes = Server::getAllowedScopes();
         $scope_descriptions = Server::getScopeDescriptions();
         $scopes = array_combine(array_keys($scopes), $scope_descriptions);
@@ -447,16 +452,16 @@ EOT;
                 'type' => 'oauth2',
                 'flows' => [
                     'authorizationCode' => [
-                        'authorizationUrl' => '/api.php/authorize',
-                        'tokenUrl' => '/api.php/token',
-                        'refreshUrl' => '/api.php/token',
-                        'scopes' => $scopes
+                        'authorizationUrl' => $CFG_GLPI['root_doc'] . '/api.php/authorize',
+                        'tokenUrl' => $CFG_GLPI['root_doc'] . '/api.php/token',
+                        'refreshUrl' => $CFG_GLPI['root_doc'] . '/api.php/token',
+                        'scopes' => $scopes,
                     ],
                     'password' => [
-                        'tokenUrl' => '/api.php/token',
-                        'scopes' => $scopes
-                    ]
-                ]
+                        'tokenUrl' => $CFG_GLPI['root_doc'] . '/api.php/token',
+                        'scopes' => $scopes,
+                    ],
+                ],
             ],
         ];
     }
@@ -494,9 +499,9 @@ EOT;
                     'schema' => [
                         'type' => 'object',
                         'properties' => [],
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         // If there is a parameter with the location of body and name of "_", it should be an object that represents the entire request body (or at least the base schema of it)
@@ -518,7 +523,7 @@ EOT;
                 continue;
             }
             $body_param = [
-                'type' => $route_param->getSchema()->getType()
+                'type' => $route_param->getSchema()->getType(),
             ];
             if ($route_param->getSchema()->getFormat() !== null) {
                 $body_param['format'] = $route_param->getSchema()->getFormat();
@@ -556,21 +561,11 @@ EOT;
      */
     private function getPathSecuritySchema(RoutePath $route_path, string $route_method): array
     {
-        $schemas = [
+        return [
             [
-                'oauth' => []
-            ]
+                'oauth' => [],
+            ],
         ];
-        // Handle special Session case
-        if ($route_path->getRouteSecurityLevel() !== Route::SECURITY_NONE) {
-            $schemas = array_merge($schemas, [
-                [
-                    'sessionTokenAuth' => []
-                ]
-            ]);
-        }
-
-        return $schemas;
     }
 
     private function getPathResponseSchemas(RoutePath $route_path, string $method): array
@@ -592,17 +587,17 @@ EOT;
                 'description' => $response->getDescription(),
                 'content' => [
                     $response_media_type => [
-                        'schema' => $resolved_schema
-                    ]
+                        'schema' => $resolved_schema,
+                    ],
                 ],
             ];
-            if ($response_media_type === 'application/json') {
+            if ($response_media_type === 'application/json' && $route_path->hasMiddleware(ResultFormatterMiddleware::class)) {
                 // add csv and xml
                 $response_schema['content']['text/csv'] = [
-                    'schema' => $resolved_schema
+                    'schema' => $resolved_schema,
                 ];
                 $response_schema['content']['application/xml'] = [
-                    'schema' => $resolved_schema
+                    'schema' => $resolved_schema,
                 ];
             }
             $response_schemas[$response->getStatusCode()] = $response_schema;
@@ -631,7 +626,7 @@ EOT;
             $default_responses = [
                 '200' => [
                     'description' => 'Success',
-                    'methods' => ['GET', 'PATCH'] // Usually only GET and PATCH methods return 200
+                    'methods' => ['GET', 'PATCH'], // Usually only GET and PATCH methods return 200
                 ],
                 '201' => [
                     'description' => 'Success (created)',
@@ -640,9 +635,9 @@ EOT;
                         'Location' => [
                             'description' => 'The URL of the newly created resource',
                             'schema' => [
-                                'type' => 'string'
-                            ]
-                        ]
+                                'type' => 'string',
+                            ],
+                        ],
                     ],
                     'content' => [
                         'application/json' => [
@@ -651,19 +646,19 @@ EOT;
                                 'properties' => [
                                     'id' => [
                                         'type' => 'integer',
-                                        'format' => 'int64'
+                                        'format' => 'int64',
                                     ],
                                     'href' => [
-                                        'type' => 'string'
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
+                                        'type' => 'string',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
                 '204' => [
                     'description' => 'Success (no content)',
-                    'methods' => ['DELETE']
+                    'methods' => ['DELETE'],
                 ],
                 '400' => [
                     'description' => 'Bad request',
@@ -696,8 +691,6 @@ EOT;
                     if (isset($info['content'])) {
                         $path_schema['responses'][$code]['content'] = $info['content'];
                     }
-                } else {
-                    $path_schema['responses'][$code]['produces'] = array_keys($response_schema[(int) $code]['content']);
                 }
             }
 
@@ -714,8 +707,10 @@ EOT;
                 if (count($route_params) > 0) {
                     foreach ($route_params as $route_param) {
                         $location = $route_param->getLocation();
-                        if ($location !== Doc\Parameter::LOCATION_BODY && $location !== Doc\Parameter::LOCATION_PATH) {
-                            $path_schema['parameters'][$route_param->getName()] = $this->getPathParameterSchema($route_param);
+                        if ($location !== Doc\Parameter::LOCATION_BODY) {
+                            if ($location !== Doc\Parameter::LOCATION_PATH || (array_key_exists($route_param->getName(), $requirements) && str_contains($route_path->getRoutePath(), '{' . $route_param->getName() . '}'))) {
+                                $path_schema['parameters'][$route_param->getName()] = $this->getPathParameterSchema($route_param);
+                            }
                         }
                     }
                 }
@@ -733,30 +728,31 @@ EOT;
                         $param = [
                             'name' => $name,
                             'in' => 'path',
-                            'required' => 'true',
+                            'required' => true,
                             'schema' => [
                                 'type' => 'integer',
-                                'pattern' => $requirement
-                            ]
+                                'pattern' => $requirement,
+                            ],
                         ];
                     } else {
                         $param = [
                             'name' => $name,
                             'in' => 'path',
-                            'required' => 'true',
+                            'required' => true,
                             'schema' => [
                                 'type' => 'string',
-                                'pattern' => $requirement
-                            ]
+                                'pattern' => $requirement,
+                            ],
                         ];
                     }
 
                     $existing = $path_schema['parameters'][$param['name']] ?? [];
+                    $in = $existing['in'] ?? $param['in'];
                     $path_schema['parameters'][$param['name']] = [
                         'name' => $existing['name'] ?? $param['name'],
                         'description' => $existing['description'] ?? '',
-                        'in' => $existing['in'] ?? $param['in'],
-                        'required' => $existing['required'] ?? $param['required'],
+                        'in' => $in,
+                        'required' => $in === Doc\Parameter::LOCATION_PATH ? true : ($existing['required'] ?? $param['required']),
                     ];
                     /** @var SchemaArray $combined_schema */
                     $combined_schema = $param['schema'];
@@ -772,13 +768,13 @@ EOT;
                     'name' => 'GLPI-Entity',
                     'in' => 'header',
                     'description' => 'The ID of the entity to use. If not specified, the default entity for the user is used.',
-                    'schema' => ['type' => Schema::TYPE_INTEGER]
+                    'schema' => ['type' => Schema::TYPE_INTEGER],
                 ];
                 $path_schema['parameters']['GLPI-Profile'] = [
                     'name' => 'GLPI-Profile',
                     'in' => 'header',
                     'description' => 'The ID of the profile to use. If not specified, the default profile for the user is used.',
-                    'schema' => ['type' => Schema::TYPE_INTEGER]
+                    'schema' => ['type' => Schema::TYPE_INTEGER],
                 ];
                 $path_schema['parameters']['GLPI-Entity-Recursive'] = [
                     'name' => 'GLPI-Entity-Recursive',
@@ -786,7 +782,7 @@ EOT;
                     'description' => '"true" if the entity access should include child entities. This is false by default.',
                     'schema' => [
                         'type' => Schema::TYPE_STRING,
-                        'enum' => ['true', 'false']
+                        'enum' => ['true', 'false'],
                     ],
                 ];
             }
@@ -799,29 +795,29 @@ EOT;
                 'examples' => [
                     'English_GB' => [
                         'value' => 'en_GB',
-                        'summary' => 'English (United Kingdom)'
+                        'summary' => 'English (United Kingdom)',
                     ],
                     'French_FR' => [
                         'value' => 'fr_FR',
-                        'summary' => 'French (France)'
+                        'summary' => 'French (France)',
                     ],
                     'Portuguese_BR' => [
                         'value' => 'pt_BR',
-                        'summary' => 'Portuguese (Brazil)'
+                        'summary' => 'Portuguese (Brazil)',
                     ],
-                ]
+                ],
             ];
 
             if (strcasecmp($method, 'delete') && $request_body !== null) {
                 $path_schema['requestBody'] = $request_body;
             }
             $path_schema['security'] = $this->getPathSecuritySchema($route_path, $route_method);
-            $path_schema['parameters'] = array_values($path_schema['parameters'] ?? []);
+            $path_schema['parameters'] = array_values($path_schema['parameters']);
             $path_schema['x-controller'] = $route_path->getController();
             $path_schemas[$method] = $path_schema;
         }
         return [
-            $route_path->getRoutePath() => $path_schemas
+            $route_path->getRoutePath() => $path_schemas,
         ];
     }
 }

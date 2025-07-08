@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -69,7 +68,7 @@ class RuleSoftwareCategoryTest extends DbTestCase
                 'glpi_rules',
                 [
                     'uuid' => 'glpi_rule_rule_software_category_import_category_from_inventory_tool',
-                    'is_active' => 0
+                    'is_active' => 0,
                 ]
             )
         );
@@ -79,7 +78,7 @@ class RuleSoftwareCategoryTest extends DbTestCase
                 'glpi_rules',
                 [
                     'uuid' => 'glpi_rule_rule_software_category_import_category_from_inventory_tool',
-                    'is_active' => 1
+                    'is_active' => 1,
                 ]
             )
         );
@@ -94,7 +93,7 @@ class RuleSoftwareCategoryTest extends DbTestCase
 
         $relations = [
             \RuleAction::class => 1,
-            \RuleCriteria::class  => 1
+            \RuleCriteria::class  => 1,
         ];
 
         foreach ($relations as $relation => $expected) {

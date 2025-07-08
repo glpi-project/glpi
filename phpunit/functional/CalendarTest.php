@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -116,30 +115,30 @@ class CalendarTest extends DbTestCase
             [
                 'start'  => '2019-01-01 07:00:00',
                 'end'    => '2019-01-01 09:00:00',
-                'value'  => HOUR_TIMESTAMP
+                'value'  => HOUR_TIMESTAMP,
             ], [
                 'start'  => '2019-01-01 06:00:00',
                 'end'    => '2019-01-01 07:00:00',
-                'value'  => 0
+                'value'  => 0,
             ], [
                 'start'  => '2019-01-01 00:00:00',
                 'end'    => '2019-01-08 00:00:00',
-                'value'  => 12 * HOUR_TIMESTAMP * 5
+                'value'  => 12 * HOUR_TIMESTAMP * 5,
             ], [
                 'start'  => '2019-01-08 00:00:00',
                 'end'    => '2019-01-01 00:00:00',
-                'value'  => 0
+                'value'  => 0,
             ], [
                 'start'  => '2019-01-01 07:00:00',
                 'end'    => '2019-01-01 09:00:00',
                 'value'  => HOUR_TIMESTAMP * 2,
-                'days'   => true
+                'days'   => true,
             ], [
                 'start'  => '2019-01-01 00:00:00',
                 'end'    => '2019-01-08 00:00:00',
                 'value'  => WEEK_TIMESTAMP,
-                'days'   => true
-            ]
+                'days'   => true,
+            ],
         ];
     }
 
@@ -167,7 +166,7 @@ class CalendarTest extends DbTestCase
             ['2019-01-03 00:00:00', true],
             ['2019-01-04 00:00:00', true],
             ['2019-01-05 00:00:00', false],
-            ['2019-01-06 00:00:00', false]
+            ['2019-01-06 00:00:00', false],
         ];
     }
 
@@ -187,7 +186,7 @@ class CalendarTest extends DbTestCase
         $this->assertTrue($calendar->hasAWorkingDay());
 
         $cid = $calendar->add([
-            'name'   => 'Test'
+            'name'   => 'Test',
         ]);
         $this->assertGreaterThan(0, $cid);
         $this->assertTrue($calendar->getFromDB($cid));
@@ -202,7 +201,7 @@ class CalendarTest extends DbTestCase
             ['2019-01-03 18:10:00', true],
             ['2019-01-04 21:00:00', false],
             ['2019-01-05 08:30:00', false],
-            ['2019-01-06 00:00:00', false]
+            ['2019-01-06 00:00:00', false],
         ];
     }
 
@@ -220,9 +219,9 @@ class CalendarTest extends DbTestCase
         $calendar_holiday = new \Calendar_Holiday();
         $this->assertGreaterThan(
             0,
-            (int)$calendar_holiday->add([
+            (int) $calendar_holiday->add([
                 'calendars_id' => $calendar->fields['id'],
-                'holidays_id'  => getItemByTypeName('Holiday', 'X-Mas', true)
+                'holidays_id'  => getItemByTypeName('Holiday', 'X-Mas', true),
             ])
         );
 
@@ -252,7 +251,7 @@ class CalendarTest extends DbTestCase
             '2019-05-01'   => true,
             '2019-05-02'   => false,
             '2019-07-01'   => false,
-            '2019-07-12'   => true
+            '2019-07-12'   => true,
         ];
 
         //no holiday by default
@@ -263,37 +262,37 @@ class CalendarTest extends DbTestCase
         //Add holidays
         $calendar_holiday = new \Calendar_Holiday();
         $holiday = new \Holiday();
-        $hid = (int)$holiday->add([
+        $hid = (int) $holiday->add([
             'name'         => '1st of may',
             'entities_id'  => 0,
             'is_recursive' => 1,
             'begin_date'   => '2019-05-01',
             'end_date'     => '2019-05-01',
-            'is_perpetual' => 1
+            'is_perpetual' => 1,
         ]);
         $this->assertGreaterThan(0, $hid);
         $this->assertGreaterThan(
             0,
-            (int)$calendar_holiday->add([
+            (int) $calendar_holiday->add([
                 'holidays_id'  => $hid,
-                'calendars_id' => $calendar->fields['id']
+                'calendars_id' => $calendar->fields['id'],
             ])
         );
 
-        $hid = (int)$holiday->add([
+        $hid = (int) $holiday->add([
             'name'   => 'Summer vacations',
             'entities_id'  => 0,
             'is_recursive' => 1,
             'begin_date'   => '2019-07-08',
             'end_date'     => '2019-09-01',
-            'is_perpetual' => 0
+            'is_perpetual' => 0,
         ]);
         $this->assertGreaterThan(0, $hid);
         $this->assertGreaterThan(
             0,
-            (int)$calendar_holiday->add([
+            (int) $calendar_holiday->add([
                 'holidays_id'  => $hid,
-                'calendars_id' => $calendar->fields['id']
+                'calendars_id' => $calendar->fields['id'],
             ])
         );
 

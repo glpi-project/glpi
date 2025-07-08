@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -44,7 +44,7 @@ class Cable extends CommonDBTM
     use Glpi\Features\Clonable;
     use Glpi\Features\State;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory         = true;
     public static $rightname         = 'cable_management';
 
@@ -72,11 +72,11 @@ class Cable extends CommonDBTM
     {
         $ong = [];
         $this->addDefaultFormTab($ong)
-         ->addStandardTab('Infocom', $ong, $options)
-         ->addStandardTab('Item_Ticket', $ong, $options)
-         ->addStandardTab('Item_Problem', $ong, $options)
-         ->addStandardTab('Change_Item', $ong, $options)
-         ->addStandardTab('Log', $ong, $options);
+         ->addStandardTab(Infocom::class, $ong, $options)
+         ->addStandardTab(Item_Ticket::class, $ong, $options)
+         ->addStandardTab(Item_Problem::class, $ong, $options)
+         ->addStandardTab(Change_Item::class, $ong, $options)
+         ->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
@@ -122,8 +122,8 @@ class Cable extends CommonDBTM
                     'links' => [
                         'add'    => '/front/socket.form.php',
                         'search' => '/front/socket.php',
-                    ]
-                ]
+                    ],
+                ],
             ];
         }
         return false;
@@ -135,7 +135,7 @@ class Cable extends CommonDBTM
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -154,7 +154,7 @@ class Cable extends CommonDBTM
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -162,7 +162,7 @@ class Cable extends CommonDBTM
             'table'              => 'glpi_cabletypes',
             'field'              => 'name',
             'name'               => _n('Cable type', 'Cable types', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -170,7 +170,7 @@ class Cable extends CommonDBTM
             'table'              => 'glpi_cablestrands',
             'field'              => 'name',
             'name'               => _n('Cable strand', 'Cable strands', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -190,7 +190,7 @@ class Cable extends CommonDBTM
             'datatype'           => 'itemtypename',
             'itemtype_list'      => 'socket_types',
             'forcegroupby'       => true,
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -201,7 +201,7 @@ class Cable extends CommonDBTM
             'massiveaction'      => false,
             'datatype'           => 'specific',
             'searchtype'         => 'equals',
-            'additionalfields'   => ['itemtype_endpoint_b']
+            'additionalfields'   => ['itemtype_endpoint_b'],
         ];
 
         $tab[] = [
@@ -212,7 +212,7 @@ class Cable extends CommonDBTM
             'datatype'           => 'itemtypename',
             'itemtype_list'      => 'socket_types',
             'forcegroupby'       => true,
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -223,7 +223,7 @@ class Cable extends CommonDBTM
             'massiveaction'      => false,
             'datatype'           => 'specific',
             'searchtype'         => 'equals',
-            'additionalfields'   => ['itemtype_endpoint_a']
+            'additionalfields'   => ['itemtype_endpoint_a'],
         ];
 
         $tab[] = [
@@ -271,15 +271,15 @@ class Cable extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'color',
             'name'               => __('Color'),
-            'datatype'           => 'color'
+            'datatype'           => 'color',
         ];
 
         $tab[] = [
             'id'                 => '16',
             'table'              => $this->getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -288,7 +288,7 @@ class Cable extends CommonDBTM
             'field'              => 'name',
             'name'               => User::getTypeName(1),
             'datatype'           => 'dropdown',
-            'right'              => 'all'
+            'right'              => 'all',
         ];
 
         $tab[] = [
@@ -302,13 +302,13 @@ class Cable extends CommonDBTM
                     'table'              => 'glpi_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
-                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL]
-                    ]
-                ]
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL],
+                    ],
+                ],
             ],
             'forcegroupby'       => true,
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -317,7 +317,7 @@ class Cable extends CommonDBTM
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -327,7 +327,7 @@ class Cable extends CommonDBTM
             'linkfield'          => 'users_id_tech',
             'name'               => __('Technician in charge'),
             'datatype'           => 'dropdown',
-            'right'              => 'own_ticket'
+            'right'              => 'own_ticket',
         ];
 
         $tab[] = [
@@ -342,13 +342,13 @@ class Cable extends CommonDBTM
                     'table'              => 'glpi_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
-                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH]
-                    ]
-                ]
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH],
+                    ],
+                ],
             ],
             'forcegroupby'       => true,
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -357,7 +357,7 @@ class Cable extends CommonDBTM
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -366,7 +366,7 @@ class Cable extends CommonDBTM
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => $this->getStateVisibilityCriteria()
+            'condition'          => $this->getStateVisibilityCriteria(),
         ];
 
         $tab[] = [
@@ -375,13 +375,13 @@ class Cable extends CommonDBTM
             'field'              => '_virtual_datacenter_position', // virtual field
             'additionalfields'   => [
                 'items_id_endpoint_a',
-                'itemtype_endpoint_a'
+                'itemtype_endpoint_a',
             ],
             'name'               => sprintf(__('%s (%s)'), __('Data center position'), __('Endpoint A')),
             'datatype'           => 'specific',
             'nosearch'           => true,
             'nosort'             => true,
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -390,13 +390,13 @@ class Cable extends CommonDBTM
             'field'              => '_virtual_datacenter_position', // virtual field
             'additionalfields'   => [
                 'items_id_endpoint_b',
-                'itemtype_endpoint_b'
+                'itemtype_endpoint_b',
             ],
             'name'               => sprintf(__('%s (%s)'), __('Data center position'), __('Endpoint B')),
             'datatype'           => 'specific',
             'nosearch'           => true,
             'nosort'             => true,
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         return $tab;
@@ -441,7 +441,7 @@ class Cable extends CommonDBTM
             case 'items_id_endpoint_a':
             case 'items_id_endpoint_b':
                 $itemtype = $values[str_replace('items_id', 'itemtype', $field)] ?? null;
-                if ($itemtype !== null && class_exists($itemtype)) {
+                if ($itemtype !== null && class_exists($itemtype) && is_a($itemtype, CommonDBTM::class, true)) {
                     if ($values[$field] > 0) {
                         $item = new $itemtype();
                         $item->getFromDB($values[$field]);
@@ -452,8 +452,8 @@ class Cable extends CommonDBTM
                 }
                 break;
             case '_virtual_datacenter_position':
-                $itemtype = isset($values['itemtype_endpoint_b']) ? $values['itemtype_endpoint_b'] : $values['itemtype_endpoint_a'];
-                $items_id = isset($values['items_id_endpoint_b']) ? $values['items_id_endpoint_b'] : $values['items_id_endpoint_a'];
+                $itemtype = $values['itemtype_endpoint_b'] ?? $values['itemtype_endpoint_a'];
+                $items_id = $values['items_id_endpoint_b'] ?? $values['items_id_endpoint_a'];
 
                 if (method_exists($itemtype, 'renderDcBreadcrumb')) {
                     /** @var class-string $itemtype */

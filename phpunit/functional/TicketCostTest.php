@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -100,7 +99,7 @@ class TicketCostTest extends DbTestCase
         $this->getNewTicketCost(
             [
                 'tickets_id' => $ticket->getID(),
-                'cost_material' => 10.
+                'cost_material' => 10.,
             ]
         );
         $computer->getFromDB($computer->getID());
@@ -109,7 +108,7 @@ class TicketCostTest extends DbTestCase
             [
                 'tickets_id' => $ticket->getID(),
                 'cost_fixed' => 10.,
-                'cost_material' => 80.
+                'cost_material' => 80.,
             ]
         );
         $computer->getFromDB($computer->getID());
@@ -132,7 +131,7 @@ class TicketCostTest extends DbTestCase
             [
                 'tickets_id' => $ticket->getID(),
                 'cost_fixed' => 10.,
-                'cost_material' => 80.
+                'cost_material' => 80.,
             ]
         );
         $computer->getFromDB($computer->getID());
@@ -151,14 +150,14 @@ class TicketCostTest extends DbTestCase
             [
                 'tickets_id' => $ticket->getID(),
                 'cost_fixed' => 140.,
-                'cost_material' => 860.
+                'cost_material' => 860.,
             ]
         );
         $this->getNewTicketCost(
             [
                 'tickets_id' => $ticket->getID(),
                 'cost_fixed' => 80.,
-                'cost_material' => 20.
+                'cost_material' => 20.,
             ]
         );
         $this->getNewItemTicket(
@@ -191,7 +190,7 @@ class TicketCostTest extends DbTestCase
         $this->getNewTicketCost(
             [
                 'tickets_id' => $ticket->getID(),
-                'cost_material' => 10.
+                'cost_material' => 10.,
             ]
         );
         $computer->getFromDB($computer->getID());
@@ -209,7 +208,7 @@ class TicketCostTest extends DbTestCase
             [
                 'tickets_id' => $ticket2->getID(),
                 'cost_fixed' => 10.,
-                'cost_material' => 80.
+                'cost_material' => 80.,
             ]
         );
         $computer->getFromDB($computer->getID());

@@ -5,8 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,8 +32,8 @@
 
 /* global GLPI */
 
-import SearchTokenizer from "../../../../js/modules/SearchTokenizer/SearchTokenizer.js";
-import SearchToken from "../../../../js/modules/SearchTokenizer/SearchToken.js";
+import SearchTokenizer from "/js/src/vue/Kanban/SearchTokenizer.js";
+import SearchToken from "/js/src/vue/Kanban/SearchToken.js";
 
 describe('Search Tokenizer', () => {
 

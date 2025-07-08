@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,21 +34,21 @@
 
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
-use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\RequestSourceField;
 use Glpi\Form\Destination\CommonITILField\RequestSourceFieldConfig;
 use Glpi\Form\Destination\CommonITILField\RequestSourceFieldStrategy;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Override;
 use RequestType;
 use Ticket;
-use TicketTemplate;
 use TicketTemplatePredefinedField;
 
-final class RequestSourceFieldTest extends DbTestCase
+include_once __DIR__ . '/../../../../../abstracts/AbstractDestinationFieldTest.php';
+
+final class RequestSourceFieldTest extends AbstractDestinationFieldTest
 {
     use FormTesterTrait;
 
@@ -78,6 +77,30 @@ final class RequestSourceFieldTest extends DbTestCase
         );
 
         $this->assertEquals($source, $created_ticket->fields['requesttypes_id']);
+    }
+
+    #[Override]
+    public static function provideConvertFieldConfigFromFormCreator(): iterable
+    {
+        yield 'Source from template or user default or GLPI default' => [
+            'field_key'     => RequestSourceField::getKey(),
+            'fields_to_set' => [
+                'source_rule' => 0, // PluginFormcreatorAbstractItilTarget::REQUESTSOURCE_NONE
+            ],
+            'field_config' => new RequestSourceFieldConfig(
+                strategy: RequestSourceFieldStrategy::FROM_TEMPLATE,
+            ),
+        ];
+
+        yield 'Formcreator' => [
+            'field_key'     => RequestSourceField::getKey(),
+            'fields_to_set' => [
+                'source_rule' => 1, // PluginFormcreatorAbstractItilTarget::REQUESTSOURCE_FORMCREATOR
+            ],
+            'field_config' => new RequestSourceFieldConfig(
+                strategy: RequestSourceFieldStrategy::FROM_TEMPLATE,
+            ),
+        ];
     }
 
     public function testSpecificSourceWithPredefinedField(): void
@@ -143,10 +166,6 @@ final class RequestSourceFieldTest extends DbTestCase
     private function createAndGetFormWithTicketDestination(): Form
     {
         $builder = new FormBuilder();
-        $builder->addDestination(
-            FormDestinationTicket::class,
-            "My ticket",
-        );
         return $this->createForm($builder);
     }
 }

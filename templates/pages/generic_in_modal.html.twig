@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -39,9 +39,6 @@
     ]
 ) }}
 
-{{ object.showForm(
-    id,
-    form_options
-) }}
+{% do object.showForm(id, form_options) %}
 
 {{ call('Html::popFooter') }}

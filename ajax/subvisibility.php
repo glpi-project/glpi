@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,14 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-// Direct access to file
-if (strpos($_SERVER['PHP_SELF'], "subvisibility.php")) {
-    /** @var \Glpi\Controller\LegacyFileLoadController $this */
-    $this->setAjax();
-
-    header("Content-Type: text/html; charset=UTF-8");
-    Html::header_nocache();
-}
+header("Content-Type: text/html; charset=UTF-8");
+Html::header_nocache();
 
 if (!empty($_POST['type']) && isset($_POST['items_id']) && ($_POST['items_id'] > 0)) {
     $prefix = '';
@@ -54,7 +48,7 @@ if (!empty($_POST['type']) && isset($_POST['items_id']) && ($_POST['items_id'] >
         case 'Group':
         case 'Profile':
             $params = ['value' => $_SESSION['glpiactive_entity'],
-                'name'  => $prefix . 'entities_id' . $suffix
+                'name'  => $prefix . 'entities_id' . $suffix,
             ];
             if (Session::canViewAllEntities()) {
                 $params['toadd'] = [-1 => __('No restriction')];

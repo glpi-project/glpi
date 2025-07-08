@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -70,4 +70,23 @@ which broke styles of btn-group > .btn-check
             border: var(--tblr-border-width) solid var(--tblr-border-color);
         }
     }
+}
+
+// Reverse border radius for flex-row-reverse
+.btn-group.flex-row-reverse > .btn:not(:last-child, .dropdown-toggle),
+.btn-group.flex-row-reverse > .btn.dropdown-toggle-split:first-child,
+.btn-group.flex-row-reverse > .btn-group:not(:last-child) > .btn {
+    border-top-right-radius: inherit;
+    border-bottom-right-radius: inherit;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.btn-group.flex-row-reverse > .btn:nth-child(n+3),
+.btn-group.flex-row-reverse > :not(.btn-check) + .btn,
+.btn-group.flex-row-reverse > .btn-group:not(:first-child) > .btn {
+    border-top-left-radius: inherit;
+    border-bottom-left-radius: inherit;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
 }

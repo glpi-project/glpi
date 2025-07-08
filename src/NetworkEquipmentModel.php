@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -48,7 +48,7 @@ class NetworkEquipmentModel extends CommonDCModelDropdown
         // Add stencil tab if there is at least one picture field defined
         foreach ((new NetworkEquipmentModelStencil())->getPicturesFields() as $picture_field) {
             if (!empty($this->getItemtypeOrModelPicture($picture_field))) {
-                $this->addStandardTab('NetworkEquipmentModelStencil', $ong, $options);
+                $this->addStandardTab(NetworkEquipmentModelStencil::class, $ong, $options);
                 break;
             }
         }

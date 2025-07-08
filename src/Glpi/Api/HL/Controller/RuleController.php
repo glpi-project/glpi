@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,14 +38,34 @@ namespace Glpi\Api\HL\Controller;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
-use Glpi\Api\HL\Router;
 use Glpi\Api\HL\RouteVersion;
 use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
+use Rule;
+use RuleCollection;
 
-#[Route(path: '/Rule', tags: ['Rule'])]
+#[Route(path: '/Rule', tags: ['Rule'], requirements: [
+    'collection' => [self::class, 'getRuleCollections'],
+    'rule_id' => '\d+',
+    'id' => '\d+',
+])]
+#[Doc\Route(
+    parameters: [
+        [
+            'name' => 'collection',
+            'description' => 'Rule Collection',
+            'location' => Doc\Parameter::LOCATION_PATH,
+            'schema' => ['type' => Doc\Schema::TYPE_STRING],
+        ],
+        [
+            'name' => 'rule_id',
+            'description' => 'Rule Collection',
+            'location' => Doc\Parameter::LOCATION_PATH,
+        ],
+    ]
+)]
 final class RuleController extends AbstractController
 {
     protected static function getRawKnownSchemas(): array
@@ -59,7 +79,7 @@ final class RuleController extends AbstractController
                     'id' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                        'x-readonly' => true
+                        'x-readonly' => true,
                     ],
                     'rule' => self::getDropdownTypeSchema(class: \Rule::class, full_schema: 'Rule') + ['x-writeonly' => true],
                     'criteria' => [
@@ -72,9 +92,9 @@ final class RuleController extends AbstractController
                     ],
                     'pattern' => [
                         'type' => Doc\Schema::TYPE_STRING,
-                        'description' => 'The value/pattern to match against. If the condition relates to regular expressions, this value needs to be a valid regular expression including the delimiters.'
+                        'description' => 'The value/pattern to match against. If the condition relates to regular expressions, this value needs to be a valid regular expression including the delimiters.',
                     ],
-                ]
+                ],
             ],
             'RuleCriteriaCondition' => [
                 'x-version-introduced' => '2.0',
@@ -90,10 +110,10 @@ final class RuleController extends AbstractController
                         'type' => Doc\Schema::TYPE_ARRAY,
                         'description' => 'Fields/criteria that can be used with this condition. See /Rule/Collection/{collection}/CriteriaCriteria for a complete list of fields/criteria.',
                         'items' => [
-                            'type' => Doc\Schema::TYPE_STRING
-                        ]
-                    ]
-                ]
+                            'type' => Doc\Schema::TYPE_STRING,
+                        ],
+                    ],
+                ],
             ],
             'RuleCriteriaCriteria' => [
                 'x-version-introduced' => '2.0',
@@ -102,7 +122,7 @@ final class RuleController extends AbstractController
                 'properties' => [
                     'id' => ['type' => Doc\Schema::TYPE_STRING],
                     'name' => ['type' => Doc\Schema::TYPE_STRING],
-                ]
+                ],
             ],
             'RuleActionType' => [
                 'x-version-introduced' => '2.0',
@@ -115,10 +135,10 @@ final class RuleController extends AbstractController
                         'type' => Doc\Schema::TYPE_ARRAY,
                         'description' => 'Fields/actions that can be used with this action. See /Rule/Collection/{collection}/ActionField for a complete list of fields/actions.',
                         'items' => [
-                            'type' => Doc\Schema::TYPE_STRING
-                        ]
-                    ]
-                ]
+                            'type' => Doc\Schema::TYPE_STRING,
+                        ],
+                    ],
+                ],
             ],
             'RuleActionField' => [
                 'x-version-introduced' => '2.0',
@@ -131,10 +151,10 @@ final class RuleController extends AbstractController
                         'type' => Doc\Schema::TYPE_ARRAY,
                         'description' => 'Action types that can be used with this field. See /Rule/Collection/{collection}/ActionType for a complete list of action types.',
                         'items' => [
-                            'type' => Doc\Schema::TYPE_STRING
-                        ]
-                    ]
-                ]
+                            'type' => Doc\Schema::TYPE_STRING,
+                        ],
+                    ],
+                ],
             ],
             'RuleAction' => [
                 'x-version-introduced' => '2.0',
@@ -144,7 +164,7 @@ final class RuleController extends AbstractController
                     'id' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                        'x-readonly' => true
+                        'x-readonly' => true,
                     ],
                     'rule' => self::getDropdownTypeSchema(class: \Rule::class, full_schema: 'Rule') + ['x-writeonly' => true],
                     'action_type' => [
@@ -157,9 +177,9 @@ final class RuleController extends AbstractController
                     ],
                     'value' => [
                         'type' => Doc\Schema::TYPE_STRING,
-                        'description' => 'The value to set. If the field relates to regular expressions, this can include a # followed by 0 through 9 to indicate a captured value from the criteria regular expression.'
+                        'description' => 'The value to set. If the field relates to regular expressions, this can include a # followed by 0 through 9 to indicate a captured value from the criteria regular expression.',
                     ],
-                ]
+                ],
             ],
         ];
         $schemas['Rule'] = [
@@ -170,11 +190,11 @@ final class RuleController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true
+                    'x-readonly' => true,
                 ],
                 'uuid' => [
                     'type' => Doc\Schema::TYPE_STRING,
-                    'x-readonly' => true
+                    'x-readonly' => true,
                 ],
                 'sub_type' => [
                     'type' => Doc\Schema::TYPE_STRING,
@@ -191,12 +211,12 @@ final class RuleController extends AbstractController
                     'type' => Doc\Schema::TYPE_STRING,
                     'enum' => [
                         'AND',
-                        'OR'
-                    ]
+                        'OR',
+                    ],
                 ],
                 'condition' => [
                     'description' => 'The condition that triggers evaluation of this rule. Typically, 1 is for "On Add" and 2 is for "On Update".',
-                    'type' => Doc\Schema::TYPE_INTEGER
+                    'type' => Doc\Schema::TYPE_INTEGER,
                 ],
                 'ranking' => [
                     'description' => 'The order in which to evaluate this rule. Lower numbers are evaluated first. Changing the ranking of a rule may shift the rankings of other rules.',
@@ -213,10 +233,10 @@ final class RuleController extends AbstractController
                             'table' => 'glpi_rulecriterias',
                             'fkey' => 'id',
                             'field' => 'rules_id',
-                            'primary-property' => 'id'
+                            'primary-property' => 'id',
                         ],
-                        'properties' => array_filter($schemas['RuleCriteria']['properties'], static fn($k) => $k !== 'rule', ARRAY_FILTER_USE_KEY)
-                    ]
+                        'properties' => array_filter($schemas['RuleCriteria']['properties'], static fn($k) => $k !== 'rule', ARRAY_FILTER_USE_KEY),
+                    ],
                 ],
                 'actions' => [
                     'type' => Doc\Schema::TYPE_ARRAY,
@@ -228,10 +248,10 @@ final class RuleController extends AbstractController
                             'table' => 'glpi_ruleactions',
                             'fkey' => 'id',
                             'field' => 'rules_id',
-                            'primary-property' => 'id'
+                            'primary-property' => 'id',
                         ],
-                        'properties' => array_filter($schemas['RuleAction']['properties'], static fn($k) => $k !== 'rule', ARRAY_FILTER_USE_KEY)
-                    ]
+                        'properties' => array_filter($schemas['RuleAction']['properties'], static fn($k) => $k !== 'rule', ARRAY_FILTER_USE_KEY),
+                    ],
                 ],
                 'date_creation' => [
                     'type' => Doc\Schema::TYPE_STRING,
@@ -246,6 +266,33 @@ final class RuleController extends AbstractController
             ],
         ];
         return $schemas;
+    }
+
+    public static function getRuleCollections(): array
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        /** @var class-string<\RuleCollection>[] $collections */
+        $collections = $CFG_GLPI['rulecollections_types'];
+        $visible_collections = [];
+        foreach ($collections as $collection) {
+            if (!\is_a($collection, RuleCollection::class, true)) {
+                continue; // Ignore invalid classes
+            }
+
+            /** @var \RuleCollection $instance */
+            $instance = new $collection();
+            if ($instance->canList()) {
+                $rule_class = $instance::getRuleClassName();
+                if (str_starts_with($rule_class, 'Rule')) {
+                    // Only handle rules from the core in the global namespace here
+                    $visible_collections[] = substr($rule_class, 4);
+                }
+            }
+        }
+
+        return $visible_collections;
     }
 
     private function checkCollectionAccess(Request $request, int $right): Response|null
@@ -266,7 +313,7 @@ final class RuleController extends AbstractController
         // Only allow updating if the criterion exists in the rule
         $result = Search::getOneBySchema($this->getKnownSchema($schema, $this->getAPIVersion($request)), $request->getAttributes(), $params);
         try {
-            $decoded = json_decode((string)$result->getBody(), true, 512, JSON_THROW_ON_ERROR);
+            $decoded = json_decode((string) $result->getBody(), true, 512, JSON_THROW_ON_ERROR);
             return isset($decoded['rule']['id']) && $decoded['rule']['id'] === (int) $request->getAttribute('rule_id');
         } catch (\JsonException $e) {
             return false;
@@ -287,16 +334,16 @@ final class RuleController extends AbstractController
                         'properties' => [
                             'name' => [
                                 'type' => Doc\Schema::TYPE_STRING,
-                                'description' => 'Name of the rule collection'
+                                'description' => 'Name of the rule collection',
                             ],
                             'rule_type' => [
                                 'type' => Doc\Schema::TYPE_STRING,
-                                'description' => 'Type of the rules in the collection'
+                                'description' => 'Type of the rules in the collection',
                             ],
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ]
     )]
     public function getCollections(Request $request): Response
@@ -308,6 +355,10 @@ final class RuleController extends AbstractController
         $collections = $CFG_GLPI['rulecollections_types'];
         $visible_collections = [];
         foreach ($collections as $collection) {
+            if (!\is_a($collection, RuleCollection::class, true)) {
+                continue; // Ignore invalid classes
+            }
+
             /** @var \RuleCollection $instance */
             $instance = new $collection();
             if ($instance->canList()) {
@@ -316,7 +367,7 @@ final class RuleController extends AbstractController
                     // Only handle rules from the core in the global namespace here
                     $visible_collections[] = [
                         'name' => $instance->getTitle(),
-                        'rule_type' => substr($rule_class, 4)
+                        'rule_type' => substr($rule_class, 4),
                     ];
                 }
             }
@@ -331,8 +382,8 @@ final class RuleController extends AbstractController
         responses: [
             '200' => [
                 'description' => 'List of rule criteria conditions',
-                'schema' => 'RuleCriteriaCondition[]'
-            ]
+                'schema' => 'RuleCriteriaCondition[]',
+            ],
         ]
     )]
     public function getRuleCriteriaConditions(Request $request): Response
@@ -340,18 +391,16 @@ final class RuleController extends AbstractController
         if ($response = $this->checkCollectionAccess($request, READ)) {
             return $response;
         }
-        /** @var class-string<\Rule> $rule_subtype */
-        $rule_subtype = 'Rule' . $request->getAttribute('collection');
-        $rule = new $rule_subtype();
+        $rule = $this->getRuleInstanceFromRequest($request);
         $possible_criteria = $rule->getCriterias();
         $conditions = [];
         foreach ($possible_criteria as $k => $v) {
-            $to_add = \RuleCriteria::getConditions($rule_subtype, $k);
+            $to_add = \RuleCriteria::getConditions($rule::class, $k);
             foreach ($to_add as $i => &$j) {
                 $j = [
                     'id' => $i,
                     'description' => $j,
-                    'fields' => [...$conditions[$i]['fields'] ?? [], $k]
+                    'fields' => [...$conditions[$i]['fields'] ?? [], $k],
                 ];
             }
             unset($j);
@@ -369,8 +418,8 @@ final class RuleController extends AbstractController
         responses: [
             '200' => [
                 'description' => 'List of rule criteria criteria/fields',
-                'schema' => 'RuleCriteriaCriteria[]'
-            ]
+                'schema' => 'RuleCriteriaCriteria[]',
+            ],
         ]
     )]
     public function getRuleCriteriaCriteria(Request $request): Response
@@ -378,15 +427,13 @@ final class RuleController extends AbstractController
         if ($response = $this->checkCollectionAccess($request, READ)) {
             return $response;
         }
-        /** @var class-string<\Rule> $rule_subtype */
-        $rule_subtype = 'Rule' . $request->getAttribute('collection');
-        $rule = new $rule_subtype();
+        $rule = $this->getRuleInstanceFromRequest($request);
         $possible_criteria = $rule->getCriterias();
         $result = [];
         foreach ($possible_criteria as $k => $v) {
             $result[] = [
                 'id' => $k,
-                'name' => $v['name']
+                'name' => $v['name'],
             ];
         }
         return new JSONResponse($result);
@@ -399,8 +446,8 @@ final class RuleController extends AbstractController
         responses: [
             '200' => [
                 'description' => 'List of rule action types',
-                'schema' => 'RuleActionType[]'
-            ]
+                'schema' => 'RuleActionType[]',
+            ],
         ]
     )]
     public function getRuleActionType(Request $request): Response
@@ -408,9 +455,7 @@ final class RuleController extends AbstractController
         if ($response = $this->checkCollectionAccess($request, READ)) {
             return $response;
         }
-        /** @var class-string<\Rule> $rule_subtype */
-        $rule_subtype = 'Rule' . $request->getAttribute('collection');
-        $rule = new $rule_subtype();
+        $rule = $this->getRuleInstanceFromRequest($request);
         $fields = $rule->getActions();
         $types = \RuleAction::getActions();
         $result = [];
@@ -420,7 +465,7 @@ final class RuleController extends AbstractController
                     $result[$k] = [
                         'id' => $k,
                         'name' => $v,
-                        'fields' => [...$result[$k]['fields'] ?? [], $fk]
+                        'fields' => [...$result[$k]['fields'] ?? [], $fk],
                     ];
                 }
             }
@@ -437,8 +482,8 @@ final class RuleController extends AbstractController
         responses: [
             '200' => [
                 'description' => 'List of rule action fields',
-                'schema' => 'RuleActionField[]'
-            ]
+                'schema' => 'RuleActionField[]',
+            ],
         ]
     )]
     public function getRuleActionField(Request $request): Response
@@ -446,16 +491,14 @@ final class RuleController extends AbstractController
         if ($response = $this->checkCollectionAccess($request, READ)) {
             return $response;
         }
-        /** @var class-string<\Rule> $rule_subtype */
-        $rule_subtype = 'Rule' . $request->getAttribute('collection');
-        $rule = new $rule_subtype();
+        $rule = $this->getRuleInstanceFromRequest($request);
         $possible_actions = $rule->getActions();
         $result = [];
         foreach ($possible_actions as $k => $v) {
             $result[] = [
                 'id' => $k,
                 'name' => $v['name'],
-                'action_types' => $v['force_actions'] ?? ['assign']
+                'action_types' => $v['force_actions'] ?? ['assign'],
             ];
         }
         return new JSONResponse($result);
@@ -469,8 +512,8 @@ final class RuleController extends AbstractController
         responses: [
             '200' => [
                 'description' => 'List of rules',
-                'schema' => 'Rule[]'
-            ]
+                'schema' => 'Rule[]',
+            ],
         ]
     )]
     public function getRules(Request $request): Response
@@ -494,8 +537,8 @@ final class RuleController extends AbstractController
         responses: [
             '200' => [
                 'description' => 'The rule',
-                'schema' => 'Rule'
-            ]
+                'schema' => 'Rule',
+            ],
         ]
     )]
     public function getRule(Request $request): Response
@@ -518,8 +561,8 @@ final class RuleController extends AbstractController
         responses: [
             '200' => [
                 'description' => 'The rule criteria',
-                'schema' => 'RuleCriteria[]'
-            ]
+                'schema' => 'RuleCriteria[]',
+            ],
         ]
     )]
     public function getRuleCriteria(Request $request): Response
@@ -543,8 +586,8 @@ final class RuleController extends AbstractController
         responses: [
             '200' => [
                 'description' => 'The rule criterion',
-                'schema' => 'RuleCriteria'
-            ]
+                'schema' => 'RuleCriteria',
+            ],
         ]
     )]
     public function getRuleCriterion(Request $request): Response
@@ -568,8 +611,8 @@ final class RuleController extends AbstractController
         responses: [
             '200' => [
                 'description' => 'The rule actions',
-                'schema' => 'RuleAction[]'
-            ]
+                'schema' => 'RuleAction[]',
+            ],
         ]
     )]
     public function getRuleActions(Request $request): Response
@@ -593,8 +636,8 @@ final class RuleController extends AbstractController
         responses: [
             '200' => [
                 'description' => 'The rule action',
-                'schema' => 'RuleAction'
-            ]
+                'schema' => 'RuleAction',
+            ],
         ]
     )]
     public function getRuleAction(Request $request): Response
@@ -620,7 +663,7 @@ final class RuleController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Rule',
-            ]
+            ],
         ]
     )]
     public function createRule(Request $request): Response
@@ -634,8 +677,8 @@ final class RuleController extends AbstractController
 
         return Search::createBySchema($this->getKnownSchema('Rule', $this->getAPIVersion($request)), $params, [self::class, 'getRule'], [
             'mapped' => [
-                'collection' => $request->getAttribute('collection')
-            ]
+                'collection' => $request->getAttribute('collection'),
+            ],
         ]);
     }
 
@@ -648,7 +691,7 @@ final class RuleController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Rule',
-            ]
+            ],
         ]
     )]
     public function updateRule(Request $request): Response
@@ -685,7 +728,7 @@ final class RuleController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'RuleCriteria',
-            ]
+            ],
         ]
     )]
     public function createRuleCriteria(Request $request): Response
@@ -700,8 +743,8 @@ final class RuleController extends AbstractController
         return Search::createBySchema($this->getKnownSchema('RuleCriteria', $this->getAPIVersion($request)), $params, [self::class, 'getRuleCriterion'], [
             'mapped' => [
                 'rule_id' => $request->getAttribute('rule_id'),
-                'collection' => $request->getAttribute('collection')
-            ]
+                'collection' => $request->getAttribute('collection'),
+            ],
         ]);
     }
 
@@ -714,7 +757,7 @@ final class RuleController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'RuleCriteria',
-            ]
+            ],
         ]
     )]
     public function updateRuleCriteria(Request $request): Response
@@ -743,7 +786,7 @@ final class RuleController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'RuleCriteria',
-            ]
+            ],
         ]
     )]
     public function deleteRuleCriteria(Request $request): Response
@@ -767,7 +810,7 @@ final class RuleController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'RuleAction',
-            ]
+            ],
         ]
     )]
     public function createRuleAction(Request $request): Response
@@ -782,8 +825,8 @@ final class RuleController extends AbstractController
         return Search::createBySchema($this->getKnownSchema('RuleAction', $this->getAPIVersion($request)), $params, [self::class, 'getRuleAction'], [
             'mapped' => [
                 'rule_id' => $request->getAttribute('rule_id'),
-                'collection' => $request->getAttribute('collection')
-            ]
+                'collection' => $request->getAttribute('collection'),
+            ],
         ]);
     }
 
@@ -796,7 +839,7 @@ final class RuleController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'RuleAction',
-            ]
+            ],
         ]
     )]
     public function updateRuleAction(Request $request): Response
@@ -825,7 +868,7 @@ final class RuleController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'RuleAction',
-            ]
+            ],
         ]
     )]
     public function deleteRuleAction(Request $request): Response
@@ -838,5 +881,16 @@ final class RuleController extends AbstractController
         }
 
         return Search::deleteBySchema($this->getKnownSchema('RuleAction', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    private function getRuleInstanceFromRequest(Request $request): Rule
+    {
+        $expected_class = 'Rule' . $request->getAttribute('collection');
+
+        if (!\is_a($expected_class, Rule::class, true)) {
+            throw new \LogicException();
+        }
+
+        return new $expected_class();
     }
 }

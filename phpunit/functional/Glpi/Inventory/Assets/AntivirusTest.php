@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -63,7 +62,7 @@ class AntivirusTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"company": "Microsoft Corporation", "enabled": true, "guid": "{641105E6-77ED-3F35-A304-765193BCB75F}", "name": "Microsoft Security Essentials", "uptodate": true, "version": "4.3.216.0", "manufacturers_id": "Microsoft Corporation", "antivirus_version": "4.3.216.0", "is_active": true, "is_uptodate": true, "is_dynamic": 1}'
+                'expected'  => '{"company": "Microsoft Corporation", "enabled": true, "guid": "{641105E6-77ED-3F35-A304-765193BCB75F}", "name": "Microsoft Security Essentials", "uptodate": true, "version": "4.3.216.0", "manufacturers_id": "Microsoft Corporation", "antivirus_version": "4.3.216.0", "is_active": true, "is_uptodate": true, "is_dynamic": 1}',
             ], [ //no version
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -80,7 +79,7 @@ class AntivirusTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"company": "Microsoft Corporation", "enabled": true, "guid": "{641105E6-77ED-3F35-A304-765193BCB75F}", "name": "Microsoft Security Essentials", "uptodate": true, "manufacturers_id": "Microsoft Corporation", "antivirus_version": "", "is_active": true, "is_uptodate": true, "is_dynamic": 1}'
+                'expected'  => '{"company": "Microsoft Corporation", "enabled": true, "guid": "{641105E6-77ED-3F35-A304-765193BCB75F}", "name": "Microsoft Security Essentials", "uptodate": true, "manufacturers_id": "Microsoft Corporation", "antivirus_version": "", "is_active": true, "is_uptodate": true, "is_dynamic": 1}',
             ], [ //w expiration date
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -99,8 +98,8 @@ class AntivirusTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"company": "Microsoft Corporation", "enabled": true, "guid": "{641105E6-77ED-3F35-A304-765193BCB75F}", "name": "Microsoft Security Essentials", "uptodate": true, "version": "4.3.216.0", "manufacturers_id": "Microsoft Corporation", "antivirus_version": "4.3.216.0", "is_active": true, "is_uptodate": true, "expiration": "2019-04-01", "date_expiration": "2019-04-01", "is_dynamic": 1}'
-            ]
+                'expected'  => '{"company": "Microsoft Corporation", "enabled": true, "guid": "{641105E6-77ED-3F35-A304-765193BCB75F}", "name": "Microsoft Security Essentials", "uptodate": true, "version": "4.3.216.0", "manufacturers_id": "Microsoft Corporation", "antivirus_version": "4.3.216.0", "is_active": true, "is_uptodate": true, "expiration": "2019-04-01", "date_expiration": "2019-04-01", "is_dynamic": 1}',
+            ],
         ];
     }
 
@@ -113,7 +112,7 @@ class AntivirusTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Antivirus($computer, $json->content->antivirus);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected), $result[0]);
     }
@@ -147,7 +146,7 @@ class AntivirusTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Antivirus($computer, $json->content->antivirus);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected['expected']), $result[0]);
 
@@ -173,7 +172,7 @@ class AntivirusTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
-       //first, check there are no AV linked to this computer
+        //first, check there are no AV linked to this computer
         $avc = new \ItemAntivirus();
         $this->assertTrue(
             $avc->getFromDbByCrit(['itemtype' => 'Computer', 'items_id' => $computer->fields['id']]),
@@ -193,7 +192,7 @@ class AntivirusTest extends AbstractInventoryAsset
         $json = json_decode($data);
 
         $asset = new \Glpi\Inventory\Asset\Antivirus($computer, $json->content->antivirus);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals($json_expected, $result[0]);
 
@@ -245,7 +244,7 @@ class AntivirusTest extends AbstractInventoryAsset
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => 'ggheb7ne7',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
@@ -254,7 +253,7 @@ class AntivirusTest extends AbstractInventoryAsset
             'items_id' => $computers_id,
             'name' => 'Kaspersky Endpoint Security 10 for Windows',
             'antivirus_version' => '2021 21.3.10.391',
-            'is_active' => 1
+            'is_active' => 1,
         ]);
         $this->assertGreaterThan(0, $antivirus_1_id);
 
@@ -263,7 +262,7 @@ class AntivirusTest extends AbstractInventoryAsset
             'items_id' => $computers_id,
             'name' => 'Microsoft Security Essentials',
             'antivirus_version' => '4.3.216.0',
-            'is_active' => 1
+            'is_active' => 1,
         ]);
         $this->assertGreaterThan(0, $antivirus_2_id);
 
@@ -272,7 +271,7 @@ class AntivirusTest extends AbstractInventoryAsset
             'items_id' => $computers_id,
             'name' => 'Avast Antivirus',
             'antivirus_version' => '19',
-            'is_active' => 1
+            'is_active' => 1,
         ]);
         $this->assertGreaterThan(0, $antivirus_3_id);
 
@@ -386,7 +385,7 @@ class AntivirusTest extends AbstractInventoryAsset
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => 'ggheb7ne7',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
@@ -395,7 +394,7 @@ class AntivirusTest extends AbstractInventoryAsset
             'items_id' => $computers_id,
             'name' => 'Kaspersky Endpoint Security 10 for Windows',
             'antivirus_version' => '2021 21.3.10.391',
-            'is_active' => 1
+            'is_active' => 1,
         ]);
         $this->assertGreaterThan(0, $antivirus_1_id);
 
@@ -404,7 +403,7 @@ class AntivirusTest extends AbstractInventoryAsset
             'items_id' => $computers_id,
             'name' => 'Microsoft Security Essentials',
             'antivirus_version' => '4.3.216.0',
-            'is_active' => 1
+            'is_active' => 1,
         ]);
         $this->assertGreaterThan(0, $antivirus_2_id);
 
@@ -413,7 +412,7 @@ class AntivirusTest extends AbstractInventoryAsset
             'items_id' => $computers_id,
             'name' => 'Avast Antivirus',
             'antivirus_version' => '19',
-            'is_active' => 1
+            'is_active' => 1,
         ]);
         $this->assertGreaterThan(0, $antivirus_3_id);
 

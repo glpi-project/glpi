@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,7 +40,7 @@ use Glpi\Application\View\TemplateRenderer;
  **/
 final class Item_Environment extends CommonDBChild
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype = 'itemtype';
     public static $items_id = 'items_id';
     public $dohistory       = true;
@@ -109,15 +109,15 @@ final class Item_Environment extends CommonDBChild
             'FROM' => self::getTable(),
             'WHERE' => [
                 'items_id' => $items_id,
-                'itemtype' => $itemtype
-            ]
+                'itemtype' => $itemtype,
+            ],
         ]);
         $all_data = iterator_to_array($all_data);
         $filtered_data = $DB->request([
             'FROM' => self::getTable(),
             'WHERE' => [
                 'items_id' => $items_id,
-                'itemtype' => $itemtype
+                'itemtype' => $itemtype,
             ] + $sql_filters,
             'LIMIT' => $_SESSION['glpilist_limit'],
             'START' => $start,
@@ -127,7 +127,7 @@ final class Item_Environment extends CommonDBChild
         $total_number = count($all_data);
         $filtered_number = count(getAllDataFromTable(self::getTable(), [
             'items_id' => $items_id,
-            'itemtype' => $itemtype
+            'itemtype' => $itemtype,
         ] + $sql_filters));
 
         $envs = [];
@@ -144,7 +144,7 @@ final class Item_Environment extends CommonDBChild
             'order' => $order,
             'href' => $item::getFormURLWithID($items_id),
             'additional_params' => $is_filtered ? http_build_query([
-                'filters' => $filters
+                'filters' => $filters,
             ]) : "",
             'is_tab' => true,
             'items_id' => $items_id,

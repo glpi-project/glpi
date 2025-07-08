@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -79,8 +78,8 @@ class FirmwareTest extends AbstractInventoryAsset
   <DEVICEID>foo</DEVICEID>
   <QUERY>SNMPQUERY</QUERY>
   </REQUEST>",
-                'expected'  => '{"description":"device firmware","manufacturer":"Cisco","name":"UCS 6248UP 48-Port","type":"device","version":"5.0(3)N2(4.02b)","manufacturers_id":"Cisco","designation":"UCS 6248UP 48-Port","devicefirmwaretypes_id":"device", "is_dynamic": 1}'
-            ]
+                'expected'  => '{"description":"device firmware","manufacturer":"Cisco","name":"UCS 6248UP 48-Port","type":"device","version":"5.0(3)N2(4.02b)","manufacturers_id":"Cisco","designation":"UCS 6248UP 48-Port","devicefirmwaretypes_id":"device", "is_dynamic": 1}',
+            ],
         ];
     }
 
@@ -92,8 +91,8 @@ class FirmwareTest extends AbstractInventoryAsset
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\Firmware($computer, (array)$json->content->firmwares);
-        $asset->setExtraData((array)$json->content);
+        $asset = new \Glpi\Inventory\Asset\Firmware($computer, (array) $json->content->firmwares);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected), $result[0]);
     }
@@ -102,14 +101,14 @@ class FirmwareTest extends AbstractInventoryAsset
     {
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
-       //first, check there are no controller linked to this computer
+        //first, check there are no controller linked to this computer
         $idf = new \Item_DeviceFirmware();
-                 $this->assertFalse(
-                     $idf->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
-                     'A firmware is already linked to computer!'
-                 );
+        $this->assertFalse(
+            $idf->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
+            'A firmware is already linked to computer!'
+        );
 
-       //convert data
+        //convert data
         $expected = $this->assetProvider()[0];
 
         $converter = new \Glpi\Inventory\Converter();
@@ -117,12 +116,12 @@ class FirmwareTest extends AbstractInventoryAsset
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\Firmware($computer, (array)$json->content->firmwares);
-        $asset->setExtraData((array)$json->content);
+        $asset = new \Glpi\Inventory\Asset\Firmware($computer, (array) $json->content->firmwares);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected['expected']), $result[0]);
 
-       //handle
+        //handle
         $asset->handleLinks();
         $asset->handle();
         $this->assertTrue(
@@ -169,7 +168,7 @@ class FirmwareTest extends AbstractInventoryAsset
         //add lockedfield to check for DB warning on manage DeviceFirmware lockedField
         $this->assertGreaterThan(
             0,
-            (int)$DB->insert("glpi_lockedfields", ["field" => mt_rand(), "itemtype" => "Item_DeviceFirmware", "is_global" => 0])
+            (int) $DB->insert("glpi_lockedfields", ["field" => mt_rand(), "itemtype" => "Item_DeviceFirmware", "is_global" => 0])
         );
 
         //computer inventory knows only "UCS 6248UP 48-Port" and "HP-HttpMg-Version" firmwares
@@ -224,23 +223,23 @@ class FirmwareTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-       //create manually a computer, with 3 firmwares
+        //create manually a computer, with 3 firmwares
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => 'ggheb7ne7',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
         $manufacturer = new \Manufacturer();
         $manufacturers_id = $manufacturer->add([
-            'name' => 'Cisco'
+            'name' => 'Cisco',
         ]);
         $this->assertGreaterThan(0, $manufacturers_id);
 
         $type = new \DeviceFirmwareType();
         $types_id = $type->add([
-            'name' => 'device'
+            'name' => 'device',
         ]);
         $this->assertGreaterThan(0, $types_id);
 
@@ -249,26 +248,26 @@ class FirmwareTest extends AbstractInventoryAsset
             'manufacturers_id' => $manufacturers_id,
             'devicefirmwaretypes_id' => $types_id,
             'version' => '5.0(3)N2(4.02b)',
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $fw_1_id);
 
         $item_fw_1_id = $item_fw->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'devicefirmwares_id' => $fw_1_id
+            'devicefirmwares_id' => $fw_1_id,
         ]);
         $this->assertGreaterThan(0, $item_fw_1_id);
 
         $manufacturer = new \Manufacturer();
         $manufacturers_id = $manufacturer->add([
-            'name' => 'HP'
+            'name' => 'HP',
         ]);
         $this->assertGreaterThan(0, $manufacturers_id);
 
         $type = new \DeviceFirmwareType();
         $types_id = $type->add([
-            'name' => 'system'
+            'name' => 'system',
         ]);
         $this->assertGreaterThan(0, $types_id);
 
@@ -277,14 +276,14 @@ class FirmwareTest extends AbstractInventoryAsset
             'manufacturers_id' => $manufacturers_id,
             'devicefirmwaretypes_id' => $types_id,
             'version' => 'WC.16.02.0003',
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $fw_2_id);
 
         $item_fw_2_id = $item_fw->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'devicefirmwares_id' => $fw_2_id
+            'devicefirmwares_id' => $fw_2_id,
         ]);
         $this->assertGreaterThan(0, $item_fw_2_id);
 
@@ -292,14 +291,14 @@ class FirmwareTest extends AbstractInventoryAsset
             'designation' => 'My Firmware',
             'manufacturers_id' => $manufacturers_id,
             'devicefirmwaretypes_id' => $types_id,
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $fw_3_id);
 
         $item_fw_3_id = $item_fw->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'devicefirmwares_id' => $fw_3_id
+            'devicefirmwares_id' => $fw_3_id,
         ]);
         $this->assertGreaterThan(0, $item_fw_3_id);
 
@@ -309,7 +308,7 @@ class FirmwareTest extends AbstractInventoryAsset
             $this->assertEquals(0, $firmware['is_dynamic']);
         }
 
-       //computer inventory knows only "UCS 6248UP 48-Port" and "HP-HttpMg-Version" firmwares
+        //computer inventory knows only "UCS 6248UP 48-Port" and "HP-HttpMg-Version" firmwares
         $this->doInventory($xml_source, true);
 
         //we still have 3 firmwares + 1 bios
@@ -324,11 +323,11 @@ class FirmwareTest extends AbstractInventoryAsset
         $fws = $item_fw->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(2, $fws);
 
-       //firmware not present in the inventory is still not dynamic
+        //firmware not present in the inventory is still not dynamic
         $fws = $item_fw->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $fws);
 
-       //Redo inventory, but with removed "HP-HttpMg-Version" firmware
+        //Redo inventory, but with removed "HP-HttpMg-Version" firmware
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
@@ -353,19 +352,19 @@ class FirmwareTest extends AbstractInventoryAsset
 
         $this->doInventory($xml_source, true);
 
-       //we still have 3 firmwares + 1 bios
+        //we still have 3 firmwares + 1 bios
         $fws = $device_fw->find();
         $this->assertCount(3 + 1, $fws);
 
-       //we now have 2 firmwares linked to computer only
+        //we now have 2 firmwares linked to computer only
         $fws = $item_fw->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(2, $fws);
 
-       //firmware present in the inventory source is still dynamic
+        //firmware present in the inventory source is still dynamic
         $fws = $item_fw->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(1, $fws);
 
-       //firmware not present in the inventory is still not dynamic
+        //firmware not present in the inventory is still not dynamic
         $fws = $item_fw->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $fws);
     }

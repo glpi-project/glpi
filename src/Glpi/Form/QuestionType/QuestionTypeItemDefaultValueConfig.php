@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,13 +36,9 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
-use Glpi\Form\Export\Context\ForeignKey\ForeignKeyHandler;
-use Glpi\Form\Export\Specification\ContentSpecificationInterface;
-use Glpi\Form\Export\Specification\QuestionContentSpecification;
 use Override;
 
-final class QuestionTypeItemDefaultValueConfig implements JsonFieldInterface, ConfigWithForeignKeysInterface
+final class QuestionTypeItemDefaultValueConfig implements JsonFieldInterface
 {
     // Unique reference to hardcoded name used for serialization
     public const KEY_ITEMS_ID = "items_id";
@@ -53,40 +49,7 @@ final class QuestionTypeItemDefaultValueConfig implements JsonFieldInterface, Co
      */
     public function __construct(
         private null|int|string $items_id = null
-    ) {
-    }
-
-    #[Override]
-    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
-    {
-        if (!($content_spec instanceof QuestionContentSpecification)) {
-            throw new \InvalidArgumentException(
-                "Content specification must be an instance of " . QuestionContentSpecification::class
-            );
-        }
-
-        $extra_data_config = (new QuestionTypeItemExtraDataConfig())->jsonDeserialize(
-            json_decode($content_spec->extra_data, true)
-        );
-
-        $default_value_config = (new self())->jsonDeserialize(
-            json_decode($content_spec->default_value, true)
-        );
-
-        if (
-            $extra_data_config->getItemtype() !== null
-            && !empty($default_value_config->items_id)
-        ) {
-            return [
-                new ForeignKeyHandler(
-                    key: self::KEY_ITEMS_ID,
-                    itemtype: $extra_data_config->getItemtype(),
-                ),
-            ];
-        }
-
-        return [];
-    }
+    ) {}
 
     #[Override]
     public static function jsonDeserialize(array $data): self

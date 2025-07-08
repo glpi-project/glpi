@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -37,7 +36,9 @@ namespace Glpi\Asset\Capacity;
 
 use CommonDevice;
 use CommonGLPI;
+use Glpi\Asset\CapacityConfig;
 use Item_Devices;
+use Override;
 use Session;
 
 class HasDevicesCapacity extends AbstractCapacity
@@ -50,6 +51,12 @@ class HasDevicesCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return CommonDevice::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Includes sub-components like CPUs, drives or memory");
     }
 
     public function getCloneRelations(): array
@@ -73,7 +80,7 @@ class HasDevicesCapacity extends AbstractCapacity
     public function getCapacityUsageDescription(string $classname): string
     {
         return sprintf(
-            __('%1$d component(s) attached to %2$d asset(s)'),
+            __('%1$d components attached to %2$d assets'),
             $this->countDevicesUsages($classname),
             $this->countAssetsLinkedToDevices($classname)
         );
@@ -92,7 +99,7 @@ class HasDevicesCapacity extends AbstractCapacity
             $iterator = $DB->request([
                 'SELECT'   => ['items_id'],
                 'DISTINCT' => true,
-                'FROM'     => $item_device_class::getTable()
+                'FROM'     => $item_device_class::getTable(),
             ]);
             foreach ($iterator as $row) {
                 $assets_ids[] = $row['items_id'];
@@ -121,7 +128,7 @@ class HasDevicesCapacity extends AbstractCapacity
         return $count;
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -144,12 +151,16 @@ class HasDevicesCapacity extends AbstractCapacity
         CommonGLPI::registerStandardTab($classname, Item_Devices::class, 15);
     }
 
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         foreach (Item_Devices::getDeviceTypes() as $item_device_class) {
+            if (!\is_a($item_device_class, Item_Devices::class, true)) {
+                continue;
+            }
+
             //Delete related items
             $item_device = new $item_device_class();
             $item_device->deleteByCriteria(['itemtype' => $classname], force: true, history: false);

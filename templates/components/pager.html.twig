@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -39,6 +38,11 @@
     {% endif %}
 {% endif %}
 
+{% set href = href|default('') %}
+
+{# "start" is 0 based, the 1 based index is "current_start" #}
+{% set start = start|default(0) %}
+
 {% set href_separator = '?' in href ? '&' : '?' %}
 {% set href = href ~ href_separator ~ "start=%start%" ~ additional_params %}
 {% if is_tab is defined and is_tab == true %}
@@ -57,7 +61,7 @@
 {% endif %}
 
 {% set back = start - limit %}
-{% if current_start - list_limit <= 0 %}
+{% if current_start - limit <= 0 %}
    {% set back = 0 %}
 {% endif %}
 
@@ -65,6 +69,7 @@
 {% set current_page = ((current_start - 1) / limit)|round(0, 'ceil') + 1 %}
 
 {% set short_display = short_display|default(false) %}
+{% set no_limit_display = no_limit_display|default(false) %}
 
 {# limit the number of adjacents links displayed #}
 {% set adjacents = 2 %}
@@ -72,29 +77,31 @@
 {% set rand = rand|default(random()) %}
 
 <div class="flex-grow-1 d-flex flex-wrap flex-md-nowrap  align-items-center justify-content-between mb-2 search-pager">
-    {% if not short_display %}
-        <span class="search-limit d-none d-md-block">
+    {% if not no_limit_display %}
+        {% if not short_display %}
+            <span class="search-limit d-none d-md-block">
+                {% include 'components/dropdown/limit.html.twig' with {
+                    'no_onchange': fluid_search|default(false),
+                    'select_class': 'search-limit-dropdown',
+                    'href': href|replace({'%start%': start}),
+                    'additional_attributes': short_display ? {
+                        'title': __('Rows per page'),
+                    } : {
+                        'aria-labelledby': 'list_limit' ~ rand ~ '_label',
+                    },
+                    'rand': rand,
+                } %}
+                <span id="list_limit{{ rand }}_label">{{ __('rows / page') }}</span>
+            </span>
+        {% endif %}
+        <span class="search-limit {{ short_display ? "" : "d-block d-md-none" }}">
             {% include 'components/dropdown/limit.html.twig' with {
                 'no_onchange': fluid_search|default(false),
                 'select_class': 'search-limit-dropdown',
                 'href': href|replace({'%start%': start}),
-                'additional_attributes': short_display ? {
-                    'title': __('Rows per page'),
-                } : {
-                    'aria-labelledby': 'list_limit' ~ rand ~ '_label',
-                },
-                'rand': rand,
             } %}
-            <span id="list_limit{{ rand }}_label">{{ __('rows / page') }}</span>
         </span>
     {% endif %}
-    <span class="search-limit {{ short_display ? "" : "d-block d-md-none" }}">
-        {% include 'components/dropdown/limit.html.twig' with {
-            'no_onchange': fluid_search|default(false),
-            'select_class': 'search-limit-dropdown',
-            'href': href|replace({'%start%': start}),
-        } %}
-    </span>
 
     {% if not short_display %}
         <p class="m-0 text-muted d-none d-md-block page-infos">
@@ -134,7 +141,7 @@
                     {% if current_page - adjacents <= page and current_page + adjacents >= page %}
                         {% set page_start = (page - 1) * limit %}
                         <li class="d-none d-sm-block page-item {% if page == current_page %}active selected{% endif %}">
-                            <a class="page-link d-flex page-link-num" href="{{ href|replace({'%start%': page_start}) }}" data-start="{{ page_start }}">{{ page }}</a>
+                            <a class="page-link page-link-num" href="{{ href|replace({'%start%': page_start}) }}" data-start="{{ page_start }}">{{ page }}</a>
                         </li>
                         {% if current_page + adjacents == page %}
                         {% set skip_adjacents = false %}

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -52,9 +52,11 @@ abstract class AbstractRightsDropdown
     /**
      * To be redefined by subclasses, specify enabled types
      *
+     * @param array $options Additional options
+     *
      * @return array
      */
-    abstract protected static function getTypes(): array;
+    abstract protected static function getTypes(array $options = []): array;
 
     protected static function addAllUsersOption(): bool
     {
@@ -65,12 +67,13 @@ abstract class AbstractRightsDropdown
      * Check if a given type is enabled
      *
      * @param string $type Class to check
+     * @param array $options Additional options
      *
      * @return bool
      */
-    protected static function isTypeEnabled(string $type): bool
+    protected static function isTypeEnabled(string $type, array $options = []): bool
     {
-        $types = array_flip(static::getTypes());
+        $types = array_flip(static::getTypes($options));
         return isset($types[$type]);
     }
 
@@ -119,31 +122,32 @@ abstract class AbstractRightsDropdown
      * Get possible data for profiles
      *
      * @param string $text Search string
+     * @param array $options Additional options
      *
      * @return array
      */
-    public static function fetchValues(string $text = ""): array
+    public static function fetchValues(string $text = "", array $options = []): array
     {
         $possible_rights = [];
 
-       // Add profiles if enabled
+        // Add profiles if enabled
         if (self::isTypeEnabled(Profile::getType())) {
             $possible_rights[Profile::getType()] = self::getProfiles($text);
         }
 
-       // Add entities if enabled
+        // Add entities if enabled
         if (self::isTypeEnabled(Entity::getType())) {
             $possible_rights[Entity::getType()] = self::getEntities($text);
         }
 
-       // Add users if enabled
-        if (self::isTypeEnabled(User::getType())) {
-            $possible_rights[User::getType()] = self::getUsers($text);
+        // Add users if enabled
+        if (self::isTypeEnabled(User::getType(), $options)) {
+            $possible_rights[User::getType()] = self::getUsers($text, $options);
         }
 
-       // Add groups if enabled
-        if (self::isTypeEnabled(Group::getType())) {
-            $possible_rights[Group::getType()] = self::getGroups($text);
+        // Add groups if enabled
+        if (self::isTypeEnabled(Group::getType(), $options)) {
+            $possible_rights[Group::getType()] = self::getGroups($text, $options);
         }
 
         // Add contacts if enabled
@@ -174,7 +178,7 @@ abstract class AbstractRightsDropdown
 
         $ret = [
             'results' => $results,
-            'count' =>  count($results)
+            'count' =>  count($results),
         ];
 
         return $ret;
@@ -191,15 +195,14 @@ abstract class AbstractRightsDropdown
     {
         return array_map(function ($value) {
             $data = explode("-", $value);
-            $itemtype = getItemtypeForForeignKeyField($data[0]);
             $items_id = $data[1];
-            $item = new $itemtype();
+            $item = getItemForForeignKeyField($data[0]);
 
             if ($items_id == self::ALL_USERS) {
-                return $itemtype::getTypeName(1) . " - " . __("All users");
+                return $item::getTypeName(1) . " - " . __("All users");
             }
 
-            return $itemtype::getTypeName(1) . " - " . Dropdown::getDropdownName(
+            return $item::getTypeName(1) . " - " . Dropdown::getDropdownName(
                 $item->getTable(),
                 $items_id
             );
@@ -217,7 +220,7 @@ abstract class AbstractRightsDropdown
     {
         $profile_item = new Profile();
         $profiles = $profile_item->find([
-            'name' => ["LIKE", "%$text%"]
+            'name' => ["LIKE", "%$text%"],
         ], [], self::LIMIT);
         $profiles_items = [];
         foreach ($profiles as $profile) {
@@ -240,7 +243,7 @@ abstract class AbstractRightsDropdown
         $entity_item = new Entity();
         $entities = $entity_item->find(
             [
-                'name' => ["LIKE", "%$text%"]
+                'name' => ["LIKE", "%$text%"],
             ] + getEntitiesRestrictCriteria(Entity::getTable()),
             [],
             self::LIMIT
@@ -258,10 +261,11 @@ abstract class AbstractRightsDropdown
      * Get possible values for users
      *
      * @param string $text Search string
+     * @param array $options Additional options
      *
      * @return array
      */
-    protected static function getUsers(string $text): array
+    protected static function getUsers(string $text, array $options): array
     {
         $users = User::getSqlSearchResult(false, "all", -1, 0, [], $text, 0, self::LIMIT);
         $users_items = [];
@@ -283,16 +287,22 @@ abstract class AbstractRightsDropdown
      * Get possible values for groups
      *
      * @param string $text Search string
+     * @param array $options Additional options
      *
      * @return array
      */
-    protected static function getGroups(string $text): array
+    protected static function getGroups(string $text, array $options): array
     {
+        $additional_conditions = [];
+        if (isset($options['group_conditions'])) {
+            $additional_conditions = $options['group_conditions'];
+        }
+
         $group_item = new Group();
         $groups = $group_item->find(
             [
-                'name' => ["LIKE", "%$text%"]
-            ] + getEntitiesRestrictCriteria(Group::getTable()),
+                'name' => ["LIKE", "%$text%"],
+            ] + getEntitiesRestrictCriteria(Group::getTable()) + $additional_conditions,
             [],
             self::LIMIT
         );
@@ -317,7 +327,7 @@ abstract class AbstractRightsDropdown
         $contact_item = new Contact();
         $contacts = $contact_item->find(
             [
-                'name' => ["LIKE", "%$text%"]
+                'name' => ["LIKE", "%$text%"],
             ] + getEntitiesRestrictCriteria(Contact::getTable()),
             [],
             self::LIMIT
@@ -343,7 +353,7 @@ abstract class AbstractRightsDropdown
         $supplier_item = new Supplier();
         $suppliers = $supplier_item->find(
             [
-                'name' => ["LIKE", "%$text%"]
+                'name' => ["LIKE", "%$text%"],
             ] + getEntitiesRestrictCriteria(Supplier::getTable()),
             [],
             self::LIMIT

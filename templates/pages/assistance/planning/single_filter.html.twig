@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -40,14 +39,14 @@
     {% set label_title %}
         {{ title }}
         {% if filter_data.type == 'external' and (not filter_data.url|default('') is url_safe) %}
-            <i class="fas fa-exclamation-triangle" title="{{ __('URL "%s" is not allowed by your administrator.')|format(filter_data.url) }}"></i>
+            <i class="ti ti-alert-triangle" title="{{ __('URL "%s" is not allowed by your administrator.')|format(filter_data.url) }}"></i>
         {% endif %}
     {% endset %}
     {{ inputs.label(label_title, filter_key) }}
 
     <span class="ms-auto d-flex align-items-center">
         {# Colors not for groups #}
-        {% if filter_data.type != 'group_users' and filter_key != 'OnlyBgEvents' %}
+        {% if filter_data.type != 'group_users' and filter_key != 'OnlyBgEvents' and filter_key != 'StateDone' %}
             <span class="color_input">
                 <input type="color" name="{{ filter_key }}_color" aria-label="{{ __('%s color')|format(title) }}" value="{{ color }}">
             </span>
@@ -64,7 +63,7 @@
                             <a target="_blank" href="#" onclick="GLPIPlanning.deletePlanning(this)" value="{{ filter_key }}">{{ __('Delete') }}</a>
                         </li>
                     {% endif %}
-                    {% if caldav_url != null and filter_data.type != 'group_users' and filter_data.type != 'external' %}
+                    {% if show_export_buttons %}
                         <li class="dropdown-item">
                             {% set export_url = path(
                                 'front/planning.php?genical=1&uID=' ~ uID ~ '&gID=' ~ gID ~ '&entities_id=' ~ session('glpiactive_entity') ~ '&is_recursive=' ~ session('glpiactive_entity_recursive') ~ '&token=' ~ login_user.getAuthToken()
@@ -74,7 +73,7 @@
                             </a>
                         </li>
                         <li class="dropdown-item">
-                            <a target="_blank" href="webcal://{{ url.host }}:{{ url.port }}{{ url.path }}{{ export_url }}">
+                            <a target="_blank" href="{{ webcal_base_url }}{{ export_url }}">
                                 {{ _x('button', 'Export') }} - {{ __('Webcal') }}
                             </a>
                         </li>
@@ -83,17 +82,19 @@
                                 {{ _x('button', 'Export') }} - {{ __('CSV') }}
                             </a>
                         </li>
+                        {% if caldav_url is not null %}
                         <li class="dropdown-item">
                             <a target="_blank" href="#" onclick="copyTextToClipboard('{{ caldav_url|e('js') }}'); alert('{{ __('CalDAV URL has been copied to clipboard')|e('js') }}'); return false;">
                                 {{ __('Copy CalDAV URL to clipboard') }}
                             </a>
                         </li>
+                        {% endif %}
                     {% endif %}
                 </ul>
             </div>
         {% endif %}
     </span>
-    {% if caldav_item_url is not empty and filter_data.type == 'group_users' %}
+    {% if (caldav_url ?? '') is not empty and filter_data.type == 'group_users' %}
         <ul class="group_listofusers filters">
             {% for user_key, user_data in filter_data.users %}
                 {% do call('Planning::showSingleLinePlanningFilter', [user_key, user_data, {

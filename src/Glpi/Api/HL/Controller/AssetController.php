@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -50,7 +50,6 @@ use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Glpi\Socket;
 use Glpi\SocketModel;
-use Group;
 use Group_Item;
 use GuzzleHttp\Psr7\Utils;
 use Location;
@@ -72,14 +71,14 @@ use User;
             'name' => 'itemtype',
             'description' => 'Asset type',
             'location' => Doc\Parameter::LOCATION_PATH,
-            'schema' => ['type' => Doc\Schema::TYPE_STRING]
+            'schema' => ['type' => Doc\Schema::TYPE_STRING],
         ],
         [
             'name' => 'id',
             'description' => 'The ID of the Asset',
             'location' => Doc\Parameter::LOCATION_PATH,
-            'schema' => ['type' => Doc\Schema::TYPE_INTEGER]
-        ]
+            'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
+        ],
     ]
 )]
 final class AssetController extends AbstractController
@@ -104,7 +103,7 @@ final class AssetController extends AbstractController
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ]
+            ],
         ];
 
         $schemas['PrinterModel'] = [
@@ -122,7 +121,7 @@ final class AssetController extends AbstractController
                 'product_number' => ['type' => Doc\Schema::TYPE_STRING],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ]
+            ],
         ];
 
         $schemas['SoftwareCategory'] = [
@@ -140,7 +139,7 @@ final class AssetController extends AbstractController
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'parent' => self::getDropdownTypeSchema(class: \SoftwareCategory::class, full_schema: 'SoftwareCategory'),
                 'level' => ['type' => Doc\Schema::TYPE_INTEGER],
-            ]
+            ],
         ];
 
         $schemas['OperatingSystem'] = [
@@ -157,7 +156,7 @@ final class AssetController extends AbstractController
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ]
+            ],
         ];
 
         $schemas['RackModel'] = [
@@ -175,7 +174,7 @@ final class AssetController extends AbstractController
                 'product_number' => ['type' => Doc\Schema::TYPE_STRING],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ]
+            ],
         ];
 
         $schemas['RackType'] = [
@@ -194,7 +193,7 @@ final class AssetController extends AbstractController
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ]
+            ],
         ];
 
         $schemas['PDUModel'] = [
@@ -219,7 +218,7 @@ final class AssetController extends AbstractController
                 'is_rackable' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ]
+            ],
         ];
 
         $schemas['PDUType'] = [
@@ -238,7 +237,7 @@ final class AssetController extends AbstractController
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ]
+            ],
         ];
 
         $schemas['PassiveDCEquipmentModel'] = [
@@ -263,7 +262,7 @@ final class AssetController extends AbstractController
                 'is_half_rack' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ]
+            ],
         ];
 
         $schemas['PassiveDCEquipmentType'] = [
@@ -280,7 +279,7 @@ final class AssetController extends AbstractController
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ]
+            ],
         ];
 
         $schemas['SocketModel'] = [
@@ -297,7 +296,7 @@ final class AssetController extends AbstractController
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ]
+            ],
         ];
 
         $schemas['NetworkPort'] = [
@@ -334,7 +333,7 @@ final class AssetController extends AbstractController
                 'trunk' => ['type' => Doc\Schema::TYPE_INTEGER],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ]
+            ],
         ];
 
         $schemas['DCRoom'] = [
@@ -357,7 +356,7 @@ final class AssetController extends AbstractController
                 'cols' => ['x-field' => 'vis_cols', 'type' => Doc\Schema::TYPE_INTEGER],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ]
+            ],
         ];
 
         $asset_types = self::getAssetTypes();
@@ -437,8 +436,8 @@ final class AssetController extends AbstractController
                                 'condition' => [
                                     'itemtype' => $asset_type,
                                     'type' => Group_Item::GROUP_TYPE_NORMAL,
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         'properties' => [
                             'id' => [
@@ -447,8 +446,8 @@ final class AssetController extends AbstractController
                                 'description' => 'ID',
                             ],
                             'name' => ['type' => Doc\Schema::TYPE_STRING],
-                        ]
-                    ]
+                        ],
+                    ],
                 ];
                 $schemas[$schema_name]['properties']['group_tech'] = [
                     'type' => Doc\Schema::TYPE_ARRAY,
@@ -466,8 +465,8 @@ final class AssetController extends AbstractController
                                 'condition' => [
                                     'itemtype' => $asset_type,
                                     'type' => Group_Item::GROUP_TYPE_TECH,
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         'properties' => [
                             'id' => [
@@ -476,8 +475,8 @@ final class AssetController extends AbstractController
                                 'description' => 'ID',
                             ],
                             'name' => ['type' => Doc\Schema::TYPE_STRING],
-                        ]
-                    ]
+                        ],
+                    ],
                 ];
             }
 
@@ -547,7 +546,7 @@ final class AssetController extends AbstractController
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                     'x-readonly' => true,
                 ],
-            ]
+            ],
         ];
 
         $schemas['CartridgeItem'] = [
@@ -564,6 +563,8 @@ final class AssetController extends AbstractController
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
                 'printer_models' => [
                     'type' => Doc\Schema::TYPE_ARRAY,
                     'description' => 'List of printer models that can use this cartridge',
@@ -578,7 +579,7 @@ final class AssetController extends AbstractController
                                 'table' => \CartridgeItem_PrinterModel::getTable(),
                                 'fkey' => 'id', // The ID field of the main table used to refer to the cartridgeitems_id of the joined table
                                 'field' => \CartridgeItem::getForeignKeyField(),
-                            ]
+                            ],
                         ],
                         'properties' => [
                             'id' => [
@@ -588,8 +589,8 @@ final class AssetController extends AbstractController
                             ],
                             'name' => ['type' => Doc\Schema::TYPE_STRING],
                             'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 'cartridges' => [
                     'type' => Doc\Schema::TYPE_ARRAY,
@@ -614,10 +615,10 @@ final class AssetController extends AbstractController
                             'date_out' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                             'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                             'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $schemas['Consumable'] = [
@@ -654,7 +655,7 @@ final class AssetController extends AbstractController
                 ],
                 'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
                 'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
-            ]
+            ],
         ];
 
         $schemas['ConsumableItem'] = [
@@ -671,6 +672,8 @@ final class AssetController extends AbstractController
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
                 'consumables' => [
                     'type' => Doc\Schema::TYPE_ARRAY,
                     'description' => 'List of consumables',
@@ -694,10 +697,10 @@ final class AssetController extends AbstractController
                             'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                             'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
                             'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $schemas['Software'] = [
@@ -736,8 +739,8 @@ final class AssetController extends AbstractController
                                 'condition' => [
                                     'itemtype' => Software::class,
                                     'type' => Group_Item::GROUP_TYPE_NORMAL,
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         'properties' => [
                             'id' => [
@@ -746,8 +749,8 @@ final class AssetController extends AbstractController
                                 'description' => 'ID',
                             ],
                             'name' => ['type' => Doc\Schema::TYPE_STRING],
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
                 'group_tech' => [
@@ -766,8 +769,8 @@ final class AssetController extends AbstractController
                                 'condition' => [
                                     'itemtype' => Software::class,
                                     'type' => Group_Item::GROUP_TYPE_TECH,
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         'properties' => [
                             'id' => [
@@ -776,15 +779,15 @@ final class AssetController extends AbstractController
                                 'description' => 'ID',
                             ],
                             'name' => ['type' => Doc\Schema::TYPE_STRING],
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'is_update' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'is_valid' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ]
+            ],
         ];
 
         $schemas['SoftwareVersion'] = [
@@ -807,7 +810,7 @@ final class AssetController extends AbstractController
                 'operating_system' => self::getDropdownTypeSchema(class: \OperatingSystem::class, full_schema: 'OperatingSystem'),
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ]
+            ],
         ];
 
         $schemas['Rack'] = [
@@ -848,8 +851,8 @@ final class AssetController extends AbstractController
                                 'condition' => [
                                     'itemtype' => \Rack::class,
                                     'type' => Group_Item::GROUP_TYPE_NORMAL,
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         'properties' => [
                             'id' => [
@@ -858,8 +861,8 @@ final class AssetController extends AbstractController
                                 'description' => 'ID',
                             ],
                             'name' => ['type' => Doc\Schema::TYPE_STRING],
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
                 'group_tech' => [
@@ -878,8 +881,8 @@ final class AssetController extends AbstractController
                                 'condition' => [
                                     'itemtype' => \Rack::class,
                                     'type' => Group_Item::GROUP_TYPE_TECH,
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         'properties' => [
                             'id' => [
@@ -888,8 +891,8 @@ final class AssetController extends AbstractController
                                 'description' => 'ID',
                             ],
                             'name' => ['type' => Doc\Schema::TYPE_STRING],
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 'width' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                 'height' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
@@ -904,7 +907,7 @@ final class AssetController extends AbstractController
                 'measured_power' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT32,
-                    'x-field' => 'mesured_power' // Took liberty to fix typo in DB without having to mess with the DB itself or other code
+                    'x-field' => 'mesured_power', // Took liberty to fix typo in DB without having to mess with the DB itself or other code
                 ],
                 'max_weight' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                 'items' => [
@@ -927,12 +930,12 @@ final class AssetController extends AbstractController
                             ],
                             'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
                             'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ]
+            ],
         ];
 
         $schemas['RackItem'] = [
@@ -952,19 +955,21 @@ final class AssetController extends AbstractController
                 'orientation' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT32,
-                    'enum' => [
-                        \Rack::FRONT => 'Front',
-                        \Rack::REAR => 'Rear',
-                    ]
+                    'enum' => [\Rack::FRONT, \Rack::REAR],
+                    'description' => <<<EOT
+                        Orientation of the item in the rack.
+                        - 0: Front
+                        - 1: Rear
+                        EOT,
                 ],
                 'bgcolor' => ['type' => Doc\Schema::TYPE_STRING],
                 'position_horizontal' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT32,
-                    'x-field' => 'hpos'
+                    'x-field' => 'hpos',
                 ],
                 'is_reserved' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-            ]
+            ],
         ];
 
         $schemas['Enclosure'] = [
@@ -1004,8 +1009,8 @@ final class AssetController extends AbstractController
                                 'condition' => [
                                     'itemtype' => \Enclosure::class,
                                     'type' => Group_Item::GROUP_TYPE_NORMAL,
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         'properties' => [
                             'id' => [
@@ -1014,8 +1019,8 @@ final class AssetController extends AbstractController
                                 'description' => 'ID',
                             ],
                             'name' => ['type' => Doc\Schema::TYPE_STRING],
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
                 'group_tech' => [
@@ -1034,8 +1039,8 @@ final class AssetController extends AbstractController
                                 'condition' => [
                                     'itemtype' => \Enclosure::class,
                                     'type' => Group_Item::GROUP_TYPE_TECH,
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         'properties' => [
                             'id' => [
@@ -1044,15 +1049,15 @@ final class AssetController extends AbstractController
                                 'description' => 'ID',
                             ],
                             'name' => ['type' => Doc\Schema::TYPE_STRING],
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'orientation' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                 'power_supplies' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ]
+            ],
         ];
 
         $schemas['PDU'] = [
@@ -1093,8 +1098,8 @@ final class AssetController extends AbstractController
                                 'condition' => [
                                     'itemtype' => \PDU::class,
                                     'type' => Group_Item::GROUP_TYPE_NORMAL,
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         'properties' => [
                             'id' => [
@@ -1103,8 +1108,8 @@ final class AssetController extends AbstractController
                                 'description' => 'ID',
                             ],
                             'name' => ['type' => Doc\Schema::TYPE_STRING],
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
                 'group_tech' => [
@@ -1123,8 +1128,8 @@ final class AssetController extends AbstractController
                                 'condition' => [
                                     'itemtype' => \PDU::class,
                                     'type' => Group_Item::GROUP_TYPE_TECH,
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         'properties' => [
                             'id' => [
@@ -1133,13 +1138,13 @@ final class AssetController extends AbstractController
                                 'description' => 'ID',
                             ],
                             'name' => ['type' => Doc\Schema::TYPE_STRING],
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ]
+            ],
         ];
 
         $schemas['PassiveDCEquipment'] = [
@@ -1180,8 +1185,8 @@ final class AssetController extends AbstractController
                                 'condition' => [
                                     'itemtype' => \PassiveDCEquipment::class,
                                     'type' => Group_Item::GROUP_TYPE_NORMAL,
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         'properties' => [
                             'id' => [
@@ -1190,8 +1195,8 @@ final class AssetController extends AbstractController
                                 'description' => 'ID',
                             ],
                             'name' => ['type' => Doc\Schema::TYPE_STRING],
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
                 'group_tech' => [
@@ -1210,8 +1215,8 @@ final class AssetController extends AbstractController
                                 'condition' => [
                                     'itemtype' => \PassiveDCEquipment::class,
                                     'type' => Group_Item::GROUP_TYPE_TECH,
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         'properties' => [
                             'id' => [
@@ -1220,13 +1225,13 @@ final class AssetController extends AbstractController
                                 'description' => 'ID',
                             ],
                             'name' => ['type' => Doc\Schema::TYPE_STRING],
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ]
+            ],
         ];
 
         $schemas['Cable'] = [
@@ -1262,8 +1267,8 @@ final class AssetController extends AbstractController
                                 'condition' => [
                                     'itemtype' => \Cable::class,
                                     'type' => Group_Item::GROUP_TYPE_NORMAL,
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         'properties' => [
                             'id' => [
@@ -1272,8 +1277,8 @@ final class AssetController extends AbstractController
                                 'description' => 'ID',
                             ],
                             'name' => ['type' => Doc\Schema::TYPE_STRING],
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
                 'group_tech' => [
@@ -1292,8 +1297,8 @@ final class AssetController extends AbstractController
                                 'condition' => [
                                     'itemtype' => \Cable::class,
                                     'type' => Group_Item::GROUP_TYPE_TECH,
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         'properties' => [
                             'id' => [
@@ -1302,8 +1307,8 @@ final class AssetController extends AbstractController
                                 'description' => 'ID',
                             ],
                             'name' => ['type' => Doc\Schema::TYPE_STRING],
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'itemtype_endpoint_a' => ['type' => Doc\Schema::TYPE_STRING],
@@ -1324,7 +1329,7 @@ final class AssetController extends AbstractController
                 'sockets_id_endpoint_b' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ]
+            ],
         ];
 
         $schemas['Socket'] = [
@@ -1347,7 +1352,7 @@ final class AssetController extends AbstractController
                 'network_port' => self::getDropdownTypeSchema(class: \NetworkPort::class, full_schema: 'NetworkPort'),
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ]
+            ],
         ];
 
         $schemas['CommonAsset'] = self::getGlobalAssetSchema($schemas);
@@ -1356,10 +1361,10 @@ final class AssetController extends AbstractController
     }
 
     /**
-     * @param bool $classes_only If true, only the class names are returned. If false, the class name => localized name pairs are returned.
+     * @param bool $types_only If true, only the type names are returned. If false, the type name => localized name pairs are returned.
      * @return array<class-string<CommonDBTM>, string>
      */
-    public static function getAssetTypes(bool $classes_only = true): array
+    public static function getAssetTypes(bool $types_only = true): array
     {
         static $assets = null;
 
@@ -1367,7 +1372,7 @@ final class AssetController extends AbstractController
             $assets = [];
             $types = ['Computer', 'Monitor', 'NetworkEquipment',
                 'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
-                'Certificate', 'Unmanaged', 'Appliance'
+                'Certificate', 'Unmanaged', 'Appliance',
             ];
             /**
              * @var class-string<CommonDBTM> $type
@@ -1376,7 +1381,7 @@ final class AssetController extends AbstractController
                 $assets[$type] = $type::getTypeName(1);
             }
         }
-        return $classes_only ? array_keys($assets) : $assets;
+        return $types_only ? array_keys($assets) : $assets;
     }
 
     public static function getRackTypes(bool $schema_names_only = true): array
@@ -1387,31 +1392,31 @@ final class AssetController extends AbstractController
             $rack_types = [
                 Computer::class => [
                     'schema_name' => 'Computer',
-                    'label' => Computer::getTypeName(1)
+                    'label' => Computer::getTypeName(1),
                 ],
                 Monitor::class => [
                     'schema_name' => 'Monitor',
-                    'label' => Monitor::getTypeName(1)
+                    'label' => Monitor::getTypeName(1),
                 ],
                 NetworkEquipment::class => [
                     'schema_name' => 'NetworkEquipment',
-                    'label' => NetworkEquipment::getTypeName(1)
+                    'label' => NetworkEquipment::getTypeName(1),
                 ],
                 Peripheral::class => [
                     'schema_name' => 'Peripheral',
-                    'label' => Peripheral::getTypeName(1)
+                    'label' => Peripheral::getTypeName(1),
                 ],
                 Enclosure::class => [
                     'schema_name' => 'Enclosure',
-                    'label' => Enclosure::getTypeName(1)
+                    'label' => Enclosure::getTypeName(1),
                 ],
                 PDU::class => [
                     'schema_name' => 'PDU',
-                    'label' => PDU::getTypeName(1)
+                    'label' => PDU::getTypeName(1),
                 ],
                 PassiveDCEquipment::class => [
                     'schema_name' => 'PassiveDCEquipment',
-                    'label' => PassiveDCEquipment::getTypeName(1)
+                    'label' => PassiveDCEquipment::getTypeName(1),
                 ],
             ];
         }
@@ -1436,8 +1441,8 @@ final class AssetController extends AbstractController
                             'href' => ['type' => Doc\Schema::TYPE_STRING],
                         ],
                     ],
-                ]
-            ]
+                ],
+            ],
         ]
     )]
     public function index(Request $request): Response
@@ -1471,7 +1476,7 @@ final class AssetController extends AbstractController
         description: 'List or search assets of all types',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
-            ['schema' => 'CommonAsset[]']
+            ['schema' => 'CommonAsset[]'],
         ]
     )]
     public function searchAll(Request $request): Response
@@ -1480,14 +1485,14 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/{itemtype}', methods: ['GET'], requirements: [
-        'itemtype' => [self::class, 'getAssetTypes']
+        'itemtype' => [self::class, 'getAssetTypes'],
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'List or search assets of a specific type',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
-            ['schema' => '{itemtype}[]']
+            ['schema' => '{itemtype}[]'],
         ]
     )]
     public function search(Request $request): Response
@@ -1498,13 +1503,13 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/{itemtype}/{id}', methods: ['GET'], requirements: [
         'itemtype' => [self::class, 'getAssetTypes'],
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get an asset of a specific type by ID',
         responses: [
-            ['schema' => '{itemtype}']
+            ['schema' => '{itemtype}'],
         ]
     )]
     public function getItem(Request $request): Response
@@ -1515,13 +1520,13 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/{itemtype}/{id}/Infocom', methods: ['GET'], requirements: [
         'itemtype' => [self::class, 'getAssetTypes'],
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get the financial and administration information for a specific asset',
         responses: [
-            ['schema' => 'Infocom']
+            ['schema' => 'Infocom'],
         ]
     )]
     public function getItemInfocom(Request $request): Response
@@ -1558,7 +1563,7 @@ final class AssetController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => '{itemtype}',
-            ]
+            ],
         ]
     )]
     public function createItem(Request $request): Response
@@ -1569,7 +1574,7 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'], requirements: [
         'itemtype' => [self::class, 'getAssetTypes'],
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -1579,7 +1584,7 @@ final class AssetController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => '{itemtype}',
-            ]
+            ],
         ]
     )]
     public function updateItem(Request $request): Response
@@ -1590,7 +1595,7 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'], requirements: [
         'itemtype' => [self::class, 'getAssetTypes'],
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -1608,7 +1613,7 @@ final class AssetController extends AbstractController
         description: 'List or search cartridge models',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
-            ['schema' => 'CartridgeItem[]']
+            ['schema' => 'CartridgeItem[]'],
         ]
     )]
     public function searchCartridgeItems(Request $request): Response
@@ -1617,13 +1622,13 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Cartridge/{id}', methods: ['GET'], requirements: [
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a cartridge model by ID',
         responses: [
-            ['schema' => 'CartridgeItem']
+            ['schema' => 'CartridgeItem'],
         ]
     )]
     public function getCartridgeItem(Request $request): Response
@@ -1640,7 +1645,7 @@ final class AssetController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'CartridgeItem',
-            ]
+            ],
         ]
     )]
     public function createCartridgeItems(Request $request): Response
@@ -1649,7 +1654,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Cartridge/{id}', methods: ['PATCH'], requirements: [
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -1659,7 +1664,7 @@ final class AssetController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'CartridgeItem',
-            ]
+            ],
         ]
     )]
     public function updateCartridgeItems(Request $request): Response
@@ -1668,7 +1673,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Cartridge/{id}', methods: ['DELETE'], requirements: [
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -1680,13 +1685,14 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Cartridge/{cartridgeitems_id}/{id}', methods: ['GET'], requirements: [
-        'id' => '\d+'
+        'cartridgeitems_id' => '\d+',
+        'id' => '\d+',
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a cartridge by ID',
         responses: [
-            ['schema' => 'Cartridge']
+            ['schema' => 'Cartridge'],
         ]
     )]
     public function getCartridge(Request $request): Response
@@ -1694,7 +1700,9 @@ final class AssetController extends AbstractController
         return Search::getOneBySchema($this->getKnownSchema('Cartridge', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Cartridge/{cartridgeitems_id}', methods: ['POST'], tags: ['Assets'])]
+    #[Route(path: '/Cartridge/{cartridgeitems_id}', methods: ['POST'], tags: ['Assets'], requirements: [
+        'cartridgeitems_id' => '\d+',
+    ])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Create a cartridge',
@@ -1703,7 +1711,7 @@ final class AssetController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Cartridge',
-            ]
+            ],
         ]
     )]
     public function createCartridges(Request $request): Response
@@ -1712,7 +1720,8 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Cartridge/{cartridgeitems_id}/{id}', methods: ['PATCH'], requirements: [
-        'id' => '\d+'
+        'cartridgeitems_id' => '\d+',
+        'id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -1722,7 +1731,7 @@ final class AssetController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Cartridge',
-            ]
+            ],
         ]
     )]
     public function updateCartridges(Request $request): Response
@@ -1731,7 +1740,8 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Cartridge/{cartridgeitems_id}/{id}', methods: ['DELETE'], requirements: [
-        'id' => '\d+'
+        'cartridgeitems_id' => '\d+',
+        'id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -1748,7 +1758,7 @@ final class AssetController extends AbstractController
         description: 'List or search consumables models',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
-            ['schema' => 'ConsumableItem[]']
+            ['schema' => 'ConsumableItem[]'],
         ]
     )]
     public function searchConsumableItems(Request $request): Response
@@ -1757,13 +1767,13 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Consumable/{id}', methods: ['GET'], requirements: [
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a consumable model by ID',
         responses: [
-            ['schema' => 'ConsumableItem']
+            ['schema' => 'ConsumableItem'],
         ]
     )]
     public function getConsumableItem(Request $request): Response
@@ -1780,7 +1790,7 @@ final class AssetController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'ConsumableItem',
-            ]
+            ],
         ]
     )]
     public function createConsumableItems(Request $request): Response
@@ -1789,7 +1799,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Consumable/{id}', methods: ['PATCH'], requirements: [
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -1799,7 +1809,7 @@ final class AssetController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'ConsumableItem',
-            ]
+            ],
         ]
     )]
     public function updateConsumableItems(Request $request): Response
@@ -1808,7 +1818,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Consumable/{id}', methods: ['DELETE'], requirements: [
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -1820,13 +1830,14 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Consumable/{consumableitems_id}/{id}', methods: ['GET'], requirements: [
-        'id' => '\d+'
+        'consumableitems_id' => '\d+',
+        'id' => '\d+',
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a consumable by ID',
         responses: [
-            ['schema' => 'Consumable']
+            ['schema' => 'Consumable'],
         ]
     )]
     public function getConsumable(Request $request): Response
@@ -1834,7 +1845,9 @@ final class AssetController extends AbstractController
         return Search::getOneBySchema($this->getKnownSchema('Consumable', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Consumable/{consumableitems_id}', methods: ['POST'], tags: ['Assets'])]
+    #[Route(path: '/Consumable/{consumableitems_id}', methods: ['POST'], requirements: [
+        'consumableitems_id' => '\d+',
+    ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Create a consumable',
@@ -1843,7 +1856,7 @@ final class AssetController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Consumable',
-            ]
+            ],
         ]
     )]
     public function createConsumables(Request $request): Response
@@ -1852,7 +1865,8 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Consumable/{consumableitems_id}/{id}', methods: ['PATCH'], requirements: [
-        'id' => '\d+'
+        'consumableitems_id' => '\d+',
+        'id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -1862,7 +1876,7 @@ final class AssetController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Consumable',
-            ]
+            ],
         ]
     )]
     public function updateConsumable(Request $request): Response
@@ -1871,7 +1885,8 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Consumable/{consumableitems_id}/{id}', methods: ['DELETE'], requirements: [
-        'id' => '\d+'
+        'consumableitems_id' => '\d+',
+        'id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -1888,7 +1903,7 @@ final class AssetController extends AbstractController
         description: 'List or search software',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
-            ['schema' => 'Software[]']
+            ['schema' => 'Software[]'],
         ]
     )]
     public function searchSoftware(Request $request): Response
@@ -1897,13 +1912,13 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Software/{id}', methods: ['GET'], requirements: [
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a software by ID',
         responses: [
-            ['schema' => 'Software']
+            ['schema' => 'Software'],
         ]
     )]
     public function getSoftware(Request $request): Response
@@ -1920,7 +1935,7 @@ final class AssetController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Software',
-            ]
+            ],
         ]
     )]
     public function createSoftware(Request $request): Response
@@ -1929,7 +1944,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Software/{id}', methods: ['PATCH'], requirements: [
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -1939,7 +1954,7 @@ final class AssetController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Software',
-            ]
+            ],
         ]
     )]
     public function updateSoftware(Request $request): Response
@@ -1948,7 +1963,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Software/{id}', methods: ['DELETE'], requirements: [
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -1965,7 +1980,7 @@ final class AssetController extends AbstractController
         description: 'List or search racks',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
-            ['schema' => 'Rack[]']
+            ['schema' => 'Rack[]'],
         ]
     )]
     public function searchRack(Request $request): Response
@@ -1974,13 +1989,13 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Rack/{id}', methods: ['GET'], requirements: [
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a rack by ID',
         responses: [
-            ['schema' => 'Rack']
+            ['schema' => 'Rack'],
         ]
     )]
     public function getRack(Request $request): Response
@@ -1997,7 +2012,7 @@ final class AssetController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Rack',
-            ]
+            ],
         ]
     )]
     public function createRack(Request $request): Response
@@ -2006,7 +2021,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Rack/{id}', methods: ['PATCH'], requirements: [
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -2016,7 +2031,7 @@ final class AssetController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Rack',
-            ]
+            ],
         ]
     )]
     public function updateRack(Request $request): Response
@@ -2025,7 +2040,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Rack/{id}', methods: ['DELETE'], requirements: [
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -2037,13 +2052,13 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Rack/{rack_id}/Item', methods: ['GET'], requirements: [
-        'rack_id' => '\d+'
+        'rack_id' => '\d+',
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get items in a rack',
         responses: [
-            ['schema' => 'RackItem[]']
+            ['schema' => 'RackItem[]'],
         ]
     )]
     public function getRackItems(Request $request): Response
@@ -2056,13 +2071,13 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/Rack/{rack_id}/Item/{id}', methods: ['GET'], requirements: [
         'rack_id' => '\d+',
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a rack item',
         responses: [
-            ['schema' => 'RackItem[]']
+            ['schema' => 'RackItem[]'],
         ]
     )]
     public function getRackItem(Request $request): Response
@@ -2075,7 +2090,7 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/Rack/{rack_id}/Item/{id}', methods: ['PATCH'], requirements: [
         'rack_id' => '\d+',
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -2085,7 +2100,7 @@ final class AssetController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Rack',
-            ]
+            ],
         ]
     )]
     public function updateRackItem(Request $request): Response
@@ -2094,7 +2109,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Rack/{rack_id}/Item', methods: ['POST'], requirements: [
-        'rack_id' => '\d+'
+        'rack_id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -2104,7 +2119,7 @@ final class AssetController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'RackItem',
-            ]
+            ],
         ]
     )]
     public function createRackItem(Request $request): Response
@@ -2114,23 +2129,23 @@ final class AssetController extends AbstractController
 
         if (!array_key_exists($rack_type, $rack_types)) {
             return new JSONResponse([
-                'error' => "Invalid itemtype '$rack_type'. Allowed values are: " . implode(', ', array_keys($rack_types))
+                'error' => "Invalid itemtype '$rack_type'. Allowed values are: " . implode(', ', array_keys($rack_types)),
             ], 400);
         }
 
         $request->setParameter('rack', $request->getAttribute('rack_id'));
         return Search::createBySchema($this->getKnownSchema('RackItem', $this->getAPIVersion($request)), $request->getParameters(), [
-            self::class, 'getRackItem'
+            self::class, 'getRackItem',
         ], [
             'mapped' => [
-                'rack_id' => $request->getAttribute('rack_id')
-            ]
+                'rack_id' => $request->getAttribute('rack_id'),
+            ],
         ]);
     }
 
     #[Route(path: '/Rack/{rack_id}/Item/{id}', methods: ['DELETE'], requirements: [
         'rack_id' => '\d+',
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -2147,7 +2162,7 @@ final class AssetController extends AbstractController
         description: 'List or search enclosure',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
-            ['schema' => 'Enclosure[]']
+            ['schema' => 'Enclosure[]'],
         ]
     )]
     public function searchEnclosure(Request $request): Response
@@ -2156,13 +2171,13 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Enclosure/{id}', methods: ['GET'], requirements: [
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a enclosure by ID',
         responses: [
-            ['schema' => 'Enclosure']
+            ['schema' => 'Enclosure'],
         ]
     )]
     public function getEnclosure(Request $request): Response
@@ -2179,7 +2194,7 @@ final class AssetController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Enclosure',
-            ]
+            ],
         ]
     )]
     public function createEnclosure(Request $request): Response
@@ -2188,7 +2203,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Enclosure/{id}', methods: ['PATCH'], requirements: [
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -2198,7 +2213,7 @@ final class AssetController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Enclosure',
-            ]
+            ],
         ]
     )]
     public function updateEnclosure(Request $request): Response
@@ -2207,7 +2222,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Enclosure/{id}', methods: ['DELETE'], requirements: [
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -2224,7 +2239,7 @@ final class AssetController extends AbstractController
         description: 'List or search PDUs',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
-            ['schema' => 'PDU[]']
+            ['schema' => 'PDU[]'],
         ]
     )]
     public function searchPDU(Request $request): Response
@@ -2233,13 +2248,13 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/PDU/{id}', methods: ['GET'], requirements: [
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a PDU by ID',
         responses: [
-            ['schema' => 'PDU']
+            ['schema' => 'PDU'],
         ]
     )]
     public function getPDU(Request $request): Response
@@ -2256,7 +2271,7 @@ final class AssetController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'PDU',
-            ]
+            ],
         ]
     )]
     public function createPDU(Request $request): Response
@@ -2265,7 +2280,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/PDU/{id}', methods: ['PATCH'], requirements: [
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -2275,7 +2290,7 @@ final class AssetController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'PDU',
-            ]
+            ],
         ]
     )]
     public function updatePDU(Request $request): Response
@@ -2284,7 +2299,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/PDU/{id}', methods: ['DELETE'], requirements: [
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -2301,7 +2316,7 @@ final class AssetController extends AbstractController
         description: 'List or search passive DC equipment',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
-            ['schema' => 'PassiveDCEquipment[]']
+            ['schema' => 'PassiveDCEquipment[]'],
         ]
     )]
     public function searchPassiveDCEquipment(Request $request): Response
@@ -2310,13 +2325,13 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/PassiveDCEquipment/{id}', methods: ['GET'], requirements: [
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a passive DC equipment by ID',
         responses: [
-            ['schema' => 'PassiveDCEquipment']
+            ['schema' => 'PassiveDCEquipment'],
         ]
     )]
     public function getPassiveDCEquipment(Request $request): Response
@@ -2333,7 +2348,7 @@ final class AssetController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'PassiveDCEquipment',
-            ]
+            ],
         ]
     )]
     public function createPassiveDCEquipment(Request $request): Response
@@ -2342,7 +2357,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/PassiveDCEquipment/{id}', methods: ['PATCH'], requirements: [
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -2352,7 +2367,7 @@ final class AssetController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'PassiveDCEquipment',
-            ]
+            ],
         ]
     )]
     public function updatePassiveDCEquipment(Request $request): Response
@@ -2361,7 +2376,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/PassiveDCEquipment/{id}', methods: ['DELETE'], requirements: [
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -2378,7 +2393,7 @@ final class AssetController extends AbstractController
         description: 'List or search cables',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
-            ['schema' => 'Cable[]']
+            ['schema' => 'Cable[]'],
         ]
     )]
     public function searchCables(Request $request): Response
@@ -2387,13 +2402,13 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Cable/{id}', methods: ['GET'], requirements: [
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a cable by ID',
         responses: [
-            ['schema' => 'Cable']
+            ['schema' => 'Cable'],
         ]
     )]
     public function getCable(Request $request): Response
@@ -2410,7 +2425,7 @@ final class AssetController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Cable',
-            ]
+            ],
         ]
     )]
     public function createCable(Request $request): Response
@@ -2419,7 +2434,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Cable/{id}', methods: ['PATCH'], requirements: [
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -2429,7 +2444,7 @@ final class AssetController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Cable',
-            ]
+            ],
         ]
     )]
     public function updateCable(Request $request): Response
@@ -2438,7 +2453,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Cable/{id}', methods: ['DELETE'], requirements: [
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -2455,7 +2470,7 @@ final class AssetController extends AbstractController
         description: 'List or search sockets',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
-            ['schema' => 'Socket[]']
+            ['schema' => 'Socket[]'],
         ]
     )]
     public function searchSockets(Request $request): Response
@@ -2464,13 +2479,13 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Socket/{id}', methods: ['GET'], requirements: [
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a socket by ID',
         responses: [
-            ['schema' => 'Socket']
+            ['schema' => 'Socket'],
         ]
     )]
     public function getSocket(Request $request): Response
@@ -2487,7 +2502,7 @@ final class AssetController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Socket',
-            ]
+            ],
         ]
     )]
     public function createSocket(Request $request): Response
@@ -2496,7 +2511,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Socket/{id}', methods: ['PATCH'], requirements: [
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -2506,7 +2521,7 @@ final class AssetController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Socket',
-            ]
+            ],
         ]
     )]
     public function updateSocket(Request $request): Response
@@ -2515,7 +2530,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Socket/{id}', methods: ['DELETE'], requirements: [
-        'id' => '\d+'
+        'id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -2534,7 +2549,7 @@ final class AssetController extends AbstractController
         description: 'List or search software versions',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
-            ['schema' => 'SoftwareVersion[]']
+            ['schema' => 'SoftwareVersion[]'],
         ]
     )]
     public function searchSoftwareVersions(Request $request): Response
@@ -2546,13 +2561,14 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Software/{software_id}/Version/{id}', methods: ['GET'], requirements: [
-        'id' => '\d+'
+        'software_id' => '\d+',
+        'id' => '\d+',
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a software version by ID',
         responses: [
-            ['schema' => 'SoftwareVersion']
+            ['schema' => 'SoftwareVersion'],
         ]
     )]
     public function getSoftwareVersion(Request $request): Response
@@ -2574,23 +2590,24 @@ final class AssetController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'SoftwareVersion',
-            ]
+            ],
         ]
     )]
     public function createSoftwareVersion(Request $request): Response
     {
         $request->setParameter('software', $request->getAttribute('software_id'));
         return Search::createBySchema($this->getKnownSchema('SoftwareVersion', $this->getAPIVersion($request)), $request->getParameters(), [
-            self::class, 'getSoftwareVersion'
+            self::class, 'getSoftwareVersion',
         ], [
             'mapped' => [
-                'software_id' => $request->getAttribute('software_id')
-            ]
+                'software_id' => $request->getAttribute('software_id'),
+            ],
         ]);
     }
 
     #[Route(path: '/Software/{software_id}/Version/{id}', methods: ['PATCH'], requirements: [
-        'id' => '\d+'
+        'software_id' => '\d+',
+        'id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -2600,7 +2617,7 @@ final class AssetController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'SoftwareVersion',
-            ]
+            ],
         ]
     )]
     public function updateSoftwareVersion(Request $request): Response
@@ -2609,7 +2626,8 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Software/{software_id}/Version/{id}', methods: ['DELETE'], requirements: [
-        'id' => '\d+'
+        'software_id' => '\d+',
+        'id' => '\d+',
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(

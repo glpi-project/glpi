@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,7 +35,9 @@
 namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
+use Glpi\Asset\CapacityConfig;
 use Infocom;
+use Override;
 
 class HasInfocomCapacity extends AbstractCapacity
 {
@@ -50,10 +51,16 @@ class HasInfocomCapacity extends AbstractCapacity
         return Infocom::getIcon();
     }
 
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Manage and track assets lifecycle, financial, administrative and warranty information");
+    }
+
     public function getCloneRelations(): array
     {
         return [
-            Infocom::class
+            Infocom::class,
         ];
     }
 
@@ -72,14 +79,14 @@ class HasInfocomCapacity extends AbstractCapacity
         );
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         $this->registerToTypeConfig('infocom_types', $classname);
 
         CommonGLPI::registerStandardTab($classname, Infocom::class, 50);
     }
 
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
         // Unregister from infocom types
         $this->unregisterFromTypeConfig('infocom_types', $classname);

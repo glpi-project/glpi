@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,11 +35,51 @@
 namespace tests\units;
 
 use DbTestCase;
-
-/* Test for inc/networkport.class.php */
+use Glpi\Asset\Capacity;
+use Glpi\Asset\Capacity\HasNetworkPortCapacity;
+use Glpi\Features\Clonable;
+use NetworkPort;
+use Toolbox;
 
 class NetworkPortTest extends DbTestCase
 {
+    public function testRelatedItemHasTab()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasNetworkPortCapacity::class)]);
+
+        $this->login(); // tab will be available only if corresponding right is available in the current session
+
+        foreach ($CFG_GLPI['networkport_types'] as $itemtype) {
+            $item = $this->createItem(
+                $itemtype,
+                $this->getMinimalCreationInput($itemtype)
+            );
+
+            $tabs = $item->defineAllTabs();
+            $this->assertArrayHasKey('NetworkPort$1', $tabs, $itemtype);
+        }
+    }
+
+    public function testRelatedItemCloneRelations()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasNetworkPortCapacity::class)]);
+
+        foreach ($CFG_GLPI['networkport_types'] as $itemtype) {
+            if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
+                continue;
+            }
+
+            $item = \getItemForItemtype($itemtype);
+            $this->assertContains(NetworkPort::class, $item->getCloneRelations(), $itemtype);
+        }
+    }
+
     public function testAddSimpleNetworkPort()
     {
         $this->login();
@@ -48,8 +87,8 @@ class NetworkPortTest extends DbTestCase
         $computer1 = getItemByTypeName('Computer', '_test_pc01');
         $networkport = new \NetworkPort();
 
-       // Be sure added
-        $nb_log = (int)countElementsInTable('glpi_logs');
+        // Be sure added
+        $nb_log = (int) countElementsInTable('glpi_logs');
         $new_id = $networkport->add([
             'items_id'           => $computer1->getID(),
             'itemtype'           => 'Computer',
@@ -60,10 +99,10 @@ class NetworkPortTest extends DbTestCase
             'instantiation_type' => 'NetworkPortEthernet',
             'name'               => 'eth1',
         ]);
-        $this->assertGreaterThan(0, (int)$new_id);
-        $this->assertGreaterThan($nb_log, (int)countElementsInTable('glpi_logs'));
+        $this->assertGreaterThan(0, (int) $new_id);
+        $this->assertGreaterThan($nb_log, (int) countElementsInTable('glpi_logs'));
 
-       // check data in db
+        // check data in db
         $all_netports = getAllDataFromTable('glpi_networkports', ['ORDER' => 'id']);
         $current_networkport = end($all_netports);
         unset($current_networkport['id']);
@@ -95,7 +134,7 @@ class NetworkPortTest extends DbTestCase
             'ifalias' => null,
             'portduplex' => null,
             'trunk' => 0,
-            'lastup' => null
+            'lastup' => null,
         ];
         $this->assertSame($expected, $current_networkport);
 
@@ -103,8 +142,8 @@ class NetworkPortTest extends DbTestCase
         $networkportethernet = end($all_netportethernets);
         $this->assertFalse($networkportethernet);
 
-       // be sure added and have no logs
-        $nb_log = (int)countElementsInTable('glpi_logs');
+        // be sure added and have no logs
+        $nb_log = (int) countElementsInTable('glpi_logs');
         $new_id = $networkport->add([
             'items_id'           => $computer1->getID(),
             'itemtype'           => 'Computer',
@@ -113,8 +152,8 @@ class NetworkPortTest extends DbTestCase
             'mac'                => '00:24:81:eb:c6:d1',
             'instantiation_type' => 'NetworkPortEthernet',
         ], [], false);
-        $this->assertGreaterThan(0, (int)$new_id);
-        $this->assertSame($nb_log, (int)countElementsInTable('glpi_logs'));
+        $this->assertGreaterThan(0, (int) $new_id);
+        $this->assertSame($nb_log, (int) countElementsInTable('glpi_logs'));
     }
 
     public function testAddCompleteNetworkPort()
@@ -123,11 +162,11 @@ class NetworkPortTest extends DbTestCase
 
         $computer1 = getItemByTypeName('Computer', '_test_pc01');
 
-       // Do some installations
+        // Do some installations
         $networkport = new \NetworkPort();
 
-       // Be sure added
-        $nb_log = (int)countElementsInTable('glpi_logs');
+        // Be sure added
+        $nb_log = (int) countElementsInTable('glpi_logs');
         $new_id = $networkport->add([
             'items_id'                    => $computer1->getID(),
             'itemtype'                    => 'Computer',
@@ -146,13 +185,13 @@ class NetworkPortTest extends DbTestCase
             'NetworkName_comment'         => 'test1 comment',
             'NetworkName_fqdns_id'        => 0,
             'NetworkName__ipaddresses'    => ['-1' => '192.168.20.1'],
-            '_create_children'            => true // automatically add instancation, networkname and ipadresses
+            '_create_children'            => true, // automatically add instancation, networkname and ipadresses
         ]);
         $this->assertGreaterThan(0, $new_id);
-        $this->assertGreaterThan($nb_log, (int)countElementsInTable('glpi_logs'));
+        $this->assertGreaterThan($nb_log, (int) countElementsInTable('glpi_logs'));
 
-       // check data in db
-       // 1 -> NetworkPortEthernet
+        // check data in db
+        // 1 -> NetworkPortEthernet
         $all_netportethernets = getAllDataFromTable('glpi_networkportethernets', ['ORDER' => 'id']);
         $networkportethernet = end($all_netportethernets);
         unset($networkportethernet['id']);
@@ -166,7 +205,7 @@ class NetworkPortTest extends DbTestCase
         ];
         $this->assertSame($expected, $networkportethernet);
 
-       // 2 -> NetworkName
+        // 2 -> NetworkName
         $all_networknames = getAllDataFromTable('glpi_networknames', ['ORDER' => 'id']);
         $networkname = end($all_networknames);
         $networknames_id = $networkname['id'];
@@ -186,7 +225,7 @@ class NetworkPortTest extends DbTestCase
         ];
         $this->assertSame($expected, $networkname);
 
-       // 3 -> IPAddress
+        // 3 -> IPAddress
         $all_ipadresses = getAllDataFromTable('glpi_ipaddresses', ['ORDER' => 'id']);
         $ipadress = end($all_ipadresses);
         unset($ipadress['id']);
@@ -209,8 +248,8 @@ class NetworkPortTest extends DbTestCase
         ];
         $this->assertSame($expected, $ipadress);
 
-       // be sure added and have no logs
-        $nb_log = (int)countElementsInTable('glpi_logs');
+        // be sure added and have no logs
+        $nb_log = (int) countElementsInTable('glpi_logs');
         $new_id = $networkport->add([
             'items_id'                    => $computer1->getID(),
             'itemtype'                    => 'Computer',
@@ -228,10 +267,10 @@ class NetworkPortTest extends DbTestCase
             'speed_other_value'           => '',
             'NetworkName_name'            => 'test2',
             'NetworkName_fqdns_id'        => 0,
-            'NetworkName__ipaddresses'    => ['-1' => '192.168.20.2']
+            'NetworkName__ipaddresses'    => ['-1' => '192.168.20.2'],
         ], [], false);
-        $this->assertGreaterThan(0, (int)$new_id);
-        $this->assertSame($nb_log, (int)countElementsInTable('glpi_logs'));
+        $this->assertGreaterThan(0, (int) $new_id);
+        $this->assertSame($nb_log, (int) countElementsInTable('glpi_logs'));
     }
 
     public function testClone()
@@ -243,11 +282,11 @@ class NetworkPortTest extends DbTestCase
 
         $computer1 = getItemByTypeName('Computer', '_test_pc01');
 
-       // Do some installations
+        // Do some installations
         $networkport = new \NetworkPort();
 
-       // Be sure added
-        $nb_log = (int)countElementsInTable('glpi_logs');
+        // Be sure added
+        $nb_log = (int) countElementsInTable('glpi_logs');
         $new_id = $networkport->add([
             'items_id'                    => $computer1->getID(),
             'itemtype'                    => 'Computer',
@@ -267,21 +306,21 @@ class NetworkPortTest extends DbTestCase
             'NetworkName_comment'         => 'test1 comment',
             'NetworkName_fqdns_id'        => 0,
             'NetworkName__ipaddresses'    => ['-1' => '192.168.20.1'],
-            '_create_children'            => true // automatically add instancation, networkname and ipadresses
+            '_create_children'            => true, // automatically add instancation, networkname and ipadresses
         ]);
         $this->assertGreaterThan(0, $new_id);
-        $this->assertGreaterThan($nb_log, (int)countElementsInTable('glpi_logs'));
+        $this->assertGreaterThan($nb_log, (int) countElementsInTable('glpi_logs'));
 
-       // Test item cloning
+        // Test item cloning
         $added = $networkport->clone();
-        $this->assertGreaterThan(0, (int)$added);
+        $this->assertGreaterThan(0, (int) $added);
 
         $clonedNetworkport = new \NetworkPort();
         $this->assertTrue($clonedNetworkport->getFromDB($added));
 
         $fields = $networkport->fields;
 
-       // Check the networkport values. Id and dates must be different, everything else must be equal
+        // Check the networkport values. Id and dates must be different, everything else must be equal
         foreach ($fields as $k => $v) {
             switch ($k) {
                 case 'id':
@@ -308,7 +347,7 @@ class NetworkPortTest extends DbTestCase
         $clonedInstantiation = $clonedNetworkport->getInstantiation();
         $instantiationFields = $networkport->fields;
 
-       // Check the networkport instantiation values. Id, networkports_id and dates must be different, everything else must be equal
+        // Check the networkport instantiation values. Id, networkports_id and dates must be different, everything else must be equal
         foreach ($fields as $k => $v) {
             switch ($k) {
                 case 'id':
@@ -358,7 +397,7 @@ class NetworkPortTest extends DbTestCase
             'instantiation_type' => 'NetworkPortEthernet',
             'name'               => 'eth1',
         ]);
-        $this->assertGreaterThan(0, (int)$np_id);
+        $this->assertGreaterThan(0, (int) $np_id);
 
         $result = $networkport->update([
             'id'                 => $np_id,
@@ -390,7 +429,7 @@ class NetworkPortTest extends DbTestCase
             'instantiation_type' => 'NetworkPortEthernet',
             'name'               => 'eth1',
         ]);
-        $this->assertGreaterThan(0, (int)$np_id);
+        $this->assertGreaterThan(0, (int) $np_id);
 
         // Display all columns
         $so = $netport->rawSearchOptions();
@@ -416,7 +455,7 @@ class NetworkPortTest extends DbTestCase
             foreach ($so_display as $column) {
                 $this->assertStringContainsString($column['name'], $result);
                 if (isset($netport->fields[$column['field']])) {
-                    $this->assertStringContainsString((string)$netport->fields[$column['field']], $result);
+                    $this->assertStringContainsString((string) $netport->fields[$column['field']], $result);
                 }
             }
         }

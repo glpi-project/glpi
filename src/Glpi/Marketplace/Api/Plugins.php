@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,13 +36,16 @@
 namespace Glpi\Marketplace\Api;
 
 use GLPINetwork;
-use GuzzleHttp\Client as Guzzle_Client;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Message;
 use GuzzleHttp\Psr7\Response;
 use Session;
 use Toolbox;
+
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\session_write_close;
 
 class Plugins
 {
@@ -157,9 +160,9 @@ class Plugins
             $response = $this->request($endpoint, $request_options, $method);
 
             if ($response === false || !is_array($current = json_decode($response->getBody(), true))) {
-                 // retry on error or unexpected response
-                 $attempt_no++;
-                 continue;
+                // retry on error or unexpected response
+                $attempt_no++;
+                continue;
             }
 
             if (count($current) === 0) {
@@ -379,8 +382,8 @@ class Plugins
 
         $response  = $this->request('tags/top', [
             'headers' => [
-                'X-Lang' => $CFG_GLPI['languages'][$_SESSION['glpilanguage']][2]
-            ]
+                'X-Lang' => $CFG_GLPI['languages'][$_SESSION['glpilanguage']][2],
+            ],
         ]);
 
         if ($response === false) {
@@ -466,7 +469,7 @@ class Plugins
                 // calculate percent based on the size and store it in session
                 $percent = 0;
                 if ($downloadTotal > 0) {
-                      $percent = round($downloadedBytes * 100 / $downloadTotal);
+                    $percent = round($downloadedBytes * 100 / $downloadTotal);
                 }
                 $_SESSION['marketplace_dl_progress'][$plugin_key] = $percent;
 

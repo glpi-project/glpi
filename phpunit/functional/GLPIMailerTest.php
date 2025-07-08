@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -45,7 +44,7 @@ class GLPIMailerTest extends DbTestCase
     public static function valideAddressProvider()
     {
         return [
-         // Test local part
+            // Test local part
             ["!#$%&+-=?^_`.{|}~@localhost.dot", true],
             ["test.test@localhost.dot", true],
             ["test..test@localhost.dot", false],
@@ -54,7 +53,7 @@ class GLPIMailerTest extends DbTestCase
             ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@localhost.dot", true],
             ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@localhost.dot", true],
 
-         // Test domain part
+            // Test domain part
             ["user", false],
             ["user@localhost", true],
             ["user@localhost.dot", true],

@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -85,22 +84,22 @@ class FormAccessControlTest extends DbTestCase
         yield [
             'glpi',
             'glpi',
-            ['view' => true, 'create' => true, 'update' => true, 'delete' => false, 'purge' => false]
+            ['view' => true, 'create' => true, 'update' => true, 'delete' => false, 'purge' => false],
         ];
         yield [
             'tech',
             'tech',
-            ['view' => false, 'create' => false, 'update' => false, 'delete' => false, 'purge' => false]
+            ['view' => false, 'create' => false, 'update' => false, 'delete' => false, 'purge' => false],
         ];
         yield [
             'normal',
             'normal',
-            ['view' => false, 'create' => false, 'update' => false, 'delete' => false, 'purge' => false]
+            ['view' => false, 'create' => false, 'update' => false, 'delete' => false, 'purge' => false],
         ];
         yield [
             'post-only',
             'postonly',
-            ['view' => false, 'create' => false, 'update' => false, 'delete' => false, 'purge' => false]
+            ['view' => false, 'create' => false, 'update' => false, 'delete' => false, 'purge' => false],
         ];
     }
 
@@ -242,7 +241,7 @@ class FormAccessControlTest extends DbTestCase
     public function testGetTabNameForEmptyForm(): void
     {
         $form = $this->createAndGetSimpleForm();
-        $this->checkGetTabNameForItem($form, "Access control");
+        $this->checkGetTabNameForItem($form, "Access control 1"); // 1 for default policy
     }
 
     public function testGetTabNameWithActivePolicies(): void
@@ -364,7 +363,7 @@ class FormAccessControlTest extends DbTestCase
         $this->assertEquals([
             '_no_message_link' => true,
             'strategy'         => DirectAccess::class,
-            'config'           => json_encode(new DirectAccessConfig(token: "my_token"))
+            'config'           => json_encode(new DirectAccessConfig(token: "my_token")),
         ], $prepared_input);
     }
 
@@ -393,6 +392,7 @@ class FormAccessControlTest extends DbTestCase
         $form = $this->createForm(
             (new FormBuilder())
                 ->addQuestion("Name", QuestionTypeShortText::class)
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
                     token: 'my_token',
                     allow_unauthenticated: true,
@@ -454,6 +454,7 @@ class FormAccessControlTest extends DbTestCase
         $form = $this->createForm(
             (new FormBuilder())
                 ->addQuestion("Name", QuestionTypeShortText::class)
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig())
         );
         return $this->getAccessControl($form, DirectAccess::class);
@@ -472,6 +473,7 @@ class FormAccessControlTest extends DbTestCase
         return $this->createForm(
             (new FormBuilder())
                 ->addQuestion("Name", QuestionTypeShortText::class)
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
                     token: 'my_token',
                     allow_unauthenticated: true,

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -83,8 +83,8 @@ class NetworkPortConnectionLog extends CommonDBChild
         return [
             'OR' => [
                 'networkports_id_source'      => $netport->fields['id'],
-                'networkports_id_destination' => $netport->fields['id']
-            ]
+                'networkports_id_destination' => $netport->fields['id'],
+            ],
         ];
     }
 
@@ -113,7 +113,7 @@ class NetworkPortConnectionLog extends CommonDBChild
 
         $iterator = $DB->request([
             'FROM'   => static::getTable(),
-            'WHERE'  => $this->getCriteria($netport)
+            'WHERE'  => $this->getCriteria($netport),
         ]);
 
         $entries = [];
@@ -131,7 +131,7 @@ class NetworkPortConnectionLog extends CommonDBChild
 
             $cport = new NetworkPort();
             if ($cport->getFromDB($netports_id)) {
-                $citem = new $cport->fields["itemtype"]();
+                $citem = getItemForItemtype($cport->fields["itemtype"]);
                 $citem->getFromDB($cport->fields["items_id"]);
 
                 $cport_link = sprintf(
@@ -147,20 +147,19 @@ class NetworkPortConnectionLog extends CommonDBChild
                         '%1$s on %2$s',
                         $cport_link,
                         $citem->getLink()
-                    )
+                    ),
                 ];
-            } else if ($row['connected'] === 1) {
+            } elseif ($row['connected'] === 1) {
                 $entries[] = [
                     'status' => __s('No longer exists in database'),
                     'date' => $row['date'],
-                    'connected_item' => __s('Unknown')
+                    'connected_item' => __s('Unknown'),
                 ];
             }
         }
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
@@ -171,7 +170,7 @@ class NetworkPortConnectionLog extends CommonDBChild
             'formatters' => [
                 'status' => 'raw_html',
                 'date' => 'datetime',
-                'connected_item' => 'raw_html'
+                'connected_item' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),

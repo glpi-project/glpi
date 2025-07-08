@@ -1,0 +1,119 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% if get_current_user() is not null %}
+    {# @var selected_user \User #}
+    {% if selected_user is not defined or selected_user is empty %}
+        {% set selected_user = get_current_user() %}
+    {% endif %}
+
+    {% set users = get_current_user().getUsersFromDelegatedGroups() %}
+    {% if users|length > 1 %}
+        {% set user_dropdown_html %}
+            {{ fields.dropdownArrayField(
+                'delegation_users_id',
+                selected_user.getID(),
+                users,
+                '',
+                {
+                    'no_label'      : true,
+                    'width'         : 'auto',
+                    'field_class'   : '',
+                    'mb'            : '',
+                    'aria_label'    : __('Select the user to delegate'),
+                    'wrapper_class' : 'd-inline-block',
+                }
+            ) }}
+        {% endset %}
+
+        {% if selected_user.getID() != get_current_user().getID() %}
+            {% set notification_part_html %}
+                <span class="input-group d-inline-flex w-auto">
+                        {{ fields.dropdownArrayField(
+                            'delegation_use_notification',
+                            '1',
+                            {
+                                '0': __('He doesn\'t want'),
+                                '1': __('He wants'),
+                            },
+                            '',
+                            {
+                                'no_label'      : true,
+                                'width'         : 'auto',
+                                'field_class'   : '',
+                                'mb'            : '',
+                                'aria_label'    : __('Do you want to be notified of future events of this ticket'),
+                                'wrapper_class' : 'd-inline-block',
+                            }
+                        ) }}
+                    <button
+                        type="button"
+                        class="btn btn-icon rounded-end"
+                        data-bs-toggle="dropdown"
+                        data-bs-auto-close="outside"
+                        aria-expanded="false"
+                        aria-label="{{ __('Address to send the notification') }}"
+                    >
+                        <i class="ti ti-mail-cog"></i>
+                    </button>
+                    <div class="dropdown-menu p-3 pt-1 rounded-3" style="width: 250px">
+                        {{ fields.textField(
+                            'delegation_alternative_email',
+                            selected_user.getDefaultEmail(),
+                            __('Address to send the notification'),
+                            {
+                                'is_horizontal': false,
+                                'field_class'  : '',
+                                'mb'           : '',
+                            }
+                        ) }}
+                    </div>
+                </span>
+            {% endset %}
+
+            <div class="alert d-flex align-items-center justify-content-start flex-wrap">
+                {{ __('This ticket is for %1$s and %2$s to be notified of future events of this ticket.')|format(
+                    '<span class="mx-2">' ~ user_dropdown_html|raw ~ '</span>',
+                    '<span class="mx-2">' ~ notification_part_html|raw ~ '</span>'
+                )|raw }}
+            </div>
+        {% else %}
+            <div class="alert d-flex align-items-center justify-content-start flex-wrap">
+                {{ __('This ticket is for %1$s')|format(
+                    '<span class="mx-2">' ~ user_dropdown_html|raw ~ '</span>'
+                )|raw }}
+            </div>
+        {% endif %}
+    {% endif %}
+{% endif %}

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,14 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\json_encode;
+
 /**
  * @var array $CFG_GLPI
  * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
  */
 global $CFG_GLPI, $GLPI_CACHE;
-
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
 
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();

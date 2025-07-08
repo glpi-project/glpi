@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
- use Glpi\Search\FilterableInterface;
- use Glpi\Search\FilterableTrait;
+use Glpi\Search\FilterableInterface;
+use Glpi\Search\FilterableTrait;
 
 class DefaultFilter extends CommonDBTM implements FilterableInterface
 {
@@ -89,8 +89,8 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
             'id'            => '4',
             'table'         => self::getTable(),
             'field'         =>  'comment',
-            'name'          =>  __('Comments'),
-            'datatype'      =>  'text'
+            'name'          =>  _n('Comment', 'Comments', Session::getPluralNumber()),
+            'datatype'      =>  'text',
         ];
 
         $tab[] = [
@@ -100,7 +100,7 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
             'name'               => __('Itemtype'),
             'datatype'           => 'itemtypename',
             'itemtype_list'      => 'globalsearch_types',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         return $tab;
@@ -114,7 +114,7 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
                 'label' => __('Itemtype'),
                 'type'           => 'itemtypename',
                 'itemtype_list'      => 'globalsearch_types',
-            ]
+            ],
         ];
     }
 
@@ -139,16 +139,16 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
                         $filter_table => 'items_id',
                     ],
                     'AND'   => [
-                        "$filter_table.itemtype" => __CLASS__
-                    ]
-                ]
+                        "$filter_table.itemtype" => __CLASS__,
+                    ],
+                ],
             ],
             'WHERE' => [
                 "$default_table.itemtype" => $itemtype,
                 "NOT" => [
-                    "$filter_table.search_criteria" => null
-                ]
-            ]
+                    "$filter_table.search_criteria" => null,
+                ],
+            ],
         ];
 
         $iterator = $DB->request($criteria);
@@ -163,7 +163,7 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
                 'search_criteria' => [
                     'link' => 'AND',
                     'criteria' => json_decode($item['search_criteria'], true),
-                ]
+                ],
             ];
         }
         return null;

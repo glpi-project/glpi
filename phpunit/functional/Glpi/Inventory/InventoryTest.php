@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -44,7 +43,6 @@ use OperatingSystemArchitecture;
 use OperatingSystemServicePack;
 use OperatingSystemVersion;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use UserEmail;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 
@@ -125,7 +123,7 @@ class InventoryTest extends InventoryTestCase
         $this->assertIsArray($record);
         $this->assertSame($expected, $record);
 
-       //remote management
+        //remote management
         $mgmt = new \Item_RemoteManagement();
         $iterator = $mgmt->getFromItem($computer);
         $this->assertCount(1, $iterator);
@@ -138,7 +136,7 @@ class InventoryTest extends InventoryTestCase
                 'remoteid' => '123456789',
                 'type' => 'teamviewer',
                 'is_dynamic' => 1,
-                'is_deleted' => 0
+                'is_deleted' => 0,
             ],
             $remote
         );
@@ -247,29 +245,29 @@ class InventoryTest extends InventoryTestCase
             ], [
                 'logical_number' => 0,
                 'name' => 'virbr0-nic',
-                'instantiation_type' => null,
+                'instantiation_type' => 'NetworkPortEthernet',
                 'mac' => '52:54:00:fa:20:0e',
                 'ifstatus' => '2',
                 'ifinternalstatus' => '2',
-            ]
+            ],
         ];
 
         $ips = [
             'lo'  => [
                 'v4'   => '127.0.0.1',
-                'v6'   => '::1'
+                'v6'   => '::1',
             ],
             'enp57s0u1u4'  => [
                 'v4'   => '192.168.1.142',
-                'v6'   => 'fe80::b283:4fa3:d3f2:96b1'
+                'v6'   => 'fe80::b283:4fa3:d3f2:96b1',
             ],
             'wlp58s0'   => [
                 'v4'   => '192.168.1.118',
-                'v6'   => 'fe80::92a4:26c6:99dd:2d60'
+                'v6'   => 'fe80::92a4:26c6:99dd:2d60',
             ],
             'virbr0' => [
-                'v4'   => '192.168.122.1'
-            ]
+                'v4'   => '192.168.122.1',
+            ],
         ];
 
         $i = 0;
@@ -311,7 +309,7 @@ class InventoryTest extends InventoryTestCase
                 'ifalias' => null,
                 'portduplex' => null,
                 'trunk' => 0,
-                'lastup' => null
+                'lastup' => null,
             ];
 
             $this->assertIsArray($port);
@@ -322,7 +320,7 @@ class InventoryTest extends InventoryTestCase
             $ip_iterator = $DB->request([
                 'SELECT'       => [
                     \IPAddress::getTable() . '.name',
-                    \IPAddress::getTable() . '.version'
+                    \IPAddress::getTable() . '.version',
                 ],
                 'FROM'   => \IPAddress::getTable(),
                 'INNER JOIN'   => [
@@ -330,22 +328,22 @@ class InventoryTest extends InventoryTestCase
                         'ON'  => [
                             \IPAddress::getTable()     => 'items_id',
                             \NetworkName::getTable()   => 'id', [
-                                'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()]
-                            ]
-                        ]
-                    ]
+                                'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()],
+                            ],
+                        ],
+                    ],
                 ],
                 'WHERE'  => [
                     \NetworkName::getTable() . '.itemtype'  => \NetworkPort::getType(),
-                    \NetworkName::getTable() . '.items_id'  => $ports_id
-                ]
+                    \NetworkName::getTable() . '.items_id'  => $ports_id,
+                ],
             ]);
 
             $this->assertCount(count($ips[$port['name']] ?? []), $ip_iterator);
             if (isset($ips[$port['name']])) {
                 //FIXME: missing all ipv6 :(
                 $ip = $ip_iterator->current();
-                $this->assertSame(4, (int)$ip['version']);
+                $this->assertSame(4, (int) $ip['version']);
                 $this->assertSame($ips[$port['name']]['v4'], $ip['name']);
             }
         }
@@ -383,7 +381,7 @@ class InventoryTest extends InventoryTestCase
             'Item_DevicePowerSupply' => 0,
             'Item_DeviceGeneric' => 0,
             'Item_DeviceSimcard' => 0,
-            'Item_DeviceSensor' => 0
+            'Item_DeviceSensor' => 0,
         ];
 
         foreach ($expecteds as $type => $count) {
@@ -414,7 +412,7 @@ class InventoryTest extends InventoryTestCase
                     'otherserial' => null,
                     'locations_id' => 0,
                     'states_id' => 0,
-                ]
+                ],
             ],
             'Item_DeviceProcessor' =>
                [
@@ -843,7 +841,7 @@ class InventoryTest extends InventoryTestCase
 
         foreach ($expecteds as $type => $expected) {
             $component = array_values($components[$type]);
-           //hack to replace expected fkeys
+            //hack to replace expected fkeys
             foreach ($expected as $i => &$row) {
                 foreach (array_keys($row) as $key) {
                     if (isForeignKeyField($key)) {
@@ -996,7 +994,7 @@ class InventoryTest extends InventoryTestCase
                 'encryption_tool' => null,
                 'encryption_algorithm' => null,
                 'encryption_type' => null,
-            ]
+            ],
         ];
 
         $i = 0;
@@ -1011,7 +1009,7 @@ class InventoryTest extends InventoryTestCase
                 'itemtype' => 'Computer',
                 'entities_id' => 0,
                 'is_deleted' => 0,
-                'is_dynamic' => 1
+                'is_dynamic' => 1,
             ];
 
             ksort($expected);
@@ -1070,7 +1068,7 @@ class InventoryTest extends InventoryTestCase
             $this->assertEquals($expected, [
                 'softname'     => $soft['softname'],
                 'version'      => $soft['version'],
-                'dateinstall'  => $soft['dateinstall']
+                'dateinstall'  => $soft['dateinstall'],
             ]);
             ++$i;
         }
@@ -1103,10 +1101,10 @@ class InventoryTest extends InventoryTestCase
             'otherserial' => null,
             'locations_id' => 0,
             'states_id' => 0,
-            'real_capacity' => $capacities[0] ?? 50570
+            'real_capacity' => $capacities[0] ?? 50570,
         ];
 
-       //hack to replace expected fkeys
+        //hack to replace expected fkeys
         foreach (array_keys($expected) as $key) {
             if (isForeignKeyField($key)) {
                 $expected[$key] = $battery[$key];
@@ -1166,11 +1164,11 @@ class InventoryTest extends InventoryTestCase
                 \Rule::getTable() => [
                     'ON' => [
                         \RuleMatchedLog::getTable() => 'rules_id',
-                        \Rule::getTable() => 'id'
-                    ]
-                ]
+                        \Rule::getTable() => 'id',
+                    ],
+                ],
             ],
-            'WHERE' => []
+            'WHERE' => [],
         ];
 
         $monitor_criteria = $criteria;
@@ -1237,11 +1235,11 @@ class InventoryTest extends InventoryTestCase
                 \Rule::getTable() => [
                     'ON' => [
                         \RuleMatchedLog::getTable() => 'rules_id',
-                        \Rule::getTable() => 'id'
-                    ]
-                ]
+                        \Rule::getTable() => 'id',
+                    ],
+                ],
             ],
-            'WHERE' => []
+            'WHERE' => [],
         ];
 
         $monitor_criteria = $mrules_criteria;
@@ -1378,7 +1376,7 @@ class InventoryTest extends InventoryTestCase
                 'encryption_tool' => null,
                 'encryption_algorithm' => null,
                 'encryption_type' => null,
-            ]
+            ],
         ];
 
         $i = 0;
@@ -1392,7 +1390,7 @@ class InventoryTest extends InventoryTestCase
                 'itemtype'     => 'Computer',
                 'entities_id'  => 0,
                 'is_deleted'   => 0,
-                'is_dynamic'   => 1
+                'is_dynamic'   => 1,
             ];
             $this->assertIsArray($volume);
             $this->assertEquals($expected, $volume);
@@ -1453,7 +1451,7 @@ class InventoryTest extends InventoryTestCase
             'Item_DevicePowerSupply' => 0,
             'Item_DeviceGeneric' => 0,
             'Item_DeviceSimcard' => 0,
-            'Item_DeviceSensor' => 0
+            'Item_DeviceSensor' => 0,
         ];
 
         foreach ($expecteds_components as $type => $count) {
@@ -1463,7 +1461,9 @@ class InventoryTest extends InventoryTestCase
         //check memory
         $this->assertCount(2, $components['Item_DeviceMemory']);
         $mem_component1 = array_pop($components['Item_DeviceMemory']);
+        $this->assertIsArray($mem_component1);
         $mem_component2 = array_pop($components['Item_DeviceMemory']);
+        $this->assertIsArray($mem_component2);
         $this->assertGreaterThan(0, $mem_component1['devicememories_id']);
         $expected_mem_component = [
             'items_id' => $mem_component1['items_id'],
@@ -1478,13 +1478,16 @@ class InventoryTest extends InventoryTestCase
             'busID' => "2",
             'otherserial' => null,
             'locations_id' => 0,
-            'states_id' => 0
+            'states_id' => 0,
         ];
-        $this->assertIsArray($mem_component1);
+
         $this->assertSame($expected_mem_component, $mem_component1);
-        $expected_mem_component['busID'] = "1";
-        $this->assertIsArray($mem_component2);
-        $this->assertSame($expected_mem_component, $mem_component2);
+
+        $expected_mem_component2 = $expected_mem_component;
+        $expected_mem_component2['busID'] = "1";
+        //device is different, because no manufacturer is set on second memory slot
+        $expected_mem_component2['devicememories_id'] = $mem_component2['devicememories_id'];
+        $this->assertSame($expected_mem_component2, $mem_component2);
 
         //software
         $isoft = new \Item_SoftwareVersion();
@@ -1573,7 +1576,7 @@ class InventoryTest extends InventoryTestCase
                 'itemtype'     => 'Computer',
                 'entities_id'  => 0,
                 'is_deleted'   => 0,
-                'is_dynamic'   => 1
+                'is_dynamic'   => 1,
             ];
             $this->assertIsArray($volume);
             $this->assertEquals($expected, $volume);
@@ -1626,12 +1629,10 @@ class InventoryTest extends InventoryTestCase
         $mem_component1 = array_pop($components['Item_DeviceMemory']);
         $mem_component2 = array_pop($components['Item_DeviceMemory']);
         $this->assertGreaterThan(0, $mem_component1['devicememories_id']);
-        $expected_mem_component['busID'] = "2";
         $this->assertIsArray($mem_component1);
         $this->assertSame($expected_mem_component, $mem_component1);
-        $expected_mem_component['busID'] = "1";
         $this->assertIsArray($mem_component2);
-        $this->assertSame($expected_mem_component, $mem_component2);
+        $this->assertSame($expected_mem_component2, $mem_component2);
 
         //software
         $isoft = new \Item_SoftwareVersion();
@@ -1751,7 +1752,7 @@ class InventoryTest extends InventoryTestCase
                 'itemtype'     => 'Computer',
                 'entities_id'  => 0,
                 'is_deleted'   => 0,
-                'is_dynamic'   => 1
+                'is_dynamic'   => 1,
             ];
             $this->assertIsArray($volume);
             $this->assertEquals($expected, $volume);
@@ -1816,13 +1817,17 @@ class InventoryTest extends InventoryTestCase
             'busID' => "2",
             'otherserial' => null,
             'locations_id' => 0,
-            'states_id' => 0
+            'states_id' => 0,
         ];
         $this->assertIsArray($mem_component1);
         $this->assertSame($expected_mem_component, $mem_component1);
-        $expected_mem_component['busID'] = "1";
+
+        $expected_mem_component2 = $expected_mem_component;
+        $expected_mem_component2['busID'] = "1";
+        //device is different, because no manufacturer is set on second memory slot
+        $expected_mem_component2['devicememories_id'] = $mem_component2['devicememories_id'];
         $this->assertIsArray($mem_component2);
-        $this->assertSame($expected_mem_component, $mem_component2);
+        $this->assertSame($expected_mem_component2, $mem_component2);
 
         //software
         $isoft = new \Item_SoftwareVersion();
@@ -1916,13 +1921,13 @@ class InventoryTest extends InventoryTestCase
         $this->assertSame('netinventory', $metadata['action']);
 
         global $DB;
-       //check created agent
+        //check created agent
         $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
         $agents = $DB->request(['FROM' => \Agent::getTable()]);
-       //no agent with deviceid equals to "foo"
+        //no agent with deviceid equals to "foo"
         $this->assertCount(0, $agents);
 
-       //get model, manufacturer, ...
+        //get model, manufacturer, ...
         $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->current();
         $this->assertIsArray($autoupdatesystems);
         $autoupdatesystems_id = $autoupdatesystems['id'];
@@ -2015,7 +2020,7 @@ class InventoryTest extends InventoryTestCase
             'Management' => [
                 '10.2.5.10',
                 '192.168.12.5',
-            ]
+            ],
         ];
 
         $i = 0;
@@ -2058,7 +2063,7 @@ class InventoryTest extends InventoryTestCase
                     'ifalias' => null,
                     'portduplex' => null,
                     'trunk' => 0,
-                    'lastup' => null
+                    'lastup' => null,
                 ];
 
                 $this->assertIsArray($port);
@@ -2066,7 +2071,7 @@ class InventoryTest extends InventoryTestCase
             } else {
                 $this->assertSame('NetworkEquipment', $port['itemtype']);
                 $this->assertSame($equipments_id, $port['items_id']);
-                $this->assertSame('NetworkPortEthernet', $port['instantiation_type'], print_r($port, true),);
+                $this->assertSame('NetworkPortEthernet', $port['instantiation_type'], print_r($port, true), );
                 $this->assertMatchesRegularExpression(
                     '/^(?:(?:[0-9a-f]{2}[\:]{1}){5}|(?:[0-9a-f]{2}[-]{1}){5}|(?:[0-9a-f]{2}){5})[0-9a-f]{2}$/i',
                     $port['mac']
@@ -2079,7 +2084,7 @@ class InventoryTest extends InventoryTestCase
             $ip_iterator = $DB->request([
                 'SELECT'       => [
                     \IPAddress::getTable() . '.name',
-                    \IPAddress::getTable() . '.version'
+                    \IPAddress::getTable() . '.version',
                 ],
                 'FROM'   => \IPAddress::getTable(),
                 'INNER JOIN'   => [
@@ -2087,15 +2092,15 @@ class InventoryTest extends InventoryTestCase
                         'ON'  => [
                             \IPAddress::getTable()     => 'items_id',
                             \NetworkName::getTable()   => 'id', [
-                                'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()]
-                            ]
-                        ]
-                    ]
+                                'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()],
+                            ],
+                        ],
+                    ],
                 ],
                 'WHERE'  => [
                     \NetworkName::getTable() . '.itemtype'  => \NetworkPort::getType(),
-                    \NetworkName::getTable() . '.items_id'  => $ports_id
-                ]
+                    \NetworkName::getTable() . '.items_id'  => $ports_id,
+                ],
             ]);
 
             $this->assertCount(count($ips[$port['name']] ?? []), $ip_iterator);
@@ -2161,7 +2166,7 @@ class InventoryTest extends InventoryTestCase
                     'otherserial' => null,
                     'locations_id' => 0,
                     'states_id' => 0,
-                ]
+                ],
             ],
             'Item_DeviceMemory' => [],
             'Item_DeviceHardDrive' => [],
@@ -2219,11 +2224,11 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 \Rule::getTable() => [
                     'ON' => [
                         \RuleMatchedLog::getTable() => 'rules_id',
-                        \Rule::getTable() => 'id'
-                    ]
-                ]
+                        \Rule::getTable() => 'id',
+                    ],
+                ],
             ],
-            'WHERE' => []
+            'WHERE' => [],
         ];
 
         $neteq_criteria = $mrules_criteria;
@@ -2298,7 +2303,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $expected_eq_count = 5;
         $iterator = $DB->request([
             'FROM'   => \NetworkEquipment::getTable(),
-            'WHERE'  => ['is_dynamic' => 1]
+            'WHERE'  => ['is_dynamic' => 1],
         ]);
         $this->assertCount($expected_eq_count, $iterator);
 
@@ -2340,24 +2345,24 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $stacks = [
             1 => [
                 'serial'       => 'FOC1243W0ED',
-                'connections'  => 0
+                'connections'  => 0,
             ],
             2 => [
                 'serial'       => 'FOC1127Z4LH',
-                'connections'  => 2
+                'connections'  => 2,
             ],
             3 => [
                 'serial'       => 'FOC1232W0JH',
-                'connections'  => 5
+                'connections'  => 5,
             ],
             4 => [
                 'serial'       => 'FOC1033Y0M7',
-                'connections'  => 2
+                'connections'  => 2,
             ],
             8 => [
                 'serial'       => 'FOC0929U1SR',
-                'connections'  => 2
-            ]
+                'connections'  => 2,
+            ],
         ];
 
         foreach ($iterator as $row) {
@@ -2436,7 +2441,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     '185.10.255.146',
                     '185.10.255.224',
                     '185.10.255.250',
-                ]
+                ],
             ];
 
             $i = 0;
@@ -2481,7 +2486,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                         'ifalias' => null,
                         'portduplex' => null,
                         'trunk' => 0,
-                        'lastup' => null
+                        'lastup' => null,
                     ];
 
                     $this->assertIsArray($port);
@@ -2502,7 +2507,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 $ip_iterator = $DB->request([
                     'SELECT'       => [
                         \IPAddress::getTable() . '.name',
-                        \IPAddress::getTable() . '.version'
+                        \IPAddress::getTable() . '.version',
                     ],
                     'FROM'   => \IPAddress::getTable(),
                     'INNER JOIN'   => [
@@ -2510,15 +2515,15 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                             'ON'  => [
                                 \IPAddress::getTable()     => 'items_id',
                                 \NetworkName::getTable()   => 'id', [
-                                    'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()]
-                                ]
-                            ]
-                        ]
+                                    'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()],
+                                ],
+                            ],
+                        ],
                     ],
                     'WHERE'  => [
                         \NetworkName::getTable() . '.itemtype'  => \NetworkPort::getType(),
-                        \NetworkName::getTable() . '.items_id'  => $ports_id
-                    ]
+                        \NetworkName::getTable() . '.items_id'  => $ports_id,
+                    ],
                 ]);
 
                 $this->assertCount(count($ips[$port['name']] ?? []), $ip_iterator);
@@ -2584,7 +2589,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                         'otherserial' => null,
                         'locations_id' => 0,
                         'states_id' => 0,
-                    ]
+                    ],
                 ],
                 'Item_DeviceMemory' => [],
                 'Item_DeviceHardDrive' => [],
@@ -2597,7 +2602,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
             foreach ($expecteds as $type => $expected) {
                 $component = array_values($components[$type]);
-               //hack to replace expected fkeys
+                //hack to replace expected fkeys
                 foreach ($expected as $i => &$row) {
                     foreach (array_keys($row) as $key) {
                         if (isForeignKeyField($key)) {
@@ -2613,8 +2618,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             $connections = $DB->request([
                 'FROM'   => \NetworkPort_NetworkPort::getTable(),
                 'WHERE'  => [
-                    'networkports_id_1' => $all_ports_ids
-                ]
+                    'networkports_id_1' => $all_ports_ids,
+                ],
             ]);
 
             $this->assertSame(
@@ -2656,7 +2661,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             '1060-priv',
             'public_servlib',
             'UGIPS',
-            '0001-pub'
+            '0001-pub',
         ];
         $db_vlans = $DB->request(['FROM' => \Vlan::getTable()]);
         $this->assertCount(count($expected_names), $db_vlans);
@@ -2699,16 +2704,16 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'accepted' => 0,
                 'hub' => 0,
                 'ip' => '10.1.0.57',
-            ]
+            ],
         ];
 
         $i = 0;
-       /*foreach ($unmanageds as $unmanaged) {
-         foreach ($expecteds[$i] as $key => $value) {
-            $this->>assertEquals($value, $unmanaged[$key]);
-         }
-         ++$i;
-       }*/
+        /*foreach ($unmanageds as $unmanaged) {
+          foreach ($expecteds[$i] as $key => $value) {
+             $this->>assertEquals($value, $unmanaged[$key]);
+          }
+          ++$i;
+        }*/
 
         //check matchedlogs
         $mlogs = new \RuleMatchedLog();
@@ -2721,11 +2726,11 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 \Rule::getTable() => [
                     'ON' => [
                         \RuleMatchedLog::getTable() => 'rules_id',
-                        \Rule::getTable() => 'id'
-                    ]
-                ]
+                        \Rule::getTable() => 'id',
+                    ],
+                ],
             ],
-            'WHERE' => []
+            'WHERE' => [],
         ];
 
         $neteq_criteria = $mrules_criteria;
@@ -2794,7 +2799,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $expected_eq_count = 2;
         $iterator = $DB->request([
             'FROM'   => \NetworkEquipment::getTable(),
-            'WHERE'  => ['is_dynamic' => 1]
+            'WHERE'  => ['is_dynamic' => 1],
         ]);
         $this->assertCount($expected_eq_count, $iterator);
 
@@ -2837,13 +2842,13 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             1 => [
                 'name' => 'SW00Test - 5130EI - 1',
                 'serial' => 'CX15GXXX99',
-                'connections'  => 0
+                'connections'  => 0,
             ],
             2 => [
                 'name' => 'SW00Test - 5130EI - 2',
                 'serial' => 'CN15CN123456',
-                'connections' => 1
-            ]
+                'connections' => 1,
+            ],
         ];
 
         foreach ($iterator as $row) {
@@ -2874,11 +2879,11 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 \Rule::getTable() => [
                     'ON' => [
                         \RuleMatchedLog::getTable() => 'rules_id',
-                        \Rule::getTable() => 'id'
-                    ]
-                ]
+                        \Rule::getTable() => 'id',
+                    ],
+                ],
             ],
-            'WHERE' => []
+            'WHERE' => [],
         ];
 
         $neteq_criteria = $mrules_criteria;
@@ -2938,7 +2943,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $expected_count = 1;
         $iterator = $DB->request([
             'FROM'   => \NetworkEquipment::getTable(),
-            'WHERE'  => ['is_dynamic' => 1]
+            'WHERE'  => ['is_dynamic' => 1],
         ]);
         $this->assertCount($expected_count, $iterator);
 
@@ -3019,7 +3024,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             $ips = [
                 'Management' => [
                     '192.168.63.30',
-                ]
+                ],
             ];
 
             $i = 0;
@@ -3064,7 +3069,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                         'ifalias' => null,
                         'portduplex' => null,
                         'trunk' => 0,
-                        'lastup' => null
+                        'lastup' => null,
                     ];
 
                     $this->assertIsArray($port);
@@ -3085,7 +3090,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 $ip_iterator = $DB->request([
                     'SELECT'       => [
                         \IPAddress::getTable() . '.name',
-                        \IPAddress::getTable() . '.version'
+                        \IPAddress::getTable() . '.version',
                     ],
                     'FROM'   => \IPAddress::getTable(),
                     'INNER JOIN'   => [
@@ -3093,15 +3098,15 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                             'ON'  => [
                                 \IPAddress::getTable()     => 'items_id',
                                 \NetworkName::getTable()   => 'id', [
-                                    'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()]
-                                ]
-                            ]
-                        ]
+                                    'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()],
+                                ],
+                            ],
+                        ],
                     ],
                     'WHERE'  => [
                         \NetworkName::getTable() . '.itemtype'  => \NetworkPort::getType(),
-                        \NetworkName::getTable() . '.items_id'  => $ports_id
-                    ]
+                        \NetworkName::getTable() . '.items_id'  => $ports_id,
+                    ],
                 ]);
 
                 $this->assertCount(count($ips[$port['name']] ?? []), $ip_iterator);
@@ -3167,7 +3172,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                         'otherserial' => null,
                         'locations_id' => 0,
                         'states_id' => 0,
-                    ]
+                    ],
                 ],
                 'Item_DeviceMemory' => [],
                 'Item_DeviceHardDrive' => [],
@@ -3522,7 +3527,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'accepted' => 0,
                 'hub' => 0,
                 'ip' => '192.168.63.128',
-            ]
+            ],
         ];
 
         $this->assertCount($unmanageds->count(), $expecteds);
@@ -3546,11 +3551,11 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 \Rule::getTable() => [
                     'ON' => [
                         \RuleMatchedLog::getTable() => 'rules_id',
-                        \Rule::getTable() => 'id'
-                    ]
-                ]
+                        \Rule::getTable() => 'id',
+                    ],
+                ],
             ],
-            'WHERE' => []
+            'WHERE' => [],
         ];
 
         $neteq_criteria = $mrules_criteria;
@@ -3577,7 +3582,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $_SESSION["glpi_currenttime"] = $date_now;
         $inventory = $this->doInventory($json);
 
-       //check inventory metadata
+        //check inventory metadata
         $metadata = $inventory->getMetadata();
 
         $this->assertCount(5, $metadata);
@@ -3588,14 +3593,14 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertSame('netinventory', $metadata['action']);
 
         global $DB;
-       //check created agent
+        //check created agent
         $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
         $this->assertSame('CH-GV1-DSI-WLC-INSID-1-2020-12-31-11-28-51', $inventory->getAgent()->fields['deviceid']);
         $this->assertSame('CH-GV1-DSI-WLC-INSID-1-2020-12-31-11-28-51', $inventory->getAgent()->fields['name']);
         $this->assertSame('NetworkEquipment', $inventory->getAgent()->fields['itemtype']);
         $this->assertSame($agenttype['id'], $inventory->getAgent()->fields['agenttypes_id']);
 
-       //get model, manufacturer, ...
+        //get model, manufacturer, ...
         $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->current();
         $this->assertIsArray($autoupdatesystems);
         $autoupdatesystems_id = $autoupdatesystems['id'];
@@ -3620,7 +3625,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $expected_eq_count = 302;
         $iterator = $DB->request([
             'FROM'   => \NetworkEquipment::getTable(),
-            'WHERE'  => ['is_dynamic' => 1]
+            'WHERE'  => ['is_dynamic' => 1],
         ]);
         $this->assertCount($expected_eq_count, $iterator);
 
@@ -3678,7 +3683,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             $this->assertIsArray($row);
             $this->assertSame($expected_eq, $row, print_r($row, true) . print_r($expected_eq, true));
 
-           //check network ports
+            //check network ports
             $expected_count = ($first ? 4 : 1);
             $ports_iterator = $DB->request([
                 'FROM'   => \NetworkPort::getTable(),
@@ -3713,8 +3718,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     '10.65.0.184',
                     '10.65.0.192',
                     '169.254.0.192',
-                    '192.168.200.116'
-                ]
+                    '192.168.200.116',
+                ],
             ];
 
             $i = 0;
@@ -3759,7 +3764,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                         'ifalias' => null,
                         'portduplex' => null,
                         'trunk' => 0,
-                        'lastup' => null
+                        'lastup' => null,
                     ];
 
                     $this->assertIsArray($port);
@@ -3767,7 +3772,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 } else {
                     $this->assertSame('NetworkEquipment', $port['itemtype']);
                     $this->assertSame($equipments_id, $port['items_id']);
-                   //$this->assertSame('NetworkPortAggregate', print_r($port, true), $port['instantiation_type']);
+                    //$this->assertSame('NetworkPortAggregate', print_r($port, true), $port['instantiation_type']);
                     $this->assertMatchesRegularExpression(
                         '/^(?:(?:[0-9a-f]{2}[\:]{1}){5}|(?:[0-9a-f]{2}[-]{1}){5}|(?:[0-9a-f]{2}){5})[0-9a-f]{2}$/i',
                         $port['mac']
@@ -3776,11 +3781,11 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 }
                 ++$i;
 
-               //check for ips
+                //check for ips
                 $ip_iterator = $DB->request([
                     'SELECT'       => [
                         \IPAddress::getTable() . '.name',
-                        \IPAddress::getTable() . '.version'
+                        \IPAddress::getTable() . '.version',
                     ],
                     'FROM'   => \IPAddress::getTable(),
                     'INNER JOIN'   => [
@@ -3788,18 +3793,18 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                             'ON'  => [
                                 \IPAddress::getTable()     => 'items_id',
                                 \NetworkName::getTable()   => 'id', [
-                                    'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()]
-                                ]
-                            ]
-                        ]
+                                    'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()],
+                                ],
+                            ],
+                        ],
                     ],
                     'WHERE'  => [
                         \NetworkName::getTable() . '.itemtype'  => \NetworkPort::getType(),
-                        \NetworkName::getTable() . '.items_id'  => $ports_id
-                    ]
+                        \NetworkName::getTable() . '.items_id'  => $ports_id,
+                    ],
                 ]);
 
-               //$this->assertCount(count($ips[$port['name']] ?? ['one' => 'one']), $ip_iterator);
+                //$this->assertCount(count($ips[$port['name']] ?? ['one' => 'one']), $ip_iterator);
                 if ($port['mac'] == '58:ac:78:59:45:fb') {
                     foreach ($ip_iterator as $ip) {
                         $this->assertIsArray($ips[$port['name']]);
@@ -3808,7 +3813,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 }
             }
 
-           //check for components
+            //check for components
             $components = [];
             $allcount = 0;
             foreach (\Item_Devices::getItemAffinities('NetworkEquipment') as $link_type) {
@@ -3862,7 +3867,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                         'otherserial' => null,
                         'locations_id' => 0,
                         'states_id' => 0,
-                    ]
+                    ],
                 ],
                 'Item_DeviceMemory' => [],
                 'Item_DeviceHardDrive' => [],
@@ -3875,7 +3880,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
             foreach ($expecteds as $type => $expected) {
                 $component = array_values($components[$type]);
-               //hack to replace expected fkeys
+                //hack to replace expected fkeys
                 foreach ($expected as $i => &$row) {
                     foreach (array_keys($row) as $key) {
                         if (isForeignKeyField($key)) {
@@ -3907,7 +3912,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'accepted' => 0,
                 'hub' => 0,
                 'ip' => '192.168.200.7',
-            ]
+            ],
         ];
 
         $i = 0;
@@ -3918,7 +3923,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             ++$i;
         }
 
-       //check matchedlogs
+        //check matchedlogs
         $mlogs = new \RuleMatchedLog();
         $found = $mlogs->find();
         $this->assertCount($expected_eq_count + count($unmanageds), $found);
@@ -3929,11 +3934,11 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 \Rule::getTable() => [
                     'ON' => [
                         \RuleMatchedLog::getTable() => 'rules_id',
-                        \Rule::getTable() => 'id'
-                    ]
-                ]
+                        \Rule::getTable() => 'id',
+                    ],
+                ],
             ],
-            'WHERE' => []
+            'WHERE' => [],
         ];
 
         $neteq_criteria = $mrules_criteria;
@@ -4073,7 +4078,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'ifdescr' => 'D-Link DGS-3420-52T R1.50.B03 Port 1 on Unit 1',
                 'ifinbytes' => 1636476664,
                 'ifoutbytes' => 2829646176,
-                'portduplex' => 3
+                'portduplex' => 3,
             ],
             ($expected_count - 1) => [
                 'logical_number' => 0,
@@ -4086,7 +4091,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $ips = [
             'Management' => [
                 '192.168.16.51',
-            ]
+            ],
         ];
 
         $i = 0;
@@ -4129,7 +4134,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     'ifalias' => null,
                     'portduplex' => null,
                     'trunk' => 0,
-                    'lastup' => null
+                    'lastup' => null,
                 ];
 
                 $this->assertIsArray($port);
@@ -4150,7 +4155,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             $ip_iterator = $DB->request([
                 'SELECT'       => [
                     \IPAddress::getTable() . '.name',
-                    \IPAddress::getTable() . '.version'
+                    \IPAddress::getTable() . '.version',
                 ],
                 'FROM'   => \IPAddress::getTable(),
                 'INNER JOIN'   => [
@@ -4158,15 +4163,15 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                         'ON'  => [
                             \IPAddress::getTable()     => 'items_id',
                             \NetworkName::getTable()   => 'id', [
-                                'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()]
-                            ]
-                        ]
-                    ]
+                                'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()],
+                            ],
+                        ],
+                    ],
                 ],
                 'WHERE'  => [
                     \NetworkName::getTable() . '.itemtype'  => \NetworkPort::getType(),
-                    \NetworkName::getTable() . '.items_id'  => $ports_id
-                ]
+                    \NetworkName::getTable() . '.items_id'  => $ports_id,
+                ],
             ]);
 
             $this->assertCount(count($ips[$port['name']] ?? []), $ip_iterator);
@@ -4232,7 +4237,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     'otherserial' => null,
                     'locations_id' => 0,
                     'states_id' => 0,
-                ]
+                ],
             ],
             'Item_DeviceMemory' => [],
             'Item_DeviceHardDrive' => [],
@@ -4245,7 +4250,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         foreach ($expecteds as $type => $expected) {
             $component = array_values($components[$type]);
-           //hack to replace expected fkeys
+            //hack to replace expected fkeys
             foreach ($expected as $i => &$row) {
                 foreach (array_keys($row) as $key) {
                     if (isForeignKeyField($key)) {
@@ -4375,7 +4380,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'id'    => $ruleaction->fields['id'],
                 'field' => '_ignore_import',
                 'action_type' => 'assign',
-                'value' => 1
+                'value' => 1,
             ])
         );
 
@@ -4454,7 +4459,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'agents_id' => 0,
             'date_creation' => $result['date_creation'],
             'date_mod' => $result['date_mod'],
-            'autoupdatesystems_id' => $result['autoupdatesystems_id']
+            'autoupdatesystems_id' => $result['autoupdatesystems_id'],
         ];
 
         $this->assertIsArray($result);
@@ -4478,7 +4483,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->hasSessionMessages(
             INFO,
             [
-                'Inventory is successful, refused entry log has been removed.'
+                'Inventory is successful, refused entry log has been removed.',
             ]
         );
 
@@ -4507,11 +4512,11 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 \Rule::getTable() => [
                     'ON' => [
                         \RuleMatchedLog::getTable() => 'rules_id',
-                        \Rule::getTable() => 'id'
-                    ]
-                ]
+                        \Rule::getTable() => 'id',
+                    ],
+                ],
             ],
-            'WHERE' => []
+            'WHERE' => [],
         ];
 
         $monitor_criteria = $criteria;
@@ -4547,7 +4552,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'name'      => 'entity refuse rule',
             'match'     => 'AND',
             'sub_type'  => \RuleImportEntity::class,
-            'ranking'   => 1
+            'ranking'   => 1,
         ];
         $rules_id = $rule->add($input);
         $this->assertGreaterThan(0, $rules_id);
@@ -4560,7 +4565,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'rules_id'  => $rules_id,
                 'criteria'  => "deviceid",
                 'pattern'   => "/^glpixps.*/",
-                'condition' => \RuleImportEntity::REGEX_MATCH
+                'condition' => \RuleImportEntity::REGEX_MATCH,
             ])
         );
 
@@ -4572,7 +4577,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'rules_id'    => $rules_id,
                 'action_type' => 'assign',
                 'field'       => '_ignore_import',
-                'value'       => 1
+                'value'       => 1,
             ])
         );
 
@@ -4628,7 +4633,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'agents_id' => 0,
             'date_creation' => $result['date_creation'],
             'date_mod' => $result['date_mod'],
-            'autoupdatesystems_id' => $result['autoupdatesystems_id']
+            'autoupdatesystems_id' => $result['autoupdatesystems_id'],
         ];
 
         $this->assertIsArray($result);
@@ -4771,14 +4776,14 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 \VirtualMachineState::getTable() => [
                     'ON' => [
                         \VirtualMachineState::getTable() => 'id',
-                        \ItemVirtualMachine::getTable() => 'virtualmachinestates_id'
-                    ]
-                ]
+                        \ItemVirtualMachine::getTable() => 'virtualmachinestates_id',
+                    ],
+                ],
             ],
             'WHERE' => [
                 \ItemVirtualMachine::getTable() . '.name' => 'db',
-                \VirtualMachineState::getTable() . '.name' => 'off'
-            ]
+                \VirtualMachineState::getTable() . '.name' => 'off',
+            ],
         ]);
         $this->assertCount(1, $iterator);
     }
@@ -4872,13 +4877,13 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             ], [
                 'condition' => \RuleImportAsset::PATTERN_IS,
                 'criteria'  => 'name',
-                'pattern'   => 'db'
-            ]
+                'pattern'   => 'db',
+            ],
         ];
         $action = [
             'action_type' => 'assign',
             'field'       => '_ignore_import',
-            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_NO_IMPORT
+            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_NO_IMPORT,
         ];
         $rule = new \RuleImportAsset();
         $collection = new \RuleImportAssetCollection();
@@ -4903,7 +4908,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'pattern'   => $crit['pattern'],
                 'condition' => $crit['condition'],
             ];
-            $this->assertGreaterThan(0, (int)$rulecriteria->add($input));
+            $this->assertGreaterThan(0, (int) $rulecriteria->add($input));
         }
 
         // Add action
@@ -4914,7 +4919,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'field'       => $action['field'],
             'value'       => $action['value'],
         ];
-        $this->assertGreaterThan(0, (int)$ruleaction->add($input));
+        $this->assertGreaterThan(0, (int) $ruleaction->add($input));
 
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_2.json'));
         $inventory = $this->doInventory($json);
@@ -4962,13 +4967,13 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             ], [
                 'condition' => \RuleImportAsset::PATTERN_EXISTS,
                 'criteria'  => 'name',
-                'pattern'   => '1'
-            ]
+                'pattern'   => '1',
+            ],
         ];
         $action = [
             'action_type' => 'assign',
             'field'       => '_inventory',
-            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT
+            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
         ];
         $rule = new \RuleImportAsset();
         $collection = new \RuleImportAssetCollection();
@@ -4993,7 +4998,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'pattern'   => $crit['pattern'],
                 'condition' => $crit['condition'],
             ];
-            $this->assertGreaterThan(0, (int)$rulecriteria->add($input));
+            $this->assertGreaterThan(0, (int) $rulecriteria->add($input));
         }
 
         // Add action
@@ -5004,7 +5009,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'field'       => $action['field'],
             'value'       => $action['value'],
         ];
-        $this->assertGreaterThan(0, (int)$ruleaction->add($input));
+        $this->assertGreaterThan(0, (int) $ruleaction->add($input));
 
         //UPDATE rule
         $criteria = [
@@ -5015,17 +5020,17 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             ], [
                 'condition' => \RuleImportAsset::PATTERN_FIND,
                 'criteria'  => 'name',
-                'pattern'   => '1'
+                'pattern'   => '1',
             ], [
                 'condition' => \RuleImportAsset::PATTERN_EXISTS,
                 'criteria' => 'name',
-                'pattern' => '1'
-            ]
+                'pattern' => '1',
+            ],
         ];
         $action = [
             'action_type' => 'assign',
             'field'       => '_inventory',
-            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT
+            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
         ];
         $rule = new \RuleImportAsset();
         $collection = new \RuleImportAssetCollection();
@@ -5051,7 +5056,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'pattern'   => $crit['pattern'],
                 'condition' => $crit['condition'],
             ];
-            $this->assertGreaterThan(0, (int)$rulecriteria->add($input));
+            $this->assertGreaterThan(0, (int) $rulecriteria->add($input));
         }
 
         // Add action
@@ -5062,7 +5067,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'field'       => $action['field'],
             'value'       => $action['value'],
         ];
-        $this->assertGreaterThan(0, (int)$ruleaction->add($input));
+        $this->assertGreaterThan(0, (int) $ruleaction->add($input));
 
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_2_partial_dbs.json'));
         $this->doInventory($json);
@@ -5221,7 +5226,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         //check for components
         $item_devicesimcard = new \Item_DeviceSimcard();
-        $simcards_first = $item_devicesimcard->find(['itemtype' => 'Phone' , 'items_id' => $agent['items_id']]);
+        $simcards_first = $item_devicesimcard->find(['itemtype' => 'Phone', 'items_id' => $agent['items_id']]);
         $this->assertCount(1, $simcards_first);
 
         //re run inventory to check if item_simcard ID is changed
@@ -5229,7 +5234,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         $this->doInventory($json);
         $item_devicesimcard = new \Item_DeviceSimcard();
-        $simcards_second = $item_devicesimcard->find(['itemtype' => 'Phone' , 'items_id' => $agent['items_id']]);
+        $simcards_second = $item_devicesimcard->find(['itemtype' => 'Phone', 'items_id' => $agent['items_id']]);
         $this->assertCount(1, $simcards_second);
 
         $this->assertIsArray($simcards_first);
@@ -5286,7 +5291,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         //check for components
         $item_devicesimcard = new \Item_DeviceSimcard();
-        $simcards_first = $item_devicesimcard->find(['itemtype' => 'Phone' , 'items_id' => $agent['items_id']]);
+        $simcards_first = $item_devicesimcard->find(['itemtype' => 'Phone', 'items_id' => $agent['items_id']]);
         $this->assertCount(2, $simcards_first);
 
         //re run inventory to check if item_simcard ID is changed
@@ -5294,7 +5299,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         $this->doInventory($json);
         $item_devicesimcard = new \Item_DeviceSimcard();
-        $simcards_second = $item_devicesimcard->find(['itemtype' => 'Phone' , 'items_id' => $agent['items_id']]);
+        $simcards_second = $item_devicesimcard->find(['itemtype' => 'Phone', 'items_id' => $agent['items_id']]);
         $this->assertCount(2, $simcards_second);
 
         $this->assertIsArray($simcards_first);
@@ -5342,11 +5347,11 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 \Rule::getTable() => [
                     'ON' => [
                         \RuleMatchedLog::getTable() => 'rules_id',
-                        \Rule::getTable() => 'id'
-                    ]
-                ]
+                        \Rule::getTable() => 'id',
+                    ],
+                ],
             ],
-            'WHERE' => ['itemtype' => \Phone::getType()]
+            'WHERE' => ['itemtype' => \Phone::getType()],
         ];
 
         $iterator = $DB->request($criteria);
@@ -5454,7 +5459,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             ], [
                 'totalsize' => 51913,
                 'freesize' => 33722,
-            ]
+            ],
         ];
 
         $i = 0;
@@ -5477,7 +5482,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'itemtype'     => 'Phone',
                 'entities_id'  => 0,
                 'is_deleted'   => 0,
-                'is_dynamic'   => 1
+                'is_dynamic'   => 1,
             ];
             ksort($volume);
             ksort($expected);
@@ -5504,13 +5509,13 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'mac' => 'e0:dc:ff:ed:09:59',
                 'ifstatus' => '1',
                 'ifinternalstatus' => '1',
-            ]
+            ],
         ];
 
         $ips = [
             'No description found'  => [
                 'v4'   => '172.28.214.132',
-            ]
+            ],
         ];
 
         $i = 0;
@@ -5552,7 +5557,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'ifalias' => null,
                 'portduplex' => null,
                 'trunk' => 0,
-                'lastup' => null
+                'lastup' => null,
             ];
 
             $this->assertIsArray($port);
@@ -5563,7 +5568,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             $ip_iterator = $DB->request([
                 'SELECT'       => [
                     \IPAddress::getTable() . '.name',
-                    \IPAddress::getTable() . '.version'
+                    \IPAddress::getTable() . '.version',
                 ],
                 'FROM'   => \IPAddress::getTable(),
                 'INNER JOIN'   => [
@@ -5571,22 +5576,22 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                         'ON'  => [
                             \IPAddress::getTable()     => 'items_id',
                             \NetworkName::getTable()   => 'id', [
-                                'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()]
-                            ]
-                        ]
-                    ]
+                                'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()],
+                            ],
+                        ],
+                    ],
                 ],
                 'WHERE'  => [
                     \NetworkName::getTable() . '.itemtype'  => \NetworkPort::getType(),
-                    \NetworkName::getTable() . '.items_id'  => $ports_id
-                ]
+                    \NetworkName::getTable() . '.items_id'  => $ports_id,
+                ],
             ]);
 
             $this->assertCount(count($ips[$port['name']] ?? []), $ip_iterator);
             if (isset($ips[$port['name']])) {
                 //FIXME: missing all ipv6 :(
                 $ip = $ip_iterator->current();
-                $this->assertSame(4, (int)$ip['version']);
+                $this->assertSame(4, (int) $ip['version']);
                 $this->assertSame($ips[$port['name']]['v4'], $ip['name']);
             }
         }
@@ -5625,7 +5630,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'Item_DeviceGeneric' => 0,
             'Item_DeviceSimcard' => 1,
             'Item_DeviceSensor' => 48,
-            'Item_DeviceCamera' => 2
+            'Item_DeviceCamera' => 2,
         ];
 
         foreach ($expecteds as $type => $count) {
@@ -5647,7 +5652,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     'otherserial' => null,
                     'locations_id' => 0,
                     'states_id' => 0,
-                ]
+                ],
             ],
             'Item_DeviceProcessor' => [
                 [
@@ -5682,7 +5687,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     'busID' => null,
                     'otherserial' => null,
                     'locations_id' => 0,
-                    'states_id' => 0
+                    'states_id' => 0,
                 ],
             ],
             'Item_DeviceHardDrive' => [],
@@ -5701,7 +5706,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     'otherserial' => null,
                     'locations_id' => 0,
                     'states_id' => 0,
-                ]
+                ],
             ],
             'Item_DeviceDrive' => [],
             'Item_DeviceBattery' => [
@@ -5718,7 +5723,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     'otherserial' => null,
                     'locations_id' => 0,
                     'states_id' => 0,
-                    'real_capacity' => 0
+                    'real_capacity' => 0,
                 ],
             ],
             'Item_DeviceGraphicCard' => [],
@@ -5750,7 +5755,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     'puk2' => '',
                     'msin' => '',
                     'comment' => null,
-                ]
+                ],
             ],
             'Item_DeviceCamera' => [
                 [
@@ -5773,8 +5778,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     'is_recursive' => 0,
                     'locations_id' => 0,
                     'states_id' => 0,
-                ]
-            ]
+                ],
+            ],
         ];
 
         foreach ($expecteds as $type => $expected) {
@@ -5813,7 +5818,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'softname' => 'Q Android 10.0 api 29',
                 'version' => '29',
                 'dateinstall' => null,
-            ]
+            ],
         ];
 
         $i = 0;
@@ -5824,7 +5829,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 [
                     'softname'     => $soft['softname'],
                     'version'      => $soft['version'],
-                    'dateinstall'  => $soft['dateinstall']
+                    'dateinstall'  => $soft['dateinstall'],
                 ]
             );
             ++$i;
@@ -5871,7 +5876,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             603,
             10740,
             20872,
-            191
+            191,
         ];
         $this->checkComputer1Volumes($computer, $sizes);
         $this->checkComputer1Softwares($computer);
@@ -5888,7 +5893,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             '3.33.0-1.fc31',
             '3.34.1-1.fc31',
             '3.12.2-18.fc31',
-            '1.32-2.fc31'
+            '1.32-2.fc31',
         ];
         $this->checkComputer1Softwares($computer, $versions);
 
@@ -5920,7 +5925,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'sub_type' => 'RuleDictionnaryManufacturer',
             'match' => \Rule::AND_MATCHING,
             'condition' => 0,
-            'description' => ''
+            'description' => '',
         ]);
         $this->assertGreaterThan(0, $rules_id);
 
@@ -5930,7 +5935,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'rules_id' => $rules_id,
                 'criteria' => 'name',
                 'condition' => \Rule::PATTERN_IS,
-                'pattern' => 'Dell Inc.'
+                'pattern' => 'Dell Inc.',
             ])
         );
 
@@ -5940,7 +5945,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'rules_id' => $rules_id,
                 'action_type' => 'assign',
                 'field' => 'name',
-                'value' => 'Dictionary manufacturer'
+                'value' => 'Dictionary manufacturer',
             ])
         );
 
@@ -6023,7 +6028,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'sub_type' => 'RuleDictionnaryOperatingSystem',
             'match' => \Rule::AND_MATCHING,
             'condition' => 0,
-            'description' => ''
+            'description' => '',
         ]);
         $this->assertGreaterThan(0, $rules_id);
 
@@ -6033,7 +6038,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'rules_id' => $rules_id,
                 'criteria' => 'name',
                 'condition' => \Rule::PATTERN_CONTAIN,
-                'pattern' => 'Fedora 31'
+                'pattern' => 'Fedora 31',
             ])
         );
 
@@ -6043,7 +6048,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'rules_id' => $rules_id,
                 'action_type' => 'assign',
                 'field' => 'name',
-                'value' => 'Ubuntu'
+                'value' => 'Ubuntu',
             ])
         );
 
@@ -6122,7 +6127,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'sub_type' => 'RuleDictionnaryOperatingSystemVersion',
             'match' => \Rule::AND_MATCHING,
             'condition' => 0,
-            'description' => ''
+            'description' => '',
         ]);
         $this->assertGreaterThan(0, $rules_id);
 
@@ -6132,7 +6137,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'rules_id' => $rules_id,
                 'criteria' => 'name',
                 'condition' => \Rule::PATTERN_CONTAIN,
-                'pattern' => '31 (Workstation Edition)'
+                'pattern' => '31 (Workstation Edition)',
             ])
         );
 
@@ -6142,7 +6147,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'rules_id' => $rules_id,
                 'action_type' => 'assign',
                 'field' => 'name',
-                'value' => 'New version'
+                'value' => 'New version',
             ])
         );
 
@@ -6221,7 +6226,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'sub_type' => 'RuleDictionnaryOperatingSystemArchitecture',
             'match' => \Rule::AND_MATCHING,
             'condition' => 0,
-            'description' => ''
+            'description' => '',
         ]);
         $this->assertGreaterThan(0, $rules_id);
 
@@ -6231,7 +6236,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'rules_id' => $rules_id,
                 'criteria' => 'name',
                 'condition' => \Rule::PATTERN_CONTAIN,
-                'pattern' => 'x86_64'
+                'pattern' => 'x86_64',
             ])
         );
 
@@ -6241,7 +6246,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'rules_id' => $rules_id,
                 'action_type' => 'assign',
                 'field' => 'name',
-                'value' => 'New arch'
+                'value' => 'New arch',
             ])
         );
 
@@ -6316,7 +6321,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'sub_type' => 'RuleDictionnaryOperatingSystemServicePack',
             'match' => \Rule::AND_MATCHING,
             'condition' => 0,
-            'description' => ''
+            'description' => '',
         ]);
         $this->assertGreaterThan(0, $rules_id);
 
@@ -6327,7 +6332,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'rules_id' => $rules_id,
                 'criteria' => 'os_name',
                 'condition' => \Rule::PATTERN_CONTAIN,
-                'pattern' => 'Fedora 31'
+                'pattern' => 'Fedora 31',
             ])
         );
 
@@ -6337,7 +6342,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'rules_id' => $rules_id,
                 'action_type' => 'assign',
                 'field' => 'name',
-                'value' => 'New service_pack'
+                'value' => 'New service_pack',
             ])
         );
 
@@ -6380,12 +6385,12 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         //create states to use
         $state = new \State();
         $inv_states_id = $state->add([
-            'name' => 'Has been inventoried'
+            'name' => 'Has been inventoried',
         ]);
         $this->assertGreaterThan(0, $inv_states_id);
 
         $cleaned_states_id = $state->add([
-            'name' => 'Has been cleaned'
+            'name' => 'Has been cleaned',
         ]);
         $this->assertGreaterThan(0, $cleaned_states_id);
 
@@ -6395,9 +6400,9 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'states_id_default' => $inv_states_id,
                 'stale_agents_delay' => 1,
                 'stale_agents_action' => exportArrayToDB([
-                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_STATUS
+                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_STATUS,
                 ]),
-                'stale_agents_status' => $cleaned_states_id
+                'stale_agents_status' => $cleaned_states_id,
             ]
         );
 
@@ -6441,7 +6446,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertTrue(
             $agent->update([
                 'id' => $agents_id,
-                'last_contact' => $invdate->format('Y-m-d H:i:s')
+                'last_contact' => $invdate->format('Y-m-d H:i:s'),
             ])
         );
 
@@ -6467,13 +6472,13 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         //create default states to use
         $default_states = new \State();
         $default_states_id = $default_states->add([
-            'name' => 'Has been inventoried'
+            'name' => 'Has been inventoried',
         ]);
         $this->assertGreaterThan(0, $default_states_id);
 
         $other_state = new \State();
         $other_states_id = $other_state->add([
-            'name' => 'Another states'
+            'name' => 'Another states',
         ]);
         $this->assertGreaterThan(0, $other_states_id);
 
@@ -6490,7 +6495,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'itemtype' => 'Computer',
             'items_id' => 0,
             'field' => 'states_id',
-            'is_global' => 1
+            'is_global' => 1,
         ]);
         $this->assertGreaterThan(0, $lock_id);
 
@@ -6534,7 +6539,6 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertSame($other_states_id, $computer->fields['states_id']);
     }
 
-    #[RunInSeparateProcess] // TODO: fix this test, it shouldn't need an individual process
     public function testOtherSerialFromTag()
     {
         global $DB;
@@ -6545,7 +6549,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'name'      => 'use TAG as otherserial',
             'match'     => 'AND',
             'sub_type'  => 'RuleAsset',
-            'condition' => \RuleAsset::ONADD + \RuleAsset::ONUPDATE
+            'condition' => \RuleAsset::ONADD + \RuleAsset::ONUPDATE,
         ];
 
         $rule = new \Rule();
@@ -6557,7 +6561,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id'  => $rules_id,
             'criteria'      => '_tag',
             'condition' => \Rule::REGEX_MATCH,
-            'pattern' => '/(.*)/'
+            'pattern' => '/(.*)/',
         ];
         $rule_criteria = new \RuleCriteria();
         $rule_criteria_id = $rule_criteria->add($input_criteria);
@@ -6568,7 +6572,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id'  => $rules_id,
             'action_type' => 'regex_result',
             'field' => 'otherserial',
-            'value' => '#0'
+            'value' => '#0',
         ];
         $rule_action = new \RuleAction();
         $rule_action_id = $rule_action->add($input_action);
@@ -6660,7 +6664,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'name'      => 'Business rule test',
             'match'     => 'AND',
             'sub_type'  => 'RuleAsset',
-            'condition' => \RuleAsset::ONADD
+            'condition' => \RuleAsset::ONADD,
         ];
 
         $rule = new \Rule();
@@ -6672,7 +6676,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id'  => $rules_id,
             'criteria'      => '_itemtype',
             'condition' => \Rule::PATTERN_IS,
-            'pattern' => \Computer::getType()
+            'pattern' => \Computer::getType(),
         ];
         $rule_criteria = new \RuleCriteria();
         $rule_criteria_id = $rule_criteria->add($input_criteria);
@@ -6683,7 +6687,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id'  => $rules_id,
             'action_type' => 'assign',
             'field' => 'states_id',
-            'value' => $states_id
+            'value' => $states_id,
         ];
         $rule_action = new \RuleAction();
         $this->assertGreaterThan(0, $rule_action->add($input_action));
@@ -6692,7 +6696,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id'  => $rules_id,
             'action_type' => 'assign',
             'field' => 'locations_id',
-            'value' => $locations_id
+            'value' => $locations_id,
         ];
         $rule_action = new \RuleAction();
         $this->assertGreaterThan(0, $rule_action->add($input_action));
@@ -6701,7 +6705,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id'  => $rules_id,
             'action_type' => 'assign',
             'field' => 'comment',
-            'value' => 'A comment'
+            'value' => 'A comment',
         ];
         $rule_action = new \RuleAction();
         $this->assertGreaterThan(0, $rule_action->add($input_action));
@@ -6774,7 +6778,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'name' => 'Business rule test',
             'match' => 'AND',
             'sub_type' => 'RuleAsset',
-            'condition' => \RuleAsset::ONUPDATE
+            'condition' => \RuleAsset::ONUPDATE,
         ];
 
         $rule = new \Rule();
@@ -6786,7 +6790,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'criteria' => '_itemtype',
             'condition' => \Rule::PATTERN_IS,
-            'pattern' => \Computer::getType()
+            'pattern' => \Computer::getType(),
         ];
         $rule_criteria = new \RuleCriteria();
         $rule_criteria_id = $rule_criteria->add($input_criteria);
@@ -6797,7 +6801,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'action_type' => 'assign',
             'field' => 'states_id',
-            'value' => $states_id
+            'value' => $states_id,
         ];
         $rule_action = new \RuleAction();
         $this->assertGreaterThan(0, $rule_action->add($input_action));
@@ -6806,7 +6810,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'action_type' => 'assign',
             'field' => 'locations_id',
-            'value' => $locations_id
+            'value' => $locations_id,
         ];
         $rule_action = new \RuleAction();
         $this->assertGreaterThan(0, $rule_action->add($input_action));
@@ -6815,7 +6819,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'action_type' => 'assign',
             'field' => 'comment',
-            'value' => 'A comment'
+            'value' => 'A comment',
         ];
         $rule_action = new \RuleAction();
         $this->assertGreaterThan(0, $rule_action->add($input_action));
@@ -6834,7 +6838,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertTrue(
             $computer->update([
                 'id' => $computers_id,
-                'comment' => 'Another comment'
+                'comment' => 'Another comment',
             ])
         );
         $this->assertTrue($computer->getFromDB($computers_id));
@@ -6901,7 +6905,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'name' => 'Business rule test',
             'match' => 'AND',
             'sub_type' => 'RuleAsset',
-            'condition' => \RuleAsset::ONADD + \RuleAsset::ONUPDATE
+            'condition' => \RuleAsset::ONADD + \RuleAsset::ONUPDATE,
         ];
 
         $rule = new \Rule();
@@ -6913,7 +6917,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'criteria' => '_itemtype',
             'condition' => \Rule::PATTERN_IS,
-            'pattern' => \Computer::getType()
+            'pattern' => \Computer::getType(),
         ];
         $rule_criteria = new \RuleCriteria();
         $rule_criteria_id = $rule_criteria->add($input_criteria);
@@ -6924,7 +6928,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'action_type' => 'assign',
             'field' => 'states_id',
-            'value' => $states_id
+            'value' => $states_id,
         ];
         $rule_action = new \RuleAction();
         $this->assertGreaterThan(0, $rule_action->add($input_action));
@@ -6933,7 +6937,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'action_type' => 'assign',
             'field' => 'locations_id',
-            'value' => $locations_id
+            'value' => $locations_id,
         ];
         $rule_action = new \RuleAction();
         $this->assertGreaterThan(0, $rule_action->add($input_action));
@@ -6942,7 +6946,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'action_type' => 'assign',
             'field' => 'comment',
-            'value' => 'A comment'
+            'value' => 'A comment',
         ];
         $rule_action = new \RuleAction();
         $this->assertGreaterThan(0, $rule_action->add($input_action));
@@ -6961,7 +6965,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertTrue(
             $computer->update([
                 'id' => $computers_id,
-                'comment' => 'Another comment'
+                'comment' => 'Another comment',
             ])
         );
         $this->assertTrue($computer->getFromDB($computers_id));
@@ -7028,7 +7032,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'name'      => 'Business rule test',
             'match'     => 'AND',
             'sub_type'  => 'RuleAsset',
-            'condition' => \RuleAsset::ONADD
+            'condition' => \RuleAsset::ONADD,
         ];
 
         $rule = new \Rule();
@@ -7040,7 +7044,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id'  => $rules_id,
             'criteria'      => '_itemtype',
             'condition' => \Rule::PATTERN_IS,
-            'pattern' => \NetworkEquipment::getType()
+            'pattern' => \NetworkEquipment::getType(),
         ];
         $rule_criteria = new \RuleCriteria();
         $rule_criteria_id = $rule_criteria->add($input_criteria);
@@ -7051,7 +7055,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id'  => $rules_id,
             'action_type' => 'assign',
             'field' => 'states_id',
-            'value' => $states_id
+            'value' => $states_id,
         ];
         $rule_action = new \RuleAction();
         $this->assertGreaterThan(0, $rule_action->add($input_action));
@@ -7060,7 +7064,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id'  => $rules_id,
             'action_type' => 'assign',
             'field' => 'locations_id',
-            'value' => $locations_id
+            'value' => $locations_id,
         ];
         $rule_action = new \RuleAction();
         $this->assertGreaterThan(0, $rule_action->add($input_action));
@@ -7069,7 +7073,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id'  => $rules_id,
             'action_type' => 'assign',
             'field' => 'comment',
-            'value' => 'A comment'
+            'value' => 'A comment',
         ];
         $rule_action = new \RuleAction();
         $this->assertGreaterThan(0, $rule_action->add($input_action));
@@ -7161,7 +7165,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'name' => 'Business rule test',
             'match' => 'AND',
             'sub_type' => 'RuleAsset',
-            'condition' => \RuleAsset::ONUPDATE
+            'condition' => \RuleAsset::ONUPDATE,
         ];
 
         $rule = new \Rule();
@@ -7173,7 +7177,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'criteria' => '_itemtype',
             'condition' => \Rule::PATTERN_IS,
-            'pattern' => \NetworkEquipment::getType()
+            'pattern' => \NetworkEquipment::getType(),
         ];
         $rule_criteria = new \RuleCriteria();
         $rule_criteria_id = $rule_criteria->add($input_criteria);
@@ -7184,7 +7188,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'action_type' => 'assign',
             'field' => 'states_id',
-            'value' => $states_id
+            'value' => $states_id,
         ];
         $rule_action = new \RuleAction();
         $this->assertGreaterThan(0, $rule_action->add($input_action));
@@ -7193,7 +7197,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'action_type' => 'assign',
             'field' => 'locations_id',
-            'value' => $locations_id
+            'value' => $locations_id,
         ];
         $rule_action = new \RuleAction();
         $this->assertGreaterThan(0, $rule_action->add($input_action));
@@ -7202,7 +7206,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'action_type' => 'assign',
             'field' => 'comment',
-            'value' => 'A comment'
+            'value' => 'A comment',
         ];
         $rule_action = new \RuleAction();
         $this->assertGreaterThan(0, $rule_action->add($input_action));
@@ -7221,7 +7225,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertTrue(
             $neteq->update([
                 'id' => $networkequipments_id,
-                'comment' => 'Another comment'
+                'comment' => 'Another comment',
             ])
         );
         $this->assertTrue($neteq->getFromDB($networkequipments_id));
@@ -7306,7 +7310,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'name' => 'Business rule test',
             'match' => 'AND',
             'sub_type' => 'RuleAsset',
-            'condition' => \RuleAsset::ONADD + \RuleAsset::ONUPDATE
+            'condition' => \RuleAsset::ONADD + \RuleAsset::ONUPDATE,
         ];
 
         $rule = new \Rule();
@@ -7318,7 +7322,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'criteria' => '_itemtype',
             'condition' => \Rule::PATTERN_IS,
-            'pattern' => \NetworkEquipment::getType()
+            'pattern' => \NetworkEquipment::getType(),
         ];
         $rule_criteria = new \RuleCriteria();
         $rule_criteria_id = $rule_criteria->add($input_criteria);
@@ -7329,7 +7333,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'action_type' => 'assign',
             'field' => 'states_id',
-            'value' => $states_id
+            'value' => $states_id,
         ];
         $rule_action = new \RuleAction();
         $this->assertGreaterThan(0, $rule_action->add($input_action));
@@ -7338,7 +7342,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'action_type' => 'assign',
             'field' => 'locations_id',
-            'value' => $locations_id
+            'value' => $locations_id,
         ];
         $rule_action = new \RuleAction();
         $this->assertGreaterThan(0, $rule_action->add($input_action));
@@ -7347,7 +7351,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'action_type' => 'assign',
             'field' => 'comment',
-            'value' => 'A comment'
+            'value' => 'A comment',
         ];
         $rule_action = new \RuleAction();
         $this->assertGreaterThan(0, $rule_action->add($input_action));
@@ -7366,7 +7370,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertTrue(
             $neteq->update([
                 'id' => $networkequipments_id,
-                'comment' => 'Another comment'
+                'comment' => 'Another comment',
             ])
         );
         $this->assertTrue($neteq->getFromDB($networkequipments_id));
@@ -7451,7 +7455,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'name'      => 'Business rule test',
             'match'     => 'AND',
             'sub_type'  => 'RuleAsset',
-            'condition' => \RuleAsset::ONADD
+            'condition' => \RuleAsset::ONADD,
         ];
 
         $rule = new \Rule();
@@ -7463,7 +7467,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id'  => $rules_id,
             'criteria'      => '_itemtype',
             'condition' => \Rule::PATTERN_IS,
-            'pattern' => \Printer::getType()
+            'pattern' => \Printer::getType(),
         ];
         $rule_criteria = new \RuleCriteria();
         $rule_criteria_id = $rule_criteria->add($input_criteria);
@@ -7474,7 +7478,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id'  => $rules_id,
             'action_type' => 'assign',
             'field' => 'states_id',
-            'value' => $states_id
+            'value' => $states_id,
         ];
         $rule_action = new \RuleAction();
         $this->assertGreaterThan(0, $rule_action->add($input_action));
@@ -7483,7 +7487,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id'  => $rules_id,
             'action_type' => 'assign',
             'field' => 'locations_id',
-            'value' => $locations_id
+            'value' => $locations_id,
         ];
         $rule_action = new \RuleAction();
         $this->assertGreaterThan(0, $rule_action->add($input_action));
@@ -7492,7 +7496,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id'  => $rules_id,
             'action_type' => 'assign',
             'field' => 'comment',
-            'value' => 'A comment'
+            'value' => 'A comment',
         ];
         $rule_action = new \RuleAction();
         $this->assertGreaterThan(0, $rule_action->add($input_action));
@@ -7580,7 +7584,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'name' => 'Business rule test',
             'match' => 'AND',
             'sub_type' => 'RuleAsset',
-            'condition' => \RuleAsset::ONUPDATE
+            'condition' => \RuleAsset::ONUPDATE,
         ];
 
         $rule = new \Rule();
@@ -7592,7 +7596,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'criteria' => '_itemtype',
             'condition' => \Rule::PATTERN_IS,
-            'pattern' => \Printer::getType()
+            'pattern' => \Printer::getType(),
         ];
         $rule_criteria = new \RuleCriteria();
         $rule_criteria_id = $rule_criteria->add($input_criteria);
@@ -7603,7 +7607,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'action_type' => 'assign',
             'field' => 'states_id',
-            'value' => $states_id
+            'value' => $states_id,
         ];
         $rule_action = new \RuleAction();
         $this->assertGreaterThan(0, $rule_action->add($input_action));
@@ -7612,7 +7616,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'action_type' => 'assign',
             'field' => 'locations_id',
-            'value' => $locations_id
+            'value' => $locations_id,
         ];
         $rule_action = new \RuleAction();
         $this->assertGreaterThan(0, $rule_action->add($input_action));
@@ -7621,7 +7625,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'action_type' => 'assign',
             'field' => 'comment',
-            'value' => 'A comment'
+            'value' => 'A comment',
         ];
         $rule_action = new \RuleAction();
         $this->assertGreaterThan(0, $rule_action->add($input_action));
@@ -7640,7 +7644,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertTrue(
             $printer->update([
                 'id' => $printers_id,
-                'comment' => 'Another comment'
+                'comment' => 'Another comment',
             ])
         );
         $this->assertTrue($printer->getFromDB($printers_id));
@@ -7721,7 +7725,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'name' => 'Business rule test',
             'match' => 'AND',
             'sub_type' => 'RuleAsset',
-            'condition' => \RuleAsset::ONADD + \RuleAsset::ONUPDATE
+            'condition' => \RuleAsset::ONADD + \RuleAsset::ONUPDATE,
         ];
 
         $rule = new \Rule();
@@ -7733,7 +7737,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'criteria' => '_itemtype',
             'condition' => \Rule::PATTERN_IS,
-            'pattern' => \Printer::getType()
+            'pattern' => \Printer::getType(),
         ];
         $rule_criteria = new \RuleCriteria();
         $rule_criteria_id = $rule_criteria->add($input_criteria);
@@ -7744,7 +7748,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'action_type' => 'assign',
             'field' => 'states_id',
-            'value' => $states_id
+            'value' => $states_id,
         ];
         $rule_action = new \RuleAction();
         $this->assertGreaterThan(0, $rule_action->add($input_action));
@@ -7753,7 +7757,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'action_type' => 'assign',
             'field' => 'locations_id',
-            'value' => $locations_id
+            'value' => $locations_id,
         ];
         $rule_action = new \RuleAction();
         $this->assertGreaterThan(0, $rule_action->add($input_action));
@@ -7762,7 +7766,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'action_type' => 'assign',
             'field' => 'comment',
-            'value' => 'A comment'
+            'value' => 'A comment',
         ];
         $rule_action = new \RuleAction();
         $this->assertGreaterThan(0, $rule_action->add($input_action));
@@ -7781,7 +7785,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertTrue(
             $printer->update([
                 'id' => $printers_id,
-                'comment' => 'Another comment'
+                'comment' => 'Another comment',
             ])
         );
         $this->assertTrue($printer->getFromDB($printers_id));
@@ -7853,7 +7857,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'name'      => 'set status if inventory',
             'match'     => 'AND',
             'sub_type'  => 'RuleAsset',
-            'condition' => \RuleAsset::ONADD
+            'condition' => \RuleAsset::ONADD,
         ];
 
         $rule = new \Rule();
@@ -7865,7 +7869,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id'  => $rules_id,
             'criteria'      => '_auto',
             'condition' => \Rule::PATTERN_IS,
-            'pattern' => '1'
+            'pattern' => '1',
         ];
         $rule_criteria = new \RuleCriteria();
         $rule_criteria_id = $rule_criteria->add($input_criteria);
@@ -7880,7 +7884,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id'  => $rules_id,
             'action_type' => 'assign',
             'field' => 'states_id',
-            'value' => $states_id
+            'value' => $states_id,
         ];
         $rule_action = new \RuleAction();
         $rule_action_id = $rule_action->add($input_action);
@@ -7930,7 +7934,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'name'      => 'set status if inventory',
             'match'     => 'AND',
             'sub_type'  => 'RuleAsset',
-            'condition' => \RuleAsset::ONUPDATE
+            'condition' => \RuleAsset::ONUPDATE,
         ];
 
         $rule = new \Rule();
@@ -7942,7 +7946,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id'  => $rules_id,
             'criteria'      => '_auto',
             'condition' => \Rule::PATTERN_IS,
-            'pattern' => '1'
+            'pattern' => '1',
         ];
         $rule_criteria = new \RuleCriteria();
         $rule_criteria_id = $rule_criteria->add($input_criteria);
@@ -7957,7 +7961,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id'  => $rules_id,
             'action_type' => 'assign',
             'field' => 'states_id',
-            'value' => $states_id
+            'value' => $states_id,
         ];
         $rule_action = new \RuleAction();
         $rule_action_id = $rule_action->add($input_action);
@@ -8007,7 +8011,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'name'      => 'set status if inventory',
             'match'     => 'AND',
             'sub_type'  => 'RuleAsset',
-            'condition' => \RuleAsset::ONADD + \RuleAsset::ONUPDATE
+            'condition' => \RuleAsset::ONADD + \RuleAsset::ONUPDATE,
         ];
 
         $rule = new \Rule();
@@ -8019,7 +8023,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id'  => $rules_id,
             'criteria'      => '_auto',
             'condition' => \Rule::PATTERN_IS,
-            'pattern' => '1'
+            'pattern' => '1',
         ];
         $rule_criteria = new \RuleCriteria();
         $rule_criteria_id = $rule_criteria->add($input_criteria);
@@ -8034,7 +8038,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id'  => $rules_id,
             'action_type' => 'assign',
             'field' => 'states_id',
-            'value' => $states_id
+            'value' => $states_id,
         ];
         $rule_action = new \RuleAction();
         $rule_action_id = $rule_action->add($input_action);
@@ -8082,15 +8086,15 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'action' => '_affect_user_by_name_and_regex',
                 'value' => '#0i',
                 'condition' => \Rule::PATTERN_NOT_CONTAIN,
-                'pattern' => 'admin'
+                'pattern' => 'admin',
             ],
             "xml_fields" => [
                 'name' => 'adminglp',
-                'domain' => 'TECLIB'
+                'domain' => 'TECLIB',
             ],
             'result' => [
                 'users_id'    => 0,
-            ]
+            ],
         ];
         yield [
             'rules_fields' => [
@@ -8098,15 +8102,15 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'action' => '_affect_user_by_name_and_regex',
                 'value' => '#0',
                 'condition' => \Rule::PATTERN_CONTAIN,
-                'pattern' => 'contain'
+                'pattern' => 'contain',
             ],
             "xml_fields" => [
                 'name' => 'logcontain_test',
-                'domain' => 'TECLIB'
+                'domain' => 'TECLIB',
             ],
             'result' => [
                 'users_id'    => 'CONTAIN_TEST_USER',
-            ]
+            ],
         ];
         yield [
             'rules_fields' => [
@@ -8114,15 +8118,15 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'action' => '_affect_user_by_name_and_regex',
                 'value' => '#0',
                 'condition' => \Rule::PATTERN_BEGIN,
-                'pattern' => 'logbegin'
+                'pattern' => 'logbegin',
             ],
             "xml_fields" => [
                 'name' => 'logbegin_test',
-                'domain' => 'TECLIB'
+                'domain' => 'TECLIB',
             ],
             'result' => [
                 'users_id'    => 'BEGIN_TEST_USER',
-            ]
+            ],
         ];
         yield [
             'rules_fields' => [
@@ -8130,15 +8134,15 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'action' => '_affect_user_by_name_and_regex',
                 'value' => '#0',
                 'condition' => \Rule::PATTERN_END,
-                'pattern' => 'END'
+                'pattern' => 'END',
             ],
             "xml_fields" => [
                 'name' => 'logend_test',
-                'domain' => 'END'
+                'domain' => 'END',
             ],
             'result' => [
                 'users_id'    => 'END_TEST_USER',
-            ]
+            ],
         ];
         yield [
             'rules_fields' => [
@@ -8148,11 +8152,11 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             ],
             "xml_fields" => [
                 'name' => 'logtec',
-                'domain' => 'TECLIB'
+                'domain' => 'TECLIB',
             ],
             'result' => [
                 'users_id'    => \User::getIDByName('tech'),
-            ]
+            ],
         ];
         yield [
             'rules_fields' => [
@@ -8162,11 +8166,11 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             ],
             "xml_fields" => [
                 'name' => 'lognorma',
-                'domain' => 'TECLIB'
+                'domain' => 'TECLIB',
             ],
             'result' => [
                 'users_id'    => 'NORMAL_ID',
-            ]
+            ],
         ];
         yield [
             'rules_fields' => [
@@ -8176,11 +8180,11 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             ],
             "xml_fields" => [
                 'name' => 'logglp',
-                'domain' => 'TECLIB'
+                'domain' => 'TECLIB',
             ],
             'result' => [
                 'users_id'    => 'GLPI_ID',
-            ]
+            ],
         ];
         yield [
             'rules_fields' => [
@@ -8190,11 +8194,11 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             ],
             "xml_fields" => [
                 'name' => 'log_test_use',
-                'domain' => 'TECLIB'
+                'domain' => 'TECLIB',
             ],
             'result' => [
                 'users_id'    => 'TEST_ID',
-            ]
+            ],
         ];
     }
 
@@ -8206,19 +8210,19 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         switch ($result['users_id']) {
             case 'CONTAIN_TEST_USER':
                 $contain_test_user = $this->createItem(\User::class, [
-                    'name' => 'contain_test'
+                    'name' => 'contain_test',
                 ]);
                 $result['users_id'] = $contain_test_user->fields['id'];
                 break;
             case 'BEGIN_TEST_USER':
                 $begin_test_user = $this->createItem(\User::class, [
-                    'name' => 'begin_test'
+                    'name' => 'begin_test',
                 ]);
                 $result['users_id'] = $begin_test_user->fields['id'];
                 break;
             case 'END_TEST_USER':
                 $end_test_user = $this->createItem(\User::class, [
-                    'name' => 'end_test'
+                    'name' => 'end_test',
                 ]);
                 $result['users_id'] = $end_test_user->fields['id'];
                 break;
@@ -8234,7 +8238,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 $this->createItem(UserEmail::class, [
                     'users_id' => $glpi_id,
                     'is_default' => 1,
-                    'email' => 'glpi@teclib.com'
+                    'email' => 'glpi@teclib.com',
                 ]);
                 $result['users_id'] = $glpi_id;
                 break;
@@ -8243,7 +8247,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 $this->updateItem(\User::class, $test_id, [
                     'realname' => '_test_user',
                     'authtype' => \Auth::EXTERNAL,
-                    'sync_field' => '_test_user@toto'
+                    'sync_field' => '_test_user@toto',
                 ]);
                 $result['users_id'] = $test_id;
                 break;
@@ -8255,7 +8259,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'name'      => $rules_fields['name'],
             'match'     => 'AND',
             'sub_type'  => 'RuleAsset',
-            'condition' => \RuleAsset::ONADD + \RuleAsset::ONUPDATE
+            'condition' => \RuleAsset::ONADD + \RuleAsset::ONUPDATE,
         ];
 
         $rule = new \Rule();
@@ -8278,7 +8282,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id'  => $rules_id,
             'criteria'      => '_inventory_users',
             'condition' => \Rule::REGEX_MATCH,
-            'pattern' => '/^log([^@]+)/'
+            'pattern' => '/^log([^@]+)/',
         ];
         $rule_criteria = new \RuleCriteria();
         $rule_criteria_id = $rule_criteria->add($input_criteria);
@@ -8289,7 +8293,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id'  => $rules_id,
             'action_type' => 'regex_result',
             'field' => $rules_fields['action'],
-            'value' => $rules_fields['value']
+            'value' => $rules_fields['value'],
         ];
         $rule_action = new \RuleAction();
         $rule_action_id = $rule_action->add($input_action);
@@ -8505,8 +8509,8 @@ JSON;
                 'FROM' => 'glpi_networkports',
                 'WHERE' => [
                     'itemtype' => get_class($computer),
-                    'items_id' => $computer->getID()
-                ]
+                    'items_id' => $computer->getID(),
+                ],
             ]
         );
         $this->assertCount(1, $nports);
@@ -8534,8 +8538,8 @@ JSON;
                 'FROM' => 'glpi_networkports',
                 'WHERE' => [
                     'itemtype' => get_class($computer),
-                    'items_id' => $computer->getID()
-                ]
+                    'items_id' => $computer->getID(),
+                ],
             ]
         );
         $this->assertCount(1, $nports);
@@ -8549,14 +8553,14 @@ JSON;
         $this->assertTrue(
             $netname->getFromDBByCrit([
                 'itemtype' => \NetworkPort::getType(),
-                'items_id' => $nport['id']
+                'items_id' => $nport['id'],
             ])
         );
         $ip = new \IPAddress();
         $this->assertTrue(
             $ip->getFromDBByCrit([
                 'itemtype' => $netname::getType(),
-                'items_id' => $netname->getID()
+                'items_id' => $netname->getID(),
             ])
         );
         $this->assertSame(4, $ip->fields['version']);
@@ -8575,8 +8579,8 @@ JSON;
                 'FROM' => 'glpi_networkports',
                 'WHERE' => [
                     'itemtype' => get_class($computer),
-                    'items_id' => $computer->getID()
-                ]
+                    'items_id' => $computer->getID(),
+                ],
             ]
         );
         $this->assertCount(1, $nports);
@@ -8598,8 +8602,8 @@ JSON;
                 'FROM' => 'glpi_networkports',
                 'WHERE' => [
                     'itemtype' => get_class($computer),
-                    'items_id' => $computer->getID()
-                ]
+                    'items_id' => $computer->getID(),
+                ],
             ]
         );
         $this->assertCount(1, $nports);
@@ -8612,14 +8616,14 @@ JSON;
         $this->assertTrue(
             $netname->getFromDBByCrit([
                 'itemtype' => \NetworkPort::getType(),
-                'items_id' => $nport['id']
+                'items_id' => $nport['id'],
             ])
         );
         $ip = new \IPAddress();
         $this->assertTrue(
             $ip->getFromDBByCrit([
                 'itemtype' => $netname::getType(),
-                'items_id' => $netname->getID()
+                'items_id' => $netname->getID(),
             ])
         );
         $this->assertSame(4, $ip->fields['version']);
@@ -8637,8 +8641,8 @@ JSON;
                 'FROM' => 'glpi_networkports',
                 'WHERE' => [
                     'itemtype' => get_class($computer),
-                    'items_id' => $computer->getID()
-                ]
+                    'items_id' => $computer->getID(),
+                ],
             ]
         );
         $this->assertCount(0, $nports);
@@ -8688,8 +8692,8 @@ JSON;
                 'FROM' => 'glpi_networkports',
                 'WHERE' => [
                     'itemtype' => get_class($computer),
-                    'items_id' => $computer->getID()
-                ]
+                    'items_id' => $computer->getID(),
+                ],
             ]
         );
         $this->assertCount(1, $nports);
@@ -8702,14 +8706,14 @@ JSON;
         $this->assertTrue(
             $netname->getFromDBByCrit([
                 'itemtype' => \NetworkPort::getType(),
-                'items_id' => $nport['id']
+                'items_id' => $nport['id'],
             ])
         );
         $ip = new \IPAddress();
         $this->assertTrue(
             $ip->getFromDBByCrit([
                 'itemtype' => $netname::getType(),
-                'items_id' => $netname->getID()
+                'items_id' => $netname->getID(),
             ])
         );
         $this->assertSame(4, $ip->fields['version']);
@@ -8728,8 +8732,8 @@ JSON;
                 'FROM' => 'glpi_networkports',
                 'WHERE' => [
                     'itemtype' => get_class($computer),
-                    'items_id' => $computer->getID()
-                ]
+                    'items_id' => $computer->getID(),
+                ],
             ]
         );
         $this->assertCount(1, $nports);
@@ -8741,7 +8745,7 @@ JSON;
         $this->assertTrue(
             $netname->getFromDBByCrit([
                 'itemtype' => \NetworkPort::getType(),
-                'items_id' => $nport['id']
+                'items_id' => $nport['id'],
             ])
         );
         $ip = new \IPAddress();
@@ -8749,7 +8753,7 @@ JSON;
         $this->assertTrue(
             $ip->getFromDBByCrit([
                 'itemtype' => $netname::getType(),
-                'items_id' => $netname->getID()
+                'items_id' => $netname->getID(),
             ])
         );
         $this->assertSame(4, $ip->fields['version']);
@@ -8768,8 +8772,8 @@ JSON;
                 'FROM' => 'glpi_networkports',
                 'WHERE' => [
                     'itemtype' => get_class($computer),
-                    'items_id' => $computer->getID()
-                ]
+                    'items_id' => $computer->getID(),
+                ],
             ]
         );
         $this->assertCount(1, $nports);
@@ -8781,7 +8785,7 @@ JSON;
         $this->assertTrue(
             $netname->getFromDBByCrit([
                 'itemtype' => \NetworkPort::getType(),
-                'items_id' => $nport['id']
+                'items_id' => $nport['id'],
             ])
         );
         $ip = new \IPAddress();
@@ -8789,7 +8793,7 @@ JSON;
         $this->assertTrue(
             $ip->getFromDBByCrit([
                 'itemtype' => $netname::getType(),
-                'items_id' => $netname->getID()
+                'items_id' => $netname->getID(),
             ])
         );
         $this->assertSame(4, $ip->fields['version']);
@@ -8840,8 +8844,8 @@ JSON;
                 'FROM' => 'glpi_networkports',
                 'WHERE' => [
                     'itemtype' => get_class($computer),
-                    'items_id' => $computer->getID()
-                ]
+                    'items_id' => $computer->getID(),
+                ],
             ]
         );
         $this->assertCount(1, $nports);
@@ -8854,14 +8858,14 @@ JSON;
         $this->assertTrue(
             $netname->getFromDBByCrit([
                 'itemtype' => \NetworkPort::getType(),
-                'items_id' => $nport['id']
+                'items_id' => $nport['id'],
             ])
         );
         $ip = new \IPAddress();
         $this->assertTrue(
             $ip->getFromDBByCrit([
                 'itemtype' => $netname::getType(),
-                'items_id' => $netname->getID()
+                'items_id' => $netname->getID(),
             ])
         );
         $this->assertSame(4, $ip->fields['version']);
@@ -8881,8 +8885,8 @@ JSON;
                 'FROM' => 'glpi_networkports',
                 'WHERE' => [
                     'itemtype' => get_class($computer),
-                    'items_id' => $computer->getID()
-                ]
+                    'items_id' => $computer->getID(),
+                ],
             ]
         );
         $this->assertCount(1, $nports);
@@ -8894,7 +8898,7 @@ JSON;
         $this->assertTrue(
             $netname->getFromDBByCrit([
                 'itemtype' => \NetworkPort::getType(),
-                'items_id' => $nport['id']
+                'items_id' => $nport['id'],
             ])
         );
         $ip = new \IPAddress();
@@ -8902,7 +8906,7 @@ JSON;
         $this->assertTrue(
             $ip->getFromDBByCrit([
                 'itemtype' => $netname::getType(),
-                'items_id' => $netname->getID()
+                'items_id' => $netname->getID(),
             ])
         );
         $this->assertSame(4, $ip->fields['version']);
@@ -8922,8 +8926,8 @@ JSON;
                 'FROM' => 'glpi_networkports',
                 'WHERE' => [
                     'itemtype' => get_class($computer),
-                    'items_id' => $computer->getID()
-                ]
+                    'items_id' => $computer->getID(),
+                ],
             ]
         );
         $this->assertCount(1, $nports);
@@ -8935,7 +8939,7 @@ JSON;
         $this->assertTrue(
             $netname->getFromDBByCrit([
                 'itemtype' => \NetworkPort::getType(),
-                'items_id' => $nport['id']
+                'items_id' => $nport['id'],
             ])
         );
         $ip = new \IPAddress();
@@ -8943,7 +8947,7 @@ JSON;
         $this->assertTrue(
             $ip->getFromDBByCrit([
                 'itemtype' => $netname::getType(),
-                'items_id' => $netname->getID()
+                'items_id' => $netname->getID(),
             ])
         );
         $this->assertSame(4, $ip->fields['version']);
@@ -8977,13 +8981,13 @@ JSON;
             ], [
                 'condition' => \Rule::PATTERN_IS,
                 'criteria'  => 'virtualmachinetypes_id',
-                'pattern'   => $docker_vm[0]->fields['id']
-            ]
+                'pattern'   => $docker_vm[0]->fields['id'],
+            ],
         ];
         $action = [
             'action_type' => 'assign',
             'field'       => '_ignore_import',
-            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_NO_IMPORT
+            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_NO_IMPORT,
         ];
         $rule = new \RuleImportAsset();
         $collection = new \RuleImportAssetCollection();
@@ -9010,7 +9014,7 @@ JSON;
                 'pattern'   => $crit['pattern'],
                 'condition' => $crit['condition'],
             ];
-            $this->assertGreaterThan(0, (int)$rulecriteria->add($input));
+            $this->assertGreaterThan(0, (int) $rulecriteria->add($input));
         }
 
         // Add action
@@ -9021,7 +9025,7 @@ JSON;
             'field'       => $action['field'],
             'value'       => $action['value'],
         ];
-        $this->assertGreaterThan(0, (int)$ruleaction->add($input));
+        $this->assertGreaterThan(0, (int) $ruleaction->add($input));
 
         $json_str = <<<JSON
         {
@@ -9189,13 +9193,13 @@ JSON;
             ], [
                 'condition' => \Rule::PATTERN_IS,
                 'criteria'  => 'virtualmachinetypes_id',
-                'pattern'   => $docker_type_id
-            ]
+                'pattern'   => $docker_type_id,
+            ],
         ];
         $action = [
             'action_type' => 'assign',
             'field'       => '_ignore_import',
-            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_NO_IMPORT
+            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_NO_IMPORT,
         ];
         $rule = new \RuleImportAsset();
         $collection = new \RuleImportAssetCollection();
@@ -9220,7 +9224,7 @@ JSON;
                 'pattern'   => $crit['pattern'],
                 'condition' => $crit['condition'],
             ];
-            $this->assertGreaterThan(0, (int)$rulecriteria->add($input));
+            $this->assertGreaterThan(0, (int) $rulecriteria->add($input));
         }
 
         // Add action
@@ -9231,7 +9235,7 @@ JSON;
             'field'       => $action['field'],
             'value'       => $action['value'],
         ];
-        $this->assertGreaterThan(0, (int)$ruleaction->add($input));
+        $this->assertGreaterThan(0, (int) $ruleaction->add($input));
 
         // Second update inventory (Must be refused because of the rule)
         $json_str = str_replace('"mailpit_update"', '"mailpit_update2"', $json_str);
@@ -9256,7 +9260,7 @@ JSON;
             'name'      => __METHOD__,
             'match'     => 'AND',
             'sub_type'  => 'RuleImportEntity',
-            'ranking'   => 1
+            'ranking'   => 1,
         ];
         $rule1_id = $rule->add($input);
         $this->assertGreaterThan(0, $rule1_id);
@@ -9267,7 +9271,7 @@ JSON;
             'rules_id'  => $rule1_id,
             'criteria'  => "name",
             'pattern'   => "/.*/",
-            'condition' => \RuleImportEntity::REGEX_MATCH
+            'condition' => \RuleImportEntity::REGEX_MATCH,
         ];
         $this->assertGreaterThan(0, $rulecriteria->add($input));
 
@@ -9285,7 +9289,7 @@ JSON;
             'rules_id'    => $rule1_id,
             'action_type' => 'assign',
             'field'       => 'is_recursive',
-            'value'       => 1
+            'value'       => 1,
         ];
         $this->assertGreaterThan(0, $ruleaction->add($input));
 
@@ -9326,7 +9330,7 @@ JSON;
             'name'      => __METHOD__,
             'match'     => 'AND',
             'sub_type'  => 'RuleImportEntity',
-            'ranking'   => 1
+            'ranking'   => 1,
         ];
         $rule1_id = $rule->add($input);
         $this->assertGreaterThan(0, $rule1_id);
@@ -9337,7 +9341,7 @@ JSON;
             'rules_id'  => $rule1_id,
             'criteria'  => "name",
             'pattern'   => "/.*/",
-            'condition' => \RuleImportEntity::REGEX_MATCH
+            'condition' => \RuleImportEntity::REGEX_MATCH,
         ];
         $this->assertGreaterThan(0, $rulecriteria->add($input));
 
@@ -9355,7 +9359,7 @@ JSON;
             'rules_id'    => $rule1_id,
             'action_type' => 'assign',
             'field'       => 'is_recursive',
-            'value'       => 0
+            'value'       => 0,
         ];
         $this->assertGreaterThan(0, $ruleaction->add($input));
 
@@ -9380,5 +9384,40 @@ JSON;
                 }
             }
         }
+    }
+
+    public function testAdditionalProperty()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $json_str = <<<JSON
+{
+   "action": "inventory",
+   "content": {
+      "hardware": {
+         "name": "pc_with_additional_prop",
+         "uuid": "32EED9C2-204C-42A1-A97E-A6EF2CE44B4F"
+      },
+      "unknown_property": [
+         {
+            "description": "An unknown property, will be silently ignored",
+            "any": true
+         }
+      ],
+      "versionclient": "GLPI-Inventory_v1.11"
+   },
+   "deviceid": "WinDev2404Eval-2024-10-14-15-28-37",
+   "itemtype": "Computer"
+}
+JSON;
+        $json = json_decode($json_str);
+        $computer = new \Computer();
+
+        //initial import
+        $inventory = new \Glpi\Inventory\Inventory();
+        $inventory->setData($json);
+        $inventory->doInventory();
+        $this->assertTrue($computer->getFromDBByCrit(['name' => 'pc_with_additional_prop']));
     }
 }

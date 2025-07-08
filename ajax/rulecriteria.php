@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,18 +36,15 @@
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-// Direct access to file
-if (strpos($_SERVER['PHP_SELF'], "rulecriteria.php")) {
-    header("Content-Type: text/html; charset=UTF-8");
-    Html::header_nocache();
-}
+header("Content-Type: text/html; charset=UTF-8");
+Html::header_nocache();
 
 /** @var Rule $rule */
 if (isset($_POST["sub_type"]) && ($rule = getItemForItemtype($_POST["sub_type"]))) {
     $criterias = $rule->getAllCriteria();
 
     if (count($criterias)) {
-       // First include -> first of the predefined array
+        // First include -> first of the predefined array
         if (!isset($_POST["criteria"])) {
             $_POST["criteria"] = key($criterias);
         }
@@ -55,7 +52,7 @@ if (isset($_POST["sub_type"]) && ($rule = getItemForItemtype($_POST["sub_type"])
         $allow_condition = $criterias[$_POST["criteria"]]['allow_condition'] ?? [];
 
         $condparam = ['criterion'        => $_POST["criteria"],
-            'allow_conditions' => $allow_condition
+            'allow_conditions' => $allow_condition,
         ];
         if (isset($_POST['condition'])) {
             $condparam['value'] = $_POST['condition'];
@@ -65,7 +62,7 @@ if (isset($_POST["sub_type"]) && ($rule = getItemForItemtype($_POST["sub_type"])
 
         $paramscriteria = ['condition' => '__VALUE__',
             'criteria'  => $_POST["criteria"],
-            'sub_type'  => $_POST["sub_type"]
+            'sub_type'  => $_POST["sub_type"],
         ];
 
         Ajax::updateItemOnSelectEvent(

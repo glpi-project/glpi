@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -39,9 +38,11 @@
 {% set candedit = item.maySolve() %}
 {% set can_read_kb = has_profile_right('knowbase', constant('READ')) or has_profile_right('knowbase', constant('KnowbaseItem::READFAQ')) %}
 {% set can_update_kb = has_profile_right('knowbase', constant('UPDATE')) %}
-{% set nokb = params['nokb'] is defined or params['nokb'] == true %}
+{% set nokb = params['nokb'] is defined or (params['nokb'] ?? false) == true %}
 {% set rand = random() %}
 {% set is_default_pending = call('PendingReason::isDefaultPending') %}
+
+{% set content_field_id = 'solution_content_' ~ rand %}
 
 {% block timeline_card %}
    {% if form_mode == 'view' %}
@@ -56,14 +57,14 @@
          <div class="timeline-badges">
             {% if entry_i['requesttypes_id'] %}
                <span class="badge bg-blue-lt" title="{{ __('Source of followup') }}">
-                  <i class="fas fa-inbox me-1"></i>
+                  <i class="ti ti-inbox me-1"></i>
                   {{ get_item_name('RequestType', entry_i['requesttypes_id']) }}
                </span>
             {% endif %}
 
             {% if entry_i['sourceitems_id'] %}
                <span class="badge bg-blue-lt">
-                  <i class="fas fa-code-branch me-1"></i>
+                  <i class="ti ti-git-merge me-1"></i>
                   {% set merged_badge %}
                      <span class="badge">
                         {{ get_item_link('Ticket', entry_i['sourceitems_id']) }}
@@ -75,7 +76,7 @@
 
             {% if entry_i['sourceof_items_id'] %}
                <span class="badge bg-blue-lt">
-                  <i class="fas fa-code-branch me-1"></i>
+                  <i class="ti ti-git-merge me-1"></i>
                   {% set promoted_badge %}
                      <span class="badge">
                         {{ get_item_link('Ticket', entry_i['sourceof_items_id']) }}
@@ -94,7 +95,7 @@
                action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true" data-submit-once>
             <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
             <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
-            {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
+            {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {"item": subitem, 'options': params}) }}
 
             {% set add_reopen = (_get['_openfollowup'] ?? false) or item.needReopen() %}
             {% if add_reopen %}
@@ -109,11 +110,12 @@
                      subitem.fields['content'],
                      '',
                      {
+                        'id': content_field_id,
                         'full_width': true,
                         'no_label': true,
                         'enable_richtext': true,
                         'enable_fileupload': true,
-                        'enable_mentions': true,
+                        'mention_options': mention_options,
                         'entities_id': item.fields['entities_id'],
                         'rand': rand,
                         'required': add_reopen
@@ -124,14 +126,16 @@
                   <div class="col-12 col-xl-5 col-xxl-4 order-first order-md-last pe-0 pe-xxl-auto">
                      <div class="row">
 
+                        {{ include('components/itilobject/timeline/knowledge_item.html.twig') }}
+
                         {% set fup_template_lbl %}
-                           <i class="fas fa-reply fa-fw me-1"
+                           <i class="{{ 'ITILFollowupTemplate'|itemtype_icon }} me-1"
                               title="{{ _n('Followup template', 'Followup templates', get_plural_number()) }}"></i>
                         {% endset %}
                         {{ fields.dropdownField(
                            'ITILFollowupTemplate',
                            'itilfollowuptemplates_id',
-                           subitem.fields['itilfollowuptemplates_id'],
+                           subitem.fields['itilfollowuptemplates_id'] ?? 0,
                            fup_template_lbl,
                            {
                               'full_width': true,
@@ -143,7 +147,7 @@
                         ) }}
 
                         {% set fup_source_lbl %}
-                           <i class="fas fa-inbox fa-fw me-1" title="{{ __('Source of followup') }}"></i>
+                           <i class="ti ti-inbox me-1" title="{{ __('Source of followup') }}"></i>
                         {% endset %}
                         {{ fields.dropdownField(
                            'RequestType',
@@ -162,7 +166,7 @@
                         ) }}
 
                         {% set fup_private_lbl %}
-                           <i class="ti ti-eye-off fa-fw me-1" title="{{ __('Private') }}"></i>
+                           <i class="ti ti-eye-off me-1" title="{{ __('Private') }}"></i>
                         {% endset %}
                         {{ fields.sliderField(
                            'is_private',
@@ -178,27 +182,9 @@
                            }
                         ) }}
 
-                        {% if can_read_kb and kb_id_toload > 0 %}
-                           {% set link_kb_lbl %}
-                              <i class="fas fa-link fa-fw me-1" data-bs-toggle="tooltip" data-bs-placement="top"
-                                 title="{{ __('Link to knowledge base entry #%id')|replace({'%id': kb_id_toload}) }}"></i>
-                           {% endset %}
-                           {{ fields.sliderField(
-                              'kb_linked_id',
-                              1,
-                              link_kb_lbl,
-                              {
-                                 'full_width': true,
-                                 'icon_label': true,
-                                 'rand': rand,
-                                 'yes_value': kb_id_toload,
-                              }
-                           ) }}
-                        {% endif %}
-
                         {% if candedit and can_update_kb and not nokb %}
                            {% set fup_to_kb_lbl %}
-                              <i class="far fa-save fa-fw me-1" title="{{ __('Save and add to the knowledge base') }}"
+                              <i class="ti ti-device-floppy me-1" title="{{ __('Save and add to the knowledge base') }}"
                                  data-bs-toggle="tooltip" data-bs-placement="top"></i>
                            {% endset %}
                            {{ fields.sliderField(
@@ -217,7 +203,7 @@
                {% endif %}
             </div>
 
-            {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
+            {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {"item": subitem, 'options': params}) }}
             {# Fixed min-height ensure no height increase when toggling the pending reason button, as select 2 dropdown are a bit higher than the default footer height #}
             <div class="d-flex card-footer mx-n3 mb-n3 flex-wrap" style="row-gap: 10px; min-height: 79px">
                {% set pending_reasons %}
@@ -229,7 +215,7 @@
                      >
                         <span class="d-inline-flex align-items-center" title="{{ __("Set the status to pending") }}"
                               data-bs-toggle="tooltip" data-bs-placement="top" role="button">
-                           <i class="fas fa-pause me-2"></i>
+                           <i class="ti ti-player-pause-filled me-2"></i>
                            <label class="form-check form-switch mt-2">
                               <input type="hidden"   name="pending" value="0" />
                               <input type="checkbox" name="pending" value="1" class="form-check-input"
@@ -255,7 +241,7 @@
                   {# Do not enable flex wrapping when creating a new item as the pending form will be merged with the add button in an input group #}
                   <div class="input-group flex-nowrap">
                      <button class="btn btn-primary" type="submit" name="add">
-                        <i class="fas fa-plus"></i>
+                        <i class="ti ti-plus"></i>
                         <span>{{ _x('button', 'Add') }}</span>
                      </button>
                     {{ pending_reasons|raw }}
@@ -264,14 +250,14 @@
                {% else %}
                   <input type="hidden" name="id" value="{{ subitem.fields['id'] }}" />
                   <button class="btn btn-primary me-2" type="submit" name="update">
-                     <i class="far fa-save"></i>
+                     <i class="ti ti-device-floppy"></i>
                      <span>{{ _x('button', 'Save') }}</span>
                   </button>
 
                   {% if subitem.can(subitem.fields['id'], constant('PURGE')) %}
                      <button class="btn btn-outline-danger me-2" type="submit" name="purge"
                              onclick="return confirm('{{ __('Confirm the final deletion?') }}');">
-                        <i class="fas fa-trash-alt"></i>
+                        <i class="ti ti-trash"></i>
                         <span>{{ _x('button', 'Delete permanently') }}</span>
                      </button>
                   {% endif %}
@@ -299,18 +285,20 @@
                   : parseInt(data.requesttypes_id);
 
                // set textarea content
-               setRichTextEditorContent("content_{{ rand }}", data.content);
+               setRichTextEditorContent("{{ content_field_id|e('js') }}", data.content);
                // set category
                //need to create new DOM option, because SELECT is remotely-sourced (AJAX)
                //see : https://select2.org/programmatic-control/add-select-clear-items#preselecting-options-in-an-remotely-sourced-ajax-select2
                var newOption = new Option(data.requesttypes_name, requesttypes_id, true, true);
                $("#dropdown_requesttypes_id{{ rand }}").append(newOption).trigger('change');
 
-               // set is_private
-               $("#is_private_{{ rand }}")
-                  .prop("checked", data.is_private == "0"
-                     ? false
-                     : true);
+               if (data.is_private !== undefined) {
+                   // set is_private
+                   $("#is_private_{{ rand }}")
+                       .prop("checked", data.is_private == "0"
+                         ? false
+                         : true);
+               }
 
                // set predefined pending reason
                $("#enable-pending-reasons-{{ rand }}")

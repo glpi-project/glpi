@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -47,11 +47,13 @@ window.GLPI.RichText.UserMention = class {
     * @param {Editor} editor
     * @param {number} activeEntity
     * @param {string} idorToken
+    * @param {Array} mentionsOptions
     */
-    constructor(editor, activeEntity, idorToken) {
+    constructor(editor, activeEntity, idorToken, mentionsOptions) {
         this.editor = editor;
         this.activeEntity = activeEntity;
         this.idorToken = idorToken;
+        this.mentionsOptions = mentionsOptions;
     }
 
     /**
@@ -97,9 +99,16 @@ window.GLPI.RichText.UserMention = class {
                         searchText: pattern,
                         _idor_token: this.idorToken,
                     }
-                ).done(
+                ).then(
                     (data) => {
-                        const items = data.results.map(
+                        let results = data.results;
+
+                        if (!this.mentionsOptions.full) {
+                            const allowedIds = this.mentionsOptions.users;
+                            results = results.filter(user => allowedIds.includes(user.id));
+                        }
+
+                        const items = results.map(
                             (user) => {
                                 return {
                                     type: 'autocompleteitem',

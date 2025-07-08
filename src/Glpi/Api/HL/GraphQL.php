@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -85,7 +85,13 @@ final class GraphQL
                 }
             );
         } catch (\Throwable $e) {
-            trigger_error("Error processing GraphQL request: {$e->getMessage()}", E_USER_WARNING);
+            /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+            global $PHPLOGGER;
+            $PHPLOGGER->error(
+                "Error processing GraphQL request: {$e->getMessage()}",
+                ['exception' => $e]
+            );
+
             return [];
         }
         return $result->toArray();
@@ -116,7 +122,7 @@ final class GraphQL
         foreach ($properties as $schema_field => $schema_field_data) {
             if (!in_array($schema_field, $field_names, true)) {
                 $properties = self::hideOrRemoveProperty($itemtype, $schema_field, $properties, array_keys($fields_requested), $object_prop_key);
-            } else if (isset($fields_requested[$schema_field]) && is_array($fields_requested[$schema_field])) {
+            } elseif (isset($fields_requested[$schema_field]) && is_array($fields_requested[$schema_field])) {
                 $properties[$schema_field] = self::expandSchemaFromRequestedFields($schema_field_data, $fields_requested[$schema_field], $schema_field, $api_version);
             }
         }

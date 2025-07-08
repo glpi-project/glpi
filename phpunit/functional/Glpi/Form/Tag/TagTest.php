@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -60,7 +59,7 @@ final class TagTest extends DbTestCase
 
         $expected = json_encode([
             'label' => 'Question: First name',
-            'html' => "<span contenteditable=\"false\" data-form-tag=\"true\" data-form-tag-value=\"$question_id\" data-form-tag-provider=\"$provider\" class=\"border-$color border-start border-3 bg-dark-lt\">Question: First name</span>"
+            'html' => "<span contenteditable=\"false\" data-form-tag=\"true\" data-form-tag-value=\"$question_id\" data-form-tag-provider=\"$provider\" class=\"border-$color border-start border-3 bg-dark-lt\">#Question: First name</span>",
         ]);
         $this->assertEquals($expected, json_encode($tag));
     }

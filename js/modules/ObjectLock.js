@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -162,7 +162,8 @@ class ObjectLock {
                         headers: {
                             'Accept': 'application/json',
                             'Content-Type': 'application/x-www-form-urlencoded;',
-                            'X-Glpi-Csrf-Token': getAjaxCsrfToken()
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
                         },
                         body: `unlock=1&id=${this.lock.id}`
                     }).catch(() => {

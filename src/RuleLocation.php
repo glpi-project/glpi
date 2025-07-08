@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -107,7 +107,7 @@ class RuleLocation extends Rule
                 'name'            => __("Serial number"),
             ],
             'oscomment' => [
-                'name'            => sprintf('%s > %s', OperatingSystem::getTypeName(1), __('Comments')),
+                'name'            => sprintf('%s > %s', OperatingSystem::getTypeName(1), _n('Comment', 'Comments', Session::getPluralNumber())),
             ],
         ];
     }
@@ -122,8 +122,8 @@ class RuleLocation extends Rule
                 'force_actions' => [
                     'assign',
                     'regex_result',
-                ]
-            ]
+                ],
+            ],
         ];
     }
 

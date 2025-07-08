@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,7 +35,10 @@
 
 namespace Glpi\Search\Output;
 
+use Glpi\Plugin\Hooks;
 use Glpi\Search\SearchOption;
+
+use function Safe\strtotime;
 
 /**
  *
@@ -66,7 +69,7 @@ abstract class ExportSearchOutput extends AbstractSearchOutput
         if ($plug = isPluginItemType($itemtype)) {
             $out = \Plugin::doOneHook(
                 $plug['plugin'],
-                'displayConfigItem',
+                Hooks::AUTO_DISPLAY_CONFIG_ITEM,
                 $itemtype,
                 $ID,
                 $data,

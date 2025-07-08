@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -39,13 +38,18 @@ use CommonITILObject;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\AbstractConfigField;
+use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Form;
+use Glpi\Form\Migration\DestinationFieldConverterInterface;
+use Glpi\Form\Migration\FormMigration;
+use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use InvalidArgumentException;
 use Override;
 
-class UrgencyField extends AbstractConfigField
+final class UrgencyField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     #[Override]
     public function getLabel(): string
@@ -56,7 +60,7 @@ class UrgencyField extends AbstractConfigField
     #[Override]
     public function getWeight(): int
     {
-        return 40;
+        return 70;
     }
 
     #[Override]
@@ -84,14 +88,6 @@ class UrgencyField extends AbstractConfigField
 
             // General display options
             'options' => $display_options,
-
-            // Main config field
-            'main_config_field' => [
-                'label'           => $this->getLabel(),
-                'value'           => $config->getStrategy()->value,
-                'input_name'      => $input_name . "[" . UrgencyFieldConfig::STRATEGY . "]",
-                'possible_values' => $this->getMainConfigurationValuesforDropdown(),
-            ],
 
             // Specific additional config for SPECIFIC_VALUE strategy
             'specific_value_extra_field' => [
@@ -121,12 +117,15 @@ class UrgencyField extends AbstractConfigField
             throw new InvalidArgumentException("Unexpected config class");
         }
 
+        // Only one strategy is allowed
+        $strategy = current($config->getStrategies());
+
         // Compute value according to strategy
-        $urgency = $config->getStrategy()->computeUrgency($config, $answers_set);
+        $urgency = $strategy->computeUrgency($config, $answers_set);
 
         // Do not edit input if invalid value was found
         $valid_values = array_keys($this->getUrgencyLevels());
-        if (array_search($urgency, $valid_values) === false) {
+        if (!in_array($urgency, $valid_values)) {
             return $input;
         }
 
@@ -139,6 +138,38 @@ class UrgencyField extends AbstractConfigField
     public function getDefaultConfig(Form $form): UrgencyFieldConfig
     {
         return new UrgencyFieldConfig(UrgencyFieldStrategy::LAST_VALID_ANSWER);
+    }
+
+    #[Override]
+    public function convertFieldConfig(FormMigration $migration, Form $form, array $rawData): JsonFieldInterface
+    {
+        switch ($rawData['urgency_rule']) {
+            case 1: // PluginFormcreatorAbstractItilTarget::URGENCY_RULE_NONE
+                return new UrgencyFieldConfig(
+                    strategy: UrgencyFieldStrategy::FROM_TEMPLATE
+                );
+            case 2: // PluginFormcreatorAbstractItilTarget::URGENCY_RULE_SPECIFIC
+                return new UrgencyFieldConfig(
+                    strategy: UrgencyFieldStrategy::SPECIFIC_VALUE,
+                    specific_urgency_value: $rawData['urgency_question']
+                );
+            case 3: // PluginFormcreatorAbstractItilTarget::URGENCY_RULE_ANSWER
+                $mapped_item = $migration->getMappedItemTarget(
+                    'PluginFormcreatorQuestion',
+                    $rawData['urgency_question']
+                );
+
+                if ($mapped_item === null) {
+                    throw new InvalidArgumentException("Question not found in a target form");
+                }
+
+                return new UrgencyFieldConfig(
+                    strategy: UrgencyFieldStrategy::SPECIFIC_ANSWER,
+                    specific_question_id: $mapped_item['items_id']
+                );
+        }
+
+        return $this->getDefaultConfig($form);
     }
 
     /**
@@ -154,20 +185,20 @@ class UrgencyField extends AbstractConfigField
         // Get the urgency levels
         $urgency_levels = array_combine(
             range(1, 5),
-            array_map(fn ($urgency) => CommonITILObject::getUrgencyName($urgency), range(1, 5))
+            array_map(fn($urgency) => CommonITILObject::getUrgencyName($urgency), range(1, 5))
         );
 
         // Filter out the urgency levels that are not enabled
         $urgency_levels = array_filter(
             $urgency_levels,
-            fn ($key) => (($CFG_GLPI['urgency_mask'] & (1 << $key)) > 0),
+            fn($key) => (($CFG_GLPI['urgency_mask'] & (1 << $key)) > 0),
             ARRAY_FILTER_USE_KEY
         );
 
         return $urgency_levels;
     }
 
-    private function getMainConfigurationValuesforDropdown(): array
+    public function getStrategiesForDropdown(): array
     {
         $values = [];
         foreach (UrgencyFieldStrategy::cases() as $strategies) {
@@ -186,5 +217,29 @@ class UrgencyField extends AbstractConfigField
         }
 
         return $values;
+    }
+
+    #[Override]
+    public function getCategory(): Category
+    {
+        return Category::PROPERTIES;
+    }
+
+    #[Override]
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+        DatabaseMapper $mapper,
+    ): array {
+        // Check if a specific question is defined
+        if (isset($config[UrgencyFieldConfig::SPECIFIC_QUESTION_ID])) {
+            // Insert id
+            $config[UrgencyFieldConfig::SPECIFIC_QUESTION_ID] = $mapper->getItemId(
+                Question::class,
+                $config[UrgencyFieldConfig::SPECIFIC_QUESTION_ID],
+            );
+        }
+
+        return $config;
     }
 }

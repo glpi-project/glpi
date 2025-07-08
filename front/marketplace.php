@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 Session::checkRight("config", UPDATE);
 
 if (!Glpi\Marketplace\Controller::isWebAllowed()) {
@@ -44,7 +46,7 @@ if (!Glpi\Marketplace\Controller::isWebAllowed()) {
 $plugin = new Plugin();
 $plugin->checkStates(true);
 
-Html::header(__('Marketplace'), $_SERVER['PHP_SELF'], "config", "plugin", "marketplace");
+Html::header(__('Marketplace'), '', "config", "plugin", "marketplace");
 
 $market_view = new \Glpi\Marketplace\View();
 $market_view->display();

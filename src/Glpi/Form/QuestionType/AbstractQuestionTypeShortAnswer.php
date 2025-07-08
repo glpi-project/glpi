@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,13 +36,15 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
+use Glpi\ItemTranslation\ItemTranslation;
 use Override;
 
 /**
  * Short answers are single line inputs used to answer simple questions.
  */
-abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType
+abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType implements FormQuestionDataConverterInterface
 {
     /**
      * Specific input type for child classes
@@ -92,6 +94,16 @@ abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType
         JS;
     }
 
+    /**
+     * Provide additional attributes for the input field
+     *
+     * @return array
+     */
+    public function getInputAttributes(): array
+    {
+        return [];
+    }
+
     #[Override]
     public function renderAdministrationTemplate(?Question $question): string
     {
@@ -102,7 +114,10 @@ abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType
                 name="default_value"
                 placeholder="{{ input_placeholder }}"
                 value="{{ question is not null ? question.fields.default_value : '' }}"
-                aria-label="{{ __('Default value') }}"
+                aria-label="{{ aria_label }}"
+                {% for key, value in attributes %}
+                    {{ key }}="{{ value|e('html_attr') }}"
+                {% endfor %}
             />
 TWIG;
 
@@ -111,6 +126,8 @@ TWIG;
             'question'          => $question,
             'input_type'        => $this->getInputType(),
             'input_placeholder' => $this->getName(),
+            'attributes'        => $this->getInputAttributes(),
+            'aria_label'        => __('Default value'),
         ]);
     }
 
@@ -118,27 +135,41 @@ TWIG;
     public function renderEndUserTemplate(
         Question $question,
     ): string {
+        $default_value = $question->fields['default_value'] ?? '';
+        if ($this instanceof TranslationAwareQuestionType) {
+            $default_value = ItemTranslation::translate(
+                $question,
+                Question::TRANSLATION_KEY_DEFAULT_VALUE,
+                1
+            );
+        }
+
         $template = <<<TWIG
             <input
                 type="{{ input_type }}"
                 class="form-control"
                 name="{{ question.getEndUserInputName() }}"
-                value="{{ question.fields.default_value }}"
+                value="{{ default_value }}"
                 aria-label="{{ label }}"
                 {{ question.fields.is_mandatory ? 'required' : '' }}
+                {% for key, value in attributes %}
+                    {{ key }}="{{ value|e('html_attr') }}"
+                {% endfor %}
             >
 TWIG;
 
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
-            'question'   => $question,
-            'input_type' => $this->getInputType(),
-            'label'      => $question->fields['name'],
+            'question'      => $question,
+            'default_value' => $default_value,
+            'input_type'    => $this->getInputType(),
+            'label'         => $question->fields['name'],
+            'attributes'    => $this->getInputAttributes(),
         ]);
     }
 
     #[Override]
-    public function getCategory(): QuestionTypeCategory
+    public function getCategory(): QuestionTypeCategoryInterface
     {
         return QuestionTypeCategory::SHORT_ANSWER;
     }
@@ -147,5 +178,23 @@ TWIG;
     public function isAllowedForUnauthenticatedAccess(): bool
     {
         return true;
+    }
+
+    #[Override]
+    public function formatPredefinedValue(string $value): string
+    {
+        return $value;
+    }
+
+    #[Override]
+    public function convertDefaultValue(array $rawData): ?string
+    {
+        return $rawData['default_values'] ?? null;
+    }
+
+    #[Override]
+    public function convertExtraData(array $rawData): null
+    {
+        return null;
     }
 }

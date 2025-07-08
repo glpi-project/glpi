@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -57,6 +57,87 @@
             p:last-child {
                 margin-bottom: 0;
             }
+        }
+    }
+
+    [data-glpi-form-renderer-horizontal-blocks] {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0 0.5rem;
+
+        &:not(:last-of-type) {
+            // Apply the margin on the items instead of the row itself, to make
+            // sure it doesn't take space when all the items inside of the row
+            // are hidden by the condition engine.
+            section:last-of-type {
+                margin-bottom: 1rem;
+            }
+        }
+
+        &:has(> :nth-child(2)) {
+            &> section {
+                margin-bottom: 0 !important;
+
+                .col-12.col-sm-6 {
+                    width: 100%;
+                }
+            }
+        }
+    }
+
+    // Special tag used to mark an item as hidden by the condition engine.
+    // It is safer than directly interacting the "display: none" class as it might
+    // conflict with other features that hide items like the section pagination.
+    [data-glpi-form-renderer-hidden-by-condition] {
+        display: none !important;
+    }
+
+    .input-group {
+        > div:not(.d-none) {
+            &:has(> span.select2-container) {
+                &:not(:first-child) {
+                    .select2-selection {
+                        border-top-left-radius: 0 !important;
+                        border-bottom-left-radius: 0 !important;
+                    }
+                }
+
+                &:not(:last-of-type) {
+                    .select2-selection {
+                        border-top-right-radius: 0 !important;
+                        border-bottom-right-radius: 0 !important;
+                    }
+                }
+            }
+        }
+    }
+
+    // Handle invalid states for specific inputs (select2 and tinymce)
+    [data-glpi-form-renderer-question] {
+        &:has(select.is-invalid) {
+            .select2-container--default .select2-selection {
+                border-color: var(--tblr-form-invalid-border-color) !important;
+            }
+        }
+
+        &:has(textarea.is-invalid) {
+            .tox.tox-tinymce {
+                border-color: var(--tblr-form-invalid-border-color) !important;
+            }
+        }
+
+        &:has(input[type="radio"].is-invalid, input[type="checkbox"].is-invalid) {
+            .invalid-tooltip {
+                display: block !important;
+            }
+        }
+
+        .invalid-tooltip {
+            position: relative;
+            background-color: unset;
+            color: var(--tblr-form-invalid-color);
+            padding: unset;
+            margin-top: .25rem;
         }
     }
 }

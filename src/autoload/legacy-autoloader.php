@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\spl_autoload_register;
+
 /**
  * Classes loader
  *
@@ -42,18 +44,16 @@
  */
 function glpi_autoload($classname)
 {
-    $plug = isPluginItemType($classname);
-    if (!$plug) {
-        // PSR-4 styled autoloading for classes without namespace
-        $path = sprintf('%s/src/%s.php', dirname(__FILE__, 3), $classname);
-        if (strpos($classname, NS_GLPI) !== 0 && file_exists($path)) {
-            include_once($path);
-        }
+    if (!str_starts_with($classname, 'Plugin') && !str_starts_with($classname, NS_PLUG)) {
         return;
     }
 
-    $plugin_name  = $plug['plugin'];
-    $plugin_key   = strtolower($plugin_name);
+    $plug = isPluginItemType($classname);
+    if (!$plug) {
+        return;
+    }
+
+    $plugin_key   = strtolower($plug['plugin']);
     $plugin_class = $plug['class'];
 
     if (!Plugin::isPluginLoaded($plugin_key)) {
@@ -61,7 +61,7 @@ function glpi_autoload($classname)
     }
 
     $plugin_path = null;
-    foreach (PLUGINS_DIRECTORIES as $plugins_dir) {
+    foreach (GLPI_PLUGINS_DIRECTORIES as $plugins_dir) {
         $dir_to_check = sprintf('%s/%s', $plugins_dir, $plugin_key);
         if (is_dir($dir_to_check)) {
             $plugin_path = $dir_to_check;
@@ -70,12 +70,12 @@ function glpi_autoload($classname)
     }
 
     // Legacy class path, e.g. `PluginMyPluginFoo` -> `plugins/myplugin/inc/foo.class.php`
-    $legacy_path          = sprintf('%s/inc/%s.class.php', $plugin_path, str_replace('\\', '/', strtolower($plugin_class)));
+    $legacy_path      = sprintf('%s/inc/%s.class.php', $plugin_path, str_replace('\\', '/', strtolower($plugin_class)));
     // PSR-4 styled path for class without namespace, e.g. `PluginMyPluginFoo` -> `plugins/myplugin/src/PluginMyPluginFoo.php`
-    $psr4_styled_path     = sprintf('%s/src/%s.php', $plugin_path, str_replace('\\', '/', $classname));
+    $psr4_styled_path = sprintf('%s/src/%s.php', $plugin_path, str_replace('\\', '/', $classname));
     if (file_exists($legacy_path)) {
         include_once($legacy_path);
-    } else if (strpos($classname, NS_PLUG) !== 0 && file_exists($psr4_styled_path)) {
+    } elseif (file_exists($psr4_styled_path)) {
         include_once($psr4_styled_path);
     }
 }

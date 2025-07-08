@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -35,35 +34,31 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% block form_fields %}
-    {% set field_options = {
-        label_class: 'col-xxl-2',
-        input_class: 'col-xxl-10',
-    } %}
-    {{ fields.htmlField('', parent != null ? get_class(parent) : constant('NOT_AVAILABLE'), _n('Type', 'Types', 1), field_options) }}
+    {{ fields.htmlField('', parent != null ? get_class(parent) : constant('NOT_AVAILABLE'), _n('Type', 'Types', 1)) }}
     {% if parent is instanceof('CommonDBTM') %}
-        {{ fields.htmlField('', parent != null ? parent.getLink() : constant('NOT_AVAILABLE'), _n('Item', 'Items', 1), field_options) }}
+        {{ fields.htmlField('', parent != null ? parent.getLink() : constant('NOT_AVAILABLE'), _n('Item', 'Items', 1)) }}
     {% else %}
         {{ fields.nullField() }}
     {% endif %}
 
-    {{ fields.htmlField('', get_item_name('NotificationTemplate', item.fields['notificationtemplates_id']), 'NotificationTemplate'|itemtype_name, field_options) }}
+    {{ fields.htmlField('', get_item_name('NotificationTemplate', item.fields['notificationtemplates_id']), 'NotificationTemplate'|itemtype_name) }}
     {{ fields.nullField() }}
 
-    {{ fields.htmlField('', item.fields['create_time'], __('Creation date'), field_options) }}
-    {{ fields.htmlField('', item.fields['send_time'], __('Expected send date'), field_options) }}
-    {{ fields.htmlField('', item.fields['sent_time'], __('Send date'), field_options) }}
-    {{ fields.htmlField('', item.fields['sent_try'], __('Number of tries of sent'), field_options) }}
+    {{ fields.htmlField('', item.fields['create_time'], __('Creation date')) }}
+    {{ fields.htmlField('', item.fields['send_time'], __('Expected send date')) }}
+    {{ fields.htmlField('', item.fields['sent_time'], __('Send date')) }}
+    {{ fields.htmlField('', item.fields['sent_try'], __('Number of tries of sent')) }}
 
     {{ fields.smallTitle(_n('Email', 'Emails', 1)) }}
-    {{ fields.htmlField('', item.fields['sender'], __('Sender email'), field_options) }}
-    {{ fields.htmlField('', item.fields['sendername'], __('Sender name'), field_options) }}
-    {{ fields.htmlField('', item.fields['recipient'], __('Recipient email'), field_options) }}
-    {{ fields.htmlField('', item.fields['recipientname'], __('Recipient name'), field_options) }}
-    {{ fields.htmlField('', item.fields['replyto'], __('Reply-To email'), field_options) }}
-    {{ fields.htmlField('', item.fields['replytoname'], __('Reply-To name'), field_options) }}
-    {{ fields.htmlField('', item.fields['messageid'], __('Message ID'), field_options) }}
-    {{ fields.htmlField('', additional_headers, __('Additional headers'), field_options) }}
-    {{ fields.htmlField('', item.fields['name'], __('Subject'), field_options) }}
+    {{ fields.htmlField('', item.fields['sender'], __('Sender email')) }}
+    {{ fields.htmlField('', item.fields['sendername'], __('Sender name')) }}
+    {{ fields.htmlField('', item.fields['recipient'], __('Recipient email')) }}
+    {{ fields.htmlField('', item.fields['recipientname'], __('Recipient name')) }}
+    {{ fields.htmlField('', item.fields['replyto'], __('Reply-To email')) }}
+    {{ fields.htmlField('', item.fields['replytoname'], __('Reply-To name')) }}
+    {{ fields.htmlField('', item.fields['messageid'], __('Message ID')) }}
+    {{ fields.htmlField('', additional_headers, __('Additional headers')) }}
+    {{ fields.htmlField('', item.fields['name'], __('Subject')) }}
 
     {{ fields.smallTitle(__('Content')) }}
     {% set has_html_content = item.fields['body_html'] is not empty %}
@@ -86,7 +81,7 @@
                     {% if undisclose_body %}
                         {% set body_html = __('The content of the notification contains sensitive information and therefore cannot be displayed.') %}
                     {% endif %}
-                    {{ fields.htmlField('', body_html, null, field_options + {
+                    {{ fields.htmlField('', body_html, null, {
                         no_label: true,
                         full_width: true,
                     }) }}
@@ -97,7 +92,7 @@
                     {% if undisclose_body %}
                         {% set body_text = __('The content of the notification contains sensitive information and therefore cannot be displayed.') %}
                     {% endif %}
-                    {{ fields.htmlField('', body_text, null, field_options + {
+                    {{ fields.htmlField('', body_text, null, {
                         no_label: true,
                         full_width: true,
                     }) }}

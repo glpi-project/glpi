@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -102,16 +102,6 @@ abstract class Spreadsheet extends ExportSearchOutput
             || $data['search']['as_map'] != 0
         ) {
             return false;
-        }
-
-        // Clear output buffers
-        $ob_config = ini_get('output_buffering');
-        $max_level = filter_var($ob_config, FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
-        while (ob_get_level() > $max_level) {
-            ob_end_clean();
-        }
-        if (ob_get_level() > 0) {
-            ob_clean();
         }
 
         $spread = $this->getSpreasheet();
@@ -244,7 +234,7 @@ abstract class Spreadsheet extends ExportSearchOutput
                 //If link was like '%NOT%' just use NOT. Otherwise, remove the link
                 if ($notpos > 0) {
                     $data['search']['criteria']['0']['link'] = 'NOT';
-                } else if (!$notpos) {
+                } elseif (!$notpos) {
                     unset($data['search']['criteria']['0']['link']);
                 }
             }
@@ -549,7 +539,7 @@ abstract class Spreadsheet extends ExportSearchOutput
         }
 
         if ($title === '') {
-            $itemtype = new $data['itemtype']();
+            $itemtype = $data['itemtype'];
             $title = sprintf(
                 __('All %1$s'),
                 $itemtype::getTypeName(Session::getPluralNumber())

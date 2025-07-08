@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,8 +42,8 @@ class Right extends \CommonDBChild
     public static $itemtype = "Glpi\\Dashboard\\Dashboard";
     public static $items_id = 'dashboards_dashboards_id';
 
-   // prevent bad getFromDB when bootstraping tests suite
-   // FIXME Should be true
+    // prevent bad getFromDB when bootstraping tests suite
+    // FIXME Should be true
     public static $mustBeAttached = false;
 
     /**
@@ -61,8 +61,8 @@ class Right extends \CommonDBChild
         $dr_iterator = $DB->request([
             'FROM'  => self::getTable(),
             'WHERE' => [
-                'dashboards_dashboards_id' => $dashboards_id
-            ]
+                'dashboards_dashboards_id' => $dashboards_id,
+            ],
         ]);
 
         $rights = [];

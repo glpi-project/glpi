@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -49,9 +48,9 @@ class PlanningTest extends \DbTestCase
             'name'  => "test event to clone",
             'plan'  => [
                 'begin'     => date('Y-m-d H:i:s'),
-                '_duration' => 2 * HOUR_TIMESTAMP
+                '_duration' => 2 * HOUR_TIMESTAMP,
             ],
-            'rrule' => '{"freq":"weekly","interval":"1"}'
+            'rrule' => '{"freq":"weekly","interval":"1"}',
         ];
 
         $event = new \PlanningExternalEvent();
@@ -67,7 +66,7 @@ class PlanningTest extends \DbTestCase
                 'old_itemtype' => 'PlanningExternalEvent',
                 'old_items_id' => $event_id,
                 'start'        => $new_start,
-                'end'          => $new_end
+                'end'          => $new_end,
             ])
         );
 
@@ -147,7 +146,7 @@ class PlanningTest extends \DbTestCase
             [
                 'start'            => '2000-01-01 00:00:00',
                 'end'              => '2050-12-31 23:59:59',
-                'force_all_events' => true
+                'force_all_events' => true,
             ]
         );
         // Fetch events only for a given month
@@ -219,7 +218,7 @@ class PlanningTest extends \DbTestCase
             'itemtype' => 'InvalidType',
             'items_id' => 1,
             'start'    => '2020-01-01 00:00:00',
-            'end'      => '2020-01-01 01:00:00'
+            'end'      => '2020-01-01 01:00:00',
         ]));
 
         // Shouldn't be allowed to update item that doesn't exist
@@ -227,7 +226,7 @@ class PlanningTest extends \DbTestCase
             'itemtype' => 'TicketTask',
             'items_id' => 99999999,
             'start'    => '2020-01-01 00:00:00',
-            'end'      => '2020-01-01 01:00:00'
+            'end'      => '2020-01-01 01:00:00',
         ]));
 
         // Shouldn't be allowed to update task from closed ticket
@@ -241,22 +240,22 @@ class PlanningTest extends \DbTestCase
             'tickets_id' => $ticket->getID(),
             'content' => 'Test task',
             'begin' => '2020-01-01 00:00:00',
-            'end' => '2020-01-01 01:00:00'
+            'end' => '2020-01-01 01:00:00',
         ]);
         $ticket->update([
             'id' => $ticket->getID(),
-            'status' => \Ticket::CLOSED
+            'status' => \Ticket::CLOSED,
         ]);
         $this->assertFalse(\Planning::updateEventTimes([
             'itemtype' => 'TicketTask',
             'items_id' => $task->getID(),
             'start'    => '2020-01-02 00:00:00',
-            'end'      => '2020-01-02 01:00:00'
+            'end'      => '2020-01-02 01:00:00',
         ]));
 
         $ticket->update([
             'id' => $ticket->getID(),
-            'status' => \Ticket::INCOMING
+            'status' => \Ticket::INCOMING,
         ]);
 
         // General update test
@@ -266,7 +265,7 @@ class PlanningTest extends \DbTestCase
             'itemtype' => 'TicketTask',
             'items_id' => $task->getID(),
             'start'    => '2020-01-02 00:00:00',
-            'end'      => '2020-01-02 01:00:00'
+            'end'      => '2020-01-02 01:00:00',
         ]));
 
         // Allowed test
@@ -275,7 +274,55 @@ class PlanningTest extends \DbTestCase
             'itemtype' => 'TicketTask',
             'items_id' => $task->getID(),
             'start'    => '2020-01-02 00:00:00',
-            'end'      => '2020-01-02 01:00:00'
+            'end'      => '2020-01-02 01:00:00',
         ]));
+    }
+
+    public function testAllDayEvents()
+    {
+        $this->login();
+        \Planning::initSessionForCurrentUser();
+
+
+        $event = new \PlanningExternalEvent();
+        $event->add([
+            'name'  => __FUNCTION__,
+            'text'  => __FUNCTION__,
+            'plan' => [
+                'begin' => '2020-01-01 00:00:00',
+                'end'   => '2020-01-02 00:00:00',
+            ],
+        ]);
+        $event->add([
+            'name'  => __FUNCTION__ . '_recurring',
+            'text'  => __FUNCTION__ . '_recurring',
+            'plan' => [
+                'begin' => '2020-01-01 00:00:00',
+                'end'   => '2020-01-02 00:00:00',
+            ],
+            'rrule' => '{"freq":"weekly","interval":"3","until":""}',
+        ]);
+        $event->add([
+            'name'  => __FUNCTION__ . '_not_allday',
+            'text'  => __FUNCTION__ . '_not_allday',
+            'plan' => [
+                'begin' => '2020-01-01 01:00:00',
+                'end'   => '2020-01-02 01:00:00',
+            ],
+        ]);
+
+        $events = \Planning::constructEventsArray([
+            'start' => '2020-01-01 00:00:00',
+            'end'   => '2020-01-30 00:00:00',
+            'view_name' => 'listFull',
+            'force_all_events' => true,
+        ]);
+        $this->assertCount(3, $events);
+        $this->assertEquals(__FUNCTION__, $events[0]['title']);
+        $this->assertTrue($events[0]['allDay'] ?? false);
+        $this->assertEquals(__FUNCTION__ . '_recurring', $events[1]['title']);
+        $this->assertTrue($events[1]['allDay'] ?? false);
+        $this->assertEquals(__FUNCTION__ . '_not_allday', $events[2]['title']);
+        $this->assertFalse($events[2]['allDay'] ?? false);
     }
 }

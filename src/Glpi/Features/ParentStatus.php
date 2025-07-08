@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -51,7 +51,7 @@ trait ParentStatus
     {
         $needupdateparent = false;
 
-       // Set pending reason data on parent and self if not already set
+        // Set pending reason data on parent and self if not already set
         if ($input['pending'] ?? 0) {
             $parent_pending_reason = PendingReason_Item::getForItem($this->input['_job']);
             if (
@@ -66,11 +66,15 @@ trait ParentStatus
                     'followup_frequency'          => $input['followup_frequency'] ?? 0,
                     'followups_before_resolution' => $input['followups_before_resolution'] ?? 0,
                     'previous_status'             => $parentitem->fields['status'],
+                    'last_bump_date'              => $input["last_bump_date"] ?? $_SESSION["glpi_currenttime"],
+                    'bump_count'                  => $input["bump_count"] ?? 0,
                 ]);
                 PendingReason_Item::createForItem($this, [
                     'pendingreasons_id'           => $input['pendingreasons_id'] ?? 0,
                     'followup_frequency'          => $input['followup_frequency'] ?? 0,
                     'followups_before_resolution' => $input['followups_before_resolution'] ?? 0,
+                    'last_bump_date'              => $input["last_bump_date"] ?? $_SESSION["glpi_currenttime"],
+                    'bump_count'                  => $input["bump_count"] ?? 0,
                 ]);
             }
         }
@@ -87,7 +91,7 @@ trait ParentStatus
                 '_accepted' => true,
             ];
 
-           // Use update method for history
+            // Use update method for history
             $parentitem->update($update);
         }
 
@@ -106,13 +110,13 @@ trait ParentStatus
             }
         }
 
-       //manage reopening of ITILObject
+        //manage reopening of ITILObject
         $reopened = false;
         if (!isset($input['_status'])) {
             $input['_status'] = $parentitem->fields["status"];
         }
-       // if reopen set (from followup form or mailcollector)
-       // and status is reopenable and not changed in form
+        // if reopen set (from followup form or mailcollector)
+        // and status is reopenable and not changed in form
         $is_set_pending = $input['pending'] ?? 0;
         if (
             isset($input["_reopen"])
@@ -129,11 +133,14 @@ trait ParentStatus
                     || ($parentitem->countSuppliers(CommonITILActor::ASSIGN) > 0)
                 )
             ) {
-               //check if lifecycle allowed new status
+                //check if lifecycle allowed new status
                 if (
-                    Session::isCron()
-                    || Session::getCurrentInterface() == "helpdesk"
-                    || $parentitem->isStatusExists(CommonITILObject::ASSIGNED)
+                    (
+                        Session::isCron()
+                        || Session::getCurrentInterface() == "helpdesk"
+                        || $parentitem->isStatusExists(CommonITILObject::ASSIGNED)
+                    )
+                    && (!isset($input['_do_not_compute_status']) || !$input['_do_not_compute_status'])
                 ) {
                     $needupdateparent = true;
                     // If begin date is defined, the status must be planned if it exists, rather than assigned.
@@ -148,11 +155,14 @@ trait ParentStatus
                     }
                 }
             } else {
-               //check if lifecycle allowed new status
+                //check if lifecycle allowed new status
                 if (
-                    Session::isCron()
-                    || Session::getCurrentInterface() == "helpdesk"
-                    || $parentitem->isStatusExists(CommonITILObject::INCOMING)
+                    (
+                        Session::isCron()
+                        || Session::getCurrentInterface() == "helpdesk"
+                        || $parentitem->isStatusExists(CommonITILObject::INCOMING)
+                    )
+                    && (!isset($input['_do_not_compute_status']) || !$input['_do_not_compute_status'])
                 ) {
                     $needupdateparent = true;
                     $update['status'] = CommonITILObject::INCOMING;
@@ -162,7 +172,7 @@ trait ParentStatus
             if ($needupdateparent) {
                 $update['id'] = $parentitem->fields['id'];
 
-               // Use update method for history
+                // Use update method for history
                 $parentitem->update($update);
                 $reopened     = true;
             }
@@ -206,7 +216,7 @@ trait ParentStatus
             }
         }
 
-       //change ITILObject status only if input change
+        //change ITILObject status only if input change
         if (
             !$reopened
             && $input['_status'] != $parentitem->fields['status']
@@ -214,10 +224,10 @@ trait ParentStatus
             $update['status'] = $input['_status'];
             $update['id']     = $parentitem->fields['id'];
 
-           // don't notify on ITILObject - update event
+            // don't notify on ITILObject - update event
             $update['_disablenotif'] = true;
 
-           // Use update method for history
+            // Use update method for history
             $parentitem->update($update);
         }
     }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,21 +36,20 @@
 namespace Glpi\Console\Plugin;
 
 use Glpi\Console\AbstractCommand;
-use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 
-abstract class AbstractPluginCommand extends AbstractCommand implements ForceNoPluginsOptionCommandInterface
+abstract class AbstractPluginCommand extends AbstractCommand
 {
     /**
      * Wildcard value to target all directories.
      *
      * @var string
      */
-    const DIRECTORY_ALL = '*';
+    public const DIRECTORY_ALL = '*';
 
     protected function configure()
     {
@@ -83,10 +82,10 @@ abstract class AbstractPluginCommand extends AbstractCommand implements ForceNoP
         }
 
         if ($all) {
-           // Set wildcard value in directory argument
+            // Set wildcard value in directory argument
             $input->setArgument('directory', [self::DIRECTORY_ALL]);
-        } else if (empty($directories)) {
-           // Ask for plugin list if directory argument is empty
+        } elseif (empty($directories)) {
+            // Ask for plugin list if directory argument is empty
             $choices = $this->getDirectoryChoiceChoices();
 
             if (!empty($choices)) {
@@ -111,13 +110,6 @@ abstract class AbstractPluginCommand extends AbstractCommand implements ForceNoP
                 $input->setArgument('directory', $answer);
             }
         }
-    }
-
-    public function getNoPluginsOptionValue()
-    {
-
-       // Force no loading on plugins in plugin install process
-        return true;
     }
 
     /**

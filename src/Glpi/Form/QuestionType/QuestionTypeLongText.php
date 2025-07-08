@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,13 +36,23 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Condition\ConditionHandler\RichTextConditionHandler;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
+use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
+use Glpi\ItemTranslation\Context\TranslationHandler;
+use Glpi\ItemTranslation\ItemTranslation;
 use Override;
+use Session;
 
 /**
  * Long answers are multiple lines inputs used to answer questions with as much details as needed.
  */
-final class QuestionTypeLongText extends AbstractQuestionType
+final class QuestionTypeLongText extends AbstractQuestionType implements
+    FormQuestionDataConverterInterface,
+    UsedAsCriteriaInterface,
+    TranslationAwareQuestionType
 {
     #[Override]
     public function getFormEditorJsOptions(): string
@@ -125,7 +135,7 @@ TWIG;
         return $twig->renderFromStringTemplate($template, [
             'question'    => $question,
             'placeholder' => __('Long text'),
-            'aria_label'  => __('Default value')
+            'aria_label'  => __('Default value'),
         ]);
     }
 
@@ -133,47 +143,42 @@ TWIG;
     public function renderEndUserTemplate(Question $question): string
     {
         // TODO: handle required
+        $translated_default_value = ItemTranslation::translate(
+            $question,
+            Question::TRANSLATION_KEY_DEFAULT_VALUE,
+            1
+        );
         $template = <<<TWIG
             {% import 'components/form/fields_macros.html.twig' as fields %}
 
             {{ fields.textareaField(
                 question.getEndUserInputName(),
-                question.fields.default_value,
+                default_value,
                 "",
                 {
                     'enable_richtext': true,
-                    'editor_height': "0",
-                    'rows' : 1,
-                    'init': question is not null ? true : false,
-                    'is_horizontal': false,
-                    'full_width'   : true,
-                    'no_label'     : true,
-                    'mb'           : '',
+                    'enable_images'  : is_authenticated,
+                    'editor_height'  : "100",
+                    'rows'           : 1,
+                    'init'           : question is not null ? true   : false,
+                    'is_horizontal'  : false,
+                    'full_width'     : true,
+                    'no_label'       : true,
+                    'mb'             : '',
                 }
             ) }}
 TWIG;
 
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
-            'question' => $question,
+            'question'      => $question,
+            'default_value' => $translated_default_value,
+            'is_authenticated' => Session::isAuthenticated(),
         ]);
     }
 
     #[Override]
-    public function renderAnswerTemplate(mixed $answer): string
-    {
-        $template = <<<TWIG
-            <div class="form-control-plaintext">{{ answer|safe_html }}</div>
-TWIG;
-
-        $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'answer' => $answer,
-        ]);
-    }
-
-    #[Override]
-    public function getCategory(): QuestionTypeCategory
+    public function getCategory(): QuestionTypeCategoryInterface
     {
         return QuestionTypeCategory::LONG_ANSWER;
     }
@@ -182,5 +187,48 @@ TWIG;
     public function isAllowedForUnauthenticatedAccess(): bool
     {
         return true;
+    }
+
+    #[Override]
+    public function formatPredefinedValue(string $value): string
+    {
+        return $value;
+    }
+
+    #[Override]
+    public function getConditionHandlers(
+        ?JsonFieldInterface $question_config
+    ): array {
+        return array_merge(parent::getConditionHandlers($question_config), [new RichTextConditionHandler()]);
+    }
+
+    #[Override]
+    public function convertDefaultValue(array $rawData): ?string
+    {
+        return $rawData['default_values'] ?? null;
+    }
+
+    #[Override]
+    public function convertExtraData(array $rawData): null
+    {
+        return null;
+    }
+
+    #[Override]
+    public function listTranslationsHandlers(Question $question): array
+    {
+        $handlers = [];
+
+        if (!empty($question->fields['default_value'])) {
+            $handlers[] = new TranslationHandler(
+                item: $question,
+                key: Question::TRANSLATION_KEY_DEFAULT_VALUE,
+                name: __('Default value'),
+                value: $question->fields['default_value'],
+                is_rich_text: true
+            );
+        }
+
+        return $handlers;
     }
 }

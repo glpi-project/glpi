@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,11 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Inventory\Conf;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\HttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+
+use function Safe\sha1_file;
 
 $doc = new Document();
 
@@ -58,7 +62,7 @@ if (isset($_GET['docid'])) {
         $exception = new NotFoundHttpException();
         $exception->setMessageToDisplay(sprintf(__('File %s not found.'), $doc->fields['filename']));
         throw $exception;
-    } else if ($doc->canViewFile($_GET)) {
+    } elseif ($doc->canViewFile($_GET)) {
         if (
             $doc->fields['sha1sum']
             && $doc->fields['sha1sum'] != sha1_file(GLPI_DOC_DIR . "/" . $doc->fields['filepath'])
@@ -67,14 +71,14 @@ if (isset($_GET['docid'])) {
             $exception->setMessageToDisplay(__('File is altered (bad checksum)'));
             throw $exception;
         } else {
-            $doc->send();
+            return $doc->getAsResponse();
         }
     } else {
         $exception = new AccessDeniedHttpException();
         $exception->setMessageToDisplay(__('Unauthorized access to this file'));
         throw $exception;
     }
-} else if (isset($_GET["file"])) {
+} elseif (isset($_GET["file"])) {
     // Get file corresponding to given path.
 
     Session::checkLoginUser(); // Do not allow anonymous access
@@ -84,16 +88,9 @@ if (isset($_GET['docid'])) {
     if (count($splitter) == 2) {
         $expires_headers = false;
         $send = false;
-        if (
-            ($splitter[0] == "_dumps")
-            && Session::haveRight("backup", CREATE)
-        ) {
-            $send = GLPI_DUMP_DIR . '/' . $splitter[1];
-        }
-
         if ($splitter[0] == "_pictures") {
             if (Document::isImage(GLPI_PICTURE_DIR . '/' . $splitter[1])) {
-               // Can use expires header as picture file path changes when picture changes.
+                // Can use expires header as picture file path changes when picture changes.
                 $expires_headers = true;
                 $send = GLPI_PICTURE_DIR . '/' . $splitter[1];
             }
@@ -115,7 +112,7 @@ if (isset($_GET['docid'])) {
         }
 
         if ($send && file_exists($send)) {
-            Toolbox::sendFile($send, $splitter[1], $mime, $expires_headers);
+            return Toolbox::getFileAsResponse($send, $splitter[1], $mime, $expires_headers);
         } else {
             $exception = new AccessDeniedHttpException();
             $exception->setMessageToDisplay(__('Unauthorized access to this file'));

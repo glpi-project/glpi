@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,27 +33,18 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 Session::checkCentralAccess();
 
 if (isset($_GET["itemtype"])) {
     $itemtype = $_GET['itemtype'];
     $link     = $itemtype::getFormURL();
 
-   // Get right sector
-    $sector   = 'assets';
+    // Get right sector
+    $sector = Html::getMenuSectorForItemtype($itemtype) ?? 'assets';
 
-   //Get sectors from the menu
-    $menu     = Html::getMenuInfos();
-
-   //Try to find to which sector the itemtype belongs
-    foreach ($menu as $menusector => $infos) {
-        if (isset($infos['types']) && in_array($itemtype, $infos['types'])) {
-            $sector = $menusector;
-            break;
-        }
-    }
-
-    Html::header(__('Manage templates...'), $_SERVER['PHP_SELF'], $sector, $itemtype);
+    Html::header(__('Manage templates...'), '', $sector, $itemtype);
 
     CommonDBTM::listTemplates($itemtype, $link, $_GET["add"]);
 

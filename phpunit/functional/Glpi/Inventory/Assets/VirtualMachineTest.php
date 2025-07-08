@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -64,7 +63,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"memory": 1048, "name": "centos7.0", "status": "off", "subsystem": "kvm", "uuid": "c37f7ce8-af95-4676-b454-0959f2c5e162", "vcpu": 1, "vmtype": "libvirt", "ram": 1048, "virtualmachinetypes_id": "libvirt", "virtualmachinesystems_id": "kvm", "virtualmachinestates_id": "off","is_deleted": 0}'
+                'expected'  => '{"memory": 1048, "name": "centos7.0", "status": "off", "subsystem": "kvm", "uuid": "c37f7ce8-af95-4676-b454-0959f2c5e162", "vcpu": 1, "vmtype": "libvirt", "ram": 1048, "virtualmachinetypes_id": "libvirt", "virtualmachinesystems_id": "kvm", "virtualmachinestates_id": "off","is_deleted": 0}',
             ], [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -83,7 +82,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"memory": 2097, "name": "fedora23", "status": "off", "subsystem": "kvm", "uuid": "358f16bf-6794-4f63-8947-150b807a2294", "vcpu": 1, "vmtype": "libvirt", "ram": 2097, "virtualmachinetypes_id": "libvirt", "virtualmachinesystems_id": "kvm", "virtualmachinestates_id": "off","is_deleted": 0}'
+                'expected'  => '{"memory": 2097, "name": "fedora23", "status": "off", "subsystem": "kvm", "uuid": "358f16bf-6794-4f63-8947-150b807a2294", "vcpu": 1, "vmtype": "libvirt", "ram": 2097, "virtualmachinetypes_id": "libvirt", "virtualmachinesystems_id": "kvm", "virtualmachinestates_id": "off","is_deleted": 0}',
             ], [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -102,8 +101,8 @@ class VirtualMachineTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"memory": 4194, "name": "win8.1", "status": "off", "subsystem": "kvm", "uuid": "fcb505ed-0ffa-419e-a5a0-fd20bed80f1e", "vcpu": 2, "vmtype": "libvirt", "ram": 4194, "virtualmachinetypes_id": "libvirt", "virtualmachinesystems_id": "kvm", "virtualmachinestates_id": "off","is_deleted": 0}'
-            ]
+                'expected'  => '{"memory": 4194, "name": "win8.1", "status": "off", "subsystem": "kvm", "uuid": "fcb505ed-0ffa-419e-a5a0-fd20bed80f1e", "vcpu": 2, "vmtype": "libvirt", "ram": 4194, "virtualmachinetypes_id": "libvirt", "virtualmachinesystems_id": "kvm", "virtualmachinestates_id": "off","is_deleted": 0}',
+            ],
         ];
     }
 
@@ -116,7 +115,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\VirtualMachine($computer, $json->content->virtualmachines);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue(
             $asset->checkConf($conf)
@@ -145,7 +144,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\VirtualMachine($computer, $json->content->virtualmachines);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue(
             $asset->checkConf($conf)
@@ -245,71 +244,71 @@ class VirtualMachineTest extends AbstractInventoryAsset
         </REQUEST>
         ";
 
-          //change config to import vms as computers
-          $this->login();
-          $conf = new \Glpi\Inventory\Conf();
-          $this->assertTrue($conf->saveConf(['vm_as_computer' => 1]));
-          $this->logout();
+        //change config to import vms as computers
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->assertTrue($conf->saveConf(['vm_as_computer' => 1]));
+        $this->logout();
 
-          //computer inventory knows bios
-          $inventory = $this->doInventory($xml_source, true);
+        //computer inventory knows bios
+        $inventory = $this->doInventory($xml_source, true);
 
-          $esx_id_first = $inventory->getItem()->fields['id'];
-          $this->assertGreaterThan(0, $esx_id_first);
+        $esx_id_first = $inventory->getItem()->fields['id'];
+        $this->assertGreaterThan(0, $esx_id_first);
 
-          //always one VM
-          $vm = new \ItemVirtualMachine();
-          $this->assertCount(1, $vm->find());
+        //always one VM
+        $vm = new \ItemVirtualMachine();
+        $this->assertCount(1, $vm->find());
 
-          //get ComputervirtualMachine
-          $vm_first = new \ItemVirtualMachine();
-          $this->assertTrue($vm_first->getFromDBByCrit([
-              'uuid' => '420904fe-6a92-95e8-13f9-a37fc3607c14',
-              'itemtype' => 'Computer',
-              'items_id' => $esx_id_first
-          ]));
+        //get ComputervirtualMachine
+        $vm_first = new \ItemVirtualMachine();
+        $this->assertTrue($vm_first->getFromDBByCrit([
+            'uuid' => '420904fe-6a92-95e8-13f9-a37fc3607c14',
+            'itemtype' => 'Computer',
+            'items_id' => $esx_id_first,
+        ]));
 
 
-          //get Computer
-          $computer_linked_first = new \Computer();
-          $this->assertTrue($computer_linked_first->getFromDBByCrit([
-              'uuid' => '420904fe-6a92-95e8-13f9-a37fc3607c14',
-          ]));
+        //get Computer
+        $computer_linked_first = new \Computer();
+        $this->assertTrue($computer_linked_first->getFromDBByCrit([
+            'uuid' => '420904fe-6a92-95e8-13f9-a37fc3607c14',
+        ]));
 
-          //get NetworkPort Computer
-          $netport_computer_linked_first = new \NetworkPort();
-          $this->assertTrue($netport_computer_linked_first->getFromDBByCrit([
-              'items_id' => $computer_linked_first->fields['id'],
-              'itemtype' => 'Computer',
-          ]));
+        //get NetworkPort Computer
+        $netport_computer_linked_first = new \NetworkPort();
+        $this->assertTrue($netport_computer_linked_first->getFromDBByCrit([
+            'items_id' => $computer_linked_first->fields['id'],
+            'itemtype' => 'Computer',
+        ]));
 
-          $netpname_computer_linked_first = new \NetworkName();
-          $this->assertTrue($netpname_computer_linked_first->getFromDBByCrit([
-              'items_id' => $netport_computer_linked_first->fields['id'],
-              'itemtype' => 'NetworkPort',
-          ]));
+        $netpname_computer_linked_first = new \NetworkName();
+        $this->assertTrue($netpname_computer_linked_first->getFromDBByCrit([
+            'items_id' => $netport_computer_linked_first->fields['id'],
+            'itemtype' => 'NetworkPort',
+        ]));
 
-          $ip_computer_linked_first = new \IPAddress();
-          $this->assertTrue($ip_computer_linked_first->getFromDBByCrit([
-              'items_id' => $netpname_computer_linked_first->fields['id'],
-              'itemtype' => 'NetworkName',
-              'name' => '10.100.240.11'
-          ]));
+        $ip_computer_linked_first = new \IPAddress();
+        $this->assertTrue($ip_computer_linked_first->getFromDBByCrit([
+            'items_id' => $netpname_computer_linked_first->fields['id'],
+            'itemtype' => 'NetworkName',
+            'name' => '10.100.240.11',
+        ]));
 
-          //get Operating system Computer
-          $itemos_computer_linked_first = new \Item_OperatingSystem();
-          $this->assertTrue($itemos_computer_linked_first->getFromDBByCrit([
-              'items_id' => $computer_linked_first->fields['id'],
-              'itemtype' => 'Computer',
-          ]));
+        //get Operating system Computer
+        $itemos_computer_linked_first = new \Item_OperatingSystem();
+        $this->assertTrue($itemos_computer_linked_first->getFromDBByCrit([
+            'items_id' => $computer_linked_first->fields['id'],
+            'itemtype' => 'Computer',
+        ]));
 
-          $os_computer_linked_first = new \OperatingSystem();
-          $this->assertTrue($os_computer_linked_first->getFromDBByCrit([
-              'id' => $itemos_computer_linked_first->fields['operatingsystems_id'],
-              'name' => 'OS Test'
-          ]));
+        $os_computer_linked_first = new \OperatingSystem();
+        $this->assertTrue($os_computer_linked_first->getFromDBByCrit([
+            'id' => $itemos_computer_linked_first->fields['operatingsystems_id'],
+            'name' => 'OS Test',
+        ]));
 
-          $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
           <REQUEST>
             <CONTENT>
               <BIOS>
@@ -375,35 +374,35 @@ class VirtualMachineTest extends AbstractInventoryAsset
           ";
 
 
-          //redo inventory with different formatted UUID fe040942-926a-e895-13f9-a37fc3607c14
-          $inventory = $this->doInventory($xml_source, true);
+        //redo inventory with different formatted UUID fe040942-926a-e895-13f9-a37fc3607c14
+        $inventory = $this->doInventory($xml_source, true);
 
-          $esx_id_second = $inventory->getItem()->fields['id'];
-          $this->assertGreaterThan(0, $esx_id_second);
+        $esx_id_second = $inventory->getItem()->fields['id'];
+        $this->assertGreaterThan(0, $esx_id_second);
 
-          $this->assertSame($esx_id_second, $esx_id_first);
+        $this->assertSame($esx_id_second, $esx_id_first);
 
-          //always one VM
-          $vm = new \ItemVirtualMachine();
-          $this->assertCount(1, $vm->find());
+        //always one VM
+        $vm = new \ItemVirtualMachine();
+        $this->assertCount(1, $vm->find());
 
-          //get ComputervirtualMachine
-          $vm_second = new \ItemVirtualMachine();
-          $this->assertTrue($vm_second->getFromDBByCrit([
-              'uuid' => 'fe040942-926a-e895-13f9-a37fc3607c14',
-              'itemtype' => 'Computer',
-              'items_id' => $esx_id_second
-          ]));
+        //get ComputervirtualMachine
+        $vm_second = new \ItemVirtualMachine();
+        $this->assertTrue($vm_second->getFromDBByCrit([
+            'uuid' => 'fe040942-926a-e895-13f9-a37fc3607c14',
+            'itemtype' => 'Computer',
+            'items_id' => $esx_id_second,
+        ]));
 
-          //get Computer
-          $computer_linked_second = new \Computer();
-          $this->assertTrue($computer_linked_second->getFromDBByCrit([
-              'uuid' => 'fe040942-926a-e895-13f9-a37fc3607c14',
-          ]));
+        //get Computer
+        $computer_linked_second = new \Computer();
+        $this->assertTrue($computer_linked_second->getFromDBByCrit([
+            'uuid' => 'fe040942-926a-e895-13f9-a37fc3607c14',
+        ]));
 
-          //same VM and Computer
-          $this->assertSame($vm_second->fields['id'], $vm_first->fields['id']);
-          $this->assertSame($computer_linked_second->fields['id'], $computer_linked_first->fields['id']);
+        //same VM and Computer
+        $this->assertSame($vm_second->fields['id'], $vm_first->fields['id']);
+        $this->assertSame($computer_linked_second->fields['id'], $computer_linked_first->fields['id']);
     }
 
     public function testImportVirtualMachineWithoutHistory()
@@ -477,13 +476,13 @@ class VirtualMachineTest extends AbstractInventoryAsset
             'uuid' => 'fe040942-926a-e895-13f9-a37fc3607c14',
             'itemtype' => 'Computer',
             'items_id' => $esx_id_first,
-            'is_deleted' => false
+            'is_deleted' => false,
         ]));
         //get related computer with fe040942-926a-e895-13f9-a37fc3607c14 -> not deleted / purged
         $first_computer_linked = new \Computer();
         $this->assertTrue($first_computer_linked->getFromDBByCrit([
             'uuid' => 'fe040942-926a-e895-13f9-a37fc3607c14',
-            'is_deleted' => false
+            'is_deleted' => false,
         ]));
 
         //get second ComputervirtualMachine -> not deleted / purged
@@ -492,13 +491,13 @@ class VirtualMachineTest extends AbstractInventoryAsset
             'uuid' => 'c37f7ce8-af95-4676-b454-0959f2c5e162',
             'itemtype' => 'Computer',
             'items_id' => $esx_id_first,
-            'is_deleted' => false
+            'is_deleted' => false,
         ]));
         //get computer with c37f7ce8-af95-4676-b454-0959f2c5e162 -> not deleted / purged
         $second_computer_linked = new \Computer();
         $this->assertTrue($second_computer_linked->getFromDBByCrit([
             'uuid' => 'c37f7ce8-af95-4676-b454-0959f2c5e162',
-            'is_deleted' => false
+            'is_deleted' => false,
         ]));
 
         //redi inventory without c37f7ce8-af95-4676-b454-0959f2c5e162
@@ -552,13 +551,13 @@ class VirtualMachineTest extends AbstractInventoryAsset
             'uuid' => 'fe040942-926a-e895-13f9-a37fc3607c14',
             'itemtype' => 'Computer',
             'items_id' => $esx_id_first,
-            'is_deleted' => false
+            'is_deleted' => false,
         ]));
         //get computer with fe040942-926a-e895-13f9-a37fc3607c14 -> not deleted / purged
         $first_computer_linked = new \Computer();
         $this->assertTrue($first_computer_linked->getFromDBByCrit([
             'uuid' => 'fe040942-926a-e895-13f9-a37fc3607c14',
-            'is_deleted' => false
+            'is_deleted' => false,
         ]));
 
         //get second ComputervirtualMachine -> purged
@@ -566,13 +565,13 @@ class VirtualMachineTest extends AbstractInventoryAsset
         $this->assertFalse($second_vm->getFromDBByCrit([
             'uuid' => 'c37f7ce8-af95-4676-b454-0959f2c5e162',
             'itemtype' => 'Computer',
-            'items_id' => $esx_id_first
+            'items_id' => $esx_id_first,
         ]));
         //get computer with c37f7ce8-af95-4676-b454-0959f2c5e162 -> not deleted / purged
         $second_computer_linked = new \Computer();
         $this->assertTrue($second_computer_linked->getFromDBByCrit([
             'uuid' => 'c37f7ce8-af95-4676-b454-0959f2c5e162',
-            'is_deleted' => false
+            'is_deleted' => false,
         ]));
     }
 
@@ -650,7 +649,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
             'sub_type' => 'RuleImportAsset',
             'match' => \Rule::AND_MATCHING,
             'condition' => 0,
-            'description' => ''
+            'description' => '',
         ]);
         $this->assertGreaterThan(0, $rules_id);
 
@@ -665,7 +664,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
                 'rules_id' => $rules_id,
                 'criteria' => 'name',
                 'condition' => \Rule::PATTERN_CONTAIN,
-                'pattern' => 'REFUSED'
+                'pattern' => 'REFUSED',
             ])
         );
 
@@ -675,7 +674,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
                 'rules_id' => $rules_id,
                 'action_type' => 'assign',
                 'field' => '_inventory',
-                'value' => '2' //import denied
+                'value' => '2', //import denied
             ])
         );
 
@@ -733,7 +732,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
         $this->assertTrue($vm->getFromDBByCrit([
             'uuid' => '420904fe-6a92-95e8-13f9-a37fc3607c14',
             'itemtype' => 'Computer',
-            'items_id' => $id_first
+            'items_id' => $id_first,
         ]));
 
         //make sure partial with no VM does not remove existing VMs
@@ -757,7 +756,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
         $this->assertTrue($vm->getFromDBByCrit([
             'uuid' => '420904fe-6a92-95e8-13f9-a37fc3607c14',
             'itemtype' => 'Computer',
-            'items_id' => $id_first
+            'items_id' => $id_first,
         ]));
 
         //remove VM, but set partial
@@ -820,7 +819,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
 
         $state = new \State();
         $inv_states_id = $state->add([
-            'name' => 'Has been inventoried'
+            'name' => 'Has been inventoried',
         ]);
 
         $conf = new \Glpi\Inventory\Conf();
@@ -849,7 +848,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
         $first_computer_linked = new \Computer();
         $this->assertTrue($first_computer_linked->getFromDBByCrit([
             'uuid' => 'a1234567-89ab-cdef-0123-456789abcdef',
-            'states_id' => $inv_states_id
+            'states_id' => $inv_states_id,
         ]));
     }
 
@@ -871,7 +870,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
         $this->assertTrue($vm->getFromDBByCrit([
             'uuid'     => '420904fe-6a92-95e8-13f9-a37fc3607c14',
             'itemtype' => \Computer::class,
-            'items_id' => $id_first
+            'items_id' => $id_first,
         ]));
 
         $this->assertSame('Computer VM', $vm->fields['comment']);
@@ -886,7 +885,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
         $this->assertTrue($vm->getFromDBByCrit([
             'uuid'     => '420904fe-6a92-95e8-13f9-a37fc3607c14',
             'itemtype' => \Computer::class,
-            'items_id' => $id_first
+            'items_id' => $id_first,
         ]));
         $this->assertSame('Edited Computer VM', $vm->fields['comment']);
     }

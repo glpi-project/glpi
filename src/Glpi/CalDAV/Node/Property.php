@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,12 +42,12 @@ namespace Glpi\CalDAV\Node;
  */
 class Property
 {
-    const CAL_COLOR                = '{http://apple.com/ns/ical/}calendar-color';
-    const CAL_DESCRIPTION          = '{urn:ietf:params:xml:ns:caldav}calendar-description';
-    const CAL_SUPPORTED_COMPONENTS = '{urn:ietf:params:xml:ns:caldav}supported-calendar-component-set';
-    const CAL_USER_TYPE            = '{urn:ietf:params:xml:ns:caldav}calendar-user-type';
-    const DISPLAY_NAME             = '{DAV:}displayname';
-    const PRIMARY_EMAIL            = '{http://sabredav.org/ns}email-address';
-    const RESOURCE_TYPE            = '{DAV:}resourcetype';
-    const USERNAME                 = '{http://glpi-project.org/ns}username';
+    public const CAL_COLOR                = '{http://apple.com/ns/ical/}calendar-color';
+    public const CAL_DESCRIPTION          = '{urn:ietf:params:xml:ns:caldav}calendar-description';
+    public const CAL_SUPPORTED_COMPONENTS = '{urn:ietf:params:xml:ns:caldav}supported-calendar-component-set';
+    public const CAL_USER_TYPE            = '{urn:ietf:params:xml:ns:caldav}calendar-user-type';
+    public const DISPLAY_NAME             = '{DAV:}displayname';
+    public const PRIMARY_EMAIL            = '{http://sabredav.org/ns}email-address';
+    public const RESOURCE_TYPE            = '{DAV:}resourcetype';
+    public const USERNAME                 = '{http://glpi-project.org/ns}username';
 }

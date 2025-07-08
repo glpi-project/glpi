@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\System\Log\LogParser;
 use Glpi\System\Log\LogViewer;
@@ -48,27 +50,26 @@ if ($filepath === null) {
     Html::redirect($CFG_GLPI["root_doc"] . "/front/logs.php");
 }
 
-if (!file_exists(GLPI_LOG_DIR . '/' . $filepath) || is_dir(GLPI_LOG_DIR . '/' . $filepath)) {
+$logparser = new LogParser();
+if ($logparser->getFullPath($filepath) === null) {
     throw new NotFoundHttpException('Not found');
 }
 
-if (($_GET['action'] ?? '') === 'download') {
+if (($_GET['action'] ?? '') === 'download_log_file') {
     $logparser = new LogParser();
     $logparser->download($filepath);
 } elseif (($_POST['action'] ?? '') === 'empty') {
     Session::checkRight('config', UPDATE);
-    $logparser = new LogParser();
     $logparser->empty($filepath);
     Html::back();
 } elseif (($_POST['action'] ?? '') === 'delete') {
     Session::checkRight('config', UPDATE);
-    $logparser = new LogParser();
     $logparser->delete($filepath);
     Html::redirect($CFG_GLPI["root_doc"] . "/front/logs.php");
 } else {
     Html::header(
         LogViewer::getTypeName(Session::getPluralNumber()),
-        $_SERVER['PHP_SELF'],
+        '',
         'admin',
         'glpi\system\log\logviewer',
         'logfile'

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,8 +39,15 @@ use DBmysql;
 use Glpi\Toolbox\DatabaseSchema;
 use Glpi\Toolbox\VersionParser;
 use Plugin;
+use Safe\Exceptions\FilesystemException;
 use SebastianBergmann\Diff\Differ;
 use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
+
+use function Safe\file_get_contents;
+use function Safe\preg_match;
+use function Safe\preg_match_all;
+use function Safe\preg_replace;
+use function Safe\preg_replace_callback;
 
 /**
  * @since 10.0.0
@@ -222,12 +229,10 @@ class DatabaseSchemaIntegrityChecker
      */
     public function extractSchemaFromFile(string $schema_path): array
     {
-        if (
-            !is_file($schema_path)
-            || !is_readable($schema_path)
-            || ($schema_sql = file_get_contents($schema_path)) === false
-        ) {
-            throw new \RuntimeException(sprintf(__('Unable to read installation file "%s".'), $schema_path));
+        try {
+            $schema_sql = file_get_contents($schema_path);
+        } catch (FilesystemException $e) {
+            throw new \RuntimeException(sprintf(__('Unable to read installation file "%s".'), $schema_path), $e->getCode(), $e);
         }
 
         $matches = [];
@@ -271,7 +276,7 @@ class DatabaseSchemaIntegrityChecker
             if (!$this->db->tableExists($table_name)) {
                 $result[$table_name] = [
                     'type' => self::RESULT_TYPE_MISSING_TABLE,
-                    'diff' => $this->diff($create_table_sql, '')
+                    'diff' => $this->diff($create_table_sql, ''),
                 ];
                 continue;
             }
@@ -280,7 +285,7 @@ class DatabaseSchemaIntegrityChecker
             if ($create_table_sql !== $effective_create_table_sql) {
                 $result[$table_name] = [
                     'type' => self::RESULT_TYPE_ALTERED_TABLE,
-                    'diff' => $this->diff($create_table_sql, $effective_create_table_sql)
+                    'diff' => $this->diff($create_table_sql, $effective_create_table_sql),
                 ];
             }
         }
@@ -289,20 +294,20 @@ class DatabaseSchemaIntegrityChecker
             $unknown_tables_criteria = [
                 [
                     'NOT' => [
-                        'table_name' => array_keys($schema)
-                    ]
+                        'table_name' => array_keys($schema),
+                    ],
                 ],
             ];
             $is_context_valid = true;
             if ($context === 'core') {
                 $unknown_tables_criteria[] = [
                     'NOT' => [
-                        'table_name' => ['LIKE', 'glpi\_plugin\_%']
-                    ]
+                        'table_name' => ['LIKE', 'glpi\_plugin\_%'],
+                    ],
                 ];
             } elseif (preg_match('/^plugin:\w+$/', $context) === 1) {
                 $unknown_tables_criteria[] = [
-                    'table_name' => ['LIKE', sprintf('glpi\_plugin\_%s_%%', str_replace('plugin:', '', $context))]
+                    'table_name' => ['LIKE', sprintf('glpi\_plugin\_%s_%%', str_replace('plugin:', '', $context))],
                 ];
             } else {
                 trigger_error(sprintf('Invalid context "%s".', $context));
@@ -314,7 +319,7 @@ class DatabaseSchemaIntegrityChecker
                 $effective_create_table_sql = $this->getNormalizedSql($this->getEffectiveCreateTableSql($table_name));
                 $result[$table_name] = [
                     'type' => self::RESULT_TYPE_UNKNOWN_TABLE,
-                    'diff' => $this->diff('', $effective_create_table_sql)
+                    'diff' => $this->diff('', $effective_create_table_sql),
                 ];
             }
         }
@@ -660,7 +665,7 @@ class DatabaseSchemaIntegrityChecker
                         // Opening backtick, ensure there is a space before
                         $sql = substr($sql, 0, $i) . ' ' . substr($sql, $i);
                         $i++;
-                    } else if ($is_protected && preg_match('/\s/', $sql[$i + 1]) !== 1) {
+                    } elseif ($is_protected && preg_match('/\s/', $sql[$i + 1]) !== 1) {
                         // Closing backtick, ensure there is a space before
                         $sql = substr($sql, 0, $i + 1) . ' ' . substr($sql, $i + 1);
                         $i++;
@@ -669,7 +674,7 @@ class DatabaseSchemaIntegrityChecker
 
                 $is_protected = !$is_protected;
                 continue;
-            } else if ($is_protected) {
+            } elseif ($is_protected) {
                 continue;
             }
 
@@ -677,13 +682,13 @@ class DatabaseSchemaIntegrityChecker
             if ($sql[$i] === '\'') {
                 $is_quoted = !$is_quoted;
                 continue;
-            } else if ($is_quoted) {
+            } elseif ($is_quoted) {
                 continue;
             }
 
             if ($sql[$i] === '(') {
                 $parenthesis_level++;
-            } else if ($sql[$i] === ')') {
+            } elseif ($sql[$i] === ')') {
                 $parenthesis_level--;
             }
 
@@ -699,10 +704,10 @@ class DatabaseSchemaIntegrityChecker
             if ($parenthesis_level === 1 && $sql[$i] === '(') {
                 $sql = substr($sql, 0, $i + 1) . "\n" . substr($sql, $i + 1);
                 $i++;
-            } else if ($parenthesis_level === 0 && $sql[$i] === ')') {
+            } elseif ($parenthesis_level === 0 && $sql[$i] === ')') {
                 $sql = substr($sql, 0, $i) . "\n" . substr($sql, $i);
                 $i++;
-            } else if ($parenthesis_level === 1 && $sql[$i] === ',') {
+            } elseif ($parenthesis_level === 1 && $sql[$i] === ',') {
                 $sql = substr($sql, 0, $i + 1) . "\n" . substr($sql, $i + 1);
                 $i++;
             }
@@ -815,7 +820,7 @@ class DatabaseSchemaIntegrityChecker
                         'WHERE'  => [
                             'context' => 'core',
                             'name'    => 'dbversion',
-                        ]
+                        ],
                     ]
                 );
                 if ($dbversion_result->count() > 0) {
@@ -829,7 +834,7 @@ class DatabaseSchemaIntegrityChecker
                             'WHERE'  => [
                                 'context' => 'core',
                                 'name'    => 'version',
-                            ]
+                            ],
                         ]
                     );
                     $this->db_version = $dbversion_result->current()['value'] ?? null;

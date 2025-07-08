@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,13 +35,51 @@
 namespace tests\units;
 
 use DbTestCase;
-use Monolog\Logger;
+use Document_Item;
+use Glpi\Asset\Capacity\HasDocumentsCapacity;
+use Glpi\Features\Clonable;
 use Psr\Log\LogLevel;
-
-/* Test for inc/document_item.class.php */
+use Toolbox;
 
 class Document_ItemTest extends DbTestCase
 {
+    public function testRelatedItemHasTab()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasDocumentsCapacity::class)]);
+
+        $this->login(); // tab will be available only if corresponding right is available in the current session
+
+        foreach ($CFG_GLPI['itemdevices_types'] as $itemtype) {
+            $item = $this->createItem(
+                $itemtype,
+                $this->getMinimalCreationInput($itemtype)
+            );
+
+            $tabs = $item->defineAllTabs();
+            $this->assertArrayHasKey('Document_Item$1', $tabs, $itemtype);
+        }
+    }
+
+    public function testRelatedItemCloneRelations()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasDocumentsCapacity::class)]);
+
+        foreach ($CFG_GLPI['itemdevices_types'] as $itemtype) {
+            if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
+                continue;
+            }
+
+            $item = \getItemForItemtype($itemtype);
+            $this->assertContains(Document_Item::class, $item->getCloneRelations(), $itemtype);
+        }
+    }
+
     public function testGetForbiddenStandardMassiveAction()
     {
         $ditem = new \Document_Item();
@@ -118,7 +155,7 @@ class Document_ItemTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             $document->add([
-                'name'   => 'Test document to link'
+                'name'   => 'Test document to link',
             ])
         );
         $input['documents_id'] = $document->getID();
@@ -129,7 +166,7 @@ class Document_ItemTest extends DbTestCase
             'documents_id' => $document->getID(),
             'users_id'     => false,
             'entities_id'  => 0,
-            'is_recursive' => 0
+            'is_recursive' => 0,
         ];
 
         $this->assertSame(
@@ -150,11 +187,11 @@ class Document_ItemTest extends DbTestCase
                     'glpi_documents_items.documents_id'  => 1,
                     [
                         'glpi_documents_items.itemtype'  => 'Document',
-                        'glpi_documents_items.items_id'  => 1
-                    ]
-                ]
+                        'glpi_documents_items.items_id'  => 1,
+                    ],
+                ],
             ],
-            'ORDER'           => 'itemtype'
+            'ORDER'           => 'itemtype',
         ];
         $this->assertSame($expected, \Document_Item::getDistinctTypesParams(1));
 
@@ -168,17 +205,17 @@ class Document_ItemTest extends DbTestCase
                     'glpi_documents_items.documents_id'  => 1,
                     [
                         'glpi_documents_items.itemtype'  => 'Document',
-                        'glpi_documents_items.items_id'  => 1
-                    ]
+                        'glpi_documents_items.items_id'  => 1,
+                    ],
                 ],
                 [
                     'date_mod'  => [
                         '>',
-                        '2000-01-01'
-                    ]
-                ]
+                        '2000-01-01',
+                    ],
+                ],
             ],
-            'ORDER'           => 'itemtype'
+            'ORDER'           => 'itemtype',
         ];
         $this->assertSame($expected, \Document_Item::getDistinctTypesParams(1, $extra_where));
     }
@@ -192,7 +229,7 @@ class Document_ItemTest extends DbTestCase
         $tickets_id = $ticket->add([
             'name' => '',
             'content' => 'Test modification date not updated from Document_Item',
-            'date_mod' => '2020-01-01'
+            'date_mod' => '2020-01-01',
         ]);
 
         $this->assertGreaterThan(0, $tickets_id);
@@ -204,7 +241,7 @@ class Document_ItemTest extends DbTestCase
             $doc->add([
                 'users_id'     => $uid,
                 'tickets_id'   => $tickets_id,
-                'name'         => 'A simple document object'
+                'name'         => 'A simple document object',
             ])
         );
 
@@ -217,7 +254,7 @@ class Document_ItemTest extends DbTestCase
                 'items_id'      => $tickets_id,
                 'itemtype'      => 'Ticket',
                 'documents_id'  => $doc->getID(),
-                '_do_update_ticket' => false
+                '_do_update_ticket' => false,
             ])
         );
 
@@ -232,7 +269,7 @@ class Document_ItemTest extends DbTestCase
             $doc->add([
                 'users_id'     => $uid,
                 'tickets_id'   => $tickets_id,
-                'name'         => 'A simple document object'
+                'name'         => 'A simple document object',
             ])
         );
 

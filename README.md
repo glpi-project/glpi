@@ -1,4 +1,4 @@
-![GLPI Logo](https://raw.githubusercontent.com/glpi-project/glpi/main/pics/logos/logo-GLPI-250-black.png)
+![GLPI Logo](https://raw.githubusercontent.com/glpi-project/glpi/main/public/pics/logos/logo-GLPI-250-black.png)
 
 ![GLPI CI](https://github.com/glpi-project/glpi/workflows/GLPI%20CI/badge.svg?branch=9.5%2Fbugfixes)
 [![Github All Releases](https://img.shields.io/github/downloads/glpi-project/glpi/total.svg)](#download)
@@ -74,29 +74,23 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 3 - please consul
 ## Prerequisites
 
 * A web server (Apache, Nginx, IIS, etc.)
-* MariaDB >= 10.5 or MySQL >= 8.0
-* PHP (See compatibility matrix below)
-
-    | GLPI Version | Minimum PHP | Maximum PHP |
-    | ------------ | ----------- | ----------- |
-    | 9.5.X        | 7.2         | 8.0         |
-    | 10.0.X       | 7.4         | 8.3         |
-    | 10.1.X       | 8.2         | 8.3         |
+* MariaDB >= 10.6 or MySQL >= 8.0
+* PHP >= 8.2
 * Mandatory PHP extensions:
-    - dom, fileinfo, json, session, simplexml (these are enabled in PHP by default)
+    - dom, fileinfo, filter, libxml, simplexml, xmlreader, xmlwriter (these are enabled in PHP by default)
+    - bcmath (QRCode generation)
     - curl (access to remote resources, like inventory agents, marketplace API, RSS feeds, ...)
     - gd (pictures handling)
     - intl (internationalization)
-    - libxml (XML handling)
+    - mbstring (multibyte chars support and charset conversion)
     - mysqli (communication with database server)
+    - openssl (email sending using SSL/TLS, encrypted communication with inventory agents and OAuth 2.0 authentication)
     - zlib (handling of compressed communication with inventory agents, installation of gzip packages from marketplace, PDF generation)
-
 * Suggested PHP extensions
+    - bz2, phar and zip (support of most common packages formats in marketplace)
     - exif (security enhancement on images validation)
     - ldap (usage of authentication through remote LDAP server)
-    - openssl (email sending using SSL/TLS)
-    - zip and bz2 (installation of zip and bz2 packages from marketplace)
-
+    - Zend OPcache (improve performances)
  * Supported browsers:
     - Edge
     - Firefox (including 2 latest ESR versions)
@@ -165,10 +159,3 @@ See :
 GLPI is a living software. Improvements are continuously made, new functionalities are being developed, and issues are being fixed.
 
 To ease support and development, we need your help when encountering issues.
-There is a GLPI version typical lifecycle:
- * A new major version (9.3) is released.
- * Minor versions (9.3.x), fixing bugs or issues, are published after several weeks.
-   Please consider updating to the latest released minor version if you encounter some bugs or performance issues.
- * Several months after major version released, a new major version (9.4) is released.
-   Previous major versions become unsupported, please update to the new major version.
-   Obviously, we provide support for the migration tools too!

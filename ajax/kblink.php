@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -52,17 +52,18 @@ if (isset($_POST["table"], $_POST["value"])) {
     }
 
     if (isset($_POST['withlink'])) {
-        $itemtype = getItemTypeForTable($_POST["table"]);
+        $item = getItemForTable($_POST["table"]);
         if (
             !Session::validateIDOR([
-                'itemtype'    => $itemtype,
-                '_idor_token' => $_POST['_idor_token'] ?? ""
+                'itemtype'    => $item::class,
+                '_idor_token' => $_POST['_idor_token'] ?? "",
             ])
         ) {
             return;
         }
-        $item = new $itemtype();
-        $item->getFromDB((int)$_POST["value"]);
-        echo '&nbsp;' . $item->getLinks();
+        $item->getFromDB((int) $_POST["value"]);
+        if (method_exists($item, 'getLinks')) {
+            echo '&nbsp;' . $item->getLinks();
+        }
     }
 }

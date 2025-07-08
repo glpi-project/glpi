@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -51,17 +51,36 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
 
     public static function getTypeName($nb = 0)
     {
-        return _n('Validation template', 'Validation templates', $nb);
+        return _n('Approval template', 'Approval templates', $nb);
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        if (isset($input['validationsteps_id']) && !(new ValidationStep())->getFromDB($input['validationsteps_id'])) {
+            Session::addMessageAfterRedirect(
+                htmlescape(__('Invalid approval step')),
+                false,
+                ERROR
+            );
+            return [];
+        }
+
+        return parent::prepareInputForUpdate($input);
     }
 
     public function getAdditionalFields()
     {
         return [
             [
+                'name' => 'validationsteps_id',
+                'label' => ValidationStep::getTypeName(1),
+                'type' => 'dropdownValue',
+            ],
+            [
                 'name'  => 'approver',
                 'label' => __('Approver'),
                 'type'  => '',
-                'list'  => true
+                'list'  => true,
             ],
             [
                 'name'           => 'content',
@@ -73,7 +92,7 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
                 // As fixing it is really complex (requires lot of refactoring in images handling, both on JS and PHP side),
                 // it is preferable to disable usage of images in templates.
                 'disable_images' => true,
-            ]
+            ],
         ];
     }
 
@@ -96,13 +115,15 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
 
         if ($id > 0) {
             $targets   = ITILValidationTemplate_Target::getTargets($id);
-            $target    = current($targets);
-            $itemtype  = $target['itemtype'];
-            $items_ids = array_column($targets, 'items_id');
+            if (!empty($targets)) {
+                $target = current($targets);
+                $itemtype = $target['itemtype'];
+                $items_ids = array_column($targets, 'items_id');
 
-            $options['itemtype_target'] = $itemtype;
-            $options['groups_id']       = $target['groups_id'];
-            $options['items_id_target'] = $itemtype == 'Group' && count($items_ids) == 1 ? $items_ids[0] : $items_ids;
+                $options['itemtype_target'] = $itemtype;
+                $options['groups_id'] = $target['groups_id'];
+                $options['items_id_target'] = $itemtype == 'Group' && count($items_ids) == 1 ? $items_ids[0] : $items_ids;
+            }
         }
 
         return CommonITILValidation::dropdownValidator($options);
@@ -125,7 +146,7 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
             'field'              => 'content',
             'table'              => $this->getTable(),
             'datatype'           => 'text',
-            'htmltext'           => true
+            'htmltext'           => true,
         ];
 
         return $tab;
@@ -133,7 +154,7 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
 
     public static function getIcon()
     {
-        return "fas fa-layer-group";
+        return "ti ti-stack-2-filled";
     }
 
     private function postTargets(): void

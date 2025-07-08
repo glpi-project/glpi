@@ -7,7 +7,7 @@
 #
 # http://glpi-project.org
 #
-# @copyright 2015-2024 Teclib' and contributors.
+# @copyright 2015-2025 Teclib' and contributors.
 # @copyright 2003-2014 by the INDEPNET Development Team.
 # @licence   https://www.gnu.org/licenses/gpl-3.0.html
 #
@@ -80,6 +80,7 @@ find $WORKING_DIR -depth -iname ".*" -exec rm -rf {} \;
 dev_nodes=(
     "composer.json"
     "composer.lock"
+    "composer-dependency-analyser.php"
     "docker-compose.yaml"
     "eslint.config.mjs"
     "js"
@@ -93,6 +94,7 @@ dev_nodes=(
     "phpstan.neon.dist"
     "phpunit"
     "phpunit.xml.dist"
+    "rector.php"
     "stubs"
     "tests"
     "tools"

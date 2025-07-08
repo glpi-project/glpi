@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Stat\Data\Location\StatDataClosed;
@@ -40,6 +42,9 @@ use Glpi\Stat\Data\Location\StatDataLate;
 use Glpi\Stat\Data\Location\StatDataOpened;
 use Glpi\Stat\Data\Location\StatDataOpenSatisfaction;
 use Glpi\Stat\Data\Location\StatDataSolved;
+
+use function Safe\mktime;
+use function Safe\preg_match;
 
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
@@ -54,7 +59,7 @@ if (!$item = getItemForItemtype($_GET['itemtype'])) {
 
 //sanitize dates
 foreach (['date1', 'date2'] as $key) {
-    if (array_key_exists($key, $_GET) && preg_match('/^\d{4}-\d{2}-\d{2}$/', (string)$_GET[$key]) !== 1) {
+    if (array_key_exists($key, $_GET) && preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) $_GET[$key]) !== 1) {
         unset($_GET[$key]);
     }
 }
@@ -75,12 +80,12 @@ if (
 
 $params = [
     'itemtype'  => $_GET["itemtype"] ?? "",
-    'type'      => (string)($_GET["type"] ?? "user"),
+    'type'      => (string) ($_GET["type"] ?? "user"),
     'date1'     => $_GET["date1"],
     'date2'     => $_GET["date2"],
     'value2'    => $_GET["value2"] ?? 0,
-    'start'     => (int)($_GET["start"] ?? 0),
-    'showgraph' => (int)($_GET["showgraph"] ?? 0),
+    'start'     => (int) ($_GET["start"] ?? 0),
+    'showgraph' => (int) ($_GET["showgraph"] ?? 0),
 ];
 
 $values = Stat::getITILStatFields($params['itemtype']);

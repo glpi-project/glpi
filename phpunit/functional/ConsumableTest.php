@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -49,30 +48,30 @@ class ConsumableTest extends \DbTestCase
         $consumable = new \Consumable();
 
         $consumable_item = new \ConsumableItem();
-        $cu_id = (int)$consumable_item->add([
-            'name' => 'Test consumable item'
+        $cu_id = (int) $consumable_item->add([
+            'name' => 'Test consumable item',
         ]);
         $this->assertGreaterThan(0, $cu_id);
 
         $group = new \Group();
-        $gid1 = (int)$group->add([
-            'name' => 'Test group 1'
+        $gid1 = (int) $group->add([
+            'name' => 'Test group 1',
         ]);
         $this->assertGreaterThan(0, $gid1);
-        $gid2 = (int)$group->add([
-            'name' => 'Test group 2'
+        $gid2 = (int) $group->add([
+            'name' => 'Test group 2',
         ]);
         $this->assertGreaterThan(0, $gid2);
 
         $user = new \User();
-        $uid = (int)$user->add([
-            'name' => 'User group'
+        $uid = (int) $user->add([
+            'name' => 'User group',
         ]);
         $this->assertGreaterThan(0, $uid);
 
         $c_ids = [];
         for ($i = 0; $i < 20; $i++) {
-            $c_id = (int)$consumable->add([
+            $c_id = (int) $consumable->add([
                 'name'               => 'Test consumable',
                 'consumableitems_id' => $cu_id,
             ]);
@@ -82,7 +81,7 @@ class ConsumableTest extends \DbTestCase
 
             // Give 1/4 of consumable pool to test group 1
             if ($i % 4 === 0) {
-                 $consumable->out($c_id, 'Group', $gid1);
+                $consumable->out($c_id, 'Group', $gid1);
             }
             // Give 1/4 of consumable pool to test group 2
             if ($i % 4 === 1) {
@@ -169,8 +168,8 @@ class ConsumableTest extends \DbTestCase
         $consumable = new \Consumable();
 
         $consumable_item = new \ConsumableItem();
-        $cu_id = (int)$consumable_item->add([
-            'name' => 'Test consumable item'
+        $cu_id = (int) $consumable_item->add([
+            'name' => 'Test consumable item',
         ]);
         $this->assertGreaterThan(0, $cu_id);
 
@@ -179,19 +178,19 @@ class ConsumableTest extends \DbTestCase
             'itemtype'  => \ConsumableItem::getType(),
             'items_id'  => $cu_id,
             'buy_date'  => '2020-10-21',
-            'value'     => '500'
+            'value'     => '500',
         ]);
         $this->assertGreaterThan(0, $infocom_id);
 
         $consumable_id = $consumable->add([
-            'consumableitems_id' => $cu_id
+            'consumableitems_id' => $cu_id,
         ]);
         $this->assertGreaterThan(0, $consumable_id);
 
         $infocom2 = new \Infocom();
         $infocom2_id = (int) $infocom2->getFromDBByCrit([
             'itemtype'  => \Consumable::getType(),
-            'items_id'  => $consumable_id
+            'items_id'  => $consumable_id,
         ]);
         $this->assertGreaterThan(0, $infocom2_id);
         $this->assertEquals(

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,7 @@
 
 namespace Glpi\OAuth;
 
+use Glpi\Exception\OAuth2KeyException;
 use Glpi\Http\Request;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Grant\AuthCodeGrant;
@@ -42,9 +43,22 @@ use League\OAuth2\Server\Grant\ClientCredentialsGrant;
 use League\OAuth2\Server\Grant\PasswordGrant;
 use League\OAuth2\Server\Grant\RefreshTokenGrant;
 use League\OAuth2\Server\ResourceServer;
+use RuntimeException;
+use Safe\Exceptions\FilesystemException;
+use Safe\Exceptions\OpensslException;
+use Throwable;
+
+use function Safe\file_put_contents;
+use function Safe\openssl_pkey_export_to_file;
+use function Safe\openssl_pkey_new;
+use function Safe\chmod;
+use function Safe\unlink;
 
 final class Server
 {
+    private const PRIVATE_KEY_PATH = GLPI_CONFIG_DIR . '/oauth.pem';
+    private const PUBLIC_KEY_PATH  = GLPI_CONFIG_DIR . '/oauth.pub';
+
     /**
      * @var ClientRepository
      */
@@ -81,16 +95,17 @@ final class Server
 
     public function __construct()
     {
+        //check for keys
+        self::checkKeys();
+
         $this->client_repository = new ClientRepository();
         $this->access_token_repository = new AccessTokenRepository();
         $this->scope_repository = new ScopeRepository();
 
-        $public_key_path = GLPI_CONFIG_DIR . '/oauth.pub';
-        $this->resource_server = new ResourceServer($this->access_token_repository, "file://$public_key_path");
+        $this->resource_server = new ResourceServer($this->access_token_repository, "file://" . self::PUBLIC_KEY_PATH);
 
-        $private_key_path = GLPI_CONFIG_DIR . '/oauth.pem';
         $encryption_key = (new \GLPIKey())->get();
-        $this->auth_server = new AuthorizationServer($this->client_repository, $this->access_token_repository, $this->scope_repository, "file://$private_key_path", $encryption_key);
+        $this->auth_server = new AuthorizationServer($this->client_repository, $this->access_token_repository, $this->scope_repository, "file://" . self::PRIVATE_KEY_PATH, $encryption_key);
         $this->auth_server->enableGrantType(
             new ClientCredentialsGrant(),
             new \DateInterval(self::GLPI_OAUTH_ACCESS_TOKEN_EXPIRES)
@@ -136,11 +151,15 @@ final class Server
     /**
      * @param Request $request
      * @return array
-     * @phpstan-return {client_id: string, user_id: string, scopes: string[]}
+     * @phpstan-return array{client_id: string, user_id: string, scopes: string[]}
      * @throws \League\OAuth2\Server\Exception\OAuthServerException
+     * @throws OAuth2KeyException
      */
     public static function validateAccessToken(Request $request): array
     {
+        //check for keys
+        self::checkKeys();
+
         $new_request = self::getInstance()->resource_server->validateAuthenticatedRequest($request);
         return [
             'client_id' => $new_request->getAttribute('oauth_client_id'),
@@ -175,45 +194,112 @@ final class Server
         ];
     }
 
+    public static function checkKeys(): bool
+    {
+        if (
+            file_exists(self::PRIVATE_KEY_PATH)
+            && file_exists(self::PUBLIC_KEY_PATH)
+        ) {
+            // Keys are already generated
+
+            if (is_readable(self::PRIVATE_KEY_PATH) && is_readable(self::PUBLIC_KEY_PATH)) {
+                return true;
+            } else {
+                throw new OAuth2KeyException('Either private or public OAuth keys cannot be read. Please check file system permissions');
+            }
+        }
+
+        return false;
+    }
     public static function generateKeys(): void
     {
-        $private_key_path = GLPI_CONFIG_DIR . '/oauth.pem';
-        $public_key_path = GLPI_CONFIG_DIR . '/oauth.pub';
-        if (!file_exists($private_key_path) && !file_exists($public_key_path)) {
-            $config = [
-                'digest_alg'       => 'sha512',
-                'private_key_bits' => 2048,
-                'private_key_type' => OPENSSL_KEYTYPE_RSA,
-            ];
-            $success = false;
-            $error = null;
-            $res = openssl_pkey_new($config);
-            if ($res && openssl_pkey_export_to_file($res, $private_key_path)) {
-                // Export public key to the public key file
-                $pubkey = openssl_pkey_get_details($res);
-                if ($pubkey !== false && file_put_contents($public_key_path, $pubkey['key']) === strlen($pubkey['key'])) {
-                    if (chmod($private_key_path, 0660) && chmod($public_key_path, 0660)) {
-                        $success = true;
-                    } else {
-                        $error = 'Unable to set permissions on the generated keys';
-                    }
-                } else {
-                    $error = 'Unable to export public key';
-                }
-            } else {
-                $error = 'Unable to generate keys';
-            }
+        if (self::checkKeys()) {
+            // Keys are already generated
+            return;
+        }
 
-            if (!$success) {
-                // Key files didn't exist before and an error occured. We should try removing any that were created to be able to retry later
-                if (file_exists($private_key_path)) {
-                    unlink($private_key_path);
-                }
-                if (file_exists($public_key_path)) {
-                    unlink($public_key_path);
-                }
-                throw new \RuntimeException($error);
-            }
+        // Partial data: unsure how to proceed, let the user review the files.
+        if (
+            file_exists(self::PRIVATE_KEY_PATH)
+            && !file_exists(self::PUBLIC_KEY_PATH)
+        ) {
+            throw new RuntimeException("Mising file: " . self::PUBLIC_KEY_PATH);
+        }
+        if (
+            file_exists(self::PUBLIC_KEY_PATH)
+            && !file_exists(self::PRIVATE_KEY_PATH)
+        ) {
+            throw new RuntimeException("Mising file: " . self::PRIVATE_KEY_PATH);
+        }
+
+        // If we reach this point, both file are missing and must be generated
+        try {
+            // Generate keys
+            self::doGenerateKeys();
+        } catch (Throwable $e) {
+            // Make sure we don't save any partially generated data
+            self::deleteKeys();
+
+            // Propagate exception
+            throw $e;
+        }
+    }
+
+    private static function doGenerateKeys(): void
+    {
+        $config = [
+            'digest_alg'       => 'sha512',
+            'private_key_bits' => 2048,
+            'private_key_type' => OPENSSL_KEYTYPE_RSA,
+        ];
+
+        // Generate key
+        try {
+            $key = openssl_pkey_new($config);
+        } catch (OpensslException $e) {
+            throw new RuntimeException("Unable to generate keys: " . $e->getMessage(), $e->getCode(), $e);
+        }
+
+        // Export private key to file
+        try {
+            openssl_pkey_export_to_file($key, self::PRIVATE_KEY_PATH);
+        } catch (OpensslException $e) {
+            throw new RuntimeException("Unable to export private key: " . $e->getMessage(), $e->getCode(), $e);
+        }
+
+        // Get public key
+        $pubkey = openssl_pkey_get_details($key);
+        if ($pubkey === false) {
+            $error = openssl_error_string();
+            throw new RuntimeException("Unable to get public key details: $error");
+        }
+
+        // Export public key to file
+        try {
+            $written_bytes = file_put_contents(self::PUBLIC_KEY_PATH, $pubkey['key']);
+        } catch (FilesystemException $e) {
+            throw new RuntimeException("Unable to export public key: " . $e->getMessage(), $e->getCode(), $e);
+        }
+        if ($written_bytes !== strlen($pubkey['key'])) {
+            throw new RuntimeException('Unable to export public key');
+        }
+
+        // Set permissions to both key files
+        try {
+            chmod(self::PRIVATE_KEY_PATH, 0o660);
+            chmod(self::PUBLIC_KEY_PATH, 0o660);
+        } catch (FilesystemException $e) {
+            throw new RuntimeException('Unable to set permissions on the generated keys', $e->getCode(), $e);
+        }
+    }
+
+    private static function deleteKeys(): void
+    {
+        if (file_exists(self::PRIVATE_KEY_PATH)) {
+            unlink(self::PRIVATE_KEY_PATH);
+        }
+        if (file_exists(self::PUBLIC_KEY_PATH)) {
+            unlink(self::PUBLIC_KEY_PATH);
         }
     }
 }

@@ -33,7 +33,7 @@
             for (let i = 0; i < textareas.length; i++) {
                 const textarea = textareas[i];
                 const editor = tinyMCE.get(textarea.id);
-                if (editor !== undefined) {
+                if (editor !== undefined && editor !== null) {
                     const editor_root_element = $(editor.dom.doc.documentElement);
                     const page_root_element = $(document.documentElement);
                     const to_copy = ['data-glpi-theme', 'data-glpi-theme-dark'];
@@ -43,6 +43,9 @@
                         }
                     }
                 }
+            }
+            if (window.monaco?.editor !== undefined) {
+                window.monaco.editor.setTheme(new_theme['is_dark'] ? 'glpi-dark' : 'glpi');
             }
         }
         emit('refreshButton');

@@ -5,8 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -181,7 +180,7 @@ Cypress.Commands.add('iframe', {prevSubject: 'element'}, (iframe, url_pattern) =
 Cypress.Commands.add('awaitTinyMCE',  {
     prevSubject: 'element',
 }, (subject) => {
-    cy.wrap(subject).siblings('div.tox-tinymce').should('exist').find('iframe').iframe('about:srcdoc').find('p', {timeout: 10000});
+    cy.wrap(subject).parent().find('div.tox-tinymce').should('exist').find('iframe').iframe('about:srcdoc').find('p', {timeout: 10000});
 });
 
 Cypress.Commands.overwrite('type', (originalFn, subject, text, options) => {
@@ -317,28 +316,99 @@ Cypress.Commands.add('validateSelect2Loading', {prevSubject: true}, (subject) =>
     });
 });
 
-Cypress.Commands.add("getMany", (names) => {
+/**
+ * @memberof Cypress.Chainable.prototype
+ * @method getMany
+ * @description Get multiple elements and return their values
+ * @param {string[]} names Array of selectors
+ */
+Cypress.Commands.add("getMany", (selectors) => {
     const values = [];
-    for (const arg of names) {
+    for (const arg of selectors) {
         cy.get(arg).then((value) => values.push(value));
     }
     return cy.wrap(values);
 });
 
-Cypress.Commands.add("createWithAPI", (url, values) => {
-    return cy.initApi().doApiRequest("POST", url, values).then(response => {
+/**
+ * @memberof Cypress.Chainable.prototype
+ * @method createWithAPI
+ * @description Get  an item using the legacy API
+ * @param {string} itemtype
+ * @param {number} id
+ */
+Cypress.Commands.add("getWithAPI", (itemtype, id) => {
+    const url = `${itemtype}/${id}`;
+    return cy.initApi().doApiRequest("GET", url).then(response => {
+        return response.body;
+    });
+});
+
+/**
+ * @memberof Cypress.Chainable.prototype
+ * @method createWithAPI
+ * @description Create an item using the legacy API
+ * @param {string} itemtype API endpoint
+ * @param {object} values Values to create the item with
+ */
+Cypress.Commands.add("createWithAPI", (itemtype, values) => {
+    return cy.initApi().doApiRequest("POST", itemtype, values).then(response => {
         if (response.status !== 201) {
             throw new Error('Failed to create item');
+        }
+
+        // Session can't be re-used as active entities will be invalid...
+        if (itemtype == "Entity") {
+            api_token = null;
         }
 
         return response.body.id;
     });
 });
 
-Cypress.Commands.add("updateWithAPI", (url, values) => {
-    cy.initApi().doApiRequest("PUT", url, values);
+/**
+ * @memberof Cypress.Chainable.prototype
+ * @method updateWithAPI
+ * @description Update an item using the legacy API
+ * @param {string} itemtype API endpoint
+ * @param {object} values Values to update the item with
+ */
+Cypress.Commands.add("updateWithAPI", (itemtype, id, values) => {
+    cy.initApi().doApiRequest("PUT", `${itemtype}/${id}`, values);
 });
 
+Cypress.Commands.add("deleteWithAPI", (itemtype, id) => {
+    cy.initApi().doApiRequest("DELETE", `${itemtype}/${id}`);
+});
+
+Cypress.Commands.add("searchWithAPI", (itemtype, values) => {
+    let url = `search/${itemtype}`;
+
+    let i = 0;
+    for (const criteria of values) {
+        url += i == 0 ? "?" : "&";
+        url += `criteria[${i}][link]=${criteria.link}`;
+        url += `&criteria[${i}][field]=${criteria.field}`;
+        url += `&criteria[${i}][searchtype]=${criteria.searchtype}`;
+        url += `&criteria[${i}][value]=${criteria.value}`;
+        i++;
+    }
+
+    return cy.initApi().doApiRequest("GET", url).then((response) => {
+        if (response.body.count == 0) {
+            // The "data" key does not exist in the API response if there are 0 results.
+            return [];
+        }
+
+        return response.body.data;
+    });
+});
+
+/**
+ * @memberof Cypress.Chainable.prototype
+ * @method initApi
+ * @description Initialize the API session
+ */
 Cypress.Commands.add("initApi", () => {
     if (api_token !== null) {
         return api_token;
@@ -357,11 +427,20 @@ Cypress.Commands.add("initApi", () => {
     });
 });
 
+/**
+ * @memberof Cypress.Chainable.prototype
+ * @method doApiRequest
+ * @description Perform an API request
+ * @param {string} token API token
+ * @param {string} method HTTP method
+ * @param {string} endpoint API endpoint
+ * @param {object} values Values to send in the request
+ */
 Cypress.Commands.add("doApiRequest", {prevSubject: true}, (token, method, endpoint, values) => {
     return cy.request({
         method: method,
         url: `/apirest.php/${encodeURI(endpoint)}`,
-        body: {input: values},
+        body: values !== undefined ? {input: values} : null,
         headers: {
             'Session-Token': token,
         }
@@ -380,14 +459,21 @@ Cypress.Commands.add('enableDebugMode', () => {
         return;
     }
 
-    cy.request({
-        method: 'POST',
-        url: '/ajax/switchdebug.php',
-        body: {
-            'debug': 'on',
-        },
-    }).then(() => {
-        cy.reload();
+    cy.getCsrfToken().then((csrf) => {
+        cy.request({
+            method: 'POST',
+            url: '/ajax/switchdebug.php',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-Glpi-Csrf-Token': csrf,
+            },
+            body: {
+                'debug': 'on',
+            },
+        }).then(() => {
+            cy.reload();
+        });
     });
 });
 
@@ -400,14 +486,22 @@ Cypress.Commands.add('disableDebugMode', () => {
     if (Cypress.$('#debug-toolbar-applet').length === 0) {
         return;
     }
-    cy.request({
-        method: 'POST',
-        url: '/ajax/switchdebug.php',
-        body: {
-            'debug': 'off',
-        },
-    }).then(() => {
-        cy.reload();
+
+    cy.getCsrfToken().then((csrf) => {
+        cy.request({
+            method: 'POST',
+            url: '/ajax/switchdebug.php',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-Glpi-Csrf-Token': csrf,
+            },
+            body: {
+                'debug': 'off',
+            },
+        }).then(() => {
+            cy.reload();
+        });
     });
 });
 
@@ -443,7 +537,46 @@ Cypress.Commands.add('dropDraggedItemAfter', {prevSubject: true}, (subject) => {
 });
 
 Cypress.Commands.add('checkAndCloseAlert', (text) => {
-    cy.findByRole('alert').as('alert');
-    cy.get('@alert').should('contain.text', text);
-    cy.get('@alert').findByRole('button', {name: 'Close'}).click();
+    cy.findAllByRole('alert').as('alerts');
+    cy.get('@alerts').should('contain.text', text);
+    cy.get('@alerts').findByRole('button', {name: 'Close'}).click();
+});
+
+Cypress.Commands.add('validateBreadcrumbs', (breadcrumbs) => {
+    cy.findByRole('banner').findAllByRole('list').eq(0).as('breadcrumbs');
+    breadcrumbs.forEach((expected_breadcrumb, i) => {
+        cy.get('@breadcrumbs')
+            .findAllByRole('link')
+            .eq(i)
+            .should('contains.text', expected_breadcrumb)
+        ;
+    });
+});
+
+Cypress.Commands.add('validateMenuIsActive', (name) => {
+    cy.findByRole('complementary')
+        .findByRole('link', {'name': name})
+        .should('have.class', 'active')
+    ;
+});
+
+Cypress.Commands.add('openAccordionItem', (container_label, item_label) => {
+    cy.findAllByRole('region', {name: container_label})
+        .findByRole('button', {name: item_label})
+        .should('have.class', 'collapsed')
+        .click()
+    ;
+});
+
+
+Cypress.Commands.add('closeAccordionItem', (container_label, item_label) => {
+    cy.findAllByRole('region', {name: container_label})
+        .findByRole('button', {name: item_label})
+        .should('not.have.class', 'collapsed')
+        .click()
+    ;
+});
+
+Cypress.Commands.add('updateTestUserSettings', (settings) => {
+    return cy.updateWithAPI('User', 7, settings);
 });

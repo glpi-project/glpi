@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -35,13 +35,13 @@
         <div role="alert" class="alert alert-danger alert-important">
             <div class="d-flex">
                 <div class="me-2">
-                    <i class="fas fa-exclamation-triangle fa-2x"></i>
+                    <i class="ti ti-alert-triangle fs-2x"></i>
                 </div>
                 <div>
                     {{ message }}
                     {% if link_url is not empty %}
                         <br>
-                        <a href="{{ link }}">{{ link_text }}</a>
+                        <a href="{{ link_url }}">{{ link_text }}</a>
                     {% endif %}
                 </div>
             </div>

@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -107,24 +106,14 @@ if (empty($config['system_user'])) {
 }
 
 // Add crontask for auto bump and auto solve
-$crontask = new CronTask();
-if (empty($crontask->find(['itemtype' => 'PendingReasonCron']))) {
-    $cron_added = CronTask::register(
-        'PendingReasonCron',
-        'pendingreason_autobump_autosolve',
-        30 * MINUTE_TIMESTAMP,
-        [
-            'state'         => 1,
-            'mode'          => 2,
-            'allowmode'     => 3,
-            'logs_lifetime' => 60,
-        ]
-    );
-
-    if (!$cron_added) {
-        die("Can't add PendingReasonCron");
-    }
-}
+$migration->addCrontask(
+    'PendingReasonCron',
+    'pendingreason_autobump_autosolve',
+    30 * MINUTE_TIMESTAMP,
+    options: [
+        'logs_lifetime' => 60,
+    ]
+);
 
 // Name change, might be needed for a few user who used the feature before release
 if ($DB->fieldExists('glpi_pendingreasons_items', 'auto_bump')) {

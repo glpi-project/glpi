@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Entity;
 
 class Appliance_Item_RelationTest extends DbTestCase
 {
@@ -53,10 +53,13 @@ class Appliance_Item_RelationTest extends DbTestCase
         /** @var \DBmysql $DB */
         global $DB;
 
+        $entity_id = \getItemByTypeName(Entity::class, '_test_root_entity', true);
+
         $appliance = new \Appliance();
 
-        $appliances_id = (int)$appliance->add([
-            'name'   => 'Test appliance'
+        $appliances_id = (int) $appliance->add([
+            'name'        => 'Test appliance',
+            'entities_id' => $entity_id,
         ]);
         $this->assertGreaterThan(0, $appliances_id);
 
@@ -64,7 +67,7 @@ class Appliance_Item_RelationTest extends DbTestCase
         $input = [
             'appliances_id'   => $appliances_id,
             'itemtype'        => 'Computer',
-            'items_id'        => $items_id
+            'items_id'        => $items_id,
         ];
         $appitem = new \Appliance_Item();
         $appliances_items_id = $appitem->add($input);
@@ -73,7 +76,7 @@ class Appliance_Item_RelationTest extends DbTestCase
         $input = [
             'appliances_items_id'   => $appliances_items_id,
             'itemtype'              => 'Location',
-            'items_id'              => getItemByTypeName('Location', '_location01', true)
+            'items_id'              => getItemByTypeName('Location', '_location01', true),
         ];
         $aritem = new \Appliance_Item_Relation();
         $this->assertGreaterThan(0, $aritem->add($input));
@@ -93,13 +96,13 @@ class Appliance_Item_RelationTest extends DbTestCase
         $this->assertTrue($appliance->delete(['id' => $appliances_id], true));
         $iterator = $DB->request([
             'FROM'   => \Appliance_Item::getTable(),
-            'WHERE'  => ['appliances_id' => $appliances_id]
+            'WHERE'  => ['appliances_id' => $appliances_id],
         ]);
         $this->assertCount(0, $iterator);
 
         $iterator = $DB->request([
             'FROM'   => \Appliance_Item_Relation::getTable(),
-            'WHERE'  => ['appliances_items_id' => $appliances_items_id]
+            'WHERE'  => ['appliances_items_id' => $appliances_items_id],
         ]);
         $this->assertCount(0, $iterator);
 

@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -42,7 +41,6 @@ use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\HttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Psr\Log\LogLevel;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -124,7 +122,7 @@ class ErrorControllerTest extends DbTestCase
                     'exception'         => new \Exception(),
                     'expected_code'     => 500,
                     'expected_title'    => 'Error',
-                    'expected_message'  => 'An unexpected error has occurred.',
+                    'expected_message'  => 'An unexpected error occurred',
                 ];
 
                 // Check some random 5xx codes
@@ -135,7 +133,7 @@ class ErrorControllerTest extends DbTestCase
                         'exception'         => new HttpException($code),
                         'expected_code'     => $code,
                         'expected_title'    => 'Error',
-                        'expected_message'  => 'An unexpected error has occurred.',
+                        'expected_message'  => 'An unexpected error occurred',
                     ];
                 }
             }
@@ -182,10 +180,6 @@ class ErrorControllerTest extends DbTestCase
         } else {
             $this->assertStringNotContainsString('<pre data-testid="stack-trace">', $content);
         }
-
-        if ($expected_code >= 500) {
-            $this->hasPhpLogRecordThatContains('*** Uncaught Exception', LogLevel::CRITICAL);
-        }
     }
 
     #[DataProvider('requestProvider')]
@@ -225,10 +219,6 @@ class ErrorControllerTest extends DbTestCase
             $this->assertStringContainsString('<pre data-testid="stack-trace">', $content);
         } else {
             $this->assertStringNotContainsString('<pre data-testid="stack-trace">', $content);
-        }
-
-        if ($expected_code >= 500) {
-            $this->hasPhpLogRecordThatContains('*** Uncaught Exception', LogLevel::CRITICAL);
         }
     }
 
@@ -278,9 +268,5 @@ class ErrorControllerTest extends DbTestCase
 
         $this->assertArrayHasKey('trace', $decoded_content);
         $this->assertEquals($debug_mode, $decoded_content['trace'] !== null);
-
-        if ($expected_code >= 500) {
-            $this->hasPhpLogRecordThatContains('*** Uncaught Exception', LogLevel::CRITICAL);
-        }
     }
 }

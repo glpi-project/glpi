@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,27 +37,30 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Event;
+use Glpi\Form\ServiceCatalog\ServiceCatalog;
+use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
 use Glpi\RichText\RichText;
+use Glpi\UI\IllustrationManager;
 
 /**
  * KnowbaseItem Class
  **/
-class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
+class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, ServiceCatalogLeafInterface
 {
     use Glpi\Features\Clonable;
     use Glpi\Features\TreeBrowse;
 
     public static $browse_default = true;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory    = true;
 
     protected $items     = [];
 
-    const KNOWBASEADMIN = 1024;
-    const READFAQ       = 2048;
-    const PUBLISHFAQ    = 4096;
-    const COMMENTS      = 8192;
+    public const KNOWBASEADMIN = 1024;
+    public const READFAQ       = 2048;
+    public const PUBLISHFAQ    = 4096;
+    public const COMMENTS      = 8192;
 
     public static $rightname   = 'knowbase';
 
@@ -221,12 +224,13 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
     {
         $ong = [];
         $this->addStandardTab(__CLASS__, $ong, $options);
-        $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
-        $this->addStandardTab('Document_Item', $ong, $options);
-        $this->addStandardTab('KnowbaseItemTranslation', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
-        $this->addStandardTab('KnowbaseItem_Revision', $ong, $options);
-        $this->addStandardTab('KnowbaseItem_Comment', $ong, $options);
+        $this->addStandardTab(KnowbaseItem_Item::class, $ong, $options);
+        $this->addStandardTab(Document_Item::class, $ong, $options);
+        $this->addStandardTab(KnowbaseItemTranslation::class, $ong, $options);
+        $this->addStandardTab(ServiceCatalog::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
+        $this->addStandardTab(KnowbaseItem_Revision::class, $ong, $options);
+        $this->addStandardTab(KnowbaseItem_Comment::class, $ong, $options);
 
         return $ong;
     }
@@ -350,11 +354,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             }
         }
 
-        if (isset($this->input['_do_item_link']) && (bool)$this->input['_do_item_link']) {
+        if (isset($this->input['_do_item_link']) && (bool) $this->input['_do_item_link']) {
             $params = [
                 'knowbaseitems_id' => $this->getID(),
                 'itemtype'         => $this->input['_itemtype'],
-                'items_id'         => $this->input['_items_id']
+                'items_id'         => $this->input['_items_id'],
             ];
             $kb_item_item = new KnowbaseItem_Item();
             $kb_item_item->add($params);
@@ -452,7 +456,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             return false;
         }
 
-       // KB Admin
+        // KB Admin
         if (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
             return true;
         }
@@ -519,8 +523,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             $join['glpi_knowbaseitems_users'] = [
                 'ON' => [
                     'glpi_knowbaseitems_users' => 'knowbaseitems_id',
-                    'glpi_knowbaseitems'       => 'id'
-                ]
+                    'glpi_knowbaseitems'       => 'id',
+                ],
             ];
         }
 
@@ -529,8 +533,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             $join['glpi_groups_knowbaseitems'] = [
                 'ON' => [
                     'glpi_groups_knowbaseitems' => 'knowbaseitems_id',
-                    'glpi_knowbaseitems'       => 'id'
-                ]
+                    'glpi_knowbaseitems'       => 'id',
+                ],
             ];
         }
 
@@ -539,8 +543,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             $join['glpi_knowbaseitems_profiles'] = [
                 'ON' => [
                     'glpi_knowbaseitems_profiles' => 'knowbaseitems_id',
-                    'glpi_knowbaseitems'       => 'id'
-                ]
+                    'glpi_knowbaseitems'       => 'id',
+                ],
             ];
         }
 
@@ -549,8 +553,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             $join['glpi_entities_knowbaseitems'] = [
                 'ON' => [
                     'glpi_entities_knowbaseitems' => 'knowbaseitems_id',
-                    'glpi_knowbaseitems'       => 'id'
-                ]
+                    'glpi_knowbaseitems'       => 'id',
+                ],
             ];
         }
 
@@ -704,7 +708,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         // All entities
         if (!count($entity_restriction)) {
             $entity_restriction = [
-                Entity_KnowbaseItem::getTableField('entities_id') => null
+                Entity_KnowbaseItem::getTableField('entities_id') => null,
             ];
         }
 
@@ -771,15 +775,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         NotificationEvent::raiseEvent('delete', $this);
     }
 
-    /**
-     * Print out an HTML "<form>" for knowbase item
-     *
-     * @param integer $ID
-     * @param array $options
-     *     - target for the Form
-     *
-     * @return void
-     **/
     public function showForm($ID, array $options = [])
     {
         // show kb item form
@@ -789,7 +784,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                 [UPDATE, self::PUBLISHFAQ, self::KNOWBASEADMIN]
             )
         ) {
-            return;
+            return false;
         }
 
         $canedit = $this->can($ID, UPDATE);
@@ -797,6 +792,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         $item = null;
         // Load ticket solution
         if (empty($ID) && !empty($options['item_itemtype']) && !empty($options['item_items_id'])) {
+            /** @var ?CommonITILObject $item */
             if ($item = getItemForItemtype($options['item_itemtype'])) {
                 if ($item->getFromDB($options['item_items_id'])) {
                     $this->fields['name']   = $item->getField('name');
@@ -805,22 +801,21 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                         $fup->getFromDBByCrit([
                             'id'           => $options['_fup_to_kb'],
                             'itemtype'     => $item::class,
-                            'items_id'     => $item->getID()
+                            'items_id'     => $item->getID(),
                         ]);
                         $this->fields['answer'] = $fup->getField('content');
-                    } else if (isset($options['_task_to_kb'])) {
-                        $tasktype = $item::class . 'Task';
-                        $task = new $tasktype();
+                    } elseif (isset($options['_task_to_kb'])) {
+                        $task = $item->getTaskClassInstance();
                         $task->getFromDB($options['_task_to_kb']);
                         $this->fields['answer'] = $task->getField('content');
-                    } else if (isset($options['_sol_to_kb'])) {
+                    } elseif (isset($options['_sol_to_kb'])) {
                         $solution = new ITILSolution();
                         $solution->getFromDBByCrit([
                             'itemtype'     => $item::class,
                             'items_id'     => $item->getID(),
                             [
-                                'NOT' => ['status'       => CommonITILValidation::REFUSED]
-                            ]
+                                'NOT' => ['status'       => CommonITILValidation::REFUSED],
+                            ],
                         ]);
                         $this->fields['answer'] = $solution->getField('content');
                     }
@@ -847,8 +842,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             'no_header' => true,
             'params' => [
                 'canedit' => $canedit,
-            ] + $options
+            ] + $options,
         ]);
+
+        return true;
     }
 
     /**
@@ -865,10 +862,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         $DB->update(
             'glpi_knowbaseitems',
             [
-                'view'   => new QueryExpression($DB::quoteName('view') . ' + 1')
+                'view'   => new QueryExpression($DB::quoteName('view') . ' + 1'),
             ],
             [
-                'id' => $this->getID()
+                'id' => $this->getID(),
             ]
         );
     }
@@ -1042,6 +1039,17 @@ TWIG, $twig_params);
         /** @var \DBmysql $DB */
         global $DB;
 
+        $params = array_replace([
+            'contains' => '',
+            'knowbaseitemcategories_id' => KnowbaseItemCategory::SEEALL,
+            'faq' => false,
+        ], $params);
+
+        // Mysql's MATCH AGAINST do not accept expressions that contains only spaces
+        if (trim($params['contains']) === '') {
+            $params['contains'] = '';
+        }
+
         $criteria = [
             'SELECT' => [
                 'glpi_knowbaseitems.*',
@@ -1051,15 +1059,15 @@ TWIG, $twig_params);
                     QueryFunction::count('glpi_knowbaseitems_profiles.id') . ' + ' .
                     QueryFunction::count('glpi_entities_knowbaseitems.id') . ' AS ' .
                     $DB::quoteName('visibility_count')
-                )
+                ),
             ],
             'FROM'   => 'glpi_knowbaseitems',
             'WHERE'     => [], //to be filled
             'LEFT JOIN' => [], //to be filled
-            'GROUPBY'   => ['glpi_knowbaseitems.id']
+            'GROUPBY'   => ['glpi_knowbaseitems.id'],
         ];
 
-       // Lists kb Items
+        // Lists kb Items
         $restrict = self::getVisibilityCriteria(true);
         $restrict_where = $restrict['WHERE'];
         unset($restrict['WHERE'], $restrict['SELECT']);
@@ -1072,14 +1080,14 @@ TWIG, $twig_params);
                 break;
 
             default:
-               // Build query
+                // Build query
                 if (Session::getLoginUserID()) {
                     $criteria['WHERE'] = array_merge(
                         $criteria['WHERE'],
                         $restrict_where
                     );
                 } else {
-                   // Anonymous access
+                    // Anonymous access
                     if (Session::isMultiEntitiesMode()) {
                         $criteria['WHERE']['glpi_entities_knowbaseitems.entities_id'] = 0;
                         $criteria['WHERE']['glpi_entities_knowbaseitems.is_recursive'] = 1;
@@ -1093,7 +1101,7 @@ TWIG, $twig_params);
                 'OR' => [
                     'glpi_knowbaseitems.is_faq' => 1,
                     'glpi_knowbaseitems_users.users_id' => Session::getLoginUserID(),
-                ]
+                ],
             ];
         }
 
@@ -1117,16 +1125,16 @@ TWIG, $twig_params);
                     'glpi_knowbaseitems'             => 'id',
                     'glpi_knowbaseitemtranslations'  => 'knowbaseitems_id', [
                         'AND'                            => [
-                            'glpi_knowbaseitemtranslations.language' => $_SESSION['glpilanguage']
-                        ]
-                    ]
-                ]
+                            'glpi_knowbaseitemtranslations.language' => $_SESSION['glpilanguage'],
+                        ],
+                    ],
+                ],
             ];
             $criteria['SELECT'][] = 'glpi_knowbaseitemtranslations.name AS transname';
             $criteria['SELECT'][] = 'glpi_knowbaseitemtranslations.answer AS transanswer';
         }
 
-       // a search with $contains
+        // a search with $contains
         switch ($type) {
             case 'allmy':
                 $criteria['WHERE']['glpi_knowbaseitems.users_id'] = Session::getLoginUserID();
@@ -1141,7 +1149,7 @@ TWIG, $twig_params);
                 break;
 
             case 'allunpublished':
-               // Only published
+                // Only published
                 $criteria['WHERE']['glpi_entities_knowbaseitems.entities_id'] = null;
                 $criteria['WHERE']['glpi_knowbaseitems_profiles.profiles_id'] = null;
                 $criteria['WHERE']['glpi_groups_knowbaseitems.groups_id'] = null;
@@ -1161,14 +1169,14 @@ TWIG, $twig_params);
                     if (countElementsInTable('glpi_knowbaseitemtranslations') > 0) {
                         $addscore = [
                             'glpi_knowbaseitemtranslations.name',
-                            'glpi_knowbaseitemtranslations.answer'
+                            'glpi_knowbaseitemtranslations.answer',
                         ];
                     }
 
                     $expr = "(MATCH(" . $DB->quoteName('glpi_knowbaseitems.name') . ", " . $DB->quoteName('glpi_knowbaseitems.answer') . ")
                            AGAINST(" . $DB->quote($search_wilcard) . " IN BOOLEAN MODE)";
 
-                    if (!empty($addscore)) {
+                    if ($addscore !== []) {
                         foreach ($addscore as $addscore_field) {
                             $expr .= " + MATCH(" . $DB->quoteName($addscore_field) . ")
                                         AGAINST(" . $DB->quote($search_wilcard) . " IN BOOLEAN MODE)";
@@ -1182,17 +1190,17 @@ TWIG, $twig_params);
                             "MATCH(" . $DB->quoteName('glpi_knowbaseitems.name') . ",
                         " . $DB->quoteName('glpi_knowbaseitems.answer') . ")
                         AGAINST(" . $DB->quote($search_wilcard) . " IN BOOLEAN MODE)"
-                        )
+                        ),
                     ];
 
-                    if (!empty($addscore)) {
+                    if ($addscore !== []) {
                         foreach ($addscore as $addscore_field) {
                             $ors[] = [
                                 'NOT' => [$addscore_field => null],
                                 new QueryExpression(
                                     "MATCH(" . $DB->quoteName($addscore_field) . ")
                               AGAINST(" . $DB->quote($search_wilcard) . " IN BOOLEAN MODE)"
-                                )
+                                ),
                             ];
                         }
                     }
@@ -1201,30 +1209,30 @@ TWIG, $twig_params);
 
                     $search_where[] = ['OR' => $ors];
 
-                   // Add visibility date
+                    // Add visibility date
                     $visibility_crit = [
                         [
                             'OR'  => [
                                 ['glpi_knowbaseitems.begin_date'  => null],
-                                ['glpi_knowbaseitems.begin_date'  => ['<', QueryFunction::now()]]
-                            ]
+                                ['glpi_knowbaseitems.begin_date'  => ['<', QueryFunction::now()]],
+                            ],
                         ], [
                             'OR'  => [
                                 ['glpi_knowbaseitems.end_date'    => null],
-                                ['glpi_knowbaseitems.end_date'    => ['>', QueryFunction::now()]]
-                            ]
-                        ]
+                                ['glpi_knowbaseitems.end_date'    => ['>', QueryFunction::now()]],
+                            ],
+                        ],
                     ];
                     $search_where[] = $visibility_crit;
 
                     $criteria['ORDERBY'] = ['SCORE DESC'];
 
-                   // preliminar query to allow alternate search if no result with fulltext
+                    // preliminar query to allow alternate search if no result with fulltext
                     $search_criteria = [
                         'COUNT'     => 'cpt',
                         'LEFT JOIN' => $criteria['LEFT JOIN'],
                         'FROM'      => 'glpi_knowbaseitems',
-                        'WHERE'     => $search_where
+                        'WHERE'     => $search_where,
                     ];
                     $search_iterator = $DB->request($search_criteria);
                     $numrows_search = $search_iterator->current()['cpt'];
@@ -1238,19 +1246,19 @@ TWIG, $twig_params);
                             /* 6 */   "/>/",
                             /* 7 */   "/\(/",
                             /* 8 */   "/\)/",
-                            /* 9 */   "/\-/"
+                            /* 9 */   "/\-/",
                         ];
                         $contains = preg_replace($search1, "", $params["contains"]);
                         $ors = [
                             ["glpi_knowbaseitems.name"     => ['LIKE', Search::makeTextSearchValue($contains)]],
-                            ["glpi_knowbaseitems.answer"   => ['LIKE', Search::makeTextSearchValue($contains)]]
+                            ["glpi_knowbaseitems.answer"   => ['LIKE', Search::makeTextSearchValue($contains)]],
                         ];
                         if (countElementsInTable('glpi_knowbaseitemtranslations') > 0) {
                             $ors[] = ["glpi_knowbaseitemtranslations.name"   => ['LIKE', Search::makeTextSearchValue($contains)]];
                             $ors[] = ["glpi_knowbaseitemtranslations.answer" => ['LIKE', Search::makeTextSearchValue($contains)]];
                         }
                         $criteria['WHERE'][] = ['OR' => $ors];
-                       // Add visibility date
+                        // Add visibility date
                         $criteria['WHERE'][] = $visibility_crit;
                     } else {
                         $criteria['WHERE'] = $search_where;
@@ -1260,18 +1268,18 @@ TWIG, $twig_params);
 
             case 'browse':
                 if (!Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
-                   // Add visibility date
+                    // Add visibility date
                     $criteria['WHERE'][] = [
                         'OR'  => [
                             ['glpi_knowbaseitems.begin_date' => null],
-                            ['glpi_knowbaseitems.begin_date' => ['<', QueryFunction::now()]]
-                        ]
+                            ['glpi_knowbaseitems.begin_date' => ['<', QueryFunction::now()]],
+                        ],
                     ];
                     $criteria['WHERE'][] = [
                         'OR'  => [
                             ['glpi_knowbaseitems.end_date' => null],
-                            ['glpi_knowbaseitems.end_date' => ['>', QueryFunction::now()]]
-                        ]
+                            ['glpi_knowbaseitems.end_date' => ['>', QueryFunction::now()]],
+                        ],
                     ];
                 }
 
@@ -1367,16 +1375,15 @@ TWIG, $twig_params);
         $DBread = DBConnection::getReadConnection();
 
         // Default values of parameters
-        $params['faq']                       = !Session::haveRight(self::$rightname, READ);
-        $params["start"]                     = "0";
-        $params["knowbaseitemcategories_id"] = null;
-        $params["contains"]                  = "";
-        $params["target"]                    = $_SERVER['PHP_SELF'];
+        $params = [
+            'faq' => !Session::haveRight(self::$rightname, READ),
+            'start' => 0,
+            'knowbaseitemcategories_id' => null,
+            'contains' => '',
+        ];
 
-        if (is_array($options) && count($options)) {
-            foreach ($options as $key => $val) {
-                $params[$key] = $val;
-            }
+        if (is_array($options)) {
+            $params = array_replace($params, $options);
         }
         $ki = new self();
         switch ($type) {
@@ -1400,24 +1407,26 @@ TWIG, $twig_params);
             $params["start"] = 0;
         }
 
-        $criteria = self::getListRequest($params, $type);
+        $criteria = self::getListRequest($params, in_array($type, ['search', 'solution'], true) ? 'search' : $type);
 
         $main_iterator = $DBread->request($criteria);
         $rows = count($main_iterator);
         $numrows = $rows;
 
-        // Get it from database
-        $KbCategory = new KnowbaseItemCategory();
-        $title      = "";
-        if ($KbCategory->getFromDB($params["knowbaseitemcategories_id"])) {
-            $title = (empty($KbCategory->fields['name']) ? "(" . $params['knowbaseitemcategories_id'] . ")"
-                : $KbCategory->fields['name']);
-            $title = sprintf(__('%1$s: %2$s'), _n('Category', 'Categories', 1), $title);
-        }
+        if ($type !== 'solution') {
+            // Get it from database
+            $KbCategory = new KnowbaseItemCategory();
+            $title      = "";
+            if ($KbCategory->getFromDB($params["knowbaseitemcategories_id"])) {
+                $title = (empty($KbCategory->fields['name']) ? "(" . $params['knowbaseitemcategories_id'] . ")"
+                    : $KbCategory->fields['name']);
+                $title = sprintf(__('%1$s: %2$s'), _n('Category', 'Categories', 1), $title);
+            }
 
-        Session::initNavigateListItems('KnowbaseItem', $title);
-        // force using getSearchUrl on list icon (when viewing a single article)
-        $_SESSION['glpilisturl']['KnowbaseItem'] = '';
+            Session::initNavigateListItems('KnowbaseItem', $title);
+            // force using getSearchUrl on list icon (when viewing a single article)
+            $_SESSION['glpilisturl']['KnowbaseItem'] = '';
+        }
 
         $list_limit = $_SESSION['glpilist_limit'];
 
@@ -1428,8 +1437,8 @@ TWIG, $twig_params);
             ($rows > $list_limit)
             && !isset($_GET['export_all'])
         ) {
-            $criteria['START'] = (int)$params['start'];
-            $criteria['LIMIT'] = (int)$list_limit;
+            $criteria['START'] = (int) $params['start'];
+            $criteria['LIMIT'] = (int) $list_limit;
             $main_iterator = $DBread->request($criteria);
             $numrows = count($main_iterator);
         }
@@ -1448,6 +1457,7 @@ TWIG, $twig_params);
                 'knowbaseitemcategories_id' => $params['knowbaseitemcategories_id'],
                 'contains' => $params["contains"],
                 'is_faq' => $params['faq'],
+                'type' => $type,
             ];
 
             if (isset($options['item_itemtype'], $options['item_items_id'])) {
@@ -1521,7 +1531,7 @@ TWIG, $twig_params);
                 if ($output_type === Search::HTML_OUTPUT) {
                     $toadd = '';
                     if (isset($options['item_itemtype'], $options['item_items_id'])) {
-                        $href  = " href='#' data-bs-toggle='modal' data-bs-target='#kbshow{$data["id"]}'";
+                        $href  = " href='#' data-bs-toggle='modal' data-bs-target='#kbshow{$data['id']}'";
                         $toadd = Ajax::createIframeModalWindow(
                             'kbshow' . $data["id"],
                             self::getFormURLWithID($data["id"]),
@@ -1531,7 +1541,7 @@ TWIG, $twig_params);
                         $href = " href=\"" . self::getFormURLWithID($data["id"]) . "\" ";
                     }
 
-                    $fa_class = "";
+                    $icon_class = "";
                     $fa_title = "";
                     if (
                         $data['is_faq']
@@ -1539,18 +1549,18 @@ TWIG, $twig_params);
                             || (isset($data['visibility_count'])
                                 && $data['visibility_count'] > 0))
                     ) {
-                        $fa_class = "fa-question-circle faq";
+                        $icon_class = "ti-help faq";
                         $fa_title = __s("This item is part of the FAQ");
-                    } else if (
+                    } elseif (
                         isset($data['visibility_count'])
                         && $data['visibility_count'] <= 0
                     ) {
-                        $fa_class = "fa-eye-slash not-published";
+                        $icon_class = "ti-eye-off not-published";
                         $fa_title = __s("This item is not published yet");
                     }
                     echo Search::showItem(
                         $output_type,
-                        "<div class='kb'>$toadd <i class='fa fa-fw $fa_class' title='$fa_title'></i> <a $href>" . Html::resume_text($name, 80) . "</a></div>
+                        "<div class='kb'>$toadd <i class='ti $icon_class' title='$fa_title'></i> <a $href>" . Html::resume_text($name, 80) . "</a></div>
                                        <div class='kb_resume'>" . Html::resume_text(RichText::getTextFromHtml($answer, false, false), 600) . "</div>",
                         $item_num,
                         $row_num
@@ -1599,8 +1609,8 @@ TWIG, $twig_params);
                         'FROM'   => 'glpi_documents_items',
                         'WHERE'  => [
                             'items_id'  => $data["id"],
-                            'itemtype'  => 'KnowbaseItem'
-                        ] + getEntitiesRestrictCriteria('', '', '', true)
+                            'itemtype'  => 'KnowbaseItem',
+                        ] + getEntitiesRestrictCriteria('', '', '', true),
                     ]);
                     foreach ($iterator as $docs) {
                         $doc = new Document();
@@ -1615,12 +1625,8 @@ TWIG, $twig_params);
                 }
 
                 if (isset($options['item_itemtype'], $options['item_items_id']) && ($output_type === Search::HTML_OUTPUT)) {
-                    $forcetab = $options['item_itemtype'] . '$main';
-                    $item_itemtype = $options['item_itemtype'];
-                    $content = "<a href='" . $item_itemtype::getFormURLWithID($options['item_items_id']) .
-                        "&amp;load_kb_sol=" . $data['id'] .
-                        "&amp;forcetab=" . $forcetab . "'>" .
-                        __s('Use as a solution') . "</a>";
+                    $content = "<button type='button' class='btn btn-link use_solution' data-solution-id='" . $data['id'] . "'>" .
+                        __s('Use as a solution') . "</button>";
                     echo Search::showItem($output_type, $content, $item_num, $row_num);
                 }
 
@@ -1655,7 +1661,7 @@ TWIG, $twig_params);
                 );
             }
         } else {
-            echo "<div class='center b'>" . __s('No item found') . "</div>";
+            echo "<div class='center b'>" . __s('No results found') . "</div>";
         }
     }
 
@@ -1679,13 +1685,13 @@ TWIG, $twig_params);
             'DISTINCT'  => true,
             'FROM'      => self::getTable(),
             'WHERE'     => [],
-            'LIMIT'     => 10
+            'LIMIT'     => 10,
         ];
 
         if ($type === "recent") {
             $criteria['ORDERBY'] = self::getTable() . '.date_creation DESC';
             $title   = __('Recent entries');
-        } else if ($type === 'lastupdate') {
+        } elseif ($type === 'lastupdate') {
             $criteria['ORDERBY'] = self::getTable() . '.date_mod DESC';
             $title   = __('Last updated entries');
         } else {
@@ -1693,7 +1699,7 @@ TWIG, $twig_params);
             $title   = __('Most popular questions');
         }
 
-       // Force all joins for not published to verify no visibility set
+        // Force all joins for not published to verify no visibility set
         $restrict = self::getVisibilityCriteria(true);
         unset($restrict['WHERE'], $restrict['SELECT']);
         $criteria = array_merge($criteria, $restrict);
@@ -1702,35 +1708,35 @@ TWIG, $twig_params);
             $restrict = self::getVisibilityCriteria();
             $criteria['WHERE'] = array_merge($criteria['WHERE'], $restrict['WHERE']);
         } else {
-           // Anonymous access
+            // Anonymous access
             if (Session::isMultiEntitiesMode()) {
                 $criteria['WHERE']['glpi_entities_knowbaseitems.entities_id'] = 0;
                 $criteria['WHERE']['glpi_entities_knowbaseitems.is_recursive'] = 1;
             }
         }
 
-       // Only published
+        // Only published
         $criteria['WHERE'][] = [
             'NOT'  => [
                 'glpi_entities_knowbaseitems.entities_id' => null,
                 'glpi_knowbaseitems_profiles.profiles_id' => null,
                 'glpi_groups_knowbaseitems.groups_id'     => null,
-                'glpi_knowbaseitems_users.users_id'       => null
-            ]
+                'glpi_knowbaseitems_users.users_id'       => null,
+            ],
         ];
 
-       // Add visibility date
+        // Add visibility date
         $criteria['WHERE'][] = [
             'OR'  => [
                 ['glpi_knowbaseitems.begin_date' => null],
-                ['glpi_knowbaseitems.begin_date' => ['<', QueryFunction::now()]]
-            ]
+                ['glpi_knowbaseitems.begin_date' => ['<', QueryFunction::now()]],
+            ],
         ];
         $criteria['WHERE'][] = [
             'OR'  => [
                 ['glpi_knowbaseitems.end_date'   => null],
-                ['glpi_knowbaseitems.end_date'   => ['>', QueryFunction::now()]]
-            ]
+                ['glpi_knowbaseitems.end_date'   => ['>', QueryFunction::now()]],
+            ],
         ];
 
         if ($faq) { // FAQ
@@ -1743,10 +1749,10 @@ TWIG, $twig_params);
                     'glpi_knowbaseitems'             => 'id',
                     'glpi_knowbaseitemtranslations'  => 'knowbaseitems_id', [
                         'AND'                            => [
-                            'glpi_knowbaseitemtranslations.language' => $_SESSION['glpilanguage']
-                        ]
-                    ]
-                ]
+                            'glpi_knowbaseitemtranslations.language' => $_SESSION['glpilanguage'],
+                        ],
+                    ],
+                ],
             ];
             $criteria['SELECT'][] = 'glpi_knowbaseitemtranslations.name AS transname';
             $criteria['SELECT'][] = 'glpi_knowbaseitemtranslations.answer AS transanswer';
@@ -1759,7 +1765,7 @@ TWIG, $twig_params);
             $twig_params = [
                 'title'    => $title,
                 'iterator' => $iterator,
-                'faq_tooltip' => __("This item is part of the FAQ")
+                'faq_tooltip' => __("This item is part of the FAQ"),
             ];
             // language=Twig
             $output .= TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -1767,7 +1773,7 @@ TWIG, $twig_params);
                     <table class="table table-sm">
                         <tr><th>{{ title }}</th></tr>
                         {% for data in iterator %}
-                            {% set name = data['transname'] is not empty ? data['transname'] : data['name'] %}
+                            {% set name = (data['transname'] ?? '') is not empty ? data['transname'] : data['name'] %}
                             <tr>
                                 <td class="text-start">
                                     <div class="kb">
@@ -1798,7 +1804,7 @@ TWIG, $twig_params);
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -1816,7 +1822,7 @@ TWIG, $twig_params);
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -1825,7 +1831,7 @@ TWIG, $twig_params);
             'field'              => 'answer',
             'name'               => __('Content'),
             'datatype'           => 'text',
-            'htmltext'           => true
+            'htmltext'           => true,
         ];
 
         $tab[] = [
@@ -1833,7 +1839,7 @@ TWIG, $twig_params);
             'table'              => static::getTable(),
             'field'              => 'is_faq',
             'name'               => __('FAQ item'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -1842,7 +1848,7 @@ TWIG, $twig_params);
             'field'              => 'view',
             'name'               => _n('View', 'Views', Session::getPluralNumber()),
             'datatype'           => 'integer',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -1850,7 +1856,7 @@ TWIG, $twig_params);
             'table'              => static::getTable(),
             'field'              => 'begin_date',
             'name'               => __('Visibility start date'),
-            'datatype'           => 'datetime'
+            'datatype'           => 'datetime',
         ];
 
         $tab[] = [
@@ -1858,7 +1864,7 @@ TWIG, $twig_params);
             'table'              => static::getTable(),
             'field'              => 'end_date',
             'name'               => __('Visibility end date'),
-            'datatype'           => 'datetime'
+            'datatype'           => 'datetime',
         ];
 
         $tab[] = [
@@ -1867,7 +1873,7 @@ TWIG, $twig_params);
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -1876,7 +1882,7 @@ TWIG, $twig_params);
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -1886,7 +1892,7 @@ TWIG, $twig_params);
             'name'               => User::getTypeName(1),
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
-            'right'              => 'all'
+            'right'              => 'all',
         ];
 
         $tab[] = [
@@ -1899,10 +1905,10 @@ TWIG, $twig_params);
                 'beforejoin'         => [
                     'table'              => KnowbaseItem_KnowbaseItemCategory::getTable(),
                     'joinparams'         => [
-                        'jointype'           => 'child'
-                    ]
-                ]
-            ]
+                        'jointype'           => 'child',
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -1916,10 +1922,10 @@ TWIG, $twig_params);
             'nosearch'           => true,
             'additionalfields'   => ['itemtype'],
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
             'forcegroupby'       => true,
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -1932,10 +1938,10 @@ TWIG, $twig_params);
             'nosort'             => true,
             'additionalfields'   => ['itemtype'],
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
             'forcegroupby'       => true,
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -1950,10 +1956,10 @@ TWIG, $twig_params);
                 'beforejoin'         => [
                     'table'              => Entity_KnowbaseItem::getTable(),
                     'joinparams'         => [
-                        'jointype'           => 'child'
-                    ]
-                ]
-            ]
+                        'jointype'           => 'child',
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -1968,10 +1974,10 @@ TWIG, $twig_params);
                 'beforejoin'         => [
                     'table'              => KnowbaseItem_Profile::getTable(),
                     'joinparams'         => [
-                        'jointype'           => 'child'
-                    ]
-                ]
-            ]
+                        'jointype'           => 'child',
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -1986,10 +1992,10 @@ TWIG, $twig_params);
                 'beforejoin'         => [
                     'table'              => Group_KnowbaseItem::getTable(),
                     'joinparams'         => [
-                        'jointype'           => 'child'
-                    ]
-                ]
-            ]
+                        'jointype'           => 'child',
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -2004,13 +2010,13 @@ TWIG, $twig_params);
                 'beforejoin'         => [
                     'table'              => KnowbaseItem_User::getTable(),
                     'joinparams'         => [
-                        'jointype'           => 'child'
-                    ]
-                ]
-            ]
+                        'jointype'           => 'child',
+                    ],
+                ],
+            ],
         ];
 
-       // add objectlock search options
+        // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
         return $tab;
@@ -2045,7 +2051,7 @@ TWIG, $twig_params);
     {
         $answer = KnowbaseItemTranslation::getTranslatedValue($this, 'answer');
         $answer = RichText::getEnhancedHtml($answer, [
-            'text_maxsize' => 0 // Show all text without read more button
+            'text_maxsize' => 0, // Show all text without read more button
         ]);
 
         $callback = static function ($matches) {
@@ -2059,7 +2065,7 @@ TWIG, $twig_params);
                     $matches[2],
                     Toolbox::slugify($matches[3]),
                     htmlescape($matches[3]),
-                    '<svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"/></svg>'
+                    '<svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"/></svg>',
                 ],
                 $tpl
             );
@@ -2100,7 +2106,7 @@ TWIG, $twig_params);
         $values = [
             'id'     => $this->getID(),
             'name'   => $revision->fields['name'],
-            'answer' => $revision->fields['answer']
+            'answer' => $revision->fields['answer'],
         ];
 
         if ($this->update($values)) {
@@ -2143,15 +2149,15 @@ TWIG, $twig_params);
                 'glpi_knowbaseitems_knowbaseitemcategories' => [
                     'ON'  => [
                         'glpi_knowbaseitems_knowbaseitemcategories'  => 'knowbaseitems_id',
-                        'glpi_knowbaseitems'             => 'id'
-                    ]
-                ]
+                        'glpi_knowbaseitems'             => 'id',
+                    ],
+                ],
             ],
             'WHERE'  => ['glpi_knowbaseitems_knowbaseitemcategories.knowbaseitemcategories_id' => $category_id],
         ]);
 
         // Get array of ids
-        $ids = array_map(static fn ($row) => $row['id'], iterator_to_array($ids, false));
+        $ids = array_map(static fn($row) => $row['id'], iterator_to_array($ids, false));
 
         // Filter on canViewItem
         $ids = array_filter($ids, static function ($id) use ($kbi) {
@@ -2238,9 +2244,39 @@ TWIG, $twig_params);
         ) {
             $params['criteria'][] = [
                 'link'     => "AND NOT",
-                'criteria' => $unpublished
+                'criteria' => $unpublished,
             ];
         }
         return $params;
+    }
+
+    #[Override]
+    public function getServiceCatalogItemTitle(): string
+    {
+        return $this->fields['name'] ?? "";
+    }
+
+    #[Override]
+    public function getServiceCatalogItemDescription(): string
+    {
+        return $this->fields['description'] ?? "";
+    }
+
+    #[Override]
+    public function getServiceCatalogItemIllustration(): string
+    {
+        return $this->fields['illustration'] ?: IllustrationManager::DEFAULT_ILLUSTRATION;
+    }
+
+    #[Override]
+    public function isServiceCatalogItemPinned(): bool
+    {
+        return $this->fields['is_pinned'] ?? false;
+    }
+
+    #[Override]
+    public function getServiceCatalogLink(): string
+    {
+        return $this->getLinkURL();
     }
 }

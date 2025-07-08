@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,8 +35,10 @@
 namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
+use Glpi\Asset\CapacityConfig;
 use Item_OperatingSystem;
 use OperatingSystem;
+use Override;
 
 class HasOperatingSystemCapacity extends AbstractCapacity
 {
@@ -50,6 +51,12 @@ class HasOperatingSystemCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return OperatingSystem::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Display operating system information");
     }
 
     public function isUsed(string $classname): bool
@@ -68,7 +75,7 @@ class HasOperatingSystemCapacity extends AbstractCapacity
     }
 
     // #Override
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         $this->registerToTypeConfig('operatingsystem_types', $classname);
 
@@ -89,12 +96,12 @@ class HasOperatingSystemCapacity extends AbstractCapacity
     public function getCloneRelations(): array
     {
         return [
-            Item_OperatingSystem::class
+            Item_OperatingSystem::class,
         ];
     }
 
     // #Override
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
         // Unregister from operating system types
         $this->unregisterFromTypeConfig('operatingsystem_types', $classname);

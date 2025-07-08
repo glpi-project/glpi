@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -39,7 +38,6 @@ use DbTestCase;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
 use Glpi\Form\Tag\CommentTitleTagProvider;
-use Glpi\Form\Tag\SectionTagProvider;
 use Glpi\Form\Tag\Tag;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
@@ -61,12 +59,12 @@ final class CommentTitleTagProviderTest extends DbTestCase
             new Tag(
                 label: 'Comment title: First comment title',
                 value: $this->getCommentId($form, 'First comment title'),
-                provider: CommentTitleTagProvider::class,
+                provider: new CommentTitleTagProvider(),
             ),
             new Tag(
                 label: 'Comment title: Second comment title',
                 value: $this->getCommentId($form, 'Second comment title'),
-                provider: CommentTitleTagProvider::class,
+                provider: new CommentTitleTagProvider(),
             ),
         ]);
     }

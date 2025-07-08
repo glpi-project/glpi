@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -62,43 +61,43 @@ final class FormTagsManagerTest extends DbTestCase
             new Tag(
                 label: 'Form name: First and last name form',
                 value: $form->getId(),
-                provider: FormTagProvider::class,
+                provider: new FormTagProvider(),
             ),
             new Tag(
                 label: 'Section: Personal information',
                 value: $this->getSectionId($form, 'Personal information'),
-                provider: SectionTagProvider::class,
+                provider: new SectionTagProvider(),
             ),
             new Tag(
                 label: 'Comment title: Comment title',
                 value: $this->getCommentId($form, 'Comment title'),
-                provider: CommentTitleTagProvider::class,
+                provider: new CommentTitleTagProvider(),
             ),
             new Tag(
                 label: 'Comment description: Comment description',
                 value: $this->getCommentId($form, 'Comment title'),
-                provider: CommentDescriptionTagProvider::class,
+                provider: new CommentDescriptionTagProvider(),
             ),
             new Tag(
                 label: 'Question: First name',
                 value: $this->getQuestionId($form, 'First name'),
-                provider: QuestionTagProvider::class,
+                provider: new QuestionTagProvider(),
             ),
             new Tag(
                 label: 'Question: Last name',
                 value: $this->getQuestionId($form, 'Last name'),
-                provider: QuestionTagProvider::class,
+                provider: new QuestionTagProvider(),
             ),
             new Tag(
                 label: 'Answer: First name',
                 value: $this->getQuestionId($form, 'First name'),
-                provider: AnswerTagProvider::class,
+                provider: new AnswerTagProvider(),
             ),
             new Tag(
                 label: 'Answer: Last name',
                 value: $this->getQuestionId($form, 'Last name'),
-                provider: AnswerTagProvider::class,
-            )
+                provider: new AnswerTagProvider(),
+            ),
         ];
 
         // Without filter
@@ -157,7 +156,7 @@ final class FormTagsManagerTest extends DbTestCase
 
         // With "Form name" filter
         $this->checkGetTags($form, "Form name", [
-            $this->getTagByName($tags, 'Form name: First and last name form')
+            $this->getTagByName($tags, 'Form name: First and last name form'),
         ]);
 
         // With "Section" filter

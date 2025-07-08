@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -77,7 +77,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
                 'name'   => 'required_units',
                 'type'   => 'integer',
                 'min'    => 1,
-                'label'  => __('Required units')
+                'label'  => __('Required units'),
             ];
         }
 
@@ -85,7 +85,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
             $fields[] = [
                 'name'   => 'depth',
                 'type'   => 'depth',
-                'label'  => __('Depth')
+                'label'  => __('Depth'),
             ];
         }
 
@@ -122,7 +122,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
             $fields[] = [
                 'name'   => 'is_half_rack',
                 'type'   => 'bool',
-                'label'  => __('Is half rack')
+                'label'  => __('Is half rack'),
             ];
         }
 
@@ -142,7 +142,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
                 'table'    => $table,
                 'field'    => 'weight',
                 'name'     => __('Weight'),
-                'datatype' => 'decimal'
+                'datatype' => 'decimal',
             ];
         }
 
@@ -152,7 +152,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
                 'table'    => $table,
                 'field'    => 'required_units',
                 'name'     => __('Required units'),
-                'datatype' => 'number'
+                'datatype' => 'number',
             ];
         }
 
@@ -171,7 +171,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
                 'table'    => $table,
                 'field'    => 'power_connections',
                 'name'     => __('Power connections'),
-                'datatype' => 'number'
+                'datatype' => 'number',
             ];
         }
 
@@ -181,7 +181,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
                 'table'    => $table,
                 'field'    => 'power_consumption',
                 'name'     => __('Power consumption'),
-                'datatype' => 'decimal'
+                'datatype' => 'decimal',
             ];
         }
 
@@ -191,7 +191,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
                 'table'    => $table,
                 'field'    => 'is_half_rack',
                 'name'     => __('Is half rack'),
-                'datatype' => 'bool'
+                'datatype' => 'bool',
             ];
         }
 
@@ -242,8 +242,8 @@ abstract class CommonDCModelDropdown extends CommonDropdown
                 'FROM'   => $itemtype::getTable(),
                 'WHERE'  => [
                     $this->getForeignKeyField() => $this->fields['id'],
-                ]
-            ])
+                ],
+            ]),
         ]);
     }
 
@@ -312,13 +312,16 @@ abstract class CommonDCModelDropdown extends CommonDropdown
     {
         // Checks whether any fields that might be causing a problem have been modified
         if (
-            (!isset($input['required_units'])
+            (
+                !isset($input['required_units'])
                 || $input['required_units'] <= $this->fields['required_units']
             )
-            && (!isset($input['is_half_rack'])
+            && (
+                !isset($input['is_half_rack'])
                 || $input['is_half_rack'] == $this->fields['is_half_rack']
             )
-            && (!isset($input['depth'])
+            && (
+                !isset($input['depth'])
                 || $input['depth'] == $this->fields['depth']
             )
         ) {
@@ -427,11 +430,11 @@ abstract class CommonDCModelDropdown extends CommonDropdown
                         '1'      => __('1'),
                         '0.5'    => __('1/2'),
                         '0.33'   => __('1/3'),
-                        '0.25'   => __('1/4')
+                        '0.25'   => __('1/4'),
                     ],
                     [
                         'value'   => $this->fields[$field['name']],
-                        'width'   => '100%'
+                        'width'   => '100%',
                     ]
                 );
                 break;
@@ -447,7 +450,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
 
         $soptions[] = [
             'id'   => 'pictures',
-            'name' => _n('Picture', 'Pictures', Session::getPluralNumber())
+            'name' => _n('Picture', 'Pictures', Session::getPluralNumber()),
         ];
 
         $soptions[] = [

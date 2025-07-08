@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -53,31 +52,31 @@ if (countElementsInTable(Rule::getTable(), ['sub_type' => 'RuleImportAsset']) > 
             'uuid'      => 'glpi_rule_import_asset_unmanaged_update_name',
             'match'     => 'AND',
             'sub_type'  => RuleImportAsset::getType(),
-            'is_active' => 1
+            'is_active' => 1,
         ],
         [
             [
                 'criteria'  => 'itemtype',
                 'condition' => Rule::PATTERN_IS,
-                'pattern'   => 'Unmanaged'
+                'pattern'   => 'Unmanaged',
             ],
             [
                 'criteria'  => 'name',
                 'condition' => Rule::PATTERN_EXISTS,
-                'pattern'   => 1
+                'pattern'   => 1,
             ],
             [
                 'criteria'  => 'name',
                 'condition' => Rule::PATTERN_FIND,
-                'pattern'   => 1
-            ]
+                'pattern'   => 1,
+            ],
         ],
         [
             [
                 'field'         => '_inventory',
                 'action_type'  => "assign",
                 'value'         => RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
-            ]
+            ],
         ]
     );
 
@@ -87,26 +86,26 @@ if (countElementsInTable(Rule::getTable(), ['sub_type' => 'RuleImportAsset']) > 
             'uuid'      => 'glpi_rule_import_asset_unmanaged_import_name',
             'match'     => 'AND',
             'sub_type'  => RuleImportAsset::getType(),
-            'is_active' => 1
+            'is_active' => 1,
         ],
         [
             [
                 'criteria'  => 'itemtype',
                 'condition' => Rule::PATTERN_IS,
-                'pattern'   => 'Unmanaged'
+                'pattern'   => 'Unmanaged',
             ],
             [
                 'criteria'  => 'name',
                 'condition' => Rule::PATTERN_EXISTS,
-                'pattern'   => 1
-            ]
+                'pattern'   => 1,
+            ],
         ],
         [
             [
                 'field'         => '_inventory',
                 'action_type'  => "assign",
                 'value'         => RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
-            ]
+            ],
         ]
     );
 
@@ -116,21 +115,21 @@ if (countElementsInTable(Rule::getTable(), ['sub_type' => 'RuleImportAsset']) > 
             'uuid'      => 'glpi_rule_import_asset_unmanaged_import_denied',
             'match'     => 'AND',
             'sub_type'  => RuleImportAsset::getType(),
-            'is_active' => 1
+            'is_active' => 1,
         ],
         [
             [
                 'criteria'  => 'itemtype',
                 'condition' => Rule::PATTERN_IS,
-                'pattern'   => 'Unmanaged'
-            ]
+                'pattern'   => 'Unmanaged',
+            ],
         ],
         [
             [
                 'field'         => '_inventory',
                 'action_type'  => "assign",
-                'value'         => RuleImportAsset::RULE_ACTION_DENIED
-            ]
+                'value'         => RuleImportAsset::RULE_ACTION_DENIED,
+            ],
         ]
     );
 }

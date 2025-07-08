@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -38,7 +37,7 @@
 {{ fields.htmlField('', inputs.button('copy-sysinfo', __('Copy system information'), 'button', 1, {
    icon: 'ti ti-copy',
    additional_attributes: {
-      onclick: "copyTextToClipboard(tableToDetails('#sysinfo_accordion'));flashIconButton(this, 'btn btn-success', 'fas fa-check', 1500);"
+      onclick: "copyTextToClipboard(tableToDetails('#sysinfo_accordion'));flashIconButton(this, 'btn btn-success', 'ti ti-check', 1500);"
    }
 }), '', {
    no_label: true
@@ -48,9 +47,9 @@
    {% set rand = random() %}
    {% set cleaned_content = content|trim|u.wordwrap(128) %}
    <div class="accordion-item">
-      <h2 class="accordion-header section-header" id="sysinfo_header_{{ rand }}">
+      <div class="accordion-header section-header" id="sysinfo_header_{{ rand }}">
          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#sysinfo_section_{{ rand }}">{{ label }}</button>
-      </h2>
+      </div>
       <div id="sysinfo_section_{{ rand }}" class="accordion-collapse collapse" aria-labelledby="sysinfo_header_{{ rand }}" data-bs-parent="#sysinfo_accordion">
          <pre class="section-content">{{ raw ? cleaned_content|raw : cleaned_content|e }}</pre>
       </div>
@@ -95,17 +94,6 @@ Requirements:
    {%- endfor -%}
 {% endset %}
 
-{% set lib_info %}
-   {%- for dep in call('Config::getLibraries') -%}
-      {% set path = call('Config::getLibraryDir', [dep['check']]) %}
-      {%- if path -%}
-         {{ "\n" ~ dep['name'] }} version {{ dep['version'] }} in {{ path }}
-      {%- else -%}
-         {{ "\n" ~ dep['name'] }} not found
-      {%- endif -%}
-   {%- endfor -%}
-{% endset %}
-
 {% set locale_info %}
    {%- for file in locales_overrides -%}
       {{ "\n" ~ file }}
@@ -116,7 +104,6 @@ Requirements:
    {{ _self.sysinfo_section('GLPI information', glpi_info) }}
    {{ _self.sysinfo_section('Server', server_info, true) }}
    {{ _self.sysinfo_section('GLPI constants', constants_info, true) }}
-   {{ _self.sysinfo_section('Libraries', lib_info, true) }}
    {% for info_obj in system_info_objs %}
       {% set info = call([info_obj, 'getSystemInformation']) %}
       {% if info['label'] is not empty and info['content'] is not empty %}

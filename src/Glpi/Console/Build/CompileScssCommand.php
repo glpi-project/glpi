@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,6 +42,9 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Toolbox;
+
+use function Safe\ini_set;
 
 class CompileScssCommand extends Command
 {
@@ -50,7 +53,7 @@ class CompileScssCommand extends Command
      *
      * @var integer
      */
-    const ERROR_UNABLE_TO_WRITE_COMPILED_FILE = 1;
+    public const ERROR_UNABLE_TO_WRITE_COMPILED_FILE = 1;
 
     protected function configure()
     {
@@ -87,6 +90,12 @@ class CompileScssCommand extends Command
                 )
             );
         }
+
+        // Ensure to have enough memory to not reach memory limit.
+        $max_memory = Html::MAIN_SCSS_COMPILATION_REQUIRED_MEMORY;
+        if (Toolbox::getMemoryLimit() < ($max_memory * 1024 * 1024)) {
+            ini_set('memory_limit', sprintf('%dM', $max_memory));
+        }
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -112,9 +121,9 @@ class CompileScssCommand extends Command
                     continue;
                 }
 
-                 $files[] = str_replace($root_path . '/', '', dirname($file->getRealPath()))
-                 . '/'
-                 . preg_replace('/^_?(.*)\.scss$/', '$1', $file->getBasename());
+                $files[] = str_replace($root_path . '/', '', dirname($file->getRealPath()))
+                . '/'
+                . preg_replace('/^_?(.*)\.scss$/', '$1', $file->getBasename());
             }
         }
 
@@ -138,7 +147,7 @@ class CompileScssCommand extends Command
                     '<info>' . $message . '</info>',
                     OutputInterface::VERBOSITY_NORMAL
                 );
-            } else if (strlen($css) === @file_put_contents($compiled_path, $css)) {
+            } elseif (strlen($css) === @file_put_contents($compiled_path, $css)) {
                 $message = sprintf('"%s" compiled successfully in "%s".', $file, $compiled_path);
                 $output->writeln(
                     '<info>' . $message . '</info>',

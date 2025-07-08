@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,11 +35,11 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use CommonDBTM;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
-use Glpi\Api\HL\Router;
 use Glpi\Api\HL\RouteVersion;
 use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
@@ -72,17 +72,17 @@ final class AdministrationController extends AbstractController
                                     'glpi_profiles_users' => [
                                         'ON' => [
                                             'glpi_profiles_users' => 'users_id',
-                                            'glpi_users' => 'id'
-                                        ]
-                                    ]
+                                            'glpi_users' => 'id',
+                                        ],
+                                    ],
                                 ],
                                 'WHERE' => [
-                                    'glpi_profiles_users.entities_id' => $_SESSION['glpiactiveentities']
-                                ]
+                                    'glpi_profiles_users.entities_id' => $_SESSION['glpiactiveentities'],
+                                ],
                             ];
                         }
                         return true;
-                    }
+                    },
                 ],
                 'properties' => [
                     'id' => [
@@ -126,7 +126,7 @@ final class AdministrationController extends AbstractController
                                 'table' => 'glpi_useremails',
                                 'fkey' => 'id',
                                 'field' => 'users_id',
-                                'primary-property' => 'id' // Help the search engine understand the 'id' property is this object's primary key since the fkey and field params are reversed for this join.
+                                'primary-property' => 'id', // Help the search engine understand the 'id' property is this object's primary key since the fkey and field params are reversed for this join.
                             ],
                             'properties' => [
                                 'id' => [
@@ -146,8 +146,8 @@ final class AdministrationController extends AbstractController
                                     'type' => Doc\Schema::TYPE_BOOLEAN,
                                     'description' => 'Is dynamic',
                                 ],
-                            ]
-                        ]
+                            ],
+                        ],
                     ],
                     'comment' => [
                         'type' => Doc\Schema::TYPE_STRING,
@@ -184,9 +184,9 @@ final class AdministrationController extends AbstractController
                                 return $path;
                             }
                             return $CFG_GLPI["root_doc"] . '/pics/picture.png';
-                        }
-                    ]
-                ]
+                        },
+                    ],
+                ],
             ],
             'Group' => [
                 'x-version-introduced' => '2.0',
@@ -218,7 +218,7 @@ final class AdministrationController extends AbstractController
                         'x-join' => [
                             'table' => 'glpi_groups',
                             'fkey' => 'groups_id',
-                            'field' => 'id'
+                            'field' => 'id',
                         ],
                         'description' => 'Parent group',
                         'properties' => [
@@ -231,14 +231,14 @@ final class AdministrationController extends AbstractController
                                 'type' => Doc\Schema::TYPE_STRING,
                                 'description' => 'Name',
                             ],
-                        ]
+                        ],
                     ],
                     'level' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'Level',
                     ],
-                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity')
-                ]
+                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                ],
             ],
             'Entity' => [
                 'x-version-introduced' => '2.0',
@@ -270,7 +270,7 @@ final class AdministrationController extends AbstractController
                         'x-join' => [
                             'table' => 'glpi_entities',
                             'fkey' => 'entities_id',
-                            'field' => 'id'
+                            'field' => 'id',
                         ],
                         'description' => 'Parent entity',
                         'properties' => [
@@ -283,13 +283,13 @@ final class AdministrationController extends AbstractController
                                 'type' => Doc\Schema::TYPE_STRING,
                                 'description' => 'Name',
                             ],
-                        ]
+                        ],
                     ],
                     'level' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'Level',
                     ],
-                ]
+                ],
             ],
             'Profile' => [
                 'x-version-introduced' => '2.0',
@@ -310,7 +310,7 @@ final class AdministrationController extends AbstractController
                         'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Comment',
                     ],
-                ]
+                ],
             ],
             'EmailAddress' => [
                 'x-version-introduced' => '2.0',
@@ -334,8 +334,8 @@ final class AdministrationController extends AbstractController
                         'type' => Doc\Schema::TYPE_BOOLEAN,
                         'description' => 'Is dynamic',
                     ],
-                ]
-            ]
+                ],
+            ],
         ];
     }
 
@@ -345,7 +345,7 @@ final class AdministrationController extends AbstractController
         description: 'List or search users',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
-            ['schema' => 'User[]']
+            ['schema' => 'User[]'],
         ]
     )]
     public function searchUsers(Request $request): Response
@@ -359,7 +359,7 @@ final class AdministrationController extends AbstractController
         description: 'List or search groups',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
-            ['schema' => 'Group[]']
+            ['schema' => 'Group[]'],
         ]
     )]
     public function searchGroups(Request $request): Response
@@ -373,7 +373,7 @@ final class AdministrationController extends AbstractController
         description: 'List or search entities',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
-            ['schema' => 'Entity[]']
+            ['schema' => 'Entity[]'],
         ]
     )]
     public function searchEntities(Request $request): Response
@@ -387,7 +387,7 @@ final class AdministrationController extends AbstractController
         description: 'List or search profiles',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
-            ['schema' => 'Profile[]']
+            ['schema' => 'Profile[]'],
         ]
     )]
     public function searchProfiles(Request $request): Response
@@ -431,7 +431,7 @@ final class AdministrationController extends AbstractController
     #[Doc\Route(
         description: 'Get the current user',
         responses: [
-            ['schema' => 'User']
+            ['schema' => 'User'],
         ]
     )]
     public function me(Request $request): Response
@@ -445,7 +445,7 @@ final class AdministrationController extends AbstractController
     #[Doc\Route(
         description: 'Get the current user\'s email addresses',
         responses: [
-            ['schema' => 'EmailAddress[]']
+            ['schema' => 'EmailAddress[]'],
         ]
     )]
     public function getMyEmails(Request $request): Response
@@ -485,7 +485,7 @@ final class AdministrationController extends AbstractController
         if (!filter_var($new_email, FILTER_VALIDATE_EMAIL)) {
             return self::getInvalidParametersErrorResponse([
                 'invalid' => [
-                    ['name' => 'email', 'reason' => 'The provided email address does not appear to be formatted as an email address']
+                    ['name' => 'email', 'reason' => 'The provided email address does not appear to be formatted as an email address'],
                 ],
             ]);
         }
@@ -497,7 +497,7 @@ final class AdministrationController extends AbstractController
                     self::getErrorResponseBody(self::ERROR_ALREADY_EXISTS, 'The provided email address is already associated with this user'),
                     409,
                     [
-                        'Location' => self::getAPIPathForRouteFunction(self::class, 'getMyEmail', ['id' => $email['id']])
+                        'Location' => self::getAPIPathForRouteFunction(self::class, 'getMyEmail', ['id' => $email['id']]),
                     ]
                 );
             }
@@ -518,7 +518,7 @@ final class AdministrationController extends AbstractController
     #[Doc\Route(
         description: 'Get a specific email address for the current user',
         responses: [
-            ['schema' => 'EmailAddress']
+            ['schema' => 'EmailAddress'],
         ]
     )]
     public function getMyEmail(Request $request): Response
@@ -537,7 +537,7 @@ final class AdministrationController extends AbstractController
     #[Doc\Route(
         description: 'Get the default email address for the current user',
         responses: [
-            ['schema' => 'EmailAddress']
+            ['schema' => 'EmailAddress'],
         ]
     )]
     public function getMyDefaultEmail(Request $request): Response
@@ -564,7 +564,9 @@ final class AdministrationController extends AbstractController
         } else {
             $picture_path = 'public/pics/picture.png';
         }
-        return \Toolbox::sendFile($picture_path, $username, null, false, true);
+        $symfony_response = \Toolbox::getFileAsResponse($picture_path, $username);
+
+        return new Response($symfony_response->getStatusCode(), $symfony_response->headers->all(), $symfony_response->getContent());
     }
 
     #[Route(path: '/User/Me/Picture', methods: ['GET'])]
@@ -594,7 +596,7 @@ final class AdministrationController extends AbstractController
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
             'schema' => 'User',
-        ]
+        ],
     ])]
     public function createUser(Request $request): Response
     {
@@ -606,7 +608,7 @@ final class AdministrationController extends AbstractController
     #[Doc\Route(
         description: 'Get a user by ID',
         responses: [
-            ['schema' => 'User']
+            ['schema' => 'User'],
         ]
     )]
     public function getUserByID(Request $request): Response
@@ -619,7 +621,7 @@ final class AdministrationController extends AbstractController
     #[Doc\Route(
         description: 'Get a user by username',
         responses: [
-            ['schema' => 'User']
+            ['schema' => 'User'],
         ]
     )]
     public function getUserByUsername(Request $request): Response
@@ -677,10 +679,10 @@ final class AdministrationController extends AbstractController
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'schema' => 'User',
-            ]
+            ],
         ],
         responses: [
-            ['schema' => 'User']
+            ['schema' => 'User'],
         ]
     )]
     public function updateUserByID(Request $request): Response
@@ -698,10 +700,10 @@ final class AdministrationController extends AbstractController
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'schema' => 'User',
-            ]
+            ],
         ],
         responses: [
-            ['schema' => 'User']
+            ['schema' => 'User'],
         ]
     )]
     public function updateUserByUsername(Request $request): Response
@@ -729,8 +731,17 @@ final class AdministrationController extends AbstractController
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
+
         // Create a union schema with all relevant item types
-        $schema = Doc\Schema::getUnionSchemaForItemtypes($CFG_GLPI['assignable_types'], $api_version);
+        $schema = Doc\Schema::getUnionSchemaForItemtypes(
+            itemtypes: array_filter($CFG_GLPI['assignable_types'], static function ($t) use ($is_managed) {
+                if (!\is_a($t, CommonDBTM::class, true)) {
+                    return false; // Ignore invalid classes
+                }
+                return (new $t())->isField($is_managed ? 'users_id_tech' : 'users_id');
+            }),
+            api_version: $api_version
+        );
         $rsql_filter = $request_params['filter'] ?? '';
         if (!empty($rsql_filter)) {
             $rsql_filter = "($rsql_filter);";
@@ -816,7 +827,7 @@ final class AdministrationController extends AbstractController
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
             'schema' => 'Group',
-        ]
+        ],
     ])]
     public function createGroup(Request $request): Response
     {
@@ -828,7 +839,7 @@ final class AdministrationController extends AbstractController
     #[Doc\Route(
         description: 'Get a group by ID',
         responses: [
-            ['schema' => 'Group']
+            ['schema' => 'Group'],
         ]
     )]
     public function getGroupByID(Request $request): Response
@@ -846,10 +857,10 @@ final class AdministrationController extends AbstractController
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'schema' => 'Group',
-            ]
+            ],
         ],
         responses: [
-            ['schema' => 'Group']
+            ['schema' => 'Group'],
         ]
     )]
     public function updateGroupByID(Request $request): Response
@@ -872,7 +883,7 @@ final class AdministrationController extends AbstractController
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
             'schema' => 'Entity',
-        ]
+        ],
     ])]
     public function createEntity(Request $request): Response
     {
@@ -884,7 +895,7 @@ final class AdministrationController extends AbstractController
     #[Doc\Route(
         description: 'Get an entity by ID',
         responses: [
-            ['schema' => 'Entity']
+            ['schema' => 'Entity'],
         ]
     )]
     public function getEntityByID(Request $request): Response
@@ -902,10 +913,10 @@ final class AdministrationController extends AbstractController
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'schema' => 'Entity',
-            ]
+            ],
         ],
         responses: [
-            ['schema' => 'Entity']
+            ['schema' => 'Entity'],
         ]
     )]
     public function updateEntityByID(Request $request): Response
@@ -928,7 +939,7 @@ final class AdministrationController extends AbstractController
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
             'schema' => 'Profile',
-        ]
+        ],
     ])]
     public function createProfile(Request $request): Response
     {
@@ -940,7 +951,7 @@ final class AdministrationController extends AbstractController
     #[Doc\Route(
         description: 'Get a profile by ID',
         responses: [
-            ['schema' => 'Profile']
+            ['schema' => 'Profile'],
         ]
     )]
     public function getProfileByID(Request $request): Response
@@ -958,10 +969,10 @@ final class AdministrationController extends AbstractController
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'schema' => 'Profile',
-            ]
+            ],
         ],
         responses: [
-            ['schema' => 'Profile']
+            ['schema' => 'Profile'],
         ]
     )]
     public function updateProfileByID(Request $request): Response

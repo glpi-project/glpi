@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,7 +37,7 @@
 /// @since 0.83
 class Entity_Reminder extends CommonDBRelation
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1          = 'Reminder';
     public static $items_id_1          = 'reminders_id';
     public static $itemtype_2          = 'Entity';
@@ -63,8 +63,8 @@ class Entity_Reminder extends CommonDBRelation
         $iterator = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'reminders_id' => $reminder->fields['id']
-            ]
+                'reminders_id' => $reminder->fields['id'],
+            ],
         ]);
 
         foreach ($iterator as $data) {

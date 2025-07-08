@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -62,14 +62,14 @@ final class ProfilerSection
         $this->parent_id = $parent_id;
         $this->category = $category;
         $this->name = $name;
-        $this->start = (int)$start;
+        $this->start = (int) $start;
     }
 
     public function end($time): void
     {
         // Force resume to complete the last pause.
         $this->resume();
-        $this->end = (int)$time;
+        $this->end = (int) $time;
     }
 
     public function getID(): string
@@ -104,7 +104,7 @@ final class ProfilerSection
 
     public function getDuration(): int
     {
-        $end = $this->end ?? (int)(microtime(true) * 1000);
+        $end = $this->end ?? (int) (microtime(true) * 1000);
         $duration = $end - $this->start;
 
         // Remove paused time from the total runtime.

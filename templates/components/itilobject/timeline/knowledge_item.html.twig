@@ -1,0 +1,83 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set btn_name = 'search_knowbaseitem_' ~ random() %}
+
+{% set search_button %}
+    <button type="button" class="btn btn-secondary overflow-hidden text-nowrap" name="{{ btn_name }}"
+        title="{{ __('Search in the knowledge base') }}" data-bs-toggle="tooltip" data-bs-placement="top">
+    <i class="ti ti-search"></i>
+    </button>
+{% endset %}
+
+{{ fields.field(
+        '',
+        search_button,
+        '',
+        {
+            'full_width': true,
+            'icon_label': true,
+        }
+    )
+}}
+
+<script>
+$('button[name="{{ btn_name|e('js') }}"]').on('click', () => {
+    window.glpi_ajax_dialog({
+        id: 'modal_search_knowbaseitem',
+        modalclass: 'modal-xl',
+        title: '{{ __('Search in the knowledge base')|e('js') }}',
+        url: '{{ path('/Knowbase/KnowbaseItem/Search/' ~ item.getType() ~ '/' ~ item.getID())|e('js') }}'
+    });
+    $(document).off('click', '#modal_search_knowbaseitem button.use-knowbaseitem').on('click', '#modal_search_knowbaseitem button.use-knowbaseitem', (e) => {
+        const btn = $(e.target).closest('button.use-knowbaseitem');
+        const knowbaseitems_id = btn.attr('data-knowbaseitem-id') ?? btn.closest('.list-group-item').attr('data-knowbaseitem-id');
+        $('#modal_search_knowbaseitem').modal('hide');
+        if (knowbaseitems_id) {
+            $.ajax({
+                url: `{{ path('/Knowbase/KnowbaseItem/') }}${knowbaseitems_id}/Content`
+            }).then((data) => {
+                if (data) {
+                    setRichTextEditorContent("{{ content_field_id|e('js') }}", data);
+                    const link_kb = $('.itilobject input[type="checkbox"][name="kb_linked_id"]');
+                    link_kb.val(knowbaseitems_id);
+                    link_kb.removeAttr('disabled');
+                    link_kb.closest('.form-field').find('label.col-form-label > i').attr('data-bs-original-title', __('Link to knowledge base entry #%id').replace('%id', knowbaseitems_id));
+                    link_kb.closest('.form-field').removeClass('d-none');
+                }
+            });
+        }
+    })
+});
+</script>

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -85,12 +85,12 @@ class Line extends CommonDBTM
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addImpactTab($ong, $options);
-        $this->addStandardTab('Item_Line', $ong, $options);
-        $this->addStandardTab('Infocom', $ong, $options);
-        $this->addStandardTab('Contract_Item', $ong, $options);
-        $this->addStandardTab('Document_Item', $ong, $options);
-        $this->addStandardTab('Notepad', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Item_Line::class, $ong, $options);
+        $this->addStandardTab(Infocom::class, $ong, $options);
+        $this->addStandardTab(Contract_Item::class, $ong, $options);
+        $this->addStandardTab(Document_Item::class, $ong, $options);
+        $this->addStandardTab(Notepad::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
@@ -129,7 +129,7 @@ class Line extends CommonDBTM
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -144,8 +144,8 @@ class Line extends CommonDBTM
             'id'                 => '16',
             'table'              => $this->getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -154,7 +154,7 @@ class Line extends CommonDBTM
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -163,7 +163,7 @@ class Line extends CommonDBTM
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => $this->getStateVisibilityCriteria()
+            'condition'          => $this->getStateVisibilityCriteria(),
         ];
 
         $tab[] = [
@@ -172,7 +172,7 @@ class Line extends CommonDBTM
             'field'              => 'name',
             'name'               => User::getTypeName(1),
             'datatype'           => 'dropdown',
-            'right'              => 'all'
+            'right'              => 'all',
         ];
 
         $tab[] = [
@@ -186,13 +186,13 @@ class Line extends CommonDBTM
                     'table'              => 'glpi_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
-                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL]
-                    ]
-                ]
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL],
+                    ],
+                ],
             ],
             'forcegroupby'       => true,
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -201,7 +201,7 @@ class Line extends CommonDBTM
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -210,7 +210,7 @@ class Line extends CommonDBTM
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -219,7 +219,7 @@ class Line extends CommonDBTM
             'field'              => 'name',
             'name'               => LineOperator::getTypeName(1),
             'massiveaction'      => true,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -246,7 +246,7 @@ class Line extends CommonDBTM
         return "ti ti-phone-calling";
     }
 
-    public static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0, CommonDBTM $checkitem = null)
+    public static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0, ?CommonDBTM $checkitem = null)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -255,7 +255,7 @@ class Line extends CommonDBTM
 
         $action_prefix = 'Item_Line' . MassiveAction::CLASS_ACTION_SEPARATOR;
         if (in_array($itemtype, $CFG_GLPI['line_types'], true)) {
-            $actions[$action_prefix . 'add']    = "<i class='fa-fw " . self::getIcon() . "'></i>" .
+            $actions[$action_prefix . 'add']    = "<i class='" . self::getIcon() . "'></i>" .
                 _sx('button', 'Add a line');
             $actions[$action_prefix . 'remove'] = _sx('button', 'Remove a line');
         }

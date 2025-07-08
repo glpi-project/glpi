@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,20 +34,21 @@
 
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
-use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\TemplateField;
 use Glpi\Form\Destination\CommonITILField\TemplateFieldConfig;
 use Glpi\Form\Destination\CommonITILField\TemplateFieldStrategy;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Override;
 use Ticket;
 use TicketTemplate;
 use TicketTemplatePredefinedField;
 
-final class TemplateFieldTest extends DbTestCase
+include_once __DIR__ . '/../../../../../abstracts/AbstractDestinationFieldTest.php';
+
+final class TemplateFieldTest extends AbstractDestinationFieldTest
 {
     use FormTesterTrait;
 
@@ -157,6 +157,31 @@ final class TemplateFieldTest extends DbTestCase
         );
     }
 
+    #[Override]
+    public static function provideConvertFieldConfigFromFormCreator(): iterable
+    {
+        yield 'Default strategy' => [
+            'field_key'     => TemplateField::getKey(),
+            'fields_to_set' => [
+                'tickettemplates_id' => 0,
+            ],
+            'field_config' => new TemplateFieldConfig(
+                TemplateFieldStrategy::DEFAULT_TEMPLATE
+            ),
+        ];
+
+        yield 'Specific Ticket Template strategy' => [
+            'field_key'     => TemplateField::getKey(),
+            'fields_to_set' => [
+                'tickettemplates_id' => getItemByTypeName(TicketTemplate::class, 'Default', true),
+            ],
+            'field_config' => new TemplateFieldConfig(
+                TemplateFieldStrategy::SPECIFIC_TEMPLATE,
+                getItemByTypeName(TicketTemplate::class, 'Default', true)
+            ),
+        ];
+    }
+
     private function checkTemplateFieldConfiguration(
         Form $form,
         TemplateFieldConfig $config,
@@ -197,10 +222,6 @@ final class TemplateFieldTest extends DbTestCase
     private function createAndGetFormWithTicketDestination(): Form
     {
         $builder = new FormBuilder();
-        $builder->addDestination(
-            FormDestinationTicket::class,
-            "My ticket",
-        );
         return $this->createForm($builder);
     }
 }

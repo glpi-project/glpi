@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -49,8 +49,7 @@ final class QuestionTypeDateTimeExtraDataConfig implements JsonFieldInterface
         private bool $is_default_value_current_time = false,
         private bool $is_date_enabled = true,
         private bool $is_time_enabled = false,
-    ) {
-    }
+    ) {}
 
     #[Override]
     public static function jsonDeserialize(array $data): self
@@ -66,9 +65,9 @@ final class QuestionTypeDateTimeExtraDataConfig implements JsonFieldInterface
     public function jsonSerialize(): array
     {
         return [
-            self::IS_DEFAULT_VALUE_CURRENT_TIME => $this->is_default_value_current_time,
-            self::IS_DATE_ENABLED               => $this->is_date_enabled,
-            self::IS_TIME_ENABLED               => $this->is_time_enabled,
+            self::IS_DEFAULT_VALUE_CURRENT_TIME => (int) $this->is_default_value_current_time,
+            self::IS_DATE_ENABLED               => (int) $this->is_date_enabled,
+            self::IS_TIME_ENABLED               => (int) $this->is_time_enabled,
         ];
     }
 

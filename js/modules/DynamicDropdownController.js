@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,14 +32,13 @@
  */
 
 /**
- * Helper class to easily manage sub dropdowns (i.e. you have a main dropdown
- * and a few secondary dropdown that will only be displayed depending on the
- * values of the main dropdown).
+ * Helper class to easily manage items that should be hidden / shown depending
+ * on a dropdown value.
  *
- * The children dropdown must define two data attributes:
+ * The item must define two data attributes:
  * - data-glpi-parent-dropdown: the name of the parent dropdown
  * - data-glpi-parent-dropdown-condition: the value that the parent dropdown
- *  must have for this dropdown to be displayed
+ *  must have for this item to be displayed
  */
 export class DynamicDropdownController
 {
@@ -51,16 +50,16 @@ export class DynamicDropdownController
         const dropdowns = $('select[data-select2-id]');
 
         $(dropdowns).on('change', (e) => {
-            this.#updateChildrenDropdownsVisiblity($(e.target));
+            this.#updateItemsVisiblity($(e.target));
         });
     }
 
-    #updateChildrenDropdownsVisiblity(select) {
+    #updateItemsVisiblity(select) {
         const name = $.escapeSelector(select.prop("name"));
-        const child_dropdowns = $(`[data-glpi-parent-dropdown='${name}']`);
+        const items = $(`[data-glpi-parent-dropdown='${name}']`);
         const value = select.val();
 
-        child_dropdowns.each((i, dropdown) => {
+        items.each((i, dropdown) => {
             const expected_value = $(dropdown).data(
                 'glpi-parent-dropdown-condition'
             );

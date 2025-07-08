@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -44,6 +43,8 @@ use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Comment;
 use Glpi\Form\Destination\FormDestination;
+use Glpi\Form\Destination\FormDestinationChange;
+use Glpi\Form\Destination\FormDestinationProblem;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
@@ -51,9 +52,12 @@ use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\Section;
+use Glpi\Helpdesk\Tile\FormTile;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Log;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Ramsey\Uuid\Uuid;
 
 class FormTest extends DbTestCase
 {
@@ -94,23 +98,26 @@ class FormTest extends DbTestCase
             \Glpi\Form\QuestionType\QuestionTypeRadio::class => [
                 'options' => [
                     123 => 'Radio 1',
-                ]
+                ],
             ],
             \Glpi\Form\QuestionType\QuestionTypeCheckbox::class => [
                 'options' => [
                     123 => 'Checkbox 1',
-                ]
+                ],
             ],
             \Glpi\Form\QuestionType\QuestionTypeDropdown::class => [
                 'options' => [
                     123 => 'Dropdown 1',
-                ]
+                ],
             ],
             \Glpi\Form\QuestionType\QuestionTypeItem::class => [
                 'itemtype' => 'Computer',
             ],
             \Glpi\Form\QuestionType\QuestionTypeItemDropdown::class => [
-                'itemtype' => 'Location',
+                'itemtype'          => 'Location',
+                'categories_filter' => [],
+                'root_items_id'     => 0,
+                'subtree_depth'     => 0,
             ],
         ];
 
@@ -167,14 +174,14 @@ class FormTest extends DbTestCase
         );
         $this->assertCount(2, $form->getSections());
         $this->assertCount(3, $form->getQuestions());
-        $this->assertCount(2, $form->getComments());
+        $this->assertCount(2, $form->getFormComments());
 
         // Delete content
         foreach ($form->getSections() as $section) {
             foreach ($section->getQuestions() as $question) {
                 $this->deleteItem(Question::class, $question->getID());
             }
-            foreach ($section->getComments() as $comment) {
+            foreach ($section->getFormComments() as $comment) {
                 $this->deleteItem(Comment::class, $comment->getID());
             }
             $this->deleteItem(Section::class, $section->getID());
@@ -184,13 +191,13 @@ class FormTest extends DbTestCase
         // shouldn't change
         $this->assertCount(2, $form->getSections());
         $this->assertCount(3, $form->getQuestions());
-        $this->assertCount(2, $form->getComments());
+        $this->assertCount(2, $form->getFormComments());
 
         // Reload form
         $form->getFromDB($form->getID());
         $this->assertCount(0, $form->getSections());
         $this->assertCount(0, $form->getQuestions());
-        $this->assertCount(0, $form->getComments());
+        $this->assertCount(0, $form->getFormComments());
     }
 
     /**
@@ -212,9 +219,9 @@ class FormTest extends DbTestCase
         $this->assertCount(1, $form_with_section->getSections());
 
         $form_without_section = $this->createItem(Form::class, [
-            'name'                  => 'Form without first section',
-            'entities_id'           => $entity->getID(),
-            '_do_not_init_sections' => true,
+            'name'           => 'Form without first section',
+            'entities_id'    => $entity->getID(),
+            '_init_sections' => false,
         ]);
         $this->assertCount(0, $form_without_section->getSections());
     }
@@ -249,30 +256,26 @@ class FormTest extends DbTestCase
             '_update' => true, // Needed to get confirmation message
             '_questions' => [
                 [
-                    'id'                        => uniqid(),
-                    '_use_uuid'                 => true,
-                    'forms_sections_id'          => $section->getID(),
-                    '_use_uuid_for_sections_id' => false,
-                    'name'                      => 'Question name',
-                    'type'                      => QuestionTypeShortText::class,
+                    'uuid'                  => Uuid::uuid4(),
+                    'forms_sections_uuid' => $section->fields['uuid'],
+                    'name'                => 'Question name',
+                    'type'                => QuestionTypeShortText::class,
                 ],
             ],
             '_comments' => [
                 [
-                    'id'                        => uniqid(),
-                    '_use_uuid'                 => true,
-                    'forms_sections_id'          => $section->getID(),
-                    '_use_uuid_for_sections_id' => false,
-                    'name'                      => 'Comment name',
-                    'description'               => 'Comment description',
+                    'uuid'                  => Uuid::uuid4(),
+                    'forms_sections_uuid' => $section->fields['uuid'],
+                    'name'                => 'Comment name',
+                    'description'         => 'Comment description',
                 ],
             ],
         ]);
         $this->assertCount(1, $form->getQuestions());
-        $this->assertCount(1, $form->getComments());
+        $this->assertCount(1, $form->getFormComments());
 
         $id = $form->getID();
-        $this->hasSessionMessages(INFO, ['Item successfully updated: <a href="/glpi/front/form/form.form.php?id=' . $id . '" title="Form with first section">Form with first section</a>']);
+        $this->hasSessionMessages(INFO, ['Item successfully updated: <a href="/front/form/form.form.php?id=' . $id . '" title="Form with first section">Form with first section</a>']);
     }
 
     public function testGetSectionsOnEmptyForm(): void
@@ -360,7 +363,7 @@ class FormTest extends DbTestCase
         array $expected_comment_names,
         array $expected_comment_descriptions
     ): void {
-        $comments = $form->getComments();
+        $comments = $form->getFormComments();
         $names = array_map(fn($comment) => $comment->getName(), $comments);
         $names = array_values($names); // Strip keys
         $this->assertEquals($expected_comment_names, $names);
@@ -385,37 +388,37 @@ class FormTest extends DbTestCase
         $this->login();
 
         $form = $this->createForm(new FormBuilder());
-        $this->checkTestLogs($form, 1); // Created
+        $this->checkTestLogs($form, 3); // Created + mandatory target + default policy
 
         $this->addSectionToForm($form, "Section 1");
         $this->addSectionToForm($form, "Section 2");
         $this->addSectionToForm($form, "Section 3");
-        $this->checkTestLogs($form, 4); // + 3 sections added
+        $this->checkTestLogs($form, 6); // + 3 sections added
 
         $q1 = $this->addQuestionToForm($form, "Question 1");
         $this->addQuestionToForm($form, "Question 2");
-        $this->checkTestLogs($form, 6); // + 2 questions added
+        $this->checkTestLogs($form, 8); // + 2 questions added
 
         $c1 = $this->addCommentBlockToForm($form, "Title 1", "Content 1");
         $this->addCommentBlockToForm($form, "Title 2", "Content 2");
-        $this->checkTestLogs($form, 8); // + 2 comments added
+        $this->checkTestLogs($form, 10); // + 2 comments added
 
         $this->updateItem(Question::class, $q1->getId(), [
             'name' => 'Question 1 (updated)',
             'type' => QuestionTypeEmail::class,
         ]);
-        $this->checkTestLogs($form, 10); // + 2 question fields updated
+        $this->checkTestLogs($form, 12); // + 2 question fields updated
 
         $this->deleteItem(Question::class, $q1->getId());
-        $this->checkTestLogs($form, 11); // + 1 question deleted
+        $this->checkTestLogs($form, 13); // + 1 question deleted
 
         $this->updateItem(Comment::class, $c1->getId(), [
             'name' => 'Title 1 (updated)',
         ]);
-        $this->checkTestLogs($form, 12); // + 1 comment updated
+        $this->checkTestLogs($form, 14); // + 1 comment updated
 
         $this->deleteItem(Comment::class, $c1->getId());
-        $this->checkTestLogs($form, 13); // + 1 comment deleted
+        $this->checkTestLogs($form, 15); // + 1 comment deleted
     }
 
     private function checkTestLogs(
@@ -445,6 +448,7 @@ class FormTest extends DbTestCase
         $comments = countElementsInTable(Comment::getTable());
         $destinations = countElementsInTable(FormDestination::getTable());
         $access_controls = countElementsInTable(FormAccessControl::getTable());
+        $form_tiles = countElementsInTable(FormTile::getTable());
 
         // Test subject that we are going to delete
         $form_to_be_deleted = $this->createForm(
@@ -459,18 +463,36 @@ class FormTest extends DbTestCase
                 ->addQuestion('Question 2', QuestionTypeShortText::class)
                 ->addQuestion('Question 3', QuestionTypeShortText::class)
                 ->addDestination(FormDestinationTicket::class, 'Destination 1')
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(AllowList::class, new AllowListConfig())
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig())
         );
 
+        // Add a tile to the form, it should be deleted with the form
+        $this->createItem(
+            FormTile::class,
+            [
+                Form::getForeignKeyField() => $form_to_be_deleted->getID(),
+            ]
+        );
+
         // Control subject that we are going to keep, its data shouldn't be deleted
-        $this->createForm(
+        $form_to_keep = $this->createForm(
             (new FormBuilder())
                 ->addSection('Section 1')
                 ->addQuestion('Question 1', QuestionTypeShortText::class)
                 ->addComment('Comment 1', 'Comment 1 description')
                 ->addDestination(FormDestinationTicket::class, 'Destination 1')
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig())
+        );
+
+        // Add a tile to the form, it should be kept with the form
+        $this->createItem(
+            FormTile::class,
+            [
+                Form::getForeignKeyField() => $form_to_keep->getID(),
+            ]
         );
 
         // Count items before deletion
@@ -478,8 +500,9 @@ class FormTest extends DbTestCase
         $this->assertEquals(6 + $questions, countElementsInTable(Question::getTable()));
         $this->assertEquals(3 + $sections, countElementsInTable(Section::getTable()));
         $this->assertEquals(3 + $comments, countElementsInTable(Comment::getTable()));
-        $this->assertEquals(2 + $destinations, countElementsInTable(FormDestination::getTable()));
+        $this->assertEquals(4 + $destinations, countElementsInTable(FormDestination::getTable())); // +1 mandatory for each form
         $this->assertEquals(3 + $access_controls, countElementsInTable(FormAccessControl::getTable()));
+        $this->assertEquals(2 + $form_tiles, countElementsInTable(FormTile::getTable()));
 
         // Delete item
         $this->deleteItem(
@@ -493,8 +516,9 @@ class FormTest extends DbTestCase
         $this->assertEquals(1 + $questions, countElementsInTable(Question::getTable()));
         $this->assertEquals(1 + $sections, countElementsInTable(Section::getTable()));
         $this->assertEquals(1 + $comments, countElementsInTable(Comment::getTable()));
-        $this->assertEquals(1 + $destinations, countElementsInTable(FormDestination::getTable()));
+        $this->assertEquals(2 + $destinations, countElementsInTable(FormDestination::getTable()));
         $this->assertEquals(1 + $access_controls, countElementsInTable(FormAccessControl::getTable()));
+        $this->assertEquals(1 + $form_tiles, countElementsInTable(FormTile::getTable()));
     }
 
     /**
@@ -527,6 +551,7 @@ class FormTest extends DbTestCase
                 ->addSection('Section 1')
                 ->addQuestion('Question 1', QuestionTypeShortText::class)
                 ->addDestination(FormDestinationTicket::class, 'Destination 1')
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig())
         );
         $DB->update(
@@ -545,5 +570,216 @@ class FormTest extends DbTestCase
         // Ensure the draft form was deleted
         // TODO: test seems weird, shouldn't it be 0 since the form was delete ?
         $this->assertEquals(1 + $forms, countElementsInTable(Form::getTable()));
+    }
+
+    public static function defineTabsProvider_defaultDestinations(): iterable
+    {
+        $default_form = new FormBuilder("My form");
+
+        yield 'Form with default destination and no answers' => [
+            'form' => $default_form,
+            'number_of_answers' => 0,
+            'expected_tabs' => [
+                'Form',
+                'Service catalog',
+                'Access control 1',
+                'Items to create 1',
+                'Form translations',
+            ],
+        ];
+        yield 'Form with default destination and 1 answers' => [
+            'form' => $default_form,
+            'number_of_answers' => 1,
+            'expected_tabs' => [
+                'Form',
+                'Service catalog',
+                'Tickets 1',
+                'Access control 1',
+                'Items to create 1',
+                'Form translations',
+            ],
+        ];
+        yield 'Form with default destination and 5 answers' => [
+            'form' => $default_form,
+            'number_of_answers' => 5,
+            'expected_tabs' => [
+                'Form',
+                'Service catalog',
+                'Tickets 5',
+                'Access control 1',
+                'Items to create 1',
+                'Form translations',
+            ],
+        ];
+    }
+
+    public static function defineTabsProvider_withAdditionalTickets(): iterable
+    {
+        $form = new FormBuilder("My form");
+        $form->addDestination(FormDestinationTicket::class, 'Destination 1');
+        $form->addDestination(FormDestinationTicket::class, 'Destination 2');
+        $form->addDestination(FormDestinationTicket::class, 'Destination 3');
+
+        yield 'Form with multiple tickets destinations and no answers' => [
+            'form' => $form,
+            'number_of_answers' => 0,
+            'expected_tabs' => [
+                'Form',
+                'Service catalog',
+                'Access control 1',
+                'Items to create 4',
+                'Form translations',
+            ],
+        ];
+        yield 'Form with multiple tickets destinations and 1 answers' => [
+            'form' => $form,
+            'number_of_answers' => 1,
+            'expected_tabs' => [
+                'Form',
+                'Service catalog',
+                'Tickets 4', // (1 (default) + 3) destinations * 1 answer
+                'Access control 1',
+                'Items to create 4',
+                'Form translations',
+            ],
+        ];
+        yield 'Form with multiple tickets destinations and 5 answers' => [
+            'form' => $form,
+            'number_of_answers' => 5,
+            'expected_tabs' => [
+                'Form',
+                'Service catalog',
+                'Tickets 20', // (1 (default) + 3) destinations 5 answers
+                'Access control 1',
+                'Items to create 4',
+                'Form translations',
+            ],
+        ];
+    }
+
+    public static function defineTabsProvider_withAdditionalChanges(): iterable
+    {
+        $form = new FormBuilder("My form");
+        $form->addDestination(FormDestinationChange::class, 'Destination 1');
+        $form->addDestination(FormDestinationChange::class, 'Destination 2');
+        $form->addDestination(FormDestinationChange::class, 'Destination 3');
+
+        yield 'Form with multiple changes destinations and no answers' => [
+            'form' => $form,
+            'number_of_answers' => 0,
+            'expected_tabs' => [
+                'Form',
+                'Service catalog',
+                'Access control 1',
+                'Items to create 4',
+                'Form translations',
+            ],
+        ];
+        yield 'Form with multiple changes destinations and 1 answers' => [
+            'form' => $form,
+            'number_of_answers' => 1,
+            'expected_tabs' => [
+                'Form',
+                'Service catalog',
+                'Tickets 1',
+                'Changes 3', // 3 destinations * 1 answer
+                'Access control 1',
+                'Items to create 4',
+                'Form translations',
+            ],
+        ];
+        yield 'Form with multiple changes destinations and 5 answers' => [
+            'form' => $form,
+            'number_of_answers' => 5,
+            'expected_tabs' => [
+                'Form',
+                'Service catalog',
+                'Tickets 5',
+                'Changes 15', // 3 destinations * 5 answers
+                'Access control 1',
+                'Items to create 4',
+                'Form translations',
+            ],
+        ];
+    }
+
+    public static function defineTabsProvider_withAdditionalProblems(): iterable
+    {
+        $form = new FormBuilder("My form");
+        $form->addDestination(FormDestinationProblem::class, 'Destination 1');
+        $form->addDestination(FormDestinationProblem::class, 'Destination 2');
+        $form->addDestination(FormDestinationProblem::class, 'Destination 3');
+
+        yield 'Form with multiple problems destinations and no answers' => [
+            'form' => $form,
+            'number_of_answers' => 0,
+            'expected_tabs' => [
+                'Form',
+                'Service catalog',
+                'Access control 1',
+                'Items to create 4',
+                'Form translations',
+            ],
+        ];
+        yield 'Form with multiple problems destinations and 1 answers' => [
+            'form' => $form,
+            'number_of_answers' => 1,
+            'expected_tabs' => [
+                'Form',
+                'Service catalog',
+                'Tickets 1',
+                'Problems 3', // 3 destinations * 1 answer
+                'Access control 1',
+                'Items to create 4',
+                'Form translations',
+            ],
+        ];
+        yield 'Form with multiple problems destinations and 5 answers' => [
+            'form' => $form,
+            'number_of_answers' => 5,
+            'expected_tabs' => [
+                'Form',
+                'Service catalog',
+                'Tickets 5',
+                'Problems 15', // 3 destinations * 5 answers
+                'Access control 1',
+                'Items to create 4',
+                'Form translations',
+            ],
+        ];
+    }
+
+
+    #[DataProvider('defineTabsProvider_defaultDestinations')]
+    #[DataProvider('defineTabsProvider_withAdditionalTickets')]
+    #[DataProvider('defineTabsProvider_withAdditionalChanges')]
+    #[DataProvider('defineTabsProvider_withAdditionalProblems')]
+    public function testDefinedTabs(
+        FormBuilder $form,
+        int $number_of_answers,
+        array $expected_tabs,
+    ): void {
+        $this->login();
+
+        // Arrange: create the form and submit its answers
+        $form = $this->createForm($form);
+        for ($i = 0; $i < $number_of_answers; $i++) {
+            $this->sendFormAndGetAnswerSet($form, []);
+        }
+
+        // Act: get tabs names
+        $tabs = array_filter($form->defineTabs(), static fn($tab): bool => $tab !== 'no_all_tab', ARRAY_FILTER_USE_KEY);
+        $tabs = array_map('strip_tags', $tabs); // Strip html
+        $tabs = array_values($tabs); // Ignore keys
+
+        // Ignore the historical tab as its number of item keep chaning and make
+        // the test less reliable.
+        $tabs = array_filter(
+            $tabs,
+            fn($tab): bool => !str_contains($tab, 'Historical'),
+        );
+
+        // Assert: the tabs should match the expected data
+        $this->assertEquals($expected_tabs, $tabs);
     }
 }

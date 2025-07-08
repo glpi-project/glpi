@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,9 +35,6 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
-
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -81,7 +78,7 @@ if (isset($_POST['inquest_config' . $config_suffix], $_POST['entities_id'])) {
             'inquest_max_rate' => $inquest_max_rate,
             'inquest_mandatory_comment' => $inquest_mandatory_comment,
             'max_closedate' => $max_closedate,
-            'inquest_URL' => $ent->fields['inquest_URL' . $config_suffix] ?? ''
+            'inquest_URL' => $ent->fields['inquest_URL' . $config_suffix] ?? '',
         ]);
     }
 }

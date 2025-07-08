@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -72,7 +72,7 @@ class StatDataTicketNumber extends StatDataAlwaysDisplay
             ], [
                 'name' => __('Real duration'),
                 'data' => $avgactiontime,
-            ]
+            ],
         ];
 
         if ($params['itemtype'] == 'Ticket') {
@@ -84,13 +84,13 @@ class StatDataTicketNumber extends StatDataAlwaysDisplay
 
             $this->series[] = [
                 'name' => __('Take into account'),
-                'data' => $avgtaketime
+                'data' => $avgtaketime,
             ];
         }
     }
 
     public function getTitle(): string
     {
-        return __('Average time') . " - " .  _n('Hour', 'Hours', Session::getPluralNumber());
+        return __('Average time') . " - " . _n('Hour', 'Hours', Session::getPluralNumber());
     }
 }

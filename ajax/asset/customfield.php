@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,9 +35,6 @@
 use Glpi\Asset\CustomFieldDefinition;
 use Glpi\Exception\Http\BadRequestHttpException;
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
-
 Session::checkRight(CustomFieldDefinition::$rightname, READ);
 
 if (isset($_POST['action'])) {
@@ -46,13 +43,16 @@ if (isset($_POST['action'])) {
         $field->fields = $_POST;
         $field->fields['default_value'] = $field->getFieldType()->normalizeValue($_POST['default_value'] ?? null);
         echo $field->getFieldType()->getDefaultValueFormInput();
-    } else if ($_POST['action'] === 'get_field_type_options') {
+    } elseif ($_POST['action'] === 'get_field_type_options') {
         $field->getFromDB($_POST['customfielddefinitions_id']);
         $field->fields['type'] = $_POST['type'];
         $field_options = $field->getFieldType()->getOptions();
         foreach ($field_options as $option) {
             echo $option->getFormInput();
         }
+    } elseif ($_POST['action'] === 'purge_field') {
+        $field->check($_POST['customfielddefinitions_id'], PURGE);
+        $field->delete(['id' => $_POST['customfielddefinitions_id']]);
     } else {
         throw new BadRequestHttpException();
     }

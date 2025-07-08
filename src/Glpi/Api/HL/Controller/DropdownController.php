@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,23 +35,13 @@
 
 namespace Glpi\Api\HL\Controller;
 
-use AutoUpdateSystem;
 use Calendar;
-use CommonDBTM;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
-use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
-use Glpi\Api\HL\Search;
-use Glpi\Http\JSONResponse;
-use Glpi\Http\Request;
-use Glpi\Http\Response;
-use Group;
 use Location;
 use Manufacturer;
-use Network;
 use State;
-use User;
 
 #[Route(path: '/Dropdowns', priority: 1, tags: ['Dropdowns'])]
 #[Doc\Route(
@@ -60,14 +50,14 @@ use User;
             'name' => 'itemtype',
             'description' => 'Dropdown type',
             'location' => Doc\Parameter::LOCATION_PATH,
-            'schema' => ['type' => Doc\Schema::TYPE_STRING]
+            'schema' => ['type' => Doc\Schema::TYPE_STRING],
         ],
         [
             'name' => 'id',
             'description' => 'The ID of the dropdown item',
             'location' => Doc\Parameter::LOCATION_PATH,
-            'schema' => ['type' => Doc\Schema::TYPE_INTEGER]
-        ]
+            'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
+        ],
     ]
 )]
 final class DropdownController extends AbstractController
@@ -113,7 +103,7 @@ final class DropdownController extends AbstractController
                 'altitude' => ['type' => Doc\Schema::TYPE_STRING],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ]
+            ],
         ];
 
         $schemas['State'] = [
@@ -137,7 +127,7 @@ final class DropdownController extends AbstractController
                 'is_visible_helpdesk' => ['x-field' => 'is_helpdesk_visible', 'type' => Doc\Schema::TYPE_BOOLEAN],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ]
+            ],
         ];
 
         // Uses static array for BC/stability. Plugins adding new types should use the related hook to modify the API schema
@@ -146,7 +136,7 @@ final class DropdownController extends AbstractController
             'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
             'Certificate', 'Enclosure', 'PDU', 'Line',
             'Rack', 'SoftwareVersion', 'Cluster', 'Contract',
-            'Appliance', 'DatabaseInstance', 'Cable', 'Unmanaged', 'PassiveDCEquipment'
+            'Appliance', 'DatabaseInstance', 'Cable', 'Unmanaged', 'PassiveDCEquipment',
         ];
         $visiblities = [];
         foreach ($state_types as $state_type) {
@@ -157,7 +147,7 @@ final class DropdownController extends AbstractController
         $schemas['State_Visibilities'] = [
             'x-version-introduced' => '2.0',
             'type' => Doc\Schema::TYPE_OBJECT,
-            'properties' => []
+            'properties' => [],
         ];
         $schemas['State']['properties']['visibilities'] = [
             'type' => Doc\Schema::TYPE_OBJECT,
@@ -175,9 +165,9 @@ final class DropdownController extends AbstractController
                     'field' => 'items_id',
                     'condition' => [
                         'itemtype' => 'State',
-                        'visible_itemtype' => $state_type
-                    ]
-                ]
+                        'visible_itemtype' => $state_type,
+                    ],
+                ],
             ];
         }
         $schemas['State']['properties']['visibilities']['properties'] = $schemas['State_Visibilities']['properties'];
@@ -197,7 +187,7 @@ final class DropdownController extends AbstractController
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ]
+            ],
         ];
 
         $schemas['Calendar'] = [
@@ -217,7 +207,7 @@ final class DropdownController extends AbstractController
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ]
+            ],
         ];
 
         return $schemas;

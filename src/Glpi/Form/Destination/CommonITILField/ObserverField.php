@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,16 +34,18 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
+use Glpi\Form\Form;
+use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeObserver;
 use Override;
 use Session;
 
-class ObserverField extends ITILActorField
+final class ObserverField extends ITILActorField
 {
     #[Override]
-    public function getAllowedQuestionType(): string
+    public function getAllowedQuestionType(): array
     {
-        return QuestionTypeObserver::class;
+        return [new QuestionTypeObserver(), new QuestionTypeEmail()];
     }
 
     #[Override]
@@ -62,6 +63,20 @@ class ObserverField extends ITILActorField
     #[Override]
     public function getWeight(): int
     {
-        return 30;
+        return 110;
+    }
+
+    #[Override]
+    public function getConfigClass(): string
+    {
+        return ObserverFieldConfig::class;
+    }
+
+    #[Override]
+    public function getDefaultConfig(Form $form): ObserverFieldConfig
+    {
+        return new ObserverFieldConfig(
+            [ITILActorFieldStrategy::FROM_TEMPLATE],
+        );
     }
 }

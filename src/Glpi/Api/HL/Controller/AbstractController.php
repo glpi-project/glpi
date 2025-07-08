@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,16 +37,12 @@ namespace Glpi\Api\HL\Controller;
 
 use CommonDBTM;
 use Glpi\Api\HL\Doc as Doc;
-use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RoutePath;
 use Glpi\Api\HL\Router;
-use Glpi\Api\HL\RSQLInput;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryUnion;
-use Search;
+use Glpi\Plugin\Hooks;
 
 /**
  * @phpstan-type AdditionalErrorMessage array{priority: string, message: string}
@@ -79,7 +75,7 @@ abstract class AbstractController
         'location' => 'query',
         'schema' => [
             'type' => Doc\Schema::TYPE_STRING,
-        ]
+        ],
     ];
 
     protected const PARAMETER_START = [
@@ -91,7 +87,7 @@ abstract class AbstractController
             'format' => Doc\Schema::FORMAT_INTEGER_INT64,
             'minimum' => 0,
             'default' => 0,
-        ]
+        ],
     ];
 
     protected const PARAMETER_LIMIT = [
@@ -103,7 +99,7 @@ abstract class AbstractController
             'format' => Doc\Schema::FORMAT_INTEGER_INT64,
             'minimum' => 0,
             'default' => 100,
-        ]
+        ],
     ];
 
     protected const PARAMETER_SORT = [
@@ -113,7 +109,7 @@ abstract class AbstractController
         'location' => 'query',
         'schema' => [
             'type' => Doc\Schema::TYPE_STRING,
-        ]
+        ],
     ];
 
     /**
@@ -127,7 +123,7 @@ abstract class AbstractController
     }
 
     /**
-     * @return array<string, Doc\Schema>
+     * @return array<string, array>
      */
     protected static function getRawKnownSchemas(): array
     {
@@ -138,13 +134,13 @@ abstract class AbstractController
      * Get all known schemas for this controller for the requested API version
      * @param ?string $api_version The API version or null if all versions should be returned
      * @return array
-     * @phpstan-return array<string, Doc\Schema>
+     * @phpstan-return array<string, array>
      */
     final public static function getKnownSchemas(?string $api_version): array
     {
         $schemas = static::getRawKnownSchemas();
         // Allow plugins to inject or modify schemas
-        $schemas = \Plugin::doHookFunction('redefine_api_schemas', [
+        $schemas = \Plugin::doHookFunction(Hooks::REDEFINE_API_SCHEMAS, [
             'controller' => static::class,
             'schemas' => $schemas,
         ])['schemas'];
@@ -201,7 +197,7 @@ abstract class AbstractController
                     'x-readonly' => $class !== \Entity::class,
                 ],
                 $name_field => ['type' => Doc\Schema::TYPE_STRING],
-            ]
+            ],
         ];
         if ($full_schema !== null) {
             $schema['x-full-schema'] = $full_schema;
@@ -226,12 +222,12 @@ abstract class AbstractController
      * @param string $status
      * @phpstan-param self::ERROR_* $status
      * @param string $title
-     * @param ?string $detail
+     * @param string|array|null $detail
      * @param AdditionalErrorMessage[] $additionalMessages
      * @return array
      * @phpstan-return ErrorResponseBody
      */
-    public static function getErrorResponseBody(string $status, string $title, ?string $detail = null, array $additionalMessages = []): array
+    public static function getErrorResponseBody(string $status, string $title, string|array|null $detail = null, array $additionalMessages = []): array
     {
         $body = [
             'status' => $status,
@@ -282,7 +278,7 @@ abstract class AbstractController
                 foreach ($message_texts as $message) {
                     $additional_messages[] = [
                         'priority' => $get_priority_name($priority),
-                        'message' => $message
+                        'message' => $message,
                     ];
                 }
             }
@@ -325,7 +321,7 @@ abstract class AbstractController
             foreach ($errors['invalid'] as $invalid_info) {
                 $msg = [
                     'priority' => 'error',
-                    'message' => 'Invalid parameter: ' . $invalid_info['name']
+                    'message' => 'Invalid parameter: ' . $invalid_info['name'],
                 ];
                 if (isset($invalid_info['reason'])) {
                     $msg['message'] .= '. ' . $invalid_info['reason'];
@@ -361,7 +357,7 @@ abstract class AbstractController
     {
         return new JSONResponse([
             'id' => $id,
-            'href' => $api_path
+            'href' => $api_path,
         ], $status, ['Location' => $api_path]);
     }
 

@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -156,16 +155,16 @@
 
                         // show/hide elements not related to Oauth
                         $('#dropdown_smtp_check_certificate{{ rand }}').closest('.form-field').toggle(!is_oauth);
-                        $('#smtp_passwd_{{ rand }}').closest('.form-field').toggle(!is_oauth);
-                        $('#smtp_username_{{ rand }}').closest('.form-field').toggle(!is_oauth);
+                        $('#smtp-passwd_{{ rand }}').closest('.form-field').toggle(!is_oauth);
+                        $('#smtp-username_{{ rand }}').closest('.form-field').toggle(!is_oauth);
 
                         // show/hide elements related to Oauth
                         $('#oauth_redirect_alert_{{ rand }}').toggleClass('d-none', !is_oauth);
-                        $('#_smtp_oauth_callback_url_{{ rand }}').closest('.form-field').toggle(is_oauth);
+                        $('#smtp-oauth-callback-url_{{ rand }}').closest('.form-field').toggle(is_oauth);
                         $('#dropdown_smtp_oauth_provider{{ rand }}').closest('.form-field').toggle(is_oauth);
-                        $('#smtp_oauth_client_id_{{ rand }}').closest('.form-field').toggle(is_oauth);
-                        $('#smtp_oauth_client_secret_{{ rand }}').closest('.form-field').toggle(is_oauth);
-                        $('#_force_redirect_to_smtp_oauth_{{ rand }}').closest('.form-field').toggle(is_oauth);
+                        $('#smtp-oauth-client-id_{{ rand }}').closest('.form-field').toggle(is_oauth);
+                        $('#smtp-oauth-client-secret_{{ rand }}').closest('.form-field').toggle(is_oauth);
+                        $('#force-redirect-to-smtp-oauth_{{ rand }}').closest('.form-field').toggle(is_oauth);
                         $('[name=smtp_oauth_provider]').trigger('change'); // refresh additional params using dedicated method
                     });
                     $('[name=smtp_mode]').trigger('change');
@@ -200,7 +199,7 @@
             </div>
 
             <div id="oauth_redirect_alert_{{ rand }}" class="d-flex alert alert-info mx-2">
-                <i class="fas fa-info-circle fa-2x alert-icon"></i>
+                <i class="ti ti-info-circle fs-2x alert-icon"></i>
                 {{ __('Once the form has been validated, you will be redirected to your supplierʼs authentication page if necessary.') }}
             </div>
 
@@ -409,7 +408,7 @@
     <div class="row">
         <div class="col">
             <div class="alert alert-info">
-                <i class="fas fa-info-circle fa-2x alert-icon"></i>
+                <i class="ti ti-info-circle fs-2x alert-icon"></i>
                 {{ __('Notifications are disabled.') }}
                 <a href="{{ config('root_doc') }}/front/setup.notification.php">{{ __('See configuration') }}</a>
             </div>

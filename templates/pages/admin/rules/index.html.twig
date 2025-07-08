@@ -1,0 +1,135 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{{ include('pages/admin/rules/backup_header.html.twig') }}
+
+<div class="row">
+    <div class="col-12 col-lg-6">
+        <ul class="process-chart">
+            <li class="align-items-center d-flex justify-content-center my-4 pb-6 fs-1 fw-bold">
+                <i class="ti ti-cloud-download me-1"></i>
+                <span>{{ __("Inventory rules") }}</span>
+            </li>
+
+            <li class="entry-point">
+                <span class="icon-stack fa-2x">
+                    <i class="ti ti-circle-dashed"></i>
+                    <i class="ti ti-robot sm-size"></i>
+                </span>
+                <span>{{ __('Agent sends an inventory file') }}</span>
+            </li>
+
+            <li class="step">
+                <a class="btn flex-column" href="{{ 'RuleDefineItemtype'|itemtype_search_path }}">
+                    <div class="d-flex align-items-center">
+                        <i class="{{ 'RuleDefineItemtype'|itemtype_icon }}"></i>
+                        <span>{{ __('Transform itemtypes') }}</span>
+                    </div>
+                    <div class="text-muted">
+                        {{ __("Override the asset to another custom definition (like Servers)") }}
+                    </div>
+                </a>
+            </li>
+
+            <li class="step">
+                <a class="btn flex-column" href="{{ 'RuleImportEntity'|itemtype_search_path }}">
+                    <div class="d-flex align-items-center">
+                        <i class="{{ 'RuleImportEntity'|itemtype_icon }}"></i>
+                        <span>{{ __('Rules for assigning an item to an entity') }}</span>
+                    </div>
+                    <div class="text-muted">
+                        {{ __("Set an entity with some criteria (by its tag for example)") }}
+                    </div>
+                </a>
+            </li>
+
+            <li class="step">
+                <a class="btn flex-column" href="{{ 'RuleLocation'|itemtype_search_path }}">
+                    <div class="d-flex align-items-center">
+                        <i class="{{ 'RuleLocation'|itemtype_icon }}"></i>
+                        <span>{{ __('Location rules') }}</span>
+                    </div>
+                    <div class="text-muted">
+                        {{ __("Apply a location by checking common criteria") }}
+                    </div>
+                </a>
+            </li>
+
+            <li class="step">
+                <a class="btn flex-column" href="{{ 'RuleImportAsset'|itemtype_search_path }}">
+                    <div class="d-flex align-items-center">
+                        <i class="{{ 'RuleImportAsset'|itemtype_icon }}"></i>
+                        <span>{{ __("Rules for import and link equipments") }}</span>
+                    </div>
+                    <div class="text-muted">
+                        {{ __("Match data with an existing asset, create a new asset, or deny the import") }}
+                    </div>
+                </a>
+            </li>
+
+            <li class="step">
+                <a class="btn flex-column" href="{{ path('/front/dictionnary.php') }}">
+                    <div class="d-flex align-items-center">
+                        <i class="{{ 'RuleDictionnaryDropdownCollection'|itemtype_icon }}"></i>
+                        <span>{{ _n('Dictionary', 'Dictionaries', get_plural_number()) }}</span>
+                    </div>
+                    <div class="text-muted">
+                        {{ __("Normalize sub-data (like softwares, OS and models)") }}
+                    </div>
+                </a>
+            </li>
+
+            <li class="step">
+                <a class="btn flex-column" href="{{ 'RuleAsset'|itemtype_search_path }}">
+                    <div class="d-flex align-items-center">
+                        <i class="{{ 'RuleAsset'|itemtype_icon }}"></i>
+                        <span>{{ __("Business rules for assets") }}</span>
+                    </div>
+                    <div class="text-muted">
+                        {{ __("Alter asset fields based on their data") }}
+                    </div>
+                </a>
+            </li>
+
+            <li class="end">
+                <i class="ti ti-circle-check me-1 fa-2x"></i>
+                <span>{{ __('The asset is created or updated in GLPI') }}</span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="col-12 col-lg-6">
+        {% include "pages/admin/rules/collections_list.html.twig" with {
+            rules_group: rules_group,
+        } only %}
+    </div>
+</div>

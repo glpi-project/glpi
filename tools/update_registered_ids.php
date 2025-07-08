@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,13 +41,13 @@ if (PHP_SAPI != 'cli') {
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 $kernel = new \Glpi\Kernel\Kernel();
-$kernel->loadCommonGlobalConfig();
+$kernel->boot();
 
 $registeredid = new RegisteredID();
 $manufacturer = new Manufacturer();
 foreach (
     ['PCI' => 'http://pciids.sourceforge.net/v2.2/pci.ids',
-        'USB' => 'http://www.linux-usb.org/usb.ids'
+        'USB' => 'http://www.linux-usb.org/usb.ids',
     ] as $type => $URL
 ) {
     echo "Processing : $type\n";
@@ -66,7 +66,7 @@ foreach (
                 $registeredid->getFromDBByCrit([
                     'itemtype'     => 'Manufacturer',
                     'name'         => $id,
-                    'device_type'  => $type
+                    'device_type'  => $type,
                 ])
             ) {
                 $manufacturer->getFromDB($registeredid->fields['items_id']);
@@ -78,17 +78,17 @@ foreach (
                 $input = ['itemtype'    => $manufacturer->getType(),
                     'items_id'    => $manufacturer->getID(),
                     'device_type' => $type,
-                    'name'        => $id
+                    'name'        => $id,
                 ];
                 $registeredid->add($input);
             }
             continue;
         }
-       // if (($line[0] == "\t") && ($line[1] != '\t'))  {
-       //    $line = trim($line);
-       //    $id   = strtolower(substr($line, 0, 4));
-       //    $name = trim(substr($line, 4));
-       //    continue;
-       // }
+        // if (($line[0] == "\t") && ($line[1] != '\t'))  {
+        //    $line = trim($line);
+        //    $id   = strtolower(substr($line, 0, 4));
+        //    $name = trim(substr($line, 4));
+        //    continue;
+        // }
     }
 }

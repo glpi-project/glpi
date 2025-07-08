@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,6 +40,12 @@ use Html;
 use Html2Text\Html2Text;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
+
+use function Safe\getimagesize;
+use function Safe\json_encode;
+use function Safe\preg_match;
+use function Safe\preg_match_all;
+use function Safe\preg_replace;
 
 final class RichText
 {
@@ -403,7 +409,7 @@ HTML;
                             'h'   => $imgsize[1],
                             'thumbnail_w' => $width,
                             'thumbnail_h' => $height,
-                        ]
+                        ],
                     ]);
                     $content = str_replace($img_tag, $gallery, $content);
                 }
@@ -434,10 +440,10 @@ HTML;
                 'zoom'         => true,
             ],
             'rand'               => mt_rand(),
-            'gallery_item_class' => ''
+            'gallery_item_class' => '',
         ];
 
-        if (is_array($options) && count($options)) {
+        if (count($options)) {
             foreach ($options as $key => $val) {
                 $p[$key] = $val;
             }
@@ -462,6 +468,13 @@ HTML;
         $items_json = json_encode($imgs);
         $close_json = json_encode($p['controls']['close'] ?? false);
         $zoom_json  = json_encode($p['controls']['zoom'] ?? false);
+
+        $next_title     = json_encode(__('Next (arrow right)'));
+        $prev_title     = json_encode(__('Previous (arrow left)'));
+        $close_title    = json_encode(__('Close (Esc)'));
+        $download_title = json_encode(__('Download'));
+        $zoom_title     = json_encode(__('Zoom in/out'));
+
         $js = <<<JAVASCRIPT
       (function($) {
          $('.pswp-img{$p['rand']}').on('click', 'figure', function(event) {
@@ -476,11 +489,11 @@ HTML;
                 close: {$close_json},
                 zoom: {$zoom_json},
 
-                arrowNextTitle: __('Next (arrow right)'),
-                arrowPrevTitle: __('Previous (arrow left)'),
-                closeTitle: __('Close (Esc)'),
-                downloadTitle: __('Download'),
-                zoomTitle: __('Zoom in/out'),
+                arrowNextTitle: {$next_title},
+                arrowPrevTitle: {$prev_title},
+                closeTitle: {$close_title},
+                downloadTitle: {$download_title},
+                zoomTitle: {$zoom_title},
             };
             const gallery = new PhotoSwipe(options);
             gallery.on(
@@ -577,6 +590,7 @@ JAVASCRIPT;
         }
 
         // Allow class and style attribute
+        $config = $config->allowAttribute('class', '*');
         $config = $config->allowAttribute('style', '*');
 
         if (GLPI_ALLOW_IFRAME_IN_RICH_TEXT) {
@@ -594,7 +608,6 @@ JAVASCRIPT;
             'data-form-tag',
             'data-form-tag-value',
             'data-form-tag-provider',
-            'class',
         ];
         foreach ($rich_text_completion_attributes as $attribute) {
             $config = $config->allowAttribute($attribute, 'span');

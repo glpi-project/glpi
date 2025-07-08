@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
@@ -45,18 +47,10 @@ if (!isset($_GET['id'])) {
 }
 //LDAP Server add/update/delete
 if (isset($_POST["update"])) {
-    if (array_key_exists('rootdn_passwd', $_POST)) {
-       // Password must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
-        $_POST['rootdn_passwd'] = $_POST['rootdn_passwd'];
-    }
     $config_ldap->update($_POST);
     Html::back();
-} else if (isset($_POST["add"])) {
-    if (array_key_exists('rootdn_passwd', $_POST)) {
-       // Password must not be altered, it will be encrypt and never displayed, so sanitize is not necessary.
-        $_POST['rootdn_passwd'] = $_POST['rootdn_passwd'];
-    }
-   //If no name has been given to this configuration, then go back to the page without adding
+} elseif (isset($_POST["add"])) {
+    //If no name has been given to this configuration, then go back to the page without adding
     if ($_POST["name"] != "") {
         if ($newID = $config_ldap->add($_POST)) {
             if (AuthLDAP::testLDAPConnection($newID)) {
@@ -69,11 +63,11 @@ if (isset($_POST["update"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $config_ldap->delete($_POST, 1);
     $_SESSION['glpi_authconfig'] = 1;
     $config_ldap->redirectToList();
-} else if (isset($_POST["add_replicate"])) {
+} elseif (isset($_POST["add_replicate"])) {
     $replicate = new AuthLdapReplicate();
     unset($_POST["next"]);
     unset($_POST["id"]);

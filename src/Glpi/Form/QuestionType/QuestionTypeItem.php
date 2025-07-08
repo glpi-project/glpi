@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,10 +36,20 @@
 namespace Glpi\Form\QuestionType;
 
 use CartridgeItem;
+use CommonDBTM;
 use ConsumableItem;
+use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Condition\ConditionHandler\ItemAsTextConditionHandler;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
+use Glpi\Form\Migration\FormQuestionDataConverterInterface;
+use Glpi\Form\Condition\ConditionHandler\ItemConditionHandler;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
-use Group;
+use InvalidArgumentException;
 use Line;
 use Override;
 use PassiveDCEquipment;
@@ -48,12 +58,11 @@ use Session;
 use Software;
 use TicketRecurrent;
 
-class QuestionTypeItem extends AbstractQuestionType
+class QuestionTypeItem extends AbstractQuestionType implements FormQuestionDataConverterInterface, UsedAsCriteriaInterface
 {
     protected string $itemtype_aria_label;
     protected string $items_id_aria_label;
 
-    #[Override]
     public function __construct()
     {
         parent::__construct();
@@ -65,11 +74,29 @@ class QuestionTypeItem extends AbstractQuestionType
     #[Override]
     public function formatDefaultValueForDB(mixed $value): ?string
     {
+        if (is_array($value) && isset($value['items_id'])) {
+            $value = $value['items_id'];
+        }
+
         if (!is_numeric($value)) {
             return null;
         }
 
-        return json_encode((new QuestionTypeItemDefaultValueConfig($value))->jsonSerialize());
+        return json_encode(new QuestionTypeItemDefaultValueConfig((int) $value));
+    }
+
+    #[Override]
+    public function convertDefaultValue(array $rawData): mixed
+    {
+        return $rawData['default_values'] ?? null;
+    }
+
+    #[Override]
+    public function convertExtraData(array $rawData): mixed
+    {
+        return (new QuestionTypeItemExtraDataConfig(
+            itemtype: $rawData['itemtype'] ?? null
+        ))->jsonSerialize();
     }
 
     /**
@@ -102,7 +129,7 @@ class QuestionTypeItem extends AbstractQuestionType
             ),
             __('Management') => $CFG_GLPI['management_types'],
             __('Tools') => $CFG_GLPI['tools_types'],
-            __('Administration') => $CFG_GLPI['admin_types']
+            __('Administration') => $CFG_GLPI['admin_types'],
         ];
     }
 
@@ -168,121 +195,67 @@ class QuestionTypeItem extends AbstractQuestionType
     }
 
     #[Override]
+    public function getSubTypes(): array
+    {
+        return Dropdown::buildItemtypesDropdownOptions($this->getAllowedItemtypes());
+    }
+
+    #[Override]
+    public function getSubTypeFieldName(): string
+    {
+        return 'itemtype';
+    }
+
+    #[Override]
+    public function getSubTypeFieldAriaLabel(): string
+    {
+        return $this->itemtype_aria_label;
+    }
+
+    #[Override]
+    public function getSubTypeDefaultValue(?Question $question): ?string
+    {
+        return $this->getDefaultValueItemtype($question);
+    }
+
+    #[Override]
     public function renderAdministrationTemplate(?Question $question): string
     {
-        $template = <<<TWIG
-            {% import 'components/form/fields_macros.html.twig' as fields %}
-
-            {% set rand = random() %}
-
-            {{ fields.dropdownItemsFromItemtypes(
-                'default_value',
-                '',
-                {
-                    'init'                           : init,
-                    'itemtypes'                      : itemtypes,
-                    'no_label'                       : true,
-                    'display_emptychoice'            : true,
-                    'default_itemtype'               : default_itemtype,
-                    'default_items_id'               : default_items_id,
-                    'itemtype_name'                  : 'itemtype',
-                    'items_id_name'                  : 'default_value',
-                    'width'                          : '100%',
-                    'container_css_class'            : 'mt-2',
-                    'no_sort'                        : true,
-                    'aria_label'                     : itemtype_aria_label,
-                    'specific_tags_items_id_dropdown': {
-                        'aria-label': items_id_aria_label,
-                    },
-                    'add_data_attributes_itemtype_dropdown' : {
-                        'glpi-form-editor-specific-question-extra-data': '',
-                    },
-                    'mb'                            : '',
-                }
-            ) }}
-
-            {% if question == null %}
-                <script>
-                    import("{{ js_path('js/modules/Forms/QuestionItem.js') }}").then((m) => {
-                        new m.GlpiFormQuestionTypeItem({{ question_type|json_encode|raw }});
-                    });
-                </script>
-            {% endif %}
-TWIG;
-
         $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'init'                => $question != null,
-            'question'            => $question,
-            'question_type'       => $this::class,
-            'default_itemtype'    => $this->getDefaultValueItemtype($question) ?? '0',
-            'default_items_id'    => $this->getDefaultValueItemId($question),
-            'itemtypes'           => $this->getAllowedItemtypes(),
-            'itemtype_aria_label' => $this->itemtype_aria_label,
-            'items_id_aria_label' => $this->items_id_aria_label,
-        ]);
+        return $twig->render(
+            'pages/admin/form/question_type/item_dropdown/administration_template.html.twig',
+            [
+                'init'             => $question != null,
+                'question'         => $question,
+                'question_type'    => $this::class,
+                'default_itemtype' => $this->getDefaultValueItemtype($question),
+                'default_items_id' => $this->getDefaultValueItemId($question),
+                'itemtypes'        => $this->getAllowedItemtypes(),
+                'aria_label'       => $this->items_id_aria_label,
+                'advanced_config'  => $this->renderAdvancedConfigurationTemplate($question) ?? '',
+            ]
+        );
     }
 
     #[Override]
     public function renderEndUserTemplate(Question $question): string
     {
-        $template = <<<TWIG
-            {% import 'components/form/fields_macros.html.twig' as fields %}
-
-            {{ fields.hiddenField(
-                question.getEndUserInputName() ~ '[itemtype]',
-                itemtype,
-                '',
-                {
-                    'no_label': true,
-                    'mb': ''
-                }
-            ) }}
-            {{ fields.dropdownField(
-                itemtype,
-                question.getEndUserInputName() ~ '[items_id]',
-                default_items_id,
-                '',
-                {
-                    'no_label'           : true,
-                    'display_emptychoice': true,
-                    'right'              : 'all',
-                    'aria_label'         : aria_label,
-                    'mb'                 : '',
-                    'addicon'            : false,
-                    'comments'           : false,
-                }
-            ) }}
-TWIG;
-
         $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'question'            => $question,
-            'itemtype'            => $this->getDefaultValueItemtype($question) ?? '0',
-            'default_items_id'    => $this->getDefaultValueItemId($question),
-            'aria_label'          => $this->items_id_aria_label,
-            'items_id_aria_label' => $this->items_id_aria_label,
-        ]);
+        return $twig->render(
+            'pages/admin/form/question_type/item_dropdown/end_user_template.html.twig',
+            [
+                'question'                    => $question,
+                'itemtype'                    => $this->getDefaultValueItemtype($question) ?? '0',
+                'default_items_id'            => $this->getDefaultValueItemId($question),
+                'aria_label'                  => $question->fields['name'],
+                'sub_types'                   => $this->getSubTypes(),
+                'dropdown_restriction_params' => $this->getDropdownRestrictionParams($question),
+            ]
+        );
     }
 
     #[Override]
-    public function renderAnswerTemplate(mixed $answer): string
-    {
-        $template = <<<TWIG
-            <div class="form-control-plaintext">
-                {{ get_item_link(itemtype, items_id) }}
-            </div>
-TWIG;
-
-        $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'itemtype' => $answer['itemtype'],
-            'items_id' => $answer['items_id'],
-        ]);
-    }
-
-    #[Override]
-    public function formatRawAnswer(mixed $answer): string
+    public function formatRawAnswer(mixed $answer, Question $question): string
     {
         $item = $answer['itemtype']::getById($answer['items_id']);
         if (!$item) {
@@ -293,7 +266,7 @@ TWIG;
     }
 
     #[Override]
-    public function getCategory(): QuestionTypeCategory
+    public function getCategory(): QuestionTypeCategoryInterface
     {
         return QuestionTypeCategory::ITEM;
     }
@@ -326,5 +299,114 @@ TWIG;
     public function getDefaultValueConfigClass(): ?string
     {
         return QuestionTypeItemDefaultValueConfig::class;
+    }
+
+    #[Override]
+    public function getConditionHandlers(
+        ?JsonFieldInterface $question_config
+    ): array {
+        if (!$question_config instanceof QuestionTypeItemExtraDataConfig) {
+            throw new InvalidArgumentException();
+        }
+
+        return array_merge(
+            parent::getConditionHandlers($question_config),
+            [
+                new ItemConditionHandler($question_config->getItemtype()),
+                new ItemAsTextConditionHandler($question_config->getItemtype()),
+            ],
+        );
+    }
+
+    public function exportDynamicDefaultValue(
+        ?JsonFieldInterface $extra_data_config,
+        array|int|float|bool|string|null $default_value_config,
+    ): DynamicExportDataField {
+        $requirements = [];
+        $fallback = parent::exportDynamicDefaultValue(
+            $extra_data_config,
+            $default_value_config
+        );
+
+        // Stop here if one of the parameters is empty or invalid
+        if ($extra_data_config === null || !is_array($default_value_config)) {
+            return $fallback;
+        }
+
+        // Validate configuration values
+        $default_value_config = $this->getDefaultValueConfig($default_value_config);
+        if (
+            !$default_value_config instanceof QuestionTypeItemDefaultValueConfig
+            || !$extra_data_config instanceof QuestionTypeItemExtraDataConfig
+            || $extra_data_config->getItemtype() === null
+            || !is_a($extra_data_config->getItemtype(), CommonDBTM::class, true)
+            || empty($default_value_config->getItemsId())
+        ) {
+            return $fallback;
+        }
+
+        $default_value_data = $default_value_config->jsonSerialize();
+
+        // Load linked item
+        /** @var class-string<\CommonDBTM> $itemtype */
+        $itemtype = $extra_data_config->getItemtype();
+        $item = $itemtype::getById(
+            $default_value_config->getItemsId()
+        );
+
+        // Replace id and register requirement
+        $key = QuestionTypeItemDefaultValueConfig::KEY_ITEMS_ID;
+        $default_value_data[$key] = $item->getName();
+        $requirements[] = new DataRequirementSpecification(
+            $itemtype,
+            $item->getName(),
+        );
+
+        return new DynamicExportDataField($default_value_data, $requirements);
+    }
+
+    #[Override]
+    public static function prepareDynamicDefaultValueForImport(
+        ?array $extra_data,
+        array|int|float|bool|string|null $default_value_data,
+        DatabaseMapper $mapper,
+    ): array|int|float|bool|string|null {
+        $fallback = parent::prepareDynamicDefaultValueForImport(
+            $extra_data,
+            $default_value_data,
+            $mapper,
+        );
+
+        // Validate we have two valid configs
+        if ($extra_data == null || $default_value_data === null) {
+            return $fallback;
+        }
+
+        // Validate config values
+        $itemtype = $extra_data[QuestionTypeItemExtraDataConfig::ITEMTYPE] ?? "";
+        $name = $default_value_data[QuestionTypeItemDefaultValueConfig::KEY_ITEMS_ID] ?? "";
+        if (
+            !(getItemForItemtype($itemtype) instanceof CommonDBTM)
+            || empty($name)
+        ) {
+            return $fallback;
+        }
+
+        // Find item id
+        $id = $mapper->getItemId($itemtype, $name);
+        $default_value_data[QuestionTypeItemDefaultValueConfig::KEY_ITEMS_ID] = $id;
+
+        return $default_value_data;
+    }
+
+    /**
+     * Get parameters for dropdown restrictions based on the question
+     *
+     * @param Question|null $question The question to retrieve the parameters for
+     * @return array
+     */
+    public function getDropdownRestrictionParams(?Question $question): array
+    {
+        return [];
     }
 }

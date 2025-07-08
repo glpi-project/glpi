@@ -5,8 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -62,14 +61,47 @@ Cypress.Commands.add('saveFormEditorAndReload', () => {
         .should('contain.text', 'Item successfully updated')
     ;
     cy.reload();
+
+    // Wait for the form to be reloaded
+    cy.findByRole('button', { 'name': 'Save' }).should('exist');
 });
 
 Cypress.Commands.add('addQuestion', (name) => {
-    cy.findByRole('button', {'name': 'Add a new question'}).click();
+    cy.findByRole('button', {'name': 'Add a question'}).click();
     cy.focused().type(name); // Question name is focused by default
 });
 
 Cypress.Commands.add('addSection', (name) => {
-    cy.findByRole('button', {'name': 'Add a new section'}).click();
+    cy.findByRole('button', {'name': 'Add a section'}).click();
     cy.focused().type(name); // Section name is focused by default
+});
+
+// TODO: refactor on playwright; too many args
+Cypress.Commands.add('addQuestionToDefaultSectionWithAPI', (
+    form_id,
+    name,
+    type,
+    vertical_rank,
+    horizontal_rank = 0,
+    default_value = null,
+    extra_data = null,
+    is_mandatory = false,
+) => {
+    cy.initApi().doApiRequest('GET', `Glpi\\Form\\Form/${form_id}/Glpi\\Form\\Section`).then((response) => {
+        const section_id = response.body[0].id;
+        const question = {
+            forms_sections_id: section_id,
+            name             : name,
+            type             : type,
+            vertical_rank    : vertical_rank,
+            horizontal_rank  : horizontal_rank,
+            default_value    : default_value,
+            extra_data       : extra_data,
+            is_mandatory     : is_mandatory,
+        };
+
+        return cy.createWithAPI('Glpi\\Form\\Question', question).then((question_id) => {
+            return question_id;
+        });
+    });
 });

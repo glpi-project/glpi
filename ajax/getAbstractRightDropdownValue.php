@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,11 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\json_encode;
+
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
-
-function show_rights_dropdown(string $class)
+function show_rights_dropdown(string $class, array $options = [])
 {
     $search = $_POST['searchText'] ?? "";
-    echo json_encode($class::fetchValues($search));
+    echo json_encode($class::fetchValues($search, $options));
 }

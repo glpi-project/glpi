@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -96,7 +95,7 @@ class NetworkPortTest extends AbstractInventoryAsset
                 'ports'        => ['{"ifdescr":"3","ifname":"3","ifnumber":3,"ifstatus":1,"iftype":6,"trunk":false,"mac":"b4:39:d6:3b:22:bd","instantiation_type":"NetworkPortEthernet","name":"3","logical_number":3}'],
                 'connections'  => '{"3":["00:40:9d:3b:7f:c4"]}',
                 'vlans'        => '{"3":[{"name":"VLAN160","tag":"160"}]}',
-                'aggregates'   => '[]'
+                'aggregates'   => '[]',
             ], [
                 'xml'          => "<?xml version=\"1.0\"?>
 <REQUEST>
@@ -178,11 +177,11 @@ class NetworkPortTest extends AbstractInventoryAsset
                 'ports'         => [
                     '{"ifdescr":"Port-channel10","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"15 days, 23:20:53.24","ifmtu":1500,"ifname":"Po10","ifnumber":5010,"ifouterrors":0,"ifspeed":4294967295,"ifstatus":1,"iftype":56,"trunk":false,"mac":"c4:64:13:8c:7e:b5","instantiation_type":"NetworkPortFiberchannel","name":"Po10","logical_number":5010,"ifinbytes":1076823325,"ifoutbytes":2179528910}',
                     '{"ifdescr":"Agg one","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"18 days, 23:20:53.24","ifmtu":1500,"ifname":"Agg01","ifnumber":10001,"ifouterrors":0,"ifspeed":4294967295,"ifstatus":1,"iftype":6,"trunk":false,"mac":"c4:64:13:8c:7e:b6","instantiation_type":"NetworkPortEthernet","name":"Agg01","logical_number":10001,"ifinbytes":0,"ifoutbytes":0}',
-                    '{"ifdescr":"Agg two","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"17 days, 23:20:53.24","ifmtu":1500,"ifname":"Agg02","ifnumber":10002,"ifouterrors":0,"ifspeed":4294967295,"ifstatus":1,"iftype":6,"trunk":false,"mac":"c4:64:13:8c:7e:b7","instantiation_type":"NetworkPortEthernet","name":"Agg02","logical_number":10002,"ifinbytes":0,"ifoutbytes":0}'
+                    '{"ifdescr":"Agg two","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"17 days, 23:20:53.24","ifmtu":1500,"ifname":"Agg02","ifnumber":10002,"ifouterrors":0,"ifspeed":4294967295,"ifstatus":1,"iftype":6,"trunk":false,"mac":"c4:64:13:8c:7e:b7","instantiation_type":"NetworkPortEthernet","name":"Agg02","logical_number":10002,"ifinbytes":0,"ifoutbytes":0}',
                 ],
                 'connections'  => '',
                 'vlans'        => '',
-                'aggregates'   => '{"5010":{"aggregates":{"10001":0,"10002":0}}}'
+                'aggregates'   => '{"5010":{"aggregates":{"10001":0,"10002":0}}}',
             ], [
                 'xml'          => "<?xml version=\"1.0\"?>
 <REQUEST>
@@ -316,12 +315,12 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                 'ports'  => [
                     '{"ifalias":"lag1.glpi-project.org","ifdescr":"Port-channel6","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"32.65 seconds","ifmtu":9000,"ifname":"Po6","ifnumber":5006,"ifouterrors":0,"ifspeed":2000000000,"ifstatus":1,"iftype":56,"mac":"00:14:a9:37:ee:2d","trunk":false,"instantiation_type":"NetworkPortFiberchannel","name":"Po6","logical_number":5006,"ifinbytes":82823274,"ifoutbytes":657139488}',
                     '{"ifalias":"net1.glpi-project.org","ifdescr":"GigabitEthernet4\/0\/46","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"5 minutes, 50.26","ifmtu":9000,"ifname":"Gi4\/0\/46","ifnumber":11646,"ifouterrors":0,"ifportduplex":3,"ifspeed":1000000000,"ifstatus":1,"iftype":6,"mac":"00:19:2f:08:8f:2e","trunk":false,"instantiation_type":"NetworkPortEthernet","name":"Gi4\/0\/46","logical_number":11646,"portduplex":3,"ifinbytes":38145664,"ifoutbytes":167335360}',
-                    '{"ifalias":"net2.glpi-project.org","ifdescr":"GigabitEthernet8\/0\/45","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"30.69 seconds","ifmtu":9000,"ifname":"Gi8\/0\/45","ifnumber":13645,"ifouterrors":0,"ifportduplex":3,"ifspeed":1000000000,"ifstatus":1,"iftype":6,"mac":"00:14:a9:37:ee:2d","trunk":false,"instantiation_type":"NetworkPortEthernet","name":"Gi8\/0\/45","logical_number":13645,"portduplex":3,"ifinbytes":40326934,"ifoutbytes":454911808}'
+                    '{"ifalias":"net2.glpi-project.org","ifdescr":"GigabitEthernet8\/0\/45","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"30.69 seconds","ifmtu":9000,"ifname":"Gi8\/0\/45","ifnumber":13645,"ifouterrors":0,"ifportduplex":3,"ifspeed":1000000000,"ifstatus":1,"iftype":6,"mac":"00:14:a9:37:ee:2d","trunk":false,"instantiation_type":"NetworkPortEthernet","name":"Gi8\/0\/45","logical_number":13645,"portduplex":3,"ifinbytes":40326934,"ifoutbytes":454911808}',
                 ],
                 'connections'  => '{"5006":["00:14:4f:f2:b7:fd","00:14:4f:f2:b7:fe"]}',
                 'vlans'        => '{"5006":[{"name":"san-replication","tag":"206"}],"11646":[{"name":"san-replication","tag":"206"}],"13645":[{"name":"san-replication","tag":"206"}]}',
-                'aggregates'   => '{"5006":{"aggregates":{"11646":0,"13645":0}}}'
-            ]
+                'aggregates'   => '{"5006":{"aggregates":{"11646":0,"13645":0}}}',
+            ],
         ];
     }
 
@@ -332,27 +331,25 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
-        $neteq = getItemByTypeName('NetworkEquipment', 'My network equipment');
-        if ($neteq === false) {
-            $neteq = new \NetworkEquipment();
-            $this->assertGreaterThan(
-                0,
-                $neteq->add([
-                    'name'   => 'My network equipment',
-                    'entities_id'  => 0
-                ])
-            );
-        }
+        $neteq = new \NetworkEquipment();
+        $this->assertGreaterThan(
+            0,
+            $neteq->add([
+                'name'   => 'My network equipment',
+                'entities_id'  => 0,
+            ])
+        );
 
         $asset = new \Glpi\Inventory\Asset\NetworkPort($neteq, $json->content->network_ports);
-        $asset->setExtraData((array)$json->content);
+        $asset->setMainAsset(new \Glpi\Inventory\MainAsset\NetworkEquipment($neteq, []));
+        $asset->setExtraData((array) $json->content);
         $results = $asset->prepare();
 
         foreach ($results as $key => $result) {
             $this->assertEquals(json_decode($ports[$key]), $result);
         }
-        $this->assertEquals((array)json_decode($connections), $asset->getPart('connections'));
-        $this->assertEquals((array)json_decode($vlans), $asset->getPart('vlans'));
+        $this->assertEquals((array) json_decode($connections), $asset->getPart('connections'));
+        $this->assertEquals((array) json_decode($vlans), $asset->getPart('vlans'));
         $this->assertEquals(json_decode($aggregates, true), $asset->getPart('aggregates'));
     }
 
@@ -912,7 +909,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             $networkport->getFromDbByCrit([
                 'itemtype' => 'NetworkEquipment',
                 'items_id' => $networkquipement_id,
-                'name' => 'radio0_ssid_id0'
+                'name' => 'radio0_ssid_id0',
             ])
         );
 
@@ -1110,7 +1107,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                 'itemtype' => 'Computer',
                 'items_id' => $computers_id,
                 'name' => 'enp3s0',
-                'instantiation_type' => 'NetworkPortEthernet'
+                'instantiation_type' => 'NetworkPortEthernet',
             ]
         ));
 
@@ -1120,7 +1117,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                 'itemtype' => 'Computer',
                 'items_id' => $computers_id,
                 'name' => 'lo',
-                'instantiation_type' => 'NetworkPortLocal'
+                'instantiation_type' => 'NetworkPortLocal',
             ]
         ));
 
@@ -1130,7 +1127,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                 'itemtype' => 'Computer',
                 'items_id' => $computers_id,
                 'name' => 'br-8f1b5a0d178c',
-                'instantiation_type' => 'NetworkPortEthernet'
+                'instantiation_type' => 'NetworkPortEthernet',
             ]
         ));
 
@@ -1140,7 +1137,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                 'itemtype' => 'Computer',
                 'items_id' => $computers_id,
                 'name' => 'Intel(R) WiFi Link 5100 AGN',
-                'instantiation_type' => 'NetworkPortWifi'
+                'instantiation_type' => 'NetworkPortWifi',
             ]
         ));
 
@@ -1150,7 +1147,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                 'itemtype' => 'Computer',
                 'items_id' => $computers_id,
                 'name' => 'fibrechannel A',
-                'instantiation_type' => 'NetworkPortFiberChannel'
+                'instantiation_type' => 'NetworkPortFiberChannel',
             ]
         ));
 
@@ -1160,7 +1157,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                 'itemtype' => 'Computer',
                 'items_id' => $computers_id,
                 'name' => 'bond0',
-                'instantiation_type' => 'NetworkPortAggregate'
+                'instantiation_type' => 'NetworkPortAggregate',
             ]
         ));
 
@@ -1170,7 +1167,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                 'itemtype' => 'Computer',
                 'items_id' => $computers_id,
                 'name' => 'eth3',
-                'instantiation_type' => 'NetworkPortAlias'
+                'instantiation_type' => 'NetworkPortAlias',
             ]
         ));
 
@@ -1180,7 +1177,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                 'itemtype' => 'Computer',
                 'items_id' => $computers_id,
                 'name' => 'Bluetooth',
-                'instantiation_type' => 'NetworkPortEthernet'
+                'instantiation_type' => 'NetworkPortEthernet',
             ]
         ));
 
@@ -1190,7 +1187,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                 'itemtype' => 'Computer',
                 'items_id' => $computers_id,
                 'name' => 'Infiniband',
-                'instantiation_type' => 'NetworkPortEthernet'
+                'instantiation_type' => 'NetworkPortEthernet',
             ]
         ));
 
@@ -1200,7 +1197,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                 'itemtype' => 'Computer',
                 'items_id' => $computers_id,
                 'name' => 'Dialup',
-                'instantiation_type' => 'NetworkPortDialup'
+                'instantiation_type' => 'NetworkPortDialup',
             ]
         ));
     }
@@ -1306,7 +1303,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                 'itemtype' => 'Computer',
                 'items_id' => $computers_id,
                 'name' => 'lo',
-                'instantiation_type' => 'NetworkPortEthernet'
+                'instantiation_type' => 'NetworkPortEthernet',
             ]
         ));
 
@@ -1391,7 +1388,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                 'itemtype' => 'Computer',
                 'items_id' => $computers_id,
                 'name' => 'lo',
-                'instantiation_type' => 'NetworkPortLocal'
+                'instantiation_type' => 'NetworkPortLocal',
             ]
         ));
 
@@ -1423,7 +1420,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                 'itemtype' => $equipment1::getType(),
                 'items_id' => $id_1,
                 'name' => 'Linked Port',
-                'mac' => '00:01:23:45:67:89'
+                'mac' => '00:01:23:45:67:89',
             ])
         );
 
@@ -1450,6 +1447,47 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         //8 connections on port, but one related to existing equipment
         $this->assertCount(7, $unmanaged->find());
+    }
+
+    public function testNetworkEquipmentsNoConnections()
+    {
+        //using same file as testNetworkEquipmentsConnections, but without importing unmanageds
+        $this->login();
+
+        //unset import of unmanaged equipments
+        $config = new \Glpi\Inventory\Conf();
+        $config->saveConf(['import_unmanaged' => false]);
+
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        //checks there are no unmanageds
+        $unmanaged = new \Unmanaged();
+        $this->assertCount(0, $unmanaged->find());
+
+        // Import the network equipment
+        $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/connected_switch.xml');
+        $converter = new \Glpi\Inventory\Converter();
+        $data = json_decode($converter->convert($xml_source));
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->assertFalse($inventory->inError());
+        $this->assertSame([], $inventory->getErrors());
+
+        $equipment2 = new \NetworkEquipment();
+        $this->assertTrue(
+            $equipment2->getFromDBByCrit(['serial' => '9876543210'])
+        );
+
+        //still no unmanageds
+        $this->assertCount(0, $unmanaged->find());
     }
 
     public function testNetworkEquipmentsConnectionsConverted(): void
@@ -1495,8 +1533,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             ->getMock();
 
         $ma->method('getAction')->willReturn('convert');
-        $ma->method('addMessage')->willReturnCallback(function () {
-        });
+        $ma->method('addMessage')->willReturnCallback(function () {});
         $ma->method('getInput')->willReturn([]);
 
         // Execute method
@@ -1529,5 +1566,127 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         //8 connections on port, but one related to existing equipment
         $this->assertCount(7, $unmanaged->find());
+    }
+
+    public function testDefaultInstantiationType()
+    {
+        global $DB;
+        $json_str = '
+        {
+            "action": "inventory",
+            "content": {
+                "bios": {
+                  "assettag": "Asset-1234567890",
+                  "bdate": "2013-10-29",
+                  "bmanufacturer": "American Megatrends Inc.",
+                  "bversion": "1602",
+                  "mmanufacturer": "ASUSTeK COMPUTER INC.",
+                  "mmodel": "Z87-A",
+                  "msn": "131219362301208",
+                  "skunumber": "All",
+                  "smanufacturer": "ASUS",
+                  "smodel": "All Series"
+                },
+                "hardware": {
+                  "chassis_type": "Desktop",
+                  "datelastloggeduser": "Mon Dec 11 09:34",
+                  "defaultgateway": "192.168.1.1",
+                  "dns": "127.0.0.53",
+                  "lastloggeduser": "teclib",
+                  "memory": 32030,
+                  "name": "teclib-asus-desktop",
+                  "swap": 2047,
+                  "uuid": "31042c80-d7da-11dd-93d0-bcee7b8de946",
+                  "vmsystem": "Physical",
+                  "workgroup": "home"
+                },
+                "networks": [
+                  {
+                    "description": "vmk1",
+                    "ipaddress": "10.15.55.81",
+                    "ipmask": "255.255.254.0",
+                    "mac": "00:50:56:6b:fa:c6",
+                    "mtu": 1500,
+                    "status": "up",
+                    "virtualdev": true
+                  },
+                  {
+                    "description": "vmk2",
+                    "ipaddress": "10.15.55.81",
+                    "ipmask": "255.255.254.0",
+                    "mtu": 1500,
+                    "status": "up",
+                    "virtualdev": true
+                  }
+                ],
+                "versionclient": "GLPI-Agent_v1.4-1"
+            },
+            "deviceid": "teclib-asus-desktop-2022-09-20-16-43-09",
+            "itemtype": "Computer"
+        }';
+
+        $json = json_decode($json_str);
+        $this->doInventory($json);
+
+        //check created agent
+        $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->assertCount(1, $agents);
+        $agent = $agents->current();
+        $this->assertIsArray($agent);
+        $this->assertSame('teclib-asus-desktop-2022-09-20-16-43-09', $agent['deviceid']);
+        $this->assertSame('teclib-asus-desktop-2022-09-20-16-43-09', $agent['name']);
+        $this->assertSame('Computer', $agent['itemtype']);
+        $this->assertSame($agenttype['id'], $agent['agenttypes_id']);
+        $this->assertGreaterThan(0, $agent['items_id']);
+
+        //check created computer
+        $computers_id = $agent['items_id'];
+        $this->assertGreaterThan(0, $computers_id);
+        $computer = new \Computer();
+        $this->assertTrue($computer->getFromDB($computers_id));
+
+        //check created networkport
+        $networkport1 = new \NetworkPort();
+
+        // vmk1 -> ethernet -> NetworkPortEthernet
+        $this->assertTrue($networkport1->getFromDbByCrit(
+            [
+                'itemtype'            => 'Computer',
+                'items_id'            => $computers_id,
+                'name'                => 'vmk1',
+                'instantiation_type'  => 'NetworkPortEthernet',
+            ]
+        ));
+
+        // vmk2 -> no mac -> no instantiation type
+        $this->assertTrue($networkport1->getFromDbByCrit(
+            [
+                'itemtype'            => 'Computer',
+                'items_id'            => $computers_id,
+                'name'                => 'vmk2',
+                'instantiation_type'  => null,
+            ]
+        ));
+        // update vmk1 to set instantiation_type to null to test update case
+        $this->assertTrue($networkport1->update([
+            'id'                  => $networkport1->fields['id'],
+            'instantiation_type'  => null,
+            'is_dynamic'          => 1, // prevent lock
+        ]));
+
+        //redo inventory
+        $json = json_decode($json_str);
+        $this->doInventory($json);
+
+        // vmk1 -> ethernet -> NetworkPortEthernet
+        $this->assertTrue($networkport1->getFromDbByCrit(
+            [
+                'itemtype'            => 'Computer',
+                'items_id'            => $computers_id,
+                'name'                => 'vmk1',
+                'instantiation_type'  => 'NetworkPortEthernet',
+            ]
+        ));
     }
 }

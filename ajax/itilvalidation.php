@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,8 +39,7 @@
 
 use Glpi\Exception\Http\BadRequestHttpException;
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
+use function Safe\json_encode;
 
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
@@ -49,10 +48,10 @@ Html::header_nocache();
 $validationtemplates_id = $_POST['validationtemplates_id'] ?? null;
 if ($validationtemplates_id === null) {
     throw new BadRequestHttpException("Missing or invalid parameter: 'validationtemplates_id'");
-} else if ($validationtemplates_id == 0) {
+} elseif ($validationtemplates_id == 0) {
     // Reset form
     echo json_encode([
-        'content' => ""
+        'content' => "",
     ]);
     return;
 }
@@ -84,22 +83,30 @@ if (!$parent->getFromDB($parents_id)) {
 $targets = ITILValidationTemplate_Target::getTargets($template->getID());
 // Both template creation form and validation creation form permits to create targets
 // for only one itemtype at once.
-$target = current($targets);
-$itemtype = $target['itemtype'];
-$items_id_target = array_column($targets, 'items_id');
+$approver_input = [
+    'validatortype' => '0',
+    'groups_id'     => null,
+    'items_id_target' => null,
+];
+if (!empty($targets)) {
+    $target = current($targets);
+    $itemtype = $target['itemtype'];
+    $items_id_target = array_column($targets, 'items_id');
 
-if (isset($target['groups_id'])) {
-    $itemtype = 'Group_User';
+    if (isset($target['groups_id'])) {
+        $itemtype = 'Group_User';
+    }
+
+    $approver_input = [
+        'validatortype'   => $itemtype,
+        'groups_id'       => $itemtype == 'Group_User' ? $target['groups_id'] : null,
+        'items_id_target' => ($itemtype == 'Group' || $itemtype == 'User') && count($items_id_target) == 1 ?
+            $items_id_target[0] : $items_id_target,
+    ];
 }
 
 // Render template content using twig
 $template->fields['content'] = $template->getRenderedContent($parent);
 
-
 // Return json response with the template fields
-echo json_encode(array_merge($template->fields, [
-    'validatortype'   => $itemtype,
-    'groups_id'       => $itemtype == 'Group_User' ? $target['groups_id'] : null,
-    'items_id_target' => ($itemtype == 'Group' || $itemtype == 'User') && count($items_id_target) == 1 ?
-        $items_id_target[0] : $items_id_target
-]));
+echo json_encode(array_merge($template->fields, $approver_input));

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,7 +39,6 @@ use Ajax;
 use CommonDBTM;
 use CommonGLPI;
 use CronTask;
-use DBConnection;
 use Document;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
@@ -67,6 +66,15 @@ class Event extends CommonDBTM
         return ['admin', LogViewer::class, self::class];
     }
 
+    public static function getMenuContent()
+    {
+        $menu = parent::getMenuContent();
+        if ($menu !== false) {
+            unset($menu['links']['search'], $menu['links']['lists']);
+        }
+        return $menu;
+    }
+
     public function prepareInputForAdd($input)
     {
         /** @var array $CFG_GLPI */
@@ -80,7 +88,7 @@ class Event extends CommonDBTM
 
     public function post_addItem()
     {
-       //only log in file, important events (connections and critical events; TODO : we need to add a general option to filter this in 9.1)
+        //only log in file, important events (connections and critical events; TODO : we need to add a general option to filter this in 9.1)
         if (isset($this->fields['level']) && $this->fields['level'] <= 3) {
             $message_type = "";
             if (isset($this->fields['type']) && $this->fields['type'] != 'system') {
@@ -115,7 +123,7 @@ class Event extends CommonDBTM
             'date'     => $_SESSION["glpi_currenttime"],
             'service'  => $service,
             'level'    => intval($level),
-            'message'  => $event
+            'message'  => $event,
         ];
         $tmp = new self();
         return $tmp->add($input);
@@ -138,7 +146,7 @@ class Event extends CommonDBTM
         $DB->delete(
             'glpi_events',
             [
-                new QueryExpression("UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs")
+                new QueryExpression("UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs"),
             ]
         );
         return $DB->affectedRows();
@@ -163,7 +171,7 @@ class Event extends CommonDBTM
             'planning'    => __('Planning'),
             'reservation' => _n('Reservation', 'Reservations', Session::getPluralNumber()),
             'dropdown'    => _n('Dropdown', 'Dropdowns', Session::getPluralNumber()),
-            'rules'       => _n('Rule', 'Rules', Session::getPluralNumber())
+            'rules'       => _n('Rule', 'Rules', Session::getPluralNumber()),
         ];
 
         $logService = [
@@ -260,34 +268,34 @@ class Event extends CommonDBTM
          */
         global $CFG_GLPI, $DB;
 
-       // Show events from $result in table form
-        list($logItemtype, $logService) = self::logArray();
+        // Show events from $result in table form
+        [$logItemtype, $logService] = self::logArray();
 
-       // define default sorting
+        // define default sorting
         $usersearch = "";
         if (!empty($user)) {
             $usersearch = $user . " ";
         }
 
-       // Query Database
+        // Query Database
         $iterator = $DB->request([
             'FROM'   => 'glpi_events',
             'WHERE'  => ['message' => ['LIKE', $usersearch . '%']],
             'ORDER'  => 'date DESC',
-            'LIMIT'  => (int)$_SESSION['glpilist_limit']
+            'LIMIT'  => (int) $_SESSION['glpilist_limit'],
         ]);
 
-       // Number of results
+        // Number of results
         $number = count($iterator);
 
-       // No Events in database
+        // No Events in database
         if ($number < 1) {
             $twig_params = [
                 'class'        => 'table table-hover table-bordered',
                 'header_rows'  => [
-                    [__('No Event')]
+                    [__('No Event')],
                 ],
-                'rows'         => []
+                'rows'         => [],
             ];
             $output = TemplateRenderer::getInstance()->render('components/table.html.twig', $twig_params);
             if ($display) {
@@ -305,8 +313,8 @@ class Event extends CommonDBTM
                     [
                         'colspan'   => 5,
                         'content'   => "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/event.php\">" .
-                     sprintf(__('Last %d events'), $_SESSION['glpilist_limit']) . "</a>"
-                    ]
+                     sprintf(__('Last %d events'), $_SESSION['glpilist_limit']) . "</a>",
+                    ],
                 ],
                 [
                     __('Source'),
@@ -314,15 +322,15 @@ class Event extends CommonDBTM
                     _n('Date', 'Dates', 1),
                     [
                         'content'   => __('Service'),
-                        'style'     => 'width: 10%'
+                        'style'     => 'width: 10%',
                     ],
                     [
                         'content'   => __('Message'),
-                        'style'     => 'width: 50%'
+                        'style'     => 'width: 50%',
                     ],
-                ]
+                ],
             ],
-            'rows'   => []
+            'rows'   => [],
         ];
 
         foreach ($iterator as $data) {
@@ -344,7 +352,7 @@ class Event extends CommonDBTM
                 }
             }
 
-           // Capture the 'echo' output of the function
+            // Capture the 'echo' output of the function
             ob_start();
             self::displayItemLogID($type, $items_id);
             $item_log_id = ob_get_clean();
@@ -356,8 +364,8 @@ class Event extends CommonDBTM
                     $item_log_id,
                     Html::convDateTime($date),
                     $logService[$service] ?? '',
-                    $message
-                ]
+                    $message,
+                ],
             ];
         }
 
@@ -492,8 +500,8 @@ class Event extends CommonDBTM
             'DISTINCT' => 'true',
             'FROM'     => self::getTable(),
             'WHERE'    => [
-                'NOT' => ['type' => $blacklist]
-            ]
+                'NOT' => ['type' => $blacklist],
+            ],
         ]);
 
         return array_column(iterator_to_array($data), 'type');
@@ -509,9 +517,9 @@ class Event extends CommonDBTM
             return \Dropdown::showFromArray($name, self::logArray()[1], [
                 'value' => $value,
                 'display' => false,
-                'display_emptychoice' => true
+                'display_emptychoice' => true,
             ]);
-        } else if ($field === 'type') {
+        } elseif ($field === 'type') {
             $value = $values['type'];
             if (empty($value)) {
                 $value = 0;
@@ -519,7 +527,7 @@ class Event extends CommonDBTM
             return \Dropdown::showFromArray($name, self::getTypeValuesForDropdown(), [
                 'value' => $value,
                 'display' => false,
-                'display_emptychoice' => true
+                'display_emptychoice' => true,
             ]);
         }
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
@@ -534,7 +542,7 @@ class Event extends CommonDBTM
             }
             $services = self::logArray()[1];
             return $services[$value] ?? $value;
-        } else if ($field === 'items_id') {
+        } elseif ($field === 'items_id') {
             $type = $values['type'] ?? null;
             if (
                 ((int) $values['items_id']) > 0
@@ -549,7 +557,7 @@ class Event extends CommonDBTM
             }
             // Show the ID at least if it is valid (There may be a plugin that is disabled)
             return ((int) $values['items_id']) > 0 ? $values['items_id'] : NOT_AVAILABLE;
-        } else if ($field === 'type') {
+        } elseif ($field === 'type') {
             $value = $values['type'];
             if (empty($value)) {
                 return NOT_AVAILABLE;
@@ -564,7 +572,7 @@ class Event extends CommonDBTM
                 $icon = '';
             }
 
-            return '<i class="fa-fw text-muted me-1 ' . $icon . '"></i><span>' . $display_value . '</span>';
+            return '<i class="text-muted me-1 ' . $icon . '"></i><span>' . $display_value . '</span>';
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }

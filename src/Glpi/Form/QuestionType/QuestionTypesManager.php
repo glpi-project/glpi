@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,11 +35,12 @@
 
 namespace Glpi\Form\QuestionType;
 
+use BackedEnum;
 use DirectoryIterator;
 use ReflectionClass;
 
 /**
- * Helper class to load all available question types
+ * Helper class to load all available question types and categories.
  */
 final class QuestionTypesManager
 {
@@ -47,20 +48,31 @@ final class QuestionTypesManager
      * Singleton instance
      * @var QuestionTypesManager|null
      */
-    protected static ?QuestionTypesManager $instance = null;
+    private static ?QuestionTypesManager $instance = null;
 
     /**
      * Available question types
      * @var QuestionTypeInterface[]
      */
-    protected array $question_types = [];
+    private array $question_types = [];
+
+    /**
+     * Available question categories
+     * @var QuestionTypeCategoryInterface[]
+     */
+    private array $categories = [];
+
+    private bool $categories_are_sorted = false;
+
+    private bool $question_types_are_sorted = false;
 
     /**
      * Private constructor to prevent instantiation (singleton)
      */
     private function __construct()
     {
-        self::loadQuestionsTypes();
+        self::loadCoreQuestionsTypes();
+        self::loadCoreCategories();
     }
 
     /**
@@ -90,11 +102,14 @@ final class QuestionTypesManager
     /**
      * Get all available question categories
      *
-     * @return iterable<QuestionTypeCategory>
+     * @return QuestionTypeCategoryInterface[]
      */
-    public function getCategories(): iterable
+    public function getCategories(): array
     {
-        return QuestionTypeCategory::cases();
+        if ($this->categories_are_sorted === false) {
+            $this->sortCategoriesTypes();
+        }
+        return $this->categories;
     }
 
     /**
@@ -104,81 +119,67 @@ final class QuestionTypesManager
      */
     public function getQuestionTypes(): array
     {
+        if ($this->question_types_are_sorted === false) {
+            $this->sortQuestionTypes();
+        }
         return $this->question_types;
     }
 
     /**
-     * Get available types for a given parent category
+     * Get available categories in the format expected by dropdowns (key => label)
      *
-     * @param QuestionTypeCategory $category Parent category
-     *
-     * @return QuestionTypeInterface[]
+     * @return array<string, string>
      */
-    public function getTypesForCategory(QuestionTypeCategory $category): array
+    public function getCategoriesDropdownValues(): array
     {
-        $filtered_types = array_filter(
-            $this->question_types,
-            fn(QuestionTypeInterface $type) => $type->getCategory() === $category
-        );
+        $values = [];
+        foreach ($this->getCategories() as $category) {
+            $values[$this->getCategoryKey($category)] = $category->getLabel();
+        }
+        return $values;
+    }
 
-        uasort(
-            $filtered_types,
-            fn(QuestionTypeInterface $a, QuestionTypeInterface $b) => $a->getWeight() <=> $b->getWeight()
-        );
+    /**
+     * Get available types for a given parent category in the format expected
+     * by dropdowns (class => label)
+     *
+     * @return array<string, string>
+     */
+    public function getQuestionTypesDropdownValuesForCategory(
+        QuestionTypeCategoryInterface $category
+    ): array {
+        $filtered_types = [];
+        foreach ($this->getQuestionTypes() as $type) {
+            $question_type_key = $this->getCategoryKey($type->getCategory());
+            $expected_key = $this->getCategoryKey($category);
+            if ($question_type_key === $expected_key) {
+                $filtered_types[$type::class] = $type->getName();
+            }
+        }
 
         return $filtered_types;
     }
 
-    /**
-     * Automatically build core questions type list.
-     *
-     * TODO: Would be better to do it with a DI auto-discovery feature, but
-     * it is not possible yet.
-     *
-     * @return void
-     */
-    protected function loadQuestionsTypes(): void
-    {
-        // Get files in the current directory
-        $directory_iterator = new DirectoryIterator(__DIR__);
+    public function registerPluginCategory(
+        QuestionTypeCategoryInterface $category
+    ): void {
+        $this->categories[] = $category;
+        $this->categories_are_sorted = false;
+    }
 
-        /** @var \SplFileObject $file */
-        foreach ($directory_iterator as $file) {
-            // Compute class name with the expected namespace
-            $classname = $file->getExtension() === 'php'
-                ? 'Glpi\\Form\\QuestionType\\' . $file->getBasename('.php')
-                : null;
-
-            // Validate that the class is a valid question type
-            if (
-                $classname !== null
-                && class_exists($classname)
-                && is_subclass_of($classname, QuestionTypeInterface::class)
-                && (new ReflectionClass($classname))->isAbstract() === false
-            ) {
-                $this->question_types[$classname] = new $classname();
-            }
-        }
-
-        // Sort question types by weight
-        uasort(
-            $this->question_types,
-            fn(QuestionTypeInterface $a, QuestionTypeInterface $b) => $a->getWeight() <=> $b->getWeight()
-        );
+    public function registerPluginQuestionType(
+        QuestionTypeInterface $question_type
+    ): void {
+        $this->question_types[] = $question_type;
+        $this->question_types_are_sorted = false;
     }
 
     public function getTemplateSelectionForCategories(): string
     {
-        $icons = array_combine(
-            array_map(
-                fn(QuestionTypeCategory $type) => $type->value,
-                (array) $this->getCategories()
-            ),
-            array_map(
-                fn(QuestionTypeCategory $type) => $type->getIcon(),
-                (array) $this->getCategories()
-            )
-        );
+        $icons = [];
+        foreach ($this->getCategories() as $category) {
+            $icons[$this->getCategoryKey($category)] = $category->getIcon();
+        }
         $js_icons = json_encode($icons);
 
         return <<<JS
@@ -194,16 +195,10 @@ JS;
 
     public function getTemplateResultForCategories(): string
     {
-        $icons = array_combine(
-            array_map(
-                fn(QuestionTypeCategory $type) => $type->value,
-                (array) $this->getCategories()
-            ),
-            array_map(
-                fn(QuestionTypeCategory $type) => $type->getIcon(),
-                (array) $this->getCategories()
-            )
-        );
+        $icons = [];
+        foreach ($this->getCategories() as $category) {
+            $icons[$this->getCategoryKey($category)] = $category->getIcon();
+        }
         $js_icons = json_encode($icons);
 
         return <<<JS
@@ -219,16 +214,10 @@ JS;
 
     public function getTemplateSelectionForQuestionTypes(): string
     {
-        $icons = array_combine(
-            array_map(
-                fn(QuestionTypeInterface $type) => $type::class,
-                $this->getQuestionTypes()
-            ),
-            array_map(
-                fn(QuestionTypeInterface $type) => $type->getIcon(),
-                $this->getQuestionTypes()
-            )
-        );
+        $icons = [];
+        foreach ($this->getQuestionTypes() as $question_type) {
+            $icons[$question_type::class] = $question_type->getIcon();
+        }
         $js_icons = json_encode($icons);
 
         return <<<JS
@@ -244,16 +233,10 @@ JS;
 
     public function getTemplateResultForQuestionTypes(): string
     {
-        $icons = array_combine(
-            array_map(
-                fn(QuestionTypeInterface $type) => $type::class,
-                $this->getQuestionTypes()
-            ),
-            array_map(
-                fn(QuestionTypeInterface $type) => $type->getIcon(),
-                $this->getQuestionTypes()
-            )
-        );
+        $icons = [];
+        foreach ($this->getQuestionTypes() as $question_type) {
+            $icons[$question_type::class] = $question_type->getIcon();
+        }
         $js_icons = json_encode($icons);
 
         return <<<JS
@@ -265,5 +248,76 @@ JS;
                     + '</span>');
             }
 JS;
+    }
+
+    public function getCategoryKey(QuestionTypeCategoryInterface $category): string
+    {
+        if ($category instanceof BackedEnum) {
+            return $category::class . "->" . $category->value;
+        }
+
+        return $category::class;
+    }
+
+    protected function isClassAValidQuestionType(?string $classname): bool
+    {
+        return
+            $classname !== null
+            && class_exists($classname)
+            && is_subclass_of($classname, QuestionTypeInterface::class)
+            && (new ReflectionClass($classname))->isAbstract() === false
+        ;
+    }
+
+    protected function loadCoreQuestionsTypes(): void
+    {
+        // Get files in the current directory
+        $directory_iterator = new DirectoryIterator(__DIR__);
+
+        while ($directory_iterator->valid()) {
+            // Compute class name with the expected namespace
+            $classname = $directory_iterator->getExtension() === 'php'
+                ? 'Glpi\\Form\\QuestionType\\' . $directory_iterator->getBasename('.php')
+                : null;
+
+            // Validate that the class is a valid question type
+            if ($this->isClassAValidQuestionType($classname)) {
+                // @phpstan-ignore glpi.forbidDynamicInstantiation (Type is checked by `self::isClassAValidQuestionType()`)
+                $this->question_types[] = new $classname();
+            }
+
+            $directory_iterator->next();
+        }
+    }
+
+    protected function loadCoreCategories(): void
+    {
+        $this->categories = QuestionTypeCategory::cases();
+    }
+
+    protected function sortQuestionTypes()
+    {
+        // Sort question types by weight
+        uasort(
+            $this->question_types,
+            fn(
+                QuestionTypeInterface $a,
+                QuestionTypeInterface $b,
+            ): int => $a->getWeight() <=> $b->getWeight()
+        );
+        $this->question_types_are_sorted = true;
+    }
+
+    protected function sortCategoriesTypes()
+    {
+        // Sort question types by weight
+        uasort(
+            $this->categories,
+            fn(
+                QuestionTypeCategoryInterface $a,
+                QuestionTypeCategoryInterface $b,
+            ): int => $a->getWeight() <=> $b->getWeight()
+        );
+        $this->categories_are_sorted = true;
     }
 }

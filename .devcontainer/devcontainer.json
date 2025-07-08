@@ -2,7 +2,7 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/php-mariadb
 {
     "name": "GLPI docker devcontainer",
-    "dockerComposeFile": "docker-compose.yaml",
+    "dockerComposeFile": "../docker-compose.yaml",
     "service": "app",
     "workspaceFolder": "/var/www/glpi",
 
@@ -16,6 +16,9 @@
         },
         "8025": {
             "label": "Mailpit"
+        },
+        "9637": {
+            "label": "Webpack dev server"
         }
     },
 

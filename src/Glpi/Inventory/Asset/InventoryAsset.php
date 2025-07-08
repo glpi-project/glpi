@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -43,23 +43,27 @@ use CommonDropdown;
 use Dropdown;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
+use Glpi\Inventory\MainAsset\MainAsset;
 use Glpi\Inventory\Request;
 use Lockedfield;
 use Manufacturer;
 use OperatingSystemKernelVersion;
+
+use function Safe\preg_match;
+use function Safe\preg_replace;
 
 abstract class InventoryAsset
 {
     /** @var array */
     protected $data = [];
     /** @var CommonDBTM */
-    protected $item;
-    /** @var string */
+    protected CommonDBTM $item;
+    /** @var ?string */
     protected $itemtype;
     /** @var array */
     protected $extra_data = [];
     /** @var \Agent */
-    protected $agent;
+    protected Agent $agent;
     /** @var integer */
     protected $entities_id = 0;
     /** @var integer */
@@ -74,9 +78,9 @@ abstract class InventoryAsset
     protected $links_handled = false;
     /** @var boolean */
     protected $with_history = true;
-    /** @var MainAsset */
+    /** @var ?MainAsset */
     protected $main_asset;
-    /** @var string */
+    /** @var ?string */
     protected $request_query;
     /** @var bool */
     private bool $is_new = false;
@@ -84,8 +88,9 @@ abstract class InventoryAsset
     protected array $known_links = [];
     /** @var array */
     protected array $raw_links = [];
-        /** @var array */
-    protected array $input_notmanaged = [];
+    /** @var array<string, mixed> */
+    protected array $metadata = [];
+
 
     /**
      * Constructor
@@ -208,7 +213,7 @@ abstract class InventoryAsset
         $lockedfield = new Lockedfield();
 
         $items_id = 0;
-        //compare current itemtype et mainasset itemtype to be sure
+        //compare current itemtype with mainasset itemtype to be sure
         //to get related lock
         if (get_class($this->item) == $itemtype) {
             $items_id = $this->item->fields['id'] ?? 0;
@@ -258,7 +263,7 @@ abstract class InventoryAsset
                     $entities_id = $this->entities_id;
                     if ($key == "locations_id") {
                         $this->known_links[$known_key] = Dropdown::importExternal('Location', $value->$key, $entities_id);
-                    } else if (preg_match('/^.+models_id/', $key)) {
+                    } elseif (preg_match('/^.+models_id/', $key)) {
                         // models that need manufacturer relation for dictionary import
                         // see CommonDCModelDropdown::$additional_fields_for_dictionnary
                         $this->known_links[$known_key] = Dropdown::importExternal(
@@ -267,9 +272,9 @@ abstract class InventoryAsset
                             $entities_id,
                             ['manufacturer' => $manufacturer_name]
                         );
-                    } else if (isset($foreignkey_itemtype[$key])) {
+                    } elseif (isset($foreignkey_itemtype[$key])) {
                         $this->known_links[$known_key] = Dropdown::importExternal($foreignkey_itemtype[$key], $value->$key, $entities_id);
-                    } else if ($key !== 'entities_id' && $key !== 'states_id' && isForeignKeyField($key) && is_a($itemtype = getItemtypeForForeignKeyField($key), CommonDropdown::class, true)) {
+                    } elseif ($key !== 'entities_id' && $key !== 'states_id' && isForeignKeyField($key) && is_a($itemtype = getItemtypeForForeignKeyField($key), CommonDropdown::class, true)) {
                         $foreignkey_itemtype[$key] = $itemtype;
 
                         $this->known_links[$known_key] = Dropdown::importExternal(
@@ -281,7 +286,7 @@ abstract class InventoryAsset
                         if (
                             $key == 'operatingsystemkernelversions_id'
                             && property_exists($value, 'operatingsystemkernels_id')
-                            && (int)$this->known_links[$known_key] > 0
+                            && (int) $this->known_links[$known_key] > 0
                         ) {
                             $kversion = new OperatingSystemKernelVersion();
                             $kversion->getFromDB($this->known_links[$known_key]);
@@ -289,7 +294,7 @@ abstract class InventoryAsset
                             if ($kversion->fields['operatingsystemkernels_id'] != $oskernels_id) {
                                 $kversion->update([
                                     'id'                          => $kversion->getID(),
-                                    'operatingsystemkernels_id'   => $oskernels_id
+                                    'operatingsystemkernels_id'   => $oskernels_id,
                                 ]);
                             }
                         }
@@ -300,6 +305,19 @@ abstract class InventoryAsset
 
         $this->links_handled = true;
         return $this->data;
+    }
+
+    /**
+     * Set metadata
+     *
+     * @param array<string, mixed> $metadata Metadata
+     *
+     * @return self
+     */
+    public function setMetadata(array $metadata): self
+    {
+        $this->metadata = $metadata;
+        return $this;
     }
 
     /**
@@ -318,11 +336,11 @@ abstract class InventoryAsset
     /**
      * Get agent
      *
-     * @return Agent
+     * @return ?Agent
      */
-    public function getAgent(): Agent
+    public function getAgent(): ?Agent
     {
-        return $this->agent;
+        return $this->agent ?? null;
     }
 
     /**
@@ -391,11 +409,11 @@ abstract class InventoryAsset
     /**
      * Set inventory item
      *
-     * @param InventoryAsset $mainasset Main inventory asset instance
+     * @param MainAsset $mainasset Main inventory asset instance
      *
      * @return InventoryAsset
      */
-    public function setMainAsset(InventoryAsset $mainasset): self
+    public function setMainAsset(MainAsset $mainasset): self
     {
         $this->main_asset = $mainasset;
         return $this;
@@ -404,16 +422,16 @@ abstract class InventoryAsset
     /**
      * Get main inventory asset
      *
-     * @return InventoryAsset
+     * @return MainAsset
      */
-    public function getMainAsset(): InventoryAsset
+    public function getMainAsset(): MainAsset
     {
         return $this->main_asset;
     }
 
     /**
      * Add or move a peripheral asset.
-     * If the peripheral asset is already linked to another maina sset, existing link will be replaced by new link.
+     * If the peripheral asset is already linked to another main asset, existing link will be replaced by new link.
      *
      * @param array $input
      *
@@ -422,7 +440,7 @@ abstract class InventoryAsset
     protected function addOrMoveItem(array $input): void
     {
         $itemtype = $input['itemtype_peripheral'];
-        $item = new $itemtype();
+        $item = getItemForItemtype($itemtype);
         $item->getFromDB($input['items_id_peripheral']);
 
         if (!$item->isGlobal()) {
@@ -440,7 +458,7 @@ abstract class InventoryAsset
         }
 
         $relation = new Asset_PeripheralAsset();
-        $relation->add($input, [], !$this->item->isNewItem()); //log only if mainitem is not new
+        $relation->add($input, [], !$this->item->isNewItem()); //log only if main item is not new
     }
 
     protected function setNew(): self
@@ -469,14 +487,22 @@ abstract class InventoryAsset
             $locks = $lockeds->getLockedNames($item->getType(), $item->isNewItem() ? 0 : $item->fields['id']);
         }
 
-        foreach ($value as $key => $val) {
+        foreach ($value as $key => $val) { // @phpstan-ignore foreach.nonIterable
             if (is_object($val) || is_array($val)) {
                 continue;
             }
             $known_key = md5($key . $val);
             if (in_array($key, $locks)) {
                 if (isset($this->raw_links[$known_key])) {
-                    $input[$key] = $this->raw_links[$known_key];
+                    if (isset($this->known_links[$known_key])) {
+                        $input[$key] = $this->known_links[$known_key];
+                        $input['_raw' . $key] = $this->raw_links[$known_key];
+                    } elseif (!$item->isNewItem()) {
+                        // If $item is new and the input key is locked, we do not want to set it using the raw value.
+                        // This is because locked fields are no longer processed or sanitized during the addition process.
+                        // For more details, see: https://github.com/glpi-project/glpi/pull/19426
+                        $input[$key] = $this->raw_links[$known_key];
+                    }
                 }
             } elseif (isset($this->known_links[$known_key])) {
                 $input[$key] = $this->known_links[$known_key];
@@ -484,6 +510,16 @@ abstract class InventoryAsset
                 $input[$key] = $val;
             }
         }
+
+        $data = $this->metadata;
+        if ($agent = $this->getAgent()) {
+            $data = $agent->fields;
+        }
+        if (isset($data['tag'])) {
+            // Pass the tag that can be used in rules criteria
+            $input['_tag'] = $data['tag'];
+        }
+
         return $input;
     }
 

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -52,7 +52,7 @@ trait CustomObjectTrait
     public static function getSearchURL($full = true)
     {
         return Toolbox::getItemTypeSearchURL(static::getDefinition()->getCustomObjectBaseClass(), $full)
-            . '?class=' . static::getDefinition()->getCustomObjectClassName(false);
+            . '?class=' . static::getDefinition()->fields['system_name'];
     }
 
     /**
@@ -61,7 +61,7 @@ trait CustomObjectTrait
     public static function getFormURL($full = true)
     {
         return Toolbox::getItemTypeFormURL(static::getDefinition()->getCustomObjectBaseClass(), $full)
-            . '?class=' . static::getDefinition()->getCustomObjectClassName(false);
+            . '?class=' . static::getDefinition()->fields['system_name'];
     }
 
     /**
@@ -92,17 +92,17 @@ trait CustomObjectTrait
             return false;
         }
 
-        $base_class       = static::class;
-        $definition_class = self::getDefinitionClass();
+        $base_class        = static::class;
+        $definition_object = self::getDefinitionClassInstance();
 
         // Load the asset definition corresponding to given asset ID
         $definition_request = [
             'INNER JOIN' => [
                 $base_class::getTable() => [
                     'ON'  => [
-                        $base_class::getTable()       => $definition_class::getForeignKeyField(),
-                        $definition_class::getTable() => $definition_class::getIndexName(),
-                    ]
+                        $base_class::getTable()       => $definition_object::getForeignKeyField(),
+                        $definition_object::getTable() => $definition_object::getIndexName(),
+                    ],
                 ],
             ],
             'WHERE' => [
@@ -110,14 +110,18 @@ trait CustomObjectTrait
             ],
         ];
 
-        $definition = new $definition_class();
+        $definition = new $definition_object();
         if (!$definition->getFromDBByRequest($definition_request)) {
             return false;
         }
 
         // Instanciate concrete class
-        $concrete_class = $definition->getCustomObjectClassName();
-        $instance = new $concrete_class();
+        $instance = $definition->getCustomObjectClassInstance();
+
+        if (!is_a($instance, static::class, true)) {
+            throw new \LogicException(); // To make PHPStan happy
+        }
+
         if (!$instance->getFromDB($id)) {
             return false;
         }
@@ -159,14 +163,14 @@ trait CustomObjectTrait
 
         if (
             array_key_exists($definition_fkey, $input)
-            && (int)$input[$definition_fkey] !== $definition_id
+            && (int) $input[$definition_fkey] !== $definition_id
         ) {
             throw new \RuntimeException('Definition does not match the current concrete class.');
         }
 
         if (
             !$this->isNewItem()
-            && (int)$this->fields[$definition_fkey] !== $definition_id
+            && (int) $this->fields[$definition_fkey] !== $definition_id
         ) {
             throw new \RuntimeException('Definition cannot be changed.');
         }

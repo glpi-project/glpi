@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -50,7 +50,7 @@ trait AssetImage
      */
     public function managePictures($input)
     {
-        foreach (['picture_front', 'picture_rear'] as $name) {
+        foreach (['picture_front', 'picture_rear', 'picture'] as $name) {
             if (
                 isset($input["_blank_$name"])
                 && $input["_blank_$name"]
@@ -85,13 +85,13 @@ trait AssetImage
 
         $pictures = [];
         $pictures_removed = false;
-        if ($this->isField('pictures')) {
+        if (!$this->isNewItem() && $this->isField('pictures')) {
             $input_keys = array_keys($input);
             $pictures = importArrayFromDB($this->fields['pictures']);
             $to_remove = [];
             foreach ($input_keys as $input_key) {
                 if (strpos($input_key, '_blank_pictures_') === 0 && $input[$input_key]) {
-                    $i = (int)str_replace('_blank_pictures_', '', $input_key);
+                    $i = (int) str_replace('_blank_pictures_', '', $input_key);
                     if (isset($pictures[$i])) {
                         Toolbox::deletePicture($pictures[$i]);
                         $to_remove[] = $i;

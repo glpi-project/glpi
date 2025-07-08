@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -36,12 +35,7 @@
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
 {% block form_fields %}
-    {% set field_options = {
-        label_class: 'col-xxl-2',
-        input_class: 'col-xxl-10',
-    } %}
-
-    {% if _request['_in_modal'] %}
+    {% if _request['_in_modal']|default(false) %}
         {{ inputs.hidden('_in_modal', 1) }}
     {% endif %}
     {% if domains_id is defined %}
@@ -55,30 +49,30 @@
                 {{ fields.dropdownField('Domain', 'domains_id', item.fields['domains_id'], null, {
                     no_label: true,
                     mb: '',
-                    entity: item.fields['entities_id']
+                    entity: item.fields['entities_id'],
+                    display_emptychoice: false,
                 }) }}
             {% endif %}
         {% endset %}
-        {{ fields.htmlField('', domain_field, 'Domain'|itemtype_name, field_options) }}
+        {{ fields.htmlField('', domain_field, 'Domain'|itemtype_name) }}
     {% endif %}
-    {{ fields.textField('name', item.fields['name'], __('Name'), field_options) }}
+    {{ fields.textField('name', item.fields['name'], __('Name')) }}
 
     {{ fields.dropdownField(
         'DomainRecordType',
         'domainrecordtypes_id',
         item.fields['domainrecordtypes_id'],
         'DomainRecordType'|itemtype_name,
-        field_options
     ) }}
     {{ fields.dropdownField(
         'User',
         'users_id_tech',
         item.fields['users_id_tech'],
         __('Technician in charge'),
-        field_options|merge({
+        {
             'entity': item.fields['entities_id'],
             'right': 'own_ticket',
-        })
+        }
     ) }}
 
     {{ fields.dropdownField(
@@ -86,19 +80,20 @@
         'groups_id_tech',
         item.fields['groups_id_tech'],
         __('Group in charge'),
-        field_options|merge({
+        {
             'entity': item.fields['entities_id'],
             'condition': {'is_assign': 1},
-        })
+            'multiple': true,
+        }
     ) }}
 
     {# In this case, date_creation is a user-changeable field (indicating when the actual domain record was added?) #}
     {# TODO shouldn't this use a 'date' field instead of changing the purpose of date_creation? #}
     {{ fields.dateField('date_creation', item.fields['date_creation'], __('Creation date'), {
         clearable: true
-    } + field_options) }}
+    }) }}
 
-    {{ fields.numberField('ttl', item.fields['ttl'], __('TTL'), field_options) }}
+    {{ fields.numberField('ttl', item.fields['ttl'], __('TTL')) }}
 
     {{ inputs.hidden('data_obj', item.fields['data_obj'], {
         id: 'data_obj' ~ rand
@@ -143,8 +138,7 @@
 
     {{ fields.textField('data', item.fields['data'], __('Data'), {
         full_width: true,
-        label_class: 'col-xxl-1',
-        input_class: 'col-xxl-11 d-flex',
+        inline_add_field_html: true,
         add_field_html: data_field_helper,
         id: 'data' ~ rand
     }) }}

@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -1371,21 +1371,21 @@ var GLPIImpact = {
         return [
             {
                 id             : 'goTo',
-                content        : '<i class="fas fa-link me-2"></i>' + __("Go to"),
+                content        : '<i class="ti ti-external-link me-2"></i>' + __("Go to"),
                 tooltipText    : _.unescape(__("Open this element in a new tab")),
                 selector       : 'node[link]',
                 onClickFunction: this.menuOnGoTo
             },
             {
                 id             : 'showOngoing',
-                content        : '<i class="fas fa-list me-2"></i>' + __("Show ongoing tickets"),
+                content        : '<i class="ti ti-alert-circle me-2"></i>' + __("Show ongoing tickets"),
                 tooltipText    : _.unescape(__("Show ongoing tickets for this item")),
                 selector       : 'node[hasITILObjects=1]',
                 onClickFunction: this.menuOnShowOngoing
             },
             {
                 id             : 'editEdge',
-                content        : '<i class="fas fa-edit me-2"></i>' + __("Edge properties..."),
+                content        : '<i class="ti ti-edit me-2"></i>' + __("Edge properties..."),
                 tooltipText    : _.unescape(__("Set name for this edge")),
                 selector       : 'edge',
                 onClickFunction: this.menuOnEditEdge,
@@ -1393,7 +1393,7 @@ var GLPIImpact = {
             },
             {
                 id             : 'editCompound',
-                content        : '<i class="fas fa-edit me-2"></i>' + __("Group properties..."),
+                content        : '<i class="ti ti-edit me-2"></i>' + __("Group properties..."),
                 tooltipText    : _.unescape(__("Set name and/or color for this group")),
                 selector       : 'node:parent',
                 onClickFunction: this.menuOnEditCompound,
@@ -1401,7 +1401,7 @@ var GLPIImpact = {
             },
             {
                 id             : 'removeFromCompound',
-                content        : '<i class="fas fa-external-link-alt me-2"></i>' + __("Remove from group"),
+                content        : '<i class="ti ti-home-move me-2"></i>' + __("Remove from group"),
                 tooltipText    : _.unescape(__("Remove this asset from the group")),
                 selector       : 'node:child',
                 onClickFunction: this.menuOnRemoveFromCompound,
@@ -1409,7 +1409,7 @@ var GLPIImpact = {
             },
             {
                 id             : 'delete',
-                content        : '<i class="fas fa-trash me-2"></i>' + __("Delete"),
+                content        : '<i class="ti ti-trash me-2"></i>' + __("Delete"),
                 tooltipText    : _.unescape(__("Delete element")),
                 selector       : 'node, edge',
                 onClickFunction: this.menuOnDelete,
@@ -1710,7 +1710,7 @@ var GLPIImpact = {
             gridSpacing: 12,
             drawGrid: true,
             panGrid: true,
-            gridColor: getComputedStyle(document.documentElement).getPropertyValue('--card-border-color'),
+            gridColor: getComputedStyle(document.documentElement).getPropertyValue('--tblr-border-color'),
         });
 
         // Disable box selection as we don't need it
@@ -2593,7 +2593,7 @@ var GLPIImpact = {
     },
 
     /**
-    * Add a new compound from the selected nodes
+    * Add a compound from the selected nodes
     */
     addCompoundFromSelection: _.debounce(function(){
         // Check that there is enough selected nodes
@@ -3678,7 +3678,7 @@ var GLPIImpact = {
                     str += value["name"];
 
                     if (isHidden) {
-                        str += '<i class="fas fa-eye-slash impact-res-hidden"></i>';
+                        str += '<i class="ti ti-eye-off impact-res-hidden"></i>';
                     }
 
                     str += "</p>";
@@ -3821,17 +3821,17 @@ var GLPIImpact = {
             });
         });
 
-        // Add a new node on the graph
+        // Add a node on the graph
         $(GLPIImpact.selectors.addNode).click(function() {
             GLPIImpact.setEditionMode(GLPIImpact.EDITION_ADD_NODE);
         });
 
-        // Add a new edge on the graph
+        // Add a edge on the graph
         $(GLPIImpact.selectors.addEdge).click(function() {
             GLPIImpact.setEditionMode(GLPIImpact.EDITION_ADD_EDGE);
         });
 
-        // Add a new compound on the graph
+        // Add a compound on the graph
         $(GLPIImpact.selectors.addCompound).click(function() {
             GLPIImpact.setEditionMode(GLPIImpact.EDITION_ADD_COMPOUND);
         });

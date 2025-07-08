@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -175,7 +175,7 @@ class QueryFunction
      * @param string|null $alias Function result alias (will be automatically quoted)
      * @return QueryExpression
      */
-    public static function groupConcat(string|QueryExpression $expression, ?string $separator = null, bool $distinct = false, array|string $order_by = null, ?string $alias = null): QueryExpression
+    public static function groupConcat(string|QueryExpression $expression, ?string $separator = null, bool $distinct = false, array|string|null $order_by = null, ?string $alias = null): QueryExpression
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -309,7 +309,7 @@ class QueryFunction
      * @param string|null $alias Function result alias (will be automatically quoted)
      * @return QueryExpression
      */
-    public static function fromUnixtime(string|QueryExpression $expression, string|QueryExpression $format = null, ?string $alias = null): QueryExpression
+    public static function fromUnixtime(string|QueryExpression $expression, string|QueryExpression|null $format = null, ?string $alias = null): QueryExpression
     {
         $params = [$expression];
         if ($format !== null) {
@@ -345,7 +345,7 @@ class QueryFunction
     {
         /** @var \DBmysql $DB */
         global $DB;
-        $length = new QueryExpression((string)$length);
+        $length = new QueryExpression((string) $length);
         $pad_string = new QueryExpression($DB::quoteValue($pad_string));
         return self::getExpression('LPAD', [$expression, $length, $pad_string], $alias);
     }
@@ -361,7 +361,7 @@ class QueryFunction
     public static function substring(string|QueryExpression $expression, int $start, int $length, ?string $alias = null): QueryExpression
     {
         return self::getExpression('SUBSTRING', [
-            $expression, new QueryExpression($start), new QueryExpression($length)
+            $expression, new QueryExpression($start), new QueryExpression($length),
         ], $alias);
     }
 
@@ -374,7 +374,7 @@ class QueryFunction
      */
     public static function round(string|QueryExpression $expression, int $precision = 0, ?string $alias = null): QueryExpression
     {
-        $precision = new QueryExpression((string)$precision);
+        $precision = new QueryExpression((string) $precision);
         return self::getExpression('ROUND', [$expression, $precision], $alias);
     }
 
@@ -433,7 +433,7 @@ class QueryFunction
      * @param string|null $alias Function result alias (will be automatically quoted)
      * @return QueryExpression
      */
-    public static function unixTimestamp(string|QueryExpression $expression = null, ?string $alias = null): QueryExpression
+    public static function unixTimestamp(string|QueryExpression|null $expression = null, ?string $alias = null): QueryExpression
     {
         $params = [];
         if ($expression !== null) {

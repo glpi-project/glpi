@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -59,11 +59,11 @@ class NotificationEventMailing extends NotificationEventAbstract
             !isset($data[$field])
             && isset($data['users_id'])
         ) {
-           // No email set : get default for user
+            // No email set : get default for user
             $data[$field] = UserEmail::getDefaultForUser($data['users_id']);
         }
 
-        if (empty($data[$field]) or !NotificationMailing::isUserAddressValid($data[$field])) {
+        if (empty($data[$field]) || !NotificationMailing::isUserAddressValid($data[$field])) {
             $data[$field] = null;
         } else {
             $data[$field] = trim(Toolbox::strtolower($data[$field]));
@@ -157,12 +157,12 @@ class NotificationEventMailing extends NotificationEventAbstract
                             [
                                 '%uuid',
                                 '%itemtype',
-                                '%items_id'
+                                '%items_id',
                             ],
                             [
                                 Config::getUuid('notification'),
                                 $current->fields['itemtype'],
-                                $current->fields['items_id']
+                                $current->fields['items_id'],
                             ],
                             '<GLPI-%uuid-%itemtype-%items_id>'
                         )
@@ -238,7 +238,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                                 // these documents corresponds to inlined images.
                                 // If notification is in plain text, they should be kepts as they cannot be rendered in text.
                                 $doc_crit[] = [
-                                    'timeline_position'  => ['>', CommonITILObject::NO_TIMELINE]
+                                    'timeline_position'  => ['>', CommonITILObject::NO_TIMELINE],
                                 ];
                             }
                         }
@@ -250,7 +250,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                             ]
                         );
                         foreach ($doc_items_iterator as $doc_item) {
-                             $documents_ids[] = $doc_item['documents_id'];
+                            $documents_ids[] = $doc_item['documents_id'];
                         }
                     }
                 }
@@ -298,7 +298,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                     $matches = [];
                     if (
                         preg_match_all(
-                            "/<img[^>]*src=(\"|')[^\"']*document\.send\.php\?docid=([0-9]+)[^\"']*(\"|')[^<]*>/",
+                            "/<img[^>]*src=(\"|')[^\"']*document\.send\.php\?docid(?:=|&#61;)([0-9]+)[^\"']*(\"|')[^<]*>/",
                             $current->fields['body_html'],
                             $matches
                         )
@@ -375,8 +375,8 @@ class NotificationEventMailing extends NotificationEventAbstract
                     foreach ($inline_docs as $docID => $filename) {
                         $current->fields['body_html'] = preg_replace(
                             [
-                                '/src=["\'][^"\']*document\.send\.php\?docid=' . $docID . '(&[^"\']+)?["\']/',
-                                '/href=["\'][^"\']*document\.send\.php\?docid=' . $docID . '(&[^"\']+)?["\']/',
+                                '/src=["\'][^"\']*document\.send\.php\?docid(?:=|&#61;)' . $docID . '(&[^"\']+)?["\']/',
+                                '/href=["\'][^"\']*document\.send\.php\?docid(?:=|&#61;)' . $docID . '(&[^"\']+)?["\']/',
                             ],
                             [
                                 // 'cid' must be identical as second arg used in `embedFromPath` method
@@ -399,6 +399,7 @@ class NotificationEventMailing extends NotificationEventAbstract
 
                 $recipient = $current->getField('recipient');
                 if (defined('GLPI_FORCE_MAIL')) {
+                    Toolbox::deprecated('Usage of the `GLPI_FORCE_MAIL` constant is deprecated. Please use a mail catcher service instead.');
                     //force recipient to configured email address
                     $recipient = GLPI_FORCE_MAIL;
                     //add original email address to message body
@@ -435,7 +436,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                 );
                 $processed[] = $current->getID();
                 $current->update(['id'        => $current->fields['id'],
-                    'sent_time' => $_SESSION['glpi_currenttime']
+                    'sent_time' => $_SESSION['glpi_currenttime'],
                 ]);
                 $current->delete(['id'        => $current->fields['id']]);
             }
@@ -474,23 +475,23 @@ class NotificationEventMailing extends NotificationEventAbstract
         );
 
         if ($retries <= 0) {
-             Toolbox::logInFile(
-                 "mail-error",
-                 sprintf(
-                     __('%1$s: %2$s'),
-                     sprintf(
-                         __('Fatal error: giving up delivery of email to %s'),
-                         $notification->fields['recipient']
-                     ),
-                     $notification->fields['name'] . "\n"
-                 )
-             );
-             $notification->delete(['id' => $notification->fields['id']]);
+            Toolbox::logInFile(
+                "mail-error",
+                sprintf(
+                    __('%1$s: %2$s'),
+                    sprintf(
+                        __('Fatal error: giving up delivery of email to %s'),
+                        $notification->fields['recipient']
+                    ),
+                    $notification->fields['name'] . "\n"
+                )
+            );
+            $notification->delete(['id' => $notification->fields['id']]);
         }
 
         $input = [
             'id'        => $notification->fields['id'],
-            'sent_try'  => $notification->fields['sent_try'] + 1
+            'sent_try'  => $notification->fields['sent_try'] + 1,
         ];
 
         if ($CFG_GLPI["smtp_retry_time"] > 0) {
@@ -523,7 +524,7 @@ class NotificationEventMailing extends NotificationEventAbstract
 
     protected static function extraRaise($params)
     {
-       //Set notification's signature (the one which corresponds to the entity)
+        //Set notification's signature (the one which corresponds to the entity)
         $entity = $params['notificationtarget']->getEntity();
         $params['template']->setSignature(Notification::getMailingSignature($entity));
     }

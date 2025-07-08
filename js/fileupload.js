@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -151,7 +151,7 @@ var displayUploadedFile = function(file, tag, editor, input_name, filecontainer)
 
     // Delete button
     var elementsIdToRemove = {0:file.id, 1:`${file.id}2`};
-    $('<span class="ti ti-circle-x pointer"></span>').click(() => {
+    $('<span class="ti ti-circle-x pointer remove_file_upload"></span>').on('click', () => {
         deleteImagePasted(elementsIdToRemove, tag.tag, editor);
     }).appendTo(p);
 };

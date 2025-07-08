@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,7 +35,9 @@
 namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
+use Glpi\Asset\CapacityConfig;
 use Item_RemoteManagement;
+use Override;
 use Session;
 
 class HasRemoteManagementCapacity extends AbstractCapacity
@@ -49,6 +50,12 @@ class HasRemoteManagementCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return Item_RemoteManagement::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Generate links for common remote access and control services");
     }
 
     public function getCloneRelations(): array
@@ -73,7 +80,7 @@ class HasRemoteManagementCapacity extends AbstractCapacity
         );
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         $this->registerToTypeConfig('remote_management_types', $classname);
 
@@ -85,7 +92,7 @@ class HasRemoteManagementCapacity extends AbstractCapacity
         return Item_RemoteManagement::rawSearchOptionsToAdd($classname);
     }
 
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
         $this->unregisterFromTypeConfig('remote_management_types', $classname);
 

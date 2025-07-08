@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -60,7 +59,7 @@ class CronTaskTest extends DbTestCase
 
         //create auto_orient directory
         if (!file_exists(GLPI_TMP_DIR . '/auto_orient/')) {
-            $this->assertTrue(mkdir(GLPI_TMP_DIR . '/auto_orient/', 0755, true));
+            $this->assertTrue(mkdir(GLPI_TMP_DIR . '/auto_orient/', 0o755, true));
         }
 
         $tmp_dir_iterator = new RecursiveIteratorIterator(
@@ -138,7 +137,7 @@ class CronTaskTest extends DbTestCase
 
     public static function unregisterProvider()
     {
-       // Only plugins are supported with the unregister method.
+        // Only plugins are supported with the unregister method.
         return [
             [
                 'plugin_name'       => 'Test',
@@ -174,7 +173,7 @@ class CronTaskTest extends DbTestCase
         $iterator = $DB->request([
             'SELECT' => ['id'],
             'FROM'   => \CronTask::getTable(),
-            'WHERE'  => ['itemtype' => $itemtype, 'name' => $name]
+            'WHERE'  => ['itemtype' => $itemtype, 'name' => $name],
         ]);
         $this->assertEquals(1, $iterator->count());
 
@@ -186,7 +185,7 @@ class CronTaskTest extends DbTestCase
         $iterator = $DB->request([
             'SELECT' => ['id'],
             'FROM'   => \CronTask::getTable(),
-            'WHERE'  => ['itemtype' => $itemtype, 'name' => $name]
+            'WHERE'  => ['itemtype' => $itemtype, 'name' => $name],
         ]);
         $this->assertEquals($should_unregister ? 0 : 1, $iterator->count());
     }
@@ -227,34 +226,27 @@ class CronTaskTest extends DbTestCase
     {
         global $DB;
 
-        $plugins = new \Plugin();
-        $plugins->init();
+        // Deactivate all registered tasks
+        $crontask = new \CronTask();
+        $this->assertTrue($DB->update(\CronTask::getTable(), ['state' => \CronTask::STATE_DISABLE], [1]));
+        $this->assertFalse($crontask->getNeedToRun());
 
-        try {
-            // Deactivate all registered tasks
-            $crontask = new \CronTask();
-            $this->assertTrue($DB->update(\CronTask::getTable(), ['state' => \CronTask::STATE_DISABLE], [1]));
-            $this->assertFalse($crontask->getNeedToRun());
-
-            // Register task for active plugin.
-            $plugin_task = \CronTask::register(
-                $itemtype,
-                $name,
-                30,
-                [
-                    'state'   => \CronTask::STATE_WAITING,
-                    'hourmin' => 0,
-                    'hourmax' => 24,
-                ]
-            );
-            $this->assertNotFalse($plugin_task);
-            $this->assertEquals($should_run, $crontask->getNeedToRun());
-            if ($should_run) {
-                $this->assertEquals($itemtype, $crontask->fields['itemtype']);
-                $this->assertEquals($name, $crontask->fields['name']);
-            }
-        } finally {
-            $plugins->unactivateAll();
+        // Register task for active plugin.
+        $plugin_task = \CronTask::register(
+            $itemtype,
+            $name,
+            30,
+            [
+                'state'   => \CronTask::STATE_WAITING,
+                'hourmin' => 0,
+                'hourmax' => 24,
+            ]
+        );
+        $this->assertNotFalse($plugin_task);
+        $this->assertEquals($should_run, $crontask->getNeedToRun());
+        if ($should_run) {
+            $this->assertEquals($itemtype, $crontask->fields['itemtype']);
+            $this->assertEquals($name, $crontask->fields['name']);
         }
     }
 

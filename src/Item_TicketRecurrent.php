@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,7 +40,7 @@
  **/
 class Item_TicketRecurrent extends CommonItilObject_Item
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1          = 'TicketRecurrent';
     public static $items_id_1          = 'ticketrecurrents_id';
 
@@ -53,16 +53,6 @@ class Item_TicketRecurrent extends CommonItilObject_Item
         return _n('Ticket recurrent item', 'Ticket recurrent items', $nb);
     }
 
-    /**
-     * Print the HTML ajax associated item add
-     *
-     * @param TicketRecurrent $ticketrecurrent   object holding the item
-     * @param array $options   array of possible options:
-     *    - id                  : ID of the object holding the items
-     *    - items_id            : array of elements (itemtype => array(id1, id2, id3, ...))
-     *
-     * @return void
-     */
     public static function itemAddForm(CommonDBTM $ticketrecurrent, $options = [])
     {
         parent::displayItemAddForm($ticketrecurrent, $options);

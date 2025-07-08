@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,9 +38,7 @@ namespace Glpi\Api\HL\Controller;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\GraphQL;
 use Glpi\Api\HL\GraphQLGenerator;
-use Glpi\Api\HL\Middleware\CookieAuthMiddleware;
 use Glpi\Api\HL\Route;
-use Glpi\Api\HL\Router;
 use Glpi\Api\HL\RouteVersion;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;

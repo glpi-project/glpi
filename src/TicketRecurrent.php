@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -76,7 +76,7 @@ class TicketRecurrent extends CommonITILRecurrent
     ): array {
         $input = parent::handlePredefinedFields($predefined, $input);
 
-       // Compute internal_time_to_resolve if predefined based on create date
+        // Compute internal_time_to_resolve if predefined based on create date
         if (isset($predefined['internal_time_to_resolve'])) {
             $input['internal_time_to_resolve'] = Html::computeGenericDateTimeSearch(
                 $predefined['internal_time_to_resolve'],
@@ -92,7 +92,7 @@ class TicketRecurrent extends CommonITILRecurrent
     public function defineTabs($options = [])
     {
         $ong = parent::defineTabs($options);
-        $this->addStandardTab('Item_TicketRecurrent', $ong, $options);
+        $this->addStandardTab(Item_TicketRecurrent::class, $ong, $options);
         return $ong;
     }
 
@@ -108,7 +108,7 @@ class TicketRecurrent extends CommonITILRecurrent
             'name'  => 'ticket_per_item',
             'label' => __('Create a ticket per linked element'),
             'type'  => 'bool',
-            'list'  => false
+            'list'  => false,
         ];
         return $tab;
     }

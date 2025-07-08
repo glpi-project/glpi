@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,14 +37,19 @@ namespace Glpi\Form\Destination\CommonITILField;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\AbstractConfigField;
+use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Form;
+use Glpi\Form\Migration\DestinationFieldConverterInterface;
+use Glpi\Form\Migration\FormMigration;
+use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeRequestType;
 use InvalidArgumentException;
 use Override;
 use Ticket;
 
-class RequestTypeField extends AbstractConfigField
+final class RequestTypeField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     #[Override]
     public function getLabel(): string
@@ -79,19 +83,11 @@ class RequestTypeField extends AbstractConfigField
             // General display options
             'options' => $display_options,
 
-            // Main config field
-            'main_config_field' => [
-                'label'           => $this->getLabel(),
-                'value'           => $config->getStrategy()->value,
-                'input_name'      => $input_name . "[" . RequestTypeFieldConfig::STRATEGY . "]",
-                'possible_values' => $this->getMainConfigurationValuesforDropdown(),
-            ],
-
             // Specific additional config for SPECIFIC_ANSWER strategy
             'specific_value_extra_field' => [
                 'empty_label'     => __("Select a request type..."),
                 'value'           => $config->getSpecificRequestType(),
-                'input_name'      => $input_name . "[" . RequestTypeFieldConfig::REQUEST_TYPE . "]",
+                'input_name'      => $input_name . "[" . RequestTypeFieldConfig::SPECIFIC_REQUEST_TYPE . "]",
                 'possible_values' => Ticket::getTypes(),
             ],
 
@@ -99,7 +95,7 @@ class RequestTypeField extends AbstractConfigField
             'specific_answer_extra_field' => [
                 'empty_label'     => __("Select a question..."),
                 'value'           => $config->getSpecificQuestionId(),
-                'input_name'      => $input_name . "[" . RequestTypeFieldConfig::QUESTION_ID . "]",
+                'input_name'      => $input_name . "[" . RequestTypeFieldConfig::SPECIFIC_QUESTION_ID . "]",
                 'possible_values' => $this->getRequestTypeQuestionsValuesForDropdown($form),
             ],
         ]);
@@ -115,12 +111,15 @@ class RequestTypeField extends AbstractConfigField
             throw new InvalidArgumentException("Unexpected config class");
         }
 
+        // Only one strategy is allowed
+        $strategy = current($config->getStrategies());
+
         // Compute value according to strategy
-        $request_type = $config->getStrategy()->getRequestType($config, $answers_set);
+        $request_type = $strategy->getRequestType($config, $answers_set);
 
         // Do not edit input if invalid value was found
         $valid_values = [Ticket::INCIDENT_TYPE, Ticket::DEMAND_TYPE];
-        if (array_search($request_type, $valid_values) === false) {
+        if (!in_array($request_type, $valid_values)) {
             return $input;
         }
 
@@ -137,7 +136,39 @@ class RequestTypeField extends AbstractConfigField
         );
     }
 
-    private function getMainConfigurationValuesforDropdown(): array
+    #[Override]
+    public function convertFieldConfig(FormMigration $migration, Form $form, array $rawData): JsonFieldInterface
+    {
+        switch ($rawData['type_rule']) {
+            case 0: // PluginFormcreatorAbstractItilTarget::REQUESTTYPE_NONE
+                return new RequestTypeFieldConfig(
+                    strategy: RequestTypeFieldStrategy::FROM_TEMPLATE
+                );
+            case 1: // PluginFormcreatorAbstractItilTarget::REQUESTTYPE_SPECIFIC
+                return new RequestTypeFieldConfig(
+                    strategy: RequestTypeFieldStrategy::SPECIFIC_VALUE,
+                    specific_request_type: $rawData['type_question']
+                );
+            case 2: // PluginFormcreatorAbstractItilTarget::REQUESTTYPE_ANSWER
+                $mapped_item = $migration->getMappedItemTarget(
+                    'PluginFormcreatorQuestion',
+                    $rawData['type_question']
+                );
+
+                if ($mapped_item === null) {
+                    throw new InvalidArgumentException("Question not found in a target form");
+                }
+
+                return new RequestTypeFieldConfig(
+                    strategy: RequestTypeFieldStrategy::SPECIFIC_ANSWER,
+                    specific_question_id: $mapped_item['items_id']
+                );
+        }
+
+        return $this->getDefaultConfig($form);
+    }
+
+    public function getStrategiesForDropdown(): array
     {
         $values = [];
         foreach (RequestTypeFieldStrategy::cases() as $strategies) {
@@ -161,6 +192,30 @@ class RequestTypeField extends AbstractConfigField
     #[Override]
     public function getWeight(): int
     {
-        return 40;
+        return 30;
+    }
+
+    #[Override]
+    public function getCategory(): Category
+    {
+        return Category::PROPERTIES;
+    }
+
+    #[Override]
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+        DatabaseMapper $mapper,
+    ): array {
+        // Check if a specific question is defined
+        if (isset($config[RequestTypeFieldConfig::SPECIFIC_QUESTION_ID])) {
+            // Insert id
+            $config[RequestTypeFieldConfig::SPECIFIC_QUESTION_ID] = $mapper->getItemId(
+                Question::class,
+                $config[RequestTypeFieldConfig::SPECIFIC_QUESTION_ID],
+            );
+        }
+
+        return $config;
     }
 }

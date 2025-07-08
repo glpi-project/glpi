@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -89,20 +89,20 @@ class NotificationTargetInfocom extends NotificationTarget
             'infocom.itemtype'       => __('Item type'),
             'infocom.item'           => _n('Associated item', 'Associated items', 1),
             'infocom.expirationdate' => __('Expiration date'),
-            'infocom.entity'         => Entity::getTypeName(1)
+            'infocom.entity'         => Entity::getTypeName(1),
         ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
                 'label' => $label,
-                'value' => true
+                'value' => true,
             ]);
         }
 
         $this->addTagToList(['tag'     => 'items',
             'label'   => __('Device list'),
             'value'   => false,
-            'foreach' => true
+            'foreach' => true,
         ]);
 
         asort($this->tag_descriptions);

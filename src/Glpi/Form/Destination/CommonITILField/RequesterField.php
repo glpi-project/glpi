@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,16 +35,17 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\Form\Form;
+use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeRequester;
 use Override;
 use Session;
 
-class RequesterField extends ITILActorField
+final class RequesterField extends ITILActorField
 {
     #[Override]
-    public function getAllowedQuestionType(): string
+    public function getAllowedQuestionType(): array
     {
-        return QuestionTypeRequester::class;
+        return [new QuestionTypeRequester(), new QuestionTypeEmail()];
     }
 
     #[Override]
@@ -61,16 +61,22 @@ class RequesterField extends ITILActorField
     }
 
     #[Override]
-    public function getDefaultConfig(Form $form): ITILActorFieldConfig
+    public function getConfigClass(): string
     {
-        return new ITILActorFieldConfig(
-            ITILActorFieldStrategy::FORM_FILLER,
+        return RequesterFieldConfig::class;
+    }
+
+    #[Override]
+    public function getDefaultConfig(Form $form): RequesterFieldConfig
+    {
+        return new RequesterFieldConfig(
+            [ITILActorFieldStrategy::FORM_FILLER],
         );
     }
 
     #[Override]
     public function getWeight(): int
     {
-        return 30;
+        return 100;
     }
 }

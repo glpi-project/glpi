@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,10 +35,8 @@
 
 namespace Glpi\Console\Migration;
 
-use DBConnection;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
-use Override;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -51,14 +49,14 @@ class MyIsamToInnoDbCommand extends AbstractCommand implements ConfigurationComm
      *
      * @var integer
      */
-    const ERROR_TABLE_MIGRATION_FAILED = 1;
+    public const ERROR_TABLE_MIGRATION_FAILED = 1;
 
     /**
      * Error code returned if DB configuration file cannot be updated.
      *
      * @var integer
      */
-    const ERROR_UNABLE_TO_UPDATE_CONFIG = 2;
+    public const ERROR_UNABLE_TO_UPDATE_CONFIG = 2;
 
     protected function configure()
     {

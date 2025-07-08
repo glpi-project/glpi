@@ -1,0 +1,76 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<section class="container-narrow" aria-labelledby="edit-tile-header">
+    <form>
+        {{ include(tile.getConfigFieldsTemplate(), {tile: tile}, with_context = false) }}
+
+        <input name="id" type="hidden" value="{{ tile.getDatabaseId() }}">
+        <input name="_itemtype" type="hidden" value="{{ get_class(tile) }}">
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+
+        <div class="d-flex mt-4 mb-3">
+            <button
+                type="button"
+                class="btn btn-outline-danger ms-auto w-auto d-flex align-items-center"
+                data-glpi-helpdesk-config-action-delete
+                data-glpi-helpdesk-config-action-delete-id="{{ tile.getDatabaseId() }}"
+                data-glpi-helpdesk-config-action-delete-itemtype="{{ get_class(tile) }}"
+            >
+                <i
+                    class="ti ti-trash me-1"
+                    data-glpi-helpdesk-config-delete-tile-icon
+                ></i>
+                <i
+                    class="ti ti-loader-2 fa-spin me-1 d-none"
+                    data-glpi-helpdesk-config-delete-tile-spinner-icon
+                ></i>
+                <span>{{ __("Delete tile") }}<span>
+            </button>
+            <button
+                type="button"
+                class="btn btn-primary ms-2 w-auto d-flex align-items-center"
+                data-glpi-helpdesk-config-edit-tile-save
+            >
+                <i
+                    class="ti ti-device-floppy me-1"
+                    data-glpi-helpdesk-config-edit-tile-save-icon
+                ></i>
+                <i
+                    class="ti ti-loader-2 fa-spin me-1 d-none"
+                    data-glpi-helpdesk-config-edit-tile-save-spinner-icon
+                ></i>
+                <span>{{ __("Save changes") }}</span>
+            </button>
+        </div>
+    </form>
+</section>

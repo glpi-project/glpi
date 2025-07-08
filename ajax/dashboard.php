@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,9 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ErrorHandler;
 use Glpi\Dashboard\Grid;
+use Glpi\Error\ErrorHandler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
+
+use function Safe\json_decode;
+use function Safe\json_encode;
 
 if (!isset($_REQUEST["action"])) {
     return;
@@ -51,7 +54,7 @@ $embed = false;
 if (
     in_array($_REQUEST['action'], ['get_dashboard_items', 'get_card', 'get_cards'])
     && array_key_exists('embed', $request_data)
-    && (bool)$request_data['embed']
+    && (bool) $request_data['embed']
 ) {
     if (Grid::checkToken($request_data) === false) {
         throw new AccessDeniedHttpException();
@@ -188,6 +191,9 @@ switch ($_REQUEST['action']) {
 
         Session::writeClose();
         \Glpi\Debug\Profiler::getInstance()->start('Get card HTML');
+        if ($embed) {
+            $grid->initEmbedSession($_REQUEST);
+        }
         echo $grid->getCardHtml($_REQUEST['card_id'], $_REQUEST);
         \Glpi\Debug\Profiler::getInstance()->stop('Get card HTML');
         break;
@@ -208,8 +214,7 @@ switch ($_REQUEST['action']) {
                 $result[$card['card_id']] = $grid->getCardHtml($card['card_id'], array_merge($request_data, $card));
             } catch (\Throwable $e) {
                 // Send exception to logger without actually exiting.
-                // Use quiet mode to not break JSON result.
-                ErrorHandler::getInstance()->handleException($e, true);
+                ErrorHandler::logCaughtException($e);
             }
         }
         \Glpi\Debug\Profiler::getInstance()->stop('Get cards HTML');

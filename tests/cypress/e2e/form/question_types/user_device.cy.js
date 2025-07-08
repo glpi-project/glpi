@@ -5,8 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -44,8 +43,8 @@ describe('User device form question type', () => {
             const tab = 'Glpi\\Form\\Form$main';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
 
-            // Add a new question
-            cy.findByRole("button", { name: "Add a new question" }).should('exist').click();
+            // Add a question
+            cy.findByRole("button", { name: "Add a question" }).should('exist').click();
 
             // Set the question name
             cy.findByRole("textbox", { name: "Question name" }).should('exist').type("Test user device question");

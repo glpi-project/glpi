@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -78,7 +78,7 @@ class GLPINetwork extends CommonGLPI
             'informations'     => $informations,
             'canedit' => $canedit,
             'services_available' => $services_available,
-            'curl_error'       => $curl_error
+            'curl_error'       => $curl_error,
         ]);
     }
 
@@ -93,7 +93,7 @@ class GLPINetwork extends CommonGLPI
         $comments = sprintf('installation-mode:%s', GLPI_INSTALL_MODE);
         if (!empty(GLPI_USER_AGENT_EXTRA_COMMENTS)) {
             // append extra comments (remove '(' and ')' chars to not break UA string)
-            $comments .= '; ' . (string)preg_replace('/\(\)/', ' ', GLPI_USER_AGENT_EXTRA_COMMENTS);
+            $comments .= '; ' . (string) preg_replace('/\(\)/', ' ', GLPI_USER_AGENT_EXTRA_COMMENTS);
         }
         return sprintf('GLPI/%s (%s)', $version, $comments);
     }
@@ -158,7 +158,7 @@ class GLPINetwork extends CommonGLPI
             return $informations;
         }
 
-       // Verify registration from registration API
+        // Verify registration from registration API
         $error_message = null;
         $registration_response = Toolbox::callCurl(
             rtrim(GLPI_NETWORK_REGISTRATION_API_URL, '/') . '/info',
@@ -170,7 +170,7 @@ class GLPINetwork extends CommonGLPI
                     'User-Agent:' . self::getGlpiUserAgent(),
                     'X-Registration-Key:' . $registration_key,
                     'X-Glpi-Network-Uid:' . self::getGlpiNetworkUid(),
-                ]
+                ],
             ],
             $error_message
         );
@@ -203,9 +203,9 @@ class GLPINetwork extends CommonGLPI
         $informations['is_valid']           = $registration_data['is_valid'];
         if (array_key_exists('validation_message', $registration_data)) {
             $informations['validation_message'] = $registration_data['validation_message'];
-        } else if (!$registration_data['is_valid']) {
+        } elseif (!$registration_data['is_valid']) {
             $informations['validation_message'] = __('The registration key is invalid.');
-        } else if (!$registration_data['subscription']['is_running']) {
+        } elseif (!$registration_data['subscription']['is_running']) {
             $informations['validation_message'] = __('The registration key refers to a terminated subscription.');
         } else {
             $informations['validation_message'] = __('The registration key is valid.');
@@ -290,7 +290,7 @@ class GLPINetwork extends CommonGLPI
                 CURLOPT_HTTPHEADER => [
                     'Accept:application/json',
                     'Accept-Language: ' . $lang,
-                ]
+                ],
             ],
             $error_message
         );

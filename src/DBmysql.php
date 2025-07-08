@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,7 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ErrorHandler;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
@@ -56,7 +55,7 @@ class DBmysql
         '>'  => '&gt;',
     ];
 
-    //! Database Host - string or Array of string (round robin)
+    //! Database Host - string or Array of string (round-robin)
     public $dbhost             = "";
     //! Database User
     public $dbuser             = "";
@@ -70,9 +69,6 @@ class DBmysql
      * @var mysqli
      */
     protected $dbh;
-
-    //! Database Error
-    public $error              = 0;
 
     // Slave management
     public $slave              = false;
@@ -201,13 +197,6 @@ class DBmysql
     private $field_cache = [];
 
     /**
-     * Last query warnings.
-     *
-     * @var array
-     */
-    private $last_query_warnings = [];
-
-    /**
      * Constructor / Connect to the MySQL Database
      *
      * @param integer $choice host number (default NULL)
@@ -248,7 +237,7 @@ class DBmysql
 
         if (is_array($this->dbhost)) {
             // Round robin choice
-            $i    = (isset($choice) ? $choice : mt_rand(0, count($this->dbhost) - 1));
+            $i    = ($choice ?? mt_rand(0, count($this->dbhost) - 1));
             $host = $this->dbhost[$i];
         } else {
             $host = $this->dbhost;
@@ -261,21 +250,15 @@ class DBmysql
         if (count($hostport) < 2) {
             // Host
             $this->dbh->real_connect($host, $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault);
-        } else if (intval($hostport[1]) > 0) {
+        } elseif (intval($hostport[1]) > 0) {
             // Host:port
             $this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, $hostport[1]);
         } else {
-             // :Socket
+            // :Socket
             $this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, ini_get('mysqli.default_port'), $hostport[1]);
         }
 
-        if ($this->dbh->connect_error) {
-            $this->connected = false;
-            $this->error     = 1;
-        } else if (!defined('MYSQLI_OPT_INT_AND_FLOAT_NATIVE')) {
-            $this->connected = false;
-            $this->error     = 2;
-        } else {
+        if (!$this->dbh->connect_error) {
             $this->setConnectionCharset();
 
             // force mysqlnd to return int and float types correctly (not as strings)
@@ -315,8 +298,8 @@ class DBmysql
                         'FROM'   => Config::getTable(),
                         'WHERE'  => [
                             'context'   => 'core',
-                            'name'      => 'timezone'
-                        ]
+                            'name'      => 'timezone',
+                        ],
                     ])->current();
                 }
                 $zone = !empty($conf_tz['value']) ? $conf_tz['value'] : date_default_timezone_get();
@@ -398,31 +381,29 @@ class DBmysql
         $debug_data['time'] = $duration;
         $debug_data['rows'] = $this->affectedRows();
 
-        // Ensure that we collect warning after affected rows
-        $this->last_query_warnings = $this->fetchQueryWarnings();
-
-        $warnings_string = implode(
-            "\n",
-            array_map(
-                static function ($warning) {
-                    return sprintf('%s: %s', $warning['Code'], $warning['Message']);
-                },
-                $this->last_query_warnings
-            )
-        );
-        $debug_data['warnings'] = $warnings_string;
-
-        // Output warnings in SQL log
-        if (!empty($this->last_query_warnings)) {
-            $message = sprintf(
-                "  *** MySQL query warnings:\n  SQL: %s\n  Warnings: \n%s\n",
-                $query,
-                $warnings_string
+        // Trigger warning errors if any SQL warnings was produced by the query
+        $sql_warnings = $this->fetchQueryWarnings(); // Ensure that we collect warning after affected rows
+        if (count($sql_warnings) > 0) {
+            $warnings_string = implode(
+                "\n",
+                array_map(
+                    static function ($warning) {
+                        return sprintf('%s: %s', $warning['Code'], $warning['Message']);
+                    },
+                    $sql_warnings
+                )
             );
-            $message .= Toolbox::backtrace(false, 'DBmysql->doQuery()', ['Toolbox::backtrace()']);
-            Toolbox::logSqlWarning($message);
 
-            ErrorHandler::getInstance()->handleSqlWarnings($this->last_query_warnings, $query);
+            $debug_data['warnings'] = $warnings_string;
+
+            trigger_error(
+                sprintf(
+                    "MySQL query warnings:\n  SQL: %s\n  Warnings: \n%s",
+                    $query,
+                    $warnings_string
+                ),
+                E_USER_WARNING
+            );
         }
 
         if (isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
@@ -442,7 +423,7 @@ class DBmysql
     }
 
     /**
-     * Execute a MySQL query and die
+     * Execute a MySQL query and throw an exception
      * (optionally with a message) if it fails
      *
      * @since 0.84
@@ -656,8 +637,8 @@ class DBmysql
             'WHERE'  => [
                 'table_schema' => $this->dbdefault,
                 'table_type'   => 'BASE TABLE',
-                'table_name'   => ['LIKE', $table]
-            ] + $where
+                'table_name'   => ['LIKE', $table],
+            ] + $where,
         ]);
         return $iterator;
     }
@@ -693,7 +674,7 @@ class DBmysql
     public function getNonUtf8mb4Tables(bool $exclude_plugins = false): DBmysqlIterator
     {
 
-       // Find tables that does not use utf8mb4 collation
+        // Find tables that does not use utf8mb4 collation
         $tables_query = [
             'SELECT'     => ['information_schema.tables.table_name as TABLE_NAME'],
             'DISTINCT'   => true,
@@ -706,7 +687,7 @@ class DBmysql
             ],
         ];
 
-       // Find columns that does not use utf8mb4 collation
+        // Find columns that does not use utf8mb4 collation
         $columns_query = [
             'SELECT'     => ['information_schema.columns.table_name as TABLE_NAME'],
             'DISTINCT'   => true,
@@ -721,17 +702,17 @@ class DBmysql
                                 'information_schema.tables.table_schema' => new QueryExpression(
                                     $this->quoteName('information_schema.columns.table_schema')
                                 ),
-                            ]
+                            ],
                         ],
-                    ]
-                ]
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'information_schema.tables.table_schema' => $this->dbdefault,
                 'information_schema.tables.table_name'   => ['LIKE', 'glpi\_%'],
                 'information_schema.tables.table_type'    => 'BASE TABLE',
                 ['NOT' => ['information_schema.columns.collation_name' => null]],
-                ['NOT' => ['information_schema.columns.collation_name' => ['LIKE', 'utf8mb4\_%']]]
+                ['NOT' => ['information_schema.columns.collation_name' => ['LIKE', 'utf8mb4\_%']]],
             ],
         ];
 
@@ -744,7 +725,7 @@ class DBmysql
             'SELECT'   => ['TABLE_NAME'],
             'DISTINCT' => true,
             'FROM'     => new QueryUnion([$tables_query, $columns_query], true),
-            'ORDER'    => ['TABLE_NAME']
+            'ORDER'    => ['TABLE_NAME'],
         ]);
 
         return $iterator;
@@ -776,10 +757,10 @@ class DBmysql
                                 'information_schema.tables.table_schema' => new QueryExpression(
                                     $this->quoteName('information_schema.columns.table_schema')
                                 ),
-                            ]
+                            ],
                         ],
-                    ]
-                ]
+                    ],
+                ],
             ],
             'WHERE'       => [
                 'information_schema.tables.table_schema' => $this->dbdefault,
@@ -787,7 +768,7 @@ class DBmysql
                 'information_schema.tables.table_type'   => 'BASE TABLE',
                 'information_schema.columns.data_type'   => 'datetime',
             ],
-            'ORDER'       => ['TABLE_NAME']
+            'ORDER'       => ['TABLE_NAME'],
         ];
 
         if ($exclude_plugins) {
@@ -831,10 +812,10 @@ class DBmysql
                                 'information_schema.tables.table_schema' => new QueryExpression(
                                     $this->quoteName('information_schema.columns.table_schema')
                                 ),
-                            ]
+                            ],
                         ],
-                    ]
-                ]
+                    ],
+                ],
             ],
             'WHERE'       => [
                 'information_schema.tables.table_schema'  => $this->dbdefault,
@@ -850,7 +831,7 @@ class DBmysql
                 'information_schema.columns.data_type' => ['tinyint', 'smallint', 'mediumint', 'int', 'bigint'],
                 ['NOT' => ['information_schema.columns.column_type' => ['LIKE', '%unsigned%']]],
             ],
-            'ORDER'       => ['TABLE_NAME']
+            'ORDER'       => ['TABLE_NAME'],
         ];
 
         if ($exclude_plugins) {
@@ -886,7 +867,7 @@ class DBmysql
                 'referenced_table_schema' => $this->dbdefault,
                 'referenced_table_name'   => ['LIKE', 'glpi\_%'],
             ],
-            'ORDER'  => ['TABLE_NAME']
+            'ORDER'  => ['TABLE_NAME'],
         ];
 
         $iterator = $this->request($query);
@@ -1013,46 +994,47 @@ class DBmysql
      */
     public function runFile($path)
     {
-        $script = fopen($path, 'r');
-        if (!$script) {
-            return false;
-        }
-        $sql_query = @fread(
-            $script,
-            @filesize($path)
-        ) . "\n";
-        $sql_query = html_entity_decode($sql_query, ENT_COMPAT, 'UTF-8');
-
-        $sql_query = $this->removeSqlRemarks($sql_query);
-        $queries = preg_split('/;\s*$/m', $sql_query);
+        $queries = $this->getQueriesFromFile($path);
 
         foreach ($queries as $query) {
-            $query = trim($query);
-            if ($query != '') {
-                $query = htmlentities($query, ENT_COMPAT, 'UTF-8');
-                $this->doQuery($query);
-                if (!isCommandLine()) {
-                  // Flush will prevent proxy to timeout as it will receive data.
-                  // Flush requires a content to be sent, so we sent spaces as multiple spaces
-                  // will be shown as a single one on browser.
-                    echo ' ';
-                    Html::glpi_flush();
-                }
-            }
+            $this->doQuery($query);
         }
 
         return true;
     }
 
     /**
+     * @internal
+     *
+     * @return array<string>
+     */
+    public function getQueriesFromFile(string $path): array
+    {
+        $script = fopen($path, 'r');
+        if (!$script) {
+            return [];
+        }
+        $sql_query = @fread($script, @filesize($path)) . "\n";
+
+        $sql_query = $this->removeSqlRemarks($sql_query);
+
+        $queries = preg_split('/;\s*$/m', $sql_query);
+
+        $queries = array_filter($queries, static fn($query) => \trim($query) !== '');
+
+        return $queries;
+    }
+
+    /**
      * Instanciate a Simple DBIterator
      *
      * @param array|QueryUnion  $criteria Query criteria
-     * @param boolean           $debug    To log the request (default false)
      *
      * @return DBmysqlIterator
+     *
+     * @since 11.0.0 The `$debug` parameter has been removed.
      */
-    public function request($criteria, $debug = false)
+    public function request($criteria)
     {
         $iterator = new DBmysqlIterator($this);
         $iterator->execute(...func_get_args()); // pass all args to be compatible with previous signature
@@ -1069,7 +1051,7 @@ class DBmysql
      */
     public function getInfo()
     {
-       // No translation, used in sysinfo
+        // No translation, used in sysinfo
         $ret = [];
         $req = $this->doQuery("SELECT @@sql_mode as mode, @@version AS vers, @@version_comment AS stype");
 
@@ -1108,9 +1090,9 @@ class DBmysql
         $name          = $this->quote($this->dbdefault . '.' . $name);
         $query         = "SELECT GET_LOCK($name, 0)";
         $result        = $this->doQuery($query);
-        list($lock_ok) = $this->fetchRow($result);
+        [$lock_ok] = $this->fetchRow($result);
 
-        return (bool)$lock_ok;
+        return (bool) $lock_ok;
     }
 
     /**
@@ -1127,7 +1109,7 @@ class DBmysql
         $name          = $this->quote($this->dbdefault . '.' . $name);
         $query         = "SELECT RELEASE_LOCK($name)";
         $result        = $this->doQuery($query);
-        list($lock_ok) = $this->fetchRow($result);
+        [$lock_ok] = $this->fetchRow($result);
 
         return $lock_ok;
     }
@@ -1151,9 +1133,9 @@ class DBmysql
             return true;
         }
 
-       // Retrieve all tables if cache is empty but enabled, in order to fill cache
-       // with all known tables
-        $retrieve_all = !$this->cache_disabled && empty($this->table_cache);
+        // Retrieve all tables if cache is empty but enabled, in order to fill cache
+        // with all known tables
+        $retrieve_all = !$this->cache_disabled && $this->table_cache === [];
 
         $result = $this->listTables($retrieve_all ? 'glpi\_%' : $tablename);
         $found_tables = [];
@@ -1220,11 +1202,11 @@ class DBmysql
      */
     public static function quoteName($name)
     {
-       //handle verbatim names
+        //handle verbatim names
         if ($name instanceof QueryExpression) {
             return $name->getValue();
         }
-       //handle aliases
+        //handle aliases
         $names = preg_split('/\s+AS\s+/i', $name);
         if (count($names) > 2) {
             throw new \RuntimeException(
@@ -1258,13 +1240,13 @@ class DBmysql
         if ($value instanceof QueryParam || $value instanceof QueryExpression) {
             //no quote for query parameters nor expressions
             $value = $value->getValue();
-        } else if ($value === null || $value === 'NULL' || $value === 'null') {
+        } elseif ($value === null || $value === 'NULL' || $value === 'null') {
             $value = 'NULL';
-        } else if (is_bool($value)) {
+        } elseif (is_bool($value)) {
             // transform boolean as int (prevent `false` to be transformed to empty string)
-            $value = "'" . (int)$value . "'";
+            $value = "'" . (int) $value . "'";
         } else {
-            /** @var \DBmysql $DB */
+            /** @var \DBmysql|null $DB */
             global $DB;
             $value = $DB instanceof DBmysql && $DB->connected ? $DB->escape($value) : $value;
             $value = "'$value'";
@@ -1367,7 +1349,7 @@ class DBmysql
      */
     public function buildUpdate($table, $params, $clauses, array $joins = [])
     {
-       //when no explicit "WHERE", we only have a WHERE clause.
+        //when no explicit "WHERE", we only have a WHERE clause.
         if (!isset($clauses['WHERE'])) {
             $clauses  = ['WHERE' => $clauses];
         } else {
@@ -1403,11 +1385,11 @@ class DBmysql
             if ($value instanceof QueryParam || $value instanceof QueryExpression) {
                 //no quote for query parameters nor expressions
                 $query .= self::quoteName($field) . " = " . $value->getValue() . ", ";
-            } else if ($value === null || $value === 'NULL' || $value === 'null') {
+            } elseif ($value === null || $value === 'NULL' || $value === 'null') {
                 $query .= self::quoteName($field) . " = NULL, ";
-            } else if (is_bool($value)) {
+            } elseif (is_bool($value)) {
                 // transform boolean as int (prevent `false` to be transformed to empty string)
-                $query .= self::quoteName($field) . " = '" . (int)$value . "', ";
+                $query .= self::quoteName($field) . " = '" . (int) $value . "', ";
             } else {
                 $query .= self::quoteName($field) . " = " . self::quoteValue($value) . ", ";
             }
@@ -1416,7 +1398,7 @@ class DBmysql
 
         $query .= " WHERE " . $this->iterator->analyseCrit($clauses['WHERE']);
 
-       // ORDER BY
+        // ORDER BY
         if (isset($clauses['ORDER']) && !empty($clauses['ORDER'])) {
             $query .= $this->iterator->handleOrderClause($clauses['ORDER']);
         }
@@ -1593,7 +1575,7 @@ class DBmysql
     }
 
     /**
-     * Truncate table in the database or die
+     * Truncate table in the database or throw an exception
      * (optionally with a message) if it fails
      *
      * @since 10.0.0
@@ -1667,7 +1649,7 @@ class DBmysql
             'VIEW',
             'INDEX',
             'FOREIGN KEY',
-            'FIELD'
+            'FIELD',
         ];
         if (!in_array($type, $known_types)) {
             throw new \InvalidArgumentException('Unknown type to drop: ' . $type);
@@ -1699,6 +1681,22 @@ class DBmysql
     }
 
     /**
+     * Get database raw version and server name
+     *
+     * @return array<string, string>
+     */
+    public function getVersionAndServer(): array
+    {
+        $version_string = $this->getVersion();
+        $server  = preg_match('/-MariaDB/', $version_string) ? 'MariaDB' : 'MySQL';
+        $version = preg_replace('/^((\d+\.?)+).*$/', '$1', $version_string);
+        return [
+            'version' => $version,
+            'server' => $server,
+        ];
+    }
+
+    /**
      * Starts a transaction
      *
      * @return boolean
@@ -1720,7 +1718,7 @@ class DBmysql
         if ($this->in_transaction) {
             $this->dbh->savepoint($name);
         } else {
-           // Not already in transaction or failed to start one now
+            // Not already in transaction or failed to start one now
             trigger_error('Unable to set DB savepoint because no transaction was started', E_USER_WARNING);
         }
     }
@@ -1784,7 +1782,7 @@ class DBmysql
      */
     public function setTimezone($timezone)
     {
-       //setup timezone
+        //setup timezone
         if ($this->use_timezones) {
             date_default_timezone_set($timezone);
             $this->dbh->query(sprintf("SET SESSION time_zone = %s", $this->quote($timezone)));
@@ -1814,7 +1812,7 @@ class DBmysql
         $iterator = $this->request([
             'SELECT' => 'Name',
             'FROM'   => 'mysql.time_zone_name',
-            'WHERE'  => ['Name' => $from_php]
+            'WHERE'  => ['Name' => $from_php],
         ]);
 
         foreach ($iterator as $from_mysql) {
@@ -1851,7 +1849,7 @@ class DBmysql
     public function quote($value, int $type = 2/*\PDO::PARAM_STR*/)
     {
         return "'" . $this->escape($value) . "'";
-       //return $this->dbh->quote($value, $type);
+        //return $this->dbh->quote($value, $type);
     }
 
     /**
@@ -1894,7 +1892,7 @@ class DBmysql
         $lines = explode("\n", $output);
         $output = "";
 
-       // try to keep mem. use down
+        // try to keep mem. use down
         $linecount = count($lines);
 
         $in_comment = false;
@@ -1929,7 +1927,7 @@ class DBmysql
     {
         $lines = explode("\n", $sql);
 
-       // try to keep mem. use down
+        // try to keep mem. use down
         $sql = "";
 
         $linecount = count($lines);
@@ -1961,7 +1959,7 @@ class DBmysql
         $warnings = [];
 
         if ($this->dbh->warning_count > 0 && $warnings_result = $this->dbh->query('SHOW WARNINGS')) {
-           // Warnings to exclude
+            // Warnings to exclude
             $excludes = [];
 
             if (!$this->use_utf8mb4 || !$this->log_deprecation_warnings) {
@@ -1985,15 +1983,6 @@ class DBmysql
         }
 
         return $warnings;
-    }
-
-    /**
-     * Get SQL warnings related to last query.
-     * @return array
-     */
-    public function getLastQueryWarnings(): array
-    {
-        return $this->last_query_warnings;
     }
 
     /**
@@ -2059,7 +2048,7 @@ class DBmysql
                 ),
                 E_USER_WARNING
             );
-        } else if (!$this->use_utf8mb4 && preg_match('/(?<invalid>(utf8mb4(_[^\';\s]+)?))([\';\s]|$)/', $query, $charset_matches)) {
+        } elseif (!$this->use_utf8mb4 && preg_match('/(?<invalid>(utf8mb4(_[^\';\s]+)?))([\';\s]|$)/', $query, $charset_matches)) {
             trigger_error(
                 sprintf(
                     'Usage of "%s" charset/collation detected, should be "%s"',
@@ -2110,7 +2099,7 @@ class DBmysql
         $config_flags = [];
 
         if ($this->getTzIncompatibleTables(true)->count() === 0) {
-           // Disallow datetime if there is no core table still using this field type.
+            // Disallow datetime if there is no core table still using this field type.
             $config_flags[DBConnection::PROPERTY_ALLOW_DATETIME] = false;
 
             $timezones_requirement = new DbTimezones($this);
@@ -2121,12 +2110,12 @@ class DBmysql
         }
 
         if ($this->getNonUtf8mb4Tables(true)->count() === 0) {
-           // Use utf8mb4 charset for update process if there all core table are using this charset.
+            // Use utf8mb4 charset for update process if there all core table are using this charset.
             $config_flags[DBConnection::PROPERTY_USE_UTF8MB4] = true;
         }
 
         if ($this->getSignedKeysColumns(true)->count() === 0) {
-           // Disallow MyISAM if there is no core table still using this engine.
+            // Disallow MyISAM if there is no core table still using this engine.
             $config_flags[DBConnection::PROPERTY_ALLOW_SIGNED_KEYS] = false;
         }
 
@@ -2242,5 +2231,73 @@ class DBmysql
             $values[$row['Variable_name']] = $row['Value'];
         }
         return $values;
+    }
+
+    /**
+     * Get binary log status query, in regard of the MySQL/MariaDB version.
+     *
+     * @return string
+     */
+    public function getBinaryLogStatusQuery(): string
+    {
+        $info = $this->getVersionAndServer();
+
+        if ($info['server'] === 'MySQL' && version_compare($info['version'], '8.4', '>=')) {
+            return "SHOW BINARY LOG STATUS";
+        }
+
+        if ($info['server'] === 'MariaDB') {
+            return "SHOW BINLOG STATUS";
+        }
+
+        return "SHOW MASTER STATUS";
+    }
+
+    /**
+     * Get replica status query, in regard of the MySQL/MariaDB version.
+     *
+     * @return string
+     */
+    public function getReplicaStatusQuery(): string
+    {
+        $info = $this->getVersionAndServer();
+
+        if ($info['server'] === 'MySQL' && version_compare($info['version'], '8.4', '>=')) {
+            return "SHOW REPLICA STATUS";
+        }
+
+        return "SHOW SLAVE STATUS";
+    }
+
+    /**
+     * Get replica status variables, in regard of the MySQL/MariaDB version.
+     *
+     * @return array<string, string>
+     */
+    public function getReplicaStatusVars(): array
+    {
+        $info = $this->getVersionAndServer();
+
+        if ($info['server'] === 'MySQL' && version_compare($info['version'], '8.4', '>=')) {
+            return [
+                'io_running'            => 'Replica_IO_Running',
+                'sql_running'           => 'Replica_SQL_Running',
+                'source_log_file'       => 'Source_Log_File',
+                'source_log_pos'        => 'Read_Source_Log_Pos',
+                'seconds_behind_source' => 'Seconds_Behind_Source',
+                'last_io_error'         => 'Last_IO_Error',
+                'last_sql_error'        => 'Last_SQL_Error',
+            ];
+        }
+
+        return [
+            'io_running'            => 'Slave_IO_Running',
+            'sql_running'           => 'Slave_SQL_Running',
+            'source_log_file'       => 'Master_Log_File',
+            'source_log_pos'        => 'Read_Master_Log_Pos',
+            'seconds_behind_source' => 'Seconds_Behind_Master',
+            'last_io_error'         => 'Last_IO_Error',
+            'last_sql_error'        => 'Last_SQL_Error',
+        ];
     }
 }

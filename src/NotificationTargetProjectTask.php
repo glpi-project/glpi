@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -50,7 +50,7 @@ class NotificationTargetProjectTask extends NotificationTarget
 
         $events = ['new'               => __('New project task'),
             'update'            => __('Update of a project task'),
-            'delete'            => __('Deletion of a project task')
+            'delete'            => __('Deletion of a project task'),
         ];
         asort($events);
         return $events;
@@ -83,27 +83,27 @@ class NotificationTargetProjectTask extends NotificationTarget
                         $this->addTeamUsers();
                         break;
 
-                    // Send to the groups in project task team
+                        // Send to the groups in project task team
                     case Notification::TEAM_GROUP:
                         $this->addTeamGroups(0);
                         break;
 
-                    // Send to the groups supervisors in project team
+                        // Send to the groups supervisors in project team
                     case Notification::TEAM_GROUP_SUPERVISOR:
                         $this->addProjectTeamGroups(1);
                         break;
 
-                    // Send to the groups without supervisors in project team
+                        // Send to the groups without supervisors in project team
                     case Notification::TEAM_GROUP_WITHOUT_SUPERVISOR:
                         $this->addProjectTeamGroups(2);
                         break;
 
-                    // Send to the contacts in project team
+                        // Send to the contacts in project team
                     case Notification::TEAM_CONTACT:
                         $this->addTeamContacts();
                         break;
 
-                    // Send to the suppliers in project team
+                        // Send to the suppliers in project team
                     case Notification::TEAM_SUPPLIER:
                         $this->addTeamSuppliers();
                         break;
@@ -127,15 +127,15 @@ class NotificationTargetProjectTask extends NotificationTarget
             'FROM'   => 'glpi_projecttaskteams',
             'WHERE'  => [
                 'itemtype'        => 'User',
-                'projecttasks_id' => $this->obj->fields['id']
-            ]
+                'projecttasks_id' => $this->obj->fields['id'],
+            ],
         ]);
 
         $user = new User();
         foreach ($iterator as $data) {
             if ($user->getFromDB($data['items_id'])) {
                 $this->addToRecipientsList(['language' => $user->getField('language'),
-                    'users_id' => $user->getField('id')
+                    'users_id' => $user->getField('id'),
                 ]);
             }
         }
@@ -159,8 +159,8 @@ class NotificationTargetProjectTask extends NotificationTarget
             'FROM'   => 'glpi_projecttaskteams',
             'WHERE'  => [
                 'itemtype'        => 'Group',
-                'projecttasks_id' => $this->obj->fields['id']
-            ]
+                'projecttasks_id' => $this->obj->fields['id'],
+            ],
         ]);
 
         foreach ($iterator as $data) {
@@ -185,8 +185,8 @@ class NotificationTargetProjectTask extends NotificationTarget
             'FROM'   => 'glpi_projectteams',
             'WHERE'  => [
                 'itemtype'    => 'Group',
-                'projects_id' => $this->obj->fields['projects_id']
-            ]
+                'projects_id' => $this->obj->fields['projects_id'],
+            ],
         ]);
 
         foreach ($iterator as $data) {
@@ -213,8 +213,8 @@ class NotificationTargetProjectTask extends NotificationTarget
             'FROM'   => 'glpi_projecttaskteams',
             'WHERE'  => [
                 'itemtype'        => 'Contact',
-                'projecttasks_id' => $this->obj->fields['id']
-            ]
+                'projecttasks_id' => $this->obj->fields['id'],
+            ],
         ]);
 
         $contact = new Contact();
@@ -223,7 +223,7 @@ class NotificationTargetProjectTask extends NotificationTarget
                 $this->addToRecipientsList(["email"    => $contact->fields["email"],
                     "name"     => $contact->getName(),
                     "language" => $CFG_GLPI["language"],
-                    'usertype' => NotificationTarget::ANONYMOUS_USER
+                    'usertype' => NotificationTarget::ANONYMOUS_USER,
                 ]);
             }
         }
@@ -248,8 +248,8 @@ class NotificationTargetProjectTask extends NotificationTarget
             'FROM'   => 'glpi_projecttaskteams',
             'WHERE'  => [
                 'itemtype'        => 'Supplier',
-                'projecttasks_id' => $this->obj->fields['id']
-            ]
+                'projecttasks_id' => $this->obj->fields['id'],
+            ],
         ]);
 
         $supplier = new Supplier();
@@ -258,7 +258,7 @@ class NotificationTargetProjectTask extends NotificationTarget
                 $this->addToRecipientsList(["email"    => $supplier->fields["email"],
                     "name"     => $supplier->getName(),
                     "language" => $CFG_GLPI["language"],
-                    'usertype' => NotificationTarget::ANONYMOUS_USER
+                    'usertype' => NotificationTarget::ANONYMOUS_USER,
                 ]);
             }
         }
@@ -273,7 +273,7 @@ class NotificationTargetProjectTask extends NotificationTarget
          */
         global $CFG_GLPI, $DB;
 
-       //----------- Reservation infos -------------- //
+        //----------- Reservation infos -------------- //
         $events     = $this->getAllEvents();
         $item       = $this->obj;
 
@@ -368,7 +368,7 @@ class NotificationTargetProjectTask extends NotificationTarget
             $this->data["##projecttask.createbyuser##"] = $user_tmp->getName();
         }
 
-       // Team infos
+        // Team infos
         $restrict = ['projecttasks_id' => $item->getField('id')];
         $items    = getAllDataFromTable('glpi_projecttaskteams', $restrict);
 
@@ -388,12 +388,12 @@ class NotificationTargetProjectTask extends NotificationTarget
 
         $this->data['##projecttask.numberofteammembers##'] = count($this->data['teammembers']);
 
-       // Task infos
+        // Task infos
         $tasks                = getAllDataFromTable(
             'glpi_projecttasks',
             [
                 'WHERE'  => $restrict,
-                'ORDER'  => ['date_creation DESC', 'id ASC']
+                'ORDER'  => ['date_creation DESC', 'id ASC'],
             ]
         );
         $this->data['tasks'] = [];
@@ -437,7 +437,7 @@ class NotificationTargetProjectTask extends NotificationTarget
 
         $this->data["##projecttask.numberoftasks##"] = count($this->data['tasks']);
 
-       // History infos
+        // History infos
 
         $this->data['log'] = [];
         // Use list_limit_max or load the full history ?
@@ -453,7 +453,7 @@ class NotificationTargetProjectTask extends NotificationTarget
 
         $this->data["##projecttask.numberoflogs##"] = count($this->data['log']);
 
-       // Tickets infos
+        // Tickets infos
         $tickets  = getAllDataFromTable('glpi_projecttasks_tickets', $restrict);
 
         $this->data['tickets'] = [];
@@ -471,17 +471,17 @@ class NotificationTargetProjectTask extends NotificationTarget
                         $options['additionnaloption']['usertype'],
                         "Ticket_" . $data['tickets_id']
                     );
-                     $tmp['##ticket.content##']
-                                       = $ticket->getField('content');
+                    $tmp['##ticket.content##']
+                                      = $ticket->getField('content');
 
-                     $this->data['tickets'][] = $tmp;
+                    $this->data['tickets'][] = $tmp;
                 }
             }
         }
 
         $this->data['##projecttask.numberoftickets##'] = count($this->data['tickets']);
 
-       // Document
+        // Document
         $iterator = $DB->request([
             'SELECT'    => 'glpi_documents.*',
             'FROM'      => 'glpi_documents',
@@ -489,14 +489,14 @@ class NotificationTargetProjectTask extends NotificationTarget
                 'glpi_documents_items'  => [
                     'ON' => [
                         'glpi_documents_items'  => 'documents_id',
-                        'glpi_documents'        => 'id'
-                    ]
-                ]
+                        'glpi_documents'        => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'glpi_documents_items.itemtype'  => 'ProjectTask',
-                'glpi_documents_items.items_id'  => $item->fields['id']
-            ]
+                'glpi_documents_items.items_id'  => $item->fields['id'],
+            ],
         ]);
 
         $this->data["documents"] = [];
@@ -520,7 +520,7 @@ class NotificationTargetProjectTask extends NotificationTarget
                                     );
             $tmp['##document.heading##'] = '';
             if ($data['documentcategories_id']) {
-                 $tmp['##document.heading##'] = Dropdown::getDropdownName('glpi_documentcategories', $data['documentcategories_id']);
+                $tmp['##document.heading##'] = Dropdown::getDropdownName('glpi_documentcategories', $data['documentcategories_id']);
             }
 
             $tmp['##document.filename##']
@@ -555,7 +555,7 @@ class NotificationTargetProjectTask extends NotificationTarget
             'projecttask.name'                => __('Name'),
             'projecttask.project'             => Project::getTypeName(1),
             'projecttask.description'         => __('Description'),
-            'projecttask.comments'            => __('Comments'),
+            'projecttask.comments'            => _n('Comment', 'Comments', Session::getPluralNumber()),
             'projecttask.creationdate'        => __('Creation date'),
             'projecttask.lastupdatedate'      => __('Last update'),
             'projecttask.planstartdate'       => __('Planned start date'),
@@ -576,7 +576,7 @@ class NotificationTargetProjectTask extends NotificationTarget
             'task.date'                       => __('Opening date'),
             'task.name'                       => __('Name'),
             'task.description'                => __('Description'),
-            'task.comments'                   => __('Comments'),
+            'task.comments'                   => _n('Comment', 'Comments', Session::getPluralNumber()),
             'task.creationdate'               => __('Creation date'),
             'task.lastupdatedate'             => __('Last update'),
             'task.type'                       => _n('Type', 'Types', 1),
@@ -621,11 +621,11 @@ class NotificationTargetProjectTask extends NotificationTarget
         foreach ($tags_all as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
                 'label' => $label,
-                'value' => true
+                'value' => true,
             ]);
         }
 
-       //Tags without lang
+        //Tags without lang
         $tags = ['ticket.id'               => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), __('ID')),
             'ticket.date'             => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), _n('Date', 'Dates', 1)),
             'ticket.url'              => sprintf(__('%1$s: %2$s'), Ticket::getTypeName(1), ('URL')),
@@ -695,45 +695,45 @@ class NotificationTargetProjectTask extends NotificationTarget
                 __('%1$s: %2$s'),
                 _n('Team member', 'Team members', 1),
                 _n('Type', 'Types', 1)
-            )
+            ),
         ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
                 'label' => $label,
                 'value' => true,
-                'lang'  => false
+                'lang'  => false,
             ]);
         }
 
-       //Tags with just lang
+        //Tags with just lang
         $tags = ['projecttask.entity'   => Entity::getTypeName(1),
             'projecttask.log'      => __('Historical'),
             'projecttask.tasks'    => _n('Task', 'Tasks', Session::getPluralNumber()),
             'projecttask.team'     => ProjectTeam::getTypeName(1),
-            'projecttask.tickets'  => _n('Ticket', 'Tickets', Session::getPluralNumber())
+            'projecttask.tickets'  => _n('Ticket', 'Tickets', Session::getPluralNumber()),
         ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
                 'label' => $label,
                 'value' => false,
-                'lang'  => true
+                'lang'  => true,
             ]);
         }
 
-       //Foreach global tags
+        //Foreach global tags
         $tags = ['log'         => __('Historical'),
             'tasks'       => _n('Task', 'Tasks', Session::getPluralNumber()),
             'tickets'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
-            'teammembers' => _n('Team member', 'Team members', Session::getPluralNumber())
+            'teammembers' => _n('Team member', 'Team members', Session::getPluralNumber()),
         ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'     => $tag,
                 'label'   => $label,
                 'value'   => false,
-                'foreach' => true
+                'foreach' => true,
             ]);
         }
         asort($this->tag_descriptions);

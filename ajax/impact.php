@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,14 +35,13 @@
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Plugin\Hooks;
+
+use function Safe\json_decode;
+use function Safe\json_encode;
 
 const DELTA_ACTION_ADD    = 1;
 const DELTA_ACTION_UPDATE = 2;
 const DELTA_ACTION_DELETE = 3;
-
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
 
 /**
  * @var array $CFG_GLPI
@@ -54,7 +53,7 @@ header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
 switch ($_SERVER['REQUEST_METHOD']) {
-   // GET request: build the impact graph for a given asset
+    // GET request: build the impact graph for a given asset
     case 'GET':
         $action = $_GET["action"]  ?? "";
 
@@ -69,19 +68,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 if (empty($itemtype)) {
                     throw new BadRequestHttpException("Missing itemtype");
                 }
-                $icon = $CFG_GLPI["impact_asset_types"][$itemtype];
-                // Execute search
 
+                // Execute search
                 $assets = Impact::searchAsset($itemtype, json_decode($used), $filter, $page);
                 foreach ($assets['items'] as $index => $item) {
-                    $plugin_icon = Plugin::doHookFunction(Hooks::SET_ITEM_IMPACT_ICON, [
-                        'itemtype' => $itemtype,
-                        'items_id' => $item['id']
-                    ]);
-                    if ($plugin_icon && is_string($plugin_icon)) {
-                        $icon = ltrim($plugin_icon, '/');
-                    }
-                    $item['image'] = $CFG_GLPI['root_doc'] . '/' . $icon;
+                    $item['image'] = Impact::getImpactIcon($itemtype, $item['id']);
+
                     $assets['items'][$index] = $item;
                 }
                 header('Content-Type: application/json');
@@ -93,33 +85,33 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 $items_id = $_GET["items_id"]  ?? "";
                 $view     = $_GET["view"]      ?? "graph";
 
-               // Check required params
+                // Check required params
                 if (empty($itemtype) || empty($items_id)) {
                     throw new BadRequestHttpException("Missing itemtype or items_id");
                 }
 
-               // Check that the target asset exist
+                // Check that the target asset exist
                 if (!Impact::assetExist($itemtype, $items_id)) {
                     throw new BadRequestHttpException("Object[class=$itemtype, id=$items_id] doesn't exist");
                 }
 
-               // Prepare graph
-                $item = new $itemtype();
+                // Prepare graph
+                $item = getItemForItemtype($itemtype);
                 $item->getFromDB($items_id);
                 $graph = Impact::buildGraph($item);
                 $params = Impact::prepareParams($item);
                 $readonly = $item->can($items_id, UPDATE);
 
                 if ($view == "graph") {
-                   // Output graph as json
+                    // Output graph as json
                     header('Content-Type: application/json');
                     echo json_encode([
                         'graph'  => Impact::makeDataForCytoscape($graph),
                         'params' => $params,
                         'readonly' => $readonly,
                     ]);
-                } else if ($view == "list") {
-                   // Output list as HTML
+                } elseif ($view == "list") {
+                    // Output list as HTML
                     header('Content-Type: text/html');
                     Impact::displayListView($item, $graph);
                 }
@@ -130,14 +122,14 @@ switch ($_SERVER['REQUEST_METHOD']) {
         }
         break;
 
-   // Post request: update the store impact dependencies, compounds or items
+        // Post request: update the store impact dependencies, compounds or items
     case 'POST':
-       // Check required params
+        // Check required params
         if (!isset($_POST['impacts'])) {
             throw new BadRequestHttpException("Missing 'impacts' payload");
         }
 
-       // Decode data (should be json)
+        // Decode data (should be json)
         $data = Toolbox::jsonDecode($_POST['impacts'], true);
         if (!is_array($data)) {
             throw new BadRequestHttpException("Payload should be an array");
@@ -145,21 +137,21 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
         $readonly = true;
 
-       // Handle context for the starting node
+        // Handle context for the starting node
         $context_em = new \ImpactContext();
         $context_data = $data['context'];
 
-       // Get id and type from node_id (e.g. Computer::4 -> [Computer, 4])
+        // Get id and type from node_id (e.g. Computer::4 -> [Computer, 4])
         $start_node_details = explode(Impact::NODE_ID_DELIMITER, $context_data['node_id']);
 
-       // Get impact_item for this node
-        $item = new $start_node_details[0]();
+        // Get impact_item for this node
+        $item = getItemForItemtype($start_node_details[0]);
         $item->getFromDB($start_node_details[1]);
         $impact_item = \ImpactItem::findForItem($item);
         $start_node_impact_item_id = $impact_item->fields['id'];
         $readonly = !$item->can($item->fields['id'], UPDATE);
 
-       // Stop here if readonly graph
+        // Stop here if readonly graph
         if ($readonly) {
             throw new AccessDeniedHttpException("Missing rights");
         }
@@ -169,25 +161,25 @@ switch ($_SERVER['REQUEST_METHOD']) {
             $impact_item->fields["impactcontexts_id"] == 0
             || $impact_item->fields["is_slave"] == 1
         ) {
-           // There is no context OR we are slave to another context -> let's
-           // create a new one
+            // There is no context OR we are slave to another context -> let's
+            // create a new one
             $context_id = $context_em->add($context_data);
 
-           // Set the context_id to be updated
+            // Set the context_id to be updated
             $data['items'][$start_node_impact_item_id]['impactcontexts_id'] = $context_id;
             $data['items'][$start_node_impact_item_id]['is_slave'] = 0;
         } else {
-           // Update existing context
+            // Update existing context
             $context_id = $impact_item->fields["impactcontexts_id"];
             $context_em->getFromDB($context_id);
             $context_data['id'] = $context_id;
             $context_em->update($context_data);
         }
 
-       // Save impact relation delta
+        // Save impact relation delta
         $em = new ImpactRelation();
         foreach ($data['edges'] as $impact) {
-           // Extract action
+            // Extract action
             $action = $impact['action'];
             unset($impact['action']);
 
@@ -212,10 +204,10 @@ switch ($_SERVER['REQUEST_METHOD']) {
             }
         }
 
-       // Save impact compound delta
+        // Save impact compound delta
         $em = new ImpactCompound();
         foreach ($data['compounds'] as $id => $compound) {
-           // Extract action
+            // Extract action
             $action = $compound['action'];
             unset($compound['action']);
 
@@ -228,7 +220,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     // temporary id as their parent id
                     foreach ($data['items'] as $nodeID => $node) {
                         if ($node['parent_id'] === $id) {
-                             $data['items'][$nodeID]['parent_id'] = $newCompoundID;
+                            $data['items'][$nodeID]['parent_id'] = $newCompoundID;
                         }
                     }
                     break;
@@ -247,10 +239,10 @@ switch ($_SERVER['REQUEST_METHOD']) {
             }
         }
 
-       // Save impact item delta
+        // Save impact item delta
         $em = new ImpactItem();
         foreach ($data['items'] as $id => $impactItem) {
-           // Extract action
+            // Extract action
             $action = $impactItem['action'];
             unset($impactItem['action']);
 
@@ -262,10 +254,10 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     if ($id !== $start_node_impact_item_id) {
                         $em->getFromDB($id);
 
-                      // If this node has no context -> make it a slave
+                        // If this node has no context -> make it a slave
                         if ($em->fields['impactcontexts_id'] == 0) {
-                             $impactItem['impactcontexts_id'] = $context_id;
-                             $impactItem['is_slave'] = 1;
+                            $impactItem['impactcontexts_id'] = $context_id;
+                            $impactItem['is_slave'] = 1;
                         }
                     }
 

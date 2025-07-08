@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -47,19 +47,19 @@ class IPNetmask extends IPAddress
     public function __construct($ipnetmask = '', $version = 0)
     {
 
-       // First, be sure that the parent is correctly initialised
+        // First, be sure that the parent is correctly initialised
         parent::__construct();
 
-       // If $ipnetmask if empty, then, empty netmask !
+        // If $ipnetmask if empty, then, empty netmask !
         if ($ipnetmask != '') {
-           // If $ipnetmask if an IPNetmask, then just clone it
+            // If $ipnetmask if an IPNetmask, then just clone it
             if ($ipnetmask instanceof IPNetmask) {
                 $this->version = $ipnetmask->version;
                 $this->textual = $ipnetmask->textual;
                 $this->binary  = $ipnetmask->binary;
                 $this->fields  = $ipnetmask->fields;
             } else {
-               // Else, check a binary then a string
+                // Else, check a binary then a string
                 if (!$this->setAddressFromBinary($ipnetmask)) {
                     $this->setNetmaskFromString($ipnetmask, $version);
                 }
@@ -92,7 +92,7 @@ class IPNetmask extends IPAddress
             if ($netmask < 0) {
                 return false;
             }
-           // Transform the number of bits to IPv6 netmasks ...
+            // Transform the number of bits to IPv6 netmasks ...
             $nbBits = $netmask + (($version == 4) ? 96 : 0);
             if ($nbBits > 128) {
                 return false;

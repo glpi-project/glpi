@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -51,7 +51,7 @@ final class GraphQLGenerator
 
     private function normalizeTypeName(string $type_name): string
     {
-        return str_replace(array(' ', '-'), array('', '_'), $type_name);
+        return str_replace([' ', '-'], ['', '_'], $type_name);
     }
 
     public function getSchema()
@@ -64,7 +64,7 @@ final class GraphQLGenerator
 
         // Write Query
         $schema_str .= "type Query {\n";
-        foreach ($this->types as $type_name => $type) {
+        foreach (array_keys($this->types) as $type_name) {
             if (str_starts_with($type_name, '_')) {
                 continue;
             }
@@ -85,11 +85,25 @@ final class GraphQLGenerator
         if (is_callable($type)) {
             $type = $type();
         }
+        // Ignore types with no fields (For example, maybe a custom asset from a definition without any custom fields generates an invalid type like "_CustomAsset_Car_custom_fields")
+        if (empty($type->getFields())) {
+            return '';
+        }
         foreach ($type->getFields() as $field_name => $field) {
+            $field_type = $field->config['type'];
+            if ($field_type instanceof ObjectType && empty($field->config['type']->getFields())) {
+                // Ignore properties that would like to types with no fields
+                continue;
+            }
             try {
                 $type_str .= "  $field_name: {$field->getType()}\n";
             } catch (\Throwable $e) {
-                trigger_error("Error writing field $field_name for type $type_name: {$e->getMessage()}", E_USER_WARNING);
+                /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+                global $PHPLOGGER;
+                $PHPLOGGER->error(
+                    "Error writing field $field_name for type $type_name: {$e->getMessage()}",
+                    ['exception' => $e]
+                );
             }
         }
         $type_str .= "}\n";
@@ -125,7 +139,7 @@ final class GraphQLGenerator
             if ($prop['type'] === Doc\Schema::TYPE_OBJECT) {
                 $namespaced_type = "{$schema_name}_{$prop_name}";
                 $types['_' . $namespaced_type] = $this->convertRESTPropertyToGraphQLType($prop, $namespaced_type);
-            } else if ($prop['type'] === Doc\Schema::TYPE_ARRAY) {
+            } elseif ($prop['type'] === Doc\Schema::TYPE_ARRAY) {
                 $items = $prop['items'];
                 if ($items['type'] === Doc\Schema::TYPE_OBJECT) {
                     $namespaced_type = "{$schema_name}_{$prop_name}";
@@ -144,7 +158,7 @@ final class GraphQLGenerator
                 'type' => $this->convertRESTPropertyToGraphQLType($property, $name, $schema_name),
                 'resolve' => function () {
                     return '';
-                }
+                },
             ];
         }
         return new ObjectType([
@@ -182,7 +196,7 @@ final class GraphQLGenerator
                     'type' => $this->convertRESTPropertyToGraphQLType($prop_value, $prop_name, $prefix),
                     'resolve' => function () {
                         return '';
-                    }
+                    },
                 ];
             }
             if (isset($property['x-full-schema'])) {

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,8 +41,7 @@ final class SchemaReference implements \ArrayAccess
 {
     public function __construct(
         private string $ref
-    ) {
-    }
+    ) {}
 
     public function getRef(): string
     {
@@ -86,7 +85,7 @@ final class SchemaReference implements \ArrayAccess
                 }
             }
 
-            $controller_matches = array_filter($matches, static fn ($schema) => $schema['x-controller'] === $controller);
+            $controller_matches = array_filter($matches, static fn($schema) => $schema['x-controller'] === $controller);
             if (count($controller_matches) > 0) {
                 $match = reset($controller_matches);
             }

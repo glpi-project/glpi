@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -48,9 +47,9 @@ class PassiveDCEquipmentTest extends DbTestCase
         // Add
         $id = $obj->add([
             'name'        => __METHOD__,
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
-        $this->assertGreaterThan(0, (int)$id);
+        $this->assertGreaterThan(0, (int) $id);
         $this->assertTrue($obj->getFromDB($id));
 
         // getField methods
@@ -70,9 +69,9 @@ class PassiveDCEquipmentTest extends DbTestCase
         // Add
         $id = $obj->add([
             'name' => __METHOD__,
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
-        $this->assertGreaterThan(0, (int)$id);
+        $this->assertGreaterThan(0, (int) $id);
         $this->assertTrue($obj->getFromDB($id));
         $this->assertEquals(0, $obj->getField('is_deleted'));
         $this->assertEquals(0, $obj->isDeleted());
@@ -103,14 +102,14 @@ class PassiveDCEquipmentTest extends DbTestCase
         // Add
         $id = $obj->add([
             'name' => __METHOD__,
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
-        $this->assertGreaterThan(0, (int)$id);
+        $this->assertGreaterThan(0, (int) $id);
         $this->assertTrue($obj->getFromDB($id));
         $this->assertEquals(0, $obj->getField('is_deleted'));
         ;
         $this->assertEquals(0, $obj->isDeleted());
-        $nb_before = (int)countElementsInTable('glpi_logs', ['itemtype' => 'PassiveDCEquipment', 'items_id' => $id]);
+        $nb_before = (int) countElementsInTable('glpi_logs', ['itemtype' => 'PassiveDCEquipment', 'items_id' => $id]);
 
         // DeleteByCriteria without history
         $this->assertTrue($obj->deleteByCriteria(['name' => __METHOD__], 0, 0));
@@ -118,7 +117,7 @@ class PassiveDCEquipmentTest extends DbTestCase
         $this->assertEquals(1, $obj->getField('is_deleted'));
         $this->assertEquals(1, $obj->isDeleted());
 
-        $nb_after = (int)countElementsInTable('glpi_logs', ['itemtype' => 'PassiveDCEquipment', 'items_id' => $id]);
+        $nb_after = (int) countElementsInTable('glpi_logs', ['itemtype' => 'PassiveDCEquipment', 'items_id' => $id]);
         $this->assertSame($nb_after, $nb_after);
 
         // Restore
@@ -127,7 +126,7 @@ class PassiveDCEquipmentTest extends DbTestCase
         $this->assertEquals(0, $obj->getField('is_deleted'));
         $this->assertEquals(0, $obj->isDeleted());
 
-        $nb_before = (int)countElementsInTable('glpi_logs', ['itemtype' => 'PassiveDCEquipment', 'items_id' => $id]);
+        $nb_before = (int) countElementsInTable('glpi_logs', ['itemtype' => 'PassiveDCEquipment', 'items_id' => $id]);
 
         // DeleteByCriteria with history
         $this->assertTrue($obj->deleteByCriteria(['name' => __METHOD__], 0, 1));
@@ -135,7 +134,7 @@ class PassiveDCEquipmentTest extends DbTestCase
         $this->assertEquals(1, $obj->getField('is_deleted'));
         $this->assertEquals(1, $obj->isDeleted());
 
-        $nb_after = (int)countElementsInTable('glpi_logs', ['itemtype' => 'PassiveDCEquipment', 'items_id' => $id]);
+        $nb_after = (int) countElementsInTable('glpi_logs', ['itemtype' => 'PassiveDCEquipment', 'items_id' => $id]);
         $this->assertSame($nb_before + 1, $nb_after);
     }
 }

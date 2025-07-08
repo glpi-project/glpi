@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,12 +36,14 @@
 namespace Glpi\Controller\Form;
 
 use Glpi\Controller\AbstractController;
-use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Controller\Form\Utils\CanCheckAccessPolicies;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
-use Glpi\Form\AccessControl\FormAccessControlManager;
-use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Form\Condition\Engine;
+use Glpi\Form\Condition\EngineInput;
 use Glpi\Form\Form;
+use Glpi\Form\ServiceCatalog\ServiceCatalog;
+use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,7 +52,16 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class RendererController extends AbstractController
 {
-    #[SecurityStrategy('no_check')] // Some forms can be accessed anonymously
+    use CanCheckAccessPolicies;
+
+    private string $interface;
+
+    public function __construct()
+    {
+        $this->interface = Session::getCurrentInterface();
+    }
+
+    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)] // Some forms can be accessed anonymously
     #[Route(
         "/Form/Render/{id}",
         name: "glpi_form_render",
@@ -62,11 +73,36 @@ final class RendererController extends AbstractController
         $form = $this->loadTargetForm($request);
         $this->checkFormAccessPolicies($form, $request);
 
+        $my_tickets_criteria = [
+            "criteria" => [
+                [
+                    "field" => 12, // Status
+                    "searchtype" => "equals",
+                    "value" => "notold", // Not solved
+                ],
+            ],
+        ];
+        if ($this->interface == 'central') {
+            $my_tickets_criteria["criteria"][] = [
+                "link" => "AND",
+                "field" => 4, // Requester
+                "searchtype" => "equals",
+                "value" => 'myself',
+            ];
+        }
+
+        // Compute the initial visibility of the form items
+        $engine = new Engine($form, EngineInput::fromForm($form));
+        $visibility_engine_output = $engine->computeVisibility();
+
         return $this->render('pages/form_renderer.html.twig', [
             'title' => $form->fields['name'],
-            'menu' => ['admin', Form::getType()],
+            'menu' => ['helpdesk', ServiceCatalog::getType()],
             'form' => $form,
             'unauthenticated_user' => !Session::isAuthenticated(),
+            'my_tickets_url_param' => http_build_query($my_tickets_criteria),
+            'visibility_engine_output' => $visibility_engine_output,
+            'params' => $request->query->all(),
         ]);
     }
 
@@ -83,25 +119,5 @@ final class RendererController extends AbstractController
         }
 
         return $form;
-    }
-
-    private function checkFormAccessPolicies(Form $form, Request $request)
-    {
-        $form_access_manager = FormAccessControlManager::getInstance();
-
-        if (Session::haveRight(Form::$rightname, READ)) {
-            // Form administrators can bypass restrictions while previewing forms.
-            $parameters = new FormAccessParameters(bypass_restriction: true);
-        } else {
-            // Load current user session info and URL parameters.
-            $parameters = new FormAccessParameters(
-                session_info: Session::getCurrentSessionInfo(),
-                url_parameters: $request->query->all(),
-            );
-        }
-
-        if (!$form_access_manager->canAnswerForm($form, $parameters)) {
-            throw new AccessDeniedHttpException();
-        }
     }
 }

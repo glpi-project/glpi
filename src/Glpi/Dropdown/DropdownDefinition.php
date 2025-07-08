@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -62,6 +62,11 @@ final class DropdownDefinition extends AbstractDefinition
     public static function getCustomObjectNamespace(): string
     {
         return 'Glpi\\CustomDropdown';
+    }
+
+    public static function getCustomObjectClassSuffix(): string
+    {
+        return 'Dropdown';
     }
 
     public static function getDefinitionManagerClass(): string
@@ -156,6 +161,8 @@ final class DropdownDefinition extends AbstractDefinition
 
     public function post_addItem()
     {
+        parent::post_addItem();
+
         // Add default display preferences for the new definition
         $prefs = [
             14, // Name
@@ -167,22 +174,6 @@ final class DropdownDefinition extends AbstractDefinition
                 'num'      => $field,
                 'users_id' => 0,
             ]);
-        }
-
-        parent::post_addItem();
-    }
-
-    public function cleanDBonPurge()
-    {
-        $related_classes = [
-            $this->getDropdownClassName(),
-        ];
-        foreach ($related_classes as $classname) {
-            (new $classname())->deleteByCriteria(
-                ['dropdowns_dropdowndefinitions_id' => $this->getID()],
-                force: true,
-                history: false
-            );
         }
     }
 }

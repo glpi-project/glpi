@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,6 +37,8 @@ namespace Glpi\Asset\Capacity;
 use CommonGLPI;
 use Domain;
 use Domain_Item;
+use Glpi\Asset\CapacityConfig;
+use Override;
 use Session;
 
 class HasDomainsCapacity extends AbstractCapacity
@@ -50,6 +51,19 @@ class HasDomainsCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return Domain::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Track domains, records and their expiration dates");
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [
+            Domain_Item::class,
+        ];
     }
 
     public function isUsed(string $classname): bool
@@ -67,7 +81,7 @@ class HasDomainsCapacity extends AbstractCapacity
         );
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         $this->registerToTypeConfig('domain_types', $classname);
 
@@ -78,7 +92,7 @@ class HasDomainsCapacity extends AbstractCapacity
         );
     }
 
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
         // Unregister from domain types
         $this->unregisterFromTypeConfig('domain_types', $classname);
@@ -87,7 +101,7 @@ class HasDomainsCapacity extends AbstractCapacity
         $domains = new Domain_Item();
         $domains->deleteByCriteria(
             [
-                'itemtype' => $classname
+                'itemtype' => $classname,
             ],
             force: true,
             history: false

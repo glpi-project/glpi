@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,6 +36,8 @@
 namespace Glpi\Toolbox;
 
 use Glpi\RichText\RichText;
+
+use function Safe\preg_replace;
 
 class DataExport
 {
@@ -66,7 +68,7 @@ class DataExport
             // Remove FontAwesome and Table icons that does not contains any text
             $icons_elements = $xpath->query('//*[contains(@class, "fa-") or contains(@class, "ti-")]');
             foreach ($icons_elements as $element) {
-                if (strlen(trim($element->textContent)) === 0) {
+                if (trim($element->textContent) === '') {
                     $element->parentNode->removeChild($element);
                 }
             }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
@@ -42,7 +44,7 @@ Html::header_nocache();
 try {
     $ma = new MassiveAction($_POST, $_GET, 'process');
 } catch (\Throwable $e) {
-    Html::popHeader(__('Bulk modification error'), $_SERVER['PHP_SELF']);
+    Html::popHeader(__('Bulk modification error'));
 
     echo "<div class='center'><img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='" .
       __s('Warning') . "'><br><br>";
@@ -53,7 +55,11 @@ try {
     Html::popFooter();
     return;
 }
-Html::popHeader(__('Bulk modification'), $_SERVER['PHP_SELF']);
+Html::includeHeader(__('Bulk modification'));
+echo '<body><div id="page">';
+$ma->displayProgressBar();
+echo '</div></body></html>';
+flush(); // force displaying the output
 
 $results   = $ma->process();
 
@@ -65,10 +71,10 @@ $nbnoright  = $results['noright'];
 $msg_type = INFO;
 if ($nbnoaction > 0 && $nbok === 0 && $nbko === 0 && $nbnoright === 0) {
     $message = __s('Operation was done but no action was required');
-} else if ($nbok == 0) {
+} elseif ($nbok == 0) {
     $message = __('Failed operation');
     $msg_type = ERROR;
-} else if ($nbnoright || $nbko) {
+} elseif ($nbnoright || $nbko) {
     $message = __s('Operation performed partially successful');
     $msg_type = WARNING;
 } else {
@@ -78,7 +84,7 @@ if ($nbnoaction > 0 && $nbok === 0 && $nbko === 0 && $nbnoright === 0) {
     }
 }
 if ($nbnoright || $nbko) {
-   //TRANS: %$1d and %$2d are numbers
+    //TRANS: %$1d and %$2d are numbers
     $message .= "<br>" . htmlescape(sprintf(
         __('(%1$d authorizations problems, %2$d failures)'),
         $nbnoright,

@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,5 +37,5 @@
  */
 
 $migration->addConfig([
-    'planning_work_days' => exportArrayToDB([0, 1, 2, 3, 4, 5, 6])
+    'planning_work_days' => exportArrayToDB([0, 1, 2, 3, 4, 5, 6]),
 ]);

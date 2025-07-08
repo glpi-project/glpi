@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -44,7 +44,7 @@
         background-color: var(--tblr-bg-forms);
         border: var(--tblr-border-width) solid var(--tblr-border-color);
         border-radius: var(--tblr-border-radius);
-        box-shadow: var(--tblr-box-shadow);
+        box-shadow: var(--tblr-box-shadow-input);
         transition: $input-transition;
 
         .select2-selection__rendered input[type="search"] {
@@ -112,13 +112,13 @@
             min-height: $input-height;
 
             .form-select-sm + & {
-                @include font-size($input-font-size-sm * 0.875);
+                @include font-size(calc(#{$input-font-size-sm} * 0.875));
 
                 min-height: $input-height-sm;
             }
 
             .form-select-lg + & {
-                @include font-size($input-font-size-lg * 0.875);
+                @include font-size(calc(#{$input-font-size-lg} * 0.875));
 
                 min-height: $input-height-lg;
             }
@@ -153,7 +153,6 @@
     }
 
     &.select2-container--disabled .select2-selection {
-        background-color: var(--tblr-disabled-color);
         border-color: var(--tblr-border-color);
         box-shadow: none;
         cursor: not-allowed;
@@ -227,7 +226,7 @@
         }
     }
 
-    .btn-group & {
+    .btn-group > & {
         flex-grow: 1;
         flex-basis: content;
 

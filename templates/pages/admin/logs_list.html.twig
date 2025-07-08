@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -37,7 +36,7 @@
             <div class="card">
                 <div class="card-header">
                     <a href="event.php">
-                        <i class="fa-fw {{ call('Glpi\\Event::getIcon') }} me-1"></i>
+                        <i class="{{ call('Glpi\\Event::getIcon') }} me-1" aria-hidden="true"></i>
                         <span>
                             {{ "Glpi\\Event"|itemtype_name(get_plural_number()) }}
                         </span>
@@ -50,7 +49,7 @@
         <div class="col-12 col-xxl-6">
             <div class="card">
                 <div class="card-header justify-content-between">
-                    <h3>{{ __("Log files") }}</h3>
+                    <span class="fs-3" role="heading" aria-level="1">{{ __("Log files") }}</span>
 
                     <div class="d-inline-flex">
                         {% set sort_controls = [
@@ -95,15 +94,15 @@
                         <span class="list-group-item list-group-item-action d-flex justify-content-between">
                             <a class="text-truncate"
                                href="logviewer.php?filepath={{ log['filepath']|url_encode }}">
-                                <i class="fa-fw ti ti-file me-1"></i>
+                                <i class="ti ti-file me-1" aria-hidden="true"></i>
                                 <span>{{ log['filepath'] }}</span>
                             </a>
                             <span class="d-inline-flex">
-                                <span class="badge badge-outline text-muted border fw-normal bg-azure-lt me-1"
+                                <span class="badge badge-outline bg-transparent fw-normal border-azure me-1"
                                       title="{{ __("file size") }}">
                                     {{ log['size']|formatted_size }}
                                 </span>
-                                <span class="badge badge-outline text-muted border fw-normal bg-blue-lt"
+                                <span class="badge badge-outline bg-transparent fw-normal border-blue"
                                       title="{{ __("date of last modification") }}">
                                     {{ log['datemod']|formatted_datetime }}
                                 </span>
@@ -113,11 +112,11 @@
                                         <input type="hidden" name="filepath" value="{{ log['filepath'] }}">
                                         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                                         <span>
-                                            <a class="btn btn-sm ms-1 btn-ghost-secondary"
+                                            <button class="btn btn-sm ms-1 btn-ghost-secondary"
                                             data-bs-toggle="dropdown"
-                                            title="{{ __("File actions") }}">
-                                                <i class="fas ti ti-dots-vertical"></i>
-                                            </a>
+                                            title="{{ __("File actions") }}" aria-label="{{ __("File actions") }}">
+                                                <i class="fas ti ti-dots-vertical" aria-hidden="true"></i>
+                                            </button>
                                             <ul class="dropdown-menu">
                                                 {% if can_clear %}
                                                     <li>
@@ -126,7 +125,7 @@
                                                                      title="{{ __("Empty file") }}"
                                                                      onclick="return confirm('{{ __("Are you sure you want to clear this file?") }}')"
                                                                      data-bs-toggle="tooltip" data-bs-placement="bottom">
-                                                            <i class="ti ti-file-off"></i>
+                                                            <i class="ti ti-file-off" aria-hidden="true"></i>
                                                             <span>{{ __("Empty file") }}</span>
                                                         </button>
                                                     </li>
@@ -138,7 +137,7 @@
                                                                      title="{{ __("Empty file") }}"
                                                                      onclick="return confirm('{{ __("Are you sure you want to delete this file?") }}')"
                                                                      data-bs-toggle="tooltip" data-bs-placement="bottom">
-                                                            <i class="ti ti-trash-x"></i>
+                                                            <i class="ti ti-trash-x" aria-hidden="true"></i>
                                                             <span>{{ __("Delete file") }}</span>
                                                         </button>
                                                     </li>

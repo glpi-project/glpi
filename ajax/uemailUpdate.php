@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,15 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use function Safe\preg_match;
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
-
-if (strpos($_SERVER['PHP_SELF'], "uemailUpdate.php")) {
-    header("Content-Type: text/html; charset=UTF-8");
-    Html::header_nocache();
-}
+header("Content-Type: text/html; charset=UTF-8");
+Html::header_nocache();
 
 if (
     (isset($_POST['field']) && ($_POST["value"] > 0))
@@ -84,7 +79,7 @@ if (
     $switch_name = $_POST['field'] . '[use_notification][]';
     echo "<div class='my-1 d-flex align-items-center'>
          <label  for='email_fup_check'>
-            <i class='far fa-envelope me-1'></i>
+            <i class='ti ti-mail me-1'></i>
             " . __s('Email followup') . "
          </label>
          <div class='ms-2'>
@@ -93,18 +88,18 @@ if (
       </div>";
 
     $email_string = '';
-   // Only one email
+    // Only one email
     if (
         (count($emails) == 1)
         && !empty($default_email)
         && NotificationMailing::isUserAddressValid($default_email[$user_index])
     ) {
-        $email_string =  $default_email[$user_index];
-       // Clean alternative email
+        $email_string = htmlescape($default_email[$user_index]);
+        // Clean alternative email
         echo "<input type='hidden' size='25' name='" . htmlescape($_POST['field']) . "[alternative_email][]'
              value=''>";
-    } else if (count($emails) > 1) {
-       // Several emails : select in the list
+    } elseif (count($emails) > 1) {
+        // Several emails : select in the list
         $emailtab = [];
         foreach ($emails as $new_email) {
             if ($new_email != $default_email) {
@@ -118,15 +113,15 @@ if (
             $emailtab,
             [
                 'value'   => '',
-                'display' => false
+                'display' => false,
             ]
         );
     } else {
         $email_string = "<input type='mail' class='form-control' name='" . htmlescape($_POST['field']) . "[alternative_email][]'
-         :               value='" . htmlescape($default_email) . "'>";
+                         value='" . htmlescape($default_email) . "'>";
     }
 
-    echo "$email_string";
+    echo $email_string;
 }
 
 Ajax::commonDropdownUpdateItem($_POST);

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,13 +36,26 @@
 namespace Glpi\Form;
 
 use CommonDBChild;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Condition\ConditionableVisibilityInterface;
+use Glpi\Form\Condition\ConditionableVisibilityTrait;
+use Glpi\ItemTranslation\Context\TranslationHandler;
+use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
+use Glpi\Form\Condition\ConditionHandler\VisibilityConditionHandler;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Override;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Section of a given helpdesk form
  */
-final class Section extends CommonDBChild
+final class Section extends CommonDBChild implements ConditionableVisibilityInterface, ProvideTranslationsInterface, UsedAsCriteriaInterface
 {
+    use ConditionableVisibilityTrait;
+
+    public const TRANSLATION_KEY_NAME = 'section_name';
+    public const TRANSLATION_KEY_DESCRIPTION = 'section_description';
+
     public static $itemtype = Form::class;
     public static $items_id = 'forms_forms_id';
 
@@ -55,7 +68,7 @@ final class Section extends CommonDBChild
 
     /**
      * Lazy loaded array of comments
-     * Should always be accessed through getComments()
+     * Should always be accessed through getFormComments()
      * @var Comment[]|null
      */
     protected ?array $comments = null;
@@ -64,6 +77,12 @@ final class Section extends CommonDBChild
     public static function getTypeName($nb = 0)
     {
         return _n('Step', 'Steps', $nb);
+    }
+
+    #[Override]
+    public function getUUID(): string
+    {
+        return $this->fields['uuid'];
     }
 
     #[Override]
@@ -84,19 +103,132 @@ final class Section extends CommonDBChild
         );
     }
 
+    #[Override]
+    public function prepareInputForAdd($input)
+    {
+        if (!isset($input['uuid'])) {
+            $input['uuid'] = Uuid::uuid4();
+        }
+
+        // JSON fields must have a value when created to prevent SQL errors
+        if (!isset($input['conditions'])) {
+            $input['conditions'] = json_encode([]);
+        }
+
+        $input = $this->prepareInput($input);
+        return parent::prepareInputForAdd($input);
+    }
+
+    #[Override]
+    public function prepareInputForUpdate($input)
+    {
+        $input = $this->prepareInput($input);
+        return parent::prepareInputForUpdate($input);
+    }
+
+    private function prepareInput($input): array
+    {
+        if (isset($input['_conditions'])) {
+            $input['conditions'] = json_encode($input['_conditions']);
+            unset($input['_conditions']);
+        }
+
+        return $input;
+    }
+
+    #[Override]
+    public function listTranslationsHandlers(): array
+    {
+        $form = $this->getItem();
+        if (!$form instanceof Form) {
+            throw new \LogicException('Section must be attached to a form');
+        }
+
+        $handlers = [];
+        $key = sprintf('%s: %s', self::getTypeName(), $this->getName());
+        if (count($form->getSections()) > 1) {
+            if (!empty($this->fields['name'])) {
+                $handlers[$key][] = new TranslationHandler(
+                    item: $this,
+                    key: self::TRANSLATION_KEY_NAME,
+                    name: __('Section title'),
+                    value: $this->fields['name'],
+                );
+            }
+
+            if (!empty($this->fields['description'])) {
+                $handlers[$key][] = new TranslationHandler(
+                    item: $this,
+                    key: self::TRANSLATION_KEY_DESCRIPTION,
+                    name: __('Section description'),
+                    value: $this->fields['description'],
+                    is_rich_text: true,
+                );
+            }
+        }
+
+        $blocks_handlers = [];
+        foreach ($this->getBlocks() as $block) {
+            $blocks_to_process = is_array($block) ? $block : [$block];
+            foreach ($blocks_to_process as $b) {
+                $blocks_handlers[] = $b->listTranslationsHandlers();
+            }
+        }
+
+        return array_merge($handlers, ...$blocks_handlers);
+    }
+
+    #[Override]
+    public function getConditionHandlers(
+        ?JsonFieldInterface $question_config
+    ): array {
+        return [new VisibilityConditionHandler()];
+    }
+
     /**
      * Get blocks of this section
      * Block can be a question or a comment
      * Each block implements BlockInterface and extends CommonDBChild
      *
-     * @return (BlockInterface & CommonDBChild)[]
+     * @return array<int, (BlockInterface & CommonDBChild)|(BlockInterface & CommonDBChild)[]>
      */
     public function getBlocks(): array
     {
-        $blocks = array_merge($this->getQuestions(), $this->getComments());
-        usort($blocks, fn($a, $b) => $a->fields['rank'] <=> $b->fields['rank']);
+        $blocks = array_merge($this->getQuestions(), $this->getFormComments());
+        $groupedBlocks = [];
 
-        return $blocks;
+        // Sort blocks by their vertical rank
+        usort($blocks, function ($a, $b) {
+            return $a->fields['vertical_rank'] <=> $b->fields['vertical_rank'];
+        });
+
+        // Group blocks by their vertical rank
+        foreach ($blocks as $block) {
+            $verticalRank = $block->fields['vertical_rank'];
+            $horizontalRank = $block->fields['horizontal_rank'];
+
+            if ($horizontalRank !== null) {
+                if (!isset($groupedBlocks[$verticalRank])) {
+                    $groupedBlocks[$verticalRank] = [];
+                }
+                $groupedBlocks[$verticalRank][] = $block;
+            } else {
+                $groupedBlocks[] = $block;
+            }
+        }
+
+        // Sort blocks in a horizontal block by their horizontal rank
+        foreach ($groupedBlocks as &$group) {
+            if (!is_array($group)) {
+                continue;
+            }
+
+            usort($group, function ($a, $b) {
+                return $a->fields['horizontal_rank'] <=> $b->fields['horizontal_rank'];
+            });
+        }
+
+        return $groupedBlocks;
     }
 
     /**
@@ -113,7 +245,7 @@ final class Section extends CommonDBChild
             // Read from database
             $questions_data = (new Question())->find(
                 [self::getForeignKeyField() => $this->fields['id']],
-                'rank ASC',
+                'vertical_rank ASC, horizontal_rank ASC',
             );
             foreach ($questions_data as $row) {
                 $question = new Question();
@@ -137,11 +269,8 @@ final class Section extends CommonDBChild
      *
      * @return Comment[]
      */
-    public function getComments(): array
+    public function getFormComments(): array
     {
-        // TODO: getComments is already a method part of the CommonDBTM interface.
-        // We need another name for this.
-
         // Lazy loading
         if ($this->comments === null) {
             $this->comments = [];
@@ -149,7 +278,7 @@ final class Section extends CommonDBChild
             // Read from database
             $comments_data = (new Comment())->find(
                 [self::getForeignKeyField() => $this->fields['id']],
-                'rank ASC',
+                'vertical_rank ASC, horizontal_rank ASC',
             );
             foreach ($comments_data as $row) {
                 $comment = new Comment();

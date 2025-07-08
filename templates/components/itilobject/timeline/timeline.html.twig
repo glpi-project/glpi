@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -32,8 +31,9 @@
  #}
 
 {% set is_timeline_reversed = user_pref('timeline_order') == constant('CommonITILObject::TIMELINE_ORDER_REVERSE') %}
+{% set is_helpdesk = get_current_interface() == 'helpdesk' %}
 
-<div class="itil-timeline d-flex flex-column align-items-start mb-auto">
+<div class="itil-timeline d-flex flex-column align-items-start mb-auto {{ is_helpdesk ? "px-3 py-2" : '' }}">
     {% if not is_timeline_reversed %}
         {{ include('components/itilobject/timeline/main_description.html.twig') }}
     {% else %}
@@ -49,17 +49,18 @@
    {% for entry in timeline %}
       {% set entry_i = entry['item'] %}
       {% set entry_object = entry['object'] ?? get_item(entry['type'], entry_i['id']) %}
+      {% set entry_state = entry_i['state'] ?? null %}
       {% set users_id = entry_i['users_id'] %}
       {% set is_private = entry_i['is_private'] ?? false %}
       {% set date_creation = entry_i['date_creation'] ?? entry_i['date'] %}
-      {% set date_mod = entry_i['date_mod'] %}
+      {% set date_mod = entry_i['date_mod'] ?? date_creation %}
       {% set entry_rand = random() %}
       {% set is_current_user = users_id == session('glpiID') %}
       {% set anonym_user = (get_current_interface() == 'helpdesk' and not is_current_user and entity_config('anonymize_support_agents', session('glpiactive_entity')) != constant('Entity::ANONYMIZE_DISABLED')) %}
 
       {% set is_private_class = is_private ? "private-item" : "" %}
 
-      {% set can_edit_i  = entry_i['can_edit'] %}
+      {% set can_edit_i  = entry_i['can_edit'] ?? false %}
 
       {% set timeline_position = entry_i['timeline_position'] %}
       {% set item_position = 't-left' %}
@@ -76,13 +77,13 @@
       {% set itiltype = entry['itiltype'] is defined ? 'ITIL' ~ entry['itiltype'] : entry['type'] %}
 
       {% set state_class = '' %}
-      {% if entry_i['state'] is constant('Planning::INFO') %}
+      {% if entry_state is constant('Planning::INFO') %}
          {% set state_class = 'info' %}
       {% endif %}
-      {% if entry_i['state'] is constant('Planning::TODO') %}
+      {% if entry_state is constant('Planning::TODO') %}
          {% set state_class = 'todo' %}
       {% endif %}
-      {% if entry_i['state'] is constant('Planning::DONE') %}
+      {% if entry_state is constant('Planning::DONE') %}
          {% set state_class = 'done' %}
       {% endif %}
 
@@ -107,7 +108,7 @@
       {% set user_cache = user_cache|merge({("_" ~ users_id): entry_user}) %}
 
       {% set anchor = entry['type'] ~ '_' ~ entry_i['id'] %}
-      <div id="{{ anchor }}" class="timeline-item mb-3 {{ is_private_class }} {{ itiltype }} {{ state_class }} {{ entry['class'] }} {{ 'right' in item_position ? 'ms-auto' : '' }}"
+      <div id="{{ anchor }}" class="timeline-item mb-3 {{ is_private_class }} {{ itiltype }} {{ state_class }} {{ entry['class'] ?? '' }} {{ 'right' in item_position ? 'ms-auto' : '' }}"
             data-itemtype="{{ entry['type'] }}" data-items-id="{{ entry_i['id'] }}"
             {% if entry['item_action'] is defined %}data-item-action="{{ entry['item_action'] }}"{% endif %}>
 
@@ -115,13 +116,13 @@
 
          <div class="row">
             <div class="col-auto todo-list-state {{ 'left' in item_position ? 'ms-auto order-sm-last' : '' }}">
-               {% if entry_i['state'] is constant('Planning::TODO') %}
+               {% if entry_state is constant('Planning::TODO') %}
                   {% if can_edit_i %}
                      <span class="state state_1" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('To do') }}"></span>
                   {% else %}
                      <span class="state state_1" title="{{ __('To do') }}" style="cursor: not-allowed;"></span>
                   {% endif %}
-               {% elseif entry_i['state'] is constant('Planning::DONE') %}
+               {% elseif entry_state is constant('Planning::DONE') %}
                   {% if can_edit_i %}
                      <span class="state state_2" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('Done') }}"></span>
                   {% else %}
@@ -173,7 +174,11 @@
                         {% if matching_types|length > 0 %}
                            {% set timeline_itemtype = matching_types|first %}
                            {% if timeline_itemtype.template is defined %}
-                              {{ include(timeline_itemtype.template, {'form_mode': 'view'}) }}
+                              {{ include(timeline_itemtype.template, {
+                                  'form_mode': 'view',
+                                  'subitem': timeline_itemtype.item,
+                                  'mention_options': mention_options,
+                              }) }}
                            {% endif %}
                         {% endif %}
                      {% else %}
@@ -215,7 +220,7 @@
     {{ include('components/itilobject/timeline/todo-list-summary.html.twig') }}
 
     <div class="timeline-item validations-title d-none mt-4">
-        <h3>{{ _n('Validation', 'Validations', get_plural_number()) }}</h3>
+        <h3>{{ 'CommonITILValidation'|itemtype_name(get_plural_number()) }}</h3>
     </div>
 
     {% if not is_timeline_reversed %}
@@ -237,7 +242,7 @@ $(function() {
       content_block.find(".read-only-content").hide();
       content_block.find(".edit-content").show()
          .find(".ajax-content")
-         .html('<i class="fas fa-3x fa-spinner fa-spin ms-auto"></i>')
+         .html('<span class="spinner-border ms-auto" role="status" aria-hidden="true"></span>')
          .load("{{ path('/ajax/timeline.php') }}", {
             'action'     : 'viewsubitem',
             'type'       : itemtype,

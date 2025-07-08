@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -78,7 +78,7 @@
 
 #viewgraph:not(.clear_picture) .with_picture .grid-stack-item-content {
     .itemrack_name {
-        background-color: rgba(255, 255, 255, 65%);
+        background-color: rgb(255, 255, 255, 65%);
         color: #000 !important;
     }
 
@@ -105,17 +105,9 @@
 }
 
 .grid-stack {
-    .grid-stack-item {
-        .grid-stack-item-content,
-        .placeholder-content {
-            left: 0;
-            right: 0;
-        }
-    }
-
     .grid-stack-placeholder > .placeholder-content {
         border: 1px dashed #bcbf33;
-        background-color: rgba(229, 245, 105, 50%);
+        background-color: rgb(229, 245, 105, 50%);
     }
 }
 
@@ -153,7 +145,7 @@ ul.indexes {
         content: "\2b";
         left: 45%;
         color: grey;
-        top: 1px;
+        top: 3px;
         font: var(--fa-font-solid);
         font-size: 1em;
         position: absolute;
@@ -206,8 +198,8 @@ ul.indexes {
             float: left;
 
             &::after {
-                left: calc(50% - 4px);
-                top: calc(50% - 0.5em - 4px);
+                left: calc(50% - 5px);
+                top: calc(50% - 6px);
             }
         }
     }
@@ -223,7 +215,7 @@ ul.indexes {
         &::after {
             position: absolute;
             content: " ";
-            background-color: rgba(3, 2, 2, 30%);
+            background-color: rgb(3, 2, 2, 30%);
         }
 
         &.room_orientation_1::after {
@@ -375,7 +367,7 @@ ul.indexes {
                     color: #e0e0e0;
 
                     &:hover {
-                        background-color: rgba(0, 128, 0, 50%);
+                        background-color: rgb(0, 128, 0, 50%);
                         cursor: pointer;
                     }
                 }
@@ -428,6 +420,18 @@ ul.indexes {
 }
 
 .grid-rack {
+    width: 217px;
+    background:
+        var(--tblr-bg-surface) repeating-linear-gradient(
+            transparent,
+            transparent 21px,
+            var(--tblr-bg-surface-tertiary) 21px,
+            var(--tblr-bg-surface-tertiary) 42px
+        );
+    z-index: 1;
+    border: 1px solid var(--tblr-border-color);
+    float: left;
+
     *,
     ::before,
     ::after {
@@ -441,18 +445,6 @@ ul.indexes {
             width: 100%;
         }
     }
-
-    width: 217px;
-    background:
-        var(--tblr-body-bg) repeating-linear-gradient(
-            transparent,
-            transparent 21px,
-            var(--tblr-bg-surface-tertiary) 21px,
-            var(--tblr-bg-surface-tertiary) 42px
-        );
-    z-index: 1;
-    border: 1px solid var(--tblr-border-color);
-    float: left;
 }
 
 .virtual_pdu_space {
@@ -488,7 +480,7 @@ ul.indexes {
 .side_pdus_float {
     .grid-stack-item {
         .grid-stack-item-content {
-            border: 0 solid rgba(4, 4, 4, 40%);
+            border: 0 solid rgb(4, 4, 4, 40%);
             border-width: 4px 1px;
 
             .rotated_text {
@@ -531,14 +523,14 @@ ul.indexes {
 .grid-rack .grid-stack-item:not(.lock-bottom) .grid-stack-item-content {
     position: relative;
     color: #2c3e50;
-    border: 0 solid rgba(4, 4, 4, 40%);
+    border: 0 solid rgb(4, 4, 4, 40%);
     border-width: 1px 4px;
     box-shadow: 1px 1px 5px 0 #656565;
     height: 100%;
 }
 
 #viewgraph:not(.clear_picture) .grid-rack .grid-stack-item.with_picture .grid-stack-item-content {
-    border-color: rgba(4, 4, 4, 25%);
+    border-color: rgb(4, 4, 4, 25%);
     border-width: 0 4px;
 }
 
@@ -553,7 +545,7 @@ ul.indexes {
     }
 
     &.item_rear {
-        background: repeating-linear-gradient(45deg, rgba(0, 0, 0, 15%), rgba(0, 0, 0, 15%) 10px, rgba(59, 59, 59, 15%) 10px, rgba(59, 59, 59, 15%) 20px);
+        background: repeating-linear-gradient(45deg, rgb(0, 0, 0, 15%), rgb(0, 0, 0, 15%) 10px, rgb(59, 59, 59, 15%) 10px, rgb(59, 59, 59, 15%) 20px);
     }
 
     &.reserved {
@@ -629,7 +621,7 @@ div#viewgraph .rack_side_block .pdu_list {
 
     td {
         text-align: left;
-        border: 1px solid rgba(0, 0, 0, 20%);
+        border: 1px solid rgb(0, 0, 0, 20%);
         padding: 0 3px;
     }
 }
@@ -640,6 +632,6 @@ div#viewgraph .rack_side_block .pdu_list {
     }
 
     i.fa {
-        color: rgba(0, 0, 0, 60%);
+        color: rgb(0, 0, 0, 60%);
     }
 }

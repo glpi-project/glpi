@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -64,7 +64,7 @@ class DomainRecordType extends CommonDropdown
                     'key'         => 'target',
                     'label'       => 'Target',
                     'placeholder' => 'sip.example.com.',
-                    'is_fqdn'     => true
+                    'is_fqdn'     => true,
                 ],
             ],
         ], [
@@ -81,7 +81,7 @@ class DomainRecordType extends CommonDropdown
                     'key'         => 'server',
                     'label'       => 'Server',
                     'placeholder' => 'mail.example.com.',
-                    'is_fqdn'     => true
+                    'is_fqdn'     => true,
                 ],
             ],
         ], [
@@ -103,13 +103,13 @@ class DomainRecordType extends CommonDropdown
                     'key'         => 'primary_name_server',
                     'label'       => 'Primary name server',
                     'placeholder' => 'ns1.example.com.',
-                    'is_fqdn'     => true
+                    'is_fqdn'     => true,
                 ],
                 [
                     'key'         => 'primary_contact',
                     'label'       => 'Primary contact',
                     'placeholder' => 'admin.example.com.',
-                    'is_fqdn'     => true
+                    'is_fqdn'     => true,
                 ],
                 [
                     'key'         => 'serial',
@@ -161,7 +161,7 @@ class DomainRecordType extends CommonDropdown
                     'key'         => 'target',
                     'label'       => 'Target',
                     'placeholder' => 'sip.example.com.',
-                    'is_fqdn'     => true
+                    'is_fqdn'     => true,
                 ],
             ],
         ], [
@@ -198,7 +198,7 @@ class DomainRecordType extends CommonDropdown
                     'quote_value' => true,
                 ],
             ],
-        ]
+        ],
     ];
 
 
@@ -209,7 +209,7 @@ class DomainRecordType extends CommonDropdown
                 'name'  => 'fields',
                 'label' => __('Fields'),
                 'type'  => 'fields',
-            ]
+            ],
         ];
     }
 

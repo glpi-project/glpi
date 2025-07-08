@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -47,14 +47,14 @@ if (isset($_POST['entity_restrict'])) {
 
 // Make a select box
 if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
-   // Link to user for search only > normal users
+    // Link to user for search only > normal users
     $link = "getDropdownValue.php";
 
     if ($_POST["idtable"] == 'User') {
         $link = "getDropdownUsers.php";
     }
 
-    $rand = $_POST['rand'] ?? mt_rand();
+    $rand = (int) ($_POST['rand'] ?? mt_rand());
 
     $field_id = Html::cleanId("dropdown_" . $_POST["name"] . $rand);
 
@@ -98,6 +98,9 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
     if (isset($_POST['specific_tags_items_id_dropdown'])) {
         $p['specific_tags'] = $_POST['specific_tags_items_id_dropdown'];
     }
+    if (isset($_POST['aria_label'])) {
+        $p['aria_label'] = $_POST['aria_label'];
+    }
     $p['_idor_token'] = Session::getNewIDORToken($_POST["idtable"], $idor_params);
 
     echo  Html::jsAjaxDropdown(
@@ -109,7 +112,7 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
 
     if (!empty($_POST['showItemSpecificity'])) {
         $params = ['items_id' => '__VALUE__',
-            'itemtype' => $_POST["idtable"]
+            'itemtype' => $_POST["idtable"],
         ];
         if (isset($_POST['entity_restrict'])) {
             $params['entity_restrict'] = $_POST['entity_restrict'];

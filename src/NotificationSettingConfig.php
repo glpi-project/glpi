@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -53,12 +53,12 @@ class NotificationSettingConfig extends CommonDBTM
             $config = new Config();
             $tmp = [
                 'id'                 => $config_id,
-                'use_notifications'  => $input['use_notifications']
+                'use_notifications'  => $input['use_notifications'],
             ];
             if (!$config->update($tmp)) {
                 $success = false;
             }
-           //disable all notifications types if notifications has been disabled
+            //disable all notifications types if notifications has been disabled
             if ($tmp['use_notifications'] == 0) {
                 $modes = Notification_NotificationTemplate::getModes();
                 foreach (array_keys($modes) as $mode) {
@@ -72,7 +72,7 @@ class NotificationSettingConfig extends CommonDBTM
             if (substr($k, 0, strlen('notifications_')) === 'notifications_') {
                 $tmp = [
                     'id' => $config_id,
-                    $k    => $v
+                    $k    => $v,
                 ];
                 if (!$config->update($tmp)) {
                     $success = false;
@@ -100,7 +100,7 @@ class NotificationSettingConfig extends CommonDBTM
         $modes = Notification_NotificationTemplate::getModes();
         foreach ($modes as $mode_key => &$mode) {
             $settings_class = Notification_NotificationTemplate::getModeClass($mode_key, 'setting');
-            $settings = new $settings_class();
+            $settings = getItemForItemtype($settings_class);
             $mode['label']          = $settings->getEnableLabel();
             $mode['label_settings'] = $settings->getTypeName();
             $mode['is_active']      = (bool) $CFG_GLPI["notifications_$mode_key"];

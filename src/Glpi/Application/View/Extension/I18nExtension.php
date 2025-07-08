@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,8 @@
 
 namespace Glpi\Application\View\Extension;
 
+use CommonDBTM;
+use Glpi\ItemTranslation\ItemTranslation;
 use Locale;
 use Session;
 use Twig\Extension\AbstractExtension;
@@ -54,11 +56,17 @@ class I18nExtension extends AbstractExtension
             new TwigFunction('_nx', '_nx'),
             new TwigFunction('get_current_locale', [$this, 'getCurrentLocale']),
             new TwigFunction('get_plural_number', [Session::class, 'getPluralNumber']),
+            new TwigFunction('translate_item_key', [$this, 'translateItemKey']),
         ];
     }
 
     public function getCurrentLocale(): array
     {
         return Locale::parseLocale($_SESSION['glpilanguage'] ?? 'en_GB');
+    }
+
+    public function translateItemKey(CommonDBTM $item, string $key, int $count = 1): ?string
+    {
+        return ItemTranslation::translate($item, $key, $count);
     }
 }

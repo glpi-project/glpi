@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,11 +37,6 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Search\Input\QueryBuilder;
 
-// Direct access to file
-
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
-
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
@@ -69,7 +64,7 @@ switch ($_REQUEST['action']) {
         $search_params = Search::manageParams($itemtype, $_REQUEST, $_REQUEST['usesession'] ?? true);
         $params = array_replace($search_params, $params);
         // Remove hidden criteria such as the longitude and latitude criteria which are injected in the search engine itself for map searches
-        $params['criteria'] = array_filter($params['criteria'], static fn ($criteria) => !isset($criteria['_hidden']) || !$criteria['_hidden']);
+        $params['criteria'] = array_filter($params['criteria'], static fn($criteria) => !isset($criteria['_hidden']) || !$criteria['_hidden']);
 
         if (
             isset($search_params['browse'])

@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -95,11 +95,6 @@ $inline-input-padding: 2px 4px;
         padding: 0 !important;
     }
 
-    // Override some hard-set tinymce margins
-    .tox-sidebar-wrap {
-        margin-bottom: -20px;
-    }
-
     // Do not display file upload summary as it will only contains pasted images
     .fileupload {
         display: none;
@@ -110,7 +105,7 @@ $inline-input-padding: 2px 4px;
 // help to trigger and remove the class as needed
 form:not(.disable-focus) {
     .simulate-focus {
-        box-shadow: 0 0 0 0.25rem rgba(var(--tblr-primary-rgb), 0.20);
+        box-shadow: 0 0 0 0.25rem rgb(var(--tblr-primary-rgb), 0.20);
 
         // Show richtext toolbar only when focused
         .tox-editor-header {

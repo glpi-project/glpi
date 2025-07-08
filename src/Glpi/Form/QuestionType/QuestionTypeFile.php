@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -82,7 +82,7 @@ TWIG;
 
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
-            'question'       => $question
+            'question'       => $question,
         ]);
     }
 
@@ -113,29 +113,12 @@ TWIG;
 
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
-            'question' => $question
+            'question' => $question,
         ]);
     }
 
     #[Override]
-    public function renderAnswerTemplate(mixed $answer): string
-    {
-        $template = <<<TWIG
-            {% for document in documents %}
-                <div class="form-control-plaintext">
-                    {{ document.getLink()|raw }}
-                </div>
-            {% endfor %}
-TWIG;
-
-        $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'documents' => array_map(fn($document_id) => (new Document())->getById($document_id), $answer)
-        ]);
-    }
-
-    #[Override]
-    public function formatRawAnswer(mixed $answer): string
+    public function formatRawAnswer(mixed $answer, Question $question): string
     {
         return implode(', ', array_map(
             fn($document_id) => (new Document())->getById($document_id)->fields['filename'],
@@ -144,7 +127,7 @@ TWIG;
     }
 
     #[Override]
-    public function getCategory(): QuestionTypeCategory
+    public function getCategory(): QuestionTypeCategoryInterface
     {
         return QuestionTypeCategory::FILE;
     }
@@ -152,6 +135,6 @@ TWIG;
     #[Override]
     public function isAllowedForUnauthenticatedAccess(): bool
     {
-        return true;
+        return false;
     }
 }

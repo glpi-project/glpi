@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,13 +37,18 @@ namespace Glpi\Form\Destination\CommonITILField;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\AbstractConfigField;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Form;
 use InvalidArgumentException;
+use ITILFollowupTemplate;
 use Override;
 use Session;
 
-class ITILFollowupField extends AbstractConfigField
+final class ITILFollowupField extends AbstractConfigField
 {
     #[Override]
     public function getLabel(): string
@@ -77,14 +81,6 @@ class ITILFollowupField extends AbstractConfigField
             // General display options
             'options' => $display_options,
 
-            // Main config field
-            'main_config_field' => [
-                'label'           => $this->getLabel(),
-                'value'           => $config->getStrategy()->value,
-                'input_name'      => $input_name . "[" . ITILFollowupFieldConfig::STRATEGY . "]",
-                'possible_values' => $this->getMainConfigurationValuesforDropdown(),
-            ],
-
             // Specific additional config for SPECIFIC_VALUES strategy
             'specific_value_extra_field' => [
                 'aria_label'     => __("Select followup templates..."),
@@ -104,8 +100,11 @@ class ITILFollowupField extends AbstractConfigField
             throw new InvalidArgumentException("Unexpected config class");
         }
 
+        // Only one strategy is allowed
+        $strategy = current($config->getStrategies());
+
         // Compute value according to strategy
-        $itilfollowuptemplates_ids = $config->getStrategy()->getITILFollowupTemplatesIDs($config);
+        $itilfollowuptemplates_ids = $strategy->getITILFollowupTemplatesIDs($config);
 
         if (!empty($itilfollowuptemplates_ids)) {
             $input['_itilfollowuptemplates_id'] = $itilfollowuptemplates_ids;
@@ -122,7 +121,7 @@ class ITILFollowupField extends AbstractConfigField
         );
     }
 
-    private function getMainConfigurationValuesforDropdown(): array
+    public function getStrategiesForDropdown(): array
     {
         $values = [];
         foreach (ITILFollowupFieldStrategy::cases() as $strategies) {
@@ -134,7 +133,7 @@ class ITILFollowupField extends AbstractConfigField
     #[Override]
     public function getWeight(): int
     {
-        return 30;
+        return 10;
     }
 
     #[Override]
@@ -148,5 +147,66 @@ class ITILFollowupField extends AbstractConfigField
         }
 
         return $input;
+    }
+
+    #[Override]
+    public function getCategory(): Category
+    {
+        return Category::TIMELINE;
+    }
+
+    #[Override]
+    public function exportDynamicConfig(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+    ): DynamicExportDataField {
+        $fallback = parent::exportDynamicConfig($config, $destination);
+        $requirements = [];
+
+        // Check if templates are defined
+        $template_ids = $config[ITILFollowupFieldConfig::ITILFOLLOWUPTEMPLATE_IDS] ?? null;
+        if ($template_ids === null) {
+            return $fallback;
+        }
+
+        foreach ($template_ids as $i => $template_id) {
+            $template = ITILFollowupTemplate::getById($template_id);
+            if ($template) {
+                // Insert template name and requirement
+                $name = $template->getName();
+                $config[ITILFollowupFieldConfig::ITILFOLLOWUPTEMPLATE_IDS][$i] = $name;
+                $requirements[] = new DataRequirementSpecification(
+                    ITILFollowupTemplate::class,
+                    $name
+                );
+            }
+        }
+
+        return new DynamicExportDataField($config, $requirements);
+    }
+
+    #[Override]
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+        DatabaseMapper $mapper,
+    ): array {
+        // Check if templates are defined
+        $template_names = $config[ITILFollowupFieldConfig::ITILFOLLOWUPTEMPLATE_IDS] ?? null;
+        if ($template_names === null) {
+            return parent::prepareDynamicConfigDataForImport(
+                $config,
+                $destination,
+                $mapper,
+            );
+        }
+
+        // Insert ids
+        foreach ($template_names as $i => $template_name) {
+            $id = $mapper->getItemId(ITILFollowupTemplate::class, $template_name);
+            $config[ITILFollowupFieldConfig::ITILFOLLOWUPTEMPLATE_IDS][$i] = $id;
+        }
+
+        return $config;
     }
 }

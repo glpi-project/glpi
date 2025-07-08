@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -45,10 +45,10 @@ class PDU_Rack extends CommonDBRelation
     public static $mustBeAttached_1      = false;
     public static $mustBeAttached_2      = false;
 
-    const SIDE_LEFT   = 1;
-    const SIDE_RIGHT  = 2;
-    const SIDE_TOP    = 3;
-    const SIDE_BOTTOM = 4;
+    public const SIDE_LEFT   = 1;
+    public const SIDE_RIGHT  = 2;
+    public const SIDE_TOP    = 3;
+    public const SIDE_BOTTOM = 4;
 
     public static function getTypeName($nb = 0)
     {
@@ -91,13 +91,13 @@ class PDU_Rack extends CommonDBRelation
     {
         $error_detected = [];
 
-       //check for requirements
+        //check for requirements
         if ($this->isNewItem()) {
-            if (!isset($input['pdus_id'])) {
+            if (empty($input['pdus_id'])) {
                 $error_detected[] = __('A pdu is required');
             }
 
-            if (!isset($input['racks_id'])) {
+            if (empty($input['racks_id'])) {
                 $error_detected[] = __('A rack is required');
             }
 
@@ -116,7 +116,7 @@ class PDU_Rack extends CommonDBRelation
         $side     = $input['side'] ?? $this->fields['side'] ?? null;
 
         if (!count($error_detected)) {
-           //check if required U are available at position
+            //check if required U are available at position
             $required_units = 1;
 
             $rack = new Rack();
@@ -130,14 +130,14 @@ class PDU_Rack extends CommonDBRelation
             $model = new PDUModel();
             if ($model->getFromDB($pdu->fields['pdumodels_id'])) {
                 if ($model->fields['required_units'] > 1) {
-                    $required_units = (int)$model->fields['required_units'];
+                    $required_units = (int) $model->fields['required_units'];
                 }
             }
 
             if (
                 in_array($side, [self::SIDE_LEFT, self::SIDE_RIGHT])
                 && ($position > $rack->fields['number_units']
-                 || $position + $required_units  > (int)$rack->fields['number_units'] + 1)
+                 || $position + $required_units  > (int) $rack->fields['number_units'] + 1)
             ) {
                 $error_detected[] = __('Item is out of rack bounds');
             } else {
@@ -207,11 +207,11 @@ class PDU_Rack extends CommonDBRelation
         /** @var \DBmysql $DB */
         global $DB;
 
-       // search used racked (or sided mounted) pdus
+        // search used racked (or sided mounted) pdus
         $used = [];
         foreach (
             $DB->request([
-                'FROM' => $this->getTable()
+                'FROM' => $this->getTable(),
             ]) as $not_racked
         ) {
             $used[] = $not_racked['pdus_id'];
@@ -221,8 +221,8 @@ class PDU_Rack extends CommonDBRelation
                 'SELECT' => 'items_id',
                 'FROM'   => Item_Rack::getTable(),
                 'WHERE'  => [
-                    'itemtype' => 'PDU'
-                ]
+                    'itemtype' => 'PDU',
+                ],
             ]) as $racked
         ) {
             $used[] = $racked['items_id'];
@@ -276,8 +276,8 @@ class PDU_Rack extends CommonDBRelation
                 'min'    => 1,
                 'max'    => $rack->fields['number_units'],
                 'step'   => 1,
-            // 'used'   => $rack->getFilled($this->fields['itemtype'], $this->fields['items_id']),
-                'rand'   => $rand
+                // 'used'   => $rack->getFilled($this->fields['itemtype'], $this->fields['items_id']),
+                'rand'   => $rand,
             ]
         );
         echo "</td>";
@@ -291,7 +291,7 @@ class PDU_Rack extends CommonDBRelation
             'bgcolor',
             [
                 'value'  => $this->fields['bgcolor'],
-                'rand'   => $rand
+                'rand'   => $rand,
             ]
         );
         echo "</td>";
@@ -316,8 +316,8 @@ class PDU_Rack extends CommonDBRelation
             'SELECT' => ['id', 'pdus_id', 'side', 'position'],
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'racks_id' => $rack->getID()
-            ]
+                'racks_id' => $rack->getID(),
+            ],
         ]);
 
         $entries = [];
@@ -328,7 +328,7 @@ class PDU_Rack extends CommonDBRelation
                     'id'       => $row['id'],
                     'item'     => $pdu->getLink(),
                     'side'     => self::getSideName($row['side']),
-                    'position' => $row['position']
+                    'position' => $row['position'],
                 ];
             }
         }
@@ -339,7 +339,7 @@ class PDU_Rack extends CommonDBRelation
             'columns' => [
                 'item' => _n('Item', 'Items', 1),
                 'side' => __('Side'),
-                'position' => __('Position')
+                'position' => __('Position'),
             ],
             'formatters' => [
                 'item' => 'raw_html',
@@ -350,7 +350,7 @@ class PDU_Rack extends CommonDBRelation
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
-                'container'     => 'mass' . static::class . $rand
+                'container'     => 'mass' . static::class . $rand,
             ],
         ]);
     }
@@ -369,13 +369,13 @@ class PDU_Rack extends CommonDBRelation
         $sides = self::getSides();
 
         $found_pdus = [];
-       // find pdus from this relation
+        // find pdus from this relation
         $iterator = $DB->request([
             'FROM' => self::getTable(),
             'WHERE' => [
-                'racks_id' => $rack->getID()
+                'racks_id' => $rack->getID(),
             ],
-            'ORDER' => 'side'
+            'ORDER' => 'side',
         ]);
         foreach ($iterator as $current) {
             $found_pdus[] = [
@@ -386,13 +386,13 @@ class PDU_Rack extends CommonDBRelation
                 'bgcolor'  => $current['bgcolor'],
             ];
         }
-       // find pdus from item_rack relation
+        // find pdus from item_rack relation
         $iterator = $DB->request([
             'FROM' => Item_Rack::getTable(),
             'WHERE' => [
                 'racks_id' => $rack->getID(),
-                'itemtype' => 'PDU'
-            ]
+                'itemtype' => 'PDU',
+            ],
         ]);
         foreach ($iterator as $current) {
             $found_pdus[] = [
@@ -415,29 +415,28 @@ class PDU_Rack extends CommonDBRelation
                     $fg_color = !empty($current_pdu['bgcolor'])
                               ? Html::getInvertedColor($current_pdu['bgcolor'])
                               : "";
-                    $fg_color_s = "color: $fg_color;";
-                    echo "<tr style='background-color: $bg_color; color: $fg_color;'>";
+                    echo "<tr style='background-color: " . htmlescape($bg_color) . "; color: " . htmlescape($fg_color) . ";'>";
                     echo "<td class='rack_position'>";
                     $current_pdu['position'] = (int) $current_pdu['position'];
                     if ($current_pdu['racked']) {
-                        echo "<i class='fa fa-server fa-fw'
+                        echo "<i class='" . htmlescape(Rack::getIcon()) . "'
                            title='" . __s("Racked") . " (" . $current_pdu['position'] . ")'></i>";
                     } else {
                         switch ($current_pdu['side']) {
                             case self::SIDE_LEFT:
-                                echo "<i class='fa fa-arrow-left fa-fw'
+                                echo "<i class='ti ti-arrow-left'
                                  title='" . __s("On left") . " (" . $current_pdu['position'] . ")'></i>";
                                 break;
                             case self::SIDE_RIGHT:
-                                 echo "<i class='fa fa-arrow-right fa-fw'
+                                echo "<i class='ti ti-arrow-right'
                                  title='" . __s("On right") . " (" . $current_pdu['position'] . ")'></i>";
                                 break;
                             case self::SIDE_TOP:
-                                echo "<i class='fa fa-arrow-up fa-fw'
+                                echo "<i class='ti ti-arrow-up'
                                  title='" . __s("On top") . " (" . $current_pdu['position'] . ")'></i>";
                                 break;
                             case self::SIDE_BOTTOM:
-                                echo "<i class='fa fa-arrow-down fa-fw'
+                                echo "<i class='ti ti-arrow-down'
                                  title='" . __s("On bottom") . " (" . $current_pdu['position'] . ")'></i>";
                                 break;
                         }
@@ -445,13 +444,13 @@ class PDU_Rack extends CommonDBRelation
                     echo "</td>";
 
                     echo "<td>";
-                    echo "<a href='" . $pdu->getLinkURL() . "'style='$fg_color_s'>" . $pdu->getName() . "</a>";
+                    echo "<a href='" . htmlescape($pdu->getLinkURL()) . "'style='color: " . htmlescape($fg_color) . ";'>" . htmlescape($pdu->getName()) . "</a>";
                     echo "</td>";
 
                     echo "<td>";
                     if ($pdu_m->getFromDB($pdu->fields['pdumodels_id'])) {
-                         echo "<i class='fa fa-bolt'></i>";
-                         echo $pdu_m->fields['max_power'] . "W";
+                        echo "<i class='ti ti-bolt'></i>";
+                        echo htmlescape($pdu_m->fields['max_power']) . "W";
                     }
                     echo "</td>";
                     echo "</tr>";
@@ -460,7 +459,7 @@ class PDU_Rack extends CommonDBRelation
             echo "</table>";
         }
         echo "<a id='add_pdu' class='btn btn-sm btn-ghost-secondary ms-auto mt-2'>";
-        echo "<i class='fa fa-plus'></i>";
+        echo "<i class='ti ti-plus'></i>";
         echo "<span>" . _sx('button', "Add") . "</span>";
         echo "</a>";
         echo "</div>";
@@ -512,13 +511,13 @@ JAVASCRIPT;
         global $CFG_GLPI;
 
         $rand  = mt_rand();
-        $num_u = $rack->fields['number_units'];
+        $num_u = (int) $rack->fields['number_units'];
         $pdu   = new PDU();
         $pdu_m = new PDUModel();
         $rel   = new self();
 
         $found_pdus_side = self::getForRackSide($rack, $side);
-       // check if the rack has sided pdu on other side (to get symetrical view)
+        // check if the rack has sided pdu on other side (to get symetrical view)
         $found_all_pdus_side = self::getForRackSide($rack, [$side, self::getOtherSide($side)]);
 
         $float = false;
@@ -544,7 +543,6 @@ JAVASCRIPT;
                 $fg_color   = !empty($current['bgcolor'])
                              ? Html::getInvertedColor($current['bgcolor'])
                              : "";
-                $fg_color_s = "color: $fg_color;";
                 $picture = false;
 
                 if (
@@ -555,7 +553,7 @@ JAVASCRIPT;
                     $height = 1;
                     $model_name = "";
                     if ($pdu_m->getFromDB($pdu->fields['pdumodels_id'])) {
-                        $height     = $pdu_m->fields['required_units'];
+                        $height     = (int) $pdu_m->fields['required_units'];
                         $y          = $num_u + 1 - $current['position'] - $height;
                         $picture    = $pdu_m->fields['picture_front'];
                         $model_name = $pdu_m->getName();
@@ -564,11 +562,11 @@ JAVASCRIPT;
                     $tip = "<span class='tipcontent'>";
                     $tip .= "<span>
                         <label>" . _sn('Type', 'Types', 1) . ":</label>" .
-                        $pdu->getTypeName() . "
+                        htmlescape($pdu->getTypeName()) . "
                      </span>
                      <span>
                         <label>" . __s('name') . ":</label>" .
-                        $pdu->getName() . "
+                        htmlescape($pdu->getName()) . "
                      </span>";
                     if (!empty($pdu->fields['serial'])) {
                         $tip .= "<span>
@@ -585,7 +583,7 @@ JAVASCRIPT;
                     if (!empty($model_name)) {
                         $tip .= "<span>
                            <label>" . __s('model') . ":</label>
-                           $model_name
+                           " . htmlescape($model_name) . "
                         </span>";
                     }
                     $tip .= "</span>";
@@ -606,22 +604,22 @@ JAVASCRIPT;
 
                     echo "<div class='grid-stack-item $picture_c'
                        id='item_$item_rand'
-                       gs-id='{$current['id']}'
+                       gs-id='" . (int) $current['id'] . "'
                        gs-h='$height' gs-w='1'
                        gs-x='0' gs-y='$y'
-                       style='background-color: $bg_color; color: $fg_color;'>
-                  <div class='grid-stack-item-content' style='$fg_color_s'>
+                       style='background-color: " . htmlescape($bg_color) . "; color: " . htmlescape($fg_color) . ";'>
+                  <div class='grid-stack-item-content' style='color: " . htmlescape($fg_color) . ";'>
                      <i class='item_rack_icon ti ti-plug fa-rotate-270'></i>
                      <span class='rotated_text'>
-                        <a href='" . $pdu->getLinkURL() . "'
+                        <a href='" . htmlescape($pdu->getLinkURL()) . "'
                            class='itemrack_name'
-                           title='" . $pdu->getName() . "'
-                           style='$fg_color_s'>" . $pdu->getName() . "
+                           title='" . htmlescape($pdu->getName()) . "'
+                           style='color: " . htmlescape($fg_color) . ";'>" . htmlescape($pdu->getName()) . "
                         </a>
                      </span>
-                     <a href='" . $rel->getLinkUrl() . "' class='rel-link'>
-                        <i class='fa fa-pencil-alt fa-rotate-270'
-                           style='$fg_color_s'
+                     <a href='" . htmlescape($rel->getLinkUrl()) . "' class='rel-link'>
+                        <i class='ti ti-pencil fa-rotate-270'
+                           style='color: " . htmlescape($fg_color) . ";'
                            title='" . __s("Edit rack relation") . "'></i>
                      </a>
                      $tip
@@ -682,9 +680,9 @@ JAVASCRIPT;
             'FROM'  => self::getTable(),
             'WHERE' => [
                 'racks_id' => $rack->getID(),
-                'side'     => $side
+                'side'     => $side,
             ],
-            'ORDER' => 'position ASC'
+            'ORDER' => 'position ASC',
         ]);
     }
 
@@ -701,7 +699,7 @@ JAVASCRIPT;
 
         return $DB->request([
             'SELECT' => $fields_requested,
-            'FROM'  => self::getTable()
+            'FROM'  => self::getTable(),
         ]);
     }
 

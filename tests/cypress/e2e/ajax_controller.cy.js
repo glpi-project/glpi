@@ -5,8 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -45,8 +44,8 @@ describe('Ajax Controller', () => {
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
 
             // Load the history tab
-            cy.findByRole('tab', {'name': "Historical 2"}).click();
-            cy.findAllByRole('row').should('have.length', 3); // 2 entries + header
+            cy.findByRole('tab', {'name': "Historical 4"}).click();
+            cy.findAllByRole('row').should('have.length', 5); // 4 entries + header
             cy.findByRole('tab', {'name': "Form"}).click();
 
             // Modify and save form
@@ -58,8 +57,8 @@ describe('Ajax Controller', () => {
             );
 
             // Go to history tab, it must be updated with a new entry
-            cy.findByRole('tab', {'name': "Historical 2"}).click();
-            cy.findAllByRole('row').should('have.length', 4); // 3 entries + header
+            cy.findByRole('tab', {'name': "Historical 4"}).click();
+            cy.findAllByRole('row').should('have.length', 6); // 5 entries + header
         });
     });
 });

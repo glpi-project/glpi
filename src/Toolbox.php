@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,21 +33,26 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
 use Glpi\Console\Application;
 use Glpi\DBAL\QueryParam;
+use Glpi\Error\ErrorUtils;
 use Glpi\Event;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Helpdesk\DefaultDataManager;
-use Glpi\Http\Response;
 use Glpi\Mail\Protocol\ProtocolInterface;
+use Glpi\Plugin\Hooks;
+use Glpi\Progress\AbstractProgressIndicator;
+use Glpi\Message\MessageType;
 use Glpi\Rules\RulesManager;
+use Glpi\Toolbox\URL;
 use Glpi\Toolbox\VersionParser;
 use GuzzleHttp\Client;
 use Laminas\Mail\Storage\AbstractStorage;
 use Mexitek\PHPColors\Color;
-use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Toolbox Class
@@ -68,7 +73,7 @@ class Toolbox
         if (!$max) {
             $max = ini_get('suhosin.post.max_vars');  // Security limit from Suhosin
         }
-        return (int)$max;
+        return (int) $max;
     }
 
 
@@ -256,14 +261,16 @@ class Toolbox
     /**
      * Log in 'php-errors' all args
      *
-     * @param LoggerInterface   $logger Logger instance, if any
-     * @param integer           $level  Log level (defaults to warning)
-     * @param array             $args   Arguments (message to log, ...)
+     * @param mixed $level  The log level (a Monolog, PSR-3 or RFC 5424 level)
+     * @param array $args   Arguments (message to log, ...)
      *
      * @return void
      **/
-    private static function log(LoggerInterface $logger = null, $level = LogLevel::WARNING, $args = null)
+    private static function log($level = LogLevel::WARNING, $args = null)
     {
+        /** @var \Monolog\Logger $PHPLOGGER */
+        global $PHPLOGGER;
+
         static $tps = 0;
 
         $extra = [];
@@ -289,16 +296,16 @@ class Toolbox
 
         if ($args == null) {
             $args = func_get_args();
-        } else if (!is_array($args)) {
+        } elseif (!is_array($args)) {
             $args = [$args];
         }
 
         foreach ($args as $arg) {
             if (is_array($arg) || is_object($arg)) {
                 $msg .= str_replace("\n", "\n  ", print_r($arg, true));
-            } else if (is_null($arg)) {
+            } elseif (is_null($arg)) {
                 $msg .= 'NULL ';
-            } else if (is_bool($arg)) {
+            } elseif (is_bool($arg)) {
                 $msg .= ($arg ? 'true' : 'false') . ' ';
             } else {
                 $msg .= $arg . ' ';
@@ -307,25 +314,14 @@ class Toolbox
 
         $tps = microtime(true);
 
-        if ($logger === null) {
-            /** @var \Monolog\Logger $PHPLOGGER */
-            global $PHPLOGGER;
-            $logger = $PHPLOGGER;
-        }
-
         try {
-            $logger->log($level, $msg, $extra);
+            $msg = self::cleanPaths($msg);
+            $PHPLOGGER->log($level, $msg, $extra);
         } catch (\Throwable $e) {
-           //something went wrong, make sure logging does not cause fatal
+            //something went wrong
+            // make sure logging does not cause fatal
+            // and error still logged (without glpi root path removed)
             error_log($e);
-        }
-
-        /** @var \Monolog\Logger $SQLLOGGER */
-        global $SQLLOGGER;
-        if (isCommandLine() && $level >= LogLevel::WARNING && $logger !== $SQLLOGGER) {
-           // Do not output related messages to $SQLLOGGER as they are redundant with
-           // output made by "ErrorHandler::handleSql*()" methods.
-            echo $msg;
         }
     }
 
@@ -334,7 +330,7 @@ class Toolbox
      */
     public static function logDebug()
     {
-        self::log(null, LogLevel::DEBUG, func_get_args());
+        self::log(LogLevel::DEBUG, func_get_args());
     }
 
     /**
@@ -342,40 +338,7 @@ class Toolbox
      */
     public static function logInfo()
     {
-        self::log(null, LogLevel::INFO, func_get_args());
-    }
-
-    /**
-     * SQL debug log
-     */
-    public static function logSqlDebug()
-    {
-        /** @var \Psr\Log\LoggerInterface $SQLLOGGER */
-        global $SQLLOGGER;
-        $args = func_get_args();
-        self::log($SQLLOGGER, LogLevel::DEBUG, $args);
-    }
-
-    /**
-     * SQL warning log
-     */
-    public static function logSqlWarning()
-    {
-        /** @var \Psr\Log\LoggerInterface $SQLLOGGER */
-        global $SQLLOGGER;
-        $args = func_get_args();
-        self::log($SQLLOGGER, LogLevel::WARNING, $args);
-    }
-
-    /**
-     * SQL error log
-     */
-    public static function logSqlError()
-    {
-        /** @var \Psr\Log\LoggerInterface $SQLLOGGER */
-        global $SQLLOGGER;
-        $args = func_get_args();
-        self::log($SQLLOGGER, LogLevel::ERROR, $args);
+        self::log(LogLevel::INFO, func_get_args());
     }
 
 
@@ -397,8 +360,8 @@ class Toolbox
             $message = "  Backtrace :\n";
             $traces  = debug_backtrace();
             foreach ($traces as $trace) {
-                $script = (isset($trace["file"]) ? $trace["file"] : "") . ":" .
-                        (isset($trace["line"]) ? $trace["line"] : "");
+                $script = ($trace["file"] ?? "") . ":" .
+                        ($trace["line"] ?? "");
                 if (strpos($script, GLPI_ROOT) === 0) {
                     $script = substr($script, strlen(GLPI_ROOT) + 1);
                 }
@@ -407,8 +370,8 @@ class Toolbox
                 } else {
                     $script = str_pad($script, 50);
                 }
-                $call = (isset($trace["class"]) ? $trace["class"] : "") .
-                    (isset($trace["type"]) ? $trace["type"] : "") .
+                $call = ($trace["class"] ?? "") .
+                    ($trace["type"] ?? "") .
                     (isset($trace["function"]) ? $trace["function"] . "()" : "");
                 if ($call == $hide) {
                     $call = '';
@@ -450,7 +413,7 @@ class Toolbox
         }
         if (
             $strict === true ||
-            (defined('GLPI_STRICT_DEPRECATED') && GLPI_STRICT_DEPRECATED === true)
+            GLPI_STRICT_ENV === true
         ) {
             trigger_error($message, E_USER_DEPRECATED);
         }
@@ -459,16 +422,18 @@ class Toolbox
     /**
      * Log a message in log file
      *
-     * @param string  $name   name of the log file
-     * @param string  $text   text to log
-     * @param boolean $force  force log in file not seeing use_log_in_files config
+     * @param string    $name   name of the log file, relative to GLPI_LOG_DIR, without '.log' extension
+     * @param string    $text   text to log
+     * @param bool      $force  force log in file not seeing use_log_in_files config
+     * @param bool      $output whether to output the message
      *
      * @return boolean
      **/
-    public static function logInFile($name, $text, $force = false)
+    public static function logInFile($name, $text, $force = false, bool $output = true)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
+        $text = self::cleanPaths($text);
 
         $user = '';
         if (method_exists('Session', 'getLoginUserID')) {
@@ -483,11 +448,15 @@ class Toolbox
             $ok = error_log(date("Y-m-d H:i:s") . "$user\n" . $text, 3, GLPI_LOG_DIR . "/" . $name . ".log");
         }
 
+        if ($output === false) {
+            return $ok;
+        }
+
         /** @var \Glpi\Console\Application $application */
         global $application;
         if ($application instanceof Application) {
             $application->getOutput()->writeln('<comment>' . $text . '</comment>', OutputInterface::VERBOSITY_VERY_VERBOSE);
-        } else if (
+        } elseif (
             isset($_SESSION['glpi_use_mode'])
             && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
             && isCommandLine()
@@ -528,51 +497,44 @@ class Toolbox
 
 
     /**
-     * Send a file (not a document) to the navigator
-     * See Document->send();
+     * Get a Symfony response for the given file.
      *
-     * @param string      $file        storage filename
-     * @param string      $filename    file title
-     * @param string|null $mime        file mime type
-     * @param boolean     $expires_headers add expires headers maximize cacheability ?
-     * @param boolean     $return_response return a Response object instead of sending it directly
+     * @param string      $path             filesystem path
+     * @param string      $filename         file name to send in the response
+     * @param string|null $mime             mime type
+     * @param boolean     $expires_headers  whether to add expires headers to maximize cacheability
      *
-     * @return Response|void
-     * @phpstan-return $return_response ? Response : void
-     **/
-    public static function sendFile($file, $filename, $mime = null, $expires_headers = false, bool $return_response = false)
-    {
-
-       // Test securite : document in DOC_DIR
-        $tmpfile = str_replace(GLPI_DOC_DIR, "", $file);
+     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+     */
+    public static function getFileAsResponse(
+        string $path,
+        string $filename,
+        ?string $mime = null,
+        bool $expires_headers = false
+    ): Response {
+        // Test securite : document in DOC_DIR
+        $tmpfile = str_replace(GLPI_DOC_DIR, "", $path);
 
         if (str_contains($tmpfile, "../") || str_contains($tmpfile, "..\\")) {
             Event::log(
-                $file,
+                $path,
                 "sendFile",
                 1,
                 "security",
                 $_SESSION["glpiname"] . " try to get a non standard file."
             );
-            if ($return_response) {
-                return new Response(403);
-            }
-            echo "Security attack!!!";
-            die(1);
+
+            throw new AccessDeniedHttpException();
         }
 
-        if (!file_exists($file)) {
-            if ($return_response) {
-                return new Response(404);
-            }
-            echo "Error file $file does not exist";
-            die(1);
+        if (!file_exists($path)) {
+            throw new NotFoundHttpException();
         }
 
-       // if $mime is defined, ignore mime type by extension
-        if ($mime === null && preg_match('/\.(...)$/', $file)) {
+        // if $mime is defined, ignore mime type by extension
+        if ($mime === null && preg_match('/\.(...)$/', $path)) {
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $mime = finfo_file($finfo, $file);
+            $mime = finfo_file($finfo, $path);
             finfo_close($finfo);
         }
 
@@ -590,23 +552,8 @@ class Toolbox
         }
         $attachment = $can_be_inlined === false ? ' attachment;' : '';
 
-        $etag = md5_file($file);
-        $lastModified = filemtime($file);
-
-        // Make sure there is nothing in the output buffer (In case stuff was added by core or misbehaving plugin).
-        // If there is any extra data, the sent file will be corrupted.
-        // 1. Turn off any extra buffering level. Keep one buffering level if PHP output_buffering directive is not "off".
-        $ob_config = ini_get('output_buffering');
-        $max_buffering_level = $ob_config !== false && (strtolower($ob_config) === 'on' || (is_numeric($ob_config) && (int)$ob_config > 0))
-            ? 1
-            : 0;
-        while (ob_get_level() > $max_buffering_level) {
-            ob_end_clean();
-        }
-        // 2. Clean any buffered output in remaining level (output_buffering="on" case).
-        if (ob_get_level() > 0) {
-            ob_clean();
-        }
+        $etag = md5_file($path);
+        $lastModified = filemtime($path);
 
         $headers = [
             'Last-Modified' => gmdate("D, d M Y H:i:s", $lastModified) . " GMT",
@@ -625,34 +572,51 @@ class Toolbox
         $headers['Content-Disposition'] = $content_disposition;
         $headers['Content-type'] = $mime;
 
-       // HTTP_IF_NONE_MATCH takes precedence over HTTP_IF_MODIFIED_SINCE
-       // http://tools.ietf.org/html/rfc7232#section-3.3
+        // HTTP_IF_NONE_MATCH takes precedence over HTTP_IF_MODIFIED_SINCE
+        // http://tools.ietf.org/html/rfc7232#section-3.3
         $matches_cache = false;
         if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) === $etag) {
             $matches_cache = true;
-        } else if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified) {
+        } elseif (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified) {
             $matches_cache = true;
         }
         if ($matches_cache) {
-            $response = new Response(304, $headers);
-            if ($return_response) {
-                return $response;
-            }
-            $response->send();
-            exit;
+            return new Response(
+                status: 304,
+                headers: $headers
+            );
         }
-        $content = file_get_contents($file);
+        $content = file_get_contents($path);
         if ($content === false) {
-            if ($return_response) {
-                return new Response(500);
-            }
-            die("Error opening file $file");
+            throw new \Symfony\Component\HttpKernel\Exception\HttpException(500);
         }
-        $response = new Response(200, $headers, $content);
-        if ($return_response) {
-            return $response;
-        }
-        $response->send();
+
+        return new Response(
+            content: $content,
+            status: 200,
+            headers: $headers
+        );
+    }
+
+
+    /**
+     * Send a file (not a document) to the navigator
+     * See Document->send();
+     *
+     * @param string      $file        storage filename
+     * @param string      $filename    file title
+     * @param string|null $mime        file mime type
+     * @param boolean     $expires_headers add expires headers maximize cacheability ?
+     *
+     * @return void
+     *
+     * @deprecated 11.0.0
+     */
+    public static function sendFile($file, $filename, $mime = null, $expires_headers = false)
+    {
+        Toolbox::deprecated();
+
+        static::getFileAsResponse($file, $filename, $mime, $expires_headers)->send();
     }
 
 
@@ -674,7 +638,8 @@ class Toolbox
 
         $value = ((array) $value === $value)
                   ? array_map([__CLASS__, 'addslashes_deep'], $value)
-                  : (is_null($value)
+                  : (
+                      is_null($value)
                        ? null : (is_resource($value) || is_object($value)
                        ? $value : $DB->escape(
                            str_replace(
@@ -683,7 +648,7 @@ class Toolbox
                                $value
                            )
                        ))
-                    );
+                  );
 
         return $value;
     }
@@ -747,9 +712,9 @@ class Toolbox
     /**
      * Compute PHP memory_limit
      *
-     * @param string $ininame  name of the ini ooption to retrieve (since 9.1)
+     * @param string $ininame  name of the ini option to retrieve (since 9.1)
      *
-     * @return integer memory limit
+     * @return integer|string memory limit
      **/
     public static function getMemoryLimit($ininame = 'memory_limit')
     {
@@ -759,19 +724,21 @@ class Toolbox
         preg_match("/([-0-9]+)([KMG]*)/", $mem, $matches);
         $mem = "";
 
-       // no K M or G
+        // no K M or G
         if (isset($matches[1])) {
-            $mem = (int)$matches[1];
+            $mem = (int) $matches[1];
             if (isset($matches[2])) {
                 switch ($matches[2]) {
                     case "G":
                         $mem *= 1024;
                         // nobreak;
 
+                        // no break
                     case "M":
                         $mem *= 1024;
                         // nobreak;
 
+                        // no break
                     case "K":
                         $mem *= 1024;
                         // nobreak;
@@ -798,7 +765,7 @@ class Toolbox
     {
 
         $mem = self::getMemoryLimit();
-        if ($mem == "") {
+        if ($mem === "") {
             return 0;
         }
         if ($mem == "-1") {
@@ -820,7 +787,7 @@ class Toolbox
     public static function getSize($size)
     {
 
-       //TRANS: list of unit (o for octet)
+        //TRANS: list of unit (o for octet)
         $bytes = [
             _x('size', 'B'),
             _x('size', 'KiB'),
@@ -834,12 +801,12 @@ class Toolbox
         ];
         foreach ($bytes as $val) {
             if ($size > 1024) {
-                $size = $size / 1024;
+                $size /= 1024;
             } else {
                 break;
             }
         }
-       //TRANS: %1$s is a number maybe float or string and %2$s the unit
+        //TRANS: %1$s is a number maybe float or string and %2$s the unit
         return sprintf(__('%1$s %2$s'), round($size, 2), $val);
     }
 
@@ -855,7 +822,7 @@ class Toolbox
     {
 
         if (file_exists($dir)) {
-            chmod($dir, 0777);
+            chmod($dir, 0o755);
 
             if (is_dir($dir)) {
                 $id_dir = opendir($dir);
@@ -907,7 +874,7 @@ class Toolbox
         $max_size = 500
     ) {
 
-       //get img information (dimensions and extension)
+        //get img information (dimensions and extension)
         $img_infos  = getimagesize($source_path);
         if (empty($img_width)) {
             $img_width  = $img_infos[0];
@@ -962,17 +929,17 @@ class Toolbox
                 return false;
         }
 
-       //create new img resource for store thumbnail
+        //create new img resource for store thumbnail
         $source_dest = imagecreatetruecolor($new_width, $new_height);
 
-       // set transparent background for PNG/GIF/WebP
+        // set transparent background for PNG/GIF/WebP
         if ($img_type === IMAGETYPE_GIF || $img_type === IMAGETYPE_PNG || $img_type === IMAGETYPE_WEBP) {
             imagecolortransparent($source_dest, imagecolorallocatealpha($source_dest, 0, 0, 0, 127));
             imagealphablending($source_dest, false);
             imagesavealpha($source_dest, true);
         }
 
-       //resize image
+        //resize image
         imagecopyresampled(
             $source_dest,
             $source_res,
@@ -986,7 +953,7 @@ class Toolbox
             $img_height
         );
 
-       //output img
+        //output img
         $result = null;
         switch ($img_type) {
             case IMAGETYPE_GIF:
@@ -1014,7 +981,7 @@ class Toolbox
      **/
     public static function checkNewVersionAvailable()
     {
-       //parse github releases (get last version number)
+        //parse github releases (get last version number)
         $error = "";
         $json_gh_releases = self::getURLContent("https://api.github.com/repos/glpi-project/glpi/releases", $error);
         if (empty($json_gh_releases)) {
@@ -1071,7 +1038,7 @@ class Toolbox
 
         $rand = rand();
 
-       // Check directory creation which can be denied by SElinux
+        // Check directory creation which can be denied by SElinux
         $sdir = sprintf("%s/test_glpi_%08x", $dir, $rand);
 
         if (!mkdir($sdir)) {
@@ -1082,7 +1049,7 @@ class Toolbox
             return 3;
         }
 
-       // Check file creation
+        // Check file creation
         $path = sprintf("%s/test_glpi_%08x.txt", $dir, $rand);
         $fp   = fopen($path, 'w');
 
@@ -1118,8 +1085,7 @@ class Toolbox
         $dir = ($full ? $CFG_GLPI['root_doc'] : '');
 
         if ($plug = isPluginItemType($itemtype)) {
-           /* PluginFooBar => /plugins/foo/front/bar */
-            $dir .= Plugin::getPhpDir(strtolower($plug['plugin']), false);
+            $dir .= "/plugins/" . strtolower($plug['plugin']);
             $item = str_replace('\\', '/', strtolower($plug['class']));
         } else { // Standard case
             $item = strtolower($itemtype);
@@ -1148,7 +1114,7 @@ class Toolbox
         $dir = ($full ? $CFG_GLPI['root_doc'] : '');
 
         if ($plug = isPluginItemType($itemtype)) {
-            $dir .= Plugin::getPhpDir(strtolower($plug['plugin']), false);
+            $dir .= "/plugins/" . strtolower($plug['plugin']);
             $item = str_replace('\\', '/', strtolower($plug['class']));
         } else { // Standard case
             if ($itemtype == 'Cartridge') {
@@ -1349,7 +1315,7 @@ class Toolbox
 
         $defaultport = 80;
 
-       // Manage standard HTTPS port : scheme detection or port 443
+        // Manage standard HTTPS port : scheme detection or port 443
         if (
             (isset($taburl["scheme"]) && $taburl["scheme"] == 'https')
             || (isset($taburl["port"]) && $taburl["port"] == '443')
@@ -1370,11 +1336,11 @@ class Toolbox
         }
 
         if (!empty($CFG_GLPI["proxy_name"])) {
-           // Connection using proxy
+            // Connection using proxy
             $opts += [
                 CURLOPT_PROXY           => $CFG_GLPI['proxy_name'],
                 CURLOPT_PROXYPORT       => $CFG_GLPI['proxy_port'],
-                CURLOPT_PROXYTYPE       => CURLPROXY_HTTP
+                CURLOPT_PROXYTYPE       => CURLPROXY_HTTP,
             ];
 
             if (!empty($CFG_GLPI["proxy_user"])) {
@@ -1386,7 +1352,7 @@ class Toolbox
 
             if ($defaultport == 443) {
                 $opts += [
-                    CURLOPT_HTTPPROXYTUNNEL => 1
+                    CURLOPT_HTTPPROXYTUNNEL => 1,
                 ];
             }
         }
@@ -1400,22 +1366,22 @@ class Toolbox
 
         if ($curl_error !== null) {
             if (empty($CFG_GLPI["proxy_name"])) {
-               //TRANS: %s is the error string
+                //TRANS: %s is the error string
                 $msgerr = sprintf(
                     __('Connection failed. If you use a proxy, please configure it. (%s)'),
                     $curl_error
                 );
             } else {
-               //TRANS: %s is the error string
+                //TRANS: %s is the error string
                 $msgerr = sprintf(
                     __('Failed to connect to the proxy server (%s)'),
                     $curl_error
                 );
             }
             $content = '';
-        } else if (!empty($curl_redirect)) {
+        } elseif (!empty($curl_redirect)) {
             return self::callCurl($curl_redirect, $eopts, $msgerr, $curl_error, $check_url_safeness, $curl_info);
-        } else if (empty($content)) {
+        } elseif (empty($content)) {
             $msgerr = __('No data available on the web site');
         }
         if (!empty($msgerr)) {
@@ -1480,7 +1446,6 @@ class Toolbox
         }
     }
 
-
     /**
      * Manage login redirection
      *
@@ -1493,150 +1458,166 @@ class Toolbox
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        if (!empty($where)) {
-            if (Session::getCurrentInterface()) {
-                // redirect to URL : URL must be rawurlencoded
-                $decoded_where = rawurldecode($where);
-                $matches = [];
+        if (empty($where) || !Session::getCurrentInterface()) {
+            return;
+        }
 
-                // redirect to full url -> check if it's based on glpi url
-                if (preg_match('@(([^:/].+:)?//[^/]+)(/.+)?@', $decoded_where, $matches)) {
-                    if ($matches[1] !== $CFG_GLPI['url_base']) {
-                        Session::addMessageAfterRedirect(__s('Redirection failed'));
-                        if (Session::getCurrentInterface() === "helpdesk") {
-                            Html::redirect($CFG_GLPI["root_doc"] . "/Helpdesk");
-                        } else {
-                            Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
-                        }
-                    } else {
-                        Html::redirect($decoded_where);
-                    }
-                }
+        // redirect to URL : URL must be rawurlencoded
+        $decoded_where = rawurldecode($where);
 
-                // Redirect to relative url
-                if ($decoded_where[0] == '/') {
-                    // prevent exploit (//example.com) and force a redirect from glpi root
-                    $redirect_to = $CFG_GLPI["root_doc"] . "/" . ltrim($decoded_where, '/');
-                    Html::redirect($redirect_to);
-                }
+        $redirect = self::computeRedirect($decoded_where);
 
-                // explode with limit 3 to preserve the last part of the url
-                // /index.php?redirect=ticket_2_Ticket$main#TicketValidation_1 (preserve anchor)
-                $data = explode("_", $where, 3);
-                $forcetab = '';
-                // forcetab for simple items
-                if (isset($data[2])) {
-                    $forcetab = 'forcetab=' . $data[2];
-                }
-
-                switch (Session::getCurrentInterface()) {
-                    case "helpdesk":
-                        switch (strtolower($data[0])) {
-                              // Use for compatibility with old name
-                            case "tracking":
-                            case "ticket":
-                                $data[0] = 'Ticket';
-                             // redirect to item
-                                if (
-                                    isset($data[1])
-                                    && is_numeric($data[1])
-                                    && ($data[1] > 0)
-                                ) {
-                                    // Check entity
-                                    if (
-                                        ($item = getItemForItemtype($data[0]))
-                                        && $item->isEntityAssign()
-                                    ) {
-                                        if ($item->getFromDB($data[1])) {
-                                            if (!Session::haveAccessToEntity($item->getEntityID())) {
-                                                Session::changeActiveEntities($item->getEntityID(), 1);
-                                            }
-                                        }
-                                    }
-                                  // force redirect to timeline when timeline is enabled and viewing
-                                  // Tasks or Followups
-                                    $forcetab = str_replace('TicketFollowup$1', 'Ticket$1', $forcetab);
-                                    $forcetab = str_replace('TicketTask$1', 'Ticket$1', $forcetab);
-                                    $forcetab = str_replace('ITILFollowup$1', 'Ticket$1', $forcetab);
-                                    Html::redirect(Ticket::getFormURLWithID($data[1]) . "&$forcetab");
-                                } else if (!empty($data[0])) { // redirect to list
-                                    if ($item = getItemForItemtype($data[0])) {
-                                        $searchUrl = $item->getSearchURL();
-                                        $searchUrl .= strpos($searchUrl, '?') === false ? '?' : '&';
-                                        $searchUrl .= $forcetab;
-                                        Html::redirect($searchUrl);
-                                    }
-                                }
-
-                                Html::redirect($CFG_GLPI["root_doc"] . "/Helpdesk");
-                                // phpcs doesn't understand that the script will exit here so we need a comment to avoid the fallthrough warning
-
-                            case "preference":
-                                Html::redirect($CFG_GLPI["root_doc"] . "/front/preference.php?$forcetab");
-                                // phpcs doesn't understand that the script will exit here so we need a comment to avoid the fallthrough warning
-
-                            case "reservation":
-                                Html::redirect(Reservation::getFormURLWithID($data[1]) . "&$forcetab");
-                                // phpcs doesn't understand that the script will exit here so we need a comment to avoid the fallthrough warning
-
-                            default:
-                                Html::redirect($CFG_GLPI["root_doc"] . "/Helpdesk");
-                        }
-                        // @phpstan-ignore deadCode.unreachable (defensive programming)
-                        break;
-
-                    case "central":
-                        switch (strtolower($data[0])) {
-                            case "preference":
-                                Html::redirect($CFG_GLPI["root_doc"] . "/front/preference.php?$forcetab");
-
-                           // Use for compatibility with old name
-                           // no break
-                            case "tracking":
-                                $data[0] = "Ticket";
-                             //var defined, use default case
-
-                            default:
-                             // redirect to item
-                                if (
-                                    !empty($data[0])
-                                    && isset($data[1])
-                                    && is_numeric($data[1])
-                                    && ($data[1] > 0)
-                                ) {
-                                    // Check entity
-                                    if ($item = getItemForItemtype($data[0])) {
-                                        if ($item->isEntityAssign()) {
-                                            if ($item->getFromDB($data[1])) {
-                                                if (!Session::haveAccessToEntity($item->getEntityID())) {
-                                                    Session::changeActiveEntities($item->getEntityID(), 1);
-                                                }
-                                            }
-                                        }
-                                    // force redirect to timeline when timeline is enabled
-                                        $forcetab = str_replace('TicketFollowup$1', 'Ticket$1', $forcetab);
-                                        $forcetab = str_replace('TicketTask$1', 'Ticket$1', $forcetab);
-                                        $forcetab = str_replace('ITILFollowup$1', 'Ticket$1', $forcetab);
-                                        Html::redirect($item->getFormURLWithID($data[1]) . "&$forcetab");
-                                    }
-                                } else if (!empty($data[0])) { // redirect to list
-                                    if ($item = getItemForItemtype($data[0])) {
-                                        $searchUrl = $item->getSearchURL();
-                                        $searchUrl .= strpos($searchUrl, '?') === false ? '?' : '&';
-                                        $searchUrl .= $forcetab;
-                                        Html::redirect($searchUrl);
-                                    }
-                                }
-
-                                Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
-                        }
-                        // @phpstan-ignore deadCode.unreachable (defensive programming)
-                        break;
-                }
+        if ($redirect === null) {
+            Session::addMessageAfterRedirect(__s('Redirection failed'));
+            if (Session::getCurrentInterface() === "helpdesk") {
+                Html::redirect($CFG_GLPI["root_doc"] . "/Helpdesk");
+            } else {
+                Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
             }
+        } else {
+            Html::redirect($redirect);
         }
     }
 
+    /**
+     * Compute the redirection target.
+     *
+     * @param string $where
+     * @return string|null
+     */
+    public static function computeRedirect(string $where): ?string
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $parsed_url = parse_url($where);
+
+        if ($parsed_url !== false) {
+            // Target URL contains a hostname, validates that it matches the base GLPI URL
+            if (array_key_exists('host', $parsed_url)) {
+                if (!str_starts_with($where, $CFG_GLPI['url_base'] . '/')) {
+                    return null;
+                } else {
+                    return $where;
+                }
+            }
+
+            // Target URL is a relative path
+            if (array_key_exists('path', $parsed_url) && $parsed_url['path'][0] === '/') {
+                return URL::isGLPIRelativeUrl($where) ? $CFG_GLPI["root_doc"] . $where : null;
+            }
+        }
+
+        // explode with limit 3 to preserve the last part of the url
+        // /index.php?redirect=ticket_2_Ticket$main#TicketValidation_1 (preserve anchor)
+        $data = explode("_", $where, 3);
+        $forcetab = '';
+        // forcetab for simple items
+        if (isset($data[2])) {
+            $forcetab = 'forcetab=' . $data[2];
+        }
+
+        switch (Session::getCurrentInterface()) {
+            case "helpdesk":
+                switch (strtolower($data[0])) {
+                    case "tracking": // Used for compatibility with old name
+                        // similar to "ticket" case
+
+                    case "ticket":
+                        $data[0] = 'Ticket';
+                        // redirect to item
+                        if (
+                            isset($data[1])
+                            && is_numeric($data[1])
+                            && ($data[1] > 0)
+                        ) {
+                            // Check entity
+                            if (
+                                ($item = getItemForItemtype($data[0]))
+                                && $item->isEntityAssign()
+                                && $item->getFromDB($data[1])
+                                && !Session::haveAccessToEntity($item->getEntityID())
+                            ) {
+                                Session::changeActiveEntities($item->getEntityID(), 1);
+                            }
+                            // force redirect to timeline when timeline is enabled and viewing
+                            // Tasks or Followups
+                            $forcetab = str_replace(['TicketFollowup$1', 'TicketTask$1', 'ITILFollowup$1'], 'Ticket$1', $forcetab);
+
+                            return Ticket::getFormURLWithID($data[1]) . "&$forcetab";
+                        }
+
+                        if ($item = getItemForItemtype($data[0])) {
+                            $searchUrl = $item::getSearchURL();
+                            $searchUrl .= !str_contains($searchUrl, '?') ? '?' : '&';
+                            $searchUrl .= $forcetab;
+                            return $searchUrl;
+                        }
+
+                        return null;
+
+                    case "preference":
+                        return $CFG_GLPI["root_doc"] . "/front/preference.php?$forcetab";
+
+                    case "reservation":
+                        return Reservation::getFormURLWithID($data[1]) . "&$forcetab";
+                }
+
+                break;
+
+            case "central":
+                switch (strtolower($data[0])) {
+                    case "preference":
+                        return $CFG_GLPI["root_doc"] . "/front/preference.php?$forcetab";
+
+                        // Use for compatibility with old name
+                    case "tracking":
+                        $data[0] = "Ticket";
+                        //var defined, use default case
+
+                        // no break
+                    default:
+                        // redirect to item
+                        if (
+                            !empty($data[0])
+                            && isset($data[1])
+                            && is_numeric($data[1])
+                            && ($data[1] > 0)
+                        ) {
+                            // Check entity
+                            if ($item = getItemForItemtype($data[0])) {
+                                if (
+                                    $item->isEntityAssign()
+                                    && $item->getFromDB($data[1])
+                                    && !Session::haveAccessToEntity($item->getEntityID())
+                                ) {
+                                    Session::changeActiveEntities($item->getEntityID(), 1);
+                                }
+                                // force redirect to timeline when timeline is enabled
+                                $forcetab = str_replace(['TicketFollowup$1', 'TicketTask$1', 'ITILFollowup$1'], 'Ticket$1', $forcetab);
+
+                                return $item::getFormURLWithID($data[1]) . "&$forcetab";
+                            }
+                        } elseif (
+                            !empty($data[0])
+                            && $item = getItemForItemtype($data[0])
+                        ) {
+                            // redirect to list
+                            $searchUrl = $item::getSearchURL();
+                            $searchUrl .= !str_contains($searchUrl, '?') ? '?' : '&';
+                            $searchUrl .= $forcetab;
+                            return $searchUrl;
+                        }
+
+                        return null;
+                }
+
+                // @phpstan-ignore deadCode.unreachable (defensive programming)
+                break;
+        }
+
+        return null;
+    }
 
     /**
      * Convert a value in byte, kbyte, megabyte etc...
@@ -1650,10 +1631,10 @@ class Toolbox
 
         $val  = trim($val);
         $last = self::strtolower($val[strlen($val) - 1]);
-        $val  = (int)$val;
+        $val  = (int) $val;
 
         switch ($last) {
-           // Le modifieur 'G' est disponible depuis PHP 5.1.0
+            // Le modifieur 'G' est disponible depuis PHP 5.1.0
             case 'g':
                 $val *= 1024;
                 // no break;
@@ -1664,7 +1645,6 @@ class Toolbox
 
             case 'k':
                 $val *= 1024;
-                // no break;
         }
 
         return $val;
@@ -1689,14 +1669,15 @@ class Toolbox
      *
      * @since 0.84
      *
-     * @param string  $value      connect string
-     * @param boolean $forceport  force compute port if not set
+     * @param string    $value                      connect string
+     * @param bool      $forceport                  force compute port if not set
+     * @param bool      $allow_plugins_protocols    Whether plugins protocol must be allowed.
      *
      * @return array  parsed arguments (address, port, mailbox, type, ssl, tls, validate-cert
      *                norsh, secure and debug) : options are empty if not set
      *                and options have boolean values if set
      **/
-    public static function parseMailServerConnectString($value, $forceport = false)
+    public static function parseMailServerConnectString($value, $forceport = false, bool $allow_plugins_protocols = true)
     {
 
         $tab = [];
@@ -1713,11 +1694,11 @@ class Toolbox
         }
         $tab['mailbox'] = preg_replace("/.*}/", "", $value);
 
-       // type follows first found "/" and ends on next "/" (or end of server string)
-       // server string is surrounded by "{}" and can be followed by a folder name
-       // i.e. "{mail.domain.org/imap/ssl}INBOX", or "{mail.domain.org/pop}"
+        // type follows first found "/" and ends on next "/" (or end of server string)
+        // server string is surrounded by "{}" and can be followed by a folder name
+        // i.e. "{mail.domain.org/imap/ssl}INBOX", or "{mail.domain.org/pop}"
         $type = preg_replace('/^\{[^\/]+\/([^\/]+)(?:\/.+)*\}.*/', '$1', $value);
-        $tab['type'] = in_array($type, array_keys(self::getMailServerProtocols())) ? $type : '';
+        $tab['type'] = in_array($type, array_keys(self::getMailServerProtocols($allow_plugins_protocols))) ? $type : '';
 
         $tab['ssl'] = false;
         if (strstr($value, "/ssl")) {
@@ -1826,26 +1807,32 @@ class Toolbox
      *  - 'protocol_class' field is the protocol class to use (see Laminas\Mail\Protocol\Imap | Laminas\Mail\Protocol\Pop3);
      *  - 'storage_class' field is the storage class to use (see Laminas\Mail\Storage\Imap | Laminas\Mail\Storage\Pop3).
      *
+     * @param bool  $allow_plugins_protocols    Whether plugins protocol must be allowed.
+     *
      * @return array
      */
-    public static function getMailServerProtocols(): array
+    public static function getMailServerProtocols(bool $allow_plugins_protocols = true): array
     {
         $protocols = [
             'imap' => [
-            //TRANS: IMAP mail server protocol
+                //TRANS: IMAP mail server protocol
                 'label'    => __('IMAP'),
                 'protocol' => 'Laminas\Mail\Protocol\Imap',
                 'storage'  => 'Laminas\Mail\Storage\Imap',
             ],
             'pop'  => [
-            //TRANS: POP3 mail server protocol
+                //TRANS: POP3 mail server protocol
                 'label'    => __('POP'),
                 'protocol' => 'Laminas\Mail\Protocol\Pop3',
                 'storage'  => 'Laminas\Mail\Storage\Pop3',
-            ]
+            ],
         ];
 
-        $additionnal_protocols = Plugin::doHookFunction('mail_server_protocols', []);
+        if ($allow_plugins_protocols === false) {
+            return $protocols;
+        }
+
+        $additionnal_protocols = Plugin::doHookFunction(Hooks::MAIL_SERVER_PROTOCOLS, []);
         if (is_array($additionnal_protocols)) {
             foreach ($additionnal_protocols as $key => $additionnal_protocol) {
                 if (array_key_exists($key, $protocols)) {
@@ -1853,7 +1840,7 @@ class Toolbox
                         sprintf('Protocol "%s" is already defined and cannot be overwritten.', $key),
                         E_USER_WARNING
                     );
-                     continue; // already exists, do not overwrite
+                    continue; // already exists, do not overwrite
                 }
 
                 if (
@@ -1885,18 +1872,19 @@ class Toolbox
      * Class should implements Glpi\Mail\Protocol\ProtocolInterface
      * or should be \Laminas\Mail\Protocol\Imap|\Laminas\Mail\Protocol\Pop3 for native protocols.
      *
-     * @param string $protocol_type
+     * @param string    $protocol_type
+     * @param bool      $allow_plugins_protocols    Whether plugins protocol must be allowed.
      *
      * @return null|\Glpi\Mail\Protocol\ProtocolInterface|\Laminas\Mail\Protocol\Imap|\Laminas\Mail\Protocol\Pop3
      */
-    public static function getMailServerProtocolInstance(string $protocol_type)
+    public static function getMailServerProtocolInstance(string $protocol_type, bool $allow_plugins_protocols = true)
     {
-        $protocols = self::getMailServerProtocols();
+        $protocols = self::getMailServerProtocols($allow_plugins_protocols);
         if (array_key_exists($protocol_type, $protocols)) {
             $protocol = $protocols[$protocol_type]['protocol'];
             if (is_callable($protocol)) {
                 return call_user_func($protocol);
-            } else if (
+            } elseif (
                 class_exists($protocol)
                 && (is_a($protocol, ProtocolInterface::class, true)
                  || is_a($protocol, \Laminas\Mail\Protocol\Imap::class, true)
@@ -1918,19 +1906,20 @@ class Toolbox
      *
      * Class should extends \Laminas\Mail\Storage\AbstractStorage.
      *
-     * @param string $protocol_type
-     * @param array  $params         Storage constructor params, as defined in AbstractStorage
+     * @param string    $protocol_type
+     * @param array     $params                     Storage constructor params, as defined in AbstractStorage
+     * @param bool      $allow_plugins_protocols    Whether plugins protocol must be allowed.
      *
      * @return null|AbstractStorage
      */
-    public static function getMailServerStorageInstance(string $protocol_type, array $params): ?AbstractStorage
+    public static function getMailServerStorageInstance(string $protocol_type, array $params, bool $allow_plugins_protocols = true): ?AbstractStorage
     {
-        $protocols = self::getMailServerProtocols();
+        $protocols = self::getMailServerProtocols($allow_plugins_protocols);
         if (array_key_exists($protocol_type, $protocols)) {
             $storage = $protocols[$protocol_type]['storage'];
             if (is_callable($storage)) {
                 return call_user_func($storage, $params);
-            } else if (class_exists($storage) && is_a($storage, AbstractStorage::class, true)) {
+            } elseif (class_exists($storage) && is_a($storage, AbstractStorage::class, true)) {
                 return new $storage($params);
             } else {
                 trigger_error(
@@ -2021,7 +2010,7 @@ class Toolbox
      **/
     public static function cleanInteger($integer)
     {
-        return preg_replace("/[^0-9-]/", "", (string)$integer);
+        return preg_replace("/[^0-9-]/", "", (string) $integer);
     }
 
 
@@ -2064,17 +2053,18 @@ class Toolbox
      *
      * @param string   $lang     Language to install
      * @param ?DBmysql $database Database instance to use, will fallback to a new instance of DB if null
+     * @param ?AbstractProgressIndicator $progress_indicator
      *
      * @return void
      *
+     * @internal
+     *
      * @since 9.1
-     * @since 9.4.7 Added $database parameter
-     **/
-    public static function createSchema($lang = 'en_GB', ?DBmysql $database = null)
+     * @since 9.4.7 Added the `$database` parameter.
+     * @since 11.0.0 Added the `$progress_indicator` parameter.
+     */
+    public static function createSchema($lang = 'en_GB', ?DBmysql $database = null, ?AbstractProgressIndicator $progress_indicator = null)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
         if (null === $database) {
             // Use configured DB if no $db is defined in parameters
             if (!class_exists('DB', false)) {
@@ -2083,88 +2073,128 @@ class Toolbox
             $database = new DB();
         }
 
-        // Set global $DB as it is used in "Config::setConfigurationValues()" just after schema creation
-        /** @var \DBmysql $DB */
-        $DB = $database;
+        $structure_queries = $database->getQueriesFromFile(sprintf('%s/install/mysql/glpi-empty.sql', GLPI_ROOT));
 
-        if (!$DB->runFile(sprintf('%s/install/mysql/glpi-empty.sql', GLPI_ROOT))) {
-            echo "Errors occurred inserting default database";
-        } else {
-           //dataset
-            Session::loadLanguage($lang, false); // Load default language locales to translate empty data
-            $tables = require_once(__DIR__ . '/../install/empty_data.php');
-            Session::loadLanguage('', false); // Load back session language
+        //dataset
+        Session::loadLanguage($lang, false); // Load default language locales to translate empty data
+        $tables = require_once(__DIR__ . '/../install/empty_data.php');
+        Session::loadLanguage('', false); // Load back session language
 
-            foreach ($tables as $table => $data) {
-                $reference = array_replace(
-                    $data[0],
-                    array_fill_keys(
-                        array_keys($data[0]),
-                        new QueryParam()
-                    )
-                );
+        $number_of_steps = \count($structure_queries);
+        foreach ($tables as $data) {
+            $number_of_steps += \count($data);
+        }
 
-                $stmt = $DB->prepare($DB->buildInsert($table, $reference));
+        // For post install steps
+        $init_form_weight = round($number_of_steps * 0.1); // 10 % of the install process
+        $init_rules_weight = round($number_of_steps * 0.1); // 10 % of the install process
+        $generate_keys_weight = round($number_of_steps * 0.02); // 2 % of the install process
+        $default_lang_weight = 1;
+        $cron_config_weight = 1;
+        $number_of_steps += $init_form_weight + $init_rules_weight + $generate_keys_weight + $default_lang_weight;
+        if (GLPI_SYSTEM_CRON) {
+            $number_of_steps += $cron_config_weight;
+        }
 
-                $types = str_repeat('s', count($data[0]));
-                foreach ($data as $row) {
-                    $res = $stmt->bind_param($types, ...array_values($row));
-                    if (false === $res) {
-                        $msg = "Error binding params in table $table\n";
-                        $msg .= print_r($row, true);
-                        throw new \RuntimeException($msg);
-                    }
-                    $res = $stmt->execute();
-                    if (false === $res) {
-                        $msg = $stmt->error;
-                        $msg .= "\nError execution statement in table $table\n";
-                        $msg .= print_r($row, true);
-                        throw new \RuntimeException($msg);
-                    }
-                    if (!isCommandLine()) {
-                         // Flush will prevent proxy to timeout as it will receive data.
-                         // Flush requires a content to be sent, so we sent spaces as multiple spaces
-                         // will be shown as a single one on browser.
-                         echo ' ';
-                         Html::glpi_flush();
-                    }
-                }
-            }
+        $progress_indicator?->setMaxSteps($number_of_steps);
+        $progress_indicator?->setProgressBarMessage(__('Creating database structure…'));
 
-            // Create default forms
-            $default_forms_manager = new DefaultDataManager();
-            $default_forms_manager->initializeData();
+        foreach ($structure_queries as $query) {
+            $database->doQuery($query);
+            $progress_indicator?->advance();
+        }
+        $progress_indicator?->addMessage(MessageType::Success, __('Database structure created.'));
 
-            // Initalize rules
-            RulesManager::initializeRules();
+        $progress_indicator?->setProgressBarMessage(__('Importing default data…'));
 
-            // Make sure keys are generated automatically so OAuth will work when/if they choose to use it
-            \Glpi\OAuth\Server::generateKeys();
-
-           // update default language
-            Config::setConfigurationValues(
-                'core',
-                [
-                    'language'      => $lang,
-                    'version'       => GLPI_VERSION,
-                    'dbversion'     => GLPI_SCHEMA_VERSION,
-                ]
+        foreach ($tables as $table => $data) {
+            $reference = array_replace(
+                $data[0],
+                array_fill_keys(
+                    array_keys($data[0]),
+                    new QueryParam()
+                )
             );
 
-            if (defined('GLPI_SYSTEM_CRON')) {
-               // Downstream packages may provide a good system cron
-                $DB->update(
-                    'glpi_crontasks',
-                    [
-                        'mode'   => 2
-                    ],
-                    [
-                        'name'      => ['!=', 'watcher'],
-                        'allowmode' => ['&', 2]
-                    ]
-                );
+            $stmt = $database->prepare($database->buildInsert($table, $reference));
+
+            $types = str_repeat('s', count($data[0]));
+            foreach ($data as $row) {
+                $res = $stmt->bind_param($types, ...array_values($row));
+                if (false === $res) {
+                    $msg = "Error binding params in table $table\n";
+                    $msg .= print_r($row, true);
+                    throw new \RuntimeException($msg);
+                }
+                $res = $stmt->execute();
+                if (false === $res) {
+                    $msg = $stmt->error;
+                    $msg .= "\nError execution statement in table $table\n";
+                    $msg .= print_r($row, true);
+                    throw new \RuntimeException($msg);
+                }
+
+                $progress_indicator?->advance();
             }
         }
+        $progress_indicator?->addMessage(MessageType::Success, __('Default data imported.'));
+
+        $progress_indicator?->setProgressBarMessage(__('Creating default forms…'));
+        $default_forms_manager = new DefaultDataManager();
+        $default_forms_manager->initializeData();
+        $progress_indicator?->advance($init_form_weight);
+        $progress_indicator?->addMessage(MessageType::Success, __('Default forms created.'));
+
+        $progress_indicator?->setProgressBarMessage(__('Initializing default rules…'));
+        RulesManager::initializeRules();
+        $progress_indicator?->advance($init_rules_weight);
+        $progress_indicator?->addMessage(MessageType::Success, __('Default rules initialized.'));
+
+        $progress_indicator?->setProgressBarMessage(__('Generating security keys…'));
+        // Make sure keys are generated automatically so OAuth will work when/if they choose to use it
+        \Glpi\OAuth\Server::generateKeys();
+        $progress_indicator?->advance($generate_keys_weight);
+        $progress_indicator?->addMessage(MessageType::Success, __('Security keys generated.'));
+
+        $progress_indicator?->setProgressBarMessage(__('Defining configuration defaults…'));
+        $configs = [
+            'language'  => $lang,
+            'version'   => GLPI_VERSION,
+            'dbversion' => GLPI_SCHEMA_VERSION,
+        ];
+        foreach ($configs as $name => $value) {
+            $database->updateOrInsert(
+                'glpi_configs',
+                [
+                    'value' => $value,
+                ],
+                [
+                    'context' => 'core',
+                    'name'    => $name,
+                ]
+            );
+        }
+        $progress_indicator?->advance($default_lang_weight);
+
+        if (GLPI_SYSTEM_CRON) {
+            // Downstream packages may provide a good system cron
+            $database->update(
+                'glpi_crontasks',
+                [
+                    'mode'   => 2,
+                ],
+                [
+                    'name'      => ['!=', 'watcher'],
+                    'allowmode' => ['&', 2],
+                ]
+            );
+            $progress_indicator?->advance($cron_config_weight);
+        }
+        $progress_indicator?->addMessage(MessageType::Success, __('Configuration defaults defined.'));
+
+        $progress_indicator?->setProgressBarMessage('');
+        $progress_indicator?->addMessage(MessageType::Success, __('Installation done.'));
+        $progress_indicator?->finish();
     }
 
 
@@ -2208,7 +2238,9 @@ class Toolbox
      **/
     public static function prepareArrayForInput(array $value)
     {
-        return base64_encode(json_encode($value));
+        $json = json_encode($value);
+        $compressed = gzcompress($json);
+        return base64_encode($compressed);
     }
 
 
@@ -2225,7 +2257,8 @@ class Toolbox
     {
 
         if ($dec = base64_decode($value)) {
-            if ($ret = json_decode($dec, true)) {
+            $json = gzuncompress($dec);
+            if ($ret = json_decode($json, true)) {
                 return $ret;
             }
         }
@@ -2312,11 +2345,11 @@ class Toolbox
         }
 
         if ($string == '') {
-           //prevent empty slugs; see https://github.com/glpi-project/glpi/issues/2946
-           //harcoded prefix string because html @id must begin with a letter
+            //prevent empty slugs; see https://github.com/glpi-project/glpi/issues/2946
+            //harcoded prefix string because html @id must begin with a letter
             $string = 'nok_' . Toolbox::getRandomString(10);
-        } else if (ctype_digit(substr($string, 0, 1))) {
-           //starts with a number; not ok to be used as an html id attribute
+        } elseif (ctype_digit(substr($string, 0, 1))) {
+            //starts with a number; not ok to be used as an html id attribute
             $string = $prefix . $string;
         }
         return $string;
@@ -2364,7 +2397,7 @@ class Toolbox
 
         $document = new Document();
         $matches  = [];
-       // If no doc data available we match all tags in content
+        // If no doc data available we match all tags in content
         if (!count($doc_data)) {
             $doc_data = Toolbox::getDocumentsFromTag($content_text);
         }
@@ -2374,7 +2407,7 @@ class Toolbox
 
             foreach ($doc_data as $id => $image) {
                 if (isset($image['tag'])) {
-                   // Add only image files : try to detect mime type
+                    // Add only image files : try to detect mime type
                     if (
                         $document->getFromDB($id)
                         && strpos($document->fields['mime'], 'image/') !== false
@@ -2382,12 +2415,12 @@ class Toolbox
                         // append object reference in image link
                         $linked_object = null;
                         if (
-                              !($item instanceof CommonITILObject)
-                              && isset($item->input['_job'])
-                              && $item->input['_job'] instanceof CommonITILObject
+                            !($item instanceof CommonITILObject)
+                            && isset($item->input['_job'])
+                            && $item->input['_job'] instanceof CommonITILObject
                         ) {
                             $linked_object = $item->input['_job'];
-                        } else if ($item instanceof CommonDBTM) {
+                        } elseif ($item instanceof CommonDBTM) {
                             $linked_object = $item;
                         }
                         $object_url_param = null !== $linked_object
@@ -2396,14 +2429,14 @@ class Toolbox
                         $img = "<img alt='" . $image['tag'] . "' src='" . $base_path .
                           "/front/document.send.php?docid=" . $id . $object_url_param . "'/>";
 
-                      // 1 - Replace direct tag (with prefix and suffix) by the image
+                        // 1 - Replace direct tag (with prefix and suffix) by the image
                         $content_text = preg_replace(
                             '/' . Document::getImageTag($image['tag']) . '/',
                             $img,
                             $content_text
                         );
 
-                         // 2 - Replace img with tag in id attribute by the image
+                        // 2 - Replace img with tag in id attribute by the image
                         $regex = '/<img[^>]+' . preg_quote($image['tag'], '/') . '[^<]+>/im';
                         preg_match_all($regex, $content_text, $matches);
                         foreach ($matches[0] as $match_img) {
@@ -2424,11 +2457,11 @@ class Toolbox
                                 $width = $img_infos[0];
                                 $height = $img_infos[1];
                             }
-
                             // Avoids creating a link within a link, when the image is already in an <a> tag
                             $add_link_tmp = $add_link;
                             if ($add_link) {
-                                $pattern = '/<a[^>]*>[^<>]*?<img[^>]+' . preg_quote($image['tag'], '/') . '[^<]+>[^<>]*?<\/a>/s';
+                                // Try to detect any unclosed `<a>` tag that preced the `<img>` tag
+                                $pattern = '/<a[^>]*>((?!<\/a>).)*<img[^>]*' . preg_quote($image['tag'], '/') . '/s';
                                 if (preg_match($pattern, $content_text)) {
                                     $add_link_tmp = false;
                                 }
@@ -2442,7 +2475,7 @@ class Toolbox
                                 $object_url_param
                             );
                             if (empty($new_image)) {
-                                  $new_image = '#' . $image['tag'] . '#';
+                                $new_image = '#' . $image['tag'] . '#';
                             }
                             $content_text = str_replace(
                                 $match_img,
@@ -2463,11 +2496,11 @@ class Toolbox
                                 '_do_notif'     => false,
                                 '_disablenotif' => true,
                                 'itemtype'      => $item->getType(),
-                                'items_id'      => $item->fields['id']
+                                'items_id'      => $item->fields['id'],
                             ]);
                         }
                     } else {
-                      // Remove tag
+                        // Remove tag
                         $content_text = preg_replace(
                             '/' . Document::getImageTag($image['tag']) . '/',
                             '',
@@ -2511,7 +2544,7 @@ class Toolbox
     public static function jsonDecode($encoded, $assoc = false)
     {
         if (!is_string($encoded)) {
-            self::log(null, LogLevel::NOTICE, ['Only strings can be json to decode!']);
+            self::log(LogLevel::NOTICE, ['Only strings can be json to decode!']);
             return $encoded;
         }
 
@@ -2521,7 +2554,7 @@ class Toolbox
         }
 
         if ($json_data === null) {
-            self::log(null, LogLevel::NOTICE, ['Unable to decode JSON string! Is this really JSON?']);
+            self::log(LogLevel::NOTICE, ['Unable to decode JSON string! Is this really JSON?']);
             return $encoded;
         }
 
@@ -2619,14 +2652,14 @@ class Toolbox
                 $formats = [
                     0 => 'Y-m-d',
                     1 => 'd-m-Y',
-                    2 => 'm-d-Y'
+                    2 => 'm-d-Y',
                 ];
                 break;
             case 'php':
                 $formats = [
                     0 => __('YYYY-MM-DD'),
                     1 => __('DD-MM-YYYY'),
-                    2 => __('MM-DD-YYYY')
+                    2 => __('MM-DD-YYYY'),
                 ];
                 break;
             default:
@@ -2771,8 +2804,8 @@ class Toolbox
 
         $i = 0;
         do {
-           // Iterate on possible suffix while dest exists.
-           // This case will almost never exists as dest is based on an unique id.
+            // Iterate on possible suffix while dest exists.
+            // This case will almost never exists as dest is based on an unique id.
             $dest = GLPI_PICTURE_DIR
             . '/' . $subdirectory
             . '/' . $filename . ($i > 0 ? '_' . $i : '') . '.' . $ext;
@@ -2787,7 +2820,7 @@ class Toolbox
             if (!rename($src, $dest)) {
                 return false;
             }
-        } else if (!copy($src, $dest)) {
+        } elseif (!copy($src, $dest)) {
             return false;
         }
 
@@ -2815,7 +2848,7 @@ class Toolbox
 
         $fullpath = realpath($fullpath);
         if (!str_starts_with($fullpath, realpath(GLPI_PICTURE_DIR))) {
-           // Prevent deletion of a file ouside pictures directory
+            // Prevent deletion of a file ouside pictures directory
             return false;
         }
 
@@ -2864,18 +2897,18 @@ class Toolbox
                 $formatted = $matches[1];
                 $suffix = $matches[2];
             } else {
-               // Unknwown format
+                // Unknwown format
                 $formatted = $number;
             }
-        } else if ($number < 900) {
+        } elseif ($number < 900) {
             $formatted = number_format($number);
-        } else if ($number < 900000) {
+        } elseif ($number < 900000) {
             $formatted = number_format($number / 1000, $precision);
             $suffix = "K";
-        } else if ($number < 900000000) {
+        } elseif ($number < 900000000) {
             $formatted = number_format($number / 1000000, $precision);
             $suffix = "M";
-        } else if ($number < 900000000000) {
+        } elseif ($number < 900000000000) {
             $formatted = number_format($number / 1000000000, $precision);
             $suffix = "B";
         } else {
@@ -2918,17 +2951,17 @@ HTML;
         $seed  = 131;
         $seed2 = 137;
         $hash  = 0;
-       // Make hash more sensitive for short string like 'a', 'b', 'c'
+        // Make hash more sensitive for short string like 'a', 'b', 'c'
         $str .= 'x';
         $max = intval(9007199254740991 / $seed2);
 
-       // Backport of Javascript function charCodeAt()
+        // Backport of Javascript function charCodeAt()
         $getCharCode = function ($c) {
-            list(, $ord) = unpack('N', mb_convert_encoding($c, 'UCS-4BE', 'UTF-8'));
+            [, $ord] = unpack('N', mb_convert_encoding($c, 'UCS-4BE', 'UTF-8'));
             return $ord;
         };
 
-       // generate integer hash
+        // generate integer hash
         for ($i = 0, $ilen = mb_strlen($str, 'UTF-8'); $i < $ilen; $i++) {
             if ($hash > $max) {
                 $hash = intval($hash / $seed2);
@@ -2936,7 +2969,7 @@ HTML;
             $hash = $hash * $seed + $getCharCode(mb_substr($str, $i, 1, 'UTF-8'));
         }
 
-       //get Hsl
+        //get Hsl
         $base_L = $base_S = [0.6, 0.65, 0.7];
         $H = $hash % 359;
         $hash = intval($hash / 360);
@@ -2946,10 +2979,10 @@ HTML;
         $hsl = [
             'H' => $H,
             'S' => $S,
-            'L' => $L
+            'L' => $L,
         ];
 
-       // return hex
+        // return hex
         return "#" . Color::hslToHex($hsl);
     }
 
@@ -2973,15 +3006,15 @@ HTML;
                 $rgb_color = [
                     "R" => intval($matches[1]),
                     "G" => intval($matches[2]),
-                    "B" => intval($matches[3])
+                    "B" => intval($matches[3]),
                 ];
-                $alpha = isset($matches[4]) ? str_pad(dechex((int)round(floatval($matches[4]) * 255)), 2, '0', STR_PAD_LEFT) : '';
+                $alpha = isset($matches[4]) ? str_pad(dechex((int) round(floatval($matches[4]) * 255)), 2, '0', STR_PAD_LEFT) : '';
                 $color = Color::rgbToHex($rgb_color) . $alpha;
             }
 
             $color = str_replace("#", "", $color);
 
-           // if transparency present, get only the color part
+            // if transparency present, get only the color part
             if (strlen($color) === 8 && preg_match('/^[a-fA-F0-9]+$/', $color)) {
                 $tmp = $color;
                 $alpha = hexdec(substr($tmp, 6, 2));
@@ -2994,7 +3027,7 @@ HTML;
 
             $color_inst = new Color($color);
 
-           // adapt luminance part
+            // adapt luminance part
             if ($color_inst->isLight()) {
                 $hsl = Color::hexToHsl($color);
                 $hsl['L'] = max(0, $hsl['L'] - ($offset / 100));
@@ -3020,7 +3053,7 @@ HTML;
      */
     public static function getHeader(string $name)
     {
-       // Format expected header name
+        // Format expected header name
         $name = "HTTP_" . str_replace("-", "_", strtoupper($name));
 
         return $_SERVER[$name] ?? null;
@@ -3047,7 +3080,7 @@ HTML;
     {
         $deprecated = "Glpi\Api\Deprecated\DeprecatedInterface";
 
-       // Insert namespace if missing
+        // Insert namespace if missing
         if (strpos($class, "Glpi\Api\Deprecated") === false) {
             $class = "Glpi\Api\Deprecated\\$class";
         }
@@ -3064,13 +3097,32 @@ HTML;
      */
     public static function isValidWebUrl($url): bool
     {
-       // Verify absence of known disallowed characters.
-       // It is still possible to have false positives, but a fireproof check would be too complex
-       // (or would require usage of a dedicated lib).
-        return (preg_match(
-            "/^(?:http[s]?:\/\/(?:[^\s`!(){};'\",<>«»“”‘’+]+|[^\s`!()\[\]{};:'\".,<>?«»“”‘’+]))$/iu",
-            $url
-        ) === 1);
+        // Based on https://github.com/symfony/symfony/blob/7.3/src/Symfony/Component/Validator/Constraints/UrlValidator.php
+        $pattern = '~^
+            (http|https)://                                 # protocol
+            (((?:[\_\.\pL\pN-]|%[0-9A-Fa-f]{2})+:)?((?:[\_\.\pL\pN-]|%[0-9A-Fa-f]{2})+)@)?  # basic auth
+            (
+                (?:
+                    (?:xn--[a-z0-9-]++\.)*+xn--[a-z0-9-]++            # a domain name using punycode
+                        |
+                    (?:[\pL\pN\pS\pM\-\_]++\.)+[\pL\pN\pM]++          # a multi-level domain name
+                        |
+                    [a-z0-9\-\_]++                                    # a single-level domain name
+                )\.?
+                    |                                                 # or
+                \d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}                    # an IP address
+                    |                                                 # or
+                \[
+                    (?:(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){6})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:::(?:(?:(?:[0-9a-f]{1,4})):){5})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:[0-9a-f]{1,4})))?::(?:(?:(?:[0-9a-f]{1,4})):){4})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,1}(?:(?:[0-9a-f]{1,4})))?::(?:(?:(?:[0-9a-f]{1,4})):){3})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,2}(?:(?:[0-9a-f]{1,4})))?::(?:(?:(?:[0-9a-f]{1,4})):){2})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,3}(?:(?:[0-9a-f]{1,4})))?::(?:(?:[0-9a-f]{1,4})):)(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,4}(?:(?:[0-9a-f]{1,4})))?::)(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,5}(?:(?:[0-9a-f]{1,4})))?::)(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,6}(?:(?:[0-9a-f]{1,4})))?::))))
+                \]  # an IPv6 address
+            )
+            (:[0-9]+)?                              # a port (optional)
+            (?:/ (?:[\pL\pN\pS\pM\-._\~!$&\'()*+,;=:@]|%[0-9A-Fa-f]{2})* )*    # a path
+            (?:\? (?:[\pL\pN\-._\~!$&\'\[\]()*+,;=:@/?]|%[0-9A-Fa-f]{2})* )?   # a query (optional)
+            (?:\# (?:[\pL\pN\-._\~!$&\'()*+,;=:@/?]|%[0-9A-Fa-f]{2})* )?       # a fragment (optional)
+        $~ixuD';
+
+        return preg_match($pattern, $url) === 1;
     }
 
     /**
@@ -3083,7 +3135,7 @@ HTML;
      */
     public static function hasTrait($class, string $trait): bool
     {
-       // Get traits of all parent classes
+        // Get traits of all parent classes
         do {
             $traits = class_uses($class, true);
             if (in_array($trait, $traits, true)) {
@@ -3094,16 +3146,16 @@ HTML;
         return false;
     }
 
-   /*
-    * Normalizes file name
-    *
-    * @param string filename
-    *
-    * @return string
-    */
+    /*
+     * Normalizes file name
+     *
+     * @param string filename
+     *
+     * @return string
+     */
     public static function filename($filename): string
     {
-       //remove extension
+        //remove extension
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
         $filename = self::slugify(
             preg_replace(
@@ -3116,7 +3168,7 @@ HTML;
 
         $namesize = strlen($filename) + strlen($ext) + 1;
         if ($namesize > 255) {
-           //limit to 255 characters
+            //limit to 255 characters
             $filename = substr($filename, 0, $namesize - 255);
         }
 
@@ -3176,7 +3228,7 @@ HTML;
         if (isset($tabs['no_all_tab'])) {
             unset($tabs['no_all_tab']);
         }
-       // Add all tab
+        // Add all tab
         $tabs[-1] = 'All';
 
         return $tabs;
@@ -3250,7 +3302,7 @@ HTML;
         }
 
         if (!preg_match('/(\d+).*?(\w+)/', $size, $matches)) {
-            // Unkown format, keep the string as it is
+            // Unknown format, keep the string as it is
             return $size;
         }
         $supported_sizes = [
@@ -3263,7 +3315,7 @@ HTML;
         ];
         if (count($matches) >= 3 && isset($supported_sizes[strtolower($matches[2])])) {
             // Known format
-            $size = (int)$matches[1];
+            $size = (int) $matches[1];
             $size *= pow(1024, $supported_sizes[strtolower($matches[2])]);
         }
         return $size;
@@ -3279,5 +3331,14 @@ HTML;
     final public static function getNormalizedItemtype(string $itemtype)
     {
         return strtolower(str_replace('\\', '', $itemtype));
+    }
+
+    /**
+     * @param string $message
+     * @return string
+     */
+    public static function cleanPaths(string $message): string
+    {
+        return ErrorUtils::cleanPaths($message);
     }
 }

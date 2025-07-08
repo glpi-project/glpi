@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -65,7 +65,7 @@ class Item_RemoteManagement extends CommonDBChild
                 self::getTable(),
                 [
                     'items_id'     => $item->getID(),
-                    'itemtype'     => $item->getType()
+                    'itemtype'     => $item->getType(),
                 ]
             );
         }
@@ -98,8 +98,9 @@ class Item_RemoteManagement extends CommonDBChild
             'FROM'      => self::getTable(),
             'WHERE'     => [
                 'itemtype'     => $item->getType(),
-                'items_id'     => $item->fields['id']
-            ]
+                'items_id'     => $item->fields['id'],
+                'is_deleted'   => 0,
+            ],
         ]);
         return $iterator;
     }
@@ -143,6 +144,10 @@ class Item_RemoteManagement extends CommonDBChild
             'canedit'  => $canedit && !(!empty($withtemplate) && $withtemplate == 2),
             'form_url' => self::getFormURL() . "?itemtype=$itemtype&items_id=$ID&withtemplate=$withtemplate",
             'entries'  => $entries,
+            'massiveactionparams' => [
+                'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
+                'container'     => 'mass' . static::class . mt_rand(),
+            ],
         ]);
     }
 
@@ -190,7 +195,7 @@ class Item_RemoteManagement extends CommonDBChild
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -221,7 +226,7 @@ class Item_RemoteManagement extends CommonDBChild
         $name = self::getTypeName(Session::getPluralNumber());
         $tab[] = [
             'id'                 => 'remote_management',
-            'name'               => $name
+            'name'               => $name,
         ];
 
         $tab[] = [
@@ -233,8 +238,8 @@ class Item_RemoteManagement extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -247,8 +252,8 @@ class Item_RemoteManagement extends CommonDBChild
             'datatype'           => 'dropdown',
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         return $tab;
@@ -260,10 +265,19 @@ class Item_RemoteManagement extends CommonDBChild
         $itemtype = null;
         if (isset($options['itemtype']) && !empty($options['itemtype'])) {
             $itemtype = $options['itemtype'];
-        } else if (isset($this->fields['itemtype']) && !empty($this->fields['itemtype'])) {
+        } elseif (isset($this->fields['itemtype']) && !empty($this->fields['itemtype'])) {
             $itemtype = $this->fields['itemtype'];
         } else {
             throw new \RuntimeException('Unable to retrieve itemtype');
+        }
+
+        if (!is_a($itemtype, CommonDBTM::class, true)) {
+            throw new \RuntimeException(
+                sprintf(
+                    'Item type %s is not a valid item type',
+                    $itemtype
+                )
+            );
         }
 
         if (!Session::haveRight($itemtype::$rightname, READ)) {

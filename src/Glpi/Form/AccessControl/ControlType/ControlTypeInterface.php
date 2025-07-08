@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,6 +39,8 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Form;
 
 interface ControlTypeInterface
@@ -58,20 +60,19 @@ interface ControlTypeInterface
     public function getIcon(): string;
 
     /**
-     * Get the free json config config class name for this object.
+     * Get a new instance of the config object for this control type.
      *
-     * @return string Class name which implements JsonFieldInterface
+     * @return JsonFieldInterface
      */
-    public function getConfigClass(): string;
+    public function getConfig(): JsonFieldInterface;
 
     /**
      * Get the warnings for the given form.
      *
      * @param  Form $form
-     * @param  string[] $warnings
      * @return string[]
      */
-    public function getWarnings(Form $form, array $warnings): array;
+    public function getWarnings(Form $form): array;
 
     /**
      * Render the configuration form of this control type.
@@ -101,13 +102,9 @@ interface ControlTypeInterface
 
     /**
      * Check if the current user can answer the given form.
-     *
-     * @param JsonFieldInterface $config
-     * @param FormAccessParameters $parameters
-     *
-     * @return AccessVote
      */
     public function canAnswer(
+        Form $form,
         JsonFieldInterface $config,
         FormAccessParameters $parameters
     ): AccessVote;
@@ -119,4 +116,13 @@ interface ControlTypeInterface
      * @return bool
      */
     public function allowUnauthenticated(JsonFieldInterface $config): bool;
+
+    public function exportDynamicConfig(
+        JsonFieldInterface $config
+    ): DynamicExportDataField;
+
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        DatabaseMapper $mapper,
+    ): array;
 }

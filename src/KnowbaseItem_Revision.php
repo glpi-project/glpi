@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -69,12 +69,12 @@ class KnowbaseItem_Revision extends CommonDBTM
             if ($item instanceof KnowbaseItem) {
                 $where = [
                     'knowbaseitems_id' => $item->getID(),
-                    'language'         => ''
+                    'language'         => '',
                 ];
             } else {
                 $where = [
                     'knowbaseitems_id' => $item->fields['knowbaseitems_id'],
-                    'language'         => $item->fields['language']
+                    'language'         => $item->fields['language'],
                 ];
             }
 
@@ -106,7 +106,7 @@ class KnowbaseItem_Revision extends CommonDBTM
         global $DB;
 
         if (isset($_GET["start"])) {
-            $start = (int)$_GET["start"];
+            $start = (int) $_GET["start"];
         } else {
             $start = 0;
         }
@@ -115,7 +115,7 @@ class KnowbaseItem_Revision extends CommonDBTM
         if ($item::class === KnowbaseItem::class) {
             $kb_item_id = $item->getID();
         } else {
-            $kb_item_id = $item->fields['knowbaseitems_id'];
+            $kb_item_id = (int) $item->fields['knowbaseitems_id'];
             $language   = $item->fields['language'];
         }
         $where = [
@@ -138,13 +138,21 @@ class KnowbaseItem_Revision extends CommonDBTM
         $user = new User();
         $user->getFromDB($item->fields['users_id']);
         $revisions = $DB->request([
+            'SELECT' => [
+                'id',
+                'knowbaseitems_id',
+                'revision',
+                'users_id',
+                'date',
+            ],
             'FROM' => 'glpi_knowbaseitems_revisions',
             'WHERE' => $where,
-            'ORDER' => 'id DESC'
+            'ORDER' => 'id DESC',
         ]);
+
         $is_checked = true;
         $author_cache = [
-            $item->fields['users_id'] => $user->getLink()
+            $item->fields['users_id'] => $user->getLink(),
         ];
         $entries = [
             [
@@ -152,8 +160,8 @@ class KnowbaseItem_Revision extends CommonDBTM
                 'selections' => '<input type="radio" name="oldid" value="0" style="visibility:hidden"/><input type="radio" name="diff" value="0" checked="checked"/>',
                 'author' => $author_cache[$item->fields['users_id']],
                 'date_creation' => $item->fields['date_mod'],
-                'actions' => ''
-            ]
+                'actions' => '',
+            ],
         ];
         $show_msg = __s('show');
         $restore_msg = __s('restore');
@@ -193,7 +201,7 @@ HTML;
                 'selections' => $selection_controls,
                 'author' => $author_cache[$revision['users_id']],
                 'date_creation' => $revision['date'],
-                'actions' => $actions
+                'actions' => $actions,
             ];
         }
 
@@ -205,11 +213,11 @@ HTML;
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
-                'number' => __('#'),
+                'number' => '#',
                 'selections' => '',
                 'author' => __('Author'),
                 'date_creation' => __('Creation date'),
-                'actions' => ''
+                'actions' => '',
             ],
             'formatters' => [
                 'selections' => 'raw_html',
@@ -264,8 +272,8 @@ HTML;
             'FROM'   => 'glpi_knowbaseitems_revisions',
             'WHERE'  => [
                 'knowbaseitems_id'   => $this->fields['knowbaseitems_id'],
-                'language'           => $this->fields['language']
-            ]
+                'language'           => $this->fields['language'],
+            ],
         ])->current();
 
         $rev = $result['revision'];

@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -29,47 +28,43 @@
  # along with this program.  If not, see <https://www.gnu.org/licenses/>.
  #
  # ---------------------------------------------------------------------
-#}
+ #}
 
 {% extends "generic_show_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
 {% block form_fields %}
-    {% set field_options = {
-        label_class: 'col-xxl-2',
-        input_class: 'col-xxl-10'
-    } %}
     {% if not id %}
         {{ inputs.hidden('users_id', item.fields['users_id']) }}
     {% endif %}
-    {% if params['from_planning_edit_ajax'] %}
+    {% if params['from_planning_edit_ajax'] ?? false %}
         {{ inputs.hidden('from_planning_edit_ajax', 1) }}
     {% endif %}
 
-    {{ fields.textField('name', item.fields['name'], __('Title'), field_options|merge({
+    {{ fields.textField('name', item.fields['name'], __('Title'), {
         full_width: true,
-    })) }}
+    }) }}
 
     {% if params['from_planning_ajax'] is not defined %}
         {% set visibility_fields %}
-            {{ fields.datetimeField('begin_view_date', item.fields['begin_view_date'], __('Begin'), field_options|merge({
+            {{ fields.datetimeField('begin_view_date', item.fields['begin_view_date'], __('Begin'), {
                 clearable: true,
                 readonly: not params['canedit'],
                 mb: '',
                 is_horizontal: false,
-            })) }}
-            {{ fields.datetimeField('end_view_date', item.fields['end_view_date'], __('End'), field_options|merge({
+            }) }}
+            {{ fields.datetimeField('end_view_date', item.fields['end_view_date'], __('End'), {
                 clearable: true,
                 readonly: not params['canedit'],
                 mb: '',
                 is_horizontal: false,
-            })) }}
+            }) }}
         {% endset %}
-        {{ fields.htmlField('', visibility_fields, __('Visibility'), field_options|merge({
+        {{ fields.htmlField('', visibility_fields, __('Visibility'), {
             full_width: true,
             wrapper_class: 'd-flex',
-        })) }}
+        }) }}
     {% endif %}
 
     {% set state_dropdown %}
@@ -79,12 +74,12 @@
             {{ call('Planning::getState', [item.fields['state']]) }}
         {% endif %}
     {% endset %}
-    {{ fields.htmlField('', state_dropdown, __('Status'), field_options|merge({
+    {{ fields.htmlField('', state_dropdown, __('Status'), {
         full_width: true,
-    })) }}
+    }) }}
 
     {% set calendar_field %}
-        {% if params['from_planning_ajax'] %}
+        {% if params['from_planning_ajax'] is defined %}
             {{ inputs.hidden('plan[begin]', params['begin']) }}
             {{ inputs.hidden('plan[end]', params['end']) }}
             {{ __('From %1$s to %2$s')|format(params['begin']|formatted_datetime, params['end']|formatted_datetime) }}
@@ -118,8 +113,8 @@
                 {% endif %}
             {% else %}
                 {% if params['canedit'] %}
-                    <div id="plan{{ rand }}" onclick="showPlan{{ rand }}()">
-                        <span class="showplan">
+                    <div id="plan{{ rand }} cursor-pointer" onclick="showPlan{{ rand }}()" role="button">
+                        <span class="fw-bold text-decoration-none text-success">
                 {% endif %}
                 {% if item.fields['begin'] is not empty or item.fields['end'] is not empty %}
                     {{ __('From %1$s to %2$s')|format(item.fields['begin']|formatted_datetime, item.fields['end']|formatted_datetime) }}
@@ -141,13 +136,13 @@
             {% endif %}
         {% endif %}
     {% endset %}
-    {{ fields.htmlField('', calendar_field, _n('Calendar', 'Calendars', 1), field_options|merge({
+    {{ fields.htmlField('', calendar_field, _n('Calendar', 'Calendars', 1), {
         full_width: true,
-    })) }}
+    }) }}
 
-    {{ fields.textareaField('text', item.fields['text']|safe_html, __('Description'), field_options|merge({
+    {{ fields.textareaField('text', item.fields['text']|safe_html, __('Description'), {
         full_width: true,
         enable_richtext: true,
         enable_fileupload: true,
-    })) }}
+    }) }}
 {% endblock %}

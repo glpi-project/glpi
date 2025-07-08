@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -49,7 +48,7 @@
         '',
         endpoint_doc
     ) }}
-    {{ fields.textField('url_base_api', api_url, __('URL of the API'), {
+    {{ fields.textField('_url_base_api', api_url, __('URL of the API'), {
         readonly: true,
         copyable: true
     }) }}
@@ -82,7 +81,7 @@
          legacy_doc
       ) }}
       {{ fields.nullField() }}
-      {{ fields.textField('legacy_url_base_api', legacy_api_url, __('URL of the API'), {
+      {{ fields.textField('_legacy_url_base_api', legacy_api_url, __('URL of the API'), {
          readonly: true,
          copyable: true
       }) }}

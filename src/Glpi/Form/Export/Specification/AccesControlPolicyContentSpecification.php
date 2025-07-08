@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,6 +38,6 @@ namespace Glpi\Form\Export\Specification;
 final class AccesControlPolicyContentSpecification implements ContentSpecificationInterface
 {
     public string $strategy;
-    public array $config_data;
+    public array $config;
     public bool $is_active;
 }

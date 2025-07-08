@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -60,12 +59,12 @@ final class CommentDescriptionTagProviderTest extends DbTestCase
             new Tag(
                 label: 'Comment description: First comment description',
                 value: $this->getCommentId($form, 'First comment title'),
-                provider: CommentDescriptionTagProvider::class,
+                provider: new CommentDescriptionTagProvider(),
             ),
             new Tag(
                 label: 'Comment description: Second comment description',
                 value: $this->getCommentId($form, 'Second comment title'),
-                provider: CommentDescriptionTagProvider::class,
+                provider: new CommentDescriptionTagProvider(),
             ),
         ]);
     }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,7 +38,7 @@
  */
 class PendingReasonCron extends CommonDBTM
 {
-    const TASK_NAME = 'pendingreason_autobump_autosolve';
+    public const TASK_NAME = 'pendingreason_autobump_autosolve';
 
     /**
      * Get task description
@@ -86,7 +86,7 @@ class PendingReasonCron extends CommonDBTM
             Problem::getType(),
         ];
 
-        $now = date("Y-m-d H:i:s");
+        $now = $_SESSION['glpi_currenttime'];
 
         $data = $DB->request([
             'SELECT' => 'id',
@@ -94,8 +94,8 @@ class PendingReasonCron extends CommonDBTM
             'WHERE'  => [
                 'pendingreasons_id'  => ['>', 0],
                 'followup_frequency' => ['>', 0],
-                'itemtype'           => $targets
-            ]
+                'itemtype'           => $targets,
+            ],
         ]);
 
         foreach ($data as $row) {
@@ -135,7 +135,7 @@ class PendingReasonCron extends CommonDBTM
                 $success = $pending_item->update([
                     'id'             => $pending_item->getID(),
                     'bump_count'     => $pending_item->fields['bump_count'] + 1,
-                    'last_bump_date' => date("Y-m-d H:i:s"),
+                    'last_bump_date' => $_SESSION['glpi_currenttime'],
                 ]);
 
                 if (!$success) {
@@ -158,7 +158,7 @@ class PendingReasonCron extends CommonDBTM
 
                 // Send notification
                 \NotificationEvent::raiseEvent('auto_reminder', $item);
-            } else if ($resolve && $now > $resolve) {
+            } elseif ($resolve && $now > $resolve) {
                 // Load solution template
                 $solution_template = SolutionTemplate::getById($pending_reason->fields['solutiontemplates_id']);
                 if (!$solution_template) {
@@ -177,6 +177,7 @@ class PendingReasonCron extends CommonDBTM
                     '_disable_auto_assign' => true,
                 ]);
                 $task->addVolume(1);
+                NotificationEvent::raiseEvent('pendingreason_close', $item);
             }
         }
 

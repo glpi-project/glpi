@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -37,8 +37,14 @@
     <input type="hidden" name="{{ 'Glpi\\Asset\\AssetDefinition'|itemtype_foreign_key }}" value="{{ assetdefinitions_id }}">
 
     {{ fields.textField('label', item.fields['label'], __('Label')) }}
-    {{ fields.textField('name', item.fields['name'], __('System name'), {
-        readonly: not item.isNewItem()
+    {% set helper %}
+        {{ __('The system name field corresponds to what will be used when development is involved. Examples: API calls, webhooks, etc.') }}
+        {{ __('In the legacy API, the field name is prefixed by "custom_" to avoid conflicts with standard fields.') }}
+    {% endset %}
+    {{ fields.textField('system_name', item.fields['system_name'], __('System name'), {
+        readonly: not item.isNewItem(),
+        required: true,
+        helper: helper
     }) }}
     {{ fields.dropdownArrayField('type', item.fields['type']|default('Glpi\\Asset\\CustomFieldType\\StringType'), field_types, _n('Type', 'Types', 1), {
         readonly: not item.isNewItem()
@@ -63,8 +69,12 @@
 
     <script>
         $(() => {
-            $('#customfield_form_container input[name="name"]').on('input', () => {
-                $('input[name="name"]').data('manually_changed', true);
+            $('#customfield_form_container input[name="system_name"]').on('input', () => {
+                if ($('input[name="system_name"]').val() === '') {
+                    $('input[name="system_name"]').data('manually_changed', false);
+                } else {
+                    $('input[name="system_name"]').data('manually_changed', true);
+                }
             });
             const getSelectedType = () => {
                 return $('#customfield_form_container select[name="type"], #customfield_form_container input[name="type"]').first().val();
@@ -87,12 +97,12 @@
                     // System name shouldn't be changed for existing custom fields
                     return;
                 {% endif %}
-                if ($('#customfield_form_container input[name="name"]').data('manually_changed')) {
+                if ($('#customfield_form_container input[name="system_name"]').data('manually_changed')) {
                     return;
                 }
                 // label is made lowercase and spaces are replaced with underscores. All other characters are removed
-                $('#customfield_form_container input[name="name"]')
-                    .val($('#customfield_form_container input[name="label"]').val().toLowerCase().replace(/ /g, '_').replace(/[^a-z_]/g, ''));
+                $('#customfield_form_container input[name="system_name"]')
+                    .val($('#customfield_form_container input[name="label"]').val().normalize('NFD').toLowerCase().replace(/ /g, '_').replace(/[^a-z0-9_]/g, ''));
             };
             const updateDefaultValueField = () => {
                 // get all inputs with name starting with field_options and create an object with the values

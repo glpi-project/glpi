@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,7 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 
 /**
@@ -51,7 +50,7 @@ class CommonITILRecurrentCron extends CommonDBTM
     public static function cronInfo(): array
     {
         return [
-            'description' => __("Create recurrent tickets and changes")
+            'description' => __("Create recurrent tickets and changes"),
         ];
     }
 
@@ -69,7 +68,7 @@ class CommonITILRecurrentCron extends CommonDBTM
 
         $total = 0;
 
-       // Concrete classes for which recurrent items can be created
+        // Concrete classes for which recurrent items can be created
         $targets = [
             TicketRecurrent::class,
             RecurrentChange::class,
@@ -83,9 +82,9 @@ class CommonITILRecurrentCron extends CommonDBTM
                     'is_active'          => 1,
                     'OR'                 => [
                         ['end_date' => null],
-                        ['end_date' => ['>', QueryFunction::now()]]
-                    ]
-                ]
+                        ['end_date' => ['>', QueryFunction::now()]],
+                    ],
+                ],
             ]);
 
             foreach ($iterator as $data) {

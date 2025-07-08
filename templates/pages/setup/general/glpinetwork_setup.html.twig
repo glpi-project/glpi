@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -29,7 +28,7 @@
  # along with this program.  If not, see <https://www.gnu.org/licenses/>.
  #
  # ---------------------------------------------------------------------
-#}
+ #}
 
 {% extends 'pages/setup/general/base_form.html.twig' %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
@@ -63,8 +62,6 @@
 
     {{ fields.textareaField('glpinetwork_registration_key', registration_key, __('Registration key'), {
         full_width: true,
-        label_class: 'col-xxl-2',
-        input_class: 'col-xxl-10',
         rows: 10
     }) }}
 
@@ -79,29 +76,43 @@
             {% endset %}
             {{ fields.htmlField('', validation_message, null, {
                 full_width: true,
-                label_class: 'col-xxl-2',
-                input_class: 'col-xxl-10',
             }) }}
         {% endif %}
 
         {% if informations['is_valid'] %}
             {{ fields.htmlField('', informations['subscription']['title']|e, __('Subscription'), {
                 full_width: true,
-                label_class: 'col-xxl-2',
-                input_class: 'col-xxl-10',
             }) }}
 
             {{ fields.htmlField('', __('From %1$s to %2$s')|format(informations['subscription']['begin_date']|formatted_date, informations['subscription']['end_date']|formatted_date)|e, __('Period'), {
                 full_width: true,
-                label_class: 'col-xxl-2',
-                input_class: 'col-xxl-10',
             }) }}
 
             {{ fields.htmlField('', informations['owner']['name']|e, __('Registered by'), {
                 full_width: true,
-                label_class: 'col-xxl-2',
-                input_class: 'col-xxl-10',
             }) }}
         {% endif %}
     {% endif %}
+
+    {{ fields.largeTitle(__('Marketplace')) }}
+
+    {{ fields.dropdownArrayField(
+        'marketplace_replace_plugins',
+        config('marketplace_replace_plugins')|default(1),
+        {
+            '1': __('Ask before replacing'),
+            '2': __('Replace plugins page with marketplace'),
+            '3': __('Never replace plugins page')
+        },
+        __('Plugin page replacement'),
+        {
+            'full_width': true,
+            'add_field_html': '<div class="form-text">' ~ __('Choose whether to replace the classic plugins page with the new marketplace interface.') ~ '</div>'
+        }
+    ) }}
+
+    {{ fields.htmlField('', '<a href="' ~ path('/front/marketplace.php') ~ '" class="btn btn-primary">' ~ __('Access GLPI Network Marketplace') ~ '</a>', null, {
+        full_width: true,
+    }) }}
+
 {% endblock %}

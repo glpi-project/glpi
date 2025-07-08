@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -47,7 +47,7 @@ class HTMLTableCell extends HTMLTableEntity
     private $numberOfLines;
     private $start;
 
-   // List of rows that have specific attributs
+    // List of rows that have specific attributs
     private $attributForTheRow = false;
 
     /**
@@ -104,7 +104,7 @@ class HTMLTableCell extends HTMLTableEntity
             }
 
             $this->father->addSon($this, $header);
-        } else if (!is_null($this->header->getFather())) {
+        } elseif (!is_null($this->header->getFather())) {
             throw new HTMLTableCellWithoutFather();
         }
 

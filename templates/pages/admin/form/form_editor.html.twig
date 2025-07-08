@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -71,94 +70,95 @@
 
         <div class="designer col-12 px-4 py-3">
             <div class="row">
-
-                {# We expect to use the right side to display some extra info later so keep some available space for now #}
                 <div
-                    class="col-7"
+                    class="d-flex"
                     data-glpi-form-editor-form
                     data-glpi-form-editor-active-form
                 >
-                    <section
-                        data-glpi-form-editor-form-details
-                        data-glpi-form-editor-on-click="set-active"
-                        aria-label="{{ __("Form details") }}"
-                    >
-                        {# Card containing the main form data: title, header and status #}
-                        <div class="card form-details mb-3">
-                            <div
-                                class="card-status-start bg-primary"
-                                data-glpi-form-editor-active-form-status-indicator
-                            ></div>
-                            <div class="card-body">
+                    <div class="col-12 col-xxl-7">
+                        <section
+                            data-glpi-form-editor-form-details
+                            data-glpi-form-editor-on-click="set-active"
+                            aria-label="{{ __("Form details") }}"
+                        >
+                            {# Card containing the main form data: title, header and status #}
+                            <div class="card form-details">
+                                <div
+                                    class="card-status-start bg-primary"
+                                    data-glpi-form-editor-active-form-status-indicator
+                                ></div>
+                                <div class="card-body">
 
-                                {# Header #}
-                                <div class="d-flex">
-                                    {# Form's name #}
-                                    <input
-                                        title="{{ __("Form name") }}"
-                                        type="text"
-                                        class="form-control content-editable-h1"
-                                        name="name"
-                                        value="{{ item.fields.name }}"
-                                        data-glpi-form-editor-form-details-name
-                                    >
-
-                                    {# Form's status #}
-                                    <label class="form-check form-switch ms-3" style="margin-top: 2px">
-                                        <input type="hidden" value="0" name="is_active">
+                                    {# Header #}
+                                    <div class="d-flex">
+                                        {# Form's name #}
                                         <input
-                                            class="form-check-input"
-                                            name="is_active"
-                                            type="checkbox"
-                                            value="1"
-                                            {% if item.fields.is_active %} checked {% endif %}
+                                            title="{{ __("Form name") }}"
+                                            type="text"
+                                            class="form-control content-editable-h1"
+                                            name="name"
+                                            value="{{ item.fields.name }}"
+                                            data-glpi-form-editor-form-details-name
                                         >
-                                        <span class="form-check-label">{{ __("Active") }}</span>
-                                    </label>
-                                </div>
 
-                                {# Form's hader #}
-                                <div class="content-editable-tinymce" data-glpi-form-editor-header-description>
-                                    {{ fields.textareaField(
-                                        'header',
-                                        item.fields.header,
-                                        __('Header'),
-                                        base_field_options|merge({
-                                            'enable_richtext': true,
-                                            'add_body_classes': ['content-editable-tinymce-editor', 'text-muted'],
-                                            'editor_height': "0",
-                                            'rows' : 1,
-                                            'toolbar_location': 'bottom',
-                                            'mb': 'mb-0',
-                                            'aria_label': __("Form description"),
-                                            'placeholder': __("Add a description to your form..."),
-                                        })
-                                    ) }}
+                                        {# Form's status #}
+                                        <label class="form-check form-switch ms-3" style="margin-top: 2px">
+                                            <input type="hidden" value="0" name="is_active">
+                                            <input
+                                                class="form-check-input"
+                                                name="is_active"
+                                                type="checkbox"
+                                                value="1"
+                                                {% if item.fields.is_active %} checked {% endif %}
+                                            >
+                                            <span class="form-check-label">{{ __("Active") }}</span>
+                                        </label>
+                                    </div>
+
+                                    {# Form's hader #}
+                                    <div class="content-editable-tinymce" data-glpi-form-editor-header-description>
+                                        {{ fields.textareaField(
+                                            'header',
+                                            item.fields.header,
+                                            __('Header'),
+                                            base_field_options|merge({
+                                                'enable_richtext': true,
+                                                'add_body_classes': ['content-editable-tinymce-editor', 'text-muted'],
+                                                'editor_height': "0",
+                                                'rows' : 1,
+                                                'toolbar_location': 'bottom',
+                                                'mb': 'mb-0',
+                                                'aria_label': __("Form description"),
+                                                'placeholder': __("Add a description to your form..."),
+                                            })
+                                        ) }}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </section>
+                        </section>
 
-                    {# Display all questions here #}
-                    <div data-glpi-form-editor-blocks>
-                        {% set number_of_sections = item.getSections()|length %}
-                        {% for section in item.getSections() %}
-                            {{ include('pages/admin/form/form_section.html.twig', {
-                                'form'                  : item,
-                                'section'               : section,
-                                'question_types_manager': question_types_manager,
-                                'section_index'         : loop.index,
-                                'can_update'            : item.canUpdate(),
-                                'show_section_form'     : number_of_sections > 1,
-                                'number_of_sections'    : number_of_sections,
-                            }, with_context = false) }}
-                        {% endfor %}
+                        {# Display all questions here #}
+                        <div data-glpi-form-editor-blocks>
+                            {% set number_of_sections = item.getSections()|length %}
+                            {% for section in item.getSections() %}
+                                {{ include('pages/admin/form/form_section.html.twig', {
+                                    'form'                  : item,
+                                    'section'               : section,
+                                    'question_types_manager': question_types_manager,
+                                    'section_index'         : loop.index,
+                                    'can_update'            : item.canUpdate(),
+                                    'show_section_form'     : number_of_sections > 1,
+                                    'number_of_sections'    : number_of_sections,
+                                }, with_context = false) }}
+                            {% endfor %}
+                        </div>
                     </div>
 
-                    <div data-glpi-form-editor-form-extra-details>
+                    <div class="mb-3" data-glpi-form-editor-form-extra-details>
                         {{ include('pages/admin/form/form_toolbar.html.twig', {
-                            'can_update': item.canUpdate(),
-                            'form'      : item,
+                            'can_update'     : item.canUpdate(),
+                            'form'           : item,
+                            'vertical_layout': true,
                         }, with_context = false) }}
                     </div>
                 </div>
@@ -200,6 +200,7 @@
                 name="update"
                 form="main-form"
                 title="{{ __("Save and preview") }}"
+                data-glpi-form-editor-on-click="queue-preview"
                 data-glpi-form-editor-save-and-preview-action
                 data-glpi-form-editor-preview-url="{{ path('/Form/Render/' ~ item.fields.id) }}"
             >
@@ -207,6 +208,11 @@
                 <span class="d-none d-xl-block">{{ __("Save and preview") }}</span>
             </button>
         </div>
+
+        {# Visibility dropdown #}
+        {{ include('pages/admin/form/submit_button_conditional_visibility_dropdown.html.twig', {
+            'item'      : item,
+        }, with_context = false) }}
 
         {# Move to trashbin form action #}
         {% if item.canDelete() %}
@@ -235,7 +241,7 @@
                 name="purge"
                 form="main-form"
             >
-                <i class="ti ti-trash me-1"></i>{{ __("Delete permanently") }}
+                <i class="ti ti-trash me-1"></i>{{ _x("button", "Delete permanently") }}
             </button>
         {% endif %}
 
@@ -287,6 +293,9 @@
     {# Form id #}
     <input type="hidden" name="id" value="{{ item.fields.id }}">
 
+    {# Form uuid #}
+    <input type="hidden" name="uuid" value="{{ item.fields.uuid }}">
+
     {# Special inputs to indicate that missing sections and question must be deleted #}
     <input type="hidden" name="_delete_missing_questions" value="1">
     <input type="hidden" name="_delete_missing_sections" value="1">
@@ -303,6 +312,9 @@
 
     {# Move section modal #}
     {{ include('pages/admin/form/move_section_modal.html.twig') }}
+
+    {# Block has conditions modal #}
+    {{ include('pages/admin/form/item_has_conditions_modal.html.twig') }}
 </form>
 
 {% if item.canUpdate() %}
@@ -310,8 +322,8 @@
     <div data-glpi-form-editor-templates class="d-none">
 
         {# Load all possible questions types as hidden DOM content that is ready to be copied for a new question #}
-        {% for key, question_type in question_types_manager.getQuestionTypes() %}
-            <div data-glpi-form-editor-question-template="{{ key }}">
+        {% for question_type in question_types_manager.getQuestionTypes() %}
+            <div data-glpi-form-editor-question-template="{{ get_class(question_type) }}">
                 {# Render admin template for the given question type #}
                 {{ include('pages/admin/form/form_question.html.twig', {
                     'form'                        : item,
@@ -329,9 +341,6 @@
         <div data-glpi-form-editor-comment-template>
             {{ include('pages/admin/form/form_comment.html.twig', {
                 'form'                   : item,
-                'question_types_manager' : question_types_manager,
-                'question_type'          : question_type,
-                'question'               : null,
                 'section'                : null,
                 'can_update'             : true,
             }, with_context = false) }}
@@ -348,12 +357,32 @@
             }, with_context = false) }}
         </div>
 
+        {# Load new horizontal block template #}
+        <div data-glpi-form-editor-horizontal-block-template>
+            {{ include('pages/admin/form/form_horizontal_block.html.twig', {
+                'blocks' : null,
+                'can_update' : true,
+                'form' : item,
+            }, with_context = false) }}
+        </div>
+
+        {# Load new horizontal block placeholder template #}
+        <div data-glpi-form-editor-horizontal-block-placeholder-template>
+            {{ include('pages/admin/form/form_horizontal_block_placeholder.html.twig', {
+                'can_update': true,
+                'form'      : item,
+            }, with_context = false) }}
+        </div>
+
         {# Load all possible question types values #}
         <select data-glpi-form-editor-question-types-values>
-            {% for key, question_type in question_types_manager.getQuestionTypes() %}
+            {% for question_type in question_types_manager.getQuestionTypes() %}
+                {% set parent_category = question_types_manager.getCategoryKey(
+                    question_type.getCategory()
+                ) %}
                 <option
-                    data-glpi-form-editor-question-type="{{ question_type.getCategory().value }}"
-                    value="{{ key }}"
+                    data-glpi-form-editor-question-type="{{ parent_category }}"
+                    value="{{ get_class(question_type) }}"
                 >
                     {{ question_type.getName() }}
                 </option>
@@ -366,29 +395,49 @@
 <script defer type="module">
 (async () => {
     const modules = await Promise.all([
-        import("{{ js_path('js/modules/Forms/EditorController.js') }}"),
-        import("{{ js_path('js/modules/Forms/EditorConvertedExtractedDefaultValue.js') }}")
+        import("/js/modules/Forms/EditorController.js"),
+        import("/js/modules/Forms/EditorConvertedExtractedDefaultValue.js"),
+        import("/js/modules/Forms/EditorConvertedExtractedSelectableDefaultValue.js")
     ]);
     const GlpiFormEditorController = modules[0].GlpiFormEditorController;
     const EditorConvertedExtractedDefaultValue = modules[1].GlpiFormEditorConvertedExtractedDefaultValue;
+    const EditorConvertedExtractedSelectableDefaultValue = modules[2].GlpiFormEditorConvertedExtractedSelectableDefaultValue;
 
     const container_selector = "[data-glpi-form-editor-container]";
     const controller = new GlpiFormEditorController(
         container_selector,
         {{ item.fields.is_draft ? "true" : "false" }},
         "{{ question_types_manager.getDefaultTypeClass()|escape('js') }}",
-        "[data-glpi-form-editor-templates]"
+        "[data-glpi-form-editor-templates]",
+        {{ item.getDestinations()|map(destination => {
+            'id': destination.fields.id,
+            'name': destination.fields.name,
+            'conditions': destination.getConfiguredConditionsData(),
+        })|json_encode|raw }}
     );
 
     // Temporary solution, would be better to import it directly where it is needed but the current
     // design doesn't allow it.
     $(container_selector).data('EditorConvertedExtractedDefaultValue', EditorConvertedExtractedDefaultValue);
+    $(container_selector).data('EditorConvertedExtractedSelectableDefaultValue', EditorConvertedExtractedSelectableDefaultValue);
 
     {% for question_type in question_types_manager.getQuestionTypes() %}
         controller.registerQuestionTypeOptions(
             '{{ get_class(question_type)|e('js') }}',
             {{ question_type.getFormEditorJsOptions()|raw }}
         );
+
+        {% if question_type.getSubTypes() is not empty %}
+            controller.registerQuestionSubTypesOptions(
+                '{{ get_class(question_type)|e('js') }}',
+                {
+                    'subtypes'        : {{ question_type.getSubTypes()|json_encode|raw }},
+                    'default_value'   : '{{ question_type.getSubTypeDefaultValue(null)|e('js') }}',
+                    'field_name'      : '{{ question_type.getSubTypeFieldName()|e('js') }}',
+                    'field_aria_label': '{{ question_type.getSubTypeFieldAriaLabel()|e('js') }}',
+                }
+            )
+        {% endif %}
     {% endfor %}
 
     $(container_selector).data('controller', controller);
@@ -396,11 +445,3 @@
     $(container_selector).trigger("initialized");
 })();
 </script>
-
-<style>
-    /* Fix a weird scrolling issue, can't find a better solution at this time */
-    /* Must be inline style to make sure it is only applied to this page */
-    html {
-        overflow: hidden;
-    }
-</style>

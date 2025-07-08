@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -53,18 +52,18 @@ class ProjectTest extends DbTestCase
         $project = new \Project();
         $project_id_1 = $project->add([
             'name' => 'Project 1',
-            'auto_percent_done' => 1
+            'auto_percent_done' => 1,
         ]);
         $this->assertGreaterThan(0, (int) $project_id_1);
         $project_id_2 = $project->add([
             'name' => 'Project 2',
             'auto_percent_done' => 1,
-            'projects_id' => $project_id_1
+            'projects_id' => $project_id_1,
         ]);
         $this->assertGreaterThan(0, (int) $project_id_2);
         $project_id_3 = $project->add([
             'name' => 'Project 3',
-            'projects_id' => $project_id_2
+            'projects_id' => $project_id_2,
         ]);
         $this->assertGreaterThan(0, (int) $project_id_3);
 
@@ -73,14 +72,14 @@ class ProjectTest extends DbTestCase
             'name' => 'Project Task 1',
             'auto_percent_done' => 1,
             'projects_id' => $project_id_2,
-            'projecttasktemplates_id' => 0
+            'projecttasktemplates_id' => 0,
         ]);
         $this->assertGreaterThan(0, (int) $projecttask_id_1);
         $projecttask_id_2 = $projecttask->add([
             'name' => 'Project Task 2',
             'projects_id' => $project_id_2,
             'projecttasks_id' => $projecttask_id_1,
-            'projecttasktemplates_id' => 0
+            'projecttasktemplates_id' => 0,
         ]);
         $this->assertGreaterThan(0, (int) $projecttask_id_2);
 
@@ -92,7 +91,7 @@ class ProjectTest extends DbTestCase
         $this->assertTrue($project_3->getFromDB($project_id_3));
         $this->assertTrue($project_3->update([
             'id'           => $project_id_3,
-            'percent_done' => '10'
+            'percent_done' => '10',
         ]));
 
         // Reload projects to get newest values
@@ -109,7 +108,7 @@ class ProjectTest extends DbTestCase
 
         $this->assertTrue($projecttask_2->update([
             'id'           => $projecttask_id_2,
-            'percent_done' => '40'
+            'percent_done' => '40',
         ]));
 
         // Reload projects and tasks to get newest values
@@ -139,7 +138,7 @@ class ProjectTest extends DbTestCase
         $project = new \Project();
         $project_id_1 = $project->add([
             'name' => 'Project 1',
-            'auto_percent_done' => 1
+            'auto_percent_done' => 1,
         ]);
         $this->assertGreaterThan(0, (int) $project_id_1);
 
@@ -148,7 +147,7 @@ class ProjectTest extends DbTestCase
             'name' => 'Project Task 1',
             'projects_id' => $project_id_1,
             'projecttasktemplates_id' => 0,
-            'percent_done'  => 0
+            'percent_done'  => 0,
         ]);
         $this->assertGreaterThan(0, (int) $projecttask_id_1);
 
@@ -161,7 +160,7 @@ class ProjectTest extends DbTestCase
             'name' => 'Project Task 2',
             'projects_id' => $project_id_1,
             'projecttasktemplates_id' => 0,
-            'percent_done'  => 100
+            'percent_done'  => 100,
         ]);
         $this->assertGreaterThan(0, $projecttask_id_2);
 
@@ -284,7 +283,7 @@ class ProjectTest extends DbTestCase
 
         $projects_id = $project->add([
             'name'      => 'Team test',
-            'content'   => 'Team test'
+            'content'   => 'Team test',
         ]);
         $this->assertGreaterThan(0, $projects_id);
 
@@ -330,7 +329,7 @@ class ProjectTest extends DbTestCase
 
     public function testClone()
     {
-       // Create a basic project
+        // Create a basic project
         $project_name = 'Project testClone' . mt_rand();
         $project_input = [
             'name'     => $project_name,
@@ -484,11 +483,11 @@ PLAINTEXT;
         $entity = getItemByTypeName("Entity", "_test_root_entity", true);
 
         // Create some unique state colors
-        list(
+        [
             $state1,
             $state2,
             $state3
-        ) = $this->createItems(ProjectState::getType(), [
+        ] = $this->createItems(ProjectState::getType(), [
             ['name' => 'state1', 'color' => '#000001'],
             ['name' => 'state2', 'color' => '#000002'],
             ['name' => 'state3', 'color' => '#000003'],
@@ -557,7 +556,7 @@ PLAINTEXT;
         // Link project to group
         $this->updateItem(\Project::getType(), $project->getID(), [
             'users_id' => 0, // Remove user from project
-            'groups_id' => $group->getID()
+            'groups_id' => $group->getID(),
         ]);
 
         // Check if a user with a project, assigned to a group he is in, returns the project id when $search_in_groups is true
@@ -644,5 +643,28 @@ PLAINTEXT;
 
         // Check if a group with a project, assigned to a group project team, returns an empty array when $search_in_team is false
         $this->assertEmpty(\Project::getActiveProjectIDsForGroup([$group->getID()], false));
+    }
+
+    public function testMyTasksURL()
+    {
+        // Allowed to read all projects -> no specific additional menu content
+        $this->login();
+        $this->assertFalse(\Project::getAdditionalMenuContent());
+
+        // Only allowed to read own tasks -> specific additional menu content
+        $this->login();
+        $_SESSION['glpiactiveprofile']['project'] = 0;
+        $_SESSION['glpiactiveprofile']['projecttask'] = \ProjectTask::READMY;
+
+        $this->assertEquals(\ProjectTask::getMyTasksURL(false), \Project::getAdditionalMenuContent()['project']['page']);
+
+        $menu_options = \Project::getAdditionalMenuOptions();
+
+        $this->assertEquals(\ProjectTask::getMyTasksURL(false), $menu_options['ProjectTask']['page']);
+        $this->assertEquals(\ProjectTask::getMyTasksURL(false), $menu_options['ProjectTask']['links']['search']);
+
+        $menu_links = \Project::getAdditionalMenuLinks();
+        $has_my_tasks_link = in_array(\ProjectTask::getMyTasksURL(false), $menu_links, true);
+        $this->assertTrue($has_my_tasks_link);
     }
 }

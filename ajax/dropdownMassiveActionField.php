@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Plugin\Hooks;
 use Glpi\Search\SearchOption;
 
 header("Content-Type: text/html; charset=UTF-8");
@@ -44,7 +45,7 @@ if (!isset($_POST["itemtype"]) || !($item = getItemForItemtype($_POST['itemtype'
 
 if (Infocom::canApplyOn($_POST["itemtype"])) {
     Session::checkSeveralRightsOr([$_POST["itemtype"] => UPDATE,
-        "infocom"          => UPDATE
+        "infocom"          => UPDATE,
     ]);
 } else {
     $item->checkGlobal(UPDATE);
@@ -61,8 +62,7 @@ if (isset($_POST['submitname']) && $_POST['submitname']) {
 
 
 if (
-    isset($_POST["itemtype"])
-    && isset($_POST["id_field"]) && $_POST["id_field"]
+    isset($_POST["id_field"]) && $_POST["id_field"]
 ) {
     $search = SearchOption::getOptionsForItemtype($_POST["itemtype"]);
     if (!isset($search[$_POST["id_field"]])) {
@@ -74,7 +74,7 @@ if (
     echo "<table class='tab_glpi w-100'><tr><td>";
 
     $plugdisplay = false;
-   // Specific plugin Type case
+    // Specific plugin Type case
     if (
         ($plug = isPluginItemType($_POST["itemtype"]))
         // Specific for plugin which add link to core object
@@ -82,9 +82,9 @@ if (
     ) {
         $plugdisplay = Plugin::doOneHook(
             $plug['plugin'],
-            'MassiveActionsFieldsDisplay',
+            Hooks::AUTO_MASSIVE_ACTIONS_FIELDS_DISPLAY,
             ['itemtype' => $_POST["itemtype"],
-                'options'  => $search
+                'options'  => $search,
             ]
         );
     }
@@ -102,7 +102,7 @@ if (
     if (!$plugdisplay) {
         $options = [];
         $values  = [];
-       // For ticket template or aditional options of massive actions
+        // For ticket template or aditional options of massive actions
         if (isset($_POST['options'])) {
             $options = $_POST['options'];
         }

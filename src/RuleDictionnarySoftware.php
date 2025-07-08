@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -93,7 +93,7 @@ class RuleDictionnarySoftware extends Rule
 
         $actions['version']['name']               = _n('Version', 'Versions', 1);
         $actions['version']['force_actions']      = ['assign','regex_result',
-            'append_regex_result'
+            'append_regex_result',
         ];
 
         $actions['manufacturer']['name']          = __('Publisher');
@@ -136,7 +136,7 @@ class RuleDictionnarySoftware extends Rule
             'action_names' => [],
             'type_match'          => $this->fields['match'] === Rule::AND_MATCHING ? __('AND') : __('OR'),
         ];
-        $actions = $this->getActions();
+        $actions = $this->getAllActions();
         foreach ($actions as $key => $action) {
             $twig_params['action_names'][$key] = $action['name'];
         }

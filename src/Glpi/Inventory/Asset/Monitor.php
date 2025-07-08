@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -49,7 +49,7 @@ class Monitor extends InventoryAsset
         $mapping = [
             'caption'      => 'name',
             'manufacturer' => 'manufacturers_id',
-            'description'  => 'comment'
+            'description'  => 'comment',
         ];
 
         foreach ($this->data as &$val) {
@@ -107,16 +107,16 @@ class Monitor extends InventoryAsset
         $iterator = $DB->request([
             'SELECT'    => [
                 'glpi_monitors.id',
-                $relation_table . '.id AS link_id'
+                $relation_table . '.id AS link_id',
             ],
             'FROM'      => $relation_table,
             'LEFT JOIN' => [
                 'glpi_monitors' => [
                     'FKEY' => [
                         'glpi_monitors' => 'id',
-                        $relation_table => 'items_id_peripheral'
-                    ]
-                ]
+                        $relation_table => 'items_id_peripheral',
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'itemtype_peripheral'           => 'Monitor',
@@ -124,8 +124,8 @@ class Monitor extends InventoryAsset
                 'items_id_asset'                => $this->item->getID(),
                 'entities_id'                   => $this->entities_id,
                 $relation_table . '.is_dynamic' => 1,
-                'glpi_monitors.is_global'       => 0
-            ]
+                'glpi_monitors.is_global'       => 0,
+            ],
         ]);
 
         foreach ($iterator as $data) {
@@ -149,7 +149,7 @@ class Monitor extends InventoryAsset
                 'itemtype'     => 'Monitor',
                 'name'         => $val->name,
                 'serial'       => $val->serial ?? '',
-                'entities_id'  => $entities_id
+                'entities_id'  => $entities_id,
             ];
             $data = $rule->processAllRules($input, [], ['class' => $this, 'return' => true]);
 
@@ -176,11 +176,11 @@ class Monitor extends InventoryAsset
                 }
                 $inputrulelog = [
                     'date'      => date('Y-m-d H:i:s'),
-                    'rules_id'  => $data['rules_id'],
+                    'rules_id'  => $data['_ruleid'],
                     'items_id'  => $items_id,
                     'itemtype'  => $itemtype,
                     'agents_id' => $agents_id,
-                    'method'    => 'inventory'
+                    'method'    => 'inventory',
                 ];
                 $rulesmatched->add($inputrulelog, [], false);
                 $rulesmatched->cleanOlddata($items_id, $itemtype);
@@ -212,7 +212,7 @@ class Monitor extends InventoryAsset
             }
 
             // Delete monitors links in DB
-            foreach ($db_monitors as $idtmp => $monits_id) {
+            foreach (array_keys($db_monitors) as $idtmp) {
                 (new Asset_PeripheralAsset())->delete(['id' => $idtmp], true);
             }
 

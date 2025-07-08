@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -44,7 +44,7 @@ class BlacklistedMailContent extends CommonDropdown
 {
     use Clonable;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory       = false;
 
     public static $rightname       = 'config';
@@ -78,8 +78,8 @@ class BlacklistedMailContent extends CommonDropdown
             'type'  => 'textarea',
             'rows'  => 20,
             'list'  => true,
-            'enable_richtext' => false
-        ]
+            'enable_richtext' => false,
+        ],
         ];
     }
 
@@ -94,7 +94,7 @@ class BlacklistedMailContent extends CommonDropdown
             'field'              => 'content',
             'name'               => __('Content'),
             'datatype'           => 'text',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         return $tab;
@@ -102,7 +102,7 @@ class BlacklistedMailContent extends CommonDropdown
 
     public static function getIcon()
     {
-        return "fas fa-envelope-square";
+        return "ti ti-mail-x";
     }
 
     public function getCloneRelations(): array

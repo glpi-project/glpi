@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -28,7 +28,7 @@
  # along with this program.  If not, see <https://www.gnu.org/licenses/>.
  #
  # ---------------------------------------------------------------------
-#}
+ #}
 
 <div class="card-body d-flex flex-wrap">
     <div class="col-12 col-xxl-12 flex-column">
@@ -43,7 +43,7 @@
                             </h3>
                             <ul class="steps steps-vertical steps-counter my-4">
                                 {% for test in tests %}
-                                    <li class="step-item {{ test['active'] ? 'active' : '' }}">
+                                    <li class="step-item {{ (test['active'] ?? false) ? 'active' : '' }}">
                                         <div class="h4 m-0">{{ test['title'] }}</div>
                                         <div class="{{ test['success'] ? 'text-success' : 'text-warning' }}">{{ test['message'] }}</div>
                                     </li>

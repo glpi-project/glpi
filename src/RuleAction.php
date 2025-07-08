@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,7 +39,7 @@ use Glpi\DBAL\QuerySubQuery;
 
 class RuleAction extends CommonDBChild
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype        = "Rule";
     public static $items_id        = 'rules_id';
     public $dohistory              = true;
@@ -72,7 +72,7 @@ class RuleAction extends CommonDBChild
     public function post_getFromDB()
     {
 
-       // Get correct itemtype if defult one is used
+        // Get correct itemtype if defult one is used
         if (static::$itemtype == 'Rule') {
             $rule = new Rule();
             if ($rule->getFromDB($this->fields['rules_id'])) {
@@ -116,7 +116,7 @@ class RuleAction extends CommonDBChild
             && ($realrule = Rule::getRuleObjectByID($this->input['rules_id']))
         ) {
             $realrule->update(['id'       => $this->input['rules_id'],
-                'date_mod' => $_SESSION['glpi_currenttime']
+                'date_mod' => $_SESSION['glpi_currenttime'],
             ]);
         }
     }
@@ -129,7 +129,7 @@ class RuleAction extends CommonDBChild
             && ($realrule = Rule::getRuleObjectByID($this->fields['rules_id']))
         ) {
             $realrule->update(['id'       => $this->fields['rules_id'],
-                'date_mod' => $_SESSION['glpi_currenttime']
+                'date_mod' => $_SESSION['glpi_currenttime'],
             ]);
         }
     }
@@ -153,7 +153,7 @@ class RuleAction extends CommonDBChild
             'name'               => self::getTypeName(1),
             'massiveaction'      => false,
             'datatype'           => 'specific',
-            'additionalfields'   => ['rules_id']
+            'additionalfields'   => ['rules_id'],
         ];
 
         $tab[] = [
@@ -163,7 +163,7 @@ class RuleAction extends CommonDBChild
             'name'               => _n('Field', 'Fields', Session::getPluralNumber()),
             'massiveaction'      => false,
             'datatype'           => 'specific',
-            'additionalfields'   => ['rules_id']
+            'additionalfields'   => ['rules_id'],
         ];
 
         $tab[] = [
@@ -258,7 +258,7 @@ class RuleAction extends CommonDBChild
                         'name'        => $name,
                         'value'       => $values[$field],
                         'alreadyused' => false,
-                        'display'     => false
+                        'display'     => false,
                     ]);
                 }
                 break;
@@ -274,7 +274,7 @@ class RuleAction extends CommonDBChild
                     && $generic_rule->getFromDB($values['rules_id'])
                 ) {
                     if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
-                       /// TODO review it : need to pass display param and others...
+                        /// TODO review it : need to pass display param and others...
                         return $rule->displayActionSelectPattern($values);
                     }
                 }
@@ -298,7 +298,7 @@ class RuleAction extends CommonDBChild
         $iterator = $DB->request([
             'FROM'   => static::getTable(),
             'WHERE'  => [static::$items_id => $ID],
-            'ORDER'  => 'id'
+            'ORDER'  => 'id',
         ]);
 
         $rules_actions = [];
@@ -357,7 +357,7 @@ class RuleAction extends CommonDBChild
         if ($rule = getItemForItemtype($p['subtype'])) {
             $actions_options = $rule->getAllActions();
             $actions         = ["assign"];
-           // Manage permit several.
+            // Manage permit several.
             $field = $p['field'];
             if ($p['alreadyused']) {
                 if (!isset($actions_options[$field]['permitseveral'])) {
@@ -376,7 +376,7 @@ class RuleAction extends CommonDBChild
             }
 
             return Dropdown::showFromArray($p['name'], $elements, ['value'   => $p['value'],
-                'display' => $p['display']
+                'display' => $p['display'],
             ]);
         }
         return '';
@@ -403,7 +403,7 @@ class RuleAction extends CommonDBChild
             'fromuser'            => __('Copy from user'),
             'defaultfromuser'     => __('Copy default from user'),
             'firstgroupfromuser'  => __('Copy first group from user'),
-            'fromitem'            => __('Copy from item')
+            'fromitem'            => __('Copy from item'),
         ];
     }
 
@@ -506,6 +506,10 @@ class RuleAction extends CommonDBChild
                 $actions = Rule::getActionsByType($options["sub_type"]);
                 if (isset($actions[$options["field"]]['type'])) {
                     switch ($actions[$options["field"]]['type']) {
+                        case "dropdown_entity":
+                            $param['toadd'] = [-1 => __('Full structure')];
+                            // Intentional fall-through to handle dropdown cases
+                            // no break
                         case "dropdown":
                             $table   = $actions[$options["field"]]['table'];
                             $param['name'] = "value";
@@ -535,7 +539,7 @@ class RuleAction extends CommonDBChild
                                 [
                                     'id'    => 'requester_manager',
                                     'text'  => __("Requester's manager"),
-                                ]
+                                ],
                             ];
                             User::dropdown($param);
                             $display = true;
@@ -548,9 +552,9 @@ class RuleAction extends CommonDBChild
                             break;
 
                         case "dropdown_impact":
-                              $param['name']  = 'value';
-                              Ticket::dropdownImpact($param);
-                              $display = true;
+                            $param['name']  = 'value';
+                            Ticket::dropdownImpact($param);
+                            $display = true;
                             break;
 
                         case "dropdown_priority":
@@ -598,12 +602,12 @@ class RuleAction extends CommonDBChild
                                     [
                                         'action_type'           => 'add_validation',
                                         'field'                 => 'users_id_validate',
-                                        $item->getRuleIdField() => $options[$item->getRuleIdField()]
+                                        $item->getRuleIdField() => $options[$item->getRuleIdField()],
                                     ]
                                 );
 
                                 foreach ($rule_data as $data) {
-                                       $used[] = $data['value'];
+                                    $used[] = $data['value'];
                                 }
                             }
                             $param['name']  = 'value';
@@ -621,11 +625,11 @@ class RuleAction extends CommonDBChild
                                     [
                                         'action_type'           => 'add_validation',
                                         'field'                 => 'groups_id_validate',
-                                        $item->getRuleIdField() => $options[$item->getRuleIdField()]
+                                        $item->getRuleIdField() => $options[$item->getRuleIdField()],
                                     ]
                                 );
                                 foreach ($rule_data as $data) {
-                                     $used[] = $data['value'];
+                                    $used[] = $data['value'];
                                 }
                             }
 
@@ -633,8 +637,8 @@ class RuleAction extends CommonDBChild
                             $param['condition'] = [new QuerySubQuery([
                                 'SELECT' => ['COUNT' => ['users_id']],
                                 'FROM'   => 'glpi_groups_users',
-                                'WHERE'  => ['groups_id' => new QueryExpression('glpi_groups.id')]
-                            ])
+                                'WHERE'  => ['groups_id' => new QueryExpression('glpi_groups.id')],
+                            ]),
                             ];
                             $param['right']     = ['validate_incident', 'validate_request'];
                             $param['used']      = $used;
@@ -642,17 +646,15 @@ class RuleAction extends CommonDBChild
                             $display            = true;
                             break;
 
-                        case "dropdown_validation_percent":
-                            $ticket = new Ticket();
-                            echo $ticket->getValueToSelect('validation_percent', 'value', $param['value']);
-                            $display       = true;
-                            break;
-
-                        case "dropdown_validation_status":
-                            TicketValidation::dropdownStatus('value', [
-                                'global' => true,
-                                'value' => $param['value'],
-                            ]);
+                        case "percent":
+                            Dropdown::showNumber(
+                                'value',
+                                [
+                                    'value' => $param['value'],
+                                    'min'   => 0,
+                                    'max'   => 100,
+                                ]
+                            );
                             $display = true;
                             break;
 
@@ -670,18 +672,9 @@ class RuleAction extends CommonDBChild
         }
     }
 
-    /**
-     * Show the form to add or update an action
-     * @param integer $ID ID of the action
-     * @param array $options Extra options
-     * @phpstan-param array{parent: Rule} $options
-     *
-     * @return boolean
-     * @since 0.85
-     **/
     public function showForm($ID, array $options = [])
     {
-       // Yllen: you always have parent for action
+        // Yllen: you always have parent for action
         $rule = $options['parent'];
 
         if (!static::isNewID($ID)) {
@@ -703,7 +696,7 @@ class RuleAction extends CommonDBChild
             'rules_id_field' => static::$items_id,
             'item' => $this,
             'used_actions' => $used,
-            'rand' => mt_rand()
+            'rand' => mt_rand(),
         ]);
 
         return true;

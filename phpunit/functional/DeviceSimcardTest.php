@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -44,19 +43,19 @@ class DeviceSimcardTest extends DbTestCase
         $this->login();
         $obj = new \DeviceSimcard();
 
-       // Add
+        // Add
         $in = [
             'designation'              => __METHOD__,
             'manufacturers_id'         => $this->getUniqueInteger(),
             'devicesimcardtypes_id'    => $this->getUniqueInteger(),
             'voltage'                  => $this->getUniqueInteger(),
-            'allow_voip'               => '1'
+            'allow_voip'               => '1',
         ];
         $id = $obj->add($in);
-        $this->assertGreaterThan(0, (int)$id);
+        $this->assertGreaterThan(0, (int) $id);
         $this->assertTrue($obj->getFromDB($id));
 
-       // getField methods
+        // getField methods
         $this->assertEquals($id, $obj->getField('id'));
         foreach ($in as $k => $v) {
             $this->assertEquals($v, $obj->getField($k));
@@ -68,25 +67,25 @@ class DeviceSimcardTest extends DbTestCase
         $this->login();
         $obj = new \DeviceSimcard();
 
-       // Add
+        // Add
         $id = $obj->add([
             'designation' => $this->getUniqueString(),
         ]);
         $this->assertGreaterThan(0, $id);
 
-       // Update
+        // Update
         $in = [
             'id'                       => $id,
             'designation'              => __METHOD__,
             'manufacturers_id'         => $this->getUniqueInteger(),
             'devicesimcardtypes_id'    => $this->getUniqueInteger(),
             'voltage'                  => $this->getUniqueInteger(),
-            'allow_voip'               => '1'
+            'allow_voip'               => '1',
         ];
         $this->assertTrue($obj->update($in));
         $this->assertTrue($obj->getFromDB($id));
 
-       // getField methods
+        // getField methods
         foreach ($in as $k => $v) {
             $this->assertEquals($v, $obj->getField($k));
         }
@@ -97,13 +96,13 @@ class DeviceSimcardTest extends DbTestCase
         $this->login();
         $obj = new \DeviceSimcard();
 
-       // Add
+        // Add
         $id = $obj->add([
             'designation' => __METHOD__,
         ]);
         $this->assertGreaterThan(0, $id);
 
-       // Delete
+        // Delete
         $in = [
             'id'                       => $obj->getID(),
         ];

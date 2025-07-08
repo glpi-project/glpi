@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,7 +39,7 @@ use Glpi\DBAL\QueryFunction;
 /// Import rules collection class
 class RuleImportAssetCollection extends RuleCollection
 {
-   // From RuleCollection
+    // From RuleCollection
     public $stop_on_first_match = true;
     public static $rightname           = 'rule_import';
     public $menu_option         = 'linkcomputer';
@@ -62,7 +62,7 @@ class RuleImportAssetCollection extends RuleCollection
             switch ($item::class) {
                 case self::class:
                     $ong    = [];
-                    $types = $CFG_GLPI['state_types'];
+                    $types = $CFG_GLPI['ruleimportasset_types'];
                     foreach ($types as $type) {
                         if (class_exists($type)) {
                             $ong[$type] = $type::getTypeName();
@@ -94,15 +94,15 @@ class RuleImportAssetCollection extends RuleCollection
         $criteria['LEFT JOIN']['glpi_rulecriterias AS crit'] = [
             'ON'  => [
                 'crit'         => 'rules_id',
-                'glpi_rules'   => 'id'
-            ]
+                'glpi_rules'   => 'id',
+            ],
         ];
         $criteria['GROUPBY'] = ['glpi_rules.id'];
 
         if ($current_tab != '_global') {
             $where = [
                 'crit.criteria'   => 'itemtype',
-                'crit.pattern'    => getSingular($current_tab)
+                'crit.pattern'    => getSingular($current_tab),
             ];
             $criteria['WHERE']  += $where;
         } else {
@@ -148,7 +148,6 @@ class RuleImportAssetCollection extends RuleCollection
                 ->handleRequest($contents);
 
             $inventory = $inventory_request->getInventory();
-            $item = $inventory->getItem();
             $invitem = $inventory->getMainAsset();
 
             // sanitize input

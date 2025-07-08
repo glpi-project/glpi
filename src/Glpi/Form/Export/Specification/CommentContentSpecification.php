@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,8 +37,15 @@ namespace Glpi\Form\Export\Specification;
 
 final class CommentContentSpecification
 {
+    public int $id;
+    public string $uuid;
     public string $name;
     public string $description;
-    public int $rank;
-    public int $section_rank;
+    public int $vertical_rank;
+    public ?int $horizontal_rank;
+    public int $section_id;
+    public string $visibility_strategy;
+
+    /** @var ConditionDataSpecification[] $conditions */
+    public array $conditions;
 }

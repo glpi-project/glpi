@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -69,19 +69,19 @@ class ImpactCsvExport implements ExportToCsvInterface
     {
         $content = [];
 
-       // Load graph and impactitem
+        // Load graph and impactitem
         $graph = Impact::buildGraph($this->item);
         $impact_item = ImpactItem::findForItem($this->item);
         $impact_context = ImpactContext::findForImpactItem($impact_item);
 
-       // Get depth param
+        // Get depth param
         if (!$impact_context) {
             $max_depth = Impact::DEFAULT_DEPTH;
         } else {
             $max_depth = $impact_context->fields["max_depth"];
         }
 
-       // Load list data
+        // Load list data
         $data = [];
         $directions = [Impact::DIRECTION_FORWARD, Impact::DIRECTION_BACKWARD];
         foreach ($directions as $direction) {
@@ -93,7 +93,7 @@ class ImpactCsvExport implements ExportToCsvInterface
             );
         }
 
-       // Flatten the hiarchical $data and insert it line by line
+        // Flatten the hiarchical $data and insert it line by line
         foreach ($data as $direction => $impact_data) {
             if ($direction == Impact::DIRECTION_FORWARD) {
                 $direction_label = __("Impact");

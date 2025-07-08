@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -44,7 +44,7 @@ class NotificationTargetContract extends NotificationTarget
         return ['end'               => __('End of contract'),
             'notice'            => __('Notice'),
             'periodicity'       => __('Periodicity'),
-            'periodicitynotice' => __('Periodicity notice')
+            'periodicitynotice' => __('Periodicity notice'),
         ];
     }
 
@@ -68,7 +68,19 @@ class NotificationTargetContract extends NotificationTarget
             $tmp['##contract.number##'] = $contract['num'];
             $tmp['##contract.comment##'] = $contract['comment'];
             $tmp['##contract.account##'] = $contract['accounting_number'];
-
+            $tmp['##contract.endtime##'] = Infocom::getWarrantyExpir(
+                $contract["begin_date"],
+                $contract["duration"]
+            );
+            if (isset($contract["notice"])) {
+                $tmp['##contract.noticetime##'] = Infocom::getWarrantyExpir(
+                    $contract["begin_date"],
+                    $contract["duration"],
+                    $contract["notice"]
+                );
+            } else {
+                $tmp['##contract.noticetime##'] = "";
+            }
             if ($contract['contracttypes_id']) {
                 $tmp['##contract.type##'] = Dropdown::getDropdownName(
                     'glpi_contracttypes',
@@ -106,9 +118,9 @@ class NotificationTargetContract extends NotificationTarget
                 case 'periodicity':
                 case 'periodicitynotice':
                     if (isset($contract["alert_date"])) {
-                         $tmp['##contract.time##'] =  Html::convDate($contract["alert_date"]);
-                    } else if (isset($options['_debug'])) {
-                          $tmp['##contract.time##'] =  Html::convDate($_SESSION['glpi_currenttime']);
+                        $tmp['##contract.time##'] =  Html::convDate($contract["alert_date"]);
+                    } elseif (isset($options['_debug'])) {
+                        $tmp['##contract.time##'] =  Html::convDate($_SESSION['glpi_currenttime']);
                     }
                     break;
             }
@@ -120,10 +132,10 @@ class NotificationTargetContract extends NotificationTarget
             $tmp['##contract.items.number##'] = 0;
             $tmp['##contract.items##']        = '';
             if (isset($contract['items']) && count($contract['items'])) {
-                 $toadd = [];
+                $toadd = [];
                 foreach ($contract['items'] as $itemtype => $item) {
                     if ($type = getItemForItemtype($itemtype)) {
-                         $typename = $type->getTypeName();
+                        $typename = $type->getTypeName();
                         foreach ($item as $item_data) {
                             $toadd[] = sprintf(__('%1$s - %2$s'), $typename, $item_data['name']);
                             $tmp['##contract.items.number##']++;
@@ -173,51 +185,53 @@ class NotificationTargetContract extends NotificationTarget
         $tags = ['contract.action'       => _n('Event', 'Events', 1),
             'contract.name'         => __('Name'),
             'contract.number'       => _x('phone', 'Number'),
-            'contract.comment'      => __('Comments'),
+            'contract.comment'      => _n('Comment', 'Comments', Session::getPluralNumber()),
             'contract.account'      => __('Account number'),
             'contract.items.number' => _x('quantity', 'Number of items'),
             'contract.items'        => __('Device list'),
             'contract.type'         => _n('Type', 'Types', 1),
             'contract.entity'       => Entity::getTypeName(1),
             'contract.states'       => __('Status'),
+            'contract.endtime'      => __('Contract expiration date'),
+            'contract.noticetime'   => __('Contract notice date'),
             'contract.time'         => sprintf(
                 __('%1$s / %2$s'),
                 __('Contract expired since the'),
                 __('Contract with notice since the')
-            )
-        ];
-
-        foreach ($tags as $tag => $label) {
-            $this->addTagToList(['tag'   => $tag,
-                'label' => $label,
-                'value' => true
-            ]);
-        }
-
-       //Tags without lang
-        $tags = ['contract.url' => sprintf(
-            __('%1$s: %2$s'),
-            _n('Contract', 'Contracts', 1),
-            __('URL')
-        )
+            ),
         ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
                 'label' => $label,
                 'value' => true,
-                'lang'  => false
             ]);
         }
 
-       //Foreach global tags
+        //Tags without lang
+        $tags = ['contract.url' => sprintf(
+            __('%1$s: %2$s'),
+            _n('Contract', 'Contracts', 1),
+            __('URL')
+        ),
+        ];
+
+        foreach ($tags as $tag => $label) {
+            $this->addTagToList(['tag'   => $tag,
+                'label' => $label,
+                'value' => true,
+                'lang'  => false,
+            ]);
+        }
+
+        //Foreach global tags
         $tags = ['contracts' => _n('Contract', 'Contracts', Session::getPluralNumber())];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'     => $tag,
                 'label'   => $label,
                 'value'   => false,
-                'foreach' => true
+                'foreach' => true,
             ]);
         }
 

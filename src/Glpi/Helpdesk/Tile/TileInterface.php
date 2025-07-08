@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,15 +32,25 @@
  * ---------------------------------------------------------------------
  */
 
- namespace Glpi\Helpdesk\Tile;
+namespace Glpi\Helpdesk\Tile;
+
+use Glpi\Session\SessionInfo;
 
 interface TileInterface
 {
+    public function getLabel(): string;
+
     public function getTitle(): string;
 
     public function getDescription(): string;
 
     public function getIllustration(): string;
 
-    public function getLink(): string;
+    public function getTileUrl(): string;
+
+    public function isAvailable(SessionInfo $session_info): bool;
+
+    public function getDatabaseId(): int;
+
+    public function getConfigFieldsTemplate(): string;
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -56,11 +56,11 @@ abstract class AbstractFilter
      */
     abstract public static function getHtml($value): string;
 
-     /**
-     * Get the filter id
-     *
-     * @return string
-     */
+    /**
+    * Get the filter id
+    *
+    * @return string
+    */
     abstract public static function getId(): string;
 
     /**
@@ -189,7 +189,7 @@ HTML;
             'placeholder'         => $label,
             'on_change'           => "on_change_{$rand}()",
             'allowClear'          => true,
-            'width'               => ''
+            'width'               => '',
         ] + $add_params);
 
         $js = <<<JAVASCRIPT
@@ -226,7 +226,7 @@ JAVASCRIPT;
                 'link'       => 'AND',
                 'field'      => $searchoption_id,
                 'searchtype' => 'morethan',
-                'value'      => date('Y-m-d 00:00:00', $begin)
+                'value'      => date('Y-m-d 00:00:00', $begin),
             ];
         } else {
             $end   = strtotime($dates[1]);
@@ -234,7 +234,7 @@ JAVASCRIPT;
                 'link'       => 'AND',
                 'field'      => $searchoption_id,
                 'searchtype' => 'lessthan',
-                'value'      => date('Y-m-d 00:00:00', $end)
+                'value'      => date('Y-m-d 00:00:00', $end),
             ];
         }
     }

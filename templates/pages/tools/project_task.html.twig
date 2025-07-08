@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -233,31 +232,25 @@
         }
     ) }}
 
-    {{ fields.dropdownTimestampField(
+    {{ fields.dropdownArrayField(
         'planned_duration',
         item.fields.planned_duration,
+        duration_dropdown_to_add,
         __('Planned duration'),
         {
-            'min': 0,
-            'max': 8 * constant('HOUR_TIMESTAMP'),
-            'addfirstminutes': true,
-            'inhours': true,
-            'toadd': duration_dropdown_to_add,
             'field_class': 'col-12 col-sm-6 is_milestone ' ~ (item.fields.is_milestone ? 'd-none' : ''),
+            'display_emptychoice': true,
         },
     ) }}
 
-    {{ fields.dropdownTimestampField(
+    {{ fields.dropdownArrayField(
         'effective_duration',
         item.fields.effective_duration,
+        duration_dropdown_to_add,
         __('Effective duration'),
         {
-            'min': 0,
-            'max': 8 * constant('HOUR_TIMESTAMP'),
-            'addfirstminutes': true,
-            'inhours': true,
-            'toadd': duration_dropdown_to_add,
             'field_class': 'col-12 col-sm-6 is_milestone ' ~ (item.fields.is_milestone ? 'd-none' : ''),
+            'display_emptychoice': true,
         },
     ) }}
 

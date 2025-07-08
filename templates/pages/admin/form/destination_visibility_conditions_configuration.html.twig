@@ -1,0 +1,94 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{# @var \Glpi\Form\Form                        form #}
+{# @var \Glpi\Form\Destination\FormDestination destination #}
+
+{% extends "pages/admin/form/condition_configuration.html.twig" %}
+
+{% block conditions_editor %}
+    {# Parent properties #}
+    {% set strategies = 'Glpi\\Form\\Condition\\CreationStrategy' %}
+    {% set selected_strategy = destination.getConfiguredCreationStrategy() %}
+    {% set strategy_input_name = "creation_strategy" %}
+    {% set conditions = destination.getConfiguredConditionsData() %}
+
+    {% set container_id = "destination-condition-editor-" ~ destination.getID() %}
+    <div id="{{ container_id }}" class="col-xl-6 col-12">
+        {{ parent() }}
+    </div>
+
+    <script defer type="module">
+        import { GlpiFormConditionVisibilityEditorController } from '/js/modules/Forms/ConditionVisibilityEditorController.js';
+
+        // Load form sections state from backend
+        const sections = [];
+        {% for section_data in form.getSectionsStateForConditionEditor() %}
+            sections.push({
+                uuid: '{{ section_data.getUuid()|escape('js') }}',
+                name: '{{ section_data.getName()|escape('js') }}',
+            });
+        {% endfor %}
+
+        // Load form questions state from backend
+        const questions = [];
+        {% for question_data in form.getQuestionsStateForConditionEditor() %}
+            questions.push({
+                uuid: '{{ question_data.getUuid()|escape('js') }}',
+                name: '{{ question_data.getName()|escape('js') }}',
+                type: '{{ get_class(question_data.getType())|escape('js') }}',
+                extra_data: {{ question_data.getExtraData()|json_encode|raw }},
+            });
+        {% endfor %}
+
+        // Load form comments state from backend
+        const comments = [];
+        {% for comment_data in form.getCommentsStateForConditionEditor() %}
+            comments.push({
+                uuid: '{{ comment_data.getUuid()|escape('js') }}',
+                name: '{{ comment_data.getName()|escape('js') }}',
+            });
+        {% endfor %}
+
+        // Initialize controller
+        const parent_container = document.getElementById('{{ container_id }}');
+        const controller = new GlpiFormConditionVisibilityEditorController(
+            parent_container.querySelector('[data-glpi-conditions-editor-container]'),
+            null,
+            null,
+            sections,
+            questions,
+            comments,
+        );
+        controller.renderEditor();
+    </script>
+{% endblock %}

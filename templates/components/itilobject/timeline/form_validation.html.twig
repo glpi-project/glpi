@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -42,7 +41,7 @@
       <div class="read-only-content w-100">
          {{ entry_i['content']|raw }}
 
-         {% if entry_i['comment_submission']|length %}
+         {% if (entry_i['comment_submission'] ?? '')|length %}
             <div class='alert alert-info mt-2'>
                 <div class='d-flex'>
                     <div><i class='ti ti-quote me-2'></i></div>
@@ -55,7 +54,7 @@
                 </div>
             </div>
          {% endif %}
-         {% if entry_i['comment_validation']|length %}
+         {% if entry_i['comment_validation'] is defined and entry_i['comment_validation']|length %}
             <div class='alert alert-info mt-2'>
                 <div class='d-flex'>
                     <div><i class='ti ti-quote me-2'></i></div>
@@ -69,7 +68,7 @@
             </div>
          {% endif %}
 
-         {% if entry_i['can_answer'] %}
+         {% if entry_i['can_answer'] ?? false %}
             <hr class="my-2" />
             <form id="validationanswers_id_{{ entry_i['id'] }}"
                   action="{{ entry['type']|itemtype_form_path }}" method="post" data-submit-once>
@@ -77,7 +76,7 @@
                <input type="hidden" name="id" value="{{ entry_i['id'] }}" />
                <input type="hidden" name="users_id_validate" value="{{ entry_i['users_id_validate'] }}" />
                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-               {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
+               {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {"item": subitem, 'options': params}) }}
 
                <div class="mb-3 comment-part">
                   {{ fields.textareaField(
@@ -89,7 +88,7 @@
                         'enable_richtext': true,
                         'is_horizontal': false,
                         'enable_fileupload': false,
-                        'enable_mentions': true,
+                        'mention_options': mention_options,
                         'entities_id': item.fields['entities_id'],
                         'rand': rand,
                      }
@@ -109,11 +108,11 @@
 
                <div class="validation-footer">
                   <button type="submit" class="btn btn-outline-green" name="approval_action" value="approve">
-                     <i class="fas fa-thumbs-up"></i>
+                     <i class="ti ti-thumb-up"></i>
                      <span class="validation-label">{{ __('Approve') }}</span>
                   </button>
                   <button type="submit" class="btn btn-outline-red" name="approval_action" value="refuse">
-                     <i class="fas fa-thumbs-down"></i>
+                     <i class="ti ti-thumb-down"></i>
                      <span class="validation-label">{{ __('Refuse') }}</span>
                   </button>
                </div>
@@ -129,7 +128,7 @@
          <input type="hidden" name="users_id_validate" value="{{ subitem.fields['users_id_validate'] }}" />
          <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
 
-         {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
+         {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {"item": subitem, 'options': params}) }}
 
          <div class="mb-3 comment-part">
             {{ fields.textareaField(
@@ -141,7 +140,7 @@
                   'enable_richtext': true,
                   'is_horizontal': false,
                   'enable_fileupload': false,
-                  'enable_mentions': true,
+                  'mention_options': mention_options,
                   'entities_id': item.fields['entities_id'],
                   'rand': rand,
                }
@@ -161,58 +160,85 @@
 
          <div class="validation-footer">
             <button type="submit" class="btn btn-outline-green" name="approval_action" value="approve">
-               <i class="fas fa-thumbs-up"></i>
+               <i class="ti ti-thumb-up"></i>
                <span class="validation-label">{{ __('Approve') }}</span>
             </button>
             <button type="submit" class="btn btn-outline-red" name="approval_action" value="refuse">
-               <i class="fas fa-thumbs-down"></i>
+               <i class="ti ti-thumb-down"></i>
                <span class="validation-label">{{ __('Refuse') }}</span>
             </button>
          </div>
       </form>
    {% else %}
-      {# Form displayed when user creates/edits an approval request #}
-      <div class="itilvalidation card mt-4">
-         <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post"
-               action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true" data-submit-once>
+        {# Form displayed when user creates/edits an approval request #}
+        <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post"
+              action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true" data-submit-once>
             <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
             <input type="hidden" name="{{ item.getForeignKeyField() }}" value="{{ item.fields['id'] }}" />
 
-            <div class="card-header">
-                <h3 class="cart-title">{{ __("Validation request") }}</h3>
-            </div>
             <div class="card-body">
-               {{ fields.dropdownField(
-                  'ITILValidationTemplate',
-                  'itilvalidationtemplates_id',
-                  '',
-                  _n('Template', 'Templates', 1),
-                  {
-                     'full_width': true,
-                     'on_change': 'itilvalidationtemplate_update' ~ rand ~ '(this.value);',
-                     'entity': item.fields['entities_id'],
-                     'rand': rand,
-                  },
-                ) }}
+                {% if subitem.isNewItem() %}
+                    {# Validation template #}
+                    {{ fields.dropdownField(
+                        'ITILValidationTemplate',
+                        'itilvalidationtemplates_id',
+                        '',
+                        _n('Template', 'Templates', 1),
+                        {
+                            'full_width': true,
+                            'on_change': 'itilvalidationtemplate_update' ~ rand ~ '(this.value);',
+                            'entity': item.fields['entities_id'],
+                            'rand': rand,
+                        },
+                    ) }}
 
+                    {# Validation step #}
+                    {{ fields.dropdownField(
+                        'ValidationStep',
+                        '_validationsteps_id',
+                        _validationsteps_id|default(call(['ValidationStep', 'getDefault']).getID()),
+                        _n('Approval step', 'Approval step', 1),
+                        {
+                            'full_width': true,
+                            'rand': rand,
+                            'required': true,
+                            'display_emptychoice': false,
+                        }
+                    ) }}
+                {% else %}
+                    {{ fields.readOnlyField(
+                        '',
+                        get_item_name(
+                            'ValidationStep',
+                            get_item(item.getValidationStepClassName(), subitem.fields['itils_validationsteps_id']).fields['validationsteps_id']
+                        ),
+                        _n('Approval step', 'Approval step', 1),
+                        {
+                            'full_width': true,
+                        }
+                    ) }}
+                {% endif %}
+
+                {# Requester #}
                 {{ fields.readOnlyField(
                     'approval_requester',
                     get_current_user().getFriendlyName(),
                     _n('Requester', 'Requesters', 1),
                     {
-                    'full_width': true,
-                    'rand': rand,
+                        'full_width': true,
+                        'rand': rand,
                     }
                 ) }}
 
+                {# Approver #}
                 {% if subitem.isNewItem() %}
                     {% set validation_right = 'validate' %}
                     {% if item.getType() == 'Ticket' %}
-                       {% if item.fields['type'] == constant('Ticket::INCIDENT_TYPE') %}
-                          {% set validation_right = 'validate_incident' %}
-                       {% elseif item.fields['type'] == constant('Ticket::DEMAND_TYPE') %}
-                          {% set validation_right = 'validate_request' %}
-                       {% endif %}
+                        {% if item.fields['type'] == constant('Ticket::INCIDENT_TYPE') %}
+                            {% set validation_right = 'validate_incident' %}
+                        {% elseif item.fields['type'] == constant('Ticket::DEMAND_TYPE') %}
+                            {% set validation_right = 'validate_request' %}
+                        {% endif %}
                     {% endif %}
                     {{ fields.field(
                         '_add_validation',
@@ -236,22 +262,24 @@
                         get_item_name(subitem.fields['itemtype_target'], subitem.fields['items_id_target']),
                         __('Approver'),
                         {
-                           'full_width': true,
+                            'full_width': true,
                         }
                     ) }}
                 {% endif %}
 
+                {# Comment #}
                 {{ fields.textareaField(
                     'comment_submission',
                     subitem.fields['comment_submission'],
                     _n('Comment', 'Comments', 1),
                     {
-                    'full_width': true,
-                    'enable_richtext': true,
-                    'enable_fileupload': false,
-                    'enable_mentions': true,
-                    'entities_id': item.fields['entities_id'],
-                    'rand': rand,
+                        'full_width': true,
+                        'enable_richtext': true,
+                        'enable_fileupload': false,
+                        'mention_options': mention_options,
+                        'entities_id': item.fields['entities_id'],
+                        'rand': rand,
+                        'disabled': not (subitem.isNewItem() or subitem.fields['status'] == constant('CommonITILValidation::WAITING')),
                     }
                 ) }}
 
@@ -266,42 +294,42 @@
                 ) }}
             </div>
 
-            {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
+            {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {"item": subitem, 'options': params}) }}
 
             <div class="d-flex justify-content-center card-footer">
-               {% if subitem.fields['id'] <= 0 %}
-                  <button class="btn btn-primary me-2" type="submit" name="add">
-                     <i class="fas fa-plus"></i>
-                     <span>{{ _x('button', 'Add') }}</span>
-                  </button>
-               {% else %}
-                  <input type="hidden" name="id" value="{{ subitem.fields['id'] }}" />
-                  <button class="btn btn-primary me-2" type="submit" name="update">
-                     <i class="far fa-save"></i>
-                     <span>{{ _x('button', 'Save') }}</span>
-                  </button>
+                {% if subitem.fields['id'] <= 0 %}
+                    <button class="btn btn-primary me-2" type="submit" name="add">
+                        <i class="ti ti-plus"></i>
+                        <span>{{ _x('button', 'Add') }}</span>
+                    </button>
+                {% else %}
+                    <input type="hidden" name="id" value="{{ subitem.fields['id'] }}" />
+                    <button class="btn btn-primary me-2" type="submit" name="update">
+                        <i class="ti ti-device-floppy"></i>
+                        <span>{{ _x('button', 'Save') }}</span>
+                    </button>
 
-                  {% if subitem.can(subitem.fields['id'], constant('PURGE')) %}
-                     <button class="btn btn-outline-danger me-2" type="submit" name="purge"
-                             onclick="return confirm('{{ __('Confirm the final deletion?') }}');">
-                        <i class="fas fa-trash-alt"></i>
-                        <span>{{ _x('button', 'Delete permanently') }}</span>
-                     </button>
-                  {% endif %}
-               {% endif %}
+                    {% if subitem.can(subitem.fields['id'], constant('PURGE')) %}
+                        <button class="btn btn-outline-danger me-2" type="submit" name="purge"
+                                onclick="return confirm('{{ __('Confirm the final deletion?') }}');">
+                            <i class="ti ti-trash"></i>
+                            <span>{{ _x('button', 'Delete permanently') }}</span>
+                        </button>
+                    {% endif %}
+                {% endif %}
             </div>
 
             <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-         </form>
-      </div>
+        </form>
 
-      {% if scroll %}
+      {% if scroll ?? false %}
          <script type="text/javascript">
             window.scrollTo(0,document.body.scrollHeight);
          </script>
       {% endif %}
 
       <script type="text/javascript">
+         // --- fill form with template data
          function itilvalidationtemplate_update{{ rand }}(value) {
             $.ajax({
                url: '{{ path('/ajax/itilvalidation.php') }}',
@@ -317,9 +345,9 @@
                   setRichTextEditorContent("comment_submission_{{ rand }}", data.content);
                }
 
+               // Validator field
                if (data.validatortype !== undefined) {
                   // set validator type
-                  $("#dropdown__validatortype_{{ rand }}").trigger('setValue', "0");
                   $("#dropdown__validatortype_{{ rand }}").trigger('setValue', data.validatortype);
 
                   if (data.groups_id !== undefined && data.groups_id !== null) {
@@ -357,6 +385,12 @@
                      });
                   }
                }
+
+               // Validation step field
+               if( data.validationsteps_id !== undefined ) {
+                  $("#dropdown__validationsteps_id{{ rand }}").trigger('setValue', data.validationsteps_id);
+               }
+
             });
          }
       </script>

@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -60,10 +59,10 @@ class SoftwareTest extends DbTestCase
         $software = new \Software();
         $input    = ['name'         => 'soft1',
             'entities_id'  => 0,
-            'is_recursive' => 1
+            'is_recursive' => 1,
         ];
         $softwares_id = $software->add($input);
-        $this->assertGreaterThan(0, (int)$softwares_id);
+        $this->assertGreaterThan(0, (int) $softwares_id);
         $software->getFromDB($softwares_id);
         $this->assertEmpty($software->getTabNameForItem($software, 1));
     }
@@ -118,12 +117,12 @@ class SoftwareTest extends DbTestCase
 
         $input    = ['is_update'             => 0,
             'withtemplate'          => 0,
-            'softwarecategories_id' => 3
+            'softwarecategories_id' => 3,
         ];
         $result   = $software->prepareInputForAdd($input);
         $expected = ['is_update'             => 0,
             'softwarecategories_id' => 3,
-            'softwares_id'          => 0
+            'softwares_id'          => 0,
         ];
 
         $this->assertSame($expected, $result);
@@ -145,9 +144,9 @@ class SoftwareTest extends DbTestCase
             'sub_type'    => 'RuleSoftwareCategory',
             'match'       => \Rule::AND_MATCHING,
             'condition'   => 0,
-            'description' => ''
+            'description' => '',
         ]);
-        $this->assertGreaterThan(0, (int)$rules_id);
+        $this->assertGreaterThan(0, (int) $rules_id);
 
         $this->assertGreaterThan(
             0,
@@ -155,7 +154,7 @@ class SoftwareTest extends DbTestCase
                 'rules_id'  => $rules_id,
                 'criteria'  => 'name',
                 'condition' => \Rule::PATTERN_IS,
-                'pattern'   => 'MySoft'
+                'pattern'   => 'MySoft',
             ])
         );
 
@@ -164,14 +163,14 @@ class SoftwareTest extends DbTestCase
             $action->add(['rules_id'    => $rules_id,
                 'action_type' => 'assign',
                 'field'       => 'softwarecategories_id',
-                'value'       => $categories_id
+                'value'       => $categories_id,
             ])
         );
 
         $input    = ['name'             => 'MySoft',
             'is_update'        => 0,
             'entities_id'      => 0,
-            'comment'          => 'Comment'
+            'comment'          => 'Comment',
         ];
 
         $software = new \Software();
@@ -182,7 +181,7 @@ class SoftwareTest extends DbTestCase
             'entities_id'           => 0,
             'comment'               => 'Comment',
             'softwares_id'          => 0,
-            'softwarecategories_id' => "$categories_id"
+            'softwarecategories_id' => "$categories_id",
         ];
 
         $this->assertSame($expected, $result);
@@ -198,16 +197,16 @@ class SoftwareTest extends DbTestCase
         $softwares_id = $software->add([
             'name'         => 'MySoft',
             'is_template'  => 0,
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
-        $this->assertGreaterThan(0, (int)$softwares_id);
+        $this->assertGreaterThan(0, (int) $softwares_id);
 
         $this->assertEquals(0, $software->fields['is_template']);
         $this->assertSame('MySoft', $software->fields['name']);
 
         $query = ['itemtype' => 'Software', 'items_id' => $softwares_id];
-        $this->assertSame(0, (int)countElementsInTable('glpi_infocoms', $query));
-        $this->assertSame(0, (int)countElementsInTable('glpi_contracts_items', $query));
+        $this->assertSame(0, (int) countElementsInTable('glpi_infocoms', $query));
+        $this->assertSame(0, (int) countElementsInTable('glpi_contracts_items', $query));
 
         //Force creation of infocom when an asset is added
         $CFG_GLPI['auto_create_infocoms'] = 1;
@@ -215,12 +214,12 @@ class SoftwareTest extends DbTestCase
         $softwares_id = $software->add([
             'name'         => 'MySoft2',
             'is_template'  => 0,
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
-        $this->assertGreaterThan(0, (int)$softwares_id);
+        $this->assertGreaterThan(0, (int) $softwares_id);
 
         $query = ['itemtype' => 'Software', 'items_id' => $softwares_id];
-        $this->assertSame(1, (int)countElementsInTable('glpi_infocoms', $query));
+        $this->assertSame(1, (int) countElementsInTable('glpi_infocoms', $query));
     }
 
     public function testPost_addItemWithTemplate()
@@ -231,7 +230,7 @@ class SoftwareTest extends DbTestCase
         $softwares_id = $software->add([
             'name'          => 'MyTemplate',
             'is_template'   => 1,
-            'template_name' => 'template'
+            'template_name' => 'template',
         ]);
         $this->assertGreaterThan(0, $softwares_id);
 
@@ -244,16 +243,16 @@ class SoftwareTest extends DbTestCase
             $infocom->add([
                 'itemtype' => 'Software',
                 'items_id' => $softwares_id,
-                'value'    => '500'
+                'value'    => '500',
             ])
         );
 
         $contract     = new \Contract();
         $contracts_id = $contract->add([
             'name'         => 'contract01',
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
-        $this->assertGreaterThan(0, (int)$contracts_id);
+        $this->assertGreaterThan(0, (int) $contracts_id);
 
         $contract_item = new \Contract_Item();
         $this->assertGreaterThan(
@@ -261,24 +260,24 @@ class SoftwareTest extends DbTestCase
             $contract_item->add([
                 'itemtype'     => 'Software',
                 'items_id'     => $softwares_id,
-                'contracts_id' => $contracts_id
+                'contracts_id' => $contracts_id,
             ])
         );
 
         $softwares_id_2 = $software->add([
             'name'         => 'MySoft',
             'id'           => $softwares_id,
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
-        $this->assertGreaterThan(0, (int)$softwares_id_2);
+        $this->assertGreaterThan(0, (int) $softwares_id_2);
 
         $this->assertTrue($software->getFromDB($softwares_id_2));
         $this->assertEquals(0, $software->fields['is_template']);
         $this->assertSame('MySoft', $software->fields['name']);
 
         $query = ['itemtype' => 'Software', 'items_id' => $softwares_id_2];
-        $this->assertSame(1, (int)countElementsInTable('glpi_infocoms', $query));
-        $this->assertSame(1, (int)countElementsInTable('glpi_contracts_items', $query));
+        $this->assertSame(1, (int) countElementsInTable('glpi_infocoms', $query));
+        $this->assertSame(1, (int) countElementsInTable('glpi_contracts_items', $query));
     }
 
     public function testCleanDBonPurge()
@@ -293,16 +292,16 @@ class SoftwareTest extends DbTestCase
         $softwares_id = $software->add([
             'name'         => 'MySoft',
             'is_template'  => 0,
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
-        $this->assertGreaterThan(0, (int)$softwares_id);
+        $this->assertGreaterThan(0, (int) $softwares_id);
 
         $contract     = new \Contract();
         $contracts_id = $contract->add([
             'name'         => 'contract02',
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
-        $this->assertGreaterThan(0, (int)$contracts_id);
+        $this->assertGreaterThan(0, (int) $contracts_id);
 
         $contract_item = new \Contract_Item();
         $this->assertGreaterThan(
@@ -310,16 +309,16 @@ class SoftwareTest extends DbTestCase
             $contract_item->add([
                 'itemtype'     => 'Software',
                 'items_id'     => $softwares_id,
-                'contracts_id' => $contracts_id
+                'contracts_id' => $contracts_id,
             ])
         );
 
         $this->assertTrue($software->delete(['id' => $softwares_id], true));
         $query = ['itemtype' => 'Software', 'items_id' => $softwares_id];
-        $this->assertSame(0, (int)countElementsInTable('glpi_infocoms', $query));
-        $this->assertSame(0, (int)countElementsInTable('glpi_contracts_items', $query));
+        $this->assertSame(0, (int) countElementsInTable('glpi_infocoms', $query));
+        $this->assertSame(0, (int) countElementsInTable('glpi_contracts_items', $query));
 
-       //TODO : test Change_Item, Item_Problem, Item_Project
+        //TODO : test Change_Item, Item_Problem, Item_Project
     }
 
     /**
@@ -333,9 +332,9 @@ class SoftwareTest extends DbTestCase
         $softwares_id = $software->add([
             'name'         => 'Software ' . $this->getUniqueString(),
             'is_template'  => 0,
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
-        $this->assertGreaterThan(0, (int)$softwares_id);
+        $this->assertGreaterThan(0, (int) $softwares_id);
         $this->assertTrue($software->getFromDB($softwares_id));
 
         return $software;
@@ -351,9 +350,9 @@ class SoftwareTest extends DbTestCase
             'name'         => 'a_software_license',
             'softwares_id' => $software->getID(),
             'entities_id'  => 0,
-            'number'       => 3
+            'number'       => 3,
         ]);
-        $this->assertGreaterThan(0, (int)$license_id);
+        $this->assertGreaterThan(0, (int) $license_id);
 
         //attach 2 licenses
         $license_computer = new \Item_SoftwareLicense();
@@ -364,9 +363,9 @@ class SoftwareTest extends DbTestCase
                 'items_id'              => $computer->getID(),
                 'itemtype'              => 'Computer',
                 'is_deleted'            => 0,
-                'is_dynamic'            => 0
+                'is_dynamic'            => 0,
             ];
-            $this->assertGreaterThan(0, (int)$license_computer->add($input_comp));
+            $this->assertGreaterThan(0, (int) $license_computer->add($input_comp));
         }
 
         $this->assertTrue($software->getFromDB($software->getID()));

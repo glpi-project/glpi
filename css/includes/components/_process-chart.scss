@@ -1,0 +1,107 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2025 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+
+.process-chart {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .entry-point, .end {
+        display: flex;
+        align-items: center;
+        position: relative;
+
+        .icon-stack {
+            display: inline-block;
+            position: relative;
+            vertical-align: middle;
+            width: 1.6em;
+
+            i {
+                font-size: 1.2em;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+
+                &.sm-size {
+                    font-size: 0.6em;
+                }
+            }
+        }
+    }
+
+    .entry-point, .step {
+        position: relative;
+        padding-bottom: 30px;
+        margin-bottom: 15px;
+
+        &::after {
+            content: '\10068'; // Tabler icon hex code for arrow
+            font-family: tabler-icons, sans-serif;
+            position: absolute;
+            left: 50%;
+            bottom: -10px;
+            font-size: 24px;
+            transform: translateX(-50%);
+            color: var(--tblr-card-color);
+        }
+
+        &:last-child::after {
+            display: none;
+        }
+
+        .btn {
+            width: 390px;
+        }
+
+        .text-muted {
+            font-size: 0.9em;
+            font-style: italic;
+            text-wrap: wrap;
+            margin: 0.3em 0;
+        }
+
+        .card {
+            text-align: center;
+
+            h4 {
+                margin-top: 15px;
+            }
+        }
+    }
+}

@@ -5,8 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,13 +32,12 @@
 
 /* global GLPI */
 
-import {GLPIDashboard} from '../../../../js/modules/Dashboard/Dashboard.js';
+import {GLPIDashboard} from '/js/modules/Dashboard/Dashboard.js';
 import {jest} from '@jest/globals';
 
 describe('Dashboard', () => {
     beforeAll(() => {
         // Make backups of some methods on the prototype we will mock by default because they are called from the constructor
-        GLPIDashboard.prototype._generateCss = GLPIDashboard.prototype.generateCss;
         GLPIDashboard.prototype._refreshDashboard = GLPIDashboard.prototype.refreshDashboard;
     });
     beforeEach(() => {
@@ -49,7 +47,6 @@ describe('Dashboard', () => {
         window.AjaxMock.end();
 
         // Mock some instance methods we don't want to test but are called from the constructor
-        GLPIDashboard.prototype.generateCss = jest.fn().mockImplementation(() => {});
         GLPIDashboard.prototype.refreshDashboard = jest.fn().mockImplementation(() => {});
 
         // Mock GridStack
@@ -155,8 +152,10 @@ describe('Dashboard', () => {
             card_options: {
                 color: null,
                 widgettype: null,
+                palette: null,
                 use_gradient: 0,
                 point_labels: 0,
+                legend: 0,
                 limit: 7,
                 card_id: undefined,
                 gridstack_id: 'undefined_12345678-1234-1234-1234-123456789012',
@@ -193,8 +192,10 @@ describe('Dashboard', () => {
                 return [
                     {name: 'color', value: '#ff00ff'},
                     {name: 'widgettype', value: 'testWidget'},
+                    {name: 'palette', value: 'testPalette'},
                     {name: 'use_gradient', value: 1},
                     {name: 'point_labels', value: 1},
+                    {name: 'legend', value: 1},
                     {name: 'limit', value: 10},
                     {name: 'card_id', value: 'mycard'},
                 ];
@@ -207,8 +208,10 @@ describe('Dashboard', () => {
                 card_id: 'mycard',
                 color: '#ff00ff',
                 widgettype: 'testWidget',
+                palette: 'testPalette',
                 use_gradient: 1,
                 point_labels: 1,
+                legend: 1,
                 limit: 10,
                 gridstack_id: 'mycard_12345678-1234-1234-1234-123456789012',
                 force: true,
@@ -217,8 +220,10 @@ describe('Dashboard', () => {
             // TODO These duplicated values probably shouldn't be here
             color: '#ff00ff',
             widgettype: 'testWidget',
+            palette: 'testPalette',
             use_gradient: 1,
             point_labels: 1,
+            legend: 1,
             limit: 10,
             gridstack_id: 'mycard_12345678-1234-1234-1234-123456789012',
         });
@@ -336,8 +341,10 @@ describe('Dashboard', () => {
             args: {
                 color: null,
                 widgettype: null,
+                palette: null,
                 use_gradient: 0,
                 point_labels: 0,
+                legend: 0,
                 limit: 7,
                 card_id: undefined,
                 gridstack_id: 'undefined_12345678-1234-1234-1234-123456789012',
@@ -392,15 +399,16 @@ describe('Dashboard', () => {
         dashboard.addWidget(widget_params);
 
         expect(dashboard.grid.addWidget).toHaveBeenCalledWith(
-            expect.toSatisfy((html) => {
-                const html_el = $(html);
+            expect.toSatisfy((widget_info) => {
+                const html_el = $(`<div>${widget_info.content}</div>`);
                 const has_refresh = html_el.find('.controls i.refresh-item').length === 1;
                 const has_edit = html_el.find('.controls i.edit-item').length === 1;
                 const has_delete = html_el.find('.controls i.delete-item').length === 1;
                 const has_content = html_el.find('div.grid-stack-item-content').length === 1;
-                return has_refresh && has_edit && has_delete && has_content;
+                return widget_info.x === 1 && widget_info.y === 2 && widget_info.w === 3 && widget_info.h === 4
+                    && widget_info.autoPosition === false && widget_info.id === 'mycard_12345678-1234-1234-1234-123456789012'
+                    && has_refresh && has_edit && has_delete && has_content;
             }),
-            {x: 1, y: 2, w: 3, h: 4, autoPosition: false, id: 'mycard_12345678-1234-1234-1234-123456789012'}
         );
     });
 
@@ -416,15 +424,16 @@ describe('Dashboard', () => {
         dashboard.addWidget(widget_params);
 
         expect(dashboard.grid.addWidget).toHaveBeenCalledWith(
-            expect.toSatisfy((html) => {
-                const html_el = $(html);
+            expect.toSatisfy((widget_info) => {
+                const html_el = $(`<div>${widget_info.content}</div>`);
                 const has_refresh = html_el.find('.controls i.refresh-item').length === 1;
                 const has_edit = html_el.find('.controls i.edit-item').length === 1;
                 const has_delete = html_el.find('.controls i.delete-item').length === 1;
                 const has_content = html_el.find('div.grid-stack-item-content').length === 1;
-                return has_refresh && has_edit && has_delete && has_content;
+                return widget_info.x === -1 && widget_info.y === -1 && widget_info.w === 2 && widget_info.h === 2
+                    && widget_info.autoPosition === true && widget_info.id === 'mycard_12345678-1234-1234-1234-123456789012'
+                    && has_refresh && has_edit && has_delete && has_content;
             }),
-            {x: -1, y: -1, w: 2, h: 2, autoPosition: true, id: 'mycard_12345678-1234-1234-1234-123456789012',}
         );
     });
 
@@ -448,15 +457,16 @@ describe('Dashboard', () => {
         const created_widget = dashboard.addWidget(widget_params);
 
         expect(dashboard.grid.addWidget).toHaveBeenCalledWith(
-            expect.toSatisfy((html) => {
-                const html_el = $(html);
+            expect.toSatisfy((widget_info) => {
+                const html_el = $(`<div>${widget_info.content}</div>`);
                 const has_refresh = html_el.find('.controls i.refresh-item').length === 1;
                 const has_edit = html_el.find('.controls i.edit-item').length === 1;
                 const has_delete = html_el.find('.controls i.delete-item').length === 1;
                 const has_content = html_el.find('div.grid-stack-item-content').length === 1;
-                return has_refresh && has_edit && has_delete && has_content;
+                return widget_info.x === 1 && widget_info.y === 2 && widget_info.w === 3 && widget_info.h === 4
+                    && widget_info.autoPosition === false && widget_info.id === 'mycard_12345678-1234-1234-1234-123456789012'
+                    && has_refresh && has_edit && has_delete && has_content;
             }),
-            {x: 1, y: 2, w: 3, h: 4, autoPosition: false, id: 'mycard_12345678-1234-1234-1234-123456789012'}
         );
 
         expect(created_widget.attr('data-card-options')).toBe(JSON.stringify(widget_params.card_options));
@@ -952,13 +962,6 @@ describe('Dashboard', () => {
         expect(window.GoOutFullscreen).not.toHaveBeenCalled();
     });
 
-    test('disableFullscreenMode', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
-        window.GoOutFullscreen = jest.fn().mockImplementation(() => {});
-        dashboard.disableFullscreenMode();
-        expect(window.GoOutFullscreen).toHaveBeenCalled();
-    });
-
     test('clone', async () => {
         const dashboard = new GLPIDashboard({
             'rand': '12345',
@@ -1321,51 +1324,6 @@ describe('Dashboard', () => {
         expect($('.grid-stack-item[gs-id="2"] .empty-card.card-error').length).toBe(1);
         // card 1 and 3 should still be present without error
         expect($('.grid-stack-item > *:not(.empty-card)').length).toBe(2);
-    });
-
-    test('generateCss', () => {
-        let dashboard = new GLPIDashboard({
-            'rand': '12345',
-            'cols': 10
-        });
-        // Restore the original function (must be done per-object after constructor)
-        dashboard.generateCss = GLPIDashboard.prototype._generateCss;
-        $('#dashboard-12345').width('1000px');
-        dashboard.grid.cellHeight = jest.fn().mockImplementation(() => {});
-        dashboard.generateCss();
-        expect(dashboard.grid.cellHeight).toHaveBeenCalledWith(99.9);
-        let head_html = $('head').html();
-        expect(head_html).toMatch(/^<style id="gs_inline_css_12345"/i);
-        expect(head_html).toMatch(/#dashboard-12345 .cell-add\s*{\s*width: 99.9px;\s*height: 100px;\s*}/i);
-        expect(head_html).toMatch(/#dashboard-12345 .grid-guide\s*{\s*background-size: 99.9px 100px;\s*bottom: 100px;\s*}/i);
-        expect(head_html).toMatch(/#dashboard-12345 .grid-stack > .grid-stack-item\[gs-w='6']\s*{\s*min-width: 10%;\s*width: 60%;\s*}/i);
-        expect(head_html).toMatch(/#dashboard-12345 .grid-stack > .grid-stack-item\[gs-x='6']\s*{\s*left: 60%;\s*}/i);
-
-        dashboard = new GLPIDashboard({
-            'rand': '12345',
-            'cols': 15
-        });
-        dashboard.generateCss = GLPIDashboard.prototype._generateCss;
-        $('#dashboard-12345').width('750px');
-        dashboard.grid.cellHeight = jest.fn().mockImplementation(() => {});
-        dashboard.generateCss();
-        expect(dashboard.grid.cellHeight).toHaveBeenCalledWith(49.93333333333333);
-        head_html = $('head').html();
-        expect(head_html).toMatch(/^<style id="gs_inline_css_12345"/i);
-        expect(head_html).toMatch(/#dashboard-12345 .cell-add\s*{\s*width: 49.93333333333333px;\s*height: 50px;\s*}/i);
-        expect(head_html).toMatch(/#dashboard-12345 .grid-guide\s*{\s*background-size: 49.93333333333333px 50px;\s*bottom: 50px;\s*}/i);
-        expect(head_html).toMatch(/#dashboard-12345 .grid-stack > .grid-stack-item\[gs-w='6']\s*{\s*min-width: 6.666666666666667%;\s*width: 40%;\s*}/i);
-        expect(head_html).toMatch(/#dashboard-12345 .grid-stack > .grid-stack-item\[gs-x='6']\s*{\s*left: 40%;\s*}/i);
-
-        dashboard = new GLPIDashboard({
-            'rand': '12345',
-            'cols': 10
-        });
-        dashboard.generateCss = GLPIDashboard.prototype._generateCss;
-        $('#dashboard-12345').width('500px');
-        dashboard.grid.cellHeight = jest.fn().mockImplementation(() => {});
-        dashboard.generateCss();
-        expect(dashboard.grid.cellHeight).toHaveBeenCalledWith(60);
     });
 
     test('initFilters', async () => {
@@ -1806,23 +1764,19 @@ describe('Dashboard', () => {
 
     test('Update CSS and Fit Numbers on Resize', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.generateCss = jest.fn().mockImplementation(() => {});
         dashboard.fitNumbers = jest.fn().mockImplementation(() => {});
         jest.useFakeTimers();
         $(window).trigger('resize');
         jest.advanceTimersByTime(250);
-        expect(dashboard.generateCss).toHaveBeenCalled();
         expect(dashboard.fitNumbers).toHaveBeenCalled();
     });
 
     test('Do not Update CSS and Fit Numbers on Propagated Resize', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.generateCss = jest.fn().mockImplementation(() => {});
         dashboard.fitNumbers = jest.fn().mockImplementation(() => {});
         jest.useFakeTimers();
         $('body').trigger('resize');
         jest.advanceTimersByTime(250);
-        expect(dashboard.generateCss).not.toHaveBeenCalled();
         expect(dashboard.fitNumbers).not.toHaveBeenCalled();
     });
 

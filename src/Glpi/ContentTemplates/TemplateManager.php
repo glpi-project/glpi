@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,7 +36,7 @@
 namespace Glpi\ContentTemplates;
 
 use CommonITILObject;
-use Glpi\Application\ErrorHandler;
+use Glpi\Error\ErrorHandler;
 use Glpi\RichText\RichText;
 use Twig\Environment;
 use Twig\Extension\SandboxExtension;
@@ -104,8 +104,7 @@ class TemplateManager
         CommonITILObject $itil_item,
         string $template
     ): ?string {
-        $parameters_class = $itil_item->getContentTemplatesParametersClass();
-        $parameters = new $parameters_class();
+        $parameters = $itil_item->getContentTemplatesParametersClassInstance();
 
         try {
             $html = TemplateManager::render(
@@ -116,7 +115,8 @@ class TemplateManager
                 ]
             );
         } catch (\Twig\Error\Error $e) {
-            ErrorHandler::getInstance()->handleException($e, false);
+            ErrorHandler::logCaughtException($e);
+            ErrorHandler::displayCaughtExceptionMessage($e);
             return null;
         }
         return $html;
@@ -135,21 +135,21 @@ class TemplateManager
         $twig->addExtension(new SandboxExtension(self::getSecurityPolicy(), true));
 
         try {
-           // Test if template is valid
+            // Test if template is valid
             $twig->parse($twig->tokenize(new Source($content, 'template')));
 
-           // Security policies are not valided with the previous step so we
-           // need to actually try to render the template to validate them
+            // Security policies are not valided with the previous step so we
+            // need to actually try to render the template to validate them
             $twig->render('template', []);
         } catch (\Twig\Sandbox\SecurityError $e) {
-           // Security policy error: the template use a forbidden tag/function/...
+            // Security policy error: the template use a forbidden tag/function/...
             $err_msg = sprintf(__("Invalid twig template (%s)"), $e->getMessage());
 
             return false;
         } catch (\Twig\Error\SyntaxError $e) {
-           // Syntax error, note that we do not show the exception message in the
-           // error sent to the users as it not really helpful and is more likely
-           // to confuse them that to help them fix the issue
+            // Syntax error, note that we do not show the exception message in the
+            // error sent to the users as it not really helpful and is more likely
+            // to confuse them that to help them fix the issue
             $err_msg = __("Invalid twig template syntax");
 
             return false;
@@ -169,7 +169,7 @@ class TemplateManager
         $filters = [
             'abs', 'batch', 'capitalize', 'column', 'date', 'default', 'escape', 'filter', 'first', 'format', 'join',
             'json_encode', 'keys', 'last', 'length', 'lower', 'map', 'merge', 'nl2br', 'raw', 'reduce', 'replace',
-            'reverse', 'round', 'slice', 'sort', 'split', 'striptags', 'title', 'trim', 'upper', 'url_encode'
+            'reverse', 'round', 'slice', 'sort', 'split', 'striptags', 'title', 'trim', 'upper', 'url_encode',
         ];
         $methods = [];
         $properties = [];

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,18 +33,21 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ErrorHandler;
+require_once(__DIR__ . '/_check_webserver_config.php');
+
+use Glpi\Application\Environment;
 use Glpi\UI\ThemeManager;
 
-// Main CSS compilation requires about 140MB of memory on PHP 7.4 (110MB on PHP 8.2).
-// Ensure to have enough memory to not reach memory limit.
-$max_memory = 192;
-if (Toolbox::getMemoryLimit() < ($max_memory * 1024 * 1024)) {
-    ini_set('memory_limit', sprintf('%dM', $max_memory));
-}
+use function Safe\ini_set;
+use function Safe\preg_match;
 
-// Ensure warnings will not break CSS output.
-ErrorHandler::getInstance()->disableOutput();
+if (preg_match('~^css/glpi(\.scss)?$~', $_GET['file'] ?? '') === 1) {
+    // Ensure to have enough memory to not reach memory limit.
+    $max_memory = Html::MAIN_SCSS_COMPILATION_REQUIRED_MEMORY;
+    if (Toolbox::getMemoryLimit() < ($max_memory * 1024 * 1024)) {
+        ini_set('memory_limit', sprintf('%dM', $max_memory));
+    }
+}
 
 // If a custom theme is requested, we need to get the real path of the theme
 if (isset($_GET['file']) && isset($_GET['is_custom_theme']) && $_GET['is_custom_theme']) {
@@ -62,11 +65,9 @@ $css = Html::compileScss($_GET);
 
 header('Content-Type: text/css');
 
-$is_cacheable = !isset($_GET['nocache'])
-    && GLPI_ENVIRONMENT_TYPE !== GLPI::ENV_DEVELOPMENT // do not use browser cache on development env
-;
+$is_cacheable = !isset($_GET['nocache']) && Environment::get()->shouldForceExtraBrowserCache();
 if ($is_cacheable) {
-   // Makes CSS cacheable by browsers and proxies
+    // Makes CSS cacheable by browsers and proxies
     $max_age = WEEK_TIMESTAMP;
     header_remove('Pragma');
     header('Cache-Control: public');

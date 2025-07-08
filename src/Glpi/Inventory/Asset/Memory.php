@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -36,8 +36,9 @@
 
 namespace Glpi\Inventory\Asset;
 
-use CommonDBTM;
 use Glpi\Inventory\Conf;
+
+use function Safe\preg_match;
 
 class Memory extends Device
 {
@@ -50,7 +51,7 @@ class Memory extends Device
             'manufacturer' => 'manufacturers_id',
             'serialnumber' => 'serial',
             'numslots'     => 'busID',
-            'model'        => 'devicememorymodels_id'
+            'model'        => 'devicememorymodels_id',
         ];
 
         foreach ($this->data as $k => &$val) {
@@ -65,8 +66,8 @@ class Memory extends Device
                 continue;
             }
 
-           // Hack to remove Memories with Flash types see ticket
-           // http://forge.fusioninventory.org/issues/1337
+            // Hack to remove Memories with Flash types see ticket
+            // http://forge.fusioninventory.org/issues/1337
             if (
                 property_exists($val, 'type')
                 && preg_match('/Flash/', $val->type)

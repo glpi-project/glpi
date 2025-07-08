@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,15 +40,15 @@ use Glpi\Plugin\Hooks;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\ArrayNormalizer;
 use Glpi\UI\ThemeManager;
-use SimplePie\SimplePie;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  *  Config class
  **/
 class Config extends CommonDBTM
 {
-    const DELETE_ALL = -1;
-    const KEEP_ALL = 0;
+    public const DELETE_ALL = -1;
+    public const KEEP_ALL = 0;
 
     public const UNIT_MANAGEMENT = 0;
     public const GLOBAL_MANAGEMENT = 1;
@@ -60,10 +60,10 @@ class Config extends CommonDBTM
     public const TIMELINE_RELATIVE_DATE = 0;
     public const TIMELINE_ABSOLUTE_DATE = 1;
 
-   // From CommonGLPI
+    // From CommonGLPI
     protected $displaylist         = false;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $auto_message_on_action = false;
     public $showdebug              = true;
 
@@ -80,6 +80,12 @@ class Config extends CommonDBTM
         'ldap_pass', // this one should not exist anymore, but may be present when admin restored config dump after migration
     ];
     public static $saferUndisclosedFields = ['admin_email', 'replyto_email'];
+
+    /**
+     * Indicates whether the GLPI configuration has been loaded.
+     * @var boolean
+     */
+    private static $loaded = false;
 
     public static function getTypeName($nb = 0)
     {
@@ -135,8 +141,8 @@ class Config extends CommonDBTM
         $ong = [];
         $this->addStandardTab(__CLASS__, $ong, $options);
         $this->addStandardTab(DisplayPreference::class, $ong, $options);
-        $this->addStandardTab('GLPINetwork', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(GLPINetwork::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
@@ -146,15 +152,15 @@ class Config extends CommonDBTM
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Unset _no_history to not save it as a configuration value
+        // Unset _no_history to not save it as a configuration value
         unset($input['_no_history']);
 
-       // Update only an item
+        // Update only an item
         if (isset($input['context'])) {
             return $input;
         }
 
-       // Process configuration for plugins
+        // Process configuration for plugins
         if (!empty($input['config_context'])) {
             $config_context = $input['config_context'];
             unset($input['id']);
@@ -174,8 +180,8 @@ class Config extends CommonDBTM
             return false;
         }
 
-       // Trim automatically ending slash for url_base config as, for all existing occurrences,
-       // this URL will be prepended to something that starts with a slash.
+        // Trim automatically ending slash for url_base config as, for all existing occurrences,
+        // this URL will be prepended to something that starts with a slash.
         if (isset($input["url_base"]) && !empty($input["url_base"])) {
             if (Toolbox::isValidWebUrl($input["url_base"])) {
                 $input["url_base"] = rtrim($input["url_base"], '/');
@@ -194,7 +200,7 @@ class Config extends CommonDBTM
             $input['proxy_passwd'] = '';
         }
 
-       // Manage DB Slave process
+        // Manage DB Slave process
         if (isset($input['_dbslave_status'])) {
             $already_active = DBConnection::isDBSlaveActive();
 
@@ -204,8 +210,8 @@ class Config extends CommonDBTM
                 if (!$already_active) {
                     // Activate Slave from the "system" tab
                     DBConnection::createDBSlaveConfig();
-                } else if (isset($input["_dbreplicate_dbhost"])) {
-                   // Change parameter from the "replicate" tab
+                } elseif (isset($input["_dbreplicate_dbhost"])) {
+                    // Change parameter from the "replicate" tab
                     DBConnection::saveDBSlaveConf(
                         $input["_dbreplicate_dbhost"],
                         $input["_dbreplicate_dbuser"],
@@ -221,7 +227,7 @@ class Config extends CommonDBTM
             }
         }
 
-       // Matrix for Impact / Urgence / Priority
+        // Matrix for Impact / Urgence / Priority
         if (isset($input['_matrix'])) {
             $tab = [];
 
@@ -253,7 +259,7 @@ class Config extends CommonDBTM
             );
         }
 
-       // lock mechanism update
+        // lock mechanism update
         if (isset($input['lock_use_lock_item']) && isset($input['lock_item_list'])) {
             $input['lock_item_list'] = exportArrayToDB(
                 ArrayNormalizer::normalizeValues($input['lock_item_list'] ?: [], 'strval')
@@ -272,12 +278,12 @@ class Config extends CommonDBTM
             );
         }
 
-       // Beware : with new management system, we must update each value
+        // Beware : with new management system, we must update each value
         unset($input['id']);
         unset($input['_glpi_csrf_token']);
         unset($input['_update']);
 
-       // Add skipMaintenance if maintenance mode update
+        // Add skipMaintenance if maintenance mode update
         if (isset($input['maintenance_mode']) && $input['maintenance_mode']) {
             $_SESSION['glpiskipMaintenance'] = 1;
             $url = htmlescape($CFG_GLPI['root_doc'] . "/index.php?skipMaintenance=1");
@@ -312,6 +318,19 @@ class Config extends CommonDBTM
             }
         }
 
+        // Check the validity of `pdffont`
+        if (isset($input['pdffont']) && !in_array($input['pdffont'], array_keys(GLPIPDF::getFontList()), true)) {
+            Session::addMessageAfterRedirect(
+                sprintf(
+                    __s('The following field has an incorrect value: "%s".'),
+                    __s('PDF export font')
+                ),
+                false,
+                ERROR
+            );
+            unset($input['pdffont']);
+        }
+
         $tfa_enforced_changed = isset($input['2fa_enforced']) && $input['2fa_enforced'] !== $CFG_GLPI['2fa_enforced'];
         $tfa_grace_days_changed = isset($input['2fa_grace_days']) && $input['2fa_grace_days'] !== $CFG_GLPI['2fa_grace_days'];
         if ($tfa_grace_days_changed || $tfa_enforced_changed) {
@@ -330,7 +349,7 @@ class Config extends CommonDBTM
             '_dbreplicate_dbhost',
             '_dbreplicate_dbuser',
             '_dbreplicate_dbpassword',
-            '_dbreplicate_dbdefault'
+            '_dbreplicate_dbdefault',
         ];
 
         $input = array_filter($input, function ($key) use ($values_to_filter) {
@@ -359,7 +378,7 @@ class Config extends CommonDBTM
             Toolbox::deprecated('Usage of "MAIL_SMTPTLS" SMTP mode is deprecated. Switch to "MAIL_SMTPS" mode.');
         }
 
-        if (array_key_exists('smtp_mode', $input) && (int)$input['smtp_mode'] === MAIL_SMTPOAUTH) {
+        if (array_key_exists('smtp_mode', $input) && (int) $input['smtp_mode'] === MAIL_SMTPOAUTH) {
             $input['smtp_check_certificate'] = 1;
             $input['smtp_passwd']          = '';
 
@@ -388,13 +407,13 @@ class Config extends CommonDBTM
             }
 
             // remember whether the SMTP Oauth flow has to be triggered
-            $_SESSION['redirect_to_smtp_oauth'] = (bool)($input['_force_redirect_to_smtp_oauth'] ?? false) === true
+            $_SESSION['redirect_to_smtp_oauth'] = (bool) ($input['_force_redirect_to_smtp_oauth'] ?? false) === true
                 || $has_oauth_settings_changed
-                || (string)$CFG_GLPI['smtp_oauth_refresh_token'] === '';
+                || (string) $CFG_GLPI['smtp_oauth_refresh_token'] === '';
 
             // ensure value is not saved in DB
             unset($input['_force_redirect_to_smtp_oauth']);
-        } elseif (array_key_exists('smtp_mode', $input) && (int)$input['smtp_mode'] !== MAIL_SMTPOAUTH) {
+        } elseif (array_key_exists('smtp_mode', $input) && (int) $input['smtp_mode'] !== MAIL_SMTPOAUTH) {
             // clean oauth related information
             $input['smtp_oauth_provider'] = '';
             $input['smtp_oauth_client_id'] = '';
@@ -536,10 +555,10 @@ class Config extends CommonDBTM
         TemplateRenderer::getInstance()->display('pages/setup/general/dbreplica_setup.html.twig', [
             'config'             => $CFG_GLPI,
             'canedit'            => static::canUpdate(),
-            'primary_dbhost'     => $DB->dbhost,
+            'source_dbhost'      => $DB->dbhost,
             'replica_config'     => $replica_config,
             'replication_status' => $replication_status,
-            'replication_delay'  => $replication_delay
+            'replication_delay'  => $replication_delay,
         ]);
     }
 
@@ -560,9 +579,9 @@ class Config extends CommonDBTM
 
         // Options just for new API
         $api_versions = \Glpi\Api\HL\Router::getAPIVersions();
-        $legacy_version = array_filter($api_versions, static fn ($version) => $version['api_version'] === '1');
+        $legacy_version = array_filter($api_versions, static fn($version) => $version['api_version'] === '1');
         $legacy_version = reset($legacy_version);
-        $current_version = array_filter($api_versions, static fn ($version) => $version['version'] === \Glpi\Api\HL\Router::API_VERSION);
+        $current_version = array_filter($api_versions, static fn($version) => $version['version'] === \Glpi\Api\HL\Router::API_VERSION);
         $current_version = reset($current_version);
         $getting_started_doc = $current_version['endpoint'] . '/getting-started';
         $endpoint_doc = $current_version['endpoint'] . '/doc';
@@ -576,7 +595,9 @@ class Config extends CommonDBTM
             'legacy_doc_url' => $legacy_version['endpoint'],
             'legacy_api_url' => $legacy_version['endpoint'],
         ]);
-        TemplateRenderer::getInstance()->display('pages/setup/general/api_apiclients_section.html.twig');
+        if ($CFG_GLPI['enable_api']) {
+            TemplateRenderer::getInstance()->display('pages/setup/general/api_apiclients_section.html.twig');
+        }
     }
 
 
@@ -698,7 +719,7 @@ class Config extends CommonDBTM
     public static function displayPasswordSecurityChecks($field = 'password')
     {
         TemplateRenderer::getInstance()->display('components/user/password_security_checks.html.twig', [
-            'field' => $field
+            'field' => $field,
         ]);
     }
 
@@ -737,7 +758,7 @@ class Config extends CommonDBTM
             'opcache_info' => $opcache_info,
             'user_cache_ext' => $user_cache_ext,
             'user_cache_version' => $user_cache_version,
-            'trans_cache_adapter' => $trans_cache_adapter
+            'trans_cache_adapter' => $trans_cache_adapter,
         ]);
     }
 
@@ -775,7 +796,7 @@ class Config extends CommonDBTM
 
         $core_requirements = (new RequirementsManager())->getCoreRequirementList($DB);
         $requirements = [];
-       /* @var \Glpi\System\Requirement\RequirementInterface $requirement */
+        /* @var \Glpi\System\Requirement\RequirementInterface $requirement */
         foreach ($core_requirements as $k => $requirement) {
             if ($requirement->isOutOfContext()) {
                 continue; // skip requirement if not relevant
@@ -786,13 +807,13 @@ class Config extends CommonDBTM
             : ($requirement->isOptional() ? 'warning' : 'ko');
             $requirements[$k] = [
                 'status' => $status,
-                'messages' => $requirement->getValidationMessages()
+                'messages' => $requirement->getValidationMessages(),
             ];
         }
 
         $system_info_objs = [];
         foreach ($CFG_GLPI["systeminformations_types"] as $type) {
-            $system_info_objs[] = new $type();
+            $system_info_objs[] = getItemForItemtype($type);
         }
 
         Session::loadLanguage($oldlang);
@@ -810,7 +831,7 @@ class Config extends CommonDBTM
             'db_info' => $DB->getInfo(),
             'core_requirements' => $requirements,
             'system_info_objs' => $system_info_objs,
-            'locales_overrides' => $files
+            'locales_overrides' => $files,
         ]);
     }
 
@@ -830,287 +851,9 @@ class Config extends CommonDBTM
 
         TemplateRenderer::getInstance()->display('pages/setup/general/systeminfo_form.html.twig', [
             'config' => $CFG_GLPI,
-            'canedit' => static::canUpdate()
+            'canedit' => static::canUpdate(),
         ]);
         self::showSystemInfoTable();
-    }
-
-
-    /**
-     * Retrieve full directory of a lib
-     *
-     * @param  $libstring  object, class or function
-     *
-     * @return false|string the path or false
-     *
-     * @since 9.1
-     */
-    public static function getLibraryDir($libstring)
-    {
-        if (is_object($libstring)) {
-            return realpath(dirname((new ReflectionObject($libstring))->getFileName()));
-        } else if (class_exists($libstring) || interface_exists($libstring)) {
-            return realpath(dirname((new ReflectionClass($libstring))->getFileName()));
-        } else if (function_exists($libstring)) {
-           // Internal function have no file name
-            $path = (new ReflectionFunction($libstring))->getFileName();
-            return ($path ? realpath(dirname($path)) : false);
-        }
-        return false;
-    }
-
-
-    /**
-     * get libraries list
-     *
-     * @param $all   (default false)
-     * @return array dependencies list
-     *
-     * @since 9.4
-     */
-    public static function getLibraries($all = false)
-    {
-       // use same name that in composer.json
-        $deps = [
-            [ 'name'    => 'symfony/mailer',
-                'check'   => 'Symfony/Mailer'
-            ],
-            [ 'name'    => 'simplepie/simplepie',
-                'version' => SimplePie::VERSION,
-                'check'   => SimplePie::class,
-            ],
-            [ 'name'      => 'tecnickcom/tcpdf',
-                'version' => TCPDF_STATIC::getTCPDFVersion(),
-                'check'   => 'TCPDF'
-            ],
-            [ 'name'      => 'tecnickcom/tc-lib-barcode',
-                'check'   => 'Com\\Tecnick\\Barcode\\Barcode'
-            ],
-            [ 'name'    => 'sabre/dav',
-                'check'   => 'Sabre\\DAV\\Version'
-            ],
-            [ 'name'    => 'sabre/http',
-                'check'   => 'Sabre\\HTTP\\Version'
-            ],
-            [ 'name'    => 'sabre/uri',
-                'check'   => 'Sabre\\Uri\\Version'
-            ],
-            [ 'name'    => 'sabre/vobject',
-                'check'   => 'Sabre\\VObject\\Component'
-            ],
-            [ 'name'    => 'laminas/laminas-i18n',
-                'check'   => 'Laminas\\I18n\\Module'
-            ],
-            [ 'name'    => 'laminas/laminas-json',
-                'check'   => 'Laminas\Json\Json'
-            ],
-            [ 'name'    => 'monolog/monolog',
-                'check'   => 'Monolog\\Logger'
-            ],
-            [ 'name'    => 'sebastian/diff',
-                'check'   => 'SebastianBergmann\\Diff\\Diff'
-            ],
-            [ 'name'    => 'donatj/phpuseragentparser',
-                'check'   => 'donatj\\UserAgent\\UserAgentParser'
-            ],
-            [ 'name'    => 'elvanto/litemoji',
-                'check'   => 'LitEmoji\\LitEmoji'
-            ],
-            [ 'name'    => 'gettext/languages',
-                'check'   => 'Gettext\\Languages\\Language'
-            ],
-            [ 'name'    => 'symfony/console',
-                'check'   => 'Symfony\\Component\\Console\\Application'
-            ],
-            [ 'name'    => 'symfony/config',
-                'check'   => 'Symfony\\Component\\Config\\Loader\\LoaderInterface'
-            ],
-            [ 'name'    => 'symfony/dependency-injection',
-                'check'   => 'Symfony\\Component\\DependencyInjection\\ContainerInterface'
-            ],
-            [ 'name'    => 'symfony/event-dispatcher',
-                'check'   => 'Symfony\\Component\\EventDispatcher\\EventDispatcherInterface'
-            ],
-            [ 'name'    => 'symfony/filesystem',
-                'check'   => 'Symfony\\Component\\Filesystem\\Filesystem'
-            ],
-            [ 'name'    => 'symfony/framework-bundle',
-                'check'   => 'Symfony\\Bundle\\FrameworkBundle\\FrameworkBundle'
-            ],
-            [ 'name'    => 'symfony/http-foundation',
-                'check'   => 'Symfony\\Component\\HttpFoundation\\Request'
-            ],
-            [ 'name'    => 'symfony/http-kernel',
-                'check'   => 'Symfony\\Component\\HttpKernel\\KernelInterface'
-            ],
-            [ 'name'    => 'symfony/routing',
-                'check'   => 'Symfony\\Component\\Routing\\RouterInterface'
-            ],
-            [ 'name'    => 'scssphp/scssphp',
-                'check'   => 'ScssPhp\ScssPhp\Compiler'
-            ],
-            [ 'name'    => 'laminas/laminas-mail',
-                'check'   => 'Laminas\\Mail\\Protocol\\Imap'
-            ],
-            [ 'name'    => 'laminas/laminas-mime',
-                'check'   => 'Laminas\\Mime\\Mime'
-            ],
-            [ 'name'    => 'rlanvin/php-rrule',
-                'check'   => 'RRule\\RRule'
-            ],
-            [ 'name'    => 'ramsey/uuid',
-                'check'   => 'Ramsey\\Uuid\\Uuid'
-            ],
-            [ 'name' => 'phpoffice/phpspreadsheet',
-                'check' => 'PhpOffice\\PhpSpreadsheet\\Spreadsheet'
-            ],
-            [ 'name'    => 'psr/log',
-                'check'   => 'Psr\\Log\\LoggerInterface'
-            ],
-            [ 'name'    => 'psr/simple-cache',
-                'check'   => 'Psr\\SimpleCache\\CacheInterface'
-            ],
-            [ 'name'    => 'psr/cache',
-                'check'   => 'Psr\\Cache\\CacheItemPoolInterface'
-            ],
-            [ 'name'    => 'psr/container',
-                'check'   => 'Psr\\Container\\ContainerInterface'
-            ],
-            [ 'name'    => 'league/csv',
-                'check'   => 'League\\Csv\\Writer'
-            ],
-            [ 'name'    => 'mexitek/phpcolors',
-                'check'   => 'Mexitek\\PHPColors\\Color'
-            ],
-            [ 'name'    => 'guzzlehttp/guzzle',
-                'check'   => 'GuzzleHttp\\Client'
-            ],
-            [ 'name'    => 'guzzlehttp/psr7',
-                'check'   => 'GuzzleHttp\\Psr7\\Response'
-            ],
-            [ 'name'    => 'glpi-project/inventory_format',
-                'check'   => 'Glpi\Inventory\Converter'
-            ],
-            [ 'name'    => 'wapmorgan/unified-archive',
-                'check'   => 'wapmorgan\\UnifiedArchive\\UnifiedArchive'
-            ],
-            [ 'name'    => 'paragonie/sodium_compat',
-                'check'   => 'ParagonIE_Sodium_Compat'
-            ],
-            [ 'name'    => 'symfony/cache',
-                'check'   => 'Symfony\\Component\\Cache\\Psr16Cache'
-            ],
-            [ 'name'    => 'html2text/html2text',
-                'check'   => 'Html2Text\\Html2Text'
-            ],
-            [
-                'name'    => 'symfony/css-selector',
-                'check'   => 'Symfony\\Component\\CssSelector\\CssSelectorConverter'
-            ],
-            [ 'name'    => 'symfony/dom-crawler',
-                'check'   => 'Symfony\\Component\\DomCrawler\\Crawler'
-            ],
-            [ 'name'    => 'twig/twig',
-                'check'   => 'Twig\\Environment'
-            ],
-            [ 'name'    => 'twig/string-extra',
-                'check'   => 'Twig\\Extra\\String\\StringExtension'
-            ],
-            [ 'name'    => 'symfony/polyfill-ctype',
-                'check'   => 'ctype_digit'
-            ],
-            [ 'name'    => 'symfony/polyfill-iconv',
-                'check'   => 'iconv'
-            ],
-            [ 'name'    => 'symfony/polyfill-mbstring',
-                'check'   => 'mb_list_encodings'
-            ],
-            [
-                'name'  => 'symfony/polyfill-php83',
-                'check' => 'json_validate'
-            ],
-            [
-                'name'  => 'league/oauth2-client',
-                'check' => 'League\\OAuth2\\Client\\Provider\\AbstractProvider'
-            ],
-            [
-                'name'  => 'league/oauth2-google',
-                'check' => 'League\\OAuth2\\Client\\Provider\\Google'
-            ],
-            [
-                'name'  => 'thenetworg/oauth2-azure',
-                'check' => 'TheNetworg\\OAuth2\\Client\\Provider\\Azure'
-            ],
-            [
-                'name'  => 'league/commonmark',
-                'check' => 'League\\CommonMark\\Extension\\CommonMark\\CommonMarkCoreExtension'
-            ],
-            [
-                'name' => 'egulias/email-validator',
-                'check' => 'Egulias\\EmailValidator\\EmailValidator'
-            ],
-            [
-                'name'    => 'symfony/mime',
-                'check'   => 'Symfony\\Mime\\Message'
-            ],
-            [
-                'name'  => 'apereo/phpcas',
-                'check' => 'phpCAS'
-            ],
-            [
-                'name'  => 'bacon/bacon-qr-code',
-                'check' => 'BaconQrCode\\Writer'
-            ],
-            [
-                'name'  => 'robthree/twofactorauth',
-                'check' => 'RobThree\\Auth\\TwoFactorAuth'
-            ],
-            [
-                'name'  => 'ralouphie/getallheaders',
-                'check' => 'getallheaders'
-            ],
-            [
-                'name'    => 'symfony/html-sanitizer',
-                'check'   => 'Symfony\\Component\\HtmlSanitizer\\HtmlSanitizer'
-            ],
-            [
-                'name' => 'league/oauth2-server',
-                'check' => 'League\\OAuth2\\Server\\AuthorizationServer'
-            ],
-            [
-                'name' => 'league/html-to-markdown',
-                'check' => 'League\\HTMLToMarkdown\\HtmlConverter'
-            ],
-            [
-                'name' => 'twig/markdown-extra',
-                'check' => 'Twig\\Extra\\Markdown\\LeagueMarkdown'
-            ],
-            [
-                'name' => 'webonyx/graphql-php',
-                'check' => 'GraphQL\\GraphQL'
-            ],
-            [
-                'name' => 'phpdocumentor/reflection-docblock',
-                'check' => 'phpDocumentor\Reflection\DocBlock'
-            ],
-            [
-                'name' => 'symfony/property-access',
-                'check' => 'Symfony\Component\PropertyAccess\PropertyAccess'
-            ],
-            [
-                'name' => 'symfony/serializer',
-                'check' => 'Symfony\Component\Serializer\Serializer'
-            ],
-            [
-                'name' => 'symfony/property-info',
-                'check' => 'Symfony\Component\PropertyInfo\Type'
-            ],
-            [
-                'name' => 'symfony/error-handler',
-                'check' => 'Symfony\Component\ErrorHandler\ErrorHandler'
-            ],
-        ];
-        return $deps;
     }
 
 
@@ -1145,12 +888,12 @@ class Config extends CommonDBTM
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Alternative language code: en-EN --> en_EN
+        // Alternative language code: en-EN --> en_EN
         $altLang = str_replace("-", "_", $lang);
 
-       // Search in order : ID or extjs dico or tinymce dico / native lang / english name
-       //                   / extjs dico / tinymce dico
-       // ID  or extjs dico or tinymce dico
+        // Search in order : ID or extjs dico or tinymce dico / native lang / english name
+        //                   / extjs dico / tinymce dico
+        // ID  or extjs dico or tinymce dico
         foreach ($CFG_GLPI["languages"] as $ID => $language) {
             if (
                 (strcasecmp($lang, $ID) == 0)
@@ -1162,14 +905,14 @@ class Config extends CommonDBTM
             }
         }
 
-       // native lang
+        // native lang
         foreach ($CFG_GLPI["languages"] as $ID => $language) {
             if (strcasecmp($lang, $language[0]) == 0) {
                 return $ID;
             }
         }
 
-       // english lang name
+        // english lang name
         foreach ($CFG_GLPI["languages"] as $ID => $language) {
             if (strcasecmp($lang, $language[4]) == 0) {
                 return $ID;
@@ -1178,86 +921,6 @@ class Config extends CommonDBTM
 
         return "";
     }
-
-
-    public static function detectRootDoc()
-    {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
-        global $CFG_GLPI, $DB;
-
-        if (isset($CFG_GLPI['root_doc'])) {
-            return; // already computed
-        }
-
-        if (isset($_SERVER['REQUEST_URI'])) {
-            // $_SERVER['REQUEST_URI'] is set, meaning that GLPI is accessed from web server.
-
-            // In this case, `$CFG_GLPI['root_doc']` corresponds to the piece of path
-            // that is common between `GLPI_ROOT` and $_SERVER['SCRIPT_NAME']
-            // e.g. GLPI_ROOT=/var/www/glpi and $_SERVER['SCRIPT_NAME']=/glpi/front/index.php -> $CFG_GLPI['root_doc']=/glpi
-
-            // We cannot rely on $_SERVER['REQUEST_URI'] value as it is a value defined by HTTP client.
-            // $_SERVER['SCRIPT_NAME'] is consider safe as it is either set by GLPI router (see `/public/index.php`),
-            // either it contains the path of PHP script executed by the web server.
-            $script_path = $_SERVER['SCRIPT_NAME'];
-
-            // Extract relative path of entry script directory
-            // e.g. /var/www/mydomain.org/glpi/front/index.php -> /front
-            $current_dir_relative = str_replace(
-                str_replace(DIRECTORY_SEPARATOR, '/', realpath(GLPI_ROOT)),
-                '',
-                str_replace(DIRECTORY_SEPARATOR, '/', realpath(getcwd()))
-            );
-
-            // Extract relative path of script directory
-            // e.g. /glpi/front/index.php -> /glpi/front
-            $script_dir_relative = preg_replace(
-                '/\/[0-9a-zA-Z\.\-\_]+\.php/',
-                '',
-                $script_path
-            );
-            // API exception (handles `RewriteRule api/(.*)$ apirest.php/$1`)
-            if (strpos($script_dir_relative, 'api/') !== false) {
-                $script_dir_relative = preg_replace("/(.*\/)api\/.*/", "$1", $script_dir_relative);
-            }
-
-            // Remove relative path of entry script directory
-            // e.g. /glpi/front -> /glpi
-            $root_doc = str_replace($current_dir_relative, '', $script_dir_relative);
-            $root_doc = rtrim($root_doc, '/');
-
-            $CFG_GLPI['root_doc'] = $root_doc;
-        } else {
-            // $_SERVER['REQUEST_URI'] is not set, meaning that GLPI is probably acces from CLI.
-            // In this case, `$CFG_GLPI['root_doc']` has to be extracted from `$CFG_GLPI['url_base']`.
-
-            $url_base = $CFG_GLPI['url_base'] ?? null;
-            // $CFG_GLPI may have not been loaded yet, load value form DB if `$CFG_GLPI['url_base']` is not set.
-            if (
-                $url_base === null
-                && $DB instanceof DBmysql
-                && $DB->connected
-                // table/field may not exists in edge case (e.g. update from GLPI < 0.85)
-                && $DB->tableExists('glpi_configs')
-                && $DB->fieldExists('glpi_configs', 'context')
-            ) {
-                $url_base = Config::getConfigurationValue('core', 'url_base');
-            }
-
-            if ($url_base !== null) {
-                $CFG_GLPI['root_doc'] = parse_url($url_base, PHP_URL_PATH) ?? '';
-            }
-        }
-
-        // Path for icon of document type (web mode only)
-        if (isset($CFG_GLPI['root_doc'])) {
-            $CFG_GLPI['typedoc_icon_dir'] = $CFG_GLPI['root_doc'] . '/pics/icones';
-        }
-    }
-
 
     /**
      * Display field unicity criterias form
@@ -1275,7 +938,7 @@ class Config extends CommonDBTM
 
         switch (get_class($item)) {
             case Preference::class:
-                return __('Personalization');
+                return self::createTabEntry(text: __('Personalization'), icon: 'ti ti-adjustments');
 
             case User::class:
                 if (
@@ -1333,11 +996,11 @@ class Config extends CommonDBTM
                 $user->computePreferences();
                 $config->showFormUserPrefs($user->fields);
             }
-        } else if ($item instanceof User) {
+        } elseif ($item instanceof User) {
             $config = new self();
             $item->computePreferences();
             $config->showFormUserPrefs($item->fields);
-        } else if ($item instanceof self) {
+        } elseif ($item instanceof self) {
             switch ($tabnum) {
                 case 1:
                     $item->showFormDisplay();
@@ -1462,9 +1125,9 @@ class Config extends CommonDBTM
         $server  = preg_match('/-MariaDB/', $raw) ? 'MariaDB' : 'MySQL';
         $version = preg_replace('/^((\d+\.?)+).*$/', '$1', $raw);
 
-        // MySQL >= 8.0 || MariaDB >= 10.5
+        // MySQL >= 8.0 || MariaDB >= 10.6
         $is_supported = $server === 'MariaDB'
-            ? version_compare($version, '10.5', '>=')
+            ? version_compare($version, '10.6', '>=')
             : version_compare($version, '8.0', '>=');
 
         return [$version => $is_supported];
@@ -1490,15 +1153,15 @@ class Config extends CommonDBTM
         if ($list === null) {
             $extensions_to_check = [
                 'mysqli'   => [
-                    'required'  => true
+                    'required'  => true,
                 ],
                 'fileinfo' => [
                     'required'  => true,
-                    'class'     => 'finfo'
+                    'class'     => 'finfo',
                 ],
                 'json'     => [
                     'required'  => true,
-                    'function'  => 'json_encode'
+                    'function'  => 'json_encode',
                 ],
                 'zlib'     => [
                     'required'  => true,
@@ -1515,28 +1178,28 @@ class Config extends CommonDBTM
                 'bcmath' => [
                     'required'  => true,
                 ],
-            //to sync/connect from LDAP
+                //to sync/connect from LDAP
                 'ldap'       => [
                     'required'  => false,
                 ],
-            //to enhance perfs
+                //to enhance perfs
                 'Zend OPcache' => [
-                    'required'  => false
+                    'required'  => false,
                 ],
-            //for CAS lib
+                //for CAS lib
                 'CAS'     => [
                     'required' => false,
-                    'class'    => 'phpCAS'
+                    'class'    => 'phpCAS',
                 ],
                 'exif' => [
-                    'required'  => false
+                    'required'  => false,
                 ],
                 'intl' => [
-                    'required' => true
+                    'required' => true,
                 ],
                 'sodium' => [
-                    'required' => false
-                ]
+                    'required' => false,
+                ],
             ];
         } else {
             $extensions_to_check = $list;
@@ -1546,20 +1209,20 @@ class Config extends CommonDBTM
             'error'     => 0,
             'good'      => [],
             'missing'   => [],
-            'may'       => []
+            'may'       => [],
         ];
 
-       //check for PHP extensions
+        //check for PHP extensions
         foreach ($extensions_to_check as $ext => $params) {
             $success = true;
 
             if (isset($params['call'])) {
                 $success = call_user_func($params['call']);
-            } else if (isset($params['function'])) {
+            } elseif (isset($params['function'])) {
                 if (!function_exists($params['function'])) {
                     $success = false;
                 }
-            } else if (isset($params['class'])) {
+            } elseif (isset($params['class'])) {
                 if (!class_exists($params['class'])) {
                     $success = false;
                 }
@@ -1611,8 +1274,8 @@ class Config extends CommonDBTM
         $query = [
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'context'   => $context
-            ]
+                'context'   => $context,
+            ],
         ];
 
         if (count($names) > 0) {
@@ -1652,12 +1315,28 @@ class Config extends CommonDBTM
      */
     public static function loadLegacyConfiguration()
     {
-
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var \DBmysql|null $DB
          */
         global $CFG_GLPI, $DB;
+
+        // Compute URLs base path.
+        $root_doc = '';
+        if (isset($_SERVER['REQUEST_URI'])) {
+            // $_SERVER['REQUEST_URI'] is set, meaning that GLPI is accessed from web server.
+            $root_doc = Request::createFromGlobals()->getBasePath();
+        }
+        $CFG_GLPI['root_doc'] = $root_doc;
+        $CFG_GLPI['typedoc_icon_dir'] = $root_doc . '/pics/icones';
+
+        if (
+            !($DB instanceof DBmysql)
+            || !$DB->connected
+            || !$DB->tableExists('glpi_configs')
+        ) {
+            return false;
+        }
 
         $iterator = $DB->request(['FROM' => 'glpi_configs']);
 
@@ -1704,7 +1383,36 @@ class Config extends CommonDBTM
             $CFG_GLPI['planning_work_days'] = importArrayFromDB($CFG_GLPI['planning_work_days']);
         }
 
+        if (isset($CFG_GLPI[Impact::CONF_ENABLED])) {
+            $CFG_GLPI[Impact::CONF_ENABLED] = importArrayFromDB($CFG_GLPI[Impact::CONF_ENABLED]);
+        }
+
+        if (!isset($_SERVER['REQUEST_URI'])) {
+            // $_SERVER['REQUEST_URI'] is not set, meaning that GLPI is probably acces from CLI.
+            // In this case, `$CFG_GLPI['root_doc']` has to be extracted from `$CFG_GLPI['url_base']`,
+            // and it can only be done once configuration is loaded.
+
+            // `$CFG_GLPI['root_doc']` is not supposed to be used in a CLI context,
+            // but it is likely to be used indirectly by cron tasks.
+
+            if (isset($CFG_GLPI['url_base'])) {
+                $root_doc = parse_url($CFG_GLPI['url_base'], PHP_URL_PATH) ?: '';
+                $CFG_GLPI['root_doc'] = $root_doc;
+                $CFG_GLPI['typedoc_icon_dir'] = $root_doc . '/pics/icones';
+            }
+        }
+
+        self::$loaded = true;
+
         return true;
+    }
+
+    /**
+     * Indicates whether the legacy configuration has been correctly loaded.
+     */
+    public static function isLegacyConfigurationLoaded(): bool
+    {
+        return self::$loaded;
     }
 
 
@@ -1725,7 +1433,7 @@ class Config extends CommonDBTM
 
         $config = new self();
         foreach ($values as $name => $value) {
-           // Encrypt config values according to list declared to GLPIKey service
+            // Encrypt config values according to list declared to GLPIKey service
             if (!empty($value) && $glpikey->isConfigSecured($context, $name)) {
                 $value = $glpikey->encrypt($value);
             }
@@ -1733,14 +1441,14 @@ class Config extends CommonDBTM
             if (
                 $config->getFromDBByCrit([
                     'context'   => $context,
-                    'name'      => $name
+                    'name'      => $name,
                 ])
             ) {
                 $input = [
                     'id'        => $config->getID(),
                     'name'      => $name,
                     'context'   => $context,
-                    'value'     => $value
+                    'value'     => $value,
                 ];
 
                 $config->update($input);
@@ -1748,7 +1456,7 @@ class Config extends CommonDBTM
                 $input = [
                     'context'   => $context,
                     'name'      => $name,
-                    'value'     => $value
+                    'value'     => $value,
                 ];
 
                 $config->add($input);
@@ -1782,7 +1490,7 @@ class Config extends CommonDBTM
             if (
                 $config->getFromDBByCrit([
                     'context'   => $context,
-                    'name'      => $value
+                    'name'      => $value,
                 ])
             ) {
                 $config->delete(['id' => $config->getID()]);
@@ -1859,7 +1567,7 @@ class Config extends CommonDBTM
         }
         TemplateRenderer::getInstance()->display('pages/setup/general/logs_setup.html.twig', [
             'config' => $CFG_GLPI,
-            'canedit' => static::canUpdate()
+            'canedit' => static::canUpdate(),
         ]);
     }
 
@@ -1894,7 +1602,7 @@ class Config extends CommonDBTM
         $options = array_merge([
             'value'   => $value,
             'display' => false,
-            'class'   => 'purgelog_interval'
+            'class'   => 'purgelog_interval',
         ], $options);
 
         $out = "<div class='" . htmlescape($options['class']) . "'>";
@@ -1943,7 +1651,7 @@ class Config extends CommonDBTM
         }
         TemplateRenderer::getInstance()->display('pages/setup/general/management_setup.html.twig', [
             'config' => $CFG_GLPI,
-            'canedit' => static::canUpdate()
+            'canedit' => static::canUpdate(),
         ]);
     }
 
@@ -1953,7 +1661,7 @@ class Config extends CommonDBTM
 
         $tab[] = [
             'id'   => 'common',
-            'name' => __('Characteristics')
+            'name' => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -1961,7 +1669,7 @@ class Config extends CommonDBTM
             'table'         => $this->getTable(),
             'field'         => 'value',
             'name'          => __('Value'),
-            'massiveaction' => false
+            'massiveaction' => false,
         ];
 
         return $tab;
@@ -1974,7 +1682,7 @@ class Config extends CommonDBTM
 
     public function post_addItem()
     {
-        $this->logConfigChange($this->fields['context'], $this->fields['name'], (string)$this->fields['value'], '');
+        $this->logConfigChange($this->fields['context'], $this->fields['name'], (string) $this->fields['value'], '');
     }
 
     public function post_updateItem($history = true)
@@ -1988,7 +1696,7 @@ class Config extends CommonDBTM
         if (
             $this->fields['name'] == 'password_expiration_delay'
             && array_key_exists('value', $this->oldvalues)
-            && (int)$this->oldvalues['value'] === -1
+            && (int) $this->oldvalues['value'] === -1
         ) {
             // As passwords will now expire, consider that "now" is the reference date of expiration delay
             $DB->update(
@@ -2012,11 +1720,25 @@ class Config extends CommonDBTM
         }
 
         if (array_key_exists('value', $this->oldvalues)) {
-            $newvalue = (string)$this->fields['value'];
-            $oldvalue = (string)$this->oldvalues['value'];
+            $newvalue = (string) $this->fields['value'];
+            $oldvalue = (string) $this->oldvalues['value'];
 
             if ($newvalue === $oldvalue) {
                 return;
+            }
+
+            // Ensure post update actions and hook that are using `$CFG_GLPI` will use the new value
+            $array_fields = [
+                'priority_matrix',
+                'devices_in_menu',
+                'lock_item_list',
+                'planning_work_days',
+                Impact::CONF_ENABLED,
+            ];
+            if (in_array($this->fields['name'], $array_fields, true)) {
+                $CFG_GLPI[$this->fields['name']] = importArrayFromDB($newvalue);
+            } else {
+                $CFG_GLPI[$this->fields['name']] = $newvalue;
             }
 
             // avoid inserting truncated json in logs
@@ -2026,8 +1748,6 @@ class Config extends CommonDBTM
             if (strlen($oldvalue) > 255 && Toolbox::isJSON($oldvalue)) {
                 $oldvalue = "{...}";
             }
-
-            $CFG_GLPI[$this->fields['name']] = $newvalue; // Ensure post update actions and hook that are using `$CFG_GLPI` will use the new value
 
             $this->logConfigChange(
                 $this->fields['context'],
@@ -2040,7 +1760,7 @@ class Config extends CommonDBTM
 
     public function post_purgeItem()
     {
-        $this->logConfigChange($this->fields['context'], $this->fields['name'], '', (string)$this->fields['value']);
+        $this->logConfigChange($this->fields['context'], $this->fields['name'], '', (string) $this->fields['value']);
     }
 
     /**

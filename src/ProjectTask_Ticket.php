@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -45,7 +45,7 @@ use Glpi\DBAL\QueryFunction;
  **/
 class ProjectTask_Ticket extends CommonDBRelation
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1   = 'ProjectTask';
     public static $items_id_1   = 'projecttasks_id';
 
@@ -115,18 +115,18 @@ class ProjectTask_Ticket extends CommonDBRelation
                 QueryFunction::sum(
                     expression: 'glpi_tickets.actiontime',
                     alias: 'duration'
-                )
+                ),
             ],
             'FROM'         => self::getTable(),
             'INNER JOIN'   => [
                 'glpi_tickets' => [
                     'FKEY'   => [
                         self::getTable()  => 'tickets_id',
-                        'glpi_tickets'    => 'id'
-                    ]
-                ]
+                        'glpi_tickets'    => 'id',
+                    ],
+                ],
             ],
-            'WHERE'        => ['projecttasks_id' => $projecttasks_id]
+            'WHERE'        => ['projecttasks_id' => $projecttasks_id],
         ]);
 
         return count($iterator) ? $iterator->current()['duration'] : 0;
@@ -162,8 +162,8 @@ class ProjectTask_Ticket extends CommonDBRelation
                     'glpi_tickets.status'    => array_merge(
                         Ticket::getSolvedStatusArray(),
                         Ticket::getClosedStatusArray()
-                    )
-                ]
+                    ),
+                ],
             ];
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
                 'rand' => $rand,
@@ -176,9 +176,9 @@ class ProjectTask_Ticket extends CommonDBRelation
                     'entity_sons' => $projecttask->isRecursive(),
                     'used'        => $used,
                     'displaywith' => ['id'],
-                    'condition'   => $condition
+                    'condition'   => $condition,
                 ],
-                'create_link' => Session::haveRight(Ticket::$rightname, CREATE)
+                'create_link' => Session::haveRight(Ticket::$rightname, CREATE),
             ]);
         }
 
@@ -191,7 +191,6 @@ class ProjectTask_Ticket extends CommonDBRelation
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => $columns,
@@ -203,7 +202,7 @@ class ProjectTask_Ticket extends CommonDBRelation
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
-            ]
+            ],
         ]);
     }
 
@@ -237,7 +236,7 @@ class ProjectTask_Ticket extends CommonDBRelation
 
         if (
             $canedit
-            && !in_array((int)$ticket->fields['status'], array_merge(
+            && !in_array((int) $ticket->fields['status'], array_merge(
                 $ticket->getClosedStatusArray(),
                 $ticket->getSolvedStatusArray()
             ), true)
@@ -247,7 +246,7 @@ class ProjectTask_Ticket extends CommonDBRelation
                     'SELECT' => ['id'],
                     'FROM'   => ProjectState::getTable(),
                     'WHERE'  => [
-                        'is_finished' => 1
+                        'is_finished' => 1,
                     ],
                 ]
             );
@@ -260,15 +259,15 @@ class ProjectTask_Ticket extends CommonDBRelation
                 'entity_restrict' => $ticket->getEntityID(),
                 'used'            => $used,
                 'rand'            => $rand,
-                'myname'          => "projects"
+                'myname'          => "projects",
             ];
 
             if (count($finished_states_ids)) {
                 $where = [
                     'OR'  => [
                         'projectstates_id'   => $finished_states_ids,
-                        'is_template'        => 1
-                    ]
+                        'is_template'        => 1,
+                    ],
                 ];
             } else {
                 $where = ['is_template' => 1];
@@ -278,7 +277,7 @@ class ProjectTask_Ticket extends CommonDBRelation
                 [
                     'SELECT' => ['id'],
                     'FROM'   => Project::getTable(),
-                    'WHERE'  => $where
+                    'WHERE'  => $where,
                 ]
             );
             $excluded_projects_ids = [];
@@ -290,7 +289,7 @@ class ProjectTask_Ticket extends CommonDBRelation
                 'used'        => $used,
                 'entity'      => $ticket->getEntityID(),
                 'entity_sons' => $ticket->isRecursive(),
-                'displaywith' => ['id']
+                'displaywith' => ['id'],
             ];
 
             $condition = [];
@@ -322,12 +321,12 @@ class ProjectTask_Ticket extends CommonDBRelation
                     'toupdate' => [
                         "id" => "results_projects$rand",
                         "itemtype" => ProjectTask::class,
-                        'params' => $dd_params
+                        'params' => $dd_params,
                     ],
                     'url' => $CFG_GLPI["root_doc"] . "/ajax/dropdownProjectTaskTicket.php",
-                    'params' => $p
+                    'params' => $p,
                 ],
-                'create_link' => false
+                'create_link' => false,
             ]);
         }
 
@@ -369,47 +368,47 @@ class ProjectTask_Ticket extends CommonDBRelation
                 'father.id AS fID',
                 'glpi_projects.name AS projectname',
                 'glpi_projects.content AS projectcontent',
-                'glpi_projecttasks_tickets.id AS linkid'
+                'glpi_projecttasks_tickets.id AS linkid',
             ],
             'FROM'      => 'glpi_projecttasks',
             'LEFT JOIN' => [
                 'glpi_projecttasktypes' => [
                     'ON' => [
                         'glpi_projecttasktypes' => 'id',
-                        'glpi_projecttasks'     => 'projecttasktypes_id'
-                    ]
+                        'glpi_projecttasks'     => 'projecttasktypes_id',
+                    ],
                 ],
                 'glpi_projectstates'    => [
                     'ON' => [
                         'glpi_projectstates' => 'id',
-                        'glpi_projecttasks'  => 'projectstates_id'
-                    ]
+                        'glpi_projecttasks'  => 'projectstates_id',
+                    ],
                 ],
                 'glpi_projecttasks AS father' => [
                     'ON' => [
                         'father'             => 'id',
-                        'glpi_projecttasks'  => 'projecttasks_id'
-                    ]
+                        'glpi_projecttasks'  => 'projecttasks_id',
+                    ],
                 ],
                 'glpi_projecttasks_tickets'   => [
                     'ON' => [
                         'glpi_projecttasks_tickets'   => 'projecttasks_id',
-                        'glpi_projecttasks'           => 'id'
-                    ]
+                        'glpi_projecttasks'           => 'id',
+                    ],
                 ],
                 'glpi_projects'               => [
                     'ON' => [
                         'glpi_projecttasks'  => 'projects_id',
-                        'glpi_projects'      => 'id'
-                    ]
-                ]
+                        'glpi_projects'      => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
-                'glpi_projecttasks_tickets.tickets_id' => $ID
+                'glpi_projecttasks_tickets.tickets_id' => $ID,
             ],
             'ORDERBY'   => [
-                "$sort $order"
-            ]
+                "$sort $order",
+            ],
         ]);
 
         $entries = [];
@@ -449,13 +448,12 @@ class ProjectTask_Ticket extends CommonDBRelation
                 'plan_end_date' => $data['plan_end_date'],
                 'planned_duration' => $data['planned_duration'],
                 '_effect_duration' => ProjectTask::getTotalEffectiveDuration($data['id']),
-                'fname' => $father
+                'fname' => $father,
             ];
         }
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'columns' => $columns,
             'formatters' => [
@@ -466,7 +464,7 @@ class ProjectTask_Ticket extends CommonDBRelation
                 'plan_end_date' => 'datetime',
                 'planned_duration' => 'duration',
                 '_effect_duration' => 'duration',
-                'fname' => 'raw_html'
+                'fname' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -475,7 +473,7 @@ class ProjectTask_Ticket extends CommonDBRelation
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
-            ]
+            ],
         ]);
     }
 }

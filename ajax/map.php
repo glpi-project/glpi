@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,8 @@
 
 use Glpi\Exception\Http\BadRequestHttpException;
 
+use function Safe\json_encode;
+
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
@@ -53,7 +55,7 @@ if (!isset($_POST['itemtype']) || !isset($_POST['params'])) {
         $lat_field = $itemtype . '_21';
         $lng_field = $itemtype . '_20';
         $name_field = $itemtype . '_1';
-    } else if ($itemtype == 'Entity') {
+    } elseif ($itemtype == 'Entity') {
         $lat_field = $itemtype . '_67';
         $lng_field = $itemtype . '_68';
         $name_field = $itemtype . '_1';
@@ -63,7 +65,7 @@ if (!isset($_POST['itemtype']) || !isset($_POST['params'])) {
         $name_field = $itemtype . '_3';
     }
     if ($itemtype == 'Ticket') {
-       //duplicate search options... again!
+        //duplicate search options... again!
         $name_field = $itemtype . '_83';
     }
 
@@ -79,7 +81,7 @@ if (!isset($_POST['itemtype']) || !isset($_POST['params'])) {
                     'lat'    => $row['raw']["ITEM_$lat_field"],
                     'lng'    => $row['raw']["ITEM_$lng_field"],
                     'title'  => $row['raw']["ITEM_$name_field"],
-                    'count'  => 1
+                    'count'  => 1,
                 ];
             } else {
                 $points[$idx] = [
@@ -87,7 +89,7 @@ if (!isset($_POST['itemtype']) || !isset($_POST['params'])) {
                     'lng'    => $row['raw']["ITEM_$lng_field"],
                     'title'  => $row['raw']["ITEM_$name_field"],
                     'loc_id' => $row['raw']['loc_id'],
-                    'count'  => 1
+                    'count'  => 1,
                 ];
             }
         }
@@ -100,7 +102,7 @@ if (!isset($_POST['itemtype']) || !isset($_POST['params'])) {
             } else {
                 $points[$idx]['types'][$curtype] = [
                     'name'   => strtolower($curtype::getTypeName(1)),
-                    'count'  => 1
+                    'count'  => 1,
                 ];
             }
         }

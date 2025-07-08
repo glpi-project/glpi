@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -57,7 +56,7 @@
 <script>
    $(function(){
       // Create Kanban
-      window.Vue.createApp(window.Vue.components['Kanban/Kanban'].component, {
+      window.Vue.createApp(window.Vue.components['Kanban/KanbanApp'].component, {
           element_id: '{{ kanban_id|default('kanban') }}',
           rights: {{ rights|json_encode|raw }},
           supported_itemtypes: {{ supported_itemtypes|json_encode|raw }},

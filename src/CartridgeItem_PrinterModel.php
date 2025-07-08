@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,7 +37,7 @@
 // since version 0.84
 class CartridgeItem_PrinterModel extends CommonDBRelation
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1          = 'CartridgeItem';
     public static $items_id_1          = 'cartridgeitems_id';
 
@@ -94,8 +94,8 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
      **/
     public static function showForCartridgeItem(CartridgeItem $item)
     {
+        $instID = $item->getID();
 
-        $instID = $item->getField('id');
         if (!$item->can($instID, READ)) {
             return false;
         }
@@ -138,7 +138,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
                 $rand     = mt_rand();
                 Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
                 $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], count($used)),
-                    'container'     => 'mass' . __CLASS__ . $rand
+                    'container'     => 'mass' . __CLASS__ . $rand,
                 ];
                 Html::showMassiveActions($massiveactionparams);
             }
@@ -171,8 +171,8 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
                             'field'      => 40, // printer model
                             'searchtype' => 'equals',
                             'value'      => $data["id"],
-                        ]
-                    ]
+                        ],
+                    ],
                 ];
                 $url = Printer::getSearchURL() . "?" . Toolbox::append_params($opt, '&amp;');
                 echo "<td class='center'><a href='" . $url . "'>" . htmlescape($data["name"]) . "</a></td>";
@@ -187,7 +187,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
             }
             echo "</div>";
         } else {
-            echo "<p class='center b'>" . __s('No item found') . "</p>";
+            echo "<p class='center b'>" . __s('No results found') . "</p>";
         }
     }
 }

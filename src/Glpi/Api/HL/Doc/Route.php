@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -64,7 +64,7 @@ class Route
             if (is_string($schema)) {
                 // Reference to a known schema
                 $schema = new SchemaReference($schema);
-            } else if (is_array($schema)) {
+            } elseif (is_array($schema)) {
                 $schema = Schema::fromArray($schema);
             }
             return new Parameter(
@@ -73,7 +73,7 @@ class Route
                 location: $parameter['location'] ?? 'query',
                 schema: $schema,
                 example: $parameter['example'] ?? null,
-                required: filter_var(isset($parameter['required']) ? $parameter['required'] : false, FILTER_VALIDATE_BOOLEAN),
+                required: filter_var($parameter['required'] ?? false, FILTER_VALIDATE_BOOLEAN),
             );
         }, $parameters);
 
@@ -86,7 +86,7 @@ class Route
             if (is_string($schema)) {
                 // Reference to a known schema
                 $schema = new SchemaReference($schema);
-            } else if (is_array($schema)) {
+            } elseif (is_array($schema)) {
                 $schema = Schema::fromArray($schema);
             }
             $this->responses[] = new Response(

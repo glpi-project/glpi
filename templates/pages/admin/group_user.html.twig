@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -63,7 +62,8 @@
                 } + field_options) }}
             {% endif %}
 
-            {{ fields.dropdownYesNo('is_manager', item.fields['is_manager'], _n('Manager', 'Managers', 1), field_options) }}
+            {{ fields.dropdownYesNo('is_manager', item.fields['is_manager'] ?? false, _n('Manager', 'Managers', 1), field_options) }}
+            {{ fields.dropdownYesNo('is_userdelegate', item.fields['is_userdelegate'] ?? false, __('Delegatee'), field_options) }}
         </div>
         <div class="d-flex flex-row-reverse pe-2">
             {{ inputs.submit('add', _x('button', 'Add'), 1, field_options) }}

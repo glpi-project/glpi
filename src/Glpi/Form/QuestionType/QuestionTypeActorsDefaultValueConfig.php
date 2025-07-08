@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,12 +36,9 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
-use Glpi\Form\Export\Context\ForeignKey\ForeignKeyArrayHandler;
-use Glpi\Form\Export\Specification\ContentSpecificationInterface;
 use Override;
 
-final class QuestionTypeActorsDefaultValueConfig implements JsonFieldInterface, ConfigWithForeignKeysInterface
+final class QuestionTypeActorsDefaultValueConfig implements JsonFieldInterface
 {
     // Unique reference to hardcoded name used for serialization
     public const KEY_USERS_IDS     = "users_ids";
@@ -52,27 +49,7 @@ final class QuestionTypeActorsDefaultValueConfig implements JsonFieldInterface, 
         private array $users_ids = [],
         private array $groups_ids = [],
         private array $suppliers_ids = [],
-    ) {
-    }
-
-    #[Override]
-    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
-    {
-        return [
-            new ForeignKeyArrayHandler(
-                key: self::KEY_USERS_IDS,
-                itemtype: 'User',
-            ),
-            new ForeignKeyArrayHandler(
-                key: self::KEY_GROUPS_IDS,
-                itemtype: 'Group',
-            ),
-            new ForeignKeyArrayHandler(
-                key: self::KEY_SUPPLIERS_IDS,
-                itemtype: 'Supplier',
-            ),
-        ];
-    }
+    ) {}
 
     #[Override]
     public static function jsonDeserialize(array $data): self

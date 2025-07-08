@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,19 +35,23 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\RichText\UserMention;
+
+use function Safe\json_encode;
 
 if (($_POST['action'] ?? null) === 'change_task_state') {
     header("Content-Type: application/json; charset=UTF-8");
 
     if (
-        !isset($_POST['tasks_id'], $_POST['parenttype']) || ($parent = getItemForItemtype($_POST['parenttype'])) === false
+        !isset($_POST['tasks_id'], $_POST['parenttype'])
+        || ($parent = getItemForItemtype($_POST['parenttype'])) === false
+        || !is_a($parent, CommonITILObject::class, true)
     ) {
         return;
     }
 
-    $taskClass = $parent::getType() . "Task";
-    /** @var CommonITILTask $task */
-    $task = new $taskClass();
+    $task = $parent::getTaskClassInstance();
     if (!$task->getFromDB((int) $_POST['tasks_id']) || !$task->canUpdateItem()) {
         throw new AccessDeniedHttpException();
     }
@@ -60,33 +64,26 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
             'id'        => (int) $_POST['tasks_id'],
             $foreignKey => (int) $_POST[$foreignKey],
             'state'     => $new_state,
-            'users_id_editor' => Session::getLoginUserID()
+            'users_id_editor' => Session::getLoginUserID(),
         ]);
         $new_label = Planning::getState($new_state);
         echo json_encode([
             'state'  => $task->fields['state'],
-            'label'  => $new_label
+            'label'  => $new_label,
         ]);
     }
-} else if (($_REQUEST['action'] ?? null) === 'viewsubitem') {
+} elseif (($_REQUEST['action'] ?? null) === 'viewsubitem') {
     header("Content-Type: text/html; charset=UTF-8");
     Html::header_nocache();
-    if (!isset($_REQUEST['type'])) {
-        return;
-    }
-    if (!isset($_REQUEST['parenttype'])) {
-        return;
+    if (!isset($_REQUEST['type'], $_REQUEST['parenttype'])) {
+        throw new BadRequestHttpException();
     }
 
     $item = getItemForItemtype($_REQUEST['type']);
     $parent = getItemForItemtype($_REQUEST['parenttype']);
 
     if (!$parent instanceof CommonITILObject) {
-        trigger_error(
-            sprintf('%s is not a valid item type.', $_REQUEST['parenttype']),
-            E_USER_WARNING
-        );
-        return;
+        throw new BadRequestHttpException();
     }
 
     $twig = TemplateRenderer::getInstance();
@@ -94,26 +91,29 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
     if (isset($_REQUEST[$parent::getForeignKeyField()])) {
         $parent->getFromDB($_REQUEST[$parent::getForeignKeyField()]);
     }
-    $id = isset($_REQUEST['id']) && (int)$_REQUEST['id'] > 0 ? $_REQUEST['id'] : null;
+    $id = isset($_REQUEST['id']) && (int) $_REQUEST['id'] > 0 ? $_REQUEST['id'] : null;
     if ($id) {
         $item->getFromDB($id);
     }
+
+    $mention_options = UserMention::getMentionOptions($parent);
+
     $params = [
-        'item'      => $parent,
-        'subitem'   => $item
+        'item'            => $parent,
+        'subitem'         => $item,
+        'mention_options' => $mention_options,
     ];
 
     if ($_REQUEST['type'] === ITILFollowup::class) {
         $template = 'form_followup';
-    } else if ($_REQUEST['type'] === ITILSolution::class) {
+    } elseif ($_REQUEST['type'] === ITILSolution::class) {
         $template = 'form_solution';
-        $params['kb_id_toload'] = $_REQUEST['load_kb_sol'] ?? 0;
-    } else if (is_subclass_of($_REQUEST['type'], CommonITILTask::class)) {
+    } elseif (is_subclass_of($_REQUEST['type'], CommonITILTask::class)) {
         $template = 'form_task';
-    } else if (is_subclass_of($_REQUEST['type'], CommonITILValidation::class)) {
+    } elseif (is_subclass_of($_REQUEST['type'], CommonITILValidation::class)) {
         $template = 'form_validation';
         $params['form_mode'] = $_REQUEST['item_action'] === 'validation-answer' ? 'answer' : 'request';
-    } else if ($id !== null && $parent->getID() >= 0) {
+    } elseif ($id !== null && $parent->getID() >= 0) {
         $ol = ObjectLock::isLocked($_REQUEST['parenttype'], $parent->getID());
         if ($ol && (Session::getLoginUserID() != $ol->fields['users_id'])) {
             ObjectLock::setReadOnlyProfile();
@@ -124,8 +124,7 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
         return;
     }
     if ($template === null) {
-        echo __s('Access denied');
-        return;
+        throw new AccessDeniedHttpException();
     }
     $twig->display("components/itilobject/timeline/{$template}.html.twig", $params);
 }

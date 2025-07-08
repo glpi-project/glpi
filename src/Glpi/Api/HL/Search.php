@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -109,12 +109,12 @@ final class Search
     private function validateIterator(\DBmysqlIterator $iterator): void
     {
         if ($iterator->isFailed()) {
-            $message = __('An internal error occured while trying to fetch the data.');
+            $message = __('An internal error occurred while trying to fetch the data.');
             if ($_SESSION['glpi_use_mode'] === \Session::DEBUG_MODE) {
                 $message .= ' ' . __('For more information, check the GLPI logs.');
             }
             throw new APIException(
-                message: 'A SQL error occured while trying to get data from the database',
+                message: 'A SQL error occurred while trying to get data from the database',
                 user_message: $message
             );
         }
@@ -153,6 +153,12 @@ final class Search
             $sql_field = $prop['x-field'];
         } else {
             $sql_field = $prop['x-field'] ?? $prop_name;
+        }
+        $is_computed = isset($prop['computation']);
+
+        // Computed fields may be used in HAVING clauses so we have no refer to the fields by the alias
+        if ($is_computed) {
+            return str_replace('.', chr(0x1F), trim($prop_name, '.'));
         }
 
         if (!$is_join) {
@@ -195,8 +201,13 @@ final class Search
             $prop = $prop['items'];
         }
         if (array_key_exists('type', $prop) && $prop['type'] !== Doc\Schema::TYPE_OBJECT) {
-            if (!isset($prop['x-mapper'])) {
+            if (isset($prop['x-mapper']) || isset($prop['x-mapped-property'])) {
                 // Do not select fields mapped after the results are retrieved
+                return null;
+            }
+            if (isset($prop['computation'])) {
+                $expression = $prop['computation'];
+            } else {
                 $sql_field = $this->getSQLFieldForProperty($prop_name);
                 $expression = $this->db_read::quoteName($sql_field);
                 if (str_contains($sql_field, '.')) {
@@ -241,9 +252,10 @@ final class Search
                         }
                     }
                 }
-                $alias = str_replace('.', chr(0x1F), $prop_name);
-                return new QueryExpression($expression, $alias);
             }
+
+            $alias = str_replace('.', chr(0x1F), $prop_name);
+            return new QueryExpression($expression, $alias);
         }
         return null;
     }
@@ -256,7 +268,7 @@ final class Search
     {
         $select = [];
 
-        foreach ($this->flattened_properties as $prop_name => $prop) {
+        foreach (array_keys($this->flattened_properties) as $prop_name) {
             $s = $this->getSelectCriteriaForProperty($prop_name);
             if ($s !== null) {
                 $select[] = $s;
@@ -375,15 +387,24 @@ final class Search
 
         // Handle RSQL filter
         if (isset($this->request_params['filter']) && !empty($this->request_params['filter'])) {
-            $criteria['WHERE'] = [$this->rsql_parser->parse(Lexer::tokenize($this->request_params['filter']))];
+            $filter_result = $this->rsql_parser->parse(Lexer::tokenize($this->request_params['filter']));
+            // Fail the request if any of the filters are invalid
+            if (!empty($filter_result->getInvalidFilters())) {
+                throw new RSQLException(
+                    message: 'RSQL query has invalid filters',
+                    details: array_map(static fn($rsql_error) => $rsql_error->getMessage(), $filter_result->getInvalidFilters())
+                );
+            }
+            $criteria['WHERE'] = [$filter_result->getSQLWhereCriteria()];
+            $criteria['HAVING'] = $filter_result->getSQLHavingCriteria();
         }
 
         // Handle entity and other visibility restrictions
         $entity_restrict = [];
         if (!$this->union_search_mode) {
-            $itemtype = $this->schema['x-itemtype'];
+            $itemtype = $this->schema['x-itemtype']; //should not that use self::getItemFromSchema()?
             /** @var CommonDBTM $item */
-            $item = new $itemtype();
+            $item = getItemForItemtype($itemtype);
             if ($item instanceof ExtraVisibilityCriteria) {
                 $main_table = $item::getTable();
                 $visibility_restrict = $item::getVisibilityCriteria();
@@ -411,15 +432,15 @@ final class Search
                     }
                     $criteria[$join_type] = array_merge($criteria[$join_type], $visibility_restrict[$join_type]);
                 }
-            } else if ($item->isEntityAssign()) {
+            } elseif ($item->isEntityAssign()) {
                 $entity_restrict = getEntitiesRestrictCriteria('_');
             }
             if ($item instanceof Entity) {
                 $entity_restrict = [
                     'OR' => [
                         [$entity_restrict],
-                        [getEntitiesRestrictCriteria('_', 'id')]
-                    ]
+                        [getEntitiesRestrictCriteria('_', 'id')],
+                    ],
                 ];
                 // if $entity_restrict has nothing except empty values as leafs, replace with a simple empty array.
                 // Expected in root entity when recursive. Having empty arrays will fail the query (thinks it is empty IN).
@@ -429,7 +450,7 @@ final class Search
                             if (!$fn_is_empty($where_value)) {
                                 return false;
                             }
-                        } else if (!empty($where_value)) {
+                        } elseif (!empty($where_value)) {
                             return false;
                         }
                     }
@@ -459,7 +480,7 @@ final class Search
 
         // Handle sorting
         if (isset($this->request_params['sort'])) {
-            $sorts = array_map(static fn ($s) => trim($s), explode(',', $this->request_params['sort']));
+            $sorts = array_map(static fn($s) => trim($s), explode(',', $this->request_params['sort']));
             $orderby = [];
             foreach ($sorts as $s) {
                 if ($s === '') {
@@ -492,14 +513,14 @@ final class Search
         $tables_schemas = [];
         if (isset($this->schema['x-table'])) {
             $tables_schemas[$this->schema['x-table']] = $this->schema;
-        } else if (isset($this->schema['x-itemtype'])) {
+        } elseif (isset($this->schema['x-itemtype'])) {
             if (is_subclass_of($this->schema['x-itemtype'], CommonDBTM::class)) {
                 $t = $this->schema['x-itemtype']::getTable();
                 $tables_schemas[$t] = $this->schema;
             } else {
                 throw new RuntimeException('Invalid itemtype');
             }
-        } else if (isset($this->schema['x-subtypes'])) {
+        } elseif (isset($this->schema['x-subtypes'])) {
             foreach ($this->schema['x-subtypes'] as $subtype_info) {
                 if (is_subclass_of($subtype_info['itemtype'], CommonDBTM::class)) {
                     $t = $subtype_info['itemtype']::getTable();
@@ -552,7 +573,7 @@ final class Search
      */
     private function criteriaHasJoinFilter(array $where): bool
     {
-        if (empty($where)) {
+        if ($where === []) {
             return false;
         }
 
@@ -560,8 +581,8 @@ final class Search
             if (is_array($where_value) && $this->criteriaHasJoinFilter($where_value)) {
                 return true;
             }
-            foreach ($this->joins as $join_alias => $join_definition) {
-                if (str_starts_with((string)$where_field, $this->db_read::quoteName($join_alias) . '.')) {
+            foreach (array_keys($this->joins) as $join_alias) {
+                if (str_starts_with((string) $where_field, $this->db_read::quoteName($join_alias) . '.')) {
                     return true;
                 }
             }
@@ -637,12 +658,13 @@ final class Search
             $this->addReadRestrictCriteria($criteria);
         }
 
-        $criteria['SELECT'] = ['_.id'];
         if ($this->union_search_mode) {
+            $criteria['SELECT'] = ['_.id'];
             $criteria['SELECT'][] = '_itemtype';
             $criteria['GROUPBY'] = ['_itemtype', '_.id'];
         } else {
-            foreach ($this->joins as $join_alias => $join) {
+            $criteria['SELECT'][] = '_.id';
+            foreach (array_keys($this->joins) as $join_alias) {
                 $s = $this->getSelectCriteriaForProperty($this->getPrimaryKeyPropertyForJoin($join_alias), true);
                 if ($s !== null) {
                     $criteria['SELECT'][] = $s;
@@ -689,7 +711,7 @@ final class Search
             } else {
                 $type_records = $records[$this->schema['x-itemtype']];
                 $criteria['WHERE'] = [
-                    '_.id' => array_column($type_records, 'id')
+                    '_.id' => array_column($type_records, 'id'),
                 ];
             }
             $iterator = $this->db_read->request($criteria);
@@ -710,9 +732,9 @@ final class Search
      * Resolve the DB table for the given foreign key and schema.
      * @param string $fkey The foreign key name (In the fully qualified property name format, not the SQL field name)
      * @param string $schema_name The schema name
-     * @return string The DB table name
+     * @return string|null The DB table name or null if the fkey parameter doesn't seem to be a foreign key.
      */
-    private function getTableForFKey(string $fkey, string $schema_name): string
+    private function getTableForFKey(string $fkey, string $schema_name): ?string
     {
         $normalized_fkey = str_replace(chr(0x1F), '.', $fkey);
         if (isset($this->joins[$normalized_fkey])) {
@@ -745,8 +767,8 @@ final class Search
                 }
             }
             if (empty($this->fkey_tables[$fkey])) {
-                // We still don't have a table. Throw an exception.
-                throw new RuntimeException('Cannot find table for property ' . $fkey);
+                // Probably not a fkey
+                return null;
             }
         }
         return $this->fkey_tables[$fkey];
@@ -773,7 +795,7 @@ final class Search
                 $current_path = implode('.', $new_path);
                 $next_id = array_shift($ids_path);
                 // if current path points to an object, we don't need to add the ID to the path
-                $path_without_ids = implode('.', array_filter(explode('.', $current_path), static fn ($p) => !is_numeric($p)));
+                $path_without_ids = implode('.', array_filter(explode('.', $current_path), static fn($p) => !is_numeric($p)));
                 if (!isset($this->joins[$path_without_ids]['parent_type']) && $this->joins[$path_without_ids]['parent_type'] === Doc\Schema::TYPE_OBJECT) {
                     if (!empty($next_id) && preg_match('/\.\d+/', $current_path)) {
                         $items = ArrayPathAccessor::getElementByArrayPath($hydrated_record, $current_path);
@@ -793,7 +815,7 @@ final class Search
                     $new_path[] = $next_id;
                 }
             }
-            $new_path = array_filter($new_path, static fn ($p) => !empty($p));
+            $new_path = array_filter($new_path, static fn($p) => !empty($p));
             $join_prop_path = implode('.', $new_path);
         }
         return [$join_prop_path ?? $join_name, $id];
@@ -815,6 +837,9 @@ final class Search
                 $dehydrated_ref = 'id';
             }
             $table = $this->getTableForFKey($dehydrated_ref, $schema_name);
+            if ($table === null) {
+                continue;
+            }
             $needed_ids = explode(chr(0x1D), $dehydrated_row[$dehydrated_ref] ?? '');
             $needed_ids = array_filter($needed_ids, static function ($id) {
                 return $id !== chr(0x0);
@@ -885,7 +910,7 @@ final class Search
         $array_joins = array_filter($this->joins, static function ($v) {
             return isset($v['parent_type']) && $v['parent_type'] === Doc\Schema::TYPE_ARRAY;
         }, ARRAY_FILTER_USE_BOTH);
-        foreach ($array_joins as $name => $join_def) {
+        foreach (array_keys($array_joins) as $name) {
             // Get all paths in the array that match the join name. Paths may or may not have number parts between the parts of the join name (separated by '.')
             $pattern = str_replace('.', '\.(?:\d+\.)?', $name);
             $paths = ArrayPathAccessor::getArrayPaths($record, "/^{$pattern}$/");
@@ -896,7 +921,7 @@ final class Search
                 }
                 $join_prop = array_values($join_prop);
                 // Remove any empty values
-                $join_prop = array_filter($join_prop, static fn ($v) => !empty($v));
+                $join_prop = array_filter($join_prop, static fn($v) => !empty($v));
                 ArrayPathAccessor::setElementByArrayPath($record, $path, $join_prop);
             }
         }
@@ -905,7 +930,7 @@ final class Search
         $obj_joins = array_filter($this->joins, function ($v, $k) {
             return isset($v['parent_type']) && $v['parent_type'] === Doc\Schema::TYPE_OBJECT && !isset($this->flattened_properties[$k]);
         }, ARRAY_FILTER_USE_BOTH);
-        foreach ($obj_joins as $name => $join_def) {
+        foreach (array_keys($obj_joins) as $name) {
             // Get all paths in the array that match the join name. Paths may or may not have number parts between the parts of the join name (separated by '.')
             $pattern = str_replace('.', '\.(?:\d+\.)?', $name);
             $paths = ArrayPathAccessor::getArrayPaths($record, "/^{$pattern}$/");
@@ -914,7 +939,7 @@ final class Search
                 if ($join_prop === null) {
                     continue;
                 }
-                $join_prop = array_filter($join_prop, static fn ($v) => !empty($v));
+                $join_prop = array_filter($join_prop, static fn($v) => !empty($v));
                 if (empty($join_prop)) {
                     ArrayPathAccessor::setElementByArrayPath($record, $path, null);
                 }
@@ -936,6 +961,9 @@ final class Search
                 // Make sure we have all the needed data
                 foreach ($row as $fkey => $record_ids) {
                     $table = $this->getTableForFKey($fkey, $schema_name);
+                    if ($table === null) {
+                        continue;
+                    }
                     $itemtype = getItemTypeForTable($table);
 
                     if ($record_ids === null || $record_ids === '' || $record_ids === "\0") {
@@ -953,7 +981,7 @@ final class Search
                     }, explode(chr(0x1D), $record_ids));
                     $ids_to_fetch = array_diff($ids_to_fetch, array_keys($fetched_records[$table] ?? []));
 
-                    if (empty($ids_to_fetch)) {
+                    if ($ids_to_fetch === []) {
                         // Every record needed for this row has already been fetched.
                         continue;
                     }
@@ -971,7 +999,7 @@ final class Search
                                 return false;
                             }
                             $prop_field = $prop_params['x-field'] ?? $prop_name;
-                            $mapped_from_other = isset($prop_params['x-mapped-from']) && $prop_params['x-mapped-from'] !== $prop_field;
+                            $mapped_from_other = isset($prop_params['x-mapped-property']) || (isset($prop_params['x-mapped-from']) && $prop_params['x-mapped-from'] !== $prop_field);
                             // We aren't handling joins or mapped fields here
                             $prop_name = str_replace(chr(0x1F), '.', $prop_name);
                             $prop_parent = substr($prop_name, 0, strrpos($prop_name, '.'));
@@ -1004,29 +1032,33 @@ final class Search
                             // Property can only be written to, not read. We shouldn't be getting it here.
                             continue;
                         }
-                        $sql_field = $this->getSQLFieldForProperty($prop_name);
-                        $field_parts = explode('.', $sql_field);
-                        $field_only = end($field_parts);
-                        // Handle translatable fields
-                        $translatable = \Session::haveTranslations($itemtype, $field_only);
-                        $trans_alias = "{$join_name}__{$field_only}__trans";
-                        $trans_alias = hash('xxh3', $trans_alias);
-                        if ($translatable) {
-                            if (!isset($criteria['LEFT JOIN'])) {
-                                $criteria['LEFT JOIN'] = [];
+
+                        $trans_alias = null;
+                        $is_computed = isset($prop['computation']);
+                        $sql_field = $is_computed ? $prop['computation'] : $this->getSQLFieldForProperty($prop_name);
+                        if (!$is_computed) {
+                            $field_parts = explode('.', $sql_field);
+                            $field_only = end($field_parts);
+                            // Handle translatable fields
+                            if (\Session::haveTranslations($itemtype, $field_only)) {
+                                $trans_alias = "{$join_name}__{$field_only}__trans";
+                                $trans_alias = hash('xxh3', $trans_alias);
+                                if (!isset($criteria['LEFT JOIN'])) {
+                                    $criteria['LEFT JOIN'] = [];
+                                }
+                                $criteria['LEFT JOIN']["glpi_dropdowntranslations AS {$trans_alias}"] = [
+                                    'ON' => [
+                                        $join_name => 'id',
+                                        $trans_alias => 'items_id', [
+                                            'AND' => [
+                                                "$trans_alias.language" => \Session::getLanguage(),
+                                                "$trans_alias.itemtype" => $itemtype,
+                                                "$trans_alias.field" => $field_only,
+                                            ],
+                                        ],
+                                    ],
+                                ];
                             }
-                            $criteria['LEFT JOIN']["glpi_dropdowntranslations AS {$trans_alias}"] = [
-                                'ON' => [
-                                    $join_name => 'id',
-                                    $trans_alias => 'items_id', [
-                                        'AND' => [
-                                            "$trans_alias.language" => \Session::getLanguage(),
-                                            "$trans_alias.itemtype" => $itemtype,
-                                            "$trans_alias.field" => $field_only,
-                                        ]
-                                    ]
-                                ]
-                            ];
                         }
                         // alias should be prop name relative to current join
                         $alias = $prop_name;
@@ -1034,7 +1066,7 @@ final class Search
                             $alias = preg_replace('/^' . preg_quote($join_name, '/') . '\./', '', $alias);
                         }
                         $alias = str_replace('.', chr(0x1F), $alias);
-                        if ($translatable) {
+                        if (!$is_computed && isset($trans_alias)) {
                             // Try to use the translated value, but fall back to the default value if there is no translation
                             $criteria['SELECT'][] = QueryFunction::ifnull(
                                 expression: "{$trans_alias}.value",
@@ -1042,7 +1074,7 @@ final class Search
                                 alias: $alias
                             );
                         } else {
-                            $criteria['SELECT'][] = $sql_field . ' AS ' . $alias;
+                            $criteria['SELECT'][] = $sql_field instanceof QueryExpression ? new QueryExpression($sql_field, $alias) : ($sql_field . ' AS ' . $alias);
                         }
                     }
 
@@ -1087,6 +1119,7 @@ final class Search
         $mapped_props = array_filter($search->getFlattenedProperties(), static function ($prop) {
             return isset($prop['x-mapper']);
         });
+
         foreach ($results as &$result) {
             // Handle mapped fields
             foreach ($mapped_props as $mapped_prop_name => $mapped_prop) {
@@ -1097,6 +1130,29 @@ final class Search
                         value: $mapped_prop['x-mapper'](ArrayPathAccessor::getElementByArrayPath($result, $mapped_prop['x-mapped-from']))
                     );
                 }
+            }
+            // Handle mapped objects
+            $mapped_objs = [];
+            foreach ($search->getFlattenedProperties() as $prop_name => $prop) {
+                if (isset($prop['x-mapped-property'])) {
+                    $parent_obj_path = substr($prop_name, 0, strrpos($prop_name, '.'));
+                    if (isset($mapped_objs[$parent_obj_path])) {
+                        // Parent object already mapped
+                        continue;
+                    }
+                    $parent_obj = ArrayPathAccessor::getElementByArrayPath($schema['properties'], $parent_obj_path);
+                    if ($parent_obj === null) {
+                        continue;
+                    }
+                    $mapper = $parent_obj['items']['x-mapper'] ?? $parent_obj['x-mapper'];
+                    $mapped_from = $parent_obj['items']['x-mapped-from'] ?? $parent_obj['x-mapped-from'];
+                    $mapped_objs[$parent_obj_path] = $mapper(ArrayPathAccessor::getElementByArrayPath($result, $mapped_from));
+                }
+            }
+            foreach ($mapped_objs as $path => $data) {
+                $existing_data = ArrayPathAccessor::getElementByArrayPath($result, $path) ?? [];
+                $data = array_merge($existing_data, $data);
+                ArrayPathAccessor::setElementByArrayPath($result, $path, $data);
             }
             $result = Doc\Schema::fromArray($schema)->castProperties($result);
         }
@@ -1152,12 +1208,12 @@ final class Search
         try {
             $results = self::getSearchResultsBySchema($schema, $request_params);
         } catch (RSQLException $e) {
-            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, $e->getMessage()), 400);
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, $e->getMessage(), $e->getDetails()), 400);
         } catch (APIException $e) {
-            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getUserMessage()));
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getUserMessage(), $e->getDetails()));
         } catch (\Throwable $e) {
             $message = (new APIException())->getUserMessage();
-            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message));
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getMessage()));
         }
         $has_more = $results['start'] + $results['limit'] < $results['total'];
         $end = max(0, ($results['start'] + $results['limit'] - 1));
@@ -1182,13 +1238,18 @@ final class Search
     {
         $params = [];
         $flattened_properties = Doc\Schema::flattenProperties($schema['properties']);
-        //Get top level properties (do not contain "." in the key)
-        $top_level_properties = array_filter($flattened_properties, static function ($k) {
+        $joins = Doc\Schema::getJoins($schema['properties']);
+        $writable_props = array_filter($flattened_properties, static function ($v, $k) use ($joins) {
+            $base_k = strstr($k, '.', true) ?: $k;
+            $is_join = isset($joins[$base_k]);
             $is_dropdown_identifier = preg_match('/^(\w+)\.id$/', $k);
-            return $is_dropdown_identifier || !str_contains($k, '.');
-        }, ARRAY_FILTER_USE_KEY);
-        foreach ($top_level_properties as $prop_name => $prop) {
-            if (str_contains($prop_name, '.')) {
+            return $is_dropdown_identifier || !$is_join;
+        }, ARRAY_FILTER_USE_BOTH);
+        foreach ($writable_props as $prop_name => $prop) {
+            $base_prop_name = strstr($prop_name, '.', true) ?: $prop_name;
+            $is_join = isset($joins[$base_prop_name]);
+            $is_dropdown_identifier = $is_join && preg_match('/^(\w+)\.id$/', $prop_name);
+            if ($is_dropdown_identifier) {
                 // This is a dropdown identifier, we need to get the id from the request
                 $prop_name = strstr($prop_name, '.', true);
                 $prop = $schema['properties'][$prop_name];
@@ -1202,13 +1263,13 @@ final class Search
             // Field resolution priority: x-field -> x-join.fkey -> property name
             if (isset($prop['x-field'])) {
                 $internal_name = $prop['x-field'];
-            } else if (isset($prop['x-join']['fkey'])) {
+            } elseif (isset($prop['x-join']['fkey'])) {
                 $internal_name = $prop['x-join']['fkey'] ?? $prop_name;
             } else {
                 $internal_name = $prop_name;
             }
-            if (isset($request_params[$prop_name])) {
-                $params[$internal_name] = $request_params[$prop_name];
+            if (ArrayPathAccessor::hasElementByArrayPath($request_params, $prop_name)) {
+                $params[$internal_name] = ArrayPathAccessor::getElementByArrayPath($request_params, $prop_name);
             }
         }
         return $params;
@@ -1217,9 +1278,8 @@ final class Search
     /**
      * Get the related itemtype for the given schema.
      * @param array $schema
-     * @return class-string<CommonDBTM>
      */
-    private static function getItemtypeFromSchema(array $schema): string
+    private static function getItemFromSchema(array $schema): CommonDBTM
     {
         $itemtype = $schema['x-itemtype'] ?? ($schema['x-table'] ? getItemTypeForTable($schema['x-table']) : null);
         if ($itemtype === null) {
@@ -1228,7 +1288,7 @@ final class Search
         if (!is_subclass_of($itemtype, CommonDBTM::class)) {
             throw new \RuntimeException('Invalid itemtype');
         }
-        return $itemtype;
+        return new $itemtype();
     }
 
     /**
@@ -1324,14 +1384,12 @@ final class Search
      */
     public static function createBySchema(array $schema, array $request_params, array $get_route, array $extra_get_route_params = []): Response
     {
-        $itemtype = self::getItemtypeFromSchema($schema);
         if (!isset($request_params['entity']) && isset($_SESSION['glpiactive_entity'])) {
             $request_params['entity'] = $_SESSION['glpiactive_entity'];
         }
         $input = self::getInputParamsBySchema($schema, $request_params);
 
-        /** @var CommonDBTM $item */
-        $item = new $itemtype();
+        $item = self::getItemFromSchema($schema);
         if (!$item->can($item->getID(), CREATE, $input)) {
             return AbstractController::getAccessDeniedErrorResponse();
         }
@@ -1364,7 +1422,6 @@ final class Search
     public static function updateBySchema(array $schema, array $request_attrs, array $request_params, string $field = 'id'): Response
     {
         $items_id = $field === 'id' ? $request_attrs['id'] : self::getIDForOtherUniqueFieldBySchema($schema, $field, $request_attrs[$field]);
-        $itemtype = self::getItemtypeFromSchema($schema);
         // Ignore entity updates. This needs to be done through the Transfer process
         // TODO This should probably be handled in a more generic way (support other fields that can be used during creation but not updates)
         if (array_key_exists('entity', $request_attrs)) {
@@ -1372,8 +1429,8 @@ final class Search
         }
         $input = self::getInputParamsBySchema($schema, $request_params);
         $input['id'] = $items_id;
-        /** @var CommonDBTM $item */
-        $item = new $itemtype();
+
+        $item = self::getItemFromSchema($schema);
         if (!$item->can($items_id, UPDATE, $input)) {
             return AbstractController::getAccessDeniedErrorResponse();
         }
@@ -1399,9 +1456,7 @@ final class Search
     public static function deleteBySchema(array $schema, array $request_attrs, array $request_params, string $field = 'id'): Response
     {
         $items_id = $field === 'id' ? $request_attrs['id'] : self::getIDForOtherUniqueFieldBySchema($schema, $field, $request_attrs[$field]);
-        $itemtype = self::getItemtypeFromSchema($schema);
-        /** @var CommonDBTM $item */
-        $item = new $itemtype();
+        $item = self::getItemFromSchema($schema);
         $force = $request_params['force'] ?? false;
         $input = ['id' => (int) $items_id];
         $purge = !$item->maybeDeleted() || $force;

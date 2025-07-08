@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,9 +34,19 @@
 
 namespace tests\units\Glpi\Form\AnswersHandler;
 
+use CommonITILObject;
 use DbTestCase;
 use Glpi\Form\Answer;
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\Condition\CreationStrategy;
+use Glpi\Form\Condition\LogicOperator;
+use Glpi\Form\Condition\Type;
+use Glpi\Form\Condition\ValidationStrategy;
+use Glpi\Form\Condition\ValueOperator;
+use Glpi\Form\Condition\VisibilityStrategy;
+use Glpi\Form\Destination\FormDestinationChange;
+use Glpi\Form\Destination\FormDestinationProblem;
+use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Question;
 use Glpi\Tests\FormBuilder;
 use Glpi\Form\Form;
@@ -55,7 +64,7 @@ class AnswersHandlerTest extends DbTestCase
 
     public function testSaveAnswers(): void
     {
-        self::login();
+        $this->login();
         $users_id = getItemByTypeName(User::class, TU_USER, true);
 
         // Fist form
@@ -89,7 +98,7 @@ class AnswersHandlerTest extends DbTestCase
                 self::getQuestionId($form_1, "First name") => "John",
                 self::getQuestionId($form_1, "Last name") => "Doe",
                 self::getQuestionId($form_1, "Age") => 78,
-                self::getQuestionId($form_1, "Thoughts about GLPI") => "I love GLPI!!!"
+                self::getQuestionId($form_1, "Thoughts about GLPI") => "I love GLPI!!!",
             ],
             expected_set: [
                 'forms_forms_id' => $form_1->getID(),
@@ -113,7 +122,7 @@ class AnswersHandlerTest extends DbTestCase
                 self::getQuestionId($form_1, "First name") => "John",
                 self::getQuestionId($form_1, "Last name") => "Smith",
                 self::getQuestionId($form_1, "Age") => 19,
-                self::getQuestionId($form_1, "Thoughts about GLPI") => "GLPI is incredible"
+                self::getQuestionId($form_1, "Thoughts about GLPI") => "GLPI is incredible",
             ],
             expected_set: [
                 'forms_forms_id' => $form_1->getID(),
@@ -158,6 +167,273 @@ class AnswersHandlerTest extends DbTestCase
         );
     }
 
+    public static function provideTestValidateAnswers(): iterable
+    {
+        // Basic mandatory form builder
+        $mandatory_form_builder = (new FormBuilder("Validation Test Form"))
+                ->addQuestion("Mandatory Name", QuestionTypeShortText::class, is_mandatory: true)
+                ->addQuestion("Mandatory Email", QuestionTypeEmail::class, is_mandatory: true)
+                ->addQuestion("Optional Comment", QuestionTypeLongText::class, is_mandatory: false);
+
+        yield 'All mandatory fields are filled - should be valid' => [
+            'builder' => $mandatory_form_builder,
+            'answers' => [
+                'Mandatory Name' => 'John Doe',
+                'Mandatory Email' => 'john.doe@example.com',
+                'Optional Comment' => 'This is an optional comment',
+            ],
+            'expectedIsValid' => true,
+            'expectedErrors' => [],
+        ];
+
+        yield 'Missing one mandatory field - should be invalid' => [
+            'builder' => $mandatory_form_builder,
+            'answers' => [
+                'Mandatory Email' => 'john.doe@example.com',
+                'Optional Comment' => 'This is an optional comment',
+            ],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Mandatory Name' => 'This field is mandatory',
+            ],
+        ];
+
+        yield 'Missing all mandatory fields - should be invalid' => [
+            'builder' => $mandatory_form_builder,
+            'answers' => [
+                'Optional Comment' => 'This is an optional comment',
+            ],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Mandatory Name' => 'This field is mandatory',
+                'Mandatory Email' => 'This field is mandatory',
+            ],
+        ];
+
+        yield 'Empty answers - should be invalid with multiple errors' => [
+            'builder' => $mandatory_form_builder,
+            'answers' => [],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Mandatory Name' => 'This field is mandatory',
+                'Mandatory Email' => 'This field is mandatory',
+            ],
+        ];
+
+        yield 'Empty string in mandatory field - should be invalid' => [
+            'builder' => $mandatory_form_builder,
+            'answers' => [
+                'Mandatory Name' => '',
+                'Mandatory Email' => 'john.doe@example.com',
+            ],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Mandatory Name' => 'This field is mandatory',
+            ],
+        ];
+
+        // Conditonnal validation form builder
+        $validation_conditional_form_builder = (new FormBuilder("Conditional Validation Test Form"))
+            ->addQuestion("Main Question", QuestionTypeShortText::class, is_mandatory: true)
+            ->addQuestion("Conditional Question", QuestionTypeShortText::class, is_mandatory: true);
+        $validation_conditional_form_builder->setQuestionValidation(
+            "Conditional Question",
+            ValidationStrategy::VALID_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Conditional Question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::MATCH_REGEX,
+                    'value'          => "/^Conditional Validation$/",
+                ],
+            ]
+        );
+
+        yield 'Validation condition met - should be valid' => [
+            'builder' => $validation_conditional_form_builder,
+            'answers' => [
+                'Main Question'        => 'Show Conditional',
+                'Conditional Question' => 'Conditional Validation',
+            ],
+            'expectedIsValid' => true,
+            'expectedErrors' => [],
+        ];
+
+        yield 'Validation condition not met - should be invalid' => [
+            'builder' => $validation_conditional_form_builder,
+            'answers' => [
+                'Main Question'        => 'Show Conditional',
+                'Conditional Question' => 'Invalid answer',
+            ],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Conditional Question' => 'The value must match the requested format',
+            ],
+        ];
+
+        yield 'Empty answer in conditional question - should be invalid' => [
+            'builder' => $validation_conditional_form_builder,
+            'answers' => [
+                'Main Question'        => 'Show Conditional',
+                'Conditional Question' => '',
+            ],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Conditional Question' => 'This field is mandatory',
+            ],
+        ];
+
+        // Conditional visibility form builder
+        $visibility_conditional_form_builder = (new FormBuilder("Conditional Validation Test Form"))
+            ->addQuestion("Main Question", QuestionTypeShortText::class, is_mandatory: true)
+            ->addQuestion("Conditional Question", QuestionTypeShortText::class, is_mandatory: true);
+        $visibility_conditional_form_builder->setQuestionVisibility(
+            "Conditional Question",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Main Question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "Show Conditional",
+                ],
+            ]
+        );
+
+        yield 'Conditional question shown and filled - should be valid' => [
+            'builder' => $visibility_conditional_form_builder,
+            'answers' => [
+                'Main Question' => 'Show Conditional',
+                'Conditional Question' => 'This is a conditional answer',
+            ],
+            'expectedIsValid' => true,
+            'expectedErrors' => [],
+        ];
+
+        yield 'Conditional question not shown - should be valid' => [
+            'builder' => $visibility_conditional_form_builder,
+            'answers' => [
+                'Main Question' => 'Do not show',
+            ],
+            'expectedIsValid' => true,
+            'expectedErrors' => [],
+        ];
+
+        yield 'Conditional question shown but not filled - should be invalid' => [
+            'builder' => $visibility_conditional_form_builder,
+            'answers' => [
+                'Main Question' => 'Show Conditional',
+                'Conditional Question' => '',
+            ],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Conditional Question' => 'This field is mandatory',
+            ],
+        ];
+
+        // Both validation and visibility form builder
+        $both_conditional_form_builder = (new FormBuilder("Both Conditional Validation Test Form"))
+            ->addQuestion("Main Question", QuestionTypeShortText::class, is_mandatory: true)
+            ->addQuestion("Conditional Question", QuestionTypeShortText::class, is_mandatory: true);
+        $both_conditional_form_builder->setQuestionVisibility(
+            "Conditional Question",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Main Question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "Show Conditional",
+                ],
+            ]
+        );
+        $both_conditional_form_builder->setQuestionValidation(
+            "Conditional Question",
+            ValidationStrategy::VALID_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Conditional Question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::MATCH_REGEX,
+                    'value'          => "/^Both Conditional Validation$/",
+                ],
+            ]
+        );
+
+        yield 'Conditional question shown and validation condition met - should be valid' => [
+            'builder' => $both_conditional_form_builder,
+            'answers' => [
+                'Main Question'        => 'Show Conditional',
+                'Conditional Question' => 'Both Conditional Validation',
+            ],
+            'expectedIsValid' => true,
+            'expectedErrors' => [],
+        ];
+
+        yield 'Conditional question shown but validation condition not met - should be invalid' => [
+            'builder' => $both_conditional_form_builder,
+            'answers' => [
+                'Main Question'        => 'Show Conditional',
+                'Conditional Question' => 'Invalid answer',
+            ],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Conditional Question' => 'The value must match the requested format',
+            ],
+        ];
+
+        yield 'Conditional question not shown and not filled - should be valid' => [
+            'builder' => $both_conditional_form_builder,
+            'answers' => [
+                'Main Question' => 'Do not show',
+            ],
+            'expectedIsValid' => true,
+            'expectedErrors' => [],
+        ];
+    }
+
+    #[DataProvider('provideTestValidateAnswers')]
+    public function testValidateAnswers(
+        FormBuilder $builder,
+        array $answers,
+        bool $expectedIsValid,
+        array $expectedErrors
+    ): void {
+        self::login();
+
+        $form = self::createForm($builder);
+        $handler = AnswersHandler::getInstance();
+
+        // Convert answer keys from question names to question IDs
+        $mapped_answers = [];
+        foreach ($answers as $question_name => $answer) {
+            $question_id = self::getQuestionId($form, $question_name);
+            $mapped_answers[$question_id] = $answer;
+        }
+        $result = $handler->validateAnswers($form, $mapped_answers);
+
+        $this->assertEquals($expectedIsValid, $result->isValid(), "Validation result should match expected value");
+        $this->assertCount(count($expectedErrors), $result->getErrors(), "Number of errors should match expected value");
+
+        // Convert expected errors to expected format
+        $currentErrors = $result->getErrors();
+        foreach ($expectedErrors as $name => $error) {
+            $this->assertContains(
+                [
+                    'question_id'   => self::getQuestionId($form, $name),
+                    'question_name' => $name,
+                    'message'       => $error,
+                ],
+                $currentErrors,
+                "Expected error message should be present in the result"
+            );
+        }
+    }
+
     private function validateAnswers(
         Form $form,
         array $answers,
@@ -169,10 +445,111 @@ class AnswersHandlerTest extends DbTestCase
         $answer_set = $handler->saveAnswers($form, $answers, $users_id);
 
         foreach ($expected_set as $field => $expected_value) {
-            $this->assertEquals($expected_value, $answer_set->fields[$field]);
+            if ($field === 'answers') {
+                $this->assertArraysEqualRecursive(
+                    json_decode($expected_value, true),
+                    json_decode($answer_set->fields[$field], true),
+                );
+            } else {
+                $this->assertEquals($expected_value, $answer_set->fields[$field]);
+            }
         }
 
         // The `createDestinations` part of the `saveAnswers` method is tested
         // by each possible destinations type in their own test file
+    }
+
+    public function testDestinationItemsAreLinkedToForm(): void
+    {
+        // Arrange: create a form with its default mandatory destination
+        $builder = new FormBuilder("My test form");
+        $builder->addQuestion("Name", QuestionTypeShortText::class);
+        $builder->addDestination(FormDestinationTicket::class, "Second ticket");
+        $builder->addDestination(FormDestinationChange::class, "First change");
+        $builder->addDestination(FormDestinationProblem::class, "First problem");
+        $form = $this->createForm($builder);
+
+        // Act: submit an answer for this form
+        $answers = $this->sendFormAndGetAnswerSet($form, [
+            'Name' => 'My test answer',
+        ]);
+        $created_items = $answers->getCreatedItems();
+
+        // Assert: the created ticket should be linked to the form
+        $this->assertCount(4, $created_items);
+
+        foreach ($created_items as $item) {
+            $this->assertInstanceOf(CommonITILObject::class, $item);
+
+            $linked_items = $item->getLinkedItems();
+            $this->assertCount(1, $linked_items);
+            $this->assertArrayHasKey(Form::class, $linked_items);
+
+            $linked_forms_ids = $linked_items[Form::class];
+            $this->assertCount(1, $linked_forms_ids);
+
+            $linked_forms_id = current($linked_forms_ids);
+            $this->assertEquals($form->getID(), $linked_forms_id);
+        }
+    }
+
+    public function testDestinationWithTrueConditionsAreNotCreated(): void
+    {
+        // Arrange: create a form with an invalid condition
+        $builder = new FormBuilder("My test form");
+        $builder->addQuestion("Name", QuestionTypeShortText::class);
+        $builder->addDestination(FormDestinationTicket::class, "Second ticket");
+        $builder->setDestinationCondition(
+            "Second ticket",
+            CreationStrategy::CREATED_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Name",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "GLPI",
+                ],
+            ],
+        );
+
+        // Act: submit an answer for this form
+        $answers = $this->sendFormAndGetAnswerSet($this->createForm($builder), [
+            'Name' => 'GLPI',
+        ]);
+        $created_items = $answers->getCreatedItems();
+
+        // Assert: the ticket should have been created
+        $this->assertCount(2, $created_items);
+    }
+
+    public function testDestinationWithFalseConditionsAreNotCreated(): void
+    {
+        // Arrange: create a form with an invalid condition
+        $builder = new FormBuilder("My test form");
+        $builder->addQuestion("Name", QuestionTypeShortText::class);
+        $builder->addDestination(FormDestinationTicket::class, "Second ticket");
+        $builder->setDestinationCondition(
+            "Second ticket",
+            CreationStrategy::CREATED_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Name",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "GLPI",
+                ],
+            ],
+        );
+
+        // Act: submit an answer for this form
+        $answers = $this->sendFormAndGetAnswerSet($this->createForm($builder), [
+            'Name' => 'not GLPI',
+        ]);
+        $created_items = $answers->getCreatedItems();
+
+        // Assert: the ticket should not have been created
+        $this->assertCount(1, $created_items);
     }
 }

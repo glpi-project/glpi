@@ -1,0 +1,205 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
+{% set container_id = 'container' ~ random() %}
+
+{% if not is_ajax %}
+    <div id="{{ container_id }}">
+{% endif %}
+        <div class="card search-card border-0">
+            <div id="search_knowbaseitem_form" class="d-flex mb-3 mt-3">
+                {{ inputs.text('contains', contains, {
+                    additional_attributes: {
+                        'aria-label': __('Search…'),
+                    },
+                    input_addclass: 'me-1'
+                }) }}
+                {{ inputs.button('search', _x('button', 'Search')) }}
+                {{ inputs.hidden('start', start) }}
+            </div>
+            {% if results|length %}
+                <div class="list-group list-group-flush list-group-hoverable" role="list">
+                    {% for result in results %}
+                        <div class="list-group-item d-flex" data-knowbaseitem-id="{{ result.id }}" role="listitem">
+                            <div class="col-auto">
+                                <i class="{{ result.icon }}" title="{{ result.icon_title }}"></i>
+                            </div>
+                            <div class="col">
+                                <div class="fs-2">{{ result.name }}</div>
+                                <div class="fs-4 knowbaseitem-content-preview">{{ result.content_preview }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <button type="button" class="btn btn-ghost-secondary btn-sm btn-icon use-knowbaseitem" title="{{ __('Use this entry') }}">
+                                    <i class="ti ti-check"></i>
+                                </button>
+                                <button type="button" class="btn btn-ghost-secondary btn-sm btn-icon view-knowbaseitem" title="{{ __('Preview') }}">
+                                    <i class="ti ti-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                {{ include('components/pager.html.twig', {
+                    no_limit_display: true,
+                }) }}
+            {% else %}
+                <div class="alert alert-info">
+                    {{ __('No results found') }}
+                </div>
+            {% endif %}
+
+        </div>
+        <div class="card preview-card border-0" style="display: none">
+            <div class="d-flex">
+                <button type="button" class="btn btn-ghost-secondary back-to-results">
+                    <i class="ti ti-arrow-left"></i>
+                    {{ __('Back to results') }}
+                </button>
+                <button type="button" class="btn btn-primary use-knowbaseitem ms-auto">
+                    <i class="ti ti-check"></i>
+                    {{ __('Use this entry') }}
+                </button>
+            </div>
+            <div class="kbi-form-container card-body"></div>
+        </div>
+{% if not is_ajax %}
+    </div>
+    <style>
+       div.spinner-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: #80808033;
+          z-index: 20;
+
+          div.spinner-border {
+             width: 50px;
+             height: 50px;
+             position: absolute;
+             top: 50%;
+             left: 50%;
+             border-width: 4px;
+          }
+       }
+
+       .knowbaseitem-content-preview {
+          white-space: break-spaces;
+          max-height: 150px;
+          overflow: hidden;
+       }
+
+       @supports (display: -webkit-box) and (-webkit-line-clamp: 7) and (-webkit-box-orient: vertical) {
+          .knowbaseitem-content-preview {
+             display: -webkit-box;
+             -webkit-line-clamp: 7;
+             -webkit-box-orient: vertical;
+             max-height: none;
+          }
+       }
+    </style>
+    <script type="module">
+        function showLoading() {
+            const loading_overlay = $('#{{ container_id }}').find('div.spinner-overlay');
+            if (loading_overlay.length === 0) {
+                $('#{{ container_id }}').append(`
+                    <div class="spinner-overlay text-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">{{ __('Loading...') }}</span>
+                        </div>
+                    </div>`);
+            } else {
+                loading_overlay.css('visibility', 'visible');
+            }
+        }
+
+        function hideLoading() {
+            $('#{{ container_id }}').find('div.spinner-overlay').css('visibility', 'hidden');
+        }
+
+        function refreshResults() {
+            showLoading();
+            $.ajax({
+                url: '{{ path('/Knowbase/KnowbaseItem/Search/' ~ itemtype ~ '/' ~ items_id)|e('js') }}',
+                method: 'GET',
+                data: {
+                    contains: $('#{{ container_id }} #search_knowbaseitem_form input[name="contains"]').val(),
+                    ajax_reload: 1,
+                    start: $('#{{ container_id }} #search_knowbaseitem_form input[name="start"]').val(),
+                }
+            }).then((html) => {
+                $('#{{ container_id }}').html(html);
+                hideLoading();
+            }, () => {
+                window.glpi_toast_error('{{ __('An error occurred while searching in the knowledge base')|e('js') }}');
+                hideLoading();
+            });
+        }
+
+        // Use itilobject button handled by whatever loads this template (form_solution.html.twig for example)
+        $('#{{ container_id }}').on('click', 'button.view-knowbaseitem', (e) => {
+            const kbi_id = $(e.target).closest('.list-group-item').attr('data-knowbaseitem-id');
+            showLoading();
+            $.ajax({
+                method: 'GET',
+                url: '{{ path('/Knowbase/KnowbaseItem/') }}' + kbi_id + '/Full',
+            }).then((html) => {
+                $('#{{ container_id }} .kbi-form-container').html(html);
+                $('#{{ container_id }} .preview-card .use-knowbaseitem').attr('data-knowbaseitem-id', kbi_id);
+                hideLoading();
+                $('#{{ container_id }} .search-card').hide();
+                $('#{{ container_id }} .preview-card').show();
+            }, () => {
+                window.glpi_toast_error('{{ __('An error occurred while loading the knowledge base entry')|e('js') }}');
+                hideLoading();
+            });
+        }).on('click', 'button[name="search"]', () => {
+            refreshResults();
+        }).on('click', 'button.back-to-results', () => {
+            $('#{{ container_id }} .preview-card').hide();
+            $('#{{ container_id }} .search-card').show();
+        }).on('keyup', 'input[name="contains"]', (e) => {
+            if (e.key === 'Enter') {
+                refreshResults();
+            }
+        }).on('click', '.search-pager .page-link', (e) => {
+            e.preventDefault();
+            const clicked_link = $(e.target).closest('.page-link');
+            const new_start = clicked_link.attr('data-start');
+            $('#{{ container_id }} input[name="start"]').val(new_start);
+            refreshResults();
+        });
+    </script>
+{% endif %}

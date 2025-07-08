@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -106,33 +106,33 @@ class UserParameters extends AbstractParameters
             'realname'  => $fields['realname'],
         ];
 
-       // Add responsible
+        // Add responsible
         if ($responsible = User::getById($fields['users_id_supervisor'])) {
             $values['responsible'] = $responsible->getFriendlyName();
         }
 
-       // Add location
+        // Add location
         if ($location = Location::getById($fields['locations_id'])) {
             $location_parameters = new LocationParameters();
             $values['location'] = $location_parameters->getValues($location);
         }
 
-       // Add usertitle
+        // Add usertitle
         if ($usertitle = UserTitle::getById($fields['usertitles_id'])) {
             $usertitle_parameters = new UserTitleParameters();
             $values['usertitle'] = $usertitle_parameters->getValues($usertitle);
         }
 
-       // Add usercategory
+        // Add usercategory
         if ($usercategory = UserCategory::getById($fields['usercategories_id'])) {
             $usercategory_parameters = new UserCategoryParameters();
             $values['usercategory'] = $usercategory_parameters->getValues($usercategory);
         }
 
-       // Add assets
+        // Add assets
         $values['used_items'] = [];
         foreach ($CFG_GLPI["asset_types"] as $asset_type) {
-            $item = new $asset_type();
+            $item = \getItemForItemtype($asset_type);
             $asset_items_data = $item->find(['users_id' => $fields['id']] + $item->getSystemSQLCriteria());
             foreach ($asset_items_data as $asset_item_data) {
                 $asset_parameters = new AssetParameters();

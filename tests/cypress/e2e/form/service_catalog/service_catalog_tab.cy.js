@@ -5,8 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,31 +31,74 @@
  */
 
 describe('Service catalog tab', () => {
+
+    const uid = new Date().getTime();
+    const category_name = `Category ${uid}`;
+    const category_dropdown_value = `»${category_name}`; // GLPI add "»" prefix to common tree dropdown values
+
+    before(() => {
+        cy.createWithAPI('Glpi\\Form\\Category', {
+            'name': category_name,
+            'description': "my description",
+        });
+    });
+
     beforeEach(() => {
         cy.login();
         cy.changeProfile('Super-Admin');
+    });
 
+    it('can configure service catalog for form', () => {
         cy.createFormWithAPI({
             'name': "Test form for service_catalog_tab.cy.js"
         }).visitFormTab('ServiceCatalog');
-    });
 
-    it('can configure service catalog', () => {
         // Make sure the values we are about to apply are are not already set to
         // prevent false negative.
-        cy.findByRole("textbox", {'name': 'Illustration'}).should('not.contain.text', 'request-service.svg');
         cy.findByLabelText("Description").awaitTinyMCE().should('not.contain.text', 'My description');
+        cy.getDropdownByLabelText("Category").should('not.have.text', category_name);
 
         // Set values
-        cy.findByRole("textbox", {'name': 'Illustration'}).type('request-service.svg');
         cy.findByLabelText("Description").awaitTinyMCE().type('My description');
+        cy.getDropdownByLabelText('Category').selectDropdownValue(category_dropdown_value);
+        cy.findByRole('checkbox', {'name': 'Pin to top of the service catalog'}).check();
 
         // Save changes
         cy.findByRole('button', {'name': "Save changes"}).click();
         cy.findByRole('alert').should('contain.text', 'Item successfully updated');
 
         // Validate values
-        cy.findByRole("textbox", {'name': 'Illustration'}).should('have.value', 'request-service.svg');
         cy.findByLabelText("Description").awaitTinyMCE().should('contain.text', 'My description');
+        cy.getDropdownByLabelText("Category").should('have.text', category_name);
+        cy.findByRole('checkbox', {'name': 'Pin to top of the service catalog'}).should('be.checked');
+
+        // Note: picking an illustration is not validated here as it is already
+        // done in the illustration_picker.cy.js test.
+    });
+
+    it('can configure service catalog for KnowbaseItem', () => {
+        cy.createWithAPI('KnowbaseItem', {
+            'name': "Test knowbase item for service_catalog_tab.cy.js",
+            'content': "My content",
+        }).then((knowbaseItem_id) => cy.visit(`/front/knowbaseitem.form.php?id=${knowbaseItem_id}&forcetab=Glpi\\Form\\ServiceCatalog\\ServiceCatalog$1`));
+
+        // Check that the service catalog configuration isn't active by default
+        cy.findByRole('checkbox', {'name': 'Active'}).should('not.be.checked');
+
+        // Set values
+        cy.findByRole('checkbox', {'name': 'Active'}).check();
+        cy.findByLabelText("Description").awaitTinyMCE().type('My description');
+        cy.getDropdownByLabelText('Category').selectDropdownValue(category_dropdown_value);
+        cy.findByRole('checkbox', {'name': 'Pin to top of the service catalog'}).check();
+
+        // Save changes
+        cy.findByRole('button', {'name': "Save changes"}).click();
+        cy.findByRole('alert').should('contain.text', 'Item successfully updated');
+
+        // Validate values
+        cy.findByRole('checkbox', {'name': 'Active'}).should('be.checked');
+        cy.findByLabelText("Description").awaitTinyMCE().should('contain.text', 'My description');
+        cy.getDropdownByLabelText("Category").should('have.text', category_name);
+        cy.findByRole('checkbox', {'name': 'Pin to top of the service catalog'}).should('be.checked');
     });
 });

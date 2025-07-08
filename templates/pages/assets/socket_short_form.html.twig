@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -63,8 +62,6 @@
         <div>
             <div class="single-add-inputs">
                 {{ fields.textField('name', '', __('Name'), {
-                    label_class: 'col-xxl-2',
-                    field_class: 'col-xxl-10',
                     full_width: true
                 }) }}
             </div>
@@ -104,32 +101,23 @@
                 {% endset %}
                 {{ fields.htmlField('', name_fields, __('Name'), {
                     wrapper_class: 'd-flex',
-                    label_class: 'col-xxl-2',
-                    field_class: 'col-xxl-10',
                     full_width: true
                 }) }}
             </div>
             <div class="common-inputs d-flex flex-wrap">
-                {{ fields.dropdownField('Glpi\\SocketModel', 'socketmodels_id', 0, 'Glpi\\SocketModel'|itemtype_name, {
-                    label_class: 'col-xxl-4',
-                }) }}
+                {{ fields.dropdownField('Glpi\\SocketModel', 'socketmodels_id', 0, 'Glpi\\SocketModel'|itemtype_name) }}
                 {% set wiring_side_field %}
                     {% do call('Glpi\\Socket::dropdownWiringSide', ['wiring_side']) %}
                 {% endset %}
-                {{ fields.htmlField('', wiring_side_field, __('Wiring side'), {
-                    label_class: 'col-xxl-3',
-                }) }}
+                {{ fields.htmlField('', wiring_side_field, __('Wiring side')) }}
                 {% if _add_fromitem['_from_itemtype'] == 'Location' %}
                     {{ fields.dropdownItemsFromItemtypes('', __('Itemtype'), {
-                        label_class: 'col-xxl-4',
                         itemtype: socket_itemtypes,
                         default_itemtype: 'Computer',
                         display_emptychoice: false
                     }) }}
                 {% else %}
-                    {{ fields.dropdownField('Location', 'locations_id', 0, 'Location'|itemtype_name, {
-                        label_class: 'col-xxl-4',
-                    }) }}
+                    {{ fields.dropdownField('Location', 'locations_id', 0, 'Location'|itemtype_name) }}
                 {% endif %}
             </div>
             <div class="d-flex flex-row-reverse px-4 mb-4">

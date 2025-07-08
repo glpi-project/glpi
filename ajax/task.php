@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,8 +39,7 @@
 
 use Glpi\Exception\Http\BadRequestHttpException;
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
+use function Safe\json_encode;
 
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
@@ -49,10 +48,10 @@ Html::header_nocache();
 $tasktemplates_id = $_POST['tasktemplates_id'] ?? null;
 if ($tasktemplates_id === null) {
     throw new BadRequestHttpException("Missing or invalid parameter: 'tasktemplates_id'");
-} else if ($tasktemplates_id == 0) {
-   // Reset form
+} elseif ($tasktemplates_id == 0) {
+    // Reset form
     echo json_encode([
-        'content' => ""
+        'content' => "",
     ]);
     return;
 }
@@ -123,8 +122,8 @@ if ($template->fields['groups_id_tech'] == 0) {
     unset($template->fields['groups_id_tech']);
 }
 
-if ($template->fields['users_id_tech'] == 0) {
-    unset($template->fields['users_id_tech']);
+if ($template->fields['users_id_tech'] == -1) {
+    $template->fields['users_id_tech'] = Session::getLoginUserID();
 }
 
 // Return json response with the template fields

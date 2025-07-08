@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -71,10 +70,42 @@
                'display': false,
                'disabled': (not canupdate),
                'readonly': (field_options.fields_template.isReadonlyField('_add_validation')),
+               'rand': rand,
             }|merge(required)),
             __('Approval request'),
             field_options
          ) }}
+
+         {# Validation step #}
+         {{ fields.dropdownField(
+            'ValidationStep',
+            '_validationsteps_id',
+            '',
+            'ValidationStep'|itemtype_name,
+            {
+               'rand': rand,
+               'value': call('ValidationStep::getDefault').id,
+            }|merge(field_options)
+         ) }}
+
+         <script type="text/javascript">
+            // --- show/hide validation step field depending on validation type seleted
+            $(
+                () => {
+                    const validationstep_wrapper = $('#dropdown__validationsteps_id{{ rand }}').closest('.form-field');
+                    validationstep_wrapper.hide();
+                }
+            );
+
+            $("#dropdown__validation_targets_0__validatortype_{{ rand }}").on(
+                'change',
+                function() {
+                   const validationstep_wrapper = $('#dropdown__validationsteps_id{{ rand }}').closest('.form-field');
+                   const validation_activated = $(this).val() !== '0';
+                   validationstep_wrapper.toggle(validation_activated);
+                }
+            );
+         </script>
 
          <input type="hidden" name="_add_validation" value="{{ params['_add_validation'] }}" />
       {% endif %}

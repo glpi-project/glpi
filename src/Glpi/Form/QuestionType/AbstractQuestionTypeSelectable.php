@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,18 +36,50 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
-use Html;
+use Glpi\ItemTranslation\Context\TranslationHandler;
 use Override;
 
 /**
  * Short answers are single line inputs used to answer simple questions.
  */
-abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType
+abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType implements FormQuestionDataConverterInterface, TranslationAwareQuestionType
 {
+    public const TRANSLATION_KEY_OPTION = 'option';
+
     #[Override]
-    public function __construct()
+    public function __construct() {}
+
+    #[Override]
+    public function getFormEditorJsOptions(): string
     {
+        return <<<JS
+            {
+                "extractDefaultValue": function (question) {
+                    const options = question.find('[data-glpi-form-editor-selectable-question-options]')
+                        .data('manager').getOptions();
+
+                    return new EditorConvertedExtractedSelectableDefaultValue(options);
+                },
+                "convertDefaultValue": function (question, value) {
+                    if (value == null) {
+                        return '';
+                    }
+
+                    if (!(value instanceof EditorConvertedExtractedSelectableDefaultValue)) {
+                        return '';
+                    }
+
+                    setTimeout(() => {
+                        question.find('[data-glpi-form-editor-selectable-question-options]')
+                            .data('manager').setOptions(value.getOptions());
+                    });
+
+                    return value.getOptions();
+                }
+            }
+        JS;
     }
 
     /**
@@ -72,15 +104,21 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType
     {
         // language=Twig
         $js = <<<TWIG
-            import("{{ js_path('js/modules/Forms/QuestionSelectable.js') }}").then((m) => {
+            import("/js/modules/Forms/QuestionSelectable.js").then((m) => {
                 {% if question is not null %}
                     const container = $('div[data-glpi-form-editor-selectable-question-options="{{ rand }}"]');
-                    new m.GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container);
+                    container.data(
+                        'manager',
+                        new m.GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container)
+                    );
                 {% else %}
                     $(document).on('glpi-form-editor-question-type-changed', function(e, question, type) {
                         if (type === '{{ question_type|escape('js') }}') {
                             const container = question.find('div[data-glpi-form-editor-selectable-question-options]');
-                            new m.GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container);
+                            container.data(
+                                'manager',
+                                new m.GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container)
+                            );
                         }
                     });
 
@@ -88,7 +126,10 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType
                         const question_type = question.find('input[data-glpi-form-editor-original-name="type"]').val();
                         if (question_type === '{{ question_type|escape('js') }}') {
                             const container = new_question.find('div[data-glpi-form-editor-selectable-question-options]');
-                            new m.GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container);
+                            container.data(
+                                'manager',
+                                new m.GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container)
+                            );
                         }
                     });
                 {% endif %}
@@ -112,7 +153,7 @@ TWIG;
     public function validateExtraDataInput(array $input): bool
     {
         // The input can not be empty, always have at least one option : the last one can be empty
-        if (empty($input) || !isset($input['options'])) {
+        if ($input === [] || !isset($input['options'])) {
             return false;
         }
 
@@ -128,6 +169,69 @@ TWIG;
         }
 
         return $input;
+    }
+
+    #[Override]
+    public function convertDefaultValue(array $rawData): array
+    {
+        if (
+            empty($rawData['default_values'])
+            || empty($rawData['values'])
+        ) {
+            return [];
+        }
+
+        $options = json_decode($rawData['values']);
+        if (empty($options)) {
+            return [];
+        }
+
+        /**
+         * New default values format require an array of values.
+         * The old system did not use an array if there was only one element.
+         */
+        $default_values = json_decode($rawData['default_values']);
+        if (
+            ($default_values === null && json_last_error() !== JSON_ERROR_NONE)
+            || !is_array($default_values)
+        ) {
+            $default_values = [$rawData['default_values']];
+        }
+
+        // Return the indexes of the default values
+        return array_map(function ($value) use ($options) {
+            return array_search($value, $options);
+        }, $default_values);
+    }
+
+    #[Override]
+    public function convertExtraData(array $rawData): array
+    {
+        $config = new QuestionTypeSelectableExtraDataConfig(
+            options: json_decode($rawData['values'], true) ?? []
+        );
+        return $config->jsonSerialize();
+    }
+
+    #[Override]
+    public function listTranslationsHandlers(Question $question): array
+    {
+        $handlers = [];
+        $options = $this->getOptions($question);
+        if ($options !== []) {
+            $handlers = array_map(
+                fn($uuid, $option) => new TranslationHandler(
+                    item: $question,
+                    key: sprintf('%s-%s', self::TRANSLATION_KEY_OPTION, $uuid),
+                    name: sprintf('%s %s', self::getName(), __('Option')),
+                    value: $option,
+                ),
+                array_keys($options),
+                $options
+            );
+        }
+
+        return $handlers;
     }
 
     public function hideOptionsContainerWhenUnfocused(): bool
@@ -235,7 +339,7 @@ TWIG;
                 <input
                     data-glpi-form-editor-specific-question-extra-data
                     type="text"
-                    class="flex-grow-1"
+                    class="flex-grow-1 w-full"
                     style="border: none transparent; outline: none; box-shadow: none;"
                     name="options[{{ uuid }}]"
                     value="{{ value }}"
@@ -294,7 +398,7 @@ TWIG;
                 'remove_option'     => __('Remove option'),
                 'selectable_option' => __('Selectable option'),
                 'enter_option'      => __('Enter an option'),
-            ]
+            ],
         ]);
     }
 
@@ -308,10 +412,18 @@ TWIG;
                     <input
                         type="{{ input_type }}"
                         name="{{ question.getEndUserInputName() }}[]"
-                        value="{{ value.value }}"
+                        value="{{ value.uuid }}"
                         class="form-check-input" {{ value.checked ? 'checked' : '' }}
                     >
-                    <span class="form-check-label">{{ value.value }}</span>
+                    <span class="form-check-label">
+                        {{ translate_item_key(
+                            question,
+                            '%s-%s'|format(
+                                constant('Glpi\\\\Form\\\\QuestionType\\\\AbstractQuestionTypeSelectable::TRANSLATION_KEY_OPTION'),
+                                value.uuid
+                            )
+                        ) }}
+                    </span>
                 </label>
             {% endfor %}
 TWIG;
@@ -325,28 +437,20 @@ TWIG;
     }
 
     #[Override]
-    public function formatRawAnswer(mixed $answer): string
+    public function formatRawAnswer(mixed $answer, Question $question): string
     {
         if (is_string($answer)) {
-            return $answer;
+            $answer = [$answer];
         }
 
+        // Replace uuids by labels
+        $options = $this->getOptions($question);
+        $answer = array_map(
+            fn($uuid) => $options[$uuid] ?? '',
+            $answer
+        );
+
         return implode(', ', $answer);
-    }
-
-    #[Override]
-    public function renderAnswerTemplate($answers): string
-    {
-        $template = <<<TWIG
-            {% for answer in answers %}
-                <div class="form-control-plaintext">{{ answer }}</div>
-            {% endfor %}
-TWIG;
-
-        $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'answers' => $answers,
-        ]);
     }
 
     #[Override]

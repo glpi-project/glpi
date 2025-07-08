@@ -1,0 +1,99 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends 'pages/admin/profile/base_tab.html.twig' %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set is_root_entity_active = has_access_to_entity(0) %}
+
+{% block content %}
+    {{ fields.smallTitle(__('ITIL Templates')) }}
+    {{ fields.dropdownField('TicketTemplate', 'tickettemplates_id', item.fields['tickettemplates_id'], __('Default ticket template'), {
+        full_width: true,
+        condition: {entity: 0}|merge(is_multi_entities_mode() ? {is_recursive: 1} : {}),
+        addicon: is_root_entity_active
+    }) }}
+
+    {{ _self.displayRightsMatrix(item, 'helpdesk', 'tracking', 'general', __('Assistance')) }}
+
+    {% if config('use_notifications') == '0' %}
+        {% set activation_msg %}
+            <span class="alert alert-warning">
+                {{ __('Notifications must be enabled to activate mentions.') }}
+            </span>
+        {% endset %}
+        {{ fields.htmlField('use_mentions', activation_msg, __('Mentions configuration'), {full_width: true}) }}
+    {% else %}
+        {% set user_mention_helper %}
+            {{ __('Enables or disables the ability to mention users within the application.') }}
+            {{ __('Disabled') ~ ': ' ~ __('User mentions are disabled for this profile.') }}
+            {{ __('Full') ~ ': ' ~ __('Displays all users. Mentioned users will be added as observers if they are not already actors.') }}
+        {% endset %}
+        {{ fields.dropdownArrayField(
+            'use_mentions',
+            item.fields['use_mentions'],
+            {
+                (constant('Glpi\\RichText\\UserMention::USER_MENTION_DISABLED')): __('Disabled'),
+                (constant('Glpi\\RichText\\UserMention::USER_MENTION_FULL')): __('Full'),
+            },
+            __('Mentions configuration'),
+            {helper: user_mention_helper}
+        ) }}
+    {% endif %}
+
+    {{ fields.smallTitle(__('Association')) }}
+    {{ fields.checkboxField('_show_group_hardware', item.fields['show_group_hardware'], __('See hardware of my groups'), {
+        full_width: true
+    }) }}
+
+    {% set helpdesk_hardware_field %}
+        {% do call('Profile::getLinearRightChoice', [
+            call('Profile::getHelpdeskHardwareTypes', [true]),
+            {
+                field: 'helpdesk_hardware',
+                value: item.fields['helpdesk_hardware'],
+            }
+        ]) %}
+    {% endset %}
+    {{ fields.htmlField('helpdesk_hardware', helpdesk_hardware_field, __('Link with items for the creation of tickets'), {
+        full_width: true
+    }) }}
+
+    {% set associable_types_field %}
+        {% do call('Profile::dropdownHelpdeskItemtypes', [{
+            values: item.fields['helpdesk_item_type']
+        }]) %}
+    {% endset %}
+    {{ fields.htmlField('helpdesk_item_type', associable_types_field, __('Associable items to tickets, changes and problems'), {
+        full_width: true
+    }) }}
+{% endblock %}

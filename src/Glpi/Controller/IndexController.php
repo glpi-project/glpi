@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,19 +35,20 @@
 namespace Glpi\Controller;
 
 use Auth;
-use Html;
-use Session;
-use Toolbox;
-use Preference;
-use Dropdown;
 use CronTask;
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Http\HeaderlessStreamedResponse;
+use Dropdown;
+use Glpi\Http\Firewall;
 use Glpi\Plugin\Hooks;
 use Glpi\Security\Attribute\SecurityStrategy;
+use Html;
+use Preference;
+use Session;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use Toolbox;
 
 final class IndexController extends AbstractController
 {
@@ -58,64 +59,14 @@ final class IndexController extends AbstractController
         ],
         name: "glpi_index"
     )]
-    #[SecurityStrategy('no_check')]
+    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function __invoke(Request $request): Response
     {
-        return new HeaderlessStreamedResponse($this->call(...));
-    }
-
-    private function call(): void
-    {
         /**
-         * @var \DBmysql|null $DB
          * @var array $CFG_GLPI
          * @var array $PLUGIN_HOOKS
          */
-        global $DB, $CFG_GLPI, $PLUGIN_HOOKS;
-
-        // If config_db doesn't exist -> start installation
-        if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php") || !class_exists('DB', false)) {
-            if (file_exists(GLPI_ROOT . '/install/install.php')) {
-                Html::redirect("install/install.php");
-            } else {
-                // Init session (required by header display logic)
-                Session::setPath();
-                Session::start();
-                Session::loadLanguage('', false);
-                // Prevent inclusion of debug information in footer, as they are based on vars that are not initialized here.
-                $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
-
-                // no translation
-                $title_text        = 'GLPI seems to not be configured properly.';
-                $missing_conf_text = sprintf('Database configuration file "%s" is missing.', GLPI_CONFIG_DIR . '/config_db.php');
-                $hint_text         = 'You have to either restart the install process, either restore this file.';
-
-                Html::nullHeader('Missing configuration');
-                echo '<div class="container-fluid mb-4">';
-                echo '<div class="row justify-content-center">';
-                echo '<div class="col-xl-6 col-lg-7 col-md-9 col-sm-12">';
-                echo '<h2>' . $title_text . '</h2>';
-                echo '<p class="mt-2 mb-n2 alert alert-warning">';
-                echo $missing_conf_text;
-                echo ' ';
-                echo $hint_text;
-                echo '</p>';
-                echo '</div>';
-                echo '</div>';
-                echo '</div>';
-                Html::nullFooter();
-                return;
-            }
-        }
-
-        //Try to detect GLPI agent calls
-        $rawdata = file_get_contents("php://input");
-        if (!isset($_POST['totp_code']) && !empty($rawdata) && $_SERVER['REQUEST_METHOD'] === 'POST') {
-            include_once(GLPI_ROOT . '/front/inventory.php');
-            return;
-        }
-
-        Session::checkCookieSecureConfig();
+        global $CFG_GLPI, $PLUGIN_HOOKS;
 
         $_SESSION["glpicookietest"] = 'testcookie';
 
@@ -150,80 +101,77 @@ final class IndexController extends AbstractController
         }
 
         if (count($errors) > 0) {
-            TemplateRenderer::getInstance()->display('pages/login_error.html.twig', [
+            return $this->render('pages/login_error.html.twig', [
                 'errors'    => $errors,
+                'title'     => __('Access denied'),
                 'login_url' => $CFG_GLPI["root_doc"] . '/front/logout.php?noAUTO=1&redirect=' . \rawurlencode($redirect),
+                'lang'      => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
             ]);
-        } else {
-            if ($redirect !== '') {
-                Toolbox::manageRedirect($redirect);
+        }
+
+        if ($redirect !== '') {
+            Toolbox::manageRedirect($redirect);
+        }
+
+        if (isset($_SESSION['mfa_pre_auth'])) {
+            if (isset($_POST['skip_mfa'])) {
+                return new RedirectResponse($CFG_GLPI['root_doc'] . '/front/login.php?skip_mfa=1');
+            }
+            if (isset($_GET['mfa_setup']) && isset($_POST['secret'], $_POST['totp_code'])) {
+                $code = is_array($_POST['totp_code']) ? implode('', $_POST['totp_code']) : $_POST['totp_code'];
+                $totp = new \Glpi\Security\TOTPManager();
+                if (Session::validateIDOR($_POST) && ($algorithm = $totp->verifyCodeForSecret($code, $_POST['secret'])) !== false) {
+                    $totp->setSecretForUser((int) $_SESSION['mfa_pre_auth']['user']['id'], $_POST['secret'], $algorithm);
+                } else {
+                    Session::addMessageAfterRedirect(__s('Invalid code'), false, ERROR);
+                }
+                return new RedirectResponse(Preference::getSearchURL());
             }
 
-            if (isset($_SESSION['mfa_pre_auth'], $_POST['skip_mfa'])) {
-                Html::redirect($CFG_GLPI['root_doc'] . '/front/login.php?skip_mfa=1');
-            }
-            if (isset($_SESSION['mfa_pre_auth'])) {
+            return new StreamedResponse(static function () {
                 if (isset($_GET['mfa_setup'])) {
-                    if (isset($_POST['secret'], $_POST['totp_code'])) {
-                        $code = is_array($_POST['totp_code']) ? implode('', $_POST['totp_code']) : $_POST['totp_code'];
-                        $totp = new \Glpi\Security\TOTPManager();
-                        if (Session::validateIDOR($_POST) && ($algorithm = $totp->verifyCodeForSecret($code, $_POST['secret'])) !== false) {
-                            $totp->setSecretForUser((int)$_SESSION['mfa_pre_auth']['user']['id'], $_POST['secret'], $algorithm);
-                        } else {
-                            Session::addMessageAfterRedirect(__s('Invalid code'), false, ERROR);
-                        }
-                        Html::redirect(Preference::getSearchURL());
-                    } else {
-                        // Login started. 2FA needs configured.
-                        $totp = new \Glpi\Security\TOTPManager();
-                        $totp->showTOTPSetupForm((int)$_SESSION['mfa_pre_auth']['user']['id']);
-                    }
+                    // Login started. 2FA needs configured.
+                    $totp = new \Glpi\Security\TOTPManager();
+                    $totp->showTOTPSetupForm((int) $_SESSION['mfa_pre_auth']['user']['id']);
                 } else {
                     // Login started. Need to ask for the TOTP code.
                     $totp = new \Glpi\Security\TOTPManager();
                     $totp->showTOTPPrompt((int) $_SESSION['mfa_pre_auth']['user']['id']);
                 }
-            } else {
-                // Random number for html id/label
-                $rand = mt_rand();
-
-                // Regular login
-                TemplateRenderer::getInstance()->display('pages/login.html.twig', [
-                    'rand'                => $rand,
-                    'card_bg_width'       => true,
-                    'lang'                => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
-                    'title'               => __('Authentication'),
-                    'noAuto'              => $_GET["noAUTO"] ?? 0,
-                    'redirect'            => $redirect,
-                    'text_login'          => $CFG_GLPI['text_login'],
-                    'namfield'            => ($_SESSION['namfield'] = \uniqid('fielda')),
-                    'pwdfield'            => ($_SESSION['pwdfield'] = \uniqid('fieldb')),
-                    'rmbfield'            => ($_SESSION['rmbfield'] = \uniqid('fieldc')),
-                    'show_lost_password'  => $CFG_GLPI["notifications_mailing"]
-                        && countElementsInTable('glpi_notifications', [
-                            'itemtype' => 'User',
-                            'event' => 'passwordforget',
-                            'is_active' => 1
-                        ]),
-                    'languages_dropdown'  => Dropdown::showLanguages('language', [
-                        'display'             => false,
-                        'rand'                => $rand,
-                        'display_emptychoice' => true,
-                        'emptylabel'          => __('Default (from user profile)'),
-                        'width'               => '100%'
-                    ]),
-                    'right_panel'         => strlen($CFG_GLPI['text_login']) > 0
-                        || count($PLUGIN_HOOKS[Hooks::DISPLAY_LOGIN] ?? []) > 0
-                        || $CFG_GLPI["use_public_faq"],
-                    'auth_dropdown_login' => Auth::dropdownLogin(false, $rand),
-                    'copyright_message'   => Html::getCopyrightMessage(false)
-                ]);
-            }
+            });
         }
 
-        // call cron
-        CronTask::callCronForce();
+        // Random number for html id/label
+        $rand = mt_rand();
 
-        echo "</body></html>";
+        // Regular login
+        return $this->render('pages/login.html.twig', [
+            'rand'                => $rand,
+            'card_bg_width'       => true,
+            'lang'                => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
+            'title'               => __('Authentication'),
+            'noAuto'              => $_GET["noAUTO"] ?? 0,
+            'redirect'            => $redirect,
+            'text_login'          => $CFG_GLPI['text_login'],
+            'show_lost_password'  => $CFG_GLPI["notifications_mailing"]
+                && countElementsInTable('glpi_notifications', [
+                    'itemtype' => 'User',
+                    'event' => 'passwordforget',
+                    'is_active' => 1,
+                ]),
+            'languages_dropdown'  => Dropdown::showLanguages('language', [
+                'display'             => false,
+                'rand'                => $rand,
+                'display_emptychoice' => true,
+                'emptylabel'          => __('Default (from user profile)'),
+                'width'               => '100%',
+            ]),
+            'right_panel'         => strlen($CFG_GLPI['text_login']) > 0
+                || count($PLUGIN_HOOKS[Hooks::DISPLAY_LOGIN] ?? []) > 0
+                || $CFG_GLPI["use_public_faq"],
+            'auth_dropdown_login' => Auth::dropdownLogin(false, $rand),
+            'copyright_message'   => Html::getCopyrightMessage(false),
+            'must_call_cron'      => CronTask::mustRunWebTasks(),
+        ]);
     }
 }

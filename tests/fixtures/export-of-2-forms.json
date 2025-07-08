@@ -2,28 +2,45 @@
     "version": 1,
     "forms": [
         {
-            "id": 0,
+            "id": 1,
+            "uuid": "form-1",
             "name": "My valid form",
-            "header": "",
+            "illustration": "report-issue",
             "entity_name": "E2ETestEntity",
             "is_recursive": false,
+            "is_active": false,
+            "submit_button_visibility_strategy": "always_visible",
+            "submit_button_conditions": [],
             "sections": [
                 {
+                    "id": 1,
+                    "uuid": "section-1",
                     "name": "First section",
                     "description": "",
-                    "rank": 0
+                    "rank": 0,
+                    "visibility_strategy": "always_visible",
+                    "conditions": []
                 }
             ],
             "questions": [
                 {
-                    "name": "Watchers",
+                    "id": 1,
+                    "uuid": "question-1",
+                    "name": "Observers",
                     "type": "Glpi\\Form\\QuestionType\\QuestionTypeObserver",
                     "is_mandatory": false,
-                    "rank": 2,
+                    "vertical_rank": 2,
+                    "horizontal_rank": null,
                     "description": null,
-                    "default_value": "{\"users_ids\":[\"glpi\"],\"groups_ids\":[],\"suppliers_ids\":[]}",
-                    "extra_data": "{\"is_multiple_actors\":true}",
-                    "section_rank": 0
+                    "default_value": {
+                        "users_ids": ["glpi"],
+                        "groups_ids": [],
+                        "suppliers_ids": []
+                    },
+                    "extra_data": {"is_multiple_actors": true},
+                    "section_id": 1,
+                    "visibility_strategy": "always_visible",
+                    "conditions": []
                 }
             ],
             "data_requirements": [
@@ -38,28 +55,45 @@
             ]
         },
         {
-            "id": 1,
+            "id": 2,
+            "uuid": "form-2",
             "name": "My invalid form",
-            "header": "",
+            "illustration": "report-issue",
             "entity_name": "Missing entity",
             "is_recursive": false,
+            "is_active": false,
+            "submit_button_visibility_strategy": "always_visible",
+            "submit_button_conditions": [],
             "sections": [
                 {
+                    "id": 2,
+                    "uuid": "section-2",
                     "name": "First section",
                     "description": "",
-                    "rank": 0
+                    "rank": 0,
+                    "visibility_strategy": "always_visible",
+                    "conditions": []
                 }
             ],
             "questions": [
                 {
+                    "id": 2,
+                    "uuid": "question-2",
                     "name": "Watchers",
                     "type": "Glpi\\Form\\QuestionType\\QuestionTypeObserver",
                     "is_mandatory": false,
-                    "rank": 2,
+                    "vertical_rank": 2,
+                    "horizontal_rank": null,
                     "description": null,
-                    "default_value": "{\"users_ids\":[\"Missing user\"],\"groups_ids\":[],\"suppliers_ids\":[]}",
-                    "extra_data": "{\"is_multiple_actors\":true}",
-                    "section_rank": 0
+                    "default_value": {
+                        "users_ids": ["Missing user"],
+                        "groups_ids": [],
+                        "suppliers_ids": []
+                    },
+                    "extra_data": {"is_multiple_actors": true},
+                    "section_id": 2,
+                    "visibility_strategy": "always_visible",
+                    "conditions": []
                 }
             ],
             "data_requirements": [

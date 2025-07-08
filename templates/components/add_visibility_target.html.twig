@@ -1,0 +1,58 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import "components/form/fields_macros.html.twig" as fields %}
+<div class="mb-3">
+    <form method="post" action="{{ type|itemtype_form_path }}">
+        <input type="hidden" name="{{ type|itemtype_foreign_key }}" value="{{ id }}">
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+        <div class="d-flex flex-wrap">
+            {{ fields.dropdownItemTypes('_type', '', add_target_msg, {
+                types: ['Entity', 'Group', 'Profile', 'User'],
+                rand: rand,
+                inline_add_field_html: true,
+                add_field_html: "<span id='visibility" ~ rand ~ "'></span>",
+            }) }}
+        </div>
+        <script defer>
+            $('#dropdown__type{{ rand }}').on('change', (e) => {
+                $('#visibility{{ rand }}').load(
+                    `${CFG_GLPI.root_doc}/ajax/visibility.php`,
+                    {
+                        ...{{ visiblity_dropdown_params|json_encode|raw }},
+                        type: e.target.value,
+                    }
+                );
+            });
+        </script>
+    </form>
+</div>

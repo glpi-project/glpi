@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,10 +35,11 @@
 
 namespace Glpi\OAuth;
 
-use GLPIKey;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 use OAuthClient;
+
+use function Safe\json_decode;
 
 class ClientRepository implements ClientRepositoryInterface
 {
@@ -50,8 +51,8 @@ class ClientRepository implements ClientRepositoryInterface
         $iterator = $DB->request([
             'FROM'   => 'glpi_oauthclients',
             'WHERE'  => [
-                'identifier' => $clientIdentifier
-            ]
+                'identifier' => $clientIdentifier,
+            ],
         ]);
 
         if (count($iterator) === 1) {
@@ -69,7 +70,7 @@ class ClientRepository implements ClientRepositoryInterface
     {
         $client = new OAuthClient();
         $client->getFromDBByCrit([
-            'identifier' => $clientIdentifier
+            'identifier' => $clientIdentifier,
         ]);
 
         if ($client->fields['secret'] !== $clientSecret) {

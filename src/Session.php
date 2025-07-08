@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,28 +35,23 @@
 
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\I18nCache;
+use Glpi\Controller\InventoryController;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\SessionExpiredException;
 use Glpi\Plugin\Hooks;
 use Glpi\Session\SessionInfo;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Session Class
  **/
 class Session
 {
-   // GLPI MODE
-    const NORMAL_MODE       = 0;
-    const TRANSLATION_MODE  = 1; // no more used
-    const DEBUG_MODE        = 2;
-
-    /**
-     * Indicates whether the request is made in an AJAX context.
-     * @FIXME This flag is actually not set to true by all AJAX requests.
-     */
-    private static bool $is_ajax_request = false;
+    // GLPI MODE
+    public const NORMAL_MODE       = 0;
+    public const TRANSLATION_MODE  = 1; // no more used
+    public const DEBUG_MODE        = 2;
 
     /**
      * Max count of CSRF tokens to keep in session.
@@ -71,6 +66,12 @@ class Session
     private const IDOR_MAX_TOKENS = 2500;
 
     /**
+     * @var bool $bypass_right_checks
+     * @internal
+     */
+    private static bool $bypass_right_checks = false;
+
+    /**
      * Destroy the current session
      *
      * @return void
@@ -79,11 +80,11 @@ class Session
     {
 
         self::start();
-       // Unset all of the session variables.
+        // Unset all of the session variables.
         session_unset();
-       // destroy may cause problems (no login / back to login page)
+        // destroy may cause problems (no login / back to login page)
         $_SESSION = [];
-       // write_close may cause troubles (no login / back to login page)
+        // write_close may cause troubles (no login / back to login page)
     }
 
     /**
@@ -110,9 +111,9 @@ class Session
         global $CFG_GLPI;
 
         if ($auth->auth_succeded) {
-           // Restart GLPI session : complete destroy to prevent lost datas
+            // Restart GLPI session : complete destroy to prevent lost datas
             $tosave = ['glpi_plugins', 'glpicookietest', 'phpCAS', 'glpicsrftokens',
-                'glpiskipMaintenance'
+                'glpiskipMaintenance',
             ];
             $save   = [];
             foreach ($tosave as $t) {
@@ -127,12 +128,12 @@ class Session
             self::start();
             $_SESSION = $save;
             $_SESSION['valid_id'] = session_id();
-           // Define default time :
+            // Define default time :
             $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
 
-           // Normal mode for this request
+            // Normal mode for this request
             $_SESSION["glpi_use_mode"] = self::NORMAL_MODE;
-           // Check ID exists and load complete user from DB (plugins...)
+            // Check ID exists and load complete user from DB (plugins...)
             if (
                 isset($auth->user->fields['id'])
                 && $auth->user->getFromDB($auth->user->fields['id'])
@@ -158,12 +159,11 @@ class Session
                     } else {
                         $_SESSION["glpiauthtype"]     = $auth->user->fields['authtype'];
                     }
-                    $_SESSION["glpiroot"]            = $CFG_GLPI["root_doc"];
                     $_SESSION["glpi_use_mode"]       = $auth->user->fields['use_mode'];
                     $_SESSION["glpi_plannings"]      = importArrayFromDB($auth->user->fields['plannings']);
                     $_SESSION["glpicrontimer"]       = time();
-                   // Default tab
-                   // $_SESSION['glpi_tab']=1;
+                    // Default tab
+                    // $_SESSION['glpi_tab']=1;
                     $_SESSION['glpi_tabs']           = [];
 
                     $auth->user->computePreferences();
@@ -176,11 +176,11 @@ class Session
                     if (isset($_SESSION['glpidefault_central_tab']) && $_SESSION['glpidefault_central_tab']) {
                         Session::setActiveTab("central", "Central$" . $_SESSION['glpidefault_central_tab']);
                     }
-                   // Do it here : do not reset on each page, cause export issue
+                    // Do it here : do not reset on each page, cause export issue
                     if ($_SESSION["glpilist_limit"] > $CFG_GLPI['list_limit_max']) {
                         $_SESSION["glpilist_limit"] = $CFG_GLPI['list_limit_max'];
                     }
-                   // Init not set value for language
+                    // Init not set value for language
                     if (empty($_SESSION["glpilanguage"])) {
                         $_SESSION["glpilanguage"] = self::getPreferredLanguage();
                     }
@@ -195,16 +195,16 @@ class Session
                         // csrf check would fail as the session data would be empty).
                         $_SESSION["glpi_use_mode"] = self::NORMAL_MODE;
                         $_SESSION['glpi_password_expired'] = 1;
-                       // Do not init profiles, as user has to update its password to be able to use GLPI
+                        // Do not init profiles, as user has to update its password to be able to use GLPI
                         return;
                     }
 
-                  // glpiprofiles -> other available profile with link to the associated entities
+                    // glpiprofiles -> other available profile with link to the associated entities
                     Plugin::doHook(Hooks::INIT_SESSION);
 
                     self::initEntityProfiles(self::getLoginUserID());
 
-                  // Use default profile if exist
+                    // Use default profile if exist
                     if (isset($_SESSION['glpiprofiles'][$auth->user->fields['profiles_id']])) {
                         self::changeProfile($auth->user->fields['profiles_id']);
                     } else { // Else use first
@@ -255,8 +255,31 @@ class Session
             session_start();
         }
 
+        self::initVars();
+    }
+
+    /**
+     * Initialize session variables.
+     */
+    public static function initVars(): void
+    {
         // Define current time for sync of action timing
         $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
+
+        // Define session default mode
+        if (!isset($_SESSION['glpi_use_mode'])) {
+            $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+        }
+
+        // Define default language
+        if (!isset($_SESSION['glpilanguage'])) {
+            $_SESSION['glpilanguage'] = Session::getPreferredLanguage();
+        }
+
+        // Init messages array
+        if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
+            $_SESSION["MESSAGE_AFTER_REDIRECT"] = [];
+        }
     }
 
 
@@ -313,7 +336,7 @@ class Session
      **/
     public static function canViewAllEntities()
     {
-       // Command line can see all entities
+        // Command line can see all entities
         return (isCommandLine()
               || ((countElementsInTable("glpi_entities")) == count($_SESSION["glpiactiveentities"] ?? [])));
     }
@@ -337,9 +360,10 @@ class Session
      **/
     public static function initNavigateListItems($itemtype, $title = "", $url = null)
     {
-        if (self::$is_ajax_request === true && ($url === null)) {
+        if (Request::createFromGlobals()->isXmlHttpRequest() && $url === null) {
             return;
         }
+
         if (empty($title)) {
             $title = __('List');
         }
@@ -430,24 +454,24 @@ class Session
                     $newentities[$val['id']] = $val['id'];
 
                     if ($val['is_recursive']) {
-                          $entities = getSonsOf("glpi_entities", $val['id']);
+                        $entities = getSonsOf("glpi_entities", $val['id']);
                         if (count($entities)) {
-                            foreach ($entities as $key2 => $val2) {
-                                  $newentities[$key2] = $key2;
+                            foreach (array_keys($entities) as $key2) {
+                                $newentities[$key2] = $key2;
                             }
                         }
                     }
                 }
                 $is_recursive = true;
             } else {
-                $ID = (int)$ID;
+                $ID = (int) $ID;
 
-               /// Check entity validity
+                /// Check entity validity
                 $ancestors = getAncestorsOf("glpi_entities", $ID);
                 $ok        = false;
                 foreach ($_SESSION['glpiactiveprofile']['entities'] as $val) {
                     if (($val['id'] == $ID) || in_array($val['id'], $ancestors)) {
-                       // Not recursive or recursive and root entity is recursive
+                        // Not recursive or recursive and root entity is recursive
                         if (!$is_recursive || $val['is_recursive']) {
                             $ok = true;
                         }
@@ -461,8 +485,8 @@ class Session
                 if ($is_recursive) {
                     $entities = getSonsOf("glpi_entities", $ID);
                     if (count($entities)) {
-                        foreach ($entities as $key2 => $val2) {
-                             $newentities[$key2] = $key2;
+                        foreach (array_keys($entities) as $key2) {
+                            $newentities[$key2] = $key2;
                         }
                     }
                 }
@@ -478,7 +502,7 @@ class Session
             if (!empty($_SESSION['glpiparententities_string'])) {
                 $_SESSION['glpiparententities_string'] = "'" . $_SESSION['glpiparententities_string'] . "'";
             }
-           // Active entity loading
+            // Active entity loading
             $_SESSION["glpiactive_entity"]           = $active;
             $_SESSION["glpiactive_entity_recursive"] = $is_recursive;
             $_SESSION["glpiactive_entity_name"]      = Dropdown::getDropdownName(
@@ -505,11 +529,11 @@ class Session
                     $_SESSION["glpiactive_entity_name"],
                     __('tree structure')
                 );
-                 $_SESSION["glpiactive_entity_shortname"] = sprintf(
-                     __('%1$s (%2$s)'),
-                     $_SESSION["glpiactive_entity_shortname"],
-                     __('tree structure')
-                 );
+                $_SESSION["glpiactive_entity_shortname"] = sprintf(
+                    __('%1$s (%2$s)'),
+                    $_SESSION["glpiactive_entity_shortname"],
+                    __('tree structure')
+                );
             }
 
             if (countElementsInTable('glpi_entities') <= count($_SESSION['glpiactiveentities'])) {
@@ -517,7 +541,7 @@ class Session
             } else {
                 $_SESSION['glpishowallentities'] = 0;
             }
-           // Clean session variable to search system
+            // Clean session variable to search system
             if (isset($_SESSION['glpisearch']) && count($_SESSION['glpisearch'])) {
                 foreach ($_SESSION['glpisearch'] as $itemtype => $tab) {
                     if (isset($tab['start']) && ($tab['start'] > 0)) {
@@ -568,7 +592,7 @@ class Session
                     }
                 }
                 if (!$active_entity_done) {
-                   // Try to load default entity
+                    // Try to load default entity
                     if (
                         $_SESSION["glpidefault_entity"] === null
                         || !self::changeActiveEntities($_SESSION["glpidefault_entity"], true)
@@ -580,7 +604,7 @@ class Session
                 Plugin::doHook(Hooks::CHANGE_PROFILE);
             }
         }
-       // Clean specific datas
+        // Clean specific datas
         if (isset($_SESSION['glpimenu'])) {
             unset($_SESSION['glpimenu']);
         }
@@ -602,14 +626,14 @@ class Session
         $_SESSION['glpiprofiles'] = [];
 
         if (!$DB->tableExists('glpi_profiles_users')) {
-           //table does not exists in old GLPI versions
+            //table does not exists in old GLPI versions
             return;
         }
 
         $iterator = $DB->request([
             'SELECT'          => [
                 'glpi_profiles.id',
-                'glpi_profiles.name'
+                'glpi_profiles.name',
             ],
             'DISTINCT'        => true,
             'FROM'            => 'glpi_profiles_users',
@@ -617,14 +641,14 @@ class Session
                 'glpi_profiles'   => [
                     'ON' => [
                         'glpi_profiles_users'   => 'profiles_id',
-                        'glpi_profiles'         => 'id'
-                    ]
-                ]
+                        'glpi_profiles'         => 'id',
+                    ],
+                ],
             ],
             'WHERE'           => [
-                'glpi_profiles_users.users_id'   => $userID
+                'glpi_profiles_users.users_id'   => $userID,
             ],
-            'ORDERBY'         => 'glpi_profiles.name'
+            'ORDERBY'         => 'glpi_profiles.name',
         ]);
 
         if (count($iterator)) {
@@ -636,26 +660,26 @@ class Session
                         'glpi_profiles_users.entities_id AS eID',
                         'glpi_profiles_users.id AS kID',
                         'glpi_profiles_users.is_recursive',
-                        'glpi_entities.*'
+                        'glpi_entities.*',
                     ],
                     'FROM'      => 'glpi_profiles_users',
                     'LEFT JOIN' => [
                         'glpi_entities'   => [
                             'ON' => [
                                 'glpi_profiles_users'   => 'entities_id',
-                                'glpi_entities'         => 'id'
-                            ]
-                        ]
+                                'glpi_entities'         => 'id',
+                            ],
+                        ],
                     ],
                     'WHERE'     => [
                         'glpi_profiles_users.profiles_id'   => $key,
-                        'glpi_profiles_users.users_id'      => $userID
+                        'glpi_profiles_users.users_id'      => $userID,
                     ],
-                    'ORDERBY'   => 'glpi_entities.completename'
+                    'ORDERBY'   => 'glpi_entities.completename',
                 ]);
 
                 foreach ($entities_iterator as $data) {
-                     // Do not override existing entity if define as recursive
+                    // Do not override existing entity if define as recursive
                     if (
                         !isset($_SESSION['glpiprofiles'][$key]['entities'][$data['eID']])
                          || $data['is_recursive']
@@ -663,7 +687,7 @@ class Session
                         $_SESSION['glpiprofiles'][$key]['entities'][$data['eID']] = [
                             'id'           => $data['eID'],
                             'name'         => $data['name'],
-                            'is_recursive' => $data['is_recursive']
+                            'is_recursive' => $data['is_recursive'],
                         ];
                     }
                 }
@@ -706,13 +730,13 @@ class Session
                 Group::getTable() => [
                     'ON' => [
                         Group::getTable()       => 'id',
-                        Group_User::getTable()  => 'groups_id'
-                    ]
-                ]
+                        Group_User::getTable()  => 'groups_id',
+                    ],
+                ],
             ],
             'WHERE'     => [
-                Group_User::getTable() . '.users_id' => self::getLoginUserID()
-            ] + $entity_restriction
+                Group_User::getTable() . '.users_id' => self::getLoginUserID(),
+            ] + $entity_restriction,
         ]);
 
         foreach ($iterator as $data) {
@@ -723,7 +747,7 @@ class Session
                 // Stack of children to load
                 $children_to_load = [$data["groups_id"]];
 
-                while (!empty($children_to_load)) {
+                while ($children_to_load !== []) {
                     $next_child_to_load = array_pop($children_to_load);
 
                     // Note: we can't use getSonsOf here because some groups in the
@@ -732,7 +756,7 @@ class Session
                     $children_data = $DB->request([
                         'SELECT' => ['id', 'recursive_membership'],
                         'FROM'   => Group::getTable(),
-                        'WHERE'  => ['groups_id' => $next_child_to_load] + $entity_restriction
+                        'WHERE'  => ['groups_id' => $next_child_to_load] + $entity_restriction,
                     ]);
 
                     // Iterate on the children
@@ -782,12 +806,12 @@ class Session
         }
 
         $trytoload = $_SESSION["glpilanguage"];
-       // Force to load a specific lang
+        // Force to load a specific lang
         if (!empty($forcelang)) {
             $trytoload = $forcelang;
         }
 
-       // If not set try default lang file
+        // If not set try default lang file
         if (empty($trytoload)) {
             $trytoload = $CFG_GLPI["language"];
         }
@@ -804,20 +828,20 @@ class Session
             $_SESSION['glpipluralnumber'] = $CFG_GLPI["languages"][$trytoload][5];
         }
 
-       // Redefine Translator caching logic to be able to drop laminas/laminas-cache dependency.
+        // Redefine Translator caching logic to be able to drop laminas/laminas-cache dependency.
         $i18n_cache = !defined('TU_USER') ? new I18nCache((new CacheManager())->getTranslationsCacheInstance()) : null;
-        $TRANSLATE = new class ($i18n_cache) extends Laminas\I18n\Translator\Translator {
+        $TRANSLATE = new class ($i18n_cache) extends Laminas\I18n\Translator\Translator { // @phpstan-ignore class.extendsFinalByPhpDoc
             public function __construct(?I18nCache $cache)
             {
-                  $this->cache = $cache;
+                $this->cache = $cache;
             }
         };
 
         $TRANSLATE->setLocale($trytoload);
 
         if (class_exists('Locale')) {
-           // Locale class may be missing if intl extension is not installed.
-           // In this case, we may still want to be able to load translations (for instance for requirements checks).
+            // Locale class may be missing if intl extension is not installed.
+            // In this case, we may still want to be able to load translations (for instance for requirements checks).
             \Locale::setDefault($trytoload);
         } else {
             trigger_error('Missing required intl PHP extension', E_USER_WARNING);
@@ -828,11 +852,11 @@ class Session
         $core_folders = is_dir(GLPI_LOCAL_I18N_DIR) ? scandir(GLPI_LOCAL_I18N_DIR) : [];
         $core_folders = array_filter($core_folders, function ($dir) {
             if (!is_dir(GLPI_LOCAL_I18N_DIR . "/$dir")) {
-                  return false;
+                return false;
             }
 
             if ($dir == 'core') {
-                 return true;
+                return true;
             }
 
             return str_starts_with($dir, 'core_');
@@ -842,18 +866,18 @@ class Session
             $mofile = GLPI_LOCAL_I18N_DIR . "/$core_folder/" . $newfile;
             $phpfile = str_replace('.mo', '.php', $mofile);
 
-           // Load local PHP file if it exists
+            // Load local PHP file if it exists
             if (file_exists($phpfile)) {
                 $TRANSLATE->addTranslationFile('phparray', $phpfile, 'glpi', $trytoload);
             }
 
-           // Load local MO file if it exists -- keep last so it gets precedence
+            // Load local MO file if it exists -- keep last so it gets precedence
             if (file_exists($mofile)) {
                 $TRANSLATE->addTranslationFile('gettext', $mofile, 'glpi', $trytoload);
             }
         }
 
-       // Load plugin dicts
+        // Load plugin dicts
         if ($with_plugins) {
             foreach (Plugin::getPlugins() as $plug) {
                 Plugin::loadLang($plug, $forcelang, $trytoload);
@@ -873,8 +897,8 @@ class Session
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Extract accepted languages from headers
-       // Accept-Language: fr-FR, fr;q=0.9, en;q=0.8, de;q=0.7, *;q=0.5
+        // Extract accepted languages from headers
+        // Accept-Language: fr-FR, fr;q=0.9, en;q=0.8, de;q=0.7, *;q=0.5
         $accepted_languages = [];
         $values = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '');
         foreach ($values as $value) {
@@ -892,10 +916,10 @@ class Session
         }
 
         if (isset($CFG_GLPI['language'])) {
-           // Default config in GLPI >= 0.72
+            // Default config in GLPI >= 0.72
             return $CFG_GLPI['language'];
-        } else if (isset($CFG_GLPI['default_language'])) {
-           // Default config in GLPI < 0.72 : keep it for upgrade process
+        } elseif (isset($CFG_GLPI['default_language'])) {
+            // Default config in GLPI < 0.72 : keep it for upgrade process
             return $CFG_GLPI['default_language'];
         }
 
@@ -928,10 +952,11 @@ class Session
      **/
     public static function isCron()
     {
-
-        return (self::isInventory() || isset($_SESSION["glpicronuserrunning"])
-              && (isCommandLine()
-                  || strpos($_SERVER['PHP_SELF'], '/cron.php')));
+        return (self::isInventory() || isset($_SESSION["glpicronuserrunning"]))
+            && (
+                isCommandLine()
+                || str_starts_with(Request::createFromGlobals()->getPathInfo(), '/front/cron.php')
+            );
     }
 
     /**
@@ -944,8 +969,7 @@ class Session
 
         return (isset($_SESSION["glpiinventoryuserrunning"])
               && (
-                  strpos($_SERVER['PHP_SELF'], '/inventory.php') !== false
-                  || strpos($_SERVER['PHP_SELF'], '/index.php') !== false
+                  InventoryController::$is_running === true
                   || defined('TU_USER')
               )
         );
@@ -978,39 +1002,6 @@ class Session
         return false;
     }
 
-
-    /**
-     * Redirect User to login if not logged in
-     *
-     * @since 0.85
-     *
-     * @return void
-     **/
-    public static function redirectIfNotLoggedIn()
-    {
-
-        if (!self::isAuthenticated()) {
-            Html::redirectToLogin();
-        }
-    }
-
-    /**
-     * Check the `session.cookie_secure` configuration and exit with an error message if the
-     * current request context is not allowed to use session cookies.
-     */
-    public static function checkCookieSecureConfig(): void
-    {
-        // If session cookie is only available on a secure HTTPS context but request is made on an unsecured HTTP context,
-        // throw an exception
-        $cookie_secure = filter_var(ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOLEAN);
-        $is_https_request = ($_SERVER['HTTPS'] ?? 'off') === 'on' || (int)($_SERVER['SERVER_PORT'] ?? null) == 443;
-        if ($is_https_request === false && $cookie_secure === true) {
-            $exception = new BadRequestHttpException();
-            $exception->setMessageToDisplay(__('The web server is configured to allow session cookies only on secured context (https). Therefore, you must access GLPI on a secured context to be able to use it.'));
-            throw $exception;
-        }
-    }
-
     /**
      * Global check of session to prevent PHP vulnerability
      *
@@ -1036,60 +1027,56 @@ class Session
         $profile_id = $_SESSION['glpiactiveprofile']['id'] ?? null;
         $entity_id  = $_SESSION['glpiactive_entity'] ?? null;
 
-        $valid_user = true;
-
         if (!is_numeric($user_id) || $profile_id === null || $entity_id === null) {
-            $valid_user = false;
-        } else {
-            $user_table = User::getTable();
-            $pu_table   = Profile_User::getTable();
-            $profile_table = Profile::getTable();
-            $result = $DB->request(
-                [
-                    'COUNT'     => 'count',
-                    'SELECT'    => [$profile_table . '.last_rights_update'],
-                    'FROM'      => $user_table,
-                    'LEFT JOIN' => [
-                        $pu_table => [
-                            'FKEY'  => [
-                                Profile_User::getTable() => 'users_id',
-                                $user_table         => 'id'
-                            ]
-                        ],
-                        $profile_table => [
-                            'FKEY'  => [
-                                $pu_table => 'profiles_id',
-                                $profile_table => 'id'
-                            ]
-                        ]
-                    ],
-                    'WHERE'     => [
-                        $user_table . '.id'         => $user_id,
-                        $user_table . '.is_active'  => 1,
-                        $user_table . '.is_deleted' => 0,
-                        $pu_table . '.profiles_id'  => $profile_id,
-                    ] + getEntitiesRestrictCriteria($pu_table, 'entities_id', $entity_id, true),
-                    'GROUPBY'   => [$profile_table . '.id'],
-                ]
-            );
-
-            $row = $result->current();
-
-            if ($row === null || $row['count'] === 0) {
-                $valid_user = false;
-            } elseif (
-                $row['last_rights_update'] !== null
-                && $row['last_rights_update'] > ($_SESSION['glpiactiveprofile']['last_rights_update'] ?? 0)
-            ) {
-                Session::reloadCurrentProfile();
-                $_SESSION['glpiactiveprofile']['last_rights_update'] = $row['last_rights_update'];
-            }
+            throw new SessionExpiredException();
         }
 
-        if (!$valid_user) {
-            Session::destroy();
-            Auth::setRememberMeCookie('');
-            Html::redirectToLogin();
+        $user_table = User::getTable();
+        $pu_table   = Profile_User::getTable();
+        $profile_table = Profile::getTable();
+        $result = $DB->request(
+            [
+                'COUNT'     => 'count',
+                'SELECT'    => [$profile_table . '.last_rights_update'],
+                'FROM'      => $user_table,
+                'LEFT JOIN' => [
+                    $pu_table => [
+                        'FKEY'  => [
+                            Profile_User::getTable() => 'users_id',
+                            $user_table         => 'id',
+                        ],
+                    ],
+                    $profile_table => [
+                        'FKEY'  => [
+                            $pu_table => 'profiles_id',
+                            $profile_table => 'id',
+                        ],
+                    ],
+                ],
+                'WHERE'     => [
+                    $user_table . '.id'         => $user_id,
+                    $user_table . '.is_active'  => 1,
+                    $user_table . '.is_deleted' => 0,
+                    $pu_table . '.profiles_id'  => $profile_id,
+                ] + getEntitiesRestrictCriteria($pu_table, 'entities_id', $entity_id, true),
+                'GROUPBY'   => [$profile_table . '.id'],
+            ]
+        );
+
+        $row = $result->current();
+
+        if ($row === null || $row['count'] === 0) {
+            // The current profile cannot be found for the current user in the database.
+            // The session information are stale, therefore the session should be considered as expired.
+            throw new SessionExpiredException();
+        }
+
+        if (
+            $row['last_rights_update'] !== null
+            && $row['last_rights_update'] > ($_SESSION['glpiactiveprofile']['last_rights_update'] ?? 0)
+        ) {
+            Session::reloadCurrentProfile();
+            $_SESSION['glpiactiveprofile']['last_rights_update'] = $row['last_rights_update'];
         }
 
         return true;
@@ -1104,8 +1091,6 @@ class Session
     {
         self::checkValidSessionId();
         if (Session::getCurrentInterface() != "central") {
-           // Gestion timeout session
-            self::redirectIfNotLoggedIn();
             throw new AccessDeniedHttpException("The current profile does not use the standard interface");
         }
     }
@@ -1139,8 +1124,6 @@ class Session
     {
         self::checkValidSessionId();
         if (Session::getCurrentInterface() != "helpdesk") {
-           // Gestion timeout session
-            self::redirectIfNotLoggedIn();
             throw new AccessDeniedHttpException("The current profile does not use the simplified interface");
         }
     }
@@ -1154,8 +1137,6 @@ class Session
     {
         self::checkValidSessionId();
         if (!isset($_SESSION["glpiname"])) {
-           // Gestion timeout session
-            self::redirectIfNotLoggedIn();
             throw new AccessDeniedHttpException("User has no valid session but seems to be logged in");
         }
     }
@@ -1228,8 +1209,6 @@ class Session
     {
         self::checkValidSessionId();
         if (!self::haveRight($module, $right)) {
-           // Gestion timeout session
-            self::redirectIfNotLoggedIn();
             $right_name = self::getRightNameForError($module, $right);
             throw new AccessDeniedHttpException("User is missing the $right ($right_name) right for $module");
         }
@@ -1247,7 +1226,6 @@ class Session
     {
         self::checkValidSessionId();
         if (!self::haveRightsOr($module, $rights)) {
-            self::redirectIfNotLoggedIn();
             $info = "User is missing all of the following rights: ";
             foreach ($rights as $right) {
                 $right_name = self::getRightNameForError($module, $right);
@@ -1283,15 +1261,13 @@ class Session
                             $valid = true;
                         }
                     }
-                } else if (self::haveRight($mod, $right)) {
+                } elseif (self::haveRight($mod, $right)) {
                     $valid = true;
                 }
             }
         }
 
         if (!$valid) {
-           // Gestion timeout session
-            self::redirectIfNotLoggedIn();
             $info = "User is missing all of the following rights: ";
             foreach ($modules as $mod => $right) {
                 $right_name = self::getRightNameForError($mod, $right);
@@ -1335,7 +1311,7 @@ class Session
     public static function haveAccessToEntity($ID, $is_recursive = false)
     {
 
-       // Quick response when passing wrong ID : default value of getEntityID is -1
+        // Quick response when passing wrong ID : default value of getEntityID is -1
         if ($ID < 0) {
             return false;
         }
@@ -1352,7 +1328,7 @@ class Session
             return false;
         }
 
-       /// Recursive object
+        /// Recursive object
         return in_array($ID, getAncestorsOf("glpi_entities", $_SESSION['glpiactiveentities']));
     }
 
@@ -1389,13 +1365,13 @@ class Session
     public static function haveRecursiveAccessToEntity($ID)
     {
 
-       // Right by profile
+        // Right by profile
         foreach ($_SESSION['glpiactiveprofile']['entities'] as $val) {
             if ($val['id'] == $ID) {
                 return $val['is_recursive'];
             }
         }
-       // Right is from a recursive profile
+        // Right is from a recursive profile
         if (isset($_SESSION['glpiactiveentities'])) {
             return in_array($ID, $_SESSION['glpiactiveentities']);
         }
@@ -1416,7 +1392,7 @@ class Session
         /** @var \DBmysql $DB */
         global $DB;
 
-        if (Session::isInventory() || Session::isCron()) {
+        if (self::isRightChecksDisabled() || Session::isInventory() || Session::isCron()) {
             return true;
         }
 
@@ -1429,7 +1405,7 @@ class Session
         }
 
         if (isset($_SESSION["glpiactiveprofile"][$module])) {
-            return (int)$_SESSION["glpiactiveprofile"][$module] & $right;
+            return (int) $_SESSION["glpiactiveprofile"][$module] & $right;
         }
 
         return false;
@@ -1720,11 +1696,12 @@ class Session
      *
      * @since 0.83.3
      *
-     * @param array $data $_POST data
+     * @param array $data           $_POST data
+     * @param bool  $preserve_token Whether to preserve token after it has been validated.
      *
      * @return boolean
      **/
-    public static function validateCSRF($data)
+    public static function validateCSRF($data, bool $preserve_token = false)
     {
         Session::cleanCSRFTokens();
 
@@ -1733,7 +1710,7 @@ class Session
         }
         $requestToken = $data['_glpi_csrf_token'];
         if (isset($_SESSION['glpicsrftokens'][$requestToken])) {
-            if (!defined('GLPI_KEEP_CSRF_TOKEN')) { /* When post open a new windows */
+            if (!$preserve_token) {
                 unset($_SESSION['glpicsrftokens'][$requestToken]);
             }
             return true;
@@ -1748,21 +1725,15 @@ class Session
      *
      * @since 0.84.2
      *
-     * @param array $data $_POST data
+     * @param array $data           $_POST data
+     * @param bool  $preserve_token Whether to preserve token after it has been validated.
      *
      * @return void
      **/
-    public static function checkCSRF($data)
+    public static function checkCSRF($data, bool $preserve_token = false)
     {
-        if (defined('GLPI_USE_CSRF_CHECK')) {
-            trigger_error(
-                'Definition of "GLPI_USE_CSRF_CHECK" constant is deprecated and is ignore for security reasons.',
-                E_USER_WARNING
-            );
-        }
-
-        if (!Session::validateCSRF($data)) {
-            $requested_url = (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'Unknown');
+        if (!Session::validateCSRF($data, $preserve_token)) {
+            $requested_url = ($_SERVER['REQUEST_URI'] ?? 'Unknown');
             $user_id = self::getLoginUserID() ?? 'Anonymous';
             Toolbox::logInFile('access-errors', "CSRF check failed for User ID: $user_id at $requested_url\n");
 
@@ -1847,7 +1818,7 @@ class Session
                 }
             }
 
-           // check all stored data for the IDOR token are present (and identical) in the posted data
+            // check all stored data for the IDOR token are present (and identical) in the posted data
             $match_expected = function ($expected, $given) use (&$match_expected) {
                 if (is_array($expected)) {
                     if (!is_array($given)) {
@@ -1976,7 +1947,7 @@ class Session
         $iterator = $DB->request([
             'SELECT' => ['id'],
             'FROM'   => Profile::getTable(),
-            'WHERE'  => $criteria
+            'WHERE'  => $criteria,
         ]);
         $profiles = [];
         foreach ($iterator as $data) {
@@ -2010,10 +1981,10 @@ class Session
             return false;
         }
 
-       //store user who impersonated another user
+        //store user who impersonated another user
         $impersonator = $_SESSION['glpiname'];
 
-       // Store current user values
+        // Store current user values
         $impersonator_id  = self::isImpersonateActive()
          ? $_SESSION['impersonator_id']
          : self::getLoginUserID();
@@ -2035,7 +2006,7 @@ class Session
         $auth->user = $user;
         Session::init($auth);
 
-       // Force usage of current user lang and session mode
+        // Force usage of current user lang and session mode
         $_SESSION['glpilanguage'] = $lang;
         $_SESSION['glpi_use_mode'] = $session_use_mode;
         Session::loadLanguage();
@@ -2069,7 +2040,7 @@ class Session
             return false;
         }
 
-       //store user which was impersonated by another user
+        //store user which was impersonated by another user
         $impersonate_user = $_SESSION['glpiname'];
         $impersonator_info = $_SESSION['impersonator_info'] ?? [];
 
@@ -2163,8 +2134,8 @@ class Session
     public static function getMatchingActiveEntities(/*int|array*/ $entities_ids)/*: int|array*/
     {
         if (
-            (int)$entities_ids === -1
-            || (is_array($entities_ids) && count($entities_ids) === 1 && (int)reset($entities_ids) === -1)
+            (int) $entities_ids === -1
+            || (is_array($entities_ids) && count($entities_ids) === 1 && (int) reset($entities_ids) === -1)
         ) {
             // Special value that is generally used to fallback to all active entities.
             return $entities_ids;
@@ -2193,20 +2164,20 @@ class Session
                 );
                 continue;
             }
-            $active_entities_ids[] = (int)$active_entity_id;
+            $active_entities_ids[] = (int) $active_entity_id;
         }
 
-        if (!is_array($entities_ids) && in_array((int)$entities_ids, $active_entities_ids, true)) {
-            return (int)$entities_ids;
+        if (!is_array($entities_ids) && in_array((int) $entities_ids, $active_entities_ids, true)) {
+            return (int) $entities_ids;
         }
 
         $filtered = [];
-        foreach ((array)$entities_ids as $entity_id) {
+        foreach ((array) $entities_ids as $entity_id) {
             if (
                 (is_int($entity_id) || (is_string($entity_id) && ctype_digit($entity_id)))
-                && in_array((int)$entity_id, $active_entities_ids, true)
+                && in_array((int) $entity_id, $active_entities_ids, true)
             ) {
-                $filtered[] = (int)$entity_id;
+                $filtered[] = (int) $entity_id;
             }
         }
         return $filtered;
@@ -2242,7 +2213,7 @@ class Session
     ) {
         $user = new User();
 
-       // Try to load from token
+        // Try to load from token
         if (!$user->getFromDBByToken($token, $token_type)) {
             return false;
         }
@@ -2280,13 +2251,13 @@ class Session
         $_SESSION['glpiactiveentities_string'] = "'" . implode("', '", $entities) . "'";
     }
 
-     /**
-     * clean what needs to be cleaned on logout
-     *
-     * @since 10.0.4
-     *
-     * @return void
-     */
+    /**
+    * clean what needs to be cleaned on logout
+    *
+    * @since 10.0.4
+    *
+    * @return void
+    */
     public static function cleanOnLogout()
     {
         Session::destroy();
@@ -2376,22 +2347,51 @@ class Session
             user_id   : self::getLoginUserID(),
             group_ids : $_SESSION['glpigroups'] ?? [],
             profile_id: $_SESSION['glpiactiveprofile']['id'],
+            active_entities_ids: $_SESSION['glpiactiveentities'],
+            current_entity_id: self::getActiveEntity(),
         );
     }
 
-    /**
-     * Indicates that the request is made in an AJAX context.
-     */
-    public static function setAjax(): void
+    public static function getCurrentProfile(): Profile
     {
-        self::$is_ajax_request = true;
+        $profile_id = $_SESSION['glpiactiveprofile']['id'] ?? null;
+        if ($profile_id === null) {
+            throw new RuntimeException("No active session");
+        }
+
+        $profile = Profile::getById($profile_id);
+        if (!$profile) {
+            throw new RuntimeException("Failed to load profile: $profile_id");
+        }
+
+        return $profile;
     }
 
     /**
-     * Unset the flag that indicates that the request is made in an AJAX context.
+     * Runs a callable with the right checks disabled.
+     * @return mixed|void The return value of the callable.
+     * @throws Throwable Any throwable that was caught from the callable if any.
      */
-    public static function resetAjaxParam(): void
+    public static function callAsSystem(callable $fn)
     {
-        self::$is_ajax_request = false;
+        $caught_throwable = null;
+        try {
+            self::$bypass_right_checks = true;
+            return $fn();
+        } catch (Throwable $e) {
+            $caught_throwable = $e;
+        } finally {
+            self::$bypass_right_checks = false;
+        }
+        throw $caught_throwable;
+    }
+
+    /**
+     * @return bool Whether the right checks are disabled.
+     * @internal No backwards compatibility promise.
+     */
+    public static function isRightChecksDisabled(): bool
+    {
+        return self::$bypass_right_checks;
     }
 }

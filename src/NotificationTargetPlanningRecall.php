@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -66,7 +66,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget
         switch ($data['type']) {
             case Notification::USER_TYPE:
                 switch ($data['items_id']) {
-                   //Send to the ITIL object task author
+                    //Send to the ITIL object task author
                     case Notification::TASK_ASSIGN_TECH:
                         $this->addTaskAssignUser();
                         break;
@@ -75,7 +75,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget
                         $this->addGuests();
                         break;
 
-                   //Send to the ITIL object task group assigned
+                        //Send to the ITIL object task group assigned
                     case Notification::TASK_ASSIGN_GROUP:
                         $this->addTaskAssignGroup();
                         break;
@@ -90,7 +90,9 @@ class NotificationTargetPlanningRecall extends NotificationTarget
      */
     public function addTaskAssignGroup()
     {
-        $item = new $this->obj->fields['itemtype']();
+        if (!($item = getItemForItemtype($this->obj->fields['itemtype']))) {
+            return false;
+        }
         if (
             $item->getFromDB($this->obj->fields['items_id'])
             && $item->isField('groups_id_tech')
@@ -105,13 +107,16 @@ class NotificationTargetPlanningRecall extends NotificationTarget
      **/
     public function addTaskAssignUser()
     {
-        $item = new $this->obj->fields['itemtype']();
+        if (!($item = getItemForItemtype($this->obj->fields['itemtype']))) {
+            return false;
+        }
+
         if ($item->getFromDB($this->obj->fields['items_id'])) {
             $user = new User();
             $field = '';
             if ($item->isField('users_id_tech')) {
                 $field = 'users_id_tech';
-            } else if (
+            } elseif (
                 in_array($item->getType(), ['PlanningExternalEvent', 'Reminder'])
                     && $item->isField('users_id')
             ) {
@@ -121,7 +126,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget
             if ($field != "" && $user->getFromDB($item->fields[$field])) {
                 $this->addToRecipientsList([
                     'language' => $user->fields['language'],
-                    'users_id' => $user->fields['id']
+                    'users_id' => $user->fields['id'],
                 ]);
             }
         }
@@ -133,7 +138,9 @@ class NotificationTargetPlanningRecall extends NotificationTarget
      **/
     public function addGuests()
     {
-        $item = new $this->obj->fields['itemtype']();
+        if (!($item = getItemForItemtype($this->obj->fields['itemtype']))) {
+            return false;
+        }
         if ($item->getFromDB($this->obj->fields['items_id'])) {
             $user = new User();
             if ($item->isField('users_id_guests')) {
@@ -141,7 +148,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget
                     if ($user->getFromDB($users_id)) {
                         $this->addToRecipientsList([
                             'language' => $user->fields['language'],
-                            'users_id' => $user->fields['id']
+                            'users_id' => $user->fields['id'],
                         ]);
                     }
                 }
@@ -160,7 +167,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget
         $this->data['##recall.action##']   = $events[$event];
         $this->data['##recall.itemtype##'] = $target_object->getTypeName(1);
         $this->data['##recall.item.URL##'] = '';
-       // For task show parent link
+        // For task show parent link
         if (
             ($target_object instanceof CommonDBChild)
             || ($target_object instanceof CommonITILTask)
@@ -256,7 +263,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget
         foreach ($tags_all as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
                 'label' => $label,
-                'value' => true
+                'value' => true,
             ]);
         }
 

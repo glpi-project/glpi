@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,48 +33,50 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\json_encode;
+
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
 $result = [];
-if (!isset($_POST['itemtype']) || !isset($_POST['items_id']) || (int)$_POST['items_id'] < 1) {
+if (!isset($_POST['itemtype']) || !isset($_POST['items_id']) || (int) $_POST['items_id'] < 1) {
     $result = [
         'success'   => false,
-        'message'   => __s('Required argument missing!')
+        'message'   => __s('Required argument missing!'),
     ];
 } else {
     $itemtype = $_POST['itemtype'];
     $items_id = $_POST['items_id'];
 
     if ($itemtype != Location::getType()) {
-        $item = new $itemtype();
+        $item = getItemForItemtype($itemtype);
         $found = $item->getFromDB($items_id);
-        if ($found && isset($item->fields['locations_id']) && (int)$item->fields['locations_id'] > 0) {
+        if ($found && isset($item->fields['locations_id']) && (int) $item->fields['locations_id'] > 0) {
             $itemtype = Location::getType();
             $items_id = $item->fields['locations_id'];
         } else {
             $result = [
                 'success'   => false,
-                'message'   => __s('Element seems not geolocalized or cannot be found')
+                'message'   => __s('Element seems not geolocalized or cannot be found'),
             ];
         }
     }
 
     if (!count($result)) {
         /** @var CommonDBTM $item */
-        $item = new $itemtype();
+        $item = getItemForItemtype($itemtype);
         $item->getFromDB($items_id);
         if (!empty($item->fields['latitude']) && !empty($item->fields['longitude'])) {
             $result = [
                 'name'   => $item->getName(),
                 'lat'    => $item->fields['latitude'],
-                'lng'    => $item->fields['longitude']
+                'lng'    => $item->fields['longitude'],
             ];
         } else {
             $result = [
                 'success'   => false,
                 'message'   => "<h3>" . __("Location seems not geolocalized!") . "</h3>" .
-                           "<a href='" . $item->getLinkURL() . "'>" . __s("Consider filling latitude and longitude on this location.") . "</a>"
+                           "<a href='" . $item->getLinkURL() . "'>" . __s("Consider filling latitude and longitude on this location.") . "</a>",
             ];
         }
     }

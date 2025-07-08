@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,13 +37,17 @@ namespace Glpi\System\Diagnostic;
 
 use FilesystemIterator;
 use Glpi\Toolbox\VersionParser;
-use GLPIKey;
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Safe\Exceptions\FilesystemException;
 use SebastianBergmann\Diff\Differ;
 use SebastianBergmann\Diff\Output\StrictUnifiedDiffOutputBuilder;
+
+use function Safe\file_get_contents;
+use function Safe\fileperms;
+use function Safe\json_decode;
+use function Safe\preg_replace;
 
 /**
  * @since 11.0.0
@@ -56,11 +60,13 @@ class SourceCodeIntegrityChecker
     public const STATUS_ADDED = 3;
 
     /**
-     * @note Only exists to be able to mock it in tests
+     * GLPI source code root directory.
      */
-    public function getCheckRootDir(): string
+    private string $root_dir;
+
+    public function __construct(string $root_dir = GLPI_ROOT)
     {
-        return GLPI_ROOT;
+        $this->root_dir = $root_dir;
     }
 
     /**
@@ -71,27 +77,46 @@ class SourceCodeIntegrityChecker
     private function getPathsToCheck(): array
     {
         return [
-            'ajax', 'css', 'front', 'inc', 'install', 'js', 'lib', 'locales', 'pics',
-            'public', 'resources', 'sound', 'src', 'templates', 'vendor',
-            'index.php', 'status.php'
+            'ajax',
+            'bin',
+            'css',
+            'dependency_injection',
+            'front',
+            'inc',
+            'install',
+            'lib',
+            'locales',
+            'public',
+            'resources',
+            'routes',
+            'src',
+            'templates',
+            'vendor',
         ];
     }
 
     /**
      * Returns the source code manifest contents.
      *
-     * @return array|null
-     * @phpstan-return array{algorithm: string, files: array<string, string>}|null
+     * @return array{algorithm: string, files: array<string, string>}
+     *
      * @throws \JsonException
      */
-    private function getBaselineManifest(): ?array
+    private function getBaselineManifest(): array
     {
-        $version = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
-        $manifest = file_get_contents($this->getCheckRootDir() . '/version/' . $version);
+        $manifest_path = \sprintf(
+            '%s/version/%s',
+            $this->root_dir,
+            VersionParser::getNormalizedVersion(GLPI_VERSION, false)
+        );
+
         try {
-            $content = json_decode($manifest, true, 512, JSON_THROW_ON_ERROR);
+            $manifest = file_get_contents($manifest_path);
+            $content = json_decode($manifest, associative: true, flags: JSON_THROW_ON_ERROR);
+        } catch (FilesystemException $e) {
+            throw new \RuntimeException('Error while trying to read the source code file manifest.', $e->getCode(), $e);
         } catch (\Throwable $e) {
-            throw new \RuntimeException('The source code file manifest is invalid.', previous: $e);
+            throw new \RuntimeException('The source code file manifest is invalid.', $e->getCode(), previous: $e);
         }
         if (!isset($content['algorithm'], $content['files']) || !is_string($content['algorithm']) || !is_array($content['files'])) {
             throw new \RuntimeException('The source code file manifest is invalid.');
@@ -112,7 +137,12 @@ class SourceCodeIntegrityChecker
         $files_to_check = [];
         $hashes = [];
         foreach ($to_scan as $item) {
-            $path = $this->getCheckRootDir() . '/' . $item;
+            $path = $this->root_dir . '/' . $item;
+
+            if (!\file_exists($path)) {
+                throw new \RuntimeException(sprintf('`%s` does not exist in the filesystem.', $path));
+            }
+
             if (is_dir($path)) {
                 $iterator = new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS);
                 // flatten the iterator
@@ -128,12 +158,12 @@ class SourceCodeIntegrityChecker
         }
         sort($files_to_check);
         foreach ($files_to_check as $file) {
-            $key = preg_replace('/^' . preg_quote($this->getCheckRootDir() . '/', '/') . '/', '', $file);
+            $key = preg_replace('/^' . preg_quote($this->root_dir . '/', '/') . '/', '', $file);
             $hashes[$key] = hash_file($algorithm, $file);
         }
         return [
             'algorithm' => $algorithm,
-            'files' => $hashes
+            'files' => $hashes,
         ];
     }
 
@@ -160,13 +190,13 @@ class SourceCodeIntegrityChecker
         }
         // Summary where the key is the file and the value is the status. Ignore OK files
         $summary = [];
-        foreach ($altered as $file => $hash) {
+        foreach (array_keys($altered) as $file) {
             $summary[$file] = self::STATUS_ALTERED;
         }
-        foreach ($added as $file => $hash) {
+        foreach (array_keys($added) as $file) {
             $summary[$file] = self::STATUS_ADDED;
         }
-        foreach ($missing as $file => $hash) {
+        foreach (array_keys($missing) as $file) {
             $summary[$file] = self::STATUS_MISSING;
         }
 
@@ -224,7 +254,7 @@ class SourceCodeIntegrityChecker
     {
         $summary = $this->getSummary();
         // ignore OK files in case they are present
-        $summary = array_filter($summary, static fn ($status) => $status !== self::STATUS_OK);
+        $summary = array_filter($summary, static fn($status) => $status !== self::STATUS_OK);
         // Ensure the release is downloaded
         $release_path = GLPI_TMP_DIR . '/glpi-' . VersionParser::getNormalizedVersion(GLPI_VERSION) . '.tgz';
         if (!file_exists($release_path)) {
@@ -250,23 +280,25 @@ class SourceCodeIntegrityChecker
             $extra_header = '';
             if ($status === self::STATUS_ADDED || !file_exists('phar://' . $release_path . '/glpi/' . $file)) {
                 $original_file = '/dev/null';
-                $file_perms   = @substr(sprintf('%o', fileperms($this->getCheckRootDir() . '/' . $file)), -4) ?: '0644';
+                $file_perms   = @substr(sprintf('%o', fileperms($this->root_dir . '/' . $file)), -4) ?: '0644';
                 $extra_header = 'new file mode 10' . $file_perms;
             } else {
-                $original_content = file_get_contents('phar://' . $release_path . '/glpi/' . $file);
-                if ($original_content === false) {
-                    $errors[] = sprintf('Failed to get original contents of file `%s`.', $file);
+                try {
+                    $original_content = file_get_contents('phar://' . $release_path . '/glpi/' . $file);
+                } catch (\Throwable $e) {
+                    $errors[] = sprintf('Failed to get original contents of file `%s`: %s', $file, $e->getMessage());
                     continue;
                 }
             }
-            if ($status === self::STATUS_MISSING || !file_exists($this->getCheckRootDir() . '/' . $file)) {
+            if ($status === self::STATUS_MISSING || !file_exists($this->root_dir . '/' . $file)) {
                 $current_file = '/dev/null';
                 $file_perms   = @substr(sprintf('%o', fileperms('phar://' . $release_path . '/glpi/' . $file)), -4) ?: '0644';
                 $extra_header = 'deleted file mode 10' . $file_perms;
             } else {
-                $current_content = file_get_contents($this->getCheckRootDir() . '/' . $file);
-                if ($current_content === false) {
-                    $errors[] = sprintf('Fails to get current contents of file `%s`.', $file);
+                try {
+                    $current_content = file_get_contents($this->root_dir . '/' . $file);
+                } catch (\Throwable $e) {
+                    $errors[] = sprintf('Failed to get current contents of file `%s`: %s', $file, $e->getMessage());
                     continue;
                 }
             }

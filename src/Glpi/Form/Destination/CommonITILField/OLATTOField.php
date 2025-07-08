@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
+use LevelAgreement;
 use OLA;
 use Override;
 use SLM;
@@ -44,24 +45,36 @@ final class OLATTOField extends SLMField
     #[Override]
     public function getLabel(): string
     {
-        return __("OLA TTO");
+        return __("Internal TTO");
     }
 
     #[Override]
     public function getWeight(): int
     {
-        return 30;
+        return 220;
     }
 
     #[Override]
-    public function getSLMClass(): string
+    public function getSLM(): LevelAgreement
     {
-        return OLA::class;
+        return new OLA();
     }
 
     #[Override]
     public function getType(): int
     {
         return SLM::TTO;
+    }
+
+    #[Override]
+    public function getConfigClass(): string
+    {
+        return OLATTOFieldConfig::class;
+    }
+
+    #[Override]
+    protected function getFieldNameToConvertSpecificSLMID(): string
+    {
+        return 'ola_question_tto';
     }
 }

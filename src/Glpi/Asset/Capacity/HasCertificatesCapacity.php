@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,6 +37,8 @@ namespace Glpi\Asset\Capacity;
 use Certificate;
 use Certificate_Item;
 use CommonGLPI;
+use Glpi\Asset\CapacityConfig;
+use Override;
 use Session;
 
 class HasCertificatesCapacity extends AbstractCapacity
@@ -50,6 +51,19 @@ class HasCertificatesCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return Certificate::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Track certificates used by the assets");
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [
+            Certificate_Item::class,
+        ];
     }
 
     public function getSearchOptions(string $classname): array
@@ -72,7 +86,7 @@ class HasCertificatesCapacity extends AbstractCapacity
         );
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         $this->registerToTypeConfig('certificate_types', $classname);
 
@@ -83,7 +97,7 @@ class HasCertificatesCapacity extends AbstractCapacity
         );
     }
 
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
         // Unregister from document types
         $this->unregisterFromTypeConfig('certificate_types', $classname);
@@ -92,7 +106,7 @@ class HasCertificatesCapacity extends AbstractCapacity
         $certificate_item = new Certificate_Item();
         $certificate_item->deleteByCriteria(
             [
-                'itemtype' => $classname
+                'itemtype' => $classname,
             ],
             force: true,
             history: false

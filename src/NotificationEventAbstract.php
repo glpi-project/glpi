@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -71,16 +71,16 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                 'data'               => $data,
                 'notificationtarget' => $notificationtarget,
                 'template'           => $template,
-                'notify_me'          => $notify_me
+                'notify_me'          => $notify_me,
             ]);
 
-           // get original timezone
+            // get original timezone
             $orig_tz = $DB->guessTimezone();
 
-           //Foreach notification targets
+            //Foreach notification targets
             foreach ($targets as $target) {
-                 //Get all users affected by this notification
-                 $notificationtarget->addForTarget($target, $options);
+                //Get all users affected by this notification
+                $notificationtarget->addForTarget($target, $options);
 
                 foreach ($notificationtarget->getTargets() as $users_infos) {
                     $key = $users_infos[static::getTargetFieldName()];
@@ -97,7 +97,7 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                             // as we work on a copy of the item object, no reload is required after
                             if (
                                 isset($users_infos['additionnaloption']['timezone'])
-                                && is_a($options['item'], CommonDBTM::class, true) // item may be a `CommonGLPI`
+                                && $options['item'] instanceof \CommonDBTM // item may be a `CommonGLPI`
                             ) {
                                 /** @var CommonDBTM $item */
                                 $DB->setTimezone($users_infos['additionnaloption']['timezone']);
@@ -145,11 +145,11 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                                     $notificationtarget->getFromDB($target['id']);
                                     echo "<tr class='tab_bg_2'><td>" . htmlescape($label) . "</td>";
                                     echo "<td>" . htmlescape($notificationtarget->getNameID()) . "</td>";
-                                    echo "<td>" . sprintf(
-                                        __s('%1$s (%2$s)'),
+                                    echo "<td>" . htmlescape(sprintf(
+                                        __('%1$s (%2$s)'),
                                         $template->getName(),
-                                        htmlescape($users_infos['language'])
-                                    ) . "</td>";
+                                        $users_infos['language']
+                                    )) . "</td>";
                                     echo "<td>" . htmlescape($options['mode']) . "</td>";
                                     echo "<td>" . htmlescape($key) . "</td>";
                                     echo "</tr>";
@@ -175,6 +175,6 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
      */
     protected static function extraRaise($params)
     {
-       //does nothing; designed to be overriden
+        //does nothing; designed to be overriden
     }
 }

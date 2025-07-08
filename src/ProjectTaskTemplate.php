@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,7 +39,7 @@
  **/
 class ProjectTaskTemplate extends CommonDropdown
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory          = true;
     public $can_be_translated  = true;
 
@@ -57,51 +57,51 @@ class ProjectTaskTemplate extends CommonDropdown
         return [['name'  => 'projectstates_id',
             'label' => _x('item', 'State'),
             'type'  => 'dropdownValue',
-            'list'  => true
+            'list'  => true,
         ],
             ['name'  => 'projecttasktypes_id',
                 'label' => _n('Type', 'Types', 1),
-                'type'  => 'dropdownValue'
+                'type'  => 'dropdownValue',
             ],
             ['name'  => 'projecttasks_id',
                 'label' => __('As child of'),
-                'type'  => 'dropdownValue'
+                'type'  => 'dropdownValue',
             ],
             ['name'  => 'percent_done',
                 'label' => __('Percent done'),
-                'type'  => 'percent_done'
+                'type'  => 'percent_done',
             ],
             ['name'  => 'is_milestone',
                 'label' => __('Milestone'),
-                'type'  => 'bool'
+                'type'  => 'bool',
             ],
             ['name'  => 'plan_start_date',
                 'label' => __('Planned start date'),
-                'type'  => 'datetime'
+                'type'  => 'datetime',
             ],
             ['name'  => 'real_start_date',
                 'label' => __('Real start date'),
-                'type'  => 'datetime'
+                'type'  => 'datetime',
             ],
             ['name'  => 'plan_end_date',
                 'label' => __('Planned end date'),
-                'type'  => 'datetime'
+                'type'  => 'datetime',
             ],
             ['name'  => 'real_end_date',
                 'label' => __('Real end date'),
-                'type'  => 'datetime'
+                'type'  => 'datetime',
             ],
             ['name'  => 'planned_duration',
                 'label' => __('Planned duration'),
-                'type'  => 'actiontime'
+                'type'  => 'actiontime',
             ],
             ['name'  => 'effective_duration',
                 'label' => __('Effective duration'),
-                'type'  => 'actiontime'
+                'type'  => 'actiontime',
             ],
             ['name'  => 'comments',
-                'label' => __('Comments'),
-                'type'  => 'textarea'
+                'label' => _n('Comment', 'Comments', Session::getPluralNumber()),
+                'type'  => 'textarea',
             ],
             ['name'  => 'description',
                 'label' => __('Description'),
@@ -254,13 +254,13 @@ class ProjectTaskTemplate extends CommonDropdown
     {
 
         $ong = parent::defineTabs($options);
-        $this->addStandardTab('Document_Item', $ong, $options);
+        $this->addStandardTab(Document_Item::class, $ong, $options);
 
         return $ong;
     }
 
     public static function getIcon()
     {
-        return "fas fa-layer-group";
+        return "ti ti-stack-2-filled";
     }
 }

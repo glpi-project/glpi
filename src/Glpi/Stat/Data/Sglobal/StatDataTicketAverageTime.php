@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -51,7 +51,7 @@ class StatDataTicketAverageTime extends StatDataAlwaysDisplay
         $avgclosed     = $this->getDataByType($params, "inter_avgclosedtime");
         $avgactiontime = $this->getDataByType($params, "inter_avgactiontime");
 
-       // Convert to hours
+        // Convert to hours
         foreach ($avgsolved as &$val) {
             $val = round($val / HOUR_TIMESTAMP, 2);
         }
@@ -69,19 +69,19 @@ class StatDataTicketAverageTime extends StatDataAlwaysDisplay
         $this->series = [
             [
                 'name' => __('Closure'),
-                'data' => $avgclosed
+                'data' => $avgclosed,
             ], [
                 'name' => __('Resolution'),
-                'data' => $avgsolved
+                'data' => $avgsolved,
             ], [
                 'name' => __('Real duration'),
-                'data' => $avgactiontime
-            ]
+                'data' => $avgactiontime,
+            ],
         ];
     }
 
     public function getTitle(): string
     {
-        return __('Average time') . " - " .  _n('Hour', 'Hours', Session::getPluralNumber());
+        return __('Average time') . " - " . _n('Hour', 'Hours', Session::getPluralNumber());
     }
 }

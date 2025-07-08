@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -46,14 +46,14 @@ class DynamicRowFormatCommand extends AbstractCommand
      *
      * @var integer
      */
-    const ERROR_MIGRATION_FAILED_FOR_SOME_TABLES = 1;
+    public const ERROR_MIGRATION_FAILED_FOR_SOME_TABLES = 1;
 
     /**
      * Error code returned if some tables are still using MyISAM engine.
      *
      * @var integer
      */
-    const ERROR_INNODB_REQUIRED = 2;
+    public const ERROR_INNODB_REQUIRED = 2;
 
     protected $requires_db_up_to_date = false;
 
@@ -81,7 +81,7 @@ class DynamicRowFormatCommand extends AbstractCommand
     private function checkForPrerequisites(): void
     {
 
-       // Check that all tables are using InnoDB engine
+        // Check that all tables are using InnoDB engine
         if (($myisam_count = $this->db->getMyIsamTables()->count()) > 0) {
             $msg = sprintf(__('%d tables are using the deprecated MyISAM storage engine.'), $myisam_count)
             . ' '

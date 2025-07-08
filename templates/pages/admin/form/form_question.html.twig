@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -49,9 +48,10 @@
 
 <section
     role="option"
-    class="mb-3"
+    class="d-flex"
     data-glpi-form-editor-block
     data-glpi-form-editor-question
+    data-glpi-form-editor-condition-type="{{ enum('Glpi\\Form\\Condition\\Type').QUESTION.value }}"
     data-glpi-draggable-item
     aria-label="{{ question is not null ? question.fields.name : __('New question') }}"
 >
@@ -59,7 +59,7 @@
         data-glpi-form-editor-on-click="set-active"
         data-glpi-form-editor-question-details
         data-glpi-form-editor-allow-anonymous="{{ not allow_unauthenticated_access or question_type.isAllowedForUnauthenticatedAccess() ? 1 : 0 }}"
-        class="card {{ question is not null and question.fields.is_mandatory ? 'mandatory-question' : '' }}"
+        class="card flex-grow-1 {{ question is not null and question.fields.is_mandatory ? 'mandatory-question' : '' }}"
         aria-label="{{ __("Question details") }}"
     >
         <div
@@ -97,17 +97,92 @@
                     data-glpi-form-editor-question-details-name
                 />
                 <span data-glpi-form-editor-required-mark class="text-danger d-none">*</span>
+
+                {% if question is null %}
+                    {% set question_strategy = enum('Glpi\\Form\\Condition\\VisibilityStrategy').ALWAYS_VISIBLE %}
+                {% else %}
+                    {% set question_strategy = question.getConfiguredVisibilityStrategy() %}
+                {% endif %}
+
+                <div class="ms-auto"></div>
+
+                {# Validation dropdown #}
+                {{ include('pages/admin/form/conditional_validation_dropdown.html.twig', {
+                    'item': question,
+                    'type': "Glpi\\Form\\Question",
+                }, with_context = false) }}
+
+                {# Visibility dropdown #}
+                {{ include('pages/admin/form/conditional_visibility_dropdown.html.twig', {
+                    'item': question,
+                    'type': "Glpi\\Form\\Question",
+                }, with_context = false) }}
+
                 {# Duplicate question #}
                 <i
                     role="button"
-                    class="ti ti-copy ms-auto cursor-pointer"
+                    class="ti ti-copy ms-3 cursor-pointer"
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"
                     title="{{ __("Duplicate question") }}"
                     data-glpi-form-editor-on-click="duplicate-question"
                     data-glpi-form-editor-question-extra-details
-                    role="button"
                 ></i>
+
+                {# Delete question #}
+                <i
+                    role="button"
+                    class="ti ti-trash ms-3 cursor-pointer"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="{{ __("Delete") }}"
+                    aria-label="{{ __("Delete") }}"
+                    data-glpi-form-editor-on-click="delete-question"
+                    data-glpi-form-editor-question-extra-details
+                ></i>
+
+                {# Extra actions #}
+                <div class="dropdown ms-3 cursor-pointer d-flex align-items-center">
+                    <i
+                        class="ti ti-dots-vertical show"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        role="button"
+                        title="{{ __('More actions') }}"
+                    ></i>
+                    <ul class="dropdown-menu" data-bs-popper="none">
+                        <li>
+                            <button
+                                type="button"
+                                class="dropdown-item"
+                                data-glpi-form-editor-on-click="show-visibility-dropdown"
+                            >
+                                <i class="ti ti-eye-cog me-2"></i>
+                                <span>{{ __("Configure visibility") }}</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                type="button"
+                                class="dropdown-item"
+                                data-glpi-form-editor-on-click="show-validation-dropdown"
+                            >
+                                <i class="ti ti-checks me-2"></i>
+                                <span>{{ __("Configure validation") }}</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                type="button"
+                                class="dropdown-item"
+                                data-glpi-form-editor-on-click="copy-uuid"
+                            >
+                                <i class="ti ti-id-badge me-2"></i>
+                                <span>{{ __("Copy uuid") }}</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
             {# Render the specific question type #}
@@ -130,7 +205,7 @@
                     question is not null ? question.fields.description : '',
                     __('Description'),
                     base_field_options|merge({
-                        'placeholder': __('Add a description...'),
+                        'placeholder': __('Add a description'),
                         'aria_label': __("Question description"),
                         'enable_richtext': true,
                         'add_body_classes': ['content-editable-tinymce-editor', 'text-muted'],
@@ -144,69 +219,87 @@
             </div>
 
             <div
-                class="d-flex align-items-center mt-2"
+                class="d-flex flex-wrap align-items-center gap-2 mt-2"
                 data-glpi-form-editor-question-extra-details
                 data-fix-dropdown-flex
             >
-                {% set categories = {} %}
-                {% for category in question_types_manager.getCategories() %}
-                    {% set categories = categories|merge({(category.value): category.getLabel()}) %}
-                {% endfor %}
+                <div class="question-type-dropdown-group">
+                    {{ fields.dropdownArrayField(
+                        '_type_category',
+                        question_types_manager.getCategoryKey(question_type.getCategory()),
+                        question_types_manager.getCategoriesDropdownValues(),
+                        '',
+                        {
+                            'init'                 : question is not null,
+                            'no_label'             : true,
+                            'mb'                   : '',
+                            'field_class'          : '',
+                            'class'                : 'form-select form-select-sm',
+                            'width'                : 'auto',
+                            'dropdownCssClass'     : 'question-type-dropdown-group-dropdown-select',
+                            'aria_label'           : __('Question type'),
+                            'add_data_attributes'  : {
+                                'glpi-form-editor-on-change': 'change-question-type-category'
+                            },
+                            'templateSelection'    : question_types_manager.getTemplateSelectionForCategories(),
+                            'templateResult'       : question_types_manager.getTemplateResultForCategories(),
+                        }
+                    ) }}
 
-                {{ fields.dropdownArrayField(
-                    '_type_category',
-                    question_type.getCategory().value,
-                    categories,
-                    '',
-                    {
-                        'init'                 : question is not null,
-                        'no_label'             : true,
-                        'mb'                   : '',
-                        'field_class'          : 'me-2',
-                        'class'                : 'form-select form-select-sm',
-                        'width'                : 'auto',
-                        'aria_label'           : __('Question type'),
-                        'add_data_attributes'  : {
-                            'glpi-form-editor-on-change': 'change-question-type-category'
-                        },
-                        'templateSelection'    : question_types_manager.getTemplateSelectionForCategories(),
-                        'templateResult'       : question_types_manager.getTemplateResultForCategories(),
-                    }
-                ) }}
+                    {% set types = question_types_manager.getQuestionTypesDropdownValuesForCategory(question_type.getCategory()) %}
 
-                {% set types = question_types_manager.getTypesForCategory(question_type.getCategory()) %}
-                {% for possible_question_type in types %}
-                    {% set types = types|merge({(get_class(possible_question_type)): possible_question_type.getName()}) %}
-                {% endfor %}
+                    {{ fields.dropdownArrayField(
+                        'type',
+                        get_class(question_type),
+                        types,
+                        question_type.getName(),
+                        {
+                            'init'                 : question is not null,
+                            'no_label'             : true,
+                            'mb'                   : '',
+                            'field_class'          : types|length == 1 ? ' d-none' : '',
+                            'class'                : 'form-select form-select-sm',
+                            'width'                : 'auto',
+                            'aria_label'           : __('Question sub type'),
+                            'add_data_attributes'  : {
+                                'glpi-form-editor-on-change'             : 'change-question-type',
+                                'glpi-form-editor-question-type-selector': ''
+                            },
+                            'templateSelection'    : question_types_manager.getTemplateSelectionForQuestionTypes(),
+                            'templateResult'       : question_types_manager.getTemplateResultForQuestionTypes(),
+                        }
+                    ) }}
 
-                {{ fields.dropdownArrayField(
-                    'type',
-                    get_class(question_type),
-                    types,
-                    question_type.getName(),
-                    {
-                        'init'                 : question is not null,
-                        'no_label'             : true,
-                        'mb'                   : '',
-                        'field_class'          : 'me-2' ~ (types|length == 1 ? ' d-none' : ''),
-                        'class'                : 'form-select form-select-sm',
-                        'width'                : 'auto',
-                        'aria_label'           : __('Question sub type'),
-                        'add_data_attributes'  : {
-                            'glpi-form-editor-on-change'             : 'change-question-type',
-                            'glpi-form-editor-question-type-selector': ''
-                        },
-                        'templateSelection'    : question_types_manager.getTemplateSelectionForQuestionTypes(),
-                        'templateResult'       : question_types_manager.getTemplateResultForQuestionTypes(),
-                    }
-                ) }}
+                    {% set sub_types = question_type.getSubTypes() %}
+                    {{ fields.dropdownArrayField(
+                        question_type.getSubTypeFieldName(),
+                        question_type.getSubTypeDefaultValue(question),
+                        question_type.getSubTypes(),
+                        '',
+                        {
+                            'init'                 : question is not null,
+                            'no_label'             : true,
+                            'mb'                   : '',
+                            'field_class'          : sub_types is empty ? ' d-none' : '',
+                            'class'                : 'form-select form-select-sm',
+                            'width'                : 'auto',
+                            'disabled'             : sub_types is empty,
+                            'aria_label'           : question_type.getSubTypeFieldAriaLabel(),
+                            'add_data_attributes'  : {
+                                'glpi-form-editor-on-change'                   : 'change-question-sub-type',
+                                'glpi-form-editor-question-sub-type-selector'  : '',
+                                'glpi-form-editor-specific-question-extra-data': ''
+                            }
+                        }
+                    ) }}
+                </div>
 
                 {# Render the specific question options #}
-                <div class="ms-2" data-glpi-form-editor-specific-question-options data-glpi-form-editor-question-extra-details>
+                <div class="ms-auto" data-glpi-form-editor-specific-question-options data-glpi-form-editor-question-extra-details>
                     {{ question_type.renderAdministrationOptionsTemplate(question)|raw }}
                 </div>
 
-                <label class="form-check form-switch ms-auto mb-0 me-2 cursor-pointer">
+                <label class="form-check form-switch ms-2 mb-0 cursor-pointer">
                     <input type="hidden" value="0" name="is_mandatory">
                     <input
                         class="form-check-input"
@@ -218,48 +311,34 @@
                     >
                     <span class="form-check-label">{{ __("Mandatory") }}</span>
                 </label>
-
-                <button
-                    class="btn btn-ghost-danger px-2"
-                    type="button"
-                    data-glpi-form-editor-on-click="delete-question"
-                >
-                    <i class="ti ti-trash me-2"></i>
-                    {{ __("Delete") }}
-                </button>
             </div>
         </div>
 
         {# Common hidden data #}
         <input
             type="hidden"
-            name="_use_uuid"
-            value="{{ question is not null ? 0 : 1 }}"
+            name="uuid"
+            value="{{ question is not null ? question.fields.uuid : '' }}"
         />
         <input
             type="hidden"
-            name="id"
-            value="{{ question is not null ? question.fields.id : 0 }}"
+            name="forms_sections_uuid"
+            value="{{ section is not null ? section.fields.uuid : '' }}"
         />
         <input
             type="hidden"
-            name="_use_uuid_for_sections_id"
-            value="{{ section is not null ? 0 : 1 }}"
+            name="vertical_rank"
+            value="{{ question is not null ? question.fields.vertical_rank : 0 }}"
         />
         <input
             type="hidden"
-            name="forms_sections_id"
-            value="{{ section is not null ? section.fields.id : 0 }}"
-        />
-        <input
-            type="hidden"
-            name="rank"
-            value="{{ question is not null ? question.fields.rank : 0 }}"
+            name="horizontal_rank"
+            value="{{ question is not null ? question.fields.horizontal_rank : null }}"
         />
         <input
             type="hidden"
             name="category"
-            value="{{ question_type.getCategory().value }}"
+            value="{{ question_types_manager.getCategoryKey(question_type.getCategory()) }}"
         />
         <input
             type="hidden"
@@ -267,10 +346,13 @@
             value="{{ constant('class', question_type) }}"
         />
     </section>
+
     <div data-glpi-form-editor-question-extra-details>
         {{ include('pages/admin/form/form_toolbar.html.twig', {
-            'can_update': can_update,
-            'form': form,
+            'can_update'     : can_update,
+            'form'           : form,
+            'vertical_layout': true
         }, with_context = false) }}
     </div>
+    <div data-glpi-form-editor-question-drag-merge></div>
 </section>

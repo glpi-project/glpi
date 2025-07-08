@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -81,8 +80,8 @@ class CartridgeTest extends AbstractInventoryAsset
         <TOTAL>1802</TOTAL>
       </PAGECOUNTERS>
     </DEVICE></CONTENT><QUERY>SNMP</QUERY><DEVICEID>foo</DEVICEID></REQUEST>",
-                'expected'  => '{"tonerblack":"71"}'
-            ]
+                'expected'  => '{"tonerblack":"71"}',
+            ],
         ];
     }
 
@@ -95,7 +94,7 @@ class CartridgeTest extends AbstractInventoryAsset
 
         $printer = getItemByTypeName('Printer', '_test_printer_all');
         $asset = new \Glpi\Inventory\Asset\Cartridge($printer, $json->content->cartridges);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected), $result[0]);
     }
@@ -113,7 +112,7 @@ class CartridgeTest extends AbstractInventoryAsset
 
     public function testHandle()
     {
-       //convert data
+        //convert data
         $expected = $this->assetProvider()[0];
 
         $converter = new \Glpi\Inventory\Converter();
@@ -122,7 +121,7 @@ class CartridgeTest extends AbstractInventoryAsset
 
         $printer = getItemByTypeName('Printer', '_test_printer_all');
         $asset = new \Glpi\Inventory\Asset\Cartridge($printer, $json->content->cartridges);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode('{"tonerblack":"71"}'), $result[0]);
 
@@ -139,7 +138,7 @@ class CartridgeTest extends AbstractInventoryAsset
         global $DB;
         $iterator = $DB->request([
             'FROM'   => \Printer_CartridgeInfo::getTable(),
-            'WHERE'  => ['printers_id' => $printers_id]
+            'WHERE'  => ['printers_id' => $printers_id],
         ]);
         $this->assertCount(1, $iterator);
 
@@ -153,7 +152,7 @@ class CartridgeTest extends AbstractInventoryAsset
         $json->content->cartridges[0]->tonerblack = 60;
 
         $asset = new \Glpi\Inventory\Asset\Cartridge($printer, $json->content->cartridges);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode('{"tonerblack":"60"}'), $result[0]);
 
@@ -164,7 +163,7 @@ class CartridgeTest extends AbstractInventoryAsset
         global $DB;
         $iterator = $DB->request([
             'FROM'   => \Printer_CartridgeInfo::getTable(),
-            'WHERE'  => ['printers_id' => $printers_id]
+            'WHERE'  => ['printers_id' => $printers_id],
         ]);
         $this->assertCount(1, $iterator);
 
@@ -178,7 +177,7 @@ class CartridgeTest extends AbstractInventoryAsset
 
         $iterator = $DB->request([
             'FROM'   => \Printer_CartridgeInfo::getTable(),
-            'WHERE'  => ['printers_id' => $printers_id]
+            'WHERE'  => ['printers_id' => $printers_id],
         ]);
         $this->assertCount(0, $iterator);
     }

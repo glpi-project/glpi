@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,7 +38,7 @@ use Glpi\Application\View\TemplateRenderer;
 // Relation between Contracts and Suppliers
 class Contract_Supplier extends CommonDBRelation
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1 = 'Contract';
     public static $items_id_1 = 'contracts_id';
 
@@ -73,7 +73,7 @@ class Contract_Supplier extends CommonDBRelation
                 case Contract::class:
                     if (Session::haveRight("contact_enterprise", READ)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
-                              $nb = self::countForItem($item);
+                            $nb = self::countForItem($item);
                         }
                         return self::createTabEntry(Supplier::getTypeName(Session::getPluralNumber()), $nb, $item::class);
                     }
@@ -148,7 +148,7 @@ class Contract_Supplier extends CommonDBRelation
                                 nochecklimit: true
                             }) }}
                             {% set btn %}
-                                <button type="submit" class="btn btn-primary">{{ btn_label }}</button>
+                                <button type="submit" name='add' class="btn btn-primary">{{ btn_label }}</button>
                             {% endset %}
                             {{ fields.htmlField('', btn, null) }}
                         </div>
@@ -193,7 +193,6 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
@@ -215,7 +214,7 @@ TWIG, $twig_params);
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
-            ]
+            ],
         ]);
     }
 
@@ -271,7 +270,7 @@ TWIG, $twig_params);
                                 entity_sons: contract.fields['is_recursive']
                             }) }}
                             {% set btn %}
-                                <button type="submit" class="btn btn-primary">{{ btn_label }}</button>
+                                <button type="submit" name='add' class="btn btn-primary">{{ btn_label }}</button>
                             {% endset %}
                             {{ fields.htmlField('', btn, null) }}
                         </div>
@@ -315,7 +314,6 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
@@ -335,7 +333,7 @@ TWIG, $twig_params);
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
-            ]
+            ],
         ]);
     }
 }

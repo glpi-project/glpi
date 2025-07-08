@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -85,6 +85,64 @@ export class GlpiFormQuestionTypeSelectable {
     }
 
     /**
+     * Get the options from the container.
+     *
+     * @returns {Array<{value: string, checked: boolean, uuid: string}>}
+     */
+    getOptions() {
+        const options = [];
+
+        this._container.children().each((index, option) => {
+            const input = $(option).find('input[type="text"]');
+            const selectable = $(option).find(`input[type="${this._inputType}"]`);
+
+            options[index] = {
+                value: input.val(),
+                checked: selectable.is(':checked'),
+                uuid: selectable.val(),
+            };
+        });
+
+        return options;
+    }
+
+    /**
+     * Set the options.
+     *
+     * @param {Array<{value: string, checked: boolean, uuid: string}>} options
+     */
+    setOptions(options) {
+        this._container.empty();
+
+        for (const [, value] of Object.entries(options)) {
+            const template = this._container.closest('div[data-glpi-form-editor-question-type-specific]').find('template').get(0);
+            const clone = template.content.cloneNode(true);
+            const uuid = getUUID(); // Generate a new UUID to avoid duplicates
+
+            $(clone).find('input[type="text"]')
+                .val(value.value)
+                .attr('name', `options[${uuid}]`);
+            $(clone).find(`input[type="${this._inputType}"]`)
+                .val(uuid)
+                .prop('checked', value.checked);
+
+            const insertedElement = $(clone).children().appendTo(this._container);
+
+            // Make option visible
+            this.#showOption($(insertedElement).find('input[type="text"]'));
+
+            // Register the new option listeners
+            this._registerOptionListeners($(insertedElement));
+
+            // Call the onAddOption method
+            this.onAddOption($(insertedElement));
+        }
+
+        this.#getFormController().computeState();
+        this.#enableOptionsSortable();
+    }
+
+    /**
      * Called when an option is added.
      *
      * @param {JQuery<HTMLElement>} option
@@ -138,7 +196,7 @@ export class GlpiFormQuestionTypeSelectable {
     }
 
     /**
-     * Add a new option after the specified input element.
+     * Add a option after the specified input element.
      *
      * @param {HTMLElement} input - The input element after which to add the new option.
      * @param {boolean} focus - Whether to focus the new option.
@@ -241,7 +299,7 @@ export class GlpiFormQuestionTypeSelectable {
     }
 
     /**
-     * Add a new option if needed.
+     * Add a option if needed.
      *
      * @param {HTMLElement} input - The input element.
      */
@@ -343,7 +401,7 @@ export class GlpiFormQuestionTypeSelectable {
     /**
      * Handle the keydown event.
      *
-     * Enter: Add a new option after the current one and focus it.
+     * Enter: Add a option after the current one and focus it.
      * Backspace: Remove the option if the value is empty.
      * Arrow Up or Shift + Tab: Focus the previous option.
      * Arrow Down or Tab: Focus the next option.
@@ -357,7 +415,7 @@ export class GlpiFormQuestionTypeSelectable {
         if (event.key === 'Enter') {
             event.preventDefault();
 
-            // Add a new option after the current one and focus it
+            // Add a option after the current one and focus it
             if (input.value) {
                 // Focus the next option if the current one is not the last and if the next one is empty
                 if (

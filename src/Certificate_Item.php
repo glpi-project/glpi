@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,12 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * Class to link a certificate to an item
  */
 class Certificate_Item extends CommonDBRelation
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1    = "Certificate";
     public static $items_id_1    = 'certificates_id';
     public static $take_entity_1 = false;
@@ -66,7 +68,7 @@ class Certificate_Item extends CommonDBRelation
     {
         $temp = new self();
         $temp->deleteByCriteria(['itemtype' => $item->getType(),
-            'items_id' => $item->getField('id')
+            'items_id' => $item->getField('id'),
         ]);
     }
 
@@ -88,7 +90,7 @@ class Certificate_Item extends CommonDBRelation
                     $nb = self::countForMainItem($item);
                 }
                 return self::createTabEntry(_n('Associated item', 'Associated items', Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
-            } else if (
+            } elseif (
                 in_array($item->getType(), Certificate::getTypes(true))
                 && Certificate::canView()
             ) {
@@ -119,7 +121,7 @@ class Certificate_Item extends CommonDBRelation
 
         if ($item->getType() == 'Certificate') {
             self::showForCertificate($item);
-        } else if (in_array($item->getType(), Certificate::getTypes(true))) {
+        } elseif (in_array($item->getType(), Certificate::getTypes(true))) {
             self::showForItem($item);
         }
         return true;
@@ -139,7 +141,7 @@ class Certificate_Item extends CommonDBRelation
         $certificates = $certificate->find([
             'certificates_id' => $certificates_id,
             'itemtype'        => $itemtype,
-            'items_id'        => $items_id
+            'items_id'        => $items_id,
         ]);
         if (count($certificates) != 1) {
             return false;
@@ -162,7 +164,7 @@ class Certificate_Item extends CommonDBRelation
 
         $this->add(['certificates_id' => $values["certificates_id"],
             'items_id'        => $values["items_id"],
-            'itemtype'        => $values["itemtype"]
+            'itemtype'        => $values["itemtype"],
         ]);
     }
 
@@ -200,135 +202,114 @@ class Certificate_Item extends CommonDBRelation
      **/
     public static function showForCertificate(Certificate $certificate)
     {
-
         $instID = $certificate->fields['id'];
         if (!$certificate->can($instID, READ)) {
             return false;
         }
         $canedit = $certificate->can($instID, UPDATE);
-        $rand    = mt_rand();
 
         $types_iterator = self::getDistinctTypes($instID, ['itemtype' => Certificate::getTypes(true)]);
-        $number = count($types_iterator);
-
-        if (Session::isMultiEntitiesMode()) {
-            $colsup = 1;
-        } else {
-            $colsup = 0;
-        }
 
         if ($canedit) {
-            echo "<div class='firstbloc'>";
-            echo "<form method='post' name='certificates_form$rand'
-                     id='certificates_form$rand'
-                     action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
-
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'>";
-            echo "<th colspan='" . ($canedit ? (5 + $colsup) : (4 + $colsup)) . "'>" .
-               __s('Add an item') . "</th></tr>";
-
-            echo "<tr class='tab_bg_1'><td colspan='" . (3 + $colsup) . "' class='center'>";
-            Dropdown::showSelectItemFromItemtypes(
-                ['items_id_name'   => 'items_id',
+            $twig_params = [
+                'btn_label' => _x('button', 'Associate'),
+                'certificates_id' => $instID,
+                'dropdown_params' => [
+                    'items_id_name'   => 'items_id',
                     'itemtypes'       => Certificate::getTypes(true),
                     'entity_restrict' => ($certificate->fields['is_recursive']
-                                      ? getSonsOf(
-                                          'glpi_entities',
-                                          $certificate->fields['entities_id']
-                                      )
-                                       : $certificate->fields['entities_id']),
+                        ? getSonsOf(
+                            'glpi_entities',
+                            $certificate->fields['entities_id']
+                        )
+                        : $certificate->fields['entities_id']),
                     'checkright'      => true,
-                ]
-            );
-            echo "</td><td colspan='2' class='center' class='tab_bg_1'>";
-            echo Html::hidden('certificates_id', ['value' => $instID]);
-            echo Html::submit(_x('button', 'Add'), ['name' => 'add']);
-            echo "</td></tr>";
-            echo "</table>";
-            Html::closeForm();
-            echo "</div>";
+                ],
+            ];
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                {% import 'components/form/fields_macros.html.twig' as fields %}
+                <div class="mb-3">
+                    <form method="post" name="certificates_form" action="{{ 'Certificate_Item'|itemtype_form_path }}">
+                        <input type="hidden" name="certificates_id" value="{{ certificates_id }}">
+                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                        <div class="d-flex">
+                            {{ fields.dropdownItemsFromItemtypes('items_id', '', dropdown_params|merge({
+                                add_field_class: 'd-inline',
+                                no_label: true,
+                            })) }}
+                            <div>
+                                <button type="submit" name="add" class="btn btn-primary ms-3 mb-3">{{ btn_label }}</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+TWIG, $twig_params);
         }
 
-        echo "<div class='spaced'>";
-        if ($canedit && $number) {
-            Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-            $massiveactionparams = [];
-            Html::showMassiveActions($massiveactionparams);
-        }
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr>";
-
-        if ($canedit && $number) {
-            echo "<th width='10'>" .
-            Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand) . "</th>";
-        }
-
-        echo "<th>" . _sn('Type', 'Types', 1) . "</th>";
-        echo "<th>" . __s('Name') . "</th>";
-        if (Session::isMultiEntitiesMode()) {
-            echo "<th>" . htmlescape(Entity::getTypeName(1)) . "</th>";
-        }
-        echo "<th>" . __s('Serial number') . "</th>";
-        echo "<th>" . __s('Inventory number') . "</th>";
-        echo "</tr>";
-
+        $entries = [];
         foreach ($types_iterator as $type_row) {
             $itemtype = $type_row['itemtype'];
-
             if (!($item = getItemForItemtype($itemtype))) {
                 continue;
             }
+            $itemtype_name = $itemtype::getTypeName(1);
 
-            if ($item->canView()) {
+            if ($item::canView()) {
                 $iterator = self::getTypeItems($instID, $itemtype);
 
                 if (count($iterator)) {
-                    Session::initNavigateListItems($itemtype, Certificate::getTypeName(2) . " = " . $certificate->fields['name']);
                     foreach ($iterator as $data) {
-                        $item->getFromDB($data["id"]);
-                        Session::addToNavigateListItems($itemtype, $data["id"]);
-                        $ID = "";
-                        if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
-                            $ID = " (" . $data["id"] . ")";
+                        if (!$item->getFromDB($data["id"])) {
+                            continue;
                         }
 
-                        $link = $itemtype::getFormURLWithID($data["id"]);
-                        $name = "<a href=\"" . $link . "\">" . htmlescape($data["name"]) . "$ID</a>";
+                        $entry = [
+                            'itemtype' => static::class,
+                            'id' => $data['linkid'],
+                            'row_class' => $item->isDeleted() ? 'table-danger' : '',
+                            'type' => $itemtype_name,
+                            'name' => $item->getLink(),
+                            'serial' => $data['serial'],
+                            'otherserial' => $data['otherserial'],
+                        ];
 
-                        echo "<tr class='tab_bg_1'>";
-
-                        if ($canedit) {
-                            echo "<td width='10'>";
-                            Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
-                            echo "</td>";
-                        }
-                        echo "<td class='center'>" . htmlescape($item->getTypeName(1)) . "</td>";
-                        echo "<td class='center' " . (isset($data['is_deleted']) && $data['is_deleted'] ? "class='tab_bg_2_2'" : "") .
-                        ">" . $name . "</td>";
                         if (Session::isMultiEntitiesMode()) {
-                            $entity = ($item->isEntityAssign() ?
-                            Dropdown::getDropdownName("glpi_entities", $data['entity']) :
-                            '-');
-                             echo "<td class='center'>" . htmlescape($entity) . "</td>";
+                            $entry['entity'] = $item->isEntityAssign() ? Dropdown::getDropdownName("glpi_entities", $data['entity']) : '-';
                         }
-                        echo "<td class='center'>" . (isset($data["serial"]) ? htmlescape($data["serial"]) : "-") . "</td>";
-                        echo "<td class='center'>" . (isset($data["otherserial"]) ? htmlescape($data["otherserial"]) : "-") . "</td>";
-                        echo "</tr>";
+                        $entries[] = $entry;
                     }
                 }
             }
         }
-        echo "</table>";
 
-        if ($canedit && $number) {
-            $paramsma = [
-                'ontop' => false,
-            ];
-            Html::showMassiveActions($paramsma);
-            Html::closeForm();
+        $columns = [
+            'type' => _n('Type', 'Types', 1),
+            'name' => __('Name'),
+        ];
+        if (Session::isMultiEntitiesMode()) {
+            $columns['entity'] = Entity::getTypeName(1);
         }
-        echo "</div>";
+        $columns['serial'] = __('Serial number');
+        $columns['otherserial'] = __('Inventory number');
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => $columns,
+            'formatters' => [
+                'name' => 'raw_html',
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . static::class . mt_rand(),
+            ],
+        ]);
     }
 
     /**
@@ -336,7 +317,7 @@ class Certificate_Item extends CommonDBRelation
      *
      * @since 9.2
      *
-     * @param $item  CommonDBTM object for which associated certificates must be displayed
+     * @param CommonDBTM $item object for which associated certificates must be displayed
      * @param $withtemplate (default 0)
      *
      * @return bool
@@ -361,12 +342,9 @@ class Certificate_Item extends CommonDBRelation
         }
 
         $canedit      = $item->canAddItem('Certificate');
-        $rand         = mt_rand();
         $is_recursive = $item->isRecursive();
 
         $iterator = self::getListForItem($item);
-        $number   = $iterator->numrows();
-        $i        = 0;
 
         $certificates = [];
         $used         = [];
@@ -377,168 +355,115 @@ class Certificate_Item extends CommonDBRelation
         }
 
         if ($canedit && $withtemplate < 2) {
-            if ($item->maybeRecursive()) {
-                $is_recursive = $item->fields['is_recursive'];
-            } else {
-                $is_recursive = false;
-            }
-            $entity_restrict = getEntitiesRestrictCriteria(
-                "glpi_certificates",
-                'entities_id',
-                $item->fields['entities_id'],
-                $is_recursive
-            );
-
-            $nb = countElementsInTable(
-                'glpi_certificates',
-                [
-                    'is_deleted'  => 0
-                ] + $entity_restrict
-            );
-
-            echo "<div class='firstbloc'>";
-
-            if (Certificate::canView() && (!$nb || ($nb > count($used)))) {
-                echo "<form name='certificate_form$rand'
-                        id='certificate_form$rand'
-                        method='post'
-                        action='" . Toolbox::getItemTypeFormURL('Certificate_Item')
-                  . "'>";
-                echo "<table class='tab_cadre_fixe'>";
-                echo "<tr class='tab_bg_1'>";
-                echo "<td colspan='4' class='center'>";
-                echo Html::hidden(
-                    'entities_id',
-                    ['value' => $item->fields['entities_id']]
-                );
-                 echo Html::hidden(
-                     'is_recursive',
-                     ['value' => $is_recursive]
-                 );
-                 echo Html::hidden(
-                     'itemtype',
-                     ['value' => $item->getType()]
-                 );
-                 echo Html::hidden(
-                     'items_id',
-                     ['value' => $ID]
-                 );
-                if ($item->getType() == 'Ticket') {
-                     echo Html::hidden('tickets_id', ['value' => $ID]);
-                }
-                 Dropdown::show('Certificate', ['entity' => $item->fields['entities_id'],
-                     'is_recursive'       => $is_recursive,
-                     'used'               => $used
-                 ]);
-
-                 echo "</td><td class='center' width='20%'>";
-                 echo Html::submit(_x('button', 'Associate'), ['name' => 'add']);
-                 echo "</td>";
-                 echo "</tr>";
-                 echo "</table>";
-                 Html::closeForm();
-            }
-
-            echo "</div>";
+            $twig_params = [
+                'btn_label' => _x('button', 'Associate'),
+                'item' => $item,
+                'is_recursive' => $is_recursive,
+                'dropdown_params' => [
+                    'entity' => $item->fields['entities_id'],
+                    'is_recursive' => $is_recursive,
+                    'used' => $used,
+                ],
+            ];
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                {% import 'components/form/fields_macros.html.twig' as fields %}
+                <div class="mb-3">
+                    <form method="post" name="certificates_form" action="{{ 'Certificate_Item'|itemtype_form_path }}">
+                        <input type="hidden" name="itemtype" value="{{ get_class(item) }}">
+                        <input type="hidden" name="items_id" value="{{ item.getID() }}">
+                        {% if get_class(item) is same as 'Ticket' %}
+                            <input type="hidden" name="tickets_id" value="{{ item.getID() }}">
+                        {% endif %}
+                        <input type="hidden" name="entities_id" value="{{ item.getEntityID() }}">
+                        <input type="hidden" name="is_recursive" value="{{ is_recursive }}">
+                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                        <div class="d-flex">
+                            {{ fields.dropdownField('Certificate', 'certificates_id', null, '', dropdown_params|merge({
+                                add_field_class: 'd-inline',
+                                no_label: true,
+                            })) }}
+                            <div>
+                                <button type="submit" name="add" class="btn btn-primary ms-3 mb-3">{{ btn_label }}</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+TWIG, $twig_params);
         }
-
-        echo "<div class='spaced table-responsive'>";
-        if ($canedit && $number && ($withtemplate < 2)) {
-            $massiveactionparams = ['num_displayed' => $number];
-            Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-            Html::showMassiveActions($massiveactionparams);
-        }
-        echo "<table class='tab_cadre_fixe'>";
-
-        echo "<tr>";
-        if ($canedit && $number && ($withtemplate < 2)) {
-            echo "<th width='10'>";
-            echo Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-            echo "</th>";
-        }
-        echo "<th>" . __('Name') . "</th>";
-        if (Session::isMultiEntitiesMode()) {
-            echo "<th>" . htmlescape(Entity::getTypeName(1)) . "</th>";
-        }
-        echo "<th>" . _sn('Type', 'Types', 1) . "</th>";
-        echo "<th>" . __s('DNS name') . "</th>";
-        echo "<th>" . __s('DNS suffix') . "</th>";
-        echo "<th>" . __s('Creation date') . "</th>";
-        echo "<th>" . __s('Expiration date') . "</th>";
-        echo "<th>" . __s('Status') . "</th>";
-        echo "</tr>";
 
         $used = [];
+        $entries = [];
 
-        if ($number) {
-            Session::initNavigateListItems(
-                'Certificate',
-                sprintf(
-                    __('%1$s = %2$s'),
-                    $item->getTypeName(1),
-                    $item->getName()
-                )
-            );
+        foreach ($certificates as $data) {
+            $certificateID = $data["id"];
+            $link = NOT_AVAILABLE;
 
-            foreach ($certificates as $data) {
-                $certificateID = $data["id"];
-                $link = NOT_AVAILABLE;
-
-                if ($certificate->getFromDB($certificateID)) {
-                    $link = $certificate->getLink();
-                }
-
-                Session::addToNavigateListItems('Certificate', $certificateID);
-
-                $used[$certificateID] = $certificateID;
-
-                echo "<tr class='tab_bg_1" . ($data["is_deleted"] ? "_2" : "") . "'>";
-                if ($canedit && ($withtemplate < 2)) {
-                    echo "<td width='10'>";
-                    Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
-                    echo "</td>";
-                }
-                echo "<td class='center'>$link</td>";
-                if (Session::isMultiEntitiesMode()) {
-                     echo "<td class='center'>" . Dropdown::getDropdownName("glpi_entities", $data['entities_id']) .
-                     "</td>";
-                }
-                echo "<td class='center'>";
-                echo Dropdown::getDropdownName(
-                    "glpi_certificatetypes",
-                    $data["certificatetypes_id"]
-                );
-                 echo "</td>";
-                 echo "<td class='center'>" . htmlescape($data["dns_name"]) . "</td>";
-                 echo "<td class='center'>" . htmlescape($data["dns_suffix"]) . "</td>";
-                 echo "<td class='center'>" . Html::convDate($data["date_creation"]) . "</td>";
-                if (
-                    $data["date_expiration"] <= date('Y-m-d')
-                     && !empty($data["date_expiration"])
-                ) {
-                     echo "<td class='center'>";
-                     echo "<div class='deleted'>" . Html::convDate($data["date_expiration"]) . "</div>";
-                     echo "</td>";
-                } else if (empty($data["date_expiration"])) {
-                    echo "<td class='center'>" . __s('Does not expire') . "</td>";
-                } else {
-                    echo "<td class='center'>" . Html::convDate($data["date_expiration"]) . "</td>";
-                }
-                echo "<td class='center'>";
-                echo Dropdown::getDropdownName("glpi_states", $data["states_id"]);
-                echo "</td>";
-                echo "</tr>";
-                $i++;
+            if ($certificate->getFromDB($certificateID)) {
+                $link = $certificate->getLink();
             }
+            $used[$certificateID] = $certificateID;
+
+            $entry = [
+                'itemtype' => static::class,
+                'id' => $data['linkid'],
+                'row_class' => $data['is_deleted'] ? 'table-danger' : '',
+                'name' => $link,
+                'type' => Dropdown::getDropdownName("glpi_certificatetypes", $data["certificatetypes_id"]),
+                'dns_name' => $data['dns_name'],
+                'dns_suffix' => $data['dns_suffix'],
+                'date_creation' => $data['date_creation'],
+                'status' => Dropdown::getDropdownName("glpi_states", $data["states_id"]),
+            ];
+            if (Session::isMultiEntitiesMode()) {
+                $entry['entity'] = Dropdown::getDropdownName("glpi_entities", $data['entities_id']);
+            }
+
+            $expiration = htmlescape(Html::convDate($data["date_expiration"]));
+            if (
+                !empty($data["date_expiration"])
+                && $data["date_expiration"] <= date('Y-m-d')
+            ) {
+                $expiration = "<span class='table-deleted'>{$expiration}</span>";
+            } elseif (empty($data["date_expiration"])) {
+                $expiration = __s('Does not expire');
+            }
+            $entry['date_expiration'] = $expiration;
+            $entries[] = $entry;
         }
 
-        echo "</table>";
-        if ($canedit && $number && ($withtemplate < 2)) {
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-            Html::closeForm();
+        $columns = [
+            'name' => __('Name'),
+        ];
+        if (Session::isMultiEntitiesMode()) {
+            $columns['entity'] = Entity::getTypeName(1);
         }
-        echo "</div>";
+        $columns['type'] = _n('Type', 'Types', 1);
+        $columns['dns_name'] = __('DNS name');
+        $columns['dns_suffix'] = __('DNS suffix');
+        $columns['date_creation'] = __('Creation date');
+        $columns['date_expiration'] = __('Expiration date');
+        $columns['status'] = __('Status');
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => $columns,
+            'formatters' => [
+                'name' => 'raw_html',
+                'date_creation' => 'date',
+                'date_expiration' => 'raw_html',
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit && $withtemplate < 2,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . static::class . mt_rand(),
+            ],
+        ]);
 
         return true;
     }

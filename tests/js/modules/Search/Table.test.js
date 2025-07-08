@@ -5,8 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,7 +32,7 @@
 
 /* global GLPI */
 
-import '../../../../js/modules/Search/Table.js';
+import '/js/modules/Search/Table.js';
 import {jest} from '@jest/globals';
 
 describe('Search Table', () => {
@@ -254,11 +253,27 @@ describe('Search Table', () => {
         // Restore sort
         restore_initial_sort_state();
         verify_initial_sort_state();
+
+        // Ensure non-consecutive sorts do not add extra, null sorts.
+        real_table.getElement().find('th').eq(0).attr('data-sort-num', '1');
+        real_table.getElement().find('th').eq(0).attr('data-sort-order', 'ASC');
+        real_table.getElement().find('th').eq(2).attr('data-sort-num', '1');
+        real_table.getElement().find('th').eq(2).attr('data-sort-order', 'ASC');
+        state = real_table.setSortStateFromColumns();
+        expect(state['sort'].length).toBe(2);
+        expect(state['order'].length).toBe(2);
+
+        // Restore sort
+        restore_initial_sort_state();
+        verify_initial_sort_state();
     });
     test('AJAX refresh on sort', async () => {
         restore_initial_sort_state();
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/search.php', 'GET', {}, () => {
             return $('div.ajax-container').html();
+        }));
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/displayMessageAfterRedirect.php', 'GET', {}, () => {
+            return {};
         }));
 
         real_table.getElement().find('th').eq(0).click();
@@ -275,6 +290,9 @@ describe('Search Table', () => {
             glpilist_limit: '10',
         }, () => {
             return $('div.ajax-container').html();
+        }));
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/displayMessageAfterRedirect.php', 'GET', {}, () => {
+            return {};
         }));
         real_table.getElement().closest('form').find('select.search-limit-dropdown').first().val(10).trigger('change');
 
@@ -296,6 +314,9 @@ describe('Search Table', () => {
             'as_map': '0',
         }, () => {
             return $('div.ajax-container').html();
+        }));
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/displayMessageAfterRedirect.php', 'GET', {}, () => {
+            return {};
         }));
         real_table.getElement().closest('.search-container').find('form.search-form-container button[name="search"]').trigger('click');
         // Wait for mocked AJAX response to resolve
@@ -346,6 +367,9 @@ describe('Search Table', () => {
     test('Reload after refresh exception', async () => {
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/search.php', 'GET', {}, () => {
             return $('div.ajax-container').html();
+        }));
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/displayMessageAfterRedirect.php', 'GET', {}, () => {
+            return {};
         }));
         const get_itemtype = jest.spyOn(real_table, 'getItemtype');
         get_itemtype.mockImplementation(() => {

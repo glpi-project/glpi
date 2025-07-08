@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
@@ -89,7 +91,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $validation->check($_POST['id'], UPDATE);
     $validation->update($_POST);
     Event::log(
@@ -101,7 +103,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s updates an approval'), $_SESSION["glpiname"])
     );
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $validation->check($_POST['id'], PURGE);
     $validation->delete($_POST, 1);
 
@@ -114,9 +116,8 @@ if (isset($_POST["add"])) {
         sprintf(__('%s purges an approval'), $_SESSION["glpiname"])
     );
     Html::back();
-} else if (isset($_POST['approval_action'])) {
-    $validation->getFromDB($_POST['id']);
-    if ($validation->canValidate($validation->fields[$validation::$items_id])) {
+} elseif (isset($_POST['approval_action'])) {
+    if ($validation->getFromDB($_POST['id']) && $validation->canAnswer()) {
         $validation->update($_POST + [
             'status' => ($_POST['approval_action'] === 'approve') ? CommonITILValidation::ACCEPTED : CommonITILValidation::REFUSED,
         ]);

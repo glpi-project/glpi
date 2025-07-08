@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,8 +35,8 @@
 
 class RuleDictionnaryManufacturerCollection extends RuleDictionnaryDropdownCollection
 {
-   // From RuleCollection
-   //public $rule_class_name = 'RuleDictionnaryManufacturer';
+    // From RuleCollection
+    //public $rule_class_name = 'RuleDictionnaryManufacturer';
 
     public $item_table  = "glpi_manufacturers";
     public $menu_option = "manufacturers";

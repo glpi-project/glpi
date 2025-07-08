@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -53,15 +52,11 @@
                 {% set filter_field = authldap.fields['group_search_type'] == constant('AuthLDAP::GROUP_SEARCH_USER') ? 'condition' : 'group_condition' %}
                 {{ fields.textField('ldap_group_filter', _request['ldap_group_filter']|default(authldap.fields[filter_field]), __('Filter to search in groups'), {
                     full_width: true,
-                    label_class: 'col-xxl-3',
-                    input_class: 'col-xxl-9'
                 }) }}
 
                 {% if authldap.fields['group_search_type'] == constant('AuthLDAP::GROUP_SEARCH_BOTH') %}
                     {{ fields.textField('ldap_group_filter2', _request['ldap_group_filter2']|default(authldap.fields['condition']), __('Search filter for users'), {
                         full_width: true,
-                        label_class: 'col-xxl-3',
-                        input_class: 'col-xxl-9'
                     }) }}
                 {% endif %}
             </div>

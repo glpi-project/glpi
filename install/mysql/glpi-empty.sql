@@ -5,7 +5,7 @@
 --
 -- http://glpi-project.org
 --
--- @copyright 2015-2024 Teclib' and contributors.
+-- @copyright 2015-2025 Teclib' and contributors.
 -- @copyright 2003-2014 by the INDEPNET Development Team.
 -- @licence   https://www.gnu.org/licenses/gpl-3.0.html
 --
@@ -40,7 +40,7 @@ CREATE TABLE `glpi_alerts` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `itemtype` varchar(100) NOT NULL,
   `items_id` int unsigned NOT NULL DEFAULT '0',
-  `type` int NOT NULL DEFAULT '0' COMMENT 'see define.php ALERT_* constant',
+  `type` int NOT NULL DEFAULT '0',
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`items_id`,`type`),
@@ -91,7 +91,7 @@ CREATE TABLE `glpi_authldaps` (
   `mobile_field` varchar(255) DEFAULT NULL,
   `comment_field` varchar(255) DEFAULT NULL,
   `use_dn` tinyint NOT NULL DEFAULT '1',
-  `time_offset` int NOT NULL DEFAULT '0' COMMENT 'in seconds',
+  `time_offset` int NOT NULL DEFAULT '0',
   `deref_option` int NOT NULL DEFAULT '0',
   `title_field` varchar(255) DEFAULT NULL,
   `category_field` varchar(255) DEFAULT NULL,
@@ -142,6 +142,7 @@ CREATE TABLE `glpi_authmails` (
   `date_creation` timestamp NULL DEFAULT NULL,
   `comment` text,
   `is_active` tinyint NOT NULL DEFAULT '0',
+  `is_default` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
@@ -231,7 +232,7 @@ DROP TABLE IF EXISTS `glpi_savedsearches`;
 CREATE TABLE `glpi_savedsearches` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
-  `type` int NOT NULL DEFAULT '0' COMMENT 'see SavedSearch:: constants',
+  `type` int NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
   `users_id` int unsigned NOT NULL DEFAULT '0',
   `is_private` tinyint NOT NULL DEFAULT '1',
@@ -239,7 +240,7 @@ CREATE TABLE `glpi_savedsearches` (
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `query` text,
   `last_execution_time` int DEFAULT NULL,
-  `do_count` tinyint NOT NULL DEFAULT '2' COMMENT 'Do or do not count results on list display see SavedSearch::COUNT_* constants',
+  `do_count` tinyint NOT NULL DEFAULT '2',
   `last_execution_date` timestamp NULL DEFAULT NULL,
   `counter` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -410,7 +411,7 @@ CREATE TABLE `glpi_calendarsegments` (
   `calendars_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `day` tinyint NOT NULL DEFAULT '1' COMMENT 'numer of the day based on date(w)',
+  `day` tinyint NOT NULL DEFAULT '1',
   `begin` time DEFAULT NULL,
   `end` time DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -537,18 +538,18 @@ CREATE TABLE `glpi_certificates` (
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_template` tinyint NOT NULL DEFAULT '0',
   `template_name` varchar(255) DEFAULT NULL,
-  `certificatetypes_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_certificatetypes (id)',
+  `certificatetypes_id` int unsigned NOT NULL DEFAULT '0',
   `dns_name` varchar(255) DEFAULT NULL,
   `dns_suffix` varchar(255) DEFAULT NULL,
-  `users_id_tech` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_users (id)',
-  `locations_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_locations (id)',
-  `manufacturers_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_manufacturers (id)',
+  `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `contact` varchar(255) DEFAULT NULL,
   `contact_num` varchar(255) DEFAULT NULL,
   `users_id` int unsigned NOT NULL DEFAULT '0',
   `is_autosign` tinyint NOT NULL DEFAULT '0',
   `date_expiration` date DEFAULT NULL,
-  `states_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   `command` text,
   `certificate_request` text,
   `certificate_item` text,
@@ -577,8 +578,8 @@ DROP TABLE IF EXISTS `glpi_certificates_items`;
 CREATE TABLE `glpi_certificates_items` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `certificates_id` int unsigned NOT NULL DEFAULT '0',
-  `items_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
-  `itemtype` varchar(100) NOT NULL COMMENT 'see .class.php file',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
+  `itemtype` varchar(100) NOT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -665,7 +666,6 @@ CREATE TABLE `glpi_changes` (
   `backoutplancontent` longtext,
   `checklistcontent` longtext,
   `global_validation` int NOT NULL DEFAULT '1',
-  `validation_percent` int NOT NULL DEFAULT '0',
   `actiontime` int NOT NULL DEFAULT '0',
   `begin_waiting_date` timestamp NULL DEFAULT NULL,
   `waiting_duration` int NOT NULL DEFAULT '0',
@@ -833,6 +833,7 @@ CREATE TABLE `glpi_changetasks` (
 DROP TABLE IF EXISTS `glpi_changevalidations`;
 CREATE TABLE `glpi_changevalidations` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `itils_validationsteps_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `users_id` int unsigned NOT NULL DEFAULT '0',
@@ -858,7 +859,8 @@ CREATE TABLE `glpi_changevalidations` (
   KEY `changes_id` (`changes_id`),
   KEY `submission_date` (`submission_date`),
   KEY `validation_date` (`validation_date`),
-  KEY `status` (`status`)
+  KEY `status` (`status`),
+  KEY `itils_validationsteps_id` (`itils_validationsteps_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -1577,12 +1579,12 @@ DROP TABLE IF EXISTS `glpi_crontasklogs`;
 CREATE TABLE `glpi_crontasklogs` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `crontasks_id` int unsigned NOT NULL,
-  `crontasklogs_id` int unsigned NOT NULL COMMENT 'id of ''start'' event',
+  `crontasklogs_id` int unsigned NOT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `state` int NOT NULL COMMENT '0:start, 1:run, 2:stop',
-  `elapsed` float NOT NULL COMMENT 'time elapsed since start',
-  `volume` int NOT NULL COMMENT 'for statistics',
-  `content` varchar(255) DEFAULT NULL COMMENT 'message',
+  `state` int NOT NULL,
+  `elapsed` float NOT NULL,
+  `volume` int NOT NULL,
+  `content` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `date` (`date`),
   KEY `crontasks_id` (`crontasks_id`),
@@ -1596,17 +1598,17 @@ DROP TABLE IF EXISTS `glpi_crontasks`;
 CREATE TABLE `glpi_crontasks` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `itemtype` varchar(100) NOT NULL,
-  `name` varchar(150) NOT NULL COMMENT 'task name',
-  `frequency` int NOT NULL COMMENT 'second between launch',
-  `param` int DEFAULT NULL COMMENT 'task specify parameter',
-  `state` int NOT NULL DEFAULT '1' COMMENT '0:disabled, 1:waiting, 2:running',
-  `mode` int NOT NULL DEFAULT '1' COMMENT '1:internal, 2:external',
-  `allowmode` int NOT NULL DEFAULT '3' COMMENT '1:internal, 2:external, 3:both',
+  `name` varchar(150) NOT NULL,
+  `frequency` int NOT NULL,
+  `param` int DEFAULT NULL,
+  `state` int NOT NULL DEFAULT '1',
+  `mode` int NOT NULL DEFAULT '1',
+  `allowmode` int NOT NULL DEFAULT '3',
   `hourmin` int NOT NULL DEFAULT '0',
   `hourmax` int NOT NULL DEFAULT '24',
-  `logs_lifetime` int NOT NULL DEFAULT '30' COMMENT 'number of days',
-  `lastrun` timestamp NULL DEFAULT NULL COMMENT 'last run date',
-  `lastcode` int DEFAULT NULL COMMENT 'last run return code',
+  `logs_lifetime` int NOT NULL DEFAULT '30',
+  `lastrun` timestamp NULL DEFAULT NULL,
+  `lastcode` int DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
@@ -2444,7 +2446,7 @@ CREATE TABLE `glpi_devicesimcards` (
 DROP TABLE IF EXISTS `glpi_items_devicesimcards`;
 CREATE TABLE `glpi_items_devicesimcards` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `items_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to various table, according to itemtype (id)',
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
   `devicesimcards_id` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
@@ -2585,8 +2587,8 @@ CREATE TABLE `glpi_documents` (
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
-  `filename` varchar(255) DEFAULT NULL COMMENT 'for display and transfert',
-  `filepath` varchar(255) DEFAULT NULL COMMENT 'file storage path',
+  `filename` varchar(255) DEFAULT NULL,
+  `filepath` varchar(255) DEFAULT NULL,
   `documentcategories_id` int unsigned NOT NULL DEFAULT '0',
   `mime` varchar(255) DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -2843,6 +2845,10 @@ CREATE TABLE `glpi_entities` (
   `is_group_autoclean` tinyint NOT NULL DEFAULT '-2',
   `is_location_autoclean` tinyint NOT NULL DEFAULT '-2',
   `state_autoclean_mode` int NOT NULL DEFAULT '-2',
+  `show_tickets_properties_on_helpdesk` int NOT NULL DEFAULT '-2',
+  `custom_helpdesk_home_scene_left` varchar(255) NOT NULL DEFAULT '-2',
+  `custom_helpdesk_home_scene_right` varchar(255) NOT NULL DEFAULT '-2',
+  `custom_helpdesk_home_title` varchar(255) NOT NULL DEFAULT '-2',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`entities_id`,`name`),
   KEY `name` (`name`),
@@ -3152,13 +3158,64 @@ CREATE TABLE `glpi_groups_users` (
   `groups_id` int unsigned NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `is_manager` tinyint NOT NULL DEFAULT '0',
+  `is_userdelegate` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`users_id`,`groups_id`),
   KEY `groups_id` (`groups_id`),
   KEY `is_dynamic` (`is_dynamic`),
-  KEY `is_manager` (`is_manager`)
+  KEY `is_manager` (`is_manager`),
+  KEY `is_userdelegate` (`is_userdelegate`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+### Dump table glpi_helpdesks_tiles_profiles_tiles
+
+DROP TABLE IF EXISTS `glpi_helpdesks_tiles_items_tiles`;
+CREATE TABLE `glpi_helpdesks_tiles_items_tiles` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `itemtype_item` varchar(255) DEFAULT NULL,
+  `items_id_item` int unsigned NOT NULL DEFAULT '0',
+  `itemtype_tile` varchar(255) DEFAULT NULL,
+  `items_id_tile` int unsigned NOT NULL DEFAULT '0',
+  `rank` int NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`itemtype_item`, `items_id_item`, `rank`),
+  UNIQUE KEY `item` (`itemtype_tile`,`items_id_tile`),
+  KEY `rank` (`rank`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+### Dump table glpi_helpdesks_tiles_formtiles
+
+DROP TABLE IF EXISTS `glpi_helpdesks_tiles_formtiles`;
+CREATE TABLE `glpi_helpdesks_tiles_formtiles` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `forms_forms_id` int unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `forms_forms_id` (`forms_forms_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+### Dump table glpi_helpdesks_tiles_glpipagetiles
+
+DROP TABLE IF EXISTS `glpi_helpdesks_tiles_glpipagetiles`;
+CREATE TABLE `glpi_helpdesks_tiles_glpipagetiles` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `illustration` varchar(255) DEFAULT NULL,
+  `page` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+### Dump table glpi_helpdesks_tiles_externalpagetiles
+
+DROP TABLE IF EXISTS `glpi_helpdesks_tiles_externalpagetiles`;
+CREATE TABLE `glpi_helpdesks_tiles_externalpagetiles` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `illustration` varchar(255) DEFAULT NULL,
+  `url` text DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_holidays
 
@@ -3986,18 +4043,24 @@ DROP TABLE IF EXISTS `glpi_knowbaseitems`;
 CREATE TABLE `glpi_knowbaseitems` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int unsigned NOT NULL DEFAULT '0',
+  `forms_categories_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` text,
   `answer` longtext,
   `is_faq` tinyint NOT NULL DEFAULT '0',
   `users_id` int unsigned NOT NULL DEFAULT '0',
   `view` int NOT NULL DEFAULT '0',
+  `show_in_service_catalog` tinyint NOT NULL DEFAULT '0',
+  `description` longtext DEFAULT NULL,
+  `illustration` varchar(255) DEFAULT NULL,
+  `is_pinned` tinyint NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `begin_date` timestamp NULL DEFAULT NULL,
   `end_date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `entities_id` (`entities_id`),
+  KEY `forms_categories_id` (`forms_categories_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `users_id` (`users_id`),
   KEY `is_faq` (`is_faq`),
@@ -4232,17 +4295,21 @@ CREATE TABLE `glpi_logs` (
   `itemtype` varchar(100) NOT NULL DEFAULT '',
   `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype_link` varchar(100) NOT NULL DEFAULT '',
-  `linked_action` int NOT NULL DEFAULT '0' COMMENT 'see define.php HISTORY_* constant',
+  `linked_action` int NOT NULL DEFAULT '0',
   `user_name` varchar(255) DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
-  `id_search_option` int NOT NULL DEFAULT '0' COMMENT 'see search.constant.php for value',
+  `id_search_option` int NOT NULL DEFAULT '0',
   `old_value` varchar(255) DEFAULT NULL,
   `new_value` varchar(255) DEFAULT NULL,
+  `old_id` int unsigned DEFAULT NULL,
+  `new_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `itemtype_link` (`itemtype_link`),
   KEY `item` (`itemtype`,`items_id`),
-  KEY `id_search_option` (`id_search_option`)
+  KEY `id_search_option` (`id_search_option`),
+  KEY `old_id` (`old_id`),
+  KEY `new_id` (`new_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -4698,7 +4765,7 @@ DROP TABLE IF EXISTS `glpi_networkportaggregates`;
 CREATE TABLE `glpi_networkportaggregates` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `networkports_id` int unsigned NOT NULL DEFAULT '0',
-  `networkports_id_list` text COMMENT 'array of associated networkports_id',
+  `networkports_id_list` text,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -4747,8 +4814,8 @@ CREATE TABLE `glpi_networkportethernets` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `networkports_id` int unsigned NOT NULL DEFAULT '0',
   `items_devicenetworkcards_id` int unsigned NOT NULL DEFAULT '0',
-  `type` varchar(10) DEFAULT '' COMMENT 'T, LX, SX',
-  `speed` int NOT NULL DEFAULT '10' COMMENT 'Mbit/s: 10, 100, 1000, 10000',
+  `type` varchar(10) DEFAULT '',
+  `speed` int NOT NULL DEFAULT '10',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -4786,7 +4853,7 @@ CREATE TABLE `glpi_networkportfiberchannels` (
   `items_devicenetworkcards_id` int unsigned NOT NULL DEFAULT '0',
   `networkportfiberchanneltypes_id` int unsigned NOT NULL DEFAULT '0',
   `wwn` varchar(50) DEFAULT '',
-  `speed` int NOT NULL DEFAULT '10' COMMENT 'Mbit/s: 10, 100, 1000, 10000',
+  `speed` int NOT NULL DEFAULT '10',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -4896,9 +4963,9 @@ CREATE TABLE `glpi_networkportwifis` (
   `networkports_id` int unsigned NOT NULL DEFAULT '0',
   `items_devicenetworkcards_id` int unsigned NOT NULL DEFAULT '0',
   `wifinetworks_id` int unsigned NOT NULL DEFAULT '0',
-  `networkportwifis_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'only useful in case of Managed node',
-  `version` varchar(20) DEFAULT NULL COMMENT 'a, a/b, a/b/g, a/b/g/n, a/b/g/n/y',
-  `mode` varchar(20) DEFAULT NULL COMMENT 'ad-hoc, managed, master, repeater, secondary, monitor, auto',
+  `networkportwifis_id` int unsigned NOT NULL DEFAULT '0',
+  `version` varchar(20) DEFAULT NULL,
+  `mode` varchar(20) DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -4985,7 +5052,7 @@ DROP TABLE IF EXISTS `glpi_notifications_notificationtemplates`;
 CREATE TABLE `glpi_notifications_notificationtemplates` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `notifications_id` int unsigned NOT NULL DEFAULT '0',
-  `mode` varchar(20) NOT NULL COMMENT 'See Notification_NotificationTemplate::MODE_* constants',
+  `mode` varchar(20) NOT NULL,
   `notificationtemplates_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`notifications_id`,`mode`,`notificationtemplates_id`),
@@ -5069,9 +5136,9 @@ CREATE TABLE `glpi_notimportedemails` (
 DROP TABLE IF EXISTS `glpi_objectlocks`;
 CREATE TABLE `glpi_objectlocks` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `itemtype` varchar(100) NOT NULL COMMENT 'Type of locked object',
-  `items_id` int unsigned NOT NULL COMMENT 'RELATION to various tables, according to itemtype (ID)',
-  `users_id` int unsigned NOT NULL COMMENT 'id of the locker',
+  `itemtype` varchar(100) NOT NULL,
+  `items_id` int unsigned NOT NULL,
+  `users_id` int unsigned NOT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `item` (`itemtype`,`items_id`),
@@ -5162,7 +5229,7 @@ CREATE TABLE `glpi_passivedcequipments` (
   `is_template` tinyint NOT NULL DEFAULT '0',
   `template_name` varchar(255) DEFAULT NULL,
   `is_deleted` tinyint NOT NULL DEFAULT '0',
-  `states_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   `comment` text,
   `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -5466,7 +5533,7 @@ CREATE TABLE `glpi_plugins` (
   `directory` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `version` varchar(255) NOT NULL,
-  `state` int NOT NULL DEFAULT '0' COMMENT 'see define.php PLUGIN_* constant',
+  `state` int NOT NULL DEFAULT '0',
   `author` varchar(255) DEFAULT NULL,
   `homepage` varchar(255) DEFAULT NULL,
   `license` varchar(255) DEFAULT NULL,
@@ -5776,15 +5843,16 @@ CREATE TABLE `glpi_profiles` (
   `is_default` tinyint NOT NULL DEFAULT '0',
   `helpdesk_hardware` int NOT NULL DEFAULT '0',
   `helpdesk_item_type` text,
-  `ticket_status` text COMMENT 'json encoded array of from/dest allowed status change',
+  `use_mentions` int NOT NULL DEFAULT '1',
+  `ticket_status` text,
   `date_mod` timestamp NULL DEFAULT NULL,
   `comment` text,
-  `problem_status` text COMMENT 'json encoded array of from/dest allowed status change',
+  `problem_status` text,
   `create_ticket_on_login` tinyint NOT NULL DEFAULT '0',
   `tickettemplates_id` int unsigned NOT NULL DEFAULT '0',
   `changetemplates_id` int unsigned NOT NULL DEFAULT '0',
   `problemtemplates_id` int unsigned NOT NULL DEFAULT '0',
-  `change_status` text COMMENT 'json encoded array of from/dest allowed status change',
+  `change_status` text,
   `managed_domainrecordtypes` text,
   `date_creation` timestamp NULL DEFAULT NULL,
   `2fa_enforced` tinyint NOT NULL DEFAULT '0',
@@ -6177,7 +6245,7 @@ CREATE TABLE `glpi_queuednotifications` (
   `body_text` longtext,
   `messageid` text,
   `documents` text,
-  `mode` varchar(20) NOT NULL COMMENT 'See Notification_NotificationTemplate::MODE_* constants',
+  `mode` varchar(20) NOT NULL,
   `event` varchar(255) DEFAULT NULL,
   `attach_documents` tinyint NOT NULL DEFAULT '0',
   `itemtype_trigger` varchar(255) DEFAULT NULL,
@@ -6205,7 +6273,7 @@ CREATE TABLE `glpi_registeredids` (
   `name` varchar(255) DEFAULT NULL,
   `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
-  `device_type` varchar(100) NOT NULL COMMENT 'USB, PCI ...',
+  `device_type` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `item` (`itemtype`,`items_id`),
@@ -6389,7 +6457,7 @@ DROP TABLE IF EXISTS `glpi_ruleactions`;
 CREATE TABLE `glpi_ruleactions` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `rules_id` int unsigned NOT NULL DEFAULT '0',
-  `action_type` varchar(255) DEFAULT NULL COMMENT 'VALUE IN (assign, regex_result, append_regex_result, affectbyip, affectbyfqdn, affectbymac)',
+  `action_type` varchar(255) DEFAULT NULL,
   `field` varchar(255) DEFAULT NULL,
   `value` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -6405,7 +6473,7 @@ CREATE TABLE `glpi_rulecriterias` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `rules_id` int unsigned NOT NULL DEFAULT '0',
   `criteria` varchar(255) DEFAULT NULL,
-  `condition` int NOT NULL DEFAULT '0' COMMENT 'see define.php PATTERN_* and REGEX_* constant',
+  `condition` int NOT NULL DEFAULT '0',
   `pattern` text,
   PRIMARY KEY (`id`),
   KEY `rules_id` (`rules_id`),
@@ -6440,7 +6508,7 @@ CREATE TABLE `glpi_rules` (
   `ranking` int NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `description` text,
-  `match` char(10) DEFAULT NULL COMMENT 'see define.php *_MATCHING constant',
+  `match` char(10) DEFAULT NULL,
   `is_active` tinyint NOT NULL DEFAULT '1',
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -6481,7 +6549,7 @@ CREATE TABLE `glpi_slalevelcriterias` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `slalevels_id` int unsigned NOT NULL DEFAULT '0',
   `criteria` varchar(255) DEFAULT NULL,
-  `condition` int NOT NULL DEFAULT '0' COMMENT 'see define.php PATTERN_* and REGEX_* constant',
+  `condition` int NOT NULL DEFAULT '0',
   `pattern` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `slalevels_id` (`slalevels_id`),
@@ -6500,7 +6568,7 @@ CREATE TABLE `glpi_slalevels` (
   `is_active` tinyint NOT NULL DEFAULT '1',
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `match` char(10) DEFAULT NULL COMMENT 'see define.php *_MATCHING constant',
+  `match` char(10) DEFAULT NULL,
   `uuid` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
@@ -6545,7 +6613,7 @@ CREATE TABLE `glpi_olalevelcriterias` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `olalevels_id` int unsigned NOT NULL DEFAULT '0',
   `criteria` varchar(255) DEFAULT NULL,
-  `condition` int NOT NULL DEFAULT '0' COMMENT 'see define.php PATTERN_* and REGEX_* constant',
+  `condition` int NOT NULL DEFAULT '0',
   `pattern` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `olalevels_id` (`olalevels_id`),
@@ -6564,7 +6632,7 @@ CREATE TABLE `glpi_olalevels` (
   `is_active` tinyint NOT NULL DEFAULT '1',
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `match` char(10) DEFAULT NULL COMMENT 'see define.php *_MATCHING constant',
+  `match` char(10) DEFAULT NULL,
   `uuid` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
@@ -6690,7 +6758,7 @@ CREATE TABLE `glpi_softwarecategories` (
 DROP TABLE IF EXISTS `glpi_softwarelicenses`;
 CREATE TABLE `glpi_softwarelicenses` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `softwares_id` int unsigned NOT NULL DEFAULT '0',
+  `softwares_id` int unsigned,
   `softwarelicenses_id` int unsigned NOT NULL DEFAULT '0',
   `completename` text,
   `level` int NOT NULL DEFAULT '0',
@@ -6918,7 +6986,7 @@ CREATE TABLE `glpi_itilsolutions` (
   `users_id_approval` int unsigned NOT NULL DEFAULT '0',
   `user_name_approval` varchar(255) DEFAULT NULL,
   `status` int NOT NULL DEFAULT '1',
-  `itilfollowups_id` int unsigned DEFAULT NULL COMMENT 'Followup reference on reject or approve a solution',
+  `itilfollowups_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `solutiontypes_id` (`solutiontypes_id`),
@@ -7108,6 +7176,7 @@ CREATE TABLE `glpi_tasktemplates` (
   `state` int NOT NULL DEFAULT '0',
   `is_private` tinyint NOT NULL DEFAULT '0',
   `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `use_current_user` tinyint NOT NULL DEFAULT '0',
   `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
@@ -7157,7 +7226,6 @@ CREATE TABLE `glpi_ticketrecurrents` (
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `entities_id` int unsigned NOT NULL DEFAULT '0',
-  `is_recursive` tinyint NOT NULL DEFAULT '0',
   `is_active` tinyint NOT NULL DEFAULT '0',
   `tickettemplates_id` int unsigned NOT NULL DEFAULT '0',
   `begin_date` timestamp NULL DEFAULT NULL,
@@ -7170,7 +7238,6 @@ CREATE TABLE `glpi_ticketrecurrents` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
-  KEY `is_recursive` (`is_recursive`),
   KEY `is_active` (`is_active`),
   KEY `tickettemplates_id` (`tickettemplates_id`),
   KEY `next_creation_date` (`next_creation_date`),
@@ -7251,7 +7318,6 @@ CREATE TABLE `glpi_tickets` (
   `actiontime` int NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `locations_id` int unsigned NOT NULL DEFAULT '0',
-  `validation_percent` int NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
   `tickettemplates_id` int unsigned NOT NULL DEFAULT '0',
   `externalid` varchar(255) DEFAULT NULL,
@@ -7531,7 +7597,7 @@ CREATE TABLE `glpi_tickettemplates` (
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `comment` text,
-  `allowed_statuses` varchar(255) NOT NULL DEFAULT '[1,2,3,4,5,6]',
+  `allowed_statuses` varchar(255) NOT NULL DEFAULT '[1,10,2,3,4,5,6]',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -7576,6 +7642,7 @@ CREATE TABLE `glpi_problemtemplates` (
 DROP TABLE IF EXISTS `glpi_ticketvalidations`;
 CREATE TABLE `glpi_ticketvalidations` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `itils_validationsteps_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `users_id` int unsigned NOT NULL DEFAULT '0',
   `tickets_id` int unsigned NOT NULL DEFAULT '0',
@@ -7599,9 +7666,41 @@ CREATE TABLE `glpi_ticketvalidations` (
   KEY `tickets_id` (`tickets_id`),
   KEY `submission_date` (`submission_date`),
   KEY `validation_date` (`validation_date`),
-  KEY `status` (`status`)
+  KEY `status` (`status`),
+  KEY `itils_validationsteps_id` (`itils_validationsteps_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+
+### Dump table glpi_validationsteps - used by ValidationStep Dropdown
+
+DROP TABLE IF EXISTS `glpi_validationsteps`;
+CREATE TABLE `glpi_validationsteps` (
+    `id`                                  int unsigned          NOT NULL    AUTO_INCREMENT,
+    `name`                                varchar(255)                      DEFAULT NULL,
+    `minimal_required_validation_percent` tinyint unsigned      NOT NULL    DEFAULT '100',
+    `is_default`                          tinyint               NOT NULL    DEFAULT '0',
+    `date_mod`                            timestamp             NULL        DEFAULT NULL,
+    `date_creation`                       timestamp             NULL        DEFAULT NULL,
+    `comment`                             text,
+    PRIMARY KEY (`id`),
+    KEY `name` (`name`),
+    KEY `date_mod` (`date_mod`),
+    KEY `date_creation` (`date_creation`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
+
+### Dump table glpi_itils_validationsteps - used by ValidationStep Dropdown
+
+DROP TABLE IF EXISTS `glpi_itils_validationsteps`;
+CREATE TABLE `glpi_itils_validationsteps` (
+    `id`                                    int unsigned        NOT NULL AUTO_INCREMENT,
+    `minimal_required_validation_percent`   tinyint unsigned    NOT NULL,
+    `validationsteps_id`                    int unsigned        NOT NULL DEFAULT '0',
+    `itemtype`                              varchar(255)        NOT NULL,
+    `items_id`                              int unsigned        NOT NULL DEFAULT '0',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `unicity` (`itemtype`,`items_id`,`validationsteps_id`),
+    KEY `validationsteps_id` (`validationsteps_id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 ### Dump table glpi_transfers
 
@@ -7699,7 +7798,7 @@ CREATE TABLE `glpi_users` (
   `realname` varchar(255) DEFAULT NULL,
   `firstname` varchar(255) DEFAULT NULL,
   `locations_id` int unsigned NOT NULL DEFAULT '0',
-  `language` char(10) DEFAULT NULL COMMENT 'see define.php CFG_GLPI[language] array',
+  `language` char(10) DEFAULT NULL,
   `use_mode` int NOT NULL DEFAULT '0',
   `list_limit` int DEFAULT NULL,
   `is_active` tinyint NOT NULL DEFAULT '1',
@@ -7765,6 +7864,7 @@ CREATE TABLE `glpi_users` (
   `privatebookmarkorder` longtext,
   `backcreated` tinyint DEFAULT NULL,
   `task_state` int DEFAULT NULL,
+  `planned_task_state` int DEFAULT NULL,
   `palette` char(20) DEFAULT NULL,
   `page_layout` char(20) DEFAULT NULL,
   `fold_menu` tinyint DEFAULT NULL,
@@ -7922,7 +8022,7 @@ CREATE TABLE `glpi_wifinetworks` (
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `essid` varchar(255) DEFAULT NULL,
-  `mode` varchar(255) DEFAULT NULL COMMENT 'ad-hoc, access_point',
+  `mode` varchar(255) DEFAULT NULL,
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
@@ -8348,7 +8448,7 @@ CREATE TABLE `glpi_enclosures` (
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `orientation` tinyint DEFAULT NULL,
   `power_supplies` tinyint NOT NULL DEFAULT '0',
-  `states_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   `comment` text,
   `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -8440,7 +8540,7 @@ CREATE TABLE `glpi_pdus` (
   `is_template` tinyint NOT NULL DEFAULT '0',
   `template_name` varchar(255) DEFAULT NULL,
   `is_deleted` tinyint NOT NULL DEFAULT '0',
-  `states_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   `comment` text,
   `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `pdutypes_id` int unsigned NOT NULL DEFAULT '0',
@@ -8591,7 +8691,7 @@ CREATE TABLE `glpi_clusters` (
   `users_id` int unsigned NOT NULL DEFAULT '0',
   `users_id_tech` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
-  `states_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
   `comment` text,
   `clustertypes_id` int unsigned NOT NULL DEFAULT '0',
   `autoupdatesystems_id` int unsigned NOT NULL DEFAULT '0',
@@ -8941,10 +9041,10 @@ CREATE TABLE `glpi_agents` (
   `tag` varchar(255) DEFAULT NULL,
   `port` varchar(6) DEFAULT NULL,
   `remote_addr` varchar(255) DEFAULT NULL,
-  `threads_networkdiscovery` int NOT NULL DEFAULT '1' COMMENT 'Number of threads for Network discovery',
-  `threads_networkinventory` int NOT NULL DEFAULT '1' COMMENT 'Number of threads for Network inventory',
-  `timeout_networkdiscovery` int NOT NULL DEFAULT '0' COMMENT 'Network Discovery task timeout (disabled by default)',
-  `timeout_networkinventory` int NOT NULL DEFAULT '0' COMMENT 'Network Inventory task timeout (disabled by default)',
+  `threads_networkdiscovery` int NOT NULL DEFAULT '1',
+  `threads_networkinventory` int NOT NULL DEFAULT '1',
+  `timeout_networkdiscovery` int NOT NULL DEFAULT '0',
+  `timeout_networkinventory` int NOT NULL DEFAULT '0',
   `use_module_wake_on_lan` tinyint NOT NULL DEFAULT '0',
   `use_module_computer_inventory` tinyint NOT NULL DEFAULT '0',
   `use_module_esx_remote_inventory` tinyint NOT NULL DEFAULT '0',
@@ -9072,7 +9172,8 @@ CREATE TABLE `glpi_networkporttypes` (
 DROP TABLE IF EXISTS `glpi_printerlogs`;
 CREATE TABLE `glpi_printerlogs` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `printers_id` int unsigned NOT NULL,
+  `itemtype` varchar(100) NOT NULL,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `total_pages` int NOT NULL DEFAULT '0',
   `bw_pages` int NOT NULL DEFAULT '0',
   `color_pages` int NOT NULL DEFAULT '0',
@@ -9089,7 +9190,7 @@ CREATE TABLE `glpi_printerlogs` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `faxed` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`printers_id`,`date`),
+  UNIQUE KEY `unicity` (`itemtype`,`items_id`,`date`),
   KEY `date` (`date`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
@@ -9405,21 +9506,46 @@ CREATE TABLE `glpi_snmpcredentials` (
    KEY `is_deleted` (`is_deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+DROP TABLE IF EXISTS `glpi_forms_categories`;
+CREATE TABLE `glpi_forms_categories` (
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `name` varchar(255) NOT NULL DEFAULT '',
+    `description` longtext,
+    `illustration` varchar(255) NOT NULL DEFAULT '',
+    `forms_categories_id` int unsigned NOT NULL DEFAULT '0',
+    `completename` text,
+    `level` int NOT NULL DEFAULT '0',
+    `ancestors_cache` longtext,
+    `sons_cache` longtext,
+    `comment` text,
+    PRIMARY KEY (`id`),
+    KEY `name` (`name`),
+    KEY `level` (`level`),
+    KEY `forms_categories_id` (`forms_categories_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 DROP TABLE IF EXISTS `glpi_forms_forms`;
 CREATE TABLE `glpi_forms_forms` (
     `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `uuid` varchar(255) NOT NULL DEFAULT '',
     `entities_id` int unsigned NOT NULL DEFAULT '0',
     `is_recursive` tinyint NOT NULL DEFAULT '0',
     `is_active` tinyint NOT NULL DEFAULT '0',
     `is_deleted` tinyint NOT NULL DEFAULT '0',
     `is_draft` tinyint NOT NULL DEFAULT '0',
+    `is_pinned` tinyint NOT NULL DEFAULT '0',
     `name` varchar(255) NOT NULL DEFAULT '',
     `header` longtext,
     `illustration` varchar(255) NOT NULL DEFAULT '',
     `description` longtext,
+    `forms_categories_id` int unsigned NOT NULL DEFAULT '0',
+    `usage_count` int unsigned NOT NULL DEFAULT '0',
+    `submit_button_visibility_strategy` varchar(30) NOT NULL DEFAULT '',
+    `submit_button_conditions` JSON NOT NULL,
     `date_mod` timestamp NULL DEFAULT NULL,
     `date_creation` timestamp NULL DEFAULT NULL,
     PRIMARY KEY (`id`),
+    UNIQUE KEY `uuid` (`uuid`),
     KEY `name` (`name`),
     KEY `entities_id` (`entities_id`),
     KEY `is_recursive` (`is_recursive`),
@@ -9427,17 +9553,22 @@ CREATE TABLE `glpi_forms_forms` (
     KEY `is_deleted` (`is_deleted`),
     KEY `is_draft` (`is_draft`),
     KEY `date_mod` (`date_mod`),
-    KEY `date_creation` (`date_creation`)
+    KEY `date_creation` (`date_creation`),
+    KEY `forms_categories_id` (`forms_categories_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_forms_sections`;
 CREATE TABLE `glpi_forms_sections` (
     `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `uuid` varchar(255) NOT NULL DEFAULT '',
     `forms_forms_id` int unsigned NOT NULL DEFAULT '0',
     `name` varchar(255) NOT NULL DEFAULT '',
     `description` longtext,
     `rank` int NOT NULL DEFAULT '0',
+    `visibility_strategy` varchar(30) NOT NULL DEFAULT '',
+    `conditions` JSON NOT NULL,
     PRIMARY KEY (`id`),
+    UNIQUE KEY `uuid` (`uuid`),
     KEY `name` (`name`),
     KEY `forms_forms_id` (`forms_forms_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -9445,29 +9576,45 @@ CREATE TABLE `glpi_forms_sections` (
 DROP TABLE IF EXISTS `glpi_forms_questions`;
 CREATE TABLE `glpi_forms_questions` (
     `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `uuid` varchar(255) NOT NULL DEFAULT '',
     `forms_sections_id` int unsigned NOT NULL DEFAULT '0',
+    `forms_sections_uuid` varchar(255) NOT NULL DEFAULT '',
     `name` varchar(255) NOT NULL DEFAULT '',
     `type` varchar(255) NOT NULL DEFAULT '',
     `is_mandatory` tinyint NOT NULL DEFAULT '0',
-    `rank` int NOT NULL DEFAULT '0',
+    `vertical_rank` int NOT NULL DEFAULT '0',
+    `horizontal_rank` int DEFAULT NULL,
     `description` longtext,
     `default_value` text COMMENT 'JSON - The default value type may not be the same for all questions type',
     `extra_data` text COMMENT 'JSON - Extra configuration field(s) depending on the questions type',
+    `visibility_strategy` varchar(30) NOT NULL DEFAULT '',
+    `conditions` JSON NOT NULL,
+    `validation_strategy` varchar(30) NOT NULL DEFAULT '',
+    `validation_conditions` JSON NOT NULL,
     PRIMARY KEY (`id`),
+    UNIQUE KEY `uuid` (`uuid`),
     KEY `name` (`name`),
-    KEY `forms_sections_id` (`forms_sections_id`)
+    KEY `forms_sections_id` (`forms_sections_id`),
+    KEY `forms_sections_uuid` (`forms_sections_uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_forms_comments`;
 CREATE TABLE `glpi_forms_comments` (
     `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `uuid` varchar(255) NOT NULL DEFAULT '',
     `forms_sections_id` int unsigned NOT NULL DEFAULT '0',
+    `forms_sections_uuid` varchar(255) NOT NULL DEFAULT '',
     `name` varchar(255) NOT NULL DEFAULT '',
     `description` longtext,
-    `rank` int NOT NULL DEFAULT '0',
+    `vertical_rank` int NOT NULL DEFAULT '0',
+    `horizontal_rank` int DEFAULT NULL,
+    `visibility_strategy` varchar(30) NOT NULL DEFAULT '',
+    `conditions` JSON NOT NULL,
     PRIMARY KEY (`id`),
+    UNIQUE KEY `uuid` (`uuid`),
     KEY `name` (`name`),
-    KEY `forms_sections_id` (`forms_sections_id`)
+    KEY `forms_sections_id` (`forms_sections_id`),
+    KEY `forms_sections_uuid` (`forms_sections_uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_forms_answerssets`;
@@ -9480,7 +9627,7 @@ CREATE TABLE `glpi_forms_answerssets` (
     `date_creation` timestamp NULL DEFAULT NULL,
     `date_mod` timestamp NULL DEFAULT NULL,
     `index` int NOT NULL DEFAULT '0',
-    `answers` text COMMENT 'JSON - Answers for each questions of the parent form',
+    `answers` json COMMENT 'JSON - Answers for each questions of the parent form',
     PRIMARY KEY (`id`),
     KEY `name` (`name`),
     KEY `date_creation` (`date_creation`),
@@ -9508,6 +9655,8 @@ CREATE TABLE `glpi_forms_destinations_formdestinations` (
     `itemtype` varchar(255) NOT NULL,
     `name` varchar(255) NOT NULL,
     `config` JSON NOT NULL COMMENT 'Extra configuration field(s) depending on the destination type',
+    `creation_strategy` varchar(30) NOT NULL DEFAULT '',
+    `conditions` JSON NOT NULL,
     PRIMARY KEY (`id`),
     KEY `name` (`name`),
     KEY `itemtype` (`itemtype`),
@@ -9662,6 +9811,7 @@ CREATE TABLE `glpi_itilvalidationtemplates` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `validationsteps_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) NOT NULL DEFAULT '',
   `content` text,
   `comment` text,
@@ -9671,6 +9821,7 @@ CREATE TABLE `glpi_itilvalidationtemplates` (
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `name` (`name`),
+  KEY `validationsteps_id` (`validationsteps_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -9828,16 +9979,20 @@ DROP TABLE IF EXISTS `glpi_assets_assetdefinitions`;
 CREATE TABLE `glpi_assets_assetdefinitions` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `system_name` varchar(255) DEFAULT NULL,
+  `label` varchar(255) NOT NULL,
   `icon` varchar(255) DEFAULT NULL,
+  `picture` text,
   `comment` text,
   `is_active` tinyint NOT NULL DEFAULT '0',
   `capacities` JSON NOT NULL,
   `profiles` JSON NOT NULL,
   `translations` JSON NOT NULL,
+  `fields_display` JSON NOT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `system_name` (`system_name`),
+  KEY `label` (`label`),
   KEY `is_active` (`is_active`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`)
@@ -9951,6 +10106,7 @@ DROP TABLE IF EXISTS `glpi_dropdowns_dropdowndefinitions`;
 CREATE TABLE `glpi_dropdowns_dropdowndefinitions` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `system_name` varchar(255) DEFAULT NULL,
+  `label` varchar(255) NOT NULL,
   `icon` varchar(255) DEFAULT NULL,
   `comment` text,
   `is_active` tinyint NOT NULL DEFAULT '0',
@@ -9960,6 +10116,7 @@ CREATE TABLE `glpi_dropdowns_dropdowndefinitions` (
   `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `system_name` (`system_name`),
+  KEY `label` (`label`),
   KEY `is_active` (`is_active`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`)
@@ -9995,15 +10152,55 @@ DROP TABLE IF EXISTS `glpi_assets_customfielddefinitions`;
 CREATE TABLE `glpi_assets_customfielddefinitions` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `assets_assetdefinitions_id` int unsigned NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `system_name` varchar(255) NOT NULL,
   `label` varchar(255) NOT NULL,
   `type` varchar(255) NOT NULL,
   `field_options` json,
   `itemtype` VARCHAR(255) NULL DEFAULT NULL,
   `default_value` text,
+  `translations` JSON NOT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`assets_assetdefinitions_id`, `name`),
-  KEY `name` (`name`)
+  UNIQUE KEY `unicity` (`assets_assetdefinitions_id`, `system_name`),
+  KEY `system_name` (`system_name`),
+  KEY `label` (`label`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_contracts_users`;
+CREATE TABLE `glpi_contracts_users` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `contracts_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`contracts_id`, `users_id`),
+  KEY `item` (`users_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_softwarelicenses_users`;
+CREATE TABLE `glpi_softwarelicenses_users` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `softwarelicenses_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `softwarelicenses_id` (`softwarelicenses_id`),
+  KEY `users_id` (`users_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_itemtranslations_itemtranslations`;
+CREATE TABLE `glpi_itemtranslations_itemtranslations` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
+  `itemtype` varchar(100) NOT NULL,
+  `key` varchar(255) NOT NULL,
+  `language` varchar(5) NOT NULL,
+  `translations` JSON NOT NULL,
+  `hash` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_item_key` (`items_id`, `itemtype`, `key`, `language`),
+  KEY `item` (`itemtype`, `items_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS=1;

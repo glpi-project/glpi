@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,7 +35,9 @@
 namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
+use Glpi\Asset\CapacityConfig;
 use Item_Plug;
+use Override;
 use Plug;
 use Session;
 
@@ -50,6 +51,12 @@ class HasPlugCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return Plug::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Has power plugs. Usually related to PDU or UPS");
     }
 
     public function getCloneRelations(): array
@@ -74,14 +81,14 @@ class HasPlugCapacity extends AbstractCapacity
         );
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         $this->registerToTypeConfig('plug_types', $classname);
 
         CommonGLPI::registerStandardTab($classname, Item_Plug::class, 55);
     }
 
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
         // Unregister from types
         $this->unregisterFromTypeConfig('plug_types', $classname);

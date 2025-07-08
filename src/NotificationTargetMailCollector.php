@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -77,13 +77,13 @@ class NotificationTargetMailCollector extends NotificationTarget
 
         $tags = ['mailcollector.action' => _n('Event', 'Events', 1),
             'mailcollector.name'   => __('Name'),
-            'mailcollector.errors' => __('Connection errors')
+            'mailcollector.errors' => __('Connection errors'),
         ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
                 'label' => $label,
-                'value' => true
+                'value' => true,
             ]);
         }
 
@@ -91,25 +91,25 @@ class NotificationTargetMailCollector extends NotificationTarget
             __('%1$s: %2$s'),
             _n('Receiver', 'Receivers', 1),
             __('URL')
-        )
+        ),
         ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
                 'label' => $label,
                 'value' => true,
-                'lang'  => false
+                'lang'  => false,
             ]);
         }
 
-       //Foreach global tags
+        //Foreach global tags
         $tags = ['mailcollectors' => _n('Receiver', 'Receivers', Session::getPluralNumber())];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'     => $tag,
                 'label'   => $label,
                 'value'   => false,
-                'foreach' => true
+                'foreach' => true,
             ]);
         }
 

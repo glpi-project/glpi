@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -31,33 +30,53 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/alerts_macros.html.twig' as alerts %}
+
 {% set datatable_id = datatable_id|default('datatable' ~ random()) %}
+{% set filters = filters|default([]) %}
+{% set additional_params = additional_params|default('') %}
+{% set sort = sort|default(null) %}
+{% set nosort = nosort|default(false) %}
+{% set order = order|default('ASC') %}
+{% set csv_url = csv_url|default('') %}
+{% set footers = footers|default([]) %}
+{% set showmassiveactions = showmassiveactions|default(false) %}
+
+{# This value should be false by default because paging will no work on usages
+   of this template unless it is explicitly implemented #}
+{% set use_pager = use_pager|default(false) %}
+
+{# nopager is deprecated, use "use_pager" instead #}
+{% set use_pager = nopager is defined ? not nopager : use_pager %}
+
 {% if total_number < 1 and filters|length == 0 %}
     <table id="{{ datatable_id }}" class="table">
         <thead>
         {% if super_header is defined and super_header is not empty %}
             {% set super_header_label = super_header is array ? super_header['label'] : super_header %}
-            {% set super_header_raw = super_header is array ? super_header['is_raw'] : false %}
-            <tr>
-                <th colspan="1">
-                    {{ super_header_raw ? super_header_label|raw : super_header_label }}
-                </th>
-            </tr>
+            {% if super_header_label is not empty %}
+                {% set super_header_raw = super_header is array ? (super_header['is_raw'] ?? false) : false %}
+                <tr>
+                    <th colspan="1">
+                        {{ super_header_raw ? super_header_label|raw : super_header_label }}
+                    </th>
+                </tr>
+            {% endif %}
         {% endif %}
         </thead>
         <tbody>
             <tr>
                 <td>
                     <div class="alert alert-info">
-                        {{ __('No data') }}
+                        {{ __('No results found') }}
                     </div>
                 </td>
             </tr>
         </tbody>
     </table>
 {% else %}
-    {% set total_cols = columns|length + (showmassiveactions ? 1 : 0) + (nofilter ? 0 : 1) %}
-    {% if not nopager %}
+    {% set total_cols = columns|length + (showmassiveactions ? 1 : 0) + ((nofilter ?? false) ? 0 : 1) %}
+    {% if use_pager %}
         {{ include('components/pager.html.twig', {
             'count': filtered_number,
             'additional_params': additional_params ~ '&sort=' ~ sort ~ '&order=' ~ order
@@ -67,18 +86,18 @@
     <div class="table-responsive" {% if showmassiveactions %} id="{{ massiveactionparams['container'] }}" {% endif %}>
         {% if showmassiveactions %}
             <div class="mb-2">
-                {% do call('Html::showMassiveActions', [massiveactionparams|default([])]) %}
+                {% do call('Html::showMassiveActions', [{action_button_classes: 'btn btn-sm btn-outline-secondary me-2'}|merge(massiveactionparams|default({}))]) %}
             </div>
         {% endif %}
-        <table id="{{ datatable_id }}" class="table {{ table_class_style|default('table-hover') }}">
+        <table id="{{ datatable_id }}" class="table {{ table_class_style|default('table-hover') }}" aria-label="{{ datatable_aria_label|default('') }}">
             <thead>
                 {% if super_header is defined and super_header is not empty %}
                     {% set super_header_label = super_header is array ? super_header['label'] : super_header %}
-                    {% set super_header_raw = super_header is array ? super_header['is_raw'] : false %}
+                    {% set super_header_raw = super_header is array ? (super_header['is_raw'] ?? false) : false %}
                     <tr>
-                        {% if super_header_raw != 'th_elements' %}<th colspan="{{ total_cols }}">{% endif %}
+                        {% if super_header_raw is not same as 'th_elements' %}<th colspan="{{ total_cols }}">{% endif %}
                             {{ super_header_raw ? super_header_label|raw : super_header_label }}
-                        {% if super_header_raw != 'th_elements' %}</th>{% endif %}
+                        {% if super_header_raw is not same as 'th_elements' %}</th>{% endif %}
                     </tr>
                 {% endif %}
                 {% if no_header is not defined or no_header == false %}
@@ -121,13 +140,13 @@
                                <span class="float-end log-toolbar mb-0">
                                    {% if nofilter is not defined %}
                                        <button class="btn btn-sm show_filters {{ filters|length > 0 ? 'btn-secondary active' : 'btn-outline-secondary' }}">
-                                           <i class="fas fa-filter"></i>
+                                           <i class="ti ti-filter"></i>
                                            <span class="d-none d-xl-block">{{ __('Filter') }}</span>
                                        </button>
                                    {% endif %}
                                    {% if csv_url|length %}
                                        <a href="{{ csv_url }}" class="btn btn-sm text-capitalize btn-outline-secondary">
-                                           <i class="fas fa-file-download"></i>
+                                           <i class="ti ti-download"></i>
                                            <span class="d-none d-xl-block">{{ __('Export') }}</span>
                                        </a>
                                    {% endif %}
@@ -146,7 +165,7 @@
                             <input type="hidden" name="items_id" value="{{ items_id }}" />
                         </td>
                         {% for colkey, colum in columns %}
-                            {% set formatter = colum['filter_formatter']|default(formatters[colkey])|default('') %}
+                            {% set formatter = colum['filter_formatter']|default(formatters[colkey]|default(''))|default('') %}
                             <td>
                                 {% if colum is not array or colum['no_filter']|default(false) == false %}
                                     {% if formatter == "array" and columns_values[colkey] is defined %}
@@ -162,7 +181,7 @@
                                         {{ call("Html::showDateTimeField", [
                                             "filters[" ~ colkey ~ "]",
                                             {
-                                                'value': filters[colkey],
+                                                'value': filters[colkey] ?? '',
                                                 'display': false
                                             }
                                         ])|raw }}
@@ -170,7 +189,7 @@
                                         {{ call("Html::showDateField", [
                                             "filters[" ~ colkey ~ "]",
                                             {
-                                                'value': filters[colkey],
+                                                'value': filters[colkey] ?? '',
                                                 'display': false
                                             }
                                         ])|raw }}
@@ -184,10 +203,10 @@
                                     {% elseif formatter == 'yesno' %}
                                         <select name="filters[{{ colkey }}]" class="form-select">
                                             <option value="">{{ __('All') }}</option>
-                                            <option value="1" {{ filters[colkey] == '1' ? 'selected' : '' }}>
+                                            <option value="1" {{ filters[colkey] ?? '' == '1' ? 'selected' : '' }}>
                                                 {{ __('Yes') }}
                                             </option>
-                                            <option value="0" {{ filters[colkey] == '0' ? 'selected' : '' }}>
+                                            <option value="0" {{ filters[colkey] ?? '' == '0' ? 'selected' : '' }}>
                                                 {{ __('No') }}
                                             </option>
                                         </select>
@@ -205,8 +224,16 @@
             <tbody>
                 {% if entries|length > 0 %}
                     {% for entry in entries %}
-                        <tr class="{{ row_class|default('') }} {{ entry['row_class']|default('') }}" data-itemtype="{{ entry['itemtype'] }}" data-id="{{ entry['id'] }}">
-                            {% set row_massiveactions = entry['showmassiveactions']|default(showmassiveactions) %}
+                        {% set row_massiveactions = entry['showmassiveactions']|default(showmassiveactions) %}
+                        <tr
+                            class="{{ loop.last ? "border-transparent" : "" }} {{ row_class|default('') }} {{ entry['row_class']|default('') }}"
+                            {% if entry['itemtype'] is defined %}
+                                data-itemtype="{{ entry['itemtype'] }}"
+                            {% endif %}
+                            {% if entry['id'] is defined %}
+                                data-id="{{ entry['id'] ?? "" }}"
+                            {% endif %}
+                        >
                             {% if row_massiveactions %}
                                 <td style="width: 10px">
                                     {% if entry['skip_ma'] is not defined or entry['skip_ma'] == false %}
@@ -217,10 +244,12 @@
                                 </td>
                             {% endif %}
                             {% for colkey, colum in columns %}
-                                <td>
-                                    {% if colkey in entry|keys %}
+                                {% if colkey in entry|keys %}
+                                    {% set colspan = entry[colkey ~ '_colspan']|default(1) %}
+                                    {% set aria_label = entry[colkey ~ '_aria_label']|default('') %}
+                                    <td colspan="{{ colspan }}" aria-label="{{ aria_label }}">
 
-                                        {% set formatter = formatters[colkey] %}
+                                        {% set formatter = formatters[colkey] ?? '' %}
 
                                         {% if formatter == "maintext" %}
                                             <span class="d-inline-block bg-blue-lt p-1 text-truncate"
@@ -237,11 +266,11 @@
                                                 {{ entry[colkey] }}
                                             </span>
                                         {% elseif formatter starts with "progress" %}
-                                            {{ call("Html::progress", [100, entry[colkey]])|raw }}
+                                            {{ progress_bar(entry[colkey]) }}
                                         {% elseif formatter == "date" %}
-                                            {{ call("Html::convDate", [entry[colkey]])|raw }}
+                                            {{ entry[colkey]|formatted_date }}
                                         {% elseif formatter == "datetime" %}
-                                            {{ call("Html::convDateTime", [entry[colkey]])|raw }}
+                                            {{ entry[colkey]|formatted_datetime }}
                                         {% elseif formatter == "duration" %}
                                             {{ entry[colkey]|formatted_duration }}
                                         {% elseif formatter == "bytesize" %}
@@ -260,18 +289,37 @@
                                             {% set initials = entry_data['initials'] %}
                                             {% set bg_color = img is not empty ? 'inherit' : entry_data['initials_bg'] %}
                                             <span class="avatar {{ avatar_size }} rounded"
-                                                  style="{% if img is not null %} background-image: url({{ img }}); {% endif %} background-color: {{ bg_color }}">
-                                                   {% if img is empty %}
-                                                       {{ initials }}
-                                                   {% endif %}
-                                                </span>
+                                                style="{% if img is not null %} background-image: url({{ img }}); {% endif %} background-color: {{ bg_color }}">
+                                                {% if img is empty %}
+                                                    {{ initials }}
+                                                {% endif %}
+                                            </span>
+                                        {% elseif formatter == "badge" %}
+                                            {% set entry_data = entry[colkey] %}
+                                            {% set content = entry_data['content'] %}
+                                            {% set color = entry_data['color'] ?? '#BBBBBB' %}
+                                            {% if not (color matches '/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/') %}
+                                                {% set color = '#BBBBBB' %}
+                                            {% endif %}
+                                            {% if content is not empty %}
+                                                <div class="badge_block" style="border-color: {{ color }}">
+                                                    <span class="me-1" style="background: {{ color }}"></span>
+                                                    {{ content }}
+                                                </div>
+                                            {% endif %}
+                                        {% elseif formatter == 'yesno' %}
+                                            {% if entry[colkey] == 1 %}
+                                                <div aria-label="{{ __('Yes') }}"><i class="ti ti-circle-check"></i></div>
+                                            {% else %}
+                                                <div aria-label="{{ __('No') }}"></div>
+                                            {% endif %}
                                         {% else %}
                                             {{ entry[colkey] }}
                                         {% endif %}
-                                    {% endif %}
-                                </td>
+                                    </td>
+                                {% endif %}
                             {% endfor %}
-                            {% if not nofilter %}
+                            {% if not (nofilter ?? false) %}
                                 <td></td>
                             {% endif %}
                         </tr>
@@ -279,9 +327,7 @@
                 {% else %}
                     <tr>
                         <td colspan="{{ total_cols }}">
-                            <div class="alert alert-info">
-                                {{ __('No data') }}
-                            </div>
+                            {{ alerts.alert_info(__('No results found')) }}
                         </td>
                     </tr>
                 {% endif %}
@@ -306,7 +352,7 @@
         </table>
     </div>
 
-    {% if not nopager %}
+    {% if use_pager %}
         <div class="ms-auto d-inline-flex align-items-center d-none d-md-block my-2">
             {{ __('Entries to show:') }}
             {% include 'components/dropdown/limit.html.twig' %}

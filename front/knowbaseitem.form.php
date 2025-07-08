@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Event;
 
 /** @var array $CFG_GLPI */
@@ -55,7 +57,7 @@ if (!isset($_GET["modify"])) {
 $kb = new KnowbaseItem();
 
 if (isset($_POST["add"])) {
-   // ajoute un item dans la base de connaisssances
+    // ajoute un item dans la base de connaisssances
     $kb->check(-1, CREATE, $_POST);
     $newID = $kb->add($_POST);
     Event::log(
@@ -70,8 +72,8 @@ if (isset($_POST["add"])) {
     } else {
         Html::redirect($CFG_GLPI["root_doc"] . "/front/knowbaseitem.php");
     }
-} else if (isset($_POST["update"])) {
-   // actualiser  un item dans la base de connaissances
+} elseif (isset($_POST["update"])) {
+    // actualiser  un item dans la base de connaissances
     $kb->check($_POST["id"], UPDATE);
 
     $kb->update($_POST);
@@ -84,8 +86,8 @@ if (isset($_POST["add"])) {
         sprintf(__('%s updates an item'), $_SESSION["glpiname"])
     );
     Html::redirect($kb->getFormURLWithID($_POST['id']));
-} else if (isset($_POST["purge"])) {
-   // effacer un item dans la base de connaissances
+} elseif (isset($_POST["purge"])) {
+    // effacer un item dans la base de connaissances
     $kb->check($_POST["id"], PURGE);
     $kb->delete($_POST, 1);
     Event::log(
@@ -97,7 +99,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s purges an item'), $_SESSION["glpiname"])
     );
     $kb->redirectToList();
-} else if (isset($_POST["addvisibility"])) {
+} elseif (isset($_POST["addvisibility"])) {
     if (
         isset($_POST["_type"]) && !empty($_POST["_type"])
         && isset($_POST["knowbaseitems_id"]) && $_POST["knowbaseitems_id"]
@@ -144,7 +146,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_GET["id"]) and isset($_GET['to_rev'])) {
+} elseif (isset($_GET['to_rev'])) {
     $kb->check($_GET["id"], UPDATE);
     if ($kb->revertTo($_GET['to_rev'])) {
         Session::addMessageAfterRedirect(
@@ -164,13 +166,13 @@ if (isset($_POST["add"])) {
         );
     }
     Html::redirect($kb->getFormURLWithID($_GET['id']));
-} else if (isset($_GET["id"])) {
+} else {
     if (!Session::getLoginUserID()) {
         Html::redirect("helpdesk.faq.php?id=" . $_GET['id']);
     }
 
     if (isset($_GET["_in_modal"])) {
-        Html::popHeader(__('Knowledge base'), $_SERVER['PHP_SELF']);
+        Html::popHeader(__('Knowledge base'));
         if ($_GET['id']) {
             $kb->check($_GET["id"], READ);
             $kb->showFull();

@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -138,7 +138,6 @@
 
                         .dropdown-item {
                             border-left: 3px solid rgba($color: #000, $alpha: 50%);
-                            padding-left: 3.25rem; // FIXME: tabler 1.0.0-beta13 missing var $container-padding-x
 
                             &.active {
                                 border-left-color: color-mix(in srgb, var(--tblr-primary), transparent 30%);
@@ -151,13 +150,18 @@
                                 color: var(--tblr-primary);
                                 background-color: rgba($color: #000, $alpha: 20%);
                             }
+
+
+                            i {
+                                margin-right: 0;
+                            }
                         }
                     }
                 }
             }
 
             i {
-                margin-right: 0.7em;
+                margin-right: 0.4rem;
             }
 
             &:hover {
@@ -209,7 +213,7 @@
             $siderbar-collasped-width: 70px;
 
             width: $siderbar-collasped-width;
-            overflow-x: visible;
+            overflow: visible;
 
             & ~ .page-wrapper,
             ~ .navbar {
@@ -313,7 +317,7 @@
                 position: static;
                 border-radius: unset;
                 box-shadow: unset;
-                background-color: rgba(0, 0, 0, 2%);
+                background-color: rgb(0, 0, 0, 2%);
                 border-style: inset;
                 border-width: 2px 0;
             }

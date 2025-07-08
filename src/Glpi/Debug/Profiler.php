@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -46,11 +46,13 @@ final class Profiler
 
     private $disabled = false;
 
+    public const CATEGORY_BOOT = 'boot';
     public const CATEGORY_CORE = 'core';
     public const CATEGORY_PLUGINS = 'plugins';
     public const CATEGORY_DB = 'db';
     public const CATEGORY_TWIG = 'twig';
     public const CATEGORY_SEARCH = 'search';
+    public const CATEGORY_CUSTOMOBJECTS = 'customobjects';
 
     private static $instance;
 

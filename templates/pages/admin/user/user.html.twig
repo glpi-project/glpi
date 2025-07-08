@@ -1,0 +1,334 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/modals_macros.html.twig' as modals %}
+
+{% set params  = params ?? [] %}
+{% set rand_field = rand|default(random()) %}
+{% set field_options = {
+    rand: rand_field
+} %}
+
+{% set internal_auth = item.fields['authtype'] == constant('Auth::DB_GLPI') %}
+{% set external_auth = not item.isNewItem() and not internal_auth %}
+{# Simple form used when creating users from a ticket #}
+{% set simple_form = params.simplified_form|default(false) %}
+{% set is_my_form = item.getID() == session('glpiID') %}
+{# Preference form = My Settings page #}
+{% set is_preference_form = is_preference_form|default(false) %}
+{% set target = path(is_preference_form ? '/front/preference.php' : '/front/user.form.php') %}
+{% set higher_rights = higher_rights|default(false) %}
+
+<div class="asset">
+    <form id="main-form" name="asset_form" method="post" action="{{ target }}" enctype="multipart/form-data" data-submit-once>
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+
+        <div class="card-body d-flex flex-wrap">
+            <div class="col-12 col-xxl-12 flex-column">
+                <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
+                    <div class="row flex-row align-items-start flex-grow-1">
+                        <div class="row flex-row">
+                            {% if not item.isNewItem() %}
+                                <input type="hidden" name="id" value="{{ item.getID() }}" />
+                            {% endif %}
+                            {% if (item.isNewItem() or internal_auth) and not is_preference_form %}
+                                {{ fields.textField('name', item.fields['name'], __('Login')) }}
+                            {% else %}
+                                {% set login_field %}
+                                    <span class="fw-bold">{{ item.fields['name'] }}</span>
+                                    <input type="hidden" name="name" value="{{ item.fields['name'] }}" />
+                                {% endset %}
+                                {{ fields.htmlField(
+                                    'name',
+                                    login_field,
+                                    __('Login')
+                                ) }}
+                            {% endif %}
+
+                            {% if not simple_form and not item.isNewItem() %}
+                                {{ include('pages/admin/user/user_picture_field.html.twig') }}
+                            {% else %}
+                                {{ fields.nullField() }}
+                            {% endif %}
+
+                            {% if not is_preference_form and show_sync_field %}
+                                {{ fields.htmlField(
+                                    'sync_field',
+                                    item.fields['sync_field']|default(constant('Dropdown::EMPTY_VALUE')),
+                                    __('Synchronization field')
+                                ) }}
+                                {{ fields.nullField() }}
+                            {% endif %}
+
+                            {{ fields.textField('realname', item.fields['realname'], __('Surname'), {
+                                readonly: external_auth,
+                            }) }}
+                            {{ fields.textField('firstname', item.fields['firstname'], __('First name'), {
+                                readonly: external_auth,
+                            }) }}
+
+                            {% if timezones is not null %}
+                                {{ fields.dropdownArrayField('timezone', item.fields['timezone'], timezones, __('Timezone'), field_options|merge({
+                                    display_emptychoice: true,
+                                    emptylabel: __('Use server configuration')
+                                })) }}
+                            {% elseif has_profile_right('config', constant('READ')) %}
+                                {% set tz_not_config = __('Timezone usage has not been activated.') ~ ' ' ~ __('Run the "%1$s" command to activate it.')|format('php bin/console database:enable_timezones') %}
+                                {{ fields.htmlField('', tz_not_config, __('Timezone'), field_options) }}
+                            {% endif %}
+
+                            {% if not is_preference_form %}
+                                {{ fields.dropdownYesNo('is_active', item.fields['is_active'], __('Active'), {
+                                    readonly: not higher_rights,
+                                    helper: not higher_rights ? __('Not enough rights to change this field') : ''
+                                }) }}
+                            {% endif %}
+
+                            {% if not simple_form and not is_preference_form %}
+                                {{ fields.datetimeField('begin_date', item.fields['begin_date'], __('Valid since'), {
+                                    clearable: true,
+                                    readonly: not higher_rights,
+                                }) }}
+                                {{ fields.datetimeField('end_date', item.fields['end_date'], __('Valid until'), {
+                                    clearable: true,
+                                    readonly: not higher_rights,
+                                }) }}
+                            {% endif %}
+
+                            {% if not is_preference_form and not item.isNewItem() and has_profile_right('user', constant('User::READAUTHENT')) %}
+                                {% set auth_field %}
+                                    {{ call('Auth::getMethodLink', [item.fields['authtype'], item.fields['auths_id']])|raw }}
+                                    {% if item.fields['date_sync'] is not empty %}
+                                        <br>
+                                        {{ __('Last synchronization on %s')|format(item.fields['date_sync']|formatted_datetime) }}
+                                    {% endif %}
+                                    {% if item.fields['last_login'] %}
+                                        <br>
+                                        {{ __('Last login on %s')|format(item.fields['last_login']|formatted_datetime) }}
+                                    {% endif %}
+                                    {% if item.fields['user_dn'] %}
+                                        <br>
+                                        {{ __('%1$s: %2$s')|format(
+                                            __('User DN'),
+                                            item.fields['user_dn']
+                                        ) }}
+                                    {% endif %}
+                                    {% if item.fields['is_deleted_ldap'] %}
+                                        <br>
+                                        {{ __('User missing in LDAP directory') }}
+                                    {% endif %}
+                                    {% if item.fields['2fa'] is not same as null %}
+                                        <br>
+                                        {{ __('2FA enabled') }}
+                                        {% if has_profile_right('user', constant('User::UPDATEAUTHENT')) %}
+                                            <button type="submit" name="disable_2fa" class="btn btn-outline-danger btn-sm ms-1" data-bs-toggle="tooltip"
+                                                    title="{{ __('If 2FA is mandatory for this user, they will be required to set it back up the next time they log in.') }}">
+                                                {{ __('Disable') }}
+                                            </button>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endset %}
+                                {{ fields.htmlField('_auth', auth_field, __('Authentication')) }}
+                            {% elseif item.isNewItem() %}
+                                <input type="hidden" name="authtype" value="1" />
+                            {% endif %}
+
+                            {% if not simple_form and not is_preference_form %}
+                                {{ fields.dropdownField('UserCategory', 'usercategories_id', item.fields['usercategories_id'], _n('Category', 'Categories', 1)) }}
+                            {% endif %}
+                            {% if not simple_form %}
+                                {% if not is_preference_form %}
+                                    {{ fields.dropdownField('UserTitle', 'usertitles_id', item.fields['usertitles_id'], _x('person', 'Title')) }}
+                                    {{ fields.textareaField('comment', item.fields['comment'], __('Comments')) }}
+                                {% endif %}
+                                {{ fields.textField('registration_number', item.fields['registration_number'], __('Administrative number')) }}
+                            {% endif %}
+                            {% if not item.isNewItem() %}
+                                {{ fields.dropdownField('Location', 'locations_id', item.fields['locations_id'], 'Location'|itemtype_name, {
+                                    entity: entities
+                                }) }}
+                            {% endif %}
+
+                            {% if item.isNewItem() %}
+                                {{ fields.smallTitle(_n('Authorization', 'Authorizations', 1)) }}
+                                {{ fields.dropdownYesNo('_is_recursive', 0, __('Recursive')) }}
+                                {{ fields.dropdownField('Profile', '_profiles_id', call('Profile::getDefault'), 'Profile'|itemtype_name(1)) }}
+                                {{ fields.dropdownField('Entity', '_entities_id', params.entities_id|default(session('glpiactive_entity')), 'Entity'|itemtype_name(1), {
+                                    display_emptychoice: false,
+                                    entity: session('glpiactiveentities')
+                                }) }}
+                            {% else %}
+                                {% if higher_rights or is_my_form %}
+                                    {{ fields.dropdownArrayField(
+                                        name: 'profiles_id',
+                                        value: item.fields['profiles_id'],
+                                        elements: profiles,
+                                        label: __('Default profile'),
+                                        options: {
+                                            display_emptychoice: true,
+                                        }
+                                    ) }}
+                                {% endif %}
+                                {% if higher_rights or is_preference_form%}
+                                    {{ fields.dropdownField('Entity', 'entities_id', item.fields['entities_id']|default(-1), __('Default entity'), {
+                                        toadd: {
+                                            '-1': __('Full structure')
+                                        },
+                                        entity: entities,
+                                    }) }}
+                                {% endif %}
+                                {% if higher_rights %}
+                                    {{ fields.dropdownArrayField(
+                                        name: 'groups_id',
+                                        value: item.fields['groups_id'],
+                                        elements: groups,
+                                        label: __('Default group'),
+                                        options: {
+                                            display_emptychoice: true,
+                                        }
+                                    ) }}
+                                    {{ fields.dropdownField('User', 'users_id_supervisor', item.fields['users_id_supervisor'], __('Supervisor'), {
+                                        entity: session('glpiactive_entity'),
+                                        entity_sons: session('glpiactive_entity_recursive'),
+                                        used: [item.getID()],
+                                        right: 'all'
+                                    }) }}
+                                {% endif %}
+
+                                {% if enable_nickname %}
+                                    {{ fields.textField('nickname', item.fields['nickname'], __('Nickname')) }}
+                                {% endif %}
+                            {% endif %}
+
+                            {% if is_preference_form %}
+                                {% set lang_dropdown %}
+                                    {% do call('Dropdown::showLanguages', ['language', {
+                                        value: item.fields['language']|default(config('language'))
+                                    }]) %}
+                                {% endset %}
+                                {{ fields.htmlField('lang_dropdown', lang_dropdown, __('Language')) }}
+                                {{ fields.dropdownArrayField('use_mode', item.fields['use_mode'], {
+                                    (constant('Session::NORMAL_MODE')): __('Normal'),
+                                    (constant('Session::DEBUG_MODE')): __('Debug'),
+                                }, __('Use GLPI in mode')) }}
+                            {% endif %}
+
+                            {{ fields.smallTitle(__('Contact information')) }}
+                            {% set emails_field %}
+                                {{ call('UserEmail::showForUser', [item]) }}
+                                {{ call('UserEmail::showAddEmailButton', [item]) }}
+                            {% endset %}
+                            {{ fields.htmlField('_useremails', emails_field, _n('Email', 'Emails', get_plural_number())) }}
+                            {{ fields.textField('phone', item.fields['phone'], 'Phone'|itemtype_name(1)) }}
+                            {{ fields.textField('mobile', item.fields['mobile'], __('Mobile phone')) }}
+                            {% if not simple_form %}
+                                {{ fields.textField('phone2', item.fields['phone2'], __('Phone 2')) }}
+                            {% endif %}
+
+                            {% if not item.isNewItem() and ((caneditpassword ?? false) or is_preference_form) %}
+                                {{ fields.smallTitle(__('Passwords and access keys')) }}
+                                {{ fields.passwordField('api_token', item.fields['api_token'], __('API token'), {
+                                    can_regenerate: true,
+                                    is_disclosable: true,
+                                    clearable: false,
+                                    is_copyable: true,
+                                    additional_attributes: {
+                                        autocomplete: 'off',
+                                    },
+                                }) }}
+                                {% if not external_auth %}
+                                    {% set change_pw_field %}
+                                        {% if is_preference_form %}
+                                            <a role="button" class="btn btn-outline-secondary btn-sm" href="{{ path('/front/updatepassword.php') }}">
+                                                <i class="ti ti-lock"></i>
+                                                {{ __('Change password') }}
+                                            </a>
+                                        {% else %}
+                                            {{ modals.modal(__('Change password'), include('pages/admin/user/change_other_password.html.twig', {full_width: true}), {
+                                                id: 'modal_password_' ~ rand_field,
+                                            }) }}
+                                            <script>
+                                                $('#modal_password_{{ rand_field }} input').on('keypress', function(e) {
+                                                    // Prevent enter key in password fields in modal from submitting form
+                                                    if (e.originalEvent.key === 'Enter') {
+                                                        e.preventDefault();
+                                                    }
+                                                });
+                                            </script>
+                                            <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#modal_password_{{ rand_field }}">
+                                                <i class="ti ti-lock"></i>
+                                                {{ __('Change password') }}
+                                            </button>
+                                            <div class="text-warning d-none" data-password-change-pending>
+                                                {{ __('Password change pending') }}
+                                            </div>
+                                            <script>
+                                                $('#modal_password_{{ rand_field }}').on('hide.bs.modal', () => {
+                                                    $('[data-password-change-pending]').toggleClass('d-none', $('#modal_password_{{ rand_field }} input[name=password]').val() === '');
+                                                });
+                                            </script>
+                                        {% endif %}
+                                    {% endset %}
+                                    {{ fields.htmlField('_change_pw', change_pw_field, __('Password')) }}
+                                {% endif %}
+                            {% endif %}
+                            {% if item.isNewItem() %}
+                                {{ fields.smallTitle(__('Passwords and access keys')) }}
+                                <div>
+                                    {{ include('pages/admin/user/change_other_password.html.twig') }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if not is_preference_form %}
+            {% if no_form_buttons is not defined or no_form_buttons == false %}
+                {{ include('components/form/buttons.html.twig') }}
+            {% endif %}
+            {% if params['formfooter'] ?? true %}
+                <div class="card-footer mx-n2 mb-n2">
+                    {{ include('components/form/dates.html.twig') }}
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="card-body mx-n2 border-top d-flex flex-row-reverse align-items-start flex-wrap">
+                <button class="btn btn-primary me-2" type="submit" name="update" value="1">
+                    <i class="ti ti-device-floppy"></i>
+                    <span>{{ _x('button', 'Save') }}</span>
+                </button>
+            </div>
+        {% endif %}
+    </form>
+</div>

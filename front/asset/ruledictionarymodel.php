@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,19 +33,21 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/../_check_webserver_config.php');
+
 use Glpi\Asset\AssetDefinition;
+use Glpi\Asset\RuleDictionaryModelCollection;
 use Glpi\Exception\Http\BadRequestHttpException;
 
 $definition = new AssetDefinition();
-$classname  = array_key_exists('class', $_GET) && $definition->getFromDBBySystemName((string)$_GET['class'])
-    ? $definition->getAssetClassName()
+$rulecollection_class  = array_key_exists('class', $_GET) && $definition->getFromDBBySystemName((string) $_GET['class'])
+    ? $definition->getAssetModelDictionaryCollectionClassName()
     : null;
 
-if ($classname === null || !class_exists($classname)) {
+if ($rulecollection_class === null || !is_a($rulecollection_class, RuleDictionaryModelCollection::class, true)) {
     throw new BadRequestHttpException('Bad request');
 }
 
-$rulecollection_class = $definition->getAssetModelDictionaryCollectionClassName();
 $rulecollection = new $rulecollection_class();
 
 include(GLPI_ROOT . "/front/rule.common.php");

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -127,7 +127,7 @@ trait CalDAVPrincipalsTrait
             !Session::haveRight(Planning::$rightname, Planning::READALL)
             && empty($_SESSION['glpigroups'])
         ) {
-           // User cannot read planning of everyone and has no groups.
+            // User cannot read planning of everyone and has no groups.
             return new EmptyIterator();
         }
 
@@ -138,10 +138,10 @@ trait CalDAVPrincipalsTrait
             true
         );
 
-       // Limit to groups visible in planning (see Planning::showAddGroupForm())
+        // Limit to groups visible in planning (see Planning::showAddGroupForm())
         $groups_criteria['is_task'] = 1;
 
-       // Limit to users groups if user cannot read planning of everyone
+        // Limit to users groups if user cannot read planning of everyone
         if (!Session::haveRight(Planning::$rightname, Planning::READALL)) {
             $groups_criteria['id'] = $_SESSION['glpigroups'];
         }
@@ -165,16 +165,16 @@ trait CalDAVPrincipalsTrait
     {
 
         if (!Session::haveRightsOr(Planning::$rightname, [Planning::READALL, Planning::READGROUP])) {
-           // Can see only personnal planning
+            // Can see only personnal planning
             $rights = 'id';
-        } else if (
+        } elseif (
             Session::haveRight(Planning::$rightname, Planning::READGROUP)
             && !Session::haveRight(Planning::$rightname, Planning::READALL)
         ) {
-           // Can see only planning from users sharing same groups
+            // Can see only planning from users sharing same groups
             $rights = 'groups';
         } else {
-           // Can see planning from users having rights on planning elements
+            // Can see planning from users having rights on planning elements
             $rights = ['change', 'problem', 'reminder', 'task', 'projecttask'];
         }
         return User::getSqlSearchResult(false, $rights);

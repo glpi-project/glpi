@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,12 +34,54 @@
 
 namespace tests\units;
 
+use DatabaseInstance;
 use DbTestCase;
-
-/* Test for inc/databaseinstance.class.php */
+use Glpi\Asset\Capacity;
+use Glpi\Asset\Capacity\HasDatabaseInstanceCapacity;
+use Glpi\Features\Clonable;
+use Toolbox;
 
 class DatabaseInstanceTest extends DbTestCase
 {
+    public function testRelatedItemHasTab()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasDatabaseInstanceCapacity::class)]);
+
+        $this->login(); // tab will be available only if corresponding right is available in the current session
+
+        foreach ($CFG_GLPI['databaseinstance_types'] as $itemtype) {
+            $item = $this->createItem(
+                $itemtype,
+                $this->getMinimalCreationInput($itemtype)
+            );
+
+            $tabs = $item->defineAllTabs();
+            $this->assertArrayHasKey('DatabaseInstance$1', $tabs, $itemtype);
+        }
+    }
+
+    public function testRelatedItemCloneRelations()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasDatabaseInstanceCapacity::class)]);
+
+        foreach ($CFG_GLPI['databaseinstance_types'] as $itemtype) {
+            if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
+                continue;
+            }
+
+            // FIXME DatabaseInstance must be a CommonDBChild to be clonable
+            // $item = \getItemForItemtype($itemtype);
+            // $this->assertContains(DatabaseInstance::class, $item->getCloneRelations(), $itemtype);
+            $this->assertTrue(true);
+        }
+    }
+
     public function testDelete()
     {
         $instance = new \DatabaseInstance();
@@ -48,7 +89,7 @@ class DatabaseInstanceTest extends DbTestCase
         $instid = $instance->add([
             'name' => 'To be removed',
             'port' => 3306,
-            'size' => 52000
+            'size' => 52000,
         ]);
 
         //check DB is created, and load it
@@ -62,17 +103,17 @@ class DatabaseInstanceTest extends DbTestCase
                 0,
                 $database->add([
                     'name'                   => 'Database ' . $i,
-                    'databaseinstances_id'   => $instid
+                    'databaseinstances_id'   => $instid,
                 ])
             );
         }
         $this->assertSame(5, countElementsInTable(\Database::getTable()));
 
-       //test removal
+        //test removal
         $this->assertTrue($instance->delete(['id' => $instid], 1));
         $this->assertFalse($instance->getFromDB($instid));
 
-       //ensure databases has been dropped aswell
+        //ensure databases has been dropped aswell
         $this->assertSame(0, countElementsInTable(\Database::getTable()));
     }
 

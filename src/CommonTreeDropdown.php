@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -52,8 +52,8 @@ abstract class CommonTreeDropdown extends CommonDropdown
         return [['name'  => $this->getForeignKeyField(),
             'label' => __('As child of'),
             'type'  => 'parent',
-            'list'  => false
-        ]
+            'list'  => false,
+        ],
         ];
     }
 
@@ -65,16 +65,28 @@ abstract class CommonTreeDropdown extends CommonDropdown
         $this->addDefaultFormTab($ong);
         $this->addImpactTab($ong, $options);
 
-        $this->addStandardTab($this->getType(), $ong, $options);
+        $this->addStandardTab(static::class, $ong, $options);
+
+        $ong = array_merge($ong, $this->insertTabs($options));
+
         if ($this->dohistory) {
-            $this->addStandardTab('Log', $ong, $options);
+            $this->addStandardTab(Log::class, $ong, $options);
         }
 
         if ($this->maybeTranslated()) {
-            $this->addStandardTab('DropdownTranslation', $ong, $options);
+            $this->addStandardTab(DropdownTranslation::class, $ong, $options);
         }
 
         return $ong;
+    }
+
+    /**
+     * Override this method to easily insert new tabs between the children tab
+     * and the log tab.
+     */
+    protected function insertTabs($options = []): array
+    {
+        return [];
     }
 
 
@@ -169,7 +181,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
         /** @var \DBmysql $DB */
         global $DB;
 
-       // Not set in case of massive delete : use parent
+        // Not set in case of massive delete : use parent
         if (isset($this->input['_replace_by']) && $this->input['_replace_by']) {
             $parent = $this->input['_replace_by'];
         } else {
@@ -183,7 +195,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
             [
                 'SELECT' => 'id',
                 'FROM'   => $this->getTable(),
-                'WHERE'  => [$this->getForeignKeyField() => $this->fields['id']]
+                'WHERE'  => [$this->getForeignKeyField() => $this->fields['id']],
             ]
         );
 
@@ -202,7 +214,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
         global $GLPI_CACHE;
 
         if (isset($input[$this->getForeignKeyField()])) {
-           // Can't move a parent under a child
+            // Can't move a parent under a child
             if (
                 in_array(
                     $input[$this->getForeignKeyField()],
@@ -211,7 +223,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
             ) {
                 return false;
             }
-           // Parent changes => clear ancestors and update its level and completename
+            // Parent changes => clear ancestors and update its level and completename
             if ($input[$this->getForeignKeyField()] != $this->fields[$this->getForeignKeyField()]) {
                 $input["ancestors_cache"] = '';
                 $ckey = 'ancestors_cache_' . $this->getTable() . '_' . $this->getID();
@@ -220,7 +232,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
             }
         }
 
-       // Name changes => update its completename (and its level : side effect ...)
+        // Name changes => update its completename (and its level : side effect ...)
         if ((isset($input['name'])) && ($input['name'] != $this->fields['name'])) {
             return $this->adaptTreeFieldsFromUpdateOrAdd($input);
         }
@@ -241,7 +253,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
          */
         global $DB, $GLPI_CACHE;
 
-       //drop from sons cache when needed
+        //drop from sons cache when needed
         if ($changeParent) {
             $ckey = 'ancestors_cache_' . $this->getTable() . '_' . $ID;
             $GLPI_CACHE->delete($ckey);
@@ -260,7 +272,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
             $query = [
                 'SELECT' => ['id', 'name'],
                 'FROM'   => $this->getTable(),
-                'WHERE'  => [$this->getForeignKeyField() => $ID]
+                'WHERE'  => [$this->getForeignKeyField() => $ID],
             ];
             if (Session::haveTranslations($this->getType(), 'completename')) {
                 DropdownTranslation::regenerateAllCompletenameTranslationsFor($this->getType(), $ID);
@@ -281,9 +293,9 @@ abstract class CommonTreeDropdown extends CommonDropdown
                 }
 
                 if ($changeParent) {
-                   // We have to reset the ancestors as only these changes (ie : not the children).
+                    // We have to reset the ancestors as only these changes (ie : not the children).
                     $update['ancestors_cache'] = 'NULL';
-                   // And we must update the level of the current node ...
+                    // And we must update the level of the current node ...
                     $update['level'] = $nextNodeLevel;
                 }
                 $DB->update(
@@ -291,9 +303,9 @@ abstract class CommonTreeDropdown extends CommonDropdown
                     $update,
                     ['id' => $data['id']]
                 );
-               // Translations :
+                // Translations :
                 if (Session::haveTranslations($this->getType(), 'completename')) {
-                      DropdownTranslation::regenerateAllCompletenameTranslationsFor($this->getType(), $data['id']);
+                    DropdownTranslation::regenerateAllCompletenameTranslationsFor($this->getType(), $data['id']);
                 }
 
                 $this->regenerateTreeUnderID($data["id"], $updateName, $changeParent);
@@ -328,10 +340,10 @@ abstract class CommonTreeDropdown extends CommonDropdown
         $DB->update(
             $this->getTable(),
             [
-                'sons_cache' => 'NULL'
+                'sons_cache' => 'NULL',
             ],
             [
-                'id' => $ancestors
+                'id' => $ancestors,
             ]
         );
 
@@ -354,7 +366,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
         /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
-       //add sons cache when needed
+        //add sons cache when needed
         $ancestors = getAncestorsOf($this->getTable(), $this->getID());
         foreach ($ancestors as $ancestor) {
             $ckey = 'sons_cache_' . $this->getTable() . '_' . $ancestor;
@@ -371,7 +383,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
     {
 
         $parent = $this->fields[$this->getForeignKeyField()];
-       //do not clean cache, it will be updated
+        //do not clean cache, it will be updated
         $this->cleanParentsSons(null, false);
         $this->addSonInParents();
         if ($parent && $this->dohistory) {
@@ -518,7 +530,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
 
         $ID            = $this->getID();
         $this->check($ID, READ);
-        $fields = array_filter($this->getAdditionalFields(), static fn ($field) => isset($field['list']) && $field['list']);
+        $fields = array_filter($this->getAdditionalFields(), static fn($field) => isset($field['list']) && $field['list']);
         $entity_assign = $this->isEntityAssign();
 
         // Minimal form for quick input.
@@ -531,7 +543,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
                 'name_label' => __('Name'),
                 'btn_label' => _x('button', 'Add'),
                 'fk' => static::getForeignKeyField(),
-                'id' => $ID
+                'id' => $ID,
             ];
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -545,8 +557,6 @@ abstract class CommonTreeDropdown extends CommonDropdown
                             <div>
                                 {{ fields.textField('name', '', name_label, {
                                     full_width: true,
-                                    label_class: 'col-xxl-2',
-                                    input_class: 'col-xxl-10',
                                 }) }}
                                 {% if entity is not null %}
                                     <input type="hidden" name="entities_id" value="{{ entity }}">
@@ -615,7 +625,7 @@ TWIG, $twig_params);
                         break;
 
                     case 'bool':
-                         echo Dropdown::getYesNo($data[$field['name']]);
+                        echo Dropdown::getYesNo($data[$field['name']]);
                         break;
 
                     case 'dropdownValue':
@@ -644,15 +654,14 @@ TWIG, $twig_params);
         foreach ($fields as $field) {
             $columns[$field['name']] = $field['label'];
         }
-        $columns['comment'] = __('Comments');
+        $columns['comment'] = _n('Comment', 'Comments', Session::getPluralNumber());
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'super_header' => [
                 'label' => sprintf(__s('Sons of %s'), $this->getTreeLink()),
-                'is_raw' => true
+                'is_raw' => true,
             ],
             'columns' => $columns,
             'formatters' => [
@@ -664,8 +673,8 @@ TWIG, $twig_params);
             'showmassiveactions' => static::canUpdate(),
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . Toolbox::slugify(static::class) . mt_rand()
-            ]
+                'container'     => 'mass' . Toolbox::slugify(static::class) . mt_rand(),
+            ],
         ]);
     }
 
@@ -677,7 +686,7 @@ TWIG, $twig_params);
 
         if ($isadmin) {
             $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_under']
-                  = "<i class='fas fa-sitemap'></i>" .
+                  = "<i class='ti ti-sitemap'></i>" .
                     _sx('button', 'Move under');
         }
 
@@ -695,7 +704,7 @@ TWIG, $twig_params);
                 Dropdown::show($itemtype, ['name'     => 'parent',
                     'comments' => 0,
                     'entity'   => $_SESSION['glpiactive_entity'],
-                    'entity_sons' => $_SESSION['glpiactive_entity_recursive']
+                    'entity_sons' => $_SESSION['glpiactive_entity_recursive'],
                 ]);
                 echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
                            _sx('button', 'Move') . "'>\n";
@@ -725,7 +734,7 @@ TWIG, $twig_params);
                     }
                     foreach ($ids as $id) {
                         if ($item->can($id, UPDATE)) {
-                             // Check if parent is not a child of the original one
+                            // Check if parent is not a child of the original one
                             if (
                                 !in_array($parent->getID(), getSonsOf(
                                     $item->getTable(),
@@ -734,7 +743,7 @@ TWIG, $twig_params);
                             ) {
                                 if (
                                     $item->update(['id' => $id,
-                                        $fk  => $parent->getID()
+                                        $fk  => $parent->getID(),
                                     ])
                                 ) {
                                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
@@ -747,8 +756,8 @@ TWIG, $twig_params);
                                 $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
                             }
                         } else {
-                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
-                             $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         }
                     }
                 } else {
@@ -767,7 +776,7 @@ TWIG, $twig_params);
 
         $tab[] = [
             'id'   => 'common',
-            'name' => __('Characteristics')
+            'name' => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -776,7 +785,7 @@ TWIG, $twig_params);
             'field'              => 'completename',
             'name'               => __('Complete name'),
             'datatype'           => 'itemlink',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -785,7 +794,7 @@ TWIG, $twig_params);
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -804,16 +813,16 @@ TWIG, $twig_params);
             'name'              => __('Father'),
             'datatype'          => 'dropdown',
             'massiveaction'     => false,
-         // Add virtual condition to relink table
-            'joinparams'        => ['condition' => [new QueryExpression("1=1")]]
+            // Add virtual condition to relink table
+            'joinparams'        => ['condition' => [new QueryExpression("1=1")]],
         ];
 
         $tab[] = [
             'id'                => '16',
             'table'             => $this->getTable(),
             'field'             => 'comment',
-            'name'              => __('Comments'),
-            'datatype'          => 'text'
+            'name'              => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'datatype'          => 'text',
         ];
 
         if ($this->isEntityAssign()) {
@@ -823,7 +832,7 @@ TWIG, $twig_params);
                 'field'          => 'completename',
                 'name'           => Entity::getTypeName(1),
                 'massiveaction'  => false,
-                'datatype'       => 'dropdown'
+                'datatype'       => 'dropdown',
             ];
         }
 
@@ -833,7 +842,7 @@ TWIG, $twig_params);
                 'table'          => $this->getTable(),
                 'field'          => 'is_recursive',
                 'name'           => __('Child entities'),
-                'datatype'       => 'bool'
+                'datatype'       => 'bool',
             ];
         }
 
@@ -844,7 +853,7 @@ TWIG, $twig_params);
                 'field'          => 'date_mod',
                 'name'           => __('Last update'),
                 'datatype'       => 'datetime',
-                'massiveaction'  => false
+                'massiveaction'  => false,
             ];
         }
 
@@ -855,11 +864,11 @@ TWIG, $twig_params);
                 'field'          => 'date_creation',
                 'name'           => __('Creation date'),
                 'datatype'       => 'datetime',
-                'massiveaction'  => false
+                'massiveaction'  => false,
             ];
         }
 
-       // add objectlock search options
+        // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
         return $tab;
@@ -905,7 +914,7 @@ TWIG, $twig_params);
         global $DB;
 
         if (isset($input['completename'])) {
-           // Clean data
+            // Clean data
             $input['completename'] = self::cleanTreeText($input['completename']);
         }
 
@@ -914,24 +923,24 @@ TWIG, $twig_params);
                 'SELECT' => 'id',
                 'FROM'   => $this->getTable(),
                 'WHERE'  => [
-                    'completename' => $input['completename']
-                ]
+                    'completename' => $input['completename'],
+                ],
             ];
             if ($this->isEntityAssign()) {
-                $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(
+                $criteria['WHERE'] += getEntitiesRestrictCriteria(
                     $this->getTable(),
                     '',
                     $input['entities_id'],
                     $this->maybeRecursive()
                 );
             }
-           // Check twin :
+            // Check twin :
             $iterator = $DB->request($criteria);
             if (count($iterator)) {
                 $result = $iterator->current();
                 return $result['id'];
             }
-        } else if (isset($input['name']) && !empty($input['name'])) {
+        } elseif (isset($input['name']) && !empty($input['name'])) {
             $fk = $this->getForeignKeyField();
 
             $criteria = [
@@ -939,18 +948,18 @@ TWIG, $twig_params);
                 'FROM'   => $this->getTable(),
                 'WHERE'  => [
                     'name'   => $input['name'],
-                    $fk      => (isset($input[$fk]) ? $input[$fk] : 0)
-                ]
+                    $fk      => ($input[$fk] ?? 0),
+                ],
             ];
             if ($this->isEntityAssign()) {
-                $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(
+                $criteria['WHERE'] += getEntitiesRestrictCriteria(
                     $this->getTable(),
                     '',
                     $input['entities_id'],
                     $this->maybeRecursive()
                 );
             }
-           // Check twin :
+            // Check twin :
             $iterator = $DB->request($criteria);
             if (count($iterator)) {
                 $result = $iterator->current();
@@ -972,7 +981,7 @@ TWIG, $twig_params);
             unset($input['name']);
         }
 
-       // Import a full tree from completename
+        // Import a full tree from completename
         $names  = explode('>', $input['completename']);
         $fk     = $this->getForeignKeyField();
         $i      = count($names);
@@ -982,7 +991,7 @@ TWIG, $twig_params);
             $i--;
             $name = trim($name);
             if (empty($name)) {
-               // Skip empty name (completename starting/endind with >, double >, ...)
+                // Skip empty name (completename starting/endind with >, double >, ...)
                 continue;
             }
 
@@ -999,7 +1008,7 @@ TWIG, $twig_params);
             }
 
             if (!$i) {
-               // Other fields (comment, ...) only for last node of the tree
+                // Other fields (comment, ...) only for last node of the tree
                 foreach ($input as $key => $val) {
                     if ($key != 'completename') {
                         $tmp[$key] = $val;

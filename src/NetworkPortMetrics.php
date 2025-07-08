@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -86,15 +86,15 @@ class NetworkPortMetrics extends CommonDBChild
         $bdate = new DateTime();
         $bdate->sub(new DateInterval('P1Y'));
         $filters = [
-            'date' => ['>', $bdate->format('Y-m-d')]
+            'date' => ['>', $bdate->format('Y-m-d')],
         ];
         $filters = array_merge($filters, $user_filters);
 
         $iterator = $DB->request([
             'FROM'   => static::getTable(),
             'WHERE'  => [
-                static::$items_id  => $netport->fields['id']
-            ] + $filters
+                static::$items_id  => $netport->fields['id'],
+            ] + $filters,
         ]);
 
         return iterator_to_array($iterator);
@@ -150,8 +150,8 @@ class NetworkPortMetrics extends CommonDBChild
             'line_width'  => 2,
         ];
 
-       //display bytes graph
-        echo "<div class='netports_metrics bytes'>";
+        //display bytes graph
+        echo "<div class='dashboard netports_metrics bytes'>";
         echo Widget::multipleAreas($bytes_bar_conf);
         echo "</div>";
 
@@ -170,8 +170,8 @@ class NetworkPortMetrics extends CommonDBChild
 
         echo "</br>";
 
-       //display error graph
-        echo "<div class='netports_metrics'>";
+        //display error graph
+        echo "<div class='dashboard netports_metrics'>";
         echo Widget::multipleAreas($errors_bar_conf);
         echo "</div>";
     }

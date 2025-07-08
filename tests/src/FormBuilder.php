@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,10 +34,10 @@
 
 namespace Glpi\Tests;
 
-use AbstractRightsDropdown;
 use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\AccessControl\ControlType\AllowList;
-use Glpi\Form\AccessControl\ControlType\AllowListConfig;
+use Glpi\Form\Condition\CreationStrategy;
+use Glpi\Form\Condition\ValidationStrategy;
+use Glpi\Form\Condition\VisibilityStrategy;
 
 /**
  * Helper class to ease form creation using DbTestCase::createForm()
@@ -81,6 +80,11 @@ class FormBuilder
     protected bool $is_draft;
 
     /**
+     * Is this form pinned ?
+     */
+    protected bool $is_pinned;
+
+    /**
      * Form sections
      */
     protected array $sections;
@@ -96,6 +100,48 @@ class FormBuilder
     protected array $access_control;
 
     /**
+     * Form category
+     */
+    protected int $category;
+
+    /**
+     * Submit buttons visibilities
+     */
+    protected array $submit_buttons_visibilities;
+
+    /**
+     * Questions visibilities
+     */
+    protected array $questions_visibilities;
+
+    /**
+     * Questions validations
+     */
+    protected array $questions_validations;
+
+    /**
+     * Comments visibilities
+     */
+    protected array $comments_visibilities;
+
+    /**
+     * Sections visibilities
+     */
+    protected array $sections_visibilities;
+
+    /**
+     * Destinations conditions
+     */
+    protected array $destinations_conditions;
+
+    protected bool $use_default_access_policies;
+
+    /**
+     * Form usage count
+     */
+    protected int $usage_count;
+
+    /**
      * Constructor
      *
      * @param string $name Form name
@@ -109,9 +155,19 @@ class FormBuilder
         $this->header = "";
         $this->description = "";
         $this->is_draft = false;
+        $this->is_pinned = false;
         $this->sections = [];
         $this->destinations = [];
         $this->access_control = [];
+        $this->category = 0;
+        $this->submit_buttons_visibilities = [];
+        $this->questions_visibilities = [];
+        $this->questions_validations = [];
+        $this->comments_visibilities = [];
+        $this->sections_visibilities = [];
+        $this->destinations_conditions = [];
+        $this->use_default_access_policies = true;
+        $this->usage_count = 0;
     }
 
     /**
@@ -276,6 +332,29 @@ class FormBuilder
     }
 
     /**
+     * Get form pinned status
+     *
+     * @return bool Form pinned status
+     */
+    public function getIsPinned(): bool
+    {
+        return $this->is_pinned;
+    }
+
+    /**
+     * Set form pinned status
+     *
+     * @param bool Form pinned status
+     *
+     * @return self To allow chain calls
+     */
+    public function setIsPinned(bool $is_pinned): self
+    {
+        $this->is_pinned = $is_pinned;
+        return $this;
+    }
+
+    /**
      * Get form sections
      *
      * @return array Form sections
@@ -310,7 +389,7 @@ class FormBuilder
      * @param string $name          Question name
      * @param string $type          Question type
      * @param mixed  $default_value Question default value
-     * @param string $extra_data    Question extra data
+     * @param ?string $extra_data    Question extra data
      * @param string $description   Question description
      * @param bool   $is_mandatory  Is the question mandatory ?
      *
@@ -320,9 +399,10 @@ class FormBuilder
         string $name,
         string $type,
         mixed $default_value = "",
-        string $extra_data = "",
+        ?string $extra_data = "",
         string $description = "",
         bool $is_mandatory = false,
+        ?int $horizontal_rank = null,
     ): self {
         // Add first section if missing
         if (empty($this->sections)) {
@@ -331,12 +411,13 @@ class FormBuilder
 
         // Add question into last section
         $this->sections[count($this->sections) - 1]['questions'][] = [
-            'name'          => $name,
-            'type'          => $type,
-            'default_value' => $default_value,
-            'extra_data'    => $extra_data,
-            'description'   => $description,
-            'is_mandatory'  => $is_mandatory,
+            'name'            => $name,
+            'type'            => $type,
+            'default_value'   => $default_value,
+            'extra_data'      => $extra_data,
+            'description'     => $description,
+            'is_mandatory'    => $is_mandatory,
+            'horizontal_rank' => $horizontal_rank,
         ];
 
         return $this;
@@ -382,7 +463,7 @@ class FormBuilder
     public function addDestination(
         string $itemtype,
         string $name,
-        array $config = []
+        array $config = [],
     ): self {
         // If first destination of the given itemtype, init its key
         if (!isset($this->destinations[$itemtype])) {
@@ -390,8 +471,8 @@ class FormBuilder
         }
 
         $this->destinations[$itemtype][] = [
-            'name'   => $name,
-            'config' => $config,
+            'name'         => $name,
+            'config'       => $config,
         ];
         return $this;
     }
@@ -427,19 +508,154 @@ class FormBuilder
     }
 
     /**
-     * Shorthand to add an allow list without restrictions to the form.
+     * Get form category
      *
-     * @return self
+     * @return int Form category
      */
-    public function allowAllUsers(): self
+    public function getCategory(): int
     {
-        $this->addAccessControl(
-            strategy: AllowList::class,
-            config: new AllowListConfig(
-                user_ids: [AbstractRightsDropdown::ALL_USERS]
-            ),
-            is_active: true,
-        );
+        return $this->category;
+    }
+
+    /**
+     * Set form category
+     *
+     * @param int Form category
+     *
+     * @return self To allow chain calls
+     */
+    public function setCategory(int $category): self
+    {
+        $this->category = $category;
         return $this;
+    }
+
+    public function setSubmitButtonVisibility(
+        VisibilityStrategy $strategy,
+        array $conditions
+    ): void {
+        $this->submit_buttons_visibilities = [
+            'strategy' => $strategy->value,
+            'conditions' => $conditions,
+        ];
+    }
+
+    public function getSubmitButtonVisibility(): array
+    {
+        return $this->submit_buttons_visibilities;
+    }
+
+    public function setQuestionVisibility(
+        string $question_name,
+        VisibilityStrategy $strategy,
+        array $conditions
+    ): void {
+        $this->questions_visibilities[$question_name] = [
+            'strategy' => $strategy->value,
+            'conditions' => $conditions,
+        ];
+    }
+
+    public function getQuestionVisibility(): array
+    {
+        return $this->questions_visibilities;
+    }
+
+    public function setQuestionValidation(
+        string $question_name,
+        ValidationStrategy $strategy,
+        array $conditions
+    ): void {
+        $this->questions_validations[$question_name] = [
+            'validation_strategy' => $strategy->value,
+            'conditions' => $conditions,
+        ];
+    }
+
+    public function getQuestionValidation(): array
+    {
+        return $this->questions_validations;
+    }
+
+    public function setCommentVisibility(
+        string $comment_name,
+        VisibilityStrategy $strategy,
+        array $conditions
+    ): void {
+        $this->comments_visibilities[$comment_name] = [
+            'strategy' => $strategy->value,
+            'conditions' => $conditions,
+        ];
+    }
+
+    public function getCommentVisibility(): array
+    {
+        return $this->comments_visibilities;
+    }
+
+    public function setSectionVisibility(
+        string $section_name,
+        VisibilityStrategy $strategy,
+        array $conditions
+    ): void {
+        $this->sections_visibilities[$section_name] = [
+            'strategy' => $strategy->value,
+            'conditions' => $conditions,
+        ];
+    }
+
+    public function getSectionVisibility(): array
+    {
+        return $this->sections_visibilities;
+    }
+
+    public function setDestinationCondition(
+        string $destination_name,
+        CreationStrategy $strategy,
+        array $conditions
+    ): void {
+        $this->destinations_conditions[$destination_name] = [
+            'strategy' => $strategy->value,
+            'conditions' => $conditions,
+        ];
+    }
+
+    public function getDestinationCondition(): array
+    {
+        return $this->destinations_conditions;
+    }
+
+    public function setUseDefaultAccessPolicies(bool $use_default_access_policies): self
+    {
+        $this->use_default_access_policies = $use_default_access_policies;
+        return $this;
+    }
+
+    public function getUseDefaultAccessPolicies(): bool
+    {
+        return $this->use_default_access_policies;
+    }
+
+    /**
+     * Set form usage count
+     *
+     * @param int $usage_count Form usage count
+     *
+     * @return self To allow chain calls
+     */
+    public function setUsageCount(int $usage_count): self
+    {
+        $this->usage_count = $usage_count;
+        return $this;
+    }
+
+    /**
+     * Get form usage count
+     *
+     * @return int Form usage count
+     */
+    public function getUsageCount(): int
+    {
+        return $this->usage_count;
     }
 }

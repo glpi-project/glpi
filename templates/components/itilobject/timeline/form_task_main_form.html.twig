@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -39,10 +38,9 @@
     has_profile_right('knowbase', constant('READ')) or has_profile_right('knowbase', constant('KnowbaseItem::READFAQ'))
 ) %}
 {% set can_update_kb = can_update_kb|default(has_profile_right('knowbase', constant('UPDATE'))) %}
-{% set nokb = nokb|default(params['nokb'] is defined or params['nokb'] == true) %}
+{% set nokb = nokb|default(params['nokb'] is defined or (params['nokb'] ?? false) == true) %}
 {% set rand = rand|default(random()) %}
 {% set formoptions = formoptions|default(params['formoptions'] ?? '') %}
-{% set kb_id_toload = kb_id_toload|default(0) %}
 
 {# In some cases, we may already have an HTML form (massive actions) #}
 {% set add_html_form = no_form is not defined or no_form == false %}
@@ -64,7 +62,7 @@
     <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
     <input type="hidden" name="{{ item.getForeignKeyField() }}" value="{{ item.fields['id'] }}" />
 
-    {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
+    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {"item": subitem, 'options': params}) }}
 
     <div class="row mx-n3 mx-xxl-auto">
         <div class="col-12 col-xl-7 col-xxl-8">
@@ -77,7 +75,7 @@
                     'no_label': true,
                     'enable_richtext': true,
                     'enable_fileupload': true,
-                    'enable_mentions': true,
+                    'mention_options': mention_options,
                     'entities_id': item.fields['entities_id'],
                     'rand': rand,
                     'editor_height': 300,
@@ -88,7 +86,7 @@
             <div class="row">
                 {% set task_template_lbl %}
                     <i
-                        class="fas fa-reply fa-fw me-1"
+                        class="{{ 'TaskTemplate'|itemtype_icon }} me-1"
                         title="{{ _n('Task template', 'Task templates', get_plural_number()) }}"
                     ></i>
                 {% endset %}
@@ -108,7 +106,7 @@
 
                 {% set task_date_lbl %}
                     <i
-                        class="fas fa-calendar fa-fw me-1"
+                        class="ti ti-calendar me-1"
                         title="{{ _n('Date', 'Dates', 1) }}"
                     ></i>
                 {% endset %}
@@ -125,7 +123,7 @@
 
                 {# Category #}
                 {% set task_category_lbl %}
-                    <i class="fas fa-tag fa-fw me-1" title="{{ _n('Category', 'Categories', 1) }}"></i>
+                    <i class="ti ti-tag me-1" title="{{ _n('Category', 'Categories', 1) }}"></i>
                 {% endset %}
                 {{ fields.dropdownField(
                     'TaskCategory',
@@ -145,7 +143,7 @@
 
                 {# Status #}
                 {% set task_state_lbl %}
-                    <i class="fas fa-tasks fa-fw me-1" title="{{ __('Status') }}"></i>
+                    <i class="ti ti-list-check me-1" title="{{ __('Status') }}"></i>
                 {% endset %}
 
                 {% set task_state %}
@@ -164,7 +162,7 @@
                 ) }}
 
                 {% set task_private_lbl %}
-                    <i class="ti ti-eye-off fa-fw me-1" title="{{ __('Private') }}"></i>
+                    <i class="ti ti-eye-off me-1" title="{{ __('Private') }}"></i>
                 {% endset %}
                 {{ fields.sliderField(
                     'is_private',
@@ -180,28 +178,10 @@
                     }
                 ) }}
 
-                {% if can_read_kb and kb_id_toload > 0 %}
-                {% set link_kb_lbl %}
-                    <i class="fas fa-link fa-fw me-1" data-bs-toggle="tooltip" data-bs-placement="top"
-                        title="{{ __('Link to knowledge base entry #%id')|replace({'%id': kb_id_toload}) }}"></i>
-                {% endset %}
-                {{ fields.sliderField(
-                    'kb_linked_id',
-                    1,
-                    link_kb_lbl,
-                    {
-                        'full_width': true,
-                        'icon_label': true,
-                        'rand': rand,
-                        'yes_value': kb_id_toload,
-                    }
-                ) }}
-                {% endif %}
-
                 {% if candedit and can_update_kb and not nokb %}
                 {% set task_to_kb_lbl %}
                     <i
-                        class="far fa-save fa-fw me-1"
+                        class="ti ti-device-floppy me-1"
                         title="{{ __('Save and add to the knowledge base') }}"
                         data-bs-toggle="tooltip"
                         data-bs-placement="top"
@@ -221,7 +201,7 @@
 
                 {# Duration #}
                 {% set task_actiontime_lbl %}
-                    <i class="fas fa-stopwatch fa-fw me-1" title="{{ __('Duration') }}"></i>
+                    <i class="ti ti-stopwatch me-1" title="{{ __('Duration') }}"></i>
                 {% endset %}
                 {{ fields.dropdownTimestampField('actiontime', subitem.fields['actiontime'], task_actiontime_lbl, {
                     'full_width': true,
@@ -236,7 +216,7 @@
 
                 {# User #}
                 {% set task_user_lbl %}
-                    <i class="fas fa-user fa-fw me-1" title="{{ 'User'|itemtype_name }}"></i>
+                    <i class="ti ti-user me-1" title="{{ 'User'|itemtype_name }}"></i>
                 {% endset %}
                 {{ fields.dropdownField(
                     'User',
@@ -254,7 +234,7 @@
 
                 {# Group #}
                 {% set task_group_lbl %}
-                    <i class="fas fa-users fa-fw me-1" title="{{ 'Group'|itemtype_name }}"></i>
+                    <i class="ti ti-users me-1" title="{{ 'Group'|itemtype_name }}"></i>
                 {% endset %}
                 {{ fields.dropdownField(
                     'Group',
@@ -273,6 +253,7 @@
                 <script type="text/javascript">
                     function showPlanUpdate{{ rand }}(e) {
                         $('#plan{{ rand }}').hide();
+                        $('#dropdown_state{{ rand }}').trigger('setValue', {{ session('glpiplanned_task_state') }});
                         $('#viewplan{{ rand }}').load('{{ path('/ajax/planning.php') }}', {
                             action: "add_event_classic_form",
                             form: "followups", // Was followups for tasks before. Can't find where this is used.
@@ -299,9 +280,9 @@
                         <i class="fas ti ti-calendar-off"></i>
                         <span>{{ __('Unplan') }}</span>
                     </button>
-                {% else %}
+                {% elseif item.isAllowedStatus(item.fields['status'], constant('CommonITILObject::PLANNED')) %}
                     <button id="plan{{ rand }}" class="btn btn-outline-secondary text-truncate" onclick="showPlanUpdate{{ rand }}()" type="button">
-                        <i class="fas fa-calendar"></i>
+                        <i class="ti ti-calendar"></i>
                         <span>{{ __('Plan this task') }}</span>
                     </button>
                 {% endif %}
@@ -326,7 +307,7 @@
                         data-bs-placement="top"
                         role="button"
                     >
-                        <i class="fas fa-pause me-2"></i>
+                        <i class="ti ti-player-pause-filled me-2"></i>
                         <label class="form-check form-switch mt-2">
                         <input type="hidden" name="pending" value="0"/>
                         <input
@@ -357,14 +338,14 @@
         {% endset %}
     {% endif %}
 
-    {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
+    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {"item": subitem, 'options': params}) }}
     {# Fixed min-height ensure no height increase when toggling the pending reason button, as select 2 dropdown are a bit higher than the default footer height #}
     <div class="d-flex card-footer mx-n3 mb-n3 flex-wrap" style="row-gap: 10px; min-height: 79px">
         {% if subitem.fields['id'] <= 0 %}
             {# Do not enable flex wrapping when creating a new item as the pending form will be merged with the add button in an input group #}
             <div class="input-group flex-nowrap">
                 <button class="btn btn-primary" type="submit" name="add">
-                <i class="fas fa-plus"></i>
+                <i class="ti ti-plus"></i>
                 <span>{{ _x('button', 'Add') }}</span>
                 </button>
                 {% if disable_pending_reasons is not defined or disable_pending_reasons == false %}
@@ -374,14 +355,14 @@
         {% else %}
             <input type="hidden" name="id" value="{{ subitem.fields['id'] }}" />
             <button class="btn btn-primary me-2" type="submit" name="update">
-                <i class="far fa-save"></i>
+                <i class="ti ti-device-floppy"></i>
                 <span>{{ _x('button', 'Save') }}</span>
             </button>
 
             {% if subitem.can(subitem.fields['id'], constant('PURGE')) %}
                 <button class="btn btn-outline-danger me-2" type="submit" name="purge"
                         onclick="return confirm('{{ __('Confirm the final deletion?') }}');">
-                <i class="fas fa-trash-alt"></i>
+                <i class="ti ti-trash"></i>
                 <span>{{ _x('button', 'Delete permanently') }}</span>
                 </button>
             {% endif %}

@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -42,13 +41,13 @@ use Toolbox;
 abstract class AssetModel extends \CommonDCModelDropdown
 {
     /**
-     * Asset definition.
+     * Asset definition system name.
      *
      * Must be defined here to make PHPStan happy (see https://github.com/phpstan/phpstan/issues/8808).
      * Must be defined by child class too to ensure that assigning a value to this property will affect
      * each child classe independently.
      */
-    protected static AssetDefinition $definition;
+    protected static string $definition_system_name;
 
     /**
      * Get the asset definition related to concrete class.
@@ -57,12 +56,14 @@ abstract class AssetModel extends \CommonDCModelDropdown
      */
     public static function getDefinition(): AssetDefinition
     {
-        if (!(static::$definition instanceof AssetDefinition)) {
+        $definition = AssetDefinitionManager::getInstance()->getDefinition(static::$definition_system_name);
+        if (!($definition instanceof AssetDefinition)) {
             throw new \RuntimeException('Asset definition is expected to be defined in concrete class.');
         }
 
-        return static::$definition;
+        return $definition;
     }
+
     public static function getTypeName($nb = 0)
     {
         return sprintf(_n('%s model', '%s models', $nb), static::getDefinition()->getTranslatedName());
@@ -83,12 +84,12 @@ abstract class AssetModel extends \CommonDCModelDropdown
 
     public static function getSearchURL($full = true)
     {
-        return Toolbox::getItemTypeSearchURL(self::class, $full) . '?class=' . static::getDefinition()->getAssetClassName(false);
+        return Toolbox::getItemTypeSearchURL(self::class, $full) . '?class=' . static::getDefinition()->fields['system_name'];
     }
 
     public static function getFormURL($full = true)
     {
-        return Toolbox::getItemTypeFormURL(self::class, $full) . '?class=' . static::getDefinition()->getAssetClassName(false);
+        return Toolbox::getItemTypeFormURL(self::class, $full) . '?class=' . static::getDefinition()->fields['system_name'];
     }
 
     public static function getById(?int $id)
@@ -104,7 +105,7 @@ abstract class AssetModel extends \CommonDCModelDropdown
                     'ON'  => [
                         self::getTable()            => AssetDefinition::getForeignKeyField(),
                         AssetDefinition::getTable() => AssetDefinition::getIndexName(),
-                    ]
+                    ],
                 ],
             ],
             'WHERE' => [
@@ -117,8 +118,7 @@ abstract class AssetModel extends \CommonDCModelDropdown
         }
 
         // Instanciate concrete class
-        $asset_model_class = $definition->getAssetModelClassName(true);
-        $asset_model = new $asset_model_class();
+        $asset_model = $definition->getAssetModelClassInstance();
         if (!$asset_model->getFromDB($id)) {
             return false;
         }
@@ -169,14 +169,14 @@ abstract class AssetModel extends \CommonDCModelDropdown
 
         if (
             array_key_exists($definition_fkey, $input)
-            && (int)$input[$definition_fkey] !== $definition_id
+            && (int) $input[$definition_fkey] !== $definition_id
         ) {
             throw new \RuntimeException('Definition does not match the current concrete class.');
         }
 
         if (
             !$this->isNewItem()
-            && (int)$this->fields[$definition_fkey] !== $definition_id
+            && (int) $this->fields[$definition_fkey] !== $definition_id
         ) {
             throw new \RuntimeException('Definition cannot be changed.');
         }
@@ -198,14 +198,14 @@ abstract class AssetModel extends \CommonDCModelDropdown
                 'table'    => $table,
                 'field'    => 'weight',
                 'name'     => __('Weight'),
-                'datatype' => 'decimal'
+                'datatype' => 'decimal',
             ];
             $options[] = [
                 'id'       => '132',
                 'table'    => $table,
                 'field'    => 'required_units',
                 'name'     => __('Required units'),
-                'datatype' => 'number'
+                'datatype' => 'number',
             ];
             $options[] = [
                 'id'       => '133',
@@ -218,21 +218,21 @@ abstract class AssetModel extends \CommonDCModelDropdown
                 'table'    => $table,
                 'field'    => 'power_connections',
                 'name'     => __('Power connections'),
-                'datatype' => 'number'
+                'datatype' => 'number',
             ];
             $options[] = [
                 'id'       => '135',
                 'table'    => $table,
                 'field'    => 'power_consumption',
                 'name'     => __('Power consumption'),
-                'datatype' => 'decimal'
+                'datatype' => 'decimal',
             ];
             $options[] = [
                 'id'       => '136',
                 'table'    => $table,
                 'field'    => 'is_half_rack',
                 'name'     => __('Is half rack'),
-                'datatype' => 'bool'
+                'datatype' => 'bool',
             ];
         } else {
             $options = array_filter($options, static function ($option) {
@@ -275,12 +275,12 @@ abstract class AssetModel extends \CommonDCModelDropdown
                 'name'   => 'required_units',
                 'type'   => 'integer',
                 'min'    => 1,
-                'label'  => __('Required units')
+                'label'  => __('Required units'),
             ];
             $fields[] = [
                 'name'   => 'depth',
                 'type'   => 'depth',
-                'label'  => __('Depth')
+                'label'  => __('Depth'),
             ];
             $fields[] = [
                 'name'   => 'power_connections',
@@ -305,7 +305,7 @@ abstract class AssetModel extends \CommonDCModelDropdown
             $fields[] = [
                 'name'   => 'is_half_rack',
                 'type'   => 'bool',
-                'label'  => __('Is half rack')
+                'label'  => __('Is half rack'),
             ];
         } else {
             $fields = array_filter($fields, static function ($option) {

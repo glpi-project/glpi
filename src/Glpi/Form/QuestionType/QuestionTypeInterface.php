@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,12 +36,15 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
 
 /**
  * Interface that must be implemented by all available questions types
  */
-interface QuestionTypeInterface
+interface QuestionTypeInterface extends UsedAsCriteriaInterface
 {
     public function __construct();
 
@@ -115,6 +118,16 @@ interface QuestionTypeInterface
     public function renderAdministrationOptionsTemplate(?Question $question): string;
 
     /**
+     * Render the advanced configuration template for the given question.
+     * This template is used on the form editor page.
+     *
+     * @param Question|null $question Given question's data. May be null for a new question.
+     *
+     * @return null|string May return null if no advanced configuration is needed.
+     */
+    public function renderAdvancedConfigurationTemplate(?Question $question): ?string;
+
+    /**
      * Render the end up user template for a given question.
      * This template is used when rendered forms are displayed to users.
      *
@@ -125,16 +138,6 @@ interface QuestionTypeInterface
     public function renderEndUserTemplate(Question $question): string;
 
     /**
-     * Render the given answer.
-     * This template is used when rendering answers for a form.
-     *
-     * @param mixed $answer Given raw answer data.
-     *
-     * @return string
-     */
-    public function renderAnswerTemplate(mixed $answer): string;
-
-    /**
      * Format the given answer.
      * This method is used to format the answer to display.
      *
@@ -142,7 +145,7 @@ interface QuestionTypeInterface
      *
      * @return string
      */
-    public function formatRawAnswer(mixed $answer): string;
+    public function formatRawAnswer(mixed $answer, Question $question): string;
 
     /**
      * Get the name of this questions type.
@@ -161,9 +164,9 @@ interface QuestionTypeInterface
     /**
      * Get the category of this question type.
      *
-     * @return QuestionTypeCategory
+     * @return QuestionTypeCategoryInterface
      */
-    public function getCategory(): QuestionTypeCategory;
+    public function getCategory(): QuestionTypeCategoryInterface;
 
     /**
      * Get the weight of this question type.
@@ -212,4 +215,72 @@ interface QuestionTypeInterface
      * @return ?JsonFieldInterface
      */
     public function getDefaultValueConfig(array $serialized_data): ?JsonFieldInterface;
+
+    /**
+     * Retrieve the allowed sub-types for the question type
+     *
+     * @return array
+     */
+    public function getSubTypes(): array;
+
+    /**
+     * Retrieve the sub-type field name for the question type
+     *
+     * @return string
+     */
+    public function getSubTypeFieldName(): string;
+
+    /**
+     * Retrieve the sub-type field label for the question type
+     *
+     * @return string
+     */
+    public function getSubTypeFieldAriaLabel(): string;
+
+    /**
+     * Retrieve the default value for the sub-type field
+     *
+     * @param Question|null $question The question to get the default value for
+     * @return null|string
+     */
+    public function getSubTypeDefaultValue(?Question $question): ?string;
+
+    /**
+     * Apply a predefined value that will be used when rendering the form.
+     */
+    public function formatPredefinedValue(string $value): ?string;
+
+    /**
+     * Must return a DynamicExportDataField object constructed from the
+     * following values:
+     *  - field_id: "extra_data"
+     *  - data: the extra data content with db names instead of ids
+     *  - requirements: one requirement per database id in the original extra data
+     */
+    public function exportDynamicExtraData(
+        ?JsonFieldInterface $extra_data_config,
+    ): DynamicExportDataField;
+
+    /**
+    * Must return a DynamicExportDataField object constructed from the
+    * following values:
+    *  - field_id: "default_value"
+    *  - data: the default value content with db names instead of ids
+    *  - requirements: one requirement per database id in the original default values
+    */
+    public function exportDynamicDefaultValue(
+        ?JsonFieldInterface $extra_data_config,
+        array|int|float|bool|string|null $default_value_config,
+    ): DynamicExportDataField;
+
+    public static function prepareDynamicExtraDataForImport(
+        ?array $extra_data,
+        DatabaseMapper $mapper,
+    ): ?array;
+
+    public static function prepareDynamicDefaultValueForImport(
+        ?array $extra_data,
+        array|int|float|bool|string|null $default_value_data,
+        DatabaseMapper $mapper,
+    ): array|int|float|bool|string|null;
 }

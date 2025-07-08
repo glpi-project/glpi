@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,24 +35,27 @@
 namespace Glpi\Asset;
 
 use CommonGLPI;
-use Dropdown;
-use Gettext\Languages\Category as Language_Category;
-use Gettext\Languages\CldrData as Language_CldrData;
-use Gettext\Languages\Language;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Capacity\CapacityInterface;
-use Glpi\Asset\CustomFieldType\TypeInterface;
+use Glpi\Asset\CustomFieldType\DropdownType;
+use Glpi\Asset\CustomFieldType\StringType;
+use Glpi\Asset\CustomFieldType\TextType;
 use Glpi\CustomObject\AbstractDefinition;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
-use Glpi\Search\SearchOption;
+use Glpi\Features\AssetImage;
+use Group;
+use Location;
+use Manufacturer;
+use Profile;
 use Session;
+use User;
 
 /**
  * @extends AbstractDefinition<\Glpi\Asset\Asset>
  */
 final class AssetDefinition extends AbstractDefinition
 {
+    use AssetImage;
+
     public static function getSectorizedDetails(): array
     {
         return ['config', self::class];
@@ -69,6 +71,11 @@ final class AssetDefinition extends AbstractDefinition
         return 'Glpi\\CustomAsset';
     }
 
+    public static function getCustomObjectClassSuffix(): string
+    {
+        return 'Asset';
+    }
+
     public static function getDefinitionManagerClass(): string
     {
         return AssetDefinitionManager::class;
@@ -78,12 +85,6 @@ final class AssetDefinition extends AbstractDefinition
     {
         return sprintf('asset_%s', strtolower($this->fields['system_name']));
     }
-
-    /**
-     * @var CustomFieldDefinition[]|null
-     * @see self::getCustomFieldDefinitions()
-     */
-    private ?array $custom_field_definitions = null;
 
     public static function getTypeName($nb = 0)
     {
@@ -106,7 +107,7 @@ final class AssetDefinition extends AbstractDefinition
                 $capacities_count   = count($item->getDecodedCapacitiesField());
                 $profiles_count     = count(array_filter($item->getDecodedProfilesField()));
                 $translations_count = count($item->getDecodedTranslationsField());
-                $fields_count       = count($item->getCustomFieldDefinitions());
+                $fields_count = count($item->getDecodedFieldsField());
             }
             return [
                 1 => self::createTabEntry(
@@ -116,10 +117,10 @@ final class AssetDefinition extends AbstractDefinition
                     'ti ti-adjustments'
                 ),
                 2 => self::createTabEntry(
-                    CustomFieldDefinition::getTypeName(Session::getPluralNumber()),
+                    __('Fields'),
                     $fields_count,
-                    CustomFieldDefinition::class,
-                    CustomFieldDefinition::getIcon()
+                    self::class,
+                    'ti ti-forms'
                 ),
                 3 => self::createTabEntry(
                     _n('Profile', 'Profiles', Session::getPluralNumber()),
@@ -147,7 +148,7 @@ final class AssetDefinition extends AbstractDefinition
                     $item->showCapacitiesForm();
                     break;
                 case 2:
-                    $item->showCustomFieldsForm();
+                    $item->showFieldsForm();
                     break;
                 case 3:
                     $item->showProfilesForm();
@@ -170,7 +171,7 @@ final class AssetDefinition extends AbstractDefinition
         $capacities = AssetDefinitionManager::getInstance()->getAvailableCapacities();
         usort(
             $capacities,
-            static fn (CapacityInterface $a, CapacityInterface $b) => strnatcasecmp($a->getLabel(), $b->getLabel())
+            static fn(CapacityInterface $a, CapacityInterface $b) => strnatcasecmp($a->getLabel(), $b->getLabel())
         );
 
         TemplateRenderer::getInstance()->display(
@@ -183,110 +184,98 @@ final class AssetDefinition extends AbstractDefinition
         );
     }
 
-    /**
-     * Show the custom fields tab including the list of custom fields and a form to add/edit them.
+    /*
+     * Display fields form.
+     *
      * @return void
      */
-    private function showCustomFieldsForm(): void
+    private function showFieldsForm(): void
     {
-        /** @var \DBmysql $DB */
-        global $DB;
+        $fields_display = $this->getDecodedFieldsField();
 
-        if (!$this->canViewItem()) {
-            return;
+        TemplateRenderer::getInstance()->display(
+            'pages/admin/assetdefinition/fields_display.html.twig',
+            [
+                'item'           => $this,
+                'all_fields'     => $this->getAllFields(),
+                'fields_display' => $fields_display,
+                'can_create_fields' => CustomFieldDefinition::canCreate(),
+                'custom_field_form_params' => [
+                    'id' => $this->fields['id'],
+                    'type' => CustomFieldDefinition::class,
+                    'parenttype' => CustomFieldDefinition::$itemtype,
+                    'items_id' => CustomFieldDefinition::$items_id,
+                    'subitem_container_id' => 'customfield_form_container',
+                    'as_modal' => true,
+                    'ajax_form_submit' => true,
+                ],
+            ]
+        );
+    }
+
+    /**
+     * Show field options for a core field.
+     * @param string $field_key The field key
+     * @param array $field_option_values Field option value overrides
+     * @return void
+     */
+    public function showFieldOptionsForCoreField(string $field_key, array $field_option_values = []): void
+    {
+        $all_fields = $this->getAllFields();
+        $field_display = $this->getDecodedFieldsField();
+        $field_match = array_filter($field_display, static fn($field) => $field['key'] === $field_key);
+        $field_options = [];
+        if ($field_match !== []) {
+            $field_options = reset($field_match)['field_options'] ?? [];
         }
+        // Merge field options with overrides
+        $field_options = array_merge($field_options, $field_option_values);
 
-        $canedit = $this->canUpdateItem();
-        $rand = mt_rand();
-        if ($canedit) {
-            TemplateRenderer::getInstance()->display('components/form/viewsubitem.html.twig', [
-                'cancreate' => CustomFieldDefinition::canCreate(),
-                'id'        => $this->fields['id'],
-                'rand'      => $rand,
-                'type'      => CustomFieldDefinition::class,
-                'parenttype' => CustomFieldDefinition::$itemtype,
-                'items_id'  => CustomFieldDefinition::$items_id,
-                'add_new_label' => __('Add a new field'),
-                'datatable_id' => 'datatable_customfields' . $rand,
-                'subitem_container_id' => 'customfield_form_container'
-            ]);
-        }
+        // Fake custom field to represent the core field
+        $custom_field = new CustomFieldDefinition();
+        $custom_field->fields['name'] = $field_key;
+        $custom_field->fields['label'] = $all_fields[$field_key]['text'];
+        $custom_field->fields['type'] = $all_fields[$field_key]['type'];
+        $custom_field->fields['itemtype'] = \Computer::class; // Doesn't matter what it is as long as it's not empty
+        $custom_field->fields['field_options'] = $field_options;
 
-        $iterator = $DB->request([
-            'SELECT' => ['id', 'name', 'label', 'type', 'field_options', 'itemtype'],
-            'FROM' => CustomFieldDefinition::getTable(),
-            'WHERE' => [
-                self::getForeignKeyField() => $this->fields['id'],
-            ],
-        ]);
+        $options_allowlist = ['required', 'readonly', 'full_width', 'hidden'];
 
-        $entries = [];
-        $adm = AssetDefinitionManager::getInstance();
-        $field_types = $adm->getCustomFieldTypes();
-        $allowed_dropdown_itemtypes = $adm->getAllowedDropdownItemtypes(true);
-        foreach ($iterator as $data) {
-            $entry = [
-                'id' => $data['id'],
-                'itemtype' => CustomFieldDefinition::class,
-                'name' => $data['name'],
-                'label' => $data['label'],
-                'type' => in_array($data['type'], $field_types, true) ? $data['type']::getName() : NOT_AVAILABLE,
-                'dropdown_itemtype' => $data['itemtype'] !== '' ? ($allowed_dropdown_itemtypes[$data['itemtype']] ?? NOT_AVAILABLE) : NOT_AVAILABLE,
-                'row_class' => 'cursor-pointer'
-            ];
+        $twig_params = [
+            'options' => array_filter($custom_field->getFieldType()->getOptions(), static fn($option) => in_array($option->getKey(), $options_allowlist, true)),
+            'key' => $field_key,
+        ];
 
-            $field_options = json_decode($data['field_options'] ?? '[]', true) ?? [];
-            $flags = '';
-            if ($field_options['readonly'] ?? false) {
-                $flags .= '<span class="badge badge-outline text-secondary">' . __s('Read-only') . '</span>';
-            }
-            if ($field_options['required'] ?? false) {
-                $flags .= '<span class="badge badge-outline text-secondary">' . __s('Mandatory') . '</span>';
-            }
-            if ($field_options['multiple'] ?? false) {
-                $flags .= '<span class="badge badge-outline text-secondary">' . __s('Multiple values') . '</span>';
-            }
-            $entry['flags'] = $flags;
-            $entries[] = $entry;
-        }
-
-        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
-            'datatable_id' => 'datatable_customfields' . $rand,
-            'is_tab' => true,
-            'nopager' => true,
-            'nosort' => true,
-            'nofilter' => true,
-            'columns' => [
-                'name' => __('Name'),
-                'label' => __('Label'),
-                'type' => _n('Type', 'Types', 1),
-                'flags' => __('Flags'),
-                'dropdown_itemtype' => __('Item type'),
-            ],
-            'formatters' => [
-                'flags' => 'raw_html'
-            ],
-            'entries' => $entries,
-            'total_number' => count($entries),
-            'filtered_number' => count($entries),
-            'showmassiveactions' => $canedit,
-            'massiveactionparams' => [
-                'num_displayed' => count($entries),
-                'container'     => 'mass' . str_replace('\\', '_', self::class) . $rand,
-                'specific_actions' => ['purge' => _x('button', 'Delete permanently')]
-            ],
-        ]);
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            <form>
+                <input type="hidden" name="key" value="{{ key }}">
+                <div class="d-flex flex-wrap">
+                    {% for option in options %}
+                        {{ option.getFormInput()|raw }}
+                    {% endfor %}
+                </div>
+            </form>
+TWIG, $twig_params);
     }
 
     public function prepareInputForAdd($input)
     {
-        foreach (['capacities', 'profiles', 'translations'] as $json_field) {
+        foreach (['capacities', 'profiles', 'translations', 'fields_display'] as $json_field) {
             if (!array_key_exists($json_field, $input)) {
                 // ensure default value of JSON fields will be a valid array
                 $input[$json_field] = [];
             }
         }
+        $input = $this->managePictures($input);
+
         return parent::prepareInputForAdd($input);
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        $input = $this->managePictures($input);
+        return parent::prepareInputForUpdate($input);
     }
 
     protected function prepareInput(array $input): array|bool
@@ -294,7 +283,23 @@ final class AssetDefinition extends AbstractDefinition
         $has_errors = false;
 
         if (array_key_exists('capacities', $input)) {
-            if (!$this->validateCapacityArray($input['capacities'])) {
+            $capacities = $input['capacities'];
+
+            // Filter capacities submitted by the UI.
+            // A `is_active` field will be present in this case, to be able to remove inactive capacities.
+            if (\is_array($capacities)) {
+                foreach ($capacities as $key => $capacity_specs) {
+                    if (
+                        \is_array($capacity_specs)
+                        && \array_key_exists('is_active', $capacity_specs)
+                        && ((bool) $capacity_specs['is_active']) === false
+                    ) {
+                        unset($capacities[$key]);
+                    }
+                }
+            }
+
+            if (!$this->validateCapacityArray($capacities)) {
                 Session::addMessageAfterRedirect(
                     htmlescape(sprintf(
                         __('The following field has an incorrect value: "%s".'),
@@ -305,8 +310,30 @@ final class AssetDefinition extends AbstractDefinition
                 );
                 $has_errors = true;
             } else {
-                $input['capacities'] = json_encode($input['capacities']);
+                // Add the config key if not present in the input.
+                $capacities = \array_map(
+                    fn(array $capacity_specs) => new Capacity(
+                        $capacity_specs['name'],
+                        new CapacityConfig($capacity_specs['config'] ?? [])
+                    ),
+                    $capacities
+                );
+
+                $input['capacities'] = json_encode(array_values($capacities));
             }
+        }
+
+        if (array_key_exists('fields_display', $input)) {
+            $formatted_fields_display = [];
+            foreach ($input['fields_display'] as $field_order => $field_key) {
+                $field_options = $input['field_options'][$field_key] ?? [];
+                $formatted_fields_display[] = [
+                    'key'   => $field_key,
+                    'order' => $field_order,
+                    'field_options' => $field_options,
+                ];
+            }
+            $input['fields_display'] = json_encode($formatted_fields_display);
         }
 
         return $has_errors ? false : parent::prepareInput($input);
@@ -314,6 +341,14 @@ final class AssetDefinition extends AbstractDefinition
 
     public function post_addItem()
     {
+        parent::post_addItem();
+
+        // Trigger the `onCapacityEnabled` hooks.
+        $added_capacities = $this->decodeCapacities($this->fields['capacities']);
+        foreach ($added_capacities as $capacity) {
+            $this->onCapacityEnabled($capacity);
+        }
+
         // Add default display preferences for the new asset definition
         $prefs = [
             4, // Name
@@ -332,103 +367,94 @@ final class AssetDefinition extends AbstractDefinition
                 'users_id' => 0,
             ]);
         }
-
-        parent::post_addItem();
     }
 
     public function post_updateItem($history = true)
     {
+        parent::post_updateItem();
+
         if (in_array('capacities', $this->updates)) {
-            // When capabilities are removed, trigger the cleaning of data related to this capacity.
-            $new_capacities = @json_decode($this->fields['capacities']);
-            $old_capacities = @json_decode($this->oldvalues['capacities']);
+            $new_capacities = $this->decodeCapacities($this->fields['capacities']);
+            $old_capacities = $this->decodeCapacities($this->oldvalues['capacities']);
 
-            if (!is_array($new_capacities)) {
-                // should not happen, do not trigger cleaning to prevent unexpected mass deletion of data
-                trigger_error(
-                    sprintf('Invalid `capacities` value `%s`.', $this->fields['capacities']),
-                    E_USER_WARNING
-                );
-                return;
-            }
-            if (!is_array($old_capacities)) {
-                // should not happen, do not trigger cleaning to prevent unexpected mass deletion of data
-                trigger_error(
-                    sprintf('Invalid `capacities` value `%s`.', $this->oldvalues['capacities']),
-                    E_USER_WARNING
-                );
-                return;
+            $added_capacities = array_diff_key($new_capacities, $old_capacities);
+            foreach ($added_capacities as $capacity) {
+                $this->onCapacityEnabled($capacity);
             }
 
-            $removed_capacities = array_diff($old_capacities, $new_capacities);
-            $rights_to_remove = [];
-            foreach ($removed_capacities as $capacity_classname) {
-                $capacity = AssetDefinitionManager::getInstance()->getCapacity($capacity_classname);
-                if ($capacity === null) {
-                    // can be null if provided by a plugin that is no longer active
-                    continue;
-                }
-                $capacity->onCapacityDisabled($this->getAssetClassName());
-                array_push($rights_to_remove, ...$capacity->getSpecificRights());
+            $removed_capacities = array_diff_key($old_capacities, $new_capacities);
+            foreach ($removed_capacities as $capacity) {
+                $this->onCapacityDisabled($capacity);
             }
 
-            if (count($rights_to_remove) > 0) {
-                $this->cleanRights($rights_to_remove);
+            $updated_capacities = array_intersect_key($old_capacities, $new_capacities);
+            foreach ($updated_capacities as $capacity) {
+                $this->onCapacityUpdated($capacity);
             }
         }
-
-        parent::post_updateItem();
     }
 
     public function cleanDBonPurge()
     {
-        $related_classes = [
-            $this->getAssetClassName(),
-            $this->getAssetModelClassName(),
-            $this->getAssetTypeClassName(),
-        ];
-        foreach ($related_classes as $classname) {
-            (new $classname())->deleteByCriteria(
-                ['assets_assetdefinitions_id' => $this->getID()],
-                force: true,
-                history: false
-            );
-            (new \DisplayPreference())->deleteByCriteria(['itemtype' => $classname]);
+        $capacities = $this->getDecodedCapacitiesField();
+        foreach ($capacities as $capacity) {
+            $this->onCapacityDisabled($capacity);
+        }
+
+        $this->purgeConcreteClassFromDb($this->getCustomObjectClassName());
+        $this->purgeConcreteClassFromDb($this->getAssetModelClassName());
+        $this->purgeConcreteClassFromDb($this->getAssetTypeClassName());
+    }
+
+    /**
+     * Handle the activation of a capacity.
+     *
+     * @param Capacity $capacity
+     */
+    private function onCapacityEnabled(Capacity $capacity): void
+    {
+        $capacity_instance = AssetDefinitionManager::getInstance()->getCapacity($capacity->getName());
+        if ($capacity_instance === null) {
+            // can be null if provided by a plugin that is no longer active
+            return;
+        }
+        $capacity_instance->onCapacityEnabled($this->getAssetClassName(), $capacity->getConfig());
+    }
+
+    /**
+     * Handle the deactivation of a capacity.
+     *
+     * @param Capacity $capacity
+     */
+    private function onCapacityDisabled(Capacity $capacity): void
+    {
+        $capacity_instance = AssetDefinitionManager::getInstance()->getCapacity($capacity->getName());
+        if ($capacity_instance === null) {
+            // can be null if provided by a plugin that is no longer active
+            return;
+        }
+        $capacity_instance->onCapacityDisabled($this->getAssetClassName(), $capacity->getConfig());
+
+        $rights_to_remove = $capacity_instance->getSpecificRights();
+        if (count($rights_to_remove) > 0) {
+            $this->cleanRights($rights_to_remove);
         }
     }
 
-    public function rawSearchOptions()
+    /**
+     * Handle the update of a capacity.
+     *
+     * @param Capacity $capacity
+     */
+    private function onCapacityUpdated(Capacity $capacity): void
     {
-        $search_options = parent::rawSearchOptions();
-
-        $search_options[] = [
-            'id'   => 'capacities',
-            'name' => __('Capacities')
-        ];
-        foreach (AssetDefinitionManager::getInstance()->getAvailableCapacities() as $capacity) {
-            // capacity is stored in a JSON array, so entry is surrounded by double quotes
-            $search_string = json_encode($capacity::class);
-            // Backslashes must be doubled in LIKE clause, according to MySQL documentation:
-            // > To search for \, specify it as \\\\; this is because the backslashes are stripped
-            // > once by the parser and again when the pattern match is made,
-            // > leaving a single backslash to be matched against.
-            $search_string = str_replace('\\', '\\\\', $search_string);
-
-            $search_options[] = [
-                'id'            => SearchOption::generateAProbablyUniqueId($capacity::class),
-                'table'         => self::getTable(),
-                'field'         => sprintf('_capacities_%s', $capacity::class),
-                'name'          => $capacity->getLabel(),
-                'computation'   => QueryFunction::if(
-                    condition: ['capacities' => ['LIKE', '%' . $search_string . '%']],
-                    true_expression: new QueryExpression('1'),
-                    false_expression: new QueryExpression('0')
-                ),
-                'datatype'      => 'bool'
-            ];
+        $capacity_instance = AssetDefinitionManager::getInstance()->getCapacity($capacity->getName());
+        if ($capacity_instance === null) {
+            // can be null if provided by a plugin that is no longer active
+            return;
         }
-
-        return $search_options;
+        $updated_capacity = $this->getDecodedCapacitiesField()[$capacity->getName()];
+        $capacity_instance->onCapacityUpdated($this->getAssetClassName(), $capacity->getConfig(), $updated_capacity->getConfig());
     }
 
     /**
@@ -455,6 +481,17 @@ final class AssetDefinition extends AbstractDefinition
         return $this->getAssetClassName($with_namespace) . 'Model';
     }
 
+    public function getAssetModelClassInstance(): AssetModel
+    {
+        $classname = $this->getAssetModelClassName();
+
+        if (!\is_a($classname, AssetModel::class, true)) {
+            throw new \LogicException();
+        }
+
+        return new $classname();
+    }
+
     /**
      * Get the definition's concrete asset type class name.
      *
@@ -465,6 +502,17 @@ final class AssetDefinition extends AbstractDefinition
     public function getAssetTypeClassName(bool $with_namespace = true): string
     {
         return $this->getAssetClassName($with_namespace) . 'Type';
+    }
+
+    public function getAssetTypeClassInstance(): AssetType
+    {
+        $classname = $this->getAssetTypeClassName();
+
+        if (!\is_a($classname, AssetType::class, true)) {
+            throw new \LogicException();
+        }
+
+        return new $classname();
     }
 
     /**
@@ -540,7 +588,7 @@ final class AssetDefinition extends AbstractDefinition
     public function hasCapacityEnabled(CapacityInterface $capacity): bool
     {
         $enabled_capacities = $this->getDecodedCapacitiesField();
-        return in_array($capacity::class, $enabled_capacities);
+        return isset($enabled_capacities[$capacity::class]);
     }
 
     /**
@@ -553,29 +601,198 @@ final class AssetDefinition extends AbstractDefinition
         $capacities = [];
         foreach (AssetDefinitionManager::getInstance()->getAvailableCapacities() as $capacity) {
             if ($this->hasCapacityEnabled($capacity)) {
-                $capacities[] = $capacity;
+                $capacities[$capacity::class] = $capacity;
             }
         }
         return $capacities;
     }
 
     /**
+     * Get configuration for the given capacity.
+     */
+    public function getCapacityConfiguration(string $capacity_classname): CapacityConfig
+    {
+        $capacities = $this->getDecodedCapacitiesField();
+        if (isset($capacities[$capacity_classname])) {
+            return $capacities[$capacity_classname]->getConfig();
+        }
+
+        return new CapacityConfig();
+    }
+
+    /**
      * Return the decoded value of the `capacities` field.
      *
-     * @return array
+     * @return \Glpi\Asset\Capacity[]
      */
     private function getDecodedCapacitiesField(): array
     {
-        $capacities = @json_decode($this->fields['capacities'], associative: true);
-        if (!$this->validateCapacityArray($capacities, false)) {
+        return $this->decodeCapacities($this->fields['capacities']);
+    }
+
+    /**
+     * Decoded the given value of the `capacities` field.
+     *
+     * @return \Glpi\Asset\Capacity[]
+     */
+    private function decodeCapacities(string $encoded): array
+    {
+        $decoded_capacities = json_decode($encoded, associative: true);
+
+        if (!$this->validateCapacityArray($decoded_capacities, false)) {
             trigger_error(
                 sprintf('Invalid `capacities` value (`%s`).', $this->fields['capacities']),
                 E_USER_WARNING
             );
             $this->fields['capacities'] = '[]'; // prevent warning to be triggered on each method call
-            $capacities = [];
+            return [];
         }
+
+        $capacities = [];
+        foreach ($decoded_capacities as $capacity_specs) {
+            $name   = $capacity_specs['name'];
+            $config = $capacity_specs['config'] ?? [];
+
+            if (!\is_a($name, CapacityInterface::class, true)) {
+                // May be a previously enabled capacity from a disabled plugin.
+                continue;
+            }
+
+            $capacities[$name] = new Capacity($name, new CapacityConfig($config));
+        }
+
         return $capacities;
+    }
+
+
+    public function getAllFields(): array
+    {
+        $type_class = $this->getAssetTypeClassName();
+        $model_class = $this->getAssetModelClassName();
+
+        $fields = [
+            'name'             => [
+                'text' => __('Name'),
+                'type' => StringType::class,
+            ],
+            'states_id'        => [
+                'text' => __('Status'),
+                'type' => DropdownType::class,
+            ],
+            'locations_id'     => [
+                'text' => Location::getTypeName(1),
+                'type' => DropdownType::class,
+            ],
+            $type_class::getForeignKeyField() => [
+                'text' => $type_class::getTypeName(1),
+                'type' => DropdownType::class,
+            ],
+            'users_id_tech'    => [
+                'text' => __('Technician in charge'),
+                'type' => DropdownType::class,
+            ],
+            'manufacturers_id' => [
+                'text' => Manufacturer::getTypeName(1),
+                'type' => DropdownType::class,
+            ],
+            'groups_id_tech'   => [
+                'text' => __('Group in charge'),
+                'type' => DropdownType::class,
+            ],
+            $model_class::getForeignKeyField() => [
+                'text' => $model_class::getTypeName(1),
+                'type' => DropdownType::class,
+            ],
+            'contact_num'      => [
+                'text' => __('Alternate username number'),
+                'type' => StringType::class,
+            ],
+            'serial'           => [
+                'text' => __('Serial'),
+                'type' => StringType::class,
+            ],
+            'contact'          => [
+                'text' => __('Alternate username'),
+                'type' => StringType::class,
+            ],
+            'otherserial'      => [
+                'text' => __('Inventory number'),
+                'type' => StringType::class,
+            ],
+            'users_id'         => [
+                'text' => User::getTypeName(1),
+                'type' => DropdownType::class,
+            ],
+            'groups_id'        => [
+                'text' => Group::getTypeName(1),
+                'type' => DropdownType::class,
+            ],
+            'uuid'            => [
+                'text' => __('UUID'),
+                'type' => StringType::class,
+            ],
+            'comment'          => [
+                'text' => _n('Comment', 'Comments', Session::getPluralNumber()),
+                'type' => TextType::class,
+            ],
+            'autoupdatesystems_id' => [
+                'text' => \AutoUpdateSystem::getTypeName(1),
+                'type' => DropdownType::class,
+            ],
+        ];
+
+        foreach ($this->getCustomFieldDefinitions() as $custom_field_def) {
+            $fields['custom_' . $custom_field_def->fields['system_name']] = [
+                'customfields_id'    => $custom_field_def->getID(),
+                'text' => $custom_field_def->computeFriendlyName(),
+                'type' => $custom_field_def->fields['type'],
+            ];
+        }
+
+        return $fields;
+    }
+
+    private function getDefaultFieldsDisplay(): array
+    {
+        $all_fields = $this->getAllFields();
+
+        $default = [];
+        $order = 0;
+        foreach (array_keys($all_fields) as $key) {
+            $default[] = [
+                'key'   => $key,
+                'order' => $order,
+                'field_options' => [],
+            ];
+            $order++;
+        }
+
+        return $default;
+    }
+
+
+    /**
+     * Return the decoded value of the `fields_display` field.
+     *
+     * @return array
+     */
+    public function getDecodedFieldsField(): array
+    {
+        $fields_display = json_decode($this->fields['fields_display'] ?? '[]', associative: true) ?? [];
+        if (!is_array($fields_display) || count($fields_display) === 0) {
+            return $this->getDefaultFieldsDisplay();
+        }
+        return $fields_display;
+    }
+
+    public function getFieldOrder(): array
+    {
+        $fields_display = $this->getDecodedFieldsField();
+        usort(
+            $fields_display,
+            static fn($a, $b) => $a['order'] <=> $b['order']
+        );
+        return array_column($fields_display, 'key');
     }
 
     /**
@@ -594,15 +811,26 @@ final class AssetDefinition extends AbstractDefinition
         $is_valid = true;
 
         $available_capacities = array_map(
-            fn ($capacity) => $capacity::class,
+            fn($capacity) => $capacity::class,
             AssetDefinitionManager::getInstance()->getAvailableCapacities()
         );
-        foreach ($capacities as $classname) {
-            if (!is_string($classname)) {
+        foreach ($capacities as $capacity_specs) {
+            if (!is_array($capacity_specs)) {
                 $is_valid = false;
                 break;
             }
-            if ($check_values && !in_array($classname, $available_capacities)) {
+
+            if (!\array_key_exists('name', $capacity_specs) || !\is_string($capacity_specs['name'])) {
+                $is_valid = false;
+                break;
+            }
+            if (\array_key_exists('config', $capacity_specs) && !\is_array($capacity_specs['config'])) {
+                // FIXME A configuration check delegated to the capacity class would be safer.
+                $is_valid = false;
+                break;
+            }
+
+            if ($check_values && !in_array($capacity_specs['name'], $available_capacities)) {
                 $is_valid = false;
                 break;
             }
@@ -641,5 +869,78 @@ final class AssetDefinition extends AbstractDefinition
         }
 
         return $this->custom_field_definitions;
+    }
+
+    protected function getExtraProfilesFields(array $profile_data): string
+    {
+        $enabled_profiles = [];
+        foreach ($profile_data as $data) {
+            $helpdesk_item_types = importArrayFromDB($data['helpdesk_item_type']);
+            if (in_array($this->getCustomObjectClassName(), $helpdesk_item_types, true)) {
+                $enabled_profiles[] = $data['id'];
+            }
+        }
+
+        $twig_params = [
+            'enabled_profiles' => $enabled_profiles,
+            'label' => sprintf(__('Profiles that can associate %s with tickets, problems or changes'), $this->getTranslatedName(\Session::getPluralNumber())),
+        ];
+        // language=Twig
+        return TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% import 'components/form/fields_macros.html.twig' as fields %}
+            {{ fields.dropdownField('Profile', '_profiles_extra[helpdesk_item_type]', enabled_profiles, label, {
+                multiple: true
+            }) }}
+TWIG, $twig_params);
+    }
+
+    protected function syncProfilesRights(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        parent::syncProfilesRights();
+
+        if (
+            !array_key_exists('_profiles_extra', $this->input)
+            || !array_key_exists('helpdesk_item_type', $this->input['_profiles_extra'])
+        ) {
+            return;
+        }
+
+        $extra_profile_data = $this->input['_profiles_extra'];
+        $old_values = [];
+
+        $it = $DB->request([
+            'SELECT' => ['id', 'helpdesk_item_type'],
+            'FROM' => Profile::getTable(),
+        ]);
+        foreach ($it as $data) {
+            $old_values[$data['id']] = importArrayFromDB($data['helpdesk_item_type']);
+            if (!is_array($old_values[$data['id']])) {
+                $old_values[$data['id']] = [];
+            }
+        }
+
+        $helpdesk_item_type = $extra_profile_data['helpdesk_item_type'];
+        if (!is_array($helpdesk_item_type)) {
+            // `helpdesk_item_type` will be an empty string if no value is selected
+            $helpdesk_item_type = [];
+        }
+
+        foreach ($old_values as $profile_id => $itemtype_allowed) {
+            $changes = [];
+
+            $current_allowed = in_array($profile_id, $helpdesk_item_type, false);
+            if ($current_allowed && !in_array($this->getCustomObjectClassName(), $itemtype_allowed, true)) {
+                $changes['helpdesk_item_type'] = [...$itemtype_allowed, $this->getCustomObjectClassName()];
+            } elseif (!$current_allowed && in_array($this->getCustomObjectClassName(), $itemtype_allowed, true)) {
+                $changes['helpdesk_item_type'] = array_diff($itemtype_allowed, [$this->getCustomObjectClassName()]);
+            }
+            if (count($changes) > 0) {
+                $profile = new Profile();
+                $profile->update(['id' => $profile_id] + $changes);
+            }
+        }
     }
 }

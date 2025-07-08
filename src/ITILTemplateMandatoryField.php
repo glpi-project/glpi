@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -47,11 +47,16 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField
         return _n('Mandatory field', 'Mandatory fields', $nb);
     }
 
+    public static function getIcon(): string
+    {
+        return 'ti ti-asterisk';
+    }
+
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
-       // can exists for template
+        // can exists for template
         if (
             $item instanceof ITILTemplate
             && Session::haveRight("itiltemplate", READ)
@@ -76,25 +81,24 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField
 
         parent::post_purgeItem();
 
-        $itil_class = static::$itiltype;
-        $itil_object = new $itil_class();
+        $itil_object = getItemForItemtype(static::$itiltype);
         $itemtype_id = $itil_object->getSearchOptionIDByField('field', 'itemtype', $itil_object->getTable());
         $items_id_id = $itil_object->getSearchOptionIDByField('field', 'items_id', $itil_object->getTable());
 
-       // Try to delete itemtype -> delete items_id
+        // Try to delete itemtype -> delete items_id
         if ($this->fields['num'] == $itemtype_id) {
             $iterator = $DB->request([
                 'SELECT' => 'id',
                 'FROM'   => $this->getTable(),
                 'WHERE'  => [
                     static::$items_id => $this->fields[static::$itiltype],
-                    'num'             => $items_id_id
-                ]
+                    'num'             => $items_id_id,
+                ],
             ]);
             if (count($iterator)) {
-                 $result = $iterator->current();
-                 $a = new static();
-                 $a->delete(['id' => $result['id']]);
+                $result = $iterator->current();
+                $a = new static();
+                $a->delete(['id' => $result['id']]);
             }
         }
     }
@@ -118,11 +122,10 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField
         $iterator = $DB->request([
             'FROM'   => $this->getTable(),
             'WHERE'  => [static::$items_id => $ID],
-            'ORDER'  => 'id'
+            'ORDER'  => 'id',
         ]);
 
-        $tt_class       = static::$itemtype;
-        $tt             = new $tt_class();
+        $tt             = getItemForItemtype(static::$itemtype);
         $allowed_fields = $tt->getAllowedFields($withtypeandcategory);
         $fields         = [];
 

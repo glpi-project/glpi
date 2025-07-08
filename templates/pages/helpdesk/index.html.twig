@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -33,25 +32,45 @@
 
 {% extends "layout/page_skeleton.html.twig" %}
 
+{% set scene_left = entity.getHelpdeskSceneId('custom_helpdesk_home_scene_left') %}
+{% set scene_right = entity.getHelpdeskSceneId('custom_helpdesk_home_scene_right') %}
+
 {% block content %}
-    <div class="d-flex flex-column helpdesk-home-container">
-        <div class="search-banner">
-            <div class="container-narrow">
-                <h1 class="text-dark text-center">
-                    {{ __("How can we help you?") }}
+    {# We override the parent width using .force-full-width because we need our background images and colors to bleed
+       through and use all the available width. The content is still using the correct width by redefining manually the
+       container size for each sections of the page using container-xl/container-narrow classes#}
+    <div class="d-flex flex-column helpdesk-home-container force-full-width">
+        <div class="search-banner d-flex">
+            <div class="scene scene-left">
+                {{ render_scene(scene_left) }}
+            </div>
+            <div class="container-narrow search-banner-content">
+                <h1 class="text-center" data-testid="home-title">
+                    {{ entity.getHelpdeskHomeTitle() }}
                 </h1>
 
+                <div id="search-overlay" class="search-overlay bg-dark"></div>
                 <div class="input-icon search-bar-container">
                     <span class="input-icon-addon">
                         <i class="ti ti-search"></i>
                     </span>
                     <input
+                        id="search-input"
                         type="text"
                         value=""
                         class="form-control home-search"
                         placeholder="{{ __("Search for knowledge base entries or forms") }}"
                     >
+                    <section
+                        id="search-results"
+                        class="position-absolute search-result-container w-100 d-none"
+                        aria-label="{{ __("Search results") }}"
+                    >
+                    </section>
                 </div>
+            </div>
+            <div class="scene scene-right">
+                {{ render_scene(scene_right) }}
             </div>
         </div>
         <section class="tiles-banner" aria-label="{{ __("Quick Access") }}">
@@ -86,17 +105,19 @@
                         <div class="col-12 col-sm-6 col-md-4 d-flex">
                             <a
                                 class="card mx-1 my-2 flex-grow-1"
-                                href="{{ path(tile.getLink()) }}"
+                                href="{{ tile.getTileUrl() }}"
                             >
                                 <section class="card-body">
                                     <div class="d-flex">
-                                        {{ render_illustration(tile.getIllustration(), 100) }}
+                                        <div class="aspect-ratio-1">
+                                            {{ render_illustration(tile.getIllustration(), 70) }}
+                                        </div>
                                         <div class="ms-4">
                                             <h2 class="card-title mb-2">
                                                 {{ tile.getTitle() }}
                                             </h2>
-                                            <div class="text-secondary">
-                                                {{ tile.getDescription() }}
+                                            <div class="text-secondary remove-last-tinymce-margin">
+                                                {{ tile.getDescription()|safe_html }}
                                             </div>
                                         </div>
                                     </div>
@@ -113,4 +134,13 @@
             </div>
         </div>
     </div>
+
+    <script>
+        (async function() {
+            const module = await import(
+                "{{ js_path('js/modules/Helpdesk/IndexController.js') }}"
+            );
+            new module.GlpiHelpdeskIndexController();
+        })();
+    </script>
 {% endblock content %}

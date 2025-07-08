@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -47,31 +47,31 @@ class RequestType extends CommonDropdown
 
         return [['name'  => 'is_active',
             'label' => __('Active'),
-            'type'  => 'bool'
+            'type'  => 'bool',
         ],
             ['name'  => 'is_helpdesk_default',
                 'label' => __('Default for tickets'),
-                'type'  => 'bool'
+                'type'  => 'bool',
             ],
             ['name'  => 'is_followup_default',
                 'label' => __('Default for followups'),
-                'type'  => 'bool'
+                'type'  => 'bool',
             ],
             ['name'  => 'is_mail_default',
                 'label' => __('Default for mail recipients'),
-                'type'  => 'bool'
+                'type'  => 'bool',
             ],
             ['name'  => 'is_mailfollowup_default',
                 'label' => __('Default for followup mail recipients'),
-                'type'  => 'bool'
+                'type'  => 'bool',
             ],
             ['name'  => 'is_ticketheader',
                 'label' => __('Request source visible for tickets'),
-                'type'  => 'bool'
+                'type'  => 'bool',
             ],
             ['name'  => 'is_itilfollowup',
                 'label' => __('Request source visible for followups'),
-                'type'  => 'bool'
+                'type'  => 'bool',
             ],
         ];
     }
@@ -87,7 +87,7 @@ class RequestType extends CommonDropdown
             'field'              => 'is_helpdesk_default',
             'name'               => __('Default for tickets'),
             'datatype'           => 'bool',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -96,7 +96,7 @@ class RequestType extends CommonDropdown
             'field'              => 'is_followup_default',
             'name'               => __('Default for followups'),
             'datatype'           => 'bool',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -105,7 +105,7 @@ class RequestType extends CommonDropdown
             'field'              => 'is_mail_default',
             'name'               => __('Default for mail recipients'),
             'datatype'           => 'bool',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -114,7 +114,7 @@ class RequestType extends CommonDropdown
             'field'              => 'is_mailfollowup_default',
             'name'               => __('Default for followup mail recipients'),
             'datatype'           => 'bool',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -122,7 +122,7 @@ class RequestType extends CommonDropdown
             'table'              => $this->getTable(),
             'field'              => 'is_active',
             'name'               => __('Active'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -130,7 +130,7 @@ class RequestType extends CommonDropdown
             'table'              => $this->getTable(),
             'field'              => 'is_ticketheader',
             'name'               => __('Request source visible for tickets'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -138,7 +138,7 @@ class RequestType extends CommonDropdown
             'table'              => $this->getTable(),
             'field'              => 'is_itilfollowup',
             'name'               => __('Request source visible for followups'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         return $tab;
@@ -173,7 +173,7 @@ class RequestType extends CommonDropdown
                 $this->getTable(),
                 $update,
                 [
-                    'id' => ['<>', $this->fields['id']]
+                    'id' => ['<>', $this->fields['id']],
                 ]
             );
         }
@@ -226,7 +226,7 @@ class RequestType extends CommonDropdown
                 $this->getTable(),
                 $update,
                 [
-                    'id' => ['<>', $this->fields['id']]
+                    'id' => ['<>', $this->fields['id']],
                 ]
             );
         }
@@ -269,7 +269,7 @@ class RequestType extends CommonDropdown
         parent::cleanRelationData();
 
         if ($this->isUsedAsDefaultRequestType()) {
-            $newval = (isset($this->input['_replace_by']) ? $this->input['_replace_by'] : 0);
+            $newval = ($this->input['_replace_by'] ?? 0);
 
             Config::setConfigurationValues(
                 'core',

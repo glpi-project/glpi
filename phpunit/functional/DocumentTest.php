@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -47,26 +46,26 @@ class DocumentTest extends DbTestCase
         return [
             [
                 'item'   => new \DeviceBattery(),
-                'can'    => true
+                'can'    => true,
             ], [
                 'item'   => 'DeviceBattery',
-                'can'    => true
+                'can'    => true,
             ], [
                 'item'   => 'Item_DeviceBattery',
-                'can'    => true
+                'can'    => true,
             ], [
                 'item'   => 'Computer',
-                'can'    => true
+                'can'    => true,
             ], [
                 'item'   => new \Ticket(),
-                'can'    => true
+                'can'    => true,
             ], [
                 'item'   => 'Config',
-                'can'    => false
+                'can'    => false,
             ], [
                 'item'   => 'Item_Plug',
-                'can'    => false
-            ]
+                'can'    => false,
+            ],
         ];
     }
 
@@ -82,11 +81,26 @@ class DocumentTest extends DbTestCase
 
     public function testGetItemtypesThatCanHave()
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $doc = new \Document();
-        $this->assertGreaterThan(
-            50,
-            count($doc->getItemtypesThatCanHave())
+        $itemtypes_doc = $doc->getItemtypesThatCanHave();
+
+        $item_device_types = [];
+        foreach ($CFG_GLPI['device_types'] as $device_type) {
+            $item_device_types[] = $device_type::getItem_DeviceType();
+        }
+        $itemtypes = array_merge(
+            $CFG_GLPI['document_types'],
+            $CFG_GLPI['device_types'],
+            $item_device_types,
         );
+
+        $this->assertEquals(count($itemtypes_doc), count($itemtypes));
+        foreach ($itemtypes as $itemtype) {
+            $this->assertContains($itemtype, $itemtypes_doc);
+        }
     }
 
     public function testDefineTabs()
@@ -104,7 +118,7 @@ class DocumentTest extends DbTestCase
     public function testPrepareInputForAdd()
     {
         $input = [
-            'filename'   => 'A_name.pdf'
+            'filename'   => 'A_name.pdf',
         ];
 
         $doc = new \Document();
@@ -129,7 +143,7 @@ class DocumentTest extends DbTestCase
         $item = new \Computer();
         $cid = $item->add([
             'name'         => 'Documented Computer',
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $cid);
 
@@ -210,11 +224,11 @@ class DocumentTest extends DbTestCase
 
         // Create a new ticket.
         $item = new \Ticket();
-        $cid = (int)$item->add([
+        $cid = (int) $item->add([
             'name'         => 'Documented Ticket',
             'entities_id'  => 0,
             'content'      => 'Ticket content',
-            'status'       => \Ticket::WAITING
+            'status'       => \Ticket::WAITING,
         ]);
 
         // Verify that the ticket is successfully added to the database.
@@ -228,7 +242,7 @@ class DocumentTest extends DbTestCase
             $ticket_user->add([
                 'tickets_id' => $cid,
                 'users_id'   => getItemByTypeName('User', TU_USER, true),
-                'type'       => \CommonITILActor::REQUESTER
+                'type'       => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -245,7 +259,7 @@ class DocumentTest extends DbTestCase
             'authtype'     => 1,
             'profiles_id'  => 0,
             'entities_id'  => 0,
-            'usercategories_id' => 1
+            'usercategories_id' => 1,
         ]);
         $this->assertGreaterThan(0, $uid);
 
@@ -286,14 +300,14 @@ class DocumentTest extends DbTestCase
             $ticket_user->add([
                 'tickets_id' => $cid,
                 'users_id'   => $uid,
-                'type'       => \CommonITILActor::ASSIGN
+                'type'       => \CommonITILActor::ASSIGN,
             ])
         );
 
         // Update the ticket status to WAITING.
         $item->update([
             'id'     => $cid,
-            'status' => \Ticket::WAITING
+            'status' => \Ticket::WAITING,
         ]);
         $this->assertEquals(\Ticket::WAITING, $item->fields['status']);
 
@@ -316,14 +330,14 @@ class DocumentTest extends DbTestCase
         return [
             [
                 'filename'  => 'myfile.png',
-                'expected'  => 'PNG'
+                'expected'  => 'PNG',
             ], [
                 'filename'  => 'myfile.dOcX',
-                'expected'  => 'DOCX'
+                'expected'  => 'DOCX',
             ], [
                 'filename'  => 'myfile.notknown',
-                'expected'  => ''
-            ]
+                'expected'  => '',
+            ],
         ];
     }
 
@@ -340,7 +354,7 @@ class DocumentTest extends DbTestCase
             0,
             $doctype->add([
                 'name'   => 'Type test',
-                'ext'    => '/[0-9]{4}/'
+                'ext'    => '/[0-9]{4}/',
             ])
         );
 
@@ -363,7 +377,7 @@ class DocumentTest extends DbTestCase
             [__DIR__ . "/../../public/pics/corners.gif", true],
             [__DIR__ . "/../../public/pics/PICS-AUTHORS.txt", false],
             [__DIR__ . "/../notanimage.jpg", false],
-            [__DIR__ . "/../notafile.jpg", false]
+            [__DIR__ . "/../notafile.jpg", false],
         ];
     }
 
@@ -450,7 +464,7 @@ class DocumentTest extends DbTestCase
 
         $this->login('post-only', 'postonly');
 
-       // post-only cannot see documents only linked to someone else reminders
+        // post-only cannot see documents only linked to someone else reminders
         $glpiReminder = new \Reminder();
         $this->assertGreaterThan(
             0,
@@ -483,7 +497,7 @@ class DocumentTest extends DbTestCase
         $this->assertFalse($basicDocument->canViewFile());
         $this->assertFalse($inlinedDocument->canViewFile());
 
-       // post-only can see documents linked to its own reminders
+        // post-only can see documents linked to its own reminders
         $myReminder = new \Reminder();
         $this->assertGreaterThan(
             0,
@@ -629,7 +643,7 @@ class DocumentTest extends DbTestCase
         );
         $this->assertTrue(
             $entity_kbitems->delete([
-                'id' => $ent_kb_id
+                'id' => $ent_kb_id,
             ])
         );
 
@@ -871,40 +885,40 @@ class DocumentTest extends DbTestCase
 
         $doc = new \Document();
 
-        $did1 = (int)$doc->add([
-            'name'   => 'test doc'
+        $did1 = (int) $doc->add([
+            'name'   => 'test doc',
         ]);
         $this->assertGreaterThan(0, $did1);
 
-        $did2 = (int)$doc->add([
-            'name'   => 'test doc'
+        $did2 = (int) $doc->add([
+            'name'   => 'test doc',
         ]);
         $this->assertGreaterThan(0, $did2);
 
-        $did3 = (int)$doc->add([
-            'name'   => 'test doc'
+        $did3 = (int) $doc->add([
+            'name'   => 'test doc',
         ]);
         $this->assertGreaterThan(0, $did3);
 
-       // create a ticket and link one document
+        // create a ticket and link one document
         $ticket = new \Ticket();
         $tickets_id_1 = $ticket->add([
             'name'            => "test 1",
             'content'         => "test 1",
             'entities_id'     => 0,
-            '_documents_id'   => [$did3]
+            '_documents_id'   => [$did3],
         ]);
-        $this->assertGreaterThan(0, (int)$tickets_id_1);
+        $this->assertGreaterThan(0, (int) $tickets_id_1);
         $this->assertTrue($ticket->getFromDB($tickets_id_1));
 
         $docitem = new \Document_Item();
         $this->assertTrue($docitem->getFromDBByCrit(['itemtype' => 'Ticket', 'items_id' => $tickets_id_1]));
 
-       // launch Cron for closing tickets
+        // launch Cron for closing tickets
         $mode = - \CronTask::MODE_EXTERNAL; // force
         \CronTask::launch($mode, 5, 'cleanorphans');
 
-       // check documents presence
+        // check documents presence
         $this->assertFalse($doc->getFromDB($did1));
         $this->assertFalse($doc->getFromDB($did2));
         $this->assertTrue($doc->getFromDB($did3));
@@ -914,7 +928,7 @@ class DocumentTest extends DbTestCase
     {
         $instance = new \Document();
 
-       // Test when the file is not in the DB
+        // Test when the file is not in the DB
         $output = $instance->getDuplicateOf(0, FIXTURE_DIR . '/uploads/foo.png');
         $this->assertFalse($output);
 
@@ -931,7 +945,7 @@ class DocumentTest extends DbTestCase
             ],
             '_prefix_filename' => [
                 '5e5e92ffd9bd91.11111111',
-            ]
+            ],
         ];
         $document = new \Document();
         $document->add($input);
@@ -945,7 +959,7 @@ class DocumentTest extends DbTestCase
         // toggle the blacklisted flag
         $success = $instance->update([
             'id'             => $instance->getID(),
-            'is_blacklisted' => '1'
+            'is_blacklisted' => '1',
         ]);
         $this->assertTrue($success);
 

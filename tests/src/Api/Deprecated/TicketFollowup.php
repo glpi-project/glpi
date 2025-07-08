@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -52,7 +51,7 @@ class TicketFollowup implements DeprecatedInterface
         return [
             "id", "tickets_id", "date", "users_id", "users_id_editor", "content",
             "is_private", "requesttypes_id", "date_mod", "date_creation",
-            "timeline_position", "links"
+            "timeline_position", "links",
         ];
     }
 
@@ -62,7 +61,7 @@ class TicketFollowup implements DeprecatedInterface
             "users_id" => getItemByTypeName('User', TU_USER, true),
             "itemtype" => "Ticket",
             "items_id" => getItemByTypeName('Ticket', '_ticket01', true),
-            "content"  => "New followup"
+            "content"  => "New followup",
         ];
     }
 

@@ -5,8 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,12 +37,12 @@ describe('Validation configuration', () => {
 
         cy.createFormWithAPI().as('form_id').visitFormTab('Form');
 
-        cy.findByRole('button', {'name': "Add a new question"}).click();
+        cy.findByRole('button', {'name': "Add a question"}).click();
         cy.focused().type("My Assignee question");
         cy.getDropdownByLabelText('Question type').selectDropdownValue('Actors');
         cy.getDropdownByLabelText('Question sub type').selectDropdownValue('Assignees');
 
-        cy.findByRole('button', {'name': "Add a new question"}).click();
+        cy.findByRole('button', {'name': "Add a question"}).click();
         cy.focused().type("My User question");
         cy.getDropdownByLabelText('Question type').selectDropdownValue('Item');
         cy.getDropdownByLabelText('Question sub type').selectDropdownValue('GLPI Objects');
@@ -53,9 +52,7 @@ describe('Validation configuration', () => {
         cy.checkAndCloseAlert('Item successfully updated');
 
         // Go to destination tab
-        cy.findByRole('tab', {'name': "Items to create"}).click();
-        cy.findByRole('button', {'name': "Add ticket"}).click();
-        cy.checkAndCloseAlert('Item successfully added');
+        cy.findByRole('tab', { 'name': "Items to create 1" }).click();
 
         cy.get('@form_id').then((form_id) => {
             cy.createWithAPI('User', {
@@ -69,13 +66,13 @@ describe('Validation configuration', () => {
     });
 
     it('can use all possibles configuration options', () => {
-        cy.findByRole('region', {'name': "Validation configuration"}).as("config");
-        cy.get('@config').getDropdownByLabelText('Validation').as("validation_dropdown");
+        cy.findByRole('region', {'name': "Approval configuration"}).as("config");
+        cy.get('@config').getDropdownByLabelText('Select strategy...').as("validation_dropdown");
 
         // Default value
         cy.get('@validation_dropdown').should(
             'have.text',
-            'No validation'
+            'No approval'
         );
 
         // Make sure hidden dropdowns are not displayed
@@ -115,8 +112,8 @@ describe('Validation configuration', () => {
 
     it('can create ticket using a specific question answer', () => {
         // Switch to "Answer from specific questions"
-        cy.findByRole('region', {'name': "Validation configuration"}).as("config");
-        cy.get('@config').getDropdownByLabelText('Validation').selectDropdownValue('Answer from specific questions');
+        cy.findByRole('region', {'name': "Approval configuration"}).as("config");
+        cy.get('@config').getDropdownByLabelText('Select strategy...').selectDropdownValue('Answer from specific questions');
         cy.get('@config').getDropdownByLabelText('Select questions...').as('specific_answers_dropdown');
         cy.get('@specific_answers_dropdown').selectDropdownValue('My User question');
 
@@ -134,9 +131,9 @@ describe('Validation configuration', () => {
         // Fill form
         cy.get('@form_id').then((form_id) => {
             cy.getDropdownByLabelText("My Assignee question").selectDropdownValue(`Validation configuration test group - ${form_id}`);
-            cy.getDropdownByLabelText("Select an item").selectDropdownValue(`Validation configuration test user - ${form_id}`);
+            cy.getDropdownByLabelText("My User question").selectDropdownValue(`Validation configuration test user - ${form_id}`);
         });
-        cy.findByRole('button', {'name': 'Send form'}).click();
+        cy.findByRole('button', {'name': 'Submit'}).click();
         cy.findByRole('link', {'name': 'My test form'}).click();
 
         // Check ticket values

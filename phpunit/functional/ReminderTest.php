@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -52,10 +51,10 @@ class ReminderTest extends DbTestCase
 
         $all_entities = "'0', '$test_root', '$e2e_root', '$e2e_test_child1', '$e2e_test_child2', '$test_child_1', '$test_child_2'";
 
-         //first, as a super-admin
-         $this->login();
-         $users_id = \Session::getLoginUserID();
-         $expected = preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '$users_id'
+        //first, as a super-admin
+        $this->login();
+        $users_id = \Session::getLoginUserID();
+        $expected = preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '$users_id'
                OR `glpi_reminders_users`.`users_id` = '$users_id'
                OR (`glpi_profiles_reminders`.`profiles_id` = '4'
                     AND (`glpi_profiles_reminders`.`no_entity_restriction` = '1'
@@ -65,40 +64,40 @@ class ReminderTest extends DbTestCase
                OR ((`glpi_entities_reminders`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2')
                          OR (`glpi_entities_reminders`.`is_recursive` = '1'
                               AND `glpi_entities_reminders`.`entities_id` IN ('0')))))");
-         $this->assertSame(
-             $expected,
-             \Reminder::addVisibilityRestrict()
-         );
+        $this->assertSame(
+            $expected,
+            \Reminder::addVisibilityRestrict()
+        );
 
-         $this->login('normal', 'normal');
-         $expected = preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '5'
+        $this->login('normal', 'normal');
+        $expected = preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '5'
                OR `glpi_reminders_users`.`users_id` = '5'
                OR (`glpi_profiles_reminders`.`profiles_id` = '2'
                     AND (`glpi_profiles_reminders`.`no_entity_restriction` = '1'
                          OR (`glpi_profiles_reminders`.`entities_id` IN ($all_entities))))
                OR (`glpi_entities_reminders`.`entities_id` IN ($all_entities)))");
-         $this->assertSame(
-             $expected,
-             trim(preg_replace('/\s+/', ' ', \Reminder::addVisibilityRestrict()))
-         );
+        $this->assertSame(
+            $expected,
+            trim(preg_replace('/\s+/', ' ', \Reminder::addVisibilityRestrict()))
+        );
 
-         $this->login('tech', 'tech');
-         $expected = preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '4'
+        $this->login('tech', 'tech');
+        $expected = preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '4'
                OR `glpi_reminders_users`.`users_id` = '4'
                OR (`glpi_profiles_reminders`.`profiles_id` = '6'
                     AND (`glpi_profiles_reminders`.`no_entity_restriction` = '1'
                          OR (`glpi_profiles_reminders`.`entities_id` IN ($all_entities))))
                OR (`glpi_entities_reminders`.`entities_id` IN ($all_entities)))");
-         $this->assertSame(
-             $expected,
-             trim(preg_replace('/\s+/', ' ', \Reminder::addVisibilityRestrict()))
-         );
+        $this->assertSame(
+            $expected,
+            trim(preg_replace('/\s+/', ' ', \Reminder::addVisibilityRestrict()))
+        );
 
-         $bkp_groups = $_SESSION['glpigroups'];
-         $_SESSION['glpigroups'] = [42, 1337];
-         $str = \Reminder::addVisibilityRestrict();
-         $_SESSION['glpigroups'] = $bkp_groups;
-         $expected = preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '4'
+        $bkp_groups = $_SESSION['glpigroups'];
+        $_SESSION['glpigroups'] = [42, 1337];
+        $str = \Reminder::addVisibilityRestrict();
+        $_SESSION['glpigroups'] = $bkp_groups;
+        $expected = preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '4'
                OR `glpi_reminders_users`.`users_id` = '4'
                OR (`glpi_groups_reminders`.`groups_id` IN ('42', '1337')
                     AND (`glpi_groups_reminders`.`no_entity_restriction` = '1'
@@ -107,9 +106,9 @@ class ReminderTest extends DbTestCase
                     AND (`glpi_profiles_reminders`.`no_entity_restriction` = '1'
                          OR (`glpi_profiles_reminders`.`entities_id` IN ($all_entities))))
                OR (`glpi_entities_reminders`.`entities_id` IN ($all_entities)))");
-         $this->assertSame(
-             $expected,
-             trim(preg_replace('/\s+/', ' ', $str))
-         );
+        $this->assertSame(
+            $expected,
+            trim(preg_replace('/\s+/', ' ', $str))
+        );
     }
 }

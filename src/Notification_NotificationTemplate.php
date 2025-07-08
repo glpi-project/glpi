@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,7 +42,7 @@ use Glpi\Application\View\TemplateRenderer;
  **/
 class Notification_NotificationTemplate extends CommonDBRelation
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1       = 'Notification';
     public static $items_id_1       = 'notifications_id';
     public static $itemtype_2       = 'NotificationTemplate';
@@ -52,12 +52,12 @@ class Notification_NotificationTemplate extends CommonDBRelation
     public $no_form_page    = false;
     protected $displaylist  = false;
 
-    const MODE_MAIL      = 'mailing';
-    const MODE_AJAX      = 'ajax';
-    const MODE_WEBSOCKET = 'websocket';
-    const MODE_SMS       = 'sms';
-    const MODE_XMPP      = 'xmpp';
-    const MODE_IRC       = 'irc';
+    public const MODE_MAIL      = 'mailing';
+    public const MODE_AJAX      = 'ajax';
+    public const MODE_WEBSOCKET = 'websocket';
+    public const MODE_SMS       = 'sms';
+    public const MODE_XMPP      = 'xmpp';
+    public const MODE_IRC       = 'irc';
 
     public static function getTypeName($nb = 0)
     {
@@ -130,17 +130,18 @@ class Notification_NotificationTemplate extends CommonDBRelation
 
         if (
             $canedit
-            && !(!empty($withtemplate) && ((int)$withtemplate === 2))
+            && !(!empty($withtemplate) && ((int) $withtemplate === 2))
         ) {
             $twig_params = [
                 'add_msg' => __('Add a template'),
                 'id' => $ID,
-                'withtemplate' => $withtemplate
+                'withtemplate' => $withtemplate,
             ];
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div class="text-center mb-3">
-                    <a class="btn btn-primary" href="{{ 'Notification_NotificationTemplate'|itemtype_form_path }}?notifications_id={{ id }}&withtemplate={{ withtemplate}}">
+                    <a class="btn btn-primary" role="button"
+                       href="{{ 'Notification_NotificationTemplate'|itemtype_form_path }}?notifications_id={{ id }}&withtemplate={{ withtemplate}}">
                         {{ add_msg }}
                     </a>
                 </div>
@@ -150,7 +151,7 @@ TWIG, $twig_params);
         $iterator = $DB->request([
             'SELECT' => ['id', 'notificationtemplates_id', 'mode'],
             'FROM'   => self::getTable(),
-            'WHERE'  => ['notifications_id' => $ID]
+            'WHERE'  => ['notifications_id' => $ID],
         ]);
 
         $notiftpl = new self();
@@ -162,7 +163,7 @@ TWIG, $twig_params);
 
             $tpl_link = $tpl->getLink();
             if (empty($tpl_link)) {
-                $tpl_link = "<i class='fa fa-exclamation-triangle red'></i>
+                $tpl_link = "<i class='ti ti-alert-triangle red'></i>
                         <a href='" . htmlescape($notiftpl->getLinkUrl()) . "'>" .
                          __s("No template selected") .
                       "</a>";
@@ -178,19 +179,18 @@ TWIG, $twig_params);
                 'id'       => $data['id'],
                 'id_link'  => $notiftpl->getLink(),
                 'link'     => $tpl_link,
-                'mode'     => $mode
+                'mode'     => $mode,
             ];
         }
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
                 'id_link' => __('ID'),
                 'link' => static::getTypeName(1),
-                'mode' => __('Mode')
+                'mode' => __('Mode'),
             ],
             'formatters' => [
                 'id_link' => 'raw_html',
@@ -203,8 +203,8 @@ TWIG, $twig_params);
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . mt_rand(),
-                'specific_actions' => ['purge' => _x('button', 'Delete permanently')]
-            ]
+                'specific_actions' => ['purge' => _x('button', 'Delete permanently')],
+            ],
         ]);
     }
 
@@ -234,7 +234,7 @@ TWIG, $twig_params);
         $iterator = $DB->request([
             'SELECT' => ['id', 'notifications_id', 'mode'],
             'FROM'   => self::getTable(),
-            'WHERE'  => ['notificationtemplates_id' => $ID]
+            'WHERE'  => ['notificationtemplates_id' => $ID],
         ]);
 
         $notiftpl = new self();
@@ -255,19 +255,18 @@ TWIG, $twig_params);
                 'id' => $data['id'],
                 'id_link' => $notiftpl->getLink(),
                 'link' => $notification->getLink(),
-                'mode' => $mode
+                'mode' => $mode,
             ];
         }
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
                 'id_link' => __('ID'),
                 'link' => Notification::getTypeName(1),
-                'mode' => __('Mode')
+                'mode' => __('Mode'),
             ],
             'formatters' => [
                 'id_link' => 'raw_html',
@@ -280,8 +279,8 @@ TWIG, $twig_params);
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . mt_rand(),
-                'specific_actions' => ['purge' => _x('button', 'Delete permanently')]
-            ]
+                'specific_actions' => ['purge' => _x('button', 'Delete permanently')],
+            ],
         ]);
     }
 
@@ -374,7 +373,7 @@ TWIG, $twig_params);
         self::getModes();
         $CFG_GLPI['notifications_modes'][$mode] = [
             'label'  => $label,
-            'from'   => $from
+            'from'   => $from,
         ];
     }
 
@@ -391,13 +390,13 @@ TWIG, $twig_params);
         $core_modes = [
             self::MODE_MAIL      => [
                 'label'  => _n('Email', 'Emails', 1),
-                'from'   => 'core'
+                'from'   => 'core',
             ],
             self::MODE_AJAX      => [
                 'label'  => __('Browser'),
-                'from'   => 'core'
-            ]
-         /*self::MODE_WEBSOCKET => [
+                'from'   => 'core',
+            ],
+            /*self::MODE_WEBSOCKET => [
             'label'  => __('Websocket'),
             'from'   => 'core'
          ],
@@ -496,10 +495,9 @@ TWIG, $twig_params);
     {
         if ($extratype === 'event') {
             $classname = 'NotificationEvent' . ucfirst($mode);
-        } else if ($extratype === 'setting') {
+        } elseif ($extratype === 'setting') {
             $classname = 'Notification' . ucfirst($mode) . 'Setting';
         } else {
-            // @phpstan-ignore notIdentical.alwaysFalse (defensive programming)
             if ($extratype !== '') {
                 throw new \LogicException(sprintf('Unknown type `%s`.', $extratype));
             }

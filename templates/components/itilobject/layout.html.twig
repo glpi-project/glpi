@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -33,12 +32,15 @@
 
 {% set rand = random() %}
 {% set main_rand = rand %}
+{% set is_helpdesk = get_current_interface() == 'helpdesk' %}
+{% set show_extra_fields = not is_helpdesk or show_tickets_properties_on_helpdesk %}
 
 {% set itil_layout = user_pref('itil_layout', true) %}
-{% set is_collapsed = itil_layout['collapsed'] == "true" %}
-{% set is_expanded  = itil_layout['expanded'] == "true" %}
+{% set is_collapsed = (itil_layout['collapsed'] ?? false) == "true" %}
+{% set is_expanded  = (itil_layout['expanded'] ?? false) == "true" %}
 {% set collapsed_cls = (is_collapsed ? "right-collapsed" : "") %}
 {% set expanded_cls  = (is_expanded == "true" ? "right-expanded" : "") %}
+{% set template_preview = params.template_preview|default(false) %}
 
 {% set left_regular_cls = "col-lg-8" %}
 {% set right_regular_cls = "col-lg-4" %}
@@ -56,39 +58,39 @@
 
 <div id="itil-object-container" class="mt-n1 {{ collapsed_cls }} {{ expanded_cls }}">
 
-   {% if item.isNewItem() and not params['template_preview'] %}
+   {% if item.isNewItem() and not template_preview %}
       {{ include('components/itilobject/mainform_open.html.twig') }}
    {% endif %}
 
-   <div class="row d-flex flex-column alin-items-stretch itil-object">
+   <div class="row d-flex flex-column itil-object">
       {% set is_timeline_reversed = user_pref('timeline_order') == constant('CommonITILObject::TIMELINE_ORDER_REVERSE') %}
       {% set fl_direction = (item.isNewItem() or is_timeline_reversed ? 'flex-column' : 'flex-column-reverse') %}
-      <div class="itil-left-side col-12 {{ left_side_cls }} order-last order-lg-first pt-2 pe-2 pe-lg-4 d-flex {{ fl_direction }} border-top border-4">
+      <div class="itil-left-side col-12 {{ left_side_cls }} order-last order-lg-first pt-2 pe-2 pe-lg-4 d-flex {{ fl_direction }} border-top border-4 {{ not show_extra_fields ? "w-100" : "" }}">
          {% if item.isNewItem() %}
             {{ include('components/itilobject/timeline/new_form.html.twig') }}
          {% else %}
             {{ include('components/itilobject/timeline/timeline.html.twig') }}
          {% endif %}
       </div>
-      <div class="itil-right-side col-12 {{ right_side_cls }} mt-0 mt-lg-n1 card-footer p-0 rounded-0">
-         {% if not item.isNewItem() %}
-            {{ include('components/itilobject/mainform_open.html.twig') }}
-         {% endif %}
-         {{ include('components/itilobject/fields_panel.html.twig') }}
-         {% if not item.isNewItem() %}
-            {{ include('components/itilobject/mainform_close.html.twig') }}
-         {% endif %}
-      </div>
+      {% if show_extra_fields %}
+         <div class="itil-right-side col-12 {{ right_side_cls }} mt-0 mt-lg-n1 card-footer p-0 rounded-0">
+            {% if not item.isNewItem() %}
+               {{ include('components/itilobject/mainform_open.html.twig') }}
+            {% endif %}
+            {{ include('components/itilobject/fields_panel.html.twig') }}
+            {% if not item.isNewItem() %}
+               {{ include('components/itilobject/mainform_close.html.twig') }}
+            {% endif %}
+         </div>
+      {% endif %}
    </div>
 
-   {% if not params['template_preview'] %}
+   {% if not template_preview %}
       {{ include('components/itilobject/footer.html.twig') }}
+      {% if not item.isNewItem() %}
+           {{ include('components/itilobject/mainform_close.html.twig') }}
+      {% endif %}
    {% endif %}
-
-   {% if not item.isNewItem() and not params['template_preview'] %}
-      {{ include('components/itilobject/mainform_close.html.twig') }}
-   {% endif %}
-
 </div>
 
 {# Common form fields for CommonITILObject_CommonITILObject purge action #}
@@ -109,7 +111,7 @@
 {% endfor %}
 
 <form name="massaction_{{ rand }}" id="massaction_{{ rand }}" method="post"
-      action="{{ path('/front/massiveaction.php') }}" data-submit-once>
+      action="{{ path('/front/massiveaction.php') }}?_from_single_item=1" data-submit-once>
    <div id="massive_container_{{ rand }}"></div>
    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
 </form>

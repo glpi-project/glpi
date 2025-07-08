@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -31,22 +30,33 @@
  # ---------------------------------------------------------------------
  #}
 
-{# @var form       Glpi\Form\Form #}
-{# @var can_update bool #}
+{# @var form                                      Glpi\Form\Form #}
+{# @var can_update                                bool #}
+{# @var vertical_layout                           bool #}
+{# @var ghost_button                              bool #}
+{# @var hide_section_button                       bool #}
+{# @var hide_new_horizontal_layout_button         bool #}
+{# @var show_remove_horizontal_placeholder_button bool #}
+
+{% set ghost_button = ghost_button|default(false) %}
+{% set hide_section_button = hide_section_button|default(false) %}
+{% set hide_new_horizontal_layout_button = hide_new_horizontal_layout_button|default(false) %}
+{% set show_remove_horizontal_placeholder_button = show_remove_horizontal_placeholder_button|default(false) %}
 
 {% if can_update %}
     <div
-        class="btn-group mt-2 d-flex justify-content-center"
+        class="d-flex h-full {{ (vertical_layout ?? false) ? 'position-absolute btn-group-vertical justify-content-end ms-2 pb-2' : 'btn-group justify-content-center mt-2' }}"
         style="box-shadow:none;"
         role="group"
+        data-glpi-form-editor-toolbar
     >
         {# Add question action #}
         <button
             type="button"
-            class="btn btn-icon flex-grow-0"
+            class="btn btn-icon {{ ghost_button ? 'btn-ghost-secondary' : '' }} flex-grow-0"
             data-bs-toggle="tooltip"
             data-bs-placement="bottom"
-            title="{{ __("Add a new question") }}"
+            title="{{ __("Add a question") }}"
             data-glpi-form-editor-on-click="add-question"
             type="button"
         >
@@ -57,12 +67,12 @@
 
         {# Add comment action #}
         <button
-        type="button"
+            type="button"
             for="btn-radio-toolbar-1"
-            class="btn btn-icon flex-grow-0"
+            class="btn btn-icon {{ ghost_button ? 'btn-ghost-secondary' : '' }} flex-grow-0"
             data-bs-toggle="tooltip"
             data-bs-placement="bottom"
-            title="{{ __("Add a new comment") }}"
+            title="{{ __("Add a comment") }}"
             data-glpi-form-editor-on-click="add-comment"
         >
             <span class="px-2 d-flex align-items-center">
@@ -71,18 +81,54 @@
         </button>
 
         {# Add section action #}
-        {% set add_section_action_visible = form.getSections()|length > 1 or (form.getSections()|first).getBlocks()|length > 0 %}
-        <button
-            type="button"
-            for="btn-radio-toolbar-1"
-            class="btn btn-icon flex-grow-0 {{ add_section_action_visible ? '' : 'd-none' }}"
-            data-bs-toggle="tooltip"
-            data-bs-placement="bottom"
-            title="{{ __("Add a new section") }}"
-            data-glpi-form-editor-on-click="add-section"
-            type="button"
-        >
-            <i class="ti ti-box-align-top"></i>
-        </button>
+        {% if not hide_section_button %}
+            {% set add_section_action_visible = form.getSections()|length > 1 or (form.getSections()|first).getBlocks()|length > 0 %}
+            <button
+                type="button"
+                for="btn-radio-toolbar-1"
+                class="btn btn-icon {{ ghost_button ? 'btn-ghost-secondary' : '' }} flex-grow-0 {{ add_section_action_visible ? '' : 'd-none' }}"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                title="{{ __("Add a section") }}"
+                data-glpi-form-editor-on-click="add-section"
+                type="button"
+            >
+                <i class="ti ti-box-align-top"></i>
+            </button>
+        {% endif %}
+
+        {# Add horizontal layout action #}
+        {% if not hide_new_horizontal_layout_button %}
+            <button
+                type="button"
+                for="btn-radio-toolbar-1"
+                class="btn btn-icon {{ ghost_button ? 'btn-ghost-secondary' : '' }} flex-grow-0"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                title="{{ __("Add a horizontal layout") }}"
+                data-glpi-form-editor-on-click="add-horizontal-layout"
+            >
+                <span class="px-2 d-flex align-items-center">
+                    <i class="ti ti-layout-columns"></i>
+                </span>
+            </button>
+        {% endif %}
+
+        {# Add remove horizontal layout slot action #}
+        {% if show_remove_horizontal_placeholder_button %}
+            <button
+                type="button"
+                class="btn btn-icon {{ ghost_button ? 'btn-ghost-danger' : '' }} flex-grow-0"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                title="{{ __("Remove slot") }}"
+                data-glpi-form-editor-on-click="remove-horizontal-layout-slot"
+                type="button"
+            >
+                <span class="px-2 d-flex align-items-center">
+                    <i class="ti ti-trash"></i>
+                </span>
+            </button>
+        {% endif %}
     </div>
 {% endif %}

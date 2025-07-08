@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,7 +36,7 @@
 /// Class Ticket_User
 class Ticket_User extends CommonITILActor
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1 = 'Ticket';
     public static $items_id_1 = 'tickets_id';
     public static $itemtype_2 = 'User';
@@ -57,6 +57,6 @@ class Ticket_User extends CommonITILActor
                 break;
         }
         parent::post_addItem();
-        unset($this->_force_log_option);
+        $this->_force_log_option = 0;
     }
 }

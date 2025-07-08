@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,12 +34,10 @@
 
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
-use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\SLATTOField;
-use Glpi\Form\Destination\CommonITILField\SLMFieldConfig;
+use Glpi\Form\Destination\CommonITILField\SLATTOFieldConfig;
 use Glpi\Form\Destination\CommonITILField\SLMFieldStrategy;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
@@ -48,14 +45,17 @@ use SLA;
 use SLM;
 use Ticket;
 use TicketTemplatePredefinedField;
+use Override;
 
-final class SLATTOFieldTest extends DbTestCase
+include_once __DIR__ . '/../../../../../abstracts/AbstractDestinationFieldTest.php';
+
+final class SLATTOFieldTest extends AbstractDestinationFieldTest
 {
     use FormTesterTrait;
 
     public function testDefaultTemplateWithPredefinedField(): void
     {
-        $this->login();
+        $this->login('normal');
         $default_template = (new Ticket())->getITILTemplateToUse(
             entities_id: $_SESSION["glpiactive_entity"]
         );
@@ -80,7 +80,7 @@ final class SLATTOFieldTest extends DbTestCase
 
         $this->checkSLATTOFieldConfiguration(
             form: $this->createAndGetFormWithTicketDestination(),
-            config: new SLMFieldConfig(
+            config: new SLATTOFieldConfig(
                 strategy: SLMFieldStrategy::FROM_TEMPLATE,
             ),
             expected_slas_tto_id: $created_sla_tto->getID()
@@ -89,7 +89,7 @@ final class SLATTOFieldTest extends DbTestCase
 
     public function testSpecificSLATTO(): void
     {
-        $this->login();
+        $this->login('normal');
         $created_sla_tto = $this->createItem(
             SLA::class,
             [
@@ -102,7 +102,7 @@ final class SLATTOFieldTest extends DbTestCase
 
         $this->checkSLATTOFieldConfiguration(
             form: $this->createAndGetFormWithTicketDestination(),
-            config: new SLMFieldConfig(
+            config: new SLATTOFieldConfig(
                 strategy: SLMFieldStrategy::SPECIFIC_VALUE,
                 specific_slm_id: $created_sla_tto->getID()
             ),
@@ -112,7 +112,7 @@ final class SLATTOFieldTest extends DbTestCase
 
     public function testSpecificSLATTOWithDefaultTemplateWithPredefinedField(): void
     {
-        $this->login();
+        $this->login('normal');
         $default_template = (new Ticket())->getITILTemplateToUse(
             entities_id: $_SESSION["glpiactive_entity"]
         );
@@ -146,7 +146,7 @@ final class SLATTOFieldTest extends DbTestCase
 
         $this->checkSLATTOFieldConfiguration(
             form: $this->createAndGetFormWithTicketDestination(),
-            config: new SLMFieldConfig(
+            config: new SLATTOFieldConfig(
                 strategy: SLMFieldStrategy::SPECIFIC_VALUE,
                 specific_slm_id: $created_sla_tto->getID()
             ),
@@ -156,7 +156,7 @@ final class SLATTOFieldTest extends DbTestCase
 
     private function checkSLATTOFieldConfiguration(
         Form $form,
-        SLMFieldConfig $config,
+        SLATTOFieldConfig $config,
         int $expected_slas_tto_id
     ): Ticket {
         // Insert config
@@ -193,10 +193,40 @@ final class SLATTOFieldTest extends DbTestCase
     private function createAndGetFormWithTicketDestination(): Form
     {
         $builder = new FormBuilder();
-        $builder->addDestination(
-            FormDestinationTicket::class,
-            "My ticket",
-        );
         return $this->createForm($builder);
+    }
+
+    #[Override]
+    public static function provideConvertFieldConfigFromFormCreator(): iterable
+    {
+        yield 'SLA from template or none' => [
+            'field_key'     => SLATTOField::getKey(),
+            'fields_to_set' => [
+                'sla_rule' => 1, // PluginFormcreatorAbstractItilTarget::SLA_RULE_NONE
+            ],
+            'field_config' => new SLATTOFieldConfig(
+                strategy: SLMFieldStrategy::FROM_TEMPLATE
+            ),
+        ];
+
+        yield 'Specific SLA' => [
+            'field_key'     => SLATTOField::getKey(),
+            'fields_to_set' => [
+                'sla_rule'         => 2, // PluginFormcreatorAbstractItilTarget::SLA_RULE_SPECIFIC
+                'sla_question_tto' => fn(AbstractDestinationFieldTest $context) => $context->createItem(
+                    SLA::class,
+                    [
+                        'name'            => '_test_sla_tto',
+                        'type'            => SLM::TTO,
+                        'number_time'     => 1,
+                        'definition_time' => 'hour',
+                    ]
+                )->getID(),
+            ],
+            'field_config' => fn($migration, $form) => new SLATTOFieldConfig(
+                strategy: SLMFieldStrategy::SPECIFIC_VALUE,
+                specific_slm_id: getItemByTypeName(SLA::class, '_test_sla_tto', true)
+            ),
+        ];
     }
 }

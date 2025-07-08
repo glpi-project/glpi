@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -61,7 +60,7 @@ class GraphicCardTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"chipset": "ATY,RadeonX1600", "memory": 128, "name": "ATI Radeon X1600", "resolution": "1680x1050", "designation": "ATI Radeon X1600", "is_dynamic": 1}'
+                'expected'  => '{"chipset": "ATY,RadeonX1600", "memory": 128, "name": "ATI Radeon X1600", "resolution": "1680x1050", "designation": "ATI Radeon X1600", "is_dynamic": 1}',
             ], [ //with unit on memory
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -76,8 +75,8 @@ class GraphicCardTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"chipset": "Intel(R) HD Graphics Family", "name": "Intel(R) HD Graphics 530", "resolution": "1920x1080", "designation": "Intel(R) HD Graphics 530", "is_dynamic": 1}'
-            ]
+                'expected'  => '{"chipset": "Intel(R) HD Graphics Family", "name": "Intel(R) HD Graphics 530", "resolution": "1920x1080", "designation": "Intel(R) HD Graphics 530", "is_dynamic": 1}',
+            ],
         ];
     }
 
@@ -90,7 +89,7 @@ class GraphicCardTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\GraphicCard($computer, $json->content->videos);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected), $result[0]);
     }
@@ -99,14 +98,14 @@ class GraphicCardTest extends AbstractInventoryAsset
     {
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
-       //first, check there are no controller linked to this computer
+        //first, check there are no controller linked to this computer
         $idg = new \Item_DeviceGraphicCard();
-                 $this->assertFalse(
-                     $idg->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
-                     'A graphic cardis already linked to computer!'
-                 );
+        $this->assertFalse(
+            $idg->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
+            'A graphic cardis already linked to computer!'
+        );
 
-       //convert data
+        //convert data
         $expected = $this->assetProvider()[0];
 
         $converter = new \Glpi\Inventory\Converter();
@@ -115,11 +114,11 @@ class GraphicCardTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\GraphicCard($computer, $json->content->videos);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected['expected']), $result[0]);
 
-       //handle
+        //handle
         $asset->handleLinks();
         $asset->handle();
         $this->assertTrue(
@@ -160,53 +159,53 @@ class GraphicCardTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-       //create manually a computer, with 3 graphic cards
+        //create manually a computer, with 3 graphic cards
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => 'ggheb7ne7',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
         $gc_1_id = $device_gc->add([
             'designation' => 'ATI Radeon X1600',
             'chipset' => 'ATY,RadeonX1600',
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $gc_1_id);
 
         $item_gc_1_id = $item_gc->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'devicegraphiccards_id' => $gc_1_id
+            'devicegraphiccards_id' => $gc_1_id,
         ]);
         $this->assertGreaterThan(0, $item_gc_1_id);
 
         $gc_2_id = $device_gc->add([
             'designation' => 'Intel(R) HD Graphics 530',
             'chipset' => 'Intel(R) HD Graphics Family',
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $gc_2_id);
 
         $item_gc_2_id = $item_gc->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'devicegraphiccards_id' => $gc_2_id
+            'devicegraphiccards_id' => $gc_2_id,
         ]);
         $this->assertGreaterThan(0, $item_gc_2_id);
 
         $gc_3_id = $device_gc->add([
             'designation' => 'My Graphic Card',
             'chipset' => 'My chipset',
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $gc_3_id);
 
         $item_gc_3_id = $item_gc->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'devicegraphiccards_id' => $gc_3_id
+            'devicegraphiccards_id' => $gc_3_id,
         ]);
         $this->assertGreaterThan(0, $item_gc_3_id);
 
@@ -216,26 +215,26 @@ class GraphicCardTest extends AbstractInventoryAsset
             $this->assertEquals(0, $gc['is_dynamic']);
         }
 
-       //computer inventory knows only "ATI" and "Intel" graphic cards
+        //computer inventory knows only "ATI" and "Intel" graphic cards
         $this->doInventory($xml_source, true);
 
-       //we still have 3 graphic cards
+        //we still have 3 graphic cards
         $gcs = $device_gc->find();
         $this->assertCount(3, $gcs);
 
-       //we still have 3 graphic cards items linked to the computer
+        //we still have 3 graphic cards items linked to the computer
         $gcs = $item_gc->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(3, $gcs);
 
-       //graphic cards present in the inventory source are now dynamic
+        //graphic cards present in the inventory source are now dynamic
         $gcs = $item_gc->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(2, $gcs);
 
-       //graphic card not present in the inventory is still not dynamic
+        //graphic card not present in the inventory is still not dynamic
         $gcs = $item_gc->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $gcs);
 
-       //Redo inventory, but with removed "Intel" graphic card
+        //Redo inventory, but with removed "Intel" graphic card
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
@@ -259,19 +258,19 @@ class GraphicCardTest extends AbstractInventoryAsset
 
         $this->doInventory($xml_source, true);
 
-       //we still have 3 graphic cards
+        //we still have 3 graphic cards
         $gcs = $device_gc->find();
         $this->assertCount(3, $gcs);
 
-       //we now have 2 graphic cards linked to computer only
+        //we now have 2 graphic cards linked to computer only
         $gcs = $item_gc->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(2, $gcs);
 
-       //graphic card present in the inventory source is still dynamic
+        //graphic card present in the inventory source is still dynamic
         $gcs = $item_gc->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(1, $gcs);
 
-       //graphic card not present in the inventory is still not dynamic
+        //graphic card not present in the inventory is still not dynamic
         $gcs = $item_gc->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $gcs);
     }

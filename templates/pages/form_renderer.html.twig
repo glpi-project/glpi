@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -31,7 +30,6 @@
  # ---------------------------------------------------------------------
  #}
 
-
 {% extends "layout/page_without_tabs.html.twig" %}
 
 {% set container_size = "narrow" %}
@@ -43,8 +41,13 @@
     {# Is this a single or multi sections forms ? #}
     {% set is_single_section_form = form.getSections()|length == 1 %}
 
-    <form id="forms_form_answers" method="POST" action="{{ path("/Form/SubmitAnswers") }}">
-
+    <form
+        id="forms_form_answers"
+        method="POST"
+        action="{{ path("/Form/SubmitAnswers") }}"
+        {# The pointer-events-none class will be removed by the JS controller once it is loaded #}
+        class="pointer-events-none"
+    >
         <div class="form-renderer mt-n5">
 
             {# Form header: title and description #}
@@ -52,11 +55,17 @@
                 class="mb-4"
                 data-glpi-form-renderer-form-header
             >
-                <h1 class="form-title mb-2"> {{ form.fields.name }} </h1>
+                <h1 class="form-title mb-2" aria-label="{{ __('Form title') }}">
+                    {{ translate_item_key(form, constant('TRANSLATION_KEY_NAME', form)) }}
+                </h1>
 
-                <div class="text-muted form-description">
-                    {{ form.fields.header|safe_html }}
+                <div class="text-muted form-description" aria-label="{{ __('Form description') }}" role="note">
+                    {{ translate_item_key(form, constant('TRANSLATION_KEY_HEADER', form))|safe_html }}
                 </div>
+            </div>
+
+            <div data-glpi-form-renderer-delegation-container>
+                {% include "components/helpdesk_forms/delegation_alert.html.twig" %}
             </div>
 
             {% for section in form.getSections() %}
@@ -67,71 +76,110 @@
                 <div
                     class="{{ is_first_section ? "" : "d-none" }}"
                     data-glpi-form-renderer-section="{{ section_index }}"
+                    data-glpi-form-renderer-uuid="{{ section.fields.uuid }}"
+                    data-glpi-form-renderer-id="{{ section.fields.id }}"
+                    {% if not visibility_engine_output.isSectionVisible(section.getID()) %}
+                        data-glpi-form-renderer-hidden-by-condition
+                    {% endif %}
                 >
                     {% if not is_single_section_form %}
                         <div
                             class="bg-primary px-2 py-1 rounded-top "
-                            style="width: fit-content;"
+                            style="width: fit-content; max-width: calc(100% - var(--tblr-border-radius) * 2);"
                         >
-                            {{ __("Step %d of %d")|format(loop.index, form.getSections()|length) }}
+                            <h2 class="mb-0 {{ not section.fields.name ? "text-muted" : "" }}">
+                                {{ translate_item_key(section, constant('TRANSLATION_KEY_NAME', section))|default(__('Untitled section')) }}
+                            </h2>
                         </div>
                     {% endif %}
                     <div
                         class="card mb-3" {{ not is_single_section_form ? "style='border-top-left-radius: 0;'" : "" }}
                     >
                         <div class="card-body">
-
                             {% if not is_single_section_form %}
-                                <h2 class="mb-1 {{ not section.fields.name ? "text-muted" : "" }}">
-                                    {{ section.fields.name|default(__('Untitled section')) }}
-                                </h2>
-
                                 <div class="text-muted section-description mb-3">
-                                    {{ section.fields.description|safe_html }}
+                                    {{ translate_item_key(section, constant('TRANSLATION_KEY_DESCRIPTION', section))|safe_html }}
                                 </div>
                             {% endif %}
 
-                            {% for form_block in section.getBlocks() %}
-                                {% if form_block is instanceof('Glpi\\Form\\Question') %}
-                                    {% set question_type = form_block.getQuestionType() %}
+                            {% for form_group_blocks in section.getBlocks() %}
+                                {# Ensure form_group_blocks is iterable (may be a single question) #}
+                                {% if form_group_blocks is not iterable %}
+                                    {% set form_group_blocks = [form_group_blocks] %}
                                 {% endif %}
 
-                                {% set skip_question = false %}
-
-                                {# Skip unknown types (may be a disabled plugin) #}
-                                {% if form_block is instanceof('Glpi\\Form\\Question') and question_type is null %}
-                                    {% set skip_question = true %}
-                                {% endif %}
-
-                                {# Skip questions not allowed for anonymous forms #}
-                                {% if not skip_question and form_block is instanceof('Glpi\\Form\\Question') and unauthenticated_user and not question_type.isAllowedForUnauthenticatedAccess() %}
-                                    {% set skip_question = true %}
-                                {% endif %}
-
-                                {% if not skip_question %}
-                                    <section
-                                        aria-label="{{ form_block.fields.name }}"
-                                        class="{{ loop.last ? "" : "mb-3" }} {{ is_first_section ? "" : "d-none" }}"
-                                        data-glpi-form-renderer-parent-section="{{ section_index }}"
-                                    >
-                                        <h3 class="mb-2 {{ not form_block.fields.name ? "text-muted" : "" }}">
-                                            {{ form_block.fields.name|default(__('Untitled question')) }}
-                                            {% if form_block.fields.is_mandatory %}
-                                                <span class="text-danger">*</span>
-                                            {% endif %}
-                                        </h3>
+                                <section data-glpi-form-renderer-horizontal-blocks>
+                                    {% set previous_index = -1 %}
+                                    {% for form_block in form_group_blocks %}
+                                        {% if form_block.fields.horizontal_rank > previous_index + 1 %}
+                                            {% for i in 1..(form_block.fields.horizontal_rank - (previous_index + 1)) %}
+                                            <div style="flex: 1;"></div>
+                                            {% endfor %}
+                                        {% endif %}
+                                        {% set previous_index = form_block.fields.horizontal_rank %}
 
                                         {% if form_block is instanceof('Glpi\\Form\\Question') %}
-                                            <div class="mb-2">
-                                                {{ question_type.renderEndUserTemplate(form_block)|raw }}
-                                            </div>
+                                            {% set question_type = form_block.getQuestionType() %}
+                                            {{ form_block.setDefaultValueFromParameters(params) }}
                                         {% endif %}
 
-                                        <div class="text-muted block-description">
-                                            {{ form_block.fields.description|safe_html }}
-                                        </div>
-                                    </section>
-                                {% endif %}
+                                        {% set skip_question = false %}
+
+                                        {# Skip unknown types (may be a disabled plugin) #}
+                                        {% if form_block is instanceof('Glpi\\Form\\Question') and question_type is null %}
+                                            {% set skip_question = true %}
+                                        {% endif %}
+
+                                        {# Skip questions not allowed for anonymous forms #}
+                                        {% if not skip_question and form_block is instanceof('Glpi\\Form\\Question') and unauthenticated_user and not question_type.isAllowedForUnauthenticatedAccess() %}
+                                            {% set skip_question = true %}
+                                        {% endif %}
+
+                                        {% if not skip_question %}
+                                            <section
+                                                aria-label="{{ form_block.fields.name }}"
+                                                class="{{ is_first_section ? "" : "d-none" }}"
+                                                style="flex: 1;"
+                                                data-glpi-form-renderer-parent-section="{{ section_index }}"
+                                                data-glpi-form-renderer-id="{{ form_block.fields.id }}"
+                                                data-glpi-form-renderer-uuid="{{ form_block.fields.uuid }}"
+
+                                                {% if form_block is instanceof('Glpi\\Form\\Question') %}
+                                                    data-glpi-form-renderer-question
+                                                {% elseif form_block is instanceof('Glpi\\Form\\Comment') %}
+                                                    data-glpi-form-renderer-comment
+                                                {% endif %}
+
+                                                {% if form_block is instanceof('Glpi\\Form\\Question') and form_block.getQuestionType() is instanceof('Glpi\\Form\\Condition\\UsedAsCriteriaInterface') %}
+                                                    data-glpi-form-renderer-criteria
+                                                {% endif %}
+
+                                                {% if form_block is instanceof('Glpi\\Form\\Question') and not visibility_engine_output.isQuestionVisible(form_block.getID()) %}
+                                                    data-glpi-form-renderer-hidden-by-condition
+                                                {% elseif form_block is instanceof('Glpi\\Form\\Comment') and not visibility_engine_output.isCommentVisible(form_block.getID()) %}
+                                                    data-glpi-form-renderer-hidden-by-condition
+                                                {% endif %}
+                                            >
+                                                <h3 class="mb-2 {{ not form_block.fields.name ? "text-muted" : "" }}">
+                                                    {{ translate_item_key(form_block, constant('TRANSLATION_KEY_NAME', form_block))|default(form_block.getUntitledLabel()) }}
+                                                    {% if form_block.fields.is_mandatory ?? false %}
+                                                        <span class="text-danger">*</span>
+                                                    {% endif %}
+                                                </h3>
+
+                                                {% if form_block is instanceof('Glpi\\Form\\Question') %}
+                                                    <div class="mb-2">
+                                                        {{ question_type.renderEndUserTemplate(form_block)|raw }}
+                                                    </div>
+                                                {% endif %}
+
+                                                <div class="text-muted block-description" role="note" aria-label="{{ __('%s description')|format(form_block.getTypeName(1)) }}">
+                                                    {{ translate_item_key(form_block, constant('TRANSLATION_KEY_DESCRIPTION', form_block))|safe_html }}
+                                                </div>
+                                            </section>
+                                        {% endif %}
+                                    {% endfor %}
+                                </section>
                             {% endfor %}
                         </div>
                     </div>
@@ -147,26 +195,32 @@
                 <button
                     type="button"
                     data-glpi-form-renderer-action="previous-section"
-                    class="btn btn-ghost-secondary d-none me-2"
+                    class="btn btn-ghost-secondary d-none d-flex align-items-end me-2 pointer-events-none"
                 >
+                    <i class="ti ti-arrow-narrow-left-dashed me-2"></i>
                     {{ __("Back") }}
                 </button>
 
                 <button
                     type="button"
                     data-glpi-form-renderer-action="next-section"
-                    class="btn btn-primary {{ is_single_section_form ? "d-none" : "" }}"
+                    class="btn btn-primary pointer-events-none {{ is_single_section_form ? "d-none" : "" }} d-flex align-items-end"
                 >
+                    <i class="ti ti-arrow-narrow-right-dashed me-2"></i>
                     {{ __("Continue") }}
                 </button>
 
                 <button
                     type="button"
                     data-glpi-form-renderer-action="submit"
-                    class="btn btn-primary {{ not is_single_section_form ? "d-none" : "" }}"
+                    class="btn btn-primary pointer-events-none {{ not is_single_section_form ? "d-none" : "" }} d-flex align-items-end"
                     disabled
+                    {% if not visibility_engine_output.isFormVisible() %}
+                        data-glpi-form-renderer-hidden-by-condition
+                    {% endif %}
                 >
-                    {{ __("Send form") }}
+                    <i class="ti ti-check me-2"></i>
+                    {{ __("Submit") }}
                 </button>
             </div>
 
@@ -197,16 +251,35 @@
                 <p class="empty-subtitle text-secondary">
                     {{ __("Your form has been submitted successfully.") }}
                 </p>
+                {% if not unauthenticated_user %}
+                    <div class="mt-3 d-flex">
+                        {% if get_current_interface() == 'central' %}
+                            <a class="btn btn-outline-secondary me-2" href="{{ path('/ServiceCatalog') }}">
+                                <i class="ti ti-library me-1"></i>
+                                <span>{{ __("Go back to service catalog") }}</span>
+                            </a>
+                        {% else %}
+                            <a class="btn btn-outline-secondary me-2" href="{{ path('/Helpdesk') }}">
+                                <i class="ti ti-home me-1"></i>
+                                <span>{{ __("Take me home") }}</span>
+                            </a>
+                        {% endif %}
+                        <a class="btn btn-primary" href="{{ path('/front/ticket.php?' ~ my_tickets_url_param) }}">
+                            <i class="ti ti-article me-1"></i>
+                            <span>{{ __("See my tickets") }}</span>
+                        </a>
+                    </div>
+                {% endif %}
             </div>
         </div>
-    </div>
+    </form>
 
-    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-
-    <script>
-        import("{{ js_path('js/modules/Forms/RendererController.js') }}").then((m) => {
-            new m.GlpiFormRendererController($('#forms_form_answers'));
-        });
-    </script>
+    <script>(async () => {
+        const mod = await import("/js/modules/Forms/RendererController.js");
+        new mod.GlpiFormRendererController(
+            '#forms_form_answers',
+            {{ form.getID() }}
+        );
+    })();</script>
 
 {% endblock content_body %}

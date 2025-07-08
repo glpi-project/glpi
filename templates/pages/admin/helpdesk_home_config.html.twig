@@ -1,0 +1,128 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set container_id = "glpi-helpdesk-config-container-" ~ random() %}
+{% set header_id = "config-tiles-header-" ~ random() %}
+
+<div id="{{ container_id }}">
+    <div data-glpi-helpdesk-config-default-view>
+        <section
+            class="container-xl ms-0 mt-2"
+            aria-labelledby="{{ header_id }}"
+        >
+            {% if info_text is not null %}
+                <div
+                    class="alert alert-info d-flex align-items-center mb-3"
+                    role="alert"
+                >
+                    <i class="ti ti-info-circle me-2"></i>
+                    {{ info_text }}
+                </div>
+            {% endif %}
+
+            <h1 id="{{ header_id }}" class="fs-2 mb-2">
+                {{ __("Home tiles configuration") }}
+            </h1>
+
+            <div class="row ms-n2 me-n2 mb-3" data-glpi-helpdesk-config-tiles>
+                {# The tiles have their own templates as they will be reloaded using AJAX #}
+                {{ include('pages/admin/helpdesk_home_config_tiles.html.twig', {
+                    'tiles_manager': tiles_manager,
+                    'tiles': tiles,
+                    'editable': editable,
+                }, with_context = false) }}
+            </div>
+
+            {% if editable %}
+                <div class="d-flex mb-3" data-glpi-helpdesk-config-actions>
+                    <button
+                        class="btn btn-primary ms-2 w-auto d-flex align-items-center ms-auto"
+                        data-glpi-helpdesk-config-reorder-action-save
+                    >
+                        <i class="ti ti-device-floppy me-1"></i>
+                        <span>{{ __("Save tiles order") }}<span>
+                    </button>
+                </div>
+
+                <div
+                    class="offcanvas offcanvas-end"
+                    tabindex="-1"
+                    id="tile-form-offcanvas"
+                    aria-labelledby="tile-form-offcanvas-label"
+                >
+                    <div class="offcanvas-header">
+                        <h3
+                            id="tile-form-offcanvas-label"
+                            class="offcanvas-title"
+                            data-glpi-helpdesk-config-tile-form-title
+                        ></h3>
+                        <button
+                            type="button"
+                            class="btn-close text-reset"
+                            data-bs-dismiss="offcanvas"
+                            aria-label="{{ __("Close") }}"
+                        ></button>
+                    </div>
+                    <div
+                        class="offcanvas-body d-flex"
+                        data-glpi-helpdesk-config-tile-form-loading
+                    >
+                        <span
+                            class="spinner-border me-auto ms-auto mt-5 mb-5"
+                            role="status"
+                        ></span>
+                    </div>
+                    <div
+                        class="offcanvas-body d-none"
+                        data-glpi-helpdesk-config-tile-form
+                    ></div>
+                </div>
+            {% endif %}
+        </section>
+    </div>
+</div>
+
+{% if editable %}
+    {# Start js controller #}
+    <script defer type="module">
+        (async () => {
+            const module = await import(
+                "/js/modules/Helpdesk/HelpdeskConfigController.js"
+            );
+            new module.GlpiHelpdeskConfigController(
+                document.getElementById("{{ container_id }}"),
+                "{{ itemtype_item|escape('js') }}",
+                {{ items_id_item }},
+            );
+        })();
+    </script>
+{% endif %}

@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -38,8 +37,8 @@
 
 <ul class="navbar-nav" id="menu_{{ rand }}">
 {% for firstlevel in menu %}
-   {% set firstlevel_active = menu[sector]['title'] == firstlevel['title'] %}
-   {% set firstlevel_shown = (menu[sector]['title'] == firstlevel['title'] and is_vertical and is_menu_folded == false) %}
+   {% set firstlevel_active = menu[sector]['title']|default('') == firstlevel['title'] %}
+   {% set firstlevel_shown = firstlevel_active and is_vertical and is_menu_folded == false %}
    {% set has_subitems = false %}
    {% if firstlevel['content'] is defined %}
       {# Are there any items under contents with a page property? #}
@@ -55,7 +54,7 @@
       <a class="nav-link dropdown-toggle {{ firstlevel_active ? 'active' : '' }} {{ firstlevel_shown ? 'show' : '' }}"
          data-bs-toggle="dropdown" role="button"
          aria-expanded="{{ firstlevel_shown ? 'true' : 'false' }}">
-         <i class="fa-fw {{ firstlevel['icon'] ?? '' }}"></i>
+         <i class="{{ firstlevel['icon'] ?? '' }}"></i>
          <span class="menu-label">{{ firstlevel['title'] }}</span>
       </a>
       <div class="dropdown-menu {{ firstlevel_active and is_vertical != false ? '' : 'animate__animated' }} {{ is_vertical ? 'animate__fadeInLeft' : 'animate__zoomIn' }} {{ firstlevel_shown ? 'show' : '' }}">
@@ -75,7 +74,7 @@
                <a class="dropdown-item {{ menu_active == sublevel['title'] ? 'active' : '' }}"
                   href="{{ path(sublevel['page']) }}"
                   accesskey="{{ sublevel['shortcut'] ?? '' }}" title="{{ sublevel['title'] }}">
-                  <i class="fa-fw {{ sublevel['icon'] ?? '' }}"></i>
+                  <i class="{{ sublevel['icon'] ?? '' }}"></i>
                   <span class='text-wrap'>
                      {{ sublevel['title']|shortcut(sublevel['shortcut'] ?? '') }}
                   </span>
@@ -95,7 +94,7 @@
    {% elseif firstlevel['default'] is defined and (firstlevel['display'] ?? true) != false %}
       <li class="nav-item dropdown {{ firstlevel_active ? 'active' : '' }}">
          <a class="nav-link" href="{{ path(firstlevel['default']) }}">
-            <i class="fa-fw {{ firstlevel['icon'] ?? '' }}"></i>
+            <i class="{{ firstlevel['icon'] ?? '' }}"></i>
             <span class="menu-label">{{ firstlevel['title'] }}</span>
          </a>
       <li>
@@ -132,12 +131,16 @@ $(function() {
 
       // opening a sub menu close others
       menuDropdown.addEventListener('show.bs.dropdown', function (event) {
+          if ($('body').hasClass('navbar-collapsed')) {
+              // Dropdown submenus will be shown with CSS, and shouldn't be handled by Bootstrap
+              event.preventDefault();
+              event.stopPropagation();
+          }
          $('#menu_{{ rand }} .nav-link').removeClass('show active');
          $('#menu_{{ rand }} .nav-item').removeClass('active');
          $('#menu_{{ rand }} .dropdown-menu').removeClass('show');
       })
    });
-
 });
 </script>
 {% endif %}

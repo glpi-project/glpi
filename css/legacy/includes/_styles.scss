@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -57,10 +57,6 @@
 
 /* Apply legacy styles to main content (#page) and elements that are inserted directly in body (modals, tooltips, ...) */
 #page, .qtip, .modal .modal-body {
-   .starthidden {
-     display: none;
-   }
-
    img {
      border: 0;
    }
@@ -119,11 +115,6 @@
 
    .deleted {
      background-color: #cf9b9b;
-   }
-
-   .separ {
-     clear: both;
-     visibility: hidden;
    }
 
    a {
@@ -190,33 +181,25 @@
    }
 
    .pointer {
-      opacity: .7;
+      &:not(.nav-link) {
+         opacity: .7;
+      }
 
       &:hover {
          opacity: 1;
       }
 
       &.disabled {
+         opacity: .3;
+
          &:hover {
             opacity: .3;
          }
-
-         opacity: .3;
       }
    }
 
    .protected {
       padding-right: 50px;
-   }
-
-   .disclosablefield {
-      position: relative;
-
-      span {
-         position: absolute;
-         right: 0;
-         top: 0;
-      }
    }
 
    /* ################--------------- Layout  ---------------#################### */
@@ -233,27 +216,9 @@
    }
 
    /* ################--------------- Table  ---------------#################### */
-   .planning_classic_card {
-
-      .field {
-         display: table-row;
-         padding: 5px;
-
-         label {
-            display: table-cell;
-            padding: 10px 5px;
-
-            & ~ div {
-               display: table-cell;
-            }
-         }
-      }
-   }
-
    .tab_cadre,
    .tab_cadre_fixehov,
-   .tab_cadrehov,
-   .tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, .tab_cadrehov th, h2.header {
+   .tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, h2.header {
       background-color: var(--tblr-bg-surface);
       color: var(--tblr-body-color);
    }
@@ -296,37 +261,21 @@
       vertical-align: middle;
    }
 
-   .tab_cadrehov {
-      margin: 10px auto;
-      border: 0;
-      text-align: left;
-      width: 95%;
-      border-spacing: 0;
-   }
-
-   .tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, .tab_cadrehov th, h2.header {
-      font-size: 12px;
+   .tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, h2.header {
       font-weight: bold;
-      border-radius: 4px;
-      padding: 2px;
       border-radius: 0;
       margin: 0;
       font-size: 1.1em;
       padding: 10px 5px;
    }
 
-   .tab_spaced {
-      border-collapse: separate;
-      border-spacing: 3px;
-   }
-
-   .tab_cadre_fixehov th, .tab_cadrehov th {
+   .tab_cadre_fixehov th {
       background-color: #F8F8F8;
       color: #2E2E2E;
       border-bottom: 1px solid var(--tblr-border-color);
    }
 
-   .tab_cadre_fixehov td, .tab_cadrehov td {
+   .tab_cadre_fixehov td {
       padding: 8px 5px;
    }
 
@@ -338,19 +287,9 @@
       border-bottom: 1px solid var(--tblr-border-color);
    }
 
-   .tab_cadrehov {
-      td {
-         border-bottom: 1px solid var(--tblr-border-color);
-      }
-   }
-
    /* Table Hover Effects */
-   .tab_cadrehov th.headHover,
    .tab_cadre_fixehov th.headHover,
-   .tab_cadrehov td.columnHover,
    .tab_cadre_fixehov td.columnHover,
-   .tab_cadrehov tr.rowHover,
-   .tab_cadrehov td.rowHover,
    .tab_cadre_fixehov tr.rowHover,
    .tab_cadre_fixehov td.rowHover {
       background-color: #F3F3F3;
@@ -391,7 +330,7 @@
          margin-bottom: 5px;
       }
 
-      .tab_cadre_fixehov th, .tab_cadrehov th {
+      .tab_cadre_fixehov th {
          background-color: #F1F0F0;
       }
    }
@@ -399,10 +338,6 @@
    td, th {
       &.numeric {
          text-align: right;
-      }
-
-      &.htmltable_upper_separation_cell {
-         border-top: dashed 1px #a0a0a0;
       }
 
       &.subheader {
@@ -415,22 +350,6 @@
             text-align: left !important;
          }
       }
-   }
-
-   .order_DESC:before {
-      content: "\25bc";
-      color: #B3B3B3;
-      font-size: 0.8em;
-      padding-right: 5px;
-      vertical-align: 1px;
-   }
-
-   .order_ASC:before {
-      content: "\25b2";
-      color: #B3B3B3;
-      font-size: 0.8em;
-      padding-right: 5px;
-      vertical-align: 1px;
    }
 
    /* ################--------------- Pager  ---------------#################### */
@@ -474,58 +393,9 @@
       .center {
          margin: 0 auto;
       }
-
-      .nav_title {
-         font-size: 13px;
-         font-weight: bold;
-         white-space: nowrap;
-         text-overflow: ellipsis;
-         overflow: hidden;
-      }
-   }
-
-   /* ################--------------- Tracking  / Reminder ---------------#################### */
-
-   .showplan {
-      font-weight: bold;
-      text-decoration: none;
-      color: #4A8865;
-      cursor: pointer;
    }
 
    /* ################--------------- User Picture ---------------#################### */
-
-   .tooltip {
-      font-size: 11px !important;
-
-      &:contains(img) {
-         white-space: nowrap;
-         height: 100px !important;
-         border: 10px solid red;
-      }
-   }
-
-   .tooltip_picture_border {
-      padding: 2px;
-      border-radius: 51px;
-      border: 5px inset #D0D99D;
-      _border: 3px solid #D0D99D;
-      width: 72px;
-      height: 72px;
-      position: absolute;
-   }
-
-   .tooltip_picture {
-      width: 71px;
-      height: 71px;
-      border-radius: 50px;
-   }
-
-   .tooltip_text {
-      margin-left: 90px;
-      min-height: 85px;
-   }
-
    .user_picture {
       margin: 0 auto;
       width: 230px;
@@ -914,37 +784,8 @@
       }
    }
 
-   .x-button {
-      position: relative;
-      margin: 0;
-      float: left;
-      outline: none;
-      padding: 5px;
-      cursor: pointer;
-      font: bold 12px Arial, Helvetica;
-      color: #8f5a0a;
-      background-color: #FEC95C;
-      border: none;
-      border-radius: 0;
-
-      &:hover {
-         cursor: pointer;
-         background-color: #fddb6f;
-         box-shadow: 0px 1px 1px #999;
-      }
-
-      &.x-button-main {
-         width: 100px;
-         height: 26px;
-      }
-   }
-
 
    /** QUEUEMAIL **/
-
-   .queuemail_preview .tab_cadre {
-      width: inherit !important;
-   }
 
    .copy_to_clipboard_wrapper {
       display: flex;
@@ -961,7 +802,7 @@
       }
 
       &:after {
-         font-family: 'Font Awesome 6 Free';
+         font-family: "Font Awesome 6 Free", sans-serif;
          position: relative;
          left: -15px;
          top: 1px;
@@ -1003,19 +844,6 @@
       &::before, &::after {
          min-height: 1em;
       }
-   }
-
-   .loadingindicator {
-      background: #fff url("../pics/spinner.48.gif") no-repeat center 0.5em;
-      padding: 60px .5em .5em;
-      text-align: center;
-      max-width: 350px;
-      margin: auto;
-      border: none;
-   }
-
-   .small {
-      width: 1%;
    }
 
    .fa {
@@ -1090,7 +918,7 @@
       padding: .5em;
       margin: 0 5px 1em;
       cursor: pointer;
-      font: bold 12px Arial, Helvetica;
+      font: bold 12px Arial, Helvetica, sans-serif;
       color: #8f5a0a;
       background-color: #FEC95C;
       border: 0;
@@ -1322,16 +1150,6 @@
       height: 500px;
    }
 
-   .spinner-18 {
-      background: transparent url("../pics/spinner.gif") no-repeat center center;
-      display: none;
-      vertical-align: middle;
-      margin: auto;
-      border: none;
-      height: 24px;
-      width: 24px;
-   }
-
    .uploadbar {
       height: 18px;
       text-align: center;
@@ -1366,25 +1184,20 @@ div.banner-need-update {
     #page, .qtip, .modal .modal-body {
         .tab_cadre,
         .tab_cadre_fixehov,
-        .tab_cadrehov,
-        .tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, .tab_cadrehov th, h2.header {
+        .tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, h2.header {
             background-color: var(--tblr-dark);
             color: var(--tblr-light);
         }
 
-        .tab_cadrehov th.headHover,
         .tab_cadre_fixehov th.headHover,
-        .tab_cadrehov td.columnHover,
         .tab_cadre_fixehov td.columnHover,
-        .tab_cadrehov tr.rowHover,
-        .tab_cadrehov td.rowHover,
         .tab_cadre_fixehov tr.rowHover,
         .tab_cadre_fixehov td.rowHover {
             background-color: #292929;
         }
 
         .central {
-            .tab_cadre_fixehov th, .tab_cadrehov th {
+            .tab_cadre_fixehov th {
                 background-color: var(--glpi-form-header-bg);
                 color: var(--glpi-form-header-fg);
             }

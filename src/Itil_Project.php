@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -190,21 +190,20 @@ class Itil_Project extends CommonDBRelation
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                     {% import 'components/form/fields_macros.html.twig' as fields %}
-                    <div class="text-center mb-3">
+                    <div class="mb-3">
                         <form method="post" action="{{ 'Itil_Project'|itemtype_form_path }}">
                             <input type="hidden" name="projects_id" value="{{ ID }}"/>
                             <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
-                            <div>
+                            <div class="d-flex">
                                 {{ fields.dropdownItemsFromItemtypes('items_id', null, {
+                                    add_field_class: 'd-inline',
                                     no_label: true,
-                                    full_width: true,
                                     itemtypes: config('itil_types'),
                                     used: used,
-                                    add_field_class: 'd-flex'
                                 }) }}
-                            </div>
-                            <div class="card-body mx-n2 border-top d-flex flex-row-reverse align-items-start flex-wrap py-2">
-                                <button class="btn btn-primary" type="submit" name="add" value="">{{ btn_msg }}</button>
+                                <div>
+                                    <button class="btn btn-primary ms-3" type="submit" name="add" value="">{{ btn_msg }}</button>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -215,7 +214,7 @@ TWIG, $twig_params);
         // insert 'itemtype_label' column after 'item_id' column
         $cols['columns'] = array_merge(
             ['item_id' => $cols['columns']['item_id']],
-            ['itemtype_label' => __('Type')],
+            ['itemtype_label' => _n('Type', 'Types', 1)],
             array_slice($cols['columns'], 1)
         );
         $entries = [];
@@ -229,7 +228,6 @@ TWIG, $twig_params);
         }
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => $cols['columns'],
@@ -241,8 +239,8 @@ TWIG, $twig_params);
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . self::class . mt_rand(),
-                'specific_actions' => ['purge' => _x('button', 'Delete permanently')]
-            ]
+                'specific_actions' => ['purge' => _x('button', 'Delete permanently')],
+            ],
         ]);
     }
 
@@ -257,7 +255,7 @@ TWIG, $twig_params);
         /** @var \DBmysql $DB */
         global $DB;
 
-        $ID = $itil->getField('id');
+        $ID = $itil->getID();
         if (!$itil->can($ID, READ)) {
             return false;
         }
@@ -271,7 +269,7 @@ TWIG, $twig_params);
         $iterator = $DB->request([
             'SELECT'          => [
                 "$selfTable.id AS linkid",
-                "$projectTable.*"
+                "$projectTable.*",
             ],
             'DISTINCT'        => true,
             'FROM'            => $selfTable,
@@ -291,8 +289,6 @@ TWIG, $twig_params);
             'ORDER'  => "{$projectTable}.name",
         ]);
 
-        $numrows = $iterator->count();
-
         $projects = [];
         $used     = [];
         foreach ($iterator as $data) {
@@ -300,87 +296,64 @@ TWIG, $twig_params);
             $used[$data['id']]     = $data['id'];
         }
 
-        if (
-            $canedit
-            && !in_array($itil->fields['status'], array_merge(
-                $itil->getClosedStatusArray(),
-                $itil->getSolvedStatusArray()
-            ))
-        ) {
-            echo '<div class="firstbloc">';
-            $formId = 'itilproject_form' . $rand;
-            echo '<form name="' . $formId . '"
-                     id="' . $formId . '"
-                     method="post"
-                     action="' . Toolbox::getItemTypeFormURL(__CLASS__) . '">';
-            echo '<table class="tab_cadre_fixe">';
-            echo '<tr class="tab_bg_2"><th colspan="2">' . __s('Add a project') . '</th></tr>';
-            echo '<tr class="tab_bg_2">';
-            echo '<td>';
-            echo '<input type="hidden" name="itemtype" value="' . htmlescape($itil->getType()) . '" />';
-            echo '<input type="hidden" name="items_id" value="' . $ID . '" />';
-            Project::dropdown(
-                [
-                    'used'   => $used,
-                    'entity' => $itil->getEntityID()
-                ]
-            );
-            echo '</td>';
-            echo '<td class="center">';
-            echo '<input type="submit" name="add" value=" ' . _sx('button', 'Add') . '" class="btn btn-primary" />';
-            echo '</td>';
-            echo '</tr>';
-            echo '</table>';
-            Html::closeForm();
-            echo '</div>';
-        }
-
-        echo '<div class="spaced">';
-        $massContainerId = 'mass' . __CLASS__ . $rand;
-        if ($canedit && $numrows) {
-            Html::openMassiveActionsForm($massContainerId);
-            $massiveactionparams = [
-                'num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                'container'     => $massContainerId,
+        if ($canedit && !$itil->isSolved(true)) {
+            $twig_params = [
+                'btn_msg' => _x('button', 'Add'),
+                'used' => $used,
+                'itemtype' => $itil::class,
+                'items_id' => $ID,
+                'entities_id' => $itil->getEntityID(),
             ];
-            Html::showMassiveActions($massiveactionparams);
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                    {% import 'components/form/fields_macros.html.twig' as fields %}
+                    <div class="mb-3">
+                        <form method="post" action="{{ 'Itil_Project'|itemtype_form_path }}">
+                            <input type="hidden" name="itemtype" value="{{ itemtype }}"/>
+                            <input type="hidden" name="items_id" value="{{ items_id }}"/>
+                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+                            <div class="d-flex">
+                                {{ fields.dropdownField('Project', 'projects_id', '', null, {
+                                    add_field_class: 'd-inline',
+                                    no_label: true,
+                                    used: used,
+                                    entity: entities_id,
+                                }) }}
+                            </div>
+                            <div>
+                                <button class="btn btn-primary ms-3" type="submit" name="add" value="">{{ btn_msg }}</button>
+                            </div>
+                        </form>
+                    </div>
+TWIG, $twig_params);
         }
 
-        echo '<table class="tab_cadre_fixehov">';
-        echo '<tr class="noHover">';
-        echo '<th colspan="12">' . htmlescape(Project::getTypeName($numrows)) . '</th>';
-        echo '</tr>';
-        if ($numrows) {
-            Project::commonListHeader(Search::HTML_OUTPUT, $massContainerId);
-            Session::initNavigateListItems(
-                Project::class,
-                //TRANS : %1$s is the itemtype name,
-                //        %2$s is the name of the item (used for headings of a list)
-                sprintf(__('%1$s = %2$s'), $itil::getTypeName(1), $itil->fields['name'])
-            );
-
-            $i = 0;
-            foreach ($projects as $data) {
-                Session::addToNavigateListItems(Project::class, $data['id']);
-                Project::showShort(
-                    $data['id'],
-                    [
-                        'row_num'               => $i,
-                        'type_for_massiveaction' => __CLASS__,
-                        'id_for_massiveaction'   => $data['linkid']
-                    ]
-                );
-                 $i++;
-            }
-            Project::commonListHeader(Search::HTML_OUTPUT, $massContainerId);
+        $entries_to_fetch = [];
+        foreach ($projects as $data) {
+            $entries_to_fetch[] = [
+                'item_id' => $data['id'],
+                'id' => $data['linkid'],
+                'itemtype' => self::class,
+            ];
         }
-        echo '</table>';
 
-        if ($canedit && $numrows) {
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-            Html::closeForm();
-        }
-        echo '</div>';
+        $cols = Project::getCommonDatatableColumns();
+        $entries = Project::getDatatableEntries($entries_to_fetch);
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => $cols['columns'],
+            'formatters' => $cols['formatters'],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . self::class . mt_rand(),
+            ],
+        ]);
     }
 }

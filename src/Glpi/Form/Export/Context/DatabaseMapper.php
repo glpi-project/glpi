@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,7 +36,10 @@
 namespace Glpi\Form\Export\Context;
 
 use CommonDBTM;
+use Glpi\Form\Comment;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
+use Glpi\Form\Question;
+use Glpi\Form\Section;
 use InvalidArgumentException;
 
 final class DatabaseMapper
@@ -50,7 +53,7 @@ final class DatabaseMapper
 
     public function __construct(array $entities_restrictions)
     {
-        if (empty($entities_restrictions)) {
+        if ($entities_restrictions === []) {
             throw new InvalidArgumentException("Must specify at least one entity");
         }
 
@@ -76,7 +79,7 @@ final class DatabaseMapper
             // Can't recover from this point, it is the serializer
             // responsability to validate that all requirements are found in the
             // context before attempting to import the forms.
-            throw new \LogicException();
+            throw new \LogicException("Unknown item: {$itemtype}::{$name}");
         }
 
         return $this->values[$itemtype][$name];
@@ -134,6 +137,14 @@ final class DatabaseMapper
 
     private function contextExist(string $itemtype, string $name): bool
     {
+        if (
+            $itemtype === Question::class
+            || $itemtype === Comment::class
+            || $itemtype === Section::class
+        ) {
+            return true;
+        }
+
         return isset($this->values[$itemtype][$name]);
     }
 
@@ -146,13 +157,12 @@ final class DatabaseMapper
             throw new InvalidArgumentException();
         }
 
-        /** @var CommonDBTM $item */
-        $item = new $itemtype();
+        $item = getItemForItemtype($itemtype);
         $query = [
             'FROM' => $item::getTable(),
         ];
         $condition = [
-            'name' => $name
+            'name' => $name,
         ];
 
         // Check entities

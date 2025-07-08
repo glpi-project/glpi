@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,13 +41,13 @@ if (PHP_SAPI != 'cli') {
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 $kernel = new \Glpi\Kernel\Kernel();
-$kernel->loadCommonGlobalConfig();
+$kernel->boot();
 
 if (isset($_SERVER['argc'])) {
     for ($i = 1; $i < $_SERVER['argc']; $i++) {
         $it           = explode("=", $_SERVER['argv'][$i], 2);
         $it[0]        = preg_replace('/^--/', '', $it[0]);
-        $_GET[$it[0]] = (isset($it[1]) ? $it[1] : true);
+        $_GET[$it[0]] = ($it[1] ?? true);
     }
 }
 $NEEDED_ITEMS = ["mailgate", "mailing"];
@@ -67,7 +67,7 @@ if (isset($_GET['to'])) {
 if (isset($_GET['enc'])) {
     $enc = $_GET['enc'];
 } else {
-   // "7bit", "binary", "base64", and "quoted-printable".
+    // "7bit", "binary", "base64", and "quoted-printable".
     $enc = '';
 }
 

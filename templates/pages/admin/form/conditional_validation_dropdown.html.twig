@@ -1,0 +1,101 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "pages/admin/form/condition_configuration.html.twig" %}
+
+{# Compute strategy, with a fallback to "Always visible" for new questions #}
+{% if item is null %}
+    {% set question_strategy = enum('Glpi\\Form\\Condition\\ValidationStrategy').NO_VALIDATION %}
+{% else %}
+    {% set question_strategy = item.getConfiguredValidationStrategy() %}
+{% endif %}
+
+{% block conditions_editor %}
+    <div
+        data-glpi-form-editor-validation-dropdown-container
+        data-glpi-form-editor-question-extra-details
+
+        {% set hide = question_strategy == enum('Glpi\\Form\\Condition\\ValidationStrategy').NO_VALIDATION %}
+        class="btn-group ms-1 {{ hide ? 'd-none' : '' }}"
+    >
+        {# Parent properties #}
+        {% set strategies = 'Glpi\\Form\\Condition\\ValidationStrategy' %}
+        {% set selected_strategy = question_strategy %}
+        {% set strategy_input_name = "validation_strategy" %}
+        {% set conditions = item is not null ? item.getConfiguredValidationConditionsData() : [] %}
+
+        <button
+            title="{{ __('Configure validation') }}"
+            data-bs-toggle="dropdown"
+            data-bs-auto-close="outside"
+            class="btn btn-outline-secondary btn-sm px-2"
+            data-bs-placement="top"
+            type="button"
+            data-glpi-form-editor-validation-dropdown
+        >
+            {% for strategy in enum_cases('Glpi\\Form\\Condition\\ValidationStrategy') %}
+                {% set is_visible = question_strategy == strategy %}
+                {% set display_class = is_visible ? 'd-flex' : 'd-none' %}
+                <div
+                    class="{{ display_class }} align-items-center"
+                    data-glpi-editor-validation-badge="{{ strategy.value }}"
+                >
+                    <i class="{{ strategy.getIcon() }} me-1"></i>
+                    <span>{{ strategy.getLabel() }}</span>
+                </div>
+            {% endfor %}
+
+            <span
+                class="badge text-bg-secondary ms-1"
+                data-glpi-editor-validation-conditions-count-badge
+                role="status"
+                aria-label="{{ __('Conditions count') }}"
+            >
+                {{ conditions|length }}
+            </span>
+        </button>
+        <div
+            class="dropdown-menu dropdown-menu-end dropdown-menu-card animate__animated animate__zoomIn"
+        >
+            <div class="card validation-dropdown-card">
+                <div class="card-body">
+                    <h3 class="card-title d-flex align-items-center">
+                        <i class="ti ti-circuit-changeover me-2"></i>
+                        {{ __('Conditional validation') }}
+                    </h3>
+
+                    {{ parent() }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

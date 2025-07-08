@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,7 +36,7 @@
 /// Collector Rules collection class
 class RuleMailCollectorCollection extends RuleCollection
 {
-   // From RuleCollection
+    // From RuleCollection
     public $stop_on_first_match = true;
     public static $rightname           = 'rule_mailcollector';
     public $menu_option         = 'mailcollector';
@@ -74,6 +74,14 @@ class RuleMailCollectorCollection extends RuleCollection
                     $input[$key] = $value;
                 }
             }
+            $input['_headers'] = implode(
+                "\n",
+                array_map(
+                    fn($k, $v) => is_array($v) ? "$k: " . implode(', ', $v) : "$k: $v",
+                    array_keys($params['headers']),
+                    $params['headers']
+                )
+            );
         }
 
         // Add all user's groups
@@ -92,7 +100,7 @@ class RuleMailCollectorCollection extends RuleCollection
 
         // If the criteria is "user has only one time the profile xxx"
         if (in_array('unique_profile', $fields, true)) {
-           //Get all profiles
+            //Get all profiles
             $profiles = Profile_User::getForUser($input['_users_id_requester']);
             foreach ($profiles as $profile) {
                 if (

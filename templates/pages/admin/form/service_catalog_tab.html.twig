@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -33,42 +32,75 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-<div class="py-2 px-3 container-narrow ms-0">
-    <h2 class="d-flex align-items-center">
-        <i class="{{ icon }} me-2"></i>
-        {{ __("Service catalog configuration") }}
-    </h2>
+<form method="POST" action="{{ item.getFormURL() }}" data-submit-once>
+    <div class="py-2 px-3 container-narrow ms-0">
+        <section data-service-catalog-config
+            style="{{ item.isField('show_in_service_catalog') and item.fields.show_in_service_catalog ? "opacity: 0.5" : "" }}"
+        >
+            <h2 class="d-flex align-items-center">
+                <i class="{{ icon }} me-2"></i>
+                {{ __("Service catalog configuration") }}
+                {% if item.isField('show_in_service_catalog') %}
+                    <label class="form-check mb-0 ms-auto form-switch">
+                        <input type="hidden" value="0" name="show_in_service_catalog">
+                        <input aria-label="{{ __(" Active") }}" class="form-check-input" type="checkbox"
+                            name="show_in_service_catalog" value="1"
+                            onchange="$('[data-service-catalog-config]').css('opacity', this.checked ? 1 : 0.5)"
+                            {{ item.fields.show_in_service_catalog == true ? "checked" : "" }}
+                        >
+                    </label>
+                {% endif %}
+            </h2>
+            <div class="row">
+                <div class="col-lg-10 col-12">
+                    {{ fields.textareaField(
+                        'description',
+                        item.fields.description,
+                        __('Description'),
+                        {
+                            'is_horizontal': false,
+                            'full_width' : true,
+                            'enable_richtext': true,
+                            'enable_images': false,
+                        }
+                    ) }}
+                </div>
 
-    <form
-        method="POST"
-        action="{{ form.getFormURL() }}"
-        data-submit-once
-    >
-        {{ fields.textField(
-            'illustration',
-            form.fields.illustration,
-            __('Illustration'),
-            {
-                'is_horizontal': false,
-                'full_width' : true,
-            }
-        ) }}
+                <div class="col-lg-2 col-12">
+                    {{ fields.illustrationField(
+                        'illustration',
+                        item.getServiceCatalogItemIllustration(),
+                        __('Illustration'),
+                        {
+                            'is_horizontal': false,
+                            'full_width' : true,
+                            'extra_css_classes': 'illustration-selector-extra-margin',
+                        }
+                    ) }}
+                </div>
+            </div>
 
-        {{ fields.textareaField(
-            'description',
-            form.fields.description,
-            __('Description'),
-            {
-                'is_horizontal': false,
-                'full_width' : true,
-                'enable_richtext': true,
-                'enable_images': false,
-            }
-        ) }}
+            {{ fields.dropdownField(
+                'Glpi\\Form\\Category',
+                'forms_categories_id',
+                item.fields.forms_categories_id,
+                _n('Category', 'Categories', 1),
+                {
+                    'is_horizontal': false,
+                    'full_width' : true,
+                }
+            ) }}
+
+            <label class="col-form-label form-check form-switch mb-2">
+                <input type="hidden" name="is_pinned" value="0">
+                <input class="form-check-input" type="checkbox" name="is_pinned" value="1" {{ item.fields.is_pinned ? 'checked' : '' }}>
+                <span class="form-check-label">{{ __("Pin to top of the service catalog") }}</span>
+            </label>
+        </section>
 
         {# Hidden values #}
         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-        <input type="hidden" name="id" value="{{ form.getID() }}" />
+        <input type="hidden" name="id" value="{{ item.getID() }}" />
 
         {# Actions #}
         <div class="d-flex mt-4">
@@ -77,5 +109,5 @@
                 {{ __("Save changes") }}
             </button>
         </div>
-    </form>
-</div>
+    </div>
+</form>

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,8 +39,7 @@
 
 use Glpi\Exception\Http\BadRequestHttpException;
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
+use function Safe\json_encode;
 
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
@@ -49,10 +48,10 @@ Html::header_nocache();
 $itilfollowuptemplates_id = $_POST['itilfollowuptemplates_id'] ?? null;
 if ($itilfollowuptemplates_id === null) {
     throw new BadRequestHttpException("Missing or invalid parameter: 'itilfollowuptemplates_id'");
-} else if ($itilfollowuptemplates_id == 0) {
-   // Reset form
+} elseif ($itilfollowuptemplates_id == 0) {
+    // Reset form
     echo json_encode([
-        'content' => ""
+        'content' => "",
     ]);
     return;
 }

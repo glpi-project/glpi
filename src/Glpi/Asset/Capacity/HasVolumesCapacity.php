@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,7 +35,9 @@
 namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
+use Glpi\Asset\CapacityConfig;
 use Item_Disk;
+use Override;
 use Session;
 
 class HasVolumesCapacity extends AbstractCapacity
@@ -51,6 +52,12 @@ class HasVolumesCapacity extends AbstractCapacity
         return Item_Disk::getIcon();
     }
 
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("List storage volumes");
+    }
+
     public function getSearchOptions(string $classname): array
     {
         return Item_Disk::rawSearchOptionsToAdd($classname::getType());
@@ -59,7 +66,7 @@ class HasVolumesCapacity extends AbstractCapacity
     public function getCloneRelations(): array
     {
         return [
-            Item_Disk::class
+            Item_Disk::class,
         ];
     }
 
@@ -78,14 +85,14 @@ class HasVolumesCapacity extends AbstractCapacity
         );
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         $this->registerToTypeConfig('disk_types', $classname);
 
         CommonGLPI::registerStandardTab($classname, Item_Disk::class, 55);
     }
 
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
         // Unregister from disk types
         $this->unregisterFromTypeConfig('disk_types', $classname);

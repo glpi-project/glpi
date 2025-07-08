@@ -1,0 +1,128 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<div
+    id="{{ id }}"
+    class="modal modal-lg modal-blur fade"
+    data-testid="illustration-picker-modal"
+
+    {# Backdrop must not be used when this component is inside an offcanvas #}
+    {% if not backdrop %}
+        data-bs-backdrop="false"
+    {% endif %}
+>
+    <div class="modal-dialog rounded">
+        <div class="modal-content">
+            <div class="px-4 pt-2" role="tablist">
+                <div class="nav nav-underline">
+                    <div class="nav-item">
+                        <a
+                            class="nav-link pointer active"
+                            role="tab"
+                            id="pick-an-icon"
+                            data-bs-toggle="tab"
+                            data-bs-target="#pick-an-icon-pane"
+                            aria-controls="pick-an-icon-pane"
+                            aria-selected="true"
+                        >
+                            <div class="d-flex align-items-center">
+                                <i class="ti ti-photo-scan fa-lg me-2"></i>
+                                {{ __("Pick an illustration") }}
+                            </div>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a
+                            class="nav-link pointer"
+                            role="tab"
+                            id="upload-an-icon"
+                            data-bs-toggle="tab"
+                            data-bs-target="#upload-an-icon-pane"
+                            aria-controls="upload-an-icon-pane"
+                            aria-selected="false"
+                        >
+                            <div class="d-flex align-items-center">
+                                <i class="ti ti-file-upload fa-lg me-2"></i>
+                                {{ __("Upload your own illustration") }}
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body tab-content">
+                <div id="pick-an-icon-pane" class="tab-pane fade active show" role="tabpanel">
+                    <div class="input-icon mb-3">
+                        <span class="input-icon-addon">
+                            <i
+                                class="ti ti-search"
+                                data-glpi-icon-picker-filter-default-icon
+                            ></i>
+                            <span class="spinner-border spinner-border d-none" role="status" aria-hidden="true" data-glpi-icon-picker-filter-loading-icon></span>
+                        </span>
+                        <input
+                            type="text"
+                            value=""
+                            class="form-control"
+                            placeholder="{{ __("Search") }}"
+                            aria-label="{{ __("Search") }}"
+                            data-glpi-icon-picker-filter
+                        />
+                    </div>
+
+                    {# The results has its own template file because it can be refreshed directly by some AJAX requests #}
+                    {{ include('components/illustration/icon_picker_search_results.html.twig', {
+                        'filter': '',
+                        'page': 1,
+                        'page_size': 30,
+                    }, with_context: false) }}
+                </div>
+                <div id="upload-an-icon-pane" class="tab-pane fade" role="tabpanel">
+                    {% do call('Html::file', [
+                        {
+                            'name': 'custom_icon',
+                            'onlyimages': true,
+                        }
+                    ]) %}
+                    <div class="d-flex justify-content-end w-100 mt-3">
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            data-glpi-icon-picker-use-custom-file
+                        >
+                            {{ __("Use selected file") }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

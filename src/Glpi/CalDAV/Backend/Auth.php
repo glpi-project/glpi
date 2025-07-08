@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,6 +36,7 @@
 namespace Glpi\CalDAV\Backend;
 
 use Sabre\DAV\Auth\Backend\AbstractBasic;
+use Session;
 
 /**
  * Basic authentication backend for CalDAV server.
@@ -48,8 +49,14 @@ class Auth extends AbstractBasic
 
     protected function validateUserPass($username, $password)
     {
-        $auth = new \Auth();
         // TODO Enforce security by accepting here only CalDAV application dedicated password
-        return $auth->validateLogin($username, $password, true);
+
+        $auth = new \Auth();
+        if ($auth->validateLogin($username, $password, true)) {
+            Session::init($auth);
+            return true;
+        }
+
+        return false;
     }
 }

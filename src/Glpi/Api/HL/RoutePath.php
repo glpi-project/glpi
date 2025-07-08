@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -45,29 +45,29 @@ use ReflectionException;
 use ReflectionMethod;
 
 /**
- * @phpstan-type RoutePathCacheHint {key: string, path: string, compiled_path: string, methods: string[], priority: int, security: int}
+ * @phpstan-type RoutePathCacheHint array{key: string, path: string, compiled_path: string, methods: string[], priority: int, security: int}
  */
 final class RoutePath
 {
     /**
      * The Route attribute
-     * @var Route
+     * @var Route|null
      */
     private ?Route $route = null;
 
     /**
-     * @var ReflectionClass<AbstractController>
+     * @var ReflectionClass<AbstractController>|null
      */
     private ?ReflectionClass $controller = null;
 
     /**
-     * @var ReflectionMethod
+     * @var ReflectionMethod|null
      */
     private ?ReflectionMethod $method = null;
 
     /**
      * The relative URI path with placeholder requirements inlined
-     * @var string
+     * @var string|null
      */
     private ?string $compiled_path;
 
@@ -147,6 +147,9 @@ final class RoutePath
         if (!$is_hydrated) {
             [$controller, $method] = explode('::', $this->key);
             try {
+                if (!\is_a($controller, AbstractController::class, true)) {
+                    throw new \Exception('Invalid controller');
+                }
                 $this->controller = new ReflectionClass($controller);
                 $this->method = $this->controller->getMethod($method);
                 if (!$this->method->isPublic()) {
@@ -328,7 +331,7 @@ final class RoutePath
             if (empty($doc->getMethods())) {
                 // Non-specific. Store in $result in case a specific doc is found later
                 $result = $doc;
-            } else if (in_array($method, $doc->getMethods(), true)) {
+            } elseif (in_array($method, $doc->getMethods(), true)) {
                 // Specific. Return immeditately
                 return $doc;
             }
@@ -365,11 +368,20 @@ final class RoutePath
     }
 
     /**
-     * @return AbstractMiddleware[]
+     * @return class-string<AbstractMiddleware>[]
      */
     public function getMiddlewares(): array
     {
         return $this->getRoute()->middlewares;
+    }
+
+    /**
+     * Check if a middleware is present in the route
+     * @param class-string<AbstractMiddleware> $middleware
+     */
+    public function hasMiddleware(string $middleware): bool
+    {
+        return in_array($middleware, $this->getMiddlewares(), true);
     }
 
     /**

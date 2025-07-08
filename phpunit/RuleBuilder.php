@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -78,6 +77,8 @@ class RuleBuilder
      */
     protected string $rule_type;
 
+    protected ?int $ranking = null;
+
     /**
      * @param string $name Rule name
      */
@@ -92,6 +93,8 @@ class RuleBuilder
         $this->entities_id  = getItemByTypeName(Entity::class, '_test_root_entity', true);
         $this->criteria     = [];
         $this->actions      = [];
+
+        assert(is_a($this->rule_type, Rule::class, true), '$rule_type parameter must be a subclass of \Rule');
 
         if (is_a($this->rule_type, RuleCommonITILObject::class, true)) {
             $this->condition = RuleTicket::ONADD | RuleTicket::ONUPDATE;
@@ -153,18 +156,31 @@ class RuleBuilder
     }
 
     /**
+     * Set rule rank
+     *
+     * @param int $ranking
+     *
+     * @return self
+     */
+    public function setRanking(int $ranking): self
+    {
+        $this->ranking = $ranking;
+        return $this;
+    }
+
+    /**
      * Add criteria
      *
-     * @param string $criteria
+     * @param string $criteria key of an item of Rule::getCriterias()
      * @param int $condition Rule::PATTERN_IS, ...
-     * @param mixed $pattern
+     * @param mixed $pattern value to match
      *
      * @return self
      */
     public function addCriteria(
         string $criteria,
         int $condition,
-        $pattern
+        mixed $pattern
     ): self {
         $this->criteria[] = [
             'criteria'  => $criteria,
@@ -177,8 +193,8 @@ class RuleBuilder
     /**
      * Add action
      *
-     * @param string $action_type
-     * @param string $field
+     * @param string $action_type 'assign', etc
+     * @param string $field key of an item of Rule::getActions()
      * @param mixed $value
      *
      * @return self
@@ -274,5 +290,15 @@ class RuleBuilder
     public function getActions(): array
     {
         return $this->actions;
+    }
+
+    /**
+     * Get rule ranking, if defined
+     *
+     * @return ?int
+     */
+    public function getRanking(): ?int
+    {
+        return $this->ranking;
     }
 }

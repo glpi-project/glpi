@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Application\View\TemplateRenderer;
 
 class Item_Line extends CommonDBRelation
 {
@@ -128,8 +130,8 @@ class Item_Line extends CommonDBRelation
             'items_id' => $item->getID(),
             'itemtype' => $item->getType(),
             'NOT'   => [
-                'lines_id' => 0
-            ]
+                'lines_id' => 0,
+            ],
         ]);
     }
 
@@ -142,7 +144,7 @@ class Item_Line extends CommonDBRelation
     protected static function countSimcardItemsForLine(Line $line)
     {
         return countElementsInTable(Item_DeviceSimcard::getTable(), [
-            'lines_id' => $line->getID()
+            'lines_id' => $line->getID(),
         ]);
     }
 
@@ -156,14 +158,10 @@ class Item_Line extends CommonDBRelation
      **/
     public static function showItemsForLine(Line $line)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
-        global $CFG_GLPI, $DB;
+        /** @var \DBmysql $DB */
+        global $DB;
 
         $ID = $line->fields['id'];
-        $rand = mt_rand();
 
         if (
             !$line->getFromDB($ID)
@@ -174,139 +172,112 @@ class Item_Line extends CommonDBRelation
         $canedit = $line->canEdit($ID);
 
         $items = $DB->request([
+            'SELECT' => ['id', 'itemtype', 'items_id'],
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'lines_id' => $ID,
-            ]
+            ],
         ]);
 
         $simcards = $DB->request([
+            'SELECT' => ['id'],
             'FROM'   => Item_DeviceSimcard::getTable(),
             'WHERE'  => [
-                'lines_id' => $ID
-            ]
+                'lines_id' => $ID,
+            ],
         ]);
 
-        Session::initNavigateListItems(
-            self::getType(),
-            //TRANS : %1$s is the itemtype name,
-            //        %2$s is the name of the item (used for headings of a list)
-            sprintf(
-                __('%1$s = %2$s'),
-                $line->getTypeName(1),
-                $line->getName()
-            )
-        );
-
-        if (!count($simcards)) {
-            echo "<table class='tab_cadre_fixe'><tr><th>" . __s('No simcard found') . "</th></tr>";
-            echo "</table>";
-        } else {
-            echo "<table class='tab_cadre_fixehov'>";
-            $header = "<tr>";
-            $header .= "<th>" . htmlescape(Item_DeviceSimcard::getTypeName(1)) . "</th>";
-            $header .= "</tr>";
-
-            echo $header;
-            foreach ($simcards as $row) {
-                $item = new Item_DeviceSimcard();
-                $item->getFromDB($row['id']);
-                echo "<tr class='tab_bg_1'>";
-                echo "<td>" . $item->getLink() . "</td>";
-                echo "</tr>";
-            }
-            echo $header;
-            echo "</table>";
+        $simcard_entries = [];
+        foreach ($simcards as $row) {
+            $item = new Item_DeviceSimcard();
+            $item->getFromDB($row['id']);
+            $simcard_entries[] = [
+                'itemtype' => Item_DeviceSimcard::class,
+                'id'      => $row['id'],
+                'name'    => $item->getLink(),
+            ];
         }
 
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'super_header' => [
+                'label' => Item_DeviceSimcard::getTypeName(Session::getPluralNumber()),
+            ],
+            'columns' => [
+                'name' => __('Name'),
+            ],
+            'formatters' => [
+                'name' => 'raw_html',
+            ],
+            'entries' => $simcard_entries,
+            'total_number' => count($simcard_entries),
+            'filtered_number' => count($simcard_entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => count($simcard_entries),
+                'container'     => 'mass' . Item_DeviceSimcard::class . mt_rand(),
+            ],
+        ]);
+
         if (static::canCreate()) {
-            echo '<form method="post" action="' . static::getFormURL() . '">';
-            echo '<table class="tab_cadre_fixe">';
-
-            echo '<tr class="tab_bg_2"><th colspan="3">' . __s('Add an item') . '</th></tr>';
-
-            echo '<tr class="tab_bg_1">';
-            echo '<td><label for="dropdown_items_id' . $rand . '">' . _sn('Item', 'Items', 1) . '</label></td>';
-            echo '<td>';
-
             //get all used items
             $used = [];
             $iterator = $DB->request([
                 'FROM'   => static::getTable(),
                 'WHERE'  => [
-                    'lines_id' => $line->getID()
-                ]
+                    'lines_id' => $line->getID(),
+                ],
             ]);
             foreach ($iterator as $row) {
                 $used[$row['itemtype']][$row['items_id']] = $row['items_id'];
             }
 
-            Dropdown::showSelectItemFromItemtypes([
-                'itemtypes'       => $CFG_GLPI['line_types'],
-                'used'            => $used,
-                'entity_restrict' => $line->isRecursive() ? getSonsOf('glpi_entities', $line->getEntityID()) : $line->getEntityID()
+            TemplateRenderer::getInstance()->display('pages/management/item_line.html.twig', [
+                'from_line' => true,
+                'peer_id' => $line->getID(),
+                'used' => $used,
+                'entity_restrict' => $line->isRecursive() ? getSonsOf('glpi_entities', $line->getEntityID()) : $line->getEntityID(),
             ]);
-            echo '</td>';
-            echo '<td class="center">';
-            echo '<input type="submit" name="add" value=" ' . _sx('button', 'Add') . '" class="btn btn-primary" />';
-            echo '</td>';
-            echo '</tr>';
-
-            echo '</table>';
-            echo Html::hidden('lines_id', ['value' => $line->getID()]);
-            Html::closeForm();
         }
 
-        if (!count($items)) {
-            echo "<table class='tab_cadre_fixe'><tr><th>" . __s('No item found') . "</th></tr>";
-            echo "</table>";
-        } else {
-            if ($canedit) {
-                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-                $massiveactionparams = [
-                    'num_displayed'   => min($_SESSION['glpilist_limit'], count($items)),
-                    'container'       => 'mass' . __CLASS__ . $rand
-                ];
-                Html::showMassiveActions($massiveactionparams);
+        $item_entries = [];
+        foreach ($items as $row) {
+            if (!is_a($row['itemtype'], CommonDBTM::class, true)) {
+                continue;
             }
-
-            echo "<table class='tab_cadre_fixehov'>";
-            $header = "<tr>";
-            if ($canedit) {
-                $header .= "<th width='10'>";
-                $header .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                $header .= "</th>";
-            }
-            $header .= "<th>" . _sn('Item', 'Items', 1) . "</th>";
-            $header .= "</tr>";
-
-            echo $header;
-            foreach ($items as $row) {
-                if (!is_a($row['itemtype'], CommonDBTM::class, true)) {
-                    continue;
-                }
-                $item = new $row['itemtype']();
-                $item->getFromDB($row['items_id']);
-                echo "<tr class='tab_bg_1'>";
-                if ($canedit) {
-                    echo "<td>";
-                    Html::showMassiveActionCheckBox(__CLASS__, $row["id"]);
-                    echo "</td>";
-                }
-                echo "<td>" . $item->getLink() . "</td>";
-                echo "</tr>";
-            }
-            echo $header;
-            echo "</table>";
-
-            if ($canedit && count($items)) {
-                $massiveactionparams['ontop'] = false;
-                Html::showMassiveActions($massiveactionparams);
-            }
-            if ($canedit) {
-                Html::closeForm();
-            }
+            $item = getItemForItemtype($row['itemtype']);
+            $item->getFromDB($row['items_id']);
+            $item_entries[] = [
+                'itemtype' => static::class,
+                'id'      => $row['id'],
+                'name'    => $item->getLink(),
+            ];
         }
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'super_header' => [
+                'label' => _n('Item', 'Items', Session::getPluralNumber()),
+            ],
+            'columns' => [
+                'name' => __('Name'),
+            ],
+            'formatters' => [
+                'name' => 'raw_html',
+            ],
+            'entries' => $item_entries,
+            'total_number' => count($item_entries),
+            'filtered_number' => count($item_entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => count($item_entries),
+                'container'     => 'mass' . static::class . mt_rand(),
+            ],
+        ]);
     }
 
     /**
@@ -340,7 +311,7 @@ class Item_Line extends CommonDBRelation
             'WHERE'  => [
                 'itemtype' => $itemtype,
                 'items_id' => $ID,
-            ]
+            ],
         ]);
 
         $lines_from_sim = $DB->request([
@@ -350,52 +321,46 @@ class Item_Line extends CommonDBRelation
                 'itemtype' => $itemtype,
                 'items_id' => $ID,
                 'NOT'   => [
-                    'lines_id' => 0
-                ]
-            ]
+                    'lines_id' => 0,
+                ],
+            ],
         ]);
 
-        Session::initNavigateListItems(
-            self::getType(),
-            //TRANS : %1$s is the itemtype name,
-            //        %2$s is the name of the item (used for headings of a list)
-            sprintf(
-                __('%1$s = %2$s'),
-                $item->getTypeName(1),
-                $item->getName()
-            )
-        );
-
-        if (!count($lines_from_sim)) {
-            echo "<table class='tab_cadre_fixe'><tr><th>" . __s('No lines from simcard found') . "</th></tr>";
-            echo "</table>";
-        } else {
-            echo "<table class='tab_cadre_fixehov'>";
-            $header = "<tr>";
-            $header .= "<th>" . htmlescape(Item_DeviceSimcard::getTypeName(1)) . "</th>";
-            $header .= "</tr>";
-
-            echo $header;
-            foreach ($lines_from_sim as $row) {
-                $item = new Item_DeviceSimcard();
-                $item->getFromDB($row['id']);
-                echo "<tr class='tab_bg_1'>";
-                echo "<td>" . $item->getLink() . "</td>";
-                echo "</tr>";
-            }
-            echo $header;
-            echo "</table>";
+        $simcard_entries = [];
+        foreach ($lines_from_sim as $row) {
+            $item = new Item_DeviceSimcard();
+            $item->getFromDB($row['id']);
+            $simcard_entries[] = [
+                'itemtype' => Item_DeviceSimcard::class,
+                'id'      => $row['id'],
+                'name'    => $item->getLink(),
+            ];
         }
 
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'super_header' => [
+                'label' => Item_DeviceSimcard::getTypeName(Session::getPluralNumber()),
+            ],
+            'columns' => [
+                'name' => __('Name'),
+            ],
+            'formatters' => [
+                'name' => 'raw_html',
+            ],
+            'entries' => $simcard_entries,
+            'total_number' => count($simcard_entries),
+            'filtered_number' => count($simcard_entries),
+            'showmassiveactions' => $simcard_entries,
+            'massiveactionparams' => [
+                'num_displayed' => count($simcard_entries),
+                'container'     => 'mass' . Item_DeviceSimcard::class . mt_rand(),
+            ],
+        ]);
+
         if (static::canCreate()) {
-            echo '<form method="post" action="' . static::getFormURL() . '">';
-            echo '<table class="tab_cadre_fixe">';
-
-            echo '<tr class="tab_bg_2"><th colspan="3">' . __s('Add a line') . '</th></tr>';
-
-            echo '<tr class="tab_bg_1">';
-            echo '<td><label for="dropdown_items_id' . $rand . '">' . htmlescape(Line::getTypeName(1)) . '</label></td>';
-            echo '<td>';
             //get all used items
             $used = [];
             $iterator = $DB->request([
@@ -403,77 +368,54 @@ class Item_Line extends CommonDBRelation
                 'WHERE'  => [
                     'itemtype' => $itemtype,
                     'items_id' => $ID,
-                ]
+                ],
             ]);
             foreach ($iterator as $row) {
                 $used[] = $row['lines_id'];
             }
 
-            Line::dropdown([
-                'rand'   => $rand,
-                'used'   => $used,
-                'entity' => $item->isRecursive() ? getSonsOf('glpi_entities', $item->getEntityID()) : $item->getEntityID(),
+            TemplateRenderer::getInstance()->display('pages/management/item_line.html.twig', [
+                'from_line' => false,
+                'peer_itemtype' => $itemtype,
+                'peer_id' => $ID,
+                'used' => $used,
+                'entity_restrict' => $item->isRecursive() ? getSonsOf('glpi_entities', $item->getEntityID()) : $item->getEntityID(),
             ]);
-            echo '</td>';
-            echo '<td class="center">';
-            echo '<input type="submit" name="add" value=" ' . _sx('button', 'Add') . '" class="btn btn-primary" />';
-            echo '</td>';
-            echo '</tr>';
-
-            echo '</table>';
-            echo Html::hidden('itemtype', ['value' => $itemtype]);
-            echo Html::hidden('items_id', ['value' => $ID]);
-            echo Html::hidden('_from', ['value' => 'item']);
-            Html::closeForm();
         }
 
-        if (!count($lines)) {
-            echo "<table class='tab_cadre_fixe'><tr><th>" . __s('No line found') . "</th></tr>";
-            echo "</table>";
-        } else {
-            if ($canedit) {
-                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-                $massiveactionparams = [
-                    'num_displayed'   => min($_SESSION['glpilist_limit'], count($lines)),
-                    'container'       => 'mass' . __CLASS__ . $rand
-                ];
-                Html::showMassiveActions($massiveactionparams);
-            }
-
-            echo "<table class='tab_cadre_fixehov'>";
-            $header = "<tr>";
-            if ($canedit) {
-                $header .= "<th width='10'>";
-                $header .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                $header .= "</th>";
-            }
-            $header .= "<th>" . htmlescape(Line::getTypeName(1)) . "</th>";
-            $header .= "</tr>";
-
-            echo $header;
-            foreach ($lines as $row) {
-                $line = new Line();
-                $line->getFromDB($row['lines_id']);
-                echo "<tr class='tab_bg_1'>";
-                if ($canedit) {
-                    echo "<td>";
-                    Html::showMassiveActionCheckBox(__CLASS__, $row["id"]);
-                    echo "</td>";
-                }
-                echo "<td>" . $line->getLink() . "</td>";
-                echo "</tr>";
-            }
-            echo $header;
-            echo "</table>";
-
-            if ($canedit && count($lines)) {
-                $massiveactionparams['ontop'] = false;
-                Html::showMassiveActions($massiveactionparams);
-            }
-            if ($canedit) {
-                Html::closeForm();
-            }
+        $line_entries = [];
+        foreach ($lines as $row) {
+            $line = new Line();
+            $line->getFromDB($row['lines_id']);
+            $line_entries[] = [
+                'itemtype' => static::class,
+                'id'      => $row['id'],
+                'name'    => $line->getLink(),
+            ];
         }
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'super_header' => [
+                'label' => Line::getTypeName(Session::getPluralNumber()),
+            ],
+            'columns' => [
+                'name' => __('Name'),
+            ],
+            'formatters' => [
+                'name' => 'raw_html',
+            ],
+            'entries' => $line_entries,
+            'total_number' => count($line_entries),
+            'filtered_number' => count($line_entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => count($line_entries),
+                'container'     => 'mass' . static::class . mt_rand(),
+            ],
+        ]);
     }
 
     public function showForm($ID, array $options = [])

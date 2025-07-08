@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+use function Safe\json_encode;
 
 Session::checkRightsOr('reservation', [READ, ReservationItem::RESERVEANITEM]);
 
@@ -62,11 +64,7 @@ if (($_POST['action'] ?? null) === "update_event") {
 Html::header_nocache();
 header("Content-Type: text/html; charset=UTF-8");
 
-if ($_REQUEST["action"] == "add_reservation_fromselect") {
+if ($_REQUEST["action"] == "add_edit_reservation_fromselect") {
     $reservation = new Reservation();
-    $reservation->showForm(0, [
-        'item'  => [(int) $_REQUEST['id']],
-        'begin' => $_REQUEST['start'],
-        'end'   => $_REQUEST['end'],
-    ]);
+    $reservation->showForm($_REQUEST['id'], $_REQUEST);
 }

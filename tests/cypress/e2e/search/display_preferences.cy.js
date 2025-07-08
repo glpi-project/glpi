@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -30,13 +30,26 @@
  * ---------------------------------------------------------------------
  */
 
-describe('Display preferences', () => {
+describe('Display preferences', { retries: {runMode: 0, openMode: 0} }, () => {
     before(() => {
         // Create at least one ticket as we will be displaying the ticket list
         // to validate that the right columns are displayed
         cy.createWithAPI('Ticket', {
             'name': 'Open ticket',
             'content': 'Open ticket',
+        });
+
+        // Make sure "pending reason" search option doens't exist as it will be
+        // created by these tests.
+        cy.searchWithAPI("DisplayPreference", [{
+            link: "AND",
+            field: 4, // Search option ID
+            searchtype: "equals",
+            value: 400, // Pending reason search option ID
+        }]).then((data) => {
+            for (const row of data) {
+                cy.deleteWithAPI("DisplayPreference", row[2]);
+            }
         });
     });
 
@@ -46,20 +59,20 @@ describe('Display preferences', () => {
         cy.visit('/front/ticket.php');
         openDisplayPreferences();
 
-        // Add a new column to the global view
-        goToTab('Global View');
+        // Add a column to the global view
+        goToTab('Global View', true);
         addDisplayPeference('Pending reason');
 
         // Refresh page
         cy.reload();
 
         // Make sure the column was added to the ticket list (still as admin)
-        cy.findByRole('columnheader', {'name': 'Pending reason'}).should('be.visible');
+        cy.findByRole('columnheader', {name: "Pending reason"}).should('exist');
 
         // Switch to helpdesk and make sure the column was not added
         cy.changeProfile('Self-Service', true);
         cy.visit('/front/ticket.php');
-        cy.findByRole('columnheader', {'name': 'Pending reason'}).should('not.exist');
+        cy.findByRole('columnheader', {name: "Pending reason"}).should('not.exist');
 
         // Go back to super admin
         cy.changeProfile('Super-Admin', true);
@@ -67,7 +80,7 @@ describe('Display preferences', () => {
 
         // Validate that the column was added to the global view config
         openDisplayPreferences();
-        goToTab('Global View');
+        goToTab('Global View', true);
         validateThatDisplayPreferenceExist('Pending reason');
 
         // Make sure the column is not in the helpdesk view config
@@ -85,20 +98,20 @@ describe('Display preferences', () => {
         cy.visit('/front/ticket.php');
         openDisplayPreferences();
 
-        // Add a new column to the global view
-        goToTab('Helpdesk View');
+        // Add a column to the global view
+        goToTab('Helpdesk View', true);
         addDisplayPeference('Pending reason');
 
         // Refresh page
         cy.reload();
 
         // Make sure the column was not added to the central ticket list
-        cy.findByRole('columnheader', {'name': 'Pending reason'}).should('not.exist');
+        cy.findByRole('columnheader', {name: "Pending reason"}).should('not.exist');
 
         // Switch to helpdesk and make sure the column was added
         cy.changeProfile('Self-Service', true);
         cy.visit('/front/ticket.php');
-        cy.findByRole('columnheader', {'name': 'Pending reason'}).should('be.visible');
+        cy.findByRole('columnheader', {name: "Pending reason"}).should('exist');
 
         // Go back to super admin
         cy.changeProfile('Super-Admin', true);
@@ -106,7 +119,7 @@ describe('Display preferences', () => {
 
         // Validate that the column was added to the helpdesk view
         openDisplayPreferences();
-        goToTab('Helpdesk View');
+        goToTab('Helpdesk View', true);
         validateThatDisplayPreferenceExist('Pending reason');
 
         // Make sure the column is not in the global view
@@ -135,11 +148,24 @@ describe('Display preferences', () => {
         ;
     }
 
-    function goToTab(name) {
+    function goToTab(name, wait = false) {
+        if (wait) {
+            // When changing tabs for the first time, we must wait for the
+            // js hanlder to be loaded.
+            // Sadly, there is no easy way to determine this without waiting
+            // an arbitrary amount of time.
+            // eslint-disable-next-line cypress/no-unnecessary-waiting
+            cy.wait(800);
+
+            // Reseting the alias here seems to make the test less flaky
+            createIframeBodyAlias();
+        }
+
         cy.get('@iframeBody').find('#tabspanel-select').select(name);
     }
 
     function addDisplayPeference(name) {
+        cy.intercept('POST', '/ajax/displaypreference.php').as('update_request');
         cy.get('@iframeBody')
             .getDropdownByLabelText('Select an option to add')
             .click()
@@ -152,15 +178,36 @@ describe('Display preferences', () => {
             .findByRole('button', {'name': 'Add'})
             .click()
         ;
+        // Make sure the option isn't still shown in the dropdown
+        cy.get('@iframeBody')
+            .getDropdownByLabelText('Select an option to add')
+            .click();
+        cy.get('@iframeBody')
+            .findByRole('option', {'name': name})
+            .should('not.exist');
+
+        cy.wait('@update_request');
     }
 
     function deletePreference(name) {
+        cy.intercept('POST', '/ajax/displaypreference.php').as('update_request');
         cy.get('@iframeBody')
             .findByRole('list')
             .findByRole('option', {'name': name}) // Should be listitem instead of option, our DOM is wrong
             .findByRole('button', {'name': "Delete permanently"})
             .click()
         ;
+
+        // Make sure the option is available again
+        // Make sure the option isn't still shown in the dropdown
+        cy.get('@iframeBody')
+            .getDropdownByLabelText('Select an option to add')
+            .click();
+        cy.get('@iframeBody')
+            .findByRole('option', {'name': name})
+            .should('be.visible');
+
+        cy.wait('@update_request');
     }
 
     function validateThatDisplayPreferenceExist(name) {

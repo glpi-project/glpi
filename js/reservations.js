@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -238,9 +238,10 @@ var Reservations = function() {
                         title: __("Add reservation"),
                         url: `${CFG_GLPI.root_doc}/ajax/reservations.php`,
                         params: {
-                            action: 'add_reservation_fromselect',
-                            id:     my.id,
-                            start:  info.start.toISOString(),
+                            action: 'add_edit_reservation_fromselect',
+                            id: 0,
+                            item:     [my.id],
+                            begin:  info.start.toISOString(),
                             end:    info.end.toISOString(),
                         },
                         dialogclass: 'modal-lg',
@@ -263,7 +264,7 @@ var Reservations = function() {
 
                 glpi_ajax_dialog({
                     title: __("Edit reservation"),
-                    url: `${ajaxurl}&ajax=true`,
+                    url: `${ajaxurl}`,
                     dialogclass: 'modal-lg',
                 });
             }

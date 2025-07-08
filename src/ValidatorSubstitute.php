@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -48,10 +48,15 @@ final class ValidatorSubstitute extends CommonDBTM
             case Preference::class:
                 $user = User::getById(Session::getLoginUserID());
                 $nb = $_SESSION['glpishow_count_on_tabs'] ? count($user->getSubstitutes()) : 0;
-                return self::createTabEntry(self::getTypeName($nb), $nb, $item::getType());
+                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
 
         return '';
+    }
+
+    public static function getIcon()
+    {
+        return 'ti ti-replace-user';
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
@@ -153,7 +158,7 @@ final class ValidatorSubstitute extends CommonDBTM
     {
         if (isset($input['users_id']) && $input['users_id'] != $this->fields['users_id']) {
             // Do not change the user.
-            Session::addMessageAfterRedirect(__s('Cannot change the validation delegator'));
+            Session::addMessageAfterRedirect(__s('Cannot change the approval delegator'));
             return [];
         }
 
@@ -187,6 +192,9 @@ final class ValidatorSubstitute extends CommonDBTM
         $success = true;
 
         if (isset($input['substitutes'])) {
+            if (empty($input['substitutes'])) {
+                $input['substitutes'] = [];
+            }
             if (in_array($input['users_id'], $input['substitutes'])) {
                 Session::addMessageAfterRedirect(__s('A user cannot be their own substitute.'), true, ERROR);
                 return false;
@@ -223,8 +231,8 @@ final class ValidatorSubstitute extends CommonDBTM
                 $input['substitution_end_date'] = $input['substitution_start_date'];
             }
         } else {
-            $input['substitution_start_date'] = $input['substitution_start_date'] ?? 'NULL';
-            $input['substitution_end_date']   = $input['substitution_end_date'] ?? 'NULL';
+            $input['substitution_start_date'] ??= 'NULL';
+            $input['substitution_end_date'] ??= 'NULL';
         }
 
         // Update begin and end date to apply substitutes

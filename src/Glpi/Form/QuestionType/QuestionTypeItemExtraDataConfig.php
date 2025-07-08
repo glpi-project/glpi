@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,15 +38,14 @@ namespace Glpi\Form\QuestionType;
 use Glpi\DBAL\JsonFieldInterface;
 use Override;
 
-final class QuestionTypeItemExtraDataConfig implements JsonFieldInterface
+class QuestionTypeItemExtraDataConfig implements JsonFieldInterface
 {
     // Unique reference to hardcoded name used for serialization
     public const ITEMTYPE = "itemtype";
 
     public function __construct(
         private ?string $itemtype = null,
-    ) {
-    }
+    ) {}
 
     #[Override]
     public static function jsonDeserialize(array $data): self

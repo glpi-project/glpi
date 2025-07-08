@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,6 +36,7 @@ namespace Glpi\Asset\CustomFieldType;
 
 use Glpi\Asset\CustomFieldDefinition;
 use Glpi\Asset\CustomFieldOption\BooleanOption;
+use Glpi\Asset\CustomFieldOption\ProfileRestrictOption;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 
@@ -43,7 +44,11 @@ abstract class AbstractType implements TypeInterface
 {
     public function __construct(
         protected CustomFieldDefinition $custom_field
-    ) {
+    ) {}
+
+    public function getLabel(): string
+    {
+        return $this->custom_field->getFriendlyName();
     }
 
     public function normalizeValue(mixed $value): mixed
@@ -65,15 +70,13 @@ abstract class AbstractType implements TypeInterface
     {
         return [
             new BooleanOption($this->custom_field, 'full_width', __('Full width'), false),
-            new BooleanOption($this->custom_field, 'readonly', __('Readonly'), false),
             new BooleanOption($this->custom_field, 'required', __('Mandatory'), false),
+            new ProfileRestrictOption($this->custom_field, 'readonly', __('Readonly for these profiles'), false),
+            new ProfileRestrictOption($this->custom_field, 'hidden', __('Hidden for these profiles'), false),
         ];
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    protected function getOptionValues(bool $default_field = false): array
+    public function getOptionValues(bool $default_field = false): array
     {
         $values = [];
         foreach ($this->getOptions() as $option) {
@@ -119,10 +122,10 @@ abstract class AbstractType implements TypeInterface
                 QueryFunction::jsonUnquote(
                     expression: QueryFunction::jsonExtract([
                         'glpi_assets_assets.custom_fields',
-                        new QueryExpression($DB::quoteValue('$."' . $this->custom_field->fields['id'] . '"'))
+                        new QueryExpression($DB::quoteValue('$."' . $this->custom_field->fields['id'] . '"')),
                     ])
                 ),
-                new QueryExpression($DB::quoteValue($this->custom_field->fields['default_value']))
+                new QueryExpression($DB::quoteValue($this->custom_field->fields['default_value'])),
             ]),
             'nometa' => true,
             'field_definition' => $this->custom_field,

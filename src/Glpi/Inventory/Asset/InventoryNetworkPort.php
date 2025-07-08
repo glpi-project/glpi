@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -38,6 +38,7 @@ namespace Glpi\Inventory\Asset;
 
 use DBmysqlIterator;
 use Glpi\Inventory\Conf;
+use Glpi\Inventory\MainAsset\MainAsset;
 use IPAddress;
 use IPNetwork;
 use Item_DeviceNetworkCard;
@@ -124,7 +125,7 @@ trait InventoryNetworkPort
         $this->handleUpdates();
         $this->handleCreates();
 
-        if (method_exists($this, 'handleAggregations')) {
+        if (method_exists($this, 'handleAggregations')) { // @phpstan-ignore function.alreadyNarrowedType
             $this->handleAggregations();
         }
 
@@ -149,8 +150,8 @@ trait InventoryNetworkPort
             'FROM'   => NetworkPort::getTable(),
             'WHERE'  => [
                 'itemtype'  => new QueryParam(),
-                'mac'       => new QueryParam()
-            ]
+                'mac'       => new QueryParam(),
+            ],
         ];
 
         $it = new DBmysqlIterator(null);
@@ -168,18 +169,18 @@ trait InventoryNetworkPort
                 $results = $stmt->get_result();
 
                 if ($results->num_rows > 0) {
-                     $row = $results->fetch_object();
-                     $unmanageds_id = $row->items_id;
-                     $input = [
-                         'logical_number'  => $port->logical_number,
-                         'itemtype'        => $this->itemtype,
-                         'items_id'        => $this->items_id,
-                         'is_dynamic'      => 1,
-                         'name'            => $port->name,
-                     ];
+                    $row = $results->fetch_object();
+                    $unmanageds_id = $row->items_id;
+                    $input = [
+                        'logical_number'  => $port->logical_number,
+                        'itemtype'        => $this->itemtype,
+                        'items_id'        => $this->items_id,
+                        'is_dynamic'      => 1,
+                        'name'            => $port->name,
+                    ];
 
-                     $networkport->update($input);
-                     $unmanaged->delete(['id' => $unmanageds_id], true);
+                    $networkport->update($input);
+                    $unmanaged->delete(['id' => $unmanageds_id], true);
                 }
             }
         }
@@ -215,7 +216,7 @@ trait InventoryNetworkPort
                         'address'      => new QueryParam(),
                         'netmask'      => new QueryParam(),
                         'gateway'      => new QueryParam(),
-                    ]
+                    ],
                 ];
 
                 $it = new DBmysqlIterator(null);
@@ -245,14 +246,14 @@ trait InventoryNetworkPort
             $count = $row->cnt;
 
             if ($count == 0) {
-                 $input = [
-                     'name'         => sprintf('%s/%s - %s', $port->subnet, $port->netmask, $port->gateway),
-                     'network'      => sprintf('%s/%s', $port->subnet, $port->netmask),
-                     'gateway'      => $port->gateway,
-                     'entities_id'  => $this->entities_id,
-                     '_no_message'  => true //to prevent 'Network already defined in visible entities' message on add
-                 ];
-                 $ipnetwork->add($input);
+                $input = [
+                    'name'         => sprintf('%s/%s - %s', $port->subnet, $port->netmask, $port->gateway),
+                    'network'      => sprintf('%s/%s', $port->subnet, $port->netmask),
+                    'gateway'      => $port->gateway,
+                    'entities_id'  => $this->entities_id,
+                    '_no_message'  => true, //to prevent 'Network already defined in visible entities' message on add
+                ];
+                $ipnetwork->add($input);
             }
         }
     }
@@ -268,7 +269,7 @@ trait InventoryNetworkPort
     {
         $networkport = new NetworkPort();
 
-        $input  = (array)$port;
+        $input  = (array) $port;
         foreach ($input as $key => $data) {
             if (is_array($data)) {
                 unset($input[$key]);
@@ -280,7 +281,7 @@ trait InventoryNetworkPort
                 'entities_id'  => $this->entities_id,
                 'items_id'     => $this->items_id,
                 'itemtype'     => $this->itemtype,
-                'is_dynamic'   => 1
+                'is_dynamic'   => 1,
             ]
         );
 
@@ -308,7 +309,7 @@ trait InventoryNetworkPort
             'is_dynamic'   => 1,
             'items_id'     => $items_id,
             'is_recursive' => 0,
-            'itemtype'     => 'NetworkPort'
+            'itemtype'     => 'NetworkPort',
         ];
 
         if ($name !== null) {
@@ -335,7 +336,7 @@ trait InventoryNetworkPort
                 'items_id'     => $items_id,
                 'itemtype'     => 'NetworkName',
                 'name'         => $ip,
-                'is_dynamic'   => 1
+                'is_dynamic'   => 1,
             ];
             $ipaddress->add($input);
         }
@@ -354,15 +355,14 @@ trait InventoryNetworkPort
         $db_ports = [];
         $networkport = new NetworkPort();
 
-        $np_dyn_props = ['logical_number', 'ifstatus', 'ifinternalstatus', 'ifalias'];
+        $np_dyn_props = ['logical_number', 'ifstatus', 'ifinternalstatus', 'ifalias', 'is_dynamic'];
         $iterator = $DB->request([
             'SELECT' => array_merge(['id', 'name', 'mac', 'instantiation_type'], $np_dyn_props),
             'FROM'   => 'glpi_networkports',
             'WHERE'  => [
                 'items_id'     => $this->items_id,
                 'itemtype'     => $this->itemtype,
-                'is_dynamic'   => 1
-            ]
+            ],
         ]);
         foreach ($iterator as $row) {
             $id = $row['id'];
@@ -401,7 +401,7 @@ trait InventoryNetworkPort
                     }
                 }
 
-               //check if port exists in database
+                //check if port exists in database
                 if ($comp_data != $datadb) {
                     continue;
                 }
@@ -413,10 +413,16 @@ trait InventoryNetworkPort
                     }
                 }
 
-                if (count($criteria)) {
+                // force dynamic for manually added NetworkPort
+                if (count($criteria) || !$dbdata_copy['is_dynamic']) {
                     $criteria['id'] = $keydb;
                     $criteria['is_dynamic'] = 1;
                     $networkport->update($criteria);
+                }
+
+                // force NetworkPortEthernet type if no instantiation_type and mac is set
+                if (!property_exists($data, 'instantiation_type') && property_exists($data, 'mac') && !empty($data->mac)) {
+                    $data->instantiation_type = 'NetworkPortEthernet';
                 }
 
                 //check for instantiation_type switch for NetworkPort
@@ -428,25 +434,24 @@ trait InventoryNetworkPort
                     $networkport->switchInstantiationType($data->instantiation_type);
                 }
 
-               //handle instantiation type
+                //handle instantiation type
                 if (property_exists($data, 'instantiation_type')) {
                     $type = $data->instantiation_type;
-
-                   //handle only ethernet and fiberchannel
+                    //handle only ethernet and fiberchannel
                     $this->handleInstantiation($type, $data, $keydb, true);
                 }
 
                 $ips = $data->ipaddress ?? [];
                 if (count($ips)) {
-                   //handle network name
+                    //handle network name
                     if ($netname_stmt == null) {
                         $criteria = [
                             'SELECT' => 'id',
                             'FROM'   => NetworkName::getTable(),
                             'WHERE'  => [
                                 'itemtype'  => 'NetworkPort',
-                                'items_id'  => new QueryParam()
-                            ]
+                                'items_id'  => new QueryParam(),
+                            ],
                         ];
 
                         $it = new DBmysqlIterator(null);
@@ -463,8 +468,8 @@ trait InventoryNetworkPort
                     $results = $netname_stmt->get_result();
 
                     if ($results->num_rows) {
-                          $row = $results->fetch_object();
-                          $netname_id = $row->id;
+                        $row = $results->fetch_object();
+                        $netname_id = $row->id;
                     } else {
                         if (!empty($datadb['name'])) {
                             $netname = \Toolbox::slugify($datadb['name']);
@@ -484,12 +489,12 @@ trait InventoryNetworkPort
                         'FROM'   => 'glpi_ipaddresses',
                         'WHERE'  => [
                             'items_id'  => $netname_id,
-                            'itemtype'  => 'NetworkName'
-                        ]
+                            'itemtype'  => 'NetworkName',
+                        ],
                     ]);
 
                     foreach ($iterator as $db_data) {
-                          $db_addresses[$db_data['id']] = $db_data['name'];
+                        $db_addresses[$db_data['id']] = $db_data['name'];
                     }
 
                     foreach ($ips as $ip_key => $ip_data) {
@@ -497,7 +502,7 @@ trait InventoryNetworkPort
                             if ($ip_data == $db_ip_data) {
                                 unset($ips[$ip_key]);
                                 unset($db_addresses[$db_ip_key]);
-                             //result found in db, useless to continue
+                                //result found in db, useless to continue
                                 break 1;
                             }
                         }
@@ -532,7 +537,7 @@ trait InventoryNetworkPort
         //delete remaining network ports, if any
         if (count($db_ports)) {
             foreach ($db_ports as $netpid => $netpdata) {
-                if ($netpdata['name'] != 'management') { //prevent removing internal management port
+                if ($netpdata['name'] != 'management' && $netpdata['is_dynamic']) { //prevent removing internal management port or non dynamic ports
                     $networkport->delete(['id' => $netpid], true);
                 }
             }
@@ -541,7 +546,7 @@ trait InventoryNetworkPort
 
     protected function portUpdated(\stdClass $port, int $netports_id)
     {
-       //does nothing
+        //does nothing
     }
 
     /**
@@ -588,8 +593,8 @@ trait InventoryNetworkPort
                     'WHERE'  => [
                         'itemtype'  => new QueryParam(),
                         'items_id'  => new QueryParam(),
-                        'mac'       => new QueryParam()
-                    ]
+                        'mac'       => new QueryParam(),
+                    ],
                 ];
 
                 $it = new DBmysqlIterator(null);
@@ -614,7 +619,7 @@ trait InventoryNetworkPort
             }
         }
 
-       //store instance
+        //store instance
         if ($instance->isNewItem()) {
             $instance->add($input);
         } else {
@@ -634,6 +639,11 @@ trait InventoryNetworkPort
             $ports += $this->getManagementPorts();
         }
         foreach ($ports as $port) {
+            // force NetworkPortEthernet type if no instantiation_type and mac is set
+            if (!property_exists($port, 'instantiation_type') && property_exists($port, 'mac') && !empty($port->mac)) {
+                $port->instantiation_type = 'NetworkPortEthernet';
+            }
+
             $netports_id = $this->addNetworkPort($port);
             if (count(($port->ipaddress ?? []))) {
                 if (property_exists($port, 'name')) {
@@ -671,7 +681,7 @@ trait InventoryNetworkPort
                     "itemtype"           => $this->itemtype,
                     "items_id"           => $this->items_id,
                     "instantiation_type" => NetworkPortAggregate::getType(),
-                    "name"               => "Management"
+                    "name"               => "Management",
                 ], 1);
             }
         }
@@ -679,7 +689,7 @@ trait InventoryNetworkPort
 
     protected function portCreated(\stdClass $port, int $netports_id)
     {
-       //does nothing
+        //does nothing
     }
 
     public function checkPortsConf(Conf $conf): bool

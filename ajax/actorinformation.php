@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,13 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-// Direct access to file
-if (strpos($_SERVER['PHP_SELF'], "actorinformation.php")) {
-    /** @var \Glpi\Controller\LegacyFileLoadController $this */
-    $this->setAjax();
-    header("Content-Type: text/html; charset=UTF-8");
-    Html::header_nocache();
-}
+use function Safe\preg_grep;
+
+header("Content-Type: text/html; charset=UTF-8");
+Html::header_nocache();
 
 // save value and force boolval for security of $_REQUEST['only_number]
 $only_number = boolval($_REQUEST['only_number'] ?? false);
@@ -52,12 +49,11 @@ if (count($actor_keys) !== 1) {
 }
 
 $actor_key = reset($actor_keys);
-$actor_id  = (int)$_REQUEST[$actor_key];
+$actor_id  = (int) $_REQUEST[$actor_key];
 
 // check if user is allowed to see the item (only if not current connected user)
 if ($actor_id != Session::getLoginUserID()) {
-    $itemtype = getItemtypeForForeignKeyField($actor_key);
-    $item     = new $itemtype();
+    $item = getItemForForeignKeyField($actor_key);
     if (!$item->getFromDB($actor_id) || !$item->canView()) {
         // Unable to get item or no rights to see the item
         return;

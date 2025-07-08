@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,8 +42,8 @@ class Item extends \CommonDBChild
     public static $itemtype = "Glpi\\Dashboard\\Dashboard";
     public static $items_id = 'dashboards_dashboards_id';
 
-   // prevent bad getFromDB when bootstraping tests suite
-   // FIXME Should be true
+    // prevent bad getFromDB when bootstraping tests suite
+    // FIXME Should be true
     public static $mustBeAttached = false;
 
     /**
@@ -61,8 +61,8 @@ class Item extends \CommonDBChild
         $di_iterator = $DB->request([
             'FROM'  => self::getTable(),
             'WHERE' => [
-                'dashboards_dashboards_id' => $dashboards_id
-            ]
+                'dashboards_dashboards_id' => $dashboards_id,
+            ],
         ]);
 
         $items = [];
@@ -111,17 +111,17 @@ class Item extends \CommonDBChild
         );
         $stmt = $DB->prepare($query_items);
         foreach ($items as $item_key => $item) {
-           // card_options should be unescaped as they will be json_encoded after
+            // card_options should be unescaped as they will be json_encoded after
             $card_options = $_REQUEST['items'][$item_key]['card_options'] ?? $item['card_options'] ?? [];
 
-           // clean
+            // clean
             unset(
                 $card_options['force'],
                 $card_options['card_id'],
                 $card_options['gridstack_id']
             );
 
-           // encode for DB
+            // encode for DB
             $card_options = exportArrayToDB($card_options);
             $gridstack_id = $item['gridstack_id'] ?? $item['gs_id'];
 

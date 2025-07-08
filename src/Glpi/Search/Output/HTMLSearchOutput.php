@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,12 +37,17 @@ namespace Glpi\Search\Output;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Dashboard\Grid;
+use Glpi\Plugin\Hooks;
 use Glpi\Search\CriteriaFilter;
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\URL;
 use Override;
 use SavedSearch;
 use Ticket;
+
+use function Safe\preg_match;
+use function Safe\preg_replace;
+use function Safe\preg_split;
 
 /**
  *
@@ -102,7 +107,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
 
         $parameters = http_build_query([
             'sort'   => $search['sort'],
-            'order'  => $search['order']
+            'order'  => $search['order'],
         ]);
 
         $parameters .= "&{$globallinkto}";
@@ -113,7 +118,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
 
         // For plugin add new parameter if available
         if ($plug = isPluginItemType($data['itemtype'])) {
-            $out = \Plugin::doOneHook($plug['plugin'], 'addParamFordynamicReport', $data['itemtype']);
+            $out = \Plugin::doOneHook($plug['plugin'], Hooks::AUTO_ADD_PARAM_FOR_DYNAMIC_REPORT, $data['itemtype']);
             if (is_array($out) && count($out)) {
                 $parameters .= \Toolbox::append_params($out, '&');
             }
@@ -136,7 +141,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
                 $active_search_name = $savedsearch->getName();
                 $active_savedsearch = true;
             }
-        } else if (count($data['search']['criteria']) > 0) {
+        } elseif (count($data['search']['criteria']) > 0) {
             // check if it isn't the default search
             $default = CriteriaFilter::getDefaultSearch($itemtype);
             if ($default != $data['search']['criteria']) {
@@ -189,6 +194,8 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
             $active_sort = true;
         }
 
+        $count = $data['data']['totalcount'] ?? 0;
+
         $rand = mt_rand();
         TemplateRenderer::getInstance()->display('components/search/display_data.html.twig', [
             'search_error'        => $search_error,
@@ -201,7 +208,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
             'sort'                => $search['sort'] ?? [],
             'start'               => $search['start'] ?? 0,
             'limit'               => $_SESSION['glpilist_limit'],
-            'count'               => $data['data']['totalcount'] ?? 0,
+            'count'               => $count,
             'item'                => $item,
             'itemtype'            => $itemtype,
             'href'                => $href,
@@ -212,16 +219,18 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
             'hide_search_toggle'  => $params['hide_criteria'] ?? false,
             'showmassiveactions'  => ($params['showmassiveactions'] ?? $search['showmassiveactions'] ?? true)
                 && $data['display_type'] != \Search::GLOBAL_SEARCH
-                && ($itemtype == \AllAssets::getType()
+                && (
+                    $itemtype == \AllAssets::getType()
                     || count(\MassiveAction::getAllMassiveActions($item, $is_deleted))
                 ),
             'massiveactionparams' => $data['search']['massiveactionparams'] + [
-                'is_deleted' => $is_deleted,
-                'container'  => "massform$itemtype$rand",
+                'num_displayed' => min($_SESSION['glpilist_limit'], $count),
+                'is_deleted'    => $is_deleted,
+                'container'     => "massform$itemtype$rand",
             ],
             'can_config'          => \Session::haveRightsOr('search_config', [
                 \DisplayPreference::PERSONAL,
-                \DisplayPreference::GENERAL
+                \DisplayPreference::GENERAL,
             ]),
             'may_be_deleted'      => $item instanceof \CommonDBTM && $item->maybeDeleted() && !$item->useDeletedToLockIfDynamic(),
             'may_be_located'      => $item instanceof \CommonDBTM && $item->maybeLocated(),
@@ -335,7 +344,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
                     'awesome-class'   => 'fa-comments',
                     'display'         => false,
                     'autoclose'       => false,
-                    'onclick'         => true
+                    'onclick'         => true,
                 ]
             );
             $out .= $values[0] . $valTip;

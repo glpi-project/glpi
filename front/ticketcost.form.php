@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Event;
 use Glpi\Exception\Http\BadRequestHttpException;
 
@@ -57,7 +59,7 @@ if (isset($_POST["add"])) {
         );
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $cost->check($_POST["id"], PURGE);
     if ($cost->delete($_POST, 1)) {
         Event::log(
@@ -70,7 +72,7 @@ if (isset($_POST["add"])) {
         );
     }
     Html::redirect(Toolbox::getItemTypeFormURL('Ticket') . '?id=' . $cost->fields['tickets_id']);
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $cost->check($_POST["id"], UPDATE);
 
     if ($cost->update($_POST)) {

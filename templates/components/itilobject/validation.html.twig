@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -29,11 +29,9 @@
  #
  # ---------------------------------------------------------------------
  #}
+
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-{% if canadd %}
-    <form method='post' name="form" action={{ itemtype|itemtype_form_path }}>
-{% endif %}
 <div class="card border-0 shadow-none p-0 m-0 mt-3">
     <div class="card-header mb-1 pt-2">
         <h4 class="card-title ">
@@ -48,47 +46,10 @@
     __('Global approval status')
 ) }}
 
-{{ fields.htmlField(
-    '',
-    validation.getValidationStats(tID),
-    __('Approval status details')
-) }}
-
-{% if canadd %}
-    {% set minvalue %}
-        {{ item.getValueToSelect(
-            'validation_percent',
-            'validation_percent',
-            item.fields["validation_percent"]
-        )|raw }}
-        <input type="submit" name="update" class="btn btn-primary" value="{{ _x('button', 'Save') }}">
-        {% if tID is not null %}
-            <input type="hidden" name="id" value="{{ tID }}">
-        {% endif %}
-    {% endset %}
-
-    {{ fields.htmlField(
-        '',
-        minvalue,
-        __('Minimum validation required')
-    ) }}
-{% else %}
-    {{ fields.htmlField(
-        '',
-        call('Dropdown::getValueWithUnit', [item.fields["validation_percent"], "%"]),
-        __('Minimum validation required')
-    ) }}
-{% endif %}
-
-{% if canadd %}
-       <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-   </form>
-{% endif %}
-
 <div class="card border-0 shadow-none p-0 m-0 mt-3">
     <div class="card-header mb-3 pt-2">
         <h4 class="card-title ">
-            {{ __('Approvals for the ticket') }}
+            {{ __('Approvals') }}
         </h4>
     </div>
     {% if canadd %}

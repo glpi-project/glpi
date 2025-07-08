@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -29,6 +29,7 @@
  *
  * ---------------------------------------------------------------------
  */
+
 describe('Error page', () => {
     beforeEach(() => {
         cy.login();
@@ -41,8 +42,8 @@ describe('Error page', () => {
         cy.changeProfile('Super-Admin');
 
         const urls = [
-            '/front/impactcsv.php',     // streamed response
-            '/InvalidClassname/Search', // modern controller
+            '/front/impactcsv.php', // streamed response
+            '/Form/Render/0',       // modern controller
         ];
 
         const expected_code    = 400;

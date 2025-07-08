@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,15 +35,15 @@
 
 namespace Glpi\Api\HL\Middleware;
 
-use Glpi\Api\HL\RoutePath;
-use Glpi\Http\Request;
-use Glpi\Http\Response;
-
 class DebugRequestMiddleware extends AbstractMiddleware implements RequestMiddlewareInterface
 {
     public function process(MiddlewareInput $input, callable $next): void
     {
-        if ($input->request->hasHeader('X-Debug-Mode') && filter_var($input->request->getHeader('X-Debug-Mode'), FILTER_VALIDATE_BOOLEAN)) {
+        if (
+            \Session::haveRight('config', UPDATE)
+            && $input->request->hasHeader('X-Debug-Mode')
+            && filter_var($input->request->getHeaderLine('X-Debug-Mode'), FILTER_VALIDATE_BOOLEAN)
+        ) {
             $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
         }
         $next($input);

@@ -5,8 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -41,8 +40,9 @@ module.exports = {
             moduleDirectories: ['js/modules', 'tests/js/modules', 'node_modules'],
             moduleFileExtensions: ['js'],
             moduleNameMapper: {
-                '^/js/modules/(.*)$': '<rootDir>/../../js/modules/$1',
-                '/lib/tablericons-definitions.js$': '<rootDir>/../../public/lib/tablericons-definitions.js',
+                '^/js/(.*)$': '<rootDir>/../../js/$1',
+                '^/build/(.*)$': '<rootDir>/../../public/build/$1',
+                '^/lib/(.*)$': '<rootDir>/../../public/lib/$1',
             },
             transform: {},
             transformIgnorePatterns: [
@@ -56,6 +56,11 @@ module.exports = {
             testMatch: ['<rootDir>/vue/**/*.test.js'],
             setupFilesAfterEnv: ["<rootDir>/jest-setup.mjs"],
             setupFiles: ['<rootDir>/bootstrap.mjs'],
+            moduleNameMapper: {
+                '^/js/(.*)$': '<rootDir>/../../js/$1',
+                '^/build/(.*)$': '<rootDir>/../../public/build/$1',
+                '^/lib/(.*)$': '<rootDir>/../../public/lib/$1',
+            },
             transform: {
                 '^.+\\.vue$': '@vue/vue3-jest',
                 '^.+\\.js$': 'babel-jest'

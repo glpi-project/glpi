@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,11 +34,19 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
+use CommonITILValidation;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\AbstractConfigField;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Form;
+use Glpi\Form\Migration\DestinationFieldConverterInterface;
+use Glpi\Form\Migration\FormMigration;
+use Glpi\Form\Question;
 use Glpi\Form\QuestionType\AbstractQuestionTypeActors;
 use Glpi\Form\QuestionType\QuestionTypeAssignee;
 use Glpi\Form\QuestionType\QuestionTypeItem;
@@ -49,12 +56,12 @@ use InvalidArgumentException;
 use Override;
 use User;
 
-class ValidationField extends AbstractConfigField
+final class ValidationField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     #[Override]
     public function getLabel(): string
     {
-        return _n('Validation', 'Validations', 1);
+        return CommonITILValidation::getTypeName(1);
     }
 
     #[Override]
@@ -74,6 +81,13 @@ class ValidationField extends AbstractConfigField
             throw new InvalidArgumentException("Unexpected config class");
         }
 
+        // Specific actors are stored as an array of itemtype => items_ids to be generic.
+        // We need to convert keys to foreign keys to be able to use them with the actors component.
+        $specific_actors = [];
+        foreach ($config->getSpecificActors() as $itemtype => $items_ids) {
+            $specific_actors[getForeignKeyFieldForItemType($itemtype)] = $items_ids;
+        }
+
         $twig = TemplateRenderer::getInstance();
         return $twig->render('pages/admin/form/itil_config_fields/validation.html.twig', [
             // Possible configuration constant that will be used to to hide/show additional fields
@@ -83,17 +97,9 @@ class ValidationField extends AbstractConfigField
             // General display options
             'options' => $display_options,
 
-            // Main config field
-            'main_config_field' => [
-                'label'           => $this->getLabel(),
-                'value'           => $config->getStrategy()->value,
-                'input_name'      => $input_name . "[" . ValidationFieldConfig::STRATEGY . "]",
-                'possible_values' => $this->getMainConfigurationValuesforDropdown(),
-            ],
-
             // Specific additional config for SPECIFIC_ACTORS strategy
             'specific_values_extra_field' => [
-                'values'        => $config->getSpecificActors() ?? [],
+                'values'        => $specific_actors,
                 'input_name'    => $input_name . "[" . ValidationFieldConfig::SPECIFIC_ACTORS . "]",
                 'allowed_types' => [User::class, Group::class],
                 'aria_label'    => __("Select actors..."),
@@ -101,8 +107,8 @@ class ValidationField extends AbstractConfigField
 
             // Specific additional config for SPECIFIC_ANSWERS strategy
             'specific_answers_extra_field' => [
-                'values'          => $config->getSpecificQuestionIds() ?? [],
-                'input_name'      => $input_name . "[" . ValidationFieldConfig::QUESTION_IDS . "]",
+                'values'          => $config->getSpecificQuestionIds(),
+                'input_name'      => $input_name . "[" . ValidationFieldConfig::SPECIFIC_QUESTION_IDS . "]",
                 'possible_values' => $this->getActorsQuestionsValuesForDropdown($form),
                 'aria_label'      => __("Select questions..."),
             ],
@@ -119,17 +125,19 @@ class ValidationField extends AbstractConfigField
             throw new InvalidArgumentException("Unexpected config class");
         }
 
-        // Compute value according to strategy
-        $validations = $config->getStrategy()->getValidation($config, $answers_set);
+        // Compute value according to strategies
+        foreach ($config->getStrategies() as $strategy) {
+            $validations = $strategy->getValidation($config, $answers_set);
 
-        if (!empty($validations)) {
-            foreach ($validations as $validation) {
-                $input['_add_validation'] = 0;
-                $input['_validation_targets'][] = [
-                    'validatortype'   => $validation['itemtype'],
-                    'itemtype_target' => $validation['itemtype'],
-                    'items_id_target' => $validation['items_id'],
-                ];
+            if (!empty($validations)) {
+                foreach ($validations as $validation) {
+                    $input['_add_validation'] = 0;
+                    $input['_validation_targets'][] = [
+                        'validatortype'   => $validation['itemtype'],
+                        'itemtype_target' => $validation['itemtype'],
+                        'items_id_target' => $validation['items_id'],
+                    ];
+                }
             }
         }
 
@@ -140,11 +148,11 @@ class ValidationField extends AbstractConfigField
     public function getDefaultConfig(Form $form): ValidationFieldConfig
     {
         return new ValidationFieldConfig(
-            ValidationFieldStrategy::NO_VALIDATION
+            [ValidationFieldStrategy::NO_VALIDATION]
         );
     }
 
-    private function getMainConfigurationValuesforDropdown(): array
+    public function getStrategiesForDropdown(): array
     {
         $values = [];
         foreach (ValidationFieldStrategy::cases() as $strategies) {
@@ -192,14 +200,18 @@ class ValidationField extends AbstractConfigField
     {
         $input = parent::prepareInput($input);
 
+        if (!isset($input[$this->getKey()][ValidationFieldConfig::STRATEGIES])) {
+            return $input;
+        }
+
         // Ensure that question_ids is an array
-        if (!is_array($input[$this->getKey()][ValidationFieldConfig::QUESTION_IDS] ?? null)) {
-            unset($input[$this->getKey()][ValidationFieldConfig::QUESTION_IDS]);
+        if (!is_array($input[$this->getKey()][ValidationFieldConfig::SPECIFIC_QUESTION_IDS] ?? null)) {
+            $input[$this->getKey()][ValidationFieldConfig::SPECIFIC_QUESTION_IDS] = null;
         }
 
         // Ensure that specific_actors is an array
         if (!is_array($input[$this->getKey()][ValidationFieldConfig::SPECIFIC_ACTORS] ?? null)) {
-            unset($input[$this->getKey()][ValidationFieldConfig::SPECIFIC_ACTORS]);
+            $input[$this->getKey()][ValidationFieldConfig::SPECIFIC_ACTORS] = null;
         }
 
         // Format specific_actors
@@ -217,22 +229,140 @@ class ValidationField extends AbstractConfigField
                 $actor_parts = explode('-', $actor);
                 if (
                     count($actor_parts) !== 2
-                    || !in_array($actor_parts[0], array_values($available_actor_types))
+                    || !in_array($actor_parts[0], $available_actor_types)
                     || !is_numeric($actor_parts[1])
                 ) {
                     continue;
                 }
 
-                if (!isset($actors[$actor_parts[0]])) {
-                    $actors[$actor_parts[0]] = [];
-                }
-
-                $actors[$actor_parts[0]][] = $actor_parts[1];
+                $itemtype = array_search($actor_parts[0], $available_actor_types);
+                $actors[$itemtype][] = $actor_parts[1];
             }
 
             $input[$this->getKey()][ValidationFieldConfig::SPECIFIC_ACTORS] = $actors;
         }
 
         return $input;
+    }
+
+    #[Override]
+    public function canHaveMultipleStrategies(): bool
+    {
+        return true;
+    }
+
+    #[Override]
+    public function getCategory(): Category
+    {
+        return Category::TIMELINE;
+    }
+
+    #[Override]
+    public function convertFieldConfig(FormMigration $migration, Form $form, array $rawData): JsonFieldInterface
+    {
+        if (isset($rawData['commonitil_validation_rule'])) {
+            switch ($rawData['commonitil_validation_rule']) {
+                case 1: // PluginFormcreatorAbstractItilTarget::VALIDATION_NONE
+                    return new ValidationFieldConfig(
+                        [ValidationFieldStrategy::NO_VALIDATION]
+                    );
+                case 2: // PluginFormcreatorAbstractItilTarget::VALIDATION_SPECIFIC_USER_OR_GROUP
+                    $validation_actors = json_decode($rawData['commonitil_validation_question'], true);
+                    if (is_array($validation_actors)) {
+                        $fk = $validation_actors['type'] == 'user' ? User::getForeignKeyField() : Group::getForeignKeyField();
+                        $actors_ids = array_map(
+                            fn($id) => sprintf('%s-%d', $fk, $id),
+                            json_decode($rawData['commonitil_validation_question'], true)['values'] ?? []
+                        );
+                    }
+
+                    return new ValidationFieldConfig(
+                        strategies: [ValidationFieldStrategy::SPECIFIC_ACTORS],
+                        specific_actors: $actors_ids ?? []
+                    );
+                case 3: // PluginFormcreatorAbstractItilTarget::VALIDATION_ANSWER_USER
+                case 4: // PluginFormcreatorAbstractItilTarget::VALIDATION_ANSWER_GROUP
+                    $question_ids = [];
+                    if (is_numeric($rawData['commonitil_validation_question'] ?? null)) {
+                        $mapped_item = $migration->getMappedItemTarget(
+                            'PluginFormcreatorQuestion',
+                            $rawData['commonitil_validation_question']
+                        );
+
+                        if ($mapped_item === null) {
+                            throw new InvalidArgumentException("Question not found in a target form");
+                        }
+
+                        $question_ids[] = $mapped_item['items_id'];
+                    }
+
+                    return new ValidationFieldConfig(
+                        strategies: [ValidationFieldStrategy::SPECIFIC_ANSWERS],
+                        specific_question_ids: $question_ids
+                    );
+            }
+        }
+
+        return $this->getDefaultConfig($form);
+    }
+
+    #[Override]
+    public function exportDynamicConfig(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+    ): DynamicExportDataField {
+        $requirements = [];
+
+        if (!isset($config[ValidationFieldConfig::SPECIFIC_ACTORS])) {
+            return parent::exportDynamicConfig($config, $destination);
+        }
+
+        $items = $config[ValidationFieldConfig::SPECIFIC_ACTORS];
+        foreach ($items as $itemtype => $items_ids) {
+            foreach ($items_ids as $i => $item_id) {
+                $item = getItemForItemtype($itemtype);
+                if ($item->getFromDB($item_id)) {
+                    // Insert name instead of id and register requirement
+                    $items[$itemtype][$i] = $item->getName();
+                    $requirements[] = new DataRequirementSpecification(
+                        $itemtype,
+                        $item->getName(),
+                    );
+                }
+            }
+        }
+
+        $config[ValidationFieldConfig::SPECIFIC_ACTORS] = $items;
+        return new DynamicExportDataField($config, $requirements);
+    }
+
+    #[Override]
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+        DatabaseMapper $mapper,
+    ): array {
+        if (isset($config[ValidationFieldConfig::SPECIFIC_ACTORS])) {
+            $items = $config[ValidationFieldConfig::SPECIFIC_ACTORS];
+            foreach ($items as $itemtype => $items_names) {
+                foreach ($items_names as $i => $item_name) {
+                    $id = $mapper->getItemId($itemtype, $item_name);
+                    $items[$itemtype][$i] = $id;
+                }
+            }
+            $config[ValidationFieldConfig::SPECIFIC_ACTORS] = $items;
+        }
+
+        // Check if specific questions are defined
+        if (isset($config[ValidationFieldConfig::SPECIFIC_QUESTION_IDS])) {
+            $questions = $config[ValidationFieldConfig::SPECIFIC_QUESTION_IDS];
+            foreach ($questions as $i => $question) {
+                $id = $mapper->getItemId(Question::class, $question);
+                $questions[$i] = $id;
+            }
+            $config[ValidationFieldConfig::SPECIFIC_QUESTION_IDS] = $questions;
+        }
+
+        return $config;
     }
 }

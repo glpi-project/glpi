@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -41,14 +41,17 @@ use Dropdown;
 use Entity;
 use Glpi\Inventory\Conf;
 use Glpi\DBAL\QueryParam;
+use Item_OperatingSystem;
 use Item_SoftwareVersion;
 use RuleDictionnarySoftwareCollection;
 use Software as GSoftware;
 use SoftwareVersion;
 
+use function Safe\json_encode;
+
 class Software extends InventoryAsset
 {
-    const SEPARATOR = '$$$$';
+    public const SEPARATOR = '$$$$';
 
     /** @var array */
     private $softwares = [];
@@ -67,7 +70,7 @@ class Software extends InventoryAsset
 
     /** @var array */
     protected $extra_data = [
-        '\Glpi\Inventory\Asset\OperatingSystem' => null
+        '\Glpi\Inventory\Asset\OperatingSystem' => null,
     ];
 
     public function prepare(): array
@@ -76,7 +79,7 @@ class Software extends InventoryAsset
             'publisher'       => 'manufacturers_id',
             'comments'        => 'comment',
             'install_date'     => 'date_install',
-            'system_category' => '_system_category'
+            'system_category' => '_system_category',
         ];
 
         //Dictionary for software
@@ -127,13 +130,13 @@ class Software extends InventoryAsset
                         "manufacturer"       => $val->manufacturers_id ?? 0,
                         "old_version"        => $val->version ?? null,
                         "entities_id"        => $this->entities_id,
-                        "_system_category"   => $val->_system_category ?? null
+                        "_system_category"   => $val->_system_category ?? null,
                     ];
                     $res_rule = $rulecollection->processAllRules($rule_input);
                 }
 
                 if (isset($res_rule['_ignore_import']) && $res_rule['_ignore_import'] == 1) {
-                   //ignored by rules
+                    //ignored by rules
                     unset($this->data[$k]);
                     continue;
                 }
@@ -154,7 +157,7 @@ class Software extends InventoryAsset
                     $sc = new \SoftwareCategory();
                     $sc->getFromDB($res_rule["softwarecategories_id"]);
                     $val->softwarecategories_id = $sc->fields['name'];
-                } else if (
+                } elseif (
                     property_exists($val, '_system_category')
                     && $val->_system_category != ''
                     && $val->_system_category != '0'
@@ -182,7 +185,7 @@ class Software extends InventoryAsset
                     );
                     $this->known_links[$mkey] = $mid;
                     $val->manufacturers_id = $res_rule['manufacturer'];
-                } else if (
+                } elseif (
                     property_exists($val, 'manufacturers_id')
                     && $val->manufacturers_id != ''
                     && $val->manufacturers_id != '0'
@@ -236,7 +239,7 @@ class Software extends InventoryAsset
         //NOTE: A same software may have a manufacturer or not. Keep the one with manufacturer.
         foreach ($without_manufacturer as $comp_key => $data_index) {
             if (isset($with_manufacturer[$comp_key])) {
-               //same software do exists with a manufacturer, remove current duplicate
+                //same software do exists with a manufacturer, remove current duplicate
                 unset($this->data[$data_index]);
             }
         }
@@ -298,10 +301,31 @@ class Software extends InventoryAsset
             $os_soft_data->version = $os_data->version ?? '';
 
             $this->data[] = $os_soft_data;
+        } else {
+
+            // Verify that the main asset is set before accessing its properties
+            // This check is necessary because some unit tests call the handle function
+            // directly on the Software class, bypassing the main asset initialization.
+            // For more details, see the functional test case:
+            // phpunit/functional/Glpi/Inventory/Assets/SoftwareTest.php -> testHandle()
+            if (isset($this->main_asset)) {
+                // When $this->extra_data['\Glpi\Inventory\Asset\OperatingSystem'] is not set,
+                // it indicates that the inventory is running in partial mode (or without operating system data).
+                // Therefore, fall back to retrieving the operating system from the main asset.
+                $item_os = new Item_OperatingSystem();
+                $os_list = $item_os->find([
+                    'items_id' => $this->main_asset->item->fields['id'],
+                    'itemtype' => $this->main_asset->item->getType(),
+                ]);
+                if (count($os_list) == 1) {
+                    $operatingsystems_id = current($os_list)['operatingsystems_id'];
+                }
+            }
         }
 
         $db_software = [];
         $db_software_wo_version = [];
+        $db_software_data = [];
 
         //Load existing software versions from db. Grab required fields
         //to build comparison key @see getFullCompareKey
@@ -318,40 +342,40 @@ class Software extends InventoryAsset
                 'glpi_softwarecategories.name AS softwarecategories_id',
                 'glpi_softwares.is_recursive',
                 'glpi_softwareversions.operatingsystems_id',
-                'glpi_manufacturers.name AS manufacturers_id'
+                'glpi_manufacturers.name AS manufacturers_id',
             ],
             'FROM'      => 'glpi_items_softwareversions',
             'LEFT JOIN' => [
                 'glpi_softwareversions' => [
                     'ON'  => [
                         'glpi_items_softwareversions' => 'softwareversions_id',
-                        'glpi_softwareversions'       => 'id'
-                    ]
+                        'glpi_softwareversions'       => 'id',
+                    ],
                 ],
                 'glpi_softwares'        => [
                     'ON'  => [
                         'glpi_softwareversions' => 'softwares_id',
-                        'glpi_softwares'        => 'id'
-                    ]
+                        'glpi_softwares'        => 'id',
+                    ],
                 ],
                 'glpi_softwarecategories' => [
                     'ON' => [
                         'glpi_softwares' => 'softwarecategories_id',
-                        'glpi_softwarecategories' => 'id'
-                    ]
+                        'glpi_softwarecategories' => 'id',
+                    ],
                 ],
                 'glpi_manufacturers' => [
                     'ON' => [
                         'glpi_softwares' => 'manufacturers_id',
-                        'glpi_manufacturers' => 'id'
-                    ]
-                ]
+                        'glpi_manufacturers' => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'glpi_items_softwareversions.items_id' => $this->item->fields['id'],
                 'glpi_items_softwareversions.itemtype'    => $this->item->getType(),
-                'glpi_items_softwareversions.is_dynamic'  => 1
-            ]
+                'glpi_items_softwareversions.is_dynamic'  => 1,
+            ],
         ]);
 
         foreach ($iterator as $data) {
@@ -361,8 +385,8 @@ class Software extends InventoryAsset
             if ($data['manufacturers_id'] == null) {
                 $data['manufacturers_id'] = 0;
             }
-            $key_w_version = $this->getFullCompareKey((object)$data);
-            $key_wo_version = $this->getFullCompareKey((object)$data, false);
+            $key_w_version = $this->getFullCompareKey((object) $data);
+            $key_wo_version = $this->getFullCompareKey((object) $data, false);
             $db_software[$key_w_version] = [
                 'id' => $item_soft_v_id,
                 'date_install' => $item_soft_v_date_install,
@@ -398,20 +422,6 @@ class Software extends InventoryAsset
 
             $dedup_vkey = $key_w_version . $this->getVersionKey($val, 0);
 
-            //update softwarecategories if needed
-            //reconciles the software without the version (no needed here)
-            $sckey = md5('softwarecategories_id' . ($val->softwarecategories_id ?? 0));
-            if (
-                isset($db_software_data[$key_wo_version])
-                && $db_software_data[$key_wo_version]['softwarecategories'] != ($this->known_links[$sckey] ?? 0)
-            ) {
-                $software_to_update = new GSoftware();
-                $software_to_update->update([
-                    "id" => $db_software_data[$key_wo_version]['softid'],
-                    "softwarecategories_id" => ($this->known_links[$sckey] ?? 0)
-                ], 0);
-            }
-
             //update date_install if needed
             //reconciles the software with the version (needed here)
             if (
@@ -422,12 +432,13 @@ class Software extends InventoryAsset
                 $software_version = new Item_SoftwareVersion();
                 $software_version->update([
                     "id" => $db_software[$key_w_version]['id'],
-                    "date_install" => $val->date_install
+                    "is_dynamic" => 1,
+                    "date_install" => $val->date_install,
                 ], 0);
             }
 
             if (isset($db_software[$key_w_version])) {
-                // software exist with the same version
+                // software exists with the same version
                 unset($this->data[$k]);
                 unset($db_software[$key_w_version]);
                 unset($db_software_wo_version[$key_wo_version]);
@@ -459,12 +470,19 @@ class Software extends InventoryAsset
         // track deleted versions (without those which version changed)
         $this->deleted_versions = array_values($db_software_wo_version);
 
-        if (count($db_software) > 0 && (!$this->main_asset || !$this->main_asset->isPartial() || $this->main_asset->isPartial() && $count_import)) {
+        if (
+            count($db_software) > 0
+            && (
+                !$this->main_asset
+                || $this->main_asset->isPartial() && $count_import
+                || !$this->main_asset->isPartial()
+            )
+        ) {
             //not found version means soft has been removed or updated, drop it
             $DB->delete(
                 'glpi_items_softwareversions',
                 [
-                    'id' => array_column($db_software, 'id')
+                    'id' => array_column($db_software, 'id'),
                 ]
             );
         }
@@ -490,7 +508,7 @@ class Software extends InventoryAsset
 
     public function getOsForKey($val)
     {
-        if (!$this->main_asset || !$this->main_asset->isPartial()) {
+        if ($val->operatingsystems_id > 0) {
             return $val->operatingsystems_id;
         } else {
             return '%';
@@ -525,7 +543,7 @@ class Software extends InventoryAsset
     {
         return $this->getNormalizedComparisonKey([
             'version'      => strtolower($val->version),
-            'softwares_id' => (int)$softwares_id,
+            'softwares_id' => (int) $softwares_id,
             'arch'         => strtolower($val->arch ?? '%'),
             'os'           => $this->getOsForKey($val),
         ]);
@@ -545,7 +563,7 @@ class Software extends InventoryAsset
             'version'          => $with_version ? mb_strtolower($val->version ?? '') : '',
             'arch'             => mb_strtolower($val->arch ?? ''),
             'manufacturers_id' => mb_strtolower(transliterator_transliterate("Any-Latin; Latin-ASCII; [^a-zA-Z0-9\.\ -_] Remove;", $val->manufacturers_id)),
-            'entities_id'      => (int)$val->entities_id,
+            'entities_id'      => (int) $val->entities_id,
             'is_recursive'     => $val->is_recursive,
             'os'               => $this->getOsForKey($val),
         ]);
@@ -564,7 +582,7 @@ class Software extends InventoryAsset
             'name'             => $val->name,
             'version'          => strtolower($val->version),
             'arch'             => strtolower($val->arch ?? ''),
-            'entities_id'      => (int)($val->entities_id ?? 0),
+            'entities_id'      => (int) ($val->entities_id ?? 0),
             'os'               => $this->getOsForKey($val),
         ]);
     }
@@ -603,8 +621,8 @@ class Software extends InventoryAsset
                 'entities_id'        => new QueryParam(),
                 'is_recursive'       => new QueryParam(),
                 'name'               => new QueryParam(),
-                'manufacturers_id'   => new QueryParam()
-            ]
+                'manufacturers_id'   => new QueryParam(),
+            ],
         ];
 
         $it = new DBmysqlIterator(null);
@@ -626,7 +644,7 @@ class Software extends InventoryAsset
             $mkey = md5('manufacturers_id' . $val->manufacturers_id);
             $input = [
                 'name'             => $val->name,
-                'manufacturers_id' => $this->known_links[$mkey] ?? 0
+                'manufacturers_id' => $this->known_links[$mkey] ?? 0,
             ];
 
             $stmt->bind_param(
@@ -669,8 +687,8 @@ class Software extends InventoryAsset
                 'name'                  => new QueryParam(),
                 'arch'                  => new QueryParam(),
                 'softwares_id'          => new QueryParam(),
-                'operatingsystems_id'   => new QueryParam()
-            ]
+                'operatingsystems_id'   => new QueryParam(),
+            ],
         ];
 
         $it = new DBmysqlIterator(null);
@@ -735,6 +753,9 @@ class Software extends InventoryAsset
         /** @var \DBmysql $DB */
         global $DB;
 
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $software = new GSoftware();
         $soft_fields = $DB->listFields($software->getTable());
         $stmt = $stmt_types = null;
@@ -742,11 +763,12 @@ class Software extends InventoryAsset
         foreach ($this->data as $val) {
             $skey = $this->getSoftwareKey($val->name, $val->manufacturers_id);
             if (!isset($this->softwares[$skey])) {
-                $stmt_columns = $this->cleanInputToPrepare((array)$val, $soft_fields);
+                $stmt_columns = $this->cleanInputToPrepare((array) $val, $soft_fields);
 
                 $software->handleCategoryRules($stmt_columns, true);
                 //set create date
                 $stmt_columns['date_creation'] = $_SESSION["glpi_currenttime"];
+                $stmt_columns['is_helpdesk_visible'] = $CFG_GLPI["default_software_helpdesk_visible"];
 
                 if ($stmt === null) {
                     $stmt_types = str_repeat('s', count($stmt_columns));
@@ -799,7 +821,7 @@ class Software extends InventoryAsset
             $skey = $this->getSoftwareKey($val->name, $val->manufacturers_id);
             $softwares_id = $this->softwares[$skey];
 
-            $input = (array)$val;
+            $input = (array) $val;
             $input['softwares_id']  = $softwares_id;
             $input['_no_history']   = true;
             $input['name']          = $val->version;
@@ -810,12 +832,12 @@ class Software extends InventoryAsset
             );
 
             if (!isset($this->versions[$vkey])) {
-                 $version_name = $val->version;
-                 $stmt_columns = $this->cleanInputToPrepare((array)$val, $version_fields);
-                 $stmt_columns['name'] = $version_name;
-                 $stmt_columns['softwares_id'] = $softwares_id;
-                 //set create date
-                 $stmt_columns['date_creation'] = $_SESSION["glpi_currenttime"];
+                $version_name = $val->version;
+                $stmt_columns = $this->cleanInputToPrepare((array) $val, $version_fields);
+                $stmt_columns['name'] = $version_name;
+                $stmt_columns['softwares_id'] = $softwares_id;
+                //set create date
+                $stmt_columns['date_creation'] = $_SESSION["glpi_currenttime"];
                 if ($stmt === null) {
                     $stmt_types = str_repeat('s', count($stmt_columns));
                     $reference = array_fill_keys(
@@ -829,10 +851,10 @@ class Software extends InventoryAsset
                     $stmt = $DB->prepare($insert_query);
                 }
 
-                 $stmt_values = array_values($stmt_columns);
-                 $stmt->bind_param($stmt_types, ...$stmt_values);
-                 $DB->executeStatement($stmt);
-                 $versions_id = $DB->insertId();
+                $stmt_values = array_values($stmt_columns);
+                $stmt->bind_param($stmt_types, ...$stmt_values);
+                $DB->executeStatement($stmt);
+                $versions_id = $DB->insertId();
                 \Log::history(
                     $softwares_id,
                     'Software',
@@ -840,7 +862,7 @@ class Software extends InventoryAsset
                     'SoftwareVersion',
                     \Log::HISTORY_ADD_SUBITEM
                 );
-                 $this->versions[$vkey] = $versions_id;
+                $this->versions[$vkey] = $versions_id;
             }
         }
 
@@ -910,20 +932,20 @@ class Software extends InventoryAsset
                     'softwareversions_id'   => new QueryParam(),
                     'is_dynamic'            => new QueryParam(),
                     'entities_id'           => new QueryParam(),
-                    'date_install'          => new QueryParam()
+                    'date_install'          => new QueryParam(),
                 ];
                 $insert_query = $DB->buildInsert(
                     'glpi_items_softwareversions',
                     $dparams
                 );
-                 $stmt = $DB->prepare($insert_query);
+                $stmt = $DB->prepare($insert_query);
             }
 
             $input = [
                 'softwareversions_id'   => $versions_id,
                 'is_dynamic'            => 1,
                 'entities_id'           => $this->item->fields['entities_id'],
-                'date_install'          => $val->date_install ?? null
+                'date_install'          => $val->date_install ?? null,
             ];
 
             $itemtype = $this->item->getType();

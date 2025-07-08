@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,7 +41,7 @@ use Glpi\Inventory\Inventory;
  */
 class SNMPCredential extends CommonDBTM
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                   = true;
     public static $rightname = 'snmpcredential';
 
@@ -61,7 +61,7 @@ class SNMPCredential extends CommonDBTM
 
         $tab[] = [
             'id'                => 'snmpcredential',
-            'name'              => SNMPCredential::getTypeName(0)
+            'name'              => SNMPCredential::getTypeName(0),
         ];
 
         $tab[] = [
@@ -112,7 +112,7 @@ class SNMPCredential extends CommonDBTM
 
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
@@ -138,7 +138,7 @@ class SNMPCredential extends CommonDBTM
         switch ($this->fields['snmpversion']) {
             case 1:
             case 3:
-                return (string)$this->fields['snmpversion'];
+                return (string) $this->fields['snmpversion'];
             case 2:
                 return '2c';
             default:

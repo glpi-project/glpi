@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -48,7 +47,13 @@
 {% set showmassiveactions = not p.showmassiveactions is defined or p.showmassiveactions %}
 
 {% if mainform and showaction %}
-   <form name="searchform{{ normalized_itemtype }}" class="search-form-container" method="get" action="{{ p['target'] }}">
+   <form
+      name="searchform{{ normalized_itemtype }}"
+      class="search-form-container"
+      method="get"
+      action="{{ p['target'] }}"
+      data-glpi-search-form
+   >
 
    {% for param_name, param_value in additional_params %}
        <input type="hidden" name="{{ param_name }}" value="{{ param_value }}" />
@@ -71,7 +76,7 @@
                   <input type="checkbox" class="form-check-input ms-0 me-1 mt-0 default-filter" role="button"
                         {{ p.nodefault is defined ? '' : 'checked' }} autocomplete="off" {{ (can_disablefilter) ? '' : 'disabled' }} />
                   <span class="form-check-label mb-1 mb-sm-0">
-                     <i class="ti fa-lg ti-filter"></i>
+                     <i class="fs-2 ti ti-filter"></i>
                   </span>
                </label>
                <span title="{{ p.defaultfilter['comment'] }}">{{ p.defaultfilter['name'] }}</span>
@@ -111,10 +116,11 @@
             <span class="d-none d-sm-block">{{ __('group') }}</span>
          </button>
          {% if mainform %}
-            <span class="ms-auto btn-group">
+            {% set action_count = showaction + p['showbookmark'] + p['showreset'] %}
+            <span class="ms-auto {{ action_count > 1 ? 'btn-group' : '' }}">
                 {% if (showaction) %}
                 {# Display submit button #}
-                <button class="btn btn-sm btn-primary" type="button" name="{{ p['actionname'] }}">
+                <button class="btn {{ p['is_criteria_filter'] ? 'btn-ghost-secondary' : 'btn-sm btn-primary' }}" type="button" name="{{ p['actionname'] }}">
                     <i class="ti ti-search"></i>
                     <span class="d-none d-sm-block">{{ p['actionvalue'] }}</span>
                 </button>

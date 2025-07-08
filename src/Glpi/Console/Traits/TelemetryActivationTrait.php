@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -89,12 +89,12 @@ trait TelemetryActivationTrait
         $disable_telemetry = false;
         $enable_telemetry  = false;
 
-       // Handle Telemetry service status
+        // Handle Telemetry service status
         if (
             !$input->getOption('no-telemetry') && !$input->getOption('enable-telemetry')
             && !$is_already_enabled && !$input->getOption('no-interaction')
         ) {
-           // Ask user its consent if no related option was provided (unless service is already active)
+            // Ask user its consent if no related option was provided (unless service is already active)
             $output->writeln(
                 [
                     '<comment>' . __('We need your help to improve GLPI and the plugins ecosystem!') . '</comment>',
@@ -111,15 +111,15 @@ trait TelemetryActivationTrait
                 $output,
                 new ConfirmationQuestion(__('Do you want to send "usage statistics"?') . ' [Yes/no]', true)
             );
-        } else if ($input->getOption('no-telemetry')) {
+        } elseif ($input->getOption('no-telemetry')) {
             $disable_telemetry = true;
-        } else if ($input->getOption('enable-telemetry')) {
+        } elseif ($input->getOption('enable-telemetry')) {
             $enable_telemetry = true;
         }
 
         if (!$is_already_enabled && $enable_telemetry) {
             Telemetry::enable();
-        } else if ($is_already_enabled && $disable_telemetry) {
+        } elseif ($is_already_enabled && $disable_telemetry) {
             Telemetry::disable();
         }
     }

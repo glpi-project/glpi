@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,6 +34,7 @@
 
 namespace tests\units;
 
+use GlpiPlugin\Tester\MyPsr4Class;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
@@ -42,7 +42,7 @@ use Glpi\Toolbox\FrontEnd;
 
 /* Test for inc/html.class.php */
 
-class HtmlTest extends \GLPITestCase
+class HtmlTest extends \DbTestCase
 {
     public function testConvDate()
     {
@@ -70,7 +70,7 @@ class HtmlTest extends \GLPITestCase
 
         $expected_error = 'Failed to parse time string (not a date) at position 0 (n): The timezone could not be found in the database';
         $this->assertSame('not a date', \Html::convDate('not a date', 2));
-        $this->hasPhpLogRecordThatContains($expected_error, LogLevel::CRITICAL);
+        $this->hasPhpLogRecordThatContains($expected_error, LogLevel::ERROR);
     }
 
     public function testConvDateTime()
@@ -255,7 +255,7 @@ class HtmlTest extends \GLPITestCase
             'plugins',
             'admin',
             'config',
-            'preference'
+            'preference',
         ];
         $this->assertSame($expected, array_keys($menu));
 
@@ -275,13 +275,16 @@ class HtmlTest extends \GLPITestCase
             'PassiveDCEquipment',
             'Unmanaged',
             'Cable',
-            'Item_DeviceSimcard'
+            'Glpi\CustomAsset\Test01Asset',
+            'Glpi\CustomAsset\Test02Asset',
+            'Item_DeviceSimcard',
         ];
         $this->assertSame('Assets', $menu['assets']['title']);
         $this->assertSame($expected, $menu['assets']['types']);
 
         $expected = [
             'Ticket',
+            'Glpi\Form\ServiceCatalog\ServiceCatalog',
             'Problem',
             'Change',
             'Planning',
@@ -305,7 +308,7 @@ class HtmlTest extends \GLPITestCase
             'Cluster',
             'Domain',
             'Appliance',
-            'Database'
+            'Database',
         ];
         $this->assertSame('Management', $menu['management']['title']);
         $this->assertSame($expected, $menu['management']['types']);
@@ -318,7 +321,7 @@ class HtmlTest extends \GLPITestCase
             'ReservationItem',
             'Report',
             'SavedSearch',
-            'Impact'
+            'Impact',
         ];
         $this->assertSame('Tools', $menu['tools']['title']);
         $this->assertSame($expected, $menu['tools']['types']);
@@ -355,7 +358,7 @@ class HtmlTest extends \GLPITestCase
             'OAuthClient',
             'MailCollector',
             'Link',
-            'Plugin'
+            'Plugin',
         ];
         $this->assertSame('Setup', $menu['config']['title']);
         $this->assertSame($expected, $menu['config']['types']);
@@ -380,12 +383,12 @@ class HtmlTest extends \GLPITestCase
     {
         global $CFG_GLPI;
 
-       //fake files
+        //fake files
         $fake_files = [
             'file.css',
             'file.min.css',
             'other.css',
-            'other-min.css'
+            'other-min.css',
         ];
         $dir = str_replace(realpath(GLPI_ROOT), '', realpath(GLPI_TMP_DIR));
         $version_key = FrontEnd::getVersionCacheKey(GLPI_VERSION);
@@ -393,12 +396,12 @@ class HtmlTest extends \GLPITestCase
          $CFG_GLPI['root_doc'] . $dir . '/%url?v=' . $version_key . '" %attrs>';
         $base_attrs = 'media="all"';
 
-       //create test files
+        //create test files
         foreach ($fake_files as $fake_file) {
             $this->assertTrue(touch(GLPI_TMP_DIR . '/' . $fake_file));
         }
 
-       //expect minified file
+        //expect minified file
         $expected = str_replace(
             ['%url', '%attrs'],
             ['file.min.css', $base_attrs],
@@ -406,7 +409,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::css($dir . '/file.css'));
 
-       //explicitely require not minified file
+        //explicitely require not minified file
         $expected = str_replace(
             ['%url', '%attrs'],
             ['file.css', $base_attrs],
@@ -414,7 +417,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::css($dir . '/file.css', [], false));
 
-       //activate debug mode: expect not minified file
+        //activate debug mode: expect not minified file
         $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
         $expected = str_replace(
             ['%url', '%attrs'],
@@ -424,7 +427,7 @@ class HtmlTest extends \GLPITestCase
         $this->assertSame($expected, \Html::css($dir . '/file.css'));
         $_SESSION['glpi_use_mode'] = \Session::NORMAL_MODE;
 
-       //expect original file
+        //expect original file
         $expected = str_replace(
             ['%url', '%attrs'],
             ['nofile.css', $base_attrs],
@@ -432,7 +435,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::css($dir . '/nofile.css'));
 
-       //expect original file
+        //expect original file
         $expected = str_replace(
             ['%url', '%attrs'],
             ['other.css', $base_attrs],
@@ -440,7 +443,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::css($dir . '/other.css'));
 
-       //expect original file
+        //expect original file
         $expected = str_replace(
             ['%url', '%attrs'],
             ['other-min.css', $base_attrs],
@@ -448,7 +451,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::css($dir . '/other-min.css'));
 
-       //expect minified file, print media
+        //expect minified file, print media
         $expected = str_replace(
             ['%url', '%attrs'],
             ['file.min.css', 'media="print"'],
@@ -456,7 +459,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::css($dir . '/file.css', ['media' => 'print']));
 
-       //expect minified file, screen media
+        //expect minified file, screen media
         $expected = str_replace(
             ['%url', '%attrs'],
             ['file.min.css', $base_attrs],
@@ -464,7 +467,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::css($dir . '/file.css', ['media' => '']));
 
-       //expect minified file and specific version
+        //expect minified file and specific version
         $fake_version = '0.0.1';
         $expected = str_replace(
             ['%url', '%attrs', $version_key],
@@ -473,7 +476,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::css($dir . '/file.css', ['version' => $fake_version]));
 
-       //expect minified file with added attributes
+        //expect minified file with added attributes
         $expected = str_replace(
             ['%url', '%attrs'],
             ['file.min.css', 'attribute="one" ' . $base_attrs],
@@ -481,7 +484,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::css($dir . '/file.css', ['attribute' => 'one']));
 
-       //remove test files
+        //remove test files
         foreach ($fake_files as $fake_file) {
             unlink(GLPI_TMP_DIR . '/' . $fake_file);
         }
@@ -491,24 +494,24 @@ class HtmlTest extends \GLPITestCase
     {
         global $CFG_GLPI;
 
-       //fake files
+        //fake files
         $fake_files = [
             'file.js',
             'file.min.js',
             'other.js',
-            'other-min.js'
+            'other-min.js',
         ];
         $dir = str_replace(realpath(GLPI_ROOT), '', realpath(GLPI_TMP_DIR));
         $version_key = FrontEnd::getVersionCacheKey(GLPI_VERSION);
         $base_expected = '<script type="text/javascript" src="' .
          $CFG_GLPI['root_doc'] . $dir . '/%url?v=' . $version_key . '"></script>';
 
-       //create test files
+        //create test files
         foreach ($fake_files as $fake_file) {
             touch(GLPI_TMP_DIR . '/' . $fake_file);
         }
 
-       //expect minified file
+        //expect minified file
         $expected = str_replace(
             '%url',
             'file.min.js',
@@ -516,7 +519,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::script($dir . '/file.js'));
 
-       //explicitely require not minified file
+        //explicitely require not minified file
         $expected = str_replace(
             '%url',
             'file.js',
@@ -524,7 +527,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::script($dir . '/file.js', [], false));
 
-       //activate debug mode: expect not minified file
+        //activate debug mode: expect not minified file
         $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
         $expected = str_replace(
             '%url',
@@ -534,7 +537,7 @@ class HtmlTest extends \GLPITestCase
         $this->assertSame($expected, \Html::script($dir . '/file.js'));
         $_SESSION['glpi_use_mode'] = \Session::NORMAL_MODE;
 
-       //expect original file
+        //expect original file
         $expected = str_replace(
             '%url',
             'nofile.js',
@@ -542,7 +545,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::script($dir . '/nofile.js'));
 
-       //expect original file
+        //expect original file
         $expected = str_replace(
             '%url',
             'other.js',
@@ -550,7 +553,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::script($dir . '/other.js'));
 
-       //expect original file
+        //expect original file
         $expected = str_replace(
             '%url',
             'other-min.js',
@@ -558,7 +561,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::script($dir . '/other-min.js'));
 
-       //expect minified file and specific version
+        //expect minified file and specific version
         $fake_version = '0.0.1';
         $expected = str_replace(
             ['%url', $version_key],
@@ -567,7 +570,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::script($dir . '/file.js', ['version' => $fake_version]));
 
-       //remove test files
+        //remove test files
         foreach ($fake_files as $fake_file) {
             unlink(GLPI_TMP_DIR . '/' . $fake_file);
         }
@@ -575,7 +578,7 @@ class HtmlTest extends \GLPITestCase
 
     public function testManageRefreshPage()
     {
-       //no session refresh, no args => no timer
+        //no session refresh, no args => no timer
         if (isset($_SESSION['glpirefresh_views'])) {
             unset($_SESSION['glpirefresh_views']);
         }
@@ -588,7 +591,7 @@ class HtmlTest extends \GLPITestCase
         $message = \Html::manageRefreshPage();
         $this->assertSame($expected, $message);
 
-       //Set session refresh to one minute
+        //Set session refresh to one minute
         $_SESSION['glpirefresh_views'] = 1;
         $expected = str_replace("##CALLBACK##", "window.location.reload()", $base_script);
         $expected = str_replace("##TIMER##", 1 * MINUTE_TIMESTAMP * 1000, $expected);
@@ -613,7 +616,7 @@ class HtmlTest extends \GLPITestCase
 
     public function testGenerateMenuSession()
     {
-       //login to get session
+        //login to get session
         $auth = new \Auth();
         $this->assertTrue($auth->login(TU_USER, TU_PASS, true));
 
@@ -684,7 +687,7 @@ class HtmlTest extends \GLPITestCase
     {
         $_SESSION['MESSAGE_AFTER_REDIRECT'] = [
             ERROR    => ['Something went really wrong :('],
-            WARNING  => ['Oooops, I did it again!']
+            WARNING  => ['Oooops, I did it again!'],
         ];
 
         ob_start();
@@ -709,18 +712,16 @@ class HtmlTest extends \GLPITestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $CFG_GLPI['url_base'] = 'http://localhost/glpi';
-
         ob_start();
         \Html::displayBackLink();
         $output = ob_get_clean();
-        $this->assertSame('<a href="http://localhost/glpi">Back</a>', $output);
+        $this->assertSame('<a href="http://localhost">Back</a>', $output);
 
-        $_SERVER['HTTP_REFERER'] = 'http://localhost/glpi/originalpage.html';
+        $_SERVER['HTTP_REFERER'] = 'http://localhost/originalpage.html';
         ob_start();
         \Html::displayBackLink();
         $output = ob_get_clean();
-        $this->assertSame('<a href="http://localhost/glpi/originalpage.html">Back</a>', $output);
+        $this->assertSame('<a href="http://localhost/originalpage.html">Back</a>', $output);
         $_SERVER['HTTP_REFERER'] = ''; // reset referer to prevent having this var in test loop mode
     }
 
@@ -764,7 +765,7 @@ class HtmlTest extends \GLPITestCase
 
         $options = [
             'title'  => 'My title',
-            'alt'    => 'no img text'
+            'alt'    => 'no img text',
         ];
         $expected = '<img src="/path/to/image.png" title="My title" alt="no img text" />';
         $this->assertSame($expected, \Html::image($path, $options));
@@ -787,7 +788,7 @@ class HtmlTest extends \GLPITestCase
         $this->assertSame($expected, \Html::link($text, $url));
 
         $options = [
-            'confirm'   => 'U sure?'
+            'confirm'   => 'U sure?',
         ];
         $expected = '<a href="mylink.php" onclick="if (window.confirm(&quot;U sure?&quot;)){ ;return true;} else { return false;}">My link</a>';
         $this->assertSame($expected, \Html::link($text, $url, $options));
@@ -810,8 +811,8 @@ class HtmlTest extends \GLPITestCase
         $options = [
             'value'  => [
                 'a value',
-                'another one'
-            ]
+                'another one',
+            ],
         ];
         $expected = "<input type=\"hidden\" name=\"hiddenfield[0]\" value=\"a value\" />\n<input type=\"hidden\" name=\"hiddenfield[1]\" value=\"another one\" />\n";
         $this->assertSame($expected, \Html::hidden($name, $options));
@@ -819,8 +820,8 @@ class HtmlTest extends \GLPITestCase
         $options = [
             'value'  => [
                 'one' => 'a value',
-                'two' => 'another one'
-            ]
+                'two' => 'another one',
+            ],
         ];
         $expected = "<input type=\"hidden\" name=\"hiddenfield[one]\" value=\"a value\" />\n<input type=\"hidden\" name=\"hiddenfield[two]\" value=\"another one\" />\n";
         $this->assertSame($expected, \Html::hidden($name, $options));
@@ -835,7 +836,7 @@ class HtmlTest extends \GLPITestCase
         $options = [
             'value'     => 'myval',
             'class'     => 'a_class',
-            'data-id'   => 12
+            'data-id'   => 12,
         ];
         $expected = '<input type="text" name="in_put" value="myval" class="a_class" data-id="12" />';
         $this->assertSame($expected, \Html::input($name, $options));
@@ -909,7 +910,7 @@ class HtmlTest extends \GLPITestCase
         yield 'http://localhost/glpi/front/computer.form.php?id=1' => [
             'referer'  => 'http://localhost/glpi/front/computer.form.php?id=1',
             'base_url' => 'https://localhost/glpi',
-            'expected' => 'http://localhost/glpi/front/computer.form.php?id=1'
+            'expected' => 'http://localhost/glpi/front/computer.form.php?id=1',
         ];
         yield 'https://localhost/glpi/front/computer.form.php?id=1' => [
             'referer'  => 'https://localhost/glpi/front/computer.form.php?id=1',
@@ -953,28 +954,25 @@ body {
 }
 @import 'imports/borders';     /* import without extension */
 @import 'imports/colors.scss'; /* import with extension */
-SCSS
-            ,
+SCSS,
 
                 'another.scss' => <<<SCSS
 form input {
    background: grey;
 }
-SCSS
-            ,
+SCSS,
 
                 'imports' => [
                     'borders.scss' => <<<SCSS
 .big-border {
    border: 5px dashed black;
 }
-SCSS
-               ,
+SCSS,
                     'colors.scss' => <<<SCSS
 .red {
    color:red;
 }
-SCSS
+SCSS,
                 ],
             ],
         ];
@@ -1127,5 +1125,292 @@ SCSS
     public function testSanitizeInputName(string $name, string $expected): void
     {
         $this->assertEquals($expected, \Html::sanitizeInputName($name));
+    }
+
+    public static function domIdProvider(): iterable
+    {
+        yield [
+            'name'      => 'itemtype',
+            'expected'  => 'itemtype',
+        ];
+
+        yield [
+            'name'      => 'foo\'"$**_23-1',
+            'expected'  => 'foo_23-1',
+        ];
+    }
+
+    #[DataProvider('domIdProvider')]
+    public function testSanitizeDomId(string $name, string $expected): void
+    {
+        $this->assertEquals($expected, \Html::sanitizeInputName($name));
+    }
+
+    public static function getMenuSectorForItemtypeProvider(): iterable
+    {
+        yield [
+            'itemtype' => 'Computer',
+            'expected' => 'assets',
+        ];
+
+        yield [
+            'itemtype' => 'Ticket',
+            'expected' => 'helpdesk',
+        ];
+
+        yield [
+            'itemtype' => 'SoftwareLicense',
+            'expected' => 'management',
+        ];
+
+        yield [
+            'itemtype' => 'Project',
+            'expected' => 'tools',
+        ];
+
+        yield [
+            'itemtype' => 'User',
+            'expected' => 'admin',
+        ];
+
+        yield [
+            'itemtype' => 'Config',
+            'expected' => 'config',
+        ];
+
+        yield [
+            'itemtype' => MyPsr4Class::class,
+            'expected' => 'management',
+        ];
+    }
+
+    #[DataProvider('getMenuSectorForItemtypeProvider')]
+    public function testGetMenuSectorForItemtype($itemtype, $expected): void
+    {
+        $this->assertEquals($expected, \Html::getMenuSectorForItemtype($itemtype));
+    }
+
+    public static function testTimestampToRelativeStrProvider(): iterable
+    {
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => null,
+            'expected'  => 'Never',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-01 00:00:00.000',
+            'expected'  => 'Now',
+        ];
+
+        yield [
+            'current' => '2025-01-01 12:00:00.000',
+            'timestamp' => '2025-01-01 11:59:59.000',
+            'expected'  => 'Just now',
+        ];
+
+        yield [
+            'current' => '2025-01-01 12:00:00.000',
+            'timestamp' => '2025-01-01 11:59:01.000',
+            'expected'  => 'Just now',
+        ];
+
+        yield [
+            'current' => '2025-01-01 12:00:00.000',
+            'timestamp' => '2025-01-01 11:59:00.000',
+            'expected'  => '1 minutes ago',
+        ];
+
+        yield [
+            'current' => '2025-01-01 12:00:00.000',
+            'timestamp' => '2025-01-01 11:00:01.000',
+            'expected'  => '59 minutes ago',
+        ];
+
+        yield [
+            'current' => '2025-01-01 23:59:59.000',
+            'timestamp' => '2025-01-01 22:59:59.000',
+            'expected'  => '1 hours ago',
+        ];
+
+        yield [
+            'current' => '2025-01-01 23:59:59.000',
+            'timestamp' => '2025-01-01 00:00:00.000',
+            'expected'  => '23 hours ago',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2024-12-31 00:00:00.000',
+            'expected'  => 'Yesterday',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2024-12-30 00:00:00.000',
+            'expected'  => '2 days ago',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2024-12-19 00:00:00.000',
+            'expected'  => '13 days ago',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2024-12-18 00:00:00.000',
+            'expected'  => '2 weeks ago',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2024-12-02 00:00:00.000',
+            'expected'  => '4 weeks ago',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2024-12-01 00:00:00.000',
+            'expected'  => 'Last month',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2024-11-03 00:00:00.000',
+            'expected'  => 'Last month',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2024-11-02 00:00:00.000',
+            'expected'  => 'November 2024',
+        ];
+
+        yield [
+            'current' => '2026-01-01 00:00:00.000',
+            'timestamp' => '2024-12-31 00:00:00.000',
+            'expected'  => 'December 2024',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-01 00:00:01.000',
+            'expected'  => 'In a minute',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-01 00:01:59.000',
+            'expected'  => 'In a minute',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-01 00:02:00.000',
+            'expected'  => 'In 2 minutes',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-01 00:59:59.000',
+            'expected'  => 'In 59 minutes',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-01 01:00:00.000',
+            'expected'  => 'In an hour',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-01 01:59:59.000',
+            'expected'  => 'In an hour',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-01 02:00:00.000',
+            'expected'  => 'In 2 hours',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-01 23:59:59.000',
+            'expected'  => 'In 23 hours',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-02 00:00:00.000',
+            'expected'  => 'Tomorrow',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-02 23:59:59.000',
+            'expected'  => 'Tomorrow',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-03 00:00:00.000',
+            'expected'  => 'In 2 days',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-14 23:59:59.000',
+            'expected'  => 'In 13 days',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-15 00:00:00.000',
+            'expected'  => 'In 2 weeks',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-31 23:59:59.000',
+            'expected'  => 'In 4 weeks',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-02-01 00:00:00.000',
+            'expected'  => 'Next month',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-03-01 23:59:59.000',
+            'expected'  => 'Next month',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-03-02 00:00:00.000',
+            'expected'  => 'March 2025',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-12-31 00:00:00.000',
+            'expected'  => 'December 2025',
+        ];
+    }
+
+    #[DataProvider('testTimestampToRelativeStrProvider')]
+    public function testTimestampToRelativeStr(string $current, ?string $timestamp, string $expected): void
+    {
+        $this->login();
+
+        $_SESSION['glpi_currenttime'] = $current;
+        $_SESSION['glpilanguage'] = 'en_GB';
+
+        $this->assertSame($expected, \Html::timestampToRelativeStr($timestamp));
     }
 }

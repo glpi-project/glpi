@@ -1,0 +1,151 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set last_condition_is_filled = false %}
+
+{% for condition in defined_conditions %}
+    {% set condition_is_filled = condition.getItemUuid() != '' %}
+    {% set last_condition_is_filled = loop.last and condition_is_filled %}
+
+    <div
+        class="row mt-3"
+        data-glpi-conditions-editor-condition
+        data-glpi-conditions-editor-condition-index="{{ loop.index0 }}"
+    >
+        <div class="col-12">
+            <div class="d-flex align-items-center">
+                {% if not loop.first %}
+                    <span class="me-2 logic-operator-selector">
+                        {% do call('Dropdown::showFromArray', [
+                            '_conditions[' ~ loop.index0 ~ '][logic_operator]',
+                            manager.getLogicOperatorDropdownValues(),
+                            {
+                                'value': condition.getLogicOperator().value,
+                                'aria_label' : __('Logic operator'),
+                                'add_data_attributes': {
+                                    'glpi-conditions-editor-logic-operator': '',
+                                },
+                        }]) %}
+                    </span>
+                {% endif %}
+
+                <span class="me-2 question-selector">
+                    {% do call('Dropdown::showFromArray', [
+                        '_conditions[' ~ loop.index0 ~ '][item]',
+                        items_values,
+                        {
+                            'value': condition.getItemDropdownKey(),
+                            'aria_label' : _n('Item', 'Items', 1),
+                            'add_data_attributes': {
+                                'glpi-conditions-editor-item': '',
+                            },
+                            'display_emptychoice': true,
+                            'emptylabel': __("Select an item..."),
+                        }
+                    ]) %}
+                </span>
+
+                {% if condition_is_filled %}
+                    <input
+                        type="hidden"
+                        value="{{ condition.getItemUuid() }}"
+                        name="_conditions[{{ loop.index0 }}][item_uuid]"
+                        data-glpi-conditions-editor-item-uuid
+                    />
+                    <input
+                        type="hidden"
+                        value="{{ condition.getItemType().value }}"
+                        name="_conditions[{{ loop.index0 }}][item_type]"
+                        data-glpi-conditions-editor-item-type
+                    />
+
+                    <span class="me-2 value-operator-selector">
+                        {% set value_op = '' %}
+                        {% if condition.getValueOperator() is not null %}
+                            {% set value_op = condition.getValueOperator().value %}
+                        {% endif %}
+                        {% do call('Dropdown::showFromArray', [
+                            '_conditions[' ~ loop.index0 ~ '][value_operator]',
+                            manager.getValueOperatorDropdownValues(
+                                condition.getItemUuid()
+                            ),
+                            {
+                                'value': value_op,
+                                'aria_label' : __('Value operator'),
+                                'add_data_attributes': {
+                                    'glpi-conditions-editor-value-operator': '',
+                                },
+                            }
+                        ]) %}
+                    </span>
+
+                    {# Load the correct template to use #}
+                    {% set handler = manager.getHandlerForCondition(condition) %}
+
+                    {% if handler is not null %}
+                        {% if handler.getTemplate() is not null %}
+                            {{ include(
+                                handler.getTemplate(),
+                                {
+                                    input_value: condition.getValue(),
+                                    input_name: "_conditions[" ~ loop.index0 ~ "][value]",
+                                    input_label: __("Value"),
+                                }|merge(handler.getTemplateParameters(condition)),
+                                with_context = false
+                            ) }}
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+
+                {% if condition_is_filled or loop.index0 > 0 %}
+                    <i
+                        role="button"
+                        aria-label="{{ __("Delete criteria") }}"
+                        class="ti ti-trash text-danger cursor-pointer ms-auto"
+                        data-glpi-condition-editor-delete-condition
+                    ></i>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
+{% if last_condition_is_filled %}
+    <button
+        data-glpi-condition-editor-add-condition
+        type="button"
+        class="d-flex align-items-center btn btn-sm btn-ghost-secondary mt-3"
+    >
+        <i class="ti ti-plus me-1"></i>
+        <span>{{ __("Add another criteria") }}</span>
+    </button>
+{% endif %}

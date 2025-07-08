@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -49,14 +49,14 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
             return false;
         }
 
-       // Add autocompletion for ticket properties (twig templates)
+        // Add autocompletion for ticket properties (twig templates)
         $parameters = ParametersPreset::getForAbstractTemplates();
         Html::activateUserTemplateAutocompletion(
             'textarea[name=content]',
             TemplateManager::computeParameters($parameters)
         );
 
-       // Add related documentation
+        // Add related documentation
         Html::addTemplateDocumentationLinkJS(
             'textarea[name=content]',
             ParametersPreset::ITIL_CHILD_TEMPLATE

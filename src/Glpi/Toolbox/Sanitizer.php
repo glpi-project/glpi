@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,6 +34,8 @@
  */
 
 namespace Glpi\Toolbox;
+
+use function Safe\preg_match;
 
 class Sanitizer
 {
@@ -71,6 +73,10 @@ class Sanitizer
                 },
                 $value
             );
+        }
+
+        if ($value instanceof \Stringable || (\is_object($value) && \method_exists($value, '__toString'))) {
+            $value = (string) $value;
         }
 
         if (!is_string($value)) {
@@ -137,11 +143,11 @@ class Sanitizer
     {
         \Toolbox::deprecated();
 
-       // A value is Html Encoded if it does not contains
-       // - `<`;
-       // - `>`;
-       // - `&` not followed by an HTML entity identifier;
-       // and if it contains any entity used to encode HTML special chars during sanitization process.
+        // A value is Html Encoded if it does not contains
+        // - `<`;
+        // - `>`;
+        // - `&` not followed by an HTML entity identifier;
+        // and if it contains any entity used to encode HTML special chars during sanitization process.
         $special_chars_pattern   = '/(<|>|(&(?!#?[a-z0-9]+;)))/i';
         $sanitized_chars = array_merge(
             array_values(self::CHARS_MAPPING),
@@ -169,7 +175,7 @@ class Sanitizer
 
         $value_length = strlen($value);
 
-       // Search for unprotected control chars `NULL`, `\n`, `\r` and `EOF`.
+        // Search for unprotected control chars `NULL`, `\n`, `\r` and `EOF`.
         $control_chars = ["\x00", "\n", "\r", "\x1a"];
         foreach ($control_chars as $char) {
             $char_length = strlen($char);
@@ -182,7 +188,7 @@ class Sanitizer
             }
         }
 
-       // Search for unprotected quotes.
+        // Search for unprotected quotes.
         $quotes = ["'", '"'];
         foreach ($quotes as $char) {
             $i = 0;
@@ -196,7 +202,7 @@ class Sanitizer
 
         $has_special_chars = false;
 
-       // Search for unprotected backslashes.
+        // Search for unprotected backslashes.
         if (str_contains($value, '\\')) {
             $special_chars = ['\x00', '\n', '\r', "\'", '\"', '\x1a'];
             $backslashes_count = 0;
@@ -205,14 +211,14 @@ class Sanitizer
             while (($i = strpos($value, '\\', $i)) !== false) {
                 $has_special_chars = true;
 
-               // Count successive backslashes.
+                // Count successive backslashes.
                 $backslashes_count = 1;
                 while ($i + 1 <= $value_length && substr($value, $i + 1, 1) == '\\') {
                     $backslashes_count++;
                     $i++;
                 }
 
-               // Check if last backslash is related to an escaped special char.
+                // Check if last backslash is related to an escaped special char.
                 foreach ($special_chars as $char) {
                     $char_length = strlen($char);
                     if ($i + $char_length <= $value_length && substr($value, $i, $char_length) == $char) {
@@ -221,7 +227,7 @@ class Sanitizer
                     }
                 }
 
-               // Backslashes are escaped only if there is odd count of them.
+                // Backslashes are escaped only if there is odd count of them.
                 if ($backslashes_count % 2 === 1) {
                     return false; // Unprotected backslash or quote found
                 }
@@ -314,8 +320,12 @@ class Sanitizer
                 if (is_array($value)) {
                     return self::encodeHtmlSpecialCharsRecursive($value);
                 }
-                if (is_string($value)) {
-                    return self::encodeHtmlSpecialChars($value);
+                if (
+                    is_string($value)
+                    || $value instanceof \Stringable
+                    || (\is_object($value) && \method_exists($value, '__toString'))
+                ) {
+                    return self::encodeHtmlSpecialChars((string) $value);
                 }
                 return $value;
             },
@@ -437,8 +447,12 @@ class Sanitizer
                 if (is_array($value)) {
                     return self::dbEscapeRecursive($value);
                 }
-                if (is_string($value)) {
-                    return self::dbEscape($value);
+                if (
+                    is_string($value)
+                    || $value instanceof \Stringable
+                    || (\is_object($value) && \method_exists($value, '__toString'))
+                ) {
+                    return self::dbEscape((string) $value);
                 }
                 return $value;
             },
@@ -460,7 +474,7 @@ class Sanitizer
     {
         \Toolbox::deprecated();
 
-       // stripslashes cannot be used here as it would produce "r" and "n" instead of "\r" and \n".
+        // stripslashes cannot be used here as it would produce "r" and "n" instead of "\r" and \n".
 
         if (!(str_contains($value, '\\') && self::isDbEscaped($value))) {
             // Value is not escaped, do not unescape it.
@@ -485,8 +499,8 @@ class Sanitizer
                 $replace[] = $r;
             }
         }
-        if (empty($search)) {
-           // Value does not contains any potentially escaped chars.
+        if ($search === []) {
+            // Value does not contains any potentially escaped chars.
             return $value;
         }
 

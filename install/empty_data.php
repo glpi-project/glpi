@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,48 +33,52 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\Environment;
 use Glpi\Form\Form;
 use Glpi\Inventory\Conf;
+use Glpi\RichText\UserMention;
 use Glpi\Socket;
+
+use function Safe\ini_get;
+use function Safe\json_encode;
 
 // Use anonymous class so we can have constants that define special values without polluting the global table
 // and adding unnecessary variables to IDE autocomplete data that may result in errors
-$empty_data_builder = new class
-{
+$empty_data_builder = new class {
     /** @var int Self-service profile ID */
-    const PROFILE_SELF_SERVICE = 1;
+    public const PROFILE_SELF_SERVICE = 1;
     /** @var int Observer profile ID */
-    const PROFILE_OBSERVER     = 2;
+    public const PROFILE_OBSERVER     = 2;
     /** @var int Admin profile ID */
-    const PROFILE_ADMIN        = 3;
+    public const PROFILE_ADMIN        = 3;
     /** @var int Super-admin profile ID */
-    const PROFILE_SUPER_ADMIN  = 4;
+    public const PROFILE_SUPER_ADMIN  = 4;
     /** @var int Hotliner profile ID */
-    const PROFILE_HOTLINER     = 5;
+    public const PROFILE_HOTLINER     = 5;
     /** @var int Technician profile ID */
-    const PROFILE_TECHNICIAN   = 6;
+    public const PROFILE_TECHNICIAN   = 6;
     /** @var int Supervisor profile ID */
-    const PROFILE_SUPERVISOR   = 7;
+    public const PROFILE_SUPERVISOR   = 7;
     /** @var int Read-only profile ID */
-    const PROFILE_READ_ONLY    = 8;
+    public const PROFILE_READ_ONLY    = 8;
 
-    const USER_GLPI            = 2;
-    const USER_POST_ONLY       = 3;
-    const USER_TECH            = 4;
-    const USER_NORMAL          = 5;
-    const USER_SYSTEM          = 6;
+    public const USER_GLPI            = 2;
+    public const USER_POST_ONLY       = 3;
+    public const USER_TECH            = 4;
+    public const USER_NORMAL          = 5;
+    public const USER_SYSTEM          = 6;
 
     /** @var int Value indicating no rights */
-    const RIGHT_NONE           = 0;
+    public const RIGHT_NONE           = 0;
 
     public function getEmptyData(): array
     {
         $tables = [];
 
         // API need to be enabled to ease e2e testing
-        $is_testing = GLPI_ENVIRONMENT_TYPE === "testing";
-        $enable_api = $is_testing ? "1" : "0";
-        $enable_api_login_credentials = $is_testing ? "1" : "0";
+        $add_e2e_data = Environment::get()->shouldAddExtraE2EDataDuringInstallation();
+        $enable_api = $add_e2e_data ? "1" : "0";
+        $enable_api_login_credentials = $add_e2e_data ? "1" : "0";
 
         $tables['glpi_apiclients'] = [
             [
@@ -162,7 +166,7 @@ $empty_data_builder = new class
             'planning_end' => '20:00:00',
             'utf8_conv' => '1',
             'use_public_faq' => '0',
-            'url_base' => 'http://localhost/glpi',
+            'url_base' => 'http://localhost',
             'show_link_in_mail' => '0',
             'text_login' => '',
             'founded_new_version' => '',
@@ -274,6 +278,7 @@ $empty_data_builder = new class
             'attach_ticket_documents_to_mail' => '0',
             'backcreated' => '1',
             'task_state' => '1',
+            'planned_task_state' => '1',
             'palette' => 'auror',
             'page_layout' => 'vertical',
             'fold_menu' => '0',
@@ -361,6 +366,7 @@ $empty_data_builder = new class
             'projecttask_unstarted_states_id' => 0,
             'projecttask_inprogress_states_id' => 0,
             'projecttask_completed_states_id' => 0,
+            'non_reusable_passwords_count' => 1,
         ];
 
         $tables['glpi_configs'] = [];
@@ -880,7 +886,7 @@ $empty_data_builder = new class
                 'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,
-                'mode' => CronTask::MODE_INTERNAL,
+                'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
                 'hourmin' => 0,
@@ -892,7 +898,7 @@ $empty_data_builder = new class
                 'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_DISABLE,
-                'mode' => CronTask::MODE_INTERNAL,
+                'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
                 'hourmin' => 0,
@@ -904,7 +910,7 @@ $empty_data_builder = new class
                 'frequency' => MINUTE_TIMESTAMP,
                 'param' => 50,
                 'state' => CronTask::STATE_WAITING,
-                'mode' => CronTask::MODE_INTERNAL,
+                'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
                 'hourmin' => 0,
@@ -916,7 +922,7 @@ $empty_data_builder = new class
                 'frequency' => DAY_TIMESTAMP,
                 'param' => 30,
                 'state' => CronTask::STATE_WAITING,
-                'mode' => CronTask::MODE_INTERNAL,
+                'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
                 'hourmin' => 0,
@@ -928,15 +934,39 @@ $empty_data_builder = new class
                 'frequency' => DAY_TIMESTAMP,
                 'param' => 7,
                 'state' => CronTask::STATE_WAITING,
-                'mode' => CronTask::MODE_INTERNAL,
+                'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
                 'hourmin' => 0,
                 'hourmax' => 24,
-            ]
+            ], [
+                'id' => 49,
+                'itemtype' => Software::class,
+                'name' => PurgeSoftwareTask::TASK_NAME,
+                'frequency' => MONTH_TIMESTAMP,
+                'param' => 1000,
+                'state' => CronTask::STATE_DISABLE,
+                'mode' => CronTask::MODE_EXTERNAL,
+                'lastrun' => null,
+                'logs_lifetime' => 300,
+                'hourmin' => 0,
+                'hourmax' => 6,
+            ], [
+                'id' => 50,
+                'itemtype' => 'CommonITILValidationCron',
+                'name' => 'approvalreminder',
+                'frequency' => WEEK_TIMESTAMP,
+                'param' => null,
+                'state' => CronTask::STATE_DISABLE,
+                'mode' => CronTask::MODE_EXTERNAL,
+                'lastrun' => null,
+                'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
+            ],
         ];
 
-        $dashboards_data = include_once __DIR__ . "/migrations/update_9.4.x_to_9.5.0/dashboards.php";
+        $dashboards_data = require __DIR__ . "/migrations/update_9.4.x_to_9.5.0/dashboards.php";
         $tables['glpi_dashboards_dashboards'] = [];
         $tables['glpi_dashboards_items'] = [];
         $i = $j = 1;
@@ -2484,6 +2514,10 @@ $empty_data_builder = new class
                 'is_group_autoclean' => '0',
                 'is_location_autoclean' => '0',
                 'state_autoclean_mode' => '0',
+                'show_tickets_properties_on_helpdesk' => 0,
+                'custom_helpdesk_home_scene_left' => '',
+                'custom_helpdesk_home_scene_right' => '',
+                'custom_helpdesk_home_title' => '',
             ],
         ];
 
@@ -2689,7 +2723,7 @@ $empty_data_builder = new class
                 'is_active' => 1,
             ], [
                 'id' => 12,
-                'name' => 'Ticket Validation',
+                'name' => 'Ticket Approval',
                 'itemtype' => 'Ticket',
                 'event' => 'validation',
                 'is_recursive' => 1,
@@ -2864,7 +2898,7 @@ $empty_data_builder = new class
                 'is_active' => 1,
             ], [
                 'id' => 37,
-                'name' => 'Ticket Validation Answer',
+                'name' => 'Ticket Approval Answer',
                 'itemtype' => 'Ticket',
                 'event' => 'validation_answer',
                 'is_recursive' => 1,
@@ -4382,6 +4416,176 @@ $empty_data_builder = new class
                 'items_id'         => '37',
                 'type'             => '1',
                 'notifications_id' => '40',
+            ], [
+                'id'               => '159',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '1',
+            ], [
+                'id'               => '160',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '12',
+            ], [
+                'id'               => '161',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '16',
+            ], [
+                'id'               => '162',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '17',
+            ], [
+                'id'               => '163',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '18',
+            ], [
+                'id'               => '164',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '20',
+            ], [
+                'id'               => '165',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '21',
+            ], [
+                'id'               => '166',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '22',
+            ], [
+                'id'               => '167',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '23',
+            ], [
+                'id'               => '168',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '24',
+            ], [
+                'id'               => '169',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '26',
+            ], [
+                'id'               => '170',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '27',
+            ], [
+                'id'               => '171',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '37',
+            ], [
+                'id'               => '172',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '38',
+            ], [
+                'id'               => '173',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '39',
+            ], [
+                'id'               => '174',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '50',
+            ], [
+                'id'               => '175',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '59',
+            ], [
+                'id'               => '176',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '60',
+            ], [
+                'id'               => '177',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '61',
+            ], [
+                'id'               => '178',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '62',
+            ], [
+                'id'               => '179',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '63',
+            ], [
+                'id'               => '180',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '64',
+            ], [
+                'id'               => '181',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '65',
+            ], [
+                'id'               => '183',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '67',
+            ], [
+                'id'               => '184',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '68',
+            ], [
+                'id'               => '185',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '69',
+            ], [
+                'id'               => '186',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '70',
+            ], [
+                'id'               => '187',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '71',
+            ], [
+                'id'               => '188',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '72',
+            ], [
+                'id'               => '189',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '74',
+            ], [
+                'id'               => '190',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '75',
+            ], [
+                'id'               => '191',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '80',
+            ], [
+                'id'               => '192',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '81',
+            ], [
+                'id'               => '193',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '82',
             ],
         ];
 
@@ -4412,7 +4616,7 @@ $empty_data_builder = new class
                 'itemtype' => 'Ticket',
             ], [
                 'id' => '7',
-                'name' => 'Tickets Validation',
+                'name' => 'Tickets Approval',
                 'itemtype' => 'Ticket',
             ], [
                 'id' => '8',
@@ -5465,7 +5669,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 &lt;p&gt;##lang.document.weblink## : ##document.weblink##&lt;/p&gt; ##ENDFOREACHdocuments##&lt;/p&gt;
 ##FOREACHtargets## &lt;p&gt;##lang.target.itemtype## : ##target.type##&lt;/p&gt;
 &lt;p&gt;##lang.target.name## : ##target.name##&lt;/p&gt;
-&lt;p&gt;##lang.target.url## : ##target.url##&lt;/p&gt; ##ENDFOREACHtargets##'
+&lt;p&gt;##lang.target.url## : ##target.url##&lt;/p&gt; ##ENDFOREACHtargets##',
             ],
         ];
 
@@ -5659,6 +5863,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'name' => 'taskcategory',
                 'rights' => self::RIGHT_NONE,
             ], [
+                'profiles_id' => self::PROFILE_OBSERVER,
+                'name' => 'tasktemplate',
+                'rights' => self::RIGHT_NONE,
+            ], [
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'statistic',
                 'rights' => self::RIGHT_NONE,
@@ -5697,6 +5905,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'itilfollowuptemplate',
+                'rights' => READ | UPDATE | CREATE | PURGE,
+            ], [
+                'profiles_id' => self::PROFILE_SUPERVISOR,
+                'name' => 'itilvalidationtemplate',
                 'rights' => READ | UPDATE | CREATE | PURGE,
             ], [
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
@@ -5943,6 +6155,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'name' => 'taskcategory',
                 'rights' => self::RIGHT_NONE,
             ], [
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
+                'name' => 'tasktemplate',
+                'rights' => self::RIGHT_NONE,
+            ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'statistic',
                 'rights' => READ,
@@ -5983,12 +6199,20 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'name' => 'itilfollowuptemplate',
                 'rights' => self::RIGHT_NONE,
             ], [
+                'profiles_id' => self::PROFILE_HOTLINER,
+                'name' => 'itilvalidationtemplate',
+                'rights' => self::RIGHT_NONE,
+            ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'solutiontemplate',
                 'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'itilfollowuptemplate',
+                'rights' => self::RIGHT_NONE,
+            ], [
+                'profiles_id' => self::PROFILE_TECHNICIAN,
+                'name' => 'itilvalidationtemplate',
                 'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
@@ -6243,6 +6467,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'rights' => READ | UPDATE | CREATE | PURGE,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
+                'name' => 'tasktemplate',
+                'rights' => READ | UPDATE | CREATE | PURGE,
+            ], [
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'cable_management',
                 'rights' => READ | UPDATE | CREATE | DELETE | PURGE,
             ], [
@@ -6286,12 +6514,20 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'name' => 'itilfollowuptemplate',
                 'rights' => READ | UPDATE | CREATE | PURGE,
             ], [
+                'profiles_id' => self::PROFILE_ADMIN,
+                'name' => 'itilvalidationtemplate',
+                'rights' => READ | UPDATE | CREATE | PURGE,
+            ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'solutiontemplate',
                 'rights' => READ | UPDATE | CREATE | PURGE,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'itilfollowuptemplate',
+                'rights' => READ | UPDATE | CREATE | PURGE,
+            ], [
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
+                'name' => 'itilvalidationtemplate',
                 'rights' => READ | UPDATE | CREATE | PURGE,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
@@ -6540,6 +6776,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
+                'name' => 'tasktemplate',
+                'rights' => self::RIGHT_NONE,
+            ], [
+                'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'cable_management',
                 'rights' => self::RIGHT_NONE,
             ], [
@@ -6583,12 +6823,20 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'name' => 'itilfollowuptemplate',
                 'rights' => self::RIGHT_NONE,
             ], [
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
+                'name' => 'itilvalidationtemplate',
+                'rights' => self::RIGHT_NONE,
+            ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'solutiontemplate',
                 'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'itilfollowuptemplate',
+                'rights' => self::RIGHT_NONE,
+            ], [
+                'profiles_id' => self::PROFILE_OBSERVER,
+                'name' => 'itilvalidationtemplate',
                 'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
@@ -6835,6 +7083,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'taskcategory',
+                'rights' => self::RIGHT_NONE,
+            ], [
+                'profiles_id' => self::PROFILE_HOTLINER,
+                'name' => 'tasktemplate',
                 'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_HOTLINER,
@@ -7125,6 +7377,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'rights' => READ | UPDATE | CREATE | PURGE,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
+                'name' => 'tasktemplate',
+                'rights' => READ | UPDATE | CREATE | PURGE,
+            ], [
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'cable_management',
                 'rights' => READ | UPDATE | CREATE | DELETE | PURGE,
             ], [
@@ -7405,6 +7661,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'taskcategory',
+                'rights' => READ | UPDATE | CREATE | PURGE,
+            ], [
+                'profiles_id' => self::PROFILE_ADMIN,
+                'name' => 'tasktemplate',
                 'rights' => READ | UPDATE | CREATE | PURGE,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
@@ -7761,6 +8021,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'taskcategory',
+                'rights' => READ,
+            ], [
+                'profiles_id' => self::PROFILE_READ_ONLY,
+                'name' => 'tasktemplate',
                 'rights' => READ,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
@@ -8697,6 +8961,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_default' => '1',
                 'helpdesk_hardware' => '1',
                 'helpdesk_item_type' => '["Computer","Monitor","NetworkEquipment","Peripheral","Phone","Printer","Software", "DCRoom", "Rack", "Enclosure", "Database"]',
+                'use_mentions' => UserMention::USER_MENTION_FULL,
                 'ticket_status' => '{"1":{"2":0,"3":0,"4":0,"5":0,"6":0},"2":{"1":0,"3":0,"4":0,"5":0,"6":0},"3":{"1":0,"2":0,"4":0,"5":0,"6":0},"4":{"1":0,"2":0,"3":0,"5":0,"6":0},"5":{"1":0,"2":0,"3":0,"4":0},"6":{"1":0,"2":0,"3":0,"4":0,"5":0}}',
                 'comment' => '',
                 'problem_status' => '[]',
@@ -8711,6 +8976,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_default' => '0',
                 'helpdesk_hardware' => '1',
                 'helpdesk_item_type' => '["Computer","Monitor","NetworkEquipment","Peripheral","Phone","Printer","Software", "DCRoom", "Rack", "Enclosure", "Database"]',
+                'use_mentions' => UserMention::USER_MENTION_FULL,
                 'ticket_status' => '[]',
                 'comment' => '',
                 'problem_status' => '[]',
@@ -8725,6 +8991,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_default' => '0',
                 'helpdesk_hardware' => '3',
                 'helpdesk_item_type' => '["Computer","Monitor","NetworkEquipment","Peripheral","Phone","Printer","Software", "DCRoom", "Rack", "Enclosure", "Database"]',
+                'use_mentions' => UserMention::USER_MENTION_FULL,
                 'ticket_status' => '[]',
                 'comment' => '',
                 'problem_status' => '[]',
@@ -8739,6 +9006,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_default' => '0',
                 'helpdesk_hardware' => '3',
                 'helpdesk_item_type' => '["Computer","Monitor","NetworkEquipment","Peripheral","Phone","Printer","Software", "DCRoom", "Rack", "Enclosure", "Database"]',
+                'use_mentions' => UserMention::USER_MENTION_FULL,
                 'ticket_status' => '[]',
                 'comment' => '',
                 'problem_status' => '[]',
@@ -8753,6 +9021,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_default' => '0',
                 'helpdesk_hardware' => '3',
                 'helpdesk_item_type' => '["Computer","Monitor","NetworkEquipment","Peripheral","Phone","Printer","Software", "DCRoom", "Rack", "Enclosure", "Database"]',
+                'use_mentions' => UserMention::USER_MENTION_FULL,
                 'ticket_status' => '[]',
                 'comment' => '',
                 'problem_status' => '[]',
@@ -8767,6 +9036,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_default' => '0',
                 'helpdesk_hardware' => '3',
                 'helpdesk_item_type' => '["Computer","Monitor","NetworkEquipment","Peripheral","Phone","Printer","Software", "DCRoom", "Rack", "Enclosure", "Database"]',
+                'use_mentions' => UserMention::USER_MENTION_FULL,
                 'ticket_status' => '[]',
                 'comment' => '',
                 'problem_status' => '[]',
@@ -8781,6 +9051,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_default' => '0',
                 'helpdesk_hardware' => '3',
                 'helpdesk_item_type' => '["Computer","Monitor","NetworkEquipment","Peripheral","Phone","Printer","Software", "DCRoom", "Rack", "Enclosure", "Database"]',
+                'use_mentions' => UserMention::USER_MENTION_FULL,
                 'ticket_status' => '[]',
                 'comment' => '',
                 'problem_status' => '[]',
@@ -8795,6 +9066,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_default' => '0',
                 'helpdesk_hardware' => '0',
                 'helpdesk_item_type' => '[]',
+                'use_mentions' => UserMention::USER_MENTION_FULL,
                 'ticket_status' => '{"1":{"2":0,"3":0,"4":0,"5":0,"6":0},"2":{"1":0,"3":0,"4":0,"5":0,"6":0},"3":{"1":0,"2":0,"4":0,"5":0,"6":0},"4":{"1":0,"2":0,"3":0,"5":0,"6":0},"5":{"1":0,"2":0,"3":0,"4":0,"6":0},"6":{"1":0,"2":0,"3":0,"4":0,"5":0}}',
                 'comment' => 'This profile defines read-only access. It is used when objects are locked. It can also be used to give to users rights to unlock objects.',
                 'problem_status' => '{"1":{"7":0,"2":0,"3":0,"4":0,"5":0,"8":0,"6":0},"7":{"1":0,"2":0,"3":0,"4":0,"5":0,"8":0,"6":0},"2":{"1":0,"7":0,"3":0,"4":0,"5":0,"8":0,"6":0},"3":{"1":0,"7":0,"2":0,"4":0,"5":0,"8":0,"6":0},"4":{"1":0,"7":0,"2":0,"3":0,"5":0,"8":0,"6":0},"5":{"1":0,"7":0,"2":0,"3":0,"4":0,"8":0,"6":0},"8":{"1":0,"7":0,"2":0,"3":0,"4":0,"5":0,"6":0},"6":{"1":0,"7":0,"2":0,"3":0,"4":0,"5":0,"8":0}}',
@@ -8998,6 +9270,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ],
         ];
 
+        // allowed_statuses is set using default value, @see install/mysql/glpi-empty.sql ( table `glpi_tickettemplates` )
         $tables['glpi_tickettemplates'] = [
             [
                 'id' => 1,
@@ -9159,8 +9432,8 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
         $tables['glpi_agenttypes'] = [
             [
                 'id' => 1,
-                'name' => 'Core'
-            ]
+                'name' => 'Core',
+            ],
         ];
 
         $tables[SNMPCredential::getTable()] = [
@@ -9168,19 +9441,19 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'id' => 1,
                 'name' => 'Public community v1',
                 'snmpversion' => 1,
-                'community' => 'public'
+                'community' => 'public',
             ],
             [
                 'id' => 2,
                 'name' => 'Public community v2c',
                 'snmpversion' => 2,
-                'community' => 'public'
-            ]
+                'community' => 'public',
+            ],
         ];
 
         // Test environment data
-        if ($is_testing) {
-            $root_entity = array_filter($tables['glpi_entities'], static fn ($e) => $e['id'] === 0);
+        if ($add_e2e_data) {
+            $root_entity = array_filter($tables['glpi_entities'], static fn($e) => $e['id'] === 0);
             $root_entity = current($root_entity);
 
             // Main E2E test entity
@@ -9214,7 +9487,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             $tables['glpi_entities'][] = $e2e_subentity2;
 
             // New e2e super-admin user (login: e2e_tests, password: glpi)
-            $default_glpi_user = array_filter($tables['glpi_users'], static fn ($u) => $u['id'] === self::USER_GLPI);
+            $default_glpi_user = array_filter($tables['glpi_users'], static fn($u) => $u['id'] === self::USER_GLPI);
             $e2e_user = array_shift($default_glpi_user);
             $e2e_user = array_replace($e2e_user, [
                 'id' => 7,
@@ -9281,7 +9554,29 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_recursive' => 1,
                 'is_dynamic' => 0,
             ];
+
+            $tables['glpi_oauthclients'][] = [
+                'name' => 'Test E2E OAuth Client',
+                'redirect_uri' => json_encode(["/api.php/oauth2/redirection"]),
+                'grants' => json_encode(['authorization_code']),
+                'scopes' => json_encode(['api', 'user']),
+                'is_active' => 1,
+                'is_confidential' => 1,
+                'identifier' => '9246d35072ff62193330003a8106d947fafe5ac036d11a51ebc7ca11b9bc135e',
+                'secret' => (new GLPIKey())->encrypt('d2c4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1'),
+            ];
         }
+
+        // initial validation steps
+        $tables[ValidationStep::getTable()][] = [
+            'id' => 1,
+            'name' => CommonITILValidation::getTypeName(1),
+            'minimal_required_validation_percent' => 100,
+            'is_default' => 1,
+            'date_creation' => date('Y-m-d H:i:s'),
+            'date_mod' => date('Y-m-d H:i:s'),
+            'comment' => '',
+        ];
 
         return $tables;
     }

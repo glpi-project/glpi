@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,21 +34,23 @@
 
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
-use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryField;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryFieldStrategy;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
+use Glpi\Form\QuestionType\QuestionTypeItemDropdownExtraDataConfig;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use ITILCategory;
+use Override;
 use Ticket;
 use TicketTemplate;
 
-final class ITILCategoryFieldTest extends DbTestCase
+include_once __DIR__ . '/../../../../../abstracts/AbstractDestinationFieldTest.php';
+
+final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
 {
     use FormTesterTrait;
 
@@ -148,11 +149,11 @@ final class ITILCategoryFieldTest extends DbTestCase
             answers: [
                 "ITILCategory 1" => [
                     'itemtype' => ITILCategory::getType(),
-                    'items_id' => $itilcategories[0]->getID()
+                    'items_id' => $itilcategories[0]->getID(),
                 ],
                 "ITILCategory 2" => [
                     'itemtype' => ITILCategory::getType(),
-                    'items_id' => $itilcategories[1]->getID()
+                    'items_id' => $itilcategories[1]->getID(),
                 ],
             ],
             expected_itilcategory: $itilcategories[0]->getID()
@@ -168,11 +169,11 @@ final class ITILCategoryFieldTest extends DbTestCase
             answers: [
                 "ITILCategory 1" => [
                     'itemtype' => ITILCategory::getType(),
-                    'items_id' => $itilcategories[0]->getID()
+                    'items_id' => $itilcategories[0]->getID(),
                 ],
                 "ITILCategory 2" => [
                     'itemtype' => ITILCategory::getType(),
-                    'items_id' => $itilcategories[1]->getID()
+                    'items_id' => $itilcategories[1]->getID(),
                 ],
             ],
             expected_itilcategory: $itilcategories[1]->getID()
@@ -198,11 +199,11 @@ final class ITILCategoryFieldTest extends DbTestCase
             answers: [
                 "ITILCategory 1" => [
                     'itemtype' => ITILCategory::getType(),
-                    'items_id' => $itilcategories[0]->getID()
+                    'items_id' => $itilcategories[0]->getID(),
                 ],
                 "ITILCategory 2" => [
                     'itemtype' => ITILCategory::getType(),
-                    'items_id' => $itilcategories[1]->getID()
+                    'items_id' => $itilcategories[1]->getID(),
                 ],
             ],
             expected_itilcategory: $itilcategories[1]->getID()
@@ -215,7 +216,7 @@ final class ITILCategoryFieldTest extends DbTestCase
             answers: [
                 "ITILCategory 1" => [
                     'itemtype' => ITILCategory::getType(),
-                    'items_id' => $itilcategories[0]->getID()
+                    'items_id' => $itilcategories[0]->getID(),
                 ],
             ],
             expected_itilcategory: $itilcategories[0]->getID()
@@ -228,7 +229,7 @@ final class ITILCategoryFieldTest extends DbTestCase
             answers: [
                 "ITILCategory 2" => [
                     'itemtype' => ITILCategory::getType(),
-                    'items_id' => $itilcategories[1]->getID()
+                    'items_id' => $itilcategories[1]->getID(),
                 ],
             ],
             expected_itilcategory: $itilcategories[1]->getID()
@@ -241,6 +242,67 @@ final class ITILCategoryFieldTest extends DbTestCase
             answers: [],
             expected_itilcategory: 0
         );
+    }
+
+    #[Override]
+    public static function provideConvertFieldConfigFromFormCreator(): iterable
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        yield 'Category from template or none' => [
+            'field_key'     => ITILCategoryField::getKey(),
+            'fields_to_set' => [
+                'category_rule' => 1, // PluginFormcreatorAbstractItilTarget::CATEGORY_RULE_NONE
+            ],
+            'field_config' => fn($migration, $form) => (new ITILCategoryField())->getDefaultConfig($form),
+        ];
+
+        // Start a transaction to rollback changes
+        $DB->beginTransaction();
+        try {
+            $itilcategory_id = (new ITILCategory())->add([
+                'name' => 'Test ITILCategory for specific value',
+            ]);
+            yield 'Specific category' => [
+                'field_key'     => ITILCategoryField::getKey(),
+                'fields_to_set' => [
+                    'category_rule'     => 2, // PluginFormcreatorAbstractItilTarget::CATEGORY_RULE_SPECIFIC
+                    'category_question' => $itilcategory_id,
+                ],
+                'field_config' => new ITILCategoryFieldConfig(
+                    strategy: ITILCategoryFieldStrategy::SPECIFIC_VALUE,
+                    specific_itilcategory_id: $itilcategory_id
+                ),
+            ];
+        } finally {
+            $DB->rollback();
+        }
+
+        yield 'Equals to the answer to the question' => [
+            'field_key'     => ITILCategoryField::getKey(),
+            'fields_to_set' => [
+                'category_rule'     => 3, // PluginFormcreatorAbstractItilTarget::CATEGORY_RULE_ANSWER
+                'category_question' => 72,
+            ],
+            'field_config' => fn($migration, $form) => new ITILCategoryFieldConfig(
+                strategy: ITILCategoryFieldStrategy::SPECIFIC_ANSWER,
+                specific_question_id: $migration->getMappedItemTarget(
+                    'PluginFormcreatorQuestion',
+                    72
+                )['items_id'] ?? throw new \Exception("Question not found")
+            ),
+        ];
+
+        yield 'Last valid answer' => [
+            'field_key'     => ITILCategoryField::getKey(),
+            'fields_to_set' => [
+                'category_rule' => 4, // PluginFormcreatorAbstractItilTarget::CATEGORY_RULE_LAST_ANSWER
+            ],
+            'field_config' => new ITILCategoryFieldConfig(
+                ITILCategoryFieldStrategy::LAST_VALID_ANSWER
+            ),
+        ];
     }
 
     private function sendFormAndAssertTicketCategory(
@@ -292,17 +354,13 @@ final class ITILCategoryFieldTest extends DbTestCase
     {
         $this->login();
 
+        $extra_data_config = (new QuestionTypeItemDropdownExtraDataConfig(
+            itemtype: ITILCategory::getType(),
+        ));
+
         $builder = new FormBuilder();
-        $builder->addQuestion("ITILCategory 1", QuestionTypeItemDropdown::class, 0, json_encode([
-            'itemtype' => ITILCategory::class,
-        ]));
-        $builder->addQuestion("ITILCategory 2", QuestionTypeItemDropdown::class, 0, json_encode([
-            'itemtype' => ITILCategory::class,
-        ]));
-        $builder->addDestination(
-            FormDestinationTicket::class,
-            "My ticket",
-        );
+        $builder->addQuestion("ITILCategory 1", QuestionTypeItemDropdown::class, 0, json_encode($extra_data_config));
+        $builder->addQuestion("ITILCategory 2", QuestionTypeItemDropdown::class, 0, json_encode($extra_data_config));
         return $this->createForm($builder);
     }
 }

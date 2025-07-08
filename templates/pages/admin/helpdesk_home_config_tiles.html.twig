@@ -1,0 +1,112 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set editable = editable|default(false) %}
+{% for tile in tiles %}
+    <section
+        class="col-12 col-lg-6 col-xl-4 d-flex-soft"
+        aria-label="{{ tile.getTitle() }}"
+        {% if editable %}
+            data-glpi-draggable-item
+            data-glpi-helpdesk-config-tile-container
+            data-glpi-helpdesk-config-action-show-edit-form
+            data-bs-toggle="offcanvas"
+            data-bs-target="#tile-form-offcanvas"
+        {% endif %}
+    >
+        <div
+            {% if editable %}
+                {% set item_tile_id = tiles_manager.getItemTileForTile(tile).getID() %}
+                data-glpi-helpdesk-config-tile
+                data-glpi-helpdesk-config-tile-id="{{ tile.getDatabaseId() }}"
+                data-glpi-helpdesk-config-tile-itemtype="{{ get_class(tile) }}"
+                data-glpi-helpdesk-config-item-tile-id="{{ item_tile_id }}"
+                data-glpi-helpdesk-config-tile-sortable
+            {% endif %}
+            class="card rounded my-2 flex-grow-1 {{ editable ? "cursor-pointer" : "" }}"
+        >
+            <section class="card-body">
+                <div class="d-flex">
+                    <div class="aspect-ratio-1">
+                        {{ render_illustration(tile.getIllustration(), 70) }}
+                    </div>
+                    <div class="ms-4 w-100">
+                        <div class="d-flex w-100">
+                            <h2 class="card-title mb-2">
+                                {{ tile.getTitle() }}
+                            </h2>
+
+                            {% if editable %}
+                                <i
+                                    class="ti ti-grip-horizontal cursor-grab ms-auto opacity-50"
+                                    data-glpi-helpdesk-config-tile-handle
+                                    draggable="true"
+                                ></i>
+                            {% endif %}
+                        </div>
+                        <div class="text-secondary remove-last-tinymce-margin">
+                            {{ tile.getDescription()|safe_html }}
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </section>
+{% else %}
+    {# If the content is not editable and the list is empty, we need to add
+    a empty state text as the user will not see the "Add tile" button #}
+    {% if not editable %}
+        <span class="text-muted">
+            {{ __("There are no tiles defined for this item.") }}
+        </span>
+    {% endif %}
+{% endfor %}
+
+{% if editable %}
+    <div
+        role="button"
+        aria-label="{{ __('Add tile') }}"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#tile-form-offcanvas"
+        data-glpi-helpdesk-config-action-new-tile
+        class="col-12 col-lg-6 col-xl-4 d-flex-soft opacity-80 cursor-pointer opacity-100-hover min-height-110"
+    >
+        <div class="card rounded my-2 flex-grow-1 border-dashed">
+            <div class="card-body d-flex justify-content-center">
+                <div class="d-flex align-items-center">
+                    <i class="ti ti-plus me-1"></i>
+                    <span class="fs-3">{{ __('Add tile') }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}

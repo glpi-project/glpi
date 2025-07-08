@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,7 +37,8 @@ namespace tests\units;
 use CommonDBTM;
 use Contract;
 use DbTestCase;
-use Domain_Item;
+use Location;
+use MassiveAction;
 use Notepad;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
@@ -58,48 +58,48 @@ class MassiveActionTest extends DbTestCase
                 'itemtype'     => 'Computer',
                 'items_id'     => '_test_pc01',
                 'allcount'     => 29,
-                'singlecount'  => 20
+                'singlecount'  => 20,
             ], [
                 'itemtype'     => 'Monitor',
                 'items_id'     => '_test_monitor_1',
                 'allcount'     => 24,
-                'singlecount'  => 17
+                'singlecount'  => 17,
             ], [
                 'itemtype'     => 'SoftwareLicense',
                 'items_id'     => '_test_softlic_1',
                 'allcount'     => 15,
-                'singlecount'  => 10
+                'singlecount'  => 9,
             ], [
                 'itemtype'     => 'NetworkEquipment',
                 'items_id'     => '_test_networkequipment_1',
-                'allcount'     => 22,
-                'singlecount'  => 17
+                'allcount'     => 24,
+                'singlecount'  => 17,
             ], [
                 'itemtype'     => 'Peripheral',
                 'items_id'     => '_test_peripheral_1',
-                'allcount'     => 24,
-                'singlecount'  => 18
+                'allcount'     => 26,
+                'singlecount'  => 18,
             ], [
                 'itemtype'     => 'Printer',
                 'items_id'     => '_test_printer_all',
                 'allcount'     => 25,
-                'singlecount'  => 17
+                'singlecount'  => 17,
             ], [
                 'itemtype'     => 'Phone',
                 'items_id'     => '_test_phone_1',
                 'allcount'     => 25,
-                'singlecount'  => 17
+                'singlecount'  => 17,
             ], [
                 'itemtype'     => 'Ticket',
                 'items_id'     => '_ticket01',
                 'allcount'     => 20,
-                'singlecount'  => 9
+                'singlecount'  => 9,
             ], [
                 'itemtype'     => 'Profile',
                 'items_id'     => 'Super-Admin',
                 'allcount'     => 3,
-                'singlecount'  => 2
-            ]
+                'singlecount'  => 2,
+            ],
         ];
     }
 
@@ -112,9 +112,9 @@ class MassiveActionTest extends DbTestCase
             [
                 'item'            => [
                     $itemtype   => [
-                        $items_id => 1
-                    ]
-                ]
+                        $items_id => 1,
+                    ],
+                ],
             ],
             [],
             'initial'
@@ -129,9 +129,9 @@ class MassiveActionTest extends DbTestCase
             [
                 'item'   => [
                     $itemtype   => [
-                        $items_id => 1
-                    ]
-                ]
+                        $items_id => 1,
+                    ],
+                ],
             ],
             [],
             'initial',
@@ -163,6 +163,7 @@ class MassiveActionTest extends DbTestCase
             ->getMock();
 
         // Mock needed methods
+        $ma->POST = $input;
         $ma->method('getAction')->willReturn($action_code);
         $ma->method('addMessage')->willReturn(null);
         $ma->method('getInput')->willReturn($input);
@@ -225,7 +226,7 @@ class MassiveActionTest extends DbTestCase
         if ($has_right) {
             $this->login();
             $_SESSION['glpiactiveentities'] = [
-                $item->getEntityID()
+                $item->getEntityID(),
             ];
         }
 
@@ -244,7 +245,7 @@ class MassiveActionTest extends DbTestCase
                 'comment' => $base_comment,
             ]);
             $this->assertTrue($update);
-        } else if (!$itemtype_is_compatible) {
+        } elseif (!$itemtype_is_compatible) {
             // Itemtype incompatible, the action won't run on any items
             $expected_ok = 0;
             $expected_ko = 0;
@@ -266,7 +267,7 @@ class MassiveActionTest extends DbTestCase
 
         // If the item was modified, check the new comment value
         if ($itemtype_is_compatible && $has_right) {
-           // Refresh data
+            // Refresh data
             $this->assertTrue($item->getFromDB($item->fields['id']));
             $this->assertSame(
                 "$base_comment\n\n$amendment",
@@ -304,7 +305,7 @@ class MassiveActionTest extends DbTestCase
         $note_search = [
             'items_id' => $item->fields['id'],
             'itemtype' => $item->getType(),
-            'content'  => $new_note_content
+            'content'  => $new_note_content,
         ];
 
         if ($has_right) {
@@ -314,7 +315,7 @@ class MassiveActionTest extends DbTestCase
         // Check expected rights
         $this->assertSame(
             $has_right,
-            (bool)Session::haveRight($item::$rightname, UPDATENOTE)
+            (bool) Session::haveRight($item::$rightname, UPDATENOTE)
         );
 
         if ($has_right) {
@@ -352,31 +353,31 @@ class MassiveActionTest extends DbTestCase
     {
         return [
             [
-            // Expected failure: wrong itemtype
+                // Expected failure: wrong itemtype
                 'item'      => getItemByTypeName("Computer", "_test_pc01"),
                 'input'     => [],
                 'has_right' => false,
             ],
             [
-            // Expected failure: missing rights
+                // Expected failure: missing rights
                 'item'      => getItemByTypeName("Ticket", "_ticket01"),
                 'input'     => [],
                 'has_right' => false,
             ],
             [
-            // Expected failure: input is empty
+                // Expected failure: input is empty
                 'item'      => getItemByTypeName("Ticket", "_ticket01"),
                 'input'     => [],
                 'has_right' => true,
             ],
             [
-            // Expected failure: input is invalid
+                // Expected failure: input is invalid
                 'item'      => getItemByTypeName("Ticket", "_ticket01"),
                 'input'     => ['problems_id' => -1],
                 'has_right' => true,
             ],
             [
-            // Should work
+                // Should work
                 'item'      => getItemByTypeName("Ticket", "_ticket01"),
                 'input'     => ['problems_id' => 1],
                 'has_right' => true,
@@ -403,7 +404,7 @@ class MassiveActionTest extends DbTestCase
         // Check rights set up was successful
         $this->assertSame(
             $has_right,
-            (bool)Session::haveRight(Problem::$rightname, UPDATE)
+            (bool) Session::haveRight(Problem::$rightname, UPDATE)
         );
 
         // If input is valid, make sure we have a matching problem
@@ -440,38 +441,38 @@ class MassiveActionTest extends DbTestCase
         $ticket = new Ticket();
         $id = $ticket->add([
             'name'    => 'test',
-            'content' => 'test'
+            'content' => 'test',
         ]);
         $ticket->getFromDB($id);
 
         return [
             [
-            // Expected failure: wrong itemtype
+                // Expected failure: wrong itemtype
                 'item'        => getItemByTypeName("Computer", "_test_pc01"),
                 'input'       => [],
                 'has_right'   => false,
                 'should_work' => false,
             ],
             [
-            // Expected failure: missing rights
+                // Expected failure: missing rights
                 'item'        => $ticket,
                 'input'       => [],
                 'has_right'   => false,
                 'should_work' => false,
             ],
             [
-            // Expected failure: input is empty
+                // Expected failure: input is empty
                 'item'        => $ticket,
                 'input'       => [],
                 'has_right'   => true,
                 'should_work' => false,
             ],
             [
-            // Should work
+                // Should work
                 'item'        => $ticket,
                 'input'       => [
                     'solutiontypes_id' => 0,
-                    'content'          => "Solution"
+                    'content'          => "Solution",
                 ],
                 'has_right'   => true,
                 'should_work' => true,
@@ -506,7 +507,7 @@ class MassiveActionTest extends DbTestCase
             // Check rights set up was successful
             $this->assertSame(
                 $has_right,
-                (bool)Session::haveRight(Ticket::$rightname, UPDATE)
+                (bool) Session::haveRight(Ticket::$rightname, UPDATE)
             );
 
             // Update expectation: this item should be OK
@@ -549,28 +550,28 @@ class MassiveActionTest extends DbTestCase
 
         return [
             [
-            // Expected failure: wrong itemtype
+                // Expected failure: wrong itemtype
                 'item'        => getItemByTypeName("Computer", "_test_pc01"),
                 'input'       => [],
                 'has_right'   => false,
                 'should_work' => false,
             ],
             [
-            // Expected failure: missing rights
+                // Expected failure: missing rights
                 'item'        => $ticket,
                 'input'       => [],
                 'has_right'   => false,
                 'should_work' => false,
             ],
             [
-            // Expected failure: input is empty
+                // Expected failure: input is empty
                 'item'        => $ticket,
                 'input'       => [],
                 'has_right'   => true,
                 'should_work' => false,
             ],
             [
-            // Should work
+                // Should work
                 'item'        => $ticket,
                 'input'       => [
                     'contracts_id' => $contract_id,
@@ -606,7 +607,7 @@ class MassiveActionTest extends DbTestCase
             // Check rights set up was successful
             $this->assertSame(
                 $has_right,
-                (bool)Session::haveRight(Ticket::$rightname, UPDATE)
+                (bool) Session::haveRight(Ticket::$rightname, UPDATE)
             );
 
             // Update expectation: this item should be OK
@@ -644,7 +645,7 @@ class MassiveActionTest extends DbTestCase
         $this->assertCount(
             0,
             (new UserEmail())->find([
-                'users_id' => $users_ids
+                'users_id' => $users_ids,
             ])
         );
 
@@ -662,7 +663,7 @@ class MassiveActionTest extends DbTestCase
         $this->assertCount(
             3,
             (new UserEmail())->find([
-                'users_id' => $users_ids
+                'users_id' => $users_ids,
             ])
         );
 
@@ -682,7 +683,7 @@ class MassiveActionTest extends DbTestCase
         $this->assertCount(
             0,
             (new UserEmail())->find([
-                'users_id' => $users_ids
+                'users_id' => $users_ids,
             ])
         );
     }
@@ -740,7 +741,7 @@ class MassiveActionTest extends DbTestCase
         );
 
 
-        $this->assertTrue(boolval(Session::haveRight(Domain_Item::$rightname, UPDATE)));
+        $this->assertTrue(boolval(Session::haveRight(\Domain::$rightname, UPDATE)));
 
         // Execute action to link Computer and Manual Domain
         $this->processMassiveActionsForOneItemtype(
@@ -839,5 +840,201 @@ class MassiveActionTest extends DbTestCase
             'is_deleted'            => true,
         ]);
         $this->assertCount(1, $rows);
+    }
+
+    public function testSaveSearchSpecificMassiveActionProvider()
+    {
+        $this->login();
+
+        $entity = getItemByTypeName('Entity', '_test_root_entity', true);
+        $uid = getItemByTypeName('User', TU_USER, true);
+        $bk = new \SavedSearch();
+        $bku = new \SavedSearch_User();
+        $this->assertTrue(
+            (bool) $bk->add([
+                'name'         => 'public root recursive',
+                'type'         => 1,
+                'itemtype'     => 'Ticket',
+                'users_id'     => $uid,
+                'is_private'   => 0,
+                'entities_id'  => $entity,
+                'is_recursive' => 1,
+                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $uid,
+            ])
+        );
+
+        $this->assertTrue(
+            (bool) $bku->add([
+                'users_id'          => $uid,
+                'itemtype'          => 'Ticket',
+                'savedsearches_id'  => $bk->getID(),
+            ])
+        );
+
+        yield [
+            "action"       => "unset_default",
+            "item"         => $bk,
+            "ids"          => [$bk->getID()],
+            "input"        => $bk->input,
+            "ok"           => 1,
+            "ko"           => 0,
+            "action_class" => \SavedSearch::class,
+        ];
+
+        yield [
+            "action"       => "change_entity",
+            "item"         => $bk,
+            "ids"          => [$bk->getID()],
+            "input"        => $bk->input,
+            "ok"           => 1,
+            "ko"           => 0,
+            "action_class" => \SavedSearch::class,
+        ];
+
+        yield [
+            "action"       => "change_visibility",
+            "item"         => $bk,
+            "ids"          => [$bk->getID()],
+            "input"        => $bk->input,
+            "ok"           => 1,
+            "ko"           => 0,
+            "action_class" => \SavedSearch::class,
+        ];
+    }
+
+    public function testaveSearchSpecificmassiveAction()
+    {
+        $provider = $this->testSaveSearchSpecificMassiveActionProvider();
+        foreach ($provider as $row) {
+            $this->processMassiveActionsForOneItemtype(
+                $row["action"],
+                $row["item"],
+                $row["ids"],
+                $row["input"],
+                $row["ok"],
+                $row["ko"],
+                $row["action_class"],
+            );
+        }
+    }
+
+    public function testProcessMassiveActionsForOneItemtype_updateDropdownOrCommonDBConnexity()
+    {
+        $this->login();
+
+        $provider = $this->updateDropdownOrCommonDBConnexityProvider();
+        foreach ($provider as $row) {
+            $item = $row['item'];
+            $input = $row['input'];
+            $has_right = $row['has_right'];
+            $should_work = $row['should_work'];
+
+
+            $old_session = $_SESSION['glpiactiveprofile'][Ticket::$rightname] ?? 0;
+            if ($has_right) {
+                $_SESSION['glpiactiveprofile'][Ticket::$rightname] = UPDATE;
+            } else {
+                $_SESSION['glpiactiveprofile'][Ticket::$rightname] = 0;
+            }
+
+
+
+            // Check rights set up was successful
+            $this->assertSame(
+                $has_right,
+                (bool) Session::haveRight(Ticket::$rightname, UPDATE)
+            );
+
+            // Default expectation: can't run
+            $expected_ok = 0;
+            $expected_ko = 0;
+
+            // Update expectation: this item should be OK
+            if ($should_work) {
+                $expected_ok = 1;
+            } else {
+                $expected_ko = 1;
+            }
+
+            // Execute action
+            $this->processMassiveActionsForOneItemtype(
+                "update",
+                $item,
+                [$item->fields['id']],
+                $input,
+                $expected_ok,
+                $expected_ko,
+                MassiveAction::class
+            );
+
+            // Reset rights
+            $_SESSION['glpiactiveprofile'][Ticket::$rightname] = $old_session;
+        }
+    }
+
+    protected function updateDropdownOrCommonDBConnexityProvider()
+    {
+        $ticket = new Ticket();
+        $location = new Location();
+        $id = $ticket->add([
+            'name'          => 'test',
+            'content'       => 'test',
+            'entities_id'   => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+        $ticket->getFromDB($id);
+        $this->assertGreaterThan(0, $id);
+        $this->assertSame($ticket->fields['entities_id'], getItemByTypeName('Entity', '_test_root_entity', true));
+
+        $this->createItem(
+            \Entity::class,
+            [
+                'name'          => '_test_root_subentity',
+                'entities_id'   => getItemByTypeName('Entity', '_test_root_entity', true),
+            ]
+        );
+
+        $location = new Location();
+        $location_id_1 = $location->add([
+            'name'        => 'test',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+        $this->assertGreaterThan(0, $location_id_1);
+
+        $location_id_2 = $location->add([
+            'name'        => 'test_sub',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_subentity', true),
+        ]);
+        $this->assertGreaterThan(0, $location_id_2);
+
+        return [
+            [
+                // Should work
+                'item'        => $ticket,
+                'input'       => [
+                    'locations_id' => $location_id_1,
+                    'search_options' =>
+                    [
+                        $ticket->getType() => 83,
+                    ],
+                    'field' => 'locations_id',
+                ],
+                'has_right'   => true,
+                'should_work' => true,
+            ],
+            [
+                // Should not work
+                'item'        => $ticket,
+                'input'       => [
+                    'locations_id' => $location_id_2,
+                    'search_options' =>
+                    [
+                        $ticket->getType() => 83,
+                    ],
+                    'field' => 'locations_id',
+                ],
+                'has_right'   => true,
+                'should_work' => false, //not same entity
+            ],
+        ];
     }
 }

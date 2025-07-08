@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,16 +33,17 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryUnion;
+
 /**
  * CommonItilObject_Item Class
  *
  * Relation between CommonItilObject_Item and Items
  */
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Asset\Asset_PeripheralAsset;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryUnion;
-
 abstract class CommonItilObject_Item extends CommonDBRelation
 {
     public static function getIcon()
@@ -52,7 +53,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
     public function getForbiddenStandardMassiveAction()
     {
-
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
         return $forbidden;
@@ -60,7 +60,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
     public function canCreateItem(): bool
     {
-        $obj = new static::$itemtype_1();
+        $obj = getItemForTable(static::$itemtype_1);
 
         if ($obj->canUpdateItem()) {
             return true;
@@ -69,10 +69,26 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         return parent::canCreateItem();
     }
 
+    private function updateItemTCO(): void
+    {
+        //TODO Costs for changes and problems should probably affect TCO too but there should also be a way to handle costs affecting multiple assets
+        //Example, A ticket with a cost of $400 with two computers shouldn't add $400 cost of ownership to both.
+        $cost_class = match (static::$itemtype_1) {
+            'Ticket' => TicketCost::class,
+            //'Change' => ChangeCost::class,
+            //'Problem' => ProblemCost::class,
+            default => null
+        };
+        if ($cost_class) {
+            $cost_obj = new $cost_class();
+            $cost_obj->updateTCOItem($this->fields['itemtype'], $this->fields['items_id']);
+        }
+    }
+
     public function post_addItem()
     {
-
-        $obj = new static::$itemtype_1();
+        $this->updateItemTCO();
+        $obj = getItemForTable(static::$itemtype_1);
         $input  = [
             'id'            => $this->fields[static::$items_id_1],
             'date_mod'      => $_SESSION["glpi_currenttime"],
@@ -91,8 +107,8 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
     public function post_purgeItem()
     {
-
-        $obj = new static::$itemtype_1();
+        $this->updateItemTCO();
+        $obj = getItemForItemtype(static::$itemtype_1);
         $input = [
             'id'            => $this->fields[static::$items_id_1],
             'date_mod'      => $_SESSION["glpi_currenttime"],
@@ -106,69 +122,81 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         parent::post_purgeItem();
     }
 
-
     public function prepareInputForAdd($input)
     {
         // Avoid duplicate entry
         if (
             countElementsInTable(
-                $this->getTable(),
+                static::getTable(),
                 [
-                    static::$items_id_1 => $input[static::$items_id_1],
-                    'itemtype'   => $input['itemtype'],
-                    'items_id'   => $input['items_id']
+                    'WHERE' => [
+                        static::$items_id_1 => $input[static::$items_id_1],
+                        static::$itemtype_2   => $input[static::$itemtype_2],
+                        static::$items_id_2   => $input[static::$items_id_2],
+                    ],
+                    'LIMIT' => 1,
                 ]
             ) > 0
         ) {
             return false;
         }
 
-        return parent::prepareInputForAdd($input);
-    }
-
-    /**
-     * validate the object type is align with itemtype_1
-     *
-     * @param $obj  object holding the item
-     *     *
-     * @return bool
-     **/
-    public static function validateObjectType($obj)
-    {
-        if (get_class($obj) != static::$itemtype_1) {
-            trigger_error(
-                sprintf(__('object from %1$s instead of %2$s'), get_class($obj), static::$itemtype_1),
-                E_USER_WARNING
-            );
-            return false;
+        if (!is_subclass_of(static::$itemtype_1, CommonITILObject::class)) {
+            return parent::prepareInputForAdd($input);
         }
-        return true;
+
+        /** @var CommonITILObject $itil */
+        $itil = new static::$itemtype_1();
+        $item = getItemForItemtype($input["itemtype"]);
+
+        // Process rules based on linked item location if needed
+        if (
+            $itil->getFromDB($input[static::$items_id_1])
+            && empty($itil->fields['locations_id'])
+            && !$itil->isClosed() // Do not allow rules to modify a closed ITIL item
+            && $item->getFromDB($input["items_id"])
+            && $item->maybeLocated()
+        ) {
+            $itil->fields['_locations_id_of_item'] = $item->fields['locations_id'];
+
+            $rules = $itil::getRuleCollectionClassInstance((int) $itil->getEntityID());
+            $itil->fields = $rules->processAllRules(
+                $itil->fields,
+                $itil->fields,
+                ['recursive' => true]
+            );
+            unset($itil->fields['_locations_id_of_item']);
+            // Update only the location field
+            $itil->updateInDB(['locations_id']);
+        }
+
+        return parent::prepareInputForAdd($input);
     }
 
     /**
      * Print the HTML ajax associated item add
      *
-     * @param CommonDBTM $obj  object holding the item
-     * @param array $options   array of possible options:
+     * @param CommonITILObject|TicketRecurrent $obj  object holding the item
+     * @param array $options
      *    - id                  : ID of the object holding the items
      *    - _users_id_requester : ID of the requester user
      *    - items_id            : array of elements (itemtype => array(id1, id2, id3, ...))
      *
-     * @return void
+     * @return void|false
      */
-    protected static function displayItemAddForm(CommonDBTM $obj, $options = [])
+    protected static function displayItemAddForm(CommonITILObject|TicketRecurrent $obj, array $options = [])
     {
-        if (!static::validateObjectType($obj)) {
+        if (!($obj instanceof static::$itemtype_1)) {
             return false;
         }
 
         $params = [
-            'id'                  => (isset($obj->fields['id']) && $obj->fields['id'] != '') ? $obj->fields['id'] : 0,
-            'entities_id'         => (isset($obj->fields['entities_id']) && is_numeric($obj->fields['entities_id']) ? $obj->fields['entities_id'] : Session::getActiveEntity()),
+            'id'                  => $obj->getID(),
+            'entities_id'         => $obj->getEntityID(),
             '_users_id_requester' => 0,
             'items_id'            => [],
             'itemtype'            => '',
-            '_canupdate'          => false
+            '_canupdate'          => false,
         ];
 
         foreach ($options as $key => $val) {
@@ -211,11 +239,11 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             'all_items_dropdown' => '',
             'items_to_add'       => [],
             'params'             => $params,
-            'opt'                => []
+            'opt'                => [],
         ];
 
-        $class_template = get_class($obj) . "Template";
-        if (class_exists($class_template)) {
+        $class_template = $obj::class . "Template";
+        if (is_a($class_template, ITILTemplate::class, true)) {
             $class_template_lower = '_' . strtolower($class_template);
             // Get ITIL object template
             $tt = new $class_template($class_template);
@@ -224,7 +252,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 if (isset($tt->fields['id'])) {
                     $twig_params['opt']['templates_id'] = $tt->fields['id'];
                 }
-            } else if (isset($options['templates_id'])) {
+            } elseif (isset($options['templates_id'])) {
                 $tt->getFromDBWithData($options['templates_id']);
                 if (isset($tt->fields['id'])) {
                     $twig_params['opt']['templates_id'] = $tt->fields['id'];
@@ -237,7 +265,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             $p = [
                 'used'       => $params['items_id'],
                 'rand'       => $rand,
-                static::$items_id_1 => $params['id']
+                static::$items_id_1 => $params['id'],
             ];
             // My items
             if ($params['_users_id_requester'] > 0) {
@@ -273,7 +301,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                         [
                             'rand'      => $rand,
                             'delete'    => $delete,
-                            'visible'   => ($count <= 5)
+                            'visible'   => ($count <= 5),
                         ]
                     );
                 }
@@ -292,10 +320,10 @@ abstract class CommonItilObject_Item extends CommonDBRelation
     /**
      * Print the HTML ajax associated item add
      *
-     * @param $object_id  object id from item_ticket but it seems to be useless UNUSED
-     * @param $itemtype   type of the item t show
-     * @param $items_id   item id
-     * @param $options   array of possible options:
+     * @param int $object_id  object id from item_ticket but it seems to be useless UNUSED
+     * @param class-string<CommonDBTM> $itemtype   type of the item t show
+     * @param int $items_id   item id
+     * @param array $options   array of possible options:
      *    - id                  : ID of the object holding the items
      *    - _users_id_requester : ID of the requester user
      *    - items_id            : array of elements (itemtype => array(id1, id2, id3, ...))
@@ -308,7 +336,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             'rand'      => mt_rand(),
             'delete'    => true,
             'visible'   => true,
-            'kblink'    => true
+            'kblink'    => true,
         ];
 
         foreach ($options as $key => $val) {
@@ -324,7 +352,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 $result .= $item->getTypeName(1) . " : " . $item->getLink(['comments' => true]);
                 $result .= Html::hidden("items_id[$itemtype][$items_id]", ['value' => $items_id]);
                 if ($params['delete']) {
-                    $result .= " <i class='fas fa-times-circle pointer' onclick=\"itemAction" . $params['rand'] . "('delete', '$itemtype', '$items_id');\"></i>";
+                    $result .= " <i class='ti ti-circle-x pointer' onclick=\"itemAction" . $params['rand'] . "('delete', '$itemtype', '$items_id');\"></i>";
                 }
                 if ($params['kblink']) {
                     $result .= ' ' . $item->getKBLinks();
@@ -341,17 +369,17 @@ abstract class CommonItilObject_Item extends CommonDBRelation
     /**
      * Print the HTML array for Items linked to a ITIL object
      *
-     * @param $obj object holding the item object
+     * @param CommonITILObject|TicketRecurrent $obj
      *
      * @return bool|void
      **/
-    protected static function showForObject($obj)
+    protected static function showForObject(CommonITILObject|TicketRecurrent $obj)
     {
-        if (!static::validateObjectType($obj)) {
+        if (!($obj instanceof static::$itemtype_1)) {
             return false;
         }
 
-        $instID = (int)$obj->fields['id'];
+        $instID = (int) $obj->fields['id'];
 
         if (!$obj->can($instID, READ)) {
             return false;
@@ -374,179 +402,238 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         if ($canedit && !$is_closed) {
             $requester_id   = 0;
             if ($obj instanceof CommonITILObject) {
-                $userlink_class = new ($obj->userlinkclass)();
-                $obj_actors     = $userlink_class->getActors($obj->fields['id']);
+                $userlink_class = $obj->getActorObjectForItem(User::class);
+                $obj_actors = $userlink_class->getActors($obj->fields['id']);
                 if (
                     isset($obj_actors[CommonITILActor::REQUESTER])
-                    && (count($obj_actors[CommonITILActor::REQUESTER]) == 1)
+                    && (count($obj_actors[CommonITILActor::REQUESTER]) === 1)
                 ) {
                     $requester_id = reset($obj_actors[CommonITILActor::REQUESTER])['users_id'];
                 }
             }
 
-            echo "<div class='firstbloc'>";
-            echo "<form name='commonitilobject_item_form$rand' method='post'
-                    action='" . Toolbox::getItemTypeFormURL(static::class) . "'>";
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><th colspan='2'>" . __s('Add an item') . "</th></tr>";
-            echo "<tr class='tab_bg_1'><td>";
-            if ($requester_id > 0) {
-                static::dropdownMyDevices(
-                    $requester_id,
-                    $obj->fields["entities_id"],
-                    null,
-                    0,
-                    [static::$items_id_1 => $instID]
-                );
-            }
-            $used = static::getUsedItems($instID);
-            static::dropdownAllDevices("itemtype", null, 0, 1, $requester_id, $obj->fields["entities_id"], [static::$items_id_1 => $instID, 'used' => $used, 'rand' => $rand]);
-            echo "<span id='item_selection_information$rand'></span>";
-            echo "</td><td class='center' width='30%'>";
-            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
-            echo "<input type='hidden' name=" . static::$items_id_1 . " value='$instID'>";
-            echo "</td></tr>";
-            echo "</table>";
-            Html::closeForm();
-            echo "</div>";
+            $twig_params = [
+                'itil_object' => $obj,
+                'link_class' => static::class,
+                'requester_id' => $requester_id,
+                'btn_label' => _x('button', 'Add'),
+                'used' => static::getUsedItems($instID),
+            ];
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                {% import 'components/form/fields_macros.html.twig' as fields %}
+                {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+                {% set rand = random() %}
+                <div class="mb-3">
+                    <form method="post" action="{{ link_class|itemtype_form_path }}">
+                        <div class="d-flex w-100 flex-column">
+                            <input type="hidden" name="{{ itil_object|itemtype_foreign_key }}" value="{{ itil_object.getID() }}">
+                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                            {% if requester_id > 0 %}
+                                {% do call([link_class, 'dropdownMyDevices'], [requester_id, itil_object.getEntityID(), null, 0, {(itil_object|itemtype_foreign_key): itil_object.getID()}]) %}
+                            {% endif %}
+                            <div>
+                                {% do call([link_class, 'dropdownAllDevices'], ['itemtype', null, 0, 1, requester_id, itil_object.getEntityID(), {
+                                    (itil_object|itemtype_foreign_key): itil_object.getID(),
+                                    'used': used,
+                                    'rand': rand
+                                }]) %}
+                            </div>
+                        </div>
+                        <div class="d-flex px-3 flex-row-reverse">
+                            {{ inputs.submit('add', btn_label, 1) }}
+                        </div>
+                    </form>
+                </div>
+TWIG, $twig_params);
         }
 
-        echo "<div class='spaced'>";
-        if ($canedit && $number && !$is_closed) {
-            Html::openMassiveActionsForm('mass' . static::class . $rand);
-            $massiveactionparams = ['container' => 'mass' . static::class . $rand];
-            Html::showMassiveActions($massiveactionparams);
-        }
-        echo "<table class='tab_cadre_fixehov'>";
-        $header_begin  = "<tr>";
-        $header_top    = '';
-        $header_bottom = '';
-        $header_end    = '';
-        if ($canedit && $number && !$is_closed) {
-            $header_top    .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . static::class . $rand);
-            $header_top    .= "</th>";
-            $header_bottom .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . static::class . $rand);
-            $header_bottom .= "</th>";
-        }
-        $header_end .= "<th>" . _sn('Type', 'Types', 1) . "</th>";
-        $header_end .= "<th>" . htmlescape(Entity::getTypeName(1)) . "</th>";
-        $header_end .= "<th>" . __s('Name') . "</th>";
-        $header_end .= "<th>" . __s('Serial number') . "</th>";
-        $header_end .= "<th>" . __s('Inventory number') . "</th>";
-        $header_end .= "<th>" . __s('Knowledge base entries') . "</th>";
-        $header_end .= "<th>" . htmlescape(State::getTypeName(1)) . "</th>";
-        $header_end .= "<th>" . htmlescape(Location::getTypeName(1)) . "</th>";
-        echo "<tr>";
-        echo $header_begin . $header_top . $header_end;
-
-        $totalnb = 0;
+        $entries = [];
         foreach ($types_iterator as $row) {
             $itemtype = $row['itemtype'];
-            if (!($item = getItemForItemtype($itemtype))) {
+            if (!($item = getItemForItemtype($itemtype)) || !in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"], true)) {
                 continue;
             }
+            $typename = htmlescape($item::getTypeName(1));
 
-            if (in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
-                $iterator = static::getTypeItems($instID, $itemtype);
-                $nb = count($iterator);
-
-                $prem = true;
-                foreach ($iterator as $data) {
-                    $name = htmlescape($data["name"]);
-                    if (
-                        $_SESSION["glpiis_ids_visible"]
-                        || empty($data["name"])
-                    ) {
-                        $name = sprintf(__s('%1$s (%2$s)'), $name, $data["id"]);
-                    }
-                    if ((Session::getCurrentInterface() != 'helpdesk') && $item::canView()) {
-                        $link     = $itemtype::getFormURLWithID($data['id']);
-                        $namelink = "<a href=\"" . $link . "\">" . $name . "</a>";
-                    } else {
-                        $namelink = $name;
-                    }
-
-                    echo "<tr class='tab_bg_1'>";
-                    if ($canedit && !$is_closed) {
-                        echo "<td width='10'>";
-                        Html::showMassiveActionCheckBox(static::class, $data["linkid"]);
-                        echo "</td>";
-                    }
-                    if ($prem) {
-                        $typename = htmlescape($item->getTypeName($nb));
-                        echo "<td class='center top' rowspan='$nb'>" .
-                            (($nb > 1) ? sprintf(__s('%1$s: %2$s'), $typename, $nb) : $typename) . "</td>";
-                        $prem = false;
-                    }
-                    echo "<td class='center'>";
-                    echo Dropdown::getDropdownName("glpi_entities", $data['entity']) . "</td>";
-                    echo "<td class='center" .
-                            (isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'");
-                    echo ">" . $namelink . "</td>";
-                    echo "<td class='center'>" . (isset($data["serial"]) ?  htmlescape($data["serial"]) : "-") .
-                        "</td>";
-                    echo "<td class='center'>" .
-                        (isset($data["otherserial"]) ? htmlescape($data["otherserial"]) : "-") . "</td>";
-                    $item->getFromDB($data["id"]);
-                    echo "<td class='center'>" . $item->getKBLinks() . "</td>";
-                    echo "<td class='center'>";
-                    echo (isset($data["states_id"]) ? Dropdown::getDropdownName("glpi_states", $data['states_id']) : '') . "</td>";
-                    echo "<td class='center'>";
-                    echo (isset($data['locations_id']) ? Dropdown::getDropdownName("glpi_locations", $data['locations_id']) : '') . "</td>";
-                    echo "</tr>";
+            $iterator = static::getTypeItems($instID, $itemtype);
+            foreach ($iterator as $data) {
+                $item->getFromDB($data["id"]);
+                $entry = [
+                    'itemtype' => static::class,
+                    'id'   => $data["linkid"],
+                    'row_class' => $data['is_deleted'] ? 'table-deleted' : '',
+                    'linked_itemtype' => $typename,
+                    'serial'  => $data["serial"] ?? "-",
+                    'otherserial' => $data["otherserial"] ?? "-",
+                    'entity' => Dropdown::getDropdownName("glpi_entities", $data['entity']),
+                    'state' => Dropdown::getDropdownName("glpi_states", $data['states_id']),
+                    'location' => Dropdown::getDropdownName("glpi_locations", $data['locations_id']),
+                    'kb' => $item->getKBLinks(),
+                    'showmassiveactions' => $canedit && !$is_closed,
+                ];
+                $name = htmlescape($data["name"]);
+                if (
+                    $_SESSION["glpiis_ids_visible"]
+                    || empty($data["name"])
+                ) {
+                    $name = sprintf(__s('%1$s (%2$s)'), $name, $data["id"]);
                 }
-                $totalnb += $nb;
+                if ((Session::getCurrentInterface() !== 'helpdesk') && $item::canView()) {
+                    $link     = $itemtype::getFormURLWithID($data['id']);
+                    $namelink = "<a href=\"" . $link . "\">" . $name . "</a>";
+                } else {
+                    $namelink = $name;
+                }
+                $entry['name'] = $namelink;
+                $entries[] = $entry;
             }
         }
 
-        if ($number) {
-            echo $header_begin . $header_bottom . $header_end;
-        }
-
-        echo "</table>";
-        if ($canedit && $number && !$is_closed) {
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-            Html::closeForm();
-        }
-        echo "</div>";
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nopager' => true,
+            'nofilter' => true,
+            'columns' => [
+                'linked_itemtype' => _n('Type', 'Types', 1),
+                'entity'          => Entity::getTypeName(1),
+                'name'            => __('Name'),
+                'serial'          => __('Serial number'),
+                'otherserial'     => __('Inventory number'),
+                'kb'              => __('Knowledge base entries'),
+                'state'           => __('Status'),
+                'location'        => Location::getTypeName(1),
+            ],
+            'formatters' => [
+                'name' => 'raw_html',
+                'kb' => 'raw_html',
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . static::class . $rand,
+            ],
+        ]);
     }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         if (!$withtemplate) {
-            $nb = 0;
-            switch ($item->getType()) {
-                case static::$itemtype_1:
-                    if (
-                        ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] != 0)
-                        && (count($_SESSION["glpiactiveprofile"]["helpdesk_item_type"]) > 0)
-                    ) {
-                        if ($_SESSION['glpishow_count_on_tabs']) {
-                            $nb = countElementsInTable(
-                                static::getTable(),
-                                [
-                                    static::$items_id_1 => $item->getID(),
-                                    'itemtype' => $_SESSION["glpiactiveprofile"]["helpdesk_item_type"]
-                                ]
-                            );
-                        }
-                        return static::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType());
-                    }
+            if (!($item instanceof CommonDBTM)) {
+                return '';
             }
+
+            // This tab might be hidden on assets
+            if (in_array($item::class, $CFG_GLPI['asset_types'], true) && !$this->shouldDisplayTabForAsset($item)) {
+                return '';
+            }
+
+            $nb = 0;
+
+            if ($item::class === static::$itemtype_1) {
+                if ($_SESSION['glpishow_count_on_tabs']) {
+                    $nb = static::countForMainItem($item);
+                }
+                return static::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::class);
+            } elseif ($_SESSION['glpishow_count_on_tabs'] && is_subclass_of(static::$itemtype_1, CommonITILObject::class)) {
+                if (in_array($item::class, static::$itemtype_1::getTeamItemtypes(), true)) {
+                    $nb = static::countForActor($item);
+                } elseif (Session::haveRight(static::$itemtype_1::$rightname, CommonITILObject::READALL)) {
+                    $nb = static::countForItemAndLinked($item);
+                }
+            } elseif ($_SESSION['glpishow_count_on_tabs']) {
+                $nb = static::countForItem($item);
+            }
+            return static::createTabEntry(static::$itemtype_1::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }
 
+    /**
+     * Count number of ITIL objects for the provided item and other items linked to the requested item
+     * @param CommonDBTM $item
+     * @return int
+     * @see Asset_PeripheralAsset
+     * @see static::getLinkedItems()
+     */
+    public static function countForItemAndLinked(CommonDBTM $item)
+    {
+        // Direct links
+        $nb = parent::countForItem($item);
+
+        // Linked items
+        $itil_table = static::$itemtype_1::getTable();
+        $linkeditems = $item->getLinkedItems();
+        foreach ($linkeditems as $type => $ids) {
+            $type_item = getItemForItemtype($type);
+            if (!$type_item) {
+                continue;
+            }
+            // Only count valid links and non-deleted items
+            $criteria = [
+                'INNER JOIN' => [
+                    $itil_table => [
+                        'FKEY' => [
+                            static::getTable() => static::$items_id_1,
+                            $itil_table       => 'id',
+                        ],
+                    ],
+                ],
+                'WHERE' => [
+                    static::$itemtype_2 => $type,
+                    static::$items_id_2 => $ids,
+                ],
+            ];
+            if ($type_item->maybeDeleted()) {
+                $criteria['WHERE']['is_deleted'] = 0;
+            }
+            $nb += countElementsInTable(static::getTable(), $criteria);
+        }
+
+        return $nb;
+    }
+
+    /**
+     * Count number of ITIL objects for the provided actor item (user, group, etc)
+     * @param CommonDBTM $item
+     * @return int
+     */
+    protected static function countForActor(CommonDBTM $item): int
+    {
+        /** @var \DBmysql $DB **/
+        global $DB;
+
+        /** @var CommonITILObject $itil */
+        $itil = getItemForItemtype(static::$itemtype_1);
+        $link_class_prop = strtolower($item::class) . 'linkclass';
+        if (!isset($itil->{$link_class_prop})) {
+            return 0;
+        }
+        $link_table = ($itil->{$link_class_prop})::getTable();
+        $result = $DB->request([
+            'SELECT' => [
+                QueryFunction::count($itil::getForeignKeyField(), true, 'cpt'),
+            ],
+            'FROM'   => $link_table,
+            'WHERE'  => [
+                $item->getForeignKeyField()   => $item->fields['id'],
+            ],
+        ])->current();
+        return $result['cpt'] ?? 0;
+    }
+
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        switch ($item->getType()) {
-            case static::$itemtype_1:
-                static::showForObject($item);
-                break;
-            default:
-                static::showListForItem($item, $withtemplate);
-                break;
+        if ($item::class === static::$itemtype_1) {
+            static::showForObject($item);
+        } else {
+            static::showListForItem($item, $withtemplate);
         }
         return true;
     }
@@ -576,36 +663,28 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
         $criteria = static::$itemtype_1::getCommonCriteria();
         $params  = [
-            'criteria' => $options['criteria'] ?? [],
+            'criteria' => [],
+            'metacriteria' => $options['metacriteria'] ?? [
+                [
+                    'itemtype' => $item::class,
+                    'field'    => Search::getOptionNumber($item::class, 'id'),
+                    'searchtype' => 'equals',
+                    'value'    => $item->getID(),
+                    'link'     => 'AND',
+                ],
+            ],
             'reset'    => 'reset',
-            'restrict' => $options['restrict'] ?? [],
         ];
-        foreach ($options as $key => $val) {
-            $params[$key] = $val;
-        }
-        $restrict = $params['restrict'];
+        $restrict = static::$itemtype_1::getListForItemRestrict($item);
 
         $params['criteria'][0]['field']      = 12;
         $params['criteria'][0]['searchtype'] = 'equals';
         $params['criteria'][0]['value']      = 'all';
         $params['criteria'][0]['link']       = 'AND';
 
-        $params['metacriteria'][0]['itemtype']   = $item->getType();
-        $params['metacriteria'][0]['field']      = Search::getOptionNumber(
-            $item->getType(),
-            'id'
-        );
-        $params['metacriteria'][0]['searchtype'] = 'equals';
-        $params['metacriteria'][0]['value']      = $item->getID();
-        $params['metacriteria'][0]['link']       = 'AND';
-        // overide value from options
-        foreach ($options as $key => $val) {
-            $params[$key] = $val;
-        }
-
         $criteria['WHERE'] = $restrict + getEntitiesRestrictCriteria(static::$itemtype_1::getTable());
         $criteria['WHERE'][static::$itemtype_1::getTable() . ".is_deleted"] = 0;
-        $criteria['LIMIT'] = (int)$_SESSION['glpilist_limit'];
+        $criteria['LIMIT'] = (int) $_SESSION['glpilist_limit'];
         $iterator = $DB->request($criteria);
         $number = count($iterator);
 
@@ -624,58 +703,14 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             && !(!empty($withtemplate) && ($withtemplate == 2))
             && (!isset($item->fields['is_template']) || ($item->fields['is_template'] == 0))
         ) {
-            echo "<div class='firstbloc'>";
-            Html::showSimpleForm(
-                static::$itemtype_1::getFormURL(),
-                '_add_fromitem',
-                sprintf(__("New %s for this item"), static::$itemtype_1::getTypeName(0)),
-                [
-                    'itemtype' => $item->getType(),
-                    'items_id' => $item->getID()
-                ]
-            );
-            echo "</div>";
+            $linknewitil = true;
         }
 
-        echo "<div>";
-
         if ($number > 0) {
-            echo "<table class='tab_cadre_fixehov'>";
             if (Session::haveRight(static::$itemtype_1::$rightname, static::$itemtype_1::READALL)) {
-                Session::initNavigateListItems(
-                    static::$itemtype_1,
-                    //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                    sprintf(__('%1$s = %2$s'), $item->getTypeName(1), $item->getName())
-                );
-                echo "<tr class='noHover'><th colspan='$colspan'>";
-                $title = htmlescape(sprintf(__('%d linked %s'), $number, static::$itemtype_1::getTypeName($number)));
-                $link = "<a href='" . static::$itemtype_1::getSearchURL() . "?" .
-                        Toolbox::append_params($params, '&amp;') . "'>" . __s('Show all') . "</a>";
-                $title = sprintf(__s('%1$s (%2$s)'), $title, $link);
-                echo $title;
-                echo "</th></tr>";
-            } else {
-                echo "<tr><th colspan='$colspan'>" . static::$itemtype_1::getTypeName(1) . ": " .
-                    __s("You don't have right to see all") . "</th></tr>";
+                $readall = true;
             }
-        } else {
-            echo "<table class='tab_cadre_fixehov'>";
-            echo "<tr class='noHover'><th colspan='$colspan'>";
-            echo htmlescape(sprintf(__('No %s on this item'), static::$itemtype_1::getTypeName($number)));
         }
-
-        // object list
-        if ($number > 0) {
-            static::$itemtype_1::commonListHeader(Search::HTML_OUTPUT);
-
-            foreach ($iterator as $data) {
-                Session::addToNavigateListItems(static::$itemtype_1, $data["id"]);
-                static::$itemtype_1::showShort($data["id"]);
-            }
-            static::$itemtype_1::commonListHeader(Search::HTML_OUTPUT);
-        }
-
-        echo "</table></div>";
 
         // Object for linked items
         $linkeditems = $item->getLinkedItems();
@@ -695,25 +730,25 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             $criteria = static::$itemtype_1::getCommonCriteria();
             $criteria['WHERE'] = ['OR' => $restrict]
                 + getEntitiesRestrictCriteria(static::$itemtype_1::getTable());
-            $iterator = $DB->request($criteria);
-            $number = count($iterator);
-
-            echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
-            echo "<tr class='noHover'><th colspan='$colspan'>";
-            echo htmlescape(sprintf(__('%s on linked items'), static::$itemtype_1::getTypeName($number)));
-            echo "</th></tr>";
-            if ($number > 0) {
-                static::$itemtype_1::commonListHeader(Search::HTML_OUTPUT);
-                foreach ($iterator as $data) {
-                    Session::addToNavigateListItems(static::$itemtype_1, $data["id"]);
-                    static::$itemtype_1::showShort($data["id"]);
-                }
-                static::$itemtype_1::commonListHeader(Search::HTML_OUTPUT);
-            } else {
-                echo "<tr><td>" . __s('None found.') . "</td></tr>";
-            }
-            echo "</table></div>";
+            $iterator2 = $DB->request($criteria);
+            $number2 = count($iterator2);
+            $showform = true;
         } // Subquery for linked item
+
+        TemplateRenderer::getInstance()->display('components/form/item_itilobject_item_list.html.twig', [
+            'item'               => $item,
+            'linknewitil'        => $linknewitil ?? false,
+            'itemtype_1'         => static::$itemtype_1,
+            'colspan'            => $colspan,
+            'number'             => $number,
+            'number2'            => $number2 ?? 0,
+            'showform'           => $showform ?? false,
+            'readall'            => $readall ?? false,
+            'params'             => $params,
+            'html_output'        => Search::HTML_OUTPUT,
+            'iterator'           => $iterator,
+            'iterator2'          => $iterator2 ?? [],
+        ]);
     }
 
     /**
@@ -729,7 +764,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
      *
      * @return void
      **/
-    public static function dropdownMyDevices($userID = 0, $entity_restrict = -1, $itemtype = 0, $items_id = 0, $options = [])
+    public static function dropdownMyDevices($userID = 0, $entity_restrict = -1, $itemtype = '', $items_id = 0, $options = [])
     {
         /**
          * @var array $CFG_GLPI
@@ -741,7 +776,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             static::$items_id_1 => 0,
             'used'       => [],
             'multiple'   => false,
-            'rand'       => mt_rand()
+            'rand'       => mt_rand(),
         ];
 
         foreach ($options as $key => $val) {
@@ -754,7 +789,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
         $entity_restrict = Session::getMatchingActiveEntities($entity_restrict);
 
-        $rand        = $params['rand'];
+        $rand        = (int) $params['rand'];
         $already_add = $params['used'];
 
         if (
@@ -872,7 +907,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                     $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
                 }
                 $output = sprintf(__('%1$s - %2$s'), $itemtype::getTypeName(), $output);
-                if ($itemtype != 'Software') {
+                if ($itemtype !== Software::class) {
                     $output = sprintf(__('%1$s - %2$s'), $output, $data['otherserial']);
                 }
                 $my_devices[__('Connected devices')][$itemtype . "_" . $data["id"]] = $output;
@@ -911,10 +946,10 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 $criteria = [
                     'FROM'   => $itemtable,
                     'WHERE'  => [
-                        'users_id' => $userID
+                        'users_id' => $userID,
                     ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict, $item->maybeRecursive())
                     + $itemtype::getSystemSQLCriteria(),
-                    'ORDER'  => $item->getNameField()
+                    'ORDER'  => $item::getNameField(),
                 ];
 
                 if ($item->maybeDeleted()) {
@@ -963,20 +998,20 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         $iterator = $DB->request([
             'SELECT'    => [
                 'glpi_groups_users.groups_id',
-                'glpi_groups.name'
+                'glpi_groups.name',
             ],
             'FROM'      => 'glpi_groups_users',
             'LEFT JOIN' => [
                 'glpi_groups'  => [
                     'ON' => [
                         'glpi_groups_users'  => 'groups_id',
-                        'glpi_groups'        => 'id'
-                    ]
-                ]
+                        'glpi_groups'        => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
-                'glpi_groups_users.users_id'  => $userID
-            ] + getEntitiesRestrictCriteria('glpi_groups', '', $entity_restrict, true)
+                'glpi_groups_users.users_id'  => $userID,
+            ] + getEntitiesRestrictCriteria('glpi_groups', '', $entity_restrict, true),
         ]);
 
         if (count($iterator)) {
@@ -1001,19 +1036,19 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                                     $itemtable => 'id',
                                     Group_Item::getTable() => 'items_id', [
                                         'AND' => [
-                                            Group_Item::getTable() . '.itemtype' => $itemtype
-                                        ]
-                                    ]
-                                ]
-                            ]
+                                            Group_Item::getTable() . '.itemtype' => $itemtype,
+                                        ],
+                                    ],
+                                ],
+                            ],
                         ],
                         'WHERE'   => [
                             Group_Item::getTable() . '.type' => Group_Item::GROUP_TYPE_NORMAL,
-                            Group_Item::getTable() . '.groups_id' => $groups
+                            Group_Item::getTable() . '.groups_id' => $groups,
                         ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict, $item->maybeRecursive())
                         + $itemtype::getSystemSQLCriteria(),
                         'GROUPBY' => $itemtable . '.id',
-                        'ORDER'   => $item->getNameField()
+                        'ORDER'   => $item::getNameField(),
                     ];
 
                     if ($item->maybeDeleted()) {
@@ -1069,7 +1104,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                         'SELECT'          => [
                             'glpi_softwareversions.name AS version',
                             'glpi_softwares.name AS name',
-                            'glpi_softwares.id'
+                            'glpi_softwares.id',
                         ],
                         'DISTINCT'        => true,
                         'FROM'            => 'glpi_items_softwareversions',
@@ -1077,22 +1112,22 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                             'glpi_softwareversions'  => [
                                 'ON' => [
                                     'glpi_items_softwareversions' => 'softwareversions_id',
-                                    'glpi_softwareversions'       => 'id'
-                                ]
+                                    'glpi_softwareversions'       => 'id',
+                                ],
                             ],
                             'glpi_softwares'        => [
                                 'ON' => [
                                     'glpi_softwareversions' => 'softwares_id',
-                                    'glpi_softwares'        => 'id'
-                                ]
-                            ]
+                                    'glpi_softwares'        => 'id',
+                                ],
+                            ],
                         ],
                         'WHERE'        => [
                             'glpi_items_softwareversions.items_id' => $devices[$itemtype],
                             'glpi_items_softwareversions.itemtype' => $itemtype,
-                            'glpi_softwares.is_helpdesk_visible'   => 1
+                            'glpi_softwares.is_helpdesk_visible'   => 1,
                         ] + getEntitiesRestrictCriteria('glpi_softwares', '', $entity_restrict),
-                        'ORDERBY'      => 'glpi_softwares.name'
+                        'ORDERBY'      => 'glpi_softwares.name',
                     ]);
 
                     if (count($iterator)) {
@@ -1120,7 +1155,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
      * @param int $entity_restrict The entity restriction to apply. Default is -1 (no restriction).
      * @param array &$already_add Reference to an array that keeps track of already added items.
      *
-     * @return array<string, array> An array of linked items categorized by their item types.
+     * @return array<class-string<CommonDBTM>, array> An array of linked items categorized by their item types.
      */
     private static function getLinkedItemsToComputers(array $devices, mixed $entity_restrict = -1, array &$already_add = []): array
     {
@@ -1152,16 +1187,16 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                                 $itemtable  => [
                                     'ON' => [
                                         $relation_table => 'items_id_peripheral',
-                                        $itemtable      => 'id'
-                                    ]
-                                ]
+                                        $itemtable      => 'id',
+                                    ],
+                                ],
                             ],
                             'WHERE'           => [
                                 $relation_table . '.itemtype_peripheral' => $peripheral_itemtype,
                                 $relation_table . '.itemtype_asset'      => $peripheralhost_itemtype,
-                                $relation_table . '.items_id_asset'      => $devices[$peripheralhost_itemtype]
+                                $relation_table . '.items_id_asset'      => $devices[$peripheralhost_itemtype],
                             ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict),
-                            'ORDERBY'         => "$itemtable.name"
+                            'ORDERBY'         => "$itemtable.name",
                         ];
 
                         if ($item->maybeDeleted()) {
@@ -1191,7 +1226,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
     /**
      * Make a select box with all glpi items
      *
-     * @param $options array of possible options:
+     * @param array $options array of possible options:
      *    - name         : string / name of the select (default is users_id)
      *    - value
      *    - comments     : boolean / is the comments displayed near the dropdown (default true)
@@ -1216,26 +1251,21 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         /** @var \DBmysql $DB */
         global $DB;
 
-        // Default values
-        $p['name']           = 'items';
-        $p['value']          = '';
-        $p['all']            = 0;
-        $p['on_change']      = '';
-        $p['comments']       = 1;
-        $p['width']          = '';
-        $p['entity']         = -1;
-        $p['entity_sons']    = false;
-        $p['used']           = [];
-        $p['toupdate']       = '';
-        $p['rand']           = mt_rand();
-        $p['display']        = true;
-        $p['hide_if_no_elements'] = false;
-
-        if (is_array($options) && count($options)) {
-            foreach ($options as $key => $val) {
-                $p[$key] = $val;
-            }
-        }
+        $p = array_replace([
+            'name' => 'items',
+            'value' => '',
+            'all' => 0,
+            'on_change' => '',
+            'comments' => 1,
+            'width' => '',
+            'entity' => -1,
+            'entity_sons' => false,
+            'used' => [],
+            'toupdate' => '',
+            'rand' => mt_rand(),
+            'display' => true,
+            'hide_if_no_elements' => false,
+        ], $options);
 
         $itemtypes = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer'];
 
@@ -1245,15 +1275,15 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             $union->addQuery([
                 'SELECT' => [
                     'id',
-                    new QueryExpression("$type AS " . $DB->quoteName('itemtype')),
-                    "name"
+                    new QueryExpression($type, 'itemtype'),
+                    "name",
                 ],
                 'FROM'   => $table,
                 'WHERE'  => [
                     'NOT'          => ['id' => null],
                     'is_deleted'   => 0,
-                    'is_template'  => 0
-                ]
+                    'is_template'  => 0,
+                ],
             ]);
         }
 
@@ -1267,7 +1297,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
         foreach ($iterator as $data) {
             $item = getItemForItemtype($data['itemtype']);
-            $output[$data['itemtype'] . "_" . $data['id']] = $item->getTypeName() . " - " . $data['name'];
+            $output[$data['itemtype'] . "_" . $data['id']] = $item::getTypeName() . " - " . $data['name'];
         }
 
         return Dropdown::showFromArray($p['name'], $output, $p);
@@ -1276,7 +1306,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
     /**
      * Return used items for a ITIL object
      *
-     * @param integer type $obj_id ITIL object on which the used item are attached
+     * @param integer $items_id ITIL object on which the used item are attached
      *
      * @return array
      */
@@ -1302,48 +1332,39 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
+        $dropdown_params = [
+            'items_id_name'   => 'items_id',
+            'itemtype_name'   => 'item_itemtype',
+            'itemtypes'       => $CFG_GLPI['ticket_types'],
+            'checkright'      => true,
+            'entity_restrict' => $_SESSION['glpiactive_entity'],
+        ];
+        Dropdown::showSelectItemFromItemtypes($dropdown_params);
         switch ($ma->getAction()) {
             case 'add_item':
-                Dropdown::showSelectItemFromItemtypes([
-                    'items_id_name'   => 'items_id',
-                    'itemtype_name'   => 'item_itemtype',
-                    'itemtypes'       => $CFG_GLPI['ticket_types'],
-                    'checkright'      => true,
-                    'entity_restrict' => $_SESSION['glpiactive_entity']
-                ]);
-                echo "<br><input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
+                echo "<br><button type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
                 break;
-
             case 'delete_item':
                 Dropdown::showSelectItemFromItemtypes([
                     'items_id_name'   => 'items_id',
                     'itemtype_name'   => 'item_itemtype',
                     'itemtypes'       => $CFG_GLPI['ticket_types'],
                     'checkright'      => true,
-                    'entity_restrict' => $_SESSION['glpiactive_entity']
+                    'entity_restrict' => $_SESSION['glpiactive_entity'],
                 ]);
-
-                echo "<br><input type='submit' name='delete' value=\"" . __s('Delete permanently') . "\" class='btn btn-primary'>";
+                echo "<br><input type='submit' name='delete' value=\"" . _sx('button', 'Delete permanently') . "\" class='btn btn-primary'>";
                 break;
         }
     }
 
-    /**
-     * @since 0.85
-     *
-     * @see CommonDBTM::showMassiveActionsSubForm()
-     **/
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
-
         switch ($ma->getAction()) {
+            case 'delete_item':
             case 'add_item':
                 static::showFormMassiveAction($ma);
                 return true;
 
-            case 'delete_item':
-                static::showFormMassiveAction($ma);
-                return true;
         }
 
         return parent::showMassiveActionsSubForm($ma);
@@ -1360,7 +1381,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
                 $item_obj = new static();
                 foreach ($ids as $id) {
-                    if ($item->getFromDB($id) && !empty($input['items_id'])) {
+                    if (!empty($input['items_id']) && $item->getFromDB($id)) {
                         $input[static::$items_id_1] = $id;
                         $input['itemtype'] = $input['item_itemtype'];
 
@@ -1391,11 +1412,11 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 $input = $ma->getInput();
                 $item_obj = new static();
                 foreach ($ids as $id) {
-                    if ($item->getFromDB($id) && !empty($input['items_id'])) {
+                    if (!empty($input['items_id']) && $item->getFromDB($id)) {
                         $item_found = $item_obj->find([
                             static::$items_id_1   => $id,
                             'itemtype'     => $input['item_itemtype'],
-                            'items_id'     => $input['items_id']
+                            'items_id'     => $input['items_id'],
                         ]);
                         if (!empty($item_found)) {
                             $item_founds_id = array_keys($item_found);
@@ -1437,7 +1458,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
         $tab[] = [
             'id'                 => '3',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => static::$items_id_1,
             'name'               => static::$itemtype_1::getTypeName(1),
             'datatype'           => 'dropdown',
@@ -1445,28 +1466,27 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
         $tab[] = [
             'id'                 => '13',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'items_id',
             'name'               => _n('Associated element', 'Associated elements', Session::getPluralNumber()),
             'datatype'           => 'specific',
             'comments'           => true,
             'nosort'             => true,
-            'additionalfields'   => ['itemtype']
+            'additionalfields'   => ['itemtype'],
         ];
 
         $tab[] = [
             'id'                 => '131',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'itemtype',
             'name'               => _n('Associated item type', 'Associated item types', Session::getPluralNumber()),
             'datatype'           => 'itemtypename',
             'itemtype_list'      => 'ticket_types',
-            'nosort'             => true
+            'nosort'             => true,
         ];
 
         return $tab;
     }
-
 
     /**
      * Add a message on add action
@@ -1489,11 +1509,11 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             $item = getItemForItemtype($this->fields['itemtype']);
             $item->getFromDB($this->fields['items_id']);
 
-            if (($name = $item->getName()) == NOT_AVAILABLE) {
-               //TRANS: %1$s is the itemtype, %2$d is the id of the item
+            if ($item->getName() === NOT_AVAILABLE) {
+                //TRANS: %1$s is the itemtype, %2$d is the id of the item
                 $item->fields['name'] = sprintf(
                     __('%1$s - ID %2$d'),
-                    $item->getTypeName(1),
+                    $item::getTypeName(1),
                     $item->fields['id']
                 );
             }
@@ -1501,7 +1521,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             $display = (isset($this->input['_no_message_link']) ? htmlescape($item->getNameID())
                                                             : $item->getLink());
 
-           //TRANS : %s is the description of the added item
+            //TRANS : %s is the description of the added item
             Session::addMessageAfterRedirect(sprintf(
                 __s('%1$s: %2$s'),
                 __s('Item successfully added'),
@@ -1515,7 +1535,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
      **/
     public function addMessageOnPurgeAction()
     {
-
         if (!$this->maybeDeleted()) {
             return;
         }
@@ -1552,29 +1571,27 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         if (!is_array($values)) {
             $values = [$field => $values];
         }
-        switch ($field) {
-            case 'items_id':
-                if (strpos($values[$field], "_") !== false) {
-                    $item_itemtype      = explode("_", $values[$field]);
-                    $values['itemtype'] = $item_itemtype[0];
-                    $values[$field]     = $item_itemtype[1];
-                }
+        if ($field === 'items_id') {
+            if (str_contains($values[$field], "_")) {
+                $item_itemtype = explode("_", $values[$field]);
+                $values['itemtype'] = $item_itemtype[0];
+                $values[$field] = $item_itemtype[1];
+            }
 
-                if (isset($values['itemtype'])) {
-                    $table = getTableForItemType($values['itemtype']);
-                    $value = (int) $values[$field];
-                    $name = Dropdown::getDropdownName($table, $value);
-                    if (isset($options['comments']) && $options['comments']) {
-                        $comments = Dropdown::getDropdownComments($table, $value);
-                         return sprintf(
-                             __('%1$s %2$s'),
-                             htmlescape($name),
-                             Html::showToolTip($comments, ['display' => false])
-                         );
-                    }
-                    return htmlescape($name);
+            if (isset($values['itemtype'])) {
+                $table = getTableForItemType($values['itemtype']);
+                $value = (int) $values[$field];
+                $name = Dropdown::getDropdownName($table, $value);
+                if (isset($options['comments']) && $options['comments']) {
+                    $comments = Dropdown::getDropdownComments($table, $value);
+                    return sprintf(
+                        __('%1$s %2$s'),
+                        htmlescape($name),
+                        Html::showToolTip($comments, ['display' => false])
+                    );
                 }
-                break;
+                return htmlescape($name);
+            }
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
@@ -1585,16 +1602,15 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             $values = [$field => $values];
         }
         $options['display'] = false;
-        switch ($field) {
-            case 'items_id':
-                if (isset($values['itemtype']) && !empty($values['itemtype'])) {
-                    $options['name']  = $name;
-                    $options['value'] = $values[$field];
-                    return Dropdown::show($values['itemtype'], $options);
-                } else {
-                    static::dropdownAllDevices($name, 0, 0);
-                    return ' ';
-                }
+        if ($field === 'items_id') {
+            if (!empty($values['itemtype'])) {
+                $options['name'] = $name;
+                $options['value'] = $values[$field];
+                return Dropdown::show($values['itemtype'], $options);
+            } else {
+                static::dropdownAllDevices($name, 0, 0);
+                return ' ';
+            }
         }
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
@@ -1614,14 +1630,14 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         $params = [static::$items_id_1 => 0,
             'used'       => [],
             'multiple'   => 0,
-            'rand'       => mt_rand()
+            'rand'       => mt_rand(),
         ];
 
         foreach ($options as $key => $val) {
             $params[$key] = $val;
         }
 
-        $rand = $params['rand'];
+        $rand = (int) $params['rand'];
 
         if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] == 0) {
             echo "<input type='hidden' name='" . htmlescape($myname) . "' value=''>";
@@ -1630,24 +1646,18 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             echo "<div id='tracking_all_devices$rand' class='input-group mb-1'>";
             // KEEP Ticket::HELPDESK_ALL_HARDWARE because it is only define on ticket level
             if (
-                $_SESSION["glpiactiveprofile"]["helpdesk_hardware"] & pow(
-                    2,
-                    Ticket::HELPDESK_ALL_HARDWARE
-                )
+                $_SESSION["glpiactiveprofile"]["helpdesk_hardware"] & (2 ** Ticket::HELPDESK_ALL_HARDWARE)
             ) {
-               // Display a message if view my hardware
+                // Display a message if view my hardware
                 if (
                     $users_id
-                    && ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] & pow(
-                        2,
-                        Ticket::HELPDESK_MY_HARDWARE
-                    ))
+                    && ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] & (2 ** Ticket::HELPDESK_MY_HARDWARE))
                 ) {
                     echo "<span class='input-group-text'>" . __s('Or complete search') . "</span>";
                 }
 
                 $types = static::$itemtype_1::getAllTypesForHelpdesk();
-                $types = array_filter($types, static fn ($k) => $k::canView(), ARRAY_FILTER_USE_KEY);
+                $types = array_filter($types, static fn($k) => $k::canView(), ARRAY_FILTER_USE_KEY);
                 $emptylabel = __('General');
                 if ($params[static::$items_id_1] > 0) {
                     $emptylabel = Dropdown::EMPTY_VALUE;
@@ -1659,7 +1669,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                         'emptylabel'          => $emptylabel,
                         'value'               => $itemtype,
                         'rand'                => $rand,
-                        'display_emptychoice' => true
+                        'display_emptychoice' => true,
                     ]
                 );
                 $found_type = isset($types[$itemtype]);
@@ -1672,7 +1682,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                     'used'            => $params['used'],
                     'multiple'        => $params['multiple'],
                     'rand'            => $rand,
-                    'myname'          => "add_items_id"
+                    'myname'          => "add_items_id",
                 ];
 
                 if (isset($params['width'])) {
@@ -1685,9 +1695,9 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                     $CFG_GLPI["root_doc"] . "/ajax/dropdownTrackingDeviceType.php",
                     $p
                 );
-                echo "<span id='" . Html::cleanId("results_" . htmlescape($myname) . "$rand") . "'>\n";
+                echo "<span id='" . Html::cleanId("results_" . htmlescape($myname) . "$rand") . "' class='d-flex align-items-center'>\n";
 
-               // Display default value if itemtype is displayed
+                // Display default value if itemtype is displayed
                 if (
                     $found_type
                     && $itemtype
@@ -1759,27 +1769,27 @@ abstract class CommonItilObject_Item extends CommonDBRelation
     /**
      * Print the HTML ajax associated item add
      *
-     * @param CommonDBTM $object
-     * @param $options   array of possible options:
+     * @param CommonITILObject|TicketRecurrent $object
+     * @param array $options   array of possible options:
      *    - id                  : ID of the ticket
      *    - _users_id_requester : ID of the requester user
      *    - items_id            : array of elements (itemtype => array(id1, id2, id3, ...))
      *
      * @return void
      **/
-    public static function itemAddForm(CommonDBTM $object, $options = [])
+    public static function itemAddForm(CommonITILObject|TicketRecurrent $object, $options = [])
     {
-        if (!($object instanceof CommonITILObject) || !static::validateObjectType($object)) {
+        if (!($object instanceof static::$itemtype_1)) {
             return;
         }
 
-        if ($options['id'] ?? 0 > 0) {
+        if (($options['id'] ?? 0) > 0) {
             // Get requester
-            $class  = new $object->userlinkclass();
+            $class  = getItemForItemtype($object->userlinkclass);
             $actors = $class->getActors($options['id']);
             if (
                 isset($actors[CommonITILActor::REQUESTER])
-                && (count($actors[CommonITILActor::REQUESTER]) == 1)
+                && (count($actors[CommonITILActor::REQUESTER]) === 1)
             ) {
                 foreach ($actors[CommonITILActor::REQUESTER] as $user_id_single) {
                     $options['_users_id_requester'] = $user_id_single['users_id'];

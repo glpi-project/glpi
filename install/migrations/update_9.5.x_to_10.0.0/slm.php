@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -79,14 +78,14 @@ foreach (['glpi_olas', 'glpi_slas'] as $table) {
                 $table . '.calendars_id'        => new QueryExpression($DB->quoteName('glpi_slms.calendars_id')),
             ],
             [
-                new QueryExpression('true')
+                new QueryExpression('true'),
             ],
             [
                 'INNER JOIN' => [
                     'glpi_slms' => [
                         'FKEY' => [
                             $table      => 'slms_id',
-                            'glpi_slms' => 'id'
+                            'glpi_slms' => 'id',
                         ],
                     ],
                 ],

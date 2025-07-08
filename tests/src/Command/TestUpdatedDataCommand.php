@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -118,22 +117,22 @@ class TestUpdatedDataCommand extends Command
         $fresh_db = new class ($hostport, $user, $pass, $input->getOption('fresh-db')) extends DBmysql {
             public function __construct($dbhost, $dbuser, $dbpassword, $dbdefault)
             {
-                  $this->dbhost     = $dbhost;
-                  $this->dbuser     = $dbuser;
-                  $this->dbpassword = $dbpassword;
-                  $this->dbdefault  = $dbdefault;
-                  parent::__construct();
+                $this->dbhost     = $dbhost;
+                $this->dbuser     = $dbuser;
+                $this->dbpassword = $dbpassword;
+                $this->dbdefault  = $dbdefault;
+                parent::__construct();
             }
         };
 
         $updated_db = new class ($hostport, $user, $pass, $input->getOption('updated-db')) extends DBmysql {
             public function __construct($dbhost, $dbuser, $dbpassword, $dbdefault)
             {
-                  $this->dbhost     = $dbhost;
-                  $this->dbuser     = $dbuser;
-                  $this->dbpassword = $dbpassword;
-                  $this->dbdefault  = $dbdefault;
-                  parent::__construct();
+                $this->dbhost     = $dbhost;
+                $this->dbuser     = $dbuser;
+                $this->dbpassword = $dbpassword;
+                $this->dbdefault  = $dbdefault;
+                parent::__construct();
             }
         };
 
@@ -151,17 +150,9 @@ class TestUpdatedDataCommand extends Command
             $table_name = $table_data['TABLE_NAME'];
 
             $itemtype = getItemTypeForTable($table_name);
-            if (!class_exists($itemtype)) {
-                $itemtype = null;
-            }
 
             $excluded_fields = $this->getExcludedFields($table_name);
             $excluded_fields[] = $itemtype != null ? $itemtype::getIndexName() : 'id';
-
-            $itemtype = getItemTypeForTable($table_name);
-            if (!class_exists($itemtype)) {
-                $itemtype = null;
-            }
 
             $row_iterator = $fresh_db->request(['FROM' => $table_name]);
             foreach ($row_iterator as $row_data) {
@@ -172,27 +163,35 @@ class TestUpdatedDataCommand extends Command
                     continue;
                 }
 
+                // Ignore e2e oauth client
+                if ($table_name === 'glpi_oauthclients' && $row_data['name'] === 'Test E2E OAuth Client') {
+                    continue;
+                }
+
                 foreach ($row_data as $key => $value) {
                     if (in_array($key, $excluded_fields)) {
                         continue; // Ignore fields that would be subject to legitimate changes
                     }
                     $field_type = $this->getFieldType($fresh_db, $table_name, $key);
                     if ($value === null && !in_array($field_type, ['datetime', 'timestamp'], true)) {
-                       // some fields were not nullable in previous GLPI versions
+                        $empty_value = '';
+                        if (in_array($field_type, ['int', 'tinyint'])) {
+                            $empty_value = 0;
+                        }
+
+                        // some fields were not nullable in previous GLPI versions
                         $criteria[] = [
                             'OR' => [
-                                [$key => ''],
+                                [$key => $empty_value],
                                 [$key => null],
-                            ]
+                            ],
                         ];
                     } elseif ($field_type === 'json') {
-                        // Compare JSON fields using they CHAR representation
                         $criteria[$key] = new QueryExpression(
-                            sprintf(
-                                '%s = %s',
-                                QueryFunction::cast($key, 'CHAR'),
-                                $fresh_db->quoteValue($value)
-                            )
+                            QueryFunction::cast(
+                                new QueryExpression($fresh_db->quoteValue($value)),
+                                'JSON'
+                            ),
                         );
                     } else {
                         $criteria[$key] = $value;
@@ -206,9 +205,9 @@ class TestUpdatedDataCommand extends Command
                     ]
                 );
                 if ($found_in_updated->count() !== 1) {
-                     $missing = true;
-                     $msg = sprintf('Unable to find the following object in table "%s": %s', $table_name, json_encode($row_data));
-                     $output->writeln('<error>‣</error> ' . $msg, OutputInterface::VERBOSITY_QUIET);
+                    $missing = true;
+                    $msg = sprintf('Unable to find the following object in table "%s": %s', $table_name, json_encode($row_data));
+                    $output->writeln('<error>‣</error> ' . $msg, OutputInterface::VERBOSITY_QUIET);
                 }
             }
         }
@@ -238,7 +237,7 @@ class TestUpdatedDataCommand extends Command
             'glpi_notifications',
             'glpi_notifications_notificationtemplates',
             'glpi_notificationtargets',
-            'glpi_notificationtemplate',
+            'glpi_notificationtemplates',
             'glpi_notificationtemplatetranslations',
 
             // Profiles are not automatically updated
@@ -253,7 +252,7 @@ class TestUpdatedDataCommand extends Command
 
             // Dashbords may have placeholders which are only present on new installs
             'glpi_dashboards_dashboards',
-            'glpi_dashboards_items'
+            'glpi_dashboards_items',
         ];
     }
 
@@ -271,6 +270,9 @@ class TestUpdatedDataCommand extends Command
                 'comment', // Some items contains comments like 'Automatically generated by GLPI X.X.X'
                 'date_creation',
                 'date_mod',
+                // By definition, any uuid fields should always be unique
+                'uuid',
+                'forms_sections_uuid',
             ],
             'glpi_configs' => [
                 'value', // Default values may have changed

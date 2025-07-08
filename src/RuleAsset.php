@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,13 +35,13 @@
 
 class RuleAsset extends Rule
 {
-   // From Rule
+    // From Rule
     public static $rightname = 'rule_asset';
 
-    const ONADD    = 1;
-    const ONUPDATE = 2;
+    public const ONADD    = 1;
+    public const ONUPDATE = 2;
 
-    const PARENT  = 1024;
+    public const PARENT  = 1024;
 
     public function getTitle()
     {
@@ -77,7 +77,7 @@ class RuleAsset extends Rule
                 __('%1$s / %2$s'),
                 __('Add'),
                 __('Update')
-            )
+            ),
         ];
     }
 
@@ -89,6 +89,9 @@ class RuleAsset extends Rule
             return $criterias;
         }
 
+        $criterias['name']['name']              = __('Name');
+        $criterias['name']['type']              = 'text';
+
         $criterias['_auto']['name']            = __('Automatic inventory');
         $criterias['_auto']['type']            = 'yesno';
         $criterias['_auto']['table']           = '';
@@ -99,7 +102,7 @@ class RuleAsset extends Rule
         $criterias['_itemtype']['allow_condition']  = [Rule::PATTERN_IS,
             Rule::PATTERN_IS_NOT,
             Rule::REGEX_MATCH,
-            Rule::REGEX_NOT_MATCH
+            Rule::REGEX_NOT_MATCH,
         ];
 
         $criterias['states_id']['table']            = 'glpi_states';
@@ -107,7 +110,7 @@ class RuleAsset extends Rule
         $criterias['states_id']['name']             = __('Status');
         $criterias['states_id']['type']             = 'dropdown';
 
-        $criterias['comment']['name']               = __('Comments');
+        $criterias['comment']['name']               = _n('Comment', 'Comments', Session::getPluralNumber());
 
         $criterias['contact']['name']               = __('Alternate username');
 
@@ -168,7 +171,7 @@ class RuleAsset extends Rule
             Rule::PATTERN_END,
             Rule::PATTERN_IS_EMPTY,
             Rule::PATTERN_CONTAIN,
-            Rule::PATTERN_NOT_CONTAIN
+            Rule::PATTERN_NOT_CONTAIN,
         ];
 
         return $criterias;
@@ -213,7 +216,7 @@ class RuleAsset extends Rule
 
         $actions['comment']['table']            = '';
         $actions['comment']['field']            = 'comment';
-        $actions['comment']['name']             = __('Comments');
+        $actions['comment']['name']             = _n('Comment', 'Comments', Session::getPluralNumber());
         $actions['comment']['force_actions']    = ['assign', 'regex_result'];
 
         $actions['otherserial']['name']              = __('Inventory number');
@@ -244,7 +247,7 @@ class RuleAsset extends Rule
         $values = parent::getRights();
         $values[self::PARENT] = [
             'short' => __('Parent business'),
-            'long'  => __('Business rules (entity parent)')
+            'long'  => __('Business rules (entity parent)'),
         ];
 
         return $values;
@@ -264,14 +267,14 @@ class RuleAsset extends Rule
                         break;
 
                     case "append":
-                        $actions = $this->getActions();
+                        $actions = $this->getAllActions();
                         $value   = $action->fields["value"];
                         if (
                             isset($actions[$action->fields["field"]]["appendtoarray"])
                             && isset($actions[$action->fields["field"]]["appendtoarrayfield"])
                         ) {
-                             $value = $actions[$action->fields["field"]]["appendtoarray"];
-                             $value[$actions[$action->fields["field"]]["appendtoarrayfield"]]
+                            $value = $actions[$action->fields["field"]]["appendtoarray"];
+                            $value[$actions[$action->fields["field"]]["appendtoarrayfield"]]
                             = $action->fields["value"];
                         }
                         $output[$actions[$action->fields["field"]]["appendto"]][] = $value;
@@ -363,7 +366,7 @@ class RuleAsset extends Rule
                             ($action->fields['field'] == 'groups_id')
                             && isset($input['_groups_id_of_user'])
                         ) {
-                            $output['_groups_id'] = count($input['_groups_id_of_user']) > 0 ? [reset($input['_groups_id_of_user'])] : [];
+                            $output['_groups_id'] = count($input['_groups_id_of_user']) > 0 ? [(int) reset($input['_groups_id_of_user'])] : [];
                         }
                         break;
 

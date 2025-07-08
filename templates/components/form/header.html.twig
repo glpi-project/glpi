@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -37,6 +36,7 @@
 {% set nametype     = params['formtitle'] ?? item.getTypeName(1) %}
 {% set no_id        = params['noid'] ?? false %}
 {% set formoptions  = params['formoptions'] ?? '' %}
+{% set form_id      = params['form_id']|default('main-form') %}
 
 {% set entity_id = 0 %}
 {% set entity_name = '' %}
@@ -55,9 +55,10 @@
 {# - This template is called from another twig template (as opposed to from PHP and most likely a legacy form) OR is in a modal #}
 {# - Not from a twig template and it is a new item #}
 {% set include_header_content = no_header == false and ((in_twig is defined or _get._in_modal|default(false)) or (in_twig is not defined and item.isNewID(item.fields['id']))) %}
+{% set canedit = params['canedit']|default(item.canEdit(item.fields['id'])) %}
 
-{% if open_form and item.canEdit(item.fields['id']) %}
-<form id="main-form" name="asset_form" method="post" action="{{ target }}" {{ formoptions|raw }} enctype="multipart/form-data" data-submit-once>
+{% if open_form and canedit %}
+<form id="{{ form_id }}" name="asset_form" method="post" action="{{ target }}" {{ formoptions|raw }} enctype="multipart/form-data" data-submit-once>
    {% if item.isField("entities_id") %}
        <input type="hidden" name="entities_id" value="{{ entity_id }}" />
    {% endif %}
@@ -70,9 +71,8 @@
          {{ include('components/form/header_content.html.twig') }}
       {% endif %}
 
-      {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params}) }}
+      {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params ?? []}) }}
 
-      {# todo modal message #}
-      {% if app.request.request('in_modal') == true %}
+      {% if _request['_in_modal'] is defined and _request['_in_modal'] == "1" %}
       <input type="hidden" name="_no_message_link" value="1" />
       {% endif %}

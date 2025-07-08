@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -50,6 +50,15 @@ class Item_DeviceSimcard extends Item_Devices
 
     public static $undisclosedFields      = ['pin', 'pin2', 'puk', 'puk2'];
 
+    public function getCloneRelations(): array
+    {
+        $relations = parent::getCloneRelations();
+
+        $relations[] = Infocom::class;
+
+        return $relations;
+    }
+
     public static function getSpecificities($specif = '')
     {
         return [
@@ -65,7 +74,7 @@ class Item_DeviceSimcard extends Item_Devices
                 'right'      => 'devicesimcard_pinpuk',
                 'nosearch'   => true,
                 'nodisplay'  => true,
-                'protected'  => true
+                'protected'  => true,
             ],
             'pin2'            => ['long name'  => __('PIN2 code'),
                 'short name' => __('PIN2 code'),
@@ -75,7 +84,7 @@ class Item_DeviceSimcard extends Item_Devices
                 'right'      => 'devicesimcard_pinpuk',
                 'nosearch'   => true,
                 'nodisplay'  => true,
-                'protected'  => true
+                'protected'  => true,
             ],
             'puk'             => ['long name'  => __('PUK code'),
                 'short name' => __('PUK code'),
@@ -85,7 +94,7 @@ class Item_DeviceSimcard extends Item_Devices
                 'right'      => 'devicesimcard_pinpuk',
                 'nosearch'   => true,
                 'nodisplay'  => true,
-                'protected'  => true
+                'protected'  => true,
             ],
             'puk2'            => ['long name'  => __('PUK2 code'),
                 'short name' => __('PUK2 code'),
@@ -95,27 +104,27 @@ class Item_DeviceSimcard extends Item_Devices
                 'right'      => 'devicesimcard_pinpuk',
                 'nosearch'   => true,
                 'nodisplay'  => true,
-                'protected'  => true
+                'protected'  => true,
             ],
             'lines_id'        => ['long name'  => Line::getTypeName(1),
                 'short name' => Line::getTypeName(1),
                 'size'       => 20,
                 'id'         => 19,
-                'datatype'   => 'dropdown'
+                'datatype'   => 'dropdown',
             ],
             'msin'           => ['long name'  => __('Mobile Subscriber Identification Number'),
                 'short name' => __('MSIN'),
                 'size'       => 20,
                 'id'         => 20,
                 'datatype'   => 'string',
-                'tooltip'    => __('MSIN is the last 8 or 10 digits of IMSI')
+                'tooltip'    => __('MSIN is the last 8 or 10 digits of IMSI'),
             ],
             'users_id'        => ['long name'  => User::getTypeName(1),
                 'short name' => User::getTypeName(1),
                 'size'       => 20,
                 'id'         => 21,
                 'datatype'   => 'dropdown',
-                'dropdown_options' => ['right' => 'all']
+                'dropdown_options' => ['right' => 'all'],
             ],
             'groups_id'        => [
                 'long name'  => Group::getTypeName(1),
@@ -127,13 +136,14 @@ class Item_DeviceSimcard extends Item_Devices
                         'table'              => 'glpi_groups_items',
                         'joinparams'         => [
                             'jointype'           => 'itemtype_item',
-                            'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL]
-                        ]
-                    ]
+                            'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL],
+                        ],
+                    ],
                 ],
                 'forcegroupby'       => true,
                 'massiveaction'      => false,
-                'datatype'           => 'dropdown'
+                'datatype'           => 'dropdown',
+                'dropdown_options' => ['multiple' => true],
             ],
             'users_id_tech'  => [
                 'long name'  => __('Technician in charge'),
@@ -141,7 +151,7 @@ class Item_DeviceSimcard extends Item_Devices
                 'size'       => 20,
                 'id'         => 23,
                 'datatype'   => 'dropdown',
-                'dropdown_options' => ['right' => 'own_ticket']
+                'dropdown_options' => ['right' => 'own_ticket'],
             ],
             'groups_id_tech' => [
                 'long name'  => __('Group in charge'),
@@ -153,14 +163,17 @@ class Item_DeviceSimcard extends Item_Devices
                         'table'              => 'glpi_groups_items',
                         'joinparams'         => [
                             'jointype'           => 'itemtype_item',
-                            'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH]
-                        ]
-                    ]
+                            'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH],
+                        ],
+                    ],
                 ],
                 'forcegroupby'     => true,
                 'massiveaction'    => false,
                 'datatype'         => 'dropdown',
-                'dropdown_options' => ['condition' => ['is_assign' => 1]]
+                'dropdown_options' => [
+                    'condition' => ['is_assign' => 1],
+                    'multiple' => true,
+                ],
             ],
         ];
     }

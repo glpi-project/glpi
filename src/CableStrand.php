@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -118,12 +118,12 @@ class CableStrand extends CommonDropdown
 
         $criteria = [
             'SELECT' => [
-                'id'
+                'id',
             ],
             'FROM'   => $cable->getTable(),
             'WHERE'  => [
                 'cablestrands_id' => $cablestrands_id,
-            ]
+            ],
         ];
         if ($cable->maybeDeleted()) {
             $criteria['WHERE']['is_deleted'] = 0;
@@ -135,7 +135,7 @@ class CableStrand extends CommonDropdown
 
         $iterator = $DB->request($criteria);
 
-       // Execute a second request to get the total number of rows
+        // Execute a second request to get the total number of rows
         unset($criteria['SELECT']);
         unset($criteria['START']);
         unset($criteria['LIMIT']);
@@ -211,7 +211,7 @@ class CableStrand extends CommonDropdown
                 echo"</tr>";
             }
         } else {
-            echo "<p class='center b'>" . __s('No item found') . "</p>";
+            echo "<p class='center b'>" . __s('No results found') . "</p>";
         }
         echo "</table></div>";
     }

@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,9 +35,11 @@
 namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
+use Glpi\Asset\CapacityConfig;
 use Link;
 use Link_Itemtype;
 use ManualLink;
+use Override;
 use Session;
 
 class HasLinksCapacity extends AbstractCapacity
@@ -51,6 +52,19 @@ class HasLinksCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return ManualLink::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Define associated external links for the assets");
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [
+            ManualLink::class,
+        ];
     }
 
     public function isUsed(string $classname): bool
@@ -78,14 +92,14 @@ class HasLinksCapacity extends AbstractCapacity
         return sprintf(__('%1$s links attached to %2$s assets'), $manualLinkCount + $externalLinkCount, $max);
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         $this->registerToTypeConfig('link_types', $classname);
 
         CommonGLPI::registerStandardTab($classname, ManualLink::class, 100);
     }
 
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
         // Unregister from link types
         $this->unregisterFromTypeConfig('link_types', $classname);

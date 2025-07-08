@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,33 +40,34 @@ Html::header_nocache();
 
 // Should be defined by other files that include this file.
 // See: change_item.php, item_problem.php, item_ticket.php and item_ticketrecurrent.php
-$obj = $obj ?? null;
-$item_obj = $item_obj ?? null;
-if (!($obj instanceof CommonDBTM) || !($item_obj instanceof CommonItilObject_Item)) {
+$obj ??= null;
+$item_obj ??= null;
+$valid_obj = $obj instanceof CommonITILObject || $obj instanceof TicketRecurrent;
+if (!$valid_obj || !($item_obj instanceof CommonItilObject_Item)) {
     throw new BadRequestHttpException();
 }
 
 switch ($_GET['action']) {
     case 'add':
-        if (isset($_GET['my_items']) && !empty($_GET['my_items'])) {
-            list($_GET['itemtype'], $_GET['items_id']) = explode('_', $_GET['my_items']);
+        if (!empty($_GET['my_items'])) {
+            [$_GET['itemtype'], $_GET['items_id']] = explode('_', $_GET['my_items']);
         }
-        if (isset($_GET['items_id']) && isset($_GET['itemtype']) && !empty($_GET['items_id'])) {
+        if (isset($_GET['itemtype']) && !empty($_GET['items_id'])) {
             $_GET['params']['items_id'][$_GET['itemtype']][$_GET['items_id']] = $_GET['items_id'];
         }
         $item_obj::itemAddForm($obj, $_GET['params'] ?? []);
         break;
 
     case 'delete':
-        if (isset($_GET['items_id']) && isset($_GET['itemtype']) && !empty($_GET['items_id'])) {
+        if (isset($_GET['itemtype']) && !empty($_GET['items_id'])) {
             $deleted = true;
             if ($_GET['params']['id'] > 0) {
-                $obj_fkey = $obj->getForeignKeyField();
+                $obj_fkey = $obj::getForeignKeyField();
                 $relation = new $item_obj();
                 $deleted  = $relation->deleteByCriteria([
                     $obj_fkey  => $_GET['params']['id'],
                     'items_id' => $_GET['items_id'],
-                    'itemtype' => $_GET['itemtype']
+                    'itemtype' => $_GET['itemtype'],
                 ]);
             }
             if ($deleted) {

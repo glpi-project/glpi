@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,7 +38,7 @@
  **/
 class IPNetwork_Vlan extends CommonDBRelation
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1          = 'IPNetwork';
     public static $items_id_1          = 'ipnetworks_id';
 
@@ -65,7 +65,7 @@ class IPNetwork_Vlan extends CommonDBRelation
 
         $this->getFromDBByCrit([
             'ipnetworks_id'   => $portID,
-            'vlans_id'        => $vlanID
+            'vlans_id'        => $vlanID,
         ]);
 
         return $this->delete($this->fields);
@@ -80,7 +80,7 @@ class IPNetwork_Vlan extends CommonDBRelation
     {
 
         $input = ['ipnetworks_id' => $port,
-            'vlans_id'      => $vlan
+            'vlans_id'      => $vlan,
         ];
 
         return $this->add($input);
@@ -109,18 +109,18 @@ class IPNetwork_Vlan extends CommonDBRelation
         $iterator = $DB->request([
             'SELECT'    => [
                 self::getTable() . '.id AS assocID',
-                'glpi_vlans.*'
+                'glpi_vlans.*',
             ],
             'FROM'      => self::getTable(),
             'LEFT JOIN' => [
                 'glpi_vlans'   => [
                     'ON' => [
                         self::getTable()  => 'vlans_id',
-                        'glpi_vlans'      => 'id'
-                    ]
-                ]
+                        'glpi_vlans'      => 'id',
+                    ],
+                ],
             ],
-            'WHERE'     => ['ipnetworks_id' => $ID]
+            'WHERE'     => ['ipnetworks_id' => $ID],
         ]);
 
         $vlans  = [];
@@ -153,7 +153,7 @@ class IPNetwork_Vlan extends CommonDBRelation
         if ($canedit && $number) {
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $number),
-                'container'     => 'mass' . __CLASS__ . $rand
+                'container'     => 'mass' . __CLASS__ . $rand,
             ];
             Html::showMassiveActions($massiveactionparams);
         }
@@ -220,7 +220,7 @@ class IPNetwork_Vlan extends CommonDBRelation
         $iterator = $DB->request([
             'SELECT' => 'vlans_id',
             'FROM'   => self::getTable(),
-            'WHERE'  => ['ipnetworks_id' => $portID]
+            'WHERE'  => ['ipnetworks_id' => $portID],
         ]);
         foreach ($iterator as $data) {
             $vlans[$data['vlans_id']] = $data['vlans_id'];

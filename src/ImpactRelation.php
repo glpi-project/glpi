@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,7 +38,7 @@
  */
 class ImpactRelation extends CommonDBRelation
 {
-   // CommonDBRelation fields
+    // CommonDBRelation fields
     public static $itemtype_1          = 'itemtype_source';
     public static $items_id_1          = 'items_id_source';
     public static $itemtype_2          = 'itemtype_impacted';
@@ -49,18 +49,18 @@ class ImpactRelation extends CommonDBRelation
         /** @var \DBmysql $DB */
         global $DB;
 
-       // Check that mandatory values are set
+        // Check that mandatory values are set
         $required = [
             "itemtype_source",
             "items_id_source",
             "itemtype_impacted",
-            "items_id_impacted"
+            "items_id_impacted",
         ];
         if (array_diff($required, array_keys($input))) {
             return false;
         }
 
-       // Check that source and impacted are different items
+        // Check that source and impacted are different items
         if (
             $input['itemtype_source'] == $input['itemtype_impacted']
             && $input['items_id_source'] == $input['items_id_impacted']
@@ -68,21 +68,21 @@ class ImpactRelation extends CommonDBRelation
             return false;
         }
 
-       // Check for duplicate
+        // Check for duplicate
         $it = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'itemtype_source'   => $input['itemtype_source'],
                 'items_id_source'   => $input['items_id_source'],
                 'itemtype_impacted' => $input['itemtype_impacted'],
-                'items_id_impacted' => $input['items_id_impacted']
-            ]
+                'items_id_impacted' => $input['items_id_impacted'],
+            ],
         ]);
         if (count($it)) {
             return false;
         }
 
-       // Check if source and impacted are valid objets
+        // Check if source and impacted are valid objets
         $source_exist = Impact::assetExist(
             $input['itemtype_source'],
             $input['items_id_source']
@@ -110,15 +110,15 @@ class ImpactRelation extends CommonDBRelation
         /** @var \DBmysql $DB */
         global $DB;
 
-       // Check that the link exist
+        // Check that the link exist
         $it = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'itemtype_source'   => $input['itemtype_source'],
                 'items_id_source'   => $input['items_id_source'],
                 'itemtype_impacted' => $input['itemtype_impacted'],
-                'items_id_impacted' => $input['items_id_impacted']
-            ]
+                'items_id_impacted' => $input['items_id_impacted'],
+            ],
         ]);
 
         if (count($it)) {

@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -35,23 +34,17 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% block form_fields %}
-    {% set field_options = {
-        label_class: 'col-xxl-4',
-        input_class: 'col-xxl-8'
-    } %}
     {% if not item.isNewItem() %}
-        {{ fields.textField('name', item.fields['name'], __('Name'), field_options) }}
+        {{ fields.textField('name', item.fields['name'], __('Name')) }}
     {% endif %}
     {{ fields.textField('url', item.fields['url'], __('URL'), {
-        full_width: true,
-        label_class: 'col-xxl-2',
-        input_class: 'col-xxl-10'
+        full_width: true
     }) }}
 
-    {{ fields.htmlField('', user|e('html'), __('By'), field_options) }}
+    {{ fields.htmlField('', user|e('html'), __('By')) }}
     {{ fields.nullField() }}
 
-    {{ fields.dropdownYesNo('is_active', item.fields['is_active'], __('Active'), field_options) }}
+    {{ fields.dropdownYesNo('is_active', item.fields['is_active'], __('Active')) }}
     {{ fields.dropdownTimestampField('refresh_rate', item.fields['refresh_rate'], __('Refresh rate'), {
         min: constant('HOUR_TIMESTAMP'),
         max: constant('DAY_TIMESTAMP'),
@@ -63,10 +56,10 @@
             30 * constant('MINUTE_TIMESTAMP'),
             45 * constant('MINUTE_TIMESTAMP')
         ]
-    }|merge(field_options)) }}
+    }) }}
 
-    {{ fields.dropdownNumberField('max_items', item.fields['max_items'], __('Number of items displayed'), field_options) }}
-    {{ fields.textareaField('comment', item.fields['comment'], __('Comments'), field_options) }}
+    {{ fields.dropdownNumberField('max_items', item.fields['max_items'], __('Number of items displayed')) }}
+    {{ fields.textareaField('comment', item.fields['comment'], __('Comments')) }}
 
     {% set status_field %}
         {% if item.fields['have_error'] and item.fields['url'] is not url_safe %}
@@ -75,5 +68,5 @@
             {{ item.fields['have_error'] ? __('Yes') : __('No') }}
         {% endif %}
     {% endset %}
-    {{ fields.htmlField('', status_field|e('html'), __('Error retrieving RSS feed'), field_options) }}
+    {{ fields.htmlField('', status_field|e('html'), __('Error retrieving RSS feed')) }}
 {% endblock %}

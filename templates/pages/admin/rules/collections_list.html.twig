@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -31,20 +30,21 @@
  # ---------------------------------------------------------------------
  #}
 
-{{ include('pages/admin/rules/backup_header.html.twig') }}
-
 <div class="container px-4">
    <div class="row g-3 justify-content-evenly">
       {% for rules_block in rules_group %}
-         <div class="col-12 {{ rules_group|length > 2 ? 'col-xxl-3' : 'col-xxl-5' }}">
-            <div class="card">
-               <div class="card-header">
-                  <h3>{{ rules_block['type'] }}</h3>
-               </div>
+         <div class="col-12 {{ rules_group|length > 2 ? 'col-xxl-3' : 'col-xxl-9' }}">
+            <h2 class="justify-content-center my-4 d-flex align-items-center mb-6 pb-3 fs-1">
+                {% if rules_block['icon'] is defined and rules_block['icon'] is not empty %}
+                    <i class="{{ rules_block['icon'] }} me-1"></i>
+                {% endif %}
+                {{ rules_block['type'] }}
+            </h2>
+            <div class="card ">
                <div class="list-group list-group-flush">
                   {% for rule in rules_block['entries'] %}
                      <a class="list-group-item list-group-item-action" href="{{ rule['link'] }}">
-                        <i class="fa-fw {{ rule['icon'] }} me-1"></i>
+                        <i class="{{ rule['icon'] }} me-1"></i>
                         <span>{{ rule['label'] }}</span>
                      </a>
                   {% endfor %}

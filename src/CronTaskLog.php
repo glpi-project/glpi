@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -43,11 +43,11 @@ class CronTaskLog extends CommonDBChild
     public static $itemtype  = 'CronTask';
     public static $items_id  = 'crontasks_id';
 
-   // Class constant
-    const STATE_START = 0;
-    const STATE_RUN   = 1;
-    const STATE_STOP  = 2;
-    const STATE_ERROR = 3;
+    // Class constant
+    public const STATE_START = 0;
+    public const STATE_RUN   = 1;
+    public const STATE_STOP  = 2;
+    public const STATE_ERROR = 3;
 
     public static function getIcon()
     {
@@ -73,7 +73,7 @@ class CronTaskLog extends CommonDBChild
             'glpi_crontasklogs',
             [
                 'crontasks_id' => $id,
-                new QueryExpression("UNIX_TIMESTAMP(" . $DB->quoteName("date") . ") < UNIX_TIMESTAMP()-$secs")
+                new QueryExpression("UNIX_TIMESTAMP(" . $DB->quoteName("date") . ") < UNIX_TIMESTAMP()-$secs"),
             ]
         );
 
@@ -93,7 +93,7 @@ class CronTaskLog extends CommonDBChild
                     $nb =  countElementsInTable(
                         $this->getTable(),
                         ['crontasks_id' => $item->getID(),
-                            'state'        => self::STATE_STOP
+                            'state'        => self::STATE_STOP,
                         ]
                     );
                 }

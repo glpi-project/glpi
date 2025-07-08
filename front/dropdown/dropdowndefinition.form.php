@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+require_once(__DIR__ . '/../_check_webserver_config.php');
 
 /**
  * @var array $CFG_GLPI
@@ -58,14 +60,14 @@ if (isset($_POST['add'])) {
         }
     }
     Html::back();
-} else if (isset($_POST['update'])) {
+} elseif (isset($_POST['update'])) {
     $dropdown_definition->check($_POST['id'], UPDATE);
 
     if (array_key_exists('profiles', $_POST)) {
         // Ensure profiles can be updated
         foreach (array_keys($_POST['profiles']) as $profile_id) {
             $profile = new Profile();
-            $profile->check((int)$profile_id, UPDATE);
+            $profile->check((int) $profile_id, UPDATE);
         }
 
         // Convert profiles input from the `components/checkbox_matrix.html.twig` format
@@ -91,7 +93,7 @@ if (isset($_POST['add'])) {
         );
     }
     Html::back();
-} else if (isset($_POST['purge'])) {
+} elseif (isset($_POST['purge'])) {
     $dropdown_definition->check($_POST['id'], PURGE);
     if ($dropdown_definition->delete($_POST)) {
         Event::log(

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -163,8 +163,8 @@ class HTMLTableGroup extends HTMLTableBase
                     foreach ($sub_header_names as $sub_header_name) {
                         $sub_header = $this->getHeaderByName($super_header_name, $sub_header_name);
                         if ($sub_header->hasToDisplay()) {
-                              $this->ordered_headers[]        = $sub_header;
-                              $sub_header->numberOfSubHeaders = $count;
+                            $this->ordered_headers[]        = $sub_header;
+                            $sub_header->numberOfSubHeaders = $count;
                         }
                     }
                 }
@@ -268,7 +268,7 @@ class HTMLTableGroup extends HTMLTableBase
 
     public function getNumberOfRows()
     {
-        return count(array_filter($this->rows, static fn ($r) => $r->notEmpty()));
+        return count(array_filter($this->rows, static fn($r) => $r->notEmpty()));
     }
 
     public function getSuperHeaderByName($name)

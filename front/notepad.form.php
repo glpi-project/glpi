@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Event;
 use Glpi\Exception\Http\BadRequestHttpException;
 
@@ -54,7 +56,7 @@ if (isset($_POST['add'])) {
         sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $newID)
     );
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $note->check($_POST["id"], PURGE);
     $note->delete($_POST, 1);
     Event::log(
@@ -66,7 +68,7 @@ if (isset($_POST['add'])) {
         sprintf(__('%s purges an item'), $_SESSION["glpiname"])
     );
     Html::back();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $note->check($_POST["id"], UPDATE);
 
     $note->update($_POST);
@@ -79,15 +81,15 @@ if (isset($_POST['add'])) {
         sprintf(__('%s updates an item'), $_SESSION["glpiname"])
     );
     Html::back();
-} else if (isset($_POST["delete_document"])) {
+} elseif (isset($_POST["delete_document"])) {
     $doc = new Document();
     $doc->getFromDB(intval($_POST['documents_id']));
     if ($doc->can($doc->getID(), UPDATE)) {
         $document_item = new Document_Item();
         $document_item->deleteByCriteria([
             'itemtype'     => "Notepad",
-            'items_id'     => (int)$_POST['id'],
-            'documents_id' => $doc->getID()
+            'items_id'     => (int) $_POST['id'],
+            'documents_id' => $doc->getID(),
         ]);
     }
     Html::back();

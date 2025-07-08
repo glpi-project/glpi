@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -230,7 +230,7 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
         // Remove zones with id > $nbZones
         $zones = array_filter(
             json_decode($this->fields['zones'] ?? '{}', true),
-            fn ($id) => $id <= $nbZones,
+            fn($id) => $id <= $nbZones,
             ARRAY_FILTER_USE_KEY
         );
 
@@ -306,9 +306,8 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
             $pictures[] = $item->getItemtypeOrModelPicture($picture_field)[0]['src'];
         }
 
-        $model_class   = $item->getModelClass();
         $model_fk      = $item->getModelForeignKeyField();
-        $model         = new $model_class();
+        $model         = $item->getModelClassInstance();
         $model->getFromDB($item->fields[$model_fk]);
         $model_stencil = self::getStencilFromItem($model);
 
@@ -337,7 +336,7 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
         $pictures = [];
         foreach ($this->getPicturesFields() as $picture_field) {
             $picture = $item->getItemtypeOrModelPicture($picture_field);
-            if (!empty($picture) && isset($picture[0]['src'])) {
+            if ($picture !== [] && isset($picture[0]['src'])) {
                 $pictures[] = $picture[0]['src'];
             }
         }

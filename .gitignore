@@ -18,8 +18,6 @@
 /vendor/*
 !/vendor/.htaccess
 phpunit.xml
-/tests/code-coverage/
-/tests/coverage-*/
 /tests/cypress/screenshots/
 /tests/cypress/downloads/
 /tests/cypress/videos/
@@ -28,7 +26,6 @@ phpunit.xml
 /nbproject
 .composer.hash
 /**/*.min.css
-!/css/standalone/tinymce_empty_skin/*.min.css
 /css/lib/
 /**/*.min.js
 /node_modules/
@@ -47,5 +44,7 @@ phpstan.neon
 /.phpunit.result.cache
 /phpunit/files/
 /phpunit/config
+/phpunit/coverage/
 *.phar
 .env
+/resources/.illustrations_translations.php

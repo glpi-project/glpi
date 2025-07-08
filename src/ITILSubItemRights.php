@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -45,6 +45,8 @@ trait ITILSubItemRights
     public const ADD_AS_OBSERVER    = 16384;
     public const ADD_AS_TECHNICIAN  = 32768;
 
+    public const SEEPRIVATEGROUPS         = 65536;
+
     public function getRights($interface = 'central')
     {
 
@@ -55,6 +57,7 @@ trait ITILSubItemRights
             $values[self::UPDATEALL] = __('Update all');
             $values[self::ADDALLITEM] = __('Add to all items');
             $values[self::SEEPRIVATE] = __('See private ones');
+            $values[self::SEEPRIVATEGROUPS] = __('See private of my groups');
         }
 
         $values[self::ADD_AS_GROUP] = [

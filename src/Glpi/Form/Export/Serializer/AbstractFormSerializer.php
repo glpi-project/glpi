@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -63,7 +63,7 @@ abstract class AbstractFormSerializer
             // The `propertyTypeExtractor` parameter is required to normalize
             // nested objects because we are not a full symfony application.
             // See: https://symfony.com/doc/current/components/serializer.html#recursive-denormalization-and-type-safety
-            new PropertyNormalizer(propertyTypeExtractor: new PhpDocExtractor())
+            new PropertyNormalizer(propertyTypeExtractor: new PhpDocExtractor()),
         ];
         $this->serializer = new Serializer($normalizers, $encoders);
     }
@@ -71,7 +71,7 @@ abstract class AbstractFormSerializer
     protected function serialize(ExportContentSpecification $specification): string
     {
         return $this->serializer->serialize($specification, 'json', [
-            PropertyNormalizer::NORMALIZE_VISIBILITY => PropertyNormalizer::NORMALIZE_PUBLIC
+            PropertyNormalizer::NORMALIZE_VISIBILITY => PropertyNormalizer::NORMALIZE_PUBLIC,
         ]);
     }
 

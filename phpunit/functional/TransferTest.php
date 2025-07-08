@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -52,9 +51,9 @@ class TransferTest extends DbTestCase
         $this->login();
 
         //Original entity
-        $fentity = (int)getItemByTypeName('Entity', '_test_root_entity', true);
+        $fentity = (int) getItemByTypeName('Entity', '_test_root_entity', true);
         //Destination entity
-        $dentity = (int)getItemByTypeName('Entity', '_test_child_2', true);
+        $dentity = (int) getItemByTypeName('Entity', '_test_child_2', true);
 
         $location_id = getItemByTypeName('Location', '_location01', true);
 
@@ -93,6 +92,8 @@ class TransferTest extends DbTestCase
             'definition_time' => 'hour',
             'number_time'     => 4,
             'begin_date'      => '2020-01-01',
+            'vis_cols'        => 1,
+            'vis_rows'        => 1,
         ];
 
         $count = 0;
@@ -163,20 +164,20 @@ class TransferTest extends DbTestCase
         $this->login();
 
         //Original entity
-        $fentity = (int)getItemByTypeName('Entity', '_test_root_entity', true);
+        $fentity = (int) getItemByTypeName('Entity', '_test_root_entity', true);
         //Destination entity
-        $dentity = (int)getItemByTypeName('Entity', '_test_child_2', true);
+        $dentity = (int) getItemByTypeName('Entity', '_test_child_2', true);
 
         //records types
-        $type_a = (int)getItemByTypeName('DomainRecordType', 'A', true);
-        $type_cname = (int)getItemByTypeName('DomainRecordType', 'CNAME', true);
+        $type_a = (int) getItemByTypeName('DomainRecordType', 'A', true);
+        $type_cname = (int) getItemByTypeName('DomainRecordType', 'CNAME', true);
 
         $domain = new \Domain();
         $record = new \DomainRecord();
 
-        $did = (int)$domain->add([
+        $did = (int) $domain->add([
             'name'         => 'glpi-project.org',
-            'entities_id'  => $fentity
+            'entities_id'  => $fentity,
         ]);
         $this->assertGreaterThan(0, $did);
         $this->assertTrue($domain->getFromDB($did));
@@ -188,7 +189,7 @@ class TransferTest extends DbTestCase
                 'type'         => $type_a,
                 'data'         => '127.0.1.1',
                 'entities_id'  => $fentity,
-                'domains_id'   => $did
+                'domains_id'   => $did,
             ])
         );
 
@@ -199,7 +200,7 @@ class TransferTest extends DbTestCase
                 'type'         => $type_cname,
                 'data'         => 'glpi-project.org.',
                 'entities_id'  => $fentity,
-                'domains_id'   => $did
+                'domains_id'   => $did,
             ])
         );
 
@@ -210,7 +211,7 @@ class TransferTest extends DbTestCase
                 'type'         => $type_cname,
                 'data'         => 'glpi-doc.rtfd.io',
                 'entities_id'  => $fentity,
-                'domains_id'   => $did
+                'domains_id'   => $did,
             ])
         );
 
@@ -230,19 +231,19 @@ class TransferTest extends DbTestCase
         unset($_SESSION['glpitransfer_list']);
 
         $this->assertTrue($domain->getFromDB($did));
-        $this->assertSame($dentity, (int)$domain->fields['entities_id']);
+        $this->assertSame($dentity, (int) $domain->fields['entities_id']);
 
         global $DB;
         $records = $DB->request([
             'FROM'   => $record->getTable(),
             'WHERE'  => [
-                'domains_id' => $did
-            ]
+                'domains_id' => $did,
+            ],
         ]);
 
         $this->assertSame(3, count($records));
         foreach ($records as $rec) {
-            $this->assertSame($dentity, (int)$rec['entities_id']);
+            $this->assertSame($dentity, (int) $rec['entities_id']);
         }
     }
 
@@ -329,7 +330,7 @@ class TransferTest extends DbTestCase
                     'Computer' => [
                         getItemByTypeName('Computer', 'test_transfer_pc_1', true),
                         getItemByTypeName('Computer', 'test_transfer_pc_2', true),
-                    ]
+                    ],
                 ],
                 'entities_id_destination' => $test_entity,
                 'transfer_options'        => ['keep_software' => 1],
@@ -337,13 +338,13 @@ class TransferTest extends DbTestCase
                     'Computer' => [
                         getItemByTypeName('Computer', 'test_transfer_pc_1', true) => [
                             $item_softwareversion_ids[0],
-                            $item_softwareversion_ids[1]
+                            $item_softwareversion_ids[1],
                         ],
                         getItemByTypeName('Computer', 'test_transfer_pc_2', true) => [
                             $item_softwareversion_ids[2],
-                            $item_softwareversion_ids[3]
+                            $item_softwareversion_ids[3],
                         ],
-                    ]
+                    ],
                 ],
                 'expected_softwares_version_after_transfer' => [
                     'Software' => [
@@ -353,17 +354,17 @@ class TransferTest extends DbTestCase
                         ],
                         getItemByTypeName('Software', 'test_transfer_software_2', true) => [
                             $softwareversion_ids[2],
-                            $softwareversion_ids[3]
+                            $softwareversion_ids[3],
                         ],
-                    ]
-                ]
+                    ],
+                ],
             ],
             [
                 'items' => [
                     'Computer' => [
                         getItemByTypeName('Computer', 'test_transfer_pc_3', true),
                         getItemByTypeName('Computer', 'test_transfer_pc_4', true),
-                    ]
+                    ],
                 ],
                 'entities_id_destination' => $test_entity,
                 'transfer_options'        => ['keep_software' => 0],
@@ -371,15 +372,15 @@ class TransferTest extends DbTestCase
                     'Computer' => [
                         getItemByTypeName('Computer', 'test_transfer_pc_3', true) => [],
                         getItemByTypeName('Computer', 'test_transfer_pc_4', true) => [],
-                    ]
+                    ],
                 ],
                 'expected_softwares_version_after_transfer' => [
                     'Software' => [
                         getItemByTypeName('Software', 'test_transfer_software_1', true) => [],
                         getItemByTypeName('Software', 'test_transfer_software_2', true) => [],
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -402,7 +403,7 @@ class TransferTest extends DbTestCase
                     $item_softwareversion = new Item_SoftwareVersion();
                     $data = $item_softwareversion->find([
                         'items_id' => $id,
-                        'itemtype' => $itemtype
+                        'itemtype' => $itemtype,
                     ]);
 
                     $found_ids = array_column($data, 'id');
@@ -516,8 +517,8 @@ class TransferTest extends DbTestCase
             'WHERE'  => [
                 'name' => 'test_transfer_software_2',
                 'entities_id' => $dest_entity,
-                'is_deleted' => 0
-            ]
+                'is_deleted' => 0,
+            ],
         ]);
         $this->assertCount(1, $it);
         $software_id_2_dest = $it->current()['id'];
@@ -577,7 +578,7 @@ class TransferTest extends DbTestCase
             $certificate_items_id = $certificate_item->add([
                 'items_id'     => getItemByTypeName('Computer', $computer_name, true),
                 'itemtype'     => 'Computer',
-                'certificates_id' => getItemByTypeName('Certificate', $certificate, true)
+                'certificates_id' => getItemByTypeName('Certificate', $certificate, true),
             ]);
             $this->assertGreaterThan(0, $certificate_items_id);
             $certificate_item_ids[] = $certificate_items_id;
@@ -589,27 +590,27 @@ class TransferTest extends DbTestCase
                     'Computer' => [
                         getItemByTypeName('Computer', 'test_transfer_pc_1', true),
                         getItemByTypeName('Computer', 'test_transfer_pc_2', true),
-                    ]
+                    ],
                 ],
                 'entities_id_destination' => $test_entity,
                 'transfer_options'        => ['keep_certificate' => 1],
                 'expected_certificates_after_transfer' => [
                     'Computer' => [
                         getItemByTypeName('Computer', 'test_transfer_pc_1', true) => [
-                            $certificate_item_ids[0]
+                            $certificate_item_ids[0],
                         ],
                         getItemByTypeName('Computer', 'test_transfer_pc_2', true) => [
-                            $certificate_item_ids[1]
+                            $certificate_item_ids[1],
                         ],
-                    ]
-                ]
+                    ],
+                ],
             ],
             [
                 'items' => [
                     'Computer' => [
                         getItemByTypeName('Computer', 'test_transfer_pc_3', true),
                         getItemByTypeName('Computer', 'test_transfer_pc_4', true),
-                    ]
+                    ],
                 ],
                 'entities_id_destination' => $test_entity,
                 'transfer_options'        => ['keep_certificate' => 0],
@@ -617,9 +618,9 @@ class TransferTest extends DbTestCase
                     'Computer' => [
                         getItemByTypeName('Computer', 'test_transfer_pc_3', true) => [],
                         getItemByTypeName('Computer', 'test_transfer_pc_4', true) => [],
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -640,7 +641,7 @@ class TransferTest extends DbTestCase
                     $certificate_item = new Certificate_Item();
                     $data = $certificate_item->find([
                         'items_id' => $id,
-                        'itemtype' => $itemtype
+                        'itemtype' => $itemtype,
                     ]);
                     $found_ids = array_column($data, 'id');
                     $this->assertEquals(
@@ -658,25 +659,25 @@ class TransferTest extends DbTestCase
         $this->login();
 
         //Original entity
-        $fentity = (int)getItemByTypeName('Entity', '_test_root_entity', true);
+        $fentity = (int) getItemByTypeName('Entity', '_test_root_entity', true);
         //Destination entity
-        $dentity = (int)getItemByTypeName('Entity', '_test_child_2', true);
+        $dentity = (int) getItemByTypeName('Entity', '_test_child_2', true);
 
         $location = new \Location();
-        $location_id = (int)$location->add([
+        $location_id = (int) $location->add([
             'name'          => 'location',
             'entities_id'   => $fentity,
-            'is_recursive'  => 1
+            'is_recursive'  => 1,
         ]);
         $this->assertGreaterThan(0, $location_id);
         $this->assertTrue($location->getFromDB($location_id));
 
         $ticket = new \Ticket();
-        $ticket_id = (int)$ticket->add([
+        $ticket_id = (int) $ticket->add([
             'name'         => 'ticket',
             'content'         => 'content ticket',
             'locations_id' => $location_id,
-            'entities_id'  => $fentity
+            'entities_id'  => $fentity,
         ]);
         $this->assertGreaterThan(0, $ticket_id);
         $this->assertTrue($ticket->getFromDB($ticket_id));
@@ -689,7 +690,7 @@ class TransferTest extends DbTestCase
         $transfer->fields["keep_location"] = 1;
         $this->assertTrue($transfer->update($transfer->fields));
 
-        $item_to_transfer = ["ticket" => [$ticket_id => $ticket_id]];
+        $item_to_transfer = [\Ticket::class => [$ticket_id => $ticket_id]];
         $transfer->moveItems($item_to_transfer, $dentity, $transfer->fields);
 
         //reload ticket
@@ -702,26 +703,26 @@ class TransferTest extends DbTestCase
         $this->login();
 
         //Original entity
-        $fentity = (int)getItemByTypeName('Entity', '_test_root_entity', true);
+        $fentity = (int) getItemByTypeName('Entity', '_test_root_entity', true);
         //Destination entity
-        $dentity = (int)getItemByTypeName('Entity', '_test_child_2', true);
+        $dentity = (int) getItemByTypeName('Entity', '_test_child_2', true);
 
         $location = new \Location();
-        $location_id = (int)$location->add([
+        $location_id = (int) $location->add([
             'name'          => 'location',
             'entities_id'   => $fentity,
-            'is_recursive'  => 1
+            'is_recursive'  => 1,
         ]);
         $this->assertGreaterThan(0, $location_id);
         $this->assertTrue($location->getFromDB($location_id));
 
 
         $ticket = new \Ticket();
-        $ticket_id = (int)$ticket->add([
+        $ticket_id = (int) $ticket->add([
             'name'         => 'ticket',
             'content'         => 'content ticket',
             'locations_id' => $location_id,
-            'entities_id'  => $fentity
+            'entities_id'  => $fentity,
         ]);
         $this->assertGreaterThan(0, $ticket_id);
         $this->assertTrue($ticket->getFromDB($ticket_id));
@@ -735,7 +736,7 @@ class TransferTest extends DbTestCase
         $transfer->fields["keep_location"] = 0;
         $this->assertTrue($transfer->update($transfer->fields));
 
-        $item_to_transfer = ["ticket" => [$ticket_id => $ticket_id]];
+        $item_to_transfer = [\Ticket::class => [$ticket_id => $ticket_id]];
         $transfer->moveItems($item_to_transfer, $dentity, $transfer->fields);
 
         //reload ticket
@@ -760,7 +761,7 @@ class TransferTest extends DbTestCase
         $ticket_id = $ticket->add([
             'name' => 'ticket',
             'content' => 'content ticket',
-            'entities_id' => $source_entity
+            'entities_id' => $source_entity,
         ]);
         $this->assertGreaterThan(0, $ticket_id);
 
@@ -800,14 +801,14 @@ class TransferTest extends DbTestCase
         $ticket_id = $ticket->add([
             'name' => 'ticket',
             'content' => 'content ticket',
-            'entities_id' => $source_entity
+            'entities_id' => $source_entity,
         ]);
         $this->assertGreaterThan(0, $ticket_id);
 
         $task_cat = new \TaskCategory();
         $task_cat_id = $task_cat->add([
             'name' => __FUNCTION__,
-            'entities_id' => $source_entity
+            'entities_id' => $source_entity,
         ]);
         $this->assertGreaterThan(0, $task_cat_id);
 
@@ -833,5 +834,84 @@ class TransferTest extends DbTestCase
         $task_cat = reset($task_cats);
         $this->assertTrue($ticket_task->getFromDB($task_id));
         $this->assertEquals($task_cat['id'], $ticket_task->fields['taskcategories_id']);
+    }
+
+    public function testGenericAssetTransfer(): void
+    {
+        $this->login();
+        $source_entity = getItemByTypeName('Entity', '_test_child_1', true);
+        $destination_entity = getItemByTypeName('Entity', '_test_child_2', true);
+
+        //create Smartphone generic asset
+        $definition = $this->initAssetDefinition(
+            system_name: 'Smartphone' . $this->getUniqueString()
+        );
+        $classname  = $definition->getAssetClassName();
+
+        $item = new $classname();
+        $item_id = $item->add([
+            'name' => 'To transfer Smartphone',
+            'entities_id' => $source_entity,
+        ]);
+        $this->assertGreaterThan(0, $item_id);
+
+        $transfer = new \Transfer();
+        $transfer->moveItems([$classname => [$item_id]], $destination_entity, []);
+        $this->assertTrue($item->getFromDB($item_id));
+        $this->assertEquals($destination_entity, $item->fields['entities_id']);
+    }
+
+    public function testTicketWithDocumentTransfer()
+    {
+        $this->login();
+
+        //Original entity
+        $fentity = (int) getItemByTypeName('Entity', '_test_root_entity', true);
+        //Destination entity
+        $dentity = (int) getItemByTypeName('Entity', '_test_child_2', true);
+
+        $ticket = new \Ticket();
+        $ticket_id = (int) $ticket->add([
+            'name' => 'ticket',
+            'content' => 'content ticket',
+            'entities_id' => $fentity,
+        ]);
+        $this->assertGreaterThan(0, $ticket_id);
+        $this->assertTrue($ticket->getFromDB($ticket_id));
+
+        // Create a document stub.
+        $mdoc = $this->getMockBuilder(\Document::class)
+            ->onlyMethods(['moveUploadedDocument'])
+            ->getMock();
+        $mdoc->method('moveUploadedDocument')->willReturn(true);
+
+        $input['upload_file'] = 'filename.ext';
+        $input['itemtype'] = \Ticket::class;
+        $input['items_id'] = $ticket_id;
+        $input['entities_id'] = $fentity;
+
+        $docid = $mdoc->add($input);
+        $this->assertGreaterThan(0, $docid);
+
+        $doc_item = new \Document_Item();
+        $this->assertTrue($doc_item->getFromDBByCrit(['documents_id' => $docid]));
+        $this->assertSame($fentity, $doc_item->fields['entities_id']);
+
+        //transfer to another entity
+        $transfer = new \Transfer();
+        $this->assertTrue($transfer->getFromDB(1));
+
+        //update transfer model to keep documents
+        $transfer->fields["keep_document"] = 1;
+        $this->assertTrue($transfer->update($transfer->fields));
+
+        $item_to_transfer = [\Ticket::class => [$ticket_id => $ticket_id]];
+        $transfer->moveItems($item_to_transfer, $dentity, $transfer->fields);
+
+        //reload ticket
+        $this->assertTrue($ticket->getFromDB($ticket_id));
+        $doc_item = new \Document_Item();
+        $this->assertTrue($doc_item->getFromDBByCrit(['documents_id' => $docid]));
+        $this->assertSame($dentity, $doc_item->fields['entities_id']);
     }
 }

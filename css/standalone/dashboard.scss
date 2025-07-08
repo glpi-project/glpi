@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -31,7 +31,6 @@
  * ---------------------------------------------------------------------
  */
 
-$item_margin: 3px;
 $toolbar_height: 40px;
 $filter_height: 62px;
 $break_phones: 700px;
@@ -59,17 +58,17 @@ $break_tablet: 1400px;
 
         // chrome
         &::-webkit-scrollbar-thumb {
-            background-color: rgba(0, 0, 0, 30%);
+            background-color: rgb(0, 0, 0, 30%);
         }
 
         &::-webkit-scrollbar-track {
-            background-color: rgba(0, 0, 0, 20%);
+            background-color: rgb(0, 0, 0, 20%);
         }
     }
 }
 
 .dashboard {
-    --glpi-dashboard-soft-border: rgba(color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 64%), 0.24);
+    --glpi-dashboard-soft-border: rgb(color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 64%), 0.24);
 
     position: relative;
     padding-top: $toolbar_height;
@@ -320,7 +319,7 @@ $break_tablet: 1400px;
                 // override tabler styles
                 border: 2px inset var(--tblr-border-color);
                 color: var(--tblr-secondary);
-                background-color: rgba(var(--tblr-secondary-rgb), 0.1);
+                background-color: rgb(var(--tblr-secondary-rgb), 0.1);
             }
 
             &.fa-moon {
@@ -331,7 +330,7 @@ $break_tablet: 1400px;
         .edit-dashboard-properties {
             display: none;
 
-            input.dashboard-name:not(.submit):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not(.select2-search__field) {
+            input.dashboard-name:not(.submit, [type="submit"], [type="reset"], [type="checkbox"], [type="radio"], .select2-search__field) {
                 min-width: 200px;
                 resize: horizontal;
             }
@@ -407,8 +406,9 @@ $break_tablet: 1400px;
                 .flatpickr {
                     position: relative;
 
-                    a[data-clear] {
+                    button[data-clear] {
                         display: none;
+                        border: none;
                     }
 
                     &::after {
@@ -525,7 +525,7 @@ $break_tablet: 1400px;
                             display: none;
                         }
 
-                        a[data-clear] {
+                        button[data-clear] {
                             display: inline-block;
                             color: #509ee3;
                         }
@@ -562,13 +562,14 @@ $break_tablet: 1400px;
     .grid-guide {
         display: none;
         position: absolute;
-        top: calc(#{$toolbar_height} + #{$filter_height} + 16px);
+        bottom: var(--gs-cell-height);
         width: calc(100% + 1px);
         border: 1px solid var(--tblr-body-bg);
         border-width: 0 1px 1px 0;
         background-image:
             linear-gradient(to right, var(--tblr-body-bg) 1px, transparent 1px),
             linear-gradient(to bottom, var(--tblr-body-bg) 1px, transparent 1px);
+        background-size: var(--gs-cell-height) var(--gs-cell-height);
 
         .cell-add {
             opacity: 0;
@@ -576,6 +577,8 @@ $break_tablet: 1400px;
             position: relative;
             cursor: pointer;
             border: 2px dashed #777;
+            width: var(--gs-cell-height);
+            height: var(--gs-cell-height);
 
             &:hover {
                 opacity: 1;
@@ -637,11 +640,6 @@ $break_tablet: 1400px;
                 }
             }
 
-            .placeholder-content {
-                left: $item_margin;
-                right: $item_margin;
-            }
-
             .loading-card {
                 height: 100%;
                 border: 1px solid rgba($color: #000, $alpha: 5%);
@@ -672,15 +670,15 @@ $break_tablet: 1400px;
             }
 
             .card-error {
-                border-color: rgba(100, 0, 0, 30%);
-                background: rgba(255, 0, 0, 10%);
-                color: rgba(100, 0, 0, 50%);
+                border-color: rgb(100, 0, 0, 30%);
+                background: rgb(255, 0, 0, 10%);
+                color: rgb(100, 0, 0, 50%);
             }
 
             .card-warning {
-                border-color: rgba(105, 100, 32, 30%);
-                background: rgba(255, 238, 0, 17.8%);
-                color: rgba(105, 100, 32, 30%);
+                border-color: rgb(105, 100, 32, 30%);
+                background: rgb(255, 238, 0, 17.8%);
+                color: rgb(105, 100, 32, 30%);
             }
 
             .no-data {
@@ -725,7 +723,7 @@ $break_tablet: 1400px;
                 .debug-card {
                     z-index: 10;
                     position: absolute;
-                    color: rgba(255, 0, 0, 50%);
+                    color: rgb(255, 0, 0, 50%);
                     font-size: 10px;
                     bottom: 5px;
                     left: 5px;
@@ -740,7 +738,7 @@ $break_tablet: 1400px;
         height: 100%;
         width: 100%;
         display: block;
-        color: rgba(0, 0, 0, 70%);
+        color: rgb(0, 0, 0, 70%);
         border: 2px solid transparent;
         border-radius: 3px !important;
         position: relative;
@@ -845,11 +843,11 @@ $break_tablet: 1400px;
 
                     &:not(:first-child) {
                         border: 0;
-                        border-left: 1px solid rgba(125, 125, 125, 20%);
+                        border-left: 1px solid rgb(125, 125, 125, 20%);
                     }
 
                     &:hover {
-                        background-color: rgba(125, 125, 125, 10%);
+                        background-color: rgb(125, 125, 125, 10%);
                         cursor: pointer;
                         border-radius: 3px;
                         border-left-color: transparent;
@@ -912,7 +910,7 @@ $break_tablet: 1400px;
                 }
 
                 .icon {
-                    color: rgba(0, 0, 0, 50%);
+                    color: rgb(0, 0, 0, 50%);
                 }
             }
         }
@@ -1003,7 +1001,7 @@ $break_tablet: 1400px;
 
             .ct-labels {
                 .ct-label:not(.ct-vertical) {
-                    word-break: break-word;
+                    overflow-wrap: anywhere;
                 }
             }
         }
@@ -1144,7 +1142,7 @@ $break_tablet: 1400px;
 
     .markdown {
         $mdmargin_v: 15px;
-        $editor_border: 1px solid rgba(0, 0, 0, 30%);
+        $editor_border: 1px solid rgb(0, 0, 0, 30%);
 
         overflow-y: auto;
 
@@ -1157,7 +1155,7 @@ $break_tablet: 1400px;
             resize: none;
             padding: 5px;
             margin: $mdmargin_v 0;
-            background-color: rgba(255, 255, 255, 90%);
+            background-color: rgb(255, 255, 255, 90%);
             border: 1px solid currentcolor;
             border-radius: 1px;
             outline: none;
@@ -1221,7 +1219,7 @@ $break_tablet: 1400px;
                 }
 
                 .tab_bg_1 {
-                    background-color: rgba(0, 0, 0, 3%);
+                    background-color: rgb(0, 0, 0, 3%);
                 }
 
                 .tab_bg_2 {
@@ -1334,5 +1332,11 @@ $break_tablet: 1400px;
                 border: 2px solid var(--glpi-dashboard-soft-border);
             }
         }
+    }
+}
+
+html[data-glpi-theme-dark="1"] {
+    .widgettype_field img {
+        filter: invert(1);
     }
 }

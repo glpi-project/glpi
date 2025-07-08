@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -46,7 +46,7 @@ class ActivateCommand extends AbstractPluginCommand
      *
      * @var integer
      */
-    const ERROR_PLUGIN_ACTIVATION_FAILED = 1;
+    public const ERROR_PLUGIN_ACTIVATION_FAILED = 1;
 
     protected function configure()
     {
@@ -124,7 +124,7 @@ class ActivateCommand extends AbstractPluginCommand
 
         $plugin = new Plugin();
 
-       // Check that directory is valid
+        // Check that directory is valid
         if (!$plugin->isLoadable($directory)) {
             $this->output->writeln(
                 '<error>' . sprintf(__('Invalid plugin directory "%s".'), $directory) . '</error>',
@@ -133,7 +133,7 @@ class ActivateCommand extends AbstractPluginCommand
             return false;
         }
 
-       // Check current plugin state
+        // Check current plugin state
         $is_already_known = $plugin->getFromDBByCrit(['directory' => $directory]);
         if (!$is_already_known) {
             $this->output->writeln(
@@ -176,8 +176,8 @@ class ActivateCommand extends AbstractPluginCommand
             [
                 'FROM'  => Plugin::getTable(),
                 'WHERE' => [
-                    'state' => Plugin::NOTACTIVATED
-                ]
+                    'state' => Plugin::NOTACTIVATED,
+                ],
             ]
         );
         foreach ($plugin_iterator as $plugin) {

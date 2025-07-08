@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,6 +32,9 @@
  * ---------------------------------------------------------------------
  */
 
+
+use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Socket;
 
 function loadDataset()
@@ -46,7 +48,7 @@ function loadDataset()
     // Unit test data definition
     $data = [
         // bump this version to force reload of the full dataset, when content change
-        '_version' => '4.12',
+        '_version' => '4.13',
 
         // Type => array of entries
         'Entity' => [
@@ -59,7 +61,7 @@ function loadDataset()
             ], [
                 'name'        => '_test_child_2',
                 'entities_id' => '_test_root_entity',
-            ]
+            ],
         ], 'Computer' => [
             [
                 'name'        => '_test_pc01',
@@ -95,7 +97,7 @@ function loadDataset()
                 'name'        => '_test_pc_with_encoded_comment',
                 'entities_id' => '_test_root_entity',
                 'comment'     => '&#60;&#62;', // "&#60;" => "<", "&#62;" => ">"
-            ]
+            ],
         ], 'ComputerModel' => [
             [
                 'name'           => '_test_computermodel_1',
@@ -125,7 +127,7 @@ function loadDataset()
                 'name'         => '_test_soft_3',
                 'entities_id'  => '_test_root_entity',
                 'is_recursive' => 1,
-            ]
+            ],
 
         ], 'SoftwareVersion' => [
             [
@@ -138,7 +140,7 @@ function loadDataset()
                 'entities_id' => '_test_root_entity',
                 'is_recursive' => 1,
                 'softwares_id' => '_test_soft',
-            ]
+            ],
         ], 'NetworkEquipment' => [
             [
                 'name'           => '_test_networkequipment_1',
@@ -172,7 +174,7 @@ function loadDataset()
                 'name'         => '_test_printer_ent2',
                 'entities_id'  => '_test_child_2',
                 'is_recursive' => 0,
-            ]
+            ],
         ], 'Phone' => [
             [
                 'name'           => '_test_phone_1',
@@ -209,7 +211,7 @@ function loadDataset()
                 '_entities_id'  => 0,
                 '_profiles_id'  => 4,
                 '_is_recursive' => 1,
-            ]
+            ],
         ], 'Group'   => [
             [
                 'name'         => '_test_group_1',
@@ -260,29 +262,29 @@ function loadDataset()
                 'itemtype'   => 'TaskCategory',
                 'language'   => 'fr_FR',
                 'field'      => 'name',
-                'value'      => 'FR - _cat_1'
+                'value'      => 'FR - _cat_1',
             ],
             [
                 'items_id'   => '_cat_1',
                 'itemtype'   => 'TaskCategory',
                 'language'   => 'fr_FR',
                 'field'      => 'comment',
-                'value'      => 'FR - Commentaire pour catégorie _cat_1'
+                'value'      => 'FR - Commentaire pour catégorie _cat_1',
             ],
             [
                 'items_id'   => '_subcat_1',
                 'itemtype'   => 'TaskCategory',
                 'language'   => 'fr_FR',
                 'field'      => 'name',
-                'value'      => 'FR - _subcat_1'
+                'value'      => 'FR - _subcat_1',
             ],
             [
                 'items_id'   => '_subcat_1',
                 'itemtype'   => 'TaskCategory',
                 'language'   => 'fr_FR',
                 'field'      => 'comment',
-                'value'      => 'FR - Commentaire pour sous-catégorie _subcat_1'
-            ]
+                'value'      => 'FR - Commentaire pour sous-catégorie _subcat_1',
+            ],
         ], 'Contact' => [
             [
                 'name'         => '_contact01_name',
@@ -293,8 +295,8 @@ function loadDataset()
                 'fax'          => '0123456787',
                 'email'        => '_contact01_firstname._contact01_name@glpi.com',
                 'comment'      => 'Comment for contact _contact01_name',
-                'entities_id'  => '_test_root_entity'
-            ]
+                'entities_id'  => '_test_root_entity',
+            ],
         ], 'Supplier' => [
             [
                 'name'         => '_suplier01_name',
@@ -302,7 +304,7 @@ function loadDataset()
                 'fax'          => '0123456787',
                 'email'        => 'info@_supplier01_name.com',
                 'comment'      => 'Comment for supplier _suplier01_name',
-                'entities_id'  => '_test_root_entity'
+                'entities_id'  => '_test_root_entity',
             ],
             [
                 'name'         => '_suplier02_name',
@@ -310,54 +312,54 @@ function loadDataset()
                 'fax'          => '0123456786',
                 'email'        => 'info@_supplier02_name.com',
                 'comment'      => 'Comment for supplier _suplier02_name',
-                'entities_id'  => '_test_root_entity'
-            ]
+                'entities_id'  => '_test_root_entity',
+            ],
         ], 'Location' => [
             [
                 'name'         => '_location01',
-                'comment'      => 'Comment for location _location01'
+                'comment'      => 'Comment for location _location01',
             ],
             [
                 'name'         => '_sublocation01',
                 'locations_id' => '_location01',
-                'comment'      => 'Comment for location _sublocation01'
+                'comment'      => 'Comment for location _sublocation01',
             ],
             [
                 'name'         => '_location02',
-                'comment'      => 'Comment for location _sublocation02'
+                'comment'      => 'Comment for location _sublocation02',
             ],
             [
                 'name'         => '_location02 > _sublocation02',
                 'comment'      => 'Comment for location _sublocation02',
-                'code'         => 'code_sublocation02'
+                'code'         => 'code_sublocation02',
             ],
             [
                 'name'         => '_location02 > _sublocation03',
                 'comment'      => 'Comment for location _sublocation03',
-                'alias'        => 'alias_sublocation03'
+                'alias'        => 'alias_sublocation03',
             ],
             [
                 'name'         => '_location02 > _sublocation04',
                 'comment'      => 'Comment for location _sublocation04',
                 'code'         => 'code_sublocation04',
-                'alias'        => 'alias_sublocation04'
+                'alias'        => 'alias_sublocation04',
             ],
             [
                 'name'         => '_location01_subentity',
                 'entities_id'  => '_test_root_entity',
-                'comment'      => 'Comment for location _location01_subentity'
+                'comment'      => 'Comment for location _location01_subentity',
             ],
         ], Socket::class => [
             [
                 'name'         => '_socket01',
                 'locations_id' => '_location01',
-                'comment'      => 'Comment for socket _socket01'
-            ]
+                'comment'      => 'Comment for socket _socket01',
+            ],
         ], 'BudgetType' => [
             [
                 'name'         => '_budgettype01',
-                'comment'      => 'Comment for budgettype _budgettype01'
-            ]
+                'comment'      => 'Comment for budgettype _budgettype01',
+            ],
         ], 'Budget' => [
             [
                 'name'           => '_budget01',
@@ -366,41 +368,41 @@ function loadDataset()
                 'budgettypes_id' => '_budgettype01',
                 'begin_date'     => '2016-10-18',
                 'end_date'       => '2016-12-31',
-                'entities_id'     => '_test_root_entity'
-            ]
+                'entities_id'     => '_test_root_entity',
+            ],
         ], 'Ticket' => [
             [
                 'name'           => '_ticket01',
                 'content'        => 'Content for ticket _ticket01',
                 'externalid'     => 'external_id',
                 'users_id_recipient' => TU_USER,
-                'entities_id'    => '_test_root_entity'
+                'entities_id'    => '_test_root_entity',
             ],
             [
                 'name'           => '_ticket02',
                 'content'        => 'Content for ticket _ticket02',
                 'users_id_recipient' => TU_USER,
-                'entities_id'    => '_test_root_entity'
+                'entities_id'    => '_test_root_entity',
             ],
             [
                 'name'           => '_ticket03',
                 'content'        => 'Content for ticket _ticket03',
                 'users_id_recipient' => TU_USER,
-                'entities_id'    => '_test_child_1'
+                'entities_id'    => '_test_child_1',
             ],
             [
                 'id'             => 100, // Force ID that will be used in imap test suite fixtures
                 'name'           => '_ticket100',
                 'content'        => 'Content for ticket _ticket100',
                 'users_id_recipient' => TU_USER,
-                'entities_id'    => '_test_root_entity'
+                'entities_id'    => '_test_root_entity',
             ],
             [
                 'id'             => 101, // Force ID that will be used in imap test suite fixtures
                 'name'           => '_ticket101',
                 'content'        => 'Content for ticket _ticket101',
                 'users_id_recipient' => TU_USER,
-                'entities_id'    => '_test_root_entity'
+                'entities_id'    => '_test_root_entity',
             ],
         ], 'TicketTask' => [
             [
@@ -410,15 +412,15 @@ function loadDataset()
                 'content'            => 'Task to be done',
                 'is_private'         => 0,
                 'users_id_tech'      => TU_USER,
-                'date'               => '2016-10-19 11:50:50'
-            ]
+                'date'               => '2016-10-19 11:50:50',
+            ],
         ], 'UserEmail' => [
             [
                 'users_id'     => TU_USER,
                 'is_default'   => '1',
                 'is_dynamic'   => '0',
-                'email'        => TU_USER . '@glpi.com'
-            ]
+                'email'        => TU_USER . '@glpi.com',
+            ],
         ], 'KnowbaseItem' => [
             [
                 'name'     => '_knowbaseitem01',
@@ -433,7 +435,7 @@ function loadDataset()
                 'is_faq'   => 0,
                 'users_id' => TU_USER,
                 'date'     => '2016-11-17 12:27:48',
-            ]
+            ],
         ], 'KnowbaseItem_Item' => [
             [
                 'knowbaseitems_id' => '_knowbaseitem01',
@@ -459,26 +461,26 @@ function loadDataset()
                 'knowbaseitems_id' => '_knowbaseitem02',
                 'itemtype'         => 'Computer',
                 'items_id'         => '_test_pc21',
-            ]
+            ],
         ], 'Entity_KnowbaseItem' => [
             [
                 'knowbaseitems_id' => '_knowbaseitem01',
-                'entities_id'      => '_test_root_entity'
+                'entities_id'      => '_test_root_entity',
             ],
             [
                 'knowbaseitems_id' => '_knowbaseitem02',
-                'entities_id'      => '_test_child_1'
-            ]
+                'entities_id'      => '_test_child_1',
+            ],
         ], 'DocumentType' => [
             [
                 'name'          => 'markdown',
                 'is_uploadable' => '1',
-                'ext'           => 'md'
-            ]
+                'ext'           => 'md',
+            ],
         ], 'Manufacturer' => [
             [
                 'name'          => 'My Manufacturer',
-            ]
+            ],
         ], 'SoftwareLicense' => [
             [
                 'name'         => '_test_softlic_1',
@@ -555,19 +557,19 @@ function loadDataset()
                 'softwarelicenses_id'   => '_test_softlic_2',
                 'items_id'              => '_test_pc21',
                 'itemtype'              => 'Computer',
-            ]
+            ],
         ], 'DeviceSimcard' => [
             [
                 'designation'         => '_test_simcard_1',
                 'entities_id'         => '_test_root_entity',
                 'is_recursive'        => 1,
-            ]
+            ],
         ], 'DeviceSensor' => [
             [
                 'designation'  => '_test_sensor_1',
                 'entities_id'  => '_test_root_entity',
-                'is_recursive' => 1
-            ]
+                'is_recursive' => 1,
+            ],
         ], 'AuthLDAP' => [
             [
                 'name'            => '_local_ldap',
@@ -591,16 +593,16 @@ function loadDataset()
                 'language_field'  => 'preferredlanguage',
                 'group_search_type'  => \AuthLDAP::GROUP_SEARCH_GROUP,
                 'group_condition' => '(objectclass=groupOfNames)',
-                'group_member_field' => 'member'
-            ]
+                'group_member_field' => 'member',
+            ],
         ], 'Holiday'   => [
             [
                 'name'         => 'X-Mas',
                 'entities_id'  => '_test_root_entity',
                 'is_recursive' => 1,
                 'begin_date'   => '2018-12-29',
-                'end_date'     => '2019-01-06'
-            ]
+                'end_date'     => '2019-01-06',
+            ],
         ], 'Glpi\\Dashboard\\Dashboard' => [
             [
                 'key'     => 'test_dashboard',
@@ -609,12 +611,12 @@ function loadDataset()
             ], [
                 'key'     => 'test_dashboard2',
                 'name'    => 'Test_Dashboard_2',
-                'context' => 'core'
+                'context' => 'core',
             ], [
                 'key'     => 'test_dashboard3',
                 'name'    => 'Test_Dashboard_3',
                 'context' => 'oustide_core',
-            ]
+            ],
         ], 'Glpi\\Dashboard\\Item' => [
             [
                 'dashboards_dashboards_id' => 'Test_Dashboard',
@@ -624,7 +626,7 @@ function loadDataset()
                 'y'                        => 0,
                 'width'                    => 2,
                 'height'                   => 2,
-                'card_options'             => '{"color": "#FFFFFF"}'
+                'card_options'             => '{"color": "#FFFFFF"}',
             ], [
                 'dashboards_dashboards_id' => 'Test_Dashboard',
                 'gridstack_id'             => 'bn_count_Computer_2',
@@ -633,7 +635,7 @@ function loadDataset()
                 'y'                        => 0,
                 'width'                    => 2,
                 'height'                   => 2,
-                'card_options'             => '{"color": "#FFFFFF"}'
+                'card_options'             => '{"color": "#FFFFFF"}',
             ], [
                 'dashboards_dashboards_id' => 'Test_Dashboard',
                 'gridstack_id'             => 'bn_count_Computer_3',
@@ -642,8 +644,8 @@ function loadDataset()
                 'y'                        => 0,
                 'width'                    => 2,
                 'height'                   => 2,
-                'card_options'             => '{"color": "#FFFFFF"}'
-            ]
+                'card_options'             => '{"color": "#FFFFFF"}',
+            ],
         ], 'Glpi\\Dashboard\\Right' => [
             [
                 'dashboards_dashboards_id' => 'Test_Dashboard',
@@ -653,20 +655,13 @@ function loadDataset()
                 'dashboards_dashboards_id' => 'Test_Dashboard',
                 'itemtype'                 => 'Profile',
                 'items_id'                 => 3,
-            ]
-        ], 'Plugin' => [
-            [
-                'directory'    => 'tester',
-                'name'         => 'tester',
-                'version'      => '1.0.0',
-                'state'        => 1,
-            ]
+            ],
         ], 'Change' => [
             [
                 'name'           => '_change01',
                 'content'        => 'Content for ticket _change01',
                 'users_id_recipient' => TU_USER,
-                'entities_id'    => '_test_root_entity'
+                'entities_id'    => '_test_root_entity',
             ],
         ],
         'OAuthClient' => [
@@ -677,8 +672,67 @@ function loadDataset()
                 'is_active' => 1,
                 'is_confidential' => 1,
                 'name' => 'Test OAuth Client',
-            ]
-        ]
+            ],
+        ],
+        'CartridgeItem' => [
+            [
+                'name'        => '_test_cartridgeitem01',
+                'entities_id' => '_test_root_entity',
+            ],
+        ],
+        'ConsumableItem' => [
+            [
+                'name'        => '_test_consumableitem01',
+                'entities_id' => '_test_root_entity',
+            ],
+        ],
+        'Glpi\\Asset\\AssetDefinition' => [
+            [
+                'system_name' => 'Test01',
+                'icon' => 'ti ti-test-pipe',
+                'label' => 'Test01',
+                'is_active' => 1,
+                'profiles' => ['4' => ALLSTANDARDRIGHT | READ_ASSIGNED | UPDATE_ASSIGNED | READ_OWNED | UPDATE_OWNED],
+            ],
+            [
+                'system_name' => 'Test02',
+                'icon' => 'ti ti-test-pipe',
+                'label' => 'Test02',
+                'is_active' => 1,
+                'profiles' => ['4' => ALLSTANDARDRIGHT | READ_ASSIGNED | UPDATE_ASSIGNED | READ_OWNED | UPDATE_OWNED],
+            ],
+        ],
+        'Glpi\\Asset\\CustomFieldDefinition' => [
+            [
+                'system_name' => 'teststring',
+                'assets_assetdefinitions_id' => 'Test01',
+                'label' => 'Test String',
+                'type' => 'Glpi\\Asset\\CustomFieldType\\StringType',
+                'field_options' => '{"full_width":"0","readonly":"0","required":"0"}',
+            ],
+        ],
+        'Glpi\\CustomAsset\\Test01Asset' => [
+            [
+                'name' => 'TestA',
+                'entities_id' => '_test_root_entity',
+                'custom_teststring' => 'Test String A',
+            ],
+            [
+                'name' => 'TestB',
+                'entities_id' => '_test_root_entity',
+                'custom_teststring' => 'Test String B',
+            ],
+        ],
+        'Glpi\\CustomAsset\\Test02Asset' => [
+            [
+                'name' => 'Test02 A',
+                'entities_id' => '_test_root_entity',
+            ],
+            [
+                'name' => 'Test02 B',
+                'entities_id' => '_test_root_entity',
+            ],
+        ],
     ];
 
     // To bypass various right checks
@@ -690,15 +744,8 @@ function loadDataset()
     $_SESSION['glpiactiveentities']  = [0];
     $_SESSION['glpiactiveentities_string'] = "'0'";
     $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
-    $CFG_GLPI['root_doc']            = '/glpi';
 
     $DB->beginTransaction();
-
-    Config::setConfigurationValues('core', ['url_base'     => GLPI_URI,
-        'url_base_api' => GLPI_URI . '/apirest.php'
-    ]);
-    $CFG_GLPI['url_base']      = GLPI_URI;
-    $CFG_GLPI['url_base_api']  = GLPI_URI . '/apirest.php';
 
     // make all caldav component available for tests (for default usage we don't VTODO)
     $CFG_GLPI['caldav_supported_components']  = ['VEVENT', 'VJOURNAL', 'VTODO'];
@@ -711,7 +758,7 @@ function loadDataset()
                 continue;
             }
             foreach ($inputs as $input) {
-               // Resolve FK
+                // Resolve FK
                 foreach ($input as $k => $v) {
                     // $foreigntype = $type; // by default same type than current type (is the case of the dropdowns)
                     $foreigntype = false;
@@ -724,26 +771,29 @@ function loadDataset()
                     }
                     if ($foreigntype && isset($ids[$foreigntype][$v]) && !is_numeric($v)) {
                         $input[$k] = $ids[$foreigntype][$v];
-                    } else if ($k == 'items_id'  &&  isset($input['itemtype']) && isset($ids[$input['itemtype']][$v]) && !is_numeric($v)) {
+                    } elseif ($k == 'items_id'  &&  isset($input['itemtype']) && isset($ids[$input['itemtype']][$v]) && !is_numeric($v)) {
                         $input[$k] = $ids[$input['itemtype']][$v];
-                    } else if ($foreigntype && $foreigntype != 'UNKNOWN' && !is_numeric($v)) {
-                       // not found in ids array, then must get it from DB
-                        if ($obj = getItemByTypeName($foreigntype, $v)) {
-                            $input[$k] = $obj->getID();
-                        }
+                    } elseif ($foreigntype && !is_numeric($v)) {
+                        // not found in ids array, then must get it from DB
+                        $foreign_id = getItemByTypeName($foreigntype, $v, true);
+                        $input[$k] = $foreign_id;
+
+                        $ids[$foreigntype][$v] = $foreign_id; // cache ID
                     }
                 }
 
-                if (isset($input['name']) && $item = getItemByTypeName($type, $input['name'])) {
-                    $input['id'] = $ids[$type][$input['name']] = $item->getField('id');
-                    $item->update($input);
+                $item = getItemForItemtype($type);
+                $name_field = $item::getNameField();
+
+                if (isset($input[$name_field]) && $item->getFromDBByCrit([$name_field => $input[$name_field]])) {
+                    // Update existing item
+                    $item->update([$item::getIndexName() => $item->getID()] + $input);
                 } else {
                     // Not found, create it
-                    $item = getItemForItemtype($type);
-                    $id = $item->add($input);
-                    if (isset($input['name'])) {
-                        $ids[$type][$input['name']] = $id;
-                    }
+                    $item->add($input);
+                }
+                if (isset($input[$name_field])) {
+                    $ids[$type][$input[$name_field]] = $item->getID(); // cache ID
                 }
             }
         }
@@ -757,22 +807,29 @@ function loadDataset()
     // Ensure cache is clear after dataset reload
     global $GLPI_CACHE;
     $GLPI_CACHE->clear();
+
+    // Force bootstraping of the created custom assets/dropdowns
+    AssetDefinitionManager::unsetInstance();
+    AssetDefinitionManager::getInstance()->bootstrapDefinitions();
+    DropdownDefinitionManager::unsetInstance();
+    DropdownDefinitionManager::getInstance()->bootstrapDefinitions();
 }
 
 /**
  * Test helper, search an item from its type and name
- *
- * @param string  $type
- * @param string  $name
- * @param boolean $onlyid
- * @return CommonDBTM|false the item, or its id
+ * @template T of CommonDBTM
+ * @param class-string<T>   $type
+ * @param string            $name
+ * @param bool              $onlyid
+ * @phpstan-return ($onlyid is true ? int : T)
+ *      Item of $type class, or its id
  */
-function getItemByTypeName($type, $name, $onlyid = false)
+function getItemByTypeName(string $type, string $name, bool $onlyid = false): CommonDBTM|int
 {
     $item = getItemForItemtype($type);
     $nameField = $type::getNameField();
-    if ($item->getFromDBByCrit([$nameField => $name])) {
-        return ($onlyid ? $item->getField('id') : $item);
+    if (!$item->getFromDBByCrit([$nameField => $name])) {
+        throw new \RuntimeException(sprintf('Unable to load a single `%s` item with the name `%s` (none or many exist may exist).', $type, $name));
     }
-    return false;
+    return ($onlyid ? $item->getID() : $item);
 }

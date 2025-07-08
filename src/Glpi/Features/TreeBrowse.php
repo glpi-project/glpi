@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -85,10 +85,9 @@ trait TreeBrowse
         $no_cat_found  = __s("No category found");
 
         $JS = <<<JAVASCRIPT
-        var loadingindicator  = $("<div class='loadingindicator'>$loading_txt</div>");
-        $('#items_list').html(loadingindicator);
+        $('#items_list').html(`<span class="spinner-border spinner-border position-absolute m-5 start-50" role="status" aria-hidden="true"></span>`);
         window.loadNode = function(cat_id) {
-            $('#items_list').html(loadingindicator);
+            $('#items_list').html(`<span class="spinner-border spinner-border position-absolute m-5 start-50" role="status" aria-hidden="true"></span>`);
             $('#items_list').load('$ajax_url', {
                 'action': 'getItemslist',
                 'cat_id': cat_id,
@@ -167,7 +166,7 @@ JAVASCRIPT;
             });
 
 JAVASCRIPT;
-            echo "<div id='tree_browse'>
+            echo "<div id='tree_browse' data-testid='tree-browse'>
             <div class='browser_tree d-flex flex-column'>
                 <input type='text' class='browser_tree_search' placeholder='" . __s("Search…") . "' id='browser_tree_search'>
                 <div id='tree_category' class='browser-tree-container'></div>
@@ -191,9 +190,7 @@ JAVASCRIPT;
         /** @var \DBmysql $DB */
         global $DB;
 
-        /** @var class-string<CommonDBTM> $cat_itemtype */
-        $cat_itemtype = static::getCategoryItemType($itemtype);
-        $cat_item     = new $cat_itemtype();
+        $cat_item = static::getCategoryItem($itemtype);
 
         $params['export_all'] = true;
 
@@ -210,9 +207,9 @@ JAVASCRIPT;
 
         $id_criteria = new QueryExpression($itemtype::getTableField('id') . ' IN ( SELECT * FROM (' . $sql_id . ') AS id_criteria )');
 
-        $cat_table = $cat_itemtype::getTable();
-        $cat_fk    = $cat_itemtype::getForeignKeyField();
-        $cat_join = $itemtype . '_' . $cat_itemtype;
+        $cat_table = $cat_item::getTable();
+        $cat_fk    = $cat_item::getForeignKeyField();
+        $cat_join = $itemtype . '_' . $cat_item::class;
 
         if (class_exists($cat_join)) {
             $cat_criteria = [1];
@@ -232,10 +229,10 @@ JAVASCRIPT;
                 $cat_join::getTable() => [
                     'ON'  => [
                         $cat_join::getTable() => $itemtype::getForeignKeyField(),
-                        $itemtype::getTable() => 'id'
+                        $itemtype::getTable() => 'id',
                     ],
                     $cat_criteria,
-                ]
+                ],
             ];
         } else {
             $join = [];
@@ -249,42 +246,41 @@ JAVASCRIPT;
                 'LEFT JOIN' => $join,
                 'WHERE'  => [
                     $cat_join::getTableField($cat_fk) => new QueryExpression(
-                        $DB->quoteName($cat_itemtype::getTableField('id'))
+                        $DB->quoteName($cat_item::getTableField('id'))
                     ),
-                    $id_criteria
-                ]
+                    $id_criteria,
+                ],
             ],
             'items_count'
         );
 
-        $select[] = $cat_itemtype::getTableField('id');
-        $select[] = $cat_itemtype::getTableField('name');
+        $select[] = $cat_item::getTableField('id');
+        $select[] = $cat_item::getTableField('name');
         if ($cat_item instanceof CommonTreeDropdown) {
-            $select[] = $cat_itemtype::getTableField($cat_fk);
+            $select[] = $cat_item::getTableField($cat_fk);
         }
         $select[] = $items_subquery;
 
         if ($cat_item instanceof CommonTreeDropdown) {
-            $order[] = $cat_itemtype::getTableField('level') . ' DESC';
-            $order[] = $cat_itemtype::getTableField('name');
+            $order[] = $cat_item::getTableField('level') . ' DESC';
+            $order[] = $cat_item::getTableField('name');
         } else {
-            $order[] = $cat_itemtype::getTableField('name') . ' DESC';
+            $order[] = $cat_item::getTableField('name') . ' DESC';
         }
 
         $cat_iterator = $DB->request([
             'SELECT' => $select,
             'FROM' => $cat_table,
-            'ORDER' => $order
+            'ORDER' => $order,
         ]);
 
-        $inst = new $cat_itemtype();
         $categories = [];
         $parents = [];
         foreach ($cat_iterator as $category) {
             if ($category instanceof CommonDropdown && $category->maybeTranslated()) {
                 $tname = DropdownTranslation::getTranslatedValue(
                     $category['id'],
-                    $inst->getType()
+                    $cat_item::class
                 );
                 if (!empty($tname)) {
                     $category['name'] = $tname;
@@ -299,9 +295,9 @@ JAVASCRIPT;
         // Without category
         $join[$cat_table] = [
             'ON' => [
-                $cat_join::getTable() => $cat_itemtype::getForeignKeyField(),
-                $cat_table => 'id'
-            ]
+                $cat_join::getTable() => $cat_item::getForeignKeyField(),
+                $cat_table => 'id',
+            ],
         ];
         $no_cat_count = $DB->request(
             [
@@ -309,9 +305,9 @@ JAVASCRIPT;
                 'FROM'   => $itemtype::getTable(),
                 'LEFT JOIN' => $join,
                 'WHERE'  => [
-                    $cat_itemtype::getTableField('id') => null,
+                    $cat_item::getTableField('id') => null,
                     $id_criteria,
-                ]
+                ],
             ]
         )->current();
         $categories[] = [
@@ -330,7 +326,7 @@ JAVASCRIPT;
                 'title'  => $category['name'],
                 'parent' => $category[$cat_fk] ?? 0,
                 'a_attr' => [
-                    'data-id' => $cat_id
+                    'data-id' => $cat_id,
                 ],
             ];
 
@@ -366,16 +362,21 @@ JAVASCRIPT;
     }
 
     /**
-     * Return category itemtype for given itemtype.
+     * Return category item for given itemtype.
      *
-     * @param string $itemtype
-     *
-     * @return string|null
+     * @param class-string<\CommonDBTM> $itemtype
      */
-    public static function getCategoryItemType(string $itemtype): ?string
+    public static function getCategoryItem(string $itemtype): ?CommonDBTM
     {
-        return is_a($itemtype, CommonITILObject::class, true)
-            ? ITILCategory::class
-            : $itemtype . 'Category';
+        if (\is_a($itemtype, CommonITILObject::class, true)) {
+            return new ITILCategory();
+        }
+
+        $expected_class = $itemtype . 'Category';
+        if (is_a($expected_class, CommonDBTM::class, true)) {
+            return new $expected_class();
+        }
+
+        return null;
     }
 }

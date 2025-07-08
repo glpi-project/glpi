@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Stat\Data\Graph\StatDataSatisfaction;
@@ -40,12 +42,15 @@ use Glpi\Stat\Data\Graph\StatDataSatisfactionSurvey;
 use Glpi\Stat\Data\Graph\StatDataTicketAverageTime;
 use Glpi\Stat\Data\Graph\StatDataTicketNumber;
 
+use function Safe\preg_match;
+use function Safe\preg_replace;
+
 /**
  * @var \DBmysql $DB
  */
 global $DB;
 
-Html::header(__('Statistics'), $_SERVER['PHP_SELF'], "helpdesk", "stat");
+Html::header(__('Statistics'), '', "helpdesk", "stat");
 
 Session::checkRight("statistic", READ);
 
@@ -56,7 +61,7 @@ if (!$item = getItemForItemtype($_GET['itemtype'])) {
 
 //sanitize dates
 foreach (['date1', 'date2'] as $key) {
-    if (array_key_exists($key, $_GET) && preg_match('/^\d{4}-\d{2}-\d{2}$/', (string)$_GET[$key]) !== 1) {
+    if (array_key_exists($key, $_GET) && preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) $_GET[$key]) !== 1) {
         unset($_GET[$key]);
     }
 }
@@ -71,8 +76,8 @@ if (
     $_GET["date2"] = $tmp;
 }
 
-$cleantarget = preg_replace("/&date[12]=[0-9-]*/", "", $_SERVER['QUERY_STRING']);
-$cleantarget = preg_replace("/&*id=(\d+&?)/", "", $cleantarget);
+$target_params = preg_replace("/&date[12]=[0-9-]*/", "", $_SERVER['QUERY_STRING']);
+$target_params = preg_replace("/&*id=(\d+&?)/", "", $target_params);
 
 $next    = 0;
 $prev    = 0;
@@ -83,12 +88,14 @@ $val1   = null;
 $val2   = null;
 $values = [];
 
-switch ($_GET["type"]) {
+/** @var string $type */
+$type = $_GET['type'] ?? '';
+switch ($type) {
     case "technician_followup":
     case "technician":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $type);
         $title   = sprintf(
             __s('%1$s: %2$s'),
             __s('Technician'),
@@ -99,7 +106,7 @@ switch ($_GET["type"]) {
     case "suppliers_id_assign":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $type);
         $supplier = Supplier::getById($_GET["id"]);
         $title   = sprintf(
             __s('%1$s: %2$s'),
@@ -112,7 +119,7 @@ switch ($_GET["type"]) {
     case "user":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $type);
         $title   = sprintf(
             __s('%1$s: %2$s'),
             User::getTypeName(1),
@@ -121,9 +128,10 @@ switch ($_GET["type"]) {
         break;
 
     case "itilcategories_tree":
-        $parent = (isset($_GET['champ']) ? $_GET['champ'] : 0);
-       // nobreak;
+        $parent = ($_GET['champ'] ?? 0);
+        // nobreak;
 
+        // no break
     case "itilcategories_id":
         $val1    = $_GET["id"];
         $val2    = "";
@@ -131,7 +139,7 @@ switch ($_GET["type"]) {
             $_GET["itemtype"],
             $_GET["date1"],
             $_GET["date2"],
-            $_GET["type"],
+            $type,
             $parent
         );
         $title   = sprintf(
@@ -143,8 +151,8 @@ switch ($_GET["type"]) {
         break;
 
     case 'locations_tree':
-        $parent = (isset($_GET['champ']) ? $_GET['champ'] : 0);
-       // no break
+        $parent = ($_GET['champ'] ?? 0);
+        // no break
 
     case 'locations_id':
         $val1    = $_GET['id'];
@@ -153,7 +161,7 @@ switch ($_GET["type"]) {
             $_GET['itemtype'],
             $_GET['date1'],
             $_GET['date2'],
-            $_GET['type'],
+            $type,
             $parent
         );
         $title   = sprintf(
@@ -167,15 +175,15 @@ switch ($_GET["type"]) {
     case "type":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $type);
         $title   = sprintf(__('%1$s: %2$s'), _n('Type', 'Types', 1), Ticket::getTicketTypeName($_GET["id"]));
         $title   = htmlescape($title);
         break;
 
     case 'group_tree':
     case 'groups_tree_assign':
-        $parent = (isset($_GET['champ']) ? $_GET['champ'] : 0);
-       // no break
+        $parent = ($_GET['champ'] ?? 0);
+        // no break
 
     case "group":
         $val1    = $_GET["id"];
@@ -184,7 +192,7 @@ switch ($_GET["type"]) {
             $_GET["itemtype"],
             $_GET["date1"],
             $_GET["date2"],
-            $_GET["type"],
+            $type,
             $parent
         );
         $title   = sprintf(
@@ -198,7 +206,7 @@ switch ($_GET["type"]) {
     case "groups_id_assign":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $type);
         $title   = sprintf(
             __('%1$s: %2$s'),
             Group::getTypeName(1),
@@ -212,8 +220,8 @@ switch ($_GET["type"]) {
     case "impact":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
-        $title = match ($_GET['type']) {
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $type);
+        $title = match ($type) {
             'priority' => sprintf(__('%1$s: %2$s'), __('Priority'), $item::getPriorityName($_GET["id"])),
             'urgency'  => sprintf(__('%1$s: %2$s'), __('Urgency'), $item::getUrgencyName($_GET["id"])),
             'impact'   => sprintf(__('%1$s: %2$s'), __('Impact'), $item->getImpactName($_GET["id"])),
@@ -224,7 +232,7 @@ switch ($_GET["type"]) {
     case "usertitles_id":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $type);
         $title   = sprintf(
             __('%1$s: %2$s'),
             _x('person', 'Title'),
@@ -236,7 +244,7 @@ switch ($_GET["type"]) {
     case "solutiontypes_id":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $type);
         $title   = sprintf(
             __('%1$s: %2$s'),
             SolutionType::getTypeName(1),
@@ -248,7 +256,7 @@ switch ($_GET["type"]) {
     case "usercategories_id":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $type);
         $title   = sprintf(
             __('%1$s: %2$s'),
             _n('Category', 'Categories', 1),
@@ -260,7 +268,7 @@ switch ($_GET["type"]) {
     case "requesttypes_id":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $type);
         $title   = sprintf(
             __('%1$s: %2$s'),
             RequestType::getTypeName(1),
@@ -285,8 +293,8 @@ switch ($_GET["type"]) {
                 'SELECT' => ['designation'],
                 'FROM'   => $device_table,
                 'WHERE'  => [
-                    'id' => $_GET['id']
-                ]
+                    'id' => $_GET['id'],
+                ],
             ]);
             $current = $iterator->current();
 
@@ -340,18 +348,18 @@ if ($foundkey >= 0) {
 $stat = new Stat();
 
 TemplateRenderer::getInstance()->display('pages/assistance/stats/single_item_pager.html.twig', [
-    'php_self' => $_SERVER['PHP_SELF'],
-    'cleantarget' => $cleantarget,
-    'prev' => $prev,
-    'next' => $next,
-    'title' => $title,
+    'target'        => 'stat.graph.php',
+    'target_params' => $target_params,
+    'prev'          => $prev,
+    'next'          => $next,
+    'title'         => $title,
 ]);
 
 TemplateRenderer::getInstance()->display('pages/assistance/stats/form.html.twig', [
     'target'    => 'stat.graph.php',
     'itemtype'  => $_GET['itemtype'],
     'id'        => $_GET["id"],
-    'type'      => $_GET['type'],
+    'type'      => $type,
     'date1'     => $_GET["date1"],
     'date2'     => $_GET["date2"],
     'champ'     => $_GET["champ"] ?? 0,
@@ -361,7 +369,7 @@ $stat_params = [
     'itemtype' => $_GET['itemtype'],
     'date1'    => $_GET['date1'],
     'date2'    => $_GET['date2'],
-    'type'     => $_GET['type'],
+    'type'     => $type,
     'val1'     => $val1,
     'val2'     => $val2,
 ];

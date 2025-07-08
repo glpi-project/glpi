@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -54,16 +54,16 @@ class Holiday extends CommonDropdown
 
         return [['name'  => 'begin_date',
             'label' => __('Start'),
-            'type'  => 'date'
+            'type'  => 'date',
         ],
             ['name'  => 'end_date',
                 'label' => __('End'),
-                'type'  => 'date'
+                'type'  => 'date',
             ],
             ['name'  => 'is_perpetual',
                 'label' => __('Recurrent'),
-                'type'  => 'bool'
-            ]
+                'type'  => 'bool',
+            ],
         ];
     }
 
@@ -77,7 +77,7 @@ class Holiday extends CommonDropdown
             'table'              => $this->getTable(),
             'field'              => 'begin_date',
             'name'               => __('Start'),
-            'datatype'           => 'date'
+            'datatype'           => 'date',
         ];
 
         $tab[] = [
@@ -85,7 +85,7 @@ class Holiday extends CommonDropdown
             'table'              => $this->getTable(),
             'field'              => 'end_date',
             'name'               => __('End'),
-            'datatype'           => 'date'
+            'datatype'           => 'date',
         ];
 
         $tab[] = [
@@ -93,7 +93,7 @@ class Holiday extends CommonDropdown
             'table'              => $this->getTable(),
             'field'              => 'is_perpetual',
             'name'               => __('Recurrent'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         return $tab;
@@ -171,6 +171,6 @@ class Holiday extends CommonDropdown
 
     public static function getIcon()
     {
-        return "far fa-calendar-times";
+        return "ti ti-calendar-off";
     }
 }

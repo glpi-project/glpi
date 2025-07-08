@@ -1,0 +1,101 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% if linknewitil %}
+    <div class='mb-3'>
+        {{ call('Html::showSimpleForm', [itemtype_1|itemtype_form_path, '_add_fromitem', __('New %s for this item')|format(itemtype_1|itemtype_name(1)), {'itemtype': item.getType(), 'items_id': item.getID()}]) }}
+    </div>
+{% endif %}
+<div class="mb-3">
+    {% if number > 0 %}
+        {{ call('Session::initNavigateListItems', [itemtype_1, __(item.getTypeName(1)) ~ " " ~ item.getName()]) }}
+        {% set superheader_raw = false %}
+        {% if readall %}
+            {% set superheader %}
+                {{ __('%d linked %s')|format(number, itemtype_1|itemtype_name(number)) }}
+                (<a href="{{ itemtype_1|itemtype_search_path }}?{{ params|url_encode('&') }}">{{ __('Show all') }}</a>)
+            {% endset %}
+            {% set superheader_raw = true %}
+        {% else %}
+            {% set superheader = __("You don't have right to see all %s")|format(itemtype_1|itemtype_name(get_plural_number())) %}
+        {% endif %}
+    {% endif %}
+
+    {% set values = [] %}
+
+    {% for data in iterator %}
+        {% set values = values|merge({(values|length) : {'id' : item.getID(), 'item_id' : data["id"], 'itemtype' : itemtype_1, 'associated_elements' : ''}}) %}
+    {% endfor %}
+
+    {% set common_columns = call(itemtype_1 ~ '::getCommonDatatableColumns', []) %}
+    {% set entries = call(itemtype_1 ~ '::getDatatableEntries', [values]) %}
+    {% set datatable_params = {
+        'super_header': {
+            'label': superheader|default(''),
+            'is_raw': superheader_raw|default(false),
+        },
+        'is_tab': true,
+        'nofilter': true,
+        'nosort': true,
+        'entries': entries,
+        'total_number': entries|length,
+        'showmassiveactions': canedit|default(false),
+    } %}
+    {% set merged_params = datatable_params|merge(common_columns) %}
+
+    {{ include('components/datatable.html.twig', merged_params, with_context = false) }}
+</div>
+
+{% if showform %}
+    {% if number2 > 0 %}
+        {% set values = [] %}
+
+        {% for data in iterator2 %}
+            {% set values = values|merge({(values|length) : {'id' : item.getID(), 'item_id' : data["id"], 'itemtype' : itemtype_1, 'associated_elements' : ''}}) %}
+        {% endfor %}
+
+        {% set common_columns = call(itemtype_1 ~ '::getCommonDatatableColumns', []) %}
+        {% set entries2 = call(itemtype_1 ~ '::getDatatableEntries', [values]) %}
+        {% set datatable_params = {
+            'super_header': __('%s on linked items')|format(itemtype_1|itemtype_name(number)),
+            'is_tab': true,
+            'nofilter': true,
+            'nosort': true,
+            'entries': entries2,
+            'total_number': entries2|length,
+            'showmassiveactions': canedit,
+        } %}
+        {% set merged_params = datatable_params|merge(common_columns) %}
+
+        {{ include('components/datatable.html.twig', merged_params, with_context = false) }}
+    {% endif %}
+{% endif %}

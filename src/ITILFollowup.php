@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 
 /**
@@ -44,7 +45,7 @@ class ITILFollowup extends CommonDBChild
     use Glpi\Features\ParentStatus;
     use ITILSubItemRights;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $auto_message_on_action = false;
     public static $rightname              = 'followup';
     private $item                  = null;
@@ -56,15 +57,15 @@ class ITILFollowup extends CommonDBChild
     /**
      * @deprecated 11.0 Use ITILFollowup::ADDMY
      */
-    const ADDMYTICKET     = self::ADDMY;
+    public const ADDMYTICKET     = self::ADDMY;
     /**
      * @deprecated 11.0 Use ITILFollowup::ADD_AS_GROUP
      */
-    const ADDGROUPTICKET  = self::ADD_AS_GROUP;
+    public const ADDGROUPTICKET  = self::ADD_AS_GROUP;
     /**
      * @deprecated 11.0 Use ITILFollowup::ADDALLITEM
      */
-    const ADDALLTICKET    = self::ADDALLITEM;
+    public const ADDALLTICKET    = self::ADDALLITEM;
 
     public static $itemtype = 'itemtype';
     public static $items_id = 'items_id';
@@ -97,7 +98,7 @@ class ITILFollowup extends CommonDBChild
             $item = $this->item;
         } else {
             $itemtype = $this->getItilObjectItemType();
-            $item     = new $itemtype();
+            $item     = getItemForItemtype($itemtype);
         }
         if (!$item->can($this->getField($item->getForeignKeyField()), READ)) {
             return false;
@@ -132,7 +133,7 @@ class ITILFollowup extends CommonDBChild
                 self::ADD_AS_GROUP,
                 self::ADDMY,
                 self::ADD_AS_OBSERVER,
-                self::ADD_AS_TECHNICIAN
+                self::ADD_AS_TECHNICIAN,
             ],
         ));
     }
@@ -155,7 +156,7 @@ class ITILFollowup extends CommonDBChild
         if ($this->isParentAlreadyLoaded()) {
             $itilobject = $this->item;
         } else {
-            $itilobject = new $this->fields['itemtype']();
+            $itilobject = getItemForItemtype($this->fields['itemtype']);
         }
         if (!$itilobject->can($this->getField('items_id'), READ)) {
             return false;
@@ -192,7 +193,7 @@ class ITILFollowup extends CommonDBChild
         if ($this->isParentAlreadyLoaded()) {
             $itilobject = $this->item;
         } else {
-            $itilobject = new $this->fields['itemtype']();
+            $itilobject = getItemForItemtype($this->fields['itemtype']);
         }
 
         if (
@@ -212,7 +213,7 @@ class ITILFollowup extends CommonDBChild
         if ($this->isParentAlreadyLoaded()) {
             $itilobject = $this->item;
         } else {
-            $itilobject = new $this->fields['itemtype']();
+            $itilobject = getItemForItemtype($this->fields['itemtype']);
         }
         if (!$itilobject->can($this->getField('items_id'), READ)) {
             return false;
@@ -239,7 +240,7 @@ class ITILFollowup extends CommonDBChild
         if ($this->isParentAlreadyLoaded()) {
             $itilobject = $this->item;
         } else {
-            $itilobject = new $this->fields['itemtype']();
+            $itilobject = getItemForItemtype($this->fields['itemtype']);
         }
         if (!$itilobject->can($this->getField('items_id'), READ)) {
             return false;
@@ -252,7 +253,7 @@ class ITILFollowup extends CommonDBChild
             return true;
         }
 
-       // Only the technician
+        // Only the technician
         return (Session::haveRight(self::$rightname, self::UPDATEALL)
               || $itilobject->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
               || (isset($_SESSION["glpigroups"])
@@ -285,7 +286,7 @@ class ITILFollowup extends CommonDBChild
             'date' => $this->fields['date'],
         ]);
 
-       // Check if stats should be computed after this change
+        // Check if stats should be computed after this change
         $no_stat = isset($this->input['_do_not_compute_takeintoaccount']);
 
         $parentitem = $this->input['_job'];
@@ -295,7 +296,7 @@ class ITILFollowup extends CommonDBChild
             $this->input["users_id"]
         );
 
-       // Add log entry in the ITILObject
+        // Add log entry in the ITILObject
         $changes = [
             0,
             '',
@@ -314,16 +315,16 @@ class ITILFollowup extends CommonDBChild
         $this->updateParentStatus($this->input['_job'], $this->input);
         PendingReason_Item::handlePendingReasonUpdateFromNewTimelineItem($this);
 
-        parent::post_addItem();
-
         $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
 
         if ($donotif) {
             $options = ['followup_id' => $this->fields["id"],
-                'is_private'  => $this->fields['is_private']
+                'is_private'  => $this->fields['is_private'],
             ];
             NotificationEvent::raiseEvent("add_followup", $parentitem, $options, $this);
         }
+
+        parent::post_addItem();
     }
 
     private function addToMergedTickets(): void
@@ -350,11 +351,11 @@ class ITILFollowup extends CommonDBChild
             $donotif = false;
         }
 
-        $job = new $this->fields['itemtype']();
+        $job = getItemForItemtype($this->fields['itemtype']);
         $job->getFromDB($this->fields[self::$items_id]);
         $job->updateDateMod($this->fields[self::$items_id]);
 
-       // Add log entry in the ITIL Object
+        // Add log entry in the ITIL Object
         $changes = [
             0,
             '',
@@ -370,8 +371,8 @@ class ITILFollowup extends CommonDBChild
 
         if ($donotif) {
             $options = ['followup_id' => $this->fields["id"],
-                           // Force is_private with data / not available
-                'is_private'  => $this->fields['is_private']
+                // Force is_private with data / not available
+                'is_private'  => $this->fields['is_private'],
             ];
             NotificationEvent::raiseEvent('delete_followup', $job, $options, $this);
         }
@@ -380,14 +381,19 @@ class ITILFollowup extends CommonDBChild
 
     public function prepareInputForAdd($input)
     {
+        $parent_item = isset($input['itemtype']) ? getItemForItemtype($input['itemtype']) : null;
+        if (
+            $parent_item === null
+            || !array_key_exists('items_id', $input)
+            || $parent_item->getFromDB((int) $input['items_id']) === false
+        ) {
+            return false;
+        }
+
         //Handle template
         if (isset($input['_itilfollowuptemplates_id'])) {
             $template = new ITILFollowupTemplate();
-            $parent_item = new $input['itemtype']();
-            if (
-                !$template->getFromDB($input['_itilfollowuptemplates_id'])
-                || !$parent_item->getFromDB($input['items_id'])
-            ) {
+            if (!$template->getFromDB($input['_itilfollowuptemplates_id'])) {
                 return false;
             }
             $input = array_replace(
@@ -411,8 +417,6 @@ class ITILFollowup extends CommonDBChild
             }
         }
 
-        $input["_job"] = new $input['itemtype']();
-
         if (
             empty($input['content'])
             && !isset($input['add_close'])
@@ -425,9 +429,8 @@ class ITILFollowup extends CommonDBChild
             );
             return false;
         }
-        if (!$input["_job"]->getFromDB($input["items_id"])) {
-            return false;
-        }
+
+        $input["_job"] = $parent_item;
 
         $input['_close'] = 0;
 
@@ -437,7 +440,7 @@ class ITILFollowup extends CommonDBChild
                 $input["users_id"] = $uid;
             }
         }
-       // if ($input["_isadmin"] && $input["_type"]!="update") {
+        // if ($input["_isadmin"] && $input["_type"]!="update") {
         if (isset($input["add_close"])) {
             $input['_close'] = 1;
             $input['_no_reopen'] = 1;
@@ -462,7 +465,7 @@ class ITILFollowup extends CommonDBChild
                         ERROR
                     );
                 } else {
-                   // Refuse solution
+                    // Refuse solution
                     Session::addMessageAfterRedirect(
                         __s('If you reject the solution, you must specify a reason'),
                         false,
@@ -474,7 +477,7 @@ class ITILFollowup extends CommonDBChild
             $input['_reopen'] = 1;
         }
         unset($input["add_reopen"]);
-       // }
+        // }
 
         $itemtype = $input['itemtype'];
 
@@ -482,7 +485,7 @@ class ITILFollowup extends CommonDBChild
             Ticket::assignToMe($this->input["items_id"], $input["users_id"]);
         }
 
-       // Only calculate timeline_position if not already specified in the input
+        // Only calculate timeline_position if not already specified in the input
         if (!isset($input['timeline_position'])) {
             $input['timeline_position'] = $itemtype::getTimelinePosition($input["items_id"], $this->getType(), $input["users_id"]);
         }
@@ -496,7 +499,7 @@ class ITILFollowup extends CommonDBChild
 
     public function prepareInputForUpdate($input)
     {
-        if (!isset($this->fields['itemtype'])) {
+        if (!isset($this->fields['itemtype']) || !is_a($this->fields['itemtype'], CommonDBTM::class, true)) {
             return false;
         }
         $input["_job"] = new $this->fields['itemtype']();
@@ -504,7 +507,7 @@ class ITILFollowup extends CommonDBChild
             return false;
         }
 
-       // update last editor if content change
+        // update last editor if content change
         if (
             ($uid = Session::getLoginUserID())
             && isset($input['content']) && ($input['content'] != $this->fields['content'])
@@ -521,7 +524,7 @@ class ITILFollowup extends CommonDBChild
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $job      = new $this->fields['itemtype']();
+        $job      = getItemForItemtype($this->fields['itemtype']);
 
         if (!$job->getFromDB($this->fields['items_id'])) {
             return;
@@ -533,7 +536,7 @@ class ITILFollowup extends CommonDBChild
             'date' => $this->fields['date'],
         ]);
 
-       //Get user_id when not logged (from mailgate)
+        //Get user_id when not logged (from mailgate)
         $uid = Session::getLoginUserID();
         if ($uid === false) {
             if (isset($this->fields['users_id_editor'])) {
@@ -554,7 +557,7 @@ class ITILFollowup extends CommonDBChild
                 //FIXME: _need_send_mail does not seems to be used
 
                 $options = ['followup_id' => $this->fields["id"],
-                    'is_private'  => $this->fields['is_private']
+                    'is_private'  => $this->fields['is_private'],
                 ];
 
                 NotificationEvent::raiseEvent("update_followup", $job, $options, $this);
@@ -563,7 +566,7 @@ class ITILFollowup extends CommonDBChild
 
         $this->input = PendingReason_Item::handleTimelineEdits($this);
 
-       // change ITIL Object status (from splitted button)
+        // change ITIL Object status (from splitted button)
         if (
             isset($this->input['_status'])
             && ($this->input['_status'] != $this->input['_job']->fields['status'])
@@ -576,7 +579,7 @@ class ITILFollowup extends CommonDBChild
             $this->input['_job']->update($update);
         }
 
-       // Add log entry in the ITIL Object
+        // Add log entry in the ITIL Object
         $changes = [
             0,
             '',
@@ -629,8 +632,9 @@ class ITILFollowup extends CommonDBChild
         // Bandaid to avoid loading parent item if not needed
         // TODO: replace by proper lazy loading in GLPI 11.0
         if (!$this->isParentAlreadyLoaded()) {
-            $this->item = new $this->fields['itemtype']();
-            $this->item->getFromDB($this->fields['items_id']);
+            if ($this->item = getItemForItemtype($this->fields['itemtype'])) {
+                $this->item->getFromDB($this->fields['items_id']);
+            }
         }
     }
 
@@ -655,7 +659,7 @@ class ITILFollowup extends CommonDBChild
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -682,7 +686,7 @@ class ITILFollowup extends CommonDBChild
             'field'              => 'name',
             'name'               => RequestType::getTypeName(1),
             'forcegroupby'       => true,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -690,7 +694,7 @@ class ITILFollowup extends CommonDBChild
             'table'              => $this->getTable(),
             'field'              => 'date',
             'name'               => _n('Date', 'Dates', 1),
-            'datatype'           => 'datetime'
+            'datatype'           => 'datetime',
         ];
 
         $tab[] = [
@@ -698,7 +702,7 @@ class ITILFollowup extends CommonDBChild
             'table'              => $this->getTable(),
             'field'              => 'is_private',
             'name'               => __('Private'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -707,7 +711,7 @@ class ITILFollowup extends CommonDBChild
             'field'              => 'name',
             'name'               => User::getTypeName(1),
             'datatype'           => 'dropdown',
-            'right'              => 'all'
+            'right'              => 'all',
         ];
 
         $tab[] = [
@@ -726,12 +730,14 @@ class ITILFollowup extends CommonDBChild
 
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
+        /** @var \DBmysql $DB */
+        global $DB;
 
         $tab = [];
 
         $tab[] = [
             'id'                 => 'followup',
-            'name'               => _n('Followup', 'Followups', Session::getPluralNumber())
+            'name'               => _n('Followup', 'Followups', Session::getPluralNumber()),
         ];
 
         $followup_condition = '';
@@ -739,8 +745,8 @@ class ITILFollowup extends CommonDBChild
             $followup_condition = [
                 'OR' => [
                     'NEWTABLE.is_private'   => 0,
-                    'NEWTABLE.users_id'     => Session::getLoginUserID()
-                ]
+                    'NEWTABLE.users_id'     => Session::getLoginUserID(),
+                ],
             ];
         }
 
@@ -754,10 +760,10 @@ class ITILFollowup extends CommonDBChild
             'massiveaction'      => false,
             'joinparams'         => [
                 'jointype'           => 'itemtype_item',
-                'condition'          => $followup_condition
+                'condition'          => $followup_condition,
             ],
             'datatype'           => 'text',
-            'htmltext'           => true
+            'htmltext'           => true,
         ];
 
         $tab[] = [
@@ -770,9 +776,27 @@ class ITILFollowup extends CommonDBChild
             'forcegroupby'       => true,
             'joinparams'         => [
                 'jointype'           => 'itemtype_item',
-                'condition'          => $followup_condition
-            ]
+                'condition'          => $followup_condition,
+            ],
         ];
+
+        $tab[] = [
+            'id'                 => '72',
+            'table'              => static::getTable(),
+            'field'              => 'date',
+            'name'               => _n('Latest date', 'Latest dates', 1),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false,
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item',
+                'condition'          => $followup_condition,
+            ],
+            'computation'        => QueryFunction::max('TABLE.date'),
+            'nometa'             => true, // cannot GROUP_CONCAT a MAX
+        ];
+
 
         $tab[] = [
             'id'                 => '27',
@@ -785,8 +809,8 @@ class ITILFollowup extends CommonDBChild
             'massiveaction'      => false,
             'joinparams'         => [
                 'jointype'           => 'itemtype_item',
-                'condition'          => $followup_condition
-            ]
+                'condition'          => $followup_condition,
+            ],
         ];
 
         $tab[] = [
@@ -802,10 +826,10 @@ class ITILFollowup extends CommonDBChild
                     'table'              => static::getTable(),
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
-                        'condition'          => $followup_condition
-                    ]
-                ]
-            ]
+                        'condition'          => $followup_condition,
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -819,8 +843,8 @@ class ITILFollowup extends CommonDBChild
             'massiveaction'      => false,
             'joinparams'         => [
                 'jointype'           => 'itemtype_item',
-                'condition'          => $followup_condition
-            ]
+                'condition'          => $followup_condition,
+            ],
         ];
 
         $tab[] = [
@@ -837,10 +861,10 @@ class ITILFollowup extends CommonDBChild
                     'table'              => static::getTable(),
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
-                        'condition'          => $followup_condition
-                    ]
-                ]
-            ]
+                        'condition'          => $followup_condition,
+                    ],
+                ],
+            ],
         ];
 
         return $tab;
@@ -919,7 +943,7 @@ class ITILFollowup extends CommonDBChild
         RequestType::dropdown(
             [
                 'value' => RequestType::getDefault('followup'),
-                'condition' => ['is_active' => 1, 'is_itilfollowup' => 1]
+                'condition' => ['is_active' => 1, 'is_itilfollowup' => 1],
             ]
         );
         echo "</td>";
@@ -975,11 +999,11 @@ class ITILFollowup extends CommonDBChild
                                 'itemtype'        => $item->getType(),
                                 'is_private'      => $input['is_private'],
                                 'requesttypes_id' => $input['requesttypes_id'],
-                                'content'         => $input['content']
+                                'content'         => $input['content'],
                             ];
                             if ($fup->can(-1, CREATE, $input2)) {
                                 if ($fup->add($input2)) {
-                                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                                 } else {
                                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
@@ -1018,7 +1042,7 @@ class ITILFollowup extends CommonDBChild
     ) {
         $itilfup_table = static::getTable();
 
-       // An ITILFollowup parent can only by a CommonItilObject
+        // An ITILFollowup parent can only by a CommonItilObject
         if (!is_a($itemtype, "CommonITILObject", true)) {
             throw new \InvalidArgumentException(
                 "'$itemtype' is not a CommonITILObject"
@@ -1026,7 +1050,7 @@ class ITILFollowup extends CommonDBChild
         }
 
         $rightname = $itemtype::$rightname;
-       // Can see all items, no need to go further
+        // Can see all items, no need to go further
         if (Session::haveRight($rightname, $itemtype::READALL)) {
             return "(`$itilfup_table`.`itemtype` = '$itemtype') ";
         }
@@ -1037,29 +1061,29 @@ class ITILFollowup extends CommonDBChild
             getForeignKeyFieldForItemType($itemtype)
         );
 
-       // Avoid empty IN ()
+        // Avoid empty IN ()
         if ($groups == "''") {
             $groups = '-1';
         }
 
-       // We need to do some specific checks for tickets
+        // We need to do some specific checks for tickets
         if ($itemtype == "Ticket") {
-           // Default condition
+            // Default condition
             $condition = "(`itemtype` = '$itemtype' AND (0 = 1 ";
             return $condition . Ticket::buildCanViewCondition("items_id") . ")) ";
         } else {
             if (Session::haveRight($rightname, $itemtype::READMY)) {
-               // Subquery for affected/assigned/observer user
+                // Subquery for affected/assigned/observer user
                 $user_query = "SELECT `$target`
                FROM `$user_table`
                WHERE `users_id` = '$user'";
 
-               // Subquery for affected/assigned/observer group
+                // Subquery for affected/assigned/observer group
                 $group_query = "SELECT `$target`
                FROM `$group_table`
                WHERE `groups_id` IN ($groups)";
 
-               // Subquery for recipient
+                // Subquery for recipient
                 $recipient_query = "SELECT `id`
                FROM `$table`
                WHERE `users_id_recipient` = '$user'";
@@ -1072,7 +1096,7 @@ class ITILFollowup extends CommonDBChild
                )
             ) ";
             } else {
-               // Can't see any items
+                // Can't see any items
                 return "(`$itilfup_table`.`itemtype` = '$itemtype' AND 0 = 1) ";
             }
         }
@@ -1093,8 +1117,8 @@ class ITILFollowup extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-       // Get parent item
-        $commonITILObject = new $this->fields['itemtype']();
+        // Get parent item
+        $commonITILObject = getItemForItemtype($this->fields['itemtype']);
         $commonITILObject->getFromDB($this->fields['items_id']);
 
         $actors = $commonITILObject->getITILActors();
@@ -1102,12 +1126,12 @@ class ITILFollowup extends CommonDBChild
         $roles = $actors[$user_id] ?? [];
 
         if (in_array(CommonITILActor::ASSIGN, $roles)) {
-           // The author is assigned -> support agent
+            // The author is assigned -> support agent
             return true;
-        } else if (in_array(CommonITILActor::OBSERVER, $roles)) {
-           // The author is an observer or a requester -> can be support agent OR
-           // requester depending on how GLPI is used so we must check the user's
-           // profiles
+        } elseif (in_array(CommonITILActor::OBSERVER, $roles)) {
+            // The author is an observer or a requester -> can be support agent OR
+            // requester depending on how GLPI is used so we must check the user's
+            // profiles
             $central_profiles = $DB->request([
                 'COUNT' => 'total',
                 'FROM' => Profile::getTable(),
@@ -1117,24 +1141,24 @@ class ITILFollowup extends CommonDBChild
                         'SELECT' => ['profiles_id'],
                         'FROM' => Profile_User::getTable(),
                         'WHERE' => [
-                            'users_id' => $user_id
-                        ]
-                    ])
-                ]
+                            'users_id' => $user_id,
+                        ],
+                    ]),
+                ],
             ]);
 
-           // No profiles, let's assume it is a support agent to be safe
+            // No profiles, let's assume it is a support agent to be safe
             if (!count($central_profiles)) {
                 return false;
             }
 
             return $central_profiles->current()['total'] > 0;
-        } else if (in_array(CommonITILActor::REQUESTER, $roles)) {
-           // The author is a requester -> not from support agent
+        } elseif (in_array(CommonITILActor::REQUESTER, $roles)) {
+            // The author is a requester -> not from support agent
             return false;
         } else {
-           // The author is not an actor of the ticket -> he was most likely a
-           // support agent that is no longer assigned to the ticket
+            // The author is not an actor of the ticket -> he was most likely a
+            // support agent that is no longer assigned to the ticket
             return true;
         }
     }

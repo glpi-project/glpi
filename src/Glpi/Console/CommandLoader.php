@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,6 +37,7 @@ namespace Glpi\Console;
 
 use AppendIterator;
 use DirectoryIterator;
+use Glpi\Application\Environment;
 use Glpi\Kernel\Kernel;
 use Plugin;
 use RecursiveDirectoryIterator;
@@ -179,7 +180,7 @@ class CommandLoader implements CommandLoaderInterface
             );
 
             if (null === $command) {
-                 continue;
+                continue;
             }
 
             $names = [$command->getName(), ...$command->getAliases()];
@@ -217,7 +218,7 @@ class CommandLoader implements CommandLoaderInterface
         }
 
         $plugins_directories = new AppendIterator();
-        foreach (PLUGINS_DIRECTORIES as $directory) {
+        foreach (GLPI_PLUGINS_DIRECTORIES as $directory) {
             $directory = str_replace(GLPI_ROOT, $this->rootdir, $directory);
             $plugins_directories->append(new DirectoryIterator($directory));
         }
@@ -274,7 +275,7 @@ class CommandLoader implements CommandLoaderInterface
                     );
 
                     if (null === $command) {
-                         continue;
+                        continue;
                     }
 
                     $expected_pattern = '/^'
@@ -333,7 +334,7 @@ class CommandLoader implements CommandLoaderInterface
             );
 
             if (null === $command) {
-                 continue;
+                continue;
             }
 
             $expected_pattern = '/^'
@@ -368,8 +369,7 @@ class CommandLoader implements CommandLoaderInterface
             return;
         }
 
-        if (!\in_array($kernel->getEnvironment(), [\GLPI::ENV_DEVELOPMENT, \GLPI::ENV_TESTING], true)) {
-            // Don't load commands if non-dev/test
+        if (!Environment::get()->shouldEnableExtraDevAndDebugTools()) {
             return;
         }
 
@@ -413,12 +413,12 @@ class CommandLoader implements CommandLoaderInterface
     private function getCommandFromFile(SplFileInfo $file, $basedir, array $prefixes = []): ?Command
     {
 
-       // Check if file is readable
+        // Check if file is readable
         if (!$file->isReadable() || !$file->isFile()) {
             return null;
         }
 
-       // Check if is a class file and finishes by "command"
+        // Check if is a class file and finishes by "command"
         if (
             !preg_match('/^(.*)command\.class\.php$/', $file->getFilename())
             && !preg_match('/^(.*)Command\.php$/', $file->getFilename())
@@ -426,14 +426,14 @@ class CommandLoader implements CommandLoaderInterface
             return null;
         }
 
-       // Classname will be lowercased, but it is ok for PHP.
+        // Classname will be lowercased, but it is ok for PHP.
         $classname = str_replace(
             ['.class.php', '.php', DIRECTORY_SEPARATOR],
             ['', '', '\\'],
             $this->getRelativePath($basedir, $file->getPathname())
         );
 
-        if (empty($prefixes)) {
+        if ($prefixes === []) {
             $prefixes = [''];
         }
         foreach ($prefixes as $prefix) {
@@ -442,13 +442,17 @@ class CommandLoader implements CommandLoaderInterface
             include_once($file->getPathname()); // Required as ReflectionClass will not use autoload
 
             if (!class_exists($classname_to_check, false)) {
-               // Try with other prefixes.
-               // Needed as a file located in root source dir of Glpi can be either namespaced either not.
+                // Try with other prefixes.
+                // Needed as a file located in root source dir of Glpi can be either namespaced either not.
+                continue;
+            }
+            if (!is_a($classname_to_check, Command::class, true)) {
+                // Not a console command.
                 continue;
             }
 
             $reflectionClass = new ReflectionClass($classname_to_check);
-            if ($reflectionClass->isInstantiable() && $reflectionClass->isSubclassOf(Command::class)) {
+            if ($reflectionClass->isInstantiable()) {
                 return new $classname_to_check();
             }
         }
@@ -466,13 +470,13 @@ class CommandLoader implements CommandLoaderInterface
     private function getRelativePath($basedir, $filepath)
     {
 
-       // Strip (multiple) ending directory separator to normalize input
+        // Strip (multiple) ending directory separator to normalize input
         while (strrpos($basedir, DIRECTORY_SEPARATOR) == strlen($basedir) - 1) {
             $basedir = substr($basedir, 0, -1);
         }
 
-       // Assume that filepath is prefixed by basedir
-       // Cannot use realpath to normalize path as it will not work when using a virtual fs (unit tests)
+        // Assume that filepath is prefixed by basedir
+        // Cannot use realpath to normalize path as it will not work when using a virtual fs (unit tests)
         return str_replace($basedir . DIRECTORY_SEPARATOR, '', $filepath);
     }
 }

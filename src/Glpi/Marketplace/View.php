@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,12 +37,18 @@ namespace Glpi\Marketplace;
 
 use CommonGLPI;
 use Config;
+use Document;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Marketplace\Api\Plugins as PluginsApi;
 use GLPINetwork;
 use Html;
 use Plugin;
 use Toolbox;
+
+use function Safe\json_encode;
+use function Safe\ob_start;
+use function Safe\ob_end_clean;
+use function Safe\parse_url;
 
 class View extends CommonGLPI
 {
@@ -98,7 +104,7 @@ class View extends CommonGLPI
     public function defineTabs($options = [])
     {
         $tabs = [
-            'no_all_tab' => true
+            'no_all_tab' => true,
         ];
         $this->addStandardTab(__CLASS__, $tabs, $options);
 
@@ -161,14 +167,11 @@ class View extends CommonGLPI
         $valid = false;
 
         if (!GLPINetwork::isServicesAvailable()) {
-            array_push(
-                $messages,
-                sprintf(__('%1$s services website seems not available from your network or offline'), 'GLPI Network'),
-                "<a href='" . $CFG_GLPI['root_doc'] . "/front/config.form.php?forcetab=Config$5'>"
-                    . __("Maybe you could setup a proxy")
-                    . "</a> "
-                    . __("or please check later")
-            );
+            $messages[] = sprintf(__('%1$s services website seems not available from your network or offline'), 'GLPI Network');
+            $messages[] = "<a href='" . $CFG_GLPI['root_doc'] . "/front/config.form.php?forcetab=Config$5'>"
+                . __("Maybe you could setup a proxy")
+                . "</a> "
+                . __("or please check later");
         } else {
             $registration_info = GLPINetwork::getRegistrationInformations();
             if (!$registration_info['is_valid']) {
@@ -176,23 +179,15 @@ class View extends CommonGLPI
 
                 $config_url = $CFG_GLPI['root_doc'] . "/front/config.form.php?forcetab=" .
                         urlencode('GLPINetwork$1');
-
-                array_push(
-                    $messages,
-                    sprintf(__('Your %1$s registration is not valid.'), 'GLPI Network'),
-                    __('A registration, at least a free one, is required to use marketplace!'),
-                    "<a href='" . GLPI_NETWORK_SERVICES . "'>" . sprintf(__('Register on %1$s'), 'GLPI Network') . "</a> "
-                        . __('and') . " "
-                        . "<a href='$config_url'>" . __("fill your registration key in setup.") . "</a>"
-                );
-            } else if (!$registration_info['subscription']['is_running']) {
+                $messages[] = sprintf(__('Your %1$s registration is not valid.'), 'GLPI Network');
+                $messages[] = __('A registration, at least a free one, is required to use marketplace!');
+                $messages[] = "<a href='" . GLPI_NETWORK_SERVICES . "'>" . sprintf(__('Register on %1$s'), 'GLPI Network') . "</a> "
+                    . __('and') . " "
+                    . "<a href='$config_url'>" . __("fill your registration key in setup.") . "</a>";
+            } elseif (!$registration_info['subscription']['is_running']) {
                 $valid = false;
-
-                array_push(
-                    $messages,
-                    sprintf(__('Your %1$s subscription has been terminated.'), 'GLPI Network'),
-                    "<a href='" . GLPI_NETWORK_SERVICES . "'>" . sprintf(__('Renew it on %1$s.'), 'GLPI Network') . "</a> "
-                );
+                $messages[] = sprintf(__('Your %1$s subscription has been terminated.'), 'GLPI Network');
+                $messages[] = "<a href='" . GLPI_NETWORK_SERVICES . "'>" . sprintf(__('Renew it on %1$s.'), 'GLPI Network') . "</a> ";
             } else {
                 $valid = true;
             }
@@ -200,7 +195,7 @@ class View extends CommonGLPI
 
         if (count($messages)) {
             echo "<div class='alert alert-important alert-warning d-flex'>";
-            echo "<i class='fa-3x ti ti-alert-triangle'></i>";
+            echo "<i class='fs-3x ti ti-alert-triangle'></i>";
             echo "<ul><li>" . implode('</li><li>', $messages) . "</li></ul>";
             echo "</div>";
         }
@@ -224,9 +219,13 @@ class View extends CommonGLPI
         bool $only_lis = false,
         string $string_filter = ""
     ) {
+        /**
+         * @var array $CFG_GLPI
+         */
+        global $CFG_GLPI;
 
         $plugin_inst = new Plugin();
-        $plugin_inst->init(true); // reload plugins
+        $plugin_inst->checkStates(true); // force synchronization of the DB data with the filesystem data
         $installed   = $plugin_inst->getList();
 
         $apiplugins  = [];
@@ -247,10 +246,16 @@ class View extends CommonGLPI
                 continue;
             }
 
+            $logo_url = $apidata['logo_url'] ?? '';
+            if (Document::isImage(\sprintf('%s/logo.png', Plugin::getPhpDir($key)))) {
+                // Use the local logo.png file if it exists.
+                $logo_url = sprintf('%s/Plugin/%s/Logo', $CFG_GLPI['root_doc'], $key);
+            }
+
             $clean_plugin = [
                 'key'           => $key,
                 'name'          => $plugin['name'],
-                'logo_url'      => $apidata['logo_url'] ?? "",
+                'logo_url'      => $logo_url,
                 'description'   => $apidata['descriptions'][0]['short_description'] ?? "",
                 'authors'       => $apidata['authors'] ?? [['id' => 'all', 'name' => $plugin['author'] ?? ""]],
                 'license'       => $apidata['license'] ?? $plugin['license'] ?? "",
@@ -305,11 +310,6 @@ class View extends CommonGLPI
             $nb_plugins
         );
 
-        // Clear all output buffers
-        while (ob_get_level()) {
-            ob_end_clean();
-        }
-
         header("X-GLPI-Marketplace-Total: $nb_plugins");
         self::displayList($plugins, "discover", $only_lis, $nb_plugins, $sort, $api->isListTruncated());
     }
@@ -325,9 +325,9 @@ class View extends CommonGLPI
         $api  = self::getAPI();
         $tags = $api->getTopTags();
 
-        $tags_li = "<li class='tag active' data-tag=''>" . __("All") . "</li>";
+        $tags_li = "<li class='tag active' data-tag=''>" . __s("All") . "</li>";
         foreach ($tags as $tag) {
-            $tags_li .= "<li class='tag' data-tag='{$tag['key']}'>" . ucfirst($tag['tag']) . "</li>";
+            $tags_li .= "<li class='tag' data-tag='" . htmlescape($tag['key']) . "'>" . htmlescape(ucfirst($tag['tag'])) . "</li>";
         }
 
         return "<ul class='plugins-tags'>{$tags_li}</ul>";
@@ -367,7 +367,7 @@ class View extends CommonGLPI
                 // Not completely offline. Do not treat as fully offline.
                 $msg = sprintf(__('Plugin list may be truncated due to %s services website unavailability. Please try again later.'), 'GLPI Network');
             }
-            $messages = '<li class="warning"><i class="fa fa-exclamation-triangle fa-3x"></i>' . $msg . '</li>';
+            $messages = '<li class="warning"><i class="ti ti-alert-triangle fs-3x"></i>' . htmlescape($msg) . '</li>';
         }
 
         $plugins_li = "";
@@ -377,9 +377,9 @@ class View extends CommonGLPI
         }
 
         if (!$only_lis) {
-           // check writable state
+            // check writable state
             if (!Controller::hasWriteAccess()) {
-                echo "<div class='alert alert-warning'><i class='fa fa-exclamation-triangle fa-5x'></i>"
+                echo "<div class='alert alert-warning'><i class='ti ti-alert-triangle fs-5x'></i>"
                       . sprintf(__("We can't write on the markeplace directory (%s)."), GLPI_MARKETPLACE_DIR)
                       . "<br>"
                       . __("If you want to ease the plugins download, please check permissions and ownership of this directory.")
@@ -420,41 +420,41 @@ HTML;
                     <select class='sort-control form-select form-select-sm'>
                         <option value='sort-alpha-asc'
                                 " . ($sort == "sort-alpha-asc" ? "selected" : "") . "
-                                data-icon='fa-fw fa-lg ti ti-sort-ascending-letters'>
+                                data-icon='fs-2 ti ti-sort-ascending-letters'>
                             " . __("Alpha ASC") . "
                         </option>
                         <option value='sort-alpha-desc'
                                 " . ($sort == "sort-alpha-desc" ? "selected" : "") . "
-                                data-icon='fa-fw fa-lg ti ti-sort-descending-letters'>
+                                data-icon='fs-2 ti ti-sort-descending-letters'>
                             " . __("Alpha DESC") . "
                         </option>
                         <option value='sort-dl'
                                 " . ($sort == "sort-dl'" ? "selected" : "") . "
-                                data-icon='fa-fw fa-lg ti ti-cloud-download'>
+                                data-icon='fs-2 ti ti-cloud-download'>
                             " . __("Most popular") . "
                         </option>
                         <option value='sort-update'
                                 " . ($sort == "sort-update'" ? "selected" : "") . "
-                                data-icon='fa-fw fas fa-lg fa-history'>
+                                data-icon='fs-2 ti ti-history'>
                             " . __("Last updated") . "
                         </option>
                         <option value='sort-added'
                                 " . ($sort == "sort-added'" ? "selected" : "") . "
-                                data-icon='fa-fw fa-lg ti ti-calendar-time'>
+                                data-icon='fs-2 ti ti-calendar-time'>
                             " . __("Most recent") . "
                         </option>
                         <option value='sort-note'
                                 " . ($sort == "sort-note'" ? "selected" : "") . "
-                                data-icon='fa-fw fa-lg ti ti-star'>
+                                data-icon='fs-2 ti ti-star'>
                             " . __("Best notes") . "
                         </option>
                     </select>";
             }
 
-            $yourplugin   = __("Your plugin here ? Contact us.");
-            $networkmail  = GLPI_NETWORK_MAIL;
-            $refresh_lbl  = __("Refresh plugin list");
-            $search_label = __("Filter plugin list");
+            $yourplugin   = __s("Your plugin here? Contact us.");
+            $networkmail  = htmlescape(GLPI_NETWORK_MAIL);
+            $refresh_lbl  = __s("Refresh plugin list");
+            $search_label = __s("Filter plugin list");
 
             $marketplace  = <<<HTML
                 <div class='marketplace $tab' data-tab='{$tab}'>
@@ -473,7 +473,7 @@ HTML;
                         </ul>
                         $pagination
                         <a href="mailto:{$networkmail}" class="network-mail" target="_blank">
-                            $yourplugin&nbsp;<i class="far fa-envelope"></i>
+                            $yourplugin&nbsp;<i class="ti ti-mail"></i>
                         </a>
                     </div>
                 </div>
@@ -524,126 +524,29 @@ JS;
         $plugin_key   = $plugin['key'];
         $plugin_inst  = new Plugin();
         $plugin_inst->getFromDBbyDir($plugin_key);
-        $plugin_state = Plugin::getStateKey($plugin_inst->fields['state'] ?? -1);
-        $buttons      = self::getButtons($plugin_key);
 
-        $name = Toolbox::stripTags($plugin['name']);
-        $description = Toolbox::stripTags($plugin['description']);
+        $plugin_info = [
+            'key'           => $plugin['key'],
+            'name'          => $plugin['name'],
+            'description'   => $plugin['description'],
+            'homepage_url'  => $plugin['homepage_url'],
+            'issues_url'    => $plugin['issues_url'],
+            'readme_url'    => $plugin['readme_url'],
+            'changelog_url' => $plugin['changelog_url'],
+            'license'       => $plugin['license'] ?? null,
+            'version'       => $plugin['version'] ?? null,
 
-        $authors = Toolbox::stripTags(implode(', ', array_column($plugin['authors'] ?? [], 'name', 'id')));
-        $authors_title = htmlescape($authors);
-        $authors = strlen($authors)
-            ? "<i class='fa-fw ti ti-users'></i>{$authors}"
-            : "";
-
-        $licence = Toolbox::stripTags($plugin['license'] ?? '');
-        $licence = strlen($licence)
-            ? "<i class='fa-fw ti ti-license'></i>{$licence}"
-            : "";
-
-        $version = Toolbox::stripTags($plugin['version'] ?? '');
-        $version = strlen($version)
-            ? "<i class='fa-fw ti ti-git-branch'></i>{$version}"
-            : "";
-
-        $stars = ($plugin['note'] ?? -1) > 0
-            ? self::getStarsHtml($plugin['note'])
-            : "";
-
-        $home_url = htmlescape($plugin['homepage_url']);
-        $home_url = strlen($home_url)
-            ? "<a href='{$home_url}' target='_blank' >
-               <i class='ti ti-home-2 add_tooltip' title='" . __s("Homepage") . "'></i>
-               </a>"
-            : "";
-
-        $issues_url = htmlescape($plugin['issues_url']);
-        $issues_url = strlen($issues_url)
-            ? "<a href='{$issues_url}' target='_blank' >
-               <i class='ti ti-bug add_tooltip' title='" . __s("Get help") . "'></i>
-               </a>"
-            : "";
-
-        $readme_url = htmlescape($plugin['readme_url']);
-        $readme_url = strlen($readme_url)
-            ? "<a href='{$readme_url}' target='_blank' >
-               <i class='ti ti-book add_tooltip' title='" . __s("Readme") . "'></i>
-               </a>"
-            : "";
-
-        $changelog_url = htmlescape($plugin['changelog_url']);
-        $changelog_url = strlen($changelog_url)
-            ? "<a href='{$changelog_url}' target='_blank' >
-               <i class='ti ti-news add_tooltip' title='" . __s("Changelog") . "'></i>
-               </a>"
-             : "";
-        $icon    = self::getPluginIcon($plugin);
-        $network = !static::$offline_mode ? self::getNetworkInformations($plugin) : '';
-
-        if ($tab === "discover") {
-            $card = <<<HTML
-                <li class="plugin {$plugin_state}" data-key="{$plugin_key}">
-                    <div class="main">
-                        <span class="icon">{$icon}</span>
-                        <span class="details">
-                            <h3 class="title">{$name}</h3>
-                            $network
-                            <p class="description">{$description}</p>
-                        </span>
-                        <span class="buttons">
-                            {$buttons}
-                        </span>
-                    </div>
-                    <div class="footer">
-                        <span class="misc-left">
-                            <div class="note">{$stars}</div>
-                            <div class="links">
-                                {$home_url}
-                                {$issues_url}
-                                {$readme_url}
-                                {$changelog_url}
-                            </div>
-                        </span>
-                        <span class='misc-right'>
-                            <div class="license">{$licence}</div>
-                            <div class="authors" title="{$authors_title}">{$authors}</div>
-                            <div class="version">{$version}</div>
-                        </span>
-                    </div>
-                </li>
-HTML;
-        } else {
-            $card = <<<HTML
-                <li class="plugin {$plugin_state}" data-key="{$plugin_key}">
-                    <div class="main">
-                        <span class="icon">{$icon}</span>
-                        <span class="details">
-                            <h3 class="title">{$name}</h3>
-                            <span class='misc-right'>
-                                <div class="license">{$licence}</div>
-                                <div class="authors" title="{$authors_title}">{$authors}</div>
-                                <div class="version">{$version}</div>
-                            </span>
-                        </span>
-                        <span class="buttons">
-                            {$buttons}
-                        </span>
-                    </div>
-                    <div class="footer">
-                        <span class="misc-left">
-                            <div class="links">
-                                {$home_url}
-                                {$issues_url}
-                                {$readme_url}
-                                {$changelog_url}
-                            </div>
-                        </span>
-                    </div>
-                </li>
-HTML;
-        }
-
-        return $card;
+            'icon'          => self::getPluginIcon($plugin),
+            'state'         => Plugin::getStateKey($plugin_inst->fields['state'] ?? -1),
+            'network_info'  => !static::$offline_mode ? self::getNetworkInformations($plugin) : '',
+            'buttons'       => self::getButtons($plugin_key),
+            'authors'       => array_column($plugin['authors'] ?? [], 'name', 'id'),
+            'stars'         => ($plugin['note'] ?? -1) > 0 ? self::getStarsHtml($plugin['note']) : '',
+        ];
+        return TemplateRenderer::getInstance()->render('pages/setup/marketplace/card.html.twig', [
+            'tab'    => $tab,
+            'plugin' => $plugin_info,
+        ]);
     }
 
     /**
@@ -660,11 +563,11 @@ HTML;
         $stars = "";
         for ($i = 1; $i < 6; $i++) {
             if ($value >= $i) {
-                $stars .= "<i class='fas fa-star'></i>";
-            } else if ($value + 0.5 == $i) {
-                $stars .= "<i class='fas fa-star-half-alt'></i>";
+                $stars .= "<i class='ti ti-star-filled'></i>";
+            } elseif ($value + 0.5 == $i) {
+                $stars .= "<i class='ti ti-star-half-filled'></i>";
             } else {
-                $stars .= "<i class='far fa-star'></i>";
+                $stars .= "<i class='ti ti-star'></i>";
             }
         }
 
@@ -742,7 +645,7 @@ HTML;
                 <button class='modify_plugin'
                         data-action='clean_plugin'
                         title='" . __s("Clean") . "'>
-                        <i class='fas fa-broom'></i>
+                        <i class='ti ti-recycle'></i>
                 </button>";
             if ($can_be_downloaded) {
                 $buttons .= "
@@ -752,7 +655,7 @@ HTML;
                         <i class='ti ti-cloud-download'></i>
                     </button>";
             }
-        } else if (!$is_available) {
+        } elseif (!$is_available) {
             if (!$can_run_local_install) {
                 $rand = mt_rand();
                 $buttons .= "<i class='ti ti-alert-triangle plugin-unavailable' id='plugin-tooltip-$rand'></i>";
@@ -763,7 +666,7 @@ HTML;
                     ]
                 );
             }
-        } else if (
+        } elseif (
             (!$exists && !$mk_controller->hasWriteAccess())
             || ($has_web_update && !$can_be_overwritten && GLPI_MARKETPLACE_MANUAL_DOWNLOADS)
         ) {
@@ -788,25 +691,25 @@ HTML;
                         : $plugin_data['installation_url'];
 
                     $buttons .= "<a href='{$download_url}' target='_blank'>
-                            <button title='$warning' class='add_tooltip download_manually'><i class='fas fa-archive'></i></button>
+                            <button title='$warning' class='add_tooltip download_manually'><i class='ti ti-archive'></i></button>
                         </a>";
                 } else {
                     $warning = __s("The plugin has an available update but its local directory contains source versioning.") . "<br>";
                     $warning .= __s("To avoid overwriting a potential branch under development, downloading is disabled.");
 
                     $buttons .= "<button title='$warning' class='add_tooltip download_manually'>
-                        <i class='fas fa-ban'></i>
+                        <i class='ti ti-ban'></i>
                     </button>";
                 }
             }
-        } else if ($can_be_downloaded) {
+        } elseif ($can_be_downloaded) {
             if (!$exists) {
                 $buttons .= "<button class='modify_plugin'
                                      data-action='download_plugin'
                                      title='" . __s("Download") . "'>
                         <i class='ti ti-cloud-download'></i>
                     </button>";
-            } else if ($can_be_updated) {
+            } elseif ($can_be_updated) {
                 $update_title = sprintf(
                     __s("A new version (%s) is available, update?", 'marketplace'),
                     htmlescape($web_update_version)
@@ -836,9 +739,9 @@ HTML;
                 implode(', ', $required_offers)
             );
 
-             $buttons .= "<a href='" . GLPI_NETWORK_SERVICES . "' target='_blank'>
+            $buttons .= "<a href='" . GLPI_NETWORK_SERVICES . "' target='_blank'>
                     <button class='add_tooltip need_offers' title='$warning'>
-                        <i class='fas fa-exclamation-triangle'></i>
+                        <i class='ti ti-alert-triangle'></i>
                     </button>
                 </a>";
         }
@@ -848,7 +751,7 @@ HTML;
             $icon = "ti ti-folder-plus";
             if ($has_local_update) {
                 $title = __s("Update");
-                $icon = "far fa-caret-square-up";
+                $icon = "ti ti-caret-up";
                 $buttons .= TemplateRenderer::getInstance()->render('components/plugin_update_modal.html.twig', [
                     'plugin_name' => $plugin_inst->getField('name'),
                     'to_version' => $plugin_inst->getField('version'),
@@ -879,13 +782,13 @@ HTML;
                     $buttons .= "<button class='modify_plugin'
                                          data-action='disable_plugin'
                                          title='" . __s("Disable") . "'>
-                            <i class='fas fa-toggle-on'></i>
+                            <i class='ti ti-toggle-right-filled'></i>
                         </button>";
                 } else {
                     $buttons .= "<button class='modify_plugin'
                                          data-action='enable_plugin'
                                          title='" . __s("Enable") . "'>
-                            <i class='fas fa-toggle-off'></i>
+                            <i class='ti ti-toggle-left-filled'></i>
                         </button>";
                 }
             }
@@ -906,9 +809,9 @@ HTML;
                                        ' . _x("button", "Uninstall") . '
                                    </a>',
                 'content' => sprintf(
-                    __s('By uninstalling the "%s" plugin you will lose all the data of the plugin.'),
-                    htmlescape($plugin_inst->getField('name'))
-                )
+                    __('By uninstalling the "%s" plugin you will lose all the data of the plugin.'),
+                    $plugin_inst->getField('name')
+                ),
             ]);
 
             if (!strlen($error) && $is_actived && $config_page) {
@@ -949,10 +852,10 @@ HTML;
                     $initials .= mb_substr($words[$i], 0, 1);
                 }
             }
-            $bg_color = Toolbox::getColorForString($initials);
-            $fg_color = Toolbox::getFgColor($bg_color);
+            $bg_color = htmlescape(Toolbox::getColorForString($initials));
+            $fg_color = htmlescape(Toolbox::getFgColor($bg_color));
             $icon = "<span style='background-color: $bg_color; color: $fg_color'
-                           class='icon-text'>$initials</span>";
+                           class='icon-text'>" . htmlescape($initials) . "</span>";
         }
 
         return $icon;
@@ -973,16 +876,16 @@ HTML;
         $html = "";
         if (count($require_offers)) {
             $fst_offer  = array_splice($require_offers, 0, 1);
-            $offerkey   = key($fst_offer);
-            $offerlabel = current($fst_offer);
+            $offerkey   = htmlescape(key($fst_offer));
+            $offerlabel = htmlescape(current($fst_offer));
 
             $html = "<div class='offers'>
-                    <a href='" . GLPI_NETWORK_SERVICES . "' target='_blank'
+                    <a href='" . htmlescape(GLPI_NETWORK_SERVICES) . "' target='_blank'
                        class='badge glpi-network'
                        title='" . sprintf(__s("You must have a %s subscription to get this plugin"), 'GLPI Network') . "'>
-                        <i class='fas fa-star'></i>GLPI Network
+                        <i class='ti ti-star-filled'></i>GLPI Network
                     </a>
-                    <a href='" . GLPI_NETWORK_SERVICES . "' target='_blank'
+                    <a href='" . htmlescape(GLPI_NETWORK_SERVICES) . "' target='_blank'
                        class='badge bg-azure $offerkey'
                        title='" . sprintf(__s("You need at least the %s subscription level to get this plugin"), $offerlabel) . "'>
                         $offerlabel
@@ -1028,7 +931,7 @@ HTML;
             }
         }
 
-        if (strlen($description) === 0) {
+        if ((string) $description === '') {
             $description = $fallback;
         }
 
@@ -1067,7 +970,7 @@ HTML;
         if (!$only_li) {
             $html .= "<ul class='pagination'>";
         }
-        $html .= "<li data-page='$prev' $p_cls><i class='fas fa-angle-left'></i></li>";
+        $html .= "<li data-page='$prev' $p_cls><i class='ti ti-chevron-left'></i></li>";
         $dots = false;
         for ($i = 1; $i <= $nb_pages; $i++) {
             if (
@@ -1089,7 +992,7 @@ HTML;
                 : "";
             $html .= "<li data-page='$i' $current>$i</li>";
         }
-        $html .= "<li data-page='$next' $n_cls><i class='fas fa-angle-right'></i></li>";
+        $html .= "<li data-page='$next' $n_cls><i class='ti ti-chevron-right'></i></li>";
         $html .= "<li class='nb_plugin'>" . sprintf(_n("%s plugin", "%s plugins", $total), $total) . "</li>";
         if (!$only_li) {
             $html .= "</ul>";
@@ -1116,12 +1019,12 @@ HTML;
                ? Controller::MP_REPLACE_NEVER
                : Controller::MP_REPLACE_ASK);
             Config::setConfigurationValues('core', [
-                'marketplace_replace_plugins' => $mp_value
+                'marketplace_replace_plugins' => $mp_value,
             ]);
 
             // is user agree, redirect him to marketplace
             if ($mp_value === Controller::MP_REPLACE_YES) {
-                 Html::redirect($CFG_GLPI["root_doc"] . "/front/marketplace.php");
+                Html::redirect($CFG_GLPI["root_doc"] . "/front/marketplace.php");
             }
 
             // avoid annoying user for the current session
@@ -1149,18 +1052,18 @@ HTML;
             echo "<div class='card-footer'>";
             echo Html::submit(__('Yes'), [
                 'name'  => 'marketplace_replace_plugins_yes',
-                'icon'  => 'fa fa-check',
-                'class' => 'btn btn-primary'
+                'icon'  => 'ti ti-check',
+                'class' => 'btn btn-primary',
             ]);
             echo "&nbsp;";
             echo Html::submit(__('No'), [
                 'name' => 'marketplace_replace_plugins_never',
-                'icon' => 'fa fa-times',
+                'icon' => 'ti ti-x',
             ]);
             echo "&nbsp;";
             echo Html::submit(__('Later'), [
                 'name'  => 'marketplace_replace_plugins_later',
-                'icon' => 'fa fa-clock',
+                'icon' => 'ti ti-clock',
             ]);
             echo "</div>";
             echo Html::hidden('marketplace_replace');

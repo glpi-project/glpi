@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,9 +37,6 @@ namespace Glpi\Api\HL\Middleware;
 
 use CommonDBTM;
 use Glpi\Api\HL\Controller\AbstractController;
-use Glpi\Api\HL\RoutePath;
-use Glpi\Http\Request;
-use Glpi\Http\Response;
 
 class CRUDRequestMiddleware extends AbstractMiddleware implements RequestMiddlewareInterface
 {
@@ -54,7 +51,7 @@ class CRUDRequestMiddleware extends AbstractMiddleware implements RequestMiddlew
         /** @var class-string<CommonDBTM> $itemtype */
         $itemtype = $input->request->getAttribute('itemtype');
         /** @var CommonDBTM $item */
-        $item = new $itemtype();
+        $item = getItemForItemtype($itemtype);
         if ($specific_item) {
             $items_id = $input->request->getAttribute('id');
 

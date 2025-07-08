@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,12 +40,15 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
         return [
             'new'     => __('New knowledge base item'),
             'delete' => __('Deleting a knowledge base item'),
-            'update' => __('Update of a knowledge base item')
+            'update' => __('Update of a knowledge base item'),
         ];
     }
 
     public function addNotificationTargets($entity)
     {
+        if (Session::haveRight("config", UPDATE)) {
+            $this->addTarget(Notification::GLOBAL_ADMINISTRATOR, __('Administrator'));
+        }
         $this->addGroupsToTargets($entity);
     }
 
@@ -100,13 +103,13 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
             new KnowbaseItem_User(),
             new KnowbaseItem_Profile(),
             new Entity_KnowbaseItem(),
-            new KnowbaseItem_KnowbaseItemCategory()
+            new KnowbaseItem_KnowbaseItemCategory(),
         ];
         $targets = $listofcategories = [];
         foreach ($typeSearch as $type) {
             foreach (
                 $type->find([
-                    'knowbaseitems_id' => $knowbase->getID()
+                    'knowbaseitems_id' => $knowbase->getID(),
                 ]) as $value
             ) {
                 $classname = get_class($type);
@@ -134,10 +137,10 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
             $this->data['targets'][] = [
                 '##target.url##'             => $target->getLink(),
                 '##target.name##'            => $target->fields['name'],
-                '##target.itemtype##'        => $target->getType()
+                '##target.itemtype##'        => $target->getType(),
             ];
         }
-        if (!empty($listofcategories)) {
+        if ($listofcategories !== []) {
             $this->data['##knowbaseitem.categories##']      = implode(', ', $listofcategories);
         } else {
             $this->data['##knowbaseitem.categories##']      = '';
@@ -149,7 +152,7 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
         $documents = new Document_Item();
         $associateddocuments = $documents->find([
             'items_id' => $knowbase->getID(),
-            'itemtype' => 'KnowbaseItem'
+            'itemtype' => 'KnowbaseItem',
         ]);
         $this->data['##knowbaseitem.numberofdocuments##']      = count($associateddocuments);
         foreach ($associateddocuments as $docid) {
@@ -161,7 +164,7 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
                 '##document.weblink##'                 => $document->fields['link'],
                 '##document.id##'                      => $document->getID(),
                 '##document.heading##'                 => $document->fields['name'],
-                '##document.name##'                    => $document->fields['name']
+                '##document.name##'                    => $document->fields['name'],
             ];
         }
     }
@@ -196,21 +199,21 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
                     'tag'   => $tag,
                     'label' => $label,
                     'value' => true,
-                    'events'  => ['new', 'update']
+                    'events'  => ['new', 'update'],
                 ]);
             } else {
                 $this->addTagToList([
                     'tag'   => $tag,
                     'label' => $label,
                     'value' => true,
-                    'events'  => ['new', 'update', 'delete']
+                    'events'  => ['new', 'update', 'delete'],
                 ]);
             }
         }
 
         $foreachtags = [
             'documents' => __('Documents'),
-            'targets' => __('Targets')
+            'targets' => __('Targets'),
         ];
         foreach ($foreachtags as $tag => $label) {
             $this->addTagToList([
@@ -218,7 +221,7 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
                 'label'   => $label,
                 'value'   => false,
                 'foreach' => true,
-                'events'  => ['new', 'update']
+                'events'  => ['new', 'update'],
             ]);
         }
 

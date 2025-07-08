@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -46,11 +45,11 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
         $collection = new \RuleDictionnarySoftwareCollection();
         $params     = ['manufacturers_id' => 1,
             '_bad'             => '_value2',
-            '_ignore_import'   => '1'
+            '_ignore_import'   => '1',
         ];
         $result     = $collection->cleanTestOutputCriterias($params);
         $expected   = ['manufacturers_id' => 1,
-            '_ignore_import'   => '1'
+            '_ignore_import'   => '1',
         ];
         $this->assertSame($expected, $result);
     }
@@ -77,20 +76,20 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
         $softwares_id = $old_software->add([
             'name'         => 'Software ' . $this->getUniqueString(),
             'is_template'  => 0,
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
-        $this->assertGreaterThan(0, (int)$softwares_id);
+        $this->assertGreaterThan(0, (int) $softwares_id);
         $this->assertTrue($old_software->getFromDB($softwares_id));
 
-       //ad and link 5 licenses to new software
+        //ad and link 5 licenses to new software
         for ($i = 0; $i < 5; ++$i) {
             $license = new \SoftwareLicense();
             $license_id = $license->add([
                 'name'         => 'Software license ' . $this->getUniqueString(),
                 'softwares_id' => $old_software->getID(),
-                'entities_id'  => 0
+                'entities_id'  => 0,
             ]);
-            $this->assertGreaterThan(0, (int)$license_id);
+            $this->assertGreaterThan(0, (int) $license_id);
             $this->assertTrue($license->getFromDB($license_id));
         }
 
@@ -98,9 +97,9 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
         $softwares_id = $new_software->add([
             'name'         => 'Software ' . $this->getUniqueString(),
             'is_template'  => 0,
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
-        $this->assertGreaterThan(0, (int)$softwares_id);
+        $this->assertGreaterThan(0, (int) $softwares_id);
         $this->assertTrue($new_software->getFromDB($softwares_id));
 
         $collection = new \RuleDictionnarySoftwareCollection();
@@ -159,7 +158,7 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
             $soft_id_2,
             $soft3->getID(),
             $soft_id_4,
-            $soft_id_5
+            $soft_id_5,
         ]);
 
         //Softwares newly put in trash
@@ -200,34 +199,34 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
             'sub_type'    => 'RuleDictionnarySoftware',
             'match'       => \Rule::AND_MATCHING,
             'condition'   => 0,
-            'description' => ''
+            'description' => '',
         ]);
         $this->assertGreaterThan(0, $rules_id);
 
         $this->assertGreaterThan(
             0,
-            (int)$criteria->add([
+            (int) $criteria->add([
                 'rules_id'  => $rules_id,
                 'criteria'  => 'name',
                 'condition' => \Rule::PATTERN_IS,
-                'pattern'   => 'Mozilla Firefox 52'
+                'pattern'   => 'Mozilla Firefox 52',
             ])
         );
 
         $this->assertGreaterThan(
             0,
-            (int)$action->add([
+            (int) $action->add([
                 'rules_id'    => $rules_id,
                 'action_type' => 'assign',
                 'field'       => '_ignore_import',
-                'value'       => '1'
+                'value'       => '1',
             ])
         );
 
         $input = ['name'             => 'Mozilla Firefox 52',
             'version'          => '52',
             'manufacturer'     => 'Mozilla',
-            '_system_category' => 'web'
+            '_system_category' => 'web',
         ];
         $result = $collection->processAllRules($input);
         $expected = ['_ignore_import' => '1', '_ruleid' => $rules_id];
@@ -236,7 +235,7 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
         $input = ['name'             => 'Mozilla Firefox 53',
             'version'          => '52',
             'manufacturer'     => 'Mozilla',
-            '_system_category' => 'web'
+            '_system_category' => 'web',
         ];
         $result = $collection->processAllRules($input);
         $expected = ['_no_rule_matches' => true, '_rule_process' => false];
@@ -256,7 +255,7 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
             'sub_type'    => 'RuleDictionnarySoftware',
             'match'       => \Rule::AND_MATCHING,
             'condition'   => 0,
-            'description' => ''
+            'description' => '',
         ]);
         $this->assertGreaterThan(0, $rules_id);
 
@@ -266,7 +265,7 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
                 'rules_id'  => $rules_id,
                 'criteria'  => 'name',
                 'condition' => \Rule::REGEX_MATCH,
-                'pattern'   => '/Mozilla Firefox (.*)/'
+                'pattern'   => '/Mozilla Firefox (.*)/',
             ])
         );
 
@@ -276,13 +275,13 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
                 'rules_id'    => $rules_id,
                 'action_type' => 'regex_result',
                 'field'       => 'version',
-                'value'       => '#0'
+                'value'       => '#0',
             ])
         );
 
         $input = ['name'             => 'Mozilla Firefox 52',
             'manufacturer'     => 'Mozilla',
-            '_system_category' => 'web'
+            '_system_category' => 'web',
         ];
 
         $collection->RuleList = new \stdClass();
@@ -305,7 +304,7 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
             'sub_type'    => 'RuleDictionnarySoftware',
             'match'       => \Rule::AND_MATCHING,
             'condition'   => 0,
-            'description' => ''
+            'description' => '',
         ]);
         $this->assertGreaterThan(0, $rules_id);
 
@@ -315,7 +314,7 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
                 'rules_id'  => $rules_id,
                 'criteria'  => 'name',
                 'condition' => \Rule::REGEX_MATCH,
-                'pattern'   => '/Mozilla Firefox (.*)/'
+                'pattern'   => '/Mozilla Firefox (.*)/',
             ])
         );
 
@@ -325,7 +324,7 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
                 'rules_id'    => $rules_id,
                 'action_type' => 'regex_result',
                 'field'       => 'version',
-                'value'       => '#0'
+                'value'       => '#0',
             ])
         );
 
@@ -335,13 +334,13 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
                 'rules_id'    => $rules_id,
                 'action_type' => 'assign',
                 'field'       => 'name',
-                'value'       => 'Mozilla Firefox'
+                'value'       => 'Mozilla Firefox',
             ])
         );
 
         $input = ['name'             => 'Mozilla Firefox 52',
             'manufacturer'     => 'Mozilla',
-            '_system_category' => 'web'
+            '_system_category' => 'web',
         ];
 
         $collection->RuleList = new \stdClass();
@@ -370,7 +369,7 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
             'sub_type'    => 'RuleDictionnarySoftware',
             'match'       => \Rule::AND_MATCHING,
             'condition'   => 0,
-            'description' => ''
+            'description' => '',
         ]);
         $this->assertGreaterThan(0, $rules_id);
 
@@ -380,7 +379,7 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
                 'rules_id'  => $rules_id,
                 'criteria'  => 'name',
                 'condition' => \Rule::REGEX_MATCH,
-                'pattern'   => '/Mozilla Firefox (.*)/'
+                'pattern'   => '/Mozilla Firefox (.*)/',
             ])
         );
 
@@ -390,7 +389,7 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
                 'rules_id'    => $rules_id,
                 'action_type' => 'assign',
                 'field'       => 'softwarecategories_id',
-                'value'       => $categories_id
+                'value'       => $categories_id,
             ])
         );
 
@@ -400,13 +399,13 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
                 'rules_id'    => $rules_id,
                 'action_type' => 'assign',
                 'field'       => 'name',
-                'value'       => 'Mozilla Firefox'
+                'value'       => 'Mozilla Firefox',
             ])
         );
 
         $input = ['name'             => 'Mozilla Firefox 52',
             'manufacturer'     => 'Mozilla',
-            '_system_category' => 'web'
+            '_system_category' => 'web',
         ];
 
         $collection->RuleList = new \stdClass();
@@ -415,7 +414,7 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
         $expected = [
             'softwarecategories_id' => "$categories_id",
             'name'                  => 'Mozilla Firefox',
-            '_ruleid'               => $rules_id
+            '_ruleid'               => $rules_id,
         ];
         $this->assertSame($expected, $result);
     }
@@ -435,7 +434,7 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
             'sub_type'    => 'RuleDictionnarySoftware',
             'match'       => \Rule::AND_MATCHING,
             'condition'   => 0,
-            'description' => ''
+            'description' => '',
         ]);
         $this->assertGreaterThan(0, $rules_id);
 
@@ -445,7 +444,7 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
                 'rules_id'  => $rules_id,
                 'criteria'  => 'name',
                 'condition' => \Rule::REGEX_MATCH,
-                'pattern'   => '/Mozilla Firefox (.*)/'
+                'pattern'   => '/Mozilla Firefox (.*)/',
             ])
         );
 
@@ -455,20 +454,20 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
                 'rules_id'    => $rules_id,
                 'action_type' => 'assign',
                 'field'       => 'manufacturers_id',
-                'value'       => $manufacturers_id
+                'value'       => $manufacturers_id,
             ])
         );
 
         $input = ['name'             => 'Mozilla Firefox 52',
             'manufacturer'     => 'Mozilla',
-            '_system_category' => 'web'
+            '_system_category' => 'web',
         ];
 
         $collection->RuleList = new \stdClass();
         $collection->RuleList->load = true;
         $result   = $collection->processAllRules($input);
         $expected = ['manufacturers_id' => "$manufacturers_id",
-            '_ruleid'          => $rules_id
+            '_ruleid'          => $rules_id,
         ];
         $this->assertSame($expected, $result);
     }
@@ -486,7 +485,7 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
             'sub_type'    => 'RuleDictionnarySoftware',
             'match'       => \Rule::AND_MATCHING,
             'condition'   => 0,
-            'description' => ''
+            'description' => '',
         ]);
         $this->assertGreaterThan(0, $rules_id);
 
@@ -496,7 +495,7 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
                 'rules_id'  => $rules_id,
                 'criteria'  => 'name',
                 'condition' => \Rule::REGEX_MATCH,
-                'pattern'   => '/^Soft (something|else)/'
+                'pattern'   => '/^Soft (something|else)/',
             ])
         );
 
@@ -506,7 +505,7 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
                 'rules_id'    => $rules_id,
                 'action_type' => 'append_regex_result',
                 'field'       => 'version',
-                'value'       => '#0'
+                'value'       => '#0',
             ])
         );
 

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,6 +34,9 @@
  */
 
 namespace Glpi\Toolbox;
+
+use function Safe\preg_match;
+use function Safe\preg_replace;
 
 class VersionParser
 {
@@ -62,7 +65,7 @@ class VersionParser
                 '(\.(?<bugfix>\d+))?', // Bugfix number, not always present (e.g. GLPI 9.2)
                 '(\.(?<tag_fail>\d+))?', // Redo tag operation number, rarely present (e.g. GLPI 9.4.1.1)
                 '(?<stability_flag>-' . self::UNSTABLE_FLAG_PATTERN . ')?', // Stability flag, optional
-                '$/'
+                '$/',
             ]
         );
         $version_matches = [];
@@ -74,6 +77,26 @@ class VersionParser
         }
 
         return $version;
+    }
+
+    /**
+     * Get major version number (e.g. '9').
+     */
+    public static function getMajorVersion(string $version): string
+    {
+        $normalized = self::getNormalizedVersion($version, false);
+
+        return preg_replace('/^(\d+)[^d].+$/', '$1', $normalized);
+    }
+
+    /**
+     * Get intermediate version number (e.g. '9.5').
+     */
+    public static function getIntermediateVersion(string $version): string
+    {
+        $normalized = self::getNormalizedVersion($version, false);
+
+        return preg_replace('/^(\d+\.\d+)[^d].+$/', '$1', $normalized);
     }
 
     /**

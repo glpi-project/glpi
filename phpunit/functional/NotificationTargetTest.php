@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,12 +37,11 @@ namespace tests\units;
 use DbTestCase;
 use Entity;
 use Generator;
-use Monolog\Logger;
+use Notification;
+use NotificationTarget;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 use Session;
-
-/* Test for inc/notificationtarget.class.php */
 
 class NotificationTargetTest extends DbTestCase
 {
@@ -118,7 +116,7 @@ class NotificationTargetTest extends DbTestCase
                 $parent_entity_id  => ['email' => null, 'name'  => null],
                 $child_1_entity_id => ['email' => null, 'name'  => null],
                 $child_2_entity_id => ['email' => null, 'name'  => null],
-            ]
+            ],
         ];
 
         // Global config is used if no entity configuration is defined
@@ -136,7 +134,7 @@ class NotificationTargetTest extends DbTestCase
                 $parent_entity_id  => ['email' => 'test@global.tld', 'name'  => 'test global'],
                 $child_1_entity_id => ['email' => 'test@global.tld', 'name'  => 'test global'],
                 $child_2_entity_id => ['email' => 'test@global.tld', 'name'  => 'test global'],
-            ]
+            ],
         ];
 
         yield [
@@ -153,7 +151,7 @@ class NotificationTargetTest extends DbTestCase
                 $parent_entity_id  => ['email' => 'noreply@global.tld', 'name'  => 'noreply global'],
                 $child_1_entity_id => ['email' => 'noreply@global.tld', 'name'  => 'noreply global'],
                 $child_2_entity_id => ['email' => 'noreply@global.tld', 'name'  => 'noreply global'],
-            ]
+            ],
         ];
 
         // Closest entity config is used, fallback on global
@@ -184,7 +182,7 @@ class NotificationTargetTest extends DbTestCase
                 $parent_entity_id  => ['email' => 'test@parent.tld', 'name'  => 'test parent'],
                 $child_1_entity_id => ['email' => 'test@parent.tld', 'name'  => 'test parent'],
                 $child_2_entity_id => ['email' => 'test@child2.tld', 'name'  => 'test child2'],
-            ]
+            ],
         ];
 
         yield [
@@ -214,7 +212,7 @@ class NotificationTargetTest extends DbTestCase
                 $parent_entity_id  => ['email' => 'noreply@parent.tld', 'name'  => 'noreply parent'],
                 $child_1_entity_id => ['email' => 'noreply@parent.tld', 'name'  => 'noreply parent'],
                 $child_2_entity_id => ['email' => 'noreply@child2.tld', 'name'  => 'noreply child2'],
-            ]
+            ],
         ];
     }
 
@@ -260,8 +258,8 @@ class NotificationTargetTest extends DbTestCase
         $ntarget_child_1 = new \NotificationTarget($child_1);
         $ntarget_child_2 = new \NotificationTarget($child_2);
 
-       // test global settings
-         $CFG_GLPI['url_base'] = 'global.tld';
+        // test global settings
+        $CFG_GLPI['url_base'] = 'global.tld';
 
         $this->assertEquals('global.tld', $ntarget_parent->getUrlBase());
         $this->assertEquals('global.tld', $ntarget_child_1->getUrlBase());
@@ -325,7 +323,7 @@ class NotificationTargetTest extends DbTestCase
             'allow_response' => false,
             'email'          => "admsys@localhost",
             'name'           => "",
-            'warning'        => 'No-Reply address is not defined in configuration.'
+            'warning'        => 'No-Reply address is not defined in configuration.',
         ];
 
         // Case 2: no reply with global config
@@ -637,5 +635,48 @@ class NotificationTargetTest extends DbTestCase
         $this->assertCount(1, $targets);
         $target = reset($targets);
         $this->assertEquals(getItemByTypeName('User', TU_USER, true), $target['users_id']);
+    }
+
+    public function testDefaultTargets()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $this->login();
+
+        $notification = new Notification();
+        $notifications = $notification->find();
+
+        foreach ($notifications as $notification) {
+            // Ensure that there is at least one default target
+            $iterator = $DB->request([
+                'FROM' => NotificationTarget::getTable(),
+                'WHERE' => ['notifications_id' => $notification['id']],
+            ]);
+            $this->assertGreaterThan(0, count($iterator));
+
+            // Ensure that the Administrator is one of the default targets, unless it is not a valid target
+            // for the current notification.
+            $has_admin_target = true;
+            if ($notification['itemtype'] === 'PlanningRecall' && $notification['event'] === 'planningrecall') {
+                // Only the user is able to receive its planning recall
+                $has_admin_target = false;
+            } elseif ($notification['itemtype'] === 'ObjectLock' && $notification['event'] === 'unlock') {
+                // Only the user is able to receive notification of fields that he has unlocked
+                $has_admin_target = false;
+            } elseif ($notification['itemtype'] === 'User' && $notification['event'] === 'passwordforget') {
+                // Only the user is able to receive its password recovery token
+                $has_admin_target = false;
+            } elseif ($notification['itemtype'] === 'SavedSearch_Alert' && $notification['event'] === 'alert') {
+                // Only the user is able to receive its save search alert
+                $has_admin_target = false;
+            } elseif ($notification['itemtype'] === 'User' && $notification['event'] === 'passwordinit') {
+                // Only the user is able to receive its first password
+                $has_admin_target = false;
+            }
+            $notification_target = NotificationTarget::getInstanceByType($notification['itemtype'], $notification['event']);
+            $notification_target->addNotificationTargets(0);
+            $this->assertSame($has_admin_target, array_key_exists('1_1', $notification_target->notification_targets));
+        }
     }
 }

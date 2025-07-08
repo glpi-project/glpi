@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\QuestionType;
 
+use Glpi\Form\Question;
 use Group;
 use Override;
 use Session;
@@ -64,5 +65,27 @@ final class QuestionTypeRequester extends AbstractQuestionTypeActors
     public function getAllowedActorTypes(): array
     {
         return [User::class, Group::class];
+    }
+
+    #[Override]
+    public function getGroupConditions(): array
+    {
+        return ['is_requester' => 1];
+    }
+
+    #[Override]
+    public function prepareEndUserAnswer(Question $question, mixed $answer): mixed
+    {
+        $actors = parent::prepareEndUserAnswer($question, $answer);
+        foreach ($actors as $actor) {
+            if ($actor['itemtype'] === Group::class) {
+                // Check if the group can be assigned
+                if (Group::getById($actor['items_id'])->fields['is_requester'] !== 1) {
+                    throw new \Exception('Invalid actor: must be a requester');
+                }
+            }
+        }
+
+        return $actors;
     }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,7 +34,6 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Search\SearchOption;
 use Glpi\RichText\RichText;
 
 /**
@@ -191,7 +190,7 @@ class DropdownTranslation extends CommonDBChild
                 'itemtype' => $itemtype,
                 'items_id' => $items_id,
                 'field'    => $field,
-                'language' => $language
+                'language' => $language,
             ]
         );
     }
@@ -210,7 +209,7 @@ class DropdownTranslation extends CommonDBChild
             [
                 'itemtype' => $item->getType(),
                 'items_id' => $item->getID(),
-                'NOT'      => ['field' => 'completename' ]
+                'NOT'      => ['field' => 'completename' ],
             ]
         );
     }
@@ -250,11 +249,11 @@ class DropdownTranslation extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-        if (!is_a($input['itemtype'], CommonTreeDropdown::class, true)) {
+        $itemtype = $input['itemtype'];
+
+        if (!is_a($itemtype, CommonTreeDropdown::class, true)) {
             return; // `completename` is used only for tree dropdowns
         }
-        /** @var class-string<CommonTreeDropdown> $itemtype */
-        $itemtype = $input['itemtype'];
 
         //If there's already a completename for this language, get it's ID, otherwise 0
         $completenames_id = self::getTranslationID(
@@ -319,7 +318,7 @@ class DropdownTranslation extends CommonDBChild
             }
         } else {
             if ($completename !== $item->fields['completename']) {
-                 $translation->add($tmp);
+                $translation->add($tmp);
             }
         }
 
@@ -327,8 +326,8 @@ class DropdownTranslation extends CommonDBChild
             'SELECT' => ['id'],
             'FROM'   => $item::getTable(),
             'WHERE'  => [
-                $foreignKey => $item->getID()
-            ]
+                $foreignKey => $item->getID(),
+            ],
         ]);
 
         foreach ($iterator as $tmp) {
@@ -359,7 +358,7 @@ class DropdownTranslation extends CommonDBChild
                 'items_id' => $item->getID(),
                 'item_fk' => $item->getForeignKeyField(),
                 'rand' => $rand,
-                'btn_msg' => __('Add a new translation')
+                'btn_msg' => __('Add a new translation'),
             ];
             // language=twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -396,9 +395,9 @@ TWIG, $twig_params);
             'WHERE'  => [
                 'itemtype'  => $item->getType(),
                 'items_id'  => $item->getID(),
-                'field'     => ['<>', 'completename']
+                'field'     => ['<>', 'completename'],
             ],
-            'ORDER'  => ['language ASC']
+            'ORDER'  => ['language ASC'],
         ]);
 
         $entries = [];
@@ -410,7 +409,7 @@ TWIG, $twig_params);
                 'id'       => $data['id'],
                 'row_class' => $canedit ? 'cursor-pointer' : '',
                 'language' => Dropdown::getLanguageName($data['language']),
-                'field'    => $searchOption['name']
+                'field'    => $searchOption['name'],
             ];
             if (($matching_field['type'] ?? null) === 'tinymce') {
                 $entry['value'] = '<div class="rich_text_container">' . RichText::getSafeHtml($data['value']) . '</div>';
@@ -423,15 +422,14 @@ TWIG, $twig_params);
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'datatable_id' => 'datatable_translations' . $rand,
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'columns' => [
                 'language' => __('Language'),
                 'field'    => _n('Field', 'Fields', 1),
-                'value'    => __('Value')
+                'value'    => __('Value'),
             ],
             'formatters' => [
-                'value' => 'raw_html'
+                'value' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -439,7 +437,7 @@ TWIG, $twig_params);
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . static::class . $rand
+                'container'     => 'mass' . static::class . $rand,
             ],
         ]);
     }
@@ -473,7 +471,7 @@ TWIG, $twig_params);
             'item' => $this,
             'search_option' => !$item->isNewItem() ? $item->getSearchOptionByField('field', $this->fields['field']) : [],
             'matching_field' => $item->getAdditionalField($this->fields['field']),
-            'no_header' => true
+            'no_header' => true,
         ]);
         return true;
     }
@@ -493,34 +491,36 @@ TWIG, $twig_params);
         global $DB;
 
         $options = [];
-        $opts = SearchOption::getOptionsForItemtype(get_class($item));
-        foreach ($opts as $id => $field) {
-            // Can only translate name, and fields whose datatype is text or string
-            $is_name_field = isset($field['field'])
-                && ($field['field'] === 'name')
-                && ($field['table'] === getTableForItemType(get_class($item)));
-            if ($is_name_field || (isset($field['datatype']) && in_array($field['datatype'], ['text', 'string']))) {
-                $options[$field['field']] = $field['name'];
+        foreach (Search::getOptions(get_class($item)) as $id => $opt) {
+            //Can only translate name, and fields whose datatype is text or string and only fields directly for this itemtype
+            $field = $opt['field'] ?? null;
+            $type  = $opt['datatype'] ?? '';
+            if (
+                $field !== null
+                && ($field === 'name' || in_array($type, ['text', 'string']))
+                && $opt['table'] === getTableForItemType(get_class($item))
+            ) {
+                $options[$field] = $opt['name'];
             }
         }
 
         $used = [];
-        if (!empty($options)) {
+        if ($options !== []) {
             $iterator = $DB->request([
                 'SELECT' => ['field'],
                 'FROM'   => self::getTable(),
                 'WHERE'  => [
                     'itemtype'  => $item::class,
                     'items_id'  => $item->getID(),
-                    'language'  => $language
-                ]
+                    'language'  => $language,
+                ],
             ]);
             foreach ($iterator as $data) {
                 $used[$data['field']] = $data['field'];
             }
         }
         return Dropdown::showFromArray('field', $options, ['value' => $value,
-            'used'  => $used
+            'used'  => $used,
         ]);
     }
 
@@ -577,20 +577,20 @@ TWIG, $twig_params);
                         'itemtype'  => $itemtype,
                         'items_id'  => $ID,
                         'field'     => $field,
-                        'language'  => $language
-                    ]
+                        'language'  => $language,
+                    ],
                 ]);
                 // The field is already translated in this language
                 if (count($iterator)) {
-                     $current = $iterator->current();
-                     return $current['value'];
+                    $current = $iterator->current();
+                    return $current['value'];
                 }
             }
             // Get the value coming from the dropdown table
             $iterator = $DB->request([
                 'SELECT' => [$field],
                 'FROM'   => getTableForItemType($itemtype),
-                'WHERE'  => ['id' => $ID]
+                'WHERE'  => ['id' => $ID],
             ]);
             if (count($iterator)) {
                 $current = $iterator->current();
@@ -623,9 +623,9 @@ TWIG, $twig_params);
                 'itemtype'  => $itemtype,
                 'items_id'  => $ID,
                 'language'  => $language,
-                'field'     => $field
+                'field'     => $field,
             ],
-            'LIMIT'  => 1
+            'LIMIT'  => 1,
         ]);
         return count($iterator) ? $iterator->current()['id'] : 0;
     }
@@ -649,8 +649,8 @@ TWIG, $twig_params);
             'WHERE'  => [
                 'itemtype'  => $itemtype,
                 'items_id'  => $items_id,
-                'field'     => $field
-            ]
+                'field'     => $field,
+            ],
         ]);
         $data = [];
         foreach ($iterator as $tmp) {
@@ -704,11 +704,11 @@ TWIG, $twig_params);
         $iterator = $DB->request([
             'SELECT'          => [
                 'itemtype',
-                'field'
+                'field',
             ],
             'DISTINCT'        => true,
             'FROM'            => self::getTable(),
-            'WHERE'           => ['language' => $language]
+            'WHERE'           => ['language' => $language],
         ]);
         foreach ($iterator as $data) {
             $tab[$data['itemtype']][$data['field']] = $data['field'];

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,9 +37,6 @@
  * @var array $CFG_GLPI
  */
 global $CFG_GLPI;
-
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -71,21 +68,21 @@ if (!isset($_GET["withtemplate"])) {
 }
 
 if (isset($_GET['id']) && !empty($_GET['id'])) {
-    $_GET['id'] = (int)$_GET['id'];
+    $_GET['id'] = (int) $_GET['id'];
 }
 
 if ($item = getItemForItemtype($_GET['_itemtype'])) {
     if ($item->get_item_to_display_tab) {
-       // No id if ruleCollection but check right
+        // No id if ruleCollection but check right
         if ($item instanceof RuleCollection) {
             if (!$item->canList()) {
                 return;
             }
-        } else if (!isset($_GET["id"]) || $item->isNewID($_GET["id"])) {
+        } elseif (!isset($_GET["id"]) || $item->isNewID($_GET["id"])) {
             if (!$item->can(-1, CREATE, $_GET)) {
                 return;
             }
-        } else if (!$item->can($_GET["id"], READ)) {
+        } elseif (!$item->can($_GET["id"], READ)) {
             return;
         }
     }
@@ -109,5 +106,5 @@ if (isset($options['locked'])) {
 }
 
 \Glpi\Debug\Profiler::getInstance()->start('CommonGLPI::displayStandardTab');
-CommonGLPI::displayStandardTab($item, $_GET['_glpi_tab'], (int)$_GET["withtemplate"], $options);
+CommonGLPI::displayStandardTab($item, $_GET['_glpi_tab'], (int) $_GET["withtemplate"], $options);
 \Glpi\Debug\Profiler::getInstance()->stop('CommonGLPI::displayStandardTab');

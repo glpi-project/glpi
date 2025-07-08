@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,11 +39,11 @@ class Appliance_Item_Relation extends CommonDBRelation
 {
     public static $itemtype_1 = 'Appliance_Item';
     public static $items_id_1 = 'appliances_items_id';
-   //static public $take_entity_1 = false;
+    //static public $take_entity_1 = false;
 
     public static $itemtype_2 = 'itemtype';
     public static $items_id_2 = 'items_id';
-   //static public $take_entity_2 = true;
+    //static public $take_entity_2 = true;
 
     public static function getTypeName($nb = 0)
     {
@@ -111,7 +111,7 @@ class Appliance_Item_Relation extends CommonDBRelation
     {
         $error_detected = [];
 
-       //check for requirements
+        //check for requirements
         if (
             ($this->isNewItem() && (!isset($input['itemtype']) || empty($input['itemtype'])))
             || (isset($input['itemtype']) && empty($input['itemtype']))
@@ -185,14 +185,14 @@ class Appliance_Item_Relation extends CommonDBRelation
             'SELECT' => ['id', 'itemtype', 'items_id'],
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                Appliance_Item::getForeignKeyField() => $appliances_items_id
-            ]
+                Appliance_Item::getForeignKeyField() => $appliances_items_id,
+            ],
         ]);
 
         $relations = [];
         foreach ($iterator as $row) {
             $itemtype = $row['itemtype'];
-            $item = new $itemtype();
+            $item = getItemForItemtype($itemtype);
             $item->getFromDB($row['items_id']);
             $relations[$row['id']] = "<i class='" . $item->getIcon() . "' title='" . htmlescape($item::getTypeName(1)) . "'></i>" .
                         "&nbsp;" . htmlescape($item::getTypeName(1)) .
@@ -220,7 +220,7 @@ class Appliance_Item_Relation extends CommonDBRelation
         foreach (self::getForApplianceItem($appliances_items_id) as $rel_id => $link) {
             $del = "";
             if ($canedit) {
-                $del = "<i class='delete_relation pointer fas fa-times' data-relations-id='$rel_id'></i>";
+                $del = "<i class='delete_relation pointer ti ti-x' data-relations-id='$rel_id'></i>";
             }
             $relations_str .= "<li>$link $del</li>";
         }
@@ -269,13 +269,15 @@ class Appliance_Item_Relation extends CommonDBRelation
 
             $crsf_token = Session::getNewCSRFToken();
 
+            $add_button = json_encode(_x('button', "Add an item"));
+
             $js = <<<JAVASCRIPT
          $(function() {
             $(document).on('click', '.add_relation', function() {
                var appliances_items_id = $(this).data('appliances-items-id');
 
                glpi_html_dialog({
-                  title: _x('button', "Add an item"),
+                  title: {$add_button},
                   body: {$modal_html},
                   id: 'add_relation_dialog',
                   show: function() {

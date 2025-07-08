@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -41,20 +40,21 @@
         'disabled': false,
         'multiple': false,
         'required': false,
+        'maxlength': null,
         'is_disclosable': false,
         'is_copyable': false,
         'clearable': false,
     }|merge(options) %}
 
-    {% if options.fields_template.isMandatoryField(name) %}
+    {% if options.fields_template.isMandatoryField(name)|default(false) %}
         {% set options = options|merge({'required': true}) %}
     {% endif %}
 
-    {% if options.fields_template.isReadonlyField(name) %}
+    {% if options.fields_template.isReadonlyField(name)|default(false) %}
         {% set options = options|merge({'readonly': true}) %}
     {% endif %}
 
-   {% if (options.is_disclosable or options.is_copyable) and id is null %}
+   {% if (options.is_disclosable or options.is_copyable) and options.id is null %}
       {% set options = options|merge({
          id: name|slug ~ '_' ~ random()
       }) %}
@@ -118,6 +118,10 @@
 
 
 {% macro text(name, value, options = {}) %}
+    {% set options = {
+        'copyable': false,
+    }|merge(options) %}
+
     {% if options.copyable %}
         <div class="copy_to_clipboard_wrapper">
     {% endif %}
@@ -148,7 +152,7 @@
 
 {% macro color(name, value, options = {}) %}
     {% set options = {
-        id: name ~ '_' ~ options.rand
+        id: name ~ '_' ~ (options.rand ?? random()),
     }|merge(options) %}
 
     {{ _self.input(name, value, options|merge({
@@ -212,13 +216,20 @@
     {% set options = {
         'rand': random(),
         'enableTime': false,
-        'checkIsExpired ': false,
+        'checkIsExpired': false,
         'clearable': false,
+        'input_addclass': '',
+        'readonly': false,
+        'maybeempty': false,
     }|merge(options) %}
 
     {% set options = {
         'id': name|slug ~ '_' ~ options.rand
     }|merge(options) %}
+
+    {% if options.fields_template.isReadonlyField(name)|default(false) %}
+        {% set options = options|merge({'readonly': true}) %}
+    {% endif %}
 
     {% if value == 'NULL' %}
       {% set value = null %}
@@ -237,7 +248,7 @@
         {% endif %}
     {% endif %}
 
-    <div class="btn-group flex-grow-1 flatpickr" id="{{ options.id }}">
+    <div class="btn-group flex-grow-1 flatpickr d-flex" id="{{ options.id }}">
         {{ _self.input(name, value, options|merge({
             'type': 'text',
             'id': options.id ~ '_input',
@@ -253,8 +264,8 @@
             </button>
             {# maybeempty has no distinct purpose, but it was here first #}
             {% if options.clearable or options.maybeempty %}
-                <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle title="{{ __('Clear') }}">
-                    <i class="ti ti-circle-x" data-clear></i>
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle data-clear title="{{ __('Clear') }}">
+                    <i class="ti ti-circle-x"></i>
                 </button>
             {% endif %}
         {% endif %}
@@ -302,7 +313,11 @@
         'rows': 3,
         'enable_richtext': false,
         'enable_images': true,
-        'enable_mentions': false,
+        'mention_options': {
+            'enabled': options.enable_mentions is defined and options.enable_mentions,
+            'full': true,
+            'users': [],
+        },
         'entities_id': session('glpiactive_entity'),
         'readonly': false,
         'disabled': false,
@@ -317,9 +332,10 @@
         'aria_label': "",
         'statusbar': true,
         'content_style': "",
+        'input_addclass': '',
     }|merge(options) %}
 
-    {% if options.fields_template.isMandatoryField(name) %}
+    {% if options.fields_template.isMandatoryField(name)|default(false) %}
         {% set options = {'required': true}|merge(options) %}
     {% endif %}
     {% set options = options|merge({
@@ -354,7 +370,6 @@
             options.content_style,
         ]) %}
    {% endif %}
-
    {% if options.enable_form_tags %}
         <script>
             $(function() {
@@ -367,13 +382,14 @@
         </script>
     {% endif %}
 
-    {% if options.enable_mentions and config('use_notifications') %}
+    {% if options.mention_options.enabled|default(false) and config('use_notifications') %}
         <script>
             $(function() {
                 const user_mention = new GLPI.RichText.UserMention(
                     tinymce.get('{{ options.id }}'),
                     {{ options.entities_id }},
-                    '{{ idor_token('User', {'right': 'all', 'entity_restrict': options.entities_id}) }}'
+                    '{{ idor_token('User', {'right': 'all', 'entity_restrict': options.entities_id}) }}',
+                    {{ options.mention_options|json_encode|raw }}
                 );
                 user_mention.register();
             });
@@ -389,6 +405,7 @@
         'readonly': false,
         'disabled': false,
         'required': false,
+        'additional_attributes': {},
     }|merge(options) %}
 
     <input type="hidden"   name="{{ name }}" value="0" />
@@ -398,7 +415,10 @@
            {{ value == 1 ? 'checked' : '' }}
            {{ options.readonly ? 'readonly' : '' }}
            {{ options.required ? 'required' : '' }}
-           {{ options.disabled ? 'disabled' : '' }} />
+           {{ options.disabled ? 'disabled' : '' }}
+            {% for attr, value in options.additional_attributes %}
+                {{ attr }}="{{ value }}"
+            {% endfor %}/>
 {% endmacro %}
 
 
@@ -431,13 +451,14 @@
 
 {% macro label(label, id, options = {}, class = 'form-label') %}
     {% set options = {
-        locked: false,
-        locked_value: null,
-        tpl_mark: null
+        'locked': false,
+        'locked_value': null,
+        'tpl_mark': null,
+        'helper': false
     }|merge(options) %}
 
     {% set required_mark = '' %}
-    {% if options.fields_template.isMandatoryField(options.name) or options.required %}
+    {% if (options.name is defined and options.fields_template.isMandatoryField(options.name)|default(false)) or options.required ?? false %}
         {% set required_mark = '<span class="required">*</span>' %}
     {% endif %}
 

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,30 +33,29 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 /**
- * Following variables have to be defined before inclusion of this file:
- * @var CommonDropdown $dropdown
- * @var LegacyFileLoadController $this
+ * @var mixed $this
+ * @var mixed $dropdown
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Glpi\Controller\GenericListController;
 use Glpi\Controller\LegacyFileLoadController;
-use Glpi\Exception\Http\AccessDeniedHttpException;
 
 if (!($this instanceof LegacyFileLoadController) || !($dropdown instanceof CommonDropdown)) {
     throw new LogicException();
 }
 
 \Toolbox::deprecated(\sprintf(
-    'Requiring legacy dropdown files is deprecated. You can safely remove the %s file and use the new `%s` route, dedicated for dropdowns.',
+    'Requiring legacy dropdown files is deprecated. You can safely remove the `%s` file in order to make the `%s` controller used instead.',
     debug_backtrace()[0]['file'] ?? 'including',
-    'glpi_dropdown',
+    GenericListController::class,
 ));
 
-if (!$dropdown::canView()) {
-    throw new AccessDeniedHttpException();
-}
+$request = $this->getRequest(); // @phpstan-ignore method.private
+$request->attributes->set('class', $dropdown::class);
 
-TemplateRenderer::getInstance()->display('pages/generic_list.html.twig', [
-    'object_class' => $dropdown::class,
-]);
+$controller = new GenericListController();
+$response = $controller($request);
+$response->send();

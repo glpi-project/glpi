@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -59,8 +59,8 @@ if (class_exists($_POST["itemtype"])) {
             'networkports_id'    => $_POST['networkports_id'],
             'itemtype'           => $_POST['itemtype'],
             'myname'             => $_POST['myname'],
-            'instantiation_type' => $_POST['instantiation_type']
-        ]
+            'instantiation_type' => $_POST['instantiation_type'],
+        ],
     ];
     $params   = [
         'rand'      => $rand,
@@ -72,11 +72,11 @@ if (class_exists($_POST["itemtype"])) {
                 'FROM'   => 'glpi_networkports',
                 'WHERE'  => [
                     'itemtype'           => $_POST['itemtype'],
-                    'instantiation_type' => $_POST['instantiation_type']
-                ]
-            ])
+                    'instantiation_type' => $_POST['instantiation_type'],
+                ],
+            ]),
         ],
-        'toupdate'  => $toupdate
+        'toupdate'  => $toupdate,
     ];
 
     Dropdown::show($_POST['itemtype'], $params);

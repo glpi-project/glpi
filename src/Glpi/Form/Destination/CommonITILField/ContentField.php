@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -40,15 +39,20 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
+use Glpi\Form\Migration\DestinationFieldConverterInterface;
+use Glpi\Form\Migration\FormMigration;
 use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Form\Tag\FormTagsManager;
 use Glpi\Form\Tag\QuestionTagProvider;
 use Glpi\Form\Tag\SectionTagProvider;
+use Glpi\Form\Migration\TagConversionTrait;
 use InvalidArgumentException;
 use Override;
 
-class ContentField extends AbstractConfigField
+final class ContentField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
+    use TagConversionTrait;
+
     #[Override]
     public function getLabel(): string
     {
@@ -78,13 +82,16 @@ class ContentField extends AbstractConfigField
             {{ fields.textareaField(
                 input_name,
                 value,
-                label,
+                '',
                 options|merge({
+                    'field_class'      : '',
+                    'no_label'         : true,
                     'enable_richtext'  : true,
                     'enable_images'    : false,
                     'enable_form_tags' : true,
                     'form_tags_form_id': form_id,
                     'content_style'    : 'body { line-height: 2.3; }',
+                    'mb'               : '',
                 })
             ) }}
 TWIG;
@@ -92,7 +99,6 @@ TWIG;
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
             'form_id'    => $form->fields['id'],
-            'label'      => $this->getLabel(),
             'value'      => $config->getValue(),
             'input_name' => $input_name . "[" . SimpleValueConfig::VALUE . "]",
             'options'    => $display_options,
@@ -166,5 +172,22 @@ TWIG;
     public function getWeight(): int
     {
         return 20;
+    }
+
+    #[Override]
+    public function getCategory(): Category
+    {
+        return Category::PROPERTIES;
+    }
+
+    #[Override]
+    public function convertFieldConfig(FormMigration $migration, Form $form, array $rawData): JsonFieldInterface
+    {
+        if (isset($rawData['content'])) {
+            $content = $this->convertLegacyTags($rawData['content'], $migration);
+            return new SimpleValueConfig($content);
+        }
+
+        return $this->getDefaultConfig($form);
     }
 }

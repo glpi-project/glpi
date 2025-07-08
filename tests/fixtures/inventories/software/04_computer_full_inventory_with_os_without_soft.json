@@ -1,0 +1,78 @@
+{
+    "action": "inventory",
+    "content": {
+        "accesslog": {
+            "logdate": "2025-05-20 14:39:00"
+        },
+        "antivirus": [
+            {
+                "base_version": "1.429.84.0",
+                "company": "Microsoft Corporation",
+                "enabled": true,
+                "guid": "{D68DDC3A-831F-4fae-9E44-DA132C1ACF46}",
+                "name": "Windows Defender",
+                "uptodate": true,
+                "version": "4.18.25030.2"
+            }
+        ],
+        "bios": {
+            "assettag": "SYS_CHASSIS_ASSET_TAG_NUM_1",
+            "bdate": "2021-07-02",
+            "bmanufacturer": "Intel Corp.",
+            "bversion": "EBTGL357.0061.2021.0702.1707",
+            "mmanufacturer": "Intel Corporation",
+            "mmodel": "sdfsdf62651sdf",
+            "msn": "qsd54sdf456sdf",
+            "smanufacturer": "Intel(R) Client Systems",
+            "smodel": "sdfsdf62651sdf",
+            "ssn": "qsd5qs1d-5qs1d564qsd-qs5d4685q4sd"
+        },
+        "hardware": {
+            "chassis_type": "Mini PC",
+            "defaultgateway": "192.168.8.1",
+            "dns": "192.168.8.1",
+            "memory": 7817,
+            "name": "ARN4058",
+            "uuid": "dfdfg-dfg5156fdg-5df1g615dfg-54dfg5d4fg",
+            "vmsystem": "Physical",
+            "winlang": "1033",
+            "winowner": "User",
+            "workgroup": "WORKGROUP"
+        },
+        "operatingsystem": {
+            "arch": "64-bit",
+            "boot_time": "2025-05-17 23:41:15",
+            "dns_domain": "WORKGROUP",
+            "fqdn": "ARN4058",
+            "full_name": "Microsoft Windows 10 IoT Enterprise LTSC",
+            "install_date": "2022-07-18 18:34:14",
+            "kernel_name": "MSWin32",
+            "kernel_version": "10.0.19044",
+            "name": "Windows",
+            "service_pack": "19044.5854",
+            "timezone": {
+                "name": "Asia\/Riyadh",
+                "offset": "+0300"
+            },
+            "version": "21H2"
+        },
+        "versionclient": "GLPI-Agent_v1.9",
+        "versionprovider": {
+            "comments": [
+                "Provided by Teclib Edition",
+                "Installer built on Tue May 28 09:10:25 2024 UTC",
+                "Built with Strawberry Perl 5.38.2",
+                "Built on github actions windows image for glpi-project\/glpi-agent repository"
+            ],
+            "etime": 25,
+            "name": "GLPI",
+            "perl_exe": "C:\\Program Files\\GLPI-Agent\\perl\\bin\\glpi-agent.exe",
+            "perl_version": "v5.38.2",
+            "program": "C:\\Program Files\\GLPI-Agent\\perl\\bin\\glpi-win32-service",
+            "version": "1.9"
+        }
+    },
+    "deviceid": "ARN4058",
+    "itemtype": "Computer",
+    "partial": false
+}

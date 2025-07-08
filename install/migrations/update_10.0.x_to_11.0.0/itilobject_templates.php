@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -58,7 +57,7 @@ foreach ($itil_type_tables as $table => $fkey_to_add) {
 
 // Add status_allowed field to all ITIL Object template tables
 $itiltemplate_tables = [
-    'glpi_tickettemplates'  => [1, 2, 3, 4, 5, 6],
+    'glpi_tickettemplates'  => [1, 10, 2, 3, 4, 5, 6],
     'glpi_changetemplates'  => [1, 9, 10, 7, 4, 11, 12, 5, 8, 6, 14, 13],
     'glpi_problemtemplates' => [1, 7, 2, 3, 4, 5, 8, 6],
 ];
@@ -68,7 +67,7 @@ foreach ($itiltemplate_tables as $table => $all_statuses) {
         $default_value = exportArrayToDB($all_statuses);
         $migration->addField($table, 'allowed_statuses', 'string', [
             'null'  => false,
-            'value' => $default_value
+            'value' => $default_value,
         ]);
     }
 }

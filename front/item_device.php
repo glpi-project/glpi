@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,30 +33,30 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Exception\Http\AccessDeniedHttpException;
 
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-if (!isset($_GET['itemtype']) || !class_exists($_GET['itemtype'])) {
+$itemDevice = getItemForItemtype($_GET['itemtype']);
+if (!$itemDevice) {
     throw new \RuntimeException(
         'Missing or incorrect item device type called!'
     );
 }
 
-/** @var class-string $_GET['itemtype'] */
-$itemDevice = getItemForItemtype($_GET['itemtype']);
 if (!$itemDevice->canView()) {
-    Session::redirectIfNotLoggedIn();
     throw new AccessDeniedHttpException();
 }
 
 if (in_array($itemDevice->getType(), $CFG_GLPI['devices_in_menu'])) {
-    Html::header($itemDevice->getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", strtolower($itemDevice->getType()));
+    Html::header($itemDevice->getTypeName(Session::getPluralNumber()), '', "assets", strtolower($itemDevice->getType()));
 } else {
     Html::header($itemDevice->getTypeName(Session::getPluralNumber()), '', "config", "commondevice", $itemDevice->getType());
 }
 
-Search::show($_GET['itemtype']);
+Search::show($itemDevice->getType());
 
 Html::footer();

@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,13 +35,20 @@
 namespace Glpi\Form\Destination;
 
 use Change;
+use CommonITILObject;
 use Override;
 
 final class FormDestinationChange extends AbstractCommonITILFormDestination
 {
     #[Override]
-    public static function getTargetItemtype(): string
+    public function getTarget(): CommonITILObject
     {
-        return Change::class;
+        return new Change();
+    }
+
+    #[Override]
+    public function getWeight(): int
+    {
+        return 20;
     }
 }

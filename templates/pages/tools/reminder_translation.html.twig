@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -29,7 +28,7 @@
  # along with this program.  If not, see <https://www.gnu.org/licenses/>.
  #
  # ---------------------------------------------------------------------
-#}
+ #}
 
 {% extends "generic_show_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
@@ -40,8 +39,6 @@
     {{ inputs.hidden('reminders_id', item.fields['reminders_id']) }}
 
     {% set field_options = {
-        label_class: 'col-xxl-2',
-        input_class: 'col-xxl-10',
         full_width: true
     } %}
 

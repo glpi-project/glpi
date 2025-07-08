@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,14 +33,17 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Csv\CsvResponse;
 use Glpi\Csv\PrinterLogCsvExport;
 use Glpi\Csv\PrinterLogCsvExportComparison;
+use Safe\DateTime;
 
 Session::checkRight("printer", READ);
 
 if (isset($_GET["id"])) {
-    $printers = array_map(fn ($id) => Printer::getById($id), $_GET["id"]);
+    $printers = array_map(fn($id) => Printer::getById($id), $_GET["id"]);
     $interval = $_GET['interval'] ?? 'P1Y';
     $start = empty($_GET['start']) ? null : new DateTime($_GET['start']);
     $end = empty($_GET['end']) ? new DateTime() : new DateTime($_GET['end']);

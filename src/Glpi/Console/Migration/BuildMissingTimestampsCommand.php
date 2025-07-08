@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,7 +35,6 @@
 
 namespace Glpi\Console\Migration;
 
-use CommonDBTM;
 use Glpi\Console\AbstractCommand;
 use Log;
 use Symfony\Component\Console\Input\InputInterface;
@@ -75,14 +74,13 @@ class BuildMissingTimestampsCommand extends AbstractCommand
 
         foreach ($tables_iterator as $table_info) {
             $table    = $table_info['TABLE_NAME'];
-            $itemtype = getItemTypeForTable($table);
+            $item     = getItemForTable($table);
+            $itemtype = $item::class;
             $column   = $table_info['COLUMN_NAME'];
 
-            if (!is_a($itemtype, CommonDBTM::class, true)) {
-                continue; // getItemTypeForTable() may not return a class name ("UNKNOWN" for example)
+            if ($item === null) {
+                continue;
             }
-           /* @var CommonDBTM $item */
-            $item = new $itemtype();
 
             if (!$item->dohistory) {
                 continue; // Skip items that does not have an history
@@ -108,17 +106,17 @@ class BuildMissingTimestampsCommand extends AbstractCommand
             "
             );
             if (false === $result) {
-                 $message = sprintf(
-                     __('Update of `%s`.`%s` failed with message "(%s) %s".'),
-                     $table,
-                     $column,
-                     $this->db->errno(),
-                     $this->db->error()
-                 );
-                 $output->writeln(
-                     '<error>' . $message . '</error>',
-                     OutputInterface::VERBOSITY_QUIET
-                 );
+                $message = sprintf(
+                    __('Update of `%s`.`%s` failed with message "(%s) %s".'),
+                    $table,
+                    $column,
+                    $this->db->errno(),
+                    $this->db->error()
+                );
+                $output->writeln(
+                    '<error>' . $message . '</error>',
+                    OutputInterface::VERBOSITY_QUIET
+                );
             }
         }
 

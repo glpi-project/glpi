@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -72,7 +72,7 @@ class UserTechFilter extends AbstractFilter
         $users_id = null;
         if ((int) $value > 0) {
             $users_id = (int) $value;
-        } else if ($value === 'myself') {
+        } elseif ($value === 'myself') {
             $users_id = $_SESSION['glpiID'];
         }
 
@@ -81,9 +81,13 @@ class UserTechFilter extends AbstractFilter
                 $criteria["WHERE"] = [
                     "$table.users_id_tech" => $users_id,
                 ];
-            } else if (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()])) {
-                $itemtype  = getItemTypeForTable($table);
-                $main_item = getItemForItemtype($itemtype);
+            } elseif (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()])) {
+                $main_item = match ($table) {
+                    Ticket::getTable() => new Ticket(),
+                    Change::getTable() => new Change(),
+                    Problem::getTable() => new Problem(),
+                    default => throw new \UnexpectedValueException(),
+                };
                 $userlink  = $main_item->userlinkclass;
                 $ul_table  = $userlink::getTable();
                 $fk        = $main_item->getForeignKeyField();
@@ -93,8 +97,8 @@ class UserTechFilter extends AbstractFilter
                         'ON' => [
                             'ul'   => $fk,
                             $table => 'id',
-                        ]
-                    ]
+                        ],
+                    ],
                 ];
                 $criteria["WHERE"] = [
                     "ul.type"     => \CommonITILActor::ASSIGN,
@@ -119,14 +123,14 @@ class UserTechFilter extends AbstractFilter
                     'link'       => 'AND',
                     'field'      => self::getSearchOptionID($table, 'users_id_tech', 'glpi_users'),
                     'searchtype' => 'equals',
-                    'value'      =>  $value === 'myself' ? (int) Session::getLoginUserID() : (int) $value
+                    'value'      =>  $value === 'myself' ? (int) Session::getLoginUserID() : (int) $value,
                 ];
             } elseif (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()])) {
                 $criteria[] = [
                     'link'       => 'AND',
                     'field'      => 5,// tech
                     'searchtype' => 'equals',
-                    'value'      =>  is_numeric($value) ? (int) $value : $value
+                    'value'      =>  is_numeric($value) ? (int) $value : $value,
                 ];
             }
         }
@@ -146,8 +150,8 @@ class UserTechFilter extends AbstractFilter
                     [
                         'id'    => 'myself',
                         'text'  => __('Myself'),
-                    ]
-                ]
+                    ],
+                ],
             ]
         );
     }

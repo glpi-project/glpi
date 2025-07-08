@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,37 +34,141 @@
 
 namespace Glpi\Helpdesk\Tile;
 
+use CommonDBChild;
+use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Form;
+use Glpi\Session\SessionInfo;
+use Html;
+use Override;
 
-final class FormTile implements TileInterface
+final class FormTile extends CommonDBChild implements TileInterface
 {
-    public function __construct(
-        private Form $form,
-        // The following properties might be specified to override the form's
-        // fields if needed.
-        private string $title = "",
-        private string $description = "",
-        private string $illustration = "",
-    ) {
+    public static $rightname = 'config';
+    public static $itemtype = Form::class;
+    public static $items_id = 'forms_forms_id';
+
+    private ?Form $form;
+
+    #[Override]
+    public function getLabel(): string
+    {
+        return Form::getTypeName(1);
     }
 
+    #[Override]
+    public static function canCreate(): bool
+    {
+        return self::canUpdate();
+    }
+
+    #[Override]
+    public static function canPurge(): bool
+    {
+        return self::canUpdate();
+    }
+
+    #[Override]
+    public function post_getFromDB(): void
+    {
+        $form = $this->getItem();
+        if (!($form instanceof Form)) {
+            // We don't throw an exception here because we don't want to crash
+            // the home page in case of one invalid tile.
+            // It is better to display an empty tile in this case rather
+            // than blocking access to the helpdesk.
+            trigger_error("Unable to load linked form", E_USER_WARNING);
+            $this->form = null;
+        } else {
+            $this->form = $form;
+        }
+    }
+
+    #[Override]
     public function getTitle(): string
     {
-        return $this->title ?: $this->form->fields['name'];
+        if ($this->form === null) {
+            return "";
+        }
+        return $this->form->getServiceCatalogItemTitle();
     }
 
+    #[Override]
     public function getDescription(): string
     {
-        return $this->description ?: $this->form->fields['description'];
+        if ($this->form === null) {
+            return "";
+        }
+        return $this->form->getServiceCatalogItemDescription();
     }
 
+    #[Override]
     public function getIllustration(): string
     {
-        return $this->illustration ?: $this->form->fields['illustration'];
+        if ($this->form === null) {
+            return "";
+        }
+        return $this->form->getServiceCatalogItemIllustration();
     }
 
-    public function getLink(): string
+    #[Override]
+    public function getTileUrl(): string
     {
-        return '/Form/Render/' .  $this->form->getID();
+        if ($this->form === null) {
+            return "";
+        }
+
+        return Html::getPrefixedUrl('/Form/Render/' . $this->form->getID());
+    }
+
+    #[Override]
+    public function isAvailable(SessionInfo $session_info): bool
+    {
+        $form_access_manager = FormAccessControlManager::getInstance();
+
+        // Form must be defined
+        if ($this->form === null) {
+            return false;
+        }
+
+        // Form must be active
+        if (!$this->form->isActive()) {
+            return false;
+        }
+
+        // Form must not be deleted
+        if ($this->form->isDeleted()) {
+            return false;
+        }
+
+        // Check that the form entity is visible
+        if (!$this->form->isAccessibleFromEntities($session_info->getActiveEntitiesIds())) {
+            return false;
+        }
+
+        // Check if the user can answer the form
+        $form_access_params = new FormAccessParameters(session_info: $session_info);
+        if (!$form_access_manager->canAnswerForm($this->form, $form_access_params)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    #[Override]
+    public function getDatabaseId(): int
+    {
+        return $this->fields['id'];
+    }
+
+    #[Override]
+    public function getConfigFieldsTemplate(): string
+    {
+        return "pages/admin/form_tile_config_fields.html.twig";
+    }
+
+    public function getFormId(): int
+    {
+        return $this->fields['forms_forms_id'] ?? 0;
     }
 }

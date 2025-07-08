@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,14 +35,14 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\CookieAuthMiddleware;
 use Glpi\Api\HL\OpenAPIGenerator;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\Router;
-use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\RouteVersion;
-use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Error\ErrorHandler;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -50,7 +50,6 @@ use Glpi\OAuth\Server;
 use Glpi\System\Status\StatusChecker;
 use Glpi\Toolbox\MarkdownRenderer;
 use League\OAuth2\Server\Exception\OAuthServerException;
-use Glpi\UI\ThemeManager;
 use Session;
 
 final class CoreController extends AbstractController
@@ -78,7 +77,7 @@ final class CoreController extends AbstractController
                             'id' => ['type' => Doc\Schema::TYPE_INTEGER],
                             'name' => ['type' => Doc\Schema::TYPE_STRING],
                             'interface' => ['type' => Doc\Schema::TYPE_STRING],
-                        ]
+                        ],
                     ],
                     'active_entity' => [
                         'type' => Doc\Schema::TYPE_OBJECT,
@@ -87,9 +86,9 @@ final class CoreController extends AbstractController
                             'short_name' => ['type' => Doc\Schema::TYPE_STRING],
                             'complete_name' => ['type' => Doc\Schema::TYPE_STRING],
                             'recursive' => ['type' => Doc\Schema::TYPE_INTEGER],
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             'EntityTransferRecord' => [
                 'x-version-introduced' => '2.0',
@@ -99,8 +98,26 @@ final class CoreController extends AbstractController
                     'items_id' => ['type' => Doc\Schema::TYPE_INTEGER],
                     'entity' => ['type' => Doc\Schema::TYPE_INTEGER],
                     'options' => ['type' => Doc\Schema::TYPE_OBJECT],
-                ]
-            ]
+                ],
+            ],
+            'APIInformation' => [
+                'x-version-introduced' => '2.0',
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'message' => ['type' => Doc\Schema::TYPE_STRING],
+                    'api_versions' => [
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'properties' => [
+                                'api_version' => ['type' => Doc\Schema::TYPE_STRING],
+                                'version' => ['type' => Doc\Schema::TYPE_STRING],
+                                'endpoint' => ['type' => Doc\Schema::TYPE_STRING],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -111,128 +128,86 @@ final class CoreController extends AbstractController
         responses: [
             '200' => [
                 'description' => 'API information',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_OBJECT,
-                    'properties' => [
-                        'message' => ['type' => Doc\Schema::TYPE_STRING],
-                        'api_versions' => [
-                            'type' => Doc\Schema::TYPE_ARRAY,
-                            'items' => [
-                                'type' => Doc\Schema::TYPE_OBJECT,
-                                'properties' => [
-                                    'api_version' => ['type' => Doc\Schema::TYPE_STRING],
-                                    'version' => ['type' => Doc\Schema::TYPE_STRING],
-                                    'endpoint' => ['type' => Doc\Schema::TYPE_STRING],
-                                ]
-                            ]
-                        ],
-                        'links' => [
-                            'type' => Doc\Schema::TYPE_ARRAY,
-                            'items' => [
-                                'type' => Doc\Schema::TYPE_OBJECT,
-                                'properties' => [
-                                    'href' => ['type' => Doc\Schema::TYPE_STRING],
-                                    'methods' => ['type' => Doc\Schema::TYPE_ARRAY, 'items' => ['type' => Doc\Schema::TYPE_STRING]],
-                                    'requirements' => ['type' => Doc\Schema::TYPE_OBJECT, 'properties' => []],
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
+                'schema' => 'APIInformation',
+            ],
         ]
     )]
     public function index(Request $request): Response
     {
         $data = [
             'message' => 'Welcome to GLPI API',
-            'api_versions' => Router::getAPIVersions()
+            'api_versions' => Router::getAPIVersions(),
         ];
-
-        $data['links'] = Router::getInstance()->getAllRoutePaths();
 
         return new JSONResponse($data);
     }
 
-    #[Route(path: '/doc{ext}', methods: ['GET'], requirements: ['ext' => '(.json)?'], security_level: Route::SECURITY_NONE, middlewares: [CookieAuthMiddleware::class])]
+    #[Route(path: '/doc', methods: ['GET'], security_level: Route::SECURITY_NONE, middlewares: [CookieAuthMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
-        description: 'Displays the API documentation as a Swagger UI HTML page or as the raw JSON schema.',
-        parameters: [
-            [
-                'name' => 'ext',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'description' => 'An optional ".json" extension to force the output to be JSON.',
-                'schema' => ['type' => 'string']
-            ]
-        ],
+        description: 'Displays the API documentation as a Swagger UI HTML page.',
     )]
     public function showDocumentation(Request $request): Response
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $generator = new OpenAPIGenerator(Router::getInstance(), $this->getAPIVersion($request));
-
-        $requested_types = $request->getHeader('Accept');
-        $requested_json = in_array('application/json', $requested_types, true) ||
-            str_ends_with($request->getUri()->getPath(), '.json');
-        if (!$requested_json) {
-            $swagger_content = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>GLPI API Documentation</title>';
-            $swagger_content .= \Html::script('/lib/swagger-ui.js');
-            $swagger_content .= \Html::css('/lib/swagger-ui.css');
-            $favicon = \Html::getPrefixedUrl('/pics/favicon.ico');
-            $doc_json_path = $CFG_GLPI['root_doc'] . '/api.php/doc.json';
-            $swagger_content .= <<<HTML
-            <link rel="shortcut icon" type="images/x-icon" href="$favicon" />
-            </head>
-            <body>
-                <div id="swagger-ui"></div>
-                <script>
-                    const ui = window.SwaggerUIBundle({
-                        url: '{$doc_json_path}',
-                        dom_id: '#swagger-ui',
-                        docExpansion: 'none',
-                        validatorUrl: 'none',
-                        filter: true,
-                        showExtensions: true,
-                        oauth2RedirectUrl: '{$CFG_GLPI['root_doc']}/api.php/swagger-oauth-redirect',
-                        // Sort operations by name and then by method
-                        operationsSorter: (a, b) => {
-                            const method_order = ['get', 'post', 'put', 'patch', 'delete'];
-                            if (a.get('path') === b.get('path')) {
-                                return method_order.indexOf(a.get('method')) - method_order.indexOf(b.get('method'));
-                            }
-                            return a.get('path').localeCompare(b.get('path'));
-                        },
-                        tagsSorter: (a, b) => a.localeCompare(b),
-                    });
-                </script>
-            </body>
+        $swagger_content = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>GLPI API Documentation</title>';
+        $swagger_content .= \Html::script('/lib/swagger-ui.js');
+        $swagger_content .= \Html::css('/lib/swagger-ui.css');
+        $favicon = \Html::getPrefixedUrl('/pics/favicon.ico');
+        $doc_json_path = $CFG_GLPI['root_doc'] . '/api.php/doc.json';
+        $swagger_content .= <<<HTML
+        <link rel="shortcut icon" type="images/x-icon" href="$favicon" />
+        </head>
+        <body>
+            <div id="swagger-ui"></div>
+            <script>
+                const ui = window.SwaggerUIBundle({
+                    url: '{$doc_json_path}',
+                    dom_id: '#swagger-ui',
+                    docExpansion: 'none',
+                    validatorUrl: 'none',
+                    filter: true,
+                    showExtensions: true,
+                    oauth2RedirectUrl: '{$CFG_GLPI['root_doc']}/api.php/swagger-oauth-redirect',
+                    // Sort operations by name and then by method
+                    operationsSorter: (a, b) => {
+                        const method_order = ['get', 'post', 'put', 'patch', 'delete'];
+                        if (a.get('path') === b.get('path')) {
+                            return method_order.indexOf(a.get('method')) - method_order.indexOf(b.get('method'));
+                        }
+                        return a.get('path').localeCompare(b.get('path'));
+                    },
+                    tagsSorter: (a, b) => a.localeCompare(b),
+                });
+            </script>
+        </body>
 HTML;
 
-            // Must allow caching since it is a large script, and the documentation won't update often (possibly when plugins change)
-            return new Response(200, [
-                'Content-Type' => 'text/html',
-                'Cache-Control' => 'public, max-age=86400'
-            ], $swagger_content);
-        }
+        // Must allow caching since it is a large script, and the documentation won't update often (possibly when plugins change)
+        return new Response(200, [
+            'Content-Type' => 'text/html',
+            'Cache-Control' => 'public, max-age=86400',
+        ], $swagger_content);
+    }
+
+    #[Route(path: '/doc.json', methods: ['GET'], security_level: Route::SECURITY_NONE, middlewares: [CookieAuthMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
+    #[Doc\Route(
+        description: 'Get the OpenAPI JSON schema.',
+    )]
+    public function getOpenAPISchema(Request $request): Response
+    {
+        $generator = new OpenAPIGenerator(Router::getInstance(), $this->getAPIVersion($request));
         $schema = $generator->getSchema();
         return new JSONResponse($schema);
     }
 
-    #[Route(path: '/getting-started{ext}', methods: ['GET'], requirements: ['ext' => '(.md)?'], security_level: Route::SECURITY_NONE, middlewares: [CookieAuthMiddleware::class])]
+    #[Route(path: '/getting-started', methods: ['GET'], security_level: Route::SECURITY_NONE, middlewares: [CookieAuthMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Displays the general API documentation to get started.',
-        parameters: [
-            [
-                'name' => 'ext',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'description' => 'An optional ".md" extension. Does not change the output format',
-                'schema' => ['type' => 'string']
-            ]
-        ],
     )]
     public function showGettingStarted(Request $request): Response
     {
@@ -298,7 +273,7 @@ HTML;
             ],
             '404' => [
                 'description' => 'No route found for the requested path',
-            ]
+            ],
         ]
     )]
     public function defaultRoute(Request $request): Response
@@ -328,7 +303,7 @@ HTML;
         }
         if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
             $response_headers['Access-Control-Allow-Headers'] = [
-                'Content-Type', 'Authorization', 'Origin', 'Accept', 'Glpi-Session-Token', 'Glpi-User-Token'
+                'Content-Type', 'Authorization', 'Origin', 'Accept', 'Glpi-Session-Token', 'Glpi-User-Token',
             ];
         }
         return new JSONResponse(null, 204, $response_headers);
@@ -341,8 +316,8 @@ HTML;
         responses: [
             [
                 'description'   => 'The session information',
-                'schema'        => 'Session'
-            ]
+                'schema'        => 'Session',
+            ],
         ]
     )]
     public function getSession(Request $request): Response
@@ -351,43 +326,43 @@ HTML;
         $allowed_keys_mapping = [
             'glpi_currenttime' => [
                 'name' => 'current_time',
-                'default' => ''
+                'default' => '',
             ],
             'glpiID' => [
                 'name' => 'user_id',
-                'default' => -1
+                'default' => -1,
             ],
             'glpi_use_mode' => [
                 'name' => 'use_mode',
-                'default' => Session::NORMAL_MODE
+                'default' => Session::NORMAL_MODE,
             ],
             'glpifriendlyname' => [
                 'name' => 'friendly_name',
-                'default' => ''
+                'default' => '',
             ],
             'glpiname' => [
                 'name' => 'name',
-                'default' => ''
+                'default' => '',
             ],
             'glpirealname' => [
                 'name' => 'real_name',
-                'default' => ''
+                'default' => '',
             ],
             'glpifirstname' => [
                 'name' => 'first_name',
-                'default' => ''
+                'default' => '',
             ],
             'glpidefault_entity' => [
                 'name' => 'default_entity',
-                'default' => -1
+                'default' => -1,
             ],
             'glpiprofiles' => [
                 'name' => 'profiles',
-                'default' => []
+                'default' => [],
             ],
             'glpiactiveentities' => [
                 'name' => 'active_entities',
-                'default' => []
+                'default' => [],
             ],
         ];
         $session = [];
@@ -406,7 +381,7 @@ HTML;
             'id' => $_SESSION['glpiactive_entity'],
             'short_name' => $_SESSION['glpiactive_entity_shortname'],
             'complete_name' => $_SESSION['glpiactive_entity_name'],
-            'recursive' => $_SESSION['glpiactive_entity_recursive']
+            'recursive' => $_SESSION['glpiactive_entity_recursive'],
         ];
         return new JSONResponse($session);
     }
@@ -427,7 +402,7 @@ HTML;
             if ($user_id === false) {
                 // Redirect to login page
                 $redirect_params = [
-                    'scope'         => implode(' ', array_map(static fn ($s) => $s->getIdentifier(), $auth_request->getScopes())),
+                    'scope'         => implode(' ', array_map(static fn($s) => $s->getIdentifier(), $auth_request->getScopes())),
                     'client_id'     => $auth_request->getClient()->getIdentifier(),
                     'response_type' => 'code',
                     'redirect_uri'  => $auth_request->getRedirectUri(),
@@ -462,7 +437,7 @@ HTML;
         } catch (OAuthServerException $exception) {
             return $exception->generateHttpResponse(new Response());
         } catch (\Throwable $exception) {
-            ErrorHandler::getInstance()->handleException($exception, true);
+            ErrorHandler::logCaughtException($exception);
             return new JSONResponse(null, 500);
         }
     }
@@ -481,7 +456,7 @@ HTML;
         } catch (OAuthServerException $exception) {
             return $exception->generateHttpResponse(new JSONResponse());
         } catch (\Throwable $exception) {
-            ErrorHandler::getInstance()->handleException($exception, true);
+            ErrorHandler::logCaughtException($exception);
             return new JSONResponse(null, 500);
         }
     }
@@ -505,7 +480,7 @@ HTML;
         $data = [
             'all' => [
                 'href' => '/status/all',
-            ]
+            ],
         ];
         foreach ($services as $service) {
             $data[$service] = [
@@ -530,10 +505,10 @@ HTML;
                                 'type' => Doc\Schema::TYPE_STRING,
                                 'enum' => [StatusChecker::STATUS_OK, StatusChecker::STATUS_WARNING, StatusChecker::STATUS_PROBLEM, StatusChecker::STATUS_NO_DATA],
                             ],
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ]
     )]
     public function statusAllServices(Request $request): Response
@@ -544,7 +519,7 @@ HTML;
     }
 
     #[Route(path: '/status/{service}', methods: ['GET'], requirements: [
-        'service' => '[a-zA-Z0-9_]+'
+        'service' => '[a-zA-Z0-9_]+',
     ], priority: 9, tags: ['Status'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -558,9 +533,9 @@ HTML;
                             'type' => Doc\Schema::TYPE_STRING,
                             'enum' => [StatusChecker::STATUS_OK, StatusChecker::STATUS_WARNING, StatusChecker::STATUS_PROBLEM, StatusChecker::STATUS_NO_DATA],
                         ],
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ]
     )]
     public function statusByService(Request $request): Response
@@ -581,8 +556,8 @@ HTML;
             [
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'EntityTransferRecord[]'
-            ]
+                'schema' => 'EntityTransferRecord[]',
+            ],
         ]
     )]
     public function transferEntity(Request $request): Response

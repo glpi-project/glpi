@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,12 @@
 
 namespace Glpi\System\Requirement;
 
+use Safe\Exceptions\ExecException;
+
+use function Safe\exec;
+use function Safe\ini_get;
+use function Safe\preg_replace;
+
 /**
  * @since 9.5.0
  */
@@ -54,39 +60,44 @@ class SeLinux extends AbstractRequirement
     protected function check()
     {
         $is_slash_separator = DIRECTORY_SEPARATOR == '/';
-        $are_bin_existing = file_exists('/usr/sbin/getenforce') && file_exists('/usr/sbin/getsebool');
-        $are_functions_existing = function_exists('selinux_is_enabled')
-         && function_exists('selinux_getenforce')
-         && function_exists('selinux_get_boolean_active');
+        $are_bin_existing = $this->doesSelinuxBinariesExists();
+        $are_functions_existing = $this->doesSelinuxIsEnabledFunctionExists()
+            && $this->doesSelinuxIsEnabledFunctionExists() //@phpstan-ignore-line
+            && $this->doesSelinuxBooleanFunctionExists();
 
         $exec_enabled = function_exists('exec') && !in_array('exec', explode(',', ini_get('disable_functions')), true);
 
         if (!$is_slash_separator || (!$are_bin_existing && !$are_functions_existing)) {
-           // This is not a SELinux system
+            // This is not a SELinux system
             $this->out_of_context = true;
             $this->validated = false;
             return;
         }
 
-        if (function_exists('selinux_is_enabled') && function_exists('selinux_getenforce')) {
-           // Use https://pecl.php.net/package/selinux
-            if (!selinux_is_enabled()) {
+        $mode = 'unknown';
+        if ($this->doesSelinuxIsEnabledFunctionExists() && $this->doesSelinuxGetenforceFunctionExists()) {
+            // Use https://pecl.php.net/package/selinux
+            if (!$this->isSelinuxEnabled()) {
                 $mode = 'disabled';
             } else {
-                $mode = selinux_getenforce();
-               // Make it human readable, with same output as the command
+                $mode = $this->getSelinxEnforceStatus();
+                // Make it human-readable, with same output as the command
                 if ($mode == 1) {
                     $mode = 'enforcing';
-                } else if ($mode == 0) {
+                } elseif ($mode == 0) {
                     $mode = 'permissive';
                 }
             }
-        } else {
-            exec('/usr/sbin/getenforce', $mode);
-            if (!$mode) {
-                $mode = 'unknown';
-            } else {
-                $mode = strtolower(array_pop($mode));
+        } elseif ($exec_enabled) {
+            try {
+                exec('/usr/sbin/getenforce', $mode);
+                if (!$mode) {
+                    $mode = 'unknown';
+                } else {
+                    $mode = strtolower(array_pop($mode));
+                }
+            } catch (ExecException $e) {
+                //no error message, assume SELinux is not enabled
             }
         }
         if (!in_array($mode, ['enforcing', 'permissive', 'disabled'])) {
@@ -102,7 +113,7 @@ class SeLinux extends AbstractRequirement
             return;
         }
 
-       // No need to check file context as DirectoryWriteAccess requirements will show issues
+        // No need to check file context as DirectoryWriteAccess requirements will show issues
 
         $bools = [
             'httpd_can_network_connect',
@@ -113,23 +124,26 @@ class SeLinux extends AbstractRequirement
         $has_missing_boolean = false;
 
         foreach ($bools as $bool) {
-            if (function_exists('selinux_get_boolean_active')) {
-                $state = selinux_get_boolean_active($bool);
+            if ($this->doesSelinuxBooleanFunctionExists()) {
+                $state = $this->getSelinuxBoolean($bool);
                 if ($state == 1) {
                     $state = 'on';
-                } else if ($state == 0) {
+                } elseif ($state == 0) {
                     $state = 'off';
                 }
             } else {
                 // command result is something like "httpd_can_network_connect --> on"
+                $state = 'unknown';
                 if ($exec_enabled) {
-                    $state = preg_replace(
-                        '/^.*(on|off)$/',
-                        '$1',
-                        strtolower(exec('/usr/sbin/getsebool ' . $bool))
-                    );
-                } else {
-                    $state = 'unknown';
+                    try {
+                        $state = preg_replace(
+                            '/^.*(on|off)$/',
+                            '$1',
+                            strtolower(exec('/usr/sbin/getsebool ' . $bool))
+                        );
+                    } catch (ExecException $e) {
+                        //no error message, state is unknown
+                    }
                 }
             }
             if (!in_array($state, ['on', 'off'])) {
@@ -151,5 +165,46 @@ class SeLinux extends AbstractRequirement
         if (!$has_missing_boolean) {
             $this->validation_messages[] = __('SELinux configuration is OK.');
         }
+    }
+
+    protected function doesSelinuxBinariesExists(): bool
+    {
+        return file_exists('/usr/sbin/getenforce') && file_exists('/usr/sbin/getsebool');
+    }
+
+    protected function doesSelinuxIsEnabledFunctionExists(): bool
+    {
+        return function_exists('selinux_is_enabled');
+    }
+
+    protected function doesSelinuxGetenforceFunctionExists(): bool
+    {
+        return function_exists('selinux_getenforce');
+    }
+
+    protected function doesSelinuxBooleanFunctionExists(): bool
+    {
+        return function_exists('selinux_get_boolean_active');
+    }
+
+    protected function isSelinuxEnabled(): bool
+    {
+        return function_exists('selinux_is_enabled') && selinux_is_enabled();
+    }
+
+    protected function getSelinxEnforceStatus(): int
+    {
+        if (function_exists('selinux_getenforce')) {
+            return selinux_getenforce();
+        }
+        return 0;
+    }
+
+    protected function getSelinuxBoolean(string $bool): int
+    {
+        if (function_exists('selinux_get_boolean_active')) {
+            return selinux_get_boolean_active($bool);
+        }
+        return 0;
     }
 }

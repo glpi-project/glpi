@@ -6,7 +6,7 @@
     import { Rights } from "./Rights.js";
     import Column from "./Column.vue";
     import {computed, nextTick, onMounted, ref, watch} from "vue";
-    import SearchInput from "../../../modules/SearchTokenizer/SearchInput.js";
+    import SearchInput from "./SearchInput.js";
     import {TeamBadgeProvider} from "./TeamBadgeProvider.js";
 
     const props = defineProps({
@@ -112,54 +112,6 @@
                 window.location = url;
             });
         }
-    });
-
-    onMounted(() => {
-        emit('kanban:pre_init');
-        loadState().then(() => {
-            $(() => {
-                $.ajax({
-                    type: 'GET',
-                    url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-                    data: {
-                        action: 'get_kanbans',
-                        itemtype: props.item.itemtype,
-                        items_id: props.item.items_id,
-                    }
-                }).then((kanbans) => {
-                    all_kanbans.value = kanbans;
-                    kanban_switcher.value = props.item.items_id <= 0 ? -1 : props.item.items_id;
-                });
-            });
-            filter_input = new SearchInput($(`#${props.element_id} input[name="filter"]`), {
-                allowed_tags: props.supported_filters,
-                on_result_change: (e, result) => {
-                    filters.value = {
-                        _text: ''
-                    };
-                    filters.value._text = result.getFullPhrase();
-                    result.getTaggedTerms().forEach(t => filters.value[t.tag] = {
-                        term: t.term || '',
-                        exclusion: t.exclusion || false,
-                        prefix: t.prefix
-                    });
-                },
-                tokenizer_options: {
-                    custom_prefixes: {
-                        '#': { // Regex prefix
-                            label: __('Regex'),
-                            token_color: '#00800080'
-                        }
-                    }
-                }
-            });
-            refreshSearchTokenizer();
-            refreshSortables();
-            initMutationObserver();
-            refresh(true);
-            backgroundRefresh();
-            emit('kanban:post_init');
-        });
     });
 
     function initMutationObserver() {
@@ -1329,12 +1281,58 @@
 
         return ordered;
     });
+
+    emit('kanban:pre_init');
+    await loadState();
+    await $.ajax({
+        type: 'GET',
+        url: CFG_GLPI.root_doc + '/ajax/kanban.php',
+        data: {
+            action: 'get_kanbans',
+            itemtype: props.item.itemtype,
+            items_id: props.item.items_id,
+        }
+    }).then((kanbans) => {
+        all_kanbans.value = kanbans;
+        kanban_switcher.value = props.item.items_id <= 0 ? -1 : props.item.items_id;
+    });
+
+    await refresh(true);
+    backgroundRefresh();
+    onMounted(() => {
+        initMutationObserver();
+        filter_input = new SearchInput($(`#${props.element_id} input[name="filter"]`), {
+            allowed_tags: props.supported_filters,
+            on_result_change: (e, result) => {
+                filters.value = {
+                    _text: ''
+                };
+                filters.value._text = result.getFullPhrase();
+                result.getTaggedTerms().forEach(t => filters.value[t.tag] = {
+                    term: t.term || '',
+                    exclusion: t.exclusion || false,
+                    prefix: t.prefix
+                });
+            },
+            tokenizer_options: {
+                custom_prefixes: {
+                    '#': { // Regex prefix
+                        label: __('Regex'),
+                        token_color: '#00800080'
+                    }
+                }
+            }
+        });
+        refreshSearchTokenizer();
+        refreshSortables();
+        emit('kanban:post_init');
+    });
 </script>
 
 <template>
     <div :id="element_id" class="kanban">
         <div class="kanban-container">
-            <div v-if="show_toolbar" class="kanban-toolbar card flex-column flex-md-row">
+            <div v-if="show_toolbar" class="kanban-toolbar flex-column flex-md-row btn-group shadow-none">
                 <select name="kanban-board-switcher" v-model="kanban_switcher">
                     <option v-for="(k_name, k_id) in all_kanbans" :value="k_id" :selected="k_id === item.items_id" :key="k_id">{{ k_name }}</option>
                 </select>
@@ -1386,7 +1384,7 @@
                     </div>
                 </div>
                 <div class="dropdown">
-                    <button type="button" class="btn btn-outline-secondary ms-1 kanban-extra-toolbar-options" v-if="rights.canModifyView()"
+                    <button type="button" class="btn btn-outline-secondary btn-icon ms-1 kanban-extra-toolbar-options" v-if="rights.canModifyView()"
                             data-bs-toggle="dropdown" data-bs-auto-close="outside">
                         <i class="ti ti-dots-vertical"></i>
                     </button>
@@ -1446,12 +1444,18 @@
     .kanban {
         position: relative;
         height: 100%;
+        --toolbar-margin: 15px;
+        --toolbar-padding: 10px;
 
         .kanban-toolbar {
             display: flex;
-            margin-bottom: 15px;
+            margin-bottom: var(--toolbar-margin);
             font-size: 14px;
-            padding: 10px;
+            padding: var(--toolbar-padding);
+
+            select[name="kanban-board-switcher"] {
+                appearance: auto;
+            }
 
             .fas,
             .fa-solid {
@@ -1473,8 +1477,9 @@
         }
 
         .kanban-container {
-            overflow: auto;
-            min-height: 400px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            height: calc(100vh - var(--glpi-contextbar-height) - var(--glpi-content-margin) - (var(--toolbar-margin) + var(--toolbar-padding) + (0.5625rem * 2) + 1.2rem + 2px));
 
             .kanban-dropdown {
                 position: fixed;
@@ -1531,57 +1536,7 @@
             .kanban-columns {
                 display: flex;
                 overflow-x: auto;
-            }
-        }
-
-        .kanban-color-preview,
-        :deep(.kanban-column-title) {
-            &.itilstatus {
-                &.assigned,
-                &.new {
-                    background-color: #49bf4d !important;
-                    color: #000f01 !important;
-                }
-
-                &.accepted {
-                    background-color: green !important;
-                    color: rgb(255, 255, 255) !important;
-                }
-
-                &.refused {
-                    background-color: rgb(167, 47, 0) !important;
-                    color: rgb(19, 5, 0) !important;
-                }
-
-                &.test,
-                &.qualif,
-                &.waiting {
-                    background-color: orange !important;
-                    color: rgb(27, 18, 0) !important;
-                }
-
-                &.approval {
-                    background-color: #8cabdb !important;
-                    color: rgb(18, 24, 36) !important;
-                }
-
-                &.eval {
-                    background-color: lightblue !important;
-                    color: rgb(30, 38, 41) !important;
-                }
-
-                &.closed,
-                &.solved,
-                &.observe,
-                &.canceled {
-                    background-color: black !important;
-                    color: white !important;
-                }
-
-                &.planned {
-                    background-color: #1b2f62 !important;
-                    color: #f3f3f5 !important;
-                }
+                height: calc(100% - 75px);
             }
         }
 
@@ -1591,6 +1546,7 @@
             display: inline-block;
             margin-right: 5px;
             vertical-align: middle;
+            background-color: var(--status-color);
         }
     }
 

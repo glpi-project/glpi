@@ -5,8 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -49,8 +48,8 @@ describe('Item form question type', () => {
             const tab = 'Glpi\\Form\\Form$main';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
 
-            // Add a new question
-            cy.findByRole("button", { name: "Add a new question" }).should('exist').click();
+            // Add a question
+            cy.findByRole("button", { name: "Add a question" }).should('exist').click();
 
             // Set the question name
             cy.findByRole("textbox", { name: "Question name" }).should('exist').type("Test item question");
@@ -67,8 +66,14 @@ describe('Item form question type', () => {
         // Click on the itemtype dropdown
         cy.getDropdownByLabelText("Select an itemtype").click();
 
-        // Select the ticket itemtype
-        cy.findByRole("option", { name: "Tickets" }).should('exist').click();
+        // Change the itemtype to Ticket
+        cy.getDropdownByLabelText("Select an item").should('exist').then(() => {
+            // Select the ticket itemtype
+            cy.findByRole("option", { name: "Tickets" }).should('exist').click();
+        }).should('not.exist');
+
+        // Wait for the items_id dropdown to be loaded
+        cy.waitForNetworkIdle(150);
 
         // Click on the items_id dropdown
         cy.getDropdownByLabelText("Select an item").click();
@@ -102,8 +107,14 @@ describe('Item form question type', () => {
         // Click on the itemtype dropdown
         cy.getDropdownByLabelText("Select a dropdown type").click();
 
-        // Select the ITIL category itemtype
-        cy.findByRole("option", { name: "ITIL categories" }).should('exist').click();
+        // Change the itemtype to ITIL categories
+        cy.getDropdownByLabelText("Select a dropdown item").should('exist').then(() => {
+            // Select the ITIL categories itemtype
+            cy.findByRole("option", { name: "ITIL categories" }).should('exist').click();
+        }).should('not.exist');
+
+        // Wait for the items_id dropdown to be loaded
+        cy.waitForNetworkIdle(150);
 
         // Click on the items_id dropdown
         cy.getDropdownByLabelText("Select a dropdown item").click();

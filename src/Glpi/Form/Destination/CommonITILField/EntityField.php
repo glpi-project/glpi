@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,16 +35,24 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Entity;
+use Exception;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\AbstractConfigField;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Form;
+use Glpi\Form\Migration\DestinationFieldConverterInterface;
+use Glpi\Form\Migration\FormMigration;
+use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use InvalidArgumentException;
 use Override;
 
-class EntityField extends AbstractConfigField
+final class EntityField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     #[Override]
     public function getLabel(): string
@@ -79,26 +86,18 @@ class EntityField extends AbstractConfigField
             // General display options
             'options' => $display_options,
 
-            // Main config field
-            'main_config_field' => [
-                'label'           => $this->getLabel(),
-                'value'           => $config->getStrategy()->value,
-                'input_name'      => $input_name . "[" . EntityFieldConfig::STRATEGY . "]",
-                'possible_values' => $this->getMainConfigurationValuesforDropdown(),
-            ],
-
             // Specific additional config for SPECIFIC_VALUE strategy
             'specific_value_extra_field' => [
                 'aria_label'      => __("Select an entity..."),
                 'value'           => $config->getSpecificEntityId() ?? 0,
-                'input_name'      => $input_name . "[" . EntityFieldConfig::ENTITY_ID . "]",
+                'input_name'      => $input_name . "[" . EntityFieldConfig::SPECIFIC_ENTITY_ID . "]",
             ],
 
             // Specific additional config for SPECIFIC_ANSWER strategy
             'specific_answer_extra_field' => [
                 'empty_label'     => __("Select a question..."),
                 'value'           => $config->getSpecificQuestionId(),
-                'input_name'      => $input_name . "[" . EntityFieldConfig::QUESTION_ID . "]",
+                'input_name'      => $input_name . "[" . EntityFieldConfig::SPECIFIC_QUESTION_ID . "]",
                 'possible_values' => $this->getEntityQuestionsValuesForDropdown($form),
             ],
         ]);
@@ -114,12 +113,15 @@ class EntityField extends AbstractConfigField
             throw new InvalidArgumentException("Unexpected config class");
         }
 
-        // Compute value according to strategy
-        $entity_id = $config->getStrategy()->getEntityID($config, $answers_set);
+        // Only one strategy is allowed
+        $strategy = current($config->getStrategies());
 
-        // Do not edit input if invalid value was found
+        // Compute value according to strategy
+        $entity_id = $strategy->getEntityID($config, $answers_set);
+
+        // We always need a valid value for entities
         if (Entity::getById($entity_id) === false) {
-            return $input;
+            throw new Exception("Invalid entity: $entity_id");
         }
 
         // Apply value
@@ -130,7 +132,7 @@ class EntityField extends AbstractConfigField
     #[Override]
     public function getDefaultConfig(Form $form): EntityFieldConfig
     {
-        // Returne last valid answer by default and fallback
+        // Return last valid answer by default and fallback
         // to form entity if no valid answer was found
         $valid_answers = array_filter(
             $form->getQuestionsByType(
@@ -141,7 +143,7 @@ class EntityField extends AbstractConfigField
 
         if (count($valid_answers) == 0) {
             return new EntityFieldConfig(
-                EntityFieldStrategy::FROM_FORM
+                EntityFieldStrategy::FORM_FILLER
             );
         }
 
@@ -150,7 +152,7 @@ class EntityField extends AbstractConfigField
         );
     }
 
-    private function getMainConfigurationValuesforDropdown(): array
+    public function getStrategiesForDropdown(): array
     {
         $values = [];
         foreach (EntityFieldStrategy::cases() as $strategies) {
@@ -179,6 +181,116 @@ class EntityField extends AbstractConfigField
     #[Override]
     public function getWeight(): int
     {
-        return 30;
+        return 20;
+    }
+
+    #[Override]
+    public function getCategory(): Category
+    {
+        return Category::PROPERTIES;
+    }
+
+    #[Override]
+    public function convertFieldConfig(FormMigration $migration, Form $form, array $rawData): JsonFieldInterface
+    {
+        /**
+         * FormCreator implements many strategies to determine the entity.
+         * Some strategies are not 100% supported by the new form system:
+         * - 2. Default requester user's entity
+         *  This strategy take the entity of the first requester user and fallback to the form filler entity.
+         *
+         * Strategies that are not supported:
+         * - 3. First dynamic requester user's entity (alphabetical) -- Must be implemented
+         * - 4. Last dynamic requester user's entity (alphabetical) -- Must be implemented
+         * - 6. Default entity of the validator
+         * - 8. Default entity of a user type question answer
+         */
+
+        switch ($rawData['destination_entity']) {
+            case 1: // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_CURRENT
+            case 2: // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_REQUESTER
+                return new EntityFieldConfig(
+                    EntityFieldStrategy::FORM_FILLER,
+                );
+            case 5: // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_FORM
+                return new EntityFieldConfig(
+                    EntityFieldStrategy::FROM_FORM,
+                );
+            case 7: // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_SPECIFIC
+                return new EntityFieldConfig(
+                    strategy: EntityFieldStrategy::SPECIFIC_VALUE,
+                    specific_entity_id: $rawData['destination_entity_value']
+                );
+            case 9: // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_ENTITY_FROM_OBJECT
+                $mapped_item = $migration->getMappedItemTarget(
+                    'PluginFormcreatorQuestion',
+                    $rawData['destination_entity_value']
+                );
+
+                if ($mapped_item === null) {
+                    throw new InvalidArgumentException("Question not found in a target form");
+                }
+
+                return new EntityFieldConfig(
+                    strategy: EntityFieldStrategy::SPECIFIC_ANSWER,
+                    specific_question_id: $mapped_item['items_id']
+                );
+        }
+
+        return $this->getDefaultConfig($form);
+    }
+
+    #[Override]
+    public function exportDynamicConfig(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+    ): DynamicExportDataField {
+        $fallback = parent::exportDynamicConfig($config, $destination);
+
+        // Check if an entity is defined
+        $entity_id = $config[EntityFieldConfig::SPECIFIC_ENTITY_ID] ?? null;
+        if ($entity_id === null) {
+            return $fallback;
+        }
+
+        // Try to load entity
+        $entity = Entity::getById($entity_id);
+        if (!$entity) {
+            return $fallback;
+        }
+
+        // Insert entity name and requirement
+        $name = $entity->getName();
+        $config[EntityFieldConfig::SPECIFIC_ENTITY_ID] = $name;
+        $requirement = new DataRequirementSpecification(Entity::class, $name);
+
+        return new DynamicExportDataField($config, [$requirement]);
+    }
+
+    #[Override]
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+        DatabaseMapper $mapper,
+    ): array {
+        // Check if an entity is defined
+        if (isset($config[EntityFieldConfig::SPECIFIC_ENTITY_ID])) {
+            // Insert id
+            $config[EntityFieldConfig::SPECIFIC_ENTITY_ID] = $mapper->getItemId(
+                Entity::class,
+                $config[EntityFieldConfig::SPECIFIC_ENTITY_ID],
+            );
+        }
+
+        // Check if a specific question is defined
+        if (isset($config[EntityFieldConfig::SPECIFIC_QUESTION_ID])) {
+            // Insert id
+            $config[EntityFieldConfig::SPECIFIC_QUESTION_ID] = $mapper->getItemId(
+                Question::class,
+                $config[EntityFieldConfig::SPECIFIC_QUESTION_ID],
+            );
+        }
+
+        return $config;
     }
 }

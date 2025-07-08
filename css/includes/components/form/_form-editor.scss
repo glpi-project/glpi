@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -31,9 +31,38 @@
  * ---------------------------------------------------------------------
  */
 
+@import "form-editor-horizontal-layout";
+
 [data-glpi-form-editor-container]{
     &:not(.initialized) {
         pointer-events: none;
+    }
+
+    &:not([data-glpi-form-editor-sorting]) {
+        [data-glpi-form-editor-question-drag-merge] {
+            position: absolute;
+        }
+    }
+
+    &[data-glpi-form-editor-sorting] {
+        [data-glpi-form-editor-section-blocks] > [data-glpi-form-editor-block] {
+            display: flex;
+            align-items: stretch;
+
+            [data-glpi-form-editor-question-drag-merge] {
+                position: relative;
+                width: 15%;
+            }
+
+            [data-glpi-form-editor-toolbar] {
+                position: absolute;
+                height: 0;
+                width: 0;
+                opacity: 0;
+                visibility: hidden;
+                overflow: hidden;
+            }
+        }
     }
 }
 
@@ -41,15 +70,10 @@
     // Use all available parent space
     flex-grow: 1;
 
-    // Subtle gradient to avoid white on white cards while still keeping a white/white connection to the active tab (experimental)
-    // TODO: keep / remove / tweak when the UX is more complete (questions, sections, ...)
+    // Subtle gradient to avoid the same background color of the cards and tab content/editor
     background: linear-gradient(169deg,
-            rgb(255, 255, 255) 0%,
-            rgb(254, 254, 254) 14%,
-            rgb(253, 253, 253) 22%,
-            rgb(252, 252, 252) 33%,
-            rgb(251, 251, 252) 41%,
-            rgb(248, 250, 252) 48%);
+            var(--tblr-bg-surface) 0%,
+            var(--tblr-bg-surface-tertiary) 48%);
 
     .designer {
         .form-details {
@@ -60,7 +84,7 @@
         }
     }
 
-    overflow: scroll;
+    overflow: auto;
 
     // Revert border radius change from parent div
     .card {
@@ -96,7 +120,6 @@
 
 .editor-footer {
     border-top: 1px solid var(--tblr-border-color);
-    background: var(--glpi-form-toolbar-bg);
 }
 
 // Show required mark on mandatory question
@@ -110,6 +133,7 @@
     &[data-glpi-form-editor-active-form] {
         // Show secondary data on active form
         [data-glpi-form-editor-form-extra-details] {
+            position: relative;
             opacity: 1;
             visibility: visible;
             transition: visibility 0s, opacity 0.20s linear;
@@ -124,9 +148,12 @@
 
         // Do not show secondary data on inactive form
         [data-glpi-form-editor-form-extra-details] {
+            position: absolute;
             height: 0;
+            width: 0;
             opacity: 0;
             visibility: hidden;
+            overflow: hidden;
         }
     }
 }
@@ -135,6 +162,7 @@
     &[data-glpi-form-editor-active-section] {
         // Show secondary data on active form
         [data-glpi-form-editor-section-extra-details] {
+            position: relative;
             opacity: 1;
             visibility: visible;
             transition: visibility 0s, opacity 0.20s linear;
@@ -149,9 +177,12 @@
 
         // Do not show secondary data on inactive form
         [data-glpi-form-editor-section-extra-details] {
+            position: absolute;
             height: 0;
+            width: 0;
             opacity: 0;
             visibility: hidden;
+            overflow: hidden;
         }
     }
 }
@@ -177,8 +208,10 @@
         [data-glpi-form-editor-question-extra-details] {
             position: absolute;
             height: 0;
+            width: 0;
             opacity: 0;
             visibility: hidden;
+            overflow: hidden;
         }
 
         // Hide tinymce toolbar on inactive questions
@@ -192,6 +225,7 @@
     &[data-glpi-form-editor-active-comment] {
         // Show secondary data on active comments
         [data-glpi-form-editor-comment-extra-details] {
+            position: relative;
             opacity: 1;
             visibility: visible;
             transition: visibility 0s, opacity 0.20s linear;
@@ -206,30 +240,46 @@
 
         // Do not show secondary data on inactive comments
         [data-glpi-form-editor-comment-extra-details] {
+            position: absolute;
             height: 0;
+            width: 0;
             opacity: 0;
             visibility: hidden;
+            overflow: hidden;
         }
     }
 }
 
 .glpi-form-editor-drag-question-placeholder {
     border: 2px dashed var(--tblr-primary);
-    background: rgba(var(--tblr-primary), 0.1);
+    background: rgb(var(--tblr-primary), 0.1);
     opacity: 0.5;
-    height: 70px !important;
+}
+
+[data-glpi-form-editor-section-blocks] {
+    .glpi-form-editor-drag-question-placeholder {
+        margin-bottom: 1rem;
+        height: 70px !important;
+    }
+}
+
+[data-glpi-form-editor-question-drag-merge] {
+    .glpi-form-editor-drag-question-placeholder {
+        height: 100% !important;
+        margin-left: 0.5rem;
+    }
 }
 
 .glpi-form-editor-drag-question-option-placeholder {
     border: 2px dashed var(--tblr-primary);
-    background: rgba(var(--tblr-primary), 0.1);
+    background: rgb(var(--tblr-primary), 0.1);
     opacity: 0.5;
     height: 40px !important;
 }
 
 .glpi-form-editor-drag-section-placeholder {
     border: 2px dashed var(--tblr-primary);
-    background: rgba(var(--tblr-primary), 0.1);
+    background: rgb(var(--tblr-primary), 0.1);
     opacity: 0.5;
     height: 60px !important;
 }
@@ -239,7 +289,8 @@
     opacity: 0;
 }
 
-[data-glpi-form-editor-question-details], [data-glpi-form-editor-comment-details] {
+[data-glpi-form-editor-question-details],
+[data-glpi-form-editor-comment-details] {
     &:hover {
         .glpi-form-editor-question-handle {
             opacity: 0.7;
@@ -256,6 +307,13 @@
     }
 
     margin-bottom: 1rem !important;
+}
+
+// Hide question badge in section when section is not collapsed
+[data-glpi-form-editor-section]:not(.section-collapsed) {
+    [data-glpi-form-editor-section-block-badge] {
+        display: none;
+    }
 }
 
 [data-glpi-form-editor-question] {
@@ -289,4 +347,220 @@
             }
         }
     }
+}
+
+.logic-operator-selector .select2-selection {
+    border: 0 !important;
+    background-color: var(--tblr-pink-lt) !important;
+
+    // Fix some border conflicts with tabler/select2
+    border-top-right-radius: var(--tblr-border-radius) !important;
+    border-bottom-right-radius: var(--tblr-border-radius) !important;
+}
+
+.question-selector .select2-selection {
+    border: 0 !important;
+    background-color: var(--tblr-indigo-lt) !important;
+
+    // Fix some border conflicts with tabler/select2
+    border-top-right-radius: var(--tblr-border-radius) !important;
+    border-bottom-right-radius: var(--tblr-border-radius) !important;
+}
+
+.value-operator-selector .select2-selection {
+    border: 0 !important;
+    background-color: var(--tblr-teal-lt) !important;
+
+    // Fix some border conflicts with tabler/select2
+    border-top-right-radius: var(--tblr-border-radius) !important;
+    border-bottom-right-radius: var(--tblr-border-radius) !important;
+}
+
+input.value-selector {
+    // Use extra padding to match height of dropdowns on the same line.
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.value-selector {
+    border: 0 !important;
+    background-color: var(--tblr-yellow-lt) !important;
+    border-radius: var(--tblr-border-radius) !important;
+
+    .select2-selection {
+        // Fix some border conflicts with tabler/select2
+        border-top-right-radius: var(--tblr-border-radius) !important;
+        border-bottom-right-radius: var(--tblr-border-radius) !important;
+        border: 0 !important;
+        background-color: var(--tblr-yellow-lt) !important;
+    }
+
+    .select2-container {
+        width: 100%;
+    }
+}
+
+.visibility-dropdown-card, .validation-dropdown-card {
+    min-width: 700px;
+    width: fit-content;
+
+    // Add scrolling as a last ressort, will not happen most of the time
+    overflow: scroll;
+}
+
+[data-glpi-form-editor-block] {
+    margin-bottom: 1rem;
+}
+
+.question-type-dropdown-group {
+    @include media-breakpoint-up(sm) {
+        display: flex;
+        flex-wrap: wrap;
+
+        &:not(:has(> :nth-child(2).d-none)) {
+            > div:not(:only-child) {
+                &:first-child {
+                    .select2-selection {
+                        border-top-right-radius: 0;
+                        border-bottom-right-radius: 0;
+                    }
+                }
+
+                &:not(:first-child) {
+                    margin-left: calc(-1 * var(--tblr-border-width));
+
+                    .select2-selection {
+                        border-top-left-radius: 0;
+                        border-bottom-left-radius: 0;
+                    }
+                }
+            }
+        }
+
+        &:not(:has(> :nth-child(3).d-none)) {
+            > div:not(:only-child) {
+                &:not(:first-child) {
+                    &:not(:last-child) {
+                        .select2-selection {
+                            border-top-right-radius: 0;
+                            border-bottom-right-radius: 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @include media-breakpoint-down(sm) {
+        width: 100%;
+
+        .select2-container {
+            width: 100% !important;
+        }
+
+        .select2-selection__rendered > span {
+            margin-right: auto;
+        }
+
+        &:not(:has(> :nth-child(2).d-none)) {
+            > div:not(:only-child) {
+                &:first-child {
+                    .select2-selection {
+                        border-bottom-left-radius: 0;
+                        border-bottom-right-radius: 0;
+                    }
+                }
+
+                &:not(:first-child) {
+                    margin-top: calc(-1 * var(--tblr-border-width));
+
+                    .select2-selection {
+                        border-top-left-radius: 0;
+                        border-top-right-radius: 0;
+                    }
+                }
+            }
+        }
+
+        &:not(:has(> :nth-child(3).d-none)) {
+            > div:not(:only-child) {
+                &:not(:first-child) {
+                    &:not(:last-child) {
+                        .select2-selection {
+                            border-bottom-left-radius: 0;
+                            border-bottom-right-radius: 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.question-type-dropdown-group-dropdown-select {
+    width: min-content !important;
+}
+
+// Fix a weird scrolling issue on the form editor where the body scrolls instead of the form editor
+html {
+    // Only apply the overflow hidden on the body when active tab contains the form editor
+    &:has(.tab-pane.active > [data-glpi-form-editor-container]) {
+        overflow: hidden;
+    }
+}
+
+
+[data-glpi-form-editor-toolbar].btn-group-vertical {
+    &::before {
+        content: "\ea7c";
+        font-family: tabler-icons !important;
+        font-size: x-large;
+        color: var(--tblr-border-active-color);
+        transform: translateY(1.9rem);
+        position: absolute;
+    }
+}
+
+[data-glpi-form-editor-visibility-dropdown-container], [data-glpi-form-editor-validation-dropdown-container] {
+    padding-right: 0.75rem;
+
+    &:has([data-glpi-editor-visibility-badge="always_visible"].d-flex,
+          [data-glpi-editor-validation-badge="no_validation"].d-flex,
+          button[aria-expanded="true"]) {
+        padding-right: 0;
+
+        [data-glpi-editor-visibility-conditions-count-badge],
+        [data-glpi-editor-validation-conditions-count-badge] {
+            display: none !important;
+        }
+    }
+}
+
+[data-glpi-form-editor-active-question]:has([data-glpi-form-editor-advanced-question-configuration]) {
+    .input-group > * {
+        &:first-child:has(.select2-selection) {
+            .select2-selection {
+                border-top-right-radius: 0 !important;
+                border-bottom-right-radius: 0 !important;
+            }
+        }
+    }
+}
+
+// Remove margins when form is empty
+[data-glpi-form-editor-form] {
+    &:not(:has([data-glpi-form-editor-block], [data-glpi-form-editor-horizontal-blocks-container])) {
+        > [data-glpi-form-editor-form-extra-details] {
+            margin-bottom: 0 !important;
+        }
+
+        [data-glpi-form-editor-section], [data-glpi-form-editor-section-blocks] {
+            margin-top: 0 !important;
+        }
+    }
+}
+
+// Hide section and toolbar container when section is hidden
+div:has(> [data-glpi-form-editor-section-details].d-none) {
+    display: none !important;
 }

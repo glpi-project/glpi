@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,15 +37,9 @@ namespace Glpi\Form;
 
 use CommonDBChild;
 use CommonDBTM;
-use CommonGLPI;
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
-use Glpi\Form\Destination\FormDestinationTypeManager;
-use Log;
 use Override;
 use ReflectionClass;
-use Search;
 use User;
 
 /**
@@ -56,10 +50,14 @@ final class AnswersSet extends CommonDBChild
     public static $itemtype = Form::class;
     public static $items_id = 'forms_forms_id';
 
+    public array $files = [];
+
+    public DelegationData $delegation;
+
     #[Override]
     public static function getTypeName($nb = 0)
     {
-        return __('Form answers');
+        return __('Answers');
     }
 
     #[Override]
@@ -69,72 +67,23 @@ final class AnswersSet extends CommonDBChild
     }
 
     #[Override]
-    public function defineTabs($options = [])
-    {
-        $tabs = parent::defineTabs();
-
-        // Register each possible destination types
-        $types_manager = FormDestinationTypeManager::getInstance();
-        foreach ($types_manager->getDestinationTypes() as $type) {
-            $this->addStandardTab($type::class, $tabs, []);
-        }
-        $this->addStandardTab(Log::class, $tabs, []);
-
-        return $tabs;
-    }
-
-    #[Override]
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
-    {
-        if (!($item instanceof Form)) {
-            return "";
-        }
-
-        $count = 0;
-        if ($_SESSION['glpishow_count_on_tabs']) {
-            $count = $this->countAnswers($item);
-        }
-
-        return self::createTabEntry(
-            self::getTypeName(),
-            $count,
-        );
-    }
-
-    #[Override]
-    public static function displayTabContentForItem(
-        CommonGLPI $item,
-        $tabnum = 1,
-        $withtemplate = 0
-    ) {
-        if (!($item instanceof Form)) {
-            return false;
-        }
-
-        Search::showList(self::class, [
-            'criteria' => [
-                [
-                    'link'       => 'AND',
-                    'field'      => 5,  // Parent form
-                    'searchtype' => 'equals',
-                    'value'      => $item->getID()
-                ]
-            ],
-            'showmassiveactions' => false,
-            'hide_controls'      => true,
-            'sort'               => 4,        // Creation date
-            'order'              => 'DESC',
-            'as_map'             => false,
-        ]);
-        return true;
-    }
-
-    #[Override]
     public function maybeRecursive(): bool
     {
         return false;
     }
 
+    public function toArray(): array
+    {
+        $answers = $this->getAnswers();
+        $answers_array = [];
+        foreach ($answers as $answer) {
+            $answers_array[$answer->getQuestionId()] = $answer->getRawAnswer();
+        }
+
+        return $answers_array;
+    }
+
+    /** @return Answer[] */
     public function getAnswers(): array
     {
         $answers = [];
@@ -156,7 +105,7 @@ final class AnswersSet extends CommonDBChild
         $answers = $this->getAnswers();
         $filtered_answers = array_filter(
             $answers,
-            fn (Answer $answer) => $answer->getQuestionId() == $id
+            fn(Answer $answer) => $answer->getQuestionId() == $id
         );
 
         if (count($filtered_answers) == 1) {
@@ -172,7 +121,7 @@ final class AnswersSet extends CommonDBChild
         $answers = $this->getAnswers();
         return array_filter(
             $answers,
-            fn (Answer $answer) => $answer->getRawType() == $type
+            fn(Answer $answer) => $answer->getRawType() == $type
         );
     }
 
@@ -182,7 +131,7 @@ final class AnswersSet extends CommonDBChild
         $answers = $this->getAnswers();
         return array_filter(
             $answers,
-            fn (Answer $answer) => in_array($answer->getRawType(), $types)
+            fn(Answer $answer) => in_array($answer->getRawType(), $types)
         );
     }
 
@@ -196,7 +145,7 @@ final class AnswersSet extends CommonDBChild
             'table'    => User::getTable(),
             'field'    => 'name',
             'name'     => User::getTypeName(1),
-            'datatype' => 'dropdown'
+            'datatype' => 'dropdown',
         ];
 
         $search_options[] = [
@@ -205,7 +154,7 @@ final class AnswersSet extends CommonDBChild
             'field'         => 'date_creation',
             'name'          => __('Creation date'),
             'datatype'      => 'datetime',
-            'massiveaction' => false
+            'massiveaction' => false,
         ];
 
         $search_options[] = [
@@ -214,10 +163,17 @@ final class AnswersSet extends CommonDBChild
             'field'         => 'name',
             'name'          => Form::getTypeName(),
             'datatype'      => 'dropdown',
-            'massiveaction' => false
+            'massiveaction' => false,
         ];
 
         return $search_options;
+    }
+
+    #[Override]
+    public static function canView(): bool
+    {
+        // Answers set can't be viewed from the UI
+        return false;
     }
 
     #[Override]
@@ -237,24 +193,8 @@ final class AnswersSet extends CommonDBChild
     #[Override]
     public static function canDelete(): bool
     {
-        // Any form administrator may delete answers
-        return Form::canUpdate();
-    }
-
-    #[Override]
-    public function showForm($id, array $options = [])
-    {
-        $this->getFromDB($id);
-        $this->initForm($id, $options);
-
-        // Render twig template
-        $twig = TemplateRenderer::getInstance();
-        $twig->display('pages/admin/form/display_answers.html.twig', [
-            'item'    => $this,
-            'answers' => $this->getAnswers(),
-            'params'  => $options,
-        ]);
-        return true;
+        // Answers set can't be deleted from the UI
+        return false;
     }
 
     /**
@@ -310,11 +250,41 @@ final class AnswersSet extends CommonDBChild
         // If no items were created, display one link to the answers themselves
         // TODO: delete this later as we will force at least one ticket to
         // be always created.
-        if (empty($links)) {
+        if ($links === []) {
             $links[] = $this->getLink();
         }
 
         return $links;
+    }
+
+    public function getSubmittedFiles(): array
+    {
+        return $this->files;
+    }
+
+    public function setSubmittedFiles(array $files): void
+    {
+        $this->files = $files;
+    }
+
+    /**
+     * Get delegation data
+     *
+     * @return DelegationData
+     */
+    public function getDelegation(): DelegationData
+    {
+        return $this->delegation;
+    }
+
+    /**
+     * Set delegation data
+     *
+     * @param DelegationData $delegation
+     */
+    public function setDelegation(DelegationData $delegation): void
+    {
+        $this->delegation = $delegation;
     }
 
     /**
@@ -327,7 +297,7 @@ final class AnswersSet extends CommonDBChild
     protected function countAnswers(Form $form): int
     {
         return countElementsInTable(self::getTable(), [
-            Form::getForeignKeyField() => $form->getID()
+            Form::getForeignKeyField() => $form->getID(),
         ]);
     }
 }

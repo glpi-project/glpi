@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,12 +35,10 @@
 
 namespace Glpi\OAuth;
 
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
-use Ramsey\Uuid\Uuid;
+use Safe\DateTime;
 
 class AccessTokenRepository implements AccessTokenRepositoryInterface
 {
@@ -89,13 +87,13 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
             'FROM' => 'glpi_oauth_access_tokens',
             'WHERE' => [
                 'identifier' => $tokenId,
-            ]
+            ],
         ]);
         if (count($iterator) === 0) {
             return true;
         }
         // Check if the token is expired
         $expiration = $iterator->current()['date_expiration'];
-        return (new \DateTime($expiration)) < new \DateTime();
+        return (new DateTime($expiration)) < new DateTime();
     }
 }

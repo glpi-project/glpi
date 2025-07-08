@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,6 +42,7 @@ use Glpi\Api\HL\Controller\AssetController;
 use Glpi\Api\HL\Controller\ComponentController;
 use Glpi\Api\HL\Controller\CoreController;
 use Glpi\Api\HL\Controller\CRUDControllerTrait;
+use Glpi\Api\HL\Controller\CustomAssetController;
 use Glpi\Api\HL\Controller\DropdownController;
 use Glpi\Api\HL\Controller\GraphQLController;
 use Glpi\Api\HL\Controller\ITILController;
@@ -119,7 +120,7 @@ class Router
     private ?RoutePath $last_invoked_route = null;
 
     /**
-     * @var array{client_id: string, user_id: int, scopes: array}|null The current client information if the user is authenticated.
+     * @var array{client_id: string, user_id: string, scopes: array}|null The current client information if the user is authenticated.
      */
     private ?array $current_client = null;
 
@@ -198,6 +199,7 @@ EOT;
             $instance = new self();
             $instance->registerController(new CoreController());
             $instance->registerController(new AssetController());
+            $instance->registerController(new CustomAssetController());
             $instance->registerController(new ComponentController());
             $instance->registerController(new ITILController());
             $instance->registerController(new AdministrationController());
@@ -530,15 +532,14 @@ EOT;
 
     private function doAuthMiddleware(MiddlewareInput $input): void
     {
-        $action = static function (MiddlewareInput $input, ?callable $next = null) {
-        };
+        $action = static function (MiddlewareInput $input, ?callable $next = null) {};
         foreach ($this->auth_middlewares as $middleware) {
             $explicit_include = in_array(get_class($middleware['middleware']), $input->route_path->getMiddlewares());
             $conditions_met = $explicit_include || $middleware['condition']($input->route_path);
             if (!$conditions_met) {
                 continue;
             }
-            $action = static fn ($input) => $middleware['middleware']($input, $action);
+            $action = static fn($input) => $middleware['middleware']($input, $action);
         }
         $action($input);
     }
@@ -554,22 +555,21 @@ EOT;
             if (!$conditions_met) {
                 continue;
             }
-            $action = static fn ($input) => $middleware['middleware']($input, $action);
+            $action = static fn($input) => $middleware['middleware']($input, $action);
         }
         return $action($input);
     }
 
     private function doResponseMiddleware(MiddlewareInput $input): void
     {
-        $action = static function (MiddlewareInput $input, ?callable $next = null) {
-        };
+        $action = static function (MiddlewareInput $input, ?callable $next = null) {};
         foreach ($this->response_middlewares as $middleware) {
             $explicit_include = in_array(get_class($middleware['middleware']), $input->route_path->getMiddlewares());
             $conditions_met = $explicit_include || $middleware['condition']($input->route_path);
             if (!$conditions_met) {
                 continue;
             }
-            $action = static fn ($input) => $middleware['middleware']($input, $action);
+            $action = static fn($input) => $middleware['middleware']($input, $action);
         }
         $action($input);
     }
@@ -577,6 +577,7 @@ EOT;
     public function handleRequest(Request $request): Response
     {
         // Start an output buffer to capture any potential debug errors
+        $current_output_buffer_level = ob_get_level();
         ob_start();
         $response = null;
         $original_method = $request->getMethod();
@@ -641,7 +642,7 @@ EOT;
             // Do auth middlewares now even if auth isn't required so session data *could* be used like the theme for doc endpoints.
             $this->doAuthMiddleware($middleware_input);
             $auth_from_middleware = $middleware_input->response === null;
-            $this->current_client = $this->current_client ?? $middleware_input->client;
+            $this->current_client ??= $middleware_input->client;
 
             if ($requires_auth && !$auth_from_middleware) {
                 if (!($request->hasHeader('Authorization') && Session::getLoginUserID() !== false)) {
@@ -668,7 +669,7 @@ EOT;
                     }
                     if (count($missing_params)) {
                         $errors = [
-                            'missing' => $missing_params
+                            'missing' => $missing_params,
                         ];
                         $response = AbstractController::getInvalidParametersErrorResponse($errors);
                     }
@@ -686,15 +687,11 @@ EOT;
         if ($original_method === 'HEAD') {
             $response = $response->withBody(Utils::streamFor(''));
         }
-        // Clear output buffers
-        $ob_config = ini_get('output_buffering');
-        $max_level = filter_var($ob_config, FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
-        while (ob_get_level() > $max_level) {
+        // Clear output buffers up to the level when the request was started
+        while (ob_get_level() > $current_output_buffer_level) {
             ob_end_clean();
         }
-        if (ob_get_level() > 0) {
-            ob_clean();
-        }
+
         return $response;
     }
 
@@ -715,14 +712,14 @@ EOT;
             if ($request->hasHeader('GLPI-Profile')) {
                 $requested_profile = $request->getHeaderLine('GLPI-Profile');
                 if (is_numeric($requested_profile)) {
-                    Session::changeProfile((int)$requested_profile);
+                    Session::changeProfile((int) $requested_profile);
                 }
             }
             if ($request->hasHeader('GLPI-Entity')) {
                 $requested_entity = $request->getHeaderLine('GLPI-Entity');
                 if (is_numeric($requested_entity)) {
                     $is_recursive = $request->hasHeader('GLPI-Entity-Recursive') && strtolower($request->getHeaderLine('GLPI-Entity-Recursive')) === 'true';
-                    Session::changeActiveEntities((int)$requested_entity, $is_recursive);
+                    Session::changeActiveEntities((int) $requested_entity, $is_recursive);
                 }
             }
         }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,14 +33,16 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ErrorHandler;
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\UI\ThemeManager;
 
-// Ensure warnings will not break image output.
-ErrorHandler::getInstance()->disableOutput();
+use function Safe\base64_decode;
+use function Safe\filesize;
+use function Safe\readfile;
 
 $theme = ThemeManager::getInstance()->getTheme($_GET['key']);
-$preview = $theme !== null ? $theme->getPreviewPath(false) : null;
+$preview = $theme?->getPreviewPath(false);
 
 header_remove('Pragma');
 header(sprintf('Content-Disposition: attachment; filename="%s.png"', basename($theme->getKey())));

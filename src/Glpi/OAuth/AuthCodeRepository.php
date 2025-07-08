@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,9 +35,7 @@
 
 namespace Glpi\OAuth;
 
-use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
-use GLPIKey;
 use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
 use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
 
@@ -83,7 +81,7 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface
             'WHERE' => [
                 'identifier' => $codeId,
                 'date_expiration' => ['>', QueryFunction::now()],
-            ]
+            ],
         ]);
         return $iterator->count() === 0;
     }

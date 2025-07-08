@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,13 +38,8 @@
  */
 global $DB;
 
-if (strpos($_SERVER['PHP_SELF'], "dropdownSoftwareLicense.php")) {
-    /** @var \Glpi\Controller\LegacyFileLoadController $this */
-    $this->setAjax();
-
-    header("Content-Type: text/html; charset=UTF-8");
-    Html::header_nocache();
-}
+header("Content-Type: text/html; charset=UTF-8");
+Html::header_nocache();
 
 Session::checkRight("software", UPDATE);
 
@@ -53,14 +48,14 @@ if ($_POST['softwares_id'] > 0) {
         $_POST['value'] = 0;
     }
 
-   // Make a select box
+    // Make a select box
     $iterator = $DB->request([
         'DISTINCT'  => true,
         'FROM'      => 'glpi_softwarelicenses',
         'WHERE'     => [
-            'glpi_softwarelicenses.softwares_id'   => (int)$_POST['softwares_id']
+            'glpi_softwarelicenses.softwares_id'   => (int) $_POST['softwares_id'],
         ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', 'entities_id', Session::getMatchingActiveEntities($_POST['entity_restrict']), true),
-        'ORDERBY'   => 'name'
+        'ORDERBY'   => 'name',
     ]);
     $number = count($iterator);
 

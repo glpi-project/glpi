@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -47,11 +47,11 @@ use Glpi\Team\Team;
  **/
 class ProjectTeam extends CommonDBRelation
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                  = true;
     public $no_form_page               = true;
 
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1          = 'Project';
     public static $items_id_1          = 'projects_id';
 
@@ -137,12 +137,12 @@ class ProjectTeam extends CommonDBRelation
             $user_ids = array_column($team['User'], 'items_id');
             $subqueries[] = new QuerySubQuery([
                 'SELECT' => ['id', 'name', 'realname', 'firstname',
-                    new QueryExpression('"User" AS itemtype')
+                    new QueryExpression('"User" AS itemtype'),
                 ],
                 'FROM' => 'glpi_users',
                 'WHERE' => [
-                    'id'           => $user_ids
-                ]
+                    'id'           => $user_ids,
+                ],
             ]);
         }
         if (count($team['Group'])) {
@@ -153,12 +153,12 @@ class ProjectTeam extends CommonDBRelation
                     'name',
                     new QueryExpression('NULL AS realname'),
                     new QueryExpression('NULL AS firstname'),
-                    new QueryExpression('"Group" AS itemtype')
+                    new QueryExpression('"Group" AS itemtype'),
                 ],
                 'FROM' => 'glpi_groups',
                 'WHERE' => [
-                    'id'           => $group_ids
-                ]
+                    'id'           => $group_ids,
+                ],
             ]);
         }
         if (count($team['Supplier'])) {
@@ -169,12 +169,12 @@ class ProjectTeam extends CommonDBRelation
                     'name',
                     new QueryExpression('NULL AS realname'),
                     new QueryExpression('NULL AS firstname'),
-                    new QueryExpression('"Supplier" AS itemtype')
+                    new QueryExpression('"Supplier" AS itemtype'),
                 ],
                 'FROM' => 'glpi_suppliers',
                 'WHERE' => [
-                    'id' => $supplier_ids
-                ]
+                    'id' => $supplier_ids,
+                ],
             ]);
         }
         if (count($team['Contact'])) {
@@ -185,12 +185,12 @@ class ProjectTeam extends CommonDBRelation
                     'name',
                     new QueryExpression('NULL AS realname'),
                     new QueryExpression('NULL AS firstname'),
-                    new QueryExpression('"Contact" AS itemtype')
+                    new QueryExpression('"Contact" AS itemtype'),
                 ],
                 'FROM' => 'glpi_contacts',
                 'WHERE' => [
-                    'id' => $contact_ids
-                ]
+                    'id' => $contact_ids,
+                ],
             ]);
         }
 
@@ -232,7 +232,7 @@ class ProjectTeam extends CommonDBRelation
 
         $team = [];
 
-       // Define empty types
+        // Define empty types
         foreach (static::$available_types as $type) {
             if (!isset($team[$type])) {
                 $team[$type] = [];
@@ -241,7 +241,7 @@ class ProjectTeam extends CommonDBRelation
 
         $iterator = $DB->request([
             'FROM'   => self::getTable(),
-            'WHERE'  => ['projects_id' => $projects_id]
+            'WHERE'  => ['projects_id' => $projects_id],
         ]);
 
         foreach ($iterator as $data) {

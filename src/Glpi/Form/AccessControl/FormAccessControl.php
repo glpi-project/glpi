@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,6 +37,8 @@ namespace Glpi\Form\AccessControl;
 
 use CommonDBChild;
 use CommonGLPI;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportData;
 use InvalidArgumentException;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
@@ -63,7 +65,7 @@ final class FormAccessControl extends CommonDBChild
     }
 
     #[Override]
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         // This tab is only available for forms
         if (!($item instanceof Form)) {
@@ -197,17 +199,19 @@ final class FormAccessControl extends CommonDBChild
         // Config is mandatory on creation; inject default config if missing.
         if (!isset($input['_config'])) {
             $strategy_class = $this->input['strategy'];
-            if (!$this->isValidStrategy($strategy_class)) {
-                trigger_error(
+            try {
+                $strategy = $this->createStrategy($strategy_class);
+                $input['_config'] = $strategy->getConfig();
+            } catch (InvalidArgumentException $e) {
+                /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+                global $PHPLOGGER;
+                $PHPLOGGER->error(
                     "Invalid access control strategy: $strategy_class",
-                    E_USER_WARNING
+                    ['exception' => $e]
                 );
+
                 return false;
             }
-
-            $strategy = new $strategy_class();
-            $config_class = $strategy->getConfigClass();
-            $input['_config'] = new $config_class();
         }
 
         $input = $this->prepareConfigInput($input);
@@ -216,7 +220,7 @@ final class FormAccessControl extends CommonDBChild
     }
 
     #[Override]
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         $input = $this->prepareConfigInput($input);
 
@@ -235,11 +239,27 @@ final class FormAccessControl extends CommonDBChild
     public function getStrategy(): ControlTypeInterface
     {
         $control_type = $this->fields['strategy'];
-        if (!$this->isValidStrategy($control_type)) {
-            throw new \RuntimeException("Unknown strategy");
+        return $this->createStrategy($control_type);
+    }
+
+    /**
+     * Factory method to create a strategy instance safely.
+     *
+     * @param string|null $strategy_class Strategy class name
+     * @return ControlTypeInterface
+     * @throws InvalidArgumentException if strategy is invalid
+     */
+    public function createStrategy(?string $strategy_class): ControlTypeInterface
+    {
+        if (
+            $strategy_class === null
+            || !is_a($strategy_class, ControlTypeInterface::class, true)
+            || (new ReflectionClass($strategy_class))->isAbstract()
+        ) {
+            throw new InvalidArgumentException("Invalid access control strategy: " . ($strategy_class ?? 'null'));
         }
 
-        return new $control_type();
+        return new $strategy_class();
     }
 
     /**
@@ -251,24 +271,15 @@ final class FormAccessControl extends CommonDBChild
     {
         $config = json_decode($this->fields['config'], true);
         $strategy = $this->getStrategy();
-        $config_class = $strategy->getConfigClass();
+        $strategy_config = $strategy->getConfig();
 
-        if (!is_a($config_class, JsonFieldInterface::class, true)) {
-            throw new \RuntimeException("Invalid config class");
-        }
-
-        return $config_class::jsonDeserialize($config);
+        return $strategy_config::jsonDeserialize($config);
     }
 
     public function createConfigFromUserInput(array $input): JsonFieldInterface
     {
         $strategy_class = $input['strategy'] ?? $this->fields['strategy'] ?? null;
-        if ($strategy_class === null || !$this->isValidStrategy($strategy_class)) {
-            throw new InvalidArgumentException(
-                "Invalid access control strategy: $strategy_class"
-            );
-        }
-        $strategy = new $strategy_class();
+        $strategy = $this->createStrategy($strategy_class);
         return $strategy->createConfigFromUserInput($input);
     }
 
@@ -284,19 +295,28 @@ final class FormAccessControl extends CommonDBChild
         return "_access_control[{$this->getID()}][$name]";
     }
 
-    /**
-     * Verify that the given access control strategy is valid.
-     *
-     * @param string $strategy Strategy name (class name)
-     *
-     * @return bool
-     */
-    public function isValidStrategy(string $strategy): bool
+    public function exportDynamicData(): DynamicExportData
     {
-        return
-            is_a($strategy, ControlTypeInterface::class, true)
-            && !(new ReflectionClass($strategy))->isAbstract()
-        ;
+        $strategy = $this->getStrategy();
+        $config = $this->getConfig();
+
+        $data = new DynamicExportData();
+        $data->addField('config', $strategy->exportDynamicConfig($config));
+
+        return $data;
+    }
+
+    public static function prepareDynamicImportData(
+        ControlTypeInterface $strategy,
+        array $input,
+        DatabaseMapper $mapper,
+    ): array {
+        $input['_config'] = $strategy->prepareDynamicConfigDataForImport(
+            $input['_config'],
+            $mapper,
+        );
+
+        return $input;
     }
 
     #[Override]
@@ -311,7 +331,7 @@ final class FormAccessControl extends CommonDBChild
      *
      * @param array $input
      *
-     * @return array|false
+     * @return array
      */
     protected function prepareConfigInput(array $input)
     {

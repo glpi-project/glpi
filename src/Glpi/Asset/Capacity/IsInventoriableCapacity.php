@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,11 +34,13 @@
 
 namespace Glpi\Asset\Capacity;
 
-use AutoUpdateSystem;
 use CommonGLPI;
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\CapacityConfig;
 use Glpi\Inventory\Inventory;
 use Item_Environment;
 use Item_Process;
+use Override;
 use Session;
 
 class IsInventoriableCapacity extends AbstractCapacity
@@ -54,6 +55,29 @@ class IsInventoriableCapacity extends AbstractCapacity
         return Inventory::getIcon();
     }
 
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("The GLPI agent can report inventory data for these assets.");
+    }
+
+    #[Override]
+    public function getConfigurationForm(string $fieldname_prefix, ?CapacityConfig $current_config): ?string
+    {
+        return TemplateRenderer::getInstance()->render(
+            'pages/admin/assetdefinition/capacity/is_inventoriable_capacity_configuration_form.html.twig',
+            [
+                'fieldname_prefix'    => $fieldname_prefix,
+                'current_config'      => $current_config,
+                'itemtype_choices'    => [
+                    \Glpi\Inventory\MainAsset\GenericAsset::class        => __('Generic'),
+                    \Glpi\Inventory\MainAsset\GenericNetworkAsset::class => \NetworkEquipment::getTypeName(1),
+                    \Glpi\Inventory\MainAsset\GenericPrinterAsset::class => \Printer::getTypeName(1),
+                ],
+            ]
+        );
+    }
+
     public function getSearchOptions(string $classname): array
     {
         $tab = \Agent::rawSearchOptionsToAdd();
@@ -62,9 +86,17 @@ class IsInventoriableCapacity extends AbstractCapacity
             'table'              => 'glpi_autoupdatesystems',
             'field'              => 'name',
             'name'               => \AutoUpdateSystem::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
         return $tab;
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [
+            Item_Process::class,
+            Item_Environment::class,
+        ];
     }
 
     public function isUsed(string $classname): bool
@@ -89,24 +121,30 @@ class IsInventoriableCapacity extends AbstractCapacity
         );
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         $this->registerToTypeConfig('inventory_types', $classname);
         $this->registerToTypeConfig('agent_types', $classname);
         $this->registerToTypeConfig('environment_types', $classname);
         $this->registerToTypeConfig('process_types', $classname);
+        $this->registerToTypeConfig('ruleimportasset_types', $classname);
 
-        //copy rules from "inventory model" (Computer only for now)
+        if ($config->getValue('inventory_mainasset') === \Glpi\Inventory\MainAsset\GenericPrinterAsset::class) {
+            $this->registerToTypeConfig('printer_types', $classname);
+        }
 
         CommonGLPI::registerStandardTab($classname, Item_Environment::class, 85);
         CommonGLPI::registerStandardTab($classname, Item_Process::class, 85);
+    }
 
+    public function onCapacityEnabled(string $classname, CapacityConfig $config): void
+    {
         //create rules
         $rules = new \RuleImportAsset();
         $rules->initRules(true, $classname);
     }
 
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -114,6 +152,8 @@ class IsInventoriableCapacity extends AbstractCapacity
         $this->unregisterFromTypeConfig('agent_types', $classname);
         $this->unregisterFromTypeConfig('environment_types', $classname);
         $this->unregisterFromTypeConfig('process_types', $classname);
+        $this->unregisterFromTypeConfig('ruleimportasset_types', $classname);
+        $this->unregisterFromTypeConfig('printer_types', $classname);
 
         $env_item = new Item_Environment();
         $env_item->deleteByCriteria([
@@ -135,15 +175,23 @@ class IsInventoriableCapacity extends AbstractCapacity
                 'glpi_rulecriterias' => [
                     'FKEY' => [
                         'glpi_rules' => 'id',
-                        'glpi_rulecriterias' => 'rules_id'
-                    ]
-                ]
-            ]
+                        'glpi_rulecriterias' => 'rules_id',
+                    ],
+                ],
+            ],
         ];
         $where += [
             'criteria' => 'itemtype',
-            'pattern' => $classname
+            'pattern' => $classname,
         ];
         $DB->delete(\RuleImportAsset::getTable(), $where, $joins);
+    }
+
+    public function onCapacityUpdated(string $classname, CapacityConfig $old_config, CapacityConfig $new_config): void
+    {
+        if ($old_config->getValue('inventory_mainasset') != $new_config->getValue('inventory_mainasset')) {
+            $rules = new \RuleImportAsset();
+            $rules->initRules(true, $classname);
+        }
     }
 }

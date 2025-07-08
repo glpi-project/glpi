@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,6 +39,8 @@ use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\ScopeEntityInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 
+use function Safe\json_decode;
+
 class ScopeRepository implements ScopeRepositoryInterface
 {
     public function getScopeEntityByIdentifier($identifier): ?ScopeEntityInterface
@@ -57,8 +59,8 @@ class ScopeRepository implements ScopeRepositoryInterface
             'SELECT' => 'scopes',
             'FROM'   => 'glpi_oauthclients',
             'WHERE'  => [
-                'identifier' => $clientEntity->getIdentifier()
-            ]
+                'identifier' => $clientEntity->getIdentifier(),
+            ],
         ])->current()['scopes']);
         if (!is_array($allowed_scopes)) {
             $allowed_scopes = [];

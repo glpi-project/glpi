@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -90,7 +90,7 @@ class Knowbase extends CommonGLPI
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Search a solution
+        // Search a solution
         if (isset($_GET["itemtype"], $_GET["items_id"]) && !isset($_GET["contains"])) {
             if (in_array($_GET["item_itemtype"], $CFG_GLPI['kb_types'], true) && $item = getItemForItemtype($_GET["itemtype"])) {
                 if ($item->can($_GET["item_items_id"], READ)) {
@@ -101,7 +101,7 @@ class Knowbase extends CommonGLPI
 
         if (isset($_GET["contains"])) {
             $_SESSION['kbcontains'] = $_GET["contains"];
-        } else if (isset($_SESSION['kbcontains'])) {
+        } elseif (isset($_SESSION['kbcontains'])) {
             $_GET['contains'] = $_SESSION["kbcontains"];
         }
         $ki = new KnowbaseItem();

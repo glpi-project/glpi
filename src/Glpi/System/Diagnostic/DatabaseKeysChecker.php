@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,6 +37,9 @@ namespace Glpi\System\Diagnostic;
 
 use CommonDBTM;
 use CommonTreeDropdown;
+
+use function Safe\preg_grep;
+use function Safe\preg_match;
 
 /**
  * @since 10.0.0
@@ -68,10 +71,10 @@ class DatabaseKeysChecker extends AbstractDatabaseChecker
                 && preg_match('/text$/', $this->getColumnType($table_name, $column_name)) !== 1
             ) {
                 if (!$this->areFieldsCorrecltyIndexed($table_name, [$column_name], $column_name)) {
-                  // Expect a key with same name as field.
+                    // Expect a key with same name as field.
                     $missing_keys[$column_name] = [$column_name];
                 }
-            } else if (preg_match('/^items_id(?<suffix>_.+)?/', $column_name, $column_name_matches)) {
+            } elseif (preg_match('/^items_id(?<suffix>_.+)?/', $column_name, $column_name_matches)) {
                 $suffix = $column_name_matches['suffix'] ?? '';
                 $expected_key = 'item' . $suffix;
                 if (
@@ -82,7 +85,7 @@ class DatabaseKeysChecker extends AbstractDatabaseChecker
                     // Expect a key named item for itemtype/items_id polymorphic foreign keys
                     $missing_keys[$expected_key] = ['itemtype' . $suffix, 'items_id' . $suffix];
                 }
-            } else if (
+            } elseif (
                 isForeignKeyField($column_name)
                 || preg_match('/^date(_(mod|creation))$/', $column_name)
                 || preg_match('/^is_(active|deleted|dynamic|recursive|template)$/', $column_name)
@@ -100,7 +103,7 @@ class DatabaseKeysChecker extends AbstractDatabaseChecker
                 }
                 $expected_key = $column_name;
                 if (!in_array($expected_key, $misnamed_keys) && !$this->areFieldsCorrecltyIndexed($table_name, [$column_name], $expected_key)) {
-                   // Expect a key with same name as field or a key that contains multiple fields including current one.
+                    // Expect a key with same name as field or a key that contains multiple fields including current one.
                     $missing_keys[$expected_key] = [$column_name];
                 }
             }
@@ -129,9 +132,9 @@ class DatabaseKeysChecker extends AbstractDatabaseChecker
             }
 
             if (count($fields) === 1 && $key !== reset($fields)) {
-               // A key corresponding to a unique field should be named like this field.
+                // A key corresponding to a unique field should be named like this field.
                 $misnamed_keys[$key] = reset($fields);
-            } else if (count($fields) === 2 && count($matching_fields = preg_grep('/^items_id(_.+)?/', $fields)) === 1) {
+            } elseif (count($fields) === 2 && count($matching_fields = preg_grep('/^items_id(_.+)?/', $fields)) === 1) {
                 $items_id_field = reset($matching_fields);
                 $suffix = str_replace('items_id', '', $items_id_field);
                 $expected_key = 'item' . $suffix;
@@ -175,9 +178,9 @@ class DatabaseKeysChecker extends AbstractDatabaseChecker
                     if (!array_key_exists($i, $other_fields) || $other_fields[$i] !== $checked_field) {
                         break;
                     }
-                   // Fields are considered as part of a larger index only if they are located at the beginning of
-                   // this larger index. Otherwise, MySQL will not be able to use the index if preceding fields
-                   // are not tested in the query.
+                    // Fields are considered as part of a larger index only if they are located at the beginning of
+                    // this larger index. Otherwise, MySQL will not be able to use the index if preceding fields
+                    // are not tested in the query.
                     $useless_keys[$checked_key] = $other_key;
                 }
             }
@@ -199,22 +202,22 @@ class DatabaseKeysChecker extends AbstractDatabaseChecker
     {
         $index = $this->getIndex($table_name);
 
-       // Check if primary key matches given fields.
+        // Check if primary key matches given fields.
         if (array_key_exists('PRIMARY', $index) && $index['PRIMARY'] === $fields) {
             return true;
         }
 
-       // Check if expected key exists and matches given fields.
+        // Check if expected key exists and matches given fields.
         if (array_key_exists($expected_key, $index) && $index[$expected_key] === $fields) {
             return true;
         }
 
-       // Check if unicity key exists and matches given fields.
+        // Check if unicity key exists and matches given fields.
         if (array_key_exists('unicity', $index) && $index['unicity'] === $fields) {
             return true;
         }
 
-       // Check if a larger key exists and contains given fields.
+        // Check if a larger key exists and contains given fields.
         foreach ($index as $key_fields) {
             if (count($fields) >= count($key_fields)) {
                 continue; // Key does not contain more that expected fields, it is not a larger key.
@@ -223,9 +226,9 @@ class DatabaseKeysChecker extends AbstractDatabaseChecker
                 if (!array_key_exists($i, $key_fields) || $key_fields[$i] !== $field) {
                     break;
                 }
-               // Fields are considered as part of a larger index only if they are located at the beginning of
-               // this larger index. Otherwise, MySQL will not be able to use the index if preceding fields
-               // are not tested in the query.
+                // Fields are considered as part of a larger index only if they are located at the beginning of
+                // this larger index. Otherwise, MySQL will not be able to use the index if preceding fields
+                // are not tested in the query.
                 return true;
             }
         }

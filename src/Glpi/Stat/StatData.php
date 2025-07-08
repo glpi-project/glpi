@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -54,7 +54,7 @@ abstract class StatData
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Set up link to the download as csv page with the same parameters
+        // Set up link to the download as csv page with the same parameters
         if (count($params)) {
             $base_link = $CFG_GLPI['root_doc'] . '/front/graph.send.php?';
             $params['statdata_itemtype'] = static::class;

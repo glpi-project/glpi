@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,11 @@
 
 namespace Glpi\UI;
 
+use function Safe\glob;
+use function Safe\file_get_contents;
+use function Safe\preg_match;
+use function Safe\scandir;
+
 /**
  * Class that manages the core and custom themes (palettes).
  */
@@ -61,7 +66,7 @@ class ThemeManager
      */
     public function getCoreThemes(): array
     {
-        if (empty($this->core_themes)) {
+        if ($this->core_themes === []) {
             $this->core_themes = [
                 new Theme('aerialgreen', 'Aerial Green', false, false),
                 new Theme('auror', 'Auror', false, false),
@@ -102,13 +107,13 @@ class ThemeManager
      */
     public function getCustomThemes(): array
     {
-        if (empty($this->custom_themes)) {
+        if ($this->custom_themes === []) {
             $custom_themes_dir = $this->getCustomThemesDirectory();
             $file_matches = [];
             // Cannot use GLOB_BRACE on some platforms (like the docker environment used for tests)
             $patterns = [
                 '*.css',
-                '*.scss'
+                '*.scss',
             ];
             /**
              * PHP glob function calls libc glob which won't be aware of streams like vfsStream

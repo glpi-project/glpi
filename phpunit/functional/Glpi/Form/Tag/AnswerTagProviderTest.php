@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -62,12 +61,12 @@ final class AnswerTagProviderTest extends DbTestCase
             new Tag(
                 label: 'Answer: First name',
                 value: $this->getQuestionId($form, 'First name'),
-                provider: AnswerTagProvider::class,
+                provider: new AnswerTagProvider(),
             ),
             new Tag(
                 label: 'Answer: Last name',
                 value: $this->getQuestionId($form, 'Last name'),
-                provider: AnswerTagProvider::class,
+                provider: new AnswerTagProvider(),
             ),
         ]);
     }

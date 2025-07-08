@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -57,6 +57,8 @@ use Glpi\Search\Output\Xlsx;
 use Glpi\Search\Provider\SearchProviderInterface;
 use Glpi\Search\Provider\SQLProvider;
 use Plugin;
+
+use function Safe\preg_match;
 
 /**
  * The search engine.
@@ -131,12 +133,12 @@ final class SearchEngine
             }
 
             if ($key === 'itil_types') {
-                if (is_a($item, \CommonITILTask::class) || is_a($item, \CommonITILValidation::class)) {
+                if ($item instanceof \CommonITILTask || $item instanceof \CommonITILValidation) {
                     $linked[] = $item::getItilObjectItemType();
                 } else {
                     $timeline_types = [\ITILFollowup::class, \ITILSolution::class];
                     foreach ($timeline_types as $timeline_type) {
-                        if (is_a($item, $timeline_type)) {
+                        if ($item instanceof $timeline_type) {
                             $linked = [...$linked, ...$values];
                         }
                     }
@@ -173,7 +175,7 @@ final class SearchEngine
     private static function getMetaParentItemtypesForTypesConfig(string $config_key): array
     {
         $matches = [];
-        if (preg_match('/^(.+)_types$/', $config_key, $matches) === 0) {
+        if (str_contains($config_key, 'rule') || preg_match('/^(.+)_types$/', $config_key, $matches) === 0) {
             return [];
         }
 
@@ -254,7 +256,7 @@ final class SearchEngine
             'Monitor',
             'Peripheral',
             'Software',
-            'Phone'
+            'Phone',
         ];
         foreach ($types as $type) {
             if (is_a($itemtype, $type, true)) {
@@ -284,6 +286,7 @@ final class SearchEngine
 
         // Default values of parameters
         $p = [
+            'itemtype'                  => $itemtype,
             'criteria'                  => [],
             'metacriteria'              => [],
             'sort'                      => [0],
@@ -408,7 +411,7 @@ final class SearchEngine
             $displaypref = \DisplayPreference::getForTypeUser($itemtype, \Session::getLoginUserID(), \Session::getCurrentInterface());
             if (count($displaypref)) {
                 foreach ($displaypref as $val) {
-                    array_push($data['toview'], $val);
+                    $data['toview'][] = $val;
                 }
             }
         } else {
@@ -434,10 +437,10 @@ final class SearchEngine
                                 && (!isset($criterion['meta'])
                                     || !$criterion['meta'])
                             ) {
-                                array_push($data['toview'], $criterion['field']);
-                            } else if ($criterion['field'] == 'all') {
+                                $data['toview'][] = $criterion['field'];
+                            } elseif ($criterion['field'] == 'all') {
                                 $data['search']['all_search'] = true;
-                            } else if ($criterion['field'] == 'view') {
+                            } elseif ($criterion['field'] == 'view') {
                                 $data['search']['view_search'] = true;
                             }
                             if (isset($criterion['virtual']) && $criterion['virtual']) {
@@ -490,7 +493,7 @@ final class SearchEngine
         if ($forcetoview) {
             foreach ($data['toview'] as $val) {
                 if (!in_array($val, $data['tocompute'])) {
-                    array_push($data['tocompute'], $val);
+                    $data['tocompute'][] = $val;
                 }
             }
         }
@@ -518,7 +521,7 @@ final class SearchEngine
         if ($only_not) {
             return [
                 'AND'     => \Dropdown::EMPTY_VALUE,
-                'AND NOT' => __("NOT")
+                'AND NOT' => __("NOT"),
             ];
         }
 
@@ -526,7 +529,7 @@ final class SearchEngine
             'AND'     => __('AND'),
             'OR'      => __('OR'),
             'AND NOT' => __('AND NOT'),
-            'OR NOT'  => __('OR NOT')
+            'OR NOT'  => __('OR NOT'),
         ];
     }
 
@@ -591,15 +594,13 @@ final class SearchEngine
         $search_input_class = self::getSearchInputClass($params);
         $params = array_merge($params, $search_input_class::manageParams($itemtype, $_GET));
 
-        if (!isset($params['display_type'])) {
-            $params['display_type'] = \Search::HTML_OUTPUT;
-        }
+        $params['display_type'] = \Search::HTML_OUTPUT;
 
         echo "<div class='search_page row'>";
         TemplateRenderer::getInstance()->display('layout/parts/saved_searches.html.twig', [
             'itemtype' => $itemtype,
         ]);
-        echo "<div class='col search-container'>";
+        echo "<div class='col search-container' data-glpi-search-container>";
 
         $output = self::getOutputForLegacyKey($params['display_type'], $params);
         $output::showPreSearchDisplay($itemtype);

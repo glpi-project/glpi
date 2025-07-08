@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,7 +35,7 @@
 /**
  * Update from 9.4.6 to 9.4.7
  *
- * @return bool for success (will die for most error)
+ * @return bool
  **/
 function update946to947()
 {
@@ -48,13 +47,11 @@ function update946to947()
 
     $updateresult     = true;
 
-   //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '9.4.7'));
     $migration->setVersion('9.4.7');
 
     $DB->update('glpi_events', ['type'   => 'dcrooms'], ['type' => 'serverroms']);
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->executeMigration();
 
     return $updateresult;

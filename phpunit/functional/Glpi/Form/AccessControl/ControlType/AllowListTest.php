@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -40,6 +39,7 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Form\Form;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
@@ -66,17 +66,17 @@ class AllowListTest extends \DbTestCase
         $this->assertNotEmpty($allow_list->getIcon());
     }
 
-    public function testGetConfigClass(): void
+    public function testGetConfig(): void
     {
         $allow_list = new AllowList();
 
         // Not much to test here, just ensure the method run without errors
-        $class = $allow_list->getConfigClass();
+        $class = $allow_list->getConfig();
         $this->assertNotEmpty($class);
 
         // Ensure the class exists and is valid
         $is_valid =
-            is_a($class, JsonFieldInterface::class, true)
+            is_a($class, JsonFieldInterface::class)
             && !(new \ReflectionClass($class))->isAbstract()
         ;
         $this->assertTrue($is_valid);
@@ -90,14 +90,15 @@ class AllowListTest extends \DbTestCase
         // The rendered content should be validated by an E2E test.
         $form = $this->createForm(
             (new FormBuilder())
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(
-                    \Glpi\Form\AccessControl\ControlType\AllowList::class,
+                    AllowList::class,
                     $this->getFullyConfiguredAllowListConfig()
                 )
         );
         $access_control = $this->getAccessControl(
             $form,
-            \Glpi\Form\AccessControl\ControlType\AllowList::class
+            AllowList::class
         );
         $this->assertNotEmpty($allow_list->renderConfigForm($access_control));
     }
@@ -133,7 +134,7 @@ class AllowListTest extends \DbTestCase
                 'profiles_id-7',
                 'profiles_id-8',
                 'profiles_id-9',
-            ]
+            ],
         ]);
         $this->assertInstanceOf(AllowListConfig::class, $config);
         $this->assertEquals([1, 2, 3], $config->getUserIds());
@@ -199,7 +200,7 @@ class AllowListTest extends \DbTestCase
         $allow_list = new AllowList();
         $this->assertEquals(
             $expected,
-            $allow_list->canAnswer($config, $parameters)
+            $allow_list->canAnswer(new Form(), $config, $parameters)
         );
     }
 

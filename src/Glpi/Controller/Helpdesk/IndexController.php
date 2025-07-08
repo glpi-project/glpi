@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,16 +34,17 @@
 
 namespace Glpi\Controller\Helpdesk;
 
+use Entity;
 use Glpi\Controller\AbstractController;
 use Glpi\Helpdesk\HomePageTabs;
 use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
+use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use User;
-use Session;
 
 final class IndexController extends AbstractController
 {
@@ -62,16 +63,18 @@ final class IndexController extends AbstractController
     )]
     public function __invoke(Request $request): Response
     {
-        $user = User::getById(Session::getLoginUserID());
+        $session_info = Session::getCurrentSessionInfo();
 
-        // Will rename the file to "home.html.twig" later, don't want to remove
-        // the original file yet.
+        $user = User::getById($session_info->getUserId());
+        $entity = Entity::getById($session_info->getCurrentEntityId());
+
         return $this->render('pages/helpdesk/index.html.twig', [
             'title' => __("Home"),
             'menu'  => ['helpdesk-home'],
-            'tiles' => $this->tiles_manager->getTiles(),
+            'tiles' => $this->tiles_manager->getVisibleTilesForSession(Session::getCurrentSessionInfo()),
             'tabs'  => new HomePageTabs(),
             'password_alert' => $user->getPasswordExpirationMessage(),
+            'entity' => $entity,
         ]);
     }
 }

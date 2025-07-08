@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,9 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
-
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -45,13 +42,13 @@ $mailcollector = new MailCollector();
 if (isset($_REQUEST['action'])) {
     switch ($_REQUEST['action']) {
         case "getFoldersList":
-           // Load config if already exists
-           // Necessary if password is not updated
+            // Load config if already exists
+            // Necessary if password is not updated
             if (array_key_exists('id', $_REQUEST)) {
                 $mailcollector->getFromDB($_REQUEST['id']);
             }
 
-           // Update fields with input values
+            // Update fields with input values
             $input = $_REQUEST;
 
             if (isset($input["passwd"])) {

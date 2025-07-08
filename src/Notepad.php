@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,7 +42,7 @@ use Glpi\Application\View\TemplateRenderer;
  **/
 class Notepad extends CommonDBChild
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype        = 'itemtype';
     public static $items_id        = 'items_id';
     public $dohistory              = false;
@@ -52,7 +52,7 @@ class Notepad extends CommonDBChild
 
     public static function getTypeName($nb = 0)
     {
-       //TRANS: Always plural
+        //TRANS: Always plural
         return _n('Note', 'Notes', $nb);
     }
 
@@ -149,7 +149,7 @@ class Notepad extends CommonDBChild
         return countElementsInTable(
             'glpi_notepads',
             ['itemtype' => $item->getType(),
-                'items_id' => $item->getID()
+                'items_id' => $item->getID(),
             ]
         );
     }
@@ -167,22 +167,22 @@ class Notepad extends CommonDBChild
         $query = [
             'SELECT'    => [
                 'glpi_notepads.*',
-                'glpi_users.picture'
+                'glpi_users.picture',
             ],
             'FROM'      => self::getTable(),
             'LEFT JOIN' => [
                 'glpi_users'   => [
                     'ON' => [
                         self::getTable()  => 'users_id_lastupdater',
-                        'glpi_users'      => 'id'
-                    ]
-                ]
+                        'glpi_users'      => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'itemtype'  => $item->getType(),
-                'items_id'  => $item->getID()
+                'items_id'  => $item->getID(),
             ],
-            'ORDERBY'   => 'date_mod DESC'
+            'ORDERBY'   => 'date_mod DESC',
         ];
         if (!is_null($target) && $target = 'Ticket') {
             $query['WHERE']['visible_from_ticket'] = true;
@@ -226,7 +226,7 @@ class Notepad extends CommonDBChild
 
         $tab[] = [
             'id'                 => 'notepad',
-            'name'               => $name
+            'name'               => $name,
         ];
 
         $tab[] = [
@@ -236,11 +236,11 @@ class Notepad extends CommonDBChild
             'name'               => $name,
             'datatype'           => 'text',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
+                'jointype'           => 'itemtype_item',
             ],
             'forcegroupby'       => true,
             'splititems'         => true,
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -250,10 +250,10 @@ class Notepad extends CommonDBChild
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
+                'jointype'           => 'itemtype_item',
             ],
             'forcegroupby'       => true,
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -268,10 +268,10 @@ class Notepad extends CommonDBChild
                 'beforejoin'         => [
                     'table'              => 'glpi_notepads',
                     'joinparams'         => [
-                        'jointype'           => 'itemtype_item'
-                    ]
-                ]
-            ]
+                        'jointype'           => 'itemtype_item',
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -281,10 +281,10 @@ class Notepad extends CommonDBChild
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
+                'jointype'           => 'itemtype_item',
             ],
             'forcegroupby'       => true,
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -300,10 +300,10 @@ class Notepad extends CommonDBChild
                 'beforejoin'         => [
                     'table'              => 'glpi_notepads',
                     'joinparams'         => [
-                        'jointype'           => 'itemtype_item'
-                    ]
-                ]
-            ]
+                        'jointype'           => 'itemtype_item',
+                    ],
+                ],
+            ],
         ];
 
         return $tab;

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,11 +37,15 @@ namespace Glpi\Form\QuestionType;
 
 use CommonItilObject_Item;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Condition\ConditionHandler\UserDevicesConditionHandler;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
+use InvalidArgumentException;
 use Override;
 use Session;
 
-final class QuestionTypeUserDevice extends AbstractQuestionType
+final class QuestionTypeUserDevice extends AbstractQuestionType implements UsedAsCriteriaInterface
 {
     #[Override]
     public function validateExtraDataInput(array $input): bool
@@ -52,7 +56,7 @@ final class QuestionTypeUserDevice extends AbstractQuestionType
             isset($input['is_multiple_devices'])
             && count($input) === 1
             && filter_var($input['is_multiple_devices'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) !== null
-        ) || empty($input);
+        ) || $input === [];
     }
 
     /**
@@ -91,7 +95,8 @@ final class QuestionTypeUserDevice extends AbstractQuestionType
                     'init'               : init,
                     'no_label'           : true,
                     'field_class'        : [
-                        'col-6',
+                        'col-12',
+                        'col-sm-6',
                         'devices-dropdown',
                         is_multiple_devices ? '' : 'd-none'
                     ]|join(' '),
@@ -111,7 +116,8 @@ final class QuestionTypeUserDevice extends AbstractQuestionType
                     'init'               : init,
                     'no_label'           : true,
                     'field_class'        : [
-                        'col-6',
+                        'col-12',
+                        'col-sm-6',
                         'devices-dropdown',
                         is_multiple_devices ? 'd-none' : ''
                     ]|join(' '),
@@ -128,7 +134,7 @@ TWIG;
             'init'                => $question !== null,
             'is_multiple_devices' => $this->isMultipleDevices($question),
             'aria_label_multiple_devices' => _n('Select device...', 'Select devices...', 2),
-            'aria_label_single_device' => _n('Select device...', 'Select devices...', 1)
+            'aria_label_single_device' => _n('Select device...', 'Select devices...', 1),
         ]);
     }
 
@@ -168,7 +174,7 @@ TWIG;
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
             'is_multiple_devices' => $this->isMultipleDevices($question),
-            'is_multiple_devices_label' => __('Allow multiple devices')
+            'is_multiple_devices_label' => __('Allow multiple devices'),
         ]);
     }
 
@@ -185,7 +191,7 @@ TWIG;
                 '',
                 {
                     'no_label'           : true,
-                    'field_class'        : 'col-6',
+                    'field_class'        : 'col-12 col-sm-6',
                     'display_emptychoice': true,
                     'multiple'           : is_multiple_devices,
                     'aria_label'         : aria_label,
@@ -199,7 +205,7 @@ TWIG;
             'question' => $question,
             'items'    => CommonItilObject_Item::getMyDevices(Session::getLoginUserID(), Session::getActiveEntities()),
             'is_multiple_devices' => $this->isMultipleDevices($question),
-            'aria_label' => _n('Select device...', 'Select devices...', $this->isMultipleDevices($question) ? 2 : 1),
+            'aria_label' => $question->fields['name'],
         ]);
     }
 
@@ -211,29 +217,27 @@ TWIG;
         }
 
         $devices = [];
-        if (is_array($answer)) {
-            foreach ($answer as $device) {
-                $device_parts = [];
-                if (
-                    preg_match('/^(?<itemtype>.+)_(?<id>\d+)$/', $device, $device_parts) !== 1
-                    || !is_a($device_parts['itemtype'], \CommonDBTM::class, true)
-                    || $device_parts['itemtype']::getById($device_parts['id']) === false
-                ) {
-                    continue;
-                }
-
-                $devices[] = [
-                    'itemtype' => $device_parts['itemtype'],
-                    'items_id' => $device_parts['id']
-                ];
+        foreach ($answer as $device) {
+            $device_parts = [];
+            if (
+                preg_match('/^(?<itemtype>.+)_(?<id>\d+)$/', $device, $device_parts) !== 1
+                || !is_a($device_parts['itemtype'], \CommonDBTM::class, true)
+                || $device_parts['itemtype']::getById($device_parts['id']) === false
+            ) {
+                continue;
             }
+
+            $devices[] = [
+                'itemtype' => $device_parts['itemtype'],
+                'items_id' => $device_parts['id'],
+            ];
         }
 
         return $devices;
     }
 
     #[Override]
-    public function formatRawAnswer(mixed $answer): string
+    public function formatRawAnswer(mixed $answer, Question $question): string
     {
         if (is_string($answer)) {
             $answer = [$answer];
@@ -263,7 +267,7 @@ TWIG;
     }
 
     #[Override]
-    public function getCategory(): QuestionTypeCategory
+    public function getCategory(): QuestionTypeCategoryInterface
     {
         return QuestionTypeCategory::ITEM;
     }
@@ -275,8 +279,22 @@ TWIG;
     }
 
     #[Override]
-    public function getExtraDataConfigClass(): ?string
+    public function getExtraDataConfigClass(): string
     {
         return QuestionTypeUserDevicesConfig::class;
+    }
+
+    #[Override]
+    public function getConditionHandlers(
+        ?JsonFieldInterface $question_config
+    ): array {
+        if (!$question_config instanceof QuestionTypeUserDevicesConfig) {
+            throw new InvalidArgumentException();
+        }
+
+        return array_merge(
+            parent::getConditionHandlers($question_config),
+            [new UserDevicesConditionHandler($question_config->isMultipleDevices())],
+        );
     }
 }

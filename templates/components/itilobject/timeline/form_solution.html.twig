@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -39,9 +38,12 @@
 {% set candedit = item.maySolve() %}
 {% set can_read_kb = has_profile_right('knowbase', constant('READ')) or has_profile_right('knowbase', constant('KnowbaseItem::READFAQ')) %}
 {% set can_update_kb = has_profile_right('knowbase', constant('UPDATE')) %}
-{% set nokb = params['nokb'] is defined or params['nokb'] == true %}
-{% set noform = params['noform'] is defined or params['noform'] == true %}
+{% set nokb = params['nokb'] is defined or (params['nokb'] ?? false) == true %}
+{% set noform = params['noform'] is defined or (params['noform'] ?? false) == true %}
 {% set disabled = (candedit == false) %}
+{% set rand = rand|default(random()) %}
+
+{% set content_field_id = 'solution_content_' ~ rand %}
 
 {% block timeline_card %}
    {% if form_mode == 'view' %}
@@ -56,7 +58,7 @@
          <div class="timeline-badges">
             {% if entry_i['solutiontypes_id'] %}
                <span class="badge bg-blue-lt">
-                  <i class="fas fa-tag me-1"></i>
+                  <i class="ti ti-tag me-1"></i>
                   {{ get_item_name('SolutionType', entry_i['solutiontypes_id']) }}
                </span>
             {% endif %}
@@ -88,36 +90,34 @@
             <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
             <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
             <input type="hidden" name="_no_message_link" value="1" />
-            {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
+            {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {"item": subitem, 'options': params}) }}
 
             {% if item.getType() == 'Ticket' and item.countOpenChildrenOfSameType() > 0 %}
                <div class="alert alert-important alert-warning">
-                  <i class="fas fa-2x fa-info me-2"></i>
+                  <i class="ti ti-info-circle fs-2x me-2"></i>
                   <span>{{ __('Warning: non closed children tickets depends on current ticket. Are you sure you want to close it?') }}</span>
                </div>
             {% endif %}
 
             <div class="row mx-n3 mx-xxl-auto">
                <div class="col-12 col-xl-7 col-xxl-8">
-                  {% set content = subitem.fields['content'] %}
-                  {% if kb_id_toload > 0 %}
-                     {% set kb_item = get_item("KnowbaseItem", kb_id_toload) %}
-                     {% set content = (kb_item.fields['answer'] ?? "") %}
-                  {% endif %}
+                  {% set content = subitem.fields['content'] ?? '' %}
 
                   {{ fields.textareaField(
                      'content',
                      content,
                      '',
                      {
+                        'id': content_field_id,
                         'full_width': true,
                         'no_label': true,
                         'enable_richtext': true,
                         'enable_fileupload': true,
-                        'enable_mentions': true,
+                        'mention_options': mention_options|default({}),
                         'entities_id': item.fields['entities_id'],
                         'rand': rand,
                         'disabled': disabled,
+                        'aria_label': _n('Solution', 'Solutions', 1),
                      }
                   ) }}
                </div>
@@ -125,27 +125,11 @@
                   <div class="row">
                      {% if candedit %}
                         {% if can_read_kb and not nokb %}
-                           {% set search_solution_button %}
-                              <a href="{{ path('/front/knowbaseitem.php?item_itemtype=' ~ item.getType() ~ '&item_items_id=' ~ item.getID() ~ '&forcetab=Knowbase$1') }}"
-                                 class="btn btn-secondary overflow-hidden text-nowrap" type="submit"
-                                 title="{{ __('Search a solution') }}"
-                                 data-bs-toggle="tooltip" data-bs-placement="top">
-                                 <i class="fas fa-search"></i>
-                              </a>
-                           {% endset %}
-                           {{ fields.field(
-                              '',
-                              search_solution_button,
-                              '',
-                              {
-                                 'full_width': true,
-                                 'icon_label': true,
-                              }
-                           ) }}
+                           {{ include('components/itilobject/timeline/knowledge_item.html.twig') }}
                         {% endif %}
 
                         {% set sol_template_lbl %}
-                           <i class="fas fa-reply fa-fw me-1" data-bs-toggle="tooltip" data-bs-placement="top"
+                           <i class="{{ 'SolutionTemplate'|itemtype_icon }} me-1" data-bs-toggle="tooltip" data-bs-placement="top"
                               title="{{ _n('Solution template', 'Solution templates', get_plural_number()) }}"></i>
                         {% endset %}
                         {{ fields.dropdownField(
@@ -166,7 +150,7 @@
                      {% endif %}
 
                      {% set sol_type_lbl %}
-                        <i class="fas fa-tag fa-fw me-1" title="{{ 'SolutionType'|itemtype_name }}"
+                        <i class="ti ti-tag me-1" title="{{ 'SolutionType'|itemtype_name }}"
                            data-bs-toggle="tooltip" data-bs-placement="top"></i>
                      {% endset %}
                      {% set sol_search = {} %}
@@ -196,27 +180,27 @@
                         }
                      ) }}
 
-                     {% if can_read_kb and kb_id_toload > 0 %}
-                        {% set link_kb_lbl %}
-                           <i class="fas fa-link fa-fw me-1" data-bs-toggle="tooltip" data-bs-placement="top"
-                              title="{{ __('Link to knowledge base entry #%id')|replace({'%id': kb_id_toload}) }}"></i>
-                        {% endset %}
-                        {{ fields.sliderField(
-                           'kb_linked_id',
-                           1,
-                           link_kb_lbl,
-                           {
-                              'full_width': true,
-                              'icon_label': true,
-                              'rand': rand,
-                              'yes_value': kb_id_toload,
-                           }
-                        ) }}
-                     {% endif %}
+                    {% set link_kb_lbl %}
+                        <i class="ti ti-link me-1" data-bs-toggle="tooltip" data-bs-placement="top"
+                           title="{{ __('Link to knowledge base entry #%id')|replace({'%id': ''}) }}"></i>
+                    {% endset %}
+                    {{ fields.sliderField(
+                       'kb_linked_id',
+                       1,
+                       link_kb_lbl,
+                       {
+                          'full_width': true,
+                          'icon_label': true,
+                          'rand': rand,
+                          'yes_value': 0,
+                          'add_field_class': 'd-none',
+                           'disabled': true,
+                       }
+                    ) }}
 
                      {% if candedit and can_update_kb and not nokb %}
                         {% set sol_to_kb_lbl %}
-                           <i class="far fa-save fa-fw me-1" title="{{ __('Save and add to the knowledge base') }}"
+                           <i class="ti ti-device-floppy me-1" title="{{ __('Save and add to the knowledge base') }}"
                               data-bs-toggle="tooltip" data-bs-placement="top"></i>
                         {% endset %}
                         {{ fields.sliderField(
@@ -235,17 +219,17 @@
             </div>
 
          {% if not noform %}
-               {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
+               {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {"item": subitem, 'options': params}) }}
                <div class="d-flex card-footer mx-n3 mb-n3">
-                  {% if subitem.fields['id'] <= 0 %}
+                  {% if (subitem.fields['id'] ?? 0) <= 0 %}
                      <button class="btn btn-primary me-2" type="submit" name="add">
-                        <i class="fas fa-plus"></i>
+                        <i class="ti ti-plus"></i>
                         <span>{{ _x('button', 'Add') }}</span>
                      </button>
                   {% else %}
                      <input type="hidden" name="id" value="{{ subitem.fields['id'] }}" />
                      <button class="btn btn-primary me-2" type="submit" name="update">
-                        <i class="far fa-save"></i>
+                        <i class="ti ti-device-floppy"></i>
                         <span>{{ _x('button', 'Save') }}</span>
                      </button>
                   {% endif %}
@@ -268,7 +252,7 @@
                }
             }).done(function (data) {
                // set textarea content
-               setRichTextEditorContent("content_{{ rand }}", data.content);
+               setRichTextEditorContent("{{ content_field_id|e('js') }}", data.content);
 
                // set type
                var solutiontypes_id = isNaN(parseInt(data.solutiontypes_id))

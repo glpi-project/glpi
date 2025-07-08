@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -44,7 +44,7 @@ use Glpi\Application\View\TemplateRenderer;
  **/
 class Change_Problem extends CommonITILObject_CommonITILObject
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1   = 'Change';
     public static $items_id_1   = 'changes_id';
 
@@ -119,7 +119,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
         $iterator = $DB->request([
             'SELECT' => [
                 'glpi_changes_problems.id AS linkid',
-                'glpi_changes.*'
+                'glpi_changes.*',
             ],
             'DISTINCT'        => true,
             'FROM'            => 'glpi_changes_problems',
@@ -127,14 +127,14 @@ class Change_Problem extends CommonITILObject_CommonITILObject
                 'glpi_changes' => [
                     'ON' => [
                         'glpi_changes_problems' => 'changes_id',
-                        'glpi_changes'          => 'id'
-                    ]
-                ]
+                        'glpi_changes'          => 'id',
+                    ],
+                ],
             ],
             'WHERE'           => [
-                'glpi_changes_problems.problems_id' => $ID
+                'glpi_changes_problems.problems_id' => $ID,
             ],
-            'ORDERBY'         => 'glpi_changes.name'
+            'ORDERBY'         => 'glpi_changes.name',
         ]);
 
         $changes = [];
@@ -161,7 +161,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
                     'displaywith' => ['id'],
                     'condition'   => Change::getOpenCriteria(),
                 ],
-                'create_link' => Session::haveRight(Change::$rightname, CREATE)
+                'create_link' => Session::haveRight(Change::$rightname, CREATE),
             ]);
         }
 
@@ -174,7 +174,6 @@ class Change_Problem extends CommonITILObject_CommonITILObject
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => $columns,
@@ -186,7 +185,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
-            ]
+            ],
         ]);
     }
 
@@ -211,7 +210,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
         $iterator = $DB->request([
             'SELECT' => [
                 'glpi_changes_problems.id AS linkid',
-                'glpi_problems.*'
+                'glpi_problems.*',
             ],
             'DISTINCT'        => true,
             'FROM'            => 'glpi_changes_problems',
@@ -219,14 +218,14 @@ class Change_Problem extends CommonITILObject_CommonITILObject
                 'glpi_problems' => [
                     'ON' => [
                         'glpi_changes_problems' => 'problems_id',
-                        'glpi_problems'         => 'id'
-                    ]
-                ]
+                        'glpi_problems'         => 'id',
+                    ],
+                ],
             ],
             'WHERE'           => [
-                'glpi_changes_problems.changes_id' => $ID
+                'glpi_changes_problems.changes_id' => $ID,
             ],
-            'ORDERBY'         => 'glpi_problems.name'
+            'ORDERBY'         => 'glpi_problems.name',
         ]);
 
         $problems = [];
@@ -251,9 +250,9 @@ class Change_Problem extends CommonITILObject_CommonITILObject
                     'entity'      => $change->getEntityID(),
                     'entity_sons' => $change->isRecursive(),
                     'used'        => $used,
-                    'displaywith' => ['id']
+                    'displaywith' => ['id'],
                 ],
-                'create_link' => false
+                'create_link' => false,
             ]);
         }
 
@@ -266,7 +265,6 @@ class Change_Problem extends CommonITILObject_CommonITILObject
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => $columns,
@@ -278,7 +276,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
-            ]
+            ],
         ]);
     }
 }

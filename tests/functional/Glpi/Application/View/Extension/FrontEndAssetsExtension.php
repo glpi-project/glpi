@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -61,7 +60,7 @@ class FrontEndAssetsExtension extends \GLPITestCase
                             'styles_1.scss' => '/* SCSS file to compile */',
                             'styles_2.scss' => '/* SCSS file to compile */',
                         ],
-                    ]
+                    ],
                 ],
                 'plugins' => [
                     'anotherplugin' => [
@@ -70,7 +69,7 @@ class FrontEndAssetsExtension extends \GLPITestCase
                             'static_2.css'     => '/* Source CSS file */',
                             'static_1.min.css' => '/* Minified CSS file */',
                         ],
-                    ]
+                    ],
                 ],
                 'public' => [
                     'css_compiled' => [

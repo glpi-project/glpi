@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,7 +35,7 @@
 /**
  * Update from 9.4.5 to 9.4.6
  *
- * @return bool for success (will die for most error)
+ * @return bool
  **/
 function update945to946()
 {
@@ -46,16 +45,14 @@ function update945to946()
      */
     global $DB, $migration;
     $updateresult     = true;
-   //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '9.4.6'));
     $migration->setVersion('9.4.6');
     $DB->delete(
         'glpi_profilerights',
         [
-            'name'  => 'backup'
+            'name'  => 'backup',
         ]
     );
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->executeMigration();
     return $updateresult;
 }

@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -68,7 +67,7 @@ class KnowbaseItem_RevisionTest extends DbTestCase
 
         $where = [
             'knowbaseitems_id' => $kb1->getID(),
-            'language'         => ''
+            'language'         => '',
         ];
 
         $nb = countElementsInTable(
@@ -81,7 +80,7 @@ class KnowbaseItem_RevisionTest extends DbTestCase
             $kb1->update(
                 [
                     'id'   => $kb1->getID(),
-                    'name' => '_knowbaseitem01-01'
+                    'name' => '_knowbaseitem01-01',
                 ]
             )
         );
@@ -94,7 +93,7 @@ class KnowbaseItem_RevisionTest extends DbTestCase
 
         $data = $DB->request([
             'SELECT' => ['MIN' => 'id as id'],
-            'FROM'   => 'glpi_knowbaseitems_revisions'
+            'FROM'   => 'glpi_knowbaseitems_revisions',
         ])->current();
         $rev_id = $data['id'];
 
@@ -112,7 +111,7 @@ class KnowbaseItem_RevisionTest extends DbTestCase
             $kb1->update(
                 [
                     'id'     => $kb1->getID(),
-                    'answer' => 'Don\'t use paths with spaces, like C:\\Program Files\\MyApp'
+                    'answer' => 'Don\'t use paths with spaces, like C:\\Program Files\\MyApp',
                 ]
             )
         );
@@ -121,7 +120,7 @@ class KnowbaseItem_RevisionTest extends DbTestCase
             $kb1->update(
                 [
                     'id'     => $kb1->getID(),
-                    'answer' => 'Answer changed'
+                    'answer' => 'Answer changed',
                 ]
             )
         );
@@ -134,7 +133,7 @@ class KnowbaseItem_RevisionTest extends DbTestCase
 
         $data = $DB->request([
             'SELECT' => new \Glpi\DBAL\QueryExpression('MAX(id) AS id'),
-            'FROM'   => 'glpi_knowbaseitems_revisions'
+            'FROM'   => 'glpi_knowbaseitems_revisions',
         ])->current();
         $nrev_id = $data['id'];
 
@@ -151,7 +150,7 @@ class KnowbaseItem_RevisionTest extends DbTestCase
 
     public function testGetTabNameForItemNotLogged()
     {
-       //we are not logged, we should not see revision tab
+        //we are not logged, we should not see revision tab
         $kb_rev = new \KnowbaseItem_Revision();
         $kb1 = $this->getNewKbItem();
 
@@ -171,7 +170,7 @@ class KnowbaseItem_RevisionTest extends DbTestCase
             $kb1->update(
                 [
                     'id'   => $kb1->getID(),
-                    'name' => '_knowbaseitem01-01'
+                    'name' => '_knowbaseitem01-01',
                 ]
             )
         );
@@ -184,7 +183,7 @@ class KnowbaseItem_RevisionTest extends DbTestCase
             $kb1->update(
                 [
                     'id'   => $kb1->getID(),
-                    'name' => '_knowbaseitem01-02'
+                    'name' => '_knowbaseitem01-02',
                 ]
             )
         );
@@ -205,7 +204,7 @@ class KnowbaseItem_RevisionTest extends DbTestCase
         unset($toadd['date_creation']);
         unset($toadd['date_mod']);
         $toadd['name'] = $this->getUniqueString();
-        $this->assertGreaterThan(0, (int)$kb1->add($toadd));
+        $this->assertGreaterThan(0, (int) $kb1->add($toadd));
         return $kb1;
     }
 }

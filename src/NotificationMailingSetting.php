@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -43,13 +43,13 @@ class NotificationMailingSetting extends NotificationSetting
 {
     public static function getTypeName($nb = 0)
     {
-        return __('Email followups configuration');
+        return __('Email notifications configuration');
     }
 
 
     public function getEnableLabel()
     {
-        return __('Enable followups via email');
+        return __('Enable email notifications');
     }
 
 
@@ -61,7 +61,7 @@ class NotificationMailingSetting extends NotificationSetting
     public function defineTabs($options = [])
     {
         $ong = parent::defineTabs($options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
@@ -106,7 +106,7 @@ class NotificationMailingSetting extends NotificationSetting
 
         $tab[] = [
             'id'   => 'common',
-            'name' => __('Characteristics')
+            'name' => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -114,7 +114,7 @@ class NotificationMailingSetting extends NotificationSetting
             'table'         => $this->getTable(),
             'field'         => 'value',
             'name'          => __('Value'),
-            'massiveaction' => false
+            'massiveaction' => false,
         ];
 
         return $tab;
@@ -166,6 +166,6 @@ class NotificationMailingSetting extends NotificationSetting
 
     public static function getIcon()
     {
-        return "far fa-envelope";
+        return "ti ti-mail";
     }
 }

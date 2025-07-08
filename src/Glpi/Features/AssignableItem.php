@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -119,8 +119,8 @@ trait AssignableItem
                             'itemtype'  => static::class,
                             'groups_id' => $_SESSION['glpigroups'],
                             'type'      => Group_Item::GROUP_TYPE_TECH,
-                        ]
-                    ])
+                        ],
+                    ]),
                 ];
             }
         }
@@ -137,8 +137,8 @@ trait AssignableItem
                             'itemtype'  => static::class,
                             'groups_id' => $_SESSION['glpigroups'],
                             'type'      => Group_Item::GROUP_TYPE_NORMAL,
-                        ]
-                    ])
+                        ],
+                    ]),
                 ];
             }
         }
@@ -176,7 +176,7 @@ trait AssignableItem
                 if (!is_array($input[$field])) {
                     $input[$field] = [$input[$field]];
                 }
-                $input['_' . $field] = array_filter(array_map('intval', $input[$field] ?? []), static fn ($v) => $v > 0);
+                $input['_' . $field] = array_filter(array_map('intval', $input[$field] ?? []), static fn($v) => $v > 0);
                 unset($input[$field]);
             }
         }

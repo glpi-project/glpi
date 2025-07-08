@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -46,7 +45,7 @@ class NetworkPortTypeTest extends DbTestCase
         global $DB;
 
         $iterator = $DB->request([
-            'FROM'   => \NetworkPortType::getTable()
+            'FROM'   => \NetworkPortType::getTable(),
         ]);
         $this->assertGreaterThanOrEqual(
             300,
@@ -55,7 +54,7 @@ class NetworkPortTypeTest extends DbTestCase
 
         $iterator = $DB->request([
             'FROM'   => \NetworkPortType::getTable(),
-            'WHERE'  => ['is_importable' => true]
+            'WHERE'  => ['is_importable' => true],
         ]);
 
         $expecteds = [
@@ -107,7 +106,7 @@ class NetworkPortTypeTest extends DbTestCase
                 'comment' => 'MAC layer over radio links [Daniele_Behar]',
                 'is_importable' => 1,
                 'instantiation_type' => 'NetworkPortWifi',
-            ]
+            ],
         ];
 
         $this->assertCount(count($expecteds), $iterator);

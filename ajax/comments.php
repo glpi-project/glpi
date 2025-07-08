@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,9 +37,6 @@
  * @var array $CFG_GLPI
  */
 global $CFG_GLPI;
-
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
 
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
@@ -108,12 +105,42 @@ if (
             }
             break;
 
+        case Supplier::getType():
+            $tmpname = [
+                'comment' => "",
+            ];
+            if ($_POST['value'] != 0) {
+                $supplier = new \Supplier();
+                if (!is_array($_POST["value"]) && $supplier->getFromDB($_POST['value']) && $supplier->canView()) {
+                    $supplier_params = [
+                        'id' => $supplier->getID(),
+                        'supplier_name' => $supplier->fields['name'],
+                        'comment' => $supplier->fields['comment'],
+                        'address' => $supplier->fields['address'],
+                        'postcode' => $supplier->fields['postcode'],
+                        'town' => $supplier->fields['town'],
+                        'email' => $supplier->fields['email'],
+                        'fax' => $supplier->fields['fax'],
+                        'registration_number' => $supplier->fields['registration_number'],
+                        'phonenumber' => $supplier->fields['phonenumber'],
+                    ];
+                    $comment = TemplateRenderer::getInstance()->render('components/supplier/info_card.html.twig', [
+                        'supplier' => $supplier_params,
+                    ]);
+                    $tmpname = [
+                        'comment' => $comment,
+                    ];
+                }
+            }
+            echo($tmpname["comment"]);
+            break;
+
         default:
             if ($_POST["value"] > 0) {
                 if (
                     !Session::validateIDOR([
                         'itemtype'    => $_POST['itemtype'],
-                        '_idor_token' => $_POST['_idor_token'] ?? ""
+                        '_idor_token' => $_POST['_idor_token'] ?? "",
                     ])
                 ) {
                     return;
@@ -148,7 +175,7 @@ if (
                     ) {
                         echo Html::scriptBlock(
                             sprintf(
-                                '$("#%s").html("href", "&nbsp;<a class=\'fas fa-crosshairs\' href=\'%s\'></a>");',
+                                '$("#%s").html("href", "&nbsp;<a class=\'ti ti-crosshairs\' href=\'%s\'></a>");',
                                 htmlescape($_POST['with_dc_position']),
                                 htmlescape($rack->getLinkURL())
                             )

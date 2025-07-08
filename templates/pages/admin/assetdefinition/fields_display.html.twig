@@ -1,0 +1,74 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set all_fields = all_fields ?? {} %}
+
+{% set params = {} %}
+{# do not display delete button #}
+{% set params = params|merge({'candel': false}) %}
+{# do not display footer with dates #}
+{% set params = params|merge({'formfooter': false}) %}
+{% set rand = rand|default(random()) %}
+
+<div class="card-body d-flex flex-wrap p-0 m-n2 mb-n5">
+    <div class="col-12 col-xxl-12 flex-column">
+        <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
+            <div class="row flex-row align-items-start flex-grow-1">
+                <div class="row flex-row">
+                    <form id="main-form" name="asset_form" method="post" action="{{ 'Glpi\\Asset\\AssetDefinition'|itemtype_form_path }}" enctype="multipart/form-data" data-submit-once="">
+                        {{ include('components/form/viewsubitem.html.twig', custom_field_form_params|merge({
+                            cancreate: false,
+                            rand: rand,
+                            modal_title: __('New field'),
+                        }), with_context = false) }}
+                        <div id="sortable-fields-container" class="card-body d-flex flex-wrap p-0"></div>
+                        <script>
+                            window.Vue.createApp(window.Vue.components['CustomObject/FieldPreview/FieldDisplay'].component, {
+                                items_id: {{ item.getID() }},
+                                toolbar_el: '#sortable-fields-toolbar',
+                                all_fields: {{ all_fields|json_encode()|raw }},
+                                fields_display: {{ fields_display|default({})|json_encode()|raw }},
+                                add_edit_fn: 'viewAddEditSubItem{{ rand }}',
+                                can_create_fields: {{ can_create_fields|default(false) ? 'true' : 'false' }},
+                            }).mount('#sortable-fields-container');
+                        </script>
+                        <div class="w-100 px-2">
+                            {% if no_form_buttons is not defined or no_form_buttons == false %}
+                                {{ include('components/form/buttons.html.twig') }}
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

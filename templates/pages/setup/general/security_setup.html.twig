@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -35,13 +34,9 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% set field_options = {
-   'field_class': 'col-12 col-xxl-6 col-sm-6',
    'full_width': true,
    'rand': rand|default(random())
 } %}
-{% set inline_field_options = field_options|merge({
-   'input_addclass': 'w-auto'
-}) %}
 
 {% block config_fields %}
    {{ fields.largeTitle(__('Password security policy'), 'ti ti-shield-lock') }}
@@ -51,7 +46,7 @@
       'use_password_security',
       config['use_password_security'],
       __('Force passwords to comply with security policy'),
-      inline_field_options
+      field_options
    ) }}
 
    {% if config['use_password_security'] %}
@@ -61,35 +56,35 @@
          'password_min_length',
          config['password_min_length'],
          __('Password minimum length'),
-         inline_field_options|merge({'min': 4})
+          field_options|merge({'min': 4})
       ) }}
 
       {{ fields.sliderField(
          'password_need_number',
          config['password_need_number'],
          __('Password need digit'),
-         inline_field_options
+          field_options
       ) }}
 
       {{ fields.sliderField(
          'password_need_letter',
          config['password_need_letter'],
          __('Password need lowercase character'),
-         inline_field_options
+          field_options
       ) }}
 
       {{ fields.sliderField(
          'password_need_caps',
          config['password_need_caps'],
          __('Password need uppercase character'),
-         inline_field_options
+          field_options
       ) }}
 
       {{ fields.sliderField(
          'password_need_symbol',
          config['password_need_symbol'],
          __('Password need symbol'),
-         inline_field_options
+          field_options
       ) }}
    {% endif %}
 
@@ -99,7 +94,7 @@
       'password_expiration_delay',
       config['password_expiration_delay'],
       __('Password expiration delay (in days)'),
-      inline_field_options|merge({
+       field_options|merge({
          'min': 15,
          'max': 365,
          'step': 5,
@@ -112,7 +107,7 @@
       'password_expiration_notice',
       config['password_expiration_notice'],
       __('Password expiration notice time (in days)'),
-      inline_field_options|merge({
+       field_options|merge({
          'min': 0,
          'max': 30,
          'step': 1,
@@ -125,7 +120,7 @@
       'password_expiration_lock_delay',
       config['password_expiration_lock_delay'],
       __('Delay before account deactivation (in days)'),
-      inline_field_options|merge({
+       field_options|merge({
          'min': 0,
          'max': 30,
          'step': 1,
@@ -138,7 +133,7 @@
       'password_init_token_delay',
       config['password_init_token_delay'],
       __('Validity period of the password initialization token'),
-      inline_field_options|merge({
+       field_options|merge({
          'min': constant('DAY_TIMESTAMP'),
          'max': constant('MONTH_TIMESTAMP'),
          'step': constant('DAY_TIMESTAMP'),
@@ -151,13 +146,13 @@
       config['non_reusable_passwords_count'],
       {
          '1': __('Last password'),
-         '2': __('Last 2 passwords'),
-         '3': __('Last 3 passwords'),
-         '4': __('Last 4 passwords'),
-         '5': __('Last 5 passwords')
+         '2': __('Last %s passwords')|format(2),
+         '3': __('Last %s passwords')|format(3),
+         '4': __('Last %s passwords')|format(4),
+         '5': __('Last %s passwords')|format(5)
       },
       __('Prevent users from reusing previous passwords'),
-      inline_field_options|merge({
+       field_options|merge({
          'width': 'auto'
       })
    ) }}
@@ -168,7 +163,7 @@
       '2fa_enforced',
       config['2fa_enforced'],
       __('Enforce 2FA'),
-      inline_field_options
+       field_options
    ) }}
 
    {% if config['2fa_enforced'] %}
@@ -176,7 +171,7 @@
          '2fa_grace_days',
          config['2fa_grace_days'],
          __('2FA grace period (in days)'),
-         inline_field_options|merge({
+          field_options|merge({
             'min': 0,
             'max': 365,
          })

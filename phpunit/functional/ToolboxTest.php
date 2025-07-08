@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -52,10 +51,12 @@ use Psr\Log\LogLevel;
 
 class ToolboxTest extends DbTestCase
 {
+    private const TEST_CUSTOM_LOG_FILE_NAME = 'test_log_file';
+
     public function testGetRandomString()
     {
         for ($len = 20; $len < 50; $len += 5) {
-           // Low strength
+            // Low strength
             $str = \Toolbox::getRandomString($len);
             $this->assertSame($len, strlen($str));
             $this->assertTrue(ctype_alnum($str));
@@ -67,15 +68,15 @@ class ToolboxTest extends DbTestCase
         return [
             [
                 'string'   => 'My - string èé  Ê À ß',
-                'expected' => 'my-string-ee-e-a-ss'
+                'expected' => 'my-string-ee-e-a-ss',
             ], [
                 //https://github.com/glpi-project/glpi/issues/2946
                 'string'   => 'Έρευνα ικανοποίησης - Αιτήματα',
-                'expected' => 'ereuna-ikanopoieses-aitemata'
+                'expected' => 'ereuna-ikanopoieses-aitemata',
             ], [
                 'string'   => 'a-valid-one',
                 'expected' => 'a-valid-one',
-            ]
+            ],
         ];
     }
 
@@ -120,11 +121,11 @@ class ToolboxTest extends DbTestCase
                 'expected'  => '25-new-text-document.txt',
             ], [
                 'name'     => 'Έρευνα ικανοποίησης - Αιτήματα',
-                'expected' => 'ereuna-ikanopoieses-aitemata'
+                'expected' => 'ereuna-ikanopoieses-aitemata',
             ], [
                 'name'     => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc gravida, nisi vel scelerisque feugiat, tellus purus volutpat justo, vel aliquam nibh nibh sit amet risus. Aenean eget urna et felis molestie elementum nec sit amet magna. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum nec malesuada elit, non luctus mi. Aliquam quis velit justo. Donec id pulvinar nunc. Phasellus.txt',
-                'expected' => 'lorem-ipsum-dolor-sit-amet-consectetur-adipiscing-elit.-nunc-gravida-nisi-vel-scelerisque-feugiat-tellus-purus-volutpat-justo-vel-aliquam-.txt'
-            ]
+                'expected' => 'lorem-ipsum-dolor-sit-amet-consectetur-adipiscing-elit.-nunc-gravida-nisi-vel-scelerisque-feugiat-tellus-purus-volutpat-justo-vel-aliquam-.txt',
+            ],
         ];
     }
 
@@ -224,7 +225,7 @@ class ToolboxTest extends DbTestCase
         return [
             [
                 '{"Monitor":[6],"Computer":[35]}',
-                ['Monitor' => [6], 'Computer' => [35]]
+                ['Monitor' => [6], 'Computer' => [35]],
             ],
         ];
     }
@@ -241,32 +242,32 @@ class ToolboxTest extends DbTestCase
         return [
             [
                 '{"validJson":true}',
-                true
+                true,
             ], [
                 '{"invalidJson":true',
-                false
+                false,
             ], [
                 '"valid"',
-                true
+                true,
             ], [
                 'null',
-                true
+                true,
             ], [
                 1000,
-                true
+                true,
             ], [
                 [1, 2, 3],
-                false
+                false,
             ], [
                 (object) ['json' => true],
-                false
+                false,
             ], [
                 '{ bad content',
-                false
+                false,
             ], [
                 file_get_contents(GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/computer_1.json'),
-                true
-            ]
+                true,
+            ],
         ];
     }
 
@@ -294,7 +295,7 @@ class ToolboxTest extends DbTestCase
             ['hello you', 'Hello you'],
             ['HEllO you', 'HEllO you'],
             ['éè', 'Éè'],
-            ['ÉÈ', 'ÉÈ']
+            ['ÉÈ', 'ÉÈ'],
         ];
     }
 
@@ -310,7 +311,7 @@ class ToolboxTest extends DbTestCase
             ['My menu', 'm', '<u>M</u>y menu'],
             ['Do something', 't', 'Do some<u>t</u>hing'],
             ['Any menu entry', 'z', 'Any menu entry'],
-            ['Computer', 'O', 'C<u>o</u>mputer']
+            ['Computer', 'O', 'C<u>o</u>mputer'],
         ];
     }
 
@@ -331,7 +332,7 @@ class ToolboxTest extends DbTestCase
             ['Where is Charlie?', 'e', 0, 2],
             ['Where is Charlie?', 'e', 2, 2],
             ['Where is Charlie?', 'e', 3, 4],
-            ['Où est Charlie ?', 'ù', 0, 1]
+            ['Où est Charlie ?', 'ù', 0, 1],
         ];
     }
 
@@ -353,7 +354,7 @@ class ToolboxTest extends DbTestCase
             ['éè', 10, " ", STR_PAD_LEFT, '        éè'],
             ['GLPI', 10, " ", STR_PAD_BOTH, '   GLPI   '],
             ['éè', 10, " ", STR_PAD_BOTH, '    éè    '],
-            ['123', 10, " ", STR_PAD_BOTH, '   123    ']
+            ['123', 10, " ", STR_PAD_BOTH, '   123    '],
         ];
     }
 
@@ -370,7 +371,7 @@ class ToolboxTest extends DbTestCase
     {
         return [
             ['GLPI', 4],
-            ['Où ça ?', 7]
+            ['Où ça ?', 7],
         ];
     }
 
@@ -388,7 +389,7 @@ class ToolboxTest extends DbTestCase
             ['I want a substring', 9, 3, 'sub'],
             ['Caractères accentués', 0, -1, 'Caractères accentués'],
             ['Caractères accentués', 11, -1, 'accentués'],
-            ['Caractères accentués', 11, 8, 'accentué']
+            ['Caractères accentués', 11, 8, 'accentué'],
         ];
     }
 
@@ -406,7 +407,7 @@ class ToolboxTest extends DbTestCase
         return [
             ['GLPI', 'glpi'],
             ['ÉÈ', 'éè'],
-            ['glpi', 'glpi']
+            ['glpi', 'glpi'],
         ];
     }
 
@@ -421,7 +422,7 @@ class ToolboxTest extends DbTestCase
         return [
             ['glpi', 'GLPI'],
             ['éè', 'ÉÈ'],
-            ['GlPI', 'GLPI']
+            ['GlPI', 'GLPI'],
         ];
     }
 
@@ -437,11 +438,11 @@ class ToolboxTest extends DbTestCase
             ['a simple string', true],
             ['caractère', true],
             [mb_convert_encoding('caractère', 'ISO-8859-15'), false],
-            [mb_convert_encoding('simple string', 'ISO-8859-15'), true]
+            [mb_convert_encoding('simple string', 'ISO-8859-15'), true],
         ];
     }
 
-     #[DataProvider('utfProvider')]
+    #[DataProvider('utfProvider')]
     public function testSeems_utf8($string, $utf)
     {
         $this->assertSame($utf, @\Toolbox::seems_utf8($string));
@@ -559,7 +560,7 @@ class ToolboxTest extends DbTestCase
 
         $img_tag = uniqid('', true);
 
-       // Create document in DB
+        // Create document in DB
         $document = new \Document();
         $doc_id = $document->add([
             'name'     => 'basic document',
@@ -567,7 +568,7 @@ class ToolboxTest extends DbTestCase
             'mime'     => 'image/png',
             'tag'      => $img_tag,
         ]);
-        $this->assertGreaterThan(0, (int)$doc_id);
+        $this->assertGreaterThan(0, (int) $doc_id);
 
         $content_text   = '<img id="' . $img_tag . '" width="10" height="10" />';
         $expected_url   = str_replace('{docid}', $doc_id, $expected_url);
@@ -612,6 +613,7 @@ class ToolboxTest extends DbTestCase
     #[DataProvider('convertTagToImageBaseUrlProvider')]
     public function testBaseUrlInConvertTagToImage($url_base, $item, $expected_url)
     {
+        global $CFG_GLPI;
 
         $img_tag = uniqid('', true);
 
@@ -623,22 +625,15 @@ class ToolboxTest extends DbTestCase
             'mime'     => 'image/png',
             'tag'      => $img_tag,
         ]);
-        $this->assertGreaterThan(0, (int)$doc_id);
+        $this->assertGreaterThan(0, (int) $doc_id);
 
         $content_text   = '<img id="' . $img_tag . '" width="10" height="10" />';
         $expected_url   = str_replace('{docid}', $doc_id, $expected_url);
         $expected_result = '<a href="' . $expected_url . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . $expected_url . '" /></a>';
 
-        // Save old config
-        global $CFG_GLPI;
-        $old_url_base = $CFG_GLPI['url_base'];
-
         // Get result
         $CFG_GLPI['url_base'] = $url_base;
         $result = \Toolbox::convertTagToImage($content_text, $item, [$doc_id => ['tag' => $img_tag]]);
-
-        // Restore config
-        $CFG_GLPI['url_base'] = $old_url_base;
 
         // Validate result
         $this->assertEquals($expected_result, $result);
@@ -657,7 +652,7 @@ class ToolboxTest extends DbTestCase
         $item = new \Ticket();
         $item->fields['id'] = mt_rand(1, 50);
 
-       // Create multiple documents in DB
+        // Create multiple documents in DB
         $document = new \Document();
         $doc_id_1 = $document->add([
             'name'     => 'document 1',
@@ -665,7 +660,7 @@ class ToolboxTest extends DbTestCase
             'mime'     => 'image/png',
             'tag'      => $img_tag_1,
         ]);
-        $this->assertGreaterThan(0, (int)$doc_id_1);
+        $this->assertGreaterThan(0, (int) $doc_id_1);
 
         $document = new \Document();
         $doc_id_2 = $document->add([
@@ -674,7 +669,7 @@ class ToolboxTest extends DbTestCase
             'mime'     => 'image/png',
             'tag'      => $img_tag_2,
         ]);
-        $this->assertGreaterThan(0, (int)$doc_id_2);
+        $this->assertGreaterThan(0, (int) $doc_id_2);
 
         $document = new \Document();
         $doc_id_3 = $document->add([
@@ -683,7 +678,7 @@ class ToolboxTest extends DbTestCase
             'mime'     => 'image/png',
             'tag'      => $img_tag_3,
         ]);
-        $this->assertGreaterThan(0, (int)$doc_id_3);
+        $this->assertGreaterThan(0, (int) $doc_id_3);
 
         $doc_data = [
             $doc_id_1 => ['tag' => $img_tag_1],
@@ -718,7 +713,7 @@ class ToolboxTest extends DbTestCase
         $item = new \Ticket();
         $item->fields['id'] = mt_rand(1, 50);
 
-       // Create multiple documents in DB
+        // Create multiple documents in DB
         $document = new \Document();
         $doc_id_1 = $document->add([
             'name'     => 'duplicated document 1',
@@ -726,7 +721,7 @@ class ToolboxTest extends DbTestCase
             'mime'     => 'image/png',
             'tag'      => $img_tag,
         ]);
-        $this->assertGreaterThan(0, (int)$doc_id_1);
+        $this->assertGreaterThan(0, (int) $doc_id_1);
 
         $document = new \Document();
         $doc_id_2 = $document->add([
@@ -735,7 +730,7 @@ class ToolboxTest extends DbTestCase
             'mime'     => 'image/png',
             'tag'      => $img_tag,
         ]);
-        $this->assertGreaterThan(0, (int)$doc_id_2);
+        $this->assertGreaterThan(0, (int) $doc_id_2);
 
         $content_text    = '<img id="' . $img_tag . '" width="10" height="10" />';
         $expected_url_1    = '/front/document.send.php?docid=' . $doc_id_1;
@@ -768,7 +763,7 @@ class ToolboxTest extends DbTestCase
         $item = new \Ticket();
         $item->fields['id'] = mt_rand(1, 50);
 
-       // Create multiple documents in DB
+        // Create multiple documents in DB
         $document = new \Document();
         $doc_id = $document->add([
             'name'     => 'img 1',
@@ -776,7 +771,7 @@ class ToolboxTest extends DbTestCase
             'mime'     => 'image/png',
             'tag'      => $img_tag,
         ]);
-        $this->assertGreaterThan(0, (int)$doc_id);
+        $this->assertGreaterThan(0, (int) $doc_id);
 
         $content_text     = '<img id="' . $img_tag . '" width="10" height="10" />';
         $content_text    .= $content_text;
@@ -846,12 +841,34 @@ HTML;
 
         $docs_data = [
             $document_1->getID() => ['tag' => $img_1_tag],
-            $document_2->getID() => ['tag' => $img_2_tag]
+            $document_2->getID() => ['tag' => $img_2_tag],
         ];
 
         $this->assertEquals(
             $expected_result,
             \Toolbox::convertTagToImage($content_text, $item, $docs_data)
+        );
+
+        $content_text2 = <<<HTML
+            <a href="http://example.org/" target="_blank"><img id="{$img_1_tag}" width="10" height="10" /></a>
+        HTML;
+        $expected_result2 = <<<HTML
+            <a href="http://example.org/" target="_blank"><img alt="{$img_1_tag}" width="10" src="{$image_1_src}" /></a>
+        HTML;
+        $this->assertEquals(
+            $expected_result2,
+            \Toolbox::convertTagToImage($content_text2, $item, $docs_data)
+        );
+
+        $content_text3 = <<<HTML
+            <a href="http://example.org/">Some Content<div><img id="{$img_1_tag}" width="10" height="10" /><p>Content</p></div></a>
+        HTML;
+        $expected_result3 = <<<HTML
+            <a href="http://example.org/">Some Content<div><img alt="{$img_1_tag}" width="10" src="{$image_1_src}" /><p>Content</p></div></a>
+        HTML;
+        $this->assertEquals(
+            $expected_result3,
+            \Toolbox::convertTagToImage($content_text3, $item, $docs_data)
         );
     }
 
@@ -890,7 +907,7 @@ HTML;
                 'number'    => "test",
                 'precision' => 1,
                 'expected'  => 'test',
-            ]
+            ],
         ];
     }
 
@@ -1025,10 +1042,10 @@ HTML;
     {
         return [
             ['http://localhost', true],
+            ['ftp://localhost', false], // Only http and https protocol are supported
             ['https://localhost', true],
             ['https;//localhost', false],
             ['https://glpi-project.org', true],
-            ['https://glpi+project-org', false],
             [' http://my.host.com', false],
             ['http://my.host.com', true],
             ['http://my.host.com/', true],
@@ -1048,14 +1065,15 @@ HTML;
             ['http://127.0.0.1:8080/', true],
             ['http://127.0.0.1 :8080/', false],
             ['http://127.0.0.1 :8080 /', false],
-            ['http://::1', true],
-            ['http://::1/glpi', true],
-            ['http://::1:8080/', true],
-            ['http://::1:8080/', true],
-            ['HTTPS://::1:8080/', true],
+            ['http://::1', false], // IPv6 addresses must be in square brackets
+            ['http://[::1]', true],
+            ['http://[::1]/glpi', true],
+            ['http://[::1]:8080/', true],
+            ['http://[::1]:8080/', true],
+            ['HTTPS://[::1]:8080/', true],
             ['www.my.host.com', false],
             ['127.0.0.1', false],
-            ['::1', false],
+            ['[::1]', false],
             ['http://my.host.com/subdir/glpi/', true],
             ['http://my.host.com/~subdir/glpi/', true],
             ['https://localhost<', false],
@@ -1064,6 +1082,9 @@ HTML;
             ['https://localhost?test=true', true],
             ['https://localhost?test=true&othertest=false', true],
             ['https://localhost/front/computer.php?is_deleted=0&as_map=0&criteria[0][link]=AND&criteria[0][field]=80&criteria[0][searchtype]=equals&criteria[0][value]=254&search=Search&itemtype=Computer', true],
+            ['https://localhost/this+is+a+test', true], // + to denote a space allowed
+            ['https://localhost/withvadlidencoded%20', true],
+            ['https://localhost/withinvalidencoded%G1', false], // %G1 is not a valid html encoded value
         ];
     }
 
@@ -1079,7 +1100,10 @@ HTML;
 
     public function testDeprecated()
     {
+        $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
         \Toolbox::deprecated('Calling this function is deprecated');
+        \error_reporting($reporting_level); // restore previous level
+
         $this->hasPhpLogRecordThatContains(
             'Calling this function is deprecated',
             LogLevel::INFO
@@ -1089,7 +1113,10 @@ HTML;
     public function testDeprecatedPast()
     {
         // Test planned deprecation in the past
+        $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
         \Toolbox::deprecated('Calling this function is deprecated', true, '10.0');
+        \error_reporting($reporting_level); // restore previous level
+
         $this->hasPhpLogRecordThatContains(
             'Calling this function is deprecated',
             LogLevel::INFO
@@ -1099,7 +1126,10 @@ HTML;
     public function testDeprecatedCurrent()
     {
         // Test planned deprecation in current version
+        $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
         \Toolbox::deprecated('Calling this function is deprecated', true, GLPI_VERSION);
+        \error_reporting($reporting_level); // restore previous level
+
         $this->hasPhpLogRecordThatContains(
             'Calling this function is deprecated',
             LogLevel::INFO
@@ -1109,7 +1139,10 @@ HTML;
     public function testFutureDeprecated()
     {
         // Test planned deprecation in the future does NOT throw an error
+        $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
         \Toolbox::deprecated('Calling this function is deprecated', true, '99.0');
+        \error_reporting($reporting_level); // restore previous level
+
         $this->assertTrue(true); //non empty test
     }
 
@@ -1139,11 +1172,11 @@ HTML;
 
     public function testGetDocumentsFromTag()
     {
-       // No tag provided in the tested text
+        // No tag provided in the tested text
         $output = \Toolbox::getDocumentsFromTag('');
         $this->AssertCount(0, $output);
 
-       // Create a document to emulate a document upload
+        // Create a document to emulate a document upload
         $filename = 'foo.png';
         copy(FIXTURE_DIR . '/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
         $tag = \Rule::getUuid();
@@ -1157,7 +1190,7 @@ HTML;
             ],
             '_prefix_filename' => [
                 '5e5e92ffd9bd91.11111111',
-            ]
+            ],
         ];
         $document = new \Document();
         $document->add($input);
@@ -1173,45 +1206,45 @@ HTML;
             [
                 [
                     'a'   => 'test1',
-                    'b'   => 'test2'
-                ], '&', 'a=test1&b=test2'
+                    'b'   => 'test2',
+                ], '&', 'a=test1&b=test2',
             ],
             [
                 [
                     'a'   => [
-                        'test1', 'test2'
+                        'test1', 'test2',
                     ],
-                    'b'   => 'test3'
-                ], '&', 'a%5B0%5D=test1&a%5B1%5D=test2&b=test3' // '[' converted to %5B, ']' converted to %5D
+                    'b'   => 'test3',
+                ], '&', 'a%5B0%5D=test1&a%5B1%5D=test2&b=test3', // '[' converted to %5B, ']' converted to %5D
             ],
             [
                 [
                     'a'   => [
-                        'test1', 'test2'
+                        'test1', 'test2',
                     ],
-                    'b'   => 'test3*'
-                ], '&', 'a%5B0%5D=test1&a%5B1%5D=test2&b=test3%2A' // '[' converted to %5B, ']' converted to %5D
+                    'b'   => 'test3*',
+                ], '&', 'a%5B0%5D=test1&a%5B1%5D=test2&b=test3%2A', // '[' converted to %5B, ']' converted to %5D
             ],
             [
                 [
                     'a'   => 'test1',
-                    'b'   => 'test2'
-                ], '_', 'a=test1_b=test2'
+                    'b'   => 'test2',
+                ], '_', 'a=test1_b=test2',
             ],
             [
                 [
                     'a'   => [
-                        'test1', 'test2'
+                        'test1', 'test2',
                     ],
-                    'b'   => 'test3'
-                ], '_', 'a%5B0%5D=test1_a%5B1%5D=test2_b=test3' // '[' converted to %5B, ']' converted to %5D
+                    'b'   => 'test3',
+                ], '_', 'a%5B0%5D=test1_a%5B1%5D=test2_b=test3', // '[' converted to %5B, ']' converted to %5D
             ],
             [
                 [
                     'a'   => 'test1',
                     [], // Empty array Should be ignored
-                    'b'   => 'test2'
-                ], '&', 'a=test1&b=test2'
+                    'b'   => 'test2',
+                ], '&', 'a=test1&b=test2',
             ],
         ];
     }
@@ -1241,50 +1274,50 @@ HTML;
 
         yield [
             'value' => "1",
-            'expected' => false
+            'expected' => false,
         ];
 
         yield [
             'value' => "1.5",
-            'expected' => true
+            'expected' => true,
         ];
 
         yield [
             'value' => "7.5569569",
-            'expected' => true
+            'expected' => true,
         ];
 
         yield [
             'value' => "0",
-            'expected' => false
+            'expected' => false,
         ];
 
         yield [
             'value' => 3.4,
-            'expected' => true
+            'expected' => true,
         ];
 
         yield [
             'value' => 3,
-            'expected' => false
+            'expected' => false,
         ];
 
         yield [
             'value' => "not a float",
             'expected' => false,
-            'warning' => "Calling isFloat on string"
+            'warning' => "Calling isFloat on string",
         ];
 
         yield [
             'value' => new stdClass(),
             'expected' => false,
-            'warning' => "Calling isFloat on object"
+            'warning' => "Calling isFloat on object",
         ];
 
         yield [
             'value' => [],
             'expected' => false,
-            'warning' => "Calling isFloat on array"
+            'warning' => "Calling isFloat on array",
         ];
     }
 
@@ -1319,55 +1352,55 @@ HTML;
     {
         yield [
             'value' => "1",
-            'decimals' => 0
+            'decimals' => 0,
         ];
 
         yield [
             'value' => "1.5",
-            'decimals' => 1
+            'decimals' => 1,
         ];
 
         yield [
             'value' => "7.5569569",
-            'decimals' => 7
+            'decimals' => 7,
         ];
 
         yield [
             'value' => "0",
-            'decimals' => 0
+            'decimals' => 0,
         ];
 
         yield [
             'value' => 3.4,
-            'decimals' => 1
+            'decimals' => 1,
         ];
 
         yield [
             'value' => 3,
-            'decimals' => 0
+            'decimals' => 0,
         ];
 
         yield [
             'value' => "not a float",
             'decimals' => 0,
-            'warning' => "Calling getDecimalNumbers on string"
+            'warning' => "Calling getDecimalNumbers on string",
         ];
 
         yield [
             'value' => new stdClass(),
             'decimals' => 0,
-            'warning' => "Calling getDecimalNumbers on object"
+            'warning' => "Calling getDecimalNumbers on object",
         ];
 
         yield [
             'value' => [],
             'decimals' => 0,
-            'warning' => "Calling getDecimalNumbers on array"
+            'warning' => "Calling getDecimalNumbers on array",
         ];
 
         yield [
             'value' => 3.141592653589791415926535897914159265358979,
-            'decimals' => 13 // floatval() round up after 13 decimals
+            'decimals' => 13, // floatval() round up after 13 decimals
         ];
     }
 
@@ -1499,11 +1532,15 @@ HTML;
             'expected' => false,
         ];
 
-        // http, https and feed URLs are accepted, unless they contains a user or port information
-        foreach (['http', 'https', 'feed'] as $scheme) {
-            foreach (['', '/', '/path/to/feed.php'] as $path) {
+        // http, https and feed URLs are accepted, unless they contains a user or non default port information
+        foreach (['http' => ':80', 'https' => ':443', 'feed' => ''] as $scheme => $default_port) {
+            foreach (['', '/', '/path/to/resource.php'] as $path) {
                 yield [
                     'url'      => sprintf('%s://localhost%s', $scheme, $path),
+                    'expected' => true,
+                ];
+                yield [
+                    'url'      => sprintf('%s://localhost%s%s', $scheme, $default_port, $path),
                     'expected' => true,
                 ];
                 yield [
@@ -1515,7 +1552,15 @@ HTML;
                     'expected' => false,
                 ];
                 yield [
+                    'url'      => sprintf('%s://test@localhost%s%s', $scheme, $default_port, $path),
+                    'expected' => false,
+                ];
+                yield [
                     'url'      => sprintf('%s://test:pass@localhost%s', $scheme, $path),
+                    'expected' => false,
+                ];
+                yield [
+                    'url'      => sprintf('%s://test:pass@localhost%s%s', $scheme, $default_port, $path),
                     'expected' => false,
                 ];
             }
@@ -1552,5 +1597,387 @@ HTML;
             $params[] = $allowlist;
         }
         $this->assertSame($expected, call_user_func_array('Toolbox::isUrlSafe', $params));
+    }
+
+
+    public static function redirectProvider(): iterable
+    {
+        // Payloads from https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Open%20Redirect/Intruder/Open-Redirect-payloads.txt
+        $open_redirect_payloads = [
+            '//google.com/%2f..',
+            '//www.whitelisteddomain.tld@google.com/%2f..',
+            '///google.com/%2f..',
+            '///www.whitelisteddomain.tld@google.com/%2f..',
+            '////google.com/%2f..',
+            '////www.whitelisteddomain.tld@google.com/%2f..',
+            'https://google.com/%2f..',
+            'https://www.whitelisteddomain.tld@google.com/%2f..',
+            '/https://google.com/%2f..',
+            '/https://www.whitelisteddomain.tld@google.com/%2f..',
+            '//www.google.com/%2f%2e%2e',
+            '//www.whitelisteddomain.tld@www.google.com/%2f%2e%2e',
+            '///www.google.com/%2f%2e%2e',
+            '///www.whitelisteddomain.tld@www.google.com/%2f%2e%2e',
+            '////www.google.com/%2f%2e%2e',
+            '////www.whitelisteddomain.tld@www.google.com/%2f%2e%2e',
+            'https://www.google.com/%2f%2e%2e',
+            'https://www.whitelisteddomain.tld@www.google.com/%2f%2e%2e',
+            '/https://www.google.com/%2f%2e%2e',
+            '/https://www.whitelisteddomain.tld@www.google.com/%2f%2e%2e',
+            '//google.com/',
+            '//www.whitelisteddomain.tld@google.com/',
+            '///google.com/',
+            '///www.whitelisteddomain.tld@google.com/',
+            '////google.com/',
+            '////www.whitelisteddomain.tld@google.com/',
+            'https://google.com/',
+            'https://www.whitelisteddomain.tld@google.com/',
+            '/https://google.com/',
+            '/https://www.whitelisteddomain.tld@google.com/',
+            '//google.com//',
+            '//www.whitelisteddomain.tld@google.com//',
+            '///google.com//',
+            '///www.whitelisteddomain.tld@google.com//',
+            '////google.com//',
+            '////www.whitelisteddomain.tld@google.com//',
+            'https://google.com//',
+            'https://www.whitelisteddomain.tld@google.com//',
+            '//https://google.com//',
+            '//https://www.whitelisteddomain.tld@google.com//',
+            '//www.google.com/%2e%2e%2f',
+            '//www.whitelisteddomain.tld@www.google.com/%2e%2e%2f',
+            '///www.google.com/%2e%2e%2f',
+            '///www.whitelisteddomain.tld@www.google.com/%2e%2e%2f',
+            '////www.google.com/%2e%2e%2f',
+            '////www.whitelisteddomain.tld@www.google.com/%2e%2e%2f',
+            'https://www.google.com/%2e%2e%2f',
+            'https://www.whitelisteddomain.tld@www.google.com/%2e%2e%2f',
+            '//https://www.google.com/%2e%2e%2f',
+            '//https://www.whitelisteddomain.tld@www.google.com/%2e%2e%2f',
+            '///www.google.com/%2e%2e',
+            '///www.whitelisteddomain.tld@www.google.com/%2e%2e',
+            '////www.google.com/%2e%2e',
+            '////www.whitelisteddomain.tld@www.google.com/%2e%2e',
+            'https:///www.google.com/%2e%2e',
+            'https:///www.whitelisteddomain.tld@www.google.com/%2e%2e',
+            '//https:///www.google.com/%2e%2e',
+            '//www.whitelisteddomain.tld@https:///www.google.com/%2e%2e',
+            '/https://www.google.com/%2e%2e',
+            '/https://www.whitelisteddomain.tld@www.google.com/%2e%2e',
+            '///www.google.com/%2f%2e%2e',
+            '///www.whitelisteddomain.tld@www.google.com/%2f%2e%2e',
+            '////www.google.com/%2f%2e%2e',
+            '////www.whitelisteddomain.tld@www.google.com/%2f%2e%2e',
+            'https:///www.google.com/%2f%2e%2e',
+            'https:///www.whitelisteddomain.tld@www.google.com/%2f%2e%2e',
+            '/https://www.google.com/%2f%2e%2e',
+            '/https://www.whitelisteddomain.tld@www.google.com/%2f%2e%2e',
+            '/https:///www.google.com/%2f%2e%2e',
+            '/https:///www.whitelisteddomain.tld@www.google.com/%2f%2e%2e',
+            '/%09/google.com',
+            '/%09/www.whitelisteddomain.tld@google.com',
+            '//%09/google.com',
+            '//%09/www.whitelisteddomain.tld@google.com',
+            '///%09/google.com',
+            '///%09/www.whitelisteddomain.tld@google.com',
+            '////%09/google.com',
+            '////%09/www.whitelisteddomain.tld@google.com',
+            'https://%09/google.com',
+            'https://%09/www.whitelisteddomain.tld@google.com',
+            '/%5cgoogle.com',
+            '/%5cwww.whitelisteddomain.tld@google.com',
+            '//%5cgoogle.com',
+            '//%5cwww.whitelisteddomain.tld@google.com',
+            '///%5cgoogle.com',
+            '///%5cwww.whitelisteddomain.tld@google.com',
+            '////%5cgoogle.com',
+            '////%5cwww.whitelisteddomain.tld@google.com',
+            'https://%5cgoogle.com',
+            'https://%5cwww.whitelisteddomain.tld@google.com',
+            '/https://%5cgoogle.com',
+            '/https://%5cwww.whitelisteddomain.tld@google.com',
+            'https://google.com',
+            'https://www.whitelisteddomain.tld@google.com',
+            'javascript:alert(1);',
+            'javascript:alert(1)',
+            '//javascript:alert(1);',
+            '/javascript:alert(1);',
+            '//javascript:alert(1)',
+            '/javascript:alert(1)',
+            '/%5cjavascript:alert(1);',
+            '/%5cjavascript:alert(1)',
+            '//%5cjavascript:alert(1);',
+            '//%5cjavascript:alert(1)',
+            '/%09/javascript:alert(1);',
+            '/%09/javascript:alert(1)',
+            'java%0d%0ascript%0d%0a:alert(0)',
+            '//google.com',
+            'https:google.com',
+            '//google%E3%80%82com',
+            '\/\/google.com/',
+            '/\/google.com/',
+            '//google%00.com',
+            'https://www.whitelisteddomain.tld/https://www.google.com/',
+            '";alert(0);//',
+            'javascript://www.whitelisteddomain.tld?%a0alert%281%29',
+            'http://0xd8.0x3a.0xd6.0xce',
+            'http://www.whitelisteddomain.tld@0xd8.0x3a.0xd6.0xce',
+            'http://3H6k7lIAiqjfNeN@0xd8.0x3a.0xd6.0xce',
+            'http://XY>.7d8T\205pZM@0xd8.0x3a.0xd6.0xce',
+            'http://0xd83ad6ce',
+            'http://www.whitelisteddomain.tld@0xd83ad6ce',
+            'http://3H6k7lIAiqjfNeN@0xd83ad6ce',
+            'http://XY>.7d8T\205pZM@0xd83ad6ce',
+            'http://3627734734',
+            'http://www.whitelisteddomain.tld@3627734734',
+            'http://3H6k7lIAiqjfNeN@3627734734',
+            'http://XY>.7d8T\205pZM@3627734734',
+            'http://472.314.470.462',
+            'http://www.whitelisteddomain.tld@472.314.470.462',
+            'http://3H6k7lIAiqjfNeN@472.314.470.462',
+            'http://XY>.7d8T\205pZM@472.314.470.462',
+            'http://0330.072.0326.0316',
+            'http://www.whitelisteddomain.tld@0330.072.0326.0316',
+            'http://3H6k7lIAiqjfNeN@0330.072.0326.0316',
+            'http://XY>.7d8T\205pZM@0330.072.0326.0316',
+            'http://00330.00072.0000326.00000316',
+            'http://www.whitelisteddomain.tld@00330.00072.0000326.00000316',
+            'http://3H6k7lIAiqjfNeN@00330.00072.0000326.00000316',
+            'http://XY>.7d8T\205pZM@00330.00072.0000326.00000316',
+            'http://[::216.58.214.206]',
+            'http://www.whitelisteddomain.tld@[::216.58.214.206]',
+            'http://3H6k7lIAiqjfNeN@[::216.58.214.206]',
+            'http://XY>.7d8T\205pZM@[::216.58.214.206]',
+            'http://[::ffff:216.58.214.206]',
+            'http://www.whitelisteddomain.tld@[::ffff:216.58.214.206]',
+            'http://3H6k7lIAiqjfNeN@[::ffff:216.58.214.206]',
+            'http://XY>.7d8T\205pZM@[::ffff:216.58.214.206]',
+            'http://0xd8.072.54990',
+            'http://www.whitelisteddomain.tld@0xd8.072.54990',
+            'http://3H6k7lIAiqjfNeN@0xd8.072.54990',
+            'http://XY>.7d8T\205pZM@0xd8.072.54990',
+            'http://0xd8.3856078',
+            'http://www.whitelisteddomain.tld@0xd8.3856078',
+            'http://3H6k7lIAiqjfNeN@0xd8.3856078',
+            'http://XY>.7d8T\205pZM@0xd8.3856078',
+            'http://00330.3856078',
+            'http://www.whitelisteddomain.tld@00330.3856078',
+            'http://3H6k7lIAiqjfNeN@00330.3856078',
+            'http://XY>.7d8T\205pZM@00330.3856078',
+            'http://00330.0x3a.54990',
+            'http://www.whitelisteddomain.tld@00330.0x3a.54990',
+            'http://3H6k7lIAiqjfNeN@00330.0x3a.54990',
+            'http://XY>.7d8T\205pZM@00330.0x3a.54990',
+            'http:0xd8.0x3a.0xd6.0xce',
+            'http:www.whitelisteddomain.tld@0xd8.0x3a.0xd6.0xce',
+            'http:3H6k7lIAiqjfNeN@0xd8.0x3a.0xd6.0xce',
+            'http:XY>.7d8T\205pZM@0xd8.0x3a.0xd6.0xce',
+            'http:0xd83ad6ce',
+            'http:www.whitelisteddomain.tld@0xd83ad6ce',
+            'http:3H6k7lIAiqjfNeN@0xd83ad6ce',
+            'http:XY>.7d8T\205pZM@0xd83ad6ce',
+            'http:3627734734',
+            'http:www.whitelisteddomain.tld@3627734734',
+            'http:3H6k7lIAiqjfNeN@3627734734',
+            'http:XY>.7d8T\205pZM@3627734734',
+            'http:472.314.470.462',
+            'http:www.whitelisteddomain.tld@472.314.470.462',
+            'http:3H6k7lIAiqjfNeN@472.314.470.462',
+            'http:XY>.7d8T\205pZM@472.314.470.462',
+            'http:0330.072.0326.0316',
+            'http:www.whitelisteddomain.tld@0330.072.0326.0316',
+            'http:3H6k7lIAiqjfNeN@0330.072.0326.0316',
+            'http:XY>.7d8T\205pZM@0330.072.0326.0316',
+            'http:00330.00072.0000326.00000316',
+            'http:www.whitelisteddomain.tld@00330.00072.0000326.00000316',
+            'http:3H6k7lIAiqjfNeN@00330.00072.0000326.00000316',
+            'http:XY>.7d8T\205pZM@00330.00072.0000326.00000316',
+            'http:[::216.58.214.206]',
+            'http:www.whitelisteddomain.tld@[::216.58.214.206]',
+            'http:3H6k7lIAiqjfNeN@[::216.58.214.206]',
+            'http:XY>.7d8T\205pZM@[::216.58.214.206]',
+            'http:[::ffff:216.58.214.206]',
+            'http:www.whitelisteddomain.tld@[::ffff:216.58.214.206]',
+            'http:3H6k7lIAiqjfNeN@[::ffff:216.58.214.206]',
+            'http:XY>.7d8T\205pZM@[::ffff:216.58.214.206]',
+            'http:0xd8.072.54990',
+            'http:www.whitelisteddomain.tld@0xd8.072.54990',
+            'http:3H6k7lIAiqjfNeN@0xd8.072.54990',
+            'http:XY>.7d8T\205pZM@0xd8.072.54990',
+            'http:0xd8.3856078',
+            'http:www.whitelisteddomain.tld@0xd8.3856078',
+            'http:3H6k7lIAiqjfNeN@0xd8.3856078',
+            'http:XY>.7d8T\205pZM@0xd8.3856078',
+            'http:00330.3856078',
+            'http:www.whitelisteddomain.tld@00330.3856078',
+            'http:3H6k7lIAiqjfNeN@00330.3856078',
+            'http:XY>.7d8T\205pZM@00330.3856078',
+            'http:00330.0x3a.54990',
+            'http:www.whitelisteddomain.tld@00330.0x3a.54990',
+            'http:3H6k7lIAiqjfNeN@00330.0x3a.54990',
+            'http:XY>.7d8T\205pZM@00330.0x3a.54990',
+            '〱google.com',
+            '〵google.com',
+            'ゝgoogle.com',
+            'ーgoogle.com',
+            'ｰgoogle.com',
+            '/〱google.com',
+            '/〵google.com',
+            '/ゝgoogle.com',
+            '/ーgoogle.com',
+            '/ｰgoogle.com',
+            '%68%74%74%70%3a%2f%2f%67%6f%6f%67%6c%65%2e%63%6f%6d',
+            'http://%67%6f%6f%67%6c%65%2e%63%6f%6d',
+            '<>javascript:alert(1);',
+            '<>//google.com',
+            '//google.com\@www.whitelisteddomain.tld',
+            'https://:@google.com\@www.whitelisteddomain.tld',
+            '\x6A\x61\x76\x61\x73\x63\x72\x69\x70\x74\x3aalert(1)',
+            '\u006A\u0061\u0076\u0061\u0073\u0063\u0072\u0069\u0070\u0074\u003aalert(1)',
+            'ja\nva\tscript\r:alert(1)',
+            '\j\av\a\s\cr\i\pt\:\a\l\ert\(1\)',
+            '\152\141\166\141\163\143\162\151\160\164\072alert(1)',
+            'http://google.com:80#@www.whitelisteddomain.tld/',
+            'http://google.com:80?@www.whitelisteddomain.tld/',
+            'http://google.com\www.whitelisteddomain.tld',
+            'http://google.com&www.whitelisteddomain.tld',
+            'http:///////////google.com',
+            '\\google.com',
+            'http://www.whitelisteddomain.tld.google.com',
+        ];
+
+        foreach (['', '/glpi', '/path/to/glpi'] as $root_doc) {
+            foreach (['helpdesk', 'central'] as $interface) {
+                foreach ($open_redirect_payloads as $where) {
+                    yield [
+                        'root_doc'  => $root_doc,
+                        'interface' => $interface,
+                        'where'     => $where,
+                        'result'    => null,
+                    ];
+                }
+
+                // Redirect to absolute URLs.
+                yield [
+                    'root_doc'  => $root_doc,
+                    'interface' => $interface,
+                    'where'     => 'http://notglpi/',
+                    'result'    => null,
+                ];
+                yield [
+                    'root_doc'  => $root_doc,
+                    'interface' => $interface,
+                    'where'     => 'http://localhost' . $root_doc . '/',
+                    'result'    => 'http://localhost' . $root_doc . '/',
+                ];
+                yield [
+                    'root_doc'  => $root_doc,
+                    'interface' => $interface,
+                    'where'     => 'http://localhost' . $root_doc . '/front/computer.php?id=15',
+                    'result'    => 'http://localhost' . $root_doc . '/front/computer.php?id=15',
+                ];
+
+                // Redirect to relative URLs.
+                yield [
+                    'root_doc'  => $root_doc,
+                    'interface' => $interface,
+                    'where'     => '/.hiddenfile',
+                    'result'    => null,
+                ];
+                yield [
+                    'root_doc'  => $root_doc,
+                    'interface' => $interface,
+                    'where'     => $root_doc . '/front/.hiddenfile',
+                    'result'    => null,
+                ];
+                yield [
+                    'root_doc'  => $root_doc,
+                    'interface' => $interface,
+                    'where'     => '/../outside-glpi',
+                    'result'    => null,
+                ];
+                yield [
+                    'root_doc'  => $root_doc,
+                    'interface' => $interface,
+                    'where'     => $root_doc . '/front/../outside-glpi',
+                    'result'    => null,
+                ];
+                yield [
+                    'root_doc'  => $root_doc,
+                    'interface' => $interface,
+                    'where'     => '/',
+                    'result'    => $root_doc . '/',
+                ];
+                yield [
+                    'root_doc'  => $root_doc,
+                    'interface' => $interface,
+                    'where'     => '/front/computer.php?id=15',
+                    'result'    => $root_doc . '/front/computer.php?id=15',
+                ];
+
+                // Redirect to a ticket.
+                yield [
+                    'root_doc'  => $root_doc,
+                    'interface' => $interface,
+                    'where'     => 'ticket_35341',
+                    'result'    => $root_doc . '/front/ticket.form.php?id=35341&',
+                ];
+
+                // Redirect to a ticket tab.
+                yield [
+                    'root_doc'  => $root_doc,
+                    'interface' => $interface,
+                    'where'     => 'ticket_12345_Ticket$main#TicketValidation_1',
+                    'result'    => $root_doc . '/front/ticket.form.php?id=12345&forcetab=Ticket$main#TicketValidation_1',
+                ];
+            }
+        }
+    }
+
+    #[DataProvider('redirectProvider')]
+    public function testComputeRedirect(string $root_doc, string $interface, string $where, ?string $result): void
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $CFG_GLPI['root_doc'] = $root_doc;
+        $_SESSION['glpiactiveprofile']['interface'] = $interface;
+
+        $instance = new \Toolbox();
+
+        $this->assertSame($result, $instance->computeRedirect($where));
+    }
+
+    public function test_LogInFile_SeeExpectedContentsInLogFile(): void
+    {
+        // Arrange
+        assert(!file_exists($this->getCustomLogFilePath()) || unlink($this->getCustomLogFilePath()));
+
+        $message = 'The logged message';
+
+        // Act
+        assert(\Toolbox::logInFile(self::TEST_CUSTOM_LOG_FILE_NAME, $message), 'log failed');
+
+        // Assert
+        $this->assertFileExists($this->getCustomLogFilePath());
+        $this->assertStringContainsString($message, file_get_contents($this->getCustomLogFilePath()));
+    }
+
+    public function test_LogInFile_FilterRootPathInLogFile(): void
+    {
+        // Arrange
+        assert(!file_exists($this->getCustomLogFilePath()) || unlink($this->getCustomLogFilePath()));
+        $messageWithPath = 'Error somewhere in the path ' . GLPI_ROOT . ' triggered';
+
+        // Act
+        assert(\Toolbox::logInFile(self::TEST_CUSTOM_LOG_FILE_NAME, $messageWithPath), 'log failed');
+
+        // Assert
+        $this->assertStringNotContainsString(\GLPI_ROOT, file_get_contents($this->getCustomLogFilePath()));
+    }
+
+    private function getCustomLogFilePath(): string
+    {
+        return GLPI_LOG_DIR . "/" . self::TEST_CUSTOM_LOG_FILE_NAME . ".log";
     }
 }

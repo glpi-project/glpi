@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -69,7 +69,7 @@ final class AnswerTagProvider implements TagProviderInterface
 
         $answers = array_filter(
             $answers_set->getAnswers(),
-            fn (Answer $answer) => $answer->getQuestionId() === $id
+            fn(Answer $answer) => $answer->getQuestionId() === $id
         );
 
         if (count($answers) !== 1) {
@@ -85,7 +85,7 @@ final class AnswerTagProvider implements TagProviderInterface
         return new Tag(
             label: sprintf(__('Answer: %s'), $question->fields['name']),
             value: $question->getId(),
-            provider: self::class,
+            provider: $this,
         );
     }
 }

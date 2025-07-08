@@ -5,8 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -44,8 +43,8 @@ describe('Dropdown form question type', () => {
             const tab = 'Glpi\\Form\\Form$main';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
 
-            // Add a new question
-            cy.findByRole("button", { name: "Add a new question" }).should('exist').click();
+            // Add a question
+            cy.findByRole("button", { name: "Add a question" }).should('exist').click();
 
             // Set the question name
             cy.findByRole("textbox", { name: "Question name" }).should('exist').type("Test dropdown question");
@@ -90,20 +89,21 @@ describe('Dropdown form question type', () => {
     function checkSelectedOptions(indexes, multiple = false) {
         // Check in the select preview
         const selector = multiple ? ".multiple-preview-dropdown select" : ".single-preview-dropdown select";
-        cy.get('@question').find(selector).find("option").each((el, i) => {
-            // Skip the empty option
-            if (i === 0 && !multiple) return;
+        cy.get('@question').find(selector).find("option").should((options) => {
+            options.each((i, el) => {
+                if (i === 0 && !multiple) return;
 
-            if (indexes.includes(i - (!multiple ? 1 : 0))) {
-                cy.wrap(el).should('be.selected');
-            } else {
-                cy.wrap(el).should('not.be.selected');
-            }
+                if (indexes.includes(i - (!multiple ? 1 : 0))) {
+                    expect(el).to.be.selected;
+                } else {
+                    expect(el).not.to.be.selected;
+                }
+            });
         });
     }
 
     it('test adding and selecting options (simple)', () => {
-        // Add a new option
+        // Add a option
         cy.findByRole("textbox", { name: "Selectable option" }).type("Option 1");
         cy.findAllByRole("textbox", { name: "Selectable option" }).should('exist');
 
@@ -111,7 +111,7 @@ describe('Dropdown form question type', () => {
         checkSelectedOptions([]);
         checkOptionLabels(["Option 1"]);
 
-        // Add a new option
+        // Add a option
         cy.findAllByRole("textbox", { name: "Selectable option" }).eq(1).type("Option 2");
 
         // Select the first option in the select preview
@@ -121,7 +121,7 @@ describe('Dropdown form question type', () => {
         checkSelectedOptions([0]);
         checkOptionLabels(["Option 1", "Option 2"]);
 
-        // Add a new option
+        // Add a option
         cy.findAllByRole("textbox", { name: "Selectable option" }).eq(2).type("Option 3");
 
         // Check selected options and option labels

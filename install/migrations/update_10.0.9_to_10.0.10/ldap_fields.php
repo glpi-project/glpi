@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,6 +31,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+use function Safe\preg_match;
 
 /**
  * @var \DBmysql $DB
@@ -76,8 +77,8 @@ $users = $DB->request([
                 // only a pre-filter, MySQL 5.7 does not support the complex regex used in PHP
                 'user_dn' => ['REGEXP', '(<|>|&)'],
                 'sync_field' => ['REGEXP', '(<|>|&)'],
-            ]
-        ]
+            ],
+        ],
     ],
 ]);
 foreach ($users as $user) {

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -38,13 +38,9 @@ namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
 use Item_Environment;
-use Toolbox;
 
 final class Environment extends InventoryAsset
 {
-    /** @var Conf */
-    private $conf;
-
     public function prepare(): array
     {
         foreach ($this->data as $key => &$val) {
@@ -67,8 +63,8 @@ final class Environment extends InventoryAsset
             'FROM'   => Item_Environment::getTable(),
             'WHERE'  => [
                 'items_id' => $this->item->fields['id'],
-                'itemtype' => $this->item->getType()
-            ]
+                'itemtype' => $this->item->getType(),
+            ],
         ]);
         foreach ($iterator as $data) {
             $dbid = $data['id'];
@@ -97,7 +93,7 @@ final class Environment extends InventoryAsset
             foreach ($db_itemEnvs as $keydb => $arraydb) {
                 unset($arraydb['is_dynamic']);
                 if ($db_elt == $arraydb) {
-                    $input = (array)$val + [
+                    $input = (array) $val + [
                         'id'           => $keydb,
                     ];
                     $itemEnv->update($input);
@@ -109,7 +105,7 @@ final class Environment extends InventoryAsset
         }
 
         if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_itemEnvs) != 0) {
-           // Delete Item_Environment in DB
+            // Delete Item_Environment in DB
             foreach ($db_itemEnvs as $dbid => $data) {
                 if ($data['is_dynamic'] == 1) {
                     //Delete only dynamics
@@ -119,9 +115,9 @@ final class Environment extends InventoryAsset
         }
         if (count($value)) {
             foreach ($value as $val) {
-                $input = (array)$val + [
+                $input = (array) $val + [
                     'items_id'     => $this->item->fields['id'],
-                    'itemtype'     => $this->item->getType()
+                    'itemtype'     => $this->item->getType(),
                 ];
 
                 $itemEnv->add($input);
@@ -133,7 +129,6 @@ final class Environment extends InventoryAsset
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
-        $this->conf = $conf;
         return $conf->import_env == 1 && in_array($this->item::class, $CFG_GLPI['environment_types']);
     }
 

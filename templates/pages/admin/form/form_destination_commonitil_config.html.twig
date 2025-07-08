@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -32,60 +31,339 @@
  #}
 
 {# @var Glpi\Form\Destination\AbstractCommonITILFormDestination item #}
-{# @var Glpi\Form\Form\                                         form #}
-{# @var array                                                   config #}
+{# @var Glpi\Form\Form\ form #}
+{# @var array config #}
+{# @var bool can_update #}
 
-<div>
-    {# @var Glpi\Form\Destination\ConfigFieldInterface field #}
-    {% for field in item.getConfigurableFields()|sort((a, b) => a.getWeight() <=> b.getWeight()) %}
+{% macro field_config_section(item, field, form, config, show_label = true, extra_options = {}) %}
+    {% import 'components/form/fields_macros.html.twig' as fields %}
 
-        {% set extra_options = {} %}
-        {% if field.supportAutoConfiguration() %}
-            {% set use_auto_configuration = field.isAutoConfigurated(config) %}
-            {% set auto_configuration_checkbox %}
-                <div class="ms-auto row g-2 me-2">
-                    <label class="col form-check form-switch mb-0">
-                        <input
-                            name="{{ item.formatConfigInputName(field.getAutoConfigKey()) }}"
-                            type="hidden"
-                            value="0"
-                            data-glpi-itildestination-toggle-do-not-disable
-                        >
-                        <input
-                            name="{{ item.formatConfigInputName(field.getAutoConfigKey()) }}"
-                            class="form-check-input"
-                            type="checkbox"
-                            value="1"
-                            {{ use_auto_configuration ? 'checked' : '' }}
-                            data-glpi-itildestination-toggle-auto-config
-                            data-glpi-itildestination-toggle-do-not-disable
-                        >
-                        <span class="form-check-label">{{ __("Auto config") }}</span>
-                    </label>
-                    <span class="col-auto form-help align-self-center"
-                        data-bs-toggle="popover"
-                        data-bs-trigger="hover"
-                        data-bs-placement="top"
-                        data-bs-html="true"
-                        data-bs-content="{{ __('The auto configuration option allows dynamically configuring the content of the created object based on the different fields of the form.') }}">
-                        ?
-                    </span>
-                </div>
-            {% endset %}
+    {% set config_field = field.getConfig(form, config) %}
+    {% if field.supportAutoConfiguration() %}
+        {% set use_auto_configuration = field.isAutoConfigurated(config) %}
+        {% set auto_configuration_checkbox %}
+            <div class="ms-auto row g-2 me-2 mb-2">
+                <label class="col form-check form-switch mb-0">
+                    <input
+                        name="{{ item.formatConfigInputName(field.getAutoConfigKey()) }}"
+                        type="hidden"
+                        value="0"
+                        data-glpi-itildestination-toggle-do-not-disable
+                    >
+                    <input
+                        name="{{ item.formatConfigInputName(field.getAutoConfigKey()) }}"
+                        class="form-check-input"
+                        type="checkbox"
+                        value="1"
+                        {{ use_auto_configuration ? 'checked' : '' }}
+                        data-glpi-itildestination-toggle-auto-config
+                        data-glpi-itildestination-toggle-do-not-disable
+                    >
+                    <span class="form-check-label">{{ __("Auto config") }}</span>
+                </label>
+                <span class="col-auto form-help align-self-center"
+                    data-bs-toggle="popover"
+                    data-bs-trigger="hover"
+                    data-bs-placement="top"
+                    data-bs-html="true"
+                    data-bs-content="{{ __('The auto configuration option allows dynamically configuring the content of the created object based on the different fields of the form.') }}">
+                    ?
+                </span>
+            </div>
+        {% endset %}
 
-            {% set extra_options = {
-                'insert_content_after_label': auto_configuration_checkbox,
-                'disabled': use_auto_configuration,
-            } %}
+        {% set extra_options = extra_options|merge({
+            'disabled': use_auto_configuration,
+        }) %}
+    {% endif %}
+
+    {% set field_container_rand = random() %}
+    {% set rand = random() %}
+    <section data-glpi-itildestination-field="{{ field_container_rand }}" aria-label="{{ field.getLabel() ~ " configuration" }}">
+        {% if config_field is instanceof('Glpi\\Form\\Destination\\ConfigFieldWithStrategiesInterface') %}
+            {% set label_for = call('Html::cleanId', [
+                'dropdown_' ~ '%s[%s][]'|format(
+                    item.formatConfigInputName(field.getKey()),
+                    config_field.getStrategiesInputName()
+                ) ~ rand
+            ]) %}
+        {% elseif config_field is instanceof('Glpi\\Form\\Destination\\CommonITILField\\SimpleValueConfig') %}
+            {% set label_for = '%s[%s]_%s'|format(
+                item.formatConfigInputName(field.getKey()),
+                constant('Glpi\\Form\\Destination\\CommonITILField\\SimpleValueConfig::VALUE'),
+                rand
+            ) %}
         {% endif %}
 
-        <section data-glpi-itildestination-field aria-label="{{ field.getLabel() ~ " configuration" }}">
-            {{ field.renderConfigForm(
-                form,
-                field.getConfig(form, config),
-                item.formatConfigInputName(field.getKey()),
-                {'is_horizontal': false}|merge(extra_options)
-            )|raw }}
+        <div class="d-flex align-items-center">
+            {% if show_label %}
+                <label
+                    class="form-label"
+                    for="{{ label_for }}"
+                >
+                    {{ field.getLabel() }}
+                </label>
+            {% endif %}
+            {% if field.supportAutoConfiguration() %}
+                {{ auto_configuration_checkbox }}
+            {% endif %}
+        </div>
+        <section data-glpi-itildestination-field-configs>
+            {% if config_field is instanceof('Glpi\\Form\\Destination\\ConfigFieldWithStrategiesInterface') %}
+                {% for strategy in config_field.getStrategies() %}
+                    {# Update the random value for each iteration except the first one, to avoid conflicts with labels #}
+                    {% if not loop.first %}
+                        {% set rand = random() %}
+                    {% endif %}
+
+                    <section
+                        {% if field.canHaveMultipleStrategies() %}
+                            class="mb-2"
+                        {% endif %}
+                        data-glpi-itildestination-field-config
+                    >
+                        <div data-glpi-itildestination-field-config-content>
+                            {{ fields.dropdownArrayField(
+                                '%s[%s][]'|format(
+                                    item.formatConfigInputName(field.getKey()),
+                                    config_field.getStrategiesInputName()
+                                ),
+                                strategy.value,
+                                field.getStrategiesForDropdown(),
+                                '',
+                                {
+                                    is_horizontal: false,
+                                    field_class: '',
+                                    no_label: true,
+                                    mb: '',
+                                    rand: rand,
+                                    aria_label: __('Select strategy...'),
+                                }|merge(extra_options)
+                            ) }}
+                            {{ field.renderConfigForm(
+                                form,
+                                config_field,
+                                item.formatConfigInputName(field.getKey()),
+                                {
+                                    'is_horizontal': false,
+                                    'rand': rand,
+                                }|merge(extra_options)
+                            )|raw }}
+                        </div>
+                        {% if field.canHaveMultipleStrategies() %}
+                            <button
+                                type="button"
+                                class="btn btn-outline"
+                                title="{{ __('Remove strategy') }}"
+                                aria-label="{{ __('Remove strategy') }}"
+                                data-glpi-itildestination-remove-field-config
+                            >
+                                <i class="ti ti-x"></i>
+                            </button>
+                        {% endif %}
+                    </section>
+                {% endfor %}
+                {% if field.canHaveMultipleStrategies() %}
+                    <button
+                        type="button"
+                        class="btn btn-outline"
+                        aria-label="{{ __('Combine with another option') }}"
+                        data-glpi-itildestination-add-field-config
+                    >
+                        <i class="ti ti-plus me-2"></i>
+                        {{ __('Combine with another option') }}
+                    </button>
+                {% endif %}
+            {% else %}
+                {{ field.renderConfigForm(
+                    form,
+                    config_field,
+                    item.formatConfigInputName(field.getKey()),
+                    {
+                        'is_horizontal': true,
+                        'rand': rand,
+                    }|merge(extra_options)
+                )|raw }}
+            {% endif %}
         </section>
-    {% endfor %}
+
+        {% if field.canHaveMultipleStrategies() %}
+            <template data-glpi-itildestination-field-config-template>
+                <section
+                    class="mb-2"
+                    data-glpi-itildestination-field-config
+                >
+                    <div data-glpi-itildestination-field-config-content>
+                        {{ fields.dropdownArrayField(
+                            '%s[%s][]'|format(
+                                item.formatConfigInputName(field.getKey()),
+                                config_field.getStrategiesInputName()
+                            ),
+                            '',
+                            field.getStrategiesForDropdown(),
+                            '',
+                            {
+                                is_horizontal: false,
+                                field_class: '',
+                                no_label: true,
+                                mb: '',
+                                display_emptychoice: true,
+                                init: false,
+                                aria_label: __('Select strategy...'),
+                            }|merge(extra_options)
+                        ) }}
+                        {{ field.renderConfigForm(
+                            form,
+                            config_field,
+                            item.formatConfigInputName(field.getKey()),
+                            {
+                                'is_horizontal': false,
+                                'init': false,
+                            }|merge(extra_options)
+                        )|raw }}
+                    </div>
+                    <button
+                        type="button"
+                        class="btn btn-outline"
+                        title="{{ __('Remove strategy') }}"
+                        aria-label="{{ __('Remove strategy') }}"
+                        data-glpi-itildestination-remove-field-config
+                    >
+                        <i class="ti ti-x"></i>
+                    </button>
+                </section>
+            </template>
+        {% endif %}
+    </section>
+
+    <script>
+        import("/js/modules/Forms/FieldDestinationMultipleConfig.js").then((m) => {
+            new m.GlpiFormFieldDestinationMultipleConfig(
+                $('[data-glpi-itildestination-field="{{ field_container_rand }}"]'),
+            );
+        });
+    </script>
+{% endmacro %}
+
+<div class="overflow-x-hidden row d-flex mx-n4 border-top">
+    <div class="col-12 col-lg-8 order-last order-lg-first pt-2 pe-2 pe-lg-4 d-flex flex-column">
+        <div class="timeline-item mb-3 ITILContent ps-4">
+            <div class="row">
+                <div class="col-12 col-sm">
+                    <div class="mt-2 timeline-content left card">
+                        <div class="card-body">
+                            <div class="read-only-content">
+                                <div class="card-title card-header mx-n3 mt-n3">
+                                    {% set field = item.getConfigurableFieldByKey('glpi-form-destination-commonitilfield-titlefield') %}
+                                    {{ _self.field_config_section(item, field, form, config, false) }}
+                                </div>
+                                <div class="rich_text_container">
+                                    {% set field = item.getConfigurableFieldByKey('glpi-form-destination-commonitilfield-contentfield') %}
+                                    {{ _self.field_config_section(item, field, form, config, false) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="timeline-item mb-3 ITILFollowup ps-4">
+            <div class="row">
+                <div class="col-12 col-sm">
+                    <div class="mt-2 timeline-content left card">
+                        <div class="card-body">
+                            {% set field = item.getConfigurableFieldByKey('glpi-form-destination-commonitilfield-itilfollowupfield') %}
+                            {{ _self.field_config_section(item, field, form, config, false) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="timeline-item mb-3 ITILTask todo ps-4">
+            <div class="row">
+                <div class="col-12 col-sm">
+                    <div class="mt-2 timeline-content left card">
+                        <div class="card-body">
+                            {% set field = item.getConfigurableFieldByKey('glpi-form-destination-commonitilfield-itiltaskfield') %}
+                            {{ _self.field_config_section(item, field, form, config, false) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="timeline-item mb-3 ITILValidation todo ps-4">
+            <div class="row">
+                <div class="col-12 col-sm">
+                    <div class="mt-2 timeline-content left card">
+                        <div class="card-body">
+                            {% set field = item.getConfigurableFieldByKey('glpi-form-destination-commonitilfield-validationfield') %}
+                            {{ _self.field_config_section(item, field, form, config, false) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-4 mt-0 p-0 rounded-0 card-footer border-start border-top-0">
+        {% set rand = random() %}
+
+        <section
+            id="glpi-itil-destinations-accordion-{{ rand }}"
+            class="accordion open accordion-flush"
+            aria-label="{{ __('Destination fields accordion') }}"
+        >
+            {% for category in item.getConfigurableFieldsGroupedByCategory() %}
+                {% set already_rendered_config = [
+                    'glpi-form-destination-commonitilfield-titlefield',
+                    'glpi-form-destination-commonitilfield-contentfield',
+                    'glpi-form-destination-commonitilfield-itilfollowupfield',
+                    'glpi-form-destination-commonitilfield-itiltaskfield',
+                    'glpi-form-destination-commonitilfield-validationfield',
+                ] %}
+                {% set fields = category.fields|filter(field => field.getKey() not in already_rendered_config) %}
+
+                {% if fields is not empty %}
+                    <section class="accordion-item border-bottom">
+                        <div class="accordion-header" id="heading-item-{{ rand }}-{{ loop.index }}">
+                            <button
+                                class="accordion-button collapsed"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#item-{{ rand }}-{{ loop.index }}"
+                                aria-expanded="true"
+                                aria-controls="item-{{ rand }}-{{ loop.index }}"
+                                aria-label="{{ category.label }}"
+                            >
+                                <i class="{{ category.icon }} item-icon"></i>
+                                <span class="item-title">{{ category.label }}</span>
+                            </button>
+                        </div>
+                        <section
+                            id="item-{{ rand }}-{{ loop.index }}"
+                            class="accordion-collapse collapse"
+                            aria-labelledby="heading-item-{{ rand }}-{{ loop.index }}"
+                            data-bs-parent="#glpi-itil-destinations-accordion-{{ rand }}"
+                        >
+                            <div class="accordion-body d-flex flex-column space-y-3 mt-n2">
+                                {% for field in fields %}
+                                    {{ _self.field_config_section(item, field, form, config) }}
+                                {% endfor %}
+                            </div>
+                        </section>
+                    </section>
+                {% endif %}
+            {% endfor %}
+        </section>
+    </div>
+    <div class="itil-footer card-footer p-0 border-top p-2 ps-4 pe-4">
+        {% if can_update %}
+            {{ include('pages/admin/form/form_destination_actions.html.twig', {
+                form: form,
+                destination: destination
+            }, with_context = false) }}
+        {% endif %}
+    </div>
 </div>

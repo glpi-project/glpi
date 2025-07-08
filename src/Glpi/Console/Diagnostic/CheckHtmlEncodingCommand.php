@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -182,7 +182,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
         foreach ($this->invalid_items as $itemtype => $items) {
             foreach ($items as $item_id => $fields) {
                 // Get the item to save
-                $item = new $itemtype();
+                $item = \getItemForItemtype($itemtype);
                 $item->getFromDB($item_id);
 
                 // read the fields to save
@@ -223,8 +223,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
     private function fixItems(): void
     {
         foreach ($this->invalid_items as $itemtype => $items) {
-            /* @var \CommonDBTM $item */
-            $item = new $itemtype();
+            $item = \getItemForItemtype($itemtype);
 
             $this->outputMessage(
                 '<comment>' . sprintf(__('Fixing %s...'), $item::getTypeName(Session::getPluralNumber())) . '</comment>',
@@ -415,7 +414,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
 
         if (in_array($itemtype, [Ticket::getType(), ITILFollowup::getType()]) && $field == 'content') {
             $searches[] = [
-                $field => ['REGEXP', '(&#38;amp;lt;)(?<email>[^@]*?@[a-zA-Z0-9\-.]*?)(&#38;amp;gt;)']
+                $field => ['REGEXP', '(&#38;amp;lt;)(?<email>[^@]*?@[a-zA-Z0-9\-.]*?)(&#38;amp;gt;)'],
             ];
         }
 

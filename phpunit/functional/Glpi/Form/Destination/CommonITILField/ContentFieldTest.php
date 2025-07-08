@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -39,7 +38,6 @@ use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\FormBuilder;
@@ -134,7 +132,7 @@ final class ContentFieldTest extends DbTestCase
                     'config' => [
                         ContentField::getKey() => $config->jsonSerialize(),
                         ContentField::getAutoConfigKey() => false,
-                    ]
+                    ],
                 ],
                 ["config"],
             );
@@ -171,10 +169,6 @@ final class ContentFieldTest extends DbTestCase
         $builder = new FormBuilder("My form name");
         $builder->addQuestion("First name", QuestionTypeShortText::class);
         $builder->addQuestion("Last name", QuestionTypeShortText::class);
-        $builder->addDestination(
-            FormDestinationTicket::class,
-            "My ticket",
-        );
         return $this->createForm($builder);
     }
 }

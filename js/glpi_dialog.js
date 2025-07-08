@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -393,7 +393,7 @@ const glpi_toast_success = (message, caption = undefined, options = {}) => {
  * @param {ToastOptions} options Toast options
  */
 const glpi_toast_info = function(message, caption = undefined, options = {}) {
-    glpi_toast(caption || _n("Information", "Informations", 1), message, 'bg-info text-white border-0', options);
+    glpi_toast(caption || _n("Information", "Information", 1), message, 'bg-info text-white border-0', options);
 };
 
 /**

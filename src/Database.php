@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,12 +40,12 @@ use Glpi\Application\View\TemplateRenderer;
  **/
 class Database extends CommonDBChild
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $auto_message_on_action = true;
     public static $rightname       = 'database';
     public static $mustBeAttached  = false;
 
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype = 'DatabaseInstance';
     public static $items_id = 'databaseinstances_id';
 
@@ -59,22 +59,30 @@ class Database extends CommonDBChild
         return ['management', self::class];
     }
 
+    public function getCloneRelations(): array
+    {
+        return [
+            Appliance_Item::class,
+            Domain_Item::class,
+        ];
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong)
          ->addImpactTab($ong, $options)
-         ->addStandardTab('Infocom', $ong, $options)
-         ->addStandardTab('Document_Item', $ong, $options)
-         ->addStandardTab('KnowbaseItem_Item', $ong, $options)
-         ->addStandardTab('Item_Ticket', $ong, $options)
-         ->addStandardTab('Item_Problem', $ong, $options)
-         ->addStandardTab('Change_Item', $ong, $options)
-         ->addStandardTab('Lock', $ong, $options)
-         ->addStandardTab('Notepad', $ong, $options)
-         ->addStandardTab('Domain_Item', $ong, $options)
-         ->addStandardTab('Appliance_Item', $ong, $options)
-         ->addStandardTab('Log', $ong, $options);
+         ->addStandardTab(Infocom::class, $ong, $options)
+         ->addStandardTab(Document_Item::class, $ong, $options)
+         ->addStandardTab(KnowbaseItem_Item::class, $ong, $options)
+         ->addStandardTab(Item_Ticket::class, $ong, $options)
+         ->addStandardTab(Item_Problem::class, $ong, $options)
+         ->addStandardTab(Change_Item::class, $ong, $options)
+         ->addStandardTab(Lock::class, $ong, $options)
+         ->addStandardTab(Notepad::class, $ong, $options)
+         ->addStandardTab(Domain_Item::class, $ong, $options)
+         ->addStandardTab(Appliance_Item::class, $ong, $options)
+         ->addStandardTab(Log::class, $ong, $options);
         return $ong;
     }
 
@@ -88,7 +96,7 @@ class Database extends CommonDBChild
 
         TemplateRenderer::getInstance()->display('pages/management/database.html.twig', [
             'item' => $this,
-            'database_instance' => $database
+            'database_instance' => $database,
         ]);
 
         return true;
@@ -106,7 +114,7 @@ class Database extends CommonDBChild
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => static::getTypeName(1)
+            'name'               => static::getTypeName(1),
         ];
 
         $tab[] = [
@@ -132,7 +140,7 @@ class Database extends CommonDBChild
             'table'              => static::getTable(),
             'field'              => 'is_active',
             'name'               => __('Active'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -141,7 +149,7 @@ class Database extends CommonDBChild
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -150,7 +158,7 @@ class Database extends CommonDBChild
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -170,7 +178,7 @@ class Database extends CommonDBChild
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -178,7 +186,7 @@ class Database extends CommonDBChild
             'table'              => static::getTable(),
             'field'              => 'is_recursive',
             'name'               => __('Child entities'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -186,7 +194,7 @@ class Database extends CommonDBChild
             'table'              => static::getTable(),
             'field'              => 'is_onbackup',
             'name'               => __('Is on backup'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -194,7 +202,7 @@ class Database extends CommonDBChild
             'table'              => static::getTable(),
             'field'              => 'date_lastbackup',
             'name'               => __('Last backup date'),
-            'datatype'           => 'date'
+            'datatype'           => 'date',
         ];
 
         $tab[] = [
@@ -203,7 +211,7 @@ class Database extends CommonDBChild
             'field'              => 'name',
             'linkfield'          => '',
             'name'               => DatabaseInstance::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -221,10 +229,10 @@ class Database extends CommonDBChild
                     'table'              => DatabaseInstance::getTable(),
                     'joinparams'         => [
                         'jointype'           => 'item_itemtype',
-                        'specific_itemtype'  => 'Computer'
-                    ]
-                ]
-            ]
+                        'specific_itemtype'  => 'Computer',
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -232,7 +240,7 @@ class Database extends CommonDBChild
             'table'              => static::getTable(),
             'field'              => 'is_dynamic',
             'name'               => __('Dynamic'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         return $tab;
@@ -245,7 +253,7 @@ class Database extends CommonDBChild
 
         $tab[] = [
             'id'                 => 'database',
-            'name'               => $name
+            'name'               => $name,
         ];
 
         $tab[] = [
@@ -257,8 +265,8 @@ class Database extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
-                'jointype'           => 'child'
-            ]
+                'jointype'           => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -270,8 +278,8 @@ class Database extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'integer',
             'joinparams'         => [
-                'jointype'           => 'child'
-            ]
+                'jointype'           => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -282,11 +290,11 @@ class Database extends CommonDBChild
             'name'               => __('Active'),
             'datatype'           => 'bool',
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
             'massiveaction'      => false,
             'forcegroupby'       => true,
-            'searchtype'         => ['equals']
+            'searchtype'         => ['equals'],
         ];
 
         $tab[] = [
@@ -297,11 +305,11 @@ class Database extends CommonDBChild
             'name'               => __('Is on backup'),
             'datatype'           => 'bool',
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
             'massiveaction'      => false,
             'forcegroupby'       => true,
-            'searchtype'         => ['equals']
+            'searchtype'         => ['equals'],
         ];
 
         $tab[] = [
@@ -313,8 +321,8 @@ class Database extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'date',
             'joinparams'         => [
-                'jointype'           => 'child'
-            ]
+                'jointype'           => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -325,11 +333,11 @@ class Database extends CommonDBChild
             'name'               => __('Dynamic'),
             'datatype'           => 'bool',
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
             'massiveaction'      => false,
             'forcegroupby'       => true,
-            'searchtype'         => ['equals']
+            'searchtype'         => ['equals'],
         ];
 
         return $tab;
@@ -348,7 +356,7 @@ class Database extends CommonDBChild
                     self::getTable(),
                     [
                         'databaseinstances_id' => $item->getID(),
-                        'is_deleted' => 0
+                        'is_deleted' => 0,
                     ]
                 );
             }
@@ -395,7 +403,7 @@ class Database extends CommonDBChild
                 'WHERE'  => [
                     'databaseinstances_id' => $ID,
                 ],
-                'ORDER'  => 'name'
+                'ORDER'  => 'name',
             ]
         );
 
@@ -480,8 +488,8 @@ class Database extends CommonDBChild
                     'links' => [
                         'add'    => '/front/databaseinstance.form.php',
                         'search' => '/front/databaseinstance.php',
-                    ]
-                ]
+                    ],
+                ],
             ];
         }
         return false;

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -47,11 +47,12 @@ class DeviceCamera extends CommonDevice
         $ong = [];
         $this->addDefaultFormTab($ong)
          ->addImpactTab($ong, $options)
-         ->addStandardTab('Item_DeviceCamera_ImageResolution', $ong, $options)
-         ->addStandardTab('Item_DeviceCamera_ImageFormat', $ong, $options)
-         ->addStandardTab('Infocom', $ong, $options)
-         ->addStandardTab('Contract_Item', $ong, $options)
-         ->addStandardTab('Log', $ong, $options);
+         ->addStandardTab(Item_DeviceCamera_ImageResolution::class, $ong, $options)
+         ->addStandardTab(Item_DeviceCamera_ImageFormat::class, $ong, $options)
+         ->addStandardTab(Infocom::class, $ong, $options)
+         ->addStandardTab(Contract_Item::class, $ong, $options)
+         ->addStandardTab(Item_Project::class, $ong, $options)
+         ->addStandardTab(Log::class, $ong, $options);
         return $ong;
     }
 
@@ -63,7 +64,7 @@ class DeviceCamera extends CommonDevice
                 [
                     'name'  => 'devicecameramodels_id',
                     'label' => _n('Model', 'Models', 1),
-                    'type'  => 'dropdownValue'
+                    'type'  => 'dropdownValue',
                 ],
                 [
                     'name'   => 'flashunit',
@@ -94,7 +95,7 @@ class DeviceCamera extends CommonDevice
                     'name'   => 'support',
                     'label'  => __('Support'),
                     'type'   => 'text',
-                ]
+                ],
             ]
         );
     }
@@ -108,7 +109,7 @@ class DeviceCamera extends CommonDevice
             'table'              => 'glpi_devicecameramodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -231,7 +232,7 @@ class DeviceCamera extends CommonDevice
         return [
             'designation'           => 'equal',
             'devicecameramodels_id' => 'equal',
-            'manufacturers_id'      => 'equal'
+            'manufacturers_id'      => 'equal',
         ];
     }
 

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Event;
 
 Session::checkRight("notification", READ);
@@ -45,16 +47,20 @@ $notification = new Notification();
 if (isset($_POST["add"])) {
     $notification->check(-1, CREATE, $_POST);
 
-    $newID = $notification->add($_POST);
-    Event::log(
-        $newID,
-        "notifications",
-        4,
-        "notification",
-        sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"])
-    );
-    Html::redirect($_SERVER['PHP_SELF'] . "?id=$newID");
-} else if (isset($_POST["purge"])) {
+    if ($newID = $notification->add($_POST)) {
+        Event::log(
+            $newID,
+            "notifications",
+            4,
+            "notification",
+            sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"])
+        );
+        if ($_SESSION['glpibackcreated']) {
+            Html::redirect($notification->getLinkURL());
+        }
+    }
+    Html::back();
+} elseif (isset($_POST["purge"])) {
     $notification->check($_POST["id"], PURGE);
     $notification->delete($_POST, 1);
 
@@ -67,7 +73,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s purges an item'), $_SESSION["glpiname"])
     );
     $notification->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $notification->check($_POST["id"], UPDATE);
 
     $notification->update($_POST);

@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -99,8 +98,12 @@
                 <button class="accordion-button collapsed d-flex align-self-center" type="button"
                         data-bs-toggle="collapse" data-bs-target="#{{ id }}"
                         aria-expanded="false" aria-controls="{{ id }}">
-                    <i class="ti ti-notes me-1"></i>
-                    <span>#{{ id }}</span>
+                    <i class="ti ti-notes"></i>
+                    {% set title = '#' ~ note['id'] ~ ' - ' ~ note['date_creation']|formatted_datetime %}
+                    {% if note['date_mod'] != note['date_creation'] %}
+                        {% set title = title ~ ' (' ~ __('Last update on %s')|format(note['date_mod']|formatted_datetime) ~ ')' %}
+                    {% endif %}
+                    <span>{{ title }}</span>
                 </button>
             </div>
 
@@ -116,6 +119,8 @@
                                     'date_creation': note['date_creation'],
                                     'date_mod': note['date_mod'],
                                     'users_id_editor': note['users_id_lastupdater'],
+                                    'anchor': 'Notepad' ~ '_' ~ note['id'],
+                                    'user_object': null,
                                 }, with_context = false) }}
                             </span>
 
@@ -123,14 +128,14 @@
                                 <button class="btn btn-sm btn-ghost-danger delete-note" name="purge" type="submit" value="1"
                                         onclick="return confirm('{{ __('Confirm the final deletion?') }}');"
                                         data-id="{{ id }}">
-                                    <i class="fa-fw ti ti-trash"></i>
+                                    <i class="ti ti-trash"></i>
                                     <span>{{ __('Delete') }}</span>
                                 </button>
 
                                 <button class="btn btn-sm btn-ghost-secondary edit-note" type="button"
                                         data-id="{{ id }}"
                                         data-bs-toggle="modal" data-bs-target="#edit-{{ id }}">
-                                    <i class="fa-fw ti ti-edit"></i>
+                                    <i class="ti ti-edit"></i>
                                     <span>{{ __('Edit') }}</span>
                                 </button>
                             </span>
@@ -141,14 +146,19 @@
                         </div>
 
                         {{ include('components/itilobject/timeline/sub_documents.html.twig', {
-                            'item': note,
+                            'item': get_item(note['itemtype'], note['items_id']),
                             'entry': note
                         }) }}
 
-                        <div id="edit-{{ id }}" class="modal fade">
+                    </form>
 
-                            <div class="modal-dialog modal-xl">
-                                <div class="modal-content">
+                    <div id="edit-{{ id }}" class="modal fade">
+                        <div class="modal-dialog modal-xl">
+                            <div class="modal-content">
+                                <form action="{{ url }}" method="post" autocomplete="off" data-submit-once>
+                                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                                    <input type="hidden" name="id" value="{{ note['id'] }}" />
+
                                     <div class="modal-header">
                                         <h3 class="modal-title">
                                             <i class="ti ti-notes"></i>
@@ -192,11 +202,10 @@
                                             <span>{{ __('Update') }}</span>
                                         </button>
                                     </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
-
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>

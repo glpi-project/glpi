@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -37,7 +36,6 @@
  * @var \Migration $migration
  */
 
-$migration->displayMessage('Add new configurations / user preferences');
 $migration->addConfig([
     'timeline_action_btn_layout'   => 0,
     'timeline_date_format'   => 0,

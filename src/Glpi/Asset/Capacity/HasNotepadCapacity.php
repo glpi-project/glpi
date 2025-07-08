@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -37,7 +36,9 @@ namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
 use Glpi\Asset\Asset;
+use Glpi\Asset\CapacityConfig;
 use Notepad;
+use Override;
 use ReflectionClass;
 use Session;
 
@@ -53,6 +54,12 @@ class HasNotepadCapacity extends AbstractCapacity
         return Notepad::getIcon();
     }
 
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Enable a simple notepad");
+    }
+
     public function getSearchOptions(string $classname): array
     {
         return Notepad::rawSearchOptionsToAdd();
@@ -66,7 +73,7 @@ class HasNotepadCapacity extends AbstractCapacity
     public function getCloneRelations(): array
     {
         return [
-            Notepad::class
+            Notepad::class,
         ];
     }
 
@@ -85,19 +92,19 @@ class HasNotepadCapacity extends AbstractCapacity
         );
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         CommonGLPI::registerStandardTab($classname, Notepad::class, 80);
     }
 
-    public function onObjectInstanciation(Asset $object): void
+    public function onObjectInstanciation(Asset $object, CapacityConfig $config): void
     {
         $reflected_class = new ReflectionClass($object);
         $reflected_property = $reflected_class->getProperty('usenotepad');
         $reflected_property->setValue($object, true);
     }
 
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
         // Delete related infocom data
         $notepad = new Notepad();

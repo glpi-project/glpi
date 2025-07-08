@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Event;
 
 $item = new SlaLevel();
@@ -52,7 +54,7 @@ if (isset($_POST["update"])) {
     );
 
     Html::back();
-} else if (isset($_POST["add"])) {
+} elseif (isset($_POST["add"])) {
     $item->check(-1, CREATE, $_POST);
 
     if ($item->add($_POST)) {
@@ -69,7 +71,7 @@ if (isset($_POST["update"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     if (isset($_POST['id'])) {
         $item->check($_POST['id'], PURGE);
         if ($item->delete($_POST, 1)) {
@@ -86,20 +88,7 @@ if (isset($_POST["update"])) {
     }
 
     Html::back();
-} else if (isset($_POST["add_action"])) {
-    $item->check($_POST['slalevels_id'], UPDATE);
-
-    $action = new SlaLevelAction();
-    $action->add($_POST);
-
-    Html::back();
-} else if (isset($_POST["add_criteria"])) {
-    $item->check($_POST['slalevels_id'], UPDATE);
-    $criteria = new SlaLevelCriteria();
-    $criteria->add($_POST);
-
-    Html::back();
-} else if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
+} elseif (isset($_GET["id"]) && ($_GET["id"] > 0)) {
     $menus = ["config", "slm", "SlaLevel"];
     SlaLevel::displayFullPageForItem($_GET["id"], $menus);
 }

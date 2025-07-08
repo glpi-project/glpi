@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
 
@@ -67,7 +69,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $item_vm->check($_POST["id"], DELETE);
     $item_vm->delete($_POST);
 
@@ -79,11 +81,11 @@ if (isset($_POST["add"])) {
         //TRANS: %s is the user login
         sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
     );
-    $asset = new $_POST['itemtype']();
+    $asset = getItemForItemtype($_POST['itemtype']);
     $asset->getFromDB($item_vm->fields['items_id']);
     Html::redirect($asset->getFormURLWithID($item_vm->fields['items_id']) .
                   ($asset->fields['is_template'] ? "&withtemplate=1" : ""));
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $item_vm->check($_POST["id"], PURGE);
 
     if ($item_vm->delete($_POST, 1)) {
@@ -96,11 +98,11 @@ if (isset($_POST["add"])) {
             sprintf(__('%s purges a virtual machine'), $_SESSION["glpiname"])
         );
     }
-    $asset = new $item_vm->fields['itemtype']();
+    $asset = getItemForItemtype($item_vm->fields['itemtype']);
     $asset->getFromDB($item_vm->fields['items_id']);
     Html::redirect($asset->getFormURLWithID($item_vm->fields['items_id']) .
                   ($asset->fields['is_template'] ? "&withtemplate=1" : ""));
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $item_vm->check($_POST["id"], UPDATE);
 
     if ($item_vm->update($_POST)) {
@@ -114,7 +116,7 @@ if (isset($_POST["add"])) {
         );
     }
     Html::back();
-} else if (isset($_POST["restore"])) {
+} elseif (isset($_POST["restore"])) {
     $item_vm->check($_POST['id'], DELETE);
     if ($item_vm->restore($_POST)) {
         Event::log(
@@ -136,6 +138,6 @@ if (isset($_POST["add"])) {
 
     ItemVirtualMachine::displayFullPageForItem($_GET["id"], $menus, [
         'itemtype' => $_GET['itemtype'],
-        'items_id' => $_GET["items_id"]
+        'items_id' => $_GET["items_id"],
     ]);
 }

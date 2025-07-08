@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -58,7 +57,7 @@ $fields = [
     'is_contact_autoclean',
     'is_user_autoclean',
     'is_group_autoclean',
-    'is_location_autoclean'
+    'is_location_autoclean',
 ];
 $config = \Config::getConfigurationValues('core');
 foreach ($fields as $field) {
@@ -80,7 +79,7 @@ foreach ($fields as $field) {
 
 $fields = [
     'state_autoupdate_mode',
-    'state_autoclean_mode'
+    'state_autoclean_mode',
 ];
 $config = \Config::getConfigurationValues('core');
 foreach ($fields as $field) {

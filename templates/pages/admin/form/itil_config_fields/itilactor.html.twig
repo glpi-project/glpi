@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -33,20 +32,9 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-{{ fields.dropdownArrayField(
-    main_config_field.input_name,
-    main_config_field.value,
-    main_config_field.possible_values,
-    main_config_field.label,
-    options
-) }}
-
 <div
-    {% if main_config_field.value != CONFIG_SPECIFIC_VALUE %}
-        class="d-none"
-    {% endif %}
-    data-glpi-parent-dropdown="{{ main_config_field.input_name }}"
-    data-glpi-parent-dropdown-condition="{{ CONFIG_SPECIFIC_VALUE }}"
+    class="d-none"
+    data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_VALUE }}"
 >
     {% set actors_dropdown = call('Glpi\\Form\\Dropdown\\FormActorsDropdown::show', [
         specific_value_extra_field.input_name,
@@ -63,18 +51,17 @@
         actors_dropdown,
         '',
         {
+            field_class: '',
             no_label: true,
             wrapper_class: '',
+            mb: '',
         }
     ) }}
 </div>
 
 <div
-    {% if main_config_field.value != CONFIG_SPECIFIC_ANSWER %}
-        class="d-none"
-    {% endif %}
-    data-glpi-parent-dropdown="{{ main_config_field.input_name }}"
-    data-glpi-parent-dropdown-condition="{{ CONFIG_SPECIFIC_ANSWER }}"
+    class="d-none"
+    data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_ANSWER }}"
 >
     {{ fields.dropdownArrayField(
         specific_answer_extra_field.input_name,
@@ -82,10 +69,42 @@
         specific_answer_extra_field.possible_values,
         "",
         options|merge({
+            rand: random(),
+            field_class: '',
             no_label: true,
             multiple: true,
             values: specific_answer_extra_field.values,
             aria_label: specific_answer_extra_field.aria_label,
+            mb: '',
         })
     ) }}
 </div>
+
+{% set group_object_strategies = [
+    CONFIG_SPECIFIC_USER_OBJECT_ANSWER,
+    CONFIG_SPECIFIC_TECH_USER_OBJECT_ANSWER,
+    CONFIG_SPECIFIC_GROUP_OBJECT_ANSWER,
+    CONFIG_SPECIFIC_TECH_GROUP_OBJECT_ANSWER
+] %}
+{% for strategy in group_object_strategies %}
+    <div
+        class="d-none"
+        data-glpi-itildestination-field-config-display-condition="{{ strategy }}"
+    >
+        {{ fields.dropdownArrayField(
+            object_answer_extra_field.input_name,
+            '',
+            object_answer_extra_field.possible_values,
+            "",
+            options|merge({
+                rand: random(),
+                field_class: '',
+                no_label: true,
+                multiple: true,
+                values: object_answer_extra_field.values,
+                aria_label: object_answer_extra_field.aria_label,
+                mb: '',
+            })
+        ) }}
+    </div>
+{% endfor %}

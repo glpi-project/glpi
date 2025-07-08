@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -59,7 +59,7 @@ class Ticket_Contract extends CommonDBRelation
                     $nb = count(self::getListForItem($item));
                 }
                 return self::createTabEntry(Contract::getTypeName(Session::getPluralNumber()), $nb, $item::class);
-            } else if ($item::class === Contract::class) {
+            } elseif ($item::class === Contract::class) {
                 if ($_SESSION['glpishow_count_on_tabs']) {
                     $nb = count(self::getListForItem($item));
                 }
@@ -85,7 +85,7 @@ class Ticket_Contract extends CommonDBRelation
         if ($item instanceof Ticket) {
             $item_a_fkey = self::$items_id_1;
             $linked_itemtype = self::$itemtype_2;
-        } else if ($item instanceof Contract) {
+        } elseif ($item instanceof Contract) {
             $item_a_fkey = self::$items_id_2;
             $linked_itemtype = self::$itemtype_1;
         } else {
@@ -151,7 +151,7 @@ TWIG, $twig_params);
                 'num' => _x('phone', 'Number'),
                 'begin_date' => __('Start date'),
                 'end_date' => __('End date'),
-                'comment' => __('Comments'),
+                'comment' => _n('Comment', 'Comments', Session::getPluralNumber()),
             ];
             $formatters = [
                 'name' => 'raw_html',
@@ -162,7 +162,9 @@ TWIG, $twig_params);
             $entity_cache = [];
             $type_cache = [];
             foreach ($linked_items as $data) {
-                $item = new $linked_itemtype();
+                if (!($item = getItemForItemtype($linked_itemtype))) {
+                    continue;
+                }
                 if (!$item->getFromDB($data['id'])) {
                     continue;
                 }
@@ -189,7 +191,6 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => $columns,
@@ -204,8 +205,8 @@ TWIG, $twig_params);
                 'specific_actions' => [
                     'purge' => _x('button', 'Delete permanently'),
                 ],
-                'extraparams'      => [$item_a_fkey => $item->getID()]
-            ]
+                'extraparams'      => [$item_a_fkey => $item->getID()],
+            ],
         ]);
 
         return true;

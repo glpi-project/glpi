@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -54,38 +53,38 @@ class Item_RackTest extends DbTestCase
                 'name'            => 'Full',
                 'required_units'  => 1,
                 'depth'           => 1,
-                'is_half_rack'    => 0
+                'is_half_rack'    => 0,
             ], [
                 'name'            => 'Midrack',
                 'required_units'  => 1,
                 'depth'           => 1,
-                'is_half_rack'    => 1
+                'is_half_rack'    => 1,
             ], [
                 'name'            => '3U',
                 'required_units'  => 3,
                 'depth'           => 1,
-                'is_half_rack'    => 0
+                'is_half_rack'    => 0,
             ], [
                 'name'            => '1/2 Depth',
                 'required_units'  => 1,
                 'depth'           => 0.5,
-                'is_half_rack'    => 0
+                'is_half_rack'    => 0,
             ], [
                 'name'            => 'Mid 1/2 depth',
                 'required_units'  => 1,
                 'depth'           => 0.5,
-                'is_half_rack'    => 1
+                'is_half_rack'    => 1,
             ], [
                 'name'            => '2U and depth',
                 'required_units'  => 2,
                 'depth'           => 0.25,
-                'is_half_rack'    => 0
+                'is_half_rack'    => 0,
             ], [
                 'name'            => '2U and mid',
                 'required_units'  => 2,
                 'depth'           => 1,
-                'is_half_rack'    => 1
-            ]
+                'is_half_rack'    => 1,
+            ],
         ];
     }
 
@@ -115,47 +114,47 @@ class Item_RackTest extends DbTestCase
         return [
             [
                 'name'   => 'SRV-NUX-1',
-                'model'  => 'Full'
+                'model'  => 'Full',
             ], [
                 'name'   => 'SRV-NUX-2',
-                'model'  => 'Full'
+                'model'  => 'Full',
             ], [
                 'name'   => 'MID-NUX-1',
-                'model'  => 'Midrack'
+                'model'  => 'Midrack',
             ], [
                 'name'   => 'MID-NUX-2',
-                'model'  => 'Midrack'
+                'model'  => 'Midrack',
             ], [
                 'name'   => 'MID-NUX-3',
-                'model'  => 'Midrack'
+                'model'  => 'Midrack',
             ], [
                 'name'   => 'BIG-NUX-1',
-                'model'  => '3U'
+                'model'  => '3U',
             ], [
                 'name'   => 'DEP-NUX-1',
-                'model'  => '1/2 Depth'
+                'model'  => '1/2 Depth',
             ], [
                 'name'   => 'DEP-NUX-2',
-                'model'  => '1/2 Depth'
+                'model'  => '1/2 Depth',
             ], [
                 'name'   => 'MAD-NUX-1',
-                'model'  => 'Mid 1/2 depth'
+                'model'  => 'Mid 1/2 depth',
             ], [
                 'name'   => 'MAD-NUX-2',
-                'model'  => 'Mid 1/2 depth'
+                'model'  => 'Mid 1/2 depth',
             ], [
                 'name'   => 'MAD-NUX-3',
-                'model'  => 'Mid 1/2 depth'
+                'model'  => 'Mid 1/2 depth',
             ], [
                 'name'   => 'MAD-NUX-4',
-                'model'  => 'Mid 1/2 depth'
+                'model'  => 'Mid 1/2 depth',
             ], [
                 'name'   => '2AD-NUX-1',
-                'model'  => '2U and depth'
+                'model'  => '2U and depth',
             ], [
                 'name'   => '2AM-NUX-1',
-                'model'  => '2U and mid'
-            ]
+                'model'  => '2U and mid',
+            ],
         ];
     }
 
@@ -169,7 +168,7 @@ class Item_RackTest extends DbTestCase
         $computer = new \Computer();
         foreach ($this->computersProvider() as $row) {
             $row['computermodels_id'] = getItemByTypeName('ComputerModel', $row['model'], true);
-            $this->assertGreaterThan(0, (int)$row['computermodels_id']);
+            $this->assertGreaterThan(0, (int) $row['computermodels_id']);
             $row['entities_id'] = 0;
             unset($row['model']);
             $this->assertGreaterThan(
@@ -213,7 +212,7 @@ class Item_RackTest extends DbTestCase
                 'racks_id'  => $rack->getID(),
                 'position'  => 15,
                 'itemtype'  => 'Computer',
-                'items_id'  => $SRVNUX1
+                'items_id'  => $SRVNUX1,
             ])
         );
 
@@ -227,7 +226,7 @@ class Item_RackTest extends DbTestCase
                 'racks_id'  => $rack->getID(),
                 'position'  => 1,
                 'itemtype'  => 'Computer',
-                'items_id'  => $SRVNUX1
+                'items_id'  => $SRVNUX1,
             ])
         );
 
@@ -239,7 +238,7 @@ class Item_RackTest extends DbTestCase
                 'racks_id'  => $rack->getID(),
                 'position'  => 10,
                 'itemtype'  => 'Computer',
-                'items_id'  => $BIGNUX1
+                'items_id'  => $BIGNUX1,
             ])
         );
 
@@ -252,7 +251,7 @@ class Item_RackTest extends DbTestCase
                 'racks_id'  => $rack->getID(),
                 'position'  => 9,
                 'itemtype'  => 'Computer',
-                'items_id'  => $BIGNUX1
+                'items_id'  => $BIGNUX1,
             ])
         );
 
@@ -266,7 +265,7 @@ class Item_RackTest extends DbTestCase
                 'racks_id'  => $rack->getID(),
                 'position'  => 8,
                 'itemtype'  => 'Computer',
-                'items_id'  => $BIGNUX1
+                'items_id'  => $BIGNUX1,
             ])
         );
 
@@ -281,7 +280,7 @@ class Item_RackTest extends DbTestCase
                 'racks_id'  => $rack->getID(),
                 'position'  => 1,
                 'itemtype'  => 'Computer',
-                'items_id'  => $MIDNUX1
+                'items_id'  => $MIDNUX1,
             ])
         );
 
@@ -295,7 +294,7 @@ class Item_RackTest extends DbTestCase
                 'position'  => 1,
                 'itemtype'  => 'Computer',
                 'items_id'  => $MIDNUX1,
-                'hpos'      => $rack::POS_LEFT
+                'hpos'      => $rack::POS_LEFT,
             ])
         );
 
@@ -310,7 +309,7 @@ class Item_RackTest extends DbTestCase
                 'position'  => 2,
                 'itemtype'  => 'Computer',
                 'items_id'  => $MIDNUX1,
-                'hpos'      => $rack::POS_LEFT
+                'hpos'      => $rack::POS_LEFT,
             ])
         );
 
@@ -322,7 +321,7 @@ class Item_RackTest extends DbTestCase
                 'position'  => 2,
                 'itemtype'  => 'Computer',
                 'items_id'  => $MIDNUX2,
-                'hpos'      => $rack::POS_LEFT
+                'hpos'      => $rack::POS_LEFT,
             ])
         );
 
@@ -337,7 +336,7 @@ class Item_RackTest extends DbTestCase
                 'position'  => 2,
                 'itemtype'  => 'Computer',
                 'items_id'  => $MIDNUX2,
-                'hpos'      => $rack::POS_RIGHT
+                'hpos'      => $rack::POS_RIGHT,
             ])
         );
 
@@ -349,7 +348,7 @@ class Item_RackTest extends DbTestCase
                 'position'  => 2,
                 'itemtype'  => 'Computer',
                 'items_id'  => $MIDNUX3,
-                'hpos'      => $rack::POS_LEFT
+                'hpos'      => $rack::POS_LEFT,
             ])
         );
 
@@ -366,7 +365,7 @@ class Item_RackTest extends DbTestCase
                 'racks_id'  => $rack->getID(),
                 'position'  => 1,
                 'itemtype'  => 'Computer',
-                'items_id'  => $DEPNUX1
+                'items_id'  => $DEPNUX1,
             ])
         );
 
@@ -380,13 +379,13 @@ class Item_RackTest extends DbTestCase
                 'position'  => 1,
                 'itemtype'  => 'Computer',
                 'items_id'  => $DEPNUX1,
-                'orientation'  => $rack::FRONT
+                'orientation'  => $rack::FRONT,
             ])
         );
 
         $this->hasSessionMessages(ERROR, ['Not enough space available to place item']);
 
-       //try to add on the second row
+        //try to add on the second row
         $ira->getEmpty();
         $this->assertFalse(
             $ira->add([
@@ -394,13 +393,13 @@ class Item_RackTest extends DbTestCase
                 'position'  => 2,
                 'itemtype'  => 'Computer',
                 'items_id'  => $DEPNUX1,
-                'orientation'  => $rack::FRONT
+                'orientation'  => $rack::FRONT,
             ])
         );
 
         $this->hasSessionMessages(ERROR, ['Not enough space available to place item']);
 
-       //add on the third row
+        //add on the third row
         $ira->getEmpty();
         $this->assertGreaterThan(
             0,
@@ -409,12 +408,12 @@ class Item_RackTest extends DbTestCase
                 'position'  => 3,
                 'itemtype'  => 'Computer',
                 'items_id'  => $DEPNUX1,
-                'orientation'  => $rack::FRONT
+                'orientation'  => $rack::FRONT,
             ])
         );
 
-       //add not full depth rack item with same orientation
-       //try to add on the first row
+        //add not full depth rack item with same orientation
+        //try to add on the first row
         $ira->getEmpty();
         $this->assertFalse(
             $ira->add([
@@ -422,7 +421,7 @@ class Item_RackTest extends DbTestCase
                 'position'  => 3,
                 'itemtype'  => 'Computer',
                 'items_id'  => $DEPNUX2,
-                'orientation'  => $rack::FRONT
+                'orientation'  => $rack::FRONT,
             ])
         );
 
@@ -436,7 +435,7 @@ class Item_RackTest extends DbTestCase
                 'position'  => 3,
                 'itemtype'  => 'Computer',
                 'items_id'  => $DEPNUX2,
-                'orientation'  => $rack::REAR
+                'orientation'  => $rack::REAR,
             ])
         );
 
@@ -456,7 +455,7 @@ class Item_RackTest extends DbTestCase
                 'itemtype'  => 'Computer',
                 'items_id'  => $MADNUX1,
                 'orientation'  => $rack::REAR,
-                'hpos'      => $rack::POS_LEFT
+                'hpos'      => $rack::POS_LEFT,
             ])
         );
 
@@ -471,7 +470,7 @@ class Item_RackTest extends DbTestCase
                 'itemtype'  => 'Computer',
                 'items_id'  => $MADNUX1,
                 'orientation'  => $rack::REAR,
-                'hpos'      => $rack::POS_RIGHT
+                'hpos'      => $rack::POS_RIGHT,
             ])
         );
 
@@ -483,7 +482,7 @@ class Item_RackTest extends DbTestCase
                 'itemtype'  => 'Computer',
                 'items_id'  => $MADNUX2,
                 'orientation'  => $rack::REAR,
-                'hpos'      => $rack::POS_LEFT
+                'hpos'      => $rack::POS_LEFT,
             ])
         );
 
@@ -498,7 +497,7 @@ class Item_RackTest extends DbTestCase
                 'itemtype'  => 'Computer',
                 'items_id'  => $MADNUX2,
                 'orientation'  => $rack::FRONT,
-                'hpos'      => $rack::POS_RIGHT
+                'hpos'      => $rack::POS_RIGHT,
             ])
         );
     }
@@ -514,7 +513,7 @@ class Item_RackTest extends DbTestCase
             [
                 'required_units'  => 1,
                 'depth'           => 1,
-                'is_half_rack'    => 0
+                'is_half_rack'    => 0,
             ]
         );
 
@@ -547,7 +546,7 @@ class Item_RackTest extends DbTestCase
                 'position'    => 2,
                 'orientation' => 0,
                 'itemtype'    => 'Computer',
-                'items_id'    => $computer->getID()
+                'items_id'    => $computer->getID(),
             ]
         );
 
@@ -596,7 +595,7 @@ class Item_RackTest extends DbTestCase
                 'position'    => 4,
                 'orientation' => 0,
                 'itemtype'    => 'Computer',
-                'items_id'    => $computer2->getID()
+                'items_id'    => $computer2->getID(),
             ]
         );
 
@@ -770,7 +769,7 @@ class Item_RackTest extends DbTestCase
             [
                 'required_units'  => 1,
                 'depth'           => 1,
-                'is_half_rack'    => 0
+                'is_half_rack'    => 0,
             ]
         );
 
@@ -803,7 +802,7 @@ class Item_RackTest extends DbTestCase
                 'position'    => 2,
                 'orientation' => 0,
                 'itemtype'    => 'Computer',
-                'items_id'    => $computer->getID()
+                'items_id'    => $computer->getID(),
             ]
         );
 

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
 
@@ -61,7 +63,7 @@ if (isset($_POST["add"])) {
         Html::redirect(Software::getFormURLWithID($version->fields['softwares_id']));
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $version->check($_POST['id'], PURGE);
     $version->delete($_POST, 1);
     Event::log(
@@ -73,7 +75,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%1$s purges the version %2$s'), $_SESSION["glpiname"], $_POST["id"])
     );
     Html::redirect(Software::getFormURLWithID($version->fields['softwares_id']));
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $version->check($_POST['id'], UPDATE);
 
     $version->update($_POST);
@@ -89,6 +91,6 @@ if (isset($_POST["add"])) {
 } else {
     $menus = ["assets", "software"];
     SoftwareVersion::displayFullPageForItem($_GET["id"], $menus, [
-        'softwares_id' => $_GET["softwares_id"]
+        'softwares_id' => $_GET["softwares_id"],
     ]);
 }

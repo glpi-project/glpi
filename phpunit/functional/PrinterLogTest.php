@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -46,7 +45,7 @@ class PrinterLogTest extends DbTestCase
         $printer = new \Printer();
         $printers_id = $printer->add([
             'name'   => 'Inventoried printer',
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $printers_id);
 
@@ -57,48 +56,52 @@ class PrinterLogTest extends DbTestCase
 
         $cdate1 = (new \DateTime(\Session::getCurrentTime()))->modify('-14 months');
         $input = [
-            'printers_id' => $printers_id,
+            'itemtype' => \Printer::class,
+            'items_id' => $printers_id,
             'total_pages' => 5132,
             'bw_pages' => 3333,
             'color_pages' => 1799,
             'rv_pages' => 4389,
             'scanned' => 7846,
-            'date' => $cdate1->format('Y-m-d')
+            'date' => $cdate1->format('Y-m-d'),
         ];
         $this->assertGreaterThan(0, $log->add($input));
 
         $cdate2 = (new \DateTime(\Session::getCurrentTime()))->modify('-6 months');
         $input = [
-            'printers_id' => $printers_id,
+            'itemtype' => \Printer::class,
+            'items_id' => $printers_id,
             'total_pages' => 6521,
             'bw_pages' => 4100,
             'color_pages' => 2151,
             'rv_pages' => 5987,
             'scanned' => 15542,
-            'date' => $cdate2->format('Y-m-d')
+            'date' => $cdate2->format('Y-m-d'),
         ];
         $this->assertGreaterThan(0, $log->add($input));
 
         $cdate3 = (new \DateTime(\Session::getCurrentTime()))->modify('first day of previous month');
         $input = [
-            'printers_id' => $printers_id,
+            'itemtype' => \Printer::class,
+            'items_id' => $printers_id,
             'total_pages' => 3464,
             'bw_pages' => 2154,
             'color_pages' => 1310,
             'rv_pages' => 548,
             'scanned' => 4657,
-            'date' => $cdate3->format('Y-m-d')
+            'date' => $cdate3->format('Y-m-d'),
         ];
         $this->assertGreaterThan(0, $log->add($input));
 
         $input = [
-            'printers_id' => $printers_id,
+            'itemtype' => \Printer::class,
+            'items_id' => $printers_id,
             'total_pages' => 9299,
             'bw_pages' => 6258,
             'color_pages' => 3041,
             'rv_pages' => 7654,
             'scanned' => 28177,
-            'date' => $now->format('Y-m-d')
+            'date' => $now->format('Y-m-d'),
         ];
         $this->assertGreaterThan(0, $log->add($input));
 
@@ -121,13 +124,14 @@ class PrinterLogTest extends DbTestCase
         for ($i = 0; $i < 21; $i++) {
             $datex->sub(new \DateInterval('P1D'));
             $input = [
-                'printers_id' => $printers_id,
+                'itemtype' => \Printer::class,
+                'items_id' => $printers_id,
                 'total_pages' => 9299,
                 'bw_pages' => 6258,
                 'color_pages' => 3041,
                 'rv_pages' => 7654,
                 'scanned' => 28177,
-                'date' => $datex->format('Y-m-d')
+                'date' => $datex->format('Y-m-d'),
             ];
             $this->assertGreaterThan(0, $log->add($input));
         }

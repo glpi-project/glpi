@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,13 +38,20 @@ namespace Glpi\Form\Destination;
 use CommonDBChild;
 use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\Condition\ConditionableCreationInterface;
+use Glpi\Form\Condition\ConditionableCreationTrait;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportData;
 use Glpi\Form\Form;
 use InvalidArgumentException;
+use LogicException;
 use Override;
 use ReflectionClass;
 
-final class FormDestination extends CommonDBChild
+final class FormDestination extends CommonDBChild implements ConditionableCreationInterface
 {
+    use ConditionableCreationTrait;
+
     /**
      * Parent item is a Form
      */
@@ -64,7 +71,7 @@ final class FormDestination extends CommonDBChild
     }
 
     #[Override]
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         // Only for forms
         if (!($item instanceof Form)) {
@@ -103,18 +110,18 @@ final class FormDestination extends CommonDBChild
             $active = null;
         }
 
-        $manager = FormDestinationTypeManager::getInstance();
+        $manager = FormDestinationManager::getInstance();
 
         $renderer = TemplateRenderer::getInstance();
         $renderer->display('pages/admin/form/form_destination.html.twig', [
             'icon'                         => self::getIcon(),
             'form'                         => $item,
-            'controller_url'               => self::getFormURL(),
             'default_destination_object'   => $manager->getDefaultType(),
             'destinations'                 => $item->getDestinations(),
             'available_destinations_types' => $manager->getDestinationTypesDropdownValues(),
             'active_destination'           => $active,
             'can_update'                   => self::canUpdate(),
+            'warnings'                     => $manager->getWarnings($item),
         ]);
 
         return true;
@@ -166,16 +173,9 @@ final class FormDestination extends CommonDBChild
     }
 
     #[Override]
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd($input): array
     {
         $input = $this->prepareInput($input);
-
-        // Set default name
-        if (!isset($input['name'])) {
-            // It is safe to access the 'itemtype' key here as it has been
-            // validated by the "prepareInput" method
-            $input['name'] = $input['itemtype']::getTypeName(1);
-        }
 
         // Set default config
         if (!isset($input['config'])) {
@@ -184,11 +184,16 @@ final class FormDestination extends CommonDBChild
             $input['config'] = json_encode([]);
         }
 
+        // JSON fields must have a value when created to prevent SQL errors
+        if (!isset($input['conditions'])) {
+            $input['conditions'] = json_encode([]);
+        }
+
         return $input;
     }
 
     #[Override]
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         return $this->prepareInput($input);
     }
@@ -228,7 +233,7 @@ final class FormDestination extends CommonDBChild
             $type = $input['itemtype'] ?? null;
             if (
                 $type === null
-                || !is_a($type, AbstractFormDestinationType::class, true)
+                || !is_a($type, FormDestinationInterface::class, true)
                 || (new ReflectionClass($type))->isAbstract()
             ) {
                 throw new InvalidArgumentException("Invalid itemtype");
@@ -240,11 +245,21 @@ final class FormDestination extends CommonDBChild
             $destination_item = $this->getConcreteDestinationItem();
             if ($destination_item instanceof AbstractCommonITILFormDestination) {
                 foreach ($destination_item->getConfigurableFields() as $field) {
+                    if ($input['_from_import'] ?? false) {
+                        continue;
+                    }
+
                     $input['config'] = $field->prepareInput($input['config']);
                 }
             }
 
             $input['config'] = json_encode($input['config']);
+        }
+
+        // Encode conditions
+        if (isset($input['_conditions'])) {
+            $input['conditions'] = json_encode($input['_conditions']);
+            unset($input['_conditions']);
         }
 
         return $input;
@@ -270,36 +285,28 @@ final class FormDestination extends CommonDBChild
         return new $class();
     }
 
-    /**
-     * Get valid destinations for a given form
-     *
-     * @param Form $form
-     *
-     * @return AbstractFormDestinationType[]
-     */
-    protected function getDestinationsForForm(Form $form): array
+    public function exportDynamicData(): DynamicExportData
     {
-        $destinations = [];
-        $raw_data = $this->find(['forms_forms_id' => $form->getID()]);
+        $type = $this->getConcreteDestinationItem();
+        $config = $this->getConfig();
 
-        foreach ($raw_data as $row) {
-            if (
-                !is_a($row['itemtype'], AbstractFormDestinationType::class, true)
-                || (new ReflectionClass($row['itemtype']))->isAbstract()
-            ) {
-                // Invalid itemtype, maybe from a disabled plugin
-                continue;
-            }
+        $data = new DynamicExportData();
+        $data->addField('config', $type->exportDynamicConfig($config));
 
-            $destination = $row['itemtype']::getById($row['items_id']);
-            if (!$destination) {
-                continue;
-            }
+        return $data;
+    }
 
-            $destinations[] = $destination;
-        }
+    public static function prepareDynamicImportData(
+        FormDestinationInterface $type,
+        array $input,
+        DatabaseMapper $mapper,
+    ): array {
+        $input['config'] = $type->prepareDynamicConfigDataForImport(
+            $input['config'],
+            $mapper,
+        );
 
-        return $destinations;
+        return $input;
     }
 
     /**
@@ -334,5 +341,14 @@ final class FormDestination extends CommonDBChild
         }
 
         return $config;
+    }
+
+    public function isMandatory(): bool
+    {
+        if (!isset($this->fields['is_mandatory'])) {
+            throw new LogicException("Fields are not loaded");
+        }
+
+        return (bool) $this->fields['is_mandatory'];
     }
 }

@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -88,6 +87,21 @@
                      </button>
                   </form>
                {% endif %}
+                {% if document is defined and entry_i['_can_edit'] %}
+                    {% set blacklisted_class    = entry_i['is_blacklisted'] ? 'red' : '' %}
+                    {% set blacklisted_title    = entry_i['is_blacklisted'] ? _x('button', 'Remove from import exclusion list') : _x('button', 'Add to import exclusion list') %}
+                    {% set blacklisted_value    = entry_i['is_blacklisted'] ? 0 : 1 %}
+                     <form class="d-inline" method="post" action="{{ 'Document'|itemtype_form_path }}">
+                        <input type="hidden" name="id" value="{{ document['item']['id'] }}">
+                        <input type="hidden" name="is_blacklisted" value="{{ blacklisted_value }}">
+                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                        <button type="submit" class="btn btn-sm btn-ghost-secondary" name="update"
+                                title="{{ blacklisted_title }}"
+                                data-bs-toggle="tooltip" data-bs-placement="top">
+                           <i class="ti ti-ban {{ blacklisted_class }}"></i>
+                        </button>
+                     </form>
+                {% endif %}
             </div>
          </div>
       </div>
@@ -100,7 +114,7 @@
                 <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
                 <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
                 <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-                {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
+                {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {"item": subitem, 'options': params}) }}
 
                 {% set can_screenshot = call('Document::isValidDoc', ['.png']) is not empty %}
                 {% set can_screenrecord = call('Document::isValidDoc', ['.webm']) is not empty %}
@@ -123,7 +137,7 @@
                             {% endif %}
                         </div>
                         <div id="screen_capture_preview" class="w-100">
-                            <div class="previews overflow-x-scroll my-2 d-flex px-2"></div>
+                            <div class="previews overflow-x-auto my-2 d-flex px-2"></div>
                             <button type="button" name="stop_recording" class="btn btn-secondary d-none">{{ __('Stop recording') }}</button>
                         </div>
                         <hr class="my-1">
@@ -136,19 +150,11 @@
                         null,
                         __("Heading"),
                         {
-                            'label_class': 'col-xxl-3',
-                            'field_class': 'col-xxl-11',
                             'full_width': true,
                             'is_horizontal': false
                         }
                     ) }}
                 {% endif %}
-
-                {% set max_size %}
-                    <div class="alert alert-info">
-                        {{ call("Document::getMaxUploadSize") }}
-                    </div>
-                {% endset %}
 
                 {{ fields.fileField(
                     'filename',
@@ -156,18 +162,15 @@
                     __("File"),
                     {
                         'multiple': true,
-                        'label_class': 'col-xxl-3',
-                        'field_class': 'col-xxl-11',
                         'full_width': true,
                         'is_horizontal': false,
-                        'add_field_html': max_size,
                     }
                 ) }}
 
-                {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
+                {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {"item": subitem, 'options': params}) }}
 
                 <div class="d-flex card-footer mx-n3 mb-n3">
-                    {% if subitem.fields['id'] <= 0 %}
+                    {% if (subitem.fields['id'] ?? 0) <= 0 %}
                         <div class="input-group">
                             <button class="btn btn-primary" type="submit" name="add">
                                 <i class="ti ti-file-plus"></i>
@@ -179,7 +182,7 @@
             </form>
         </div>
         <script type="module">
-            import('{{ js_path('js/modules/ITIL/Timeline/DocumentForm.js') }}');
+            import('/js/modules/ITIL/Timeline/DocumentForm.js');
         </script>
    {% endif %}
 {% endblock %}

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 /**
  * Following variables have to be defined before inclusion of this file:
  * @var RuleCollection $rulecollection
@@ -48,13 +50,13 @@ if (isset($_POST["action"])) {
     $rulecollection->checkGlobal(UPDATE);
     $rulecollection->changeRuleOrder($_POST["id"], $_POST["action"], $_POST['condition']);
     Html::back();
-} else if (isset($_POST["reinit"]) || isset($_GET['reinit'])) {
-   //reinitialize current rules
+} elseif (isset($_POST["reinit"]) || isset($_GET['reinit'])) {
+    //reinitialize current rules
     $ruleclass = $rulecollection->getRuleClass();
     if ($ruleclass->initRules()) {
         Session::addMessageAfterRedirect(
             htmlescape(sprintf(
-            //TRANS: first parameter is the rule type name
+                //TRANS: first parameter is the rule type name
                 __('%1$s has been reset.'),
                 $rulecollection->getTitle()
             ))
@@ -71,20 +73,18 @@ if (isset($_POST["action"])) {
         );
     }
     Html::back();
-} else if (isset($_POST["replay_rule"]) || isset($_GET["replay_rule"])) {
-   // POST and GET needed to manage reload
+} elseif (isset($_POST["replay_rule"]) || isset($_GET["replay_rule"])) {
     $rulecollection->checkGlobal(UPDATE);
 
-   // Current time
+    // Current time
     $start = microtime(true);
 
-   // Limit computed from current time
-    $max = (int) get_cfg_var("max_execution_time");
-    $max = $start + ($max > 0 ? $max / 2.0 : 30.0);
+    // Reload every X seconds to refresh the progress bar
+    $max = $start + 5;
 
     Html::header(
         Rule::getTypeName(Session::getPluralNumber()),
-        $_SERVER['PHP_SELF'],
+        '',
         "admin",
         $rulecollection->menu_type,
         $rulecollection->menu_option
@@ -92,63 +92,64 @@ if (isset($_POST["action"])) {
 
     if (
         !(isset($_POST['replay_confirm']) || isset($_GET['offset']))
-        && $rulecollection->warningBeforeReplayRulesOnExistingDB($_SERVER['PHP_SELF'])
+        && $rulecollection->warningBeforeReplayRulesOnExistingDB()
     ) {
         Html::footer();
         return;
     }
 
-    echo "<table class='tab_cadrehov'>";
+    $rule_class = $rulecollection->getRuleClassName();
 
-    echo "<tr><th><div class='relative b'>" . htmlescape($rulecollection->getTitle()) . "<br>" .
-         __s('Replay the rules dictionary') . "</div></th></tr>";
-    echo "<tr><td class='center'>";
-    Html::progressBar('doaction_progress', [
-        'create' => true,
-        'message' => __s('Work in progress...')
-    ]);
-    echo "</td></tr>";
-    echo "</table>";
+    if (array_key_exists('offset', $_GET)) {
+        // $_GET['offset'] will exists only when page is reloaded to update the progress bar
+        $manufacturer   = (int) ($_GET['manufacturer']);
+        $current_offset = (int) $_GET['offset'];
+        $total_items    = (int) $_GET['total'];
 
-    if (!isset($_GET['offset'])) {
-       // First run
-        $offset       = $rulecollection->replayRulesOnExistingDB(0, $max, [], $_POST);
-        $manufacturer = (isset($_POST["manufacturer"]) ? $_POST["manufacturer"] : 0);
+        $start = $_GET['start']; // global start for stat
     } else {
-       // Next run
-        $offset       = $rulecollection->replayRulesOnExistingDB(
-            $_GET['offset'],
-            $max,
-            [],
-            $_GET
-        );
-        $manufacturer = $_GET["manufacturer"];
-
-       // global start for stat
-        $start = $_GET["start"];
+        $manufacturer   = (int) ($_POST['manufacturer'] ?? 0);
+        $current_offset = 0;
+        $total_items    = $rulecollection->countTotalItemsForRulesReplay(['manufacturer' => $manufacturer]);
     }
+
+    if ($total_items === 0) {
+        // Nothing to do
+        Session::addMessageAfterRedirect(__s('No items found.'));
+        Html::redirect($rule_class::getSearchURL());
+    }
+
+    echo "<div class='position-relative fw-bold'>" . htmlescape($rulecollection->getTitle()) . "<br>" .
+         __s('Replay the rules dictionary') . "</div>";
+    echo "<div class='text-center mb-3'>";
+    echo Html::getProgressBar(
+        $current_offset / $total_items * 100,
+        __('Work in progress...')
+    );
+    echo '</div>';
+    Html::footer();
+    flush(); // force displaying the output
+
+    $offset = $rulecollection->replayRulesOnExistingDB($current_offset, $max, [], ['manufacturer' => $manufacturer]);
 
     if ($offset < 0) {
-       // Work ended
-        $duree = round(microtime(true) - $start);
-        Html::changeProgressBarMessage(sprintf(
-            __('Task completed in %s'),
-            Html::timestampToString($duree)
+        // Work ended
+        $duration = round(microtime(true) - $start);
+        Session::addMessageAfterRedirect(sprintf(
+            __s('Task completed in %s'),
+            Html::timestampToString($duration)
         ));
-        echo "<a href='" . $_SERVER['PHP_SELF'] . "'>" . __s('Back') . "</a>";
+        Html::redirect($rule_class::getSearchURL());
     } else {
-       // Need more work
-        Html::redirect($_SERVER['PHP_SELF'] . "?start=$start&replay_rule=1&offset=$offset&manufacturer=" .
+        // Need more work
+        Html::redirect($rule_class::getSearchURL() . "?start=$start&replay_rule=1&offset=$offset&total=$total_items&manufacturer=" .
                      "$manufacturer");
     }
-
-    Html::footer();
-    return;
 }
 
 Html::header(
     Rule::getTypeName(Session::getPluralNumber()),
-    $_SERVER['PHP_SELF'],
+    '',
     'admin',
     $rulecollection->menu_type,
     $rulecollection->menu_option

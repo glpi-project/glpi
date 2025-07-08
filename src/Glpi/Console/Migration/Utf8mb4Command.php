@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -49,35 +49,35 @@ class Utf8mb4Command extends AbstractCommand implements ConfigurationCommandInte
      *
      * @var integer
      */
-    const ERROR_MIGRATION_FAILED_FOR_SOME_TABLES = 1;
+    public const ERROR_MIGRATION_FAILED_FOR_SOME_TABLES = 1;
 
     /**
      * Error code returned if DB configuration file cannot be updated.
      *
      * @var integer
      */
-    const ERROR_UNABLE_TO_UPDATE_CONFIG = 2;
+    public const ERROR_UNABLE_TO_UPDATE_CONFIG = 2;
 
     /**
      * Error code returned if some tables are still using MyISAM engine.
      *
      * @var integer
      */
-    const ERROR_INNODB_REQUIRED = 3;
+    public const ERROR_INNODB_REQUIRED = 3;
 
     /**
      * Error code returned if some tables are still using Redundant/Compact row format.
      *
      * @var integer
      */
-    const ERROR_DYNAMIC_ROW_FORMAT_REQUIRED = 4;
+    public const ERROR_DYNAMIC_ROW_FORMAT_REQUIRED = 4;
 
     /**
      * Error code returned if DB configuration is not compatible with large indexes.
      *
      * @var integer
      */
-    const ERROR_INCOMPATIBLE_DB_CONFIG = 5;
+    public const ERROR_INCOMPATIBLE_DB_CONFIG = 5;
 
     protected function configure()
     {
@@ -102,7 +102,7 @@ class Utf8mb4Command extends AbstractCommand implements ConfigurationCommandInte
      */
     private function checkForPrerequisites(): void
     {
-       // Check that DB configuration is compatible
+        // Check that DB configuration is compatible
         $config_requirement = new DbConfiguration($this->db);
         if (!$config_requirement->isValidated()) {
             $msg = '<error>' . __('Database configuration is not compatible with "utf8mb4" usage.') . '</error>';
@@ -112,7 +112,7 @@ class Utf8mb4Command extends AbstractCommand implements ConfigurationCommandInte
             throw new \Glpi\Console\Exception\EarlyExitException($msg, self::ERROR_INCOMPATIBLE_DB_CONFIG);
         }
 
-       // Check that all tables are using InnoDB engine
+        // Check that all tables are using InnoDB engine
         if (($myisam_count = $this->db->getMyIsamTables()->count()) > 0) {
             $msg = sprintf(__('%d tables are using the deprecated MyISAM storage engine.'), $myisam_count)
             . ' '
@@ -120,7 +120,7 @@ class Utf8mb4Command extends AbstractCommand implements ConfigurationCommandInte
             throw new \Glpi\Console\Exception\EarlyExitException('<error>' . $msg . '</error>', self::ERROR_INNODB_REQUIRED);
         }
 
-       // Check that all tables are using the "Dynamic" row format
+        // Check that all tables are using the "Dynamic" row format
         if ($this->db->listTables('glpi\_%', ['row_format' => ['COMPACT', 'REDUNDANT']])->count() > 0) {
             $msg = sprintf(__('%d tables are still using Compact or Redundant row format.'), $myisam_count)
             . ' '
@@ -139,7 +139,7 @@ class Utf8mb4Command extends AbstractCommand implements ConfigurationCommandInte
 
         $tables = [];
 
-       // Find collations to update at table level
+        // Find collations to update at table level
         $table_iterator = $this->db->getNonUtf8mb4Tables();
         foreach ($table_iterator as $table_data) {
             $tables[] = $table_data['TABLE_NAME'];

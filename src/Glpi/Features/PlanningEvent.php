@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -82,10 +82,10 @@ trait PlanningEvent
 
     public function post_addItem()
     {
-       // Add document if needed
+        // Add document if needed
         $this->input = $this->addFiles($this->input, [
             'force_update'  => true,
-            'content_field' => 'text'
+            'content_field' => 'text',
         ]);
 
         if (
@@ -99,7 +99,7 @@ trait PlanningEvent
                 $this->fields["begin"],
                 $this->fields["end"],
                 [
-                    $this->getType() => [$this->fields['id']]
+                    $this->getType() => [$this->fields['id']],
                 ]
             );
         }
@@ -150,7 +150,7 @@ trait PlanningEvent
                 $input['is_planned'] = 1;
                 $input["begin"]      = $input['_plan']["begin"];
                 $input["end"]        = $input['_plan']["end"];
-            } else if (
+            } elseif (
                 isset($this->fields['begin'])
                     && isset($this->fields['end'])
             ) {
@@ -162,10 +162,10 @@ trait PlanningEvent
             }
         }
 
-       // set new date.
+        // set new date.
         $input["date"] = $_SESSION["glpi_currenttime"];
 
-       // encode rrule
+        // encode rrule
         if (isset($input['rrule']) && is_array($input['rrule'])) {
             $input['rrule'] = $this->encodeRrule($input['rrule']);
         }
@@ -208,7 +208,7 @@ trait PlanningEvent
                 $input['is_planned'] = 1;
                 $input["begin"]      = $input['_plan']["begin"];
                 $input["end"]        = $input['_plan']["end"];
-            } else if (
+            } elseif (
                 isset($this->fields['begin'])
                     && isset($this->fields['end'])
             ) {
@@ -222,7 +222,7 @@ trait PlanningEvent
 
         $input = $this->addFiles($input, ['content_field' => 'text']);
 
-       // encode rrule
+        // encode rrule
         if (isset($input['rrule']) && is_array($input['rrule'])) {
             $input['rrule'] = $this->encodeRrule($input['rrule']);
         }
@@ -246,6 +246,14 @@ trait PlanningEvent
 
         if ($rrule['freq'] == null) {
             return "";
+        }
+
+        if (empty($rrule['byday'])) {
+            unset($rrule['byday']);
+        }
+
+        if (empty($rrule['bymonth'])) {
+            unset($rrule['bymonth']);
         }
 
         if (isset($rrule['exceptions'])) {
@@ -278,7 +286,7 @@ trait PlanningEvent
                 $this->fields["begin"],
                 $this->fields["end"],
                 [
-                    $this->getType() => [$this->fields['id']]
+                    $this->getType() => [$this->fields['id']],
                 ]
             );
         }
@@ -294,7 +302,7 @@ trait PlanningEvent
 
     public function pre_updateInDB()
     {
-       // Set new user if initial user have been deleted
+        // Set new user if initial user have been deleted
         if (
             isset($this->fields['users_id'])
             && $this->fields['users_id'] == 0
@@ -330,8 +338,8 @@ trait PlanningEvent
         $rrule = json_decode($this->fields['rrule'], true) ?? [];
         $rrule = array_merge_recursive($rrule, [
             'exceptions' => [
-                $day
-            ]
+                $day,
+            ],
         ]);
         return $this->update([
             'id'             => $id,
@@ -359,7 +367,7 @@ trait PlanningEvent
             'begin' => $fields['begin'],
             'end'   => $fields['end'],
         ];
-       // avoid checking availability, will be done after when updating new dates
+        // avoid checking availability, will be done after when updating new dates
         $fields['_no_check_plan'] = true;
 
         $instance = new static();
@@ -383,7 +391,6 @@ trait PlanningEvent
      *    - color
      *    - event_type_color
      *    - check_planned (boolean)
-     *    - display_done_events (boolean)
      *
      * @return array of planning item
      **/
@@ -400,7 +407,7 @@ trait PlanningEvent
             'color'               => '',
             'event_type_color'    => '',
             'check_planned'       => false,
-            'display_done_events' => true,
+            'state_done'          => true,
         ];
         $options = array_merge($default_options, $options);
 
@@ -433,7 +440,7 @@ trait PlanningEvent
         $nreadpub  = [];
         $nreadpriv = [];
 
-       // See public event ?
+        // See public event ?
         if (
             !$options['genical']
             && (Session::getLoginUserID() !== false && $who == Session::getLoginUserID())
@@ -447,21 +454,21 @@ trait PlanningEvent
         if ($whogroup === "mine") {
             if (isset($_SESSION['glpigroups'])) {
                 $whogroup = $_SESSION['glpigroups'];
-            } else if ($who > 0) {
+            } elseif ($who > 0) {
                 $whogroup = array_column(Group_User::getUserGroups($who), 'id');
             }
         }
 
-       // See my private event ?
+        // See my private event ?
         if ($who > 0) {
             $nreadpriv = ["$table.users_id" => $who];
 
-           // guests accounts
+            // guests accounts
             if ($DB->fieldExists($table, 'users_id_guests')) {
                 $nreadpriv = ['OR' => [
                     "$table.users_id" => $who,
                     "$table.users_id_guests" => ['LIKE', '%"' . $who . '"%'],
-                ]
+                ],
                 ];
             }
         }
@@ -472,7 +479,7 @@ trait PlanningEvent
             } else {
                 $ngrouppriv = [$itemtype::getTableField('groups_id') => $whogroup];
             }
-            if (!empty($nreadpriv)) {
+            if ($nreadpriv !== []) {
                 $nreadpriv['OR'] = [$nreadpriv, $ngrouppriv];
             } else {
                 $nreadpriv = $ngrouppriv;
@@ -486,7 +493,7 @@ trait PlanningEvent
             && count($nreadpriv)
         ) {
             $NASSIGN = ['OR' => [$nreadpub, $nreadpriv]];
-        } else if (count($nreadpub)) {
+        } elseif (count($nreadpub)) {
             $NASSIGN = $nreadpub;
         } else {
             $NASSIGN = $nreadpriv;
@@ -498,7 +505,7 @@ trait PlanningEvent
 
         $WHERE = [
             'begin' => ['<', $end],
-            'end'   => ['>', $begin]
+            'end'   => ['>', $begin],
         ] + [$NASSIGN]; // "encapsulate" nassign to prevent OR overriding
 
         if ($DB->fieldExists($table, 'is_planned')) {
@@ -509,15 +516,15 @@ trait PlanningEvent
             $WHERE['state'] = ['!=', Planning::INFO];
         }
 
-        if (!$options['display_done_events']) {
+        if (!$options['state_done']) {
             $WHERE[] = [
                 'OR' => [
-                    'state'  => Planning::TODO,
-                    'AND'    => [
-                        'state'  => Planning::INFO,
-                        'end'    => ['>', QueryFunction::now()]
-                    ]
-                ]
+                    'state' => Planning::TODO,
+                    [
+                        'state' => Planning::INFO,
+                        'end' => ['>', QueryFunction::now()],
+                    ],
+                ],
             ];
         }
 
@@ -528,7 +535,7 @@ trait PlanningEvent
                 'OR' => [
                     'end'   => ['>', $begin],
                     'rrule' => ['!=', ""],
-                ]
+                ],
             ];
         }
 
@@ -537,7 +544,7 @@ trait PlanningEvent
             'DISTINCT'        => true,
             'FROM'            => $table,
             'WHERE'           => $WHERE,
-            'ORDER'           => 'begin'
+            'ORDER'           => 'begin',
         ] + $visibility_criteria;
 
         if (isset($event_obj->fields['planningeventcategories_id'])) {
@@ -548,8 +555,8 @@ trait PlanningEvent
                     'FKEY' => [
                         $c_table => 'id',
                         $table   => 'planningeventcategories_id',
-                    ]
-                ]
+                    ],
+                ],
             ];
         }
 
@@ -605,11 +612,11 @@ trait PlanningEvent
                                           : $data["end"],
                         'rrule'            => isset($data['rrule']) && !empty($data['rrule'])
                                           ? json_decode($data['rrule'], true)
-                                          : []
+                                          : [],
                     ];
 
-                    // when checking avaibility, we need to explode rrules events
-                    // to check if future occurences of the primary event
+                    // when checking availability, we need to explode rrules events
+                    // to check if future occurrences of the primary event
                     // doesn't match current range
                     if ($options['check_planned'] && count($events[$key]['rrule'])) {
                         $event      = $events[$key];
@@ -617,30 +624,30 @@ trait PlanningEvent
 
                         $rset = static::getRsetFromRRuleField($event['rrule'], $event['begin']);
 
-                       // - rrule object doesn't any duration property,
-                       //   so we remove the duration from the begin part of the range
-                       //   (minus 1second to avoid mathing precise end date)
-                       //   to check if event started before begin and could be still valid
-                       // - also set begin and end dates like it was as UTC
-                       //   (Rrule lib will always compare with UTC)
+                        // - rrule object doesn't any duration property,
+                        //   so we remove the duration from the begin part of the range
+                        //   (minus 1 second to avoid matching precise end date)
+                        //   to check if event started before begin and could be still valid
+                        // - also set begin and end dates like it was as UTC
+                        //   (Rrule lib will always compare with UTC)
                         $begin_datetime = new DateTime($options['begin'], new DateTimeZone('UTC'));
                         $begin_datetime->sub(new DateInterval("PT" . ($duration - 1) . "S"));
                         $end_datetime   = new DateTime($options['end'], new DateTimeZone('UTC'));
-                        $occurences = $rset->getOccurrencesBetween($begin_datetime, $end_datetime);
+                        $occurrences = $rset->getOccurrencesBetween($begin_datetime, $end_datetime);
 
-                       // add the found occurences to the final tab after replacing their dates
-                        foreach ($occurences as $currentDate) {
-                            $occurence_begin = $currentDate;
-                            $occurence_end   = (clone $currentDate)->add(new DateInterval("PT" . $duration . "S"));
+                        // add the found occurrences to the final tab after replacing their dates
+                        foreach ($occurrences as $currentDate) {
+                            $occurrence_begin = $currentDate;
+                            $occurrence_end   = (clone $currentDate)->add(new DateInterval("PT" . $duration . "S"));
 
                             $events_toadd[] = array_merge($event, [
-                                'begin' => $occurence_begin->format('Y-m-d H:i:s'),
-                                'end'   => $occurence_end->format('Y-m-d H:i:s'),
+                                'begin' => $occurrence_begin->format('Y-m-d H:i:s'),
+                                'end'   => $occurrence_end->format('Y-m-d H:i:s'),
                             ]);
                         }
 
-                       // remove primary event (with rrule)
-                       // as the final array now have all the occurences
+                        // remove primary event (with rrule)
+                        // as the final array now have all the occurrences
                         unset($events[$key]);
                     }
                 }
@@ -648,7 +655,7 @@ trait PlanningEvent
         }
 
         if (count($events_toadd)) {
-            $events = $events + $events_toadd;
+            $events += $events_toadd;
         }
 
         return $events;
@@ -707,7 +714,7 @@ trait PlanningEvent
             }
         }
 
-       // $val["text"] has already been sanitized and decoded by self::populatePlanning()
+        // $val["text"] has already been sanitized and decoded by self::populatePlanning()
         $content = $val["text"] . $recall;
 
         if ($complete) {
@@ -717,7 +724,7 @@ trait PlanningEvent
             $html .= Html::showToolTip(
                 "<span class='b'>" . Planning::getState($val["state"]) . "</span><br>" . $content,
                 ['applyto' => "reminder_" . $val[$item_fk] . $rand,
-                    'display' => false
+                    'display' => false,
                 ]
             );
         }
@@ -769,22 +776,31 @@ trait PlanningEvent
             'value'     => strtolower($rrule['freq'] ?? ""),
             'rand'      => $rand,
             'display'   => false,
-            'on_change' => "$(\"#toggle_ar\").toggle($(\"#dropdown_rrule_freq_$rand\").val().length > 0)"
+            'on_change' => "$(\"#toggle_ar\").toggle($(\"#dropdown_rrule_freq_$rand\").val().length > 0)",
         ]);
+
+        $byday = $rrule['byday'] ?? [];
+        if (!is_array($byday)) {
+            $byday = explode(',', $byday);
+        }
+        $bymonth = $rrule['bymonth'] ?? [];
+        if (!is_array($bymonth)) {
+            $bymonth = explode(',', $bymonth);
+        }
 
         $display_tar = $rrule['freq'] == null ? "none" : "inline";
         $display_ar  = $rrule['freq'] == null
                      || !($rrule['interval'] > 1
                           || $rrule['until'] != null
-                          || count($rrule['byday']) > 0
-                          || count($rrule['bymonth']) > 0)
+                          || count($byday) > 0
+                          || count($bymonth) > 0)
                         ? "none" : "table";
 
         $out .= "<span id='toggle_ar' style='display: $display_tar'>";
         $out .= "<a class='btn btn-primary'
                  title='" . __("Personalization") . "'
                  onclick='$(\"#advanced_repetition$rand\").toggle()'>
-                 <i class='fas fa-cog'></i>
+                 <i class='ti ti-settings'></i>
               </a>";
         $out .= "<div id='advanced_repetition$rand' style='display: $display_ar; max-width: 23'>";
 
@@ -818,7 +834,7 @@ trait PlanningEvent
             'SA' => __('Saturday'),
             'SU' => __('Sunday'),
         ], [
-            'values'              => $rrule['byday'],
+            'values'              => $byday,
             'rand'                => $rand,
             'display'             => false,
             'display_emptychoice' => true,
@@ -843,7 +859,7 @@ trait PlanningEvent
             11 => __('November'),
             12 => __('December'),
         ], [
-            'values'              => $rrule['bymonth'],
+            'values'              => $bymonth,
             'rand'                => $rand,
             'display'             => false,
             'display_emptychoice' => true,
@@ -884,7 +900,7 @@ trait PlanningEvent
         if ($item = getItemForItemtype($itemtype)) {
             $objectitemtype = (method_exists($item, 'getItilObjectItemType') ? $item::getItilObjectItemType() : $itemtype);
 
-           //TRANS: %1$s is a type, %2$$ is a date, %3$s is a date
+            //TRANS: %1$s is a type, %2$$ is a date, %3$s is a date
             $out  = sprintf(
                 __('%1$s: from %2$s to %3$s:'),
                 $item->getTypeName(1),
@@ -893,7 +909,7 @@ trait PlanningEvent
             );
             $out .= "<br/><a href='" . $objectitemtype::getFormURLWithID($val[getForeignKeyFieldForItemType($objectitemtype)]);
             if ($item instanceof CommonITILTask) {
-                 $out .= "&amp;forcetab=" . $itemtype . "$1";
+                $out .= "&amp;forcetab=" . $itemtype . "$1";
             }
             $out .= "'>";
             $out .= Html::resume_text($val["name"], 80) . '</a>';
@@ -904,10 +920,10 @@ trait PlanningEvent
     }
 
     /**
-     * Returns RSet occurence corresponding to rrule field value.
+     * Returns RSet occurrence corresponding to rrule field value.
      *
      * @param array  $rrule    RRule field value
-     * @param string $dtstart  Start of first occurence
+     * @param string $dtstart  Start of first occurrence
      *
      * @return \RRule\RSet
      */
@@ -916,11 +932,11 @@ trait PlanningEvent
         $dtstart_datetime  = new DateTime($dtstart);
         $rrule['dtstart']  = $dtstart_datetime->format('Y-m-d\TH:i:s\Z');
 
-       // create a ruleset containing dtstart, the rrule, and the exclusions
+        // create a ruleset containing dtstart, the rrule, and the exclusions
         $rset = new RSet();
 
-       // manage date exclusions,
-       // we need to set a top level property for that (not directly in rrule one)
+        // manage date exclusions,
+        // we need to set a top level property for that (not directly in rrule one)
         if (isset($rrule['exceptions'])) {
             foreach ($rrule['exceptions'] as $exception) {
                 $exdate = new DateTime($exception);
@@ -932,11 +948,11 @@ trait PlanningEvent
                 $rset->addExDate($exdate->format('Y-m-d\TH:i:s\Z'));
             }
 
-           // remove exceptions key (as libraries throw exception for unknow keys)
+            // remove exceptions key (as libraries throw exception for unknown keys)
             unset($rrule['exceptions']);
         }
 
-       // remove specific change from js library to match rfc
+        // remove specific change from js library to match rfc
         if (isset($rrule['byweekday']) || isset($rrule['BYWEEKDAY'])) {
             $rrule['byday'] = $rrule['byweekday'] ?? $rrule['BYWEEKDAY'];
             unset($rrule['byweekday'], $rrule['BYWEEKDAY']);
@@ -953,7 +969,7 @@ trait PlanningEvent
         $tab = [
             [
                 'id'            => 'common',
-                'name'          => static::getTypeName()
+                'name'          => static::getTypeName(),
             ], [
                 'id'            => '1',
                 'table'         => static::getTable(),
@@ -967,13 +983,13 @@ trait PlanningEvent
                 'field'         => 'id',
                 'name'          => __('ID'),
                 'massiveaction' => false,
-                'datatype'      => 'number'
+                'datatype'      => 'number',
             ], [
                 'id'            => '80',
                 'table'         => 'glpi_entities',
                 'field'         => 'completename',
                 'name'          => Entity::getTypeName(1),
-                'datatype'      => 'dropdown'
+                'datatype'      => 'dropdown',
             ], [
                 'id'            => '3',
                 'table'         => static::getTable(),
@@ -981,7 +997,7 @@ trait PlanningEvent
                 'name'          => __('Status'),
                 'datatype'      => 'specific',
                 'massiveaction' => false,
-                'searchtype'    => ['equals', 'notequals']
+                'searchtype'    => ['equals', 'notequals'],
             ], [
                 'id'            => '4',
                 'table'         => $this->getTable(),
@@ -989,41 +1005,41 @@ trait PlanningEvent
                 'name'          => __('Description'),
                 'massiveaction' => false,
                 'datatype'      => 'text',
-                'htmltext'      => true
+                'htmltext'      => true,
             ], [
                 'id'            => '5',
                 'table'         => PlanningEventCategory::getTable(),
                 'field'         => 'name',
                 'name'          => PlanningEventCategory::getTypeName(),
                 'forcegroupby'  => true,
-                'datatype'      => 'dropdown'
+                'datatype'      => 'dropdown',
             ], [
                 'id'            => '6',
                 'table'         => static::getTable(),
                 'field'         => 'background',
                 'name'          => __('Background event'),
-                'datatype'      => 'bool'
+                'datatype'      => 'bool',
             ], [
                 'id'            => '10',
                 'table'         => static::getTable(),
                 'field'         => 'rrule',
                 'name'          => __('Repeat'),
-                'datatype'      => 'text'
+                'datatype'      => 'text',
             ], [
                 'id'            => '19',
                 'table'         => static::getTable(),
                 'field'         => 'date_mod',
                 'name'          => __('Last update'),
                 'datatype'      => 'datetime',
-                'massiveaction' => false
+                'massiveaction' => false,
             ], [
                 'id'            => '121',
                 'table'         => static::getTable(),
                 'field'         => 'date_creation',
                 'name'          => __('Creation date'),
                 'datatype'      => 'datetime',
-                'massiveaction' => false
-            ]
+                'massiveaction' => false,
+            ],
         ];
 
         if (!count($this->fields)) {
@@ -1036,7 +1052,7 @@ trait PlanningEvent
                 'table'         => static::getTable(),
                 'field'         => 'is_recursive',
                 'name'          => __('Child entities'),
-                'datatype'      => 'bool'
+                'datatype'      => 'bool',
             ];
         }
 
@@ -1047,7 +1063,7 @@ trait PlanningEvent
                 'field'         => 'name',
                 'name'          => User::getTypeName(1),
                 'datatype'      => 'dropdown',
-                'right'         => 'all'
+                'right'         => 'all',
             ];
         }
 
@@ -1067,7 +1083,7 @@ trait PlanningEvent
                 'table'         => static::getTable(),
                 'field'         => 'begin',
                 'name'          => __('Planning start date'),
-                'datatype'      => 'datetime'
+                'datatype'      => 'datetime',
             ];
         }
 
@@ -1077,7 +1093,7 @@ trait PlanningEvent
                 'table'         => static::getTable(),
                 'field'         => 'end',
                 'name'          => __('Planning end date'),
-                'datatype'      => 'datetime'
+                'datatype'      => 'datetime',
             ];
         }
 

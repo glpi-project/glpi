@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 if (!isset($_GET["reservationitems_id"])) {
     $_GET["reservationitems_id"] = 0;
 }
@@ -40,7 +42,7 @@ if (!isset($_GET["reservationitems_id"])) {
 if (Session::getCurrentInterface() == "helpdesk") {
     Html::helpHeader(__('Simplified interface'));
 } else {
-    Html::header(Reservation::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "reservationitem");
+    Html::header(Reservation::getTypeName(Session::getPluralNumber()), '', "tools", "reservationitem");
 }
 
 Reservation::showCalendar((int) $_GET["reservationitems_id"]);

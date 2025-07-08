@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -40,7 +39,7 @@
 /**
  * Update from 9.3.1 to 9.3.2
  *
- * @return bool for success (will die for most error)
+ * @return bool
  **/
 function update931to932()
 {
@@ -54,8 +53,6 @@ function update931to932()
     $updateresult     = true;
     $ADDTODISPLAYPREF = [];
 
-   //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '9.3.2'));
     $migration->setVersion('9.3.2');
 
     /** Clean rack/enclosure items corrupted relations */
@@ -69,19 +66,19 @@ function update931to932()
     $DB->delete(Item_Enclosure::getTable(), $corrupted_criteria);
     /** /Clean rack/enclosure items corrupted relations */
 
-   // limit state visibility for enclosures and pdus
+    // limit state visibility for enclosures and pdus
     $migration->addField('glpi_states', 'is_visible_enclosure', 'bool', [
         'value' => 1,
-        'after' => 'is_visible_rack'
+        'after' => 'is_visible_rack',
     ]);
     $migration->addField('glpi_states', 'is_visible_pdu', 'bool', [
         'value' => 1,
-        'after' => 'is_visible_enclosure'
+        'after' => 'is_visible_enclosure',
     ]);
     $migration->addKey('glpi_states', 'is_visible_enclosure');
     $migration->addKey('glpi_states', 'is_visible_pdu');
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->executeMigration();
 
     return $updateresult;

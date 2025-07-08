@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,26 +42,20 @@ abstract class CommonDropdown extends CommonDBTM
 {
     use AssetImage;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                   = true;
 
-   // For delete operation (entity will overload this value)
+    // For delete operation (entity will overload this value)
     public $must_be_replace = false;
 
-   //Menu & navigation
+    //Menu & navigation
     public $display_dropdowntitle  = true;
 
-   //This dropdown can be translated
+    //This dropdown can be translated
     public $can_be_translated = true;
 
     public static $rightname = 'dropdown';
 
-
-    /**
-     * @since 0.85
-     *
-     * @param $nb
-     **/
     public static function getTypeName($nb = 0)
     {
         return _n('Dropdown', 'Dropdowns', $nb);
@@ -124,8 +118,8 @@ abstract class CommonDropdown extends CommonDBTM
                     'links' => [
                         'search' => DropdownDefinition::getSearchURL(false),
                         'add'    => DropdownDefinition::getFormURL(false),
-                    ]
-                ]
+                    ],
+                ],
             ];
 
             $dps = Dropdown::getStandardDropdownItemTypes();
@@ -157,7 +151,8 @@ abstract class CommonDropdown extends CommonDBTM
     /**
      * Return Additional Fields for this type
      *
-     * @return array
+     * Possible 'type' can be found in templates/dropdown_form.html.twig, @see showForm()
+     * @return array Additional fields
      **/
     public function getAdditionalFields()
     {
@@ -169,21 +164,21 @@ abstract class CommonDropdown extends CommonDBTM
             $fields[] = [
                 'name' => 'product_number',
                 'type' => 'text',
-                'label' => __('Product Number')
+                'label' => __('Product Number'),
             ];
         }
         if ($DB->fieldExists(static::getTable(), 'picture')) {
             $fields[] = [
                 'name' => 'picture',
                 'type' => 'picture',
-                'label' => _n('Picture', 'Pictures', 1)
+                'label' => _n('Picture', 'Pictures', 1),
             ];
         }
         if ($DB->fieldExists($this->getTable(), 'picture_front')) {
             $fields[] = [
                 'name'   => 'picture_front',
                 'type'   => 'picture',
-                'label'  => __('Front picture')
+                'label'  => __('Front picture'),
             ];
         }
 
@@ -191,7 +186,7 @@ abstract class CommonDropdown extends CommonDBTM
             $fields[] = [
                 'name'   => 'picture_rear',
                 'type'   => 'picture',
-                'label'  => __('Rear picture')
+                'label'  => __('Rear picture'),
             ];
         }
 
@@ -199,7 +194,7 @@ abstract class CommonDropdown extends CommonDBTM
             $fields[] = [
                 'name'   => 'pictures',
                 'type'   => 'picture_gallery',
-                'label'  => _n('Picture', 'Pictures', Session::getPluralNumber())
+                'label'  => _n('Picture', 'Pictures', Session::getPluralNumber()),
             ];
         }
         return $fields;
@@ -226,11 +221,11 @@ abstract class CommonDropdown extends CommonDBTM
         $ong = [];
         $this->addDefaultFormTab($ong);
         if ($this->dohistory) {
-            $this->addStandardTab('Log', $ong, $options);
+            $this->addStandardTab(Log::class, $ong, $options);
         }
 
         if ($this->maybeTranslated()) {
-            $this->addStandardTab('DropdownTranslation', $ong, $options);
+            $this->addStandardTab(DropdownTranslation::class, $ong, $options);
         }
 
         return $ong;
@@ -246,22 +241,22 @@ abstract class CommonDropdown extends CommonDBTM
         /** @var \DBmysql $DB */
         global $DB;
 
-       // if item based on location, create item in the same entity as location
+        // if item based on location, create item in the same entity as location
         if (isset($input['locations_id']) && !isset($input['_is_update'])) {
             $iterator = $DB->request([
                 'SELECT' => ['entities_id'],
                 'FROM'   => 'glpi_locations',
                 'WHERE'  => [
-                    'id' => $input['locations_id']
-                ]
+                    'id' => $input['locations_id'],
+                ],
             ]);
             foreach ($iterator as $data) {
-                 $input['entities_id'] = $data['entities_id'];
+                $input['entities_id'] = $data['entities_id'];
             }
         }
 
         if (isset($input['name'])) {
-           // leading/ending space will break findID/import
+            // leading/ending space will break findID/import
             $input['name'] = trim($input['name']);
         }
         if (isset($input['_is_update'])) {
@@ -281,7 +276,7 @@ abstract class CommonDropdown extends CommonDBTM
      **/
     public function prepareInputForUpdate($input)
     {
-       //add a "metadata to find if we're on an update or a add
+        //add a "metadata to find if we're on an update or a add
         $input['_is_update'] = true;
         return self::prepareInputForAdd($input);
     }
@@ -349,18 +344,18 @@ abstract class CommonDropdown extends CommonDBTM
         if (!$this->isNewID($ID)) {
             $this->check($ID, READ);
         } else {
-           // Create item
+            // Create item
             $this->check(-1, CREATE);
         }
 
-       // Specific code for templates classes, can't be run in lower classes
-       // because $this->check will override the fields property
+        // Specific code for templates classes, can't be run in lower classes
+        // because $this->check will override the fields property
         if ($this instanceof AbstractITILChildTemplate) {
-           // Restore input if needed
+            // Restore input if needed
             $this->fields = $this->restoreInput($this->fields ?? []);
             if ($this->isNewID($ID)) {
-               // Restore input lose the empty ID in cause of a new item so we need
-               // to set it back manually
+                // Restore input lose the empty ID in cause of a new item so we need
+                // to set it back manually
                 $this->fields['id'] = $ID;
             }
         }
@@ -370,7 +365,7 @@ abstract class CommonDropdown extends CommonDBTM
         echo TemplateRenderer::getInstance()->render('dropdown_form.html.twig', [
             'item'   => $this,
             'params' => $options,
-            'additional_fields' => $fields
+            'additional_fields' => $fields,
         ]);
 
         return true;
@@ -388,17 +383,20 @@ abstract class CommonDropdown extends CommonDBTM
      *
      * @since 10.0.0 $options param added
      */
-    public function displaySpecificTypeField($ID, $field = [], array $options = [])
-    {
-    }
+    public function displaySpecificTypeField($ID, $field = [], array $options = []) {}
 
 
     public function pre_deleteItem()
     {
-
         if (isset($this->fields['is_protected']) && $this->fields['is_protected']) {
+            Session::addMessageAfterRedirect(
+                msg: __s('Protected item cannot be deleted.'),
+                message_type: ERROR
+            );
+
             return false;
         }
+
         return true;
     }
 
@@ -411,7 +409,7 @@ abstract class CommonDropdown extends CommonDBTM
 
         $tab[] = [
             'id'   => 'common',
-            'name' => __('Characteristics')
+            'name' => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -429,7 +427,7 @@ abstract class CommonDropdown extends CommonDBTM
             'field'             => 'id',
             'name'              => __('ID'),
             'massiveaction'     => false,
-            'datatype'          => 'number'
+            'datatype'          => 'number',
         ];
 
         if ($DB->fieldExists($this->getTable(), 'product_number')) {
@@ -445,8 +443,8 @@ abstract class CommonDropdown extends CommonDBTM
             'id'                => '16',
             'table'             => $this->getTable(),
             'field'             => 'comment',
-            'name'              => __('Comments'),
-            'datatype'          => 'text'
+            'name'              => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'datatype'          => 'text',
         ];
 
         if ($this->isEntityAssign()) {
@@ -456,7 +454,7 @@ abstract class CommonDropdown extends CommonDBTM
                 'field'          => 'completename',
                 'name'           => Entity::getTypeName(1),
                 'massiveaction'  => false,
-                'datatype'       => 'dropdown'
+                'datatype'       => 'dropdown',
             ];
         }
 
@@ -466,7 +464,7 @@ abstract class CommonDropdown extends CommonDBTM
                 'table'          => $this->getTable(),
                 'field'          => 'is_recursive',
                 'name'           => __('Child entities'),
-                'datatype'       => 'bool'
+                'datatype'       => 'bool',
             ];
         }
 
@@ -477,7 +475,7 @@ abstract class CommonDropdown extends CommonDBTM
                 'field'          => 'date_mod',
                 'name'           => __('Last update'),
                 'datatype'       => 'datetime',
-                'massiveaction'  => false
+                'massiveaction'  => false,
             ];
         }
 
@@ -488,7 +486,7 @@ abstract class CommonDropdown extends CommonDBTM
                 'field'          => 'date_creation',
                 'name'           => __('Creation date'),
                 'datatype'       => 'datetime',
-                'massiveaction'  => false
+                'massiveaction'  => false,
             ];
         }
 
@@ -518,7 +516,7 @@ abstract class CommonDropdown extends CommonDBTM
             ];
         }
 
-       // add objectlock search options
+        // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
         return $tab;
@@ -580,10 +578,10 @@ abstract class CommonDropdown extends CommonDBTM
             $row = $DB->request([
                 'FROM'   => $tablename,
                 'COUNT'  => 'cpt',
-                'WHERE'  => ['OR' => $or_criteria]
+                'WHERE'  => ['OR' => $or_criteria],
             ])->current();
             if ($row['cpt'] > 0) {
-                 return true;
+                return true;
             }
         }
 
@@ -605,9 +603,9 @@ abstract class CommonDropdown extends CommonDBTM
      * Show a dialog to Confirm delete action
      * And propose a value to replace
      *
-     * @param $target string URL
-     **/
-    public function showDeleteConfirmForm($target)
+     * since 11.0.0 The `$target` parameter has been removed and its value is automatically computed.
+     */
+    public function showDeleteConfirmForm()
     {
 
         if ($this->haveChildren()) {
@@ -616,15 +614,16 @@ abstract class CommonDropdown extends CommonDBTM
             return false;
         }
 
-        $ID = (int)$this->fields['id'];
-        $target = htmlescape($target);
+        $ID = (int) $this->fields['id'];
+
+        $target = htmlescape(static::getFormURL());
 
         echo "<div class='center'><p class='red'>";
         echo __s("Caution: you're about to remove a heading used for one or more items.");
         echo "</p>";
 
         if (!$this->must_be_replace) {
-           // Delete form (set to 0)
+            // Delete form (set to 0)
             echo "<p>" . __s('If you confirm the deletion, all uses of this dropdown will be blanked.') .
               "</p>";
             echo "<form action='" . $target . "' method='post'>";
@@ -644,18 +643,18 @@ abstract class CommonDropdown extends CommonDBTM
             echo "<p>" . __s('You must replace all uses of this dropdown by another.') . "</p>";
         }
 
-       // Replace form (set to new value)
+        // Replace form (set to new value)
         echo "<form action='$target' method='post'>";
         echo "<table class='tab_cadre'><tr><td>";
 
         $replacement_options = [
-            'name' => '_replace_by'
+            'name' => '_replace_by',
         ];
         if (!$this instanceof Entity) {
             $replacement_options['entity'] = $this->getEntityID();
         }
         if ($this instanceof CommonTreeDropdown) {
-           // TreeDropdown => default replacement is parent
+            // TreeDropdown => default replacement is parent
             $fk = $this->getForeignKeyField();
             $replacement_options['value'] = $this->fields[$fk];
             $replacement_options['used']  = getSonsOf($this->getTable(), $ID);
@@ -663,7 +662,7 @@ abstract class CommonDropdown extends CommonDBTM
             $replacement_options['used'] = [$ID];
         }
         Dropdown::show(
-            getItemTypeForTable($this->getTable()),
+            static::class,
             $replacement_options
         );
         echo "<input type='hidden' name='id' value='$ID' />";
@@ -695,9 +694,9 @@ abstract class CommonDropdown extends CommonDBTM
                 'SELECT' => 'id',
                 'FROM'   => $this->getTable(),
                 'WHERE'  => [
-                    'name'   => $input['name']
+                    'name'   => $input['name'],
                 ],
-                'LIMIT'  => 1
+                'LIMIT'  => 1,
             ];
 
             if ($this->isEntityAssign()) {
@@ -711,7 +710,7 @@ abstract class CommonDropdown extends CommonDBTM
 
             $iterator = $DB->request($crit);
 
-           // Check twin :
+            // Check twin :
             if (count($iterator) > 0) {
                 $result = $iterator->current();
                 return $result['id'];
@@ -734,14 +733,14 @@ abstract class CommonDropdown extends CommonDBTM
         if (!isset($input['name'])) {
             return -1;
         }
-       // Clean datas
+        // Clean datas
         $input['name'] = trim($input['name']);
 
         if (empty($input['name'])) {
             return -1;
         }
 
-       // Check twin :
+        // Check twin :
         if ($ID = $this->findID($input)) {
             if ($ID > 0) {
                 return $ID;
@@ -789,17 +788,17 @@ abstract class CommonDropdown extends CommonDBTM
                 $ruleinput[$field] = '';
             }
         }
-       /*
-       switch ($this->getTable()) {
-         case "glpi_computermodels" :
-         case "glpi_monitormodels" :
-         case "glpi_printermodels" :
-         case "glpi_peripheralmodels" :
-         case "glpi_phonemodels" :
-         case "glpi_networkequipmentmodels" :
-            $ruleinput["manufacturer"] = $external_params["manufacturer"];
-            break;
-       }*/
+        /*
+        switch ($this->getTable()) {
+          case "glpi_computermodels" :
+          case "glpi_monitormodels" :
+          case "glpi_printermodels" :
+          case "glpi_peripheralmodels" :
+          case "glpi_phonemodels" :
+          case "glpi_networkequipmentmodels" :
+             $ruleinput["manufacturer"] = $external_params["manufacturer"];
+             break;
+        }*/
 
         $input = [
             'name'        => $value,
@@ -811,6 +810,7 @@ abstract class CommonDropdown extends CommonDBTM
             $res_rule = $rulecollection->processAllRules($ruleinput, [], []);
             if (isset($res_rule["name"])) {
                 $input["name"] = $res_rule["name"];
+                unset($external_params['id']); //ID won't match one set from rules
             }
         }
         // Merge extra input fields into $input
@@ -824,7 +824,7 @@ abstract class CommonDropdown extends CommonDBTM
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
 
-       // Manage forbidden actions
+        // Manage forbidden actions
         $forbidden_actions = $this->getForbiddenStandardMassiveAction();
 
         if (
@@ -866,10 +866,10 @@ abstract class CommonDropdown extends CommonDBTM
                         if ($item->getEntityID() == $_SESSION['glpiactive_entity']) {
                             if (
                                 $item->update(['id'           => $key,
-                                    'is_recursive' => 1
+                                    'is_recursive' => 1,
                                 ])
                             ) {
-                                 $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                             } else {
                                 $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
@@ -887,13 +887,13 @@ abstract class CommonDropdown extends CommonDBTM
                             $input2['is_recursive'] = 1;
                             // Import new
                             if ($newid = $item->import($input2)) {
-                               // Delete old
+                                // Delete old
                                 if ($newid > 0 && $key != $newid) {
                                     // delete with purge for dropdown with trashbin (Budget)
                                     $item->delete(['id'          => $key,
-                                        '_replace_by' => $newid
+                                        '_replace_by' => $newid,
                                     ], 1);
-                                } else if ($newid > 0 && $key == $newid) {
+                                } elseif ($newid > 0 && $key == $newid) {
                                     $input2['id'] = $newid;
                                     $item->update($input2);
                                 }
@@ -926,18 +926,19 @@ abstract class CommonDropdown extends CommonDBTM
         $ret = '';
 
         if ($withname) {
-            $ret .= $this->fields["name"];
+            $ret .= htmlescape($this->fields["name"]);
             $ret .= "&nbsp;&nbsp;";
         }
 
         if (
-            $this->isField('knowbaseitemcategories_id')
+            !$this->isNewItem()
+            && $this->isField('knowbaseitemcategories_id')
             && $this->fields['knowbaseitemcategories_id']
         ) {
             $title = __s('FAQ');
 
             $condition = [
-                KnowbaseItem::getTable() . '.id'  => KnowbaseItem::getForCategory($this->fields['knowbaseitemcategories_id'])
+                KnowbaseItem::getTable() . '.id'  => KnowbaseItem::getForCategory($this->fields['knowbaseitemcategories_id']),
             ];
 
             if (Session::getCurrentInterface() == 'central') {
@@ -981,7 +982,7 @@ abstract class CommonDropdown extends CommonDBTM
                         'display'   => false,
                         'rand'      => $rand,
                         'condition' => $condition,
-                        'on_change' => "getKnowbaseItemAnswer$rand()"
+                        'on_change' => "getKnowbaseItemAnswer$rand()",
                     ]);
                     $ret .= "<div class='faqadd_block_content' id='faqadd_block_content$rand'>";
                     $ret .= $kbitem->showFull(['display' => false]);

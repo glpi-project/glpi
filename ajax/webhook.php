@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,6 +37,8 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 
+use function Safe\json_encode;
+
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
@@ -55,6 +57,7 @@ switch ($action) {
         } else {
             throw new NotFoundHttpException();
         }
+        // no break
     case 'get_events_from_itemtype':
         echo Dropdown::showFromArray(
             "event",
@@ -64,7 +67,7 @@ switch ($action) {
         return;
     case 'get_items_from_itemtype':
         if (array_key_exists($_POST['itemtype'], Webhook::getSubItemForAssistance())) {
-            $object = new $_POST['itemtype']();
+            $object = getItemForItemtype($_POST['itemtype']);
             $data = $object->find();
             $values = [];
             foreach ($data as $items_id => $items_data) {
@@ -77,7 +80,7 @@ switch ($action) {
                 }
             }
             echo Dropdown::showFromArray('items_id', $values, [
-                'display' => false
+                'display' => false,
             ]);
         } else {
             if (!empty($_POST['itemtype'])) {
@@ -85,7 +88,7 @@ switch ($action) {
                     $_POST['itemtype'],
                     [
                         'name' => 'items_id',
-                        'display' => false
+                        'display' => false,
                     ]
                 );
             } else {
@@ -94,7 +97,7 @@ switch ($action) {
                     [],
                     [
                         'display' => false,
-                        'display_emptychoice' => true
+                        'display_emptychoice' => true,
                     ]
                 );
             }
@@ -128,7 +131,7 @@ switch ($action) {
             array_unshift($error, __("Result can't be loaded :"));
             echo implode("<br>&nbsp; - ", $error);
         } else {
-            $obj = new $itemtype();
+            $obj = getItemForItemtype($itemtype);
             $obj->getFromDB($items_id);
             $path = $webhook->getApiPath($obj);
             echo $webhook->getResultForPath($path, $event, $itemtype, $items_id, $raw_output);

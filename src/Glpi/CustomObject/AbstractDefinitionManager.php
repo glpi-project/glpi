@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -42,24 +42,22 @@ abstract class AbstractDefinitionManager
 {
     /**
      * Definitions cache.
-     * @var array
-     * @phpstan-var array<class-string<ConcreteDefinition>, array<int, ConcreteDefinition>>
+     * @var array<int, mixed>
      */
-    private array $definitions_data = [];
+    private ?array $definitions_data = null;
 
     abstract public static function getInstance(): self;
 
     /**
-     * @return class-string<AbstractDefinition>
-     * @phpstan-return class-string<ConcreteDefinition>
+     * @phpstan-return ConcreteDefinition
      */
-    abstract public static function getDefinitionClass(): string;
+    abstract public static function getDefinitionClassInstance(): AbstractDefinition;
 
     /**
-     * Returns the list of reserved system names
-     * @return array
+     * Returns the regex pattern of reserved system names
+     * @return string
      */
-    abstract public function getReservedSystemNames(): array;
+    abstract public function getReservedSystemNamesPattern(): string;
 
     /**
      * Register the class autoload function.
@@ -67,7 +65,13 @@ abstract class AbstractDefinitionManager
      */
     final public function registerAutoload(): void
     {
-        spl_autoload_register([$this, 'autoloadClass']);
+        spl_autoload_register(
+            function ($classname) {
+                // Use `static::getInstance()` to be sure that the autoloader will use the current instance in testing context
+                // instead of the instance that was the current one during the GLPI boot.
+                static::getInstance()->autoloadClass($classname);
+            }
+        );
     }
 
     /**
@@ -78,27 +82,23 @@ abstract class AbstractDefinitionManager
      */
     abstract public function autoloadClass(string $classname): void;
 
-    final public function bootstrapClasses(): void
+    /**
+     * Boostrap all the active definitions.
+     */
+    final public function bootstrapDefinitions(): void
     {
-        foreach ($this->getDefinitions() as $definition) {
-            if (!$definition->isActive()) {
-                continue;
-            }
-
-            $this->boostrapConcreteClass($definition);
+        foreach ($this->getDefinitions(true) as $definition) {
+            $this->bootstrapDefinition($definition);
         }
     }
 
     /**
-     * Bootstrap the concrete class.
+     * Bootstrap the definition.
      * @param AbstractDefinition $definition
      * @phpstan-param ConcreteDefinition $definition
      * @return void
      */
-    protected function boostrapConcreteClass(AbstractDefinition $definition): void
-    {
-        // Intentionally left blank
-    }
+    public function bootstrapDefinition(AbstractDefinition $definition) {}
 
     final public function getCustomObjectClassNames(bool $with_namespace = true): array
     {
@@ -115,18 +115,26 @@ abstract class AbstractDefinitionManager
     }
 
     /**
-     * Get the dropdown definition corresponding to given system name.
+     * Get the definition corresponding to given system name.
      *
      * @param string $system_name
      * @phpstan-return ConcreteDefinition|null
      */
-    final protected function getDefinition(string $system_name): ?AbstractDefinition
+    final public function getDefinition(string $system_name): ?AbstractDefinition
     {
         return $this->getDefinitions()[$system_name] ?? null;
     }
 
     /**
-     * Get all the dropdown definitions.
+     * Clear the definitions cache.
+     */
+    final public function clearDefinitionsCache(): void
+    {
+        $this->definitions_data = null;
+    }
+
+    /**
+     * Get all the definitions.
      *
      * @param bool $only_active
      * @return AbstractDefinition[]
@@ -134,19 +142,20 @@ abstract class AbstractDefinitionManager
      */
     final public function getDefinitions(bool $only_active = false): array
     {
-        $definition_class = static::getDefinitionClass();
-        if (!array_key_exists($definition_class, $this->definitions_data)) {
-            $this->definitions_data[$definition_class] = getAllDataFromTable($definition_class::getTable());
+        $definition_object = static::getDefinitionClassInstance();
+
+        if ($this->definitions_data === null) {
+            $this->definitions_data = getAllDataFromTable($definition_object::getTable());
         }
 
         $definitions = [];
-        foreach ($this->definitions_data[$definition_class] as $definition_data) {
+        foreach ($this->definitions_data as $definition_data) {
             if ($only_active && (bool) $definition_data['is_active'] !== true) {
                 continue;
             }
 
             $system_name = $definition_data['system_name'];
-            $definition = new $definition_class();
+            $definition = new $definition_object();
             $definition->getFromResultSet($definition_data);
             $definitions[$system_name] = $definition;
         }

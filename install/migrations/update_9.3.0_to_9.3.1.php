@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -40,7 +39,7 @@
 /**
  * Update from 9.3.0 to 9.3.1
  *
- * @return bool for success (will die for most error)
+ * @return bool
  **/
 function update930to931()
 {
@@ -53,8 +52,6 @@ function update930to931()
     $updateresult     = true;
     $ADDTODISPLAYPREF = [];
 
-   //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '9.3.1'));
     $migration->setVersion('9.3.1');
 
     /** Change field type */
@@ -66,21 +63,21 @@ function update930to931()
     );
     /** /Change field type */
 
-   // add option to hide/show source on login page
+    // add option to hide/show source on login page
     $migration->addConfig(['display_login_source' => 1]);
 
-   // supplier now have use_notification = 1 by default
+    // supplier now have use_notification = 1 by default
     $migration->changeField(
         'glpi_suppliers_tickets',
         'use_notification',
         'use_notification',
         'bool',
         [
-            'value' => 1
+            'value' => 1,
         ]
     );
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->executeMigration();
 
     return $updateresult;

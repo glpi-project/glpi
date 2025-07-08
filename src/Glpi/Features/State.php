@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -50,12 +50,11 @@ trait State
         global $CFG_GLPI;
 
         if (!in_array(static::class, $CFG_GLPI['state_types'])) {
-            trigger_error(
+            throw new \LogicException(
                 sprintf(
                     'Class %s must be present in $CFG_GLPI[\'state_types\']',
                     static::class
-                ),
-                E_USER_ERROR
+                )
             );
         }
     }
@@ -75,7 +74,7 @@ trait State
             'itemtype' => \State::getType(),
             'items_id' => $id,
             'visible_itemtype' => static::class,
-            'is_visible' => 1
+            'is_visible' => 1,
         ]);
     }
 
@@ -94,17 +93,17 @@ trait State
                         DropdownVisibility::getTable() => 'items_id',
                         \State::getTable() => 'id', [
                             'AND' => [
-                                DropdownVisibility::getTable() . '.itemtype' => \State::getType()
-                            ]
-                        ]
-                    ]
-                ]
+                                DropdownVisibility::getTable() . '.itemtype' => \State::getType(),
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'WHERE' => [
                 DropdownVisibility::getTable() . '.itemtype' => \State::getType(),
                 DropdownVisibility::getTable() . '.visible_itemtype' => static::class,
-                DropdownVisibility::getTable() . '.is_visible' => 1
-            ]
+                DropdownVisibility::getTable() . '.is_visible' => 1,
+            ],
         ];
     }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -171,12 +171,12 @@ function _sn($sing, $plural, $nb, $domain = 'glpi')
 function _x($ctx, $str, $domain = 'glpi')
 {
 
-   // simulate pgettext
+    // simulate pgettext
     $msg   = $ctx . "\004" . $str;
     $trans = __($msg, $domain);
 
     if ($trans == $msg) {
-       // No translation
+        // No translation
         return $str;
     }
     return $trans;
@@ -199,17 +199,17 @@ function _x($ctx, $str, $domain = 'glpi')
 function _nx($ctx, $sing, $plural, $nb, $domain = 'glpi')
 {
 
-   // simulate pgettext
+    // simulate pgettext
     $singmsg    = $ctx . "\004" . $sing;
     $pluralmsg  = $ctx . "\004" . $plural;
     $trans      = _n($singmsg, $pluralmsg, $nb, $domain);
 
     if ($trans == $singmsg) {
-       // No translation
+        // No translation
         return $sing;
     }
     if ($trans == $pluralmsg) {
-       // No translation
+        // No translation
         return $plural;
     }
     return $trans;

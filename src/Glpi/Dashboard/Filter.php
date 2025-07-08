@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -163,7 +163,7 @@ class Filter extends \CommonDBChild
             'WHERE' => [
                 'dashboards_dashboards_id' => $dashboards_id,
                 'users_id'                 => Session::getLoginUserID(),
-            ]
+            ],
         ]);
 
         $settings = $dr_iterator->count() === 1 ? $dr_iterator->current()['filter'] : null;

@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,9 +35,12 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Destination\ConfigFieldWithStrategiesInterface;
 use Override;
 
-final class ITILFollowupFieldConfig implements JsonFieldInterface
+final class ITILFollowupFieldConfig implements
+    JsonFieldInterface,
+    ConfigFieldWithStrategiesInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
     public const STRATEGY = 'strategy';
@@ -47,8 +49,7 @@ final class ITILFollowupFieldConfig implements JsonFieldInterface
     public function __construct(
         private ITILFollowupFieldStrategy $strategy,
         private ?array $specific_itilfollowuptemplates_ids = null,
-    ) {
-    }
+    ) {}
 
     #[Override]
     public static function jsonDeserialize(array $data): self
@@ -73,9 +74,18 @@ final class ITILFollowupFieldConfig implements JsonFieldInterface
         ];
     }
 
-    public function getStrategy(): ITILFollowupFieldStrategy
+    #[Override]
+    public static function getStrategiesInputName(): string
     {
-        return $this->strategy;
+        return self::STRATEGY;
+    }
+
+    /**
+     * @return array<ITILFollowupFieldStrategy>
+     */
+    public function getStrategies(): array
+    {
+        return [$this->strategy];
     }
 
     public function getSpecificITILFollowupTemplatesIds(): ?array

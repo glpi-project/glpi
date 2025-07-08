@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,13 +35,24 @@
 
 namespace Glpi\Form\Export\Specification;
 
+use Glpi\Form\Export\Serializer\DynamicExportData;
+
 final class FormContentSpecification
 {
     public int $id;
+    public string $uuid;
     public string $name;
-    public string $header;
+    public ?string $header;
+    public ?string $description;
+    public string $illustration;
+    public string $category_name;
     public string $entity_name;
     public bool $is_recursive;
+    public bool $is_active;
+    public string $submit_button_visibility_strategy;
+
+    /** @var ConditionDataSpecification[] $conditions */
+    public array $submit_button_conditions;
 
     /** @var SectionContentSpecification[] $sections */
     public array $sections = [];
@@ -54,6 +65,12 @@ final class FormContentSpecification
 
     /** @var AccesControlPolicyContentSpecification[] $policies */
     public array $policies = [];
+
+    /** @var DestinationContentSpecification[] $destinations */
+    public array $destinations = [];
+
+    /** @var TranslationContentSpecification[] $translations */
+    public array $translations = [];
 
     /** @var DataRequirementSpecification[] $data_requirements */
     public array $data_requirements = [];
@@ -72,5 +89,10 @@ final class FormContentSpecification
         $requirement->itemtype = $class;
         $requirement->name = $name;
         $this->data_requirements[] = $requirement;
+    }
+
+    public function addRequirementsFromDynamicData(DynamicExportData $data): void
+    {
+        array_push($this->data_requirements, ...$data->getRequirements());
     }
 }

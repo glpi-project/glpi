@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -66,23 +66,23 @@ class DeviceNetworkCard extends CommonDevice
                 [
                     'name'  => 'mac_default',
                     'label' => __('MAC address by default'),
-                    'type'  => 'text'
+                    'type'  => 'text',
                 ],
                 [
                     'name'  => 'bandwidth',
                     'label' => __('Flow'),
-                    'type'  => 'text'
+                    'type'  => 'text',
                 ],
                 [
                     'name'  => 'devicenetworkcardmodels_id',
                     'label' => _n('Model', 'Models', 1),
-                    'type'  => 'dropdownValue'
+                    'type'  => 'dropdownValue',
                 ],
                 [
                     'name'  => 'none',
                     'label' => RegisteredID::getTypeName(Session::getPluralNumber()),
-                    'type'  => 'registeredIDChooser'
-                ]
+                    'type'  => 'registeredIDChooser',
+                ],
             ]
         );
     }
@@ -112,7 +112,7 @@ class DeviceNetworkCard extends CommonDevice
             'table'              => 'glpi_devicenetworkcardmodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -218,9 +218,9 @@ class DeviceNetworkCard extends CommonDevice
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => 'glpi_items_devicenetworkcards',
-                    'joinparams'         => $main_joinparams
-                ]
-            ]
+                    'joinparams'         => $main_joinparams,
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -231,7 +231,31 @@ class DeviceNetworkCard extends CommonDevice
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'datatype'           => 'string',
-            'joinparams'         => $main_joinparams
+            'joinparams'         => $main_joinparams,
+        ];
+
+        $tab[] = [
+            'id'                 => '1330',
+            'table'              => 'glpi_items_devicenetworkcards',
+            'field'              => 'serial',
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Serial Number')),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'string',
+            'massiveaction'      => false,
+            'joinparams'         => $main_joinparams,
+        ];
+
+        $tab[] = [
+            'id'                 => '1331',
+            'table'              => 'glpi_items_devicemotherboards',
+            'field'              => 'otherserial',
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Inventory number')),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'string',
+            'massiveaction'      => false,
+            'joinparams'         => $main_joinparams,
         ];
 
         return $tab;
@@ -240,6 +264,6 @@ class DeviceNetworkCard extends CommonDevice
 
     public static function getIcon()
     {
-        return "fas fa-network-wired";
+        return NetworkPort::getIcon();
     }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,8 +34,8 @@
 
 namespace Glpi\Dropdown;
 
+use Glpi\CustomObject\AbstractDefinition;
 use Glpi\CustomObject\AbstractDefinitionManager;
-use ReflectionClass;
 
 /**
  * @extends AbstractDefinitionManager<DropdownDefinition>
@@ -47,12 +47,6 @@ final class DropdownDefinitionManager extends AbstractDefinitionManager
      * @return static|null
      */
     private static ?DropdownDefinitionManager $instance = null;
-
-    /**
-     * Definitions cache.
-     * @var DropdownDefinition[]|null
-     */
-    protected ?array $definitions_data;
 
     /**
      * Get singleton instance
@@ -68,21 +62,30 @@ final class DropdownDefinitionManager extends AbstractDefinitionManager
         return self::$instance;
     }
 
-    public static function getDefinitionClass(): string
+    /**
+     * Unset the singleton instance
+     *
+     * @return void
+     */
+    public static function unsetInstance(): void
     {
-        return DropdownDefinition::class;
+        self::$instance = null;
     }
 
-    public function getReservedSystemNames(): array
+    public static function getDefinitionClassInstance(): AbstractDefinition
     {
-        $standard_dropdowns = \Dropdown::getStandardDropdownItemTypes();
+        return new DropdownDefinition();
+    }
+
+    public function getReservedSystemNamesPattern(): string
+    {
+        $standard_dropdowns = \Dropdown::getStandardDropdownItemTypes(check_rights: false);
         $core_dropdowns = [];
         foreach ($standard_dropdowns as $optgroup) {
             foreach (array_keys($optgroup) as $classname) {
                 if (
                     !is_subclass_of($classname, Dropdown::class)
                     && !isPluginItemType($classname)
-                    && preg_match('/(Model|Type)$/i', $classname) !== 1 // `*Model` and `*Type` patterns are already blacklisted
                 ) {
                     // Dropdown is not a custom one or from a plugin
                     $core_dropdowns[] = $classname;
@@ -90,13 +93,21 @@ final class DropdownDefinitionManager extends AbstractDefinitionManager
             }
         }
 
-        return $core_dropdowns;
+        return '/^(' . \implode('|', \array_map(fn($classname) => \preg_quote($classname, '/'), $core_dropdowns)) . ')$/i';
     }
 
     public function autoloadClass(string $classname): void
     {
-        $ns = static::getDefinitionClass()::getCustomObjectNamespace() . '\\';
-        $pattern = '/^' . preg_quote($ns, '/') . '([A-Za-z]+)$/';
+        $definition_object = self::getDefinitionClassInstance();
+        $ns = $definition_object::getCustomObjectNamespace() . '\\';
+
+        if (!\str_starts_with($classname, $ns)) {
+            return;
+        }
+
+        $class_suffix = $definition_object::getCustomObjectClassSuffix();
+
+        $pattern = '/^' . preg_quote($ns, '/') . '(' . $definition_object::SYSTEM_NAME_PATTERN . ')' . $class_suffix . '$/';
 
         if (preg_match($pattern, $classname) === 1) {
             $system_name = preg_replace($pattern, '$1', $classname);
@@ -120,19 +131,12 @@ final class DropdownDefinitionManager extends AbstractDefinitionManager
 namespace Glpi\\CustomDropdown;
 
 use Glpi\\Dropdown\\Dropdown;
-use Glpi\\Dropdown\\DropdownDefinition;
 
 final class {$definition->getDropdownClassName(false)} extends Dropdown {
-    protected static DropdownDefinition \$definition;
+    protected static string \$definition_system_name = '{$definition->fields['system_name']}';
     public static \$rightname = '{$rightname}';
 }
 PHP
         );
-
-        // Set the definition of the concrete class using reflection API.
-        // It permits to directly store a pointer to the definition on the object without having
-        // to make the property publicly writable.
-        $reflected_class = new ReflectionClass($definition->getDropdownClassName());
-        $reflected_class->setStaticPropertyValue('definition', $definition);
     }
 }

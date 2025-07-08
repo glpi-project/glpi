@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,7 +39,6 @@ use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
 use Glpi\Form\AccessControl\ControlType\DirectAccess;
 use Glpi\Form\Form;
-use Session;
 
 final class FormAccessControlManager
 {
@@ -48,12 +47,13 @@ final class FormAccessControlManager
      */
     private static ?FormAccessControlManager $instance = null;
 
+    /** @var ControlTypeInterface[] */
+    private array $plugins_policies = [];
+
     /**
      * Private constructor (singleton).
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Singleton access method.
@@ -87,7 +87,7 @@ final class FormAccessControlManager
         $controls = $form->getAccessControls();
         $controls = array_filter(
             $controls,
-            fn ($control) => $control->fields['is_active'],
+            fn($control) => $control->fields['is_active'],
         );
         return array_values($controls);
     }
@@ -121,6 +121,14 @@ final class FormAccessControlManager
             return true;
         }
 
+        if ($form->isDeleted()) {
+            return false;
+        }
+
+        if (!$form->isActive()) {
+            return false;
+        }
+
         $access_controls_policies = $this->getActiveAccessControlsForForm($form);
         if (count($access_controls_policies) === 0) {
             // Refuse access if no access controls are configured.
@@ -128,6 +136,7 @@ final class FormAccessControlManager
         }
 
         return $this->validateAccessControlsPolicies(
+            $form,
             $access_controls_policies,
             $parameters
         );
@@ -170,10 +179,16 @@ final class FormAccessControlManager
         // Add Access Control Strategy warnings
         $access_controls = $this->getPossibleAccessControlsStrategies();
         foreach ($access_controls as $access_control) {
-            $warnings = $access_control->getWarnings($form, $warnings);
+            array_push($warnings, ...$access_control->getWarnings($form));
         }
 
         return $warnings;
+    }
+
+    public function registerPluginAccessControlPolicy(
+        ControlTypeInterface $control
+    ): void {
+        $this->plugins_policies[] = $control;
     }
 
     private function addWarningIfFormIsNotActive(
@@ -199,6 +214,7 @@ final class FormAccessControlManager
     }
 
     private function validateAccessControlsPolicies(
+        Form $form,
         array $policies,
         FormAccessParameters $parameters
     ): bool {
@@ -208,6 +224,7 @@ final class FormAccessControlManager
         /** @var FormAccessControl[] $policies */
         foreach ($policies as $policiy) {
             $votes[] = $policiy->getStrategy()->canAnswer(
+                $form,
                 $policiy->getConfig(),
                 $parameters
             );
@@ -242,9 +259,8 @@ final class FormAccessControlManager
         $types = [
             new AllowList(),
             new DirectAccess(),
+            ...$this->plugins_policies,
         ];
-
-        // TODO: plugin support
 
         return $types;
     }
@@ -256,7 +272,7 @@ final class FormAccessControlManager
     private function getDefinedStrategies(array $access_controls)
     {
         return array_map(
-            fn ($control) => $control->getStrategy(),
+            fn($control) => $control->getStrategy(),
             $access_controls
         );
     }
@@ -268,13 +284,13 @@ final class FormAccessControlManager
     private function getMissingStrategies(array $defined_strategies)
     {
         $defined_strategies_classes = array_map(
-            fn ($strategy) => $strategy::class,
+            fn($strategy) => $strategy::class,
             $defined_strategies
         );
 
         return array_filter(
             $this->getPossibleAccessControlsStrategies(),
-            fn (ControlTypeInterface $strategy) => !in_array(
+            fn(ControlTypeInterface $strategy) => !in_array(
                 $strategy::class,
                 $defined_strategies_classes
             )

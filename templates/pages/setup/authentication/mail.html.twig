@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -34,11 +33,29 @@
 {% extends 'generic_show_form.html.twig' %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-{% block more_fields %}
-    {{ fields.textField('host', item.fields['host'], __('Email domain Name (users email will be login@domain)')) }}
+{% block form_fields %}
+    {{ fields.textField('name', item.fields['name'], __('Name'), field_options) }}
+
+    {{ fields.textareaField('comment', item.fields['comment'], __('Comments'), field_options) }}
+
+    {{ fields.dropdownYesNo('is_default', item.fields['is_default'], __('Default server'), field_options) }}
+    {{ fields.dropdownYesNo('is_active', item.fields['is_active'], __('Active'), field_options) }}
+    {{ fields.nullField() }}
+
+    {{ fields.smallTitle(__('Server configuration')) }}
     {% set connect_opts = call('Toolbox::parseMailServerConnectString', [item.fields['connect_string']]) %}
     {{ include('pages/setup/mailcollector/server_config_fields.html.twig', {
         'connect_opts': connect_opts,
-        'host': item.fields['connect_string']
+        'connect_string': item.fields['connect_string'],
+        'protocol_choices': protocol_choices,
     }) }}
+
+    {{ fields.smallTitle(__('Email options')) }}
+    {{ fields.textField(
+       'host',
+       item.fields['host'],
+       __('Email domain name'), {
+            helper: __('Users email will be login@domainname')
+        }
+    ) }}
 {% endblock %}

@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -90,6 +89,7 @@ final class FormSerializerAccessPoliciesTest extends \DbTestCase
     ): void {
         // Arrange: create a form with a direct access policy
         $builder = new FormBuilder("My test form");
+        $builder->setUseDefaultAccessPolicies(false);
         $builder->addAccessControl(
             strategy: DirectAccess::class,
             config: new DirectAccessConfig(
@@ -130,26 +130,26 @@ final class FormSerializerAccessPoliciesTest extends \DbTestCase
             'user_ids' => [
                 getItemByTypeName(User::class, "glpi", true),
                 getItemByTypeName(User::class, "tech", true),
-            ]
+            ],
         ];
         yield 'With groups' => [
             'group_ids' => [
                 getItemByTypeName(Group::class, "_test_group_1", true),
                 getItemByTypeName(Group::class, "_test_group_2", true),
-            ]
+            ],
         ];
         yield 'With profiles' => [
             'profile_ids' => [
                 getItemByTypeName(Profile::class, "Super-Admin", true),
                 getItemByTypeName(Profile::class, "Read-Only", true),
-            ]
+            ],
         ];
         yield 'With users and special value' => [
             'user_ids' => [
                 AbstractRightsDropdown::ALL_USERS,
                 getItemByTypeName(User::class, "glpi", true),
                 getItemByTypeName(User::class, "tech", true),
-            ]
+            ],
         ];
         yield 'With everything' => [
             'user_ids' => [
@@ -177,6 +177,7 @@ final class FormSerializerAccessPoliciesTest extends \DbTestCase
     ): void {
         // Arrange: Create a form with an allow list policy
         $builder = new FormBuilder("My test form");
+        $builder->setUseDefaultAccessPolicies(false);
         $builder->addAccessControl(
             strategy: AllowList::class,
             config: new AllowListConfig(
@@ -225,6 +226,7 @@ final class FormSerializerAccessPoliciesTest extends \DbTestCase
         );
 
         $builder = new FormBuilder("My test form");
+        $builder->setUseDefaultAccessPolicies(false);
         $builder->addAccessControl(AllowList::class, new AllowListConfig(
             user_ids: [$user_1->getID(), $user_2->getID(), AbstractRightsDropdown::ALL_USERS],
             group_ids: [$group_1->getID(), $group_2->getID()],
@@ -284,6 +286,7 @@ final class FormSerializerAccessPoliciesTest extends \DbTestCase
         );
 
         $builder = new FormBuilder("My test form");
+        $builder->setUseDefaultAccessPolicies(false);
         $builder->addAccessControl(AllowList::class, new AllowListConfig(
             user_ids: [$user_1->getID(), $user_2->getID(), AbstractRightsDropdown::ALL_USERS],
             group_ids: [$group_1->getID(), $group_2->getID()],

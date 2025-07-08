@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,6 +37,7 @@ namespace tests\units;
 use DbTestCase;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Psr\Log\LogLevel;
 
 /* Test for inc/dbutils.class.php */
@@ -62,7 +62,7 @@ class DbUtilsTest extends DbTestCase
             ['glpi_computers', 'computers_id'],
             ['glpi_users', 'users_id'],
             ['glpi_plugin_foo_bars', 'plugin_foo_bars_id'],
-            ['glpi_plugin_fooglpis', 'plugin_fooglpis_id']
+            ['glpi_plugin_fooglpis', 'plugin_fooglpis_id'],
         ];
     }
 
@@ -72,7 +72,7 @@ class DbUtilsTest extends DbTestCase
         return [
             ['glpi_computers', 'computers_id'],
             ['glpi_users', 'users_id'],
-            ['glpi_plugin_foo_bars', 'plugin_foo_bars_id']
+            ['glpi_plugin_foo_bars', 'plugin_foo_bars_id'],
         ];
     }
 
@@ -230,14 +230,41 @@ class DbUtilsTest extends DbTestCase
         if ($is_valid_type) {
             $this->assertSame($type, $instance->getItemTypeForTable($table));
         } else {
-            $this->assertSame('UNKNOWN', $instance->getItemTypeForTable($table));
+            $this->assertNull($instance->getItemTypeForTable($table));
         }
 
         //keep testing old method from db.function
         if ($is_valid_type) {
             $this->assertSame($type, getItemTypeForTable($table));
         } else {
-            $this->assertSame('UNKNOWN', getItemTypeForTable($table));
+            $this->assertNull(getItemTypeForTable($table));
+        }
+    }
+
+    #[DataProvider('dataTableType')]
+    public function testGetItemForTable($table, $type, $is_valid_type)
+    {
+        require_once __DIR__ . '/../../tests/fixtures/another_test.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginbarabstractstuff.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginbarfoo.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginfoobar.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginfooservice.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginfoo_search_item_filter.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginfoo_item_filter.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginfoo_search_a_b_c_d_e_f_g_bar.php';
+        require_once __DIR__ . '/../../tests/fixtures/test_a_b.php';
+
+        $instance = new \DbUtils();
+        if ($is_valid_type) {
+            $this->assertInstanceOf($type, $instance->getItemForTable($table));
+        } else {
+            $this->assertNull($instance->getItemForTable($table));
+        }
+
+        if ($is_valid_type) {
+            $this->assertInstanceOf($type, getItemForTable($table));
+        } else {
+            $this->assertNull(getItemForTable($table));
         }
     }
 
@@ -280,7 +307,7 @@ class DbUtilsTest extends DbTestCase
             $this->assertFalse($instance->getItemForItemtype($itemtype));
         }
 
-       //keep testing old method from db.function
+        //keep testing old method from db.function
         if ($is_valid) {
             $this->assertInstanceOf($expected_class, getItemForItemtype($itemtype));
         } else {
@@ -313,6 +340,68 @@ class DbUtilsTest extends DbTestCase
         );
     }
 
+    public static function itemtypeForeignKeyFieldProvider()
+    {
+        yield [
+            'key'       => 'computers_id',
+            'itemtype'  => \Computer::class,
+        ];
+        yield [
+            'key'       => 'appliances_items_id',
+            'itemtype'  => \Appliance_Item::class,
+        ];
+        yield [
+            'key'       => 'dashboards_dashboards_id',
+            'itemtype'  => \Glpi\Dashboard\Dashboard::class,
+        ];
+        yield [
+            'key'       => 'plugin_tester_assets_foos_id',
+            'itemtype'  => \GlpiPlugin\Tester\Asset\Foo::class,
+        ];
+        yield [
+            'key'       => 'plugin_tester_mypseudopsr4classes_id',
+            'itemtype'  => \PluginTesterMyPseudoPsr4Class::class,
+        ];
+        yield [
+            'key'       => 'invalid_id',
+            'itemtype'  => null,
+        ];
+    }
+
+    #[DataProvider('itemtypeForeignKeyFieldProvider')]
+    public function testGetItemtypeForForeignKeyField(string $key, ?string $itemtype)
+    {
+        $instance = new \DbUtils();
+        if ($itemtype !== null) {
+            $this->assertSame($itemtype, $instance->getItemtypeForForeignKeyField($key));
+        } else {
+            $this->assertNull($instance->getItemtypeForForeignKeyField($key));
+        }
+
+        if ($itemtype !== null) {
+            $this->assertSame($itemtype, $instance->getItemtypeForForeignKeyField($key));
+        } else {
+            $this->assertNull($instance->getItemtypeForForeignKeyField($key));
+        }
+    }
+
+    #[DataProvider('itemtypeForeignKeyFieldProvider')]
+    public function testGetItemForForeignKeyField(string $key, ?string $itemtype)
+    {
+        $instance = new \DbUtils();
+        if ($itemtype !== null) {
+            $this->assertInstanceOf($itemtype, $instance->getItemForForeignKeyField($key));
+        } else {
+            $this->assertNull($instance->getItemForForeignKeyField($key));
+        }
+
+        if ($itemtype !== null) {
+            $this->assertInstanceOf($itemtype, $instance->getItemForForeignKeyField($key));
+        } else {
+            $this->assertNull($instance->getItemForForeignKeyField($key));
+        }
+    }
+
     public static function dataPlural()
     {
 
@@ -328,7 +417,7 @@ class DbUtilsTest extends DbTestCase
             ['memory', 'memories'],
             ['licence', 'licences'],
             ['pdu', 'pdus'],
-            ['metrics', 'metrics']
+            ['metrics', 'metrics'],
         ];
     }
 
@@ -586,12 +675,12 @@ class DbUtilsTest extends DbTestCase
         $it = new \DBmysqlIterator(null);
 
         $it->execute(['FROM' => 'glpi_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('glpi_computers')]);
-        $this->assertSame('SELECT * FROM `glpi_computers`', $it->getSql());
+        $this->assertSame('SELECT * FROM `glpi_computers` WHERE true', $it->getSql());
 
         //keep testing old method from db.function
         $this->assertEmpty(getEntitiesRestrictRequest('AND', 'glpi_computers'));
         $it->execute(['FROM' => 'glpi_computers', 'WHERE' => getEntitiesRestrictCriteria('glpi_computers')]);
-        $this->assertSame('SELECT * FROM `glpi_computers`', $it->getSql());
+        $this->assertSame('SELECT * FROM `glpi_computers` WHERE (true)', $it->getSql());
 
         // See all
         $this->setEntity('_test_root_entity', true);
@@ -611,7 +700,7 @@ class DbUtilsTest extends DbTestCase
             "WHERE ( `glpi_computers`.`entities_id` IN ('$root', '$child1', '$child2')  ) ",
             getEntitiesRestrictRequest('WHERE', 'glpi_computers')
         );
-         $it->execute(['FROM' => 'glpi_computers', 'WHERE' => getEntitiesRestrictCriteria('glpi_computers')]);
+        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => getEntitiesRestrictCriteria('glpi_computers')]);
         $this->assertSame(
             "SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN ('$root', '$child1', '$child2'))",
             $it->getSql()
@@ -762,6 +851,18 @@ class DbUtilsTest extends DbTestCase
             $it->getSql()
         );
 
+        // Entity value is empty array
+        $it->execute('glpi_entities', $instance->getEntitiesRestrictCriteria('glpi_entities', '', [], true));
+        $this->hasPhpLogRecordThatContains(
+            'User Deprecated: The `DBmysqlIterator::execute()` method signature changed. Its previous signature is deprecated.',
+            LogLevel::INFO
+        );
+        $this->assertSame(0, $it->count());
+        $this->assertSame(
+            'SELECT * FROM `glpi_entities` WHERE false',
+            $it->getSql()
+        );
+
         //keep testing old method from db.function
         $this->assertSame(
             "WHERE ( `entities_id` IN ('$child2')  OR (`is_recursive`='1' AND `entities_id` IN (0, $root)) ) ",
@@ -784,6 +885,18 @@ class DbUtilsTest extends DbTestCase
             'SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` = \'7\')',
             $it->getSql()
         );
+
+        // Entity value is empty array
+        $it->execute('glpi_entities', getEntitiesRestrictCriteria('glpi_entities', '', [], true));
+        $this->hasPhpLogRecordThatContains(
+            'User Deprecated: The `DBmysqlIterator::execute()` method signature changed. Its previous signature is deprecated.',
+            LogLevel::INFO
+        );
+        $this->assertSame(0, $it->count());
+        $this->assertSame(
+            'SELECT * FROM `glpi_entities` WHERE (false)',
+            $it->getSql()
+        );
     }
 
     /**
@@ -802,20 +915,20 @@ class DbUtilsTest extends DbTestCase
         $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
         $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
 
-       //Cache tests:
-       //- if $cache === 0; we do not expect anything,
-       //- if $cache === 1; we expect cache to be empty before call, and populated after
-       //- if $hit   === 1; we expect cache to be populated
+        //Cache tests:
+        //- if $cache === 0; we do not expect anything,
+        //- if $cache === 1; we expect cache to be empty before call, and populated after
+        //- if $hit   === 1; we expect cache to be populated
 
         $ckey_ent0 = 'ancestors_cache_glpi_entities_' . $ent0;
         $ckey_ent1 = 'ancestors_cache_glpi_entities_' . $ent1;
         $ckey_ent2 = 'ancestors_cache_glpi_entities_' . $ent2;
 
-       //test on ent0
+        //test on ent0
         $expected = [0 => 0];
         if ($cache === true && $hit === false) {
             $this->assertFalse($GLPI_CACHE->has($ckey_ent0));
-        } else if ($cache === true && $hit === true) {
+        } elseif ($cache === true && $hit === true) {
             $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent0));
         }
 
@@ -826,11 +939,11 @@ class DbUtilsTest extends DbTestCase
             $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent0));
         }
 
-       //test on ent1
+        //test on ent1
         $expected = [0 => 0, $ent0 => $ent0];
         if ($cache === true && $hit === false) {
             $this->assertFalse($GLPI_CACHE->has($ckey_ent1));
-        } else if ($cache === true && $hit === true) {
+        } elseif ($cache === true && $hit === true) {
             $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent1));
         }
 
@@ -845,7 +958,7 @@ class DbUtilsTest extends DbTestCase
         $expected = [0 => 0, $ent0 => $ent0];
         if ($cache === true && $hit === false) {
             $this->assertFalse($GLPI_CACHE->has($ckey_ent2));
-        } else if ($cache === true && $hit === true) {
+        } elseif ($cache === true && $hit === true) {
             $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent2));
         }
 
@@ -859,12 +972,13 @@ class DbUtilsTest extends DbTestCase
         //test with new sub entity
         //Cache tests:
         //Cache is updated on entity creation; so even if we do not expect $hit; we got it.
-        $new_id = getItemByTypeName('Entity', 'Sub child entity', true);
-        if (!$new_id) {
-            $entity = new \Entity();
+        $entity = new \Entity();
+        if ($entity->getFromDBByCrit(['name' => 'Sub child entity'])) {
+            $new_id = $entity->getID();
+        } else {
             $new_id = $entity->add([
                 'name'         => 'Sub child entity',
-                'entities_id'  => $ent1
+                'entities_id'  => $ent1,
             ]);
             $this->assertGreaterThan(0, $new_id);
         }
@@ -883,12 +997,13 @@ class DbUtilsTest extends DbTestCase
         }
 
         //test with another new sub entity
-        $new_id2 = getItemByTypeName('Entity', 'Sub child entity 2', true);
-        if (!$new_id2) {
-            $entity = new \Entity();
+        $entity = new \Entity();
+        if ($entity->getFromDBByCrit(['name' => 'Sub child entity 2'])) {
+            $new_id2 = $entity->getID();
+        } else {
             $new_id2 = $entity->add([
                 'name'         => 'Sub child entity 2',
-                'entities_id'  => $ent2
+                'entities_id'  => $ent2,
             ]);
             $this->assertGreaterThan(0, $new_id2);
         }
@@ -920,7 +1035,7 @@ class DbUtilsTest extends DbTestCase
     {
         global $DB;
         $this->login();
-       //ensure db cache is unset
+        //ensure db cache is unset
         $DB->update('glpi_entities', ['ancestors_cache' => null], [true]);
         $this->runGetAncestorsOf();
 
@@ -929,7 +1044,7 @@ class DbUtilsTest extends DbTestCase
             countElementsInTable(
                 'glpi_entities',
                 [
-                    'NOT' => ['ancestors_cache' => null]
+                    'NOT' => ['ancestors_cache' => null],
                 ]
             )
         );
@@ -937,9 +1052,7 @@ class DbUtilsTest extends DbTestCase
         $this->runGetAncestorsOf();
     }
 
-    /**
-     * @tags cache
-     */
+    #[Group('cache')]
     public function testGetAncestorsOfCached()
     {
         $this->login();
@@ -987,7 +1100,7 @@ class DbUtilsTest extends DbTestCase
         $expected = [$ent0 => $ent0, $ent1 => $ent1, $ent2 => $ent2];
         if ($cache === true && $hit === false) {
             $this->assertFalse($GLPI_CACHE->has($ckey_ent0));
-        } else if ($cache === true && $hit === true) {
+        } elseif ($cache === true && $hit === true) {
             $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent0));
         }
 
@@ -1002,7 +1115,7 @@ class DbUtilsTest extends DbTestCase
         $expected = [$ent1 => $ent1];
         if ($cache === true && $hit === false) {
             $this->assertFalse($GLPI_CACHE->has($ckey_ent1));
-        } else if ($cache === true && $hit === true) {
+        } elseif ($cache === true && $hit === true) {
             $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent1));
         }
 
@@ -1017,7 +1130,7 @@ class DbUtilsTest extends DbTestCase
         $expected = [$ent2 => $ent2];
         if ($cache === true && $hit === false) {
             $this->assertFalse($GLPI_CACHE->has($ckey_ent2));
-        } else if ($cache === true && $hit === true) {
+        } elseif ($cache === true && $hit === true) {
             $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent2));
         }
 
@@ -1031,12 +1144,13 @@ class DbUtilsTest extends DbTestCase
         //test with new sub entity
         //Cache tests:
         //Cache is updated on entity creation; so even if we do not expect $hit; we got it.
-        $new_id = getItemByTypeName('Entity', 'Sub child entity', true);
-        if (!$new_id) {
-            $entity = new \Entity();
-            $new_id = (int)$entity->add([
+        $entity = new \Entity();
+        if ($entity->getFromDBByCrit(['name' => 'Sub child entity'])) {
+            $new_id = $entity->getID();
+        } else {
+            $new_id = (int) $entity->add([
                 'name'         => 'Sub child entity',
-                'entities_id'  => $ent1
+                'entities_id'  => $ent1,
             ]);
             $this->assertGreaterThan(0, $new_id);
         }
@@ -1054,12 +1168,13 @@ class DbUtilsTest extends DbTestCase
         }
 
         //test with another new sub entity
-        $new_id2 = getItemByTypeName('Entity', 'Sub child entity 2', true);
-        if (!$new_id2) {
-            $entity = new \Entity();
-            $new_id2 = (int)$entity->add([
+        $entity = new \Entity();
+        if ($entity->getFromDBByCrit(['name' => 'Sub child entity 2'])) {
+            $new_id2 = $entity->getID();
+        } else {
+            $new_id2 = (int) $entity->add([
                 'name'         => 'Sub child entity 2',
-                'entities_id'  => $ent1
+                'entities_id'  => $ent1,
             ]);
             $this->assertGreaterThan(0, $new_id2);
         }
@@ -1121,17 +1236,15 @@ class DbUtilsTest extends DbTestCase
             $instance->countElementsInTable(
                 'glpi_entities',
                 [
-                    'NOT' => ['sons_cache' => null]
+                    'NOT' => ['sons_cache' => null],
                 ]
             )
         );
-       //run a second time: db cache must be set
+        //run a second time: db cache must be set
         $this->runGetSonsOf();
     }
 
-    /**
-     * @tags cache
-     */
+    #[Group('cache')]
     public function testGetSonsOfCached()
     {
         $this->login();
@@ -1358,7 +1471,7 @@ class DbUtilsTest extends DbTestCase
                 . PHP_EOL;
         }
         if (!empty($missing_relations)) {
-            $msg .= 'Following relations are missing:'
+            $msg .= 'Following relations are missing (did you forget to declare them in inc/relation.constant.php ? ):'
                 . PHP_EOL
                 . implode(PHP_EOL, $missing_relations)
                 . PHP_EOL;
@@ -1456,47 +1569,47 @@ class DbUtilsTest extends DbTestCase
         $test_child_1 = getItemByTypeName('Entity', '_test_child_1', true);
 
         return [
-         //will return name without changes
+            //will return name without changes
             [
-            //not a template
+                //not a template
                 'name'         => 'Computer 1',
                 'field'        => 'name',
                 'is_template'  => false,
                 'itemtype'     => 'Computer',
                 'entities_id'  => -1, //default
-                'expected'     => 'Computer 1'
+                'expected'     => 'Computer 1',
             ], [
-            // not existing on entity, with multibyte strings
+                // not existing on entity, with multibyte strings
                 'name'         => '<自動名稱測試_##>',
                 'field'       => 'name',
                 'is_template'  => true,
                 'itemtype'     => 'Computer',
                 'entities_id'  => 0,
-                'expected'     => '自動名稱測試_01'
+                'expected'     => '自動名稱測試_01',
             ], [
-            // not existing on entity, with multibyte strings
+                // not existing on entity, with multibyte strings
                 'name'         => '<自動名稱—####—測試>',
                 'field'       => 'name',
                 'is_template'  => true,
                 'itemtype'     => 'Computer',
                 'entities_id'  => 0,
-                'expected'     => '自動名稱—0001—測試'
+                'expected'     => '自動名稱—0001—測試',
             ], [
-            // existing on entity
+                // existing on entity
                 'name'         => '<_test_pc##>',
                 'field'       => 'name',
                 'is_template'  => true,
                 'itemtype'     => 'Computer',
                 'entities_id'  => $test_child_1,
-                'expected'     => '_test_pc14'
+                'expected'     => '_test_pc14',
             ], [
-            // not existing on entity, not sanitized, and containing a special char
+                // not existing on entity, not sanitized, and containing a special char
                 'name'         => '<pc_>_##>',
                 'field'       => 'name',
                 'is_template'  => true,
                 'itemtype'     => 'Computer',
                 'entities_id'  => $test_child_1,
-                'expected'     => 'pc_>_01'
+                'expected'     => 'pc_>_01',
             ],
         ];
     }
@@ -1523,7 +1636,7 @@ class DbUtilsTest extends DbTestCase
     public static function fixItemtypeCaseProvider()
     {
         return [
-         // Bad case classnames matching and existing class file
+            // Bad case classnames matching and existing class file
             [
                 'itemtype' => 'myclass',
                 'expected' => 'MyClass',
@@ -1552,7 +1665,19 @@ class DbUtilsTest extends DbTestCase
                 'itemtype' => 'glpiplugin\\foo\\relation_item',
                 'expected' => 'GlpiPlugin\\Foo\\Relation_Item',
             ],
-         // Good case (should not be altered)
+            [
+                'itemtype' => 'PluginBarFooitem',
+                'expected' => 'PluginBarFooItem',
+            ],
+            [
+                'itemtype' => 'GlpiPluGin\\Bar\\Namespacedfoo',
+                'expected' => 'GlpiPlugin\\Bar\\NamespacedFoo',
+            ],
+            [
+                'itemtype' => 'glpiplugin\\bar\\models\\bar\\foo_item',
+                'expected' => 'GlpiPlugin\\Bar\\Models\\Bar\\Foo_Item',
+            ],
+            // Good case (should not be altered)
             [
                 'itemtype' => 'MyClass',
                 'expected' => 'MyClass',
@@ -1565,7 +1690,11 @@ class DbUtilsTest extends DbTestCase
                 'itemtype' => 'GlpiPlugin\\Foo\\NamespacedBar',
                 'expected' => 'GlpiPlugin\\Foo\\NamespacedBar',
             ],
-         // Not matching any class file (should not be altered)
+            [
+                'itemtype' => 'GlpiPlugin\\Bar\\NamespacedFoo',
+                'expected' => 'GlpiPlugin\\Bar\\NamespacedFoo',
+            ],
+            // Not matching any class file (should not be altered)
             [
                 'itemtype' => 'notanitemtype',
                 'expected' => 'notanitemtype',
@@ -1613,10 +1742,23 @@ class DbUtilsTest extends DbTestCase
                         ],
                     ],
                 ],
+                'marketplace' => [
+                    'bar' => [
+                        'src' => [
+                            'Models' => [
+                                'Bar' => [
+                                    'Foo_Item.php' => '',
+                                ],
+                            ],
+                            'NamespacedFoo.php' => '',
+                            'PluginBarFooItem.php' => '',
+                        ],
+                    ],
+                ],
             ]
         );
         $instance = new \DbUtils();
-        $result = $instance->fixItemtypeCase($itemtype, vfsStream::url($name), [vfsStream::url("$name/plugins")]);
+        $result = $instance->fixItemtypeCase($itemtype, vfsStream::url($name), [vfsStream::url("$name/plugins"), vfsStream::url("$name/marketplace")]);
         $this->assertEquals($expected, $result);
     }
 }

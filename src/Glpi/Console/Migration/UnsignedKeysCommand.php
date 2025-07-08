@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -49,14 +49,14 @@ class UnsignedKeysCommand extends AbstractCommand implements ConfigurationComman
      *
      * @var int
      */
-    const ERROR_COLUMN_MIGRATION_FAILED = 1;
+    public const ERROR_COLUMN_MIGRATION_FAILED = 1;
 
     /**
      * Error code returned if DB configuration file cannot be updated.
      *
      * @var integer
      */
-    const ERROR_UNABLE_TO_UPDATE_CONFIG = 2;
+    public const ERROR_UNABLE_TO_UPDATE_CONFIG = 2;
 
     protected function configure()
     {
