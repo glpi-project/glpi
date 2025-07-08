@@ -294,6 +294,36 @@ final class CustomFieldDefinition extends CommonDBChild
         parent::post_getFromDB();
     }
 
+    public function post_addItem()
+    {
+        parent::post_addItem();
+
+        $this->refreshAssetDefinition();
+    }
+
+    public function post_updateItem($history = true)
+    {
+        parent::post_updateItem($history);
+
+        $this->refreshAssetDefinition();
+    }
+
+    public function post_purgeItem()
+    {
+        parent::post_purgeItem();
+
+        $this->refreshAssetDefinition();
+    }
+
+    /**
+     * Refresh the asset definition to get force its custom fields definitions to be updated.
+     */
+    private function refreshAssetDefinition(): void
+    {
+        $definition = AssetDefinition::getById($this->fields['assets_assetdefinitions_id']);
+        AssetDefinitionManager::getInstance()->registerDefinition($definition);
+    }
+
     public function computeFriendlyName(): string
     {
         return $this->getDecodedTranslationsField()[Session::getLanguage()] ?? $this->fields['label'];
