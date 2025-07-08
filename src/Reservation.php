@@ -706,7 +706,7 @@ JAVASCRIPT;
         } else {
             $resa->getEmpty();
             $options = Planning::cleanDates($options);
-            $resa->fields["begin"] = !empty($options['begin']) ? date("Y-m-d H:i:s", strtotime($options['begin'])) : date('Y-m-d H:00:00', strtotime(Session::getCurrentTime()));
+            $resa->fields["begin"] = !empty($options['begin']) ? date("Y-m-d H:i:s", Safe\strtotime($options['begin'])) : date('Y-m-d H:00:00', Safe\strtotime(Session::getCurrentTime()));
             if (!isset($options['end'])) {
                 $resa->fields["end"] = date("Y-m-d H:00:00", strtotime($resa->fields["begin"]) + HOUR_TIMESTAMP);
             } else {
