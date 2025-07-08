@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\strtotime;
+
 // Class NotificationTarget
 class NotificationTargetUser extends NotificationTarget
 {

@@ -35,6 +35,8 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
+use function Safe\getimagesize;
+
 /**
  * Notepad class
  *

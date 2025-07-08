@@ -37,7 +37,6 @@ namespace Glpi\Features;
 
 use CommonITILTask;
 use DateInterval;
-use DateTime;
 use DateTimeZone;
 use Dropdown;
 use Entity;
@@ -56,6 +55,11 @@ use RRule\RSet;
 use Session;
 use Toolbox;
 use User;
+use Safe\DateTime;
+
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\strtotime;
 
 trait PlanningEvent
 {

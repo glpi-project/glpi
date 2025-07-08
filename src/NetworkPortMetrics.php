@@ -34,6 +34,7 @@
  */
 
 use Glpi\Dashboard\Widget;
+use Safe\DateTime;
 
 /**
  * Store network port metrics
@@ -118,7 +119,7 @@ class NetworkPortMetrics extends CommonDBChild
         $errors_series = [];
         $labels = [];
         foreach ($raw_metrics as $metrics) {
-            $date = new \DateTime($metrics['date']);
+            $date = new DateTime($metrics['date']);
             $labels[] = $date->format(__('Y-m-d'));
             unset($metrics['id'], $metrics['date'], $metrics['date_creation'], $metrics['date_mod'], $metrics[static::$items_id]);
 

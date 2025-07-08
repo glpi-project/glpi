@@ -38,6 +38,9 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\RichText\RichText;
 
+use function Safe\preg_match;
+use function Safe\strtotime;
+
 /** QueuedNotification class
  *
  * @since 0.85

@@ -36,6 +36,18 @@
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 
+use function Safe\curl_exec;
+use function Safe\curl_getinfo;
+use function Safe\curl_init;
+use function Safe\curl_setopt;
+use function Safe\file_get_contents;
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\ini_get;
+use function Safe\parse_url;
+use function Safe\preg_match;
+use function Safe\preg_replace;
+
 class Telemetry extends CommonGLPI
 {
     public static function getTypeName($nb = 0)

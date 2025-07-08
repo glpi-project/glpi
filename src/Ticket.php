@@ -44,6 +44,13 @@ use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
 use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
+use Safe\DateTime;
+use Safe\Exceptions\DatetimeException;
+
+use function Safe\strtotime;
+use function Safe\preg_match;
+use function Safe\preg_match_all;
+use function Safe\preg_replace;
 
 /**
  * Ticket Class
@@ -5432,7 +5439,11 @@ JAVASCRIPT;
         $time_to_own              = strtotime($this->fields['time_to_own'] ?? '');
         $internal_time_to_resolve = strtotime($this->fields['internal_time_to_resolve'] ?? '');
         $time_to_resolve          = strtotime($this->fields['time_to_resolve'] ?? '');
-        $solvedate                = strtotime($this->fields['solvedate'] ?? '');
+        try {
+            $solvedate = strtotime($this->fields['solvedate'] ?? '');
+        } catch (DatetimeException $e) {
+            $solvedate = '';
+        }
         $closedate                = strtotime($this->fields['closedate'] ?? '');
         $goal_takeintoaccount     = ($date_takeintoaccount > 0 ? $date_takeintoaccount : $now);
         $goal_solvedate           = ($solvedate > 0 ? $solvedate : $now);

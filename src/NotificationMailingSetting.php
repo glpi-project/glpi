@@ -36,6 +36,8 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Mail\SMTP\OauthConfig;
 
+use function Safe\json_decode;
+
 /**
  *  This class manages the mail settings
  */

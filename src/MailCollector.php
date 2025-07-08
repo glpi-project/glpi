@@ -44,6 +44,14 @@ use Laminas\Mail\Storage\Message;
 use LitEmoji\LitEmoji;
 use Glpi\Error\ErrorHandler;
 
+use function Safe\base64_decode;
+use function Safe\iconv;
+use function Safe\file_put_contents;
+use function Safe\mb_convert_encoding;
+use function Safe\preg_match;
+use function Safe\preg_replace;
+use function Safe\strtotime;
+
 /**
  * MailCollector class
  *
@@ -82,8 +90,8 @@ class MailCollector extends CommonDBTM
     public $filesize_max    = 0;
 
     /**
-     * Flag that tells wheter the body is in HTML format or not.
-     * @var string
+     * Flag that tells whether the body is in HTML format or not.
+     * @var bool
      */
     private $body_is_html   = false;
 
@@ -2355,11 +2363,12 @@ TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_l
 
                 // Try to convert using iconv with TRANSLIT, then with IGNORE.
                 // TRANSLIT may result in failure depending on system iconv implementation.
-                if ($converted = @iconv($charset, 'UTF-8//TRANSLIT', $contents)) {
-                    $contents = $converted;
-                } elseif ($converted = iconv($charset, 'UTF-8//IGNORE', $contents)) {
-                    $contents = $converted;
+                try {
+                    $converted = @iconv($charset, 'UTF-8//TRANSLIT', $contents);
+                } catch (\Safe\Exceptions\IconvException $e) {
+                    $converted = iconv($charset, 'UTF-8//IGNORE', $contents);
                 }
+                $contents = $converted;
             }
         }
 

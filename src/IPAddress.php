@@ -37,6 +37,8 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryUnion;
 
+use function Safe\preg_match;
+
 /**
  * Represent an IPv4 or an IPv6 address. Both textual (ie. human readable)
  * and binary (ie. : used for request) are present
