@@ -539,14 +539,16 @@ abstract class AbstractDefinition extends CommonDBTM
         return $has_errors ? false : $input;
     }
 
+    public function post_getFromDB()
+    {
+        // Clear the custom fields definitions cache when the object is reloaded
+        $this->custom_field_definitions = null;
+    }
+
     public function post_addItem()
     {
-        // Clear the definitions cache to ensure that the code triggerred by the capacities hooks
-        // will not use an outdated definition list.
-        static::getDefinitionManagerClass()::getInstance()->clearDefinitionsCache();
-
-        // Bootstrap the definition to make it usable right now.
-        static::getDefinitionManagerClass()::getInstance()->bootstrapDefinition($this);
+        // Register and bootstrap the definition to make it usable right now.
+        $this->registerAndBootstrapDefinition();
 
         if ($this->isActive()) {
             $this->syncProfilesRights();
@@ -556,12 +558,8 @@ abstract class AbstractDefinition extends CommonDBTM
 
     public function post_updateItem($history = true)
     {
-        // Clear the definitions cache to ensure that the code triggerred by the capacities hooks
-        // will not use an outdated definition list.
-        static::getDefinitionManagerClass()::getInstance()->clearDefinitionsCache();
-
-        // Bootstrap the definition to make it usable right now.
-        static::getDefinitionManagerClass()::getInstance()->bootstrapDefinition($this);
+        // Register and bootstrap the definition to make it usable right now.
+        $this->registerAndBootstrapDefinition();
 
         if (in_array('is_active', $this->updates, true)) {
             // Force menu refresh when active state change
@@ -574,6 +572,15 @@ abstract class AbstractDefinition extends CommonDBTM
             || array_key_exists('_profiles_extra', $this->input)
         ) {
             $this->syncProfilesRights();
+        }
+    }
+
+    private function registerAndBootstrapDefinition(): void
+    {
+        $manager = static::getDefinitionManagerClass()::getInstance();
+        $manager->registerDefinition($this);
+        if ($this->isActive()) {
+            $manager->bootstrapDefinition($this);
         }
     }
 

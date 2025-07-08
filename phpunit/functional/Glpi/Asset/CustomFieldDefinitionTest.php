@@ -79,6 +79,8 @@ class CustomFieldDefinitionTest extends DbTestCase
             'default_value' => 'default text',
         ]);
 
+        $this->assertTrue($asset_definition->getFromDB($asset_definition->getID()));
+
         $this->assertTrue($asset_definition->update([
             'id' => $asset_definition->getID(),
             'fields_display' => [
