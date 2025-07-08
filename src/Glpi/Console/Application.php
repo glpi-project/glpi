@@ -76,11 +76,18 @@ class Application extends BaseApplication
     public const ERROR_CONFIG_WRITE_ACCESS_DENIED = 129;
 
     /**
+     * Error code returned when DB is not available.
+     *
+     * @var integer
+     */
+    public const ERROR_DB_UNAVAILABLE = 130;
+
+    /**
      * Error code returned when DB is not up-to-date.
      *
      * @var integer
      */
-    public const ERROR_DB_OUTDATED = 129;
+    public const ERROR_DB_OUTDATED = 131;
 
     /**
      * Pointer to $CFG_GLPI.

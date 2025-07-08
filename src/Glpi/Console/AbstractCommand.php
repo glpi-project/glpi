@@ -113,7 +113,10 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
         global $DB;
 
         if ($this->requires_db && (!($DB instanceof DBmysql) || !$DB->connected)) {
-            throw new \Symfony\Component\Console\Exception\RuntimeException(__('Unable to connect to database.'));
+            throw new \Glpi\Console\Exception\EarlyExitException(
+                '<error>' . __('Unable to connect to database.') . '</error>',
+                Application::ERROR_DB_UNAVAILABLE
+            );
         }
 
         $this->db = $DB;
