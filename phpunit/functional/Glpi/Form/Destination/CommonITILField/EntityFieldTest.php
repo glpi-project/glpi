@@ -235,14 +235,14 @@ final class EntityFieldTest extends AbstractDestinationFieldTest
     {
         $form = $this->createAndGetFormWithMultipleEntityAndRequesterQuestions();
 
-        // No answers, fallback to default value db value
+        // No answers, fallback to current entity
         $this->sendFormAndAssertTicketEntity(
             form: $form,
             config: new EntityFieldConfig(
                 EntityFieldStrategy::LAST_VALID_ANSWER
             ),
             answers: [],
-            expected_entity_id: 0
+            expected_entity_id: $this->getTestRootEntity(only_id: true)
         );
     }
 

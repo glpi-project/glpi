@@ -44,6 +44,7 @@ use Glpi\Form\Question;
 use Glpi\ItemTranslation\Context\TranslationHandler;
 use Glpi\ItemTranslation\ItemTranslation;
 use Override;
+use Session;
 
 /**
  * Long answers are multiple lines inputs used to answer questions with as much details as needed.
@@ -156,6 +157,7 @@ TWIG;
                 "",
                 {
                     'enable_richtext': true,
+                    'enable_images'  : is_authenticated,
                     'editor_height'  : "100",
                     'rows'           : 1,
                     'init'           : question is not null ? true   : false,
@@ -171,6 +173,7 @@ TWIG;
         return $twig->renderFromStringTemplate($template, [
             'question'      => $question,
             'default_value' => $translated_default_value,
+            'is_authenticated' => Session::isAuthenticated(),
         ]);
     }
 

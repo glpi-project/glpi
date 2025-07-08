@@ -35,6 +35,7 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Entity;
+use Exception;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
@@ -118,9 +119,9 @@ final class EntityField extends AbstractConfigField implements DestinationFieldC
         // Compute value according to strategy
         $entity_id = $strategy->getEntityID($config, $answers_set);
 
-        // Do not edit input if invalid value was found
+        // We always need a valid value for entities
         if (Entity::getById($entity_id) === false) {
-            return $input;
+            throw new Exception("Invalid entity: $entity_id");
         }
 
         // Apply value
