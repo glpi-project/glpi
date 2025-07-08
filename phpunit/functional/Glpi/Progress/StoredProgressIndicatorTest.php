@@ -52,7 +52,8 @@ class StoredProgressIndicatorTest extends GLPITestCase
         $date = new DateTimeImmutable();
 
         // Act
-        $instance = new StoredProgressIndicator($storage, $storage_key);
+        $instance = new StoredProgressIndicator($storage_key);
+        $instance->setProgressStorage($storage);
 
         // Assert
         $this->assertEquals($instance->getStartedAt(), $instance->getUpdatedAt());
@@ -69,10 +70,12 @@ class StoredProgressIndicatorTest extends GLPITestCase
     public function testMessagesAccessors(): void
     {
         // Arrange
+        $storage = $this->createMock(ProgressStorage::class);
+
         $instance = new StoredProgressIndicator(
-            $storage = $this->createMock(ProgressStorage::class),
             $this->getUniqueString()
         );
+        $instance->setProgressStorage($storage);
 
         // Saving into the storage will be triggered during each message adding operation
         $storage->expects($this->exactly(7))->method('save');
@@ -123,10 +126,12 @@ class StoredProgressIndicatorTest extends GLPITestCase
     public function testUpdate(): void
     {
         // Arrange
+        $storage = $this->createMock(ProgressStorage::class);
+
         $instance = new StoredProgressIndicator(
-            $storage = $this->createMock(ProgressStorage::class),
             $this->getUniqueString()
         );
+        $instance->setProgressStorage($storage);
 
         // Saving into the storage will be triggered by the `update` call.
         $storage->expects($this->once())->method('save');
