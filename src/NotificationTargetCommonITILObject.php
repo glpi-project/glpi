@@ -1080,6 +1080,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
                     case Notification::VALIDATION_TARGET_SUBSTITUTES:
                         $this->addValidationTargetSubstitutes($options);
+                        break;
 
                         //Send to the ITIL object validation approver
                     case Notification::VALIDATION_APPROVER:
