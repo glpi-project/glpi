@@ -78,6 +78,7 @@ describe('DC Room', () => {
                 //TODO the heading here should not be level 3
                 cy.findByRole('heading', {level: 3}).should('contain.text', 'New item - Rack');
                 cy.findByRole('button', {name: 'Close'}).click();
+                cy.should('not.exist');
             });
 
             // Check loading of existing rack

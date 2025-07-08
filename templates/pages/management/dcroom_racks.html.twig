@@ -64,8 +64,8 @@
       --dcroom-grid-cellh: {{ cell_h }}px;
    }
    {% for i in 0..cols %}
-       {% set left = i * (100/cols) %}
-       {% set width = (i + 1) * (100/cols) %}
+       {% set left = i * (100 / cols) %}
+       {% set width = (i + 1) * (100 / cols) %}
        .grid-stack > .grid-stack-item[gs-x="{{ i }}"] { left: {{ left }}%; }
        .grid-stack > .grid-stack-item[gs-w="{{ i + 1 }}"] {
           min-width: {{ width }}%;
