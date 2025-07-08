@@ -56,6 +56,7 @@ use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Form;
 use Override;
+use Session;
 use Ticket;
 
 abstract class AbstractCommonITILFormDestination implements FormDestinationInterface
@@ -170,7 +171,11 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
         $input = $this->setFilesInput($input, $answers_set);
 
         // Create commonitil object
-        if (!$itil_object->add($input)) {
+        // We use 'callAsSystem' here because Ticket::prepareInputForAdd() has
+        // rights checks for some features (SLA, ...) and will yield different
+        // results depending on the current user rights
+        $id = Session::callAsSystem(fn() => $itil_object->add($input));
+        if (!$id) {
             throw new \Exception(
                 "Failed to create $typename: " . json_encode($input)
             );

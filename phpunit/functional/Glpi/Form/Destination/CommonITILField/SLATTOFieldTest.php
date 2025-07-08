@@ -55,7 +55,7 @@ final class SLATTOFieldTest extends AbstractDestinationFieldTest
 
     public function testDefaultTemplateWithPredefinedField(): void
     {
-        $this->login();
+        $this->login('normal');
         $default_template = (new Ticket())->getITILTemplateToUse(
             entities_id: $_SESSION["glpiactive_entity"]
         );
@@ -89,7 +89,7 @@ final class SLATTOFieldTest extends AbstractDestinationFieldTest
 
     public function testSpecificSLATTO(): void
     {
-        $this->login();
+        $this->login('normal');
         $created_sla_tto = $this->createItem(
             SLA::class,
             [
@@ -112,7 +112,7 @@ final class SLATTOFieldTest extends AbstractDestinationFieldTest
 
     public function testSpecificSLATTOWithDefaultTemplateWithPredefinedField(): void
     {
-        $this->login();
+        $this->login('normal');
         $default_template = (new Ticket())->getITILTemplateToUse(
             entities_id: $_SESSION["glpiactive_entity"]
         );
