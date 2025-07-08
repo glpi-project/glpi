@@ -81,7 +81,7 @@ try {
         false,
         ERROR
     );
-} finally {
-    // Redirect to previous page
-    Html::back();
 }
+
+// Redirect to previous page
+Html::back();
