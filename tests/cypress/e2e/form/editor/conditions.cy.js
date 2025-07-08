@@ -78,7 +78,7 @@ function addSection(name) {
 }
 
 function getSubmitButtonContainer() {
-    return cy.get('.editor-footer [data-glpi-form-editor-visibility-dropdown-container]');
+    return cy.get('#glpi-form-properties-accordion [data-glpi-form-editor-visibility-dropdown-container]');
 }
 
 function getAndFocusQuestion(name) {
