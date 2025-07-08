@@ -2319,6 +2319,16 @@ final class SQLProvider implements SearchProviderInterface
                 }
                 break;
 
+            case 'SavedSearch':
+                $criterias = \SavedSearch::getVisibilityCriteria(false);
+                if (isset($criterias['LEFT JOIN'])) {
+                    $out = ['LEFT JOIN' => $criterias['LEFT JOIN']];
+                    foreach ($criterias['LEFT JOIN'] as $table => $criteria) {
+                        $already_link_tables[] = $table;
+                    }
+                }
+                break;
+
             case ITILFollowup::class:
                 foreach ($CFG_GLPI['itil_types'] as $itil_itemtype) {
                     $out = array_merge_recursive($out, self::getLeftJoinCriteria(

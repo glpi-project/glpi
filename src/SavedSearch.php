@@ -45,12 +45,12 @@ use Glpi\Error\ErrorHandler;
  *
  * @since 9.2
  **/
-class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
+class SavedSearch extends CommonDBVisible implements ExtraVisibilityCriteria
 {
     use Clonable;
 
     public static $rightname               = 'bookmark_public';
-
+    public static $types                   = ['Group', 'User', 'Entity'];
     public const SEARCH = 1; //SEARCH SYSTEM bookmark
     public const URI    = 2;
     public const ALERT  = 3; //SEARCH SYSTEM search alert
@@ -58,6 +58,11 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     public const COUNT_NO = 0;
     public const COUNT_YES = 1;
     public const COUNT_AUTO = 2;
+
+    protected $userClass = SavedSearch_UserTarget::class;
+    protected $groupClass = Group_SavedSearch::class;
+    protected $entityClass = Entity_SavedSearch::class;
+    protected $service = 'tools';
 
     public static function getForbiddenActionsForMenu()
     {
@@ -254,31 +259,118 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
+    public function haveVisibilityAccess()
+    {
+        if (!self::canView()) {
+            return false;
+        }
+
+        return parent::haveVisibilityAccess();
+    }
+
     public function canCreateItem(): bool
     {
-
-        if ($this->fields['is_private'] == 1) {
-            return (Session::haveRight('config', UPDATE)
-                 || $this->fields['users_id'] == Session::getLoginUserID());
+        if (isset($this->input['is_private']) && $this->input['is_private'] == 0) {
+            return self::canCreatePublic();
         }
         return parent::canCreateItem();
     }
 
+    /**
+     * @return bool
+     */
+    public static function canCreatePublic(): bool
+    {
+        return (Session::haveRight('config', UPDATE) ||
+            Session::haveRight(self::$rightname, CREATE));
+    }
+
     public function canViewItem(): bool
     {
-        if ($this->fields['is_private'] == 1) {
-            return (Session::haveRight('config', READ)
-                 || $this->fields['users_id'] == Session::getLoginUserID());
+        if (
+            Session::haveRight('config', READ)
+            || $this->fields['users_id'] == Session::getLoginUserID()
+        ) {
+            return true;
         }
-        return parent::canViewItem();
+
+        if (array_key_exists($this->getID(), $this->getMine())) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function post_getFromDB()
+    {
+        // Group
+        $this->groups = Group_SavedSearch::getGroups($this);
+
+        // Users
+        $this->users = SavedSearch_UserTarget::getUsers($this);
+
+        // Entities
+        $this->entities = Entity_SavedSearch::getEntities($this);
+    }
+
+    public function post_addItem()
+    {
+        // for search saved as public, automatically create a link with its entity
+        if (isset($this->input['is_private']) && !$this->input['is_private']) {
+            $item = new Entity_SavedSearch();
+            $item->add([
+                'savedsearches_id' => $this->getID(),
+                'entities_id' => $this->fields['entities_id'],
+                'is_recursive' => $this->fields['is_recursive'],
+            ]);
+        }
+        parent::post_addItem();
+    }
+
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
+        if (self::canView()) {
+            $nb = 0;
+            switch ($item::class) {
+                case SavedSearch::class:
+                    if (self::canCreatePublic()) {
+                        if ($_SESSION['glpishow_count_on_tabs']) {
+                            $nb = $item->countVisibilities();
+                        }
+                        return [
+                            1 => self::createTabEntry(
+                                _n(
+                                    'Target',
+                                    'Targets',
+                                    Session::getPluralNumber()
+                                ),
+                                $nb
+                            ),
+                        ];
+                    }
+                    break;
+            }
+        }
+        return '';
     }
 
     public function defineTabs($options = [])
     {
         $ong = [];
-        $this->addDefaultFormTab($ong)
-           ->addStandardTab(SavedSearch_Alert::class, $ong, $options);
+        $this->addDefaultFormTab($ong);
+        $this->addStandardTab('SavedSearch', $ong, $options);
+        $this->addStandardTab('SavedSearch_Alert', $ong, $options);
         return $ong;
+    }
+
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
+        switch ($item::class) {
+            case SavedSearch::class:
+                $item->showVisibility();
+                return true;
+        }
+        return false;
     }
 
     public function rawSearchOptions()
@@ -298,15 +390,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             'field'              => 'name',
             'name'               => User::getTypeName(1),
             'datatype'           => 'dropdown',
-        ];
-
-        $tab[] = [
-            'id'  => 4,
-            'table'           => $this->getTable(),
-            'field'           => 'is_private',
-            'name'            => __('Is private'),
-            'datatype'        => 'bool',
-            'massiveaction'   => false,
         ];
 
         $tab[] = ['id'                 => '8',
@@ -451,6 +534,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             [
                 SavedSearch_Alert::class,
                 SavedSearch_User::class,
+                SavedSearch_UserTarget::class,
+                Group_SavedSearch::class,
             ]
         );
     }
@@ -472,6 +557,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         TemplateRenderer::getInstance()->display('pages/tools/savedsearch/form.html.twig', [
             'item' => $this,
             'can_create' => self::canCreate(),
+            'can_create_public' => self::canCreatePublic(),
             'params' => $options,
         ]);
         return true;
@@ -666,6 +752,41 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
     /**
+     * Get relations for targets
+     * @return array[][] key 'LEFT JOIN' for request
+     */
+    public static function getDefaultJoin()
+    {
+        $table = self::getTable();
+        $user_table = SavedSearch_UserTarget::getTable();
+        $group_table = Group_SavedSearch::getTable();
+        $entity_table = Entity_SavedSearch::getTable();
+        return [
+            'LEFT JOIN' => [
+                // relations for targets
+                $user_table => [
+                    'ON' => [
+                        $user_table => 'savedsearches_id',
+                        $table => 'id',
+                    ],
+                ],
+                $group_table => [
+                    'ON' => [
+                        $group_table => 'savedsearches_id',
+                        $table => 'id',
+                    ],
+                ],
+                $entity_table => [
+                    'ON' => [
+                        $entity_table => 'savedsearches_id',
+                        $table => 'id',
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
      * return an array of saved searches for a given itemtype
      *
      * @param string $itemtype if given filter saved search by only this one
@@ -682,6 +803,10 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
         $table = $this->getTable();
         $utable = 'glpi_savedsearches_users';
+        $user_table = SavedSearch_UserTarget::getTable();
+        $group_table = Group_SavedSearch::getTable();
+        $entity_table = Entity_SavedSearch::getTable();
+
         $criteria = [
             'SELECT'    => [
                 "$table.*",
@@ -690,19 +815,59 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                 ),
             ],
             'FROM'      => $table,
-            'LEFT JOIN' => [
-                $utable => [
-                    'ON' => [
-                        $utable  => 'savedsearches_id',
-                        $table   => 'id',
-                    ],
-                ],
-            ],
             'ORDERBY'   => [
                 'itemtype',
                 'name',
             ],
-        ] + self::getVisibilityCriteriaForMine();
+        ] + self::getDefaultJoin();
+
+        $criteria['LEFT JOIN'][$utable] = [
+            'ON' => [
+                $utable => 'savedsearches_id',
+                $table => 'id',
+            ],
+        ];
+        $owner_restrict = [
+            $table . '.users_id' => Session::getLoginUserID(),
+        ];
+        $entity_restrict = getEntitiesRestrictCriteria($table, '', '', true);
+        if (count($entity_restrict)) {
+            $owner_restrict += $entity_restrict;
+        }
+        $criteria['WHERE'] = [
+            'OR' => [
+                $owner_restrict,
+                [
+                    'OR' => [
+                        // directly targeted
+                        $user_table . '.users_id' => Session::getLoginUserID(),
+                        // targeted through groups
+                        [
+                            $group_table . '.groups_id' => count($_SESSION["glpigroups"])
+                                ? $_SESSION["glpigroups"]
+                                : [-1],
+                            'OR' => [
+                                [$group_table . '.no_entity_restriction' => 1],
+                                getEntitiesRestrictCriteria(
+                                    $group_table,
+                                    '',
+                                    $_SESSION['glpiactiveentities'],
+                                    true
+                                ),
+                            ],
+                        ],
+                        // targeted through entities
+                        getEntitiesRestrictCriteria(
+                            $entity_table,
+                            '',
+                            '',
+                            true,
+                            true
+                        ),
+                    ],
+                ],
+            ],
+        ];
 
         if ($itemtype != null) {
             if (!$inverse) {
@@ -795,6 +960,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     {
         TemplateRenderer::getInstance()->display('layout/parts/saved_searches_list.html.twig', [
             'active'         => $_SESSION['glpi_loaded_savedsearch'] ?? "",
+            'current_user'   => Session::getLoginUserID(),
             'saved_searches' => $this->getMine($itemtype, $inverse),
         ]);
     }
@@ -1196,26 +1362,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return $sql;
     }
 
-    private static function getVisibilityCriteriaForMine(): array
-    {
-        $criteria = ['WHERE' => []];
-        $restrict = [
-            self::getTable() . '.is_private' => 1,
-            self::getTable() . '.users_id'    => Session::getLoginUserID(),
-        ];
-
-        if (Session::haveRight(self::$rightname, READ)) {
-            $restrict = [
-                'OR' => [
-                    $restrict,
-                    [self::getTable() . '.is_private' => 0],
-                ],
-            ];
-        }
-
-        $criteria['WHERE'] = $restrict + getEntitiesRestrictCriteria(self::getTable(), '', '', true);
-        return $criteria;
-    }
 
     /**
      * Return visibility joins to add to DBIterator parameters
@@ -1232,7 +1378,64 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             return ['WHERE' => []];
         }
 
-        return self::getVisibilityCriteriaForMine();
+        if (!Session::haveRight(self::$rightname, READ)) {
+            return [
+                'WHERE' => ['glpi_savedsearches.users_id' => Session::getLoginUserID()],
+            ];
+        }
+
+        $table = self::getTable();
+        $user_table = SavedSearch_UserTarget::getTable();
+        $group_table = Group_SavedSearch::getTable();
+        $entity_table = Entity_SavedSearch::getTable();
+
+        $criteria = self::getDefaultJoin();
+
+        $owner_restrict = [
+            $table . '.users_id' => Session::getLoginUserID(),
+        ];
+        $entity_restrict = getEntitiesRestrictCriteria($table, '', '', true);
+        if (count($entity_restrict)) {
+            $owner_restrict += $entity_restrict;
+        }
+
+        $restrict = [
+            'OR' => [
+                $owner_restrict,
+                [
+                    'OR' => [
+                        // directly targeted
+                        $user_table . '.users_id' => Session::getLoginUserID(),
+                        // targeted through groups
+                        [
+                            $group_table . '.groups_id' => count($_SESSION["glpigroups"])
+                                ? $_SESSION["glpigroups"]
+                                : [-1],
+                            'OR' => [
+                                [$group_table . '.no_entity_restriction' => 1],
+                                getEntitiesRestrictCriteria(
+                                    $group_table,
+                                    '',
+                                    $_SESSION['glpiactiveentities'],
+                                    true
+                                ),
+                            ],
+                        ],
+                        // targeted through entities
+                        getEntitiesRestrictCriteria(
+                            $entity_table,
+                            '',
+                            '',
+                            true,
+                            true
+                        ),
+                    ],
+                ],
+            ],
+        ];
+        $criteria['WHERE'] = $restrict;
+
+        return $criteria;
     }
 
     public static function getIcon()
@@ -1243,5 +1446,14 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     public function getCloneRelations(): array
     {
         return [];
+    }
+
+    /**
+     * No specific right needed to be a target
+     * @return string
+     */
+    public function getVisibilityRight()
+    {
+        return '';
     }
 }

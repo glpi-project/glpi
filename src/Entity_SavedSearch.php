@@ -33,31 +33,41 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Exception\Http\AccessDeniedHttpException;
+class Entity_SavedSearch extends CommonDBRelation
+{
+    // From CommonDBRelation
+    public static $itemtype_1          = 'SavedSearch';
+    public static $items_id_1          = 'savedsearches_id';
+    public static $itemtype_2          = 'Entity';
+    public static $items_id_2          = 'entities_id';
 
-require_once(__DIR__ . '/_check_webserver_config.php');
+    public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
+    public static $logs_for_item_2     = false;
 
-if (Session::getCurrentInterface() == "helpdesk") {
-    Html::helpHeader(SavedSearch::getTypeName(Session::getPluralNumber()));
-} else {
-    Html::header(SavedSearch::getTypeName(Session::getPluralNumber()), '', 'tools', 'savedsearch');
-}
 
-$savedsearch = new SavedSearch();
+    /**
+     * Get entities for a saved search
+     *
+     * @param SavedSearch $savedSearch SavedSearch instance
+     *
+     * @return array of entities linked to a saved search
+     **/
+    public static function getEntities(SavedSearch $savedSearch)
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
 
-if (
-    isset($_GET['action']) && $_GET["action"] == "load"
-    && isset($_GET["id"]) && ($_GET["id"] > 0)
-) {
-    $savedsearch->getFromDB($_GET['id']);
-    if ($savedsearch->canViewItem()) {
-        $savedsearch->load($_GET["id"]);
-    } else {
-        $info = "User can not access the SavedSearch " . $_GET['id'];
-        throw new AccessDeniedHttpException($info);
+        $results   = [];
+        $iterator = $DB->request([
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                self::$items_id_1 => $savedSearch->getID()
+            ]
+        ]);
+
+        foreach ($iterator as $data) {
+            $results[$data[self::$items_id_2]][] = $data;
+        }
+        return $results;
     }
-    return;
 }
-
-Search::show('SavedSearch');
-Html::footer();
