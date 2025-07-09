@@ -83,7 +83,7 @@ class SavedSearchTest extends DbTestCase
         $this->logOut();
         $this->login('normal', 'normal');
         \Session::changeProfile(3);
-        $visibility_restrict2 = "(((`glpi_savedsearches`.`users_id` = '5' AND (true)) OR ((`glpi_savedsearches_usertargets`.`users_id` = '5' OR (`glpi_groups_savedsearches`.`groups_id` IN ('-1') AND ((`glpi_groups_savedsearches`.`no_entity_restriction` = '1') OR ((`glpi_groups_savedsearches`.`entities_id` IN ('0', '4', '1', '2', '3', '5', '6'))))) OR ((`glpi_entities_savedsearches`.`entities_id` IN ('0', '4', '1', '2', '3', '5', '6'))))))";
+        $visibility_restrict2 = "((`glpi_savedsearches`.`users_id` = '5' AND (true)) OR ((`glpi_savedsearches_usertargets`.`users_id` = '5' OR (`glpi_groups_savedsearches`.`groups_id` IN ('-1') AND ((`glpi_groups_savedsearches`.`no_entity_restriction` = '1') OR ((`glpi_groups_savedsearches`.`entities_id` IN ('0', '4', '1', '2', '3', '5', '6'))))) OR ((`glpi_entities_savedsearches`.`entities_id` IN ('0', '4', '1', '2', '3', '5', '6'))))))";
         $this->assertSame(
             $visibility_restrict2,
             \SavedSearch::addVisibilityRestrict()
