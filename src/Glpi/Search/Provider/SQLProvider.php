@@ -5850,21 +5850,16 @@ final class SQLProvider implements SearchProviderInterface
                 case "glpi_problems.time_to_resolve":
                 case "glpi_changes.time_to_resolve":
                 case "glpi_tickets.time_to_own":
-                case "glpi_tickets.internal_time_to_own":
-                case "glpi_tickets.internal_time_to_resolve":
                     // Due date + progress
-                    if (in_array($orig_id, [151, 158, 181, 186])) {
-                        $out = Html::convDateTime($data[$ID][0]['name']);
+                    if (in_array($orig_id, [151, 158, 181])) {
+                        $out = \Html::convDateTime($data[$ID][0]['name']);
 
                         $color = null;
                         if (
                             $data[$ID][0]['status'] == CommonITILObject::WAITING
                         ) {
                             // No due date in waiting status for TTRs
-                            if (
-                                $table . '.' . $field == "glpi_tickets.time_to_resolve"
-                                || $table . '.' . $field == "glpi_tickets.internal_time_to_resolve"
-                            ) {
+                            if ($table . '.' . $field == "glpi_tickets.time_to_resolve") {
                                 return '';
                             } else {
                                 $color = '#AAAAAA';
@@ -6013,6 +6008,140 @@ final class SQLProvider implements SearchProviderInterface
                         ];
                     }
                     break;
+
+                    // OLA TTO / OLA TTR - due time and due time + progress
+                case "glpi_items_olas.due_time":
+                    $out = '';
+                    if (in_array($orig_id, [180, 181, 185, 186,])) {
+
+                        // remove 'count' from data
+                        $data_items = array_filter($data[$ID], fn($key) => is_numeric($key), ARRAY_FILTER_USE_KEY);
+                        foreach ($data_items as $data_item) {
+                            // data used :
+                            // - name -> due_time (see below)
+                            // - status (ticket status)
+                            // - takeintoaccount_delay_stat
+                            // - date (ticket creation date)
+                            // - olas_id
+                            // - waiting_time
+                            // - end_time
+                            $ticket_status = $data_item['status'] ?? null;
+                            $due_time = $data_item['name'] ?? null;
+                            $ticket_creation_date = $data_item['date'] ?? null;
+                            $waiting_time = $data_item['waiting_time'] ?? null;
+                            $ola_end_time = $data_item['end_time'] ?? null;
+                            $olas_id = $data_item['olas_id'] ?? null;
+
+                            $ola = new OLA();
+                            if (!$olas_id) {
+                                // no item_olas associated
+                                continue;
+                            }
+                            if (!$ola->getFromDB($olas_id)) {
+                                throw new \Exception('Referenced OLA not found for item_olas ID: ' . $olas_id);
+                            }
+                            $ola_name = $ola->fields['name'];
+                            $ola_type = $ola->fields['type']; // won't change between loops
+
+                            // no due time set, nothing to display
+                            if (is_null($due_time)) {
+                                continue;
+                            }
+
+                            // For TTR : no display if ticket is in waiting status
+                            if (
+                                $ticket_status == CommonITILObject::WAITING
+                                && $ola_type == \SLM::TTR) {
+                                continue;
+                            }
+
+                            // ticket is solved or closed, no progress to display, just display the date
+                            if (
+                                ($ticket_status == \Ticket::SOLVED)
+                                || ($ticket_status == \Ticket::CLOSED)
+                            ) {
+                                $out .= $ola_name . ' : ' . \Html::convDateTime($due_time) . '</br>';
+                                continue;
+                            }
+
+                            $color = null;
+                            if ($ticket_status == CommonITILObject::WAITING) {
+                                $color = '#AAAAAA';
+                            }
+
+                            // no need to check $takeintoaccount_delay_stat, we rely on items_ola end_time
+                            if (
+                                ($ola_type == \SLM::TTO && $ola_end_time)
+                                || (in_array($orig_id, [180, 185]))
+                            ) {
+                                $out .= $ola_name . ' : ' . \Html::convDateTime($due_time) . '</br>';
+                                continue;
+                            }
+
+                            // time calculations to build the progress bar
+                            $delay_between_ticket_creation_and_now = $ola->getActiveTimeBetween($ticket_creation_date, date('Y-m-d H:i:s'));
+                            $delay_between_ticket_creation_and_ola_due_time = $ola->getActiveTimeBetween($ticket_creation_date, $due_time);
+
+
+                            if (($delay_between_ticket_creation_and_ola_due_time - $waiting_time) != 0) {
+                                $percentage_done = round((100 * ($delay_between_ticket_creation_and_now - $waiting_time)) / ($delay_between_ticket_creation_and_ola_due_time - $waiting_time));
+                            } else {
+                                // Total time is null : no active time
+                                $percentage_done = 100;
+                            }
+                            if ($percentage_done > 100) {
+                                $percentage_done = 100;
+                            }
+                            switch ($_SESSION['glpiduedatewarning_unit']) {
+                                case 'hour':
+                                    $less_warn_limit = $_SESSION['glpiduedatewarning_less'] * HOUR_TIMESTAMP;
+                                    $less_warn = ($delay_between_ticket_creation_and_ola_due_time - $delay_between_ticket_creation_and_now);
+                                    break;
+                                case 'day':
+                                    $less_warn_limit = $_SESSION['glpiduedatewarning_less'] * DAY_TIMESTAMP;
+                                    $less_warn = ($delay_between_ticket_creation_and_ola_due_time - $delay_between_ticket_creation_and_now);
+                                    break;
+                                case '%':
+                                default:
+                                    $less_warn_limit = $_SESSION['glpiduedatewarning_less'];
+                                    $less_warn = (100 - $percentage_done);
+                                    break;
+                            }
+
+                            $less_crit_limit = 0;
+                            $less_crit = 0;
+                            if ($_SESSION['glpiduedatecritical_unit'] == '%') {
+                                $less_crit_limit = $_SESSION['glpiduedatecritical_less'];
+                                $less_crit = (100 - $percentage_done);
+                            } elseif ($_SESSION['glpiduedatecritical_unit'] == 'hour') {
+                                $less_crit_limit = $_SESSION['glpiduedatecritical_less'] * HOUR_TIMESTAMP;
+                                $less_crit = ($delay_between_ticket_creation_and_ola_due_time - $delay_between_ticket_creation_and_now);
+                            } elseif ($_SESSION['glpiduedatecritical_unit'] == 'day') {
+                                $less_crit_limit = $_SESSION['glpiduedatecritical_less'] * DAY_TIMESTAMP;
+                                $less_crit = ($delay_between_ticket_creation_and_ola_due_time - $delay_between_ticket_creation_and_now);
+                            }
+
+                            if ($color === null) {
+                                $color = $_SESSION['glpiduedateok_color'];
+                                if ($less_crit < $less_crit_limit) {
+                                    $color = $_SESSION['glpiduedatecritical_color'];
+                                } elseif ($less_warn < $less_warn_limit) {
+                                    $color = $_SESSION['glpiduedatewarning_color'];
+                                }
+                            }
+
+                            $progressbar_data = [
+                                'text' => $ola_name . ' : ' . \Html::convDateTime($due_time),
+                                'percent' => $percentage_done,
+                                'percent_text' => (string) $percentage_done,
+                                'color' => $color,
+                            ];
+
+                            $out .= self::getProgressBar($progressbar_data);
+                        }
+                    }
+
+                    return $out;
 
                 case "glpi_softwarelicenses.number":
                     if ($data[$ID][0]['min'] == -1) {
@@ -6676,19 +6805,7 @@ final class SQLProvider implements SearchProviderInterface
 
                     $out = "";
                     if ($progressbar_data['percent'] !== null) {
-                        $out = <<<HTML
-                  <span class='text-nowrap'>
-                     {$progressbar_data['text']}
-                  </span>
-                  <div class="progress" style="height: 16px">
-                     <div class="progress-bar progress-bar-striped" role="progressbar"
-                          style="width: {$progressbar_data['percent']}%; background-color: {$progressbar_data['color']};"
-                          aria-valuenow="{$progressbar_data['percent']}"
-                          aria-valuemin="0" aria-valuemax="100">
-                        {$progressbar_data['percent_text']}%
-                     </div>
-                  </div>
-HTML;
+                        $out = self::getProgressBar($progressbar_data);
                     }
 
                     return $out;
@@ -6833,5 +6950,26 @@ HTML;
         }
 
         return $suffix;
+    }
+
+    /**
+     * @param array{percent:int, percent_text:string, color:string, text:string} $progressbar_data
+     * @return string
+     */
+    public static function getProgressBar(array $progressbar_data): string
+    {
+        return <<<HTML
+                              <span class='text-nowrap'>
+                                 {$progressbar_data['text']}
+                              </span>
+                              <div class="progress" style="height: 16px">
+                                 <div class="progress-bar progress-bar-striped" role="progressbar"
+                                      style="width: {$progressbar_data['percent']}%; background-color: {$progressbar_data['color']};"
+                                      aria-valuenow="{$progressbar_data['percent']}"
+                                      aria-valuemin="0" aria-valuemax="100">
+                                    {$progressbar_data['percent_text']}%
+                                 </div>
+                              </div>
+HTML;
     }
 }

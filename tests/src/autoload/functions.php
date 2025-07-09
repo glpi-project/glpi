@@ -830,6 +830,8 @@ function getItemByTypeName(string $type, string $name, bool $onlyid = false): Co
     $nameField = $type::getNameField();
     if (!$item->getFromDBByCrit([$nameField => $name])) {
         throw new \RuntimeException(sprintf('Unable to load a single `%s` item with the name `%s` (none or many exist may exist).', $type, $name));
+        $availables =  implode(', ', array_column($item->find([]), $nameField));
+        throw new \RuntimeException(sprintf('Unable to load the `%s` item with the name `%s`. Available items are : %s', $type, $name, $availables));
     }
     return ($onlyid ? $item->getID() : $item);
 }
