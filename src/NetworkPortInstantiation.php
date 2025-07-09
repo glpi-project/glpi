@@ -122,8 +122,6 @@ class NetworkPortInstantiation extends CommonDBChild
 
     public function manageSocket()
     {
-
-        Toolbox::logDebug($this->input, $this->fields);
         //add link to define
         if (isset($this->input['sockets_id']) && $this->input['sockets_id'] > 0) {
             $networkport = new NetworkPort();
