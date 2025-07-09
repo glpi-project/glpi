@@ -40,6 +40,8 @@ use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use Twig\TwigTest;
 
+use function Safe\ini_get;
+
 /**
  * @since 10.0.0
  */

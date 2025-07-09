@@ -39,6 +39,9 @@ use Glpi\Http\HeaderlessStreamedResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+use function Safe\ob_start;
+use function Safe\ob_get_clean;
+
 final class LegacyFileLoadController implements PublicService
 {
     public const REQUEST_FILE_KEY = '_glpi_file_to_load';
@@ -55,9 +58,9 @@ final class LegacyFileLoadController implements PublicService
             throw new \RuntimeException('Cannot load legacy controller without specifying a file to load.');
         }
 
-        \ob_start();
+        ob_start();
         $response = require($target_file);
-        $content = \ob_get_clean();
+        $content = ob_get_clean();
 
         if ($response instanceof Response) {
             // The legacy file contains a return value that corresponds to a valid Symfony response.

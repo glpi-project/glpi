@@ -77,6 +77,15 @@ use Ticket;
 use Toolbox;
 use User;
 
+use function Safe\json_encode;
+use function Safe\file_get_contents;
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
+use function Safe\preg_match;
+use function Safe\session_id;
+use function Safe\session_destroy;
+use function Safe\session_write_close;
+
 abstract class API
 {
     // permit writing to $_SESSION

@@ -45,6 +45,10 @@ use Profile;
 use ProfileRight;
 use Session;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\preg_match;
+
 /**
  * Abstract class for custom object definition managers
  * @template ConcreteClass of CommonDBTM

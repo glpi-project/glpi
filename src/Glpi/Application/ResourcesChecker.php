@@ -98,7 +98,7 @@ final class ResourcesChecker
         } elseif (file_exists($this->root_dir . '/composer.lock')) {
             if (!file_exists($this->root_dir . '/.composer.hash')) {
                 return false;
-            } elseif (sha1_file($this->root_dir . '/composer.lock') != file_get_contents($this->root_dir . '/.composer.hash')) {
+            } elseif (sha1_file($this->root_dir . '/composer.lock') != file_get_contents($this->root_dir . '/.composer.hash')) { // @phpstan-ignore theCodingMachineSafe.function, theCodingMachineSafe.function (Safe not installed at this point)
                 return false;
             }
         }
@@ -109,7 +109,7 @@ final class ResourcesChecker
         } elseif (file_exists($this->root_dir . '/package-lock.json')) {
             if (!file_exists($this->root_dir . '/.package.hash')) {
                 return false;
-            } elseif (sha1_file($this->root_dir . '/package-lock.json') != file_get_contents($this->root_dir . '/.package.hash')) {
+            } elseif (sha1_file($this->root_dir . '/package-lock.json') != file_get_contents($this->root_dir . '/.package.hash')) { // @phpstan-ignore theCodingMachineSafe.function, theCodingMachineSafe.function (Safe not installed at this point)
                 return false;
             }
         }
@@ -122,17 +122,17 @@ final class ResourcesChecker
      */
     private function areLocalesUpToDate(): bool
     {
-        $locales_files = scandir($this->root_dir . '/locales');
-        $po_files = preg_grep('/\.po$/', $locales_files);
-        $mo_files = preg_grep('/\.mo$/', $locales_files);
+        $locales_files = scandir($this->root_dir . '/locales'); // @phpstan-ignore theCodingMachineSafe.function (Safe not loaded at this point)
+        $po_files = preg_grep('/\.po$/', $locales_files); // @phpstan-ignore theCodingMachineSafe.function (Safe not loaded at this point)
+        $mo_files = preg_grep('/\.mo$/', $locales_files); // @phpstan-ignore theCodingMachineSafe.function (Safe not loaded at this point)
         if (count($mo_files) < count($po_files)) {
             return false;
         } elseif (file_exists($this->root_dir . '/locales/glpi.pot')) {
             // Assume that `locales/glpi.pot` file only exists when installation mode is GIT
             foreach ($po_files as $po_file) {
                 $po_file = $this->root_dir . '/locales/' . $po_file;
-                $mo_file = preg_replace('/\.po$/', '.mo', $po_file);
-                if (!file_exists($mo_file) || filemtime($mo_file) < filemtime($po_file)) {
+                $mo_file = preg_replace('/\.po$/', '.mo', $po_file); // @phpstan-ignore theCodingMachineSafe.function (Safe not loaded at this point)
+                if (!file_exists($mo_file) || filemtime($mo_file) < filemtime($po_file)) { // @phpstan-ignore theCodingMachineSafe.function, theCodingMachineSafe.function (Safe not loaded at this point)
                     return false;
                 }
             }

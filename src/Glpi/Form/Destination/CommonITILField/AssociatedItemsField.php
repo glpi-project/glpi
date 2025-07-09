@@ -52,6 +52,8 @@ use Glpi\Form\QuestionType\QuestionTypeUserDevice;
 use InvalidArgumentException;
 use Override;
 
+use function Safe\json_decode;
+
 final class AssociatedItemsField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     #[Override]

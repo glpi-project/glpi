@@ -44,6 +44,8 @@ use Glpi\Form\Question;
 use InvalidArgumentException;
 use Override;
 
+use function Safe\json_decode;
+
 final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable implements UsedAsCriteriaInterface
 {
     #[Override]

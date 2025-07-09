@@ -48,8 +48,12 @@ use Glpi\Form\Question;
 use Group;
 use InvalidArgumentException;
 use Override;
+use Safe\Exceptions\JsonException;
 use Supplier;
 use User;
+
+use function Safe\json_decode;
+use function Safe\json_encode;
 
 /**
  * "Actors" questions represent an input field for actors (requesters, ...)
@@ -202,13 +206,16 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
             return false;
         }
 
-        /** @var ?QuestionTypeActorsExtraDataConfig $config */
-        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
-        if ($config === null) {
+        try {
+            /** @var ?QuestionTypeActorsExtraDataConfig $config */
+            $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
+            if ($config === null) {
+                return false;
+            }
+            return $config->isMultipleActors();
+        } catch (JsonException $e) {
             return false;
         }
-
-        return $config->isMultipleActors();
     }
 
     /**

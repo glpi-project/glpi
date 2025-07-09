@@ -35,7 +35,6 @@
 
 namespace Glpi\Form\QuestionType;
 
-use DateTime;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionHandler\DateAndTimeConditionHandler;
@@ -47,6 +46,11 @@ use Glpi\Form\Question;
 use InvalidArgumentException;
 use Override;
 use RuntimeException;
+use Safe\DateTime;
+use Safe\Exceptions\JsonException;
+
+use function Safe\json_decode;
+use function Safe\preg_match;
 
 /**
  * Short answers are single line inputs used to answer simple questions.
@@ -154,13 +158,16 @@ class QuestionTypeDateTime extends AbstractQuestionType implements FormQuestionD
             return false;
         }
 
-        /** @var ?QuestionTypeDateTimeExtraDataConfig $config */
-        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
-        if ($config === null) {
+        try {
+            /** @var ?QuestionTypeDateTimeExtraDataConfig $config */
+            $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
+            if ($config === null) {
+                return false;
+            }
+            return $config->isDefaultValueCurrentTime();
+        } catch (JsonException $e) {
             return false;
         }
-
-        return $config->isDefaultValueCurrentTime();
     }
 
     public function isDateEnabled(?Question $question): bool
@@ -169,13 +176,16 @@ class QuestionTypeDateTime extends AbstractQuestionType implements FormQuestionD
             return true;
         }
 
-        /** @var ?QuestionTypeDateTimeExtraDataConfig $config */
-        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
-        if ($config === null) {
+        try {
+            /** @var ?QuestionTypeDateTimeExtraDataConfig $config */
+            $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
+            if ($config === null) {
+                return true;
+            }
+            return $config->isDateEnabled();
+        } catch (JsonException $e) {
             return true;
         }
-
-        return $config->isDateEnabled();
     }
 
     public function isTimeEnabled(?Question $question): bool
@@ -184,13 +194,16 @@ class QuestionTypeDateTime extends AbstractQuestionType implements FormQuestionD
             return false;
         }
 
-        /** @var ?QuestionTypeDateTimeExtraDataConfig $config */
-        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
-        if ($config === null) {
+        try {
+            /** @var ?QuestionTypeDateTimeExtraDataConfig $config */
+            $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
+            if ($config === null) {
+                return false;
+            }
+            return $config->isTimeEnabled();
+        } catch (JsonException $e) {
             return false;
         }
-
-        return $config->isTimeEnabled();
     }
 
     #[Override]

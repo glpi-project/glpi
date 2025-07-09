@@ -50,6 +50,9 @@ use Glpi\DBAL\QueryUnion;
 use Glpi\Toolbox\ArrayPathAccessor;
 use RuntimeException;
 
+use function Safe\preg_match;
+use function Safe\preg_replace;
+
 /**
  * Internal search engine for the High-Level API
  *

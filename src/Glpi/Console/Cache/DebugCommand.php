@@ -41,6 +41,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use function Safe\json_encode;
+
 class DebugCommand extends Command
 {
     protected $requires_db_up_to_date = false;

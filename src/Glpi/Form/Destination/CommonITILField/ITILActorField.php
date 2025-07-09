@@ -55,6 +55,8 @@ use Override;
 use Supplier;
 use User;
 
+use function Safe\class_uses;
+
 abstract class ITILActorField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     /** @return AbstractQuestionType[] */

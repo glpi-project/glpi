@@ -40,8 +40,15 @@ use Glpi\Log\ErrorLogHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use Safe\Exceptions\PcreException;
 
 use function Safe\define;
+use function Safe\ini_set;
+use function Safe\mkdir;
+use function Safe\preg_grep;
+use function Safe\preg_match;
+use function Safe\preg_replace_callback;
+use function Safe\session_name;
 
 final class SystemConfigurator
 {
@@ -235,13 +242,16 @@ final class SystemConfigurator
         // Try to create sub directories of `GLPI_VAR_DIR`, if they are not existing.
         // Silently fail, as handling errors is not really possible here.
         foreach ($constants_names as $name) {
-            if (preg_match('/^GLPI_[\w]+_DIR$/', $name) !== 1) {
+            try {
+                if (preg_match('/^GLPI_[\w]+_DIR$/', $name) !== 1) {
+                    continue;
+                }
+            } catch (PcreException $e) {
                 continue;
             }
             $value = constant($name);
             if (
-                preg_match('/^GLPI_[\w]+_DIR$/', $name)
-                && preg_match('/^' . preg_quote(GLPI_VAR_DIR, '/') . '\//', $value)
+                preg_match('/^' . preg_quote(GLPI_VAR_DIR, '/') . '\//', $value)
                 && !is_dir($value)
             ) {
                 @mkdir($value, recursive: true);

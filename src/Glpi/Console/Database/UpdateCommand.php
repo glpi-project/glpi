@@ -55,6 +55,10 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Update;
 
+use function Safe\preg_match;
+use function Safe\preg_replace;
+use function Safe\sha1_file;
+
 class UpdateCommand extends AbstractCommand implements ConfigurationCommandInterface
 {
     use TelemetryActivationTrait;

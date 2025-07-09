@@ -40,7 +40,10 @@ use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\Section;
 use LogicException;
+use Safe\Exceptions\JsonException;
 use Session;
+
+use function Safe\json_decode;
 
 final class Engine
 {
@@ -266,10 +269,13 @@ final class Engine
             case Type::QUESTION:
                 $question = Question::getByUuid($condition->getItemUuid());
                 $item = $question->getQuestionType();
-                $raw_config = json_decode($question->fields['extra_data'] ?? '', true);
-                $config = $raw_config ? $item->getExtraDataConfig($raw_config) : null;
+                try {
+                    $raw_config = json_decode($question->fields['extra_data'] ?? '', true);
+                    $config = $item->getExtraDataConfig($raw_config);
+                } catch (JsonException $e) {
+                    $config = null;
+                }
                 $answer = $this->input->getAnswers()[$question->getID()] ?? null;
-
                 break;
             case Type::SECTION:
                 $item = Section::getByUuid($condition->getItemUuid());

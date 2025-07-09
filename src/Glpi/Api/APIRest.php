@@ -41,8 +41,15 @@ namespace Glpi\Api;
 
 use AllAssets;
 use GLPIUploadHandler;
+use Safe\Exceptions\JsonException;
 use stdClass;
 use Toolbox;
+
+use function Safe\file_get_contents;
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\preg_match;
+use function Safe\strtotime;
 
 class APIRest extends API
 {
@@ -511,11 +518,12 @@ class APIRest extends API
         }
 
         if (strpos($content_type, "application/json") !== false) {
-            if ($body_params = json_decode($body)) {
+            try {
+                $body_params = json_decode($body);
                 foreach ($body_params as $param_name => $param_value) {
                     $parameters[$param_name] = $param_value;
                 }
-            } elseif (strlen($body) > 0) {
+            } catch (JsonException $e) {
                 $this->returnError(
                     "JSON payload seems not valid",
                     400,
@@ -537,7 +545,18 @@ class APIRest extends API
             }
 
             // with this content_type, php://input is empty... (see http://php.net/manual/en/wrappers.php.php)
-            if (!$uploadManifest = json_decode($_REQUEST['uploadManifest'])) {
+            try {
+                $uploadManifest = json_decode($_REQUEST['uploadManifest']);
+                foreach ($uploadManifest as $field => $value) {
+                    $parameters[$field] = $value;
+                }
+                $this->format = "json";
+
+                // move files into _tmp folder
+                $parameters['upload_result'] = [];
+                $parameters['input']->_filename = [];
+                $parameters['input']->_prefix_filename = [];
+            } catch (JsonException $e) {
                 $this->returnError(
                     "JSON payload seems not valid",
                     400,
@@ -545,15 +564,6 @@ class APIRest extends API
                     false
                 );
             }
-            foreach ($uploadManifest as $field => $value) {
-                $parameters[$field] = $value;
-            }
-            $this->format = "json";
-
-            // move files into _tmp folder
-            $parameters['upload_result'] = [];
-            $parameters['input']->_filename = [];
-            $parameters['input']->_prefix_filename = [];
         } elseif (strpos($content_type, "application/x-www-form-urlencoded") !== false) {
             parse_str($body, $postvars);
             /** @var array $postvars */

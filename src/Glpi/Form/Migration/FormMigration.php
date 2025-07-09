@@ -85,6 +85,8 @@ use Glpi\Message\MessageType;
 use Glpi\Migration\AbstractPluginMigration;
 use LogicException;
 
+use function Safe\json_decode;
+
 class FormMigration extends AbstractPluginMigration
 {
     private FormAccessControlManager $formAccessControlManager;
