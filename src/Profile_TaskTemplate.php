@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -55,8 +56,8 @@ class Profile_TaskTemplate extends CommonDBRelation
         $iterator = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                self::$items_id_1 => $tasktemplate->getID()
-            ]
+                self::$items_id_1 => $tasktemplate->getID(),
+            ],
         ]);
         foreach ($iterator as $data) {
             $prof[$data['profiles_id']][] = $data;

@@ -155,7 +155,7 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
                                     Session::getPluralNumber()
                                 ),
                                 $nb
-                            )
+                            ),
                         ];
                     }
                     break;
@@ -193,7 +193,7 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
             $this->getUserClass(),
             $this->getGroupClass(),
             $this->getProfileClass(),
-            $this->getEntityClass()
+            $this->getEntityClass(),
         ]);
     }
 
@@ -219,8 +219,8 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
                             '',
                             $_SESSION['glpiactiveentities'],
                             true
-                        )
-                    ]
+                        ),
+                    ],
                 ],
                 [
                     $this->getProfileClass()::getTable() . '.profiles_id' => $_SESSION["glpiactiveprofile"]['id'],
@@ -231,47 +231,47 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
                             '',
                             $_SESSION['glpiactiveentities'],
                             true
-                        )
-                    ]
-                ]
-            ]
+                        ),
+                    ],
+                ],
+            ],
         ];
         $restrict = getEntitiesRestrictCriteria($this->getEntityClass()::getTable(), '', '', true, true);
         if (count($restrict)) {
             $where['OR'] = $where['OR'] + $restrict;
-                }
+        }
         return [
             'WHERE' => $where,
             'LEFT JOIN' => [
                 $this->getUserClass()::getTable() => [
                     'ON' => [
                         $this->getUserClass()::getTable() => $fkField,
-                        $table => 'id'
-                    ]
+                        $table => 'id',
+                    ],
                 ],
                 $this->getGroupClass()::getTable() => [
                     'ON' => [
                         $this->getGroupClass()::getTable() => $fkField,
-                        $table => 'id'
-                    ]
+                        $table => 'id',
+                    ],
                 ],
                 $this->getProfileClass()::getTable() => [
                     'ON' => [
                         $this->getProfileClass()::getTable() => $fkField,
-                        $table => 'id'
-                    ]
+                        $table => 'id',
+                    ],
                 ],
                 $this->getEntityClass()::getTable() => [
                     'ON' => [
                         $this->getEntityClass()::getTable() => $fkField,
-                        $table => 'id'
-                    ]
+                        $table => 'id',
+                    ],
                 ],
             ],
             'ORDERBY' => [
                 'itemtype',
-                'name'
-            ]
+                'name',
+            ],
         ];
     }
 

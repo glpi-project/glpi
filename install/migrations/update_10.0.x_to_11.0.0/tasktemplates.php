@@ -33,6 +33,7 @@
  */
 
 /**
+ * @var \DBmysql $DB
  * @var \Migration $migration
  */
 
@@ -45,3 +46,71 @@ $migration->addRight('tasktemplate', READ, ['taskcategory' => READ]);
 $migration->replaceRight('tasktemplate', READ | UPDATE, ['taskcategory' => UPDATE]);
 $migration->replaceRight('tasktemplate', READ | UPDATE | CREATE, ['taskcategory' => CREATE]);
 $migration->replaceRight('tasktemplate', READ | UPDATE | CREATE | PURGE, ['taskcategory' => PURGE]);
+
+$default_charset = DBConnection::getDefaultCharset();
+$default_collation = DBConnection::getDefaultCollation();
+$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+
+if (!$DB->tableExists('glpi_entities_tasktemplates')) {
+    $query = "CREATE TABLE `glpi_entities_tasktemplates` (
+        `id` int unsigned NOT NULL AUTO_INCREMENT,
+        `tasktemplates_id` int unsigned  NOT NULL DEFAULT '0',
+        `entities_id` int unsigned  NOT NULL DEFAULT '0',
+        `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`),
+        KEY `tasktemplates_id` (`tasktemplates_id`),
+        KEY `entities_id` (`entities_id`),
+        KEY `is_recursive` (`is_recursive`)
+    ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
+    $DB->doQuery($query);
+}
+
+//INSERT INTO glpi_entities_tasktemplates (tasktemplates_id, entities_id, is_recursive)
+//SELECT id, entities_id, is_recursive
+//FROM glpi_tasktemplates;
+
+if (!$DB->tableExists('glpi_tasktemplates_users')) {
+    $query = "CREATE TABLE `glpi_tasktemplates_users` (
+        `id` int unsigned NOT NULL AUTO_INCREMENT,
+        `tasktemplates_id` int unsigned  NOT NULL DEFAULT '0',
+        `users_id` int unsigned  NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`),
+        KEY `tasktemplates_id` (`tasktemplates_id`),
+        KEY `users_id` (`users_id`)
+    ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
+    $DB->doQuery($query);
+}
+
+if (!$DB->tableExists('glpi_groups_tasktemplates')) {
+    $query = "CREATE TABLE `glpi_groups_tasktemplates` (
+        `id` int unsigned NOT NULL AUTO_INCREMENT,
+        `tasktemplates_id` int unsigned  NOT NULL DEFAULT '0',
+        `groups_id` int unsigned  NOT NULL DEFAULT '0',
+        `entities_id` int unsigned  NULL,
+        `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+        `no_entity_restriction` tinyint NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`),
+        KEY `tasktemplates_id` (`tasktemplates_id`),
+        KEY `groups_id` (`groups_id`),
+        KEY `entities_id` (`entities_id`),
+        KEY `is_recursive` (`is_recursive`)
+    ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
+    $DB->doQuery($query);
+}
+
+if (!$DB->tableExists('glpi_profiles_tasktemplates')) {
+    $query = "CREATE TABLE `glpi_profiles_tasktemplates` (
+        `id` int unsigned NOT NULL AUTO_INCREMENT,
+        `tasktemplates_id` int unsigned  NOT NULL DEFAULT '0',
+        `profiles_id` int unsigned  NOT NULL DEFAULT '0',
+        `entities_id` int unsigned  NULL,
+        `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+        `no_entity_restriction` tinyint NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`),
+        KEY `tasktemplates_id` (`tasktemplates_id`),
+        KEY `profiles_id` (`profiles_id`),
+        KEY `entities_id` (`entities_id`),
+        KEY `is_recursive` (`is_recursive`)
+    ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
+    $DB->doQuery($query);
+}

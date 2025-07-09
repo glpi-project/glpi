@@ -109,8 +109,7 @@ final class DropdownFormController extends AbstractController
 
         if (isset($input["purge"])) {
             $dropdown->check($input["id"], PURGE);
-            if (
-                $dropdown->isUsed()
+            if ($dropdown->isUsed()
                 && empty($input["forcepurge"])
             ) {
                 ob_start();
@@ -194,6 +193,65 @@ final class DropdownFormController extends AbstractController
             $content = ob_get_clean();
 
             return new Response($content);
+        }
+
+        if (isset($input["addvisibility"])) {
+            if (isset($input["_type"]) && !empty($input["_type"])
+                && isset($input[$dropdown::getForeignKeyField()]) && $input[$dropdown::getForeignKeyField()]
+            ) {
+                if (array_key_exists('entities_id', $input) && $input['entities_id'] == -1) {
+                    // "No restriction" value selected
+                    $input['entities_id'] = 'NULL';
+                    $input['no_entity_restriction'] = 1;
+                }
+                $item = null;
+                switch ($input["_type"]) {
+                    case 'User':
+                        if (isset($input['users_id']) && $input['users_id']) {
+                            $class = $dropdown->getType() . '_' . 'User';
+                            if (is_a($class, \CommonDBRelation::class, true)) {
+                                $item = new $class();
+                            }
+                        }
+                        break;
+                    case 'Group':
+                        if (isset($input['groups_id']) && $input['groups_id']) {
+                            $class = 'Group' . '_' . $dropdown->getType();
+                            if (is_a($class, \CommonDBRelation::class, true)) {
+                                $item = new $class();
+                            }
+                        }
+                        break;
+                    case 'Profile':
+                        if (isset($input['profiles_id']) && $input['profiles_id']) {
+                            $class = 'Profile' . '_' . $dropdown->getType();
+                            if (is_a($class, \CommonDBRelation::class, true)) {
+                                $item = new $class();
+                            }
+                        }
+                        break;
+                    case 'Entity':
+                        if (isset($input['entities_id'])) {
+                            $class = 'Entity' . '_' . $dropdown->getType();
+                            if (is_a($class, \CommonDBRelation::class, true)) {
+                                $item = new $class();
+                            }
+                        }
+                        break;
+                }
+                if (!is_null($item)) {
+                    $item->add($input);
+                    Event::log(
+                        $input[$dropdown::getForeignKeyField()],
+                        $dropdown->getType(),
+                        4,
+                        "tools",
+                        //TRANS: %s is the user login
+                        sprintf(__('%s adds a target'), $_SESSION["glpiname"])
+                    );
+                }
+            }
+            return new RedirectResponse(Html::getBackUrl());
         }
 
         ob_start();
