@@ -122,6 +122,8 @@ class NetworkPortInstantiation extends CommonDBChild
 
     public function manageSocket()
     {
+
+        Toolbox::logDebug($this->input, $this->fields);
         //add link to define
         if (isset($this->input['sockets_id']) && $this->input['sockets_id'] > 0) {
             $networkport = new NetworkPort();
@@ -135,6 +137,15 @@ class NetworkPortInstantiation extends CommonDBChild
                     "position"        => $networkport->fields['logical_number'],
                     "items_id"        => $networkport->fields['items_id'],
                     "networkports_id" => $this->fields['networkports_id'],
+                ]);
+            }
+        } else {
+            // Retrieve the associated socket to disconnect it from the NetworkPortEthernet
+            $socket = new Socket();
+            if ($socket->getFromDBByCrit(["networkports_id" => $this->fields['networkports_id']])) {
+                $socket->update([
+                    "id" => $socket->getID(),
+                    "networkports_id" => 0,
                 ]);
             }
         }
