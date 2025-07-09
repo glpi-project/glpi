@@ -91,11 +91,19 @@ final class ValidationField extends AbstractConfigField implements DestinationFi
         $twig = TemplateRenderer::getInstance();
         return $twig->render('pages/admin/form/itil_config_fields/validation.html.twig', [
             // Possible configuration constant that will be used to to hide/show additional fields
+            'CONFIG_SPECIFIC_VALUES'  => ValidationFieldStrategy::SPECIFIC_VALUES->value,
             'CONFIG_SPECIFIC_ACTORS'  => ValidationFieldStrategy::SPECIFIC_ACTORS->value,
             'CONFIG_SPECIFIC_ANSWERS' => ValidationFieldStrategy::SPECIFIC_ANSWERS->value,
 
             // General display options
             'options' => $display_options,
+
+            // Specific additional config for SPECIFIC_VALUES strategy
+            'specific_value_extra_field' => [
+                'aria_label'     => __("Select approval templates..."),
+                'value'           => $config->getSpecificValidationTemplateIds(),
+                'input_name'      => $input_name . "[" . ValidationFieldConfig::SPECIFIC_VALIDATION_TEMPLATE_IDS . "]",
+            ],
 
             // Specific additional config for SPECIFIC_ACTORS strategy
             'specific_values_extra_field' => [
