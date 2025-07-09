@@ -57,6 +57,10 @@ class SavedSearchTest extends DbTestCase
     public function testAddVisibilityRestrict()
     {
         global $DB;
+
+        $test_root    = getItemByTypeName('Entity', '_test_root_entity', true);
+        $test_child_1 = getItemByTypeName('Entity', '_test_child_1', true);
+        $test_child_2 = getItemByTypeName('Entity', '_test_child_2', true);
         // super-admin
         $this->login();
         $this->assertSame('', \SavedSearch::addVisibilityRestrict());
@@ -90,7 +94,7 @@ class SavedSearchTest extends DbTestCase
         );
         // can see public after moving entity
         $this->setEntity('_test_root_entity', true);
-        $visibility_restrict3 = "((`glpi_savedsearches`.`users_id` = '5' AND ((`glpi_savedsearches`.`entities_id` IN ('4', '5', '6') OR (`glpi_savedsearches`.`is_recursive` = '1' AND `glpi_savedsearches`.`entities_id` IN ('0'))))) OR ((`glpi_savedsearches_usertargets`.`users_id` = '5' OR (`glpi_groups_savedsearches`.`groups_id` IN ('-1') AND ((`glpi_groups_savedsearches`.`no_entity_restriction` = '1') OR (((`glpi_groups_savedsearches`.`entities_id` IN ('4', '5', '6') OR (`glpi_groups_savedsearches`.`is_recursive` = '1' AND `glpi_groups_savedsearches`.`entities_id` IN ('0'))))))) OR (((`glpi_entities_savedsearches`.`entities_id` IN ('4', '5', '6') OR (`glpi_entities_savedsearches`.`is_recursive` = '1' AND `glpi_entities_savedsearches`.`entities_id` IN ('0'))))))))";
+        $visibility_restrict3 = "((`glpi_savedsearches`.`users_id` = '5' AND ((`glpi_savedsearches`.`entities_id` IN ('4', '5', '6') OR (`glpi_savedsearches`.`is_recursive` = '1' AND `glpi_savedsearches`.`entities_id` IN ('0'))))) OR ((`glpi_savedsearches_usertargets`.`users_id` = '5' OR (`glpi_groups_savedsearches`.`groups_id` IN ('-1') AND ((`glpi_groups_savedsearches`.`no_entity_restriction` = '1') OR (((`glpi_groups_savedsearches`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2') OR (`glpi_groups_savedsearches`.`is_recursive` = '1' AND `glpi_groups_savedsearches`.`entities_id` IN ('0'))))))) OR (((`glpi_entities_savedsearches`.`entities_id` IN ('4', '5', '6') OR (`glpi_entities_savedsearches`.`is_recursive` = '1' AND `glpi_entities_savedsearches`.`entities_id` IN ('0'))))))))";
         $this->assertSame(
             $visibility_restrict3,
             \SavedSearch::addVisibilityRestrict()

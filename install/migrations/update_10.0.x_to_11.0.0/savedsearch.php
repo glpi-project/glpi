@@ -42,10 +42,9 @@
 $table = SavedSearch::getTable();
 $field = 'is_private';
 if ($DB->fieldExists($table, $field)) {
-    $query = 'INSERT INTO glpi_entities_savedsearches (savedsearches_id, entities_id, is_recursive)
-SELECT id, entities_id, is_recursive
-FROM glpi_savedsearches WHERE is_private = 0;';
-    $DB->doQuery($query);
+    $DB->doQuery('INSERT INTO `glpi_entities_savedsearches` (`savedsearches_id`, `entities_id`, `is_recursive`)
+SELECT `id`, `entities_id`, `is_recursive`
+FROM `glpi_savedsearches` WHERE `is_private` = 0;');
 
     $migration->dropField($table, $field);
 
