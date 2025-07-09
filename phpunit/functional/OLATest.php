@@ -101,6 +101,33 @@ use Ticket;
  *              - ttr waiting time is incremented while the ticket status is WAITING : @see self::testOlaTTRWaitingTimeIsIncrementedWhileTicketStatusIsWaiting()
  *              + @todo tests avec autres groupes
  *
+ *          - ticket is late if : (business logic extracted from CommonITILObject::generateSLAOLAComputation())
+ *              tto :
+ *              - ola due time is not null (0)
+ *              - and ticket status is not WAITING (1)
+*               - and one of the following is true :
+ *                  - takeintoaccountdate is not null & > due_time (2.1))
+ *                  - takeintoaccountdate is null & target resolution delay (time elapsed since ticket creation without pauses) > time elapsed since ticket start start (2.2) // @todoseb need rewrite
+ *                  - takeintoaccountdate is null & due time is passed (2.3)
+ *              - ttr :
+ *                  - due time is not null
+ *                  - ticket status is not WAITING
+*                      - ticket solved_date > due_time
+ *                     - or solved_date is null & due_time is passed
+ *              // ---
+ *
+ *              - tto : (takeintoaccountdate is replaced by end_time)
+ *                - end_time is defined and > due_time - @see self::testOlaTtoIsLateWhenEndTimeIsAfterDueTime()
+ *                - end_time is not defined & due_time is passed - @see self::testOlaTtoIsLateWhenDueTimeIsPassed()
+ *                - ticket status is not WAITING (1): @see self::testOlaTtoIsLateWhenTicketStatusIsNotWaiting()    // @todoseb
+ *                and that's all.
+
+ * // ----
+ *                - is never late if ticket is solved or closed : @see self::testOlaTtoIsNotLateWhenTicketIsSolvedOrClosed()
+                * - ttr : @todoseb implémenter tests manquants
+ *
+ * // @todoseb test si is_late change quand ticket devient waiting
+ *
  *          - when completion is done, the associated group is removed from ticket assignees : not implemented, seems not relevant atm
  */
 
@@ -809,6 +836,32 @@ class OLATest extends DbTestCase
 
         $ola_data = $ticket->getOlasData()[0];
         $this->assertEquals(20 * 60, $ola_data['waiting_time'], 'Waiting time should be incremented by 20 minutes after 20 min in WAITING status for an OLA TTR');
+    }
+
+    public function testOlaTtoIsLateWhenEndTimeIsAfterDueTime(): void
+    {
+        // arrange
+        $this->login();
+        $ola = $this->createOLA(ola_type: SLM::TTR)['ola'];
+        $now = $this->setCurrentTime('10:04:00', '2025-06-26');
+        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()]]);
+
+        // act - check ola is not yet late
+        $ola_data = $ticket->getOlasData()[0];
+        assert($ola_data['is_late'] == 0, 'OLA should not be late when end time is not set');
+
+        // act : complete ola after due time - wait for ola to be late + assign the ola group to the ticket
+        $later = clone($now);
+        $later->add($this->getDefaultTtrDelayInterval());
+        $later->add(new \DateInterval('PT1H')); // add 1 hour to ensure end time is after due time
+        $this->setCurrentTime($later->format('Y-m-d H:i:s'));
+        $this->updateItem($ticket::class, $ticket->getID(), ['_groups_id_assign' => $ola->fields['groups_id']]);
+        $this->runOlaCron();
+
+        // assert - check ola is late
+        $ola_data = $ticket->getOlasData()[0];
+        dump($ola_data, $ola_data['is_late']);
+        $this->assertEquals(1, $ola_data['is_late'], 'OLA should be late when end time is set');
     }
 
     private function getDefaultTtoDelayInterval(): \DateInterval

@@ -35,7 +35,9 @@
 namespace Glpi\PHPUnit\Tests\Glpi;
 
 use OLA;
+use OlaLevel_Ticket;
 use SLA;
+use SlaLevel_Ticket;
 use SLM;
 
 trait SLMTrait
@@ -129,5 +131,16 @@ trait SLMTrait
                 'calendars_id' => $calendar->getID(),
             ]
         );
+    }
+
+    private function runSlaCron(): void
+    {
+        SlaLevel_Ticket::cronSlaTicket(getItemByTypeName(\CronTask::class, 'slaticket'));
+    }
+
+    private function runOlaCron(): void
+    {
+        OlaLevel_Ticket::cronOlaTicket(getItemByTypeName(\CronTask::class, 'slaticket')); // at the moment only slaticketcron exists
+        \Item_Ola::cron(getItemByTypeName(\CronTask::class, 'slaticket'));
     }
 }

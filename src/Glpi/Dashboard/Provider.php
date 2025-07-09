@@ -496,6 +496,9 @@ class Provider
     }
 
 
+    /**
+     * Get the number of late tickets by SLA status and technician
+     */
     public static function nbTicketsByAgreementStatusAndTechnician(array $params = []): array
     {
         /** @var \DBmysql $DB */
