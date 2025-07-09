@@ -287,7 +287,7 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
                             );
 
                             if ($mapped_item === null) {
-                                throw new InvalidArgumentException("Question not found in a target form");
+                                throw new InvalidArgumentException("Question '$id' not found in a target form");
                             }
 
                             $specific_question_ids[] = $mapped_item['items_id'];

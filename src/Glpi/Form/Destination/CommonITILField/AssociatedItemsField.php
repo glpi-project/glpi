@@ -291,7 +291,7 @@ final class AssociatedItemsField extends AbstractConfigField implements Destinat
                     );
 
                     if ($mapped_item === null) {
-                        throw new InvalidArgumentException("Question not found in a target form");
+                        throw new InvalidArgumentException("Question '{$rawData['associate_question']}' not found in a target form");
                     }
 
                     return new AssociatedItemsFieldConfig(

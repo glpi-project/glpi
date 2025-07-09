@@ -160,7 +160,7 @@ final class UrgencyField extends AbstractConfigField implements DestinationField
                 );
 
                 if ($mapped_item === null) {
-                    throw new InvalidArgumentException("Question not found in a target form");
+                    throw new InvalidArgumentException("Question '{$rawData['urgency_question']}' not found in a target form");
                 }
 
                 return new UrgencyFieldConfig(
