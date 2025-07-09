@@ -114,7 +114,14 @@ final class TilesManager
             }
 
             // Try to load tile from database
-            if (!$tile->getFromDb($row['items_id_tile'])) {
+            try {
+                if (!$tile->getFromDb($row['items_id_tile'])) {
+                    continue;
+                }
+            } catch (InvalidTileException $e) {
+                // Should not happen unless the database is manually edited
+                // Log the error but do not block the exectuion.
+                trigger_error("Unable to load linked form", E_USER_WARNING);
                 continue;
             }
 

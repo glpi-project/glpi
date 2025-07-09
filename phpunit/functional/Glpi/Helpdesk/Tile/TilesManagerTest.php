@@ -38,6 +38,7 @@ use CommonDBTM;
 use DbTestCase;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\Form;
 use Glpi\Helpdesk\Tile\ExternalPageTile;
 use Glpi\Helpdesk\Tile\FormTile;
 use Glpi\Helpdesk\Tile\GlpiPageTile;
@@ -532,5 +533,113 @@ final class TilesManagerTest extends DbTestCase
         // Assert: no real assertions, we are just checking that the template
         // above doesn't throw an error.
         $this->assertTrue(true);
+    }
+
+    public function testFormCascadeDeletion(): void
+    {
+        // Arrange: create a form tile
+        $builder = new FormBuilder("My form");
+        $form = $this->createForm($builder);
+        $manager = $this->getManager();
+        $manager->addTile($this->getTestRootEntity(), FormTile::class, [
+            'forms_forms_id' => $form->getId(),
+        ]);
+
+        // Count tiles before and after form deletion
+        $before_tiles_items = countElementsInTable(Item_Tile::getTable());
+        $before_form_tiles = countElementsInTable(FormTile::getTable());
+        $this->deleteItem(Form::class, $form->getId(), purge: true);
+        $after_tiles_items = countElementsInTable(Item_Tile::getTable());
+        $after_form_tiles = countElementsInTable(FormTile::getTable());
+
+        // Assert: tile should be deleted after deletion
+        $this->assertEquals($before_tiles_items - 1, $after_tiles_items);
+        $this->assertEquals($before_form_tiles - 1, $after_form_tiles);
+    }
+
+    public function testFormTileCascadeDeletion(): void
+    {
+        // Arrange: create a form page tile
+        $builder = new FormBuilder("My form");
+        $form = $this->createForm($builder);
+        $manager = $this->getManager();
+        $item_tile_id = $manager->addTile(
+            $this->getTestRootEntity(),
+            FormTile::class,
+            [
+                'forms_forms_id' => $form->getId(),
+            ]
+        );
+        $item_tile = Item_Tile::getById($item_tile_id);
+
+        // Count tiles before and after tile deletion
+        $before_tiles_items = countElementsInTable(Item_Tile::getTable());
+        $this->deleteItem(
+            FormTile::class,
+            $item_tile->fields['items_id_tile'],
+            purge: true
+        );
+        $after_tiles_items = countElementsInTable(Item_Tile::getTable());
+
+        // Assert: tile should be deleted after deletion
+        $this->assertEquals($before_tiles_items - 1, $after_tiles_items);
+    }
+
+    public function testExternalPageTileCascadeDeletion(): void
+    {
+        // Arrange: create an external page tile
+        $manager = $this->getManager();
+        $item_tile_id = $manager->addTile(
+            $this->getTestRootEntity(),
+            ExternalPageTile::class,
+            [
+                'title'        => "GLPI project",
+                'description'  => "Link to GLPI project website",
+                'illustration' => "request-service",
+                'url'          => "https://glpi-project.org",
+            ]
+        );
+        $item_tile = Item_Tile::getById($item_tile_id);
+
+        // Count tiles before and after tile deletion
+        $before_tiles_items = countElementsInTable(Item_Tile::getTable());
+        $this->deleteItem(
+            ExternalPageTile::class,
+            $item_tile->fields['items_id_tile'],
+            purge: true
+        );
+        $after_tiles_items = countElementsInTable(Item_Tile::getTable());
+
+        // Assert: tile should be deleted after deletion
+        $this->assertEquals($before_tiles_items - 1, $after_tiles_items);
+    }
+
+    public function testGlpiPageTileCascadeDeletion(): void
+    {
+        // Arrange: create a glpi page tile
+        $manager = $this->getManager();
+        $item_tile_id = $manager->addTile(
+            $this->getTestRootEntity(),
+            GlpiPageTile::class,
+            [
+                'title'        => "FAQ",
+                'description'  => "Link to the FAQ",
+                'illustration' => "browse-kb",
+                'page'         => GlpiPageTile::PAGE_FAQ,
+            ]
+        );
+        $item_tile = Item_Tile::getById($item_tile_id);
+
+        // Count tiles before and after tile deletion
+        $before_tiles_items = countElementsInTable(Item_Tile::getTable());
+        $this->deleteItem(
+            GlpiPageTile::class,
+            $item_tile->fields['items_id_tile'],
+            purge: true
+        );
+        $after_tiles_items = countElementsInTable(Item_Tile::getTable());
+
+        // Assert: tile should be deleted after deletion
+        $this->assertEquals($before_tiles_items - 1, $after_tiles_items);
     }
 }
