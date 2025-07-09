@@ -89,7 +89,7 @@ trait PluginMigrationTrait
         } else {
             $messages[] = [
                 'type'    => MessageType::Error,
-                'message' => __("Migration was aborted due to errors, all changes have been reverted"),
+                'message' => __("Migration was aborted due to errors, all changes have been reverted."),
             ];
         }
 
