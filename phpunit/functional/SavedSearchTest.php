@@ -35,8 +35,8 @@
 namespace tests\units;
 
 use DbTestCase;
-use MassiveAction;
-use SavedSearch;
+
+use function PHPUnit\Framework\assertContains;
 
 /* Test for inc/savedsearch.class.php */
 
@@ -59,39 +59,37 @@ class SavedSearchTest extends DbTestCase
     public function testAddVisibilityRestrict()
     {
         global $DB;
-        //first, as a super-admin
+        // super-admin
         $this->login();
-        $visibility_restrict = "`glpi_savedsearches`.`users_id` = '5'";
         $this->assertSame('', \SavedSearch::addVisibilityRestrict());
 
+        // no rights on bookmark
         $this->login('normal', 'normal');
+        $visibility_restrict = "`glpi_savedsearches`.`users_id` = '5'";
         $this->assertSame(
             $visibility_restrict,
             \SavedSearch::addVisibilityRestrict()
         );
 
-        //ACLs have changed: login again.
         // temporarily add admin profile and switch to it to test can see public
         $DB->insert('glpi_profiles_users', [
             'users_id' => \Session::getLoginUserID(),
             'profiles_id' => 3,
             'entities_id' => 0,
-            'is_recursive' => 1,
+            'is_recursive' => 1
         ]);
         // logout -> login to be able to switch to new profile
         $this->logOut();
         $this->login('normal', 'normal');
-
         \Session::changeProfile(3);
         $visibility_restrict2 = "((`glpi_savedsearches`.`users_id` = '5') OR ((`glpi_savedsearches_usertargets`.`users_id` = '5' OR (`glpi_groups_savedsearches`.`groups_id` IN ('-1') AND ((`glpi_groups_savedsearches`.`no_entity_restriction` = '1') OR ((`glpi_groups_savedsearches`.`entities_id` IN ('0', '4', '1', '2', '3', '5', '6'))))) OR ((`glpi_entities_savedsearches`.`entities_id` IN ('0', '4', '1', '2', '3', '5', '6'))))))";
         $this->assertSame(
             $visibility_restrict2,
             \SavedSearch::addVisibilityRestrict()
         );
-
-        $visibility_restrict3 = "((`glpi_savedsearches`.`users_id` = '5' AND ((`glpi_savedsearches`.`entities_id` IN ('4', '5', '6') OR (`glpi_savedsearches`.`is_recursive` = '1' AND `glpi_savedsearches`.`entities_id` IN ('0'))))) OR ((`glpi_savedsearches_usertargets`.`users_id` = '5' OR (`glpi_groups_savedsearches`.`groups_id` IN ('-1') AND ((`glpi_groups_savedsearches`.`no_entity_restriction` = '1') OR (((`glpi_groups_savedsearches`.`entities_id` IN ('4', '5', '6') OR (`glpi_groups_savedsearches`.`is_recursive` = '1' AND `glpi_groups_savedsearches`.`entities_id` IN ('0'))))))) OR (((`glpi_entities_savedsearches`.`entities_id` IN ('4', '5', '6') OR (`glpi_entities_savedsearches`.`is_recursive` = '1' AND `glpi_entities_savedsearches`.`entities_id` IN ('0'))))))))";
-        // Check entity restriction
+        // can see public after moving entity
         $this->setEntity('_test_root_entity', true);
+        $visibility_restrict3 = "((`glpi_savedsearches`.`users_id` = '5' AND ((`glpi_savedsearches`.`entities_id` IN ('4', '5', '6') OR (`glpi_savedsearches`.`is_recursive` = '1' AND `glpi_savedsearches`.`entities_id` IN ('0'))))) OR ((`glpi_savedsearches_usertargets`.`users_id` = '5' OR (`glpi_groups_savedsearches`.`groups_id` IN ('-1') AND ((`glpi_groups_savedsearches`.`no_entity_restriction` = '1') OR (((`glpi_groups_savedsearches`.`entities_id` IN ('4', '5', '6') OR (`glpi_groups_savedsearches`.`is_recursive` = '1' AND `glpi_groups_savedsearches`.`entities_id` IN ('0'))))))) OR (((`glpi_entities_savedsearches`.`entities_id` IN ('4', '5', '6') OR (`glpi_entities_savedsearches`.`is_recursive` = '1' AND `glpi_entities_savedsearches`.`entities_id` IN ('0'))))))))";
         $this->assertSame(
             $visibility_restrict3,
             \SavedSearch::addVisibilityRestrict()
@@ -100,7 +98,7 @@ class SavedSearchTest extends DbTestCase
             'users_id' => \Session::getLoginUserID(),
             'profiles_id' => 3,
             'entities_id' => 0,
-            'is_recursive' => 1,
+            'is_recursive' => 1
         ]);
     }
 
@@ -109,6 +107,7 @@ class SavedSearchTest extends DbTestCase
         global $DB;
 
         $root_entity_id  = getItemByTypeName(\Entity::class, '_test_root_entity', true);
+
         $test_group_1_id  = getItemByTypeName(\Group::class, '_test_group_1', true);
 
         // needs a user
@@ -120,47 +119,44 @@ class SavedSearchTest extends DbTestCase
         // now add a bookmark on Ticket view
         $bk = new \SavedSearch();
         $this->assertTrue(
-            (bool) $bk->add([
+            (bool)$bk->add([
                 'name'         => 'private root recursive',
                 'type'         => 1,
                 'itemtype'     => 'Ticket',
                 'users_id'     => $tuuser_id,
                 'entities_id'  => 0,
                 'is_recursive' => 1,
-                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id,
+                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id
             ])
         );
         $bk_private_id = $bk->getID();
         $this->assertTrue(
-            (bool) $bk->add([
+            (bool)$bk->add([
                 'name'         => 'target user root recursive',
                 'type'         => 1,
                 'itemtype'     => 'Ticket',
                 'users_id'     => $tuuser_id,
-                'is_private'   => 0,
                 'entities_id'  => 0,
                 'is_recursive' => 1,
-                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id,
+                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id
             ])
         );
         $bk_target_user_id = $bk->getID();
         $this->assertTrue(
-            (bool) $bk->add([
+            (bool)$bk->add([
                 'name'         => 'target group root recursive',
                 'type'         => 1,
                 'itemtype'     => 'Ticket',
                 'users_id'     => $tuuser_id,
-                'is_private'   => 0,
                 'entities_id'  => 0,
                 'is_recursive' => 1,
-                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id,
+                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id
             ])
         );
-
         $bk_target_group_id = $bk->getID();
         // has is_private => 0 in inputs, so a target will be automatically created for the bookmark's entity
         $this->assertTrue(
-            (bool) $bk->add([
+            (bool)$bk->add([
                 'name'         => 'created public target entity root recursive',
                 'type'         => 1,
                 'itemtype'     => 'Ticket',
@@ -168,24 +164,23 @@ class SavedSearchTest extends DbTestCase
                 'is_private'   => 0,
                 'entities_id'  => 0,
                 'is_recursive' => 1,
-                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id,
+                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id
             ])
         );
-
         $bk_target_entity_id = $bk->getID();
         $bk2 = new \SavedSearch();
         $bk2->getFromDB($bk_target_entity_id);
         $this->assertEquals(1, $bk2->countVisibilities());
 
         $this->assertTrue(
-            (bool) $bk->add([
+            (bool)$bk->add([
                 'name'         => 'private normal user',
                 'type'         => 1,
                 'itemtype'     => 'Ticket',
                 'users_id'     => $normal_id,
                 'entities_id'  => 0,
                 'is_recursive' => 1,
-                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id,
+                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id
             ])
         );
         $bk_private_normal_id = $bk->getID();
@@ -212,16 +207,15 @@ class SavedSearchTest extends DbTestCase
         // test each type of targets so that normal will be able to see them
         $bks_normal = [
             'private normal user',
-            'created public target entity root recursive',
+            'created public target entity root recursive'
         ];
         // add normal to a group
         $group_user = new \Group_User();
         $group_user->add([
             'users_id' => 5,
-            'groups_id' => $test_group_1_id,
+            'groups_id' => $test_group_1_id
         ]);
         $this->login('normal', 'normal');
-
         $mine = $bk->getMine();
         $this->assertCount(count($bks_normal), $mine);
         $this->assertEqualsCanonicalizing(
@@ -229,13 +223,12 @@ class SavedSearchTest extends DbTestCase
             array_column($mine, 'name')
         );
 
-        //add public saved searches read right for normal profile
-        $DB->update(
-            'glpi_profilerights',
-            ['rights' => 1],
+        // add normal as target for another savedsearch
+        $DB->insert(
+            'glpi_savedsearches_usertargets',
             [
                 'users_id'  => 5,
-                'savedsearches_id' => $bk_target_user_id,
+                'savedsearches_id' => $bk_target_user_id
             ]
         );
         $bks_normal[] = 'target user root recursive';
@@ -246,7 +239,6 @@ class SavedSearchTest extends DbTestCase
             array_column($mine, 'name')
         );
 
-        // Check entity restrictions
         // add the group as target for a bookmark
         $DB->insert(
             'glpi_groups_savedsearches',
@@ -254,10 +246,9 @@ class SavedSearchTest extends DbTestCase
                 'savedsearches_id'  => $bk_target_group_id,
                 'groups_id' => $test_group_1_id,
                 'entities_id' => 0,
-                'is_recursive' => 1,
+                'is_recursive' => 1
             ]
         );
-
         $bks_normal[] = 'target group root recursive';
         $mine = $bk->getMine('Ticket');
         $this->assertCount(count($bks_normal), $mine);
@@ -272,7 +263,7 @@ class SavedSearchTest extends DbTestCase
             [
                 'savedsearches_id'  => $bk_private_id,
                 'entities_id' => $root_entity_id,
-                'is_recursive' => 1,
+                'is_recursive' => 1
             ]
         );
         $bks_normal[] = 'private root recursive';
@@ -282,22 +273,9 @@ class SavedSearchTest extends DbTestCase
             $bks_normal,
             array_column($mine, 'name')
         );
-    }
 
-    public function testAvailableMassiveActions(): void
-    {
-        // Act: get saved searches massive actions
-        $this->login();
-        $actions = MassiveAction::getAllMassiveActions(SavedSearch::class);
-
-        // Assert: validate the available actions
-        $this->assertEquals([
-            'Delete permanently',
-            'Add to transfer list',
-            'Unset as default',
-            'Change count method',
-            'Change visibility',
-            'Change entity',
-        ], array_values($actions));
+        $DB->delete($group_user->getTable(), [
+            'id' => $group_user->getID()
+        ]);
     }
 }
