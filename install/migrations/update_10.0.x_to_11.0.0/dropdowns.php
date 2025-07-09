@@ -77,6 +77,7 @@ SQL;
         $migration->renameItemtype(
             'Glpi\\CustomDropdown\\' . $definition_data['system_name'],
             'Glpi\\CustomDropdown\\' . $definition_data['system_name'] . 'Dropdown',
+            false
         );
     }
 }
