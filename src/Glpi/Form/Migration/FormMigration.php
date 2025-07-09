@@ -336,6 +336,9 @@ class FormMigration extends AbstractPluginMigration
             'glpi_plugin_formcreator_questionregexes' => [
                 'id', 'regex', 'plugin_formcreator_questions_id', 'fieldname', 'uuid',
             ],
+            'glpi_plugin_formcreator_targets_actors' => [
+                'id', 'itemtype', 'items_id', 'actor_role', 'actor_type', 'actor_value', 'use_notification', 'uuid',
+            ],
         ];
 
         return $this->checkDbFieldsExists($formcreator_schema);
