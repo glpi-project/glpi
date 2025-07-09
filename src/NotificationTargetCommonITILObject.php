@@ -149,6 +149,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             'pendingreason_add' => __('Pending reason added'),
             'pendingreason_del' => __('Pending reason removed'),
             'pendingreason_close' => __('Pending reason auto close'),
+            'del_assign_user'   => __('Deletion of a user in assignees'),
         ];
 
         asort($events);
@@ -950,7 +951,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             return; // Do not propose more targets
         }
 
-        if ($event == 'update') {
+        if (
+            $event == 'update' ||
+            $event == 'del_assign_user'
+        ) {
             $this->addTarget(
                 Notification::OLD_TECH_IN_CHARGE,
                 __('Former technician in charge of the ticket')
