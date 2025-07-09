@@ -65,9 +65,9 @@ if (!$DB->tableExists('glpi_entities_tasktemplates')) {
     $DB->doQuery($query);
 }
 
-//INSERT INTO glpi_entities_tasktemplates (tasktemplates_id, entities_id, is_recursive)
-//SELECT id, entities_id, is_recursive
-//FROM glpi_tasktemplates;
+$DB->doQuery("INSERT INTO glpi_entities_tasktemplates (tasktemplates_id, entities_id, is_recursive)
+SELECT id, entities_id, is_recursive
+FROM glpi_tasktemplates;");
 
 if (!$DB->tableExists('glpi_tasktemplates_users')) {
     $query = "CREATE TABLE `glpi_tasktemplates_users` (
