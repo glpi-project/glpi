@@ -43,8 +43,11 @@ use SimplePie\SimplePie;
  *
  * @since 0.84
  **/
-class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
+class RSSFeed extends CommonDBTM implements ExtraVisibilityCriteria
 {
+    use CommonDBVisible {
+        CommonDBVisible::haveVisibilityAccess as traitHaveVisibilityAccess;
+    }
     // From CommonDBTM
     public $dohistory                   = true;
 
@@ -154,7 +157,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             return false;
         }
 
-        return parent::haveVisibilityAccess();
+        return $this->traitHaveVisibilityAccess();
     }
 
     /**

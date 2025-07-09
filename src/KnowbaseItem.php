@@ -45,11 +45,13 @@ use Glpi\UI\IllustrationManager;
 /**
  * KnowbaseItem Class
  **/
-class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, ServiceCatalogLeafInterface
+class KnowbaseItem extends CommonDBTM implements ExtraVisibilityCriteria, ServiceCatalogLeafInterface
 {
     use Glpi\Features\Clonable;
     use Glpi\Features\TreeBrowse;
-
+    use CommonDBVisible {
+        CommonDBVisible::haveVisibilityAccess as traitHaveVisibilityAccess;
+    }
     public static $browse_default = true;
 
     // From CommonDBTM
@@ -461,7 +463,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             return true;
         }
 
-        return parent::haveVisibilityAccess();
+        return $this->traitHaveVisibilityAccess();
     }
 
     /**
