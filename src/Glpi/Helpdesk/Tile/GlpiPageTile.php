@@ -138,6 +138,16 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface
         return "pages/admin/glpi_page_tile_config_fields.html.twig";
     }
 
+    #[Override]
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb(
+            [
+                Item_Tile::class,
+            ]
+        );
+    }
+
     public function getPage(): string
     {
         return $this->fields['page'] ?? "";

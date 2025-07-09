@@ -102,4 +102,14 @@ final class ExternalPageTile extends CommonDBTM implements TileInterface
     {
         return "pages/admin/external_page_tile_config_fields.html.twig";
     }
+
+    #[Override]
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb(
+            [
+                Item_Tile::class,
+            ]
+        );
+    }
 }
