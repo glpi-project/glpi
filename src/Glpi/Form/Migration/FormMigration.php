@@ -328,7 +328,7 @@ class FormMigration extends AbstractPluginMigration
                 'id', 'name', 'plugin_formcreator_forms_id', 'target_name', 'changetemplates_id', 'content', 'impactcontent', 'controlistcontent', 'rolloutplancontent', 'backoutplancontent','checklistcontent', 'due_date_rule', 'due_date_question', 'due_date_value', 'due_date_period', 'urgency_rule', 'urgency_question', 'validation_followup', 'destination_entity', 'destination_entity_value', 'tag_type', 'tag_questions', 'tag_specifics', 'category_rule', 'category_question', 'commonitil_validation_rule', 'commonitil_validation_question', 'show_rule', 'sla_rule', 'sla_question_tto', 'sla_question_ttr', 'ola_rule', 'ola_question_tto', 'ola_question_ttr', 'uuid',
             ],
             'glpi_plugin_formcreator_items_targettickets' => [
-                'id', 'plugin_formcreator_questions_id', 'link', 'itemtype', 'items_id', 'uuid',
+                'id', 'plugin_formcreator_targettickets_id', 'link', 'itemtype', 'items_id', 'uuid',
             ],
             'glpi_plugin_formcreator_questionranges' => [
                 'id', 'range_min', 'range_max', 'plugin_formcreator_questions_id', 'fieldname', 'uuid',
