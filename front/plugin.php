@@ -46,6 +46,8 @@ Html::header(__('Setup'), '', "config", "plugin");
 
 \Glpi\Marketplace\View::showFeatureSwitchDialog();
 
+echo $plugin->getPluginsListSuspendBanner();
+
 Search::show('Plugin');
 
 echo \Glpi\Application\View\TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG

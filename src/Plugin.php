@@ -1271,7 +1271,7 @@ class Plugin extends CommonDBTM
     }
 
     /**
-     * Suspend a plugin execution.
+     * Suspend execution of a plugin.
      */
     final public function suspendExecution(): bool
     {
@@ -1288,7 +1288,32 @@ class Plugin extends CommonDBTM
     }
 
     /**
-     * Resume a plugin execution.
+     * Suspend execution of all active plugins.
+     */
+    final public function suspendAllPluginsExecution(): bool
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $suspended_plugin_iterator = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'state' => [self::ACTIVATED, self::TOBECONFIGURED],
+            ],
+        ]);
+
+        $success = true;
+
+        foreach (self::getFromIter($suspended_plugin_iterator) as $plugin) {
+            $success &= $plugin->suspendExecution();
+        }
+
+        return $success;
+    }
+
+    /**
+     * Resume execution of a plugin.
      */
     final public function resumeExecution(): bool
     {
@@ -1300,6 +1325,31 @@ class Plugin extends CommonDBTM
         if ($success) {
             $this->load($this->fields['directory']);
             self::$activated_plugins[] = $this->fields['directory'];
+        }
+
+        return $success;
+    }
+
+    /**
+     * Resume execution of all suspended plugins.
+     */
+    final public function resumeAllPluginsExecution(): bool
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $suspended_plugin_iterator = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'state' => Plugin::SUSPENDED,
+            ],
+        ]);
+
+        $success = true;
+
+        foreach (self::getFromIter($suspended_plugin_iterator) as $plugin) {
+            $success &= $plugin->resumeExecution();
         }
 
         return $success;
@@ -3079,5 +3129,36 @@ TWIG;
         }
 
         return $GLPI_CACHE->deleteMultiple($to_clear);
+    }
+
+    final public function getPluginsListSuspendBanner(): string
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $suspended_plugin_iterator = $DB->request([
+            'SELECT' => ['name'],
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'state' => Plugin::SUSPENDED,
+            ],
+        ]);
+
+        $show_suspend_btn = $DB->request([
+            'SELECT' => ['id'],
+            'COUNT'  => 'cpt',
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'state' => [self::ACTIVATED, self::TOBECONFIGURED],
+            ],
+        ])->current()['cpt'] > 0;
+
+        return TemplateRenderer::getInstance()->render(
+            'pages/admin/plugins/list_suspend_banner.html.twig',
+            [
+                'show_suspend_btn'  => $show_suspend_btn,
+                'suspended_plugins' => array_column(iterator_to_array($suspended_plugin_iterator), 'name'),
+            ]
+        );
     }
 }

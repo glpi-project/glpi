@@ -46,27 +46,30 @@ Session::checkRight("config", UPDATE);
 $plugin = new Plugin();
 
 $id     = isset($_POST['id']) && is_numeric($_POST['id']) ? (int) $_POST['id'] : null;
-$action = $id > 0 && isset($_POST['action']) ? $_POST['action'] : null;
+$action = $_POST['action'] ?? null;
 
 switch ($action) {
     case 'install':
-        $plugin->install($id);
-        break;
     case 'activate':
-        $plugin->activate($id);
-        break;
     case 'unactivate':
-        $plugin->unactivate($id);
-        break;
     case 'uninstall':
-        $plugin->uninstall($id);
-        break;
     case 'clean':
-        $plugin->clean($id);
+        if (!$id) {
+            throw new BadRequestHttpException();
+        }
+        $plugin->{$action}($id);
         break;
     case 'resume_execution':
-        $plugin->getFromDB($id);
+        if (!$plugin->getFromDB($id)) {
+            throw new BadRequestHttpException();
+        }
         $plugin->resumeExecution();
+        break;
+    case 'resume_all_execution':
+        $plugin->resumeAllPluginsExecution();
+        break;
+    case 'suspend_all_execution':
+        $plugin->suspendAllPluginsExecution();
         break;
     default:
         throw new BadRequestHttpException();

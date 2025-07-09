@@ -408,6 +408,9 @@ HTML;
                 echo $marketplace;
                 return;
             }
+            $suspend_banner = $tab === "installed"
+                ? (new Plugin())->getPluginsListSuspendBanner()
+                : '';
             $tags_list    = $tab != "installed"
                 ? "<div class='left-panel'>" . self::getTagsHtml() . "</div>"
                 : "";
@@ -460,6 +463,7 @@ HTML;
                 <div class='marketplace $tab' data-tab='{$tab}'>
                     {$tags_list}
                     <div class='right-panel'>
+                        {$suspend_banner}
                         <div class='top-panel'>
                             <input type='search' class='filter-list form-control' placeholder='{$search_label}'>
                             <div class='controls'>
