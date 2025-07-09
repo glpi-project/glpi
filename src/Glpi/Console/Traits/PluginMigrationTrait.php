@@ -65,7 +65,7 @@ trait PluginMigrationTrait
             if ($created_count > 0) {
                 $messages[] = [
                     'type'    => MessageType::Success,
-                    'message' => sprintf('%d items created.', $created_count),
+                    'message' => sprintf(__('%1$d items created.'), $created_count),
                 ];
             }
 
@@ -74,7 +74,7 @@ trait PluginMigrationTrait
             if ($reused_count > 0) {
                 $messages[] = [
                     'type'    => MessageType::Success,
-                    'message' => sprintf('%d items reused.', $reused_count),
+                    'message' => sprintf(__('%1$d items reused.'), $reused_count),
                 ];
             }
 
@@ -83,7 +83,7 @@ trait PluginMigrationTrait
             if ($ignored_count > 0) {
                 $messages[] = [
                     'type'    => MessageType::Notice,
-                    'message' => sprintf('%d items ignored.', $ignored_count),
+                    'message' => sprintf(__('%1$d items ignored.'), $ignored_count),
                 ];
             }
         } else {
