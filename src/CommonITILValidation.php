@@ -39,6 +39,8 @@ use Glpi\DBAL\QuerySubQuery;
 use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
 
+use function Safe\json_encode;
+
 /**
  * CommonITILValidation Class
  *

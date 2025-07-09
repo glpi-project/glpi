@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\preg_match;
+
 /**
  * Common DataBase Connexity Table Manager Class
  * This class factorize code for CommonDBChild and CommonDBRelation. Both classes themselves

@@ -47,6 +47,13 @@ use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
 use Glpi\Team\Team;
 
+use function Safe\getimagesize;
+use function Safe\ob_start;
+use function Safe\ob_get_clean;
+use function Safe\preg_match;
+use function Safe\preg_replace;
+use function Safe\strtotime;
+
 /**
  * CommonITILObject Class
  *
@@ -5535,8 +5542,12 @@ abstract class CommonITILObject extends CommonDBTM
                                                             - $this->fields["waiting_duration"]);
             }
             // Not calendar defined
-            return max(0, strtotime($this->fields['solvedate']) - strtotime($this->fields['date'])
-                       - $this->fields["waiting_duration"]);
+            try {
+                return max(0, strtotime($this->fields['solvedate']) - strtotime($this->fields['date'])
+                    - $this->fields["waiting_duration"]);
+            } catch (\Safe\Exceptions\DatetimeException $e) {
+                return 0;
+            }
         }
         return 0;
     }
@@ -5573,8 +5584,12 @@ abstract class CommonITILObject extends CommonDBTM
                                                              - $this->fields["waiting_duration"]);
             }
             // Not calendar defined
-            return max(0, strtotime($this->fields['closedate']) - strtotime($this->fields['date'])
-                       - $this->fields["waiting_duration"]);
+            try {
+                return max(0, strtotime($this->fields['closedate']) - strtotime($this->fields['date'])
+                    - $this->fields["waiting_duration"]);
+            } catch (\Safe\Exceptions\DatetimeException $e) {
+                return 0;
+            }
         }
         return 0;
     }

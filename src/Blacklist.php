@@ -35,6 +35,8 @@
 
 use Glpi\Features\Clonable;
 
+use function Safe\preg_match;
+
 /**
  * Blacklist Class
  *

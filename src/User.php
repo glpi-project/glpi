@@ -42,6 +42,7 @@ use Glpi\DBAL\QuerySubQuery;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Plugin\Hooks;
 use Sabre\VObject;
+use Safe\Exceptions\FilesystemException;
 use Symfony\Component\HttpFoundation\Request;
 use Safe\DateTime;
 
@@ -5669,7 +5670,11 @@ HTML;
     public static function dropPictureFiles($picture)
     {
         if (!empty($picture)) {
-            if (!$filepath = realpath(GLPI_PICTURE_DIR . "/$picture")) {
+            try {
+                if (!$filepath = realpath(GLPI_PICTURE_DIR . "/$picture")) {
+                    return;
+                }
+            } catch (FilesystemException $e) {
                 return;
             }
             if (!str_starts_with($filepath, realpath(GLPI_PICTURE_DIR))) {

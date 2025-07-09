@@ -35,6 +35,8 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
+use function Safe\mktime;
+
 /**
  * Cartridge class.
  * This class is used to manage printer cartridges.
