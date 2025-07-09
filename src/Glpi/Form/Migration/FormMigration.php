@@ -318,6 +318,24 @@ class FormMigration extends AbstractPluginMigration
             'glpi_plugin_formcreator_conditions' => [
                 'itemtype', 'items_id', 'plugin_formcreator_questions_id', 'show_condition', 'show_value', 'show_logic', 'order',
             ],
+            'glpi_plugin_formcreator_targettickets' => [
+                'id', 'name', 'plugin_formcreator_forms_id', 'target_name', 'source_rule', 'source_question', 'type_rule', 'type_question', 'tickettemplates_id', 'content', 'due_date_rule', 'due_date_question', 'due_date_value', 'due_date_period', 'urgency_rule', 'urgency_question', 'validation_followup', 'destination_entity', 'destination_entity_value', 'tag_type', 'tag_questions', 'tag_specifics', 'category_rule', 'category_question', 'associate_rule', 'associate_question', 'location_rule', 'location_question', 'commonitil_validation_rule', 'commonitil_validation_question', 'show_rule', 'sla_rule', 'sla_question_tto', 'sla_question_ttr', 'ola_rule', 'ola_question_tto', 'ola_question_ttr', 'uuid',
+            ],
+            'glpi_plugin_formcreator_targetproblems' => [
+                'id', 'name', 'plugin_formcreator_forms_id', 'target_name', 'problemtemplates_id', 'content', 'impactcontent', 'causecontent', 'symptomcontent', 'urgency_rule', 'urgency_question', 'destination_entity', 'destination_entity_value', 'tag_type', 'tag_questions', 'tag_specifics', 'category_rule', 'category_question', 'show_rule', 'uuid',
+            ],
+            'glpi_plugin_formcreator_targetchanges' => [
+                'id', 'name', 'plugin_formcreator_forms_id', 'target_name', 'changetemplates_id', 'content', 'impactcontent', 'controlistcontent', 'rolloutplancontent', 'backoutplancontent','checklistcontent', 'due_date_rule', 'due_date_question', 'due_date_value', 'due_date_period', 'urgency_rule', 'urgency_question', 'validation_followup', 'destination_entity', 'destination_entity_value', 'tag_type', 'tag_questions', 'tag_specifics', 'category_rule', 'category_question', 'commonitil_validation_rule', 'commonitil_validation_question', 'show_rule', 'sla_rule', 'sla_question_tto', 'sla_question_ttr', 'ola_rule', 'ola_question_tto', 'ola_question_ttr', 'uuid',
+            ],
+            'glpi_plugin_formcreator_items_targettickets' => [
+                'id', 'plugin_formcreator_questions_id', 'link', 'itemtype', 'items_id', 'uuid',
+            ],
+            'glpi_plugin_formcreator_questionranges' => [
+                'id', 'range_min', 'range_max', 'plugin_formcreator_questions_id', 'fieldname', 'uuid',
+            ],
+            'glpi_plugin_formcreator_questionregexes' => [
+                'id', 'regex', 'plugin_formcreator_questions_id', 'fieldname', 'uuid',
+            ],
         ];
 
         return $this->checkDbFieldsExists($formcreator_schema);
