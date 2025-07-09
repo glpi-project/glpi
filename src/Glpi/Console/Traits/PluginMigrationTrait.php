@@ -59,30 +59,37 @@ trait PluginMigrationTrait
 
         $messages = $result->getMessages();
 
-        $created_items_ids = $result->getCreatedItemsIds();
-        $created_count = \array_reduce($created_items_ids, static fn(int $count, array $ids): int => $count + count($ids), 0);
-        if ($created_count > 0) {
-            $messages[] = [
-                'type'    => MessageType::Success,
-                'message' => sprintf('%d items created.', $created_count),
-            ];
-        }
+        if ($result->isFullyProcessed()) {
+            $created_items_ids = $result->getCreatedItemsIds();
+            $created_count = \array_reduce($created_items_ids, static fn(int $count, array $ids): int => $count + count($ids), 0);
+            if ($created_count > 0) {
+                $messages[] = [
+                    'type'    => MessageType::Success,
+                    'message' => sprintf(__('%1$d items created.'), $created_count),
+                ];
+            }
 
-        $reused_items_ids = $result->getReusedItemsIds();
-        $reused_count = \array_reduce($reused_items_ids, static fn(int $count, array $ids): int => $count + count($ids), 0);
-        if ($reused_count > 0) {
-            $messages[] = [
-                'type'    => MessageType::Success,
-                'message' => sprintf('%d items reused.', $reused_count),
-            ];
-        }
+            $reused_items_ids = $result->getReusedItemsIds();
+            $reused_count = \array_reduce($reused_items_ids, static fn(int $count, array $ids): int => $count + count($ids), 0);
+            if ($reused_count > 0) {
+                $messages[] = [
+                    'type'    => MessageType::Success,
+                    'message' => sprintf(__('%1$d items reused.'), $reused_count),
+                ];
+            }
 
-        $ignored_items_ids = $result->getIgnoredItemsIds();
-        $ignored_count = \array_reduce($ignored_items_ids, static fn(int $count, array $ids): int => $count + count($ids), 0);
-        if ($ignored_count > 0) {
+            $ignored_items_ids = $result->getIgnoredItemsIds();
+            $ignored_count = \array_reduce($ignored_items_ids, static fn(int $count, array $ids): int => $count + count($ids), 0);
+            if ($ignored_count > 0) {
+                $messages[] = [
+                    'type'    => MessageType::Notice,
+                    'message' => sprintf(__('%1$d items ignored.'), $ignored_count),
+                ];
+            }
+        } else {
             $messages[] = [
-                'type'    => MessageType::Notice,
-                'message' => sprintf('%d items ignored.', $ignored_count),
+                'type'    => MessageType::Error,
+                'message' => __("Migration was aborted due to errors, all changes have been reverted."),
             ];
         }
 
