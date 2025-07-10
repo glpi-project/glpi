@@ -62,7 +62,7 @@ if (
         case 'User':
             $params = [
                 'right' => 'all',
-                'name' => $prefix . 'users_id' . $suffix
+                'name' => $prefix . 'users_id' . $suffix,
             ];
             if (isset($_POST['right']) && !isset($_POST['allusers'])) {
                 $params['right'] = $_POST['right'];
