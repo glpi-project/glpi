@@ -33,6 +33,7 @@
  */
 
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\QueryExpression;
 
 /**
  * @var \DBmysql $DB
@@ -63,6 +64,7 @@ if (!$DB->tableExists('glpi_entities_itilfollowuptemplates')) {
 
 $DB->insert('glpi_entities_itilfollowuptemplates', new QuerySubQuery([
     'SELECT' => [
+        new QueryExpression('null AS `id`'),
         'id as itilfollowuptemplates_id',
         'entities_id',
         'is_recursive',
