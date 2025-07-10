@@ -2319,7 +2319,7 @@ final class SQLProvider implements SearchProviderInterface
                 }
                 break;
 
-            case 'SavedSearch':
+            case SavedSearch::class:
                 $criterias = \SavedSearch::getVisibilityCriteria(false);
                 if (isset($criterias['LEFT JOIN'])) {
                     $out = ['LEFT JOIN' => $criterias['LEFT JOIN']];
