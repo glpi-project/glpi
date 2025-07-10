@@ -329,26 +329,23 @@ class SavedSearch extends CommonDBVisible implements ExtraVisibilityCriteria
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        if (self::canView()) {
+        if (self::canView()
+        && $item::class == SavedSearch::class) {
             $nb = 0;
-            switch ($item::class) {
-                case SavedSearch::class:
-                    if (self::canCreatePublic()) {
-                        if ($_SESSION['glpishow_count_on_tabs']) {
-                            $nb = $item->countVisibilities();
-                        }
-                        return [
-                            1 => self::createTabEntry(
-                                _n(
-                                    'Target',
-                                    'Targets',
-                                    Session::getPluralNumber()
-                                ),
-                                $nb
-                            ),
-                        ];
-                    }
-                    break;
+            if (self::canCreatePublic()) {
+                if ($_SESSION['glpishow_count_on_tabs']) {
+                    $nb = $item->countVisibilities();
+                }
+                return [
+                    1 => self::createTabEntry(
+                        _n(
+                            'Target',
+                            'Targets',
+                            Session::getPluralNumber()
+                        ),
+                        $nb
+                    ),
+                ];
             }
         }
         return '';
