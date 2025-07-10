@@ -208,7 +208,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
 
         try {
             /** @var ?QuestionTypeActorsExtraDataConfig $config */
-            $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
+            $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'] ?? '', true) ?? []);
             if ($config === null) {
                 return false;
             }

@@ -52,6 +52,7 @@ use PlanningRecall;
 use Reminder;
 use RRule\RRule;
 use RRule\RSet;
+use Safe\Exceptions\JsonException;
 use Session;
 use Toolbox;
 use User;
@@ -752,7 +753,11 @@ trait PlanningEvent
      */
     public static function showRepetitionForm(string $rrule = "", array $options = []): string
     {
-        $rrule = json_decode($rrule, true) ?? [];
+        try {
+            $rrule = json_decode($rrule, true) ?? [];
+        } catch (JsonException $e) {
+            $rrule = [];
+        }
         $defaults = [
             'freq'       => null,
             'interval'   => 1,
