@@ -386,7 +386,7 @@ class GLPIDashboard {
                     height:       item.attr('gs-h') ?? 1,
                     card_options: card_opt,
                 },
-                modalclass: 'modal-xl',
+                modalclass: 'modal-lg',
             });
         }).on("click", '.cell-add', (e) => {
             // add new widget form
@@ -401,7 +401,7 @@ class GLPIDashboard {
                     x: add_ctrl.data('x'),
                     y: add_ctrl.data('y')
                 },
-                modalclass: 'modal-xl',
+                modalclass: 'modal-lg',
             });
         }).on("click", '.filters_toolbar .add-filter', () => {
             // add new filter
