@@ -40,7 +40,7 @@ class SavedSearch_UserTarget extends CommonDBRelation
     public static $itemtype_1          = SavedSearch::class;
     public static $items_id_1          = 'savedsearches_id';
 
-    public static $itemtype_2          = 'User';
+    public static $itemtype_2          = User::class;
     public static $items_id_2          = 'users_id';
 
     public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
