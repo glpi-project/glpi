@@ -404,6 +404,12 @@ class Lockedfield extends CommonDBTM
         return true;
     }
 
+    public function getFormFields(): array
+    {
+        $fields = parent::getFormFields();
+        return array_filter($fields, static fn($field) => $field !== 'is_global');
+    }
+
 
     /**
      * List of itemtypes/fields that can be locked globally
