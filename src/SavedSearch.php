@@ -358,8 +358,8 @@ class SavedSearch extends CommonDBVisible implements ExtraVisibilityCriteria
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab('SavedSearch', $ong, $options);
-        $this->addStandardTab('SavedSearch_Alert', $ong, $options);
+        $this->addStandardTab(SavedSearch::class, $ong, $options);
+        $this->addStandardTab(SavedSearch_Alert::class, $ong, $options);
         return $ong;
     }
 
