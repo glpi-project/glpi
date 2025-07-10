@@ -38,7 +38,7 @@ class Entity_SavedSearch extends CommonDBRelation
     // From CommonDBRelation
     public static $itemtype_1          = SavedSearch::class;
     public static $items_id_1          = 'savedsearches_id';
-    public static $itemtype_2          = 'Entity';
+    public static $itemtype_2          = Entity::class;
     public static $items_id_2          = 'entities_id';
 
     public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
