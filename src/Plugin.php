@@ -630,12 +630,19 @@ class Plugin extends CommonDBTM
             return;
         }
 
-        if (Update::isUpdateMandatory()) {
+        if (Update::isUpdateMandatory() && countElementsInTable(self::getTable()) > 0) {
             // Suspend all plugins once a new mandatory update is detected.
             // This prevents incompatible plugins to be loaded.
-            Config::setConfigurationValues(
-                'core',
-                ['plugins_execution_mode' => self::EXECUTION_MODE_SUSPENDED_BY_UPDATE]
+            // Use a direct DB query to prevent trigerring `CommonDBTM` hooks.
+            $DB->updateOrInsert(
+                Config::getTable(),
+                [
+                    'value'   => self::EXECUTION_MODE_SUSPENDED_BY_UPDATE,
+                ],
+                [
+                    'context' => 'core',
+                    'name'    => 'plugins_execution_mode',
+                ],
             );
 
             Event::log(
