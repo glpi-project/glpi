@@ -60,11 +60,12 @@ if (
     echo "<div class='d-flex'>";
     switch ($_POST['type']) {
         case 'User':
-            $params = ['name' => $prefix . 'users_id' . $suffix];
-            if (isset($_POST['right'])) {
-                $params['right'] = isset($_POST['allusers']) ? 'all' : $_POST['right'];
-            } else {
-                $params['right'] = 'all';
+            $params = [
+                'right' => 'all,
+                'name' => $prefix . 'users_id' . $suffix
+            ];
+            if (isset($_POST['right']) && !isset($_POST['allusers'])) {
+                $params['right'] = $_POST['right'];
             }
             if (isset($_POST['entity']) && $_POST['entity'] >= 0) {
                 $params['entity'] = $_POST['entity'];
