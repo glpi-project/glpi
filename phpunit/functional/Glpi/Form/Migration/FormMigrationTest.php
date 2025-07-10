@@ -81,6 +81,7 @@ use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Form\Section;
+use Glpi\Message\MessageType;
 use Glpi\Migration\PluginMigrationResult;
 use Glpi\Tests\FormTesterTrait;
 use Location;
@@ -289,7 +290,7 @@ final class FormMigrationTest extends DbTestCase
                 'type'                        => QuestionTypeRequester::class,
                 'is_mandatory'                => 0,
                 'vertical_rank'               => 0,
-                'horizontal_rank'             => 1,
+                'horizontal_rank'             => null,
                 'description'                 => null,
                 'default_value'               => json_encode($default_value),
                 'extra_data'                  => json_encode($extra_data),
@@ -2507,6 +2508,44 @@ final class FormMigrationTest extends DbTestCase
                 ],
                 $condition_question->getConfiguredConditionsData()
             )
+        );
+    }
+
+    public function testUnkownQuestionTypesAreIgnored(): void
+    {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        // Arrange: insert an unexpected question type
+        $DB->insert('glpi_plugin_formcreator_questions', [
+            'name' => 'question from unknown plugin',
+            'fieldtype' => 'my_unknown_type',
+            'plugin_formcreator_sections_id' => 26,
+        ]);
+        // Need to also have some regex to trigger potential failures
+        $DB->insert('glpi_plugin_formcreator_questionregexes', [
+            'plugin_formcreator_questions_id' => $DB->insertId(),
+            'regex' => 'test',
+        ]);
+
+        // Act: execute migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $result = $migration->execute();
+
+        // Assert: make sure an error message was added to indicate the missing
+        // question type.
+        $this->assertTrue($result->isFullyProcessed());
+        $this->assertTrue($result->hasErrors());
+        $errors = array_filter(
+            $result->getMessages(),
+            fn($m) => $m['type'] == MessageType::Error
+        );
+        $errors = array_column($errors, "message");
+        $this->assertContains(
+            "Unable to import question with unknown type 'my_unknown_type'",
+            $errors,
         );
     }
 }
