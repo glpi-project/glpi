@@ -35,140 +35,33 @@
 
 namespace Glpi\Console\Plugin;
 
+use Glpi\Console\AbstractCommand;
 use Plugin;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ResumeExecutionCommand extends AbstractPluginCommand
+class ResumeExecutionCommand extends AbstractCommand
 {
     protected function configure()
     {
         parent::configure();
 
         $this->setName('plugin:resume_execution');
-        $this->setDescription(__('Resume plugin(s) execution'));
+        $this->setDescription(__('Resume execution of all active plugins'));
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->normalizeInput($input);
-
-        $directories = $input->getArgument('directory');
-
-        $failed = false;
-
-        foreach ($directories as $directory) {
-            $output->writeln(
-                '<info>' . sprintf(__('Processing plugin "%s"...'), $directory) . '</info>',
-                OutputInterface::VERBOSITY_NORMAL
+        if (!(new Plugin())->resumeAllPluginsExecution()) {
+            $this->output->writeln(
+                '<error>' . __('An unexpected error occurred') . '</error>',
+                OutputInterface::VERBOSITY_QUIET
             );
-
-            $plugin = new Plugin();
-            $plugin->checkPluginState($directory); // Be sure that plugin information are up to date in DB
-
-            if (!$this->canRunResumeExecutionMethod($directory)) {
-                $failed = true;
-                continue;
-            }
-
-            if (!$plugin->getFromDBByCrit(['directory' => $directory])) {
-                $this->output->writeln(
-                    '<error>' . sprintf(__('Unable to load plugin "%s" information.'), $directory) . '</error>',
-                    OutputInterface::VERBOSITY_QUIET
-                );
-                $failed = true;
-                continue;
-            }
-
-            if (!$plugin->resumeExecution()) {
-                $this->output->writeln(
-                    '<error>' . sprintf(__('Fail to resume plugin "%s" execution.'), $directory) . '</error>',
-                    OutputInterface::VERBOSITY_QUIET
-                );
-                $failed = true;
-                continue;
-            }
-
-            $output->writeln(
-                '<info>' . sprintf(__('Plugin "%1$s" execution has been resumed.'), $directory) . '</info>',
-                OutputInterface::VERBOSITY_NORMAL
-            );
-        }
-
-        if ($failed) {
             return self::FAILURE;
         }
 
+        $output->writeln('<info>' . __('Execution of all active plugins has been resumed.') . '</info>');
+
         return self::SUCCESS;
-    }
-
-    /**
-     * Check whether the plugin execution can be resumed.
-     */
-    private function canRunResumeExecutionMethod(string $directory): bool
-    {
-        $plugin = new Plugin();
-
-        // Check that directory is valid
-        if (!$plugin->isLoadable($directory)) {
-            $this->output->writeln(
-                '<error>' . sprintf(__('Invalid plugin directory "%s".'), $directory) . '</error>',
-                OutputInterface::VERBOSITY_QUIET
-            );
-            return false;
-        }
-
-        // Check current plugin state
-        $is_already_known = $plugin->getFromDBByCrit(['directory' => $directory]);
-        if (!$is_already_known) {
-            $this->output->writeln(
-                '<error>' . sprintf(__('Plugin "%s" is not yet installed.'), $directory) . '</error>',
-                OutputInterface::VERBOSITY_QUIET
-            );
-            return false;
-        }
-
-        if (in_array($plugin->fields['state'], [Plugin::ACTIVATED, Plugin::TOBECONFIGURED], true)) {
-            $this->output->writeln(
-                '<info>' . sprintf(__('Plugin "%s" is already active.'), $directory) . '</info>',
-                OutputInterface::VERBOSITY_NORMAL
-            );
-            return false;
-        }
-
-        if ($plugin->fields['state'] !== Plugin::SUSPENDED) {
-            $this->output->writeln(
-                '<error>' . sprintf(__('Plugin "%s" execution is not suspended and therefore its execution cannot be resumed.'), $directory) . '</error>',
-                OutputInterface::VERBOSITY_QUIET
-            );
-            return false;
-        }
-
-        return true;
-    }
-
-    protected function getDirectoryChoiceQuestion()
-    {
-        return __('Which plugin(s) do you want to resume execution of (comma separated values)?');
-    }
-
-    protected function getDirectoryChoiceChoices()
-    {
-        $choices = [];
-        $plugin_iterator = $this->db->request(
-            [
-                'FROM'  => Plugin::getTable(),
-                'WHERE' => [
-                    'state' => Plugin::SUSPENDED,
-                ],
-            ]
-        );
-        foreach ($plugin_iterator as $plugin) {
-            $choices[$plugin['directory']] = $plugin['name'];
-        }
-
-        ksort($choices, SORT_STRING);
-
-        return $choices;
     }
 }

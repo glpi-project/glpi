@@ -65,12 +65,15 @@ final readonly class InitializePlugins implements EventSubscriberInterface
 
         Profiler::getInstance()->start('InitializePlugins::execute', Profiler::CATEGORY_BOOT);
 
-        if (Environment::get()->shouldSetupTesterPlugin()) {
-            $this->setupTesterPlugin();
-        }
-
         $plugin = new Plugin();
-        $plugin->init();
+
+        if (!$plugin->isPluginsExecutionSuspended()) {
+            if (Environment::get()->shouldSetupTesterPlugin()) {
+                $this->setupTesterPlugin();
+            }
+
+            $plugin->init();
+        }
 
         $this->pluginContainer->initializeContainer();
 

@@ -30,20 +30,18 @@
  # ---------------------------------------------------------------------
  #}
 
-{% if suspended_plugins|length > 0 %}
+{% if execution_suspended %}
     <div class="alert alert-warning" role="alert">
-        {{ __('The execution of the following plugins is suspended: %s.')|format(suspended_plugins|join(', ')) }}
+        {{ __('The execution of the plugins is suspended.') }}
         <form class="d-inline" action="{{ 'Plugin'|itemtype_form_path }}" method="POST">
             <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
             <button type="submit" name="action" value="resume_all_execution" class="btn btn-sm btn-primary me-1">
                 <i class="ti ti-player-play-filled"></i>
-                {{ __('Resume execution of all plugins') }}
+                {{ __('Resume execution of all active plugins') }}
             </button>
         </form>
     </div>
-{% endif %}
-
-{% if show_suspend_btn %}
+{% else %}
     <div class="text-end mb-3">
         <form class="d-inline" action="{{ 'Plugin'|itemtype_form_path }}" method="POST">
             <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">

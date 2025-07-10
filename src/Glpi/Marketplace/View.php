@@ -594,6 +594,13 @@ JS;
          */
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
+        if ((new Plugin())->isPluginsExecutionSuspended()) {
+            return \sprintf(
+                '<span class="text-info" data-bs-toggle="tooltip" title="%s"><i class="ti ti-info-circle-filled"></i></span>',
+                __s('The plugins maintenance actions are disabled when the plugins execution is suspended.')
+            );
+        }
+
         $plugin_inst        = new Plugin();
         $exists             = $plugin_inst->getFromDBbyDir($plugin_key);
         $is_installed       = $plugin_inst->isInstalled($plugin_key);
@@ -611,7 +618,6 @@ JS;
 
         $config_page        = $PLUGIN_HOOKS['config_page'][$plugin_key] ?? "";
         $must_be_cleaned   = $exists && !$plugin_inst->isLoadable($plugin_key);
-        $is_suspended      = $exists && $plugin_inst->fields['state'] === Plugin::SUSPENDED;
         $has_local_install = $exists && !$must_be_cleaned && !$is_installed;
         $has_local_update  = $exists && !$must_be_cleaned && $plugin_inst->isUpdatable($plugin_key);
 
@@ -788,12 +794,6 @@ JS;
                                          data-action='disable_plugin'
                                          title='" . __s("Disable") . "'>
                             <i class='ti ti-toggle-right-filled'></i>
-                        </button>";
-                } elseif ($is_suspended) {
-                    $buttons .= "<button class='modify_plugin'
-                                         data-action='resume_plugin_execution'
-                                         title='" . __s("This plugin has been temporarily suspended. You can force it to run again.") . "'>
-                            <i class='ti ti-player-pause-filled'></i>
                         </button>";
                 } else {
                     $buttons .= "<button class='modify_plugin'

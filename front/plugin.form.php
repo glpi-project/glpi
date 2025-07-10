@@ -59,17 +59,13 @@ switch ($action) {
         }
         $plugin->{$action}($id);
         break;
-    case 'resume_execution':
-        if (!$plugin->getFromDB($id)) {
-            throw new BadRequestHttpException();
-        }
-        $plugin->resumeExecution();
-        break;
     case 'resume_all_execution':
         $plugin->resumeAllPluginsExecution();
+        Session::addMessageAfterRedirect(__s('Execution of all active plugins has been resumed.'));
         break;
     case 'suspend_all_execution':
         $plugin->suspendAllPluginsExecution();
+        Session::addMessageAfterRedirect(__s('Execution of all active plugins has been suspended.'));
         break;
     default:
         throw new BadRequestHttpException();
