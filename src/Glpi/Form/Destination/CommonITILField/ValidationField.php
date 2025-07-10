@@ -236,6 +236,11 @@ final class ValidationField extends AbstractConfigField implements DestinationFi
             $actors = [];
 
             foreach ($input[$this->getKey()][ValidationFieldConfig::SPECIFIC_ACTORS] as $actor) {
+                if (is_array($actor)) {
+                    // Input is already formatted correctly.
+                    continue;
+                }
+
                 $actor_parts = explode('-', $actor);
                 if (
                     count($actor_parts) !== 2
@@ -285,7 +290,6 @@ final class ValidationField extends AbstractConfigField implements DestinationFi
                             json_decode($rawData['commonitil_validation_question'], true)['values'] ?? []
                         );
                     }
-
                     return new ValidationFieldConfig(
                         strategies: [ValidationFieldStrategy::SPECIFIC_ACTORS],
                         specific_actors: $actors_ids ?? []

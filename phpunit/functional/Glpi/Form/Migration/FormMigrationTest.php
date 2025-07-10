@@ -2548,4 +2548,37 @@ final class FormMigrationTest extends DbTestCase
             $errors,
         );
     }
+
+    public function testValidationRequestCanBeImported(): void
+    {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        // Arrange: insert validation data in target
+        $DB->insert('glpi_plugin_formcreator_targettickets', [
+            'name' => 'Target with validation from user',
+            'plugin_formcreator_forms_id' => 4,
+            'commonitil_validation_rule' => 2,
+            'commonitil_validation_question' => '{"type":"user","values":["2"]}',
+            'content' => '',
+        ]);
+        // We need some actors to be imported to trigger potential failures at
+        // it will trigger an update of the form destination
+        $DB->insert('glpi_plugin_formcreator_targets_actors', [
+            'items_id' => $DB->insertId(),
+            'itemtype' => "PluginFormcreatorTargetTicket",
+            'actor_role' => 1,
+            'actor_type' => 1,
+            'actor_value' => 0,
+        ]);
+
+        // Act: execute migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $result = $migration->execute();
+
+        // Assert: make sure the migration was completed
+        $this->assertTrue($result->isFullyProcessed());
+    }
 }
