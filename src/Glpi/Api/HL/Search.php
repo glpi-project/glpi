@@ -1217,6 +1217,7 @@ final class Search
         } catch (APIException $e) {
             return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getUserMessage(), $e->getDetails()), $e->getCode() ?: 400);
         } catch (\Throwable $e) {
+            $message = (new APIException())->getUserMessage();
             $detail = null;
             if ($_SESSION['glpi_use_mode'] === \Session::DEBUG_MODE) {
                 $detail = $e->getMessage();
