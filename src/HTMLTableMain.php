@@ -75,42 +75,6 @@ class HTMLTableMain extends HTMLTableBase
         parent::__construct(true);
     }
 
-    public function __get(string $property)
-    {
-        // TODO Deprecate access to variables in GLPI 11.0.
-        $value = null;
-        switch ($property) {
-            case 'title':
-                $value = $this->$property;
-                break;
-            default:
-                $trace = debug_backtrace();
-                trigger_error(
-                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
-                    E_USER_WARNING
-                );
-                break;
-        }
-        return $value;
-    }
-
-    public function __set(string $property, $value)
-    {
-        // TODO Deprecate access to variables in GLPI 11.0.
-        switch ($property) {
-            case 'title':
-                $this->$property = $value;
-                break;
-            default:
-                $trace = debug_backtrace();
-                trigger_error(
-                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
-                    E_USER_WARNING
-                );
-                break;
-        }
-    }
-
     /**
      * We can define a global name for the table : this will print as header that colspan all columns
      *

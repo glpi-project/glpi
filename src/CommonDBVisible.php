@@ -68,48 +68,6 @@ abstract class CommonDBVisible extends CommonDBTM
      */
     protected $users = [];
 
-    public function __get(string $property)
-    {
-        // TODO Deprecate access to variables in GLPI 11.0.
-        $value = null;
-        switch ($property) {
-            case 'entities':
-            case 'groups':
-            case 'profiles':
-            case 'users':
-                $value = $this->$property;
-                break;
-            default:
-                $trace = debug_backtrace();
-                trigger_error(
-                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
-                    E_USER_WARNING
-                );
-                break;
-        }
-        return $value;
-    }
-
-    public function __set(string $property, $value)
-    {
-        // TODO Deprecate access to variables in GLPI 11.0.
-        switch ($property) {
-            case 'entities':
-            case 'groups':
-            case 'profiles':
-            case 'users':
-                $this->$property = $value;
-                break;
-            default:
-                $trace = debug_backtrace();
-                trigger_error(
-                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
-                    E_USER_WARNING
-                );
-                break;
-        }
-    }
-
     /**
      * Is the login user have access to item based on visibility configuration
      *

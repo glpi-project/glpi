@@ -630,7 +630,7 @@ class ITILFollowup extends CommonDBChild
     public function post_getFromDB()
     {
         // Bandaid to avoid loading parent item if not needed
-        // TODO: replace by proper lazy loading in GLPI 11.0
+        // TODO: replace by proper lazy loading
         if (!$this->isParentAlreadyLoaded()) {
             if ($this->item = getItemForItemtype($this->fields['itemtype'])) {
                 $this->item->getFromDB($this->fields['items_id']);
@@ -1170,7 +1170,7 @@ class ITILFollowup extends CommonDBChild
      * before loading the item, thus avoiding one useless DB query (or many more queries
      * when looping on children items)
      *
-     * TODO 11.0 move method and `item` property into parent class
+     * TODO move method and `item` property into parent class
      *
      * @param CommonITILObject $parent Parent item
      *
