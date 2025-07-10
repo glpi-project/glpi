@@ -140,7 +140,7 @@ class APIRest extends API
         // Add headers for CORS
         $this->cors();
 
-        // retrieve paramaters (in body, query_string, headers)
+        // retrieve parameters (in body, query_string, headers)
         $this->parseIncomingParams($is_inline_doc);
 
         // show debug if required
