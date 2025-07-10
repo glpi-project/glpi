@@ -96,14 +96,14 @@ class SoftwareLicense_User extends CommonDBRelation
                 User::getTable() => [
                     'FKEY' => [
                         static::getTable() => 'users_id',
-                        User::getTable() => 'id'
-                    ]
-                ]
+                        User::getTable() => 'id',
+                    ],
+                ],
             ],
             'WHERE' => [
                 static::getTable() . '.softwarelicenses_id' => $softwarelicenses_id,
-                User::getTable() . '.is_deleted' => 0
-            ]
+                User::getTable() . '.is_deleted' => 0,
+            ],
         ]);
 
         return $iterator->current()['cpt'];
