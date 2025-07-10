@@ -42,7 +42,7 @@ use Glpi\Kernel\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-final readonly class CustomObjectsBootstrap implements EventSubscriberInterface
+final readonly class CustomObjectsBoot implements EventSubscriberInterface
 {
     use KernelListenerTrait;
 
@@ -60,11 +60,11 @@ final readonly class CustomObjectsBootstrap implements EventSubscriberInterface
             return;
         }
 
-        Profiler::getInstance()->start('CustomObjectsBootstrap::execute', Profiler::CATEGORY_BOOT);
+        Profiler::getInstance()->start('CustomObjectsBoot::execute', Profiler::CATEGORY_BOOT);
 
-        AssetDefinitionManager::getInstance()->bootstrapDefinitions();
-        DropdownDefinitionManager::getInstance()->bootstrapDefinitions();
+        AssetDefinitionManager::getInstance()->bootDefinitions();
+        DropdownDefinitionManager::getInstance()->bootDefinitions();
 
-        Profiler::getInstance()->stop('CustomObjectsBootstrap::execute');
+        Profiler::getInstance()->stop('CustomObjectsBoot::execute');
     }
 }

@@ -75,33 +75,24 @@ class Event extends CommonDBTM
         return $menu;
     }
 
-    public function prepareInputForAdd($input)
+    public function add(array $input, $options = [], $history = true)
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        if (isset($input['level']) && ($input['level'] <= $CFG_GLPI["event_loglevel"])) {
-            return $input;
-        }
-        return false;
+        throw new \RuntimeException(
+            \sprintf(
+                'Events must be added by calling the `%s::log()` method.',
+                static::class,
+            )
+        );
     }
 
-    public function post_addItem()
+    public function update(array $input, $history = true, $options = [])
     {
-        //only log in file, important events (connections and critical events; TODO : we need to add a general option to filter this in 9.1)
-        if (isset($this->fields['level']) && $this->fields['level'] <= 3) {
-            $message_type = "";
-            if (isset($this->fields['type']) && $this->fields['type'] != 'system') {
-                $message_type = "[" . $this->fields['type'] . " " . $this->fields['id'] . "] ";
-            }
+        throw new \RuntimeException('Events cannot be updated.');
+    }
 
-            $full_message = "[" . $this->fields['service'] . "] " .
-                         $message_type .
-                         $this->fields['level'] . ": " .
-                         $this->fields['message'] . "\n";
-
-            Toolbox::logInFile("event", $full_message);
-        }
+    public function delete(array $input, $force = false, $history = true)
+    {
+        throw new \RuntimeException('Events cannot be deleted.');
     }
 
     /**
@@ -118,15 +109,43 @@ class Event extends CommonDBTM
      **/
     public static function log($items_id, $type, $level, $service, $event)
     {
-        $input = ['items_id' => intval($items_id),
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
+
+        if ($level >= $CFG_GLPI["event_loglevel"]) {
+            return;
+        }
+
+        $input = [
+            'items_id' => intval($items_id),
             'type'     => $type,
             'date'     => $_SESSION["glpi_currenttime"],
             'service'  => $service,
             'level'    => intval($level),
             'message'  => $event,
         ];
-        $tmp = new self();
-        return $tmp->add($input);
+
+        $DB->insert(self::getTable(), $input);
+
+        $id = $DB->insertId();
+
+        //only log in file, important events (connections and critical events; TODO : we need to add a general option to filter this in 9.1)
+        if ($level <= 3) {
+            $message_type = "";
+            if ($type != 'system') {
+                $message_type = "[" . $type . " " . $id . "] ";
+            }
+
+            $full_message = "[" . $service . "] " .
+                         $message_type .
+                         $level . ": " .
+                         $event . "\n";
+
+            Toolbox::logInFile("event", $full_message);
+        }
     }
 
     /**

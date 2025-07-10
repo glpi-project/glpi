@@ -290,7 +290,7 @@ final class ValidationField extends AbstractConfigField implements DestinationFi
                         );
 
                         if ($mapped_item === null) {
-                            throw new InvalidArgumentException("Question not found in a target form");
+                            throw new InvalidArgumentException("Question '{$rawData['commonitil_validation_question']}' not found in a target form");
                         }
 
                         $question_ids[] = $mapped_item['items_id'];

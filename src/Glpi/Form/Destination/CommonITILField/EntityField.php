@@ -228,7 +228,7 @@ final class EntityField extends AbstractConfigField implements DestinationFieldC
                 );
 
                 if ($mapped_item === null) {
-                    throw new InvalidArgumentException("Question not found in a target form");
+                    throw new InvalidArgumentException("Question '{$rawData['destination_entity_value']}' not found in a target form");
                 }
 
                 return new EntityFieldConfig(

@@ -152,7 +152,7 @@ final class ITILCategoryField extends AbstractConfigField implements Destination
                 );
 
                 if ($mapped_item === null) {
-                    throw new InvalidArgumentException("Question not found in a target form");
+                    throw new InvalidArgumentException("Question '{$rawData['category_question']}' not found in a target form");
                 }
 
                 return new ITILCategoryFieldConfig(

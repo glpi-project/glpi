@@ -153,12 +153,6 @@ $assignable_itemtypes = [
     ],
 ];
 
-if ($DB->tableExists('glpi_groups_assets') && !$DB->tableExists('glpi_groups_items')) {
-    // dev migration
-    // TODO Delete before GLPI 11.0 release
-    $migration->renameTable('glpi_groups_assets', 'glpi_groups_items');
-}
-
 if (!$DB->tableExists('glpi_groups_items')) {
     $query = <<<SQL
         CREATE TABLE `glpi_groups_items` (

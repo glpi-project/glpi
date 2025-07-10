@@ -287,7 +287,7 @@ final class CustomAssetController extends AbstractController
     public static function getCustomAssetTypes(bool $types_only = true): array
     {
         $assets = [];
-        $definitions = AssetDefinitionManager::getInstance()->getDefinitions();
+        $definitions = AssetDefinitionManager::getInstance()->getDefinitions(true);
         foreach ($definitions as $definition) {
             $assets[$definition->fields['system_name']] = $definition->getAssetClassName()::getTypeName(1);
         }

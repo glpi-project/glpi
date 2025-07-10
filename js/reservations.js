@@ -80,14 +80,6 @@ var Reservations = function() {
                 : my.currentv,
             height: function() {
                 var _newheight = $(window).height() - 272;
-                if ($('#debugajax').length > 0) {
-                    _newheight -= $('#debugajax').height();
-                }
-
-                if (my.is_tab) {
-                    // TODO .glpi_tabs not exists anymore
-                    _newheight = $('.glpi_tabs ').height() - 150;
-                }
 
                 //minimal size
                 var _minheight = 300;

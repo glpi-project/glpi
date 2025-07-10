@@ -347,7 +347,7 @@
                             aria-labelledby="heading-item-{{ rand }}-{{ loop.index }}"
                             data-bs-parent="#glpi-itil-destinations-accordion-{{ rand }}"
                         >
-                            <div class="accordion-body d-flex flex-column space-y-3 mt-n2">
+                            <div class="accordion-body d-flex flex-column space-y-3">
                                 {% for field in fields %}
                                     {{ _self.field_config_section(item, field, form, config) }}
                                 {% endfor %}
