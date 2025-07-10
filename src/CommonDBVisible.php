@@ -270,7 +270,7 @@ abstract class CommonDBVisible extends CommonDBTM
                     }
                 }
                 $entries[] = [
-                    'itemtype' => static::class . '_Group',
+                    'itemtype' => 'Group_' . static::class,
                     'id' => $data['id'],
                     'type' => Group::getTypeName(1),
                     'recipient' => $recipient,
