@@ -84,11 +84,6 @@ var Reservations = function() {
                     _newheight -= $('#debugajax').height();
                 }
 
-                if (my.is_tab) {
-                    // TODO .glpi_tabs not exists anymore
-                    _newheight = $('.glpi_tabs ').height() - 150;
-                }
-
                 //minimal size
                 var _minheight = 300;
                 if (_newheight < _minheight) {

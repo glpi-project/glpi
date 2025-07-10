@@ -6500,7 +6500,7 @@ CSS;
      *
      * @return string
      *
-     * @TODO GLPI 11.0 Handle SCSS compiled directory in plugins.
+     * @TODO Handle SCSS compiled directory in plugins.
      */
     public static function getScssCompilePath($file, string $root_dir = GLPI_ROOT)
     {

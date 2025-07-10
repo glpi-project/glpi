@@ -194,8 +194,6 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function loadActors()
     {
-        // TODO 11.0 (breaking change): method should be protected instead of public
-
         // Might not be 100% needed to clear cache here but let's be safe
         // This way, any direct call to loadActors is assured to return accurate data
         $this->clearLazyLoadedActors();
@@ -246,33 +244,7 @@ abstract class CommonITILObject extends CommonDBTM
                 return $this->lazy_loaded_suppliers;
 
             default:
-                // Log error and keep running
-                // TODO 11.0: throw exception instead
-                trigger_error("Unknown field: '$property_name'", E_USER_WARNING);
-                return null;
-        }
-    }
-
-    /**
-     * Magic setter for lazy loaded properties
-     *
-     * @param string $property_name
-     * @param mixed $value
-     */
-    public function __set(string $property_name, $value)
-    {
-        switch ($property_name) {
-            case 'users':
-            case 'groups':
-            case 'suppliers':
-                // Log error and keep running
-                // TODO 11.0: throw exception instead
-                trigger_error("Readonly field: '$property_name'", E_USER_WARNING);
-                break;
-
-            default:
-                $this->$property_name = $value;
-                break;
+                throw new \RuntimeException(sprintf('Unknown property `%s`.', $property_name));
         }
     }
 
@@ -290,10 +262,7 @@ abstract class CommonITILObject extends CommonDBTM
                 return true;
 
             default:
-                // Log error and keep running
-                // TODO 11.0: throw exception instead
-                trigger_error("Unknown field: '$property_name'", E_USER_WARNING);
-                return false;
+                throw new \RuntimeException(sprintf('Unknown property `%s`.', $property_name));
         }
     }
 
@@ -318,10 +287,7 @@ abstract class CommonITILObject extends CommonDBTM
                 break;
 
             default:
-                // Log error and keep running
-                // TODO 11.0: throw exception instead
-                trigger_error("Unknown field: '$property_name'", E_USER_WARNING);
-                break;
+                throw new \RuntimeException(sprintf('Unknown property `%s`.', $property_name));
         }
     }
 

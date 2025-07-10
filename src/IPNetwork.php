@@ -84,52 +84,6 @@ class IPNetwork extends CommonImplicitTreeDropdown
      */
     private $networkUpdate;
 
-    public function __get(string $property)
-    {
-        // TODO Deprecate read access to all variables in GLPI 11.0.
-        $value = null;
-        switch ($property) {
-            case 'address':
-            case 'data_for_implicit_update':
-            case 'gateway':
-            case 'netmask':
-            case 'networkUpdate':
-                $value = $this->$property;
-                break;
-            default:
-                $trace = debug_backtrace();
-                trigger_error(
-                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
-                    E_USER_WARNING
-                );
-                break;
-        }
-        return $value;
-    }
-
-    public function __set(string $property, $value)
-    {
-        switch ($property) {
-            case 'address':
-            case 'data_for_implicit_update':
-            case 'gateway':
-            case 'netmask':
-                Toolbox::deprecated(sprintf('Writing private property %s::%s is deprecated', __CLASS__, $property));
-                // no break is intentionnal
-            case 'networkUpdate':
-                // TODO Deprecate write access to variable in GLPI 11.0.
-                $this->$property = $value;
-                break;
-            default:
-                $trace = debug_backtrace();
-                trigger_error(
-                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
-                    E_USER_WARNING
-                );
-                break;
-        }
-    }
-
     public static function getTypeName($nb = 0)
     {
         return _n('IP network', 'IP networks', $nb);

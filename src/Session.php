@@ -2282,7 +2282,7 @@ class Session
      */
     public static function getCurrentTime(): ?string
     {
-        // TODO (11.0 refactoring): replace references to $_SESSION['glpi_currenttime'] by a call to this function
+        // TODO replace references to $_SESSION['glpi_currenttime'] by a call to this function
         return $_SESSION['glpi_currenttime'] ?? null;
     }
 
