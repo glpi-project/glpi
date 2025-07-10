@@ -33,12 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Event;
 use Glpi\Helpdesk\DefaultDataManager;
+use Glpi\Message\MessageType;
+use Glpi\Progress\AbstractProgressIndicator;
 use Glpi\Rules\RulesManager;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Glpi\Toolbox\VersionParser;
-use Glpi\Progress\AbstractProgressIndicator;
-use Glpi\Message\MessageType;
 use Psr\Log\LoggerAwareTrait;
 
 use function Safe\preg_match;
@@ -407,6 +408,27 @@ class Update
 
         $progress_indicator?->advance($generate_keys_weight);
         $progress_indicator?->addMessage(MessageType::Success, __('Security keys generated.'));
+
+        if (
+            (Config::getConfigurationValue('core', 'plugins_execution_mode') ?? null) === Plugin::EXECUTION_MODE_SUSPENDED_BY_UPDATE
+            && VersionParser::getIntermediateVersion($current_version) === VersionParser::getIntermediateVersion(GLPI_VERSION)
+        ) {
+            // The target version is the same intermediate/major version.
+            // Resume plugins execution if it was previously suspended by a GLPI codebase update.
+            $progress_indicator?->setProgressBarMessage(__('Resuming plugins execution…'));
+
+            (new Plugin())->resumeAllPluginsExecution();
+
+            Event::log(
+                '',
+                Plugin::class,
+                3,
+                "setup",
+                __('Execution of all the plugins has been resumed after the database update.')
+            );
+
+            $progress_indicator?->addMessage(MessageType::Success, __('Execution of all active plugins has been resumed.'));
+        }
 
         $progress_indicator?->setProgressBarMessage('');
         $progress_indicator?->addMessage(MessageType::Success, __('Update done.'));
