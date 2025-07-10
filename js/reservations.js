@@ -80,9 +80,6 @@ var Reservations = function() {
                 : my.currentv,
             height: function() {
                 var _newheight = $(window).height() - 272;
-                if ($('#debugajax').length > 0) {
-                    _newheight -= $('#debugajax').height();
-                }
 
                 //minimal size
                 var _minheight = 300;
