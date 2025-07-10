@@ -517,11 +517,13 @@ class APIRest extends API
             }
         }
 
-        if (strpos($content_type, "application/json") !== false) {
+        if (str_contains($content_type, "application/json")) {
             try {
-                $body_params = json_decode($body);
-                foreach ($body_params as $param_name => $param_value) {
-                    $parameters[$param_name] = $param_value;
+                if ($body != '') {
+                    $body_params = json_decode($body);
+                    foreach ($body_params as $param_name => $param_value) {
+                        $parameters[$param_name] = $param_value;
+                    }
                 }
             } catch (JsonException $e) {
                 $this->returnError(
@@ -532,7 +534,7 @@ class APIRest extends API
                 );
             }
             $this->format = "json";
-        } elseif (strpos($content_type, "multipart/form-data") !== false) {
+        } elseif (str_contains($content_type, "multipart/form-data")) {
             if (count($_FILES) <= 0) {
                 // likely uploaded files is too big so $_REQUEST will be empty also.
                 // see http://us.php.net/manual/en/ini.core.php#ini.post-max-size
@@ -564,7 +566,7 @@ class APIRest extends API
                     false
                 );
             }
-        } elseif (strpos($content_type, "application/x-www-form-urlencoded") !== false) {
+        } elseif (str_contains($content_type, "application/x-www-form-urlencoded")) {
             parse_str($body, $postvars);
             /** @var array $postvars */
             foreach ($postvars as $field => $value) {
