@@ -50,7 +50,7 @@ class SavedSearch extends CommonDBVisible implements ExtraVisibilityCriteria
     use Clonable;
 
     public static $rightname               = 'bookmark_public';
-    public static $types                   = ['Group', 'User', 'Entity'];
+    public static $types                   = [Group::class, User::class, Entity::class];
     public const SEARCH = 1; //SEARCH SYSTEM bookmark
     public const URI    = 2;
     public const ALERT  = 3; //SEARCH SYSTEM search alert
@@ -259,7 +259,7 @@ class SavedSearch extends CommonDBVisible implements ExtraVisibilityCriteria
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
-    public function haveVisibilityAccess()
+    public function haveVisibilityAccess(): bool
     {
         if (!self::canView()) {
             return false;
@@ -276,9 +276,6 @@ class SavedSearch extends CommonDBVisible implements ExtraVisibilityCriteria
         return parent::canCreateItem();
     }
 
-    /**
-     * @return bool
-     */
     public static function canCreatePublic(): bool
     {
         return (Session::haveRight('config', UPDATE) ||
