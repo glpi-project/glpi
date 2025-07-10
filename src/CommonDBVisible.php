@@ -472,7 +472,7 @@ abstract class CommonDBVisible extends CommonDBTM
         $fkField = getForeignKeyFieldForItemType($this->getType());
         $item = null;
         switch ($inputs['_type']) {
-            case 'User':
+            case User::class:
                 $class = $this->getType() . '_User';
                 if (is_a($class, CommonDBRelation::class, true)) {
                     $item = new $class();
