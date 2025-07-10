@@ -32,6 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QuerySubQuery;
+
 /**
  * @var \DBmysql $DB
  * @var \Migration $migration
@@ -65,9 +67,14 @@ if (!$DB->tableExists('glpi_entities_tasktemplates')) {
     $DB->doQuery($query);
 }
 
-$DB->doQuery("INSERT INTO glpi_entities_tasktemplates (tasktemplates_id, entities_id, is_recursive)
-SELECT id, entities_id, is_recursive
-FROM glpi_tasktemplates;");
+$DB->insert('glpi_entities_tasktemplates', new QuerySubQuery([
+    'SELECT' => [
+        'id as tasktemplates_id',
+        'entities_id',
+        'is_recursive',
+    ],
+    'FROM'   => 'glpi_tasktemplates',
+]));
 
 if (!$DB->tableExists('glpi_tasktemplates_users')) {
     $query = "CREATE TABLE `glpi_tasktemplates_users` (

@@ -32,6 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QuerySubQuery;
+
 /**
  * @var \DBmysql $DB
  * @var \Migration $migration
@@ -59,9 +61,14 @@ if (!$DB->tableExists('glpi_entities_itilfollowuptemplates')) {
     $DB->doQuery($query);
 }
 
-$DB->doQuery("INSERT INTO glpi_entities_itilfollowuptemplates (itilfollowuptemplates_id, entities_id, is_recursive)
-SELECT id, entities_id, is_recursive
-FROM glpi_itilfollowuptemplates;");
+$DB->insert('glpi_entities_itilfollowuptemplates', new QuerySubQuery([
+    'SELECT' => [
+        'id as itilfollowuptemplates_id',
+        'entities_id',
+        'is_recursive',
+    ],
+    'FROM'   => 'glpi_itilfollowuptemplates',
+]));
 
 if (!$DB->tableExists('glpi_itilfollowuptemplates_users')) {
     $query = "CREATE TABLE `glpi_itilfollowuptemplates_users` (
