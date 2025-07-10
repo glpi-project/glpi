@@ -109,7 +109,7 @@ abstract class CommonDBVisible extends CommonDBTM
     {
         // define default values
         if (!$this->userClass) {
-            $this->userClass = $this->getType() . '_User';
+            $this->userClass = $this->getType() . '_UserTarget';
         }
         if (!$this->groupClass) {
             $this->groupClass = 'Group_' . $this->getType();
@@ -473,7 +473,7 @@ abstract class CommonDBVisible extends CommonDBTM
         $item = null;
         switch ($inputs['_type']) {
             case User::class:
-                $class = $this->getType() . '_User';
+                $class = $this->getType() . '_UserTarget';
                 if (is_a($class, CommonDBRelation::class, true)) {
                     $item = new $class();
                 }
@@ -496,6 +496,11 @@ abstract class CommonDBVisible extends CommonDBTM
                     $item = new $class();
                 }
                 break;
+        }
+        if (array_key_exists('entities_id', $inputs) && $inputs['entities_id'] == -1) {
+            // "No restriction" value selected
+            $inputs['entities_id'] = 'NULL';
+            $inputs['no_entity_restriction'] = 1;
         }
         if (!is_null($item)) {
             $item->add($inputs);
