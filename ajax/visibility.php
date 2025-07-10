@@ -61,7 +61,7 @@ if (
     switch ($_POST['type']) {
         case 'User':
             $params = [
-                'right' => 'all,
+                'right' => 'all',
                 'name' => $prefix . 'users_id' . $suffix
             ];
             if (isset($_POST['right']) && !isset($_POST['allusers'])) {
@@ -88,12 +88,6 @@ if (
                     'prefix'   => $_POST['prefix'],
                 ],
             ];
-            if (isset($_POST['entity']) && $_POST['entity'] >= 0) {
-                $params['entity'] = $_POST['entity'];
-                $params['toupdate']['moreparams']['entity'] = $_POST['entity'];
-                $params['entity_sons'] = $_POST['is_recursive'] ?? false;
-                $params['toupdate']['moreparams']['entity_sons'] = $_POST['is_recursive'] ?? false;
-            }
             Group::dropdown($params);
             echo "<span id='subvisibility$rand'></span>";
             $display = true;
@@ -112,27 +106,26 @@ if (
             break;
 
         case 'Profile':
-            $checkright   = (READ | CREATE | UPDATE | PURGE);
-            $righttocheck = $_POST['right'];
-            if ($_POST['right'] == 'faq') {
-                $righttocheck = 'knowbase';
-                $checkright   = KnowbaseItem::READFAQ;
+            $righttocheck = $_POST['right'] ?? null;
+            if ($righttocheck) {
+                $checkright   = (READ | CREATE | UPDATE | PURGE);
+                if ($_POST['right'] == 'faq') {
+                    $righttocheck = 'knowbase';
+                    $checkright   = KnowbaseItem::READFAQ;
+                }
+                $params['condition'] = [
+                    'glpi_profilerights.name' => $righttocheck,
+                    'glpi_profilerights.rights' => ['&', $checkright],
+                ];
             }
-            $params             = [
-                'rand'      => $rand,
-                'name'      => $prefix . 'profiles_id' . $suffix,
-                'condition' => [
-                    'glpi_profilerights.name'     => $righttocheck,
-                    'glpi_profilerights.rights'   => ['&', $checkright],
-                ],
-            ];
-            $params['toupdate'] = ['value_fieldname'
-                                                  => 'value',
-                'to_update'  => "subvisibility$rand",
-                'url'        => $CFG_GLPI["root_doc"] . "/ajax/subvisibility.php",
-                'moreparams' => ['items_id' => '__VALUE__',
-                    'type'     => $_POST['type'],
-                    'prefix'   => $_POST['prefix'],
+            $params['toupdate'] = [
+                'value_fieldname' => 'value',
+                'to_update' => "subvisibility$rand",
+                'url' => $CFG_GLPI["root_doc"] . "/ajax/subvisibility.php",
+                'moreparams' => [
+                    'items_id' => '__VALUE__',
+                    'type' => $_POST['type'],
+                    'prefix' => $_POST['prefix'],
                 ],
             ];
 

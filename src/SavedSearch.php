@@ -365,10 +365,8 @@ class SavedSearch extends CommonDBVisible implements ExtraVisibilityCriteria
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        switch ($item::class) {
-            case SavedSearch::class:
-                $item->showVisibility();
-                return true;
+        if ($item::class == SavedSearch::class) {
+            $item->showVisibility();
         }
         return false;
     }

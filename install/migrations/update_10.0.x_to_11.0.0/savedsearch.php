@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\QueryExpression;
+
 /**
  * @var \DBmysql $DB
  * @var \Migration $migration
@@ -42,9 +45,17 @@
 $table = SavedSearch::getTable();
 $field = 'is_private';
 if ($DB->fieldExists($table, $field)) {
-    $DB->doQuery('INSERT INTO `glpi_entities_savedsearches` (`savedsearches_id`, `entities_id`, `is_recursive`)
-SELECT `id`, `entities_id`, `is_recursive`
-FROM `glpi_savedsearches` WHERE `is_private` = 0;');
+    $DB->insert('glpi_entities_savedsearches', new QuerySubQuery([
+        'SELECT' => [
+            'id as savedsearches_id',
+            'entities_id',
+            'is_recursive',
+        ],
+        'FROM'   => 'glpi_savedsearches',
+        'WHERE'  => [
+            'is_private' => ['<>', 0],
+        ],
+    ]));
 
     $migration->dropField($table, $field);
 
