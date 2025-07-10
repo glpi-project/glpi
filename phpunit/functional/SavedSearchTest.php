@@ -99,15 +99,6 @@ class SavedSearchTest extends DbTestCase
             $visibility_restrict3,
             \SavedSearch::addVisibilityRestrict()
         );
-        $DB->delete(
-            'glpi_profiles_users',
-            [
-                'users_id' => \Session::getLoginUserID(),
-                'profiles_id' => 3,
-                'entities_id' => 0,
-                'is_recursive' => 1,
-            ]
-        );
     }
 
     public function testGetMine()
