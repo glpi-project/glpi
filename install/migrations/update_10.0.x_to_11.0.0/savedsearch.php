@@ -47,6 +47,7 @@ $field = 'is_private';
 if ($DB->fieldExists($table, $field)) {
     $DB->insert('glpi_entities_savedsearches', new QuerySubQuery([
         'SELECT' => [
+            new QueryExpression('null AS `id`'),
             'id as savedsearches_id',
             'entities_id',
             'is_recursive',
