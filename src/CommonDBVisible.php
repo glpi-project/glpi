@@ -484,7 +484,7 @@ abstract class CommonDBVisible extends CommonDBTM
                     $item = new $class();
                 }
                 break;
-            case 'Entity':
+            case Entity::class:
                 $class = 'Entity_' . $this->getType();
                 if (is_a($class, CommonDBRelation::class, true)) {
                     $item = new $class();
