@@ -44,6 +44,12 @@ use Sabre\VObject\Property\FlatText;
 use Sabre\VObject\Property\ICalendar\Recur;
 use Sabre\VObject\Reader;
 use Glpi\Features\PlanningEvent;
+use Safe\DateTime;
+
+use function Safe\strtotime;
+use function Safe\parse_url;
+use function Safe\preg_match;
+use function Safe\preg_replace;
 
 /**
  * Planning Class
@@ -1740,7 +1746,7 @@ TWIG, $twig_params);
 
                 // append icon to distinguish reccurent event in views
                 // use UTC datetime to avoid some issues with rlan/phprrule
-                $dtstart_datetime  = new \DateTime($new_event['start']);
+                $dtstart_datetime  = new DateTime($new_event['start']);
                 unset($rrule['exceptions']); // remove exceptions key (as libraries throw exception for unknow keys)
                 $hr_rrule_o = new RRule(
                     array_merge(
@@ -1758,7 +1764,7 @@ TWIG, $twig_params);
                 // for fullcalendar, we need to pass start in the rrule key
                 unset($new_event['start'], $new_event['end']);
 
-                // For list view, only display only the next occurence
+                // For list view, only display only the next occurrence
                 // to avoid issues performances (range in list view can be 10 years long)
                 if ($param['view_name'] === "listFull") {
                     /** @var ?DateTime $next_date */
@@ -1927,7 +1933,7 @@ TWIG, $twig_params);
                 ) {
                     continue;
                 }
-                $user_tz  = new \DateTimeZone(date_default_timezone_get());
+                $user_tz  = new DateTimeZone(date_default_timezone_get());
                 $begin_dt = $vcomp->DTSTART->getDateTime();
                 $begin_dt = $begin_dt->setTimeZone($user_tz);
                 $end_dt   = $vcomp->$end_date_prop->getDateTime();

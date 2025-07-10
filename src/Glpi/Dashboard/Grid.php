@@ -54,6 +54,9 @@ use Telemetry;
 use Ticket;
 use Toolbox;
 
+use function Safe\json_encode;
+use function Safe\preg_replace;
+
 class Grid
 {
     protected $cell_margin     = 3;

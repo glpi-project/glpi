@@ -46,6 +46,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
+use function Safe\preg_replace;
+
 abstract class AbstractCommand extends Command implements GlpiCommandInterface
 {
     /**

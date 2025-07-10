@@ -39,6 +39,8 @@ use Glpi\Http\Request;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Utils\BuildSchema;
 
+use function Safe\json_decode;
+
 /**
  * GraphQL processor
  */

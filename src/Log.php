@@ -38,6 +38,8 @@ use Glpi\DBAL\QueryParam;
 use Glpi\Search\SearchOption;
 use Glpi\RichText\RichText;
 
+use function Safe\preg_match;
+
 /**
  * Log Class
  **/
@@ -243,8 +245,8 @@ class Log extends CommonDBTM
         $new_id           = $changes[4] ?? null;
 
         // Remove json values
-        $decoded_old_value = json_decode($old_value);
-        $decoded_new_value = json_decode($new_value);
+        $decoded_old_value = json_decode($old_value); //@phpstan-ignore theCodingMachineSafe.function
+        $decoded_new_value = json_decode($new_value); //@phpstan-ignore theCodingMachineSafe.function
         if (is_array($decoded_old_value) || is_object($decoded_old_value)) {
             $old_value = '';
         }

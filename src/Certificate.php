@@ -37,6 +37,8 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Features\AssignableItem;
 
+use function Safe\strtotime;
+
 /**
  * Class to declare a certificate
  * @since 9.2

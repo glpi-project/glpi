@@ -34,6 +34,11 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Safe\Exceptions\PcreException;
+
+use function Safe\preg_match;
+use function Safe\preg_match_all;
+use function Safe\preg_replace;
 
 /**
  * Criteria Rule class
@@ -449,38 +454,42 @@ class RuleCriteria extends CommonDBChild
 
             case Rule::REGEX_MATCH:
                 $results = [];
-                $match_result = @preg_match_all($pattern . "si", $field, $results);
-                if ($match_result === false) {
+                try {
+                    $match_result = @preg_match_all($pattern . "si", $field, $results);
+                    if ($match_result > 0) {
+                        // Drop $result[0] : complete match result
+                        array_shift($results);
+                        // And add to $regex_result array
+                        $res = [];
+                        foreach ($results as $data) {
+                            foreach ($data as $val) {
+                                $res[] = $val;
+                            }
+                        }
+                        $regex_result[] = $res;
+                        $criterias_results[$criteria] = $pattern_raw;
+                        return true;
+                    }
+                } catch (PcreException $e) {
                     trigger_error(
                         sprintf('Invalid regular expression `%s`.', $pattern),
                         E_USER_WARNING
                     );
-                } elseif ($match_result > 0) {
-                    // Drop $result[0] : complete match result
-                    array_shift($results);
-                    // And add to $regex_result array
-                    $res = [];
-                    foreach ($results as $data) {
-                        foreach ($data as $val) {
-                            $res[] = $val;
-                        }
-                    }
-                    $regex_result[]               = $res;
-                    $criterias_results[$criteria] = $pattern_raw;
-                    return true;
                 }
                 return false;
 
             case Rule::REGEX_NOT_MATCH:
-                $match_result = @preg_match($pattern . "si", $field);
-                if ($match_result === false) {
+                try {
+                    $match_result = @preg_match($pattern . "si", $field);
+                    if ($match_result === 0) {
+                        $criterias_results[$criteria] = $pattern_raw;
+                        return true;
+                    }
+                } catch (PcreException $e) {
                     trigger_error(
                         sprintf('Invalid regular expression `%s`.', $pattern),
                         E_USER_WARNING
                     );
-                } elseif ($match_result === 0) {
-                    $criterias_results[$criteria] = $pattern_raw;
-                    return true;
                 }
                 return false;
 

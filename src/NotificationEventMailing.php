@@ -37,6 +37,12 @@ use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 
+use function Safe\getimagesize;
+use function Safe\preg_match;
+use function Safe\preg_match_all;
+use function Safe\preg_replace;
+use function Safe\strtotime;
+
 class NotificationEventMailing extends NotificationEventAbstract
 {
     /**

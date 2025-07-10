@@ -42,6 +42,8 @@ use Override;
 use ReflectionClass;
 use User;
 
+use function Safe\json_decode;
+
 /**
  * Answers set for a given helpdesk form
  */

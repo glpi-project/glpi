@@ -2043,7 +2043,7 @@ class APIRestTest extends TestCase
                 'json'     => [],
             ],
             400,
-            'ERROR_JSON_PAYLOAD_INVALID'
+            'ERROR_BAD_ARRAY'
         );
     }
 

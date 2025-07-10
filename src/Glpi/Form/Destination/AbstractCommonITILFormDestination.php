@@ -59,6 +59,8 @@ use Override;
 use Session;
 use Ticket;
 
+use function Safe\json_encode;
+
 abstract class AbstractCommonITILFormDestination implements FormDestinationInterface
 {
     abstract public function getTarget(): CommonITILObject;

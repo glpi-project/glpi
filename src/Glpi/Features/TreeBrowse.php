@@ -46,6 +46,10 @@ use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryExpression;
 use Search;
 
+use function Safe\json_encode;
+use function Safe\preg_match;
+use function Safe\preg_replace;
+
 /**
  * TreeBrowse
  *

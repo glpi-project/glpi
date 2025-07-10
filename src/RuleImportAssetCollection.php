@@ -36,6 +36,8 @@
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 
+use function Safe\file_get_contents;
+
 /// Import rules collection class
 class RuleImportAssetCollection extends RuleCollection
 {

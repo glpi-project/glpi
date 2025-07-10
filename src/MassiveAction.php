@@ -38,6 +38,8 @@ use Glpi\Plugin\Hooks;
 use Glpi\Search\SearchOption;
 use Symfony\Component\HttpFoundation\Request;
 
+use function Safe\preg_match;
+
 /**
  * Class that manages all the massive actions
  *

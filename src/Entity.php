@@ -42,6 +42,9 @@ use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\UI\IllustrationManager;
 use Ramsey\Uuid\Uuid;
 
+use function Safe\preg_match;
+use function Safe\realpath;
+
 /**
  * Entity class
  */

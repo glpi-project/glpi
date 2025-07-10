@@ -37,6 +37,8 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\URL;
 
+use function Safe\json_encode;
+
 /**
  * @since 9.5.0
  */

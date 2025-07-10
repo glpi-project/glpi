@@ -50,6 +50,11 @@ use Glpi\Search\FilterableInterface;
 use Glpi\Search\SearchOption;
 use Glpi\Socket;
 
+use function Safe\getimagesize;
+use function Safe\preg_grep;
+use function Safe\preg_match;
+use function Safe\preg_replace;
+
 /**
  * Common DataBase Table Manager Class - Persistent Object
  */

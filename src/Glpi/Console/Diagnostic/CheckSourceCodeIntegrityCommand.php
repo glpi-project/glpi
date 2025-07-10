@@ -46,6 +46,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Toolbox;
 
+use function Safe\ini_set;
+
 class CheckSourceCodeIntegrityCommand extends AbstractCommand
 {
     protected $requires_db = false;

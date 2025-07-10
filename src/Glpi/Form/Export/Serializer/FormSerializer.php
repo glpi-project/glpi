@@ -68,6 +68,9 @@ use InvalidArgumentException;
 use RuntimeException;
 use Session;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+
 final class FormSerializer extends AbstractFormSerializer
 {
     public function getVersion(): int

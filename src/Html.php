@@ -51,6 +51,19 @@ use Glpi\Toolbox\URL;
 use Glpi\UI\ThemeManager;
 use ScssPhp\ScssPhp\Compiler;
 use Symfony\Component\HttpFoundation\Request;
+use Safe\DateTime;
+
+use function Safe\file_get_contents;
+use function Safe\filemtime;
+use function Safe\filesize;
+use function Safe\json_encode;
+use function Safe\mktime;
+use function Safe\parse_url;
+use function Safe\preg_match;
+use function Safe\preg_match_all;
+use function Safe\preg_replace;
+use function Safe\realpath;
+use function Safe\strtotime;
 
 /**
  * Html Class
@@ -135,7 +148,7 @@ class Html
         }
 
         try {
-            $date = new \DateTime($time);
+            $date = new DateTime($time);
         } catch (\Throwable $e) {
             ErrorHandler::logCaughtException($e);
             ErrorHandler::displayCaughtExceptionMessage($e);

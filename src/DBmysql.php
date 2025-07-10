@@ -38,6 +38,15 @@ use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\System\Requirement\DbTimezones;
+use Safe\DateTime;
+
+use function Safe\ini_get;
+use function Safe\filesize;
+use function Safe\fopen;
+use function Safe\fread;
+use function Safe\preg_match;
+use function Safe\preg_replace;
+use function Safe\preg_split;
 
 /**
  *  Database class for Mysql
@@ -1807,7 +1816,7 @@ class DBmysql
         $list = []; //default $tz is empty
 
         $from_php = \DateTimeZone::listIdentifiers();
-        $now = new \DateTime();
+        $now = new DateTime();
 
         $iterator = $this->request([
             'SELECT' => 'Name',

@@ -33,8 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
+use Safe\Exceptions\PcreException;
+
+use function Safe\preg_match;
+
 /**
- * Create an abstration layer for any kind of internet label
+ * Create an abstraction layer for any kind of internet label
  */
 
 
@@ -88,22 +92,24 @@ abstract class FQDNLabel extends CommonDBChild
      **/
     public static function checkFQDNLabel($label)
     {
-
-        if (strlen($label) == 1) {
-            if (!preg_match("/^[0-9A-Za-z]$/", $label, $regs)) {
-                return false;
-            }
-        } else {
-            $fqdn_regex = "/^(?!-)[A-Za-z0-9-]{1,63}(?<!-)$/";
-            if (!preg_match($fqdn_regex, $label, $regs)) {
-                //check also Internationalized domain name
-                $idn = idn_to_ascii($label);
-                if (!preg_match($fqdn_regex, $idn, $regs)) {
+        try {
+            if (strlen($label) == 1) {
+                if (!preg_match("/^[0-9A-Za-z]$/", $label, $regs)) {
                     return false;
                 }
+            } else {
+                $fqdn_regex = "/^(?!-)[A-Za-z0-9-]{1,63}(?<!-)$/";
+                if (!preg_match($fqdn_regex, $label, $regs)) {
+                    //check also Internationalized domain name
+                    $idn = idn_to_ascii($label);
+                    if (!preg_match($fqdn_regex, $idn, $regs)) {
+                        return false;
+                    }
+                }
             }
+        } catch (PcreException $e) {
+            return false;
         }
-
         return true;
     }
 

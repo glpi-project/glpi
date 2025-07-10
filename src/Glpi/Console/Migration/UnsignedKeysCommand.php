@@ -42,6 +42,8 @@ use Plugin;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use function Safe\preg_match;
+
 class UnsignedKeysCommand extends AbstractCommand implements ConfigurationCommandInterface
 {
     /**

@@ -55,6 +55,9 @@ use Ramsey\Uuid\Uuid;
 use ReflectionClass;
 use RuntimeException;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+
 /**
  * Question of a given helpdesk form's section
  */

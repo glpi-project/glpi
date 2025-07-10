@@ -35,6 +35,8 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
+use function Safe\json_encode;
+
 class Item_Rack extends CommonDBRelation
 {
     public static $itemtype_1 = 'Rack';

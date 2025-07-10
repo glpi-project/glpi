@@ -34,6 +34,8 @@
 
 namespace Glpi\CustomObject;
 
+use function Safe\spl_autoload_register;
+
 /**
  * Abstract class for custom object definition managers
  * @template ConcreteDefinition of AbstractDefinition

@@ -47,6 +47,10 @@ use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
+use function Safe\file_get_contents;
+use function Safe\preg_match;
+use function Safe\preg_replace;
+
 final class ApiController extends AbstractController
 {
     #[Route(

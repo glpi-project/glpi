@@ -35,6 +35,9 @@
 
 namespace Glpi\Form;
 
+use function Safe\preg_match;
+use function Safe\preg_replace;
+
 /**
  * Utility class to provide the end user input name
  */

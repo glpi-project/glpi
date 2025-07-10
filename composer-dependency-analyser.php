@@ -82,6 +82,8 @@ return $config
         'symfony/property-access',
         'symfony/polyfill-mbstring',
     ], [ErrorType::UNUSED_DEPENDENCY])
+    ->ignoreErrorsOnExtension('ext-iconv', [ErrorType::UNUSED_DEPENDENCY]) // Required by Safe/iconv()
+    ->ignoreErrorsOnExtension('ext-zlib', [ErrorType::UNUSED_DEPENDENCY]) // Required by Safe/gzcompress() Safe::gzuncompress()
 
     ->disableReportingUnmatchedIgnores()
 ;

@@ -37,6 +37,8 @@ namespace Glpi\Search;
 
 use CommonDBTM;
 
+use function Safe\json_encode;
+
 /**
  * Helper trait to ease interaction with filters
  */

@@ -38,6 +38,9 @@ namespace Glpi\Form\Tag;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
 
+use function Safe\preg_match;
+use function Safe\preg_replace_callback;
+
 final class FormTagsManager
 {
     public function getTags(Form $form, string $filter = ""): array

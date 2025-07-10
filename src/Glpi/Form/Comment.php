@@ -48,6 +48,8 @@ use Override;
 use Ramsey\Uuid\Uuid;
 use RuntimeException;
 
+use function Safe\json_encode;
+
 /**
  * Comment of a given helpdesk form's section
  */
