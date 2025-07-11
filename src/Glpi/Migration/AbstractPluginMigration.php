@@ -95,17 +95,22 @@ abstract class AbstractPluginMigration
     {
         $this->result = new PluginMigrationResult();
 
+        // Use a transaction unless we are already inside one.
+        $use_transaction = !$this->db->inTransaction();
+
         $fully_processed = false;
         try {
             if ($this->validatePrerequisites()) {
-                $this->db->beginTransaction();
-
-                $fully_processed = $this->processMigration();
-
-                if ($simulate === false && $fully_processed === true) {
-                    $this->db->commit();
+                if ($use_transaction) {
+                    $this->db->beginTransaction();
+                    $fully_processed = $this->processMigration();
+                    if ($simulate === false && $fully_processed === true) {
+                        $this->db->commit();
+                    } else {
+                        $this->db->rollBack();
+                    }
                 } else {
-                    $this->db->rollBack();
+                    $fully_processed = $this->processMigration();
                 }
             } else {
                 $this->result->addMessage(MessageType::Error, __('Migration cannot be done.'));
