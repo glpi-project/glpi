@@ -38,6 +38,7 @@ namespace Glpi\Search\Output;
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\DataExport;
 use PhpOffice\PhpSpreadsheet\Writer\BaseWriter;
+use PhpOffice\PhpSpreadsheet\Writer\IWriter;
 use Session;
 
 /**
@@ -47,7 +48,7 @@ use Session;
 abstract class Spreadsheet extends ExportSearchOutput
 {
     protected \PhpOffice\PhpSpreadsheet\Spreadsheet $spread;
-    protected BaseWriter $writer;
+    protected BaseWriter|IWriter $writer;
     protected $count;
 
     public function __construct()
@@ -206,7 +207,7 @@ abstract class Spreadsheet extends ExportSearchOutput
         $writer->save('php://output');
     }
 
-    public function getWriter(): BaseWriter
+    public function getWriter(): BaseWriter|IWriter
     {
         return $this->writer;
     }

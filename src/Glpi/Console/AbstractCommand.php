@@ -82,7 +82,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
     /**
      * Current progress bar.
      *
-     * @var ProgressBar
+     * @var ?ProgressBar
      */
     protected $progress_bar;
 

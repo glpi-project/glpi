@@ -86,7 +86,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
     /**
      * Profile rights to update after profile update.
-     * @var array
+     * @var ?array
      */
     private $profileRight;
 

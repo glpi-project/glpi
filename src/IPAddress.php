@@ -88,7 +88,7 @@ class IPAddress extends CommonDBChild
      *
      * For IPv4 addresses, the first three bytes are set to [0, 0, 0xffff]
      * This is used for SQL requests.
-     * @var int[]
+     * @var string|int[]
      */
     protected $binary  = [0, 0, 0, 0];
 
