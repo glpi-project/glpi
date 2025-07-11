@@ -840,6 +840,11 @@ class Session
             $_SESSION['glpipluralnumber'] = $CFG_GLPI["languages"][$trytoload][5];
         }
 
+        $_SESSION['glpiisrtl'] = false;
+        if (isset($CFG_GLPI["languages"][$trytoload][6]) && $CFG_GLPI["languages"][$trytoload][6] === true) {
+            $_SESSION['glpiisrtl'] = true;
+        }
+
         // Redefine Translator caching logic to be able to drop laminas/laminas-cache dependency.
         $i18n_cache = !defined('TU_USER') ? new I18nCache((new CacheManager())->getTranslationsCacheInstance()) : null;
         $TRANSLATE = new class ($i18n_cache) extends Laminas\I18n\Translator\Translator { // @phpstan-ignore class.extendsFinalByPhpDoc
