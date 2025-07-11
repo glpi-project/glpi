@@ -845,7 +845,7 @@ class Session
         $TRANSLATE = new class ($i18n_cache) extends Laminas\I18n\Translator\Translator { // @phpstan-ignore class.extendsFinalByPhpDoc
             public function __construct(?I18nCache $cache)
             {
-                $this->cache = $cache;
+                $this->cache = $cache; // @phpstan-ignore assign.propertyType (laminas...)
             }
         };
 

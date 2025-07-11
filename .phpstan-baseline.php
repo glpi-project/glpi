@@ -266,18 +266,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Property CommonDBTM\\:\\:\\$right \\(int\\) does not accept null\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property CommonDBTM\\:\\:\\$searchopt \\(array\\) does not accept default value of type false\\.$#',
-	'identifier' => 'property.defaultValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Instanceof between \\$this\\(CommonDropdown\\) and IPAddress will always evaluate to false\\.$#',
 	'identifier' => 'instanceof.alwaysFalse',
 	'count' => 1,
@@ -1047,12 +1035,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/AbstractCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Console\\\\AbstractCommand\\:\\:\\$progress_bar \\(Symfony\\\\Component\\\\Console\\\\Helper\\\\ProgressBar\\) does not accept null\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/AbstractCommand.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type SplFileInfo is not subtype of native type DirectoryIterator\\.$#',
 	'identifier' => 'varTag.nativeType',
 	'count' => 1,
@@ -1195,18 +1177,6 @@ $ignoreErrors[] = [
 	'identifier' => 'booleanNot.alwaysTrue',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Search/Input/QueryBuilder.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method PhpOffice\\\\PhpSpreadsheet\\\\Writer\\\\BaseWriter\\:\\:setOrientation\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Output/Pdf.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Search\\\\Output\\\\Spreadsheet\\:\\:\\$writer \\(PhpOffice\\\\PhpSpreadsheet\\\\Writer\\\\BaseWriter\\) does not accept PhpOffice\\\\PhpSpreadsheet\\\\Writer\\\\IWriter\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Output/Pdf.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to static method getAssignableVisiblityCriteria\\(\\) on an unknown class Glpi\\\\Features\\\\AssignableItem\\.$#',
@@ -1395,42 +1365,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Property IPAddress\\:\\:\\$binary \\(array\\<int\\>\\) does not accept string\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/IPAddress.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property IPNetwork\\:\\:\\$address \\(IPAddress\\) does not accept null\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/IPNetwork.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property IPNetwork\\:\\:\\$data_for_implicit_update \\(array\\) does not accept null\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/IPNetwork.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property IPNetwork\\:\\:\\$gateway \\(IPAddress\\) does not accept null\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/IPNetwork.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property IPNetwork\\:\\:\\$netmask \\(IPNetmask\\) does not accept null\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/IPNetwork.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property IPNetwork\\:\\:\\$networkUpdate \\(bool\\) does not accept null\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/IPNetwork.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Left side of && is always true\\.$#',
 	'identifier' => 'booleanAnd.leftAlwaysTrue',
 	'count' => 1,
@@ -1579,18 +1513,6 @@ $ignoreErrors[] = [
 	'identifier' => 'phpDoc.parseError',
 	'count' => 1,
 	'path' => __DIR__ . '/src/KnowbaseItemTranslation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Static property LevelAgreement\\:\\:\\$levelclass \\(class\\-string\\<LevelAgreementLevel\\>\\) does not accept default value of type string\\.$#',
-	'identifier' => 'property.defaultValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/LevelAgreement.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Static property LevelAgreement\\:\\:\\$levelticketclass \\(class\\-string\\<CommonDBTM\\>\\) does not accept default value of type string\\.$#',
-	'identifier' => 'property.defaultValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/LevelAgreement.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type OlaLevel\\|SlaLevel is not subtype of native type static\\(LevelAgreementLevel\\)\\.$#',
@@ -2025,12 +1947,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Profile.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Property Profile\\:\\:\\$profileRight \\(array\\) does not accept null\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Profile.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#',
 	'identifier' => 'method.notFound',
 	'count' => 1,
@@ -2219,12 +2135,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method Session\\:\\:loadLanguage\\(\\) with return type void returns mixed but should not return anything\\.$#',
 	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Session.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Laminas\\\\I18n\\\\Translator\\\\Translator\\:\\:\\$cache \\(Laminas\\\\Cache\\\\Storage\\\\StorageInterface\\|null\\) does not accept Glpi\\\\Cache\\\\I18nCache\\|null\\.$#',
-	'identifier' => 'assign.propertyType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Session.php',
 ];
