@@ -62,6 +62,10 @@ describe('Validation configuration', () => {
             cy.createWithAPI('Group', {
                 'name': `Validation configuration test group - ${form_id}`,
             });
+
+            cy.createWithAPI('ITILValidationTemplate', {
+                'name': `Validation configuration test validation template - ${form_id}`
+            });
         });
     });
 
@@ -78,6 +82,18 @@ describe('Validation configuration', () => {
         // Make sure hidden dropdowns are not displayed
         cy.get('@config').getDropdownByLabelText('Select a request type...').should('not.exist');
         cy.get('@config').getDropdownByLabelText('Select a question...').should('not.exist');
+
+        // Switch to "Specific values"
+        cy.get('@validation_dropdown').selectDropdownValue('Specific Approval templates');
+        cy.get('@config').getDropdownByLabelText('Select approval templates...').as('specific_templates_dropdown');
+        cy.get('@form_id').then((form_id) => {
+            cy.get('@specific_templates_dropdown').selectDropdownValue(`Validation configuration test validation template - ${form_id}`);
+
+            cy.findByRole('button', {'name': 'Update item'}).click();
+            cy.checkAndCloseAlert('Item successfully updated');
+            cy.get('@validation_dropdown').hasDropdownValue('Specific Approval templates');
+            cy.get('@specific_templates_dropdown').hasDropdownValue(`Validation configuration test validation template - ${form_id}`);
+        });
 
         // Switch to "Specific actors"
         cy.get('@validation_dropdown').selectDropdownValue('Specific actors');

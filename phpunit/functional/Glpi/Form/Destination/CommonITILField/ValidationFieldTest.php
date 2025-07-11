@@ -46,8 +46,10 @@ use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Group;
 use Group_User;
+use ITILValidationTemplate;
 use Override;
 use User;
+use ValidationStep;
 
 include_once __DIR__ . '/../../../../../abstracts/AbstractDestinationFieldTest.php';
 
@@ -127,6 +129,73 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
             ],
             expected_validations: [],
             keys_to_be_considered: []
+        );
+    }
+
+    public function testFollowupForSpecificValues(): void
+    {
+        $this->login();
+
+        $form = $this->createAndGetFormWithMultipleActorsQuestions();
+        $users = $this->createAndGetUserActors();
+        $groups = $this->createAndGetGroupActors();
+        $templates = [
+            $this->createITILValidationTemplate(User::class, $users[0]->getID()),
+            $this->createITILValidationTemplate(Group::class, $groups[0]->getID()),
+        ];
+
+        // With no answers
+        $this->sendFormAndAssertValidations(
+            form: $form,
+            config: new ValidationFieldConfig(
+                strategies: [ValidationFieldStrategy::SPECIFIC_VALUES],
+                specific_validationtemplate_ids: [
+                    $templates[0]->getID(),
+                    $templates[1]->getID(),
+                ]
+            ),
+            answers: [],
+            expected_validations: [
+                [
+                    'itemtype_target' => 'User',
+                    'items_id_target' => $users[0]->getID(),
+                ],
+                [
+                    'itemtype_target' => 'Group',
+                    'items_id_target' => $groups[0]->getID(),
+                ],
+            ],
+            keys_to_be_considered: ['itemtype_target', 'items_id_target']
+        );
+
+        // With answers
+        $this->sendFormAndAssertValidations(
+            form: $form,
+            config: new ValidationFieldConfig(
+                strategies: [ValidationFieldStrategy::SPECIFIC_VALUES],
+                specific_validationtemplate_ids: [
+                    $templates[0]->getID(),
+                    $templates[1]->getID(),
+                ]
+            ),
+            answers: [
+                "Assignee" => Group::getForeignKeyField() . '-' . $groups[1]->getID(),
+                "GLPI User" => [
+                    'itemtype' => User::class,
+                    'items_id' => $users[3]->getID(),
+                ],
+            ],
+            expected_validations: [
+                [
+                    'itemtype_target' => 'User',
+                    'items_id_target' => $users[0]->getID(),
+                ],
+                [
+                    'itemtype_target' => 'Group',
+                    'items_id_target' => $groups[0]->getID(),
+                ],
+            ],
+            keys_to_be_considered: ['itemtype_target', 'items_id_target']
         );
     }
 
@@ -265,12 +334,24 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
         $users = $this->createAndGetUserActors();
         $groups = $this->createAndGetGroupActors();
+        $templates = [
+            $this->createITILValidationTemplate(User::class, $users[3]->getID()),
+            $this->createITILValidationTemplate(Group::class, $groups[2]->getID()),
+        ];
 
-        // Multiple strategies: SPECIFIC_ACTORS and SPECIFIC_ANSWERS
+        // Multiple strategies: SPECIFIC_VALUES, SPECIFIC_ACTORS and SPECIFIC_ANSWERS
         $this->sendFormAndAssertValidations(
             form: $form,
             config: new ValidationFieldConfig(
-                strategies: [ValidationFieldStrategy::SPECIFIC_ACTORS, ValidationFieldStrategy::SPECIFIC_ANSWERS],
+                strategies: [
+                    ValidationFieldStrategy::SPECIFIC_VALUES,
+                    ValidationFieldStrategy::SPECIFIC_ACTORS,
+                    ValidationFieldStrategy::SPECIFIC_ANSWERS,
+                ],
+                specific_validationtemplate_ids: [
+                    $templates[0]->getID(),
+                    $templates[1]->getID(),
+                ],
                 specific_actors: [
                     'users_id-' . $users[0]->getID(),
                     'groups_id-' . $groups[0]->getID(),
@@ -303,6 +384,14 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
                 [
                     'itemtype_target' => 'Group',
                     'items_id_target' => $groups[1]->getID(),
+                ],
+                [
+                    'itemtype_target' => 'User',
+                    'items_id_target' => $users[3]->getID(),
+                ],
+                [
+                    'itemtype_target' => 'Group',
+                    'items_id_target' => $groups[2]->getID(),
                 ],
             ],
             keys_to_be_considered: ['itemtype_target', 'items_id_target']
@@ -484,6 +573,7 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
             [
                 ['name' => 'ValidationFieldTest Group 1', 'entities_id' => $this->getTestRootEntity()->getID()],
                 ['name' => 'ValidationFieldTest Group 2', 'entities_id' => $this->getTestRootEntity()->getID()],
+                ['name' => 'ValidationFieldTest Group 3', 'entities_id' => $this->getTestRootEntity()->getID()],
             ]
         );
 
@@ -498,6 +588,10 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
                     'name' => 'ValidationFieldTest User for Group 2',
                     'entities_id' => $this->getTestRootEntity()->getID(),
                 ],
+                [
+                    'name' => 'ValidationFieldTest User for Group 3',
+                    'entities_id' => $this->getTestRootEntity()->getID(),
+                ],
             ]
         );
 
@@ -506,9 +600,21 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
             [
                 ['users_id' => $users_for_groups[0]->getID(), 'groups_id' => $groups[0]->getID()],
                 ['users_id' => $users_for_groups[1]->getID(), 'groups_id' => $groups[1]->getID()],
+                ['users_id' => $users_for_groups[2]->getID(), 'groups_id' => $groups[2]->getID()],
             ]
         );
 
         return $groups;
+    }
+
+    private function createITILValidationTemplate(string $itemtype, int $items_id): ITILValidationTemplate
+    {
+        return $this->createItem(ITILValidationTemplate::class, [
+            'name'               => 'ITIL Validation Template',
+            'entities_id'        => $this->getTestRootEntity()->getID(),
+            'validationsteps_id' => getItemByTypeName(ValidationStep::class, 'Approval', true),
+            'itemtype_target'    => $itemtype,
+            'items_id_target'    => $items_id,
+        ], ['itemtype_target', 'items_id_target']);
     }
 }

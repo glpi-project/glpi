@@ -43,9 +43,10 @@ final class ValidationFieldConfig implements
     ConfigFieldWithStrategiesInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
-    public const STRATEGIES            = 'strategies';
-    public const SPECIFIC_QUESTION_IDS = 'specific_question_ids';
-    public const SPECIFIC_ACTORS       = 'specific_actors';
+    public const STRATEGIES                       = 'strategies';
+    public const SPECIFIC_VALIDATION_TEMPLATE_IDS = 'specific_validationtemplates_ids';
+    public const SPECIFIC_QUESTION_IDS            = 'specific_question_ids';
+    public const SPECIFIC_ACTORS                  = 'specific_actors';
 
     /**
      * @param array<ValidationFieldStrategy> $strategies
@@ -54,6 +55,7 @@ final class ValidationFieldConfig implements
      */
     public function __construct(
         private array $strategies,
+        private array $specific_validationtemplate_ids = [],
         private array $specific_question_ids = [],
         private array $specific_actors = [],
     ) {}
@@ -71,6 +73,7 @@ final class ValidationFieldConfig implements
 
         return new self(
             strategies: $strategies,
+            specific_validationtemplate_ids: $data[self::SPECIFIC_VALIDATION_TEMPLATE_IDS] ?? [],
             specific_question_ids: $data[self::SPECIFIC_QUESTION_IDS] ?? [],
             specific_actors: $data[self::SPECIFIC_ACTORS] ?? [],
         );
@@ -84,6 +87,7 @@ final class ValidationFieldConfig implements
                 fn(ValidationFieldStrategy $strategy) => $strategy->value,
                 $this->strategies
             ),
+            self::SPECIFIC_VALIDATION_TEMPLATE_IDS => $this->specific_validationtemplate_ids,
             self::SPECIFIC_QUESTION_IDS => $this->specific_question_ids,
             self::SPECIFIC_ACTORS => $this->specific_actors,
         ];
@@ -101,6 +105,11 @@ final class ValidationFieldConfig implements
     public function getStrategies(): array
     {
         return $this->strategies;
+    }
+
+    public function getSpecificValidationTemplateIds(): array
+    {
+        return $this->specific_validationtemplate_ids;
     }
 
     public function getSpecificQuestionIds(): array
