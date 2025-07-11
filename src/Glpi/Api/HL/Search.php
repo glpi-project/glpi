@@ -118,7 +118,8 @@ final class Search
             }
             throw new APIException(
                 message: 'A SQL error occurred while trying to get data from the database',
-                user_message: $message
+                user_message: $message,
+                code: 500,
             );
         }
     }
@@ -495,7 +496,11 @@ final class Search
                 $direction = strtoupper($sort_parts[1] ?? 'ASC') === 'DESC' ? 'DESC' : 'ASC';
                 // Verify the property is valid
                 if (!isset($this->flattened_properties[$property])) {
-                    throw new APIException('Invalid property for sorting: ' . $property, 'Invalid property for sorting: ' . $property);
+                    throw new APIException(
+                        message: 'Invalid property for sorting: ' . $property,
+                        user_message: 'Invalid property for sorting: ' . $property,
+                        code: 400,
+                    );
                 }
                 $sql_field = $this->getSQLFieldForProperty($property);
                 $orderby[] = "{$sql_field} {$direction}";
@@ -1213,10 +1218,14 @@ final class Search
         } catch (RSQLException $e) {
             return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, $e->getMessage(), $e->getDetails()), 400);
         } catch (APIException $e) {
-            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getUserMessage(), $e->getDetails()));
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getUserMessage(), $e->getDetails()), $e->getCode() ?: 400);
         } catch (\Throwable $e) {
             $message = (new APIException())->getUserMessage();
-            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getMessage()));
+            $detail = null;
+            if ($_SESSION['glpi_use_mode'] === \Session::DEBUG_MODE) {
+                $detail = $e->getMessage();
+            }
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message, $detail), 500);
         }
         $has_more = $results['start'] + $results['limit'] < $results['total'];
         $end = max(0, ($results['start'] + $results['limit'] - 1));
@@ -1361,10 +1370,10 @@ final class Search
         } catch (RSQLException $e) {
             return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, $e->getUserMessage()), 400);
         } catch (APIException $e) {
-            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getUserMessage()));
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getUserMessage()), $e->getCode() ?: 400);
         } catch (\Throwable $e) {
             $message = (new APIException())->getUserMessage();
-            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message));
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message), 500);
         }
         if (count($results['results']) === 0) {
             return AbstractController::getNotFoundErrorResponse();
