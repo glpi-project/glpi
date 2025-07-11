@@ -6982,7 +6982,7 @@ abstract class CommonITILObject extends CommonDBTM
      * @return array The data with the other required fields added
      * @see CommonITILObject::getCommonDatatableColumns()
      */
-    public static function getDatatableEntries(array $data, $params = []): array
+    public static function getDatatableEntries(array $data, array $params = []): array
     {
         $params = array_replace([
             'ticket_stats' => false,
