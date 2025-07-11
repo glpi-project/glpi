@@ -5969,18 +5969,18 @@ CREATE TABLE `glpi_profiles` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
-### Dump table glpi_profiles_solutiontemplates
+### Dump table glpi_profiles_itilfollowuptemplates
 
 DROP TABLE IF EXISTS `glpi_profiles_itilfollowuptemplates`;
 CREATE TABLE `glpi_profiles_itilfollowuptemplates` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `solutiontemplates_id` int unsigned  NOT NULL DEFAULT '0',
+  `itilfollowuptemplates_id` int unsigned  NOT NULL DEFAULT '0',
   `profiles_id` int unsigned  NOT NULL DEFAULT '0',
   `entities_id` int unsigned  NULL,
   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   `no_entity_restriction` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `solutiontemplates_id` (`solutiontemplates_id`),
+  KEY `itilfollowuptemplates_id` (`itilfollowuptemplates_id`),
   KEY `profiles_id` (`profiles_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
@@ -6040,7 +6040,7 @@ CREATE TABLE `glpi_profiles_solutiontemplates` (
 ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
-### Dump table glpi_profiles_solutiontemplates
+### Dump table glpi_profiles_tasktemplates
 
 DROP TABLE IF EXISTS `glpi_profiles_tasktemplates`;
 CREATE TABLE `glpi_profiles_tasktemplates` (

@@ -355,6 +355,7 @@ The present file will list all changes made to the project; according to the
 - Handling of encoded/escaped value in `autoName()`.
 - `closeDBConnections`
 - `regenerateTreeCompleteName()`
+- `AbstractITILChildTemplate::addVisibilityJoins()`
 - `Appliance::getMassiveActionsForItemtype()`
 - `AuthLDAP::ldapChooseDirectory()`
 - `AuthLDAP::displayLdapFilter()`

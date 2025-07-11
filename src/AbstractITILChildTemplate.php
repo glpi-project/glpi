@@ -55,34 +55,6 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
         return $this->traitHaveVisibilityAccess();
     }
 
-    /**
-     * Return visibility joins to add to SQL
-     *
-     * @param $forceall force all joins (false by default)
-     *
-     * @return string joins to add
-     **/
-    public static function addVisibilityJoins($forceall = false)
-    {
-        //not deprecated because used in Search
-        /** @var \DBmysql $DB */
-        global $DB;
-        //get and clean criteria
-        $criteria = self::getVisibilityCriteria();
-        unset($criteria['WHERE']);
-        $criteria['FROM'] = self::getTable();
-        $it = new \DBmysqlIterator(null);
-        $it->buildQuery($criteria);
-        $sql = $it->getSql();
-        $sql = trim(
-            str_replace(
-                'SELECT * FROM ' . $DB->quoteName(self::getTable()),
-                '',
-                $sql
-            )
-        );
-        return $sql;
-    }
 
     /**
      * Class for Group type target
@@ -145,7 +117,7 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
                 case self::getType():
                     if (Session::haveRight(self::$rightname, CREATE)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
-                            $nb = $item->countVisibilities();
+                            $nb = $this->countVisibilities();
                         }
                         return [
                             1 => self::createTabEntry(
