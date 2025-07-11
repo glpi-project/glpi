@@ -613,14 +613,16 @@ class FormMigration extends AbstractPluginMigration
                     $question->getID()
                 );
             } catch (\Throwable $th) {
+                /** @var ?Section $section */
                 $section = Section::getById($section_id) ?: null;
+                $item = $section?->getItem() ?: null;
                 $this->result->addMessage(
                     MessageType::Error,
                     sprintf(
                         __('Error while importing question "%s" in section "%s" and form "%s": %s'),
                         $raw_question['name'],
                         $section?->getName(),
-                        $section?->getItem()?->getName(),
+                        $item?->getName(),
                         $th->getMessage()
                     )
                 );
@@ -1320,16 +1322,20 @@ class FormMigration extends AbstractPluginMigration
             }
 
             $question = Question::getById($question_id);
-            if ($question === false) {
+            if (!$question instanceof Question) {
                 continue;
             }
 
             $value = $raw_condition['show_value'];
             if (isset($question->fields['extra_data'])) {
-                $config              = $question->getQuestionType()->getExtraDataConfig(
+                $question_type = $question->getQuestionType();
+                if ($question_type === null) {
+                    continue;
+                }
+                $config = $question_type->getExtraDataConfig(
                     json_decode($question->fields['extra_data'], true)
                 );
-                $condition_handlers  = $question->getQuestionType()->getConditionHandlers($config);
+                $condition_handlers = $question_type->getConditionHandlers($config);
                 $condition_handler   = null;
 
                 // Get the value operator before trying to find a compatible handler
@@ -1509,7 +1515,7 @@ class FormMigration extends AbstractPluginMigration
             }
 
             $question = Question::getById($question_id);
-            if ($question === false) {
+            if (!$question instanceof Question) {
                 continue;
             }
 
@@ -1523,6 +1529,9 @@ class FormMigration extends AbstractPluginMigration
             }
 
             $question_type = $question->getQuestionType();
+            if ($question_type === null) {
+                continue;
+            }
             $raw_config = json_decode(json: $question->fields['extra_data'] ?? '{}', associative: true, flags: JSON_THROW_ON_ERROR);
             $config = $raw_config ? $question_type->getExtraDataConfig($raw_config) : null;
             $condition_handlers = $question_type->getConditionHandlers($config);

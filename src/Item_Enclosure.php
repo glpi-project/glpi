@@ -62,16 +62,18 @@ class Item_Enclosure extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        self::showItems($item);
-        return true;
+        if (!$item instanceof Enclosure) {
+            return false;
+        }
+        return self::showItems($item);
     }
 
     /**
      * Print enclosure items
      *
-     * @return void
+     * @return bool
      **/
-    public static function showItems(Enclosure $enclosure)
+    public static function showItems(Enclosure $enclosure): bool
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -143,6 +145,8 @@ class Item_Enclosure extends CommonDBRelation
                 ],
             ],
         ]);
+
+        return true;
     }
 
     public function showForm($ID, array $options = [])

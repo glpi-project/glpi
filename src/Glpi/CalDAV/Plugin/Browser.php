@@ -54,7 +54,7 @@ class Browser extends Plugin
     public function httpGet(RequestInterface $request, ResponseInterface $response)
     {
         if (!$this->canDisplayDebugInterface()) {
-            return;
+            return false;
         }
 
         return parent::httpGet($request, $response);

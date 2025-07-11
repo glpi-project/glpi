@@ -142,10 +142,7 @@ class Log extends CommonDBTM
         }
         // needed to have  $SEARCHOPTION
         [$real_type, $real_id] = $item->getLogTypeID();
-        $searchopt                 = SearchOption::getOptionsForItemtype($real_type);
-        if (!is_array($searchopt)) {
-            return false;
-        }
+        $searchopt = SearchOption::getOptionsForItemtype($real_type);
         $result = 0;
 
         foreach ($oldvalues as $key => $oldval) {

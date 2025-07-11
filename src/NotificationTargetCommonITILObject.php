@@ -1506,7 +1506,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $data["##$objettype.reminder.bumpremaining##"] = $pending_reason_item->getField('followups_before_resolution') - $pending_reason_item->getField('bump_count');
                 $data["##$objettype.reminder.bumptotal##"]     = $pending_reason_item->getField('followups_before_resolution');
                 $data["##$objettype.reminder.deadline##"]      = $pending_reason_item->getAutoResolvedate();
-                $data["##$objettype.reminder.text##"]          = $followup_template !== false ? $followup_template->getRenderedContent($item) : '';
+                $data["##$objettype.reminder.text##"]          = $followup_template instanceof ITILFollowupTemplate ? $followup_template->getRenderedContent($item) : '';
                 $data["##$objettype.reminder.name##"]          = $pending_reason->getField('name');
             }
         }
@@ -1573,7 +1573,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $tmp['##followup.isprivate##']   = Dropdown::getYesNo($followup['is_private']);
 
                 // Check if the author need to be anonymized
-                if ($are_names_anonymized && ITILFollowup::getById($followup['id'])->isFromSupportAgent()) {
+                $itilfup = ITILFollowup::getById($followup['id']);
+                if ($are_names_anonymized && $itilfup instanceof ITILFollowup && $itilfup->isFromSupportAgent()) {
                     $tmp['##followup.author##'] = User::getAnonymizedNameForUser(
                         $followup['users_id'],
                         $item->fields['entities_id']
@@ -1827,11 +1828,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $item_users_id = (int) $timeline_data['item']['users_id'];
 
                 // Check if the author need to be anonymized
+                $itilfup = ITILFollowup::getById($timeline_data['item']['id']);
                 if (
                     $item_users_id > 0
                     && $timeline_data['type'] == ITILFollowup::getType()
                     && $are_names_anonymized
-                    && ITILFollowup::getById($timeline_data['item']['id'])->isFromSupportAgent()
+                    && $itilfup instanceof ITILFollowup
+                    && $itilfup->isFromSupportAgent()
                 ) {
                     $tmptimelineitem['##timelineitems.author##'] = User::getAnonymizedNameForUser(
                         $item_users_id,

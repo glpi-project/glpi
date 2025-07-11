@@ -229,7 +229,7 @@ class DomainRecord extends CommonDBChild
 
     public function canCreateItem(): bool
     {
-        return count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes']);
+        return count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes']) > 0;
     }
 
     public function canUpdateItem(): bool

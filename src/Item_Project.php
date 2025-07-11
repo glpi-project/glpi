@@ -87,9 +87,9 @@ class Item_Project extends CommonDBRelation
      *
      * @param $project Project object
      *
-     * @return void
+     * @return bool
      **/
-    public static function showForProject(Project $project)
+    public static function showForProject(Project $project): bool
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -219,6 +219,8 @@ class Item_Project extends CommonDBRelation
             Html::closeForm();
         }
         echo "</div>";
+
+        return true;
     }
 
 
@@ -272,25 +274,25 @@ class Item_Project extends CommonDBRelation
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        switch ($item->getType()) {
-            case 'Project':
-                self::showForProject($item);
-                break;
-
-            default:
-                if (
-                    Project::canView()
-                    && $item instanceof CommonDBTM
-                    && in_array($item->getType(), $CFG_GLPI["project_asset_types"])
-                ) {
-                    self::showForAsset($item);
-                }
-                break;
+        if (!$item instanceof CommonDBTM) {
+            return false;
         }
-        return true;
+
+        if ($item instanceof Project) {
+            return self::showForProject($item);
+        }
+
+        if (
+            Project::canView()
+            && in_array($item->getType(), $CFG_GLPI["project_asset_types"])
+        ) {
+            return self::showForAsset($item);
+        }
+
+        return false;
     }
 
-    private static function showForAsset(CommonDBTM $item): void
+    private static function showForAsset(CommonDBTM $item): bool
     {
 
         $item_project = new self();
@@ -372,5 +374,7 @@ class Item_Project extends CommonDBRelation
                 'filtered_number' => count($entries),
             ],
         ]);
+
+        return true;
     }
 }

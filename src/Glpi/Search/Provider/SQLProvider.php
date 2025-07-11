@@ -1686,10 +1686,10 @@ final class SQLProvider implements SearchProviderInterface
                     $toadd2 = " OR `$table`.`$field` IS NULL";
                 }
 
-                return new QueryExpression(" (((`$table`.`tickets_id_1` $compare '$val'
+                return [new QueryExpression(" (((`$table`.`tickets_id_1` $compare '$val'
                               $tmplink `$table`.`tickets_id_2` $compare '$val')
                              AND `glpi_tickets`.`id` <> '$val')
-                            $toadd2)");
+                            $toadd2)")];
 
             case "glpi_tickets.priority":
             case "glpi_tickets.impact":
@@ -3778,19 +3778,19 @@ final class SQLProvider implements SearchProviderInterface
      * Generic Function to add GROUP BY to a request
      *
      * @param string  $LINK           link to use
-     * @param string  $NOT            is is a negative search?
+     * @param bool    $NOT            is is a negative search?
      * @param class-string<CommonDBTM>  $itemtype       item type
      * @param integer $ID             ID of the item to search
      * @param string  $searchtype     search type ('contains' or 'equals')
      * @param string  $val            value search
      *
-     * @return string HAVING string
+     * @return array HAVING string
      **/
     public static function getHavingCriteria(string $LINK, bool $NOT, string $itemtype, int $ID, string $searchtype, string $val): array
     {
         $searchopt  = SearchOption::getOptionsForItemtype($itemtype);
         if (!isset($searchopt[$ID]['table'])) {
-            return false;
+            return [];
         }
         $table = $searchopt[$ID]["table"];
         $NAME = "ITEM_{$itemtype}_{$ID}";
@@ -6014,7 +6014,7 @@ final class SQLProvider implements SearchProviderInterface
                         return __('Unlimited');
                     }
                     if (empty($data[$ID][0]['name'])) {
-                        return 0;
+                        return '';
                     }
                     return $data[$ID][0]['name'];
 

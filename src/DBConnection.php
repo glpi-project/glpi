@@ -715,8 +715,7 @@ class DBConnection extends CommonDBTM
      * Display in HTML, delay between master and slave
      * 1 line per slave is multiple
      * @param boolean $no_display if true, the function returns the HTML string to display
-     * @return string|null
-     * @phpstan-return $no_display ? string : null
+     * @return ($no_display is true ? string : null)
      **/
     public static function showAllReplicateDelay($no_display = false)
     {
@@ -745,6 +744,7 @@ class DBConnection extends CommonDBTM
             return $output;
         }
         echo $output;
+        return null;
     }
 
 

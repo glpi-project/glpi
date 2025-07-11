@@ -308,7 +308,7 @@ class Dropdown
                 false
             );
             if ($result['count'] === 0) {
-                return;
+                return false;
             }
         }
 
@@ -1826,7 +1826,7 @@ HTML;
             'add_data_attributes_itemtype_dropdown' => '',
         ];
 
-        if (is_array($options) && count($options)) {
+        if (count($options)) {
             foreach ($options as $key => $val) {
                 $params[$key] = $val;
             }
@@ -2847,7 +2847,7 @@ HTML;
      * @param array   $post Posted values
      * @param boolean $json Encode to JSON, default to true
      *
-     * @return string|array
+     * @return string|array|false
      */
     public static function getDropdownValue($post, $json = true)
     {
@@ -2859,7 +2859,7 @@ HTML;
 
         // check if asked itemtype is the one originally requested by the form
         if (!Session::validateIDOR($post)) {
-            return;
+            return false;
         }
 
         if (isset($post['entity_restrict']) && 'default' === $post['entity_restrict']) {
@@ -2882,7 +2882,7 @@ HTML;
 
         // Security
         if (!($item = getItemForItemtype($post['itemtype']))) {
-            return;
+            return false;
         }
 
         $table = $item->getTable();
@@ -3755,7 +3755,7 @@ HTML;
      * @param array   $post Posted values
      * @param boolean $json Encode to JSON, default to true
      *
-     * @return string|array
+     * @return string|array|false
      */
     public static function getDropdownConnect($post, $json = true)
     {
@@ -3767,11 +3767,11 @@ HTML;
 
         // check if asked itemtype is the one originaly requested by the form
         if (!Session::validateIDOR($post)) {
-            return;
+            return false;
         }
 
         if (!isset($post['fromtype']) || !($fromitem = getItemForItemtype($post['fromtype']))) {
-            return;
+            return false;
         }
 
         if (isset($post['entity_restrict'])) {
@@ -3793,7 +3793,7 @@ HTML;
         // Make a select box
         $table = getTableForItemType($post["itemtype"]);
         if (!$item = getItemForItemtype($post['itemtype'])) {
-            return;
+            return false;
         }
 
         $where = [];
@@ -3957,7 +3957,7 @@ HTML;
      * @param array   $post Posted values
      * @param boolean $json Encode to JSON, default to true
      *
-     * @return string|array
+     * @return string|array|false
      */
     public static function getDropdownFindNum($post, $json = true)
     {
@@ -3969,18 +3969,16 @@ HTML;
 
         // Security
         if (!$DB->tableExists($post['table'])) {
-            return;
+            return false;
         }
 
-        $itemtypeisplugin = isPluginItemType($post['itemtype']);
-
-        // check if asked itemtype is the one originaly requested by the form
+        // check if asked itemtype is the one originally requested by the form
         if (!Session::validateIDOR($post)) {
-            return;
+            return false;
         }
 
         if (!$item = getItemForItemtype($post['itemtype'])) {
-            return;
+            return false;
         }
 
         $where = $item->getSystemSQLCriteria();
@@ -4236,7 +4234,7 @@ HTML;
      * @param array   $post Posted values
      * @param boolean $json Encode to JSON, default to true
      *
-     * @return string|array
+     * @return string|array|false
      */
     public static function getDropdownUsers($post, $json = true)
     {
@@ -4245,7 +4243,7 @@ HTML;
 
         // check if asked itemtype is the one originaly requested by the form
         if (!Session::validateIDOR($post + ['itemtype' => 'User', 'right' => ($post['right'] ?? "")])) {
-            return;
+            return false;
         }
 
         if (!isset($post['right'])) {

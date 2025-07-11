@@ -198,7 +198,7 @@ class PendingReason_Item extends CommonDBRelation
             PendingReason::getById($this->fields['pendingreasons_id'])->fields['calendars_id']
         );
 
-        if ($calendar) {
+        if ($calendar instanceof Calendar) {
             return $calendar->computeEndDate(
                 $this->fields['last_bump_date'],
                 $this->fields['followup_frequency'],
@@ -234,7 +234,7 @@ class PendingReason_Item extends CommonDBRelation
             PendingReason::getById($this->fields['pendingreasons_id'])->fields['calendars_id']
         );
 
-        if ($calendar) {
+        if ($calendar instanceof Calendar) {
             return $calendar->computeEndDate(
                 $this->fields['last_bump_date'],
                 $this->fields['followup_frequency'] * $remaining_bumps,

@@ -137,7 +137,7 @@ class ItemTranslation extends CommonDBChild
     /**
      * Get translations for an item
      *
-     * @return array<ItemTranslation>
+     * @return array<ItemTranslation|false>
      */
     public static function getTranslationsForItem(CommonDBTM $item): array
     {
@@ -162,7 +162,10 @@ class ItemTranslation extends CommonDBChild
         ]);
 
         if (!empty($translation)) {
-            return static::getById(key($translation));
+            $itemtranslation = static::getById(key($translation));
+            if ($itemtranslation instanceof self) {
+                return $itemtranslation;
+            }
         }
 
         return null;

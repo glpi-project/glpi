@@ -106,23 +106,22 @@ class Itil_Project extends CommonDBRelation
             case Change::class:
             case Problem::class:
             case Ticket::class:
-                self::showForItil($item);
-                break;
+                return self::showForItil($item);
 
             case Project::class:
-                self::showForProject($item);
-                break;
+                return self::showForProject($item);
         }
-        return true;
+        return false;
     }
 
     /**
      * Show ITIL items for a project.
      *
      * @param Project $project
-     * @return void
+     *
+     * @return bool
      **/
-    public static function showForProject(Project $project)
+    public static function showForProject(Project $project): bool
     {
         /**
          * @var \DBmysql $DB
@@ -242,15 +241,18 @@ TWIG, $twig_params);
                 'specific_actions' => ['purge' => _x('button', 'Delete permanently')],
             ],
         ]);
+
+        return true;
     }
 
     /**
      * Show projects for an ITIL item.
      *
      * @param CommonITILObject $itil
-     * @return void
+     *
+     * @return bool
      **/
-    public static function showForItil(CommonITILObject $itil)
+    public static function showForItil(CommonITILObject $itil): bool
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -355,5 +357,7 @@ TWIG, $twig_params);
                 'container'     => 'mass' . self::class . mt_rand(),
             ],
         ]);
+
+        return true;
     }
 }

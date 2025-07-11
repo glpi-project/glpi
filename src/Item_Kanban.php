@@ -137,7 +137,7 @@ class Item_Kanban extends CommonDBRelation
      * @param string $itemtype Type of the item.
      * @param int $items_id ID of the item.
      * @param string $timestamp Timestamp string of last check or null to always get the state.
-     * @return array Array of Kanban column state data.
+     * @return ?array Array of Kanban column state data.
      *       Null is returned if $timestamp is specified, but no changes have been made to the state since then
      *       An empty array is returned if the state is not in the DB.
      */
