@@ -98,12 +98,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/AuthLDAP.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method AuthLDAP\\:\\:ldapStamp2UnixStamp\\(\\) should return int but returns string\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/AuthLDAP.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always true\\.$#',
 	'identifier' => 'booleanNot.alwaysTrue',
 	'count' => 1,
@@ -236,30 +230,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method CommonDBTM\\:\\:isActive\\(\\) should return bool but returns int\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method CommonDBTM\\:\\:isDeleted\\(\\) should return bool but returns int\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method CommonDBTM\\:\\:isRecursive\\(\\) should return bool but returns int\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method CommonDBTM\\:\\:isTemplate\\(\\) should return bool but returns int\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type class\\-string is not subtype of native type static\\(CommonDBTM\\)\\.$#',
 	'identifier' => 'varTag.nativeType',
 	'count' => 1,
@@ -356,24 +326,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILTask.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method CommonITILTask\\:\\:genericDisplayPlanningItem\\(\\) should return string but empty return statement found\\.$#',
-	'identifier' => 'return.empty',
-	'count' => 2,
-	'path' => __DIR__ . '/src/CommonITILTask.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method CommonITILTask\\:\\:genericPopulatePlanning\\(\\) should return array but empty return statement found\\.$#',
-	'identifier' => 'return.empty',
-	'count' => 4,
-	'path' => __DIR__ . '/src/CommonITILTask.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method CommonITILTask\\:\\:getItemsAsVCalendars\\(\\) should return array\\<Sabre\\\\VObject\\\\Component\\\\VCalendar\\> but empty return statement found\\.$#',
-	'identifier' => 'return.empty',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILTask.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method CommonITILTask\\:\\:post_updateItem\\(\\) with return type void returns false but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
@@ -384,12 +336,6 @@ $ignoreErrors[] = [
 	'identifier' => 'arguments.count',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILValidationCron.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method CommonItilObject_Item\\:\\:dropdown\\(\\) should return int\\|string\\|false but empty return statement found\\.$#',
-	'identifier' => 'return.empty',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Computer\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
@@ -506,36 +452,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DbUtils.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot use array destructuring on string\\.$#',
-	'identifier' => 'offsetAccess.nonArray',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DbUtils.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method DbUtils\\:\\:getHourFromSql\\(\\) should return array but returns string\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DbUtils.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method DbUtils\\:\\:getTreeLeafValueName\\(\\) should return string but returns array\\<string, mixed\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DbUtils.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method DbUtils\\:\\:getTreeValueCompleteName\\(\\) should return string but returns array\\<string, mixed\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DbUtils.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method DbUtils\\:\\:getTreeValueName\\(\\) should return string but returns array\\<int, int\\|string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DbUtils.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\=\\=\\= between \'\\.php\' and bool will always evaluate to false\\.$#',
 	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
@@ -578,40 +494,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Domain.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method DomainRecord\\:\\:canCreateItem\\(\\) should return bool but returns int\\<0, max\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DomainRecord.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Right side of && is always true\\.$#',
 	'identifier' => 'booleanAnd.rightAlwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Domain_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Dropdown\\:\\:getDropdownConnect\\(\\) should return array\\|string but empty return statement found\\.$#',
-	'identifier' => 'return.empty',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Dropdown.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Dropdown\\:\\:getDropdownFindNum\\(\\) should return array\\|string but empty return statement found\\.$#',
-	'identifier' => 'return.empty',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Dropdown.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Dropdown\\:\\:getDropdownUsers\\(\\) should return array\\|string but empty return statement found\\.$#',
-	'identifier' => 'return.empty',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Dropdown.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Dropdown\\:\\:getDropdownValue\\(\\) should return array\\|string but empty return statement found\\.$#',
-	'identifier' => 'return.empty',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Dropdown.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\=\\=\\= between float and \'0\' will always evaluate to false\\.$#',
@@ -662,18 +548,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Entity.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Fieldblacklist\\:\\:isFieldBlacklisted\\(\\) should return true but returns bool\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Fieldblacklist.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method GLPIKey\\:\\:keyExists\\(\\) should return string but returns bool\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/GLPIKey.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to an undefined method Symfony\\\\Component\\\\Mime\\\\Header\\\\HeaderInterface\\:\\:getAddresses\\(\\)\\.$#',
 	'identifier' => 'method.notFound',
 	'count' => 4,
@@ -701,12 +575,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\API\\:\\:applyMassiveAction\\(\\) with return type void returns array\\|null but should not return anything\\.$#',
 	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/API.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\API\\:\\:getActiveProfile\\(\\) should return int but returns array\\<string, mixed\\>\\.$#',
-	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/API.php',
 ];
@@ -753,18 +621,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/APIRest.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\CoreController\\:\\:authorize\\(\\) should return Glpi\\\\Http\\\\Response but returns Psr\\\\Http\\\\Message\\\\ResponseInterface\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/CoreController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\CoreController\\:\\:token\\(\\) should return Glpi\\\\Http\\\\Response but returns Psr\\\\Http\\\\Message\\\\ResponseInterface\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/CoreController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var has invalid value \\(\\{name\\: string, default\\: mixed\\}\\[\\] \\$allowed_keys_mapping\\)\\: Unexpected token "\\{", expected type at offset 9 on line 1$#',
 	'identifier' => 'phpDoc.parseError',
 	'count' => 1,
@@ -803,18 +659,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Doc\\\\Schema\\:\\:getUnionSchema\\(\\) should return array\\{x\\-subtypes\\: array\\{schema_name\\: string, itemtype\\: string\\}, type\\: \'object\', properties\\: array\\} but returns array\\{x\\-subtypes\\: non\\-empty\\-list\\<array\\{schema_name\\: string, itemtype\\: mixed\\}\\>, type\\: \'object\', properties\\: mixed\\}\\.$#',
 	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Doc/Schema.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Doc\\\\Schema\\:\\:validateTypeAndFormat\\(\\) should return bool but returns string\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Doc/Schema.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type string is not subtype of native type bool\\.$#',
-	'identifier' => 'varTag.nativeType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Doc/Schema.php',
 ];
@@ -895,18 +739,6 @@ $ignoreErrors[] = [
 	'identifier' => 'varTag.nativeType',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Asset/AssetDefinitionManager.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Asset\\\\AssetModel\\:\\:getById\\(\\) should return static\\(Glpi\\\\Asset\\\\AssetModel\\)\\|false but returns Glpi\\\\Asset\\\\AssetModel\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/AssetModel.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Asset\\\\AssetType\\:\\:getById\\(\\) should return static\\(Glpi\\\\Asset\\\\AssetType\\)\\|false but returns Glpi\\\\Asset\\\\AssetType\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/AssetType.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Asset\\\\Asset_PeripheralAsset\\:\\:getTabNameForItem\\(\\) never returns array\\<string\\> so it can be removed from the return type\\.$#',
@@ -999,12 +831,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Principal.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\CalDAV\\\\Backend\\\\Principal\\:\\:getPrincipalByPath\\(\\) should return array but empty return statement found\\.$#',
-	'identifier' => 'return.empty',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Principal.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:getFromDB\\(\\)\\.$#',
 	'identifier' => 'method.notFound',
 	'count' => 1,
@@ -1013,12 +839,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:getFromDB\\(\\)\\.$#',
 	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/CalDAV/Plugin/Browser.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\CalDAV\\\\Plugin\\\\Browser\\:\\:httpGet\\(\\) should return bool but empty return statement found\\.$#',
-	'identifier' => 'return.empty',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/CalDAV/Plugin/Browser.php',
 ];
@@ -1087,12 +907,6 @@ $ignoreErrors[] = [
 	'identifier' => 'return.unusedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Migration/RacksPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Console\\\\Plugin\\\\InstallCommand\\:\\:isAlreadyInstalled\\(\\) should return array but returns bool\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Plugin/InstallCommand.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Helper\\\\HelperInterface\\:\\:ask\\(\\)\\.$#',
@@ -1239,38 +1053,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Search\\\\Provider\\\\SQLProvider\\:\\:getHavingCriteria\\(\\) should return array but returns false\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Search\\\\Provider\\\\SQLProvider\\:\\:getWhereCriteria\\(\\) should return array\\|null but returns Glpi\\\\DBAL\\\\QueryExpression\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Search\\\\Provider\\\\SQLProvider\\:\\:giveItem\\(\\) should return string but returns int\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset 2 on array\\{string, string, string\\} in isset\\(\\) always exists and is not nullable\\.$#',
 	'identifier' => 'isset.offset',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @param for parameter \\$NOT with type string is incompatible with native type bool\\.$#',
-	'identifier' => 'parameter.phpDocType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @return with type string is incompatible with native type array\\.$#',
-	'identifier' => 'return.phpDocType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
@@ -1485,22 +1269,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_Kanban.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Item_Kanban\\:\\:loadStateForItem\\(\\) should return array but returns null\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Kanban.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var for variable \\$item has invalid type Glpi\\\\Features\\\\Kanban\\.$#',
 	'identifier' => 'varTag.trait',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Item_Kanban.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Item_Line\\:\\:prepareInput\\(\\) should return array but returns false\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Line.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^If condition is always true\\.$#',
@@ -1590,18 +1362,6 @@ $ignoreErrors[] = [
 	'message' => '#^Cannot call method getAddressList\\(\\) on array\\|ArrayIterator\\|Laminas\\\\Mail\\\\Header\\\\HeaderInterface\\|string\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 2,
-	'path' => __DIR__ . '/src/MailCollector.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method MailCollector\\:\\:cronMailgate\\(\\) should return \\-1 but returns 0\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/MailCollector.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method MailCollector\\:\\:cronMailgate\\(\\) should return \\-1 but returns 1\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
 	'path' => __DIR__ . '/src/MailCollector.php',
 ];
 $ignoreErrors[] = [
@@ -1737,24 +1497,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method NotificationTargetCommonITILObject\\:\\:addAdditionnalUserInfo\\(\\) should return 0\\|0\\.0\\|\'\'\\|\'0\'\\|array\\{\\}\\|false\\|null but returns array\\{show_private\\: mixed, is_self_service\\: mixed\\}\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method NotificationTemplate\\:\\:getTemplateByLanguage\\(\\) should return int\\|false but returns non\\-falsy\\-string\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTemplate.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Notification_NotificationTemplate\\:\\:getName\\(\\) should return string but returns int\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Notification_NotificationTemplate.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @return has invalid value \\(array\\: empty array if itemtype is not lockable; else returns UNLOCK right\\)\\: Unexpected token "\\:", expected TOKEN_HORIZONTAL_WS at offset 96 on line 5$#',
 	'identifier' => 'phpDoc.parseError',
 	'count' => 1,
@@ -1855,12 +1597,6 @@ $ignoreErrors[] = [
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Phone.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Planning\\:\\:updateEventTimes\\(\\) should return bool but empty return statement found\\.$#',
-	'identifier' => 'return.empty',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Planning.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always true\\.$#',
@@ -2061,18 +1797,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Report.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Report\\:\\:getAssetCounts\\(\\) should return array\\<class\\-string\\<CommonDBTM\\>, array\\<string, array\\>\\> but returns array\\<array\\<string, mixed\\>\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Report.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Report\\:\\:getOSInstallCounts\\(\\) should return array\\<string, array\\<int, array\\>\\> but returns array\\<array\\<string, mixed\\>\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Report.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @param for parameter \\$by_itemtype contains unresolvable type\\.$#',
 	'identifier' => 'parameter.unresolvableType',
 	'count' => 1,
@@ -2123,12 +1847,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Default value of the parameter \\#1 \\$options \\(array\\{\\}\\) of method RuleAction\\:\\:dropdownActions\\(\\) is incompatible with type array\\{subtype\\: string, name\\: string, field\\: string, value\\?\\: string, alreadyused\\?\\: bool, display\\?\\: bool\\}\\.$#',
 	'identifier' => 'parameter.defaultValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method RuleAction\\:\\:dropdownActions\\(\\) should return int\\|string but returns false\\.$#',
-	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleAction.php',
 ];
@@ -2383,12 +2101,6 @@ $ignoreErrors[] = [
 	'identifier' => 'class.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/XHProf.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Function getDateCriteria\\(\\) should return string but returns array\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/autoload/dbutils-aliases.php',
 ];
 
 return ['parameters' => ['ignoreErrors' => $ignoreErrors]];

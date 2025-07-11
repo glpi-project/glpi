@@ -569,7 +569,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * @param $data
      *
-     * @return empty array
+     * @return array
      **/
     public function addAdditionnalUserInfo(array $data)
     {

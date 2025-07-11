@@ -83,7 +83,7 @@ class SessionExtension extends AbstractExtension
      */
     public function getCurrentUser(): ?User
     {
-        if (($user = User::getById(Session::getLoginUserID())) !== false) {
+        if (($user = User::getById(Session::getLoginUserID())) instanceof User) {
             return $user;
         }
         return null;

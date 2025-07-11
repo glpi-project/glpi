@@ -1311,7 +1311,7 @@ final class DbUtils
      * @param boolean $withcomment 1 if you want to give the array with the comments (false by default)
      * @param boolean $translate   (true by default)
      *
-     * @return string name of the element
+     * @return ($withcomment is true ? array : string)
      *
      * @see DbUtils::getTreeValueCompleteName
      */
@@ -1414,7 +1414,7 @@ final class DbUtils
      * @param boolean $tooltip     (true by default) returns a tooltip, else returns only 'comment'
      * @param string  $default     default value returned when item not exists
      *
-     * @return string completename of the element
+     * @return ($withcomment is true ? array : string)
      *
      * @see DbUtils::getTreeLeafValueName
      *
@@ -1525,7 +1525,7 @@ final class DbUtils
      * @param string  $wholename current name to complete (use for recursivity) (default '')
      * @param integer $level     current level of recursion (default 0)
      *
-     * @return string name
+     * @return array
      */
     public function getTreeValueName($table, $ID, $wholename = "", $level = 0)
     {
@@ -2103,7 +2103,7 @@ final class DbUtils
      *
      * @param string $time datetime time
      *
-     * @return  array
+     * @return string
      */
     public function getHourFromSql($time)
     {

@@ -1179,6 +1179,11 @@ TWIG, $avatar_params) . $username;
     protected function isLastSuperAdminAuthorization(): bool
     {
         $profile = Profile::getById($this->fields["profiles_id"]);
+
+        if (!$profile instanceof Profile) {
+            return false;
+        }
+
         if (!$profile->isLastSuperAdminProfile()) {
             // Can't be the last super admin auth if not targeting the last
             // super admin profile

@@ -585,9 +585,13 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     {
         // Clone all sub-tasks of the source and link them to the cloned task
         foreach (self::getAllForProjectTask($source->getID()) as $task) {
-            self::getById($task['id'])->clone([
-                'projecttasks_id' => $this->getID(),
-            ]);
+            if ($task = self::getById($task['id'])) {
+                if (method_exists($task, 'clone')) {
+                    $task->clone([
+                        'projecttasks_id' => $this->getID(),
+                    ]);
+                }
+            }
         }
     }
 

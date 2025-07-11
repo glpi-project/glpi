@@ -117,7 +117,7 @@ class GLPIKey
     /**
      * Check if GLPI security key used for decryptable passwords exists
      *
-     * @return string
+     * @return bool
      */
     public function keyExists()
     {

@@ -2380,7 +2380,7 @@ class Session
         }
 
         $profile = Profile::getById($profile_id);
-        if (!$profile) {
+        if (!$profile instanceof Profile) {
             throw new RuntimeException("Failed to load profile: $profile_id");
         }
 

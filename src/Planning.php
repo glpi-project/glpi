@@ -2094,7 +2094,7 @@ TWIG, $twig_params);
                     if (is_subclass_of($item, "CommonITILTask")) {
                         $parentitemtype = $item::getItilObjectItemType();
                         if (!$update["_job"] = getItemForItemtype($parentitemtype)) {
-                            return;
+                            return false;
                         }
 
                         $fkfield = $update["_job"]::getForeignKeyField();

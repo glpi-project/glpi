@@ -439,7 +439,7 @@ HTML;
             $response = Server::getAuthorizationServer()->completeAuthorizationRequest($auth_request, new Response());
             return $response;
         } catch (OAuthServerException $exception) {
-            return $exception->generateHttpResponse(new Response());
+            return $exception->generateHttpResponse(new Response()); // @phpstan-ignore return.type (Response vs ResponseInterface)
         } catch (\Throwable $exception) {
             ErrorHandler::logCaughtException($exception);
             return new JSONResponse(null, 500);
@@ -458,7 +458,7 @@ HTML;
             $response = Server::getAuthorizationServer()->respondToAccessTokenRequest($request, new JSONResponse());
             return $response;
         } catch (OAuthServerException $exception) {
-            return $exception->generateHttpResponse(new JSONResponse());
+            return $exception->generateHttpResponse(new JSONResponse()); // @phpstan-ignore return.type (Response vs ResponseInterface)
         } catch (\Throwable $exception) {
             ErrorHandler::logCaughtException($exception);
             return new JSONResponse(null, 500);

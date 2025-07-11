@@ -268,7 +268,7 @@ class InstallCommand extends AbstractPluginCommand
      *
      * @param string $directory
      *
-     * @return array
+     * @return bool
      */
     private function isAlreadyInstalled($directory)
     {

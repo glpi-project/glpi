@@ -3277,7 +3277,7 @@ class CommonDBTM extends CommonGLPI
      *
      * Can be overloaded (ex : infocom)
      *
-     * @return boolean
+     * @return boolean|0
      **/
     public function isRecursive()
     {
@@ -3308,7 +3308,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Is the object deleted
      *
-     * @return boolean
+     * @return boolean|0
      **/
     public function isDeleted()
     {
@@ -3343,7 +3343,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @since 9.2
      *
-     * @return boolean
+     * @return boolean|1
      **/
     public function isActive()
     {
@@ -3374,7 +3374,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Is the object a template
      *
-     * @return boolean
+     * @return boolean|0
      **/
     public function isTemplate()
     {
@@ -6023,7 +6023,7 @@ TWIG, $twig_params);
      *
      * @param int|null $id ID of the item to get
      *
-     * @return static|false
+     * @return self|false
      */
     public static function getById(?int $id)
     {
@@ -6045,7 +6045,7 @@ TWIG, $twig_params);
      *
      * @param int[] $ids
      *
-     * @return static[]
+     * @return self[]
      */
     public static function getByIds(array $ids): array
     {
