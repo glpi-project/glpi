@@ -2544,7 +2544,7 @@ final class FormMigrationTest extends DbTestCase
         );
         $errors = array_column($errors, "message");
         $this->assertContains(
-            "Unable to import question with unknown type 'my_unknown_type'",
+            "Unable to import question 'question from unknown plugin' with unknown type 'my_unknown_type'",
             $errors,
         );
     }
