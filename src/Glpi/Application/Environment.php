@@ -59,6 +59,13 @@ enum Environment: string
     case TESTING = 'testing';
 
     /**
+     * E2E Testing environment.
+     * Separate from testing as it commit data to the database which may interfere
+     * with regular tests that expect a static database.
+     */
+    case E2E_TESTING = 'e2e_testing';
+
+    /**
      * Development environment.
      * Suitable for developer machines and development servers.
      */
@@ -151,6 +158,16 @@ enum Environment: string
                     $root_dir . '/tests/fixtures/plugins',
                 ],
             ],
+            self::E2E_TESTING => [
+                'GLPI_CONFIG_DIR'          => $root_dir . '/tests/playwright/glpi_config',
+                'GLPI_VAR_DIR'             => $root_dir . '/tests/playwright/glpi_files',
+                'GLPI_LOG_LVL'             => LogLevel::DEBUG,
+                'GLPI_STRICT_ENV'          => true,
+                'GLPI_PLUGINS_DIRECTORIES' => [
+                    $root_dir . '/tests/fixtures/plugins',
+                ],
+
+            ],
             self::DEVELOPMENT => [
                 'GLPI_LOG_LVL'                       => LogLevel::DEBUG,
                 'GLPI_STRICT_ENV'                    => true,
@@ -169,7 +186,11 @@ enum Environment: string
         // Only production/staging environment are considered as environments
         // where resources are not supposed to change.
         // In others environments, we must match for changes.
-        if ($this === self::TESTING || $this === self::DEVELOPMENT) {
+        if (
+            $this === self::TESTING
+            || $this === self::DEVELOPMENT
+            || $this === self::E2E_TESTING
+        ) {
             return true;
         }
 
@@ -212,7 +233,7 @@ enum Environment: string
         };
     }
 
-    public function shouldAddExtraE2EDataDuringInstallation(): bool
+    public function shouldAddExtraCypressDataDuringInstallation(): bool
     {
         // Note: this will be removed when we switch to playwright.
         return match ($this) {
