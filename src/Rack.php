@@ -386,12 +386,10 @@ class Rack extends CommonDBTM
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        switch ($item->getType()) {
-            case DCRoom::getType():
-                self::showForRoom($item);
-                break;
+        if ($item instanceof DCRoom) {
+            return self::showForRoom($item);
         }
-        return true;
+        return false;
     }
 
     /**
@@ -399,9 +397,9 @@ class Rack extends CommonDBTM
      *
      * @param DCRoom $room DCRoom object
      *
-     * @return void
+     * @return bool
      **/
-    public static function showForRoom(DCRoom $room)
+    public static function showForRoom(DCRoom $room): bool
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -519,6 +517,8 @@ class Rack extends CommonDBTM
             'outbound' => $outbound,
             'blueprint_url' => $blueprint_url,
         ]);
+
+        return true;
     }
 
     public function prepareInputForAdd($input)

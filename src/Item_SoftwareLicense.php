@@ -516,9 +516,9 @@ class Item_SoftwareLicense extends CommonDBRelation
      *
      * @param SoftwareLicense $license SoftwareLicense instance
      *
-     * @return void
+     * @return bool
      **/
-    public static function showForLicenseByEntity(SoftwareLicense $license)
+    public static function showForLicenseByEntity(SoftwareLicense $license): bool
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -589,6 +589,8 @@ class Item_SoftwareLicense extends CommonDBRelation
             echo "<tr class='tab_bg_1'><td colspan='2 b'>" . __s('No results found') . "</td></tr>\n";
         }
         echo "</table></div>";
+
+        return true;
     }
 
 
@@ -597,9 +599,9 @@ class Item_SoftwareLicense extends CommonDBRelation
      *
      * @param SoftwareLicense $license SoftwareLicense instance
      *
-     * @return void
+     * @return bool
      **/
-    public static function showForLicense(SoftwareLicense $license)
+    public static function showForLicense(SoftwareLicense $license): bool
     {
         /**
          * @var array $CFG_GLPI
@@ -719,7 +721,7 @@ JAVASCRIPT;
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr><th>" . __s('No results found') . "</th></tr>";
             echo "</table></div>\n";
-            return;
+            return true;
         }
 
         // Display the pager
@@ -1074,6 +1076,8 @@ JAVASCRIPT;
         Html::printAjaxPager(__s('Affected items'), $start, $number);
 
         echo "</div>\n";
+
+        return true;
     }
 
     /**
@@ -1180,17 +1184,15 @@ JAVASCRIPT;
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item::class === SoftwareLicense::class) {
+        if ($item instanceof SoftwareLicense) {
             switch ($tabnum) {
                 case 1:
-                    self::showForLicenseByEntity($item);
-                    break;
+                    return self::showForLicenseByEntity($item);
                 case 2:
-                    self::showForLicense($item);
-                    break;
+                    return self::showForLicense($item);
             }
         }
-        return true;
+        return false;
     }
 
     /**

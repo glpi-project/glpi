@@ -74,8 +74,11 @@ class Item_Rack extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        self::showItems($item);
-        return true;
+        if (!$item instanceof Rack) {
+            return false;
+        }
+
+        return self::showItems($item);
     }
 
     public function getForbiddenStandardMassiveAction()
@@ -365,9 +368,9 @@ class Item_Rack extends CommonDBRelation
     /**
      * Print racks items
      * @param  Rack   $rack the current rack instance
-     * @return void
+     * @return bool
      */
-    public static function showItems(Rack $rack)
+    public static function showItems(Rack $rack): bool
     {
         /**
          * @var array $CFG_GLPI
@@ -436,6 +439,8 @@ class Item_Rack extends CommonDBRelation
       });
 JAVASCRIPT;
         echo Html::scriptBlock($js);
+
+        return true;
     }
 
     /**

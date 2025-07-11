@@ -425,12 +425,8 @@ abstract class ITILTemplate extends CommonDropdown
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item instanceof ITILTemplate) {
-            switch ($tabnum) {
-                case 1:
-                    $item->showCentralPreview($item);
-                    return true;
-            }
+        if ($item instanceof ITILTemplate && $tabnum === 1) {
+            return $item->showCentralPreview($item);
         }
         return false;
     }
@@ -557,9 +553,9 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @param $tt ITILTemplate object
      *
-     * @return void
+     * @return bool
      **/
-    public static function showCentralPreview(ITILTemplate $tt)
+    public static function showCentralPreview(ITILTemplate $tt): bool
     {
 
         if (!$tt->getID()) {
@@ -567,8 +563,10 @@ abstract class ITILTemplate extends CommonDropdown
         }
         if ($tt->getFromDBWithData($tt->getID())) {
             $itil_object = getItemForItemtype(static::getITILObjectClass());
-            $itil_object->showForm(0, ['template_preview' => $tt->getID()]);
+            return $itil_object->showForm(0, ['template_preview' => $tt->getID()]);
         }
+
+        return false;
     }
 
 

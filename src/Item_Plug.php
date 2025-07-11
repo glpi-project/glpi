@@ -54,6 +54,7 @@ class Item_Plug extends CommonDBRelation
     {
         $nb = 0;
         if ($_SESSION['glpishow_count_on_tabs']) {
+            /** @var CommonDBTM $item */
             $nb = $item::class === Plug::class
                 ? countElementsInTable(self::getTable(), ['plugs_id' => $item->getID()])
                 : countElementsInTable(self::getTable(), ['itemtype' => $item::class, 'items_id' => $item->getID()]);
@@ -63,8 +64,10 @@ class Item_Plug extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        self::showItems($item);
-        return true;
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
+        return self::showItems($item);
     }
 
     /**
@@ -72,9 +75,9 @@ class Item_Plug extends CommonDBRelation
      *
      * @param CommonDBTM $item
      *
-     * @return void
+     * @return bool
      */
-    public static function showItems(CommonDBTM $item)
+    public static function showItems(CommonDBTM $item): bool
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -159,6 +162,8 @@ class Item_Plug extends CommonDBRelation
                 'container'     => 'mass' . static::class . $rand,
             ],
         ]);
+
+        return true;
     }
 
     public function getForbiddenStandardMassiveAction()

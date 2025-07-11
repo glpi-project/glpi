@@ -64,8 +64,10 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        self::showItems($item);
-        return true;
+        if (!$item instanceof Item_DeviceCamera) {
+            return false;
+        }
+        return self::showItems($item);
     }
 
     public function getForbiddenStandardMassiveAction()
@@ -81,9 +83,9 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
     /**
      * Print items
      * @param  DeviceCamera $camera the current camera instance
-     * @return void
+     * @return bool
      */
-    public static function showItems(DeviceCamera $camera)
+    public static function showItems(DeviceCamera $camera): bool
     {
         /**
          * @var \DBmysql $DB
@@ -151,5 +153,7 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
                 'container'     => 'mass' . static::class . $rand,
             ],
         ]);
+
+        return true;
     }
 }

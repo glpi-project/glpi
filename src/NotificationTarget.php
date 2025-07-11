@@ -427,7 +427,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * @param $notification Notification object
      **/
-    public function showForNotification(Notification $notification)
+    public function showForNotification(Notification $notification): bool
     {
         if (!Notification::canView()) {
             return false;
@@ -482,6 +482,8 @@ class NotificationTarget extends CommonDBChild
                 ],
             ]);
         }
+
+        return true;
     }
 
 
@@ -1695,9 +1697,9 @@ class NotificationTarget extends CommonDBChild
      *
      * @param $group Group object
      *
-     * @return void
+     * @return bool
      **/
-    public static function showForGroup(Group $group)
+    public static function showForGroup(Group $group): bool
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -1750,25 +1752,27 @@ class NotificationTarget extends CommonDBChild
         TemplateRenderer::getInstance()->display('pages/setup/notification/group_notifications.html.twig', [
             'notifications' => $notifications,
         ]);
+
+        return true;
     }
 
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        if (get_class($item) == Group::class) {
-            self::showForGroup($item);
-        } elseif (get_class($item) == Notification::class) {
+        if ($item instanceof Group) {
+            return self::showForGroup($item);
+        } elseif ($item instanceof Notification) {
             $target = self::getInstanceByType(
                 $item->getField('itemtype'),
                 $item->getField('event'),
                 ['entities_id' => $item->getField('entities_id')]
             );
             if ($target) {
-                $target->showForNotification($item);
+                return $target->showForNotification($item);
             }
         }
-        return true;
+        return false;
     }
 
     /**

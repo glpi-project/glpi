@@ -103,8 +103,10 @@ class Item_Disk extends CommonDBChild
      */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        self::showForItem($item, $withtemplate);
-        return true;
+        if ($item instanceof CommonDBTM) {
+            return self::showForItem($item, $withtemplate);
+        }
+        return false;
     }
 
     public function defineTabs($options = [])
@@ -215,9 +217,9 @@ class Item_Disk extends CommonDBChild
      * @param CommonDBTM $item          Item object
      * @param integer    $withtemplate  Template or basic item (default 0)
      *
-     * @return void
+     * @return bool
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $item, $withtemplate = 0): bool
     {
         $ID = $item->getID();
         $rand = mt_rand();
@@ -323,6 +325,8 @@ TWIG, $twig_params);
                 'container'     => 'mass' . static::class . $rand,
             ],
         ]);
+
+        return true;
     }
 
     public function rawSearchOptions()

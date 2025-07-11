@@ -100,8 +100,10 @@ abstract class ITILTemplateField extends CommonDBChild
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        static::showForITILTemplate($item, $withtemplate);
-        return true;
+        if ($item instanceof ITILTemplate) {
+            return static::showForITILTemplate($item, $withtemplate);
+        }
+        return false;
     }
 
 
@@ -123,9 +125,9 @@ abstract class ITILTemplateField extends CommonDBChild
      * @param ITILTemplate $tt           ITIL Template
      * @param integer      $withtemplate Template or basic item (default 0)
      *
-     * @return void
+     * @return bool
      **/
-    public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0)
+    public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0): bool
     {
         /**
          * @var \DBmysql $DB
@@ -291,6 +293,8 @@ TWIG, $twig_params);
                 'container'     => 'mass' . static::class . $rand,
             ],
         ]);
+
+        return true;
     }
 
 

@@ -308,7 +308,7 @@ class Dropdown
                 false
             );
             if ($result['count'] === 0) {
-                return;
+                return false;
             }
         }
 
