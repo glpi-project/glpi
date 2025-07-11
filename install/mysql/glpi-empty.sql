@@ -2880,10 +2880,6 @@ CREATE TABLE `glpi_entities_itilfollowuptemplates` (
   KEY `is_recursive` (`is_recursive`)
 ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
-INSERT INTO glpi_entities_itilfollowuptemplates (itilfollowuptemplates_id, entities_id, is_recursive)
-SELECT id, entities_id, is_recursive
-FROM glpi_itilfollowuptemplates;
-
 
 ### Dump table glpi_entities_knowbaseitems
 
@@ -2944,10 +2940,6 @@ CREATE TABLE `glpi_entities_solutiontemplates` (
   KEY `is_recursive` (`is_recursive`)
 ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
-INSERT INTO glpi_entities_solutiontemplates (solutiontemplates_id, entities_id, is_recursive)
-SELECT id, entities_id, is_recursive
-FROM glpi_solutiontemplates;
-
 
 ### Dump table glpi_entities_tasktemplates
 
@@ -2962,10 +2954,6 @@ CREATE TABLE `glpi_entities_tasktemplates` (
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
 ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
-
-INSERT INTO glpi_entities_tasktemplates (tasktemplates_id, entities_id, is_recursive)
-SELECT id, entities_id, is_recursive
-FROM glpi_tasktemplates;
 
 
 ### Dump table glpi_events
