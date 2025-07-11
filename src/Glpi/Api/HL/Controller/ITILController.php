@@ -62,6 +62,8 @@ use TicketTemplate;
 use TicketValidation;
 use User;
 
+use function Safe\json_decode;
+
 #[Route(path: '/Assistance', requirements: [
     'itemtype' => 'Ticket|Change|Problem',
     'id' => '\d+',

@@ -41,8 +41,15 @@ namespace Glpi\Api;
 
 use AllAssets;
 use GLPIUploadHandler;
+use Safe\Exceptions\JsonException;
 use stdClass;
 use Toolbox;
+
+use function Safe\file_get_contents;
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\preg_match;
+use function Safe\strtotime;
 
 class APIRest extends API
 {
@@ -133,7 +140,7 @@ class APIRest extends API
         // Add headers for CORS
         $this->cors();
 
-        // retrieve paramaters (in body, query_string, headers)
+        // retrieve parameters (in body, query_string, headers)
         $this->parseIncomingParams($is_inline_doc);
 
         // show debug if required
@@ -510,12 +517,15 @@ class APIRest extends API
             }
         }
 
-        if (strpos($content_type, "application/json") !== false) {
-            if ($body_params = json_decode($body)) {
-                foreach ($body_params as $param_name => $param_value) {
-                    $parameters[$param_name] = $param_value;
+        if (str_contains($content_type, "application/json")) {
+            try {
+                if ($body != '') {
+                    $body_params = json_decode($body);
+                    foreach ($body_params as $param_name => $param_value) {
+                        $parameters[$param_name] = $param_value;
+                    }
                 }
-            } elseif (strlen($body) > 0) {
+            } catch (JsonException $e) {
                 $this->returnError(
                     "JSON payload seems not valid",
                     400,
@@ -524,7 +534,7 @@ class APIRest extends API
                 );
             }
             $this->format = "json";
-        } elseif (strpos($content_type, "multipart/form-data") !== false) {
+        } elseif (str_contains($content_type, "multipart/form-data")) {
             if (count($_FILES) <= 0) {
                 // likely uploaded files is too big so $_REQUEST will be empty also.
                 // see http://us.php.net/manual/en/ini.core.php#ini.post-max-size
@@ -537,7 +547,18 @@ class APIRest extends API
             }
 
             // with this content_type, php://input is empty... (see http://php.net/manual/en/wrappers.php.php)
-            if (!$uploadManifest = json_decode($_REQUEST['uploadManifest'])) {
+            try {
+                $uploadManifest = json_decode($_REQUEST['uploadManifest']);
+                foreach ($uploadManifest as $field => $value) {
+                    $parameters[$field] = $value;
+                }
+                $this->format = "json";
+
+                // move files into _tmp folder
+                $parameters['upload_result'] = [];
+                $parameters['input']->_filename = [];
+                $parameters['input']->_prefix_filename = [];
+            } catch (JsonException $e) {
                 $this->returnError(
                     "JSON payload seems not valid",
                     400,
@@ -545,16 +566,7 @@ class APIRest extends API
                     false
                 );
             }
-            foreach ($uploadManifest as $field => $value) {
-                $parameters[$field] = $value;
-            }
-            $this->format = "json";
-
-            // move files into _tmp folder
-            $parameters['upload_result'] = [];
-            $parameters['input']->_filename = [];
-            $parameters['input']->_prefix_filename = [];
-        } elseif (strpos($content_type, "application/x-www-form-urlencoded") !== false) {
+        } elseif (str_contains($content_type, "application/x-www-form-urlencoded")) {
             parse_str($body, $postvars);
             /** @var array $postvars */
             foreach ($postvars as $field => $value) {

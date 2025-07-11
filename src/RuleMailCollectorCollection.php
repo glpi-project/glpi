@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\preg_match;
+
 /// Collector Rules collection class
 class RuleMailCollectorCollection extends RuleCollection
 {

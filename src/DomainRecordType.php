@@ -35,6 +35,9 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+
 class DomainRecordType extends CommonDropdown
 {
     public static $rightname = 'dropdown';

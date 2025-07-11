@@ -47,6 +47,9 @@ use Glpi\Form\Form;
 use Override;
 use ReflectionClass;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+
 final class FormAccessControl extends CommonDBChild
 {
     public static $itemtype = Form::class;

@@ -38,6 +38,8 @@ namespace Glpi\CalDAV\Node;
 use Glpi\CalDAV\Backend\Calendar;
 use Glpi\CalDAV\Backend\Principal;
 
+use function Safe\preg_replace;
+
 /**
  * Calendar root node for CalDAV server.
  *

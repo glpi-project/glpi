@@ -35,6 +35,10 @@
 
 use Glpi\Features\Kanban;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\strtotime;
+
 class Item_Kanban extends CommonDBRelation
 {
     public static $itemtype_1 = 'itemtype';

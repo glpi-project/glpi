@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\preg_match;
+use function Safe\unlink;
+
 /** GLPIUploadHandler class
  *
  * @since 9.2

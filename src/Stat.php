@@ -44,6 +44,9 @@ use Glpi\Stat\StatData;
 use Glpi\Application\View\TemplateRenderer;
 use Symfony\Component\HttpFoundation\Request;
 
+use function Safe\strtotime;
+use function Safe\mktime;
+
 /**
  *  Stat class
  **/

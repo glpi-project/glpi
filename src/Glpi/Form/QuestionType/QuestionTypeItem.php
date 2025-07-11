@@ -58,6 +58,9 @@ use Session;
 use Software;
 use TicketRecurrent;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+
 class QuestionTypeItem extends AbstractQuestionType implements FormQuestionDataConverterInterface, UsedAsCriteriaInterface
 {
     protected string $itemtype_aria_label;

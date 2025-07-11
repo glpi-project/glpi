@@ -42,6 +42,10 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Session;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\preg_match;
+
 final class CustomFieldDefinition extends CommonDBChild
 {
     public static $itemtype = AssetDefinition::class;

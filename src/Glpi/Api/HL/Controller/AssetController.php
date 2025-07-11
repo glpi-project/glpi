@@ -64,6 +64,9 @@ use Software;
 use State;
 use User;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+
 #[Route(path: '/Assets', priority: 1, tags: ['Assets'])]
 #[Doc\Route(
     parameters: [

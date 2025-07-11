@@ -41,6 +41,9 @@ use Glpi\DBAL\QueryUnion;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\SearchOption;
 
+use function Safe\ob_start;
+use function Safe\ob_get_clean;
+
 /**
  * This class manages locks
  * Lock management is available for objects and link between objects. It relies on the use of

@@ -51,8 +51,60 @@ use GuzzleHttp\Client;
 use Laminas\Mail\Storage\AbstractStorage;
 use Mexitek\PHPColors\Color;
 use Psr\Log\LogLevel;
+use Safe\Exceptions\ErrorfuncException;
+use Safe\Exceptions\FilesystemException;
+use Safe\Exceptions\ImageException;
+use Safe\Exceptions\PcreException;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpFoundation\Response;
+
+use function Safe\base64_decode;
+use function Safe\class_uses;
+use function Safe\chmod;
+use function Safe\copy;
+use function Safe\curl_exec;
+use function Safe\curl_getinfo;
+use function Safe\curl_init;
+use function Safe\error_log;
+use function Safe\fclose;
+use function Safe\file_get_contents;
+use function Safe\filemtime;
+use function Safe\finfo_close;
+use function Safe\finfo_open;
+use function Safe\fopen;
+use function Safe\fwrite;
+use function Safe\getimagesize;
+use function Safe\gzcompress;
+use function Safe\gzuncompress;
+use function Safe\imagealphablending;
+use function Safe\imagecopyresampled;
+use function Safe\imagecreatefrombmp;
+use function Safe\imagecreatefrompng;
+use function Safe\imagecreatefromgif;
+use function Safe\imagecreatefromjpeg;
+use function Safe\imagecreatefromwebp;
+use function Safe\imagecreatetruecolor;
+use function Safe\imagejpeg;
+use function Safe\imagepng;
+use function Safe\imagesavealpha;
+use function Safe\imagewebp;
+use function Safe\ini_get;
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\mb_convert_encoding;
+use function Safe\md5_file;
+use function Safe\mkdir;
+use function Safe\opendir;
+use function Safe\parse_url;
+use function Safe\preg_match;
+use function Safe\preg_match_all;
+use function Safe\preg_replace;
+use function Safe\realpath;
+use function Safe\rename;
+use function Safe\rmdir;
+use function Safe\strtotime;
+use function Safe\unlink;
+use function Safe\unpack;
 
 /**
  * Toolbox Class
@@ -445,7 +497,11 @@ class Toolbox
             (isset($CFG_GLPI["use_log_in_files"]) && $CFG_GLPI["use_log_in_files"])
             || $force
         ) {
-            $ok = error_log(date("Y-m-d H:i:s") . "$user\n" . $text, 3, GLPI_LOG_DIR . "/" . $name . ".log");
+            try {
+                error_log(date("Y-m-d H:i:s") . "$user\n" . $text, 3, GLPI_LOG_DIR . "/" . $name . ".log");
+            } catch (ErrorfuncException $e) {
+                $ok = false;
+            }
         }
 
         if ($output === false) {
@@ -586,9 +642,11 @@ class Toolbox
                 headers: $headers
             );
         }
-        $content = file_get_contents($path);
-        if ($content === false) {
-            throw new \Symfony\Component\HttpKernel\Exception\HttpException(500);
+
+        try {
+            $content = file_get_contents($path);
+        } catch (FilesystemException $e) {
+            throw new \Symfony\Component\HttpKernel\Exception\HttpException(500, $e->getMessage(), $e);
         }
 
         return new Response(
@@ -954,23 +1012,26 @@ class Toolbox
         );
 
         //output img
-        $result = null;
-        switch ($img_type) {
-            case IMAGETYPE_GIF:
-            case IMAGETYPE_PNG:
-                $result = imagepng($source_dest, $dest_path);
-                break;
+        try {
+            switch ($img_type) {
+                case IMAGETYPE_GIF:
+                case IMAGETYPE_PNG:
+                    imagepng($source_dest, $dest_path);
+                    break;
 
-            case IMAGETYPE_WEBP:
-                $result = imagewebp($source_dest, $dest_path);
-                break;
+                case IMAGETYPE_WEBP:
+                    imagewebp($source_dest, $dest_path);
+                    break;
 
-            case IMAGETYPE_JPEG:
-            default:
-                $result = imagejpeg($source_dest, $dest_path, 90);
-                break;
+                case IMAGETYPE_JPEG:
+                default:
+                    imagejpeg($source_dest, $dest_path, 90);
+                    break;
+            }
+        } catch (ImageException $e) {
+            return false;
         }
-        return $result;
+        return true;
     }
 
 
@@ -1041,11 +1102,15 @@ class Toolbox
         // Check directory creation which can be denied by SElinux
         $sdir = sprintf("%s/test_glpi_%08x", $dir, $rand);
 
-        if (!mkdir($sdir)) {
+        try {
+            mkdir($sdir);
+        } catch (FileSystemException $e) {
             return 4;
         }
 
-        if (!rmdir($sdir)) {
+        try {
+            rmdir($sdir);
+        } catch (FileSystemException $e) {
             return 3;
         }
 
@@ -1059,13 +1124,13 @@ class Toolbox
 
         fwrite($fp, "This file was created for testing reasons. ");
         fclose($fp);
-        $delete = unlink($path);
 
-        if (!$delete) {
+        try {
+            unlink($path);
+            return 0;
+        } catch (FileSystemException $e) {
             return 1;
         }
-
-        return 0;
     }
 
 
@@ -1225,14 +1290,16 @@ class Toolbox
     public static function isUrlSafe(string $url, array $allowlist = GLPI_SERVERSIDE_URL_ALLOWLIST): bool
     {
         foreach ($allowlist as $allow_regex) {
-            $result = preg_match($allow_regex, $url);
-            if ($result === false) {
+            try {
+                $result = preg_match($allow_regex, $url);
+                if ($result === 1) {
+                    return true;
+                }
+            } catch (PcreException $e) {
                 trigger_error(
                     sprintf('Unable to validate URL safeness. Following regex is probably invalid: "%s".', $allow_regex),
                     E_USER_WARNING
                 );
-            } elseif ($result === 1) {
-                return true;
             }
         }
 
@@ -1490,9 +1557,8 @@ class Toolbox
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $parsed_url = parse_url($where);
-
-        if ($parsed_url !== false) {
+        try {
+            $parsed_url = parse_url($where);
             // Target URL contains a hostname, validates that it matches the base GLPI URL
             if (array_key_exists('host', $parsed_url)) {
                 if (!str_starts_with($where, $CFG_GLPI['url_base'] . '/')) {
@@ -1506,6 +1572,8 @@ class Toolbox
             if (array_key_exists('path', $parsed_url) && $parsed_url['path'][0] === '/') {
                 return URL::isGLPIRelativeUrl($where) ? $CFG_GLPI["root_doc"] . $where : null;
             }
+        } catch (\Safe\Exceptions\UrlException $e) {
+            //empty catch
         }
 
         // explode with limit 3 to preserve the last part of the url
@@ -2620,7 +2688,12 @@ class Toolbox
         }
 
         // See if the string contents are valid JSON.
-        return null !== json_decode($json);
+        try {
+            json_decode($json);
+            return true;
+        } catch (\Safe\Exceptions\JsonException $e) {
+            return false;
+        }
     }
 
     /**
@@ -2812,16 +2885,26 @@ class Toolbox
             $i++;
         } while (file_exists($dest));
 
-        if (!is_dir(GLPI_PICTURE_DIR . '/' . $subdirectory) && !mkdir(GLPI_PICTURE_DIR . '/' . $subdirectory)) {
-            return false;
+        if (!is_dir(GLPI_PICTURE_DIR . '/' . $subdirectory)) {
+            try {
+                mkdir(GLPI_PICTURE_DIR . '/' . $subdirectory);
+            } catch (FilesystemException $e) {
+                return false;
+            }
         }
 
         if (!$keep_src) {
-            if (!rename($src, $dest)) {
+            try {
+                rename($src, $dest);
+            } catch (FilesystemException $e) {
                 return false;
             }
-        } elseif (!copy($src, $dest)) {
-            return false;
+        } else {
+            try {
+                copy($src, $dest);
+            } catch (FilesystemException $e) {
+                return false;
+            }
         }
 
         return substr($dest, strlen(GLPI_PICTURE_DIR . '/')); // Return dest relative to GLPI_PICTURE_DIR
@@ -2848,11 +2931,16 @@ class Toolbox
 
         $fullpath = realpath($fullpath);
         if (!str_starts_with($fullpath, realpath(GLPI_PICTURE_DIR))) {
-            // Prevent deletion of a file ouside pictures directory
+            // Prevent deletion of a file outside pictures directory
             return false;
         }
 
-        return @unlink($fullpath);
+        try {
+            @unlink($fullpath);
+            return true;
+        } catch (FilesystemException $e) {
+            return false;
+        }
     }
 
 

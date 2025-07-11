@@ -41,6 +41,9 @@ use Glpi\Api\HL\Doc\SchemaReference;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\OAuth\Server;
 
+use function Safe\preg_match;
+use function Safe\preg_replace;
+
 /**
  * @phpstan-type OpenAPIInfo array{title: string, version: string, license: array{name: string, url: string}}
  * @phpstan-type SecuritySchemaComponent array{type: string, schema?: string, name?: string, in?: string}

@@ -35,6 +35,8 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
+use function Safe\preg_match;
+
 class Contact_Supplier extends CommonDBRelation
 {
     // From CommonDBRelation

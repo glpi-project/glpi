@@ -51,6 +51,8 @@ use Symfony\Component\Routing\Attribute\Route;
 use Toolbox;
 use Update;
 
+use function Safe\unlink;
+
 class InstallController extends AbstractController
 {
     use AsyncOperationProgressControllerTrait;

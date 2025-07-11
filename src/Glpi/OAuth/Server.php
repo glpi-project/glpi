@@ -50,6 +50,7 @@ use Throwable;
 
 use function Safe\file_put_contents;
 use function Safe\openssl_pkey_export_to_file;
+use function Safe\openssl_pkey_get_details;
 use function Safe\openssl_pkey_new;
 use function Safe\chmod;
 use function Safe\unlink;
@@ -268,10 +269,11 @@ final class Server
         }
 
         // Get public key
-        $pubkey = openssl_pkey_get_details($key);
-        if ($pubkey === false) {
+        try {
+            $pubkey = openssl_pkey_get_details($key);
+        } catch (OpensslException $e) {
             $error = openssl_error_string();
-            throw new RuntimeException("Unable to get public key details: $error");
+            throw new RuntimeException("Unable to get public key details: $error", $e->getCode(), $e);
         }
 
         // Export public key to file

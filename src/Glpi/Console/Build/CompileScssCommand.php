@@ -38,13 +38,19 @@ namespace Glpi\Console\Build;
 use Html;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Safe\Exceptions\FilesystemException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Toolbox;
 
+use function Safe\mkdir;
 use function Safe\ini_set;
+use function Safe\file_put_contents;
+use function Safe\preg_match;
+use function Safe\preg_replace;
+use function Safe\realpath;
 
 class CompileScssCommand extends Command
 {
@@ -82,13 +88,19 @@ class CompileScssCommand extends Command
 
         $compile_directory = Html::getScssCompileDir();
 
-        if (!@is_dir($compile_directory) && !@mkdir($compile_directory)) {
-            throw new \RuntimeException(
-                sprintf(
-                    'Destination directory "%s" cannot be accessed.',
-                    $compile_directory
-                )
-            );
+        if (!@is_dir($compile_directory)) {
+            try {
+                @mkdir($compile_directory);
+            } catch (FilesystemException $e) {
+                throw new \RuntimeException(
+                    sprintf(
+                        'Destination directory "%s" cannot be accessed.',
+                        $compile_directory
+                    ),
+                    $e->getCode(),
+                    $e
+                );
+            }
         }
 
         // Ensure to have enough memory to not reach memory limit.
@@ -147,19 +159,22 @@ class CompileScssCommand extends Command
                     '<info>' . $message . '</info>',
                     OutputInterface::VERBOSITY_NORMAL
                 );
-            } elseif (strlen($css) === @file_put_contents($compiled_path, $css)) {
-                $message = sprintf('"%s" compiled successfully in "%s".', $file, $compiled_path);
-                $output->writeln(
-                    '<info>' . $message . '</info>',
-                    OutputInterface::VERBOSITY_NORMAL
-                );
             } else {
-                $message = sprintf('Unable to write compiled CSS in "%s".', $compiled_path);
-                $output->writeln(
-                    '<error>' . $message . '</error>',
-                    OutputInterface::VERBOSITY_QUIET
-                );
-                return self::ERROR_UNABLE_TO_WRITE_COMPILED_FILE;
+                try {
+                    @file_put_contents($compiled_path, $css);
+                    $message = sprintf('"%s" compiled successfully in "%s".', $file, $compiled_path);
+                    $output->writeln(
+                        '<info>' . $message . '</info>',
+                        OutputInterface::VERBOSITY_NORMAL
+                    );
+                } catch (FilesystemException $e) {
+                    $message = sprintf('Unable to write compiled CSS in "%s".', $compiled_path);
+                    $output->writeln(
+                        '<error>' . $message . '</error>',
+                        OutputInterface::VERBOSITY_QUIET
+                    );
+                    return self::ERROR_UNABLE_TO_WRITE_COMPILED_FILE;
+                }
             }
         }
 

@@ -43,7 +43,11 @@ use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
 use InvalidArgumentException;
 use Override;
+use Safe\Exceptions\JsonException;
 use Session;
+
+use function Safe\json_decode;
+use function Safe\preg_match;
 
 final class QuestionTypeUserDevice extends AbstractQuestionType implements UsedAsCriteriaInterface
 {
@@ -71,13 +75,16 @@ final class QuestionTypeUserDevice extends AbstractQuestionType implements UsedA
             return false;
         }
 
-        /** @var ?QuestionTypeUserDevicesConfig $config */
-        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
-        if ($config === null) {
+        try {
+            /** @var ?QuestionTypeUserDevicesConfig $config */
+            $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
+            if ($config === null) {
+                return false;
+            }
+            return $config->isMultipleDevices();
+        } catch (JsonException $e) {
             return false;
         }
-
-        return $config->isMultipleDevices();
     }
 
     #[Override]

@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\AssignableItem;
 use Glpi\Inventory\Inventory;
 use Glpi\Search\SearchOption;
 
@@ -466,7 +467,9 @@ class Lockedfield extends CommonDBTM
             $fields[] = strtolower($itemtype) . 'types_id'; //type relation field
 
             foreach ($fields as $field) {
-                if ($DB->fieldExists($itemtype::getTable(), $field) && !isset($lockeds[$itemtype][$field])) {
+                $field_lockable = $DB->fieldExists($itemtype::getTable(), $field)
+                    || (in_array($field, ['groups_id', 'groups_id_tech'], true) && Toolbox::hasTrait($itemtype, AssignableItem::class));
+                if ($field_lockable && !isset($lockeds[$itemtype][$field])) {
                     $name = sprintf(
                         '%1$s - %2$s',
                         $itemtype,

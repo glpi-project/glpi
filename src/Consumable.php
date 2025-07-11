@@ -37,6 +37,9 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
 
+use function Safe\ob_start;
+use function Safe\ob_get_clean;
+
 //!  Consumable Class
 /**
  * This class is used to manage the consumables.

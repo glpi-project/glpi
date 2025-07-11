@@ -46,6 +46,10 @@ use Symfony\Component\DomCrawler\Crawler;
 use Search;
 use Toolbox;
 
+use function Safe\ob_start;
+use function Safe\ob_get_clean;
+use function Safe\json_encode;
+
 /**
  * Widget class
  **/

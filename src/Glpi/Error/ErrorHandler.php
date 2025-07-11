@@ -42,6 +42,8 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\ErrorHandler\ErrorHandler as BaseErrorHandler;
 
+use function Safe\ini_set;
+
 /**
  * @phpstan-ignore class.extendsFinalByPhpDoc
  */
@@ -257,7 +259,7 @@ final class ErrorHandler extends BaseErrorHandler
      */
     private function disableNativeErrorDisplaying(): void
     {
-        \ini_set('display_errors', 'Off');
+        ini_set('display_errors', 'Off');
     }
 
     private static function cleanPaths(string $message): string

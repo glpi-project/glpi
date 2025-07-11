@@ -40,6 +40,8 @@ use Glpi\System\Status\StatusChecker;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use function Safe\json_encode;
+
 class ListServicesCommand extends AbstractCommand
 {
     protected function configure()

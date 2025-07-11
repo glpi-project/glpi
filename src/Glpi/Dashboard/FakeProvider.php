@@ -42,6 +42,8 @@ use Session;
 use Ticket;
 use User;
 
+use function Safe\strtotime;
+
 final class FakeProvider extends Provider
 {
     private static function getObscureNumberForString(string $string, int $max = 100): int

@@ -37,6 +37,8 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 
+use function Safe\strtotime;
+
 // Class PlanningRecall
 // @since 0.84
 class PlanningRecall extends CommonDBChild

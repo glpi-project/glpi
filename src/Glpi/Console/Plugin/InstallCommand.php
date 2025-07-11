@@ -45,6 +45,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use User;
 
+use function Safe\opendir;
+use function Safe\ob_start;
+use function Safe\ob_end_clean;
+
 class InstallCommand extends AbstractPluginCommand
 {
     /**

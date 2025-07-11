@@ -35,6 +35,8 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
+use function Safe\preg_replace;
+
 /**
  * Ethernet instantiation of NetworkPort
  * @since 0.84

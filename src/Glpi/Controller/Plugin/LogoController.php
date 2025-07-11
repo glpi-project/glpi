@@ -43,6 +43,8 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+use function Safe\base64_decode;
+
 final class LogoController extends AbstractController
 {
     /**
@@ -67,7 +69,7 @@ final class LogoController extends AbstractController
         }
 
         // Fallback to an empty PNG to prevent 500 error that would pollute logs.
-        $empty_png = \base64_decode(self::EMPTY_PNG);
+        $empty_png = base64_decode(self::EMPTY_PNG);
         return new Response(
             $empty_png,
             status: 404,

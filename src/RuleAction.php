@@ -37,6 +37,9 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 
+use function Safe\preg_match_all;
+use function Safe\preg_replace;
+
 class RuleAction extends CommonDBChild
 {
     // From CommonDBChild

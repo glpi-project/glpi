@@ -50,6 +50,9 @@ use Glpi\DBAL\QueryUnion;
 use Glpi\Toolbox\ArrayPathAccessor;
 use RuntimeException;
 
+use function Safe\preg_match;
+use function Safe\preg_replace;
+
 /**
  * Internal search engine for the High-Level API
  *
@@ -496,7 +499,7 @@ final class Search
                     throw new APIException(
                         message: 'Invalid property for sorting: ' . $property,
                         user_message: 'Invalid property for sorting: ' . $property,
-                        code: 400
+                        code: 400,
                     );
                 }
                 $sql_field = $this->getSQLFieldForProperty($property);

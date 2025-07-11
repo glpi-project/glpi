@@ -174,7 +174,6 @@ class TelemetryTest extends DbTestCase
                 'max_execution_time'    => ini_get('max_execution_time'),
                 'memory_limit'          => ini_get('memory_limit'),
                 'post_max_size'         => ini_get('post_max_size'),
-                'safe_mode'             => ini_get('safe_mode'),
                 'session'               => ini_get('session.save_handler'),
                 'upload_max_filesize'   => ini_get('upload_max_filesize'),
             ],

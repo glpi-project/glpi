@@ -39,6 +39,8 @@ use BackedEnum;
 use DirectoryIterator;
 use ReflectionClass;
 
+use function Safe\json_encode;
+
 /**
  * Helper class to load all available question types and categories.
  */

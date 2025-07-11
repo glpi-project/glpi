@@ -36,6 +36,9 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\ZonableModelPicture;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+
 class Stencil extends CommonDBChild implements ZonableModelPicture
 {
     public static $itemtype = "itemtype";

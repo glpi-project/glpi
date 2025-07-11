@@ -39,6 +39,9 @@ use CommonGLPI;
 use Glpi\Api\HL\Router;
 use Glpi\Toolbox\ArrayPathAccessor;
 
+use function Safe\preg_match;
+use function Safe\strtotime;
+
 /**
  * @implements \ArrayAccess<string, null|string|array<string, Schema>>
  */

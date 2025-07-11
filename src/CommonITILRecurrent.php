@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\preg_match;
+use function Safe\strtotime;
+
 /**
  * Base class for recurrent tickets and changes
  *

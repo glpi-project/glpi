@@ -46,6 +46,13 @@ use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\VersionParser;
 use Glpi\Event;
 
+use function Safe\ob_start;
+use function Safe\ob_end_clean;
+use function Safe\ini_get;
+use function Safe\preg_grep;
+use function Safe\preg_match;
+use function Safe\scandir;
+
 class Plugin extends CommonDBTM
 {
     // Class constant : Plugin state

@@ -46,6 +46,7 @@ use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Property\FlatText;
 use Sabre\VObject\Property\ICalendar\DateTime;
 use Sabre\VObject\Reader;
+use Safe\DateTime as SafeDateTime;
 
 /**
  * Calendar backend for CalDAV server.
@@ -279,11 +280,11 @@ class Calendar extends AbstractBackend
         /* @var \DateTimeInterface $last_modified */
         $last_modified = $vcomponent->{'LAST-MODIFIED'} instanceof DateTime
          ? $vcomponent->{'LAST-MODIFIED'}->getDateTime()
-         : new \DateTime();
+         : new SafeDateTime();
 
         return  [
             'uri'          => $vcomponent->UID . '.ics',
-            'lastmodified' => (new \DateTime('@' . $last_modified->getTimestamp())),
+            'lastmodified' => (new SafeDateTime('@' . $last_modified->getTimestamp())),
             'size'         => strlen($calendardata),
             'calendardata' => $calendardata,
         ];

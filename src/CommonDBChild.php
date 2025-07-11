@@ -36,6 +36,10 @@
 use Glpi\DBAL\QueryExpression;
 use Glpi\Plugin\Hooks;
 
+use function Safe\ob_start;
+use function Safe\ob_get_clean;
+use function Safe\preg_match;
+
 /// Common DataBase Relation Table Manager Class
 abstract class CommonDBChild extends CommonDBConnexity
 {

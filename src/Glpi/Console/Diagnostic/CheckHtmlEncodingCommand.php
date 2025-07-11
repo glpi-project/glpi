@@ -38,6 +38,7 @@ namespace Glpi\Console\Diagnostic;
 use CommonDBTM;
 use Glpi\Console\AbstractCommand;
 use ITILFollowup;
+use Safe\Exceptions\FilesystemException;
 use Search;
 use Session;
 use Ticket;
@@ -45,6 +46,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+
+use function Safe\file_put_contents;
+use function Safe\preg_replace;
 
 /**
  * Prior from GLPI 10.0, some HTML contents were not properly encoded.
@@ -202,15 +206,17 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
 
         // Save the rollback SQL queries dump
         $dump_file_name = $this->input->getOption('dump');
-        if (@file_put_contents($dump_file_name, $dump_content) == strlen($dump_content)) {
+        try {
+            @file_put_contents($dump_file_name, $dump_content) == strlen($dump_content);
             $this->output->writeln(
                 '<comment>' . sprintf(__('File %s contains SQL queries that can be used to rollback command.'), $dump_file_name) . '</comment>',
                 OutputInterface::VERBOSITY_QUIET
             );
-        } else {
+        } catch (FilesystemException $e) {
             throw new \Glpi\Console\Exception\EarlyExitException(
                 '<comment>' . sprintf(__('Failed to write rollback SQL queries in "%s" file.'), $dump_file_name) . '</comment>',
-                self::ERROR_ROLLBACK_FILE_FAILED
+                self::ERROR_ROLLBACK_FILE_FAILED,
+                $e
             );
         }
     }

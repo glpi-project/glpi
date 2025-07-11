@@ -47,6 +47,8 @@ use SplFileInfo;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\CommandLoader\CommandLoaderInterface;
 
+use function Safe\preg_match;
+
 /**
  * Core and plugins command loader.
  *

@@ -42,7 +42,23 @@ use Glpi\DBAL\QuerySubQuery;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Plugin\Hooks;
 use Sabre\VObject;
+use Safe\Exceptions\FilesystemException;
 use Symfony\Component\HttpFoundation\Request;
+use Safe\DateTime;
+
+use function Safe\fclose;
+use function Safe\fopen;
+use function Safe\fwrite;
+use function Safe\json_encode;
+use function Safe\mb_convert_encoding;
+use function Safe\mkdir;
+use function Safe\preg_match;
+use function Safe\preg_match_all;
+use function Safe\preg_replace_callback;
+use function Safe\realpath;
+use function Safe\sha1_file;
+use function Safe\strtotime;
+use function Safe\unlink;
 
 class User extends CommonDBTM
 {
@@ -1058,9 +1074,7 @@ class User extends CommonDBTM
 
                     // output images with possible transparency to png, other to jpg
                     $extension = strtolower(pathinfo($fullpath, PATHINFO_EXTENSION));
-                    $extension = in_array($extension, ['png', 'gif'])
-                    ? 'png'
-                    : 'jpg';
+                    $extension = in_array($extension, ['png', 'gif']) ? 'png' : 'jpg';
 
                     @mkdir(GLPI_PICTURE_DIR . "/$sub");
                     $picture_path = GLPI_PICTURE_DIR . "/{$sub}/{$filename}.{$extension}";
@@ -5656,7 +5670,11 @@ HTML;
     public static function dropPictureFiles($picture)
     {
         if (!empty($picture)) {
-            if (!$filepath = realpath(GLPI_PICTURE_DIR . "/$picture")) {
+            try {
+                if (!$filepath = realpath(GLPI_PICTURE_DIR . "/$picture")) {
+                    return;
+                }
+            } catch (FilesystemException $e) {
                 return;
             }
             if (!str_starts_with($filepath, realpath(GLPI_PICTURE_DIR))) {

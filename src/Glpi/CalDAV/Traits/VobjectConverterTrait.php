@@ -47,6 +47,9 @@ use Sabre\VObject\Property\FlatText;
 use Sabre\VObject\Property\ICalendar\DateTime;
 use Sabre\VObject\Property\ICalendar\Recur;
 use Sabre\VObject\Reader;
+use Safe\DateTime as SafeDateTime;
+
+use function Safe\json_decode;
 
 /**
  * Trait containing methods to convert properties from/to a VObject component.
@@ -106,14 +109,14 @@ trait VobjectConverterTrait
         }
 
         if (array_key_exists('date_creation', $fields)) {
-            $vcomp->CREATED = (new \DateTime($fields['date_creation']))->setTimeZone($utc_tz);
+            $vcomp->CREATED = (new SafeDateTime($fields['date_creation']))->setTimeZone($utc_tz);
         } elseif (array_key_exists('date', $fields)) {
-            $vcomp->CREATED = (new \DateTime($fields['date']))->setTimeZone($utc_tz);
+            $vcomp->CREATED = (new SafeDateTime($fields['date']))->setTimeZone($utc_tz);
         }
 
         if (array_key_exists('date_mod', $fields)) {
-            $vcomp->DTSTAMP           = (new \DateTime($fields['date_mod']))->setTimeZone($utc_tz);
-            $vcomp->{'LAST-MODIFIED'} = (new \DateTime($fields['date_mod']))->setTimeZone($utc_tz);
+            $vcomp->DTSTAMP           = (new SafeDateTime($fields['date_mod']))->setTimeZone($utc_tz);
+            $vcomp->{'LAST-MODIFIED'} = (new SafeDateTime($fields['date_mod']))->setTimeZone($utc_tz);
         }
 
         if (array_key_exists('name', $fields)) {
@@ -134,11 +137,11 @@ trait VobjectConverterTrait
         $vcomp->URL = $CFG_GLPI['url_base'] . $this->getFormURLWithID($fields['id'], false);
 
         if (array_key_exists('begin', $fields) && !empty($fields['begin'])) {
-            $vcomp->DTSTART = (new \DateTime($fields['begin']))->setTimeZone($utc_tz);
+            $vcomp->DTSTART = (new SafeDateTime($fields['begin']))->setTimeZone($utc_tz);
         }
 
         if (array_key_exists('end', $fields) && !empty($fields['end'])) {
-            $end_date = (new \DateTime($fields['end']))->setTimeZone($utc_tz);
+            $end_date = (new SafeDateTime($fields['end']))->setTimeZone($utc_tz);
             if ('VTODO' === $component_type) {
                 $vcomp->DUE = $end_date;
             } else {
@@ -158,7 +161,7 @@ trait VobjectConverterTrait
                 }
                 if (array_key_exists('exceptions', $rrule_specs)) {
                     foreach ($rrule_specs['exceptions'] as $exdate) {
-                        $vcomp->add('EXDATE', (new \DateTime($exdate))->setTimeZone($utc_tz));
+                        $vcomp->add('EXDATE', (new SafeDateTime($exdate))->setTimeZone($utc_tz));
                     }
                     unset($rrule_specs['exceptions']);
                 }
@@ -376,7 +379,7 @@ trait VobjectConverterTrait
 
         if (array_key_exists('until', $rrule)) {
             $user_tz        = new \DateTimeZone(date_default_timezone_get());
-            $until_datetime = new \DateTime($rrule['until']);
+            $until_datetime = new SafeDateTime($rrule['until']);
             $until_datetime->setTimezone($user_tz);
             $rrule['until'] = $until_datetime->format('Y-m-d H:i:s');
         }

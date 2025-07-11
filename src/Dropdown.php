@@ -44,6 +44,10 @@ use Glpi\Form\Category;
 use Glpi\Plugin\Hooks;
 use Glpi\SocketModel;
 
+use function Safe\json_encode;
+use function Safe\opendir;
+use function Safe\preg_match;
+
 class Dropdown
 {
     //Empty value displayed in a dropdown

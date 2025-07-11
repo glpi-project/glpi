@@ -52,6 +52,10 @@ use Glpi\Toolbox\MarkdownRenderer;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Session;
 
+use function Safe\file_get_contents;
+use function Safe\preg_replace;
+use function Safe\strtotime;
+
 final class CoreController extends AbstractController
 {
     public static function getRawKnownSchemas(): array

@@ -43,6 +43,9 @@ use ImpactRelation;
 use Override;
 use Toolbox;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+
 class HasImpactCapacity extends AbstractCapacity
 {
     public function getLabel(): string

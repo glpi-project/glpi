@@ -35,6 +35,8 @@
 
 namespace Glpi\Api\HL\RSQL;
 
+use function Safe\preg_match;
+
 /**
  * Lexer to parse RSQL query (extension of FIQL) string into tokens.
  */

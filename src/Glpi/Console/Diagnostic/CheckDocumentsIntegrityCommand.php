@@ -41,6 +41,8 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use function Safe\sha1_file;
+
 final class CheckDocumentsIntegrityCommand extends AbstractCommand
 {
     private const DOCUMENT_OK = 0;

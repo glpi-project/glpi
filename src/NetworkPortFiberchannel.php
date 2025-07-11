@@ -35,8 +35,10 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
+use function Safe\preg_replace;
+
 /**
- * NetworkPortFiberchannel class : Fiberchannel instantiation of NetworkPort
+ * NetworkPortFiberchannel class: Fiberchannel instantiation of NetworkPort
  *
  * @since 9.1
  */

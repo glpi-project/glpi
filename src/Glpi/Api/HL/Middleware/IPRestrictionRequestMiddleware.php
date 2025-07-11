@@ -38,6 +38,8 @@ namespace Glpi\Api\HL\Middleware;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Router;
 
+use function Safe\inet_pton;
+
 class IPRestrictionRequestMiddleware extends AbstractMiddleware implements RequestMiddlewareInterface
 {
     public function process(MiddlewareInput $input, callable $next): void

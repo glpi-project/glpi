@@ -48,6 +48,9 @@ use LogicException;
 use Override;
 use ReflectionClass;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+
 final class FormDestination extends CommonDBChild implements ConditionableCreationInterface
 {
     use ConditionableCreationTrait;

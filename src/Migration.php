@@ -38,6 +38,8 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\Progress\AbstractProgressIndicator;
 use Glpi\Message\MessageType;
 
+use function Safe\preg_replace;
+
 /**
  * Migration Class
  *

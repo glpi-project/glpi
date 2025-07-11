@@ -36,6 +36,9 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\OAuth\Server;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+
 final class OAuthClient extends CommonDBTM
 {
     public static $rightname = 'oauth_client';

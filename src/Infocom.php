@@ -37,6 +37,11 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Safe\DateTime;
+
+use function Safe\mktime;
+use function Safe\preg_match;
+use function Safe\strtotime;
 
 /**
  * Infocom class
@@ -1095,7 +1100,7 @@ JS;
             if ($fiscaldate == '') {
                 throw new \RuntimeException('Empty date');
             }
-            $fiscaldate = new \DateTime($fiscaldate, new DateTimeZone($TZ));
+            $fiscaldate = new DateTime($fiscaldate, new DateTimeZone($TZ));
         } catch (\Throwable $e) {
             Session::addMessageAfterRedirect(
                 __s('Please fill you fiscal year date in preferences.'),
@@ -1111,9 +1116,9 @@ JS;
                 throw new \RuntimeException('Empty date');
             }
             if ($usedate != '') {
-                $usedate = new \DateTime($usedate, new DateTimeZone($TZ));
+                $usedate = new DateTime($usedate, new DateTimeZone($TZ));
             } else {
-                $usedate = new \DateTime($buydate, new DateTimeZone($TZ));
+                $usedate = new DateTime($buydate, new DateTimeZone($TZ));
             }
         } catch (\Throwable $e) {
             Session::addMessageAfterRedirect(
@@ -1124,7 +1129,7 @@ JS;
             return false;
         }
 
-        $now = new \DateTime('now', new DateTimeZone($TZ));
+        $now = new DateTime('now', new DateTimeZone($TZ));
 
         $elapsed_years = $now->format('Y') - $usedate->format('Y');
 
@@ -1137,7 +1142,7 @@ JS;
         for ($i = 0; $i <= $elapsed_years; ++$i) {
             $begin_value      = $value;
             $current_annuity  = $annuity;
-            $fiscal_end       = new \DateTime(
+            $fiscal_end       = new DateTime(
                 $fiscaldate->format('d-m-') . ($usedate->format('Y') + $i),
                 new DateTimeZone($TZ)
             );

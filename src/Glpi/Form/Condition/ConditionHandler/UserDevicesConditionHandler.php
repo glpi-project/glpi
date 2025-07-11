@@ -38,6 +38,8 @@ use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ValueOperator;
 use Override;
 
+use function Safe\preg_match;
+
 final class UserDevicesConditionHandler implements ConditionHandlerInterface
 {
     public function __construct(

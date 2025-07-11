@@ -48,6 +48,9 @@ use Item_Ticket;
 use ReflectionClass;
 use Session;
 
+use function Safe\preg_match;
+use function Safe\preg_replace;
+
 /**
  * @extends AbstractDefinitionManager<AssetDefinition>
  */

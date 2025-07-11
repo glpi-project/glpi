@@ -56,6 +56,8 @@ use InvalidArgumentException;
 use Override;
 use User;
 
+use function Safe\json_decode;
+
 final class ValidationField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     #[Override]

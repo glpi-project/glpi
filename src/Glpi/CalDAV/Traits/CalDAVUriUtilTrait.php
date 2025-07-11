@@ -40,6 +40,8 @@ use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryUnion;
 
+use function Safe\preg_replace;
+
 /**
  * Trait used for CalDAV URI utilities, like generation and parsing.
  *

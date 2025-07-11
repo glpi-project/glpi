@@ -36,6 +36,8 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QuerySubQuery;
 
+use function Safe\strtotime;
+
 /**
  * LevelAgreement base Class for OLA & SLA
  * @since 9.2

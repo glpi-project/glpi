@@ -44,6 +44,9 @@ use Glpi\Plugin\Hooks;
 use Html;
 use Plugin;
 use RefusedEquipment;
+use Safe\Exceptions\FilesystemException;
+
+use function Safe\unlink;
 
 trait Inventoriable
 {
@@ -57,7 +60,12 @@ trait Inventoriable
             return true;
         }
 
-        return unlink($file_name);
+        try {
+            unlink($file_name);
+            return true;
+        } catch (FilesystemException $e) {
+            return false;
+        }
     }
 
 

@@ -36,6 +36,8 @@
 use Glpi\Search\FilterableInterface;
 use Glpi\Search\FilterableTrait;
 
+use function Safe\json_decode;
+
 class DefaultFilter extends CommonDBTM implements FilterableInterface
 {
     use FilterableTrait;

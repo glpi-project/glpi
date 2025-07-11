@@ -38,6 +38,8 @@ use Glpi\RichText\RichText;
 use Glpi\Toolbox\URL;
 use SimplePie\SimplePie;
 
+use function Safe\parse_url;
+
 /**
  * RSSFeed Class
  *
@@ -539,7 +541,9 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
      */
     private function checkUrlInput(string $url): bool
     {
-        if (parse_url($url) === false) {
+        try {
+            parse_url($url);
+        } catch (\Safe\Exceptions\UrlException $e) {
             Session::addMessageAfterRedirect(__s('Feed URL is invalid.'), false, ERROR);
             return false;
         }

@@ -64,7 +64,9 @@ use Ticket;
 use Ticket_User;
 use Toolbox;
 use User;
-use Search;
+
+use function Safe\mktime;
+use function Safe\strtotime;
 
 /**
  * Provider class

@@ -73,6 +73,10 @@ use RuntimeException;
 use Session;
 use Ticket;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\strtotime;
+
 /**
  * Helpdesk form
  */

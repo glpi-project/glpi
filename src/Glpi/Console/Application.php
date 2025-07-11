@@ -59,6 +59,8 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Toolbox;
 use Update;
 
+use function Safe\preg_replace;
+
 class Application extends BaseApplication
 {
     /**

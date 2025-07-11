@@ -220,10 +220,10 @@ final class ValidatorSubstitute extends CommonDBTM
         }
 
         $start_date = $input['substitution_start_date'] ?? $user->fields['substitution_start_date'];
-        $input['substitution_start_date'] = is_string($start_date) && strtotime($start_date) !== false ? $start_date : null;
+        $input['substitution_start_date'] = is_string($start_date) && strtotime($start_date) !== false ? $start_date : null; //@phpstan-ignore theCodingMachineSafe.function (false is explicitly tested)
 
         $end_date = $input['substitution_end_date'] ?? $user->fields['substitution_end_date'];
-        $input['substitution_end_date'] = is_string($end_date) && strtotime($end_date) !== false ? $end_date : null;
+        $input['substitution_end_date'] = is_string($end_date) && strtotime($end_date) !== false ? $end_date : null; //@phpstan-ignore theCodingMachineSafe.function (false is explicitly tested)
 
         // Check sanity of substitution date range
         if ($input['substitution_start_date'] !== null && $input['substitution_end_date'] !== null) {

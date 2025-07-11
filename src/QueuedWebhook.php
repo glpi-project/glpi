@@ -40,6 +40,9 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\RequestOptions;
 
+use function Safe\json_decode;
+use function Safe\strtotime;
+
 class QueuedWebhook extends CommonDBChild
 {
     public static $rightname = 'config';

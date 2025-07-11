@@ -44,6 +44,9 @@ use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
 use Symfony\Component\Mailer\Transport\TransportInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
+use Safe\DateTime;
+
+use function Safe\preg_replace;
 
 /** GLPI Mailer class
  *

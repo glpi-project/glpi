@@ -37,6 +37,9 @@ namespace Glpi\DBAL;
 
 use DBmysqlIterator;
 
+use function Safe\preg_match;
+use function Safe\preg_replace;
+
 /**
  *  Query function class
  *

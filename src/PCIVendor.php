@@ -37,6 +37,9 @@ use Glpi\Features\CacheableListInterface;
 use Glpi\Inventory\FilesToJSON;
 use Psr\SimpleCache\CacheInterface;
 
+use function Safe\file_get_contents;
+use function Safe\json_decode;
+
 /**
  * PCIVendor class
  */

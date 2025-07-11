@@ -37,6 +37,7 @@ namespace Glpi\Console\Ldap;
 
 use AuthLDAP;
 use Glpi\Console\AbstractCommand;
+use Safe\Exceptions\DatetimeException;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
@@ -44,6 +45,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Toolbox;
 use User;
+
+use function Safe\preg_match;
+use function Safe\strtotime;
 
 class SynchronizeUsersCommand extends AbstractCommand
 {
@@ -506,10 +510,13 @@ class SynchronizeUsersCommand extends AbstractCommand
             $date = $input->getOption($option_name);
 
             if (null !== $date) {
-                $parsed_date = strtotime($date);
-                if (false === $parsed_date) {
+                try {
+                    $parsed_date = strtotime($date);
+                } catch (DatetimeException $e) {
                     throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
-                        sprintf(__('Unable to parse --%1$s value "%2$s".'), $option_name, $date)
+                        sprintf(__('Unable to parse --%1$s value "%2$s".'), $option_name, $date),
+                        $e->getCode(),
+                        $e
                     );
                 }
                 $input->setOption($option_name, date('Y-m-d H:i:s', $parsed_date));

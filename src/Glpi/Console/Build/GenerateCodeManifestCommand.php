@@ -43,6 +43,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use function Safe\file_put_contents;
+use function Safe\json_encode;
+
 class GenerateCodeManifestCommand extends Command
 {
     protected function configure()

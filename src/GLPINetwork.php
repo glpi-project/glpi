@@ -36,6 +36,9 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Toolbox\VersionParser;
 
+use function Safe\json_decode;
+use function Safe\preg_replace;
+
 class GLPINetwork extends CommonGLPI
 {
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)

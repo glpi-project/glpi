@@ -39,6 +39,7 @@ use DirectoryIterator;
 use Glpi\Kernel\Kernel;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\SimpleCache\CacheInterface;
+use Safe\Exceptions\FilesystemException;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Adapter\MemcachedAdapter;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
@@ -46,6 +47,13 @@ use Symfony\Component\Cache\CacheItem;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Toolbox;
+
+use function Safe\glob;
+use function Safe\json_encode;
+use function Safe\preg_match;
+use function Safe\preg_replace;
+use function Safe\rmdir;
+use function Safe\unlink;
 
 class CacheManager
 {
@@ -321,12 +329,20 @@ class CacheManager
         if (file_exists($tpl_cache_dir)) {
             $tpl_files = glob($tpl_cache_dir . '/**/*.php');
             foreach ($tpl_files as $tpl_file) {
-                $success = unlink($tpl_file) && $success;
+                try {
+                    unlink($tpl_file);
+                } catch (FilesystemException $e) {
+                    $success = false;
+                }
             }
 
             $tpl_dirs = glob($tpl_cache_dir . '/*', GLOB_ONLYDIR);
             foreach ($tpl_dirs as $tpl_dir) {
-                $success = rmdir($tpl_dir) && $success;
+                try {
+                    rmdir($tpl_dir);
+                } catch (FilesystemException $e) {
+                    $success = false;
+                }
             }
         }
 

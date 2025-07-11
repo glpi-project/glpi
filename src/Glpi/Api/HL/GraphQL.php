@@ -40,6 +40,8 @@ use GraphQL\Error\Error;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Utils\BuildSchema;
 
+use function Safe\json_decode;
+
 /**
  * GraphQL processor
  */

@@ -519,7 +519,7 @@ class Rack extends CommonDBTM
 
             $x = $y = 0;
             $coord = explode(',', $item['position']);
-            if (is_array($coord) && count($coord) == 2) {
+            if (count($coord) == 2) {
                 [$x, $y] = $coord;
                 $item['_x'] = (int) $x - 1;
                 $item['_y'] = (int) $y - 1;

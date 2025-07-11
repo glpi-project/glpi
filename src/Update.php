@@ -41,6 +41,9 @@ use Glpi\Progress\AbstractProgressIndicator;
 use Glpi\Message\MessageType;
 use Psr\Log\LoggerAwareTrait;
 
+use function Safe\preg_match;
+use function Safe\preg_replace;
+
 /**
  *  Update class
  **/

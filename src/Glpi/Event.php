@@ -49,6 +49,9 @@ use ITILSolution;
 use Session;
 use Toolbox;
 
+use function Safe\ob_start;
+use function Safe\ob_get_clean;
+
 /**
  * Event Class
  **/

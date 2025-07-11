@@ -39,6 +39,8 @@ use Toolbox;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
+use function Safe\filesize;
+
 /**
  * @since 10.0.0
  */

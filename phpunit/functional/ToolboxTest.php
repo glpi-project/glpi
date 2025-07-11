@@ -1970,7 +1970,7 @@ HTML;
         $messageWithPath = 'Error somewhere in the path ' . GLPI_ROOT . ' triggered';
 
         // Act
-        assert(\Toolbox::logInFile(self::TEST_CUSTOM_LOG_FILE_NAME, $messageWithPath), 'log failed');
+        \Toolbox::logInFile(self::TEST_CUSTOM_LOG_FILE_NAME, $messageWithPath);
 
         // Assert
         $this->assertStringNotContainsString(\GLPI_ROOT, file_get_contents($this->getCustomLogFilePath()));

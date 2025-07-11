@@ -36,6 +36,8 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Search\SearchOption;
 
+use function Safe\preg_replace;
+
 /**
  * ITIL Template class
  *

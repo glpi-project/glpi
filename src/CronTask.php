@@ -41,6 +41,17 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Error\ErrorHandler;
 use Glpi\Event;
+use Safe\Exceptions\FilesystemException;
+
+use function Safe\glob;
+use function Safe\filemtime;
+use function Safe\ini_get;
+use function Safe\pcntl_signal;
+use function Safe\preg_match;
+use function Safe\rmdir;
+use function Safe\scandir;
+use function Safe\strtotime;
+use function Safe\unlink;
 
 /**
  * CronTask class
@@ -1545,8 +1556,11 @@ TWIG, ['msg' => __('Last run list')]);
         foreach (glob(GLPI_SESSION_DIR . "/sess_*") as $filename) {
             if ((filemtime($filename) + $maxlifetime) < time()) {
                 // Delete session file if not delete before
-                if (@unlink($filename)) {
-                    $nb++;
+                try {
+                    @unlink($filename);
+                    ++$nb;
+                } catch (FilesystemException $e) {
+                    //mepty catch
                 }
             }
         }
@@ -1598,10 +1612,11 @@ TWIG, ['msg' => __('Last run list')]);
             if (preg_match('/.+[.]log[.](\\d{8})[.]bak$/', $file, $match) > 0) {
                 if ($match[1] < $firstdate) {
                     $task->addVolume(1);
-                    if (unlink($file)) {
+                    try {
+                        unlink($file);
                         $task->log(sprintf(__('Deletion of archived log file: %s'), $shortfile));
                         $actionCode = 1;
-                    } else {
+                    } catch (FilesystemException $e) {
                         $task->log(sprintf(__('Unable to delete archived log file: %s'), $shortfile));
                         $error = true;
                     }
@@ -1619,7 +1634,7 @@ TWIG, ['msg' => __('Last run list')]);
             $shortnewfile = str_replace(GLPI_LOG_DIR . '/', '', $newfilename);
 
             $task->addVolume(1);
-            if (!file_exists($newfilename) && rename($file, $newfilename)) {
+            if (!file_exists($newfilename) && rename($file, $newfilename)) { // @phpstan-ignore theCodingMachineSafe.function
                 $task->log(sprintf(__('Archiving log file: %1$s to %2$s'), $shortfile, $shortnewfile));
                 $actionCode = 1;
             } else {
@@ -1656,8 +1671,11 @@ TWIG, ['msg' => __('Last run list')]);
                 continue;
             }
             if ((filemtime($filename) + $maxlifetime) < time()) {
-                if (@unlink($filename)) {
-                    $nb++;
+                try {
+                    @unlink($filename);
+                    ++$nb;
+                } catch (FilesystemException $e) {
+                    //empty catch
                 }
             }
         }
@@ -1709,8 +1727,11 @@ TWIG, ['msg' => __('Last run list')]);
                 is_file($filename) && is_writable($filename)
                 && (filemtime($filename) + $maxlifetime) < time()
             ) {
-                if (@unlink($filename)) {
-                    $nb++;
+                try {
+                    @unlink($filename);
+                    ++$nb;
+                } catch (FilesystemException $e) {
+                    //empty catch
                 }
             }
 
@@ -1719,8 +1740,11 @@ TWIG, ['msg' => __('Last run list')]);
                 // be sure that the directory is empty
                 && count(scandir($filename)) === 2
             ) {
-                if (@rmdir($filename)) {
-                    $nb++;
+                try {
+                    @rmdir($filename);
+                    ++$nb;
+                } catch (FilesystemException $e) {
+                    //empty catch
                 }
             }
         }

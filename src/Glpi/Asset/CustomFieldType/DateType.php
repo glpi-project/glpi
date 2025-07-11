@@ -36,6 +36,9 @@ namespace Glpi\Asset\CustomFieldType;
 
 use Glpi\Application\View\TemplateRenderer;
 
+use function Safe\preg_match;
+use function Safe\strtotime;
+
 class DateType extends AbstractType
 {
     public static function getName(): string

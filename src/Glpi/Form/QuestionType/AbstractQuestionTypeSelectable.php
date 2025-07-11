@@ -40,6 +40,9 @@ use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use Glpi\ItemTranslation\Context\TranslationHandler;
 use Override;
+use Safe\Exceptions\JsonException;
+
+use function Safe\json_decode;
 
 /**
  * Short answers are single line inputs used to answer simple questions.
@@ -190,11 +193,13 @@ TWIG;
          * New default values format require an array of values.
          * The old system did not use an array if there was only one element.
          */
-        $default_values = json_decode($rawData['default_values']);
-        if (
-            ($default_values === null && json_last_error() !== JSON_ERROR_NONE)
-            || !is_array($default_values)
-        ) {
+        $default_values = '';
+        try {
+            $default_values = json_decode($rawData['default_values']);
+        } catch (JsonException $e) {
+            //empty catch
+        }
+        if (!is_array($default_values)) {
             $default_values = [$rawData['default_values']];
         }
 

@@ -35,6 +35,8 @@
 
 use Glpi\DBAL\QueryExpression;
 
+use function Safe\json_encode;
+
 class Appliance_Item_Relation extends CommonDBRelation
 {
     public static $itemtype_1 = 'Appliance_Item';

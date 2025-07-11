@@ -39,6 +39,9 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryUnion;
 
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
+
 /**
  * CommonItilObject_Item Class
  *

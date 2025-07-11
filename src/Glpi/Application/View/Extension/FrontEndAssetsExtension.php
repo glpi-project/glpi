@@ -49,6 +49,8 @@ use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 use function Safe\json_encode;
+use function Safe\parse_url;
+use function Safe\preg_match;
 
 /**
  * @since 10.0.0

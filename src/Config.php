@@ -42,6 +42,17 @@ use Glpi\Toolbox\ArrayNormalizer;
 use Glpi\UI\ThemeManager;
 use Symfony\Component\HttpFoundation\Request;
 
+use function Safe\chdir;
+use function Safe\getcwd;
+use function Safe\exec;
+use function Safe\glob;
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\opcache_get_status;
+use function Safe\parse_url;
+use function Safe\preg_match;
+use function Safe\preg_replace;
+
 /**
  *  Config class
  **/
@@ -1388,7 +1399,7 @@ class Config extends CommonDBTM
         }
 
         if (!isset($_SERVER['REQUEST_URI'])) {
-            // $_SERVER['REQUEST_URI'] is not set, meaning that GLPI is probably acces from CLI.
+            // $_SERVER['REQUEST_URI'] is not set, meaning that GLPI is probably access from CLI.
             // In this case, `$CFG_GLPI['root_doc']` has to be extracted from `$CFG_GLPI['url_base']`,
             // and it can only be done once configuration is loaded.
 
@@ -1463,7 +1474,7 @@ class Config extends CommonDBTM
             }
         }
 
-        //reload config for loggedin user
+        //reload config for logged user
         if ($_SESSION['glpiID'] ?? false) {
             $user = new \User();
             if ($user->getFromDB($_SESSION['glpiID'])) {

@@ -39,6 +39,15 @@ use Glpi\Error\ErrorHandler;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
 use Glpi\Security\TOTPManager;
+use Safe\Exceptions\LdapException;
+
+use function Safe\ini_get;
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\ldap_bind;
+use function Safe\parse_url;
+use function Safe\preg_match;
+use function Safe\session_name;
 
 /**
  *  Identification class used to login
@@ -330,22 +339,24 @@ class Auth extends CommonGLPI
             $dn = $info['dn'];
             $this->user_found = $dn !== '';
 
-            $bind_result = $this->user_found && @ldap_bind($this->ldap_connection, $dn, $password);
-
-            if ($this->user_found && $bind_result !== false) {
-                // Hook to implement to restrict access by checking the ldap directory
-                if (Plugin::doHookFunction(Hooks::RESTRICT_LDAP_AUTH, $info)) {
-                    return $info;
+            if ($this->user_found) {
+                try {
+                    @ldap_bind($this->ldap_connection, $dn, $password);
+                    // Hook to implement to restrict access by checking the ldap directory
+                    if (Plugin::doHookFunction(Hooks::RESTRICT_LDAP_AUTH, $info)) {
+                        return $info;
+                    }
+                    $this->addToError(__('User not authorized to connect in GLPI'));
+                    // Use is present by has no right to connect because of a plugin
+                    return false;
+                } catch (LdapException $e) {
+                    //empty catch
                 }
-                $this->addToError(__('User not authorized to connect in GLPI'));
-                // Use is present by has no right to connect because of a plugin
-                return false;
-            } else {
-                // Incorrect login
-                $this->addToError(__('Incorrect username or password'));
-                //Use is not present anymore in the directory!
-                return false;
             }
+            // Incorrect login
+            $this->addToError(__('Incorrect username or password'));
+            //Use is not present anymore in the directory!
+            return false;
         } else {
             // Directory is not available
             $this->addToError(__('Unable to connect to the LDAP directory'));

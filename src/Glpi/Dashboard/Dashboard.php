@@ -39,6 +39,8 @@ use Glpi\Debug\Profiler;
 use Ramsey\Uuid\Uuid;
 use Session;
 
+use function Safe\json_decode;
+
 class Dashboard extends \CommonDBTM
 {
     protected $id      = 0;

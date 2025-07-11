@@ -49,6 +49,9 @@ use Profile;
 use Session;
 use User;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+
 /**
  * @extends AbstractDefinition<\Glpi\Asset\Asset>
  */

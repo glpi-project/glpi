@@ -37,9 +37,19 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Error\ErrorHandler;
 use Glpi\Toolbox\Filesystem;
 use LDAP\Connection;
+use Safe\Exceptions\DatetimeException;
+use Safe\Exceptions\LdapException;
 
+use function Safe\fsockopen;
+use function Safe\gmmktime;
+use function Safe\ldap_bind;
+use function Safe\ldap_get_entries;
+use function Safe\ldap_set_option;
 use function Safe\parse_url;
+use function Safe\preg_match;
 use function Safe\preg_replace;
+use function Safe\strtotime;
+use function Safe\unpack;
 
 /**
  *  Class used to manage Auth LDAP config
@@ -1274,7 +1284,12 @@ TWIG, ['authldaps_id' => $ID]);
      */
     public static function date2ldapTimeStamp($date)
     {
-        return date("YmdHis", strtotime($date)) . '.0Z';
+        try {
+            $strdate = strtotime($date);
+        } catch (DatetimeException $e) {
+            $strdate = 0;
+        }
+        return date("YmdHis", $strdate) . '.0Z';
     }
 
     /**
@@ -1409,12 +1424,13 @@ TWIG, ['authldaps_id' => $ID]);
             $errstr = __('No hostname provided');
         }
 
-        if (@fsockopen($host, $port_num, $errno, $errstr, 5)) {
+        try {
+            @fsockopen($host, $port_num, $errno, $errstr, 5);
             return [
                 'success' => true,
                 'message' => sprintf(__('Connection to %s on port %s succeeded'), $host, $port_num),
             ];
-        } else {
+        } catch (\Safe\Exceptions\NetworkException $e) {
             return [
                 'success' => false,
                 'message' => sprintf(__('%s (ERR: %s) to %s on port %s'), $errstr, $errno, $host, $port_num),
@@ -1748,7 +1764,7 @@ TWIG, $twig_params);
                 $sr = @ldap_search($ds, $values['basedn'], $filter, $attrs, 0, -1, -1, LDAP_DEREF_NEVER, $controls);
                 if (
                     $sr === false
-                    || @ldap_parse_result($ds, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls) === false
+                    || @ldap_parse_result($ds, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls) === false // @phpstan-ignore theCodingMachineSafe.function
                 ) {
                     // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
                     if (ldap_errno($ds) !== 32) {
@@ -2430,7 +2446,7 @@ TWIG, $twig_params);
                 $sr = @ldap_search($ldap_connection, $config_ldap->fields['basedn'], $filter, $attrs, 0, -1, -1, LDAP_DEREF_NEVER, $controls);
                 if (
                     $sr === false
-                    || @ldap_parse_result($ldap_connection, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls) === false
+                    || @ldap_parse_result($ldap_connection, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls) === false // @phpstan-ignore theCodingMachineSafe.function
                 ) {
                     // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
                     if (ldap_errno($ldap_connection) !== 32) {
@@ -2891,7 +2907,9 @@ TWIG, $twig_params);
         }
 
         foreach ($ldap_options as $option => $value) {
-            if (!@ldap_set_option($ds, $option, $value)) {
+            try {
+                @ldap_set_option($ds, $option, $value);
+            } catch (LdapException $e) {
                 trigger_error(
                     static::buildError(
                         $ds,
@@ -2911,8 +2929,12 @@ TWIG, $twig_params);
                 trigger_error("TLS certificate path is not safe.", E_USER_WARNING);
             } elseif (!file_exists($tls_certfile)) {
                 trigger_error("TLS certificate path is not valid.", E_USER_WARNING);
-            } elseif (!@ldap_set_option(null, LDAP_OPT_X_TLS_CERTFILE, $tls_certfile)) {
-                trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_CERTFILE`", E_USER_WARNING);
+            } else {
+                try {
+                    @ldap_set_option(null, LDAP_OPT_X_TLS_CERTFILE, $tls_certfile);
+                } catch (LdapException $e) {
+                    trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_CERTFILE`", E_USER_WARNING);
+                }
             }
         }
         if (!empty($tls_keyfile)) {
@@ -2920,8 +2942,12 @@ TWIG, $twig_params);
                 trigger_error("TLS key file path is not safe.", E_USER_WARNING);
             } elseif (!file_exists($tls_keyfile)) {
                 trigger_error("TLS key file path is not valid.", E_USER_WARNING);
-            } elseif (!@ldap_set_option(null, LDAP_OPT_X_TLS_KEYFILE, $tls_keyfile)) {
-                trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_KEYFILE`", E_USER_WARNING);
+            } else {
+                try {
+                    @ldap_set_option(null, LDAP_OPT_X_TLS_KEYFILE, $tls_keyfile);
+                } catch (LdapException $e) {
+                    trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_KEYFILE`", E_USER_WARNING);
+                }
             }
         }
         if (!empty($tls_version)) {
@@ -2929,7 +2955,9 @@ TWIG, $twig_params);
             foreach (self::TLS_VERSIONS as $tls_version_value) {
                 $cipher_suite .= ($tls_version_value == $tls_version ? ':+' : ':!') . 'VERS-TLS' . $tls_version_value;
             }
-            if (!@ldap_set_option(null, LDAP_OPT_X_TLS_CIPHER_SUITE, $cipher_suite)) {
+            try {
+                @ldap_set_option(null, LDAP_OPT_X_TLS_CIPHER_SUITE, $cipher_suite);
+            } catch (LdapException $e) {
                 trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_CIPHER_SUITE`", E_USER_WARNING);
             }
         }
@@ -2958,14 +2986,15 @@ TWIG, $twig_params);
             return $ds;
         }
 
-        if ($login !== '') {
-            // Auth bind
-            $b = @ldap_bind($ds, $login, $password);
-        } else {
-            // Anonymous bind
-            $b = @ldap_bind($ds);
-        }
-        if ($b === false) {
+        try {
+            if ($login !== '') {
+                // Auth bind
+                @ldap_bind($ds, $login, $password);
+            } else {
+                // Anonymous bind
+                @ldap_bind($ds);
+            }
+        } catch (LdapException $e) {
             self::$last_errno = ldap_errno($ds);
             self::$last_error = ldap_error($ds);
 
@@ -3999,8 +4028,10 @@ TWIG, $twig_params);
      */
     public static function get_entries_clean($link, $result, ?bool &$error = null)
     {
-        $entries = @ldap_get_entries($link, $result);
-        if ($entries === false) {
+        try {
+            $entries = @ldap_get_entries($link, $result);
+            return $entries;
+        } catch (LdapException $e) {
             $error = true;
             trigger_error(
                 static::buildError(
@@ -4010,7 +4041,7 @@ TWIG, $twig_params);
                 E_USER_WARNING
             );
         }
-        return $entries;
+        return [];
     }
 
     /**
@@ -4366,8 +4397,8 @@ TWIG, $twig_params);
             $message,
             ldap_error($ds),
             ldap_errno($ds),
-            (ldap_get_option($ds, LDAP_OPT_DIAGNOSTIC_MESSAGE, $diag_message) ? "\nextended error: " . $diag_message : ''),
-            (ldap_get_option($ds, LDAP_OPT_ERROR_STRING, $err_message) ? "\nerr string: " . $err_message : '')
+            (ldap_get_option($ds, LDAP_OPT_DIAGNOSTIC_MESSAGE, $diag_message) ? "\nextended error: " . $diag_message : ''), // @phpstan-ignore theCodingMachineSafe.function
+            (ldap_get_option($ds, LDAP_OPT_ERROR_STRING, $err_message) ? "\nerr string: " . $err_message : '') // @phpstan-ignore theCodingMachineSafe.function
         );
         return $message;
     }

@@ -36,6 +36,10 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\RichText\RichText;
 
+use function Safe\preg_match;
+use function Safe\preg_match_all;
+use function Safe\preg_replace;
+
 /**
  * NotificationTemplate Class
  **/
