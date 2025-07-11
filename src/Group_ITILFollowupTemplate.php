@@ -36,9 +36,9 @@
 class Group_ITILFollowupTemplate extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1          = 'ITILFollowupTemplate';
+    public static $itemtype_1          = ITILFollowupTemplate::class;
     public static $items_id_1          = 'itilfollowuptemplates_id';
-    public static $itemtype_2          = 'Group';
+    public static $itemtype_2          = Group::class;
     public static $items_id_2          = 'groups_id';
     public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
     public static $logs_for_item_2     = false;
@@ -57,8 +57,8 @@ class Group_ITILFollowupTemplate extends CommonDBRelation
         $iterator = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                self::$items_id_1 => $itilfollowupTemplate->getID()
-            ]
+                self::$items_id_1 => $itilfollowupTemplate->getID(),
+            ],
         ]);
         foreach ($iterator as $data) {
             $results[$data[self::$items_id_2]][] = $data;

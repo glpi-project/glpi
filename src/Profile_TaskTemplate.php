@@ -36,9 +36,9 @@
 class Profile_TaskTemplate extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1          = 'TaskTemplate';
+    public static $itemtype_1          = TaskTemplate::class;
     public static $items_id_1          = 'tasktemplates_id';
-    public static $itemtype_2          = 'Profile';
+    public static $itemtype_2          = Profile::class;
     public static $items_id_2          = 'profiles_id';
     public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
     public static $logs_for_item_2     = false;

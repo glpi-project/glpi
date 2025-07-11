@@ -36,9 +36,9 @@
 class TaskTemplate_User extends CommonDBRelation
 {
     public $auto_message_on_action = false;
-    public static $itemtype_1          = 'TaskTemplate';
+    public static $itemtype_1          = TaskTemplate::class;
     public static $items_id_1          = 'tasktemplates_id';
-    public static $itemtype_2          = 'User';
+    public static $itemtype_2          = User::class;
     public static $items_id_2          = 'users_id';
     public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
     public static $logs_for_item_2     = false;
@@ -56,8 +56,8 @@ class TaskTemplate_User extends CommonDBRelation
         $iterator = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                self::$items_id_1 => $taskTemplate->getID()
-            ]
+                self::$items_id_1 => $taskTemplate->getID(),
+            ],
         ]);
         foreach ($iterator as $data) {
             $results[$data[self::$items_id_2]][] = $data;

@@ -36,9 +36,9 @@
 class Entity_ITILFollowupTemplate extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1          = 'ITILFollowupTemplate';
+    public static $itemtype_1          = ITILFollowupTemplate::class;
     public static $items_id_1          = 'itilfollowuptemplates_id';
-    public static $itemtype_2          = 'Entity';
+    public static $itemtype_2          = Entity::class;
     public static $items_id_2          = 'entities_id';
     public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
     public static $logs_for_item_2     = false;
@@ -55,8 +55,8 @@ class Entity_ITILFollowupTemplate extends CommonDBRelation
         $iterator = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                self::$items_id_1 => $template->fields['id']
-            ]
+                self::$items_id_1 => $template->fields['id'],
+            ],
         ]);
         foreach ($iterator as $data) {
             $ent[$data[self::$items_id_2]][] = $data;

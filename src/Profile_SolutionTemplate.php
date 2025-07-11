@@ -36,9 +36,9 @@
 class Profile_SolutionTemplate extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1          = 'SolutionTemplate';
+    public static $itemtype_1          = SolutionTemplate::class;
     public static $items_id_1          = 'solutiontemplates_id';
-    public static $itemtype_2          = 'Profile';
+    public static $itemtype_2          = Profile::class;
     public static $items_id_2          = 'profiles_id';
     public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
     public static $logs_for_item_2     = false;
@@ -57,8 +57,8 @@ class Profile_SolutionTemplate extends CommonDBRelation
         $iterator = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                self::$items_id_1 => $solutiontemplate->getID()
-            ]
+                self::$items_id_1 => $solutiontemplate->getID(),
+            ],
         ]);
         foreach ($iterator as $data) {
             $prof[$data['profiles_id']][] = $data;

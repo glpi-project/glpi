@@ -149,8 +149,7 @@ trait CommonDBVisible
         }
 
         // Groups
-        if (
-            count($this->groups)
+        if (count($this->groups)
             && isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])
         ) {
             foreach ($this->groups as $data) {
@@ -170,8 +169,7 @@ trait CommonDBVisible
         }
 
         // Entities
-        if (
-            count($this->entities)
+        if (count($this->entities)
             && isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])
         ) {
             foreach ($this->entities as $data) {
@@ -184,8 +182,7 @@ trait CommonDBVisible
         }
 
         // Profiles
-        if (
-            count($this->profiles)
+        if (count($this->profiles)
             && isset($_SESSION["glpiactiveprofile"])
             && isset($_SESSION["glpiactiveprofile"]['id'])
         ) {
@@ -377,7 +374,8 @@ trait CommonDBVisible
             'container' => 'mass' . static::class . $rand,
             'specific_actions' => ['delete' => _x('button', 'Delete permanently')],
         ];
-        if (isset($this->fields['users_id']) 
+
+        if (isset($this->fields['users_id'])
             && $this->fields['users_id'] !== Session::getLoginUserID()) {
             $massiveactionparams['confirm'] = __('Caution! You are not the author of this item. Deleting targets can result in loss of access.');
         }
