@@ -777,8 +777,8 @@ class DisplayPreference extends CommonDBTM
      * Change display preferences for an itemtype back to its defaults.
      * This only works with core itemtypes that have their default preferences specified in the empty_data.php script
      * or itemtypes from plugins that provide the defaults via the {@link Hooks::DEFAULT_DISPLAY_PREFS} hook.
-     * @param string $itemtype The itemtype
-     * @return array|null True if defaults existed and were reset OK. False otherwise.
+     *
+     * @param class-string<CommonDBTM> $itemtype
      */
     public static function resetToDefaultOptions(string $itemtype): bool
     {
