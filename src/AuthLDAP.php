@@ -1251,7 +1251,7 @@ TWIG, ['authldaps_id' => $ID]);
      * @param string  $ldapstamp        LDAP timestamp
      * @param integer $ldap_time_offset time offset (default 0)
      *
-     * @return integer|string unix timestamp
+     * @return integer|'' unix timestamp or an empty string if the LDAP timestamp is invalid
      */
     public static function ldapStamp2UnixStamp($ldapstamp, $ldap_time_offset = 0)
     {
