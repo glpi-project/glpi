@@ -3778,15 +3778,15 @@ final class SQLProvider implements SearchProviderInterface
      * Generic Function to add GROUP BY to a request
      *
      * @param string  $LINK           link to use
-     * @param string  $NOT            is is a negative search?
+     * @param bool    $NOT            is is a negative search?
      * @param class-string<CommonDBTM>  $itemtype       item type
-     * @param integer $ID             ID of the item to search
+     * @param int     $ID             ID of the item to search
      * @param string  $searchtype     search type ('contains' or 'equals')
      * @param string  $val            value search
      *
-     * @return string HAVING string
+     * @return array|false HAVING criteria as an array
      **/
-    public static function getHavingCriteria(string $LINK, bool $NOT, string $itemtype, int $ID, string $searchtype, string $val): array
+    public static function getHavingCriteria(string $LINK, bool $NOT, string $itemtype, int $ID, string $searchtype, string $val): array|false
     {
         $searchopt  = SearchOption::getOptionsForItemtype($itemtype);
         if (!isset($searchopt[$ID]['table'])) {
