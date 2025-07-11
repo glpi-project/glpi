@@ -1251,12 +1251,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/CriteriaFilter.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Default value of the parameter \\#1 \\$itemtype \\(string\\) of method Glpi\\\\Search\\\\Input\\\\QueryBuilder\\:\\:findCriteriaInSession\\(\\) is incompatible with type class\\-string\\<CommonDBTM\\>\\.$#',
-	'identifier' => 'parameter.defaultValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Input/QueryBuilder.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Default value of the parameter \\#1 \\$itemtype \\(string\\) of method Glpi\\\\Search\\\\Input\\\\QueryBuilder\\:\\:getDefaultCriteria\\(\\) is incompatible with type class\\-string\\<CommonDBTM\\>\\.$#',
 	'identifier' => 'parameter.defaultValue',
 	'count' => 1,
