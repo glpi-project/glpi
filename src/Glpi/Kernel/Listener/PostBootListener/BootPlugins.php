@@ -62,7 +62,10 @@ final readonly class BootPlugins implements EventSubscriberInterface
         Profiler::getInstance()->start('BootPlugins::execute', Profiler::CATEGORY_BOOT);
 
         $plugin = new Plugin();
-        $plugin->bootPlugins();
+
+        if (!$plugin->isPluginsExecutionSuspended()) {
+            $plugin->bootPlugins();
+        }
 
         Profiler::getInstance()->stop('BootPlugins::execute');
     }

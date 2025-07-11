@@ -84,7 +84,7 @@
 {% endmacro %}
 
 {% if tab == 'discover' %}
-    <li class="plugin {{ plugin['state'] }}" data-key="{{ plugin['key'] }}">
+    <li class="plugin" data-key="{{ plugin['key'] }}" data-state="{{ plugin['state'] }}">
         <div class="main">
             <span class="icon">{{ plugin['icon']|raw }}</span>
             <span class="details">
@@ -100,7 +100,7 @@
         </div>
     </li>
 {% else %}
-    <li class="plugin {{ plugin['state'] }}" data-key="{{ plugin['key'] }}">
+    <li class="plugin" data-key="{{ plugin['key'] }}" data-state="{{ plugin['state'] }}">
         <div class="main">
             <span class="icon">{{ plugin['icon']|raw }}</span>
             <span class="details">

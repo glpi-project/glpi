@@ -537,6 +537,7 @@ The present file will list all changes made to the project; according to the
 - `PlanningRecall::specificForm()`
 - `Plugin::haveImport()`
 - `Plugin::migrateItemType()`
+- `Plugin::unactivateAll()`
 - `ProfileRight::updateProfileRightAsOtherRight()`
 - `ProfileRight::updateProfileRightsAsOtherRights()`
 - `Project::commonListHeader()`
