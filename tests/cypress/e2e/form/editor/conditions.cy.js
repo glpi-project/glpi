@@ -348,6 +348,42 @@ describe ('Conditions', () => {
         });
     });
 
+    it('displays the correct dynamic label for submit button visibility strategy', () => {
+        createForm();
+        addQuestion('My first question');
+        saveAndReload();
+
+        // Test that the initial label is "Always visible"
+        getSubmitButtonContainer().within(() => {
+            openConditionEditor();
+            checkThatSelectedVisibilityOptionIs('Always visible');
+
+            // Change to "Visible if..." and verify the label updates
+            setConditionStrategy('Visible if...');
+            checkThatSelectedVisibilityOptionIs('Visible if...');
+            fillCondition(0, null, 'My first question', 'Is equal to', 'I love GLPI');
+
+            // Change to "Hidden if..." and verify the label updates
+            setConditionStrategy('Hidden if...');
+            checkThatSelectedVisibilityOptionIs('Hidden if...');
+
+            // Change back to "Always visible" and verify the label updates
+            setConditionStrategy('Always visible');
+            checkThatSelectedVisibilityOptionIs('Always visible');
+
+            closeConditionEditor();
+        });
+
+        // Save and reload to test persistence
+        saveAndReload();
+
+        getSubmitButtonContainer().within(() => {
+            openConditionEditor();
+            checkThatSelectedVisibilityOptionIs('Always visible');
+            closeConditionEditor();
+        });
+    });
+
     it('can set the conditional visibility of a question', () => {
         createForm();
         addQuestion('My first question');
