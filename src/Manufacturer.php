@@ -125,10 +125,9 @@ class Manufacturer extends CommonDropdown
         parent::post_addItem();
     }
 
-
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
-
         $this->post_workOnItem();
         parent::post_updateItem($history);
     }

@@ -896,7 +896,8 @@ class Domain extends CommonDBTM
         return "ti ti-world-www";
     }
 
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         $this->post_updateItemAssignableItem($history);
         $this->cleanAlerts([Alert::END, Alert::NOTICE]);

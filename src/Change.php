@@ -323,7 +323,8 @@ class Change extends CommonITILObject
     }
 
 
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;

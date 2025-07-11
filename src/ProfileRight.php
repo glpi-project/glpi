@@ -306,7 +306,8 @@ class ProfileRight extends CommonDBChild
         $this->updateProfileLastRightsUpdate($this->fields['profiles_id']);
     }
 
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         // Refresh session rights to avoid log out and login when rights change
         $this->updateProfileLastRightsUpdate($this->fields['profiles_id']);

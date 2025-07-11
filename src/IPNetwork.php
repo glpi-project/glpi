@@ -467,8 +467,8 @@ class IPNetwork extends CommonImplicitTreeDropdown
         $this->data_for_implicit_update = null;
     }
 
-
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
 
         if ($this->networkUpdate) {

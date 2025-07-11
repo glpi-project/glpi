@@ -49,6 +49,7 @@ use Location;
 use Log;
 use NetworkPort;
 use Notepad;
+use Override;
 use Session;
 
 /// Socket class
@@ -559,7 +560,8 @@ class Socket extends CommonDBChild
         $this->cleanIfStealNetworkPort();
     }
 
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         $this->cleanIfStealNetworkPort();
     }

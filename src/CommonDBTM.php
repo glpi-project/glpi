@@ -2060,11 +2060,11 @@ class CommonDBTM extends CommonGLPI
     /**
      * Actions done after the UPDATE of the item in the database
      *
-     * @param boolean $history store changes history ? (default true)
+     * @param bool $history store changes history ? (default true)
      *
      * @return void
      **/
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true): void
     {
         if (count($this->updates) > 0) {
             UserMention::handleUserMentions($this);

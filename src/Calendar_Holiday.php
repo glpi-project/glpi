@@ -191,7 +191,8 @@ class Calendar_Holiday extends CommonDBRelation
         parent::post_addItem();
     }
 
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         if (in_array('calendars_id', $this->updates)) {
             $this->invalidateCalendarCache($this->oldvalues['calendars_id']);

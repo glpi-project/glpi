@@ -750,7 +750,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         return $input;
     }
 
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles(

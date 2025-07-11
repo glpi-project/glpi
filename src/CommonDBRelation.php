@@ -893,7 +893,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
         }
     }
 
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
 
         if (

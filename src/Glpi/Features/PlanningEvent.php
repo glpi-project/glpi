@@ -278,7 +278,7 @@ trait PlanningEvent
     }
 
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true): void
     {
         if (
             !isset($this->input['_no_check_plan'])

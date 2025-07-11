@@ -226,7 +226,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $this->fields['percent_done'] = 0;
     }
 
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         /**
          * @var array $CFG_GLPI

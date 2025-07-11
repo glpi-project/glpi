@@ -101,7 +101,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     }
 
     #[Override]
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true): void
     {
         // Report logs to the parent form
         $this->logUpdateInParentForm($history);

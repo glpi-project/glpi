@@ -45,6 +45,7 @@ use Glpi\Features\AssetImage;
 use Group;
 use Location;
 use Manufacturer;
+use Override;
 use Profile;
 use Session;
 use User;
@@ -372,7 +373,8 @@ TWIG, $twig_params);
         }
     }
 
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         parent::post_updateItem();
 

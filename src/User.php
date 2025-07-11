@@ -1344,8 +1344,8 @@ class User extends CommonDBTM
         return $input;
     }
 
-
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         //handle timezone change for current user
         if ($this->fields['id'] == Session::getLoginUserID()) {

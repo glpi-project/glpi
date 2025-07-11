@@ -40,6 +40,7 @@ use Glpi\Asset\CustomFieldType\DropdownType;
 use Glpi\Asset\CustomFieldType\TypeInterface;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Override;
 use Session;
 
 use function Safe\json_decode;
@@ -305,7 +306,8 @@ final class CustomFieldDefinition extends CommonDBChild
         $this->refreshAssetDefinition();
     }
 
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         parent::post_updateItem($history);
 

@@ -222,7 +222,8 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         }
     }
 
-    public function post_UpdateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;

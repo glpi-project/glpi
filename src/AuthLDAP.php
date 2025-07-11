@@ -3835,7 +3835,7 @@ TWIG, $twig_params);
         }
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true): void
     {
         if ($this->fields["is_default"]) {
             $this->removeDefaultFromOtherItems();

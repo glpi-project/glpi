@@ -117,7 +117,8 @@ class PlanningRecall extends CommonDBChild
         ]);
     }
 
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         $alert = new Alert();
         $alert->clear(static::class, $this->fields['id'], Alert::ACTION);

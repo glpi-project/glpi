@@ -100,7 +100,8 @@ abstract class ITIL_ValidationStep extends CommonDBChild
      *
      * If minimal_required_validation_percent has changed : recompute Tickets validation status
      */
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         // if minimal_required_validation_percent has changed : recompute Ticket validation status
         if (

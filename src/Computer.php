@@ -180,8 +180,8 @@ class Computer extends CommonDBTM
         $comp_softvers->updateDatasForItem('Computer', $this->fields['id']);
     }
 
-
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         /**
          * @var array $CFG_GLPI

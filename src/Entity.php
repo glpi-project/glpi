@@ -764,7 +764,8 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         $_SESSION['glpi_multientitiesmode'] = 1;
     }
 
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;

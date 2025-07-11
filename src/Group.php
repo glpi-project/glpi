@@ -944,7 +944,8 @@ class Group extends CommonTreeDropdown
         }
     }
 
-    public function post_updateItem($history = 1)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         parent::post_updateItem($history);
         // Changing a group's parent might invalidate the group cache if recursive

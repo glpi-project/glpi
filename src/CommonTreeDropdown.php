@@ -403,9 +403,9 @@ abstract class CommonTreeDropdown extends CommonDropdown
     }
 
 
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
-
         $ID           = $this->getID();
         $changeParent = in_array($this->getForeignKeyField(), $this->updates);
         $this->regenerateTreeUnderID($ID, in_array('name', $this->updates), $changeParent);

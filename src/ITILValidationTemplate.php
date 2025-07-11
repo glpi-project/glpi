@@ -185,7 +185,8 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
         $this->postTargets();
     }
 
-    public function post_updateItem($history = 1)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         $this->postTargets();
     }

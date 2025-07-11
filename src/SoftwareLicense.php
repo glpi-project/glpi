@@ -204,7 +204,8 @@ class SoftwareLicense extends CommonTreeDropdown
         Software::updateValidityIndicator($this->fields["softwares_id"]);
     }
 
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         $this->post_updateItemAssignableItem($history);
         if (in_array("is_valid", $this->updates, true)) {
