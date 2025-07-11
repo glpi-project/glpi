@@ -3831,6 +3831,7 @@ JAVASCRIPT;
             return false;
         }
 
+        $SELECT = ['glpi_tickets.id', 'glpi_tickets.date_mod'];
         $JOINS = [];
         $WHERE = [
             'glpi_tickets.is_deleted' => 0,
@@ -3981,7 +3982,10 @@ JAVASCRIPT;
                 );
                 break;
 
-            case "survey": // tickets dont l'enqu??te de satisfaction n'est pas remplie et encore valide
+            case "survey": // tickets for which the satisfaction survey has not been completed and is still valid
+                $SELECT[] = 'glpi_tickets.entities_id';
+                $SELECT[] = 'glpi_entities.inquest_config';
+                $SELECT[] = 'glpi_ticketsatisfactions.date_begin';
                 $JOINS['INNER JOIN'] = [
                     'glpi_ticketsatisfactions' => [
                         'ON' => [
@@ -4006,19 +4010,31 @@ JAVASCRIPT;
                     $WHERE,
                     [
                         'glpi_tickets.status'   => self::CLOSED,
-                        ['OR'                   => [
-                            'glpi_entities.inquest_duration' => 0,
-                            new QueryExpression(
-                                QueryFunction::dateDiff(
-                                    expression1: QueryFunction::dateAdd(
-                                        date: 'glpi_ticketsatisfactions.date_begin',
-                                        interval: new QueryExpression($DB::quoteName('glpi_entities.inquest_duration')),
-                                        interval_unit: 'DAY'
-                                    ),
-                                    expression2: QueryFunction::curDate()
-                                ) . ' > 0'
-                            ),
-                        ],
+                        // We can ignore any tickets closed more than Entity::MAX_INQUEST_DURATION_DAYS days ago as no survey is valid after that
+                        new QueryExpression(
+                            QueryFunction::dateDiff(
+                                expression1: QueryFunction::curDate(),
+                                expression2: 'glpi_tickets.closedate'
+                            ) . ' <= ' . Entity::MAX_INQUEST_DURATION_DAYS
+                        ),
+                        [
+                            'OR' => [
+                                [
+                                    'glpi_tickets.entities_id' => ['<>', 0], // Root entity never inherits
+                                    'glpi_entities.inquest_config' => Entity::CONFIG_PARENT, // We need to resolve the inquest_duration in PHP
+                                ],
+                                'glpi_entities.inquest_duration' => 0,
+                                new QueryExpression(
+                                    QueryFunction::dateDiff(
+                                        expression1: QueryFunction::dateAdd(
+                                            date: 'glpi_ticketsatisfactions.date_begin',
+                                            interval: new QueryExpression($DB::quoteName('glpi_entities.inquest_duration')),
+                                            interval_unit: 'DAY'
+                                        ),
+                                        expression2: QueryFunction::curDate()
+                                    ) . ' > 0'
+                                ),
+                            ],
                         ],
                         'glpi_ticketsatisfactions.date_answered'  => null,
                     ]
@@ -4045,7 +4061,7 @@ JAVASCRIPT;
         }
 
         $criteria = [
-            'SELECT'          => ['glpi_tickets.id', 'glpi_tickets.date_mod'],
+            'SELECT'          => $SELECT,
             'DISTINCT'        => true,
             'FROM'            => 'glpi_tickets',
             'LEFT JOIN'       => [
@@ -4069,8 +4085,32 @@ JAVASCRIPT;
             $criteria = array_merge_recursive($criteria, $JOINS);
         }
 
-        $iterator = $DB->request($criteria);
-        $total_row_count = count($iterator);
+        $results = iterator_to_array($DB->request($criteria), false);
+
+        if ($status === 'survey') {
+            $duration_cache = [];
+            // Evaluate the resolved inquest_duration for any results with inquest_config = Entity::CONFIG_PARENT
+            foreach ($results as $k => $result) {
+                if ($result['inquest_config'] !== Entity::CONFIG_PARENT) {
+                    // No need to evaluate the duration for this result
+                    continue;
+                }
+                $entities_id = $result['entities_id'];
+                if (!isset($duration_cache[$entities_id])) {
+                    $duration_cache[$entities_id] = Entity::getUsedConfig('inquest_config', $entities_id, 'inquest_duration');
+                }
+
+                // Is the survey still valid?
+                $is_valid = $duration_cache[$entities_id] === 0
+                    || (\Safe\strtotime($result['date_begin']) + $duration_cache[$entities_id] * DAY_TIMESTAMP) > \Safe\strtotime($_SESSION['glpi_currenttime']);
+                if (!$is_valid) {
+                    // Remove the result from the list
+                    unset($results[$k]);
+                }
+            }
+        }
+
+        $total_row_count = count($results);
         $displayed_row_count = min((int) $_SESSION['glpidisplay_count_on_home'], $total_row_count);
 
         if ($total_row_count > 0) {
@@ -4467,7 +4507,7 @@ JAVASCRIPT;
                     ],
                     __('Description'),
                 ];
-                foreach ($iterator as $data) {
+                foreach ($results as $data) {
                     $showprivate = false;
                     if (Session::haveRight('followup', ITILFollowup::SEEPRIVATE)) {
                         $showprivate = true;
