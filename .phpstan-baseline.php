@@ -338,12 +338,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILCost.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Default value of the parameter \\#2 \\$params \\(array\\{\\}\\) of method CommonITILObject\\:\\:getDatatableEntries\\(\\) is incompatible with type array\\{ticket_stats\\: bool\\}\\.$#',
-	'identifier' => 'parameter.defaultValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
 	'identifier' => 'nullCoalesce.expr',
 	'count' => 1,

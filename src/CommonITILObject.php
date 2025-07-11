@@ -6978,7 +6978,7 @@ abstract class CommonITILObject extends CommonDBTM
      *        - item_id: The ID of the ITIL object
      *        - id: The ID of the entry in the datatable (probably the ID of the link between the ITIL item and another item)
      *       - itemtype: The class name of the ITIL object
-     * @param array{ticket_stats: bool} $params
+     * @param array{ticket_stats?: bool} $params
      * @return array The data with the other required fields added
      * @see CommonITILObject::getCommonDatatableColumns()
      */
