@@ -124,6 +124,8 @@ class Router
      */
     private ?array $current_client = null;
 
+    private static ?self $instance = null;
+
     /**
      * Get information about all API versions available.
      * @return array{api_version: string, version: string, description?: string, endpoint: string}[]
@@ -185,6 +187,15 @@ EOT;
     }
 
     /**
+     * Unsets the instance so it can be recreated the next time {@link getInstance()} is called.
+     * @return void
+     */
+    public static function resetInstance(): void
+    {
+        self::$instance = null;
+    }
+
+    /**
      * Get the singleton instance of the router
      *
      * @return Router
@@ -194,21 +205,20 @@ EOT;
         /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
-        static $instance;
-        if (!$instance) {
-            $instance = new self();
-            $instance->registerController(new CoreController());
-            $instance->registerController(new AssetController());
-            $instance->registerController(new CustomAssetController());
-            $instance->registerController(new ComponentController());
-            $instance->registerController(new ITILController());
-            $instance->registerController(new AdministrationController());
-            $instance->registerController(new ManagementController());
-            $instance->registerController(new ProjectController());
-            $instance->registerController(new DropdownController());
-            $instance->registerController(new GraphQLController());
-            $instance->registerController(new ReportController());
-            $instance->registerController(new RuleController());
+        if (self::$instance === null) {
+            self::$instance = new self();
+            self::$instance->registerController(new CoreController());
+            self::$instance->registerController(new AssetController());
+            self::$instance->registerController(new CustomAssetController());
+            self::$instance->registerController(new ComponentController());
+            self::$instance->registerController(new ITILController());
+            self::$instance->registerController(new AdministrationController());
+            self::$instance->registerController(new ManagementController());
+            self::$instance->registerController(new ProjectController());
+            self::$instance->registerController(new DropdownController());
+            self::$instance->registerController(new GraphQLController());
+            self::$instance->registerController(new ReportController());
+            self::$instance->registerController(new RuleController());
 
             // Register controllers from plugins
             if (isset($PLUGIN_HOOKS[Hooks::API_CONTROLLERS])) {
@@ -218,27 +228,27 @@ EOT;
                     }
                     foreach ($controllers as $controller) {
                         if (is_subclass_of($controller, AbstractController::class, true)) {
-                            $instance->registerController(new $controller());
+                            self::$instance->registerController(new $controller());
                         }
                     }
                 }
             }
 
             // Cookie middleware shouldn't run by default. Must be explicitly enabled by adding it in a Route attribute.
-            $instance->registerAuthMiddleware(new CookieAuthMiddleware(), 0, static fn(RoutePath $route_path) => false);
+            self::$instance->registerAuthMiddleware(new CookieAuthMiddleware(), 0, static fn(RoutePath $route_path) => false);
 
-            $instance->registerRequestMiddleware(new IPRestrictionRequestMiddleware());
-            $instance->registerRequestMiddleware(new OAuthRequestMiddleware());
-            $instance->registerRequestMiddleware(new CRUDRequestMiddleware(), 0, static function (RoutePath $route_path) {
+            self::$instance->registerRequestMiddleware(new IPRestrictionRequestMiddleware());
+            self::$instance->registerRequestMiddleware(new OAuthRequestMiddleware());
+            self::$instance->registerRequestMiddleware(new CRUDRequestMiddleware(), 0, static function (RoutePath $route_path) {
                 return \Toolbox::hasTrait($route_path->getControllerInstance(), CRUDControllerTrait::class);
             });
-            $instance->registerRequestMiddleware(new DebugRequestMiddleware());
-            $instance->registerRequestMiddleware(new RSQLRequestMiddleware());
+            self::$instance->registerRequestMiddleware(new DebugRequestMiddleware());
+            self::$instance->registerRequestMiddleware(new RSQLRequestMiddleware());
 
             // Always run the security middleware (no condition set)
-            $instance->registerResponseMiddleware(new SecurityResponseMiddleware());
-            $instance->registerResponseMiddleware(new DebugResponseMiddleware(), PHP_INT_MAX);
-            $instance->registerResponseMiddleware(new ResultFormatterMiddleware(), 0, static fn(RoutePath $route_path) => false);
+            self::$instance->registerResponseMiddleware(new SecurityResponseMiddleware());
+            self::$instance->registerResponseMiddleware(new DebugResponseMiddleware(), PHP_INT_MAX);
+            self::$instance->registerResponseMiddleware(new ResultFormatterMiddleware(), 0, static fn(RoutePath $route_path) => false);
 
             // Register middleware from plugins
             if (isset($PLUGIN_HOOKS[Hooks::API_MIDDLEWARE])) {
@@ -255,16 +265,16 @@ EOT;
                         }
                         $middleware = new $middleware_info['middleware']();
                         if (class_implements($middleware, RequestMiddlewareInterface::class)) {
-                            $instance->registerRequestMiddleware(new $middleware(), $middleware_info['priority'] ?? 0, $middleware_info['condition'] ?? null);
+                            self::$instance->registerRequestMiddleware(new $middleware(), $middleware_info['priority'] ?? 0, $middleware_info['condition'] ?? null);
                         }
                         if (class_implements($middleware, ResponseMiddlewareInterface::class)) {
-                            $instance->registerResponseMiddleware(new $middleware(), $middleware_info['priority'] ?? 0, $middleware_info['condition'] ?? null);
+                            self::$instance->registerResponseMiddleware(new $middleware(), $middleware_info['priority'] ?? 0, $middleware_info['condition'] ?? null);
                         }
                     }
                 }
             }
         }
-        return $instance;
+        return self::$instance;
     }
 
     /**
