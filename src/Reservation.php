@@ -1159,7 +1159,7 @@ JAVASCRIPT;
     }
 
     #[Override]
-    public static function getMassiveActionsForItemtype(array &$actions, string $itemtype, bool $is_deleted = 0, ?CommonDBTM $checkitem = null): void
+    public static function getMassiveActionsForItemtype(array &$actions, string $itemtype, bool $is_deleted = false, ?CommonDBTM $checkitem = null): void
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
