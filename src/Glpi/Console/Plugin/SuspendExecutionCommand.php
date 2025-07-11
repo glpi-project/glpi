@@ -33,30 +33,35 @@
  * ---------------------------------------------------------------------
  */
 
-require_once(__DIR__ . '/_check_webserver_config.php');
+namespace Glpi\Console\Plugin;
 
-Session::checkRight("config", UPDATE);
+use Glpi\Console\AbstractCommand;
+use Plugin;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
-// This has to be called before search process is called, in order to add
-// "new" plugins in DB to be able to display them.
-$plugin = new Plugin();
-$plugin->checkStates(true);
+class SuspendExecutionCommand extends AbstractCommand
+{
+    protected function configure()
+    {
+        parent::configure();
 
-Html::header(__('Setup'), '', "config", "plugin");
+        $this->setName('plugin:suspend_execution');
+        $this->setDescription(__('Suspend execution of all active plugins'));
+    }
 
-\Glpi\Marketplace\View::showFeatureSwitchDialog();
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        if (!(new Plugin())->suspendAllPluginsExecution()) {
+            $this->output->writeln(
+                '<error>' . __('An unexpected error occurred') . '</error>',
+                OutputInterface::VERBOSITY_QUIET
+            );
+            return self::FAILURE;
+        }
 
-echo $plugin->getPluginsListSuspendBanner();
+        $output->writeln('<info>' . __('Execution of all active plugins has been suspended.') . '</info>');
 
-Search::show('Plugin');
-
-echo \Glpi\Application\View\TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-    <div class="text-center my-2">
-        <a href="https://plugins.glpi-project.org" class="btn btn-primary" role="button">
-            <i class="ti ti-eye"></i>
-            <span>{{ label }}</span>
-        </a>
-    </div>
-TWIG, ['label' => __('See the catalog of plugins')]);
-
-Html::footer();
+        return self::SUCCESS;
+    }
+}

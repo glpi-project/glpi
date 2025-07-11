@@ -408,6 +408,9 @@ HTML;
                 echo $marketplace;
                 return;
             }
+            $suspend_banner = $tab === "installed"
+                ? (new Plugin())->getPluginsListSuspendBanner()
+                : '';
             $tags_list    = $tab != "installed"
                 ? "<div class='left-panel'>" . self::getTagsHtml() . "</div>"
                 : "";
@@ -460,6 +463,7 @@ HTML;
                 <div class='marketplace $tab' data-tab='{$tab}'>
                     {$tags_list}
                     <div class='right-panel'>
+                        {$suspend_banner}
                         <div class='top-panel'>
                             <input type='search' class='filter-list form-control' placeholder='{$search_label}'>
                             <div class='controls'>
@@ -589,6 +593,13 @@ JS;
          * @var array $PLUGIN_HOOKS
          */
         global $CFG_GLPI, $PLUGIN_HOOKS;
+
+        if ((new Plugin())->isPluginsExecutionSuspended()) {
+            return \sprintf(
+                '<span class="text-info" data-bs-toggle="tooltip" title="%s"><i class="ti ti-info-circle-filled"></i></span>',
+                __s('The plugins maintenance actions are disabled when the plugins execution is suspended.')
+            );
+        }
 
         $plugin_inst        = new Plugin();
         $exists             = $plugin_inst->getFromDBbyDir($plugin_key);

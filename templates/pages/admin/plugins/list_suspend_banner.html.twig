@@ -1,0 +1,54 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% if execution_suspended %}
+    <div class="alert alert-warning" role="alert">
+        {{ __('The execution of the plugins is suspended.') }}
+        <form class="d-inline" action="{{ 'Plugin'|itemtype_form_path }}" method="POST">
+            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" name="action" value="resume_all_execution" class="btn btn-sm btn-primary me-1">
+                <i class="ti ti-player-play-filled"></i>
+                {{ __('Resume execution of all active plugins') }}
+            </button>
+        </form>
+    </div>
+{% else %}
+    <div class="text-end mb-3">
+        <form class="d-inline" action="{{ 'Plugin'|itemtype_form_path }}" method="POST">
+            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" name="action" value="suspend_all_execution" class="btn btn-primary me-1">
+                <i class="ti ti-player-pause-filled"></i>
+                {{ __('Suspend execution of all plugins') }}
+            </button>
+        </form>
+    </div>
+{% endif %}

@@ -44,13 +44,14 @@ $(document).ready(function() {
 
     // plugin actions (install, enable, etc)
     $(document).on('click', '.marketplace .modify_plugin', function() {
-        var button     = $(this);
-        var buttons    = button.closest('.buttons');
-        var li         = button.closest('li.plugin');
-        var icon       = button.children('i');
-        var installed  = button.closest('.marketplace').hasClass('installed');
-        var action     = button.data('action');
-        var plugin_key = li.data('key');
+        var button       = $(this);
+        var buttons      = button.closest('.buttons');
+        var li           = button.closest('li.plugin');
+        var icon         = button.children('i');
+        var installed    = button.closest('.marketplace').hasClass('installed');
+        var action       = button.data('action');
+        var plugin_key   = li.data('key');
+        var plugin_state = li.data('state');
 
         icon
             .removeClass()
@@ -80,12 +81,15 @@ $(document).ready(function() {
             });
         };
 
-        if (action === 'download_plugin' || action === 'update_plugin') {
+        if (
+            (action === 'download_plugin' || action === 'update_plugin')
+            && (plugin_state === 'activated' || plugin_state === 'tobeconfigured')
+        ) {
             // Specific case for plugin code source replacement.
             // The plugin execution must be suspended first to ensure that its `setup.php` file is not loaded before
             // its new version is downloaded.
             $.post(ajax_url, {
-                'action': 'suspend_plugin',
+                'action': 'disable_plugin',
                 'key': plugin_key
             }).done(function() {
                 executeAction();

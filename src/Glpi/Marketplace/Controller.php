@@ -584,21 +584,6 @@ class Controller extends CommonGLPI
         return $this->setPluginState("unactivate") == Plugin::NOTACTIVATED;
     }
 
-    /**
-     * Suspend current plugin
-     *
-     * @return bool
-     */
-    public function suspendPlugin(): bool
-    {
-        $plugin = new Plugin();
-        if ($plugin->getFromDBbyDir($this->plugin_key)) {
-            return $plugin->suspend();
-        }
-
-        return true;
-    }
-
 
     /**
      * Clean (remove database data) current plugin
