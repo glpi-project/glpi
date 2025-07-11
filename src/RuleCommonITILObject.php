@@ -35,6 +35,8 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
+use function Safe\preg_match;
+
 abstract class RuleCommonITILObject extends Rule
 {
     public const PARENT  = 1024;

@@ -46,6 +46,13 @@ use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\VersionParser;
 use Glpi\Event;
 
+use function Safe\ob_start;
+use function Safe\ob_end_clean;
+use function Safe\ini_get;
+use function Safe\preg_grep;
+use function Safe\preg_match;
+use function Safe\scandir;
+
 class Plugin extends CommonDBTM
 {
     // Class constant : Plugin state
@@ -463,6 +470,13 @@ class Plugin extends CommonDBTM
         if (($key = array_search($plugin_key, self::$loaded_plugins)) !== false) {
             unset(self::$loaded_plugins[$key]);
         }
+
+        // reset menu
+        if (isset($_SESSION['glpimenu'])) {
+            unset($_SESSION['glpimenu']);
+        }
+
+        $this->resetHookableCacheEntries($this->fields['directory']);
     }
 
 
@@ -651,12 +665,14 @@ class Plugin extends CommonDBTM
      */
     public function checkPluginState($plugin_key, bool $check_for_replacement = false)
     {
+        /** @var \DBmysql $DB */
+        global $DB;
+
         $plugin = new self();
 
         $information      = $this->getPluginInformation($plugin_key) ?? [];
-        $is_already_known = $plugin->getFromDBByCrit(['directory' => $plugin_key]);
         $is_loadable      = $information !== [];
-
+        $is_already_known = $plugin->getFromDBByCrit(['directory' => $plugin_key]);
         $new_specs        = $check_for_replacement ? $this->getNewInfoAndDirBasedOnOldName($plugin_key) : null;
         $is_replaced      = $new_specs !== null;
 
@@ -664,6 +680,19 @@ class Plugin extends CommonDBTM
             // Plugin is not known and we are unable to load information, we ignore it.
             return;
         }
+
+        // Filter information to keep only fields expected to be inserted/updated into the DB.
+        $information = array_filter(
+            $information,
+            function ($key) {
+                return in_array(
+                    $key,
+                    ['name', 'version', 'author', 'homepage', 'license'],
+                    true
+                );
+            },
+            ARRAY_FILTER_USE_KEY
+        );
 
         if ($is_already_known && $is_replaced) {
             // Filesystem contains both the checked plugin and the plugin that is supposed to replace it.
@@ -677,19 +706,17 @@ class Plugin extends CommonDBTM
                     ),
                     E_USER_WARNING
                 );
-                $this->update(
+                $DB->update(
+                    self::getTable(),
                     [
-                        'id'    => $plugin->fields['id'],
                         'state' => self::REPLACED,
-                    ] + $information
+                    ] + $information,
+                    [
+                        'id' => $plugin->fields['id'],
+                    ]
                 );
 
                 $this->unload($plugin_key);
-
-                // reset menu
-                if (isset($_SESSION['glpimenu'])) {
-                    unset($_SESSION['glpimenu']);
-                }
 
                 Event::log(
                     '',
@@ -721,14 +748,12 @@ class Plugin extends CommonDBTM
 
         if (!$is_already_known) {
             // Plugin not known, add it in DB
-            $this->add(
-                array_merge(
-                    $information,
-                    [
-                        'state'     => $is_replaced ? self::REPLACED : self::NOTINSTALLED,
-                        'directory' => $plugin_key,
-                    ]
-                )
+            $DB->insert(
+                self::getTable(),
+                [
+                    'state'     => $is_replaced ? self::REPLACED : self::NOTINSTALLED,
+                    'directory' => $plugin_key,
+                ] + $information
             );
             return;
         }
@@ -740,7 +765,6 @@ class Plugin extends CommonDBTM
             // Plugin known version differs from information or plugin has been renamed,
             // update information in database
             $input              = $information;
-            $input['id']        = $plugin->fields['id'];
             $input['directory'] = $plugin_key;
             if (!in_array($plugin->fields['state'], [self::ANEW, self::NOTINSTALLED, self::NOTUPDATED])) {
                 // mark it as 'updatable' unless it was not installed
@@ -766,13 +790,15 @@ class Plugin extends CommonDBTM
                 );
             }
 
-            $this->update($input);
+            $DB->update(
+                self::getTable(),
+                $input,
+                [
+                    'id' => $plugin->fields['id'],
+                ]
+            );
 
             $this->unload($plugin_key);
-            // reset menu
-            if (isset($_SESSION['glpimenu'])) {
-                unset($_SESSION['glpimenu']);
-            }
 
             return;
         }
@@ -780,10 +806,13 @@ class Plugin extends CommonDBTM
         // Check if replacement state changed
         if ((int) $plugin->fields['state'] === self::REPLACED && !$is_replaced) {
             // Reset plugin state as replacement plugin is not present anymore on filesystem
-            $this->update(
+            $DB->update(
+                self::getTable(),
                 [
-                    'id'    => $plugin->fields['id'],
                     'state' => self::NOTINSTALLED,
+                ],
+                [
+                    'id' => $plugin->fields['id'],
                 ]
             );
             return;
@@ -796,10 +825,13 @@ class Plugin extends CommonDBTM
 
             if ((int) $plugin->fields['state'] === self::TOBECONFIGURED && $is_config_ok) {
                 // Remove TOBECONFIGURED state if configuration is OK now
-                $this->update(
+                $DB->update(
+                    self::getTable(),
                     [
-                        'id'    => $plugin->fields['id'],
                         'state' => self::NOTACTIVATED,
+                    ],
+                    [
+                        'id' => $plugin->fields['id'],
                     ]
                 );
                 return;
@@ -812,10 +844,13 @@ class Plugin extends CommonDBTM
                     ),
                     E_USER_WARNING
                 );
-                $this->update(
+                $DB->update(
+                    self::getTable(),
                     [
-                        'id'    => $plugin->fields['id'],
                         'state' => self::TOBECONFIGURED,
+                    ],
+                    [
+                        'id' => $plugin->fields['id'],
                     ]
                 );
                 return;
@@ -858,7 +893,29 @@ class Plugin extends CommonDBTM
                 ),
                 E_USER_WARNING
             );
-            $this->unactivate($plugin->fields['id']);
+
+            $DB->update(
+                self::getTable(),
+                [
+                    'state' => self::NOTACTIVATED,
+                ],
+                [
+                    'id' => $plugin->fields['id'],
+                ]
+            );
+
+            $this->unload($plugin_key);
+
+            Event::log(
+                '',
+                Plugin::class,
+                3,
+                "setup",
+                sprintf(
+                    'Plugin "%s" prerequisites are not matched. It has been deactivated.',
+                    $plugin_key
+                )
+            );
         }
     }
 
@@ -950,8 +1007,6 @@ class Plugin extends CommonDBTM
                 'state'   => self::NOTINSTALLED,
             ]);
             $this->unload($this->fields['directory']);
-
-            $this->resetHookableCacheEntries($this->fields['directory']);
 
             self::doHook(Hooks::POST_PLUGIN_UNINSTALL, $this->fields['directory']);
 
@@ -1225,14 +1280,7 @@ class Plugin extends CommonDBTM
             ]);
             $this->unload($this->fields['directory']);
 
-            $this->resetHookableCacheEntries($this->fields['directory']);
-
             self::doHook(Hooks::POST_PLUGIN_DISABLE, $this->fields['directory']);
-
-            // reset menu
-            if (isset($_SESSION['glpimenu'])) {
-                unset($_SESSION['glpimenu']);
-            }
 
             Session::addMessageAfterRedirect(
                 sprintf(__('Plugin %1$s has been deactivated!'), $this->fields['name']),

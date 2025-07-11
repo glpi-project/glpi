@@ -48,7 +48,7 @@ final class FormTile extends CommonDBChild implements TileInterface
     public static $itemtype = Form::class;
     public static $items_id = 'forms_forms_id';
 
-    private ?Form $form;
+    private Form $form;
 
     #[Override]
     public function getLabel(): string
@@ -73,12 +73,7 @@ final class FormTile extends CommonDBChild implements TileInterface
     {
         $form = $this->getItem();
         if (!($form instanceof Form)) {
-            // We don't throw an exception here because we don't want to crash
-            // the home page in case of one invalid tile.
-            // It is better to display an empty tile in this case rather
-            // than blocking access to the helpdesk.
-            trigger_error("Unable to load linked form", E_USER_WARNING);
-            $this->form = null;
+            throw new InvalidTileException("Unable to load linked form");
         } else {
             $this->form = $form;
         }
@@ -87,37 +82,24 @@ final class FormTile extends CommonDBChild implements TileInterface
     #[Override]
     public function getTitle(): string
     {
-        if ($this->form === null) {
-            return "";
-        }
         return $this->form->getServiceCatalogItemTitle();
     }
 
     #[Override]
     public function getDescription(): string
     {
-        if ($this->form === null) {
-            return "";
-        }
         return $this->form->getServiceCatalogItemDescription();
     }
 
     #[Override]
     public function getIllustration(): string
     {
-        if ($this->form === null) {
-            return "";
-        }
         return $this->form->getServiceCatalogItemIllustration();
     }
 
     #[Override]
     public function getTileUrl(): string
     {
-        if ($this->form === null) {
-            return "";
-        }
-
         return Html::getPrefixedUrl('/Form/Render/' . $this->form->getID());
     }
 
@@ -125,11 +107,6 @@ final class FormTile extends CommonDBChild implements TileInterface
     public function isAvailable(SessionInfo $session_info): bool
     {
         $form_access_manager = FormAccessControlManager::getInstance();
-
-        // Form must be defined
-        if ($this->form === null) {
-            return false;
-        }
 
         // Form must be active
         if (!$this->form->isActive()) {
@@ -165,6 +142,16 @@ final class FormTile extends CommonDBChild implements TileInterface
     public function getConfigFieldsTemplate(): string
     {
         return "pages/admin/form_tile_config_fields.html.twig";
+    }
+
+    #[Override]
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb(
+            [
+                Item_Tile::class,
+            ]
+        );
     }
 
     public function getFormId(): int

@@ -56,6 +56,8 @@ use InvalidArgumentException;
 use Override;
 use User;
 
+use function Safe\json_decode;
+
 final class ValidationField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     #[Override]
@@ -290,7 +292,7 @@ final class ValidationField extends AbstractConfigField implements DestinationFi
                         );
 
                         if ($mapped_item === null) {
-                            throw new InvalidArgumentException("Question not found in a target form");
+                            throw new InvalidArgumentException("Question '{$rawData['commonitil_validation_question']}' not found in a target form");
                         }
 
                         $question_ids[] = $mapped_item['items_id'];

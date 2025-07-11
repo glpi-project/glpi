@@ -37,6 +37,8 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Inventory\Request;
 
+use function Safe\json_decode;
+
 /**
  * Logs rules used during inventory
  */

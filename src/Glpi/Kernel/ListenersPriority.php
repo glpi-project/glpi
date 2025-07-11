@@ -50,7 +50,7 @@ final class ListenersPriority
         PostBootListener\SessionStart::class =>                        130,
         PostBootListener\LoadLanguage::class =>                        120,
         PostBootListener\InitializePlugins::class =>                   110,
-        PostBootListener\CustomObjectsBootstrap::class =>              100,
+        PostBootListener\CustomObjectsBoot::class =>                   100,
     ];
 
     public const REQUEST_LISTENERS_PRIORITIES = [

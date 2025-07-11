@@ -472,6 +472,16 @@ body pre {
     }
 }
 
+.modal-lg .col-12.glpi-full-width {
+    .col-form-label {
+        width: calc(-4px + 25.8333%);
+    }
+
+    .field-container {
+        width: calc(-11px + 74.1666%);
+    }
+}
+
 // Needed as 'text-muted' may not always be readable depending on the menu
 // background color.
 .horizontal-layout  {

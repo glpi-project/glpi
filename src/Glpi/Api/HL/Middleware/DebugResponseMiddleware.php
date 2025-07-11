@@ -36,9 +36,13 @@
 namespace Glpi\Api\HL\Middleware;
 
 use Glpi\Http\JSONResponse;
-use Glpi\Http\Response;
 use GuzzleHttp\Psr7\Utils;
+use Safe\Exceptions\OutcontrolException;
 use Symfony\Component\DomCrawler\Crawler;
+
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\ob_get_clean;
 
 class DebugResponseMiddleware extends AbstractMiddleware implements ResponseMiddlewareInterface
 {
@@ -58,14 +62,15 @@ class DebugResponseMiddleware extends AbstractMiddleware implements ResponseMidd
         $outputs = [];
         // Go through all output buffers
         while (ob_get_level() > 0) {
-            $outputs[] = ob_get_clean();
+            try {
+                $outputs[] = ob_get_clean();
+            } catch (OutcontrolException $e) {
+                //just contineu, seems not an error.
+            }
         }
         $debug_messages = [];
         // If the output matches an HTML debug alert, extract the inner text and add it to the array
         foreach ($outputs as $output) {
-            if (!is_string($output)) {
-                continue;
-            }
             $crawler = new Crawler($output);
             $node = $crawler->filter('div.glpi-debug-alert');
             if ($node->count() > 0) {

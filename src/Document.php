@@ -36,7 +36,21 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
+use Safe\Exceptions\FilesystemException;
 use Symfony\Component\HttpFoundation\Response;
+
+use function Safe\copy;
+use function Safe\finfo_open;
+use function Safe\filesize;
+use function Safe\getimagesize;
+use function Safe\mkdir;
+use function Safe\opendir;
+use function Safe\preg_match;
+use function Safe\rename;
+use function Safe\sha1_file;
+use function Safe\session_destroy;
+use function Safe\session_id;
+use function Safe\unlink;
 
 /**
  * Document class
@@ -159,12 +173,13 @@ class Document extends CommonDBTM
                     ['sha1sum' => $this->fields["sha1sum"] ]
                 ) <= 1)
             ) {
-                if (unlink(GLPI_DOC_DIR . "/" . $this->fields["filepath"])) {
+                try {
+                    unlink(GLPI_DOC_DIR . "/" . $this->fields["filepath"]);
                     Session::addMessageAfterRedirect(htmlescape(sprintf(
                         __('Successful deletion of the file %s'),
                         $this->fields["filepath"]
                     )));
-                } else {
+                } catch (FilesystemException $e) {
                     trigger_error(
                         sprintf(
                             'Failed to delete the file %s',
@@ -997,7 +1012,12 @@ class Document extends CommonDBTM
             return true;
         }
         // Move
-        return rename($srce, $dest);
+        try {
+            rename($srce, $dest);
+            return true;
+        } catch (FilesystemException $e) {
+            return false;
+        }
     }
 
     /**
@@ -1061,12 +1081,13 @@ class Document extends CommonDBTM
                 ]
             ) <= 1)
         ) {
-            if (unlink(GLPI_DOC_DIR . "/" . $input['current_filepath'])) {
+            try {
+                unlink(GLPI_DOC_DIR . "/" . $input['current_filepath']);
                 Session::addMessageAfterRedirect(htmlescape(sprintf(
                     __('Successful deletion of the file %s'),
                     $input['current_filename']
                 )));
-            } else {
+            } catch (FilesystemException $e) {
                 // TRANS: %1$s is the curent filename, %2$s is its directory
                 trigger_error(
                     sprintf(
@@ -1087,7 +1108,7 @@ class Document extends CommonDBTM
             }
         }
 
-        // Local file : try to detect mime type
+        // Local file: try to detect mime type
         $input['mime'] = Toolbox::getMime($fullpath);
 
         if (
@@ -1101,9 +1122,10 @@ class Document extends CommonDBTM
                 return false;
             }
         } else { // Copy (will overwrite dest file is present)
-            if (copy($fullpath, GLPI_DOC_DIR . "/" . $new_path)) {
+            try {
+                copy($fullpath, GLPI_DOC_DIR . "/" . $new_path);
                 Session::addMessageAfterRedirect(__s('Document copy succeeded.'));
-            } else {
+            } catch (FilesystemException $e) {
                 Session::addMessageAfterRedirect(__s('File move failed'), false, ERROR);
                 return false;
             }
@@ -1178,12 +1200,13 @@ class Document extends CommonDBTM
                 ]
             ) <= 1)
         ) {
-            if (unlink(GLPI_DOC_DIR . "/" . $input['current_filepath'])) {
+            try {
+                unlink(GLPI_DOC_DIR . "/" . $input['current_filepath']);
                 Session::addMessageAfterRedirect(sprintf(
                     __s('Successful deletion of the file %s'),
                     $input['current_filename']
                 ));
-            } else {
+            } catch (FilesystemException $e) {
                 // TRANS: %1$s is the curent filename, %2$s is its directory
                 trigger_error(
                     sprintf(
@@ -1204,13 +1227,14 @@ class Document extends CommonDBTM
             }
         }
 
-        // Local file : try to detect mime type
+        // Local file: try to detect mime type
         $input['mime'] = Toolbox::getMime($fullpath);
 
         // Copy (will overwrite dest file if present)
-        if (copy($fullpath, GLPI_DOC_DIR . "/" . $new_path)) {
+        try {
+            copy($fullpath, GLPI_DOC_DIR . "/" . $new_path);
             Session::addMessageAfterRedirect(__s('Document copy succeeded.'));
-        } else {
+        } catch (FilesystemException $e) {
             Session::addMessageAfterRedirect(__s('File move failed'), false, ERROR);
             @unlink($fullpath);
             return false;
@@ -1263,14 +1287,16 @@ class Document extends CommonDBTM
         }
         $subdir = $dir . '/' . substr($sha1sum, 0, 2);
 
-        if (
-            !is_dir(GLPI_DOC_DIR . "/" . $subdir)
-            && @mkdir(GLPI_DOC_DIR . "/" . $subdir, 0o777, true)
-        ) {
-            Session::addMessageAfterRedirect(sprintf(
-                __s('Create the directory %s'),
-                $subdir
-            ));
+        if (!is_dir(GLPI_DOC_DIR . "/" . $subdir)) {
+            try {
+                mkdir(GLPI_DOC_DIR . "/" . $subdir, 0o777, true);
+                Session::addMessageAfterRedirect(sprintf(
+                    __s('Create the directory %s'),
+                    $subdir
+                ));
+            } catch (FilesystemException $e) {
+                //emtpy catch
+            }
         }
 
         if (!is_dir(GLPI_DOC_DIR . "/" . $subdir)) {

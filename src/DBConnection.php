@@ -33,6 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
+use Safe\Exceptions\FilesystemException;
+
+use function Safe\file_get_contents;
+use function Safe\preg_match;
+use function Safe\unlink;
+
 /**
  *  Database class for Mysql
  **/
@@ -184,7 +190,9 @@ class DBConnection extends CommonDBTM
         }
 
         foreach ($files as $file) {
-            if (($config_str = file_get_contents($config_dir . '/' . $file)) === false) {
+            try {
+                $config_str = file_get_contents($config_dir . '/' . $file);
+            } catch (FilesystemException $e) {
                 return false;
             }
 

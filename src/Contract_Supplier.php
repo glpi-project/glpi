@@ -35,6 +35,8 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
+use function Safe\preg_match;
+
 // Relation between Contracts and Suppliers
 class Contract_Supplier extends CommonDBRelation
 {

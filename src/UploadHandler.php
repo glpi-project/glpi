@@ -40,6 +40,41 @@
  *        It has been added in GLPI 10.0.10 to ensure that removal of `blueimp/jquery-file-upload` library would not
  *        result in any BC-break for plugins.
  */
+
+use Safe\Exceptions\FilesystemException;
+use Safe\Exceptions\ImageException;
+
+use function Safe\ob_flush;
+use function Safe\error_log;
+use function Safe\copy;
+use function Safe\fclose;
+use function Safe\file_put_contents;
+use function Safe\filemtime;
+use function Safe\filesize;
+use function Safe\fopen;
+use function Safe\fread;
+use function Safe\getimagesize;
+use function Safe\imagealphablending;
+use function Safe\imagecopyresampled;
+use function Safe\imagecreatetruecolor;
+use function Safe\imagedestroy;
+use function Safe\imageflip;
+use function Safe\imagerotate;
+use function Safe\imagesavealpha;
+use function Safe\ini_get;
+use function Safe\json_encode;
+use function Safe\mkdir;
+use function Safe\parse_url;
+use function Safe\preg_match;
+use function Safe\preg_replace;
+use function Safe\preg_replace_callback;
+use function Safe\preg_split;
+use function Safe\readfile;
+use function Safe\scandir;
+use function Safe\session_id;
+use function Safe\session_start;
+use function Safe\unlink;
+
 class UploadHandler
 {
     protected $options;
@@ -722,13 +757,26 @@ class UploadHandler
     protected function gd_destroy_image_object($file_path)
     {
         $image = (isset($this->image_objects[$file_path])) ? $this->image_objects[$file_path] : null ;
-        return $image && imagedestroy($image);
+        if ($image) {
+            try {
+                imagedestroy($image);
+                return true;
+            } catch (ImageException $e) {
+                return false;
+            }
+        }
+        return false;
     }
 
     protected function gd_imageflip($image, $mode)
     {
         if (function_exists('imageflip')) {
-            return imageflip($image, $mode);
+            try {
+                imageflip($image, $mode);
+                return true;
+            } catch (ImageException $e) {
+                return false;
+            }
         }
         $new_width = $src_width = imagesx($image);
         $new_height = $src_height = imagesy($image);
@@ -890,7 +938,12 @@ class UploadHandler
                 return $write_func($src_img, $new_file_path, $image_quality);
             }
             if ($file_path !== $new_file_path) {
-                return copy($file_path, $new_file_path);
+                try {
+                    copy($file_path, $new_file_path);
+                    return true;
+                } catch (FilesystemException $e) {
+                    return false;
+                }
             }
             return true;
         }
@@ -923,20 +976,25 @@ class UploadHandler
                 imagesavealpha($new_img, true);
                 break;
         }
-        $success = imagecopyresampled(
-            $new_img,
-            $src_img,
-            $dst_x,
-            $dst_y,
-            0,
-            0,
-            $new_width,
-            $new_height,
-            $img_width,
-            $img_height
-        ) && $write_func($new_img, $new_file_path, $image_quality);
-        $this->gd_set_image_object($file_path, $new_img);
-        return $success;
+        try {
+            imagecopyresampled(
+                $new_img,
+                $src_img,
+                $dst_x,
+                $dst_y,
+                0,
+                0,
+                $new_width,
+                $new_height,
+                $img_width,
+                $img_height
+            );
+            $write_func($new_img, $new_file_path, $image_quality);
+            $this->gd_set_image_object($file_path, $new_img);
+            return true;
+        } catch (ImageException $e) {
+            return false;
+        }
     }
 
     protected function get_image_size($file_path)
@@ -1370,7 +1428,7 @@ class UploadHandler
         $response = [];
         foreach ($file_names as $file_name) {
             $file_path = $this->get_upload_path($file_name);
-            $success = strlen($file_name) > 0 && $file_name[0] !== '.' && is_file($file_path) && unlink($file_path);
+            $success = strlen($file_name) > 0 && $file_name[0] !== '.' && is_file($file_path) && \unlink($file_path); //@phpstan-ignore theCodingMachineSafe.function
             if ($success) {
                 foreach ($this->options['image_versions'] as $version => $options) {
                     if (!empty($version)) {

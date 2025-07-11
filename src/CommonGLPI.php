@@ -40,6 +40,8 @@ use Glpi\Plugin\Hooks;
 use Glpi\Search\FilterableInterface;
 use Symfony\Component\HttpFoundation\Request;
 
+use function Safe\parse_url;
+
 /**
  *  Common GLPI object
  **/

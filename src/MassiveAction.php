@@ -38,6 +38,8 @@ use Glpi\Plugin\Hooks;
 use Glpi\Search\SearchOption;
 use Symfony\Component\HttpFoundation\Request;
 
+use function Safe\preg_match;
+
 /**
  * Class that manages all the massive actions
  *
@@ -388,77 +390,6 @@ class MassiveAction
             $this->start_time = microtime(true);
         }
     }
-
-    public function __get(string $property)
-    {
-        // TODO Deprecate access to variables in GLPI 11.0.
-        $value = null;
-        switch ($property) {
-            case 'action':
-                $value = $this->getAction();
-                break;
-            case 'action_name':
-                $value = $this->getActionName();
-                break;
-            case 'processor':
-                $value = $this->getProcessor();
-                break;
-            case 'items':
-                $value = $this->getItems();
-                break;
-            case 'check_item':
-            case 'current_itemtype':
-            case 'done':
-            case 'fields_to_remove_when_reload':
-            case 'identifier':
-            case 'nb_done':
-            case 'nb_items':
-            case 'redirect':
-            case 'remainings':
-                Toolbox::deprecated(sprintf('Reading private property %s::%s is deprecated', __CLASS__, $property));
-                $value = $this->$property;
-                break;
-            default:
-                $trace = debug_backtrace();
-                trigger_error(
-                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
-                    E_USER_WARNING
-                );
-                break;
-        }
-        return $value;
-    }
-
-    public function __set(string $property, $value)
-    {
-        // TODO Deprecate access to variables in GLPI 11.0.
-        switch ($property) {
-            case 'action':
-            case 'action_name':
-            case 'check_item':
-            case 'current_itemtype':
-            case 'done':
-            case 'fields_to_remove_when_reload':
-            case 'identifier':
-            case 'items':
-            case 'nb_done':
-            case 'nb_items':
-            case 'processor':
-            case 'redirect':
-            case 'remainings':
-                Toolbox::deprecated(sprintf('Writing private property %s::%s is deprecated', __CLASS__, $property));
-                $this->$property = $value;
-                break;
-            default:
-                $trace = debug_backtrace();
-                trigger_error(
-                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
-                    E_USER_WARNING
-                );
-                break;
-        }
-    }
-
 
     /**
      * Get the fields provided by previous stage through $_POST.

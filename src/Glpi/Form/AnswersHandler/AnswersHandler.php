@@ -48,6 +48,8 @@ use Glpi\Form\Form;
 use Glpi\Form\Section;
 use Glpi\Form\ValidationResult;
 
+use function Safe\json_encode;
+
 /**
  * Helper class to handle raw answers data
  */

@@ -195,7 +195,7 @@ final class LocationField extends AbstractConfigField implements DestinationFiel
                     );
 
                     if ($mapped_item === null) {
-                        throw new InvalidArgumentException("Question not found in a target form");
+                        throw new InvalidArgumentException("Question '{$rawData['location_question']}' not found in a target form");
                     }
 
                     return new LocationFieldConfig(

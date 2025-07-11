@@ -37,6 +37,9 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 
+use function Safe\preg_replace;
+use function Safe\strtotime;
+
 abstract class CommonITILSatisfaction extends CommonDBTM
 {
     public $dohistory         = true;

@@ -1191,7 +1191,7 @@ class Hooks
      * - 'itemtype' => The type of the items being searched.
      * - 'reference_table' => The name of the reference table. This should be the table for the itemtype.
      * - 'already_link_table' => An array of tables that are already joined.
-     * The function is expected to return a SQL JOIN clause as a string or an empty string if the default behavior should be used.
+     * The function is expected to return a SQL JOIN clause in the iterator array format, raw SQL string or an empty string if the default behavior should be used.
      */
     public const AUTO_ADD_DEFAULT_JOIN = 'addDefaultJoin';
 
@@ -1207,7 +1207,7 @@ class Hooks
      * Automatic hook function to add a WHERE clause to the SQL query for a searchof itemtypes added by the plugin.
      * The function is called with the following parameters:
      * - 'itemtype' => The type of the items being searched.
-     * The function is expected to return a SQL WHERE clause as a string or an empty string if the default behavior should be used.
+     * The function is expected to return a SQL WHERE clause in the iterator array format, raw SQL string or an empty string if the default behavior should be used.
      */
     public const AUTO_ADD_DEFAULT_WHERE = 'addDefaultWhere';
 
@@ -1240,7 +1240,7 @@ class Hooks
      * - 'search_option_id' => The ID of the search option of the criteria.
      * - 'search_value' => The value to search for.
      * - 'num' => A string in the form of "${itemtype}_{$search_option_id}". The alias of the related field in the SELECT clause will be "ITEM_{$num}".
-     * The function is expected to return a SQL HAVING clause as a string or an empty string if the default behavior should be used.
+     * The function is expected to return a SQL HAVING clause in the iterator array format, raw SQL string or an empty string if the default behavior should be used.
      */
     public const AUTO_ADD_HAVING = 'addHaving';
 
@@ -1253,7 +1253,7 @@ class Hooks
      * - 'new_table' => The name of the table to be joined. Typically, this is the table related to the search option.
      * - 'link_field' => The name of the field in the reference table that links to the new table.
      * - 'already_link_table' => An array of tables that are already joined.
-     * The function is expected to return a SQL JOIN clause as a string or an empty string if the default behavior should be used.
+     * The function is expected to return a SQL JOIN clause in the iterator array format, raw SQL string or an empty string if the default behavior should be used.
      */
     public const AUTO_ADD_LEFT_JOIN = 'addLeftJoin';
 
@@ -1287,7 +1287,7 @@ class Hooks
      * - 'search_option_id' => The ID of the search option of the criteria.
      * - 'search_value' => The value to search for.
      * - 'search_type' => The type of the search (notcontains, contains, equals, etc.).
-     * The function is expected to return a SQL WHERE clause as a string or an empty string if the default behavior should be used.
+     * The function is expected to return a SQL WHERE clause in the iterator array format, raw SQL string or an empty string if the default behavior should be used.
      */
     public const AUTO_ADD_WHERE = 'addWhere';
 

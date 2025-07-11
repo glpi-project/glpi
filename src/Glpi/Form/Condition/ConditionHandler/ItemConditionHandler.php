@@ -38,6 +38,8 @@ use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ValueOperator;
 use Override;
 
+use function Safe\json_decode;
+
 final class ItemConditionHandler implements ConditionHandlerInterface
 {
     use ArrayConditionHandlerTrait;

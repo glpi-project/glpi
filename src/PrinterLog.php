@@ -35,6 +35,9 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Dashboard\Widget;
+use Safe\DateTime;
+
+use function Safe\strtotime;
 
 /**
  * Store printer metrics
@@ -124,8 +127,8 @@ class PrinterLog extends CommonDBChild
         array|Printer|\Glpi\Asset\Asset $printers,
         array $user_filters = [],
         string $interval = 'P1Y',
-        ?DateTime $start_date = null,
-        DateTime $end_date = new DateTime(),
+        ?\DateTime $start_date = null,
+        \DateTime $end_date = new DateTime(),
         string $format = 'dynamic'
     ): array {
         /** @var \DBmysql $DB */

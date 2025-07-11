@@ -42,6 +42,10 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Session;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\preg_match;
+
 final class CustomFieldDefinition extends CommonDBChild
 {
     public static $itemtype = AssetDefinition::class;
@@ -292,6 +296,36 @@ final class CustomFieldDefinition extends CommonDBChild
             $this->fields['default_value'] = $this->getFieldType()->formatValueFromDB(json_decode($this->fields['default_value']));
         }
         parent::post_getFromDB();
+    }
+
+    public function post_addItem()
+    {
+        parent::post_addItem();
+
+        $this->refreshAssetDefinition();
+    }
+
+    public function post_updateItem($history = true)
+    {
+        parent::post_updateItem($history);
+
+        $this->refreshAssetDefinition();
+    }
+
+    public function post_purgeItem()
+    {
+        parent::post_purgeItem();
+
+        $this->refreshAssetDefinition();
+    }
+
+    /**
+     * Refresh the asset definition to get force its custom fields definitions to be updated.
+     */
+    private function refreshAssetDefinition(): void
+    {
+        $definition = AssetDefinition::getById($this->fields['assets_assetdefinitions_id']);
+        AssetDefinitionManager::getInstance()->registerDefinition($definition);
     }
 
     public function computeFriendlyName(): string

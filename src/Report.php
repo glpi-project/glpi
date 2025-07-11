@@ -40,6 +40,8 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Socket;
 
+use function Safe\mktime;
+
 /**
  *  Report class
  *

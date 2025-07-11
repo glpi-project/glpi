@@ -38,6 +38,15 @@ use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\System\Requirement\DbTimezones;
+use Safe\DateTime;
+
+use function Safe\ini_get;
+use function Safe\filesize;
+use function Safe\fopen;
+use function Safe\fread;
+use function Safe\preg_match;
+use function Safe\preg_replace;
+use function Safe\preg_split;
 
 /**
  *  Database class for Mysql
@@ -249,13 +258,13 @@ class DBmysql
         $hostport = explode(":", $host);
         if (count($hostport) < 2) {
             // Host
-            $this->dbh->real_connect($host, $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault);
+            @$this->dbh->real_connect($host, $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault);
         } elseif (intval($hostport[1]) > 0) {
             // Host:port
-            $this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, $hostport[1]);
+            @$this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, $hostport[1]);
         } else {
             // :Socket
-            $this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, ini_get('mysqli.default_port'), $hostport[1]);
+            @$this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, ini_get('mysqli.default_port'), $hostport[1]);
         }
 
         if (!$this->dbh->connect_error) {
@@ -1807,7 +1816,7 @@ class DBmysql
         $list = []; //default $tz is empty
 
         $from_php = \DateTimeZone::listIdentifiers();
-        $now = new \DateTime();
+        $now = new DateTime();
 
         $iterator = $this->request([
             'SELECT' => 'Name',

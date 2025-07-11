@@ -474,6 +474,9 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                 );
             }
 
+            // Reload the definition to refresh its custom fields definition cache
+            $asset_definition->getFromDB($asset_definition->getID());
+
             // Update the fields display options
             $form_fields = array_keys($asset_definition->getAllFields());
 

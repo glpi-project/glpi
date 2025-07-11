@@ -75,6 +75,7 @@ trait CommonDBVisible
      */
     protected $users = [];
 
+
     /**
      * Class defining relation to $users
      * @var string
@@ -126,6 +127,7 @@ trait CommonDBVisible
 
         parent::__construct();
     }
+
 
     /**
      * Is the login user have access to item based on visibility configuration

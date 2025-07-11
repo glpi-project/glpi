@@ -9017,4 +9017,90 @@ HTML,
             'recipientname' => 'tech',
         ]));
     }
+
+    public function testShowCentralListSurvey()
+    {
+        global $DB, $GLPI_CACHE;
+
+        $this->login();
+
+        $DB->insert('glpi_tickets', [
+            'name' => __FUNCTION__ . ' old',
+            'content' => '',
+            'users_id_recipient' => Session::getLoginUserID(),
+            'entities_id' => getItemByTypeName('Entity', '_test_child_1', true),
+            'status' => CommonITILObject::CLOSED,
+            'closedate' => date('Y-m-d', \Safe\strtotime(Session::getCurrentTime() . ' - 181 days')),
+        ]);
+        $this->assertNotFalse($DB->insert('glpi_ticketsatisfactions', [
+            'tickets_id' => $DB->insertId(),
+            'date_begin' => date('Y-m-d', \Safe\strtotime(Session::getCurrentTime() . ' - 181 days')),
+        ]));
+        $DB->insert('glpi_tickets', [
+            'name' => __FUNCTION__ . ' 1',
+            'content' => '',
+            'users_id_recipient' => Session::getLoginUserID(),
+            'entities_id' => getItemByTypeName('Entity', '_test_child_1', true),
+            'status' => CommonITILObject::CLOSED,
+            'closedate' => date('Y-m-d', \Safe\strtotime(Session::getCurrentTime() . ' - 10 days')),
+        ]);
+        $this->assertNotFalse($DB->insert('glpi_ticketsatisfactions', [
+            'tickets_id' => $DB->insertId(),
+            'date_begin' => date('Y-m-d', \Safe\strtotime(Session::getCurrentTime() . ' - 10 days')),
+        ]));
+        $DB->insert('glpi_tickets', [
+            'name' => __FUNCTION__ . ' 2',
+            'content' => '',
+            'users_id_recipient' => Session::getLoginUserID(),
+            'entities_id' => getItemByTypeName('Entity', '_test_child_1', true),
+            'status' => CommonITILObject::CLOSED,
+            'closedate' => date('Y-m-d', \Safe\strtotime(Session::getCurrentTime() . ' - 5 days')),
+        ]);
+        $this->assertNotFalse($DB->insert('glpi_ticketsatisfactions', [
+            'tickets_id' => $DB->insertId(),
+            'date_begin' => date('Y-m-d', \Safe\strtotime(Session::getCurrentTime() . ' - 5 days')),
+        ]));
+
+        $this->assertNotFalse($DB->update('glpi_entities', [
+            'inquest_config' => \Entity::CONFIG_PARENT,
+        ], [
+            'id' => getItemByTypeName('Entity', '_test_child_1', true),
+        ]));
+        $this->assertNotFalse($DB->update('glpi_entities', [
+            'inquest_config' => 1,
+            'inquest_duration' => 7,
+        ], [
+            'id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]));
+        $GLPI_CACHE->clear();
+
+        $result = Ticket::showCentralList(0, 'survey', false, false);
+        $this->assertStringContainsString(__FUNCTION__ . ' 2', $result);
+        $this->assertStringNotContainsString(__FUNCTION__ . ' 1', $result);
+        $this->assertStringNotContainsString(__FUNCTION__ . ' old', $result);
+
+        $DB->update('glpi_entities', [
+            'inquest_duration' => 11,
+        ], [
+            'id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+        $GLPI_CACHE->clear();
+        $result = Ticket::showCentralList(0, 'survey', false, false);
+
+        $this->assertStringContainsString(__FUNCTION__ . ' 2', $result);
+        $this->assertStringContainsString(__FUNCTION__ . ' 1', $result);
+        $this->assertStringNotContainsString(__FUNCTION__ . ' old', $result);
+
+        $DB->update('glpi_entities', [
+            'inquest_duration' => 200,
+        ], [
+            'id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+        $GLPI_CACHE->clear();
+        $result = Ticket::showCentralList(0, 'survey', false, false);
+
+        $this->assertStringContainsString(__FUNCTION__ . ' 2', $result);
+        $this->assertStringContainsString(__FUNCTION__ . ' 1', $result);
+        $this->assertStringNotContainsString(__FUNCTION__ . ' old', $result);
+    }
 }

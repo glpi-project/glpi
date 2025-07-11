@@ -43,6 +43,13 @@ use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Glpi\Api\HL\Doc as Doc;
 
+use function Safe\ob_start;
+use function Safe\ob_get_clean;
+use function Safe\mktime;
+use function Safe\parse_url;
+use function Safe\preg_match;
+use function Safe\strtotime;
+
 class ReportController extends AbstractController
 {
     protected static function getRawKnownSchemas(): array

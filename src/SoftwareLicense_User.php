@@ -86,7 +86,27 @@ class SoftwareLicense_User extends CommonDBRelation
 
     public static function countForLicense(int $softwarelicenses_id): int
     {
-        return countElementsInTable(static::getTable(), ['softwarelicenses_id' => $softwarelicenses_id]);
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $iterator = $DB->request([
+            'COUNT' => 'cpt',
+            'FROM'  => static::getTable(),
+            'INNER JOIN' => [
+                User::getTable() => [
+                    'FKEY' => [
+                        static::getTable() => 'users_id',
+                        User::getTable() => 'id',
+                    ],
+                ],
+            ],
+            'WHERE' => [
+                static::getTable() . '.softwarelicenses_id' => $softwarelicenses_id,
+                User::getTable() . '.is_deleted' => 0,
+            ],
+        ]);
+
+        return $iterator->current()['cpt'];
     }
 
     private static function showForUser(CommonDBTM $item, $withtemplate = 0): void

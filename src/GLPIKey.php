@@ -34,6 +34,12 @@
  */
 
 use Glpi\Plugin\Hooks;
+use Safe\Exceptions\FilesystemException;
+
+use function Safe\base64_decode;
+use function Safe\file_put_contents;
+use function Safe\sodium_crypto_aead_xchacha20poly1305_ietf_encrypt;
+use function Safe\sodium_crypto_aead_xchacha20poly1305_ietf_decrypt;
 
 /**
  *  GLPI security key
@@ -129,7 +135,7 @@ class GLPIKey
             trigger_error('You must create a security key, see security:change_key command.', E_USER_WARNING);
             return null;
         }
-        if (!is_readable($this->keyfile) || ($key = file_get_contents($this->keyfile)) === false) {
+        if (!is_readable($this->keyfile) || ($key = file_get_contents($this->keyfile)) === false) { //@phpstan-ignore theCodingMachineSafe.function
             trigger_error('Unable to get security key file contents.', E_USER_WARNING);
             return null;
         }
@@ -152,7 +158,7 @@ class GLPIKey
             return GLPIKEY;
         }
         //load key from existing config file
-        if (!is_readable($this->legacykeyfile) || ($key = file_get_contents($this->legacykeyfile)) === false) {
+        if (!is_readable($this->legacykeyfile) || ($key = file_get_contents($this->legacykeyfile)) === false) { //@phpstan-ignore theCodingMachineSafe.function
             trigger_error('Unable to get security legacy key file contents.', E_USER_WARNING);
             return null;
         }
@@ -191,7 +197,11 @@ class GLPIKey
         }
 
         $key = sodium_crypto_aead_chacha20poly1305_ietf_keygen();
-        $written_bytes = file_put_contents($this->keyfile, $key);
+        try {
+            $written_bytes = file_put_contents($this->keyfile, $key);
+        } catch (FilesystemException $e) {
+            $written_bytes = false;
+        }
         if ($written_bytes !== strlen($key)) {
             trigger_error('Unable to write security key file contents.', E_USER_WARNING);
             return false;
@@ -425,20 +435,21 @@ class GLPIKey
 
         $ciphertext = mb_substr($string, SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES, null, '8bit');
 
-        $plaintext = sodium_crypto_aead_xchacha20poly1305_ietf_decrypt(
-            $ciphertext,
-            $nonce,
-            $nonce,
-            $key
-        );
-        if ($plaintext === false) {
+        try {
+            $plaintext = sodium_crypto_aead_xchacha20poly1305_ietf_decrypt(
+                $ciphertext,
+                $nonce,
+                $nonce,
+                $key
+            );
+            return $plaintext;
+        } catch (\Safe\Exceptions\SodiumException $e) {
             trigger_error(
                 'Unable to decrypt string. It may have been crypted with another key.',
                 E_USER_WARNING
             );
             return '';
         }
-        return $plaintext;
     }
 
     /**

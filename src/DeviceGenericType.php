@@ -38,6 +38,6 @@ class DeviceGenericType extends CommonDeviceType
 {
     public static function getTypeName($nb = 0)
     {
-        return _n('Generic type', 'Generic types', $nb); //TODO : add this to locales (if don't exist)
+        return _n('Generic type', 'Generic types', $nb);
     }
 }

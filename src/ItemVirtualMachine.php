@@ -36,6 +36,9 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
 
+use function Safe\preg_match;
+use function Safe\preg_replace;
+
 /**
  * Virtual machine management
  */

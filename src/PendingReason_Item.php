@@ -35,6 +35,7 @@
 
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
+use Safe\DateTime;
 
 class PendingReason_Item extends CommonDBRelation
 {

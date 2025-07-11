@@ -46,6 +46,8 @@ use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Override;
 use Ramsey\Uuid\Uuid;
 
+use function Safe\json_encode;
+
 /**
  * Section of a given helpdesk form
  */

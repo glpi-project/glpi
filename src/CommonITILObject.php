@@ -47,6 +47,13 @@ use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
 use Glpi\Team\Team;
 
+use function Safe\getimagesize;
+use function Safe\ob_start;
+use function Safe\ob_get_clean;
+use function Safe\preg_match;
+use function Safe\preg_replace;
+use function Safe\strtotime;
+
 /**
  * CommonITILObject Class
  *
@@ -194,8 +201,6 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function loadActors()
     {
-        // TODO 11.0 (breaking change): method should be protected instead of public
-
         // Might not be 100% needed to clear cache here but let's be safe
         // This way, any direct call to loadActors is assured to return accurate data
         $this->clearLazyLoadedActors();
@@ -246,33 +251,7 @@ abstract class CommonITILObject extends CommonDBTM
                 return $this->lazy_loaded_suppliers;
 
             default:
-                // Log error and keep running
-                // TODO 11.0: throw exception instead
-                trigger_error("Unknown field: '$property_name'", E_USER_WARNING);
-                return null;
-        }
-    }
-
-    /**
-     * Magic setter for lazy loaded properties
-     *
-     * @param string $property_name
-     * @param mixed $value
-     */
-    public function __set(string $property_name, $value)
-    {
-        switch ($property_name) {
-            case 'users':
-            case 'groups':
-            case 'suppliers':
-                // Log error and keep running
-                // TODO 11.0: throw exception instead
-                trigger_error("Readonly field: '$property_name'", E_USER_WARNING);
-                break;
-
-            default:
-                $this->$property_name = $value;
-                break;
+                throw new \RuntimeException(sprintf('Unknown property `%s`.', $property_name));
         }
     }
 
@@ -290,10 +269,7 @@ abstract class CommonITILObject extends CommonDBTM
                 return true;
 
             default:
-                // Log error and keep running
-                // TODO 11.0: throw exception instead
-                trigger_error("Unknown field: '$property_name'", E_USER_WARNING);
-                return false;
+                throw new \RuntimeException(sprintf('Unknown property `%s`.', $property_name));
         }
     }
 
@@ -318,10 +294,7 @@ abstract class CommonITILObject extends CommonDBTM
                 break;
 
             default:
-                // Log error and keep running
-                // TODO 11.0: throw exception instead
-                trigger_error("Unknown field: '$property_name'", E_USER_WARNING);
-                break;
+                throw new \RuntimeException(sprintf('Unknown property `%s`.', $property_name));
         }
     }
 
@@ -4779,6 +4752,7 @@ abstract class CommonITILObject extends CommonDBTM
             'name'               => _n('Requester', 'Requesters', 1),
             'forcegroupby'       => true,
             'massiveaction'      => false,
+            'use_subquery'       => true,
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => getTableForItemType($this->userlinkclass),
@@ -4831,6 +4805,7 @@ abstract class CommonITILObject extends CommonDBTM
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'condition'          => ['is_requester' => 1],
+            'use_subquery'       => true,
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => getTableForItemType($this->grouplinkclass),
@@ -4885,6 +4860,7 @@ abstract class CommonITILObject extends CommonDBTM
             'name'               => _n('Observer', 'Observers', 1),
             'forcegroupby'       => true,
             'massiveaction'      => false,
+            'use_subquery'       => true,
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => getTableForItemType($this->userlinkclass),
@@ -4929,6 +4905,7 @@ abstract class CommonITILObject extends CommonDBTM
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'condition'          => ['is_watcher' => 1],
+            'use_subquery'       => true,
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => getTableForItemType($this->grouplinkclass),
@@ -4954,6 +4931,7 @@ abstract class CommonITILObject extends CommonDBTM
             'name'               => __('Technician'),
             'forcegroupby'       => true,
             'massiveaction'      => false,
+            'use_subquery'       => true,
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => getTableForItemType($this->userlinkclass),
@@ -4973,6 +4951,7 @@ abstract class CommonITILObject extends CommonDBTM
             'name'               => __('Assigned to a supplier'),
             'forcegroupby'       => true,
             'massiveaction'      => false,
+            'use_subquery'       => true,
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => getTableForItemType($this->supplierlinkclass),
@@ -5017,6 +4996,7 @@ abstract class CommonITILObject extends CommonDBTM
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'condition'          => ['is_assign' => 1],
+            'use_subquery'       => true,
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => getTableForItemType($this->grouplinkclass),
@@ -5528,8 +5508,12 @@ abstract class CommonITILObject extends CommonDBTM
                                                             - $this->fields["waiting_duration"]);
             }
             // Not calendar defined
-            return max(0, strtotime($this->fields['solvedate']) - strtotime($this->fields['date'])
-                       - $this->fields["waiting_duration"]);
+            try {
+                return max(0, strtotime($this->fields['solvedate']) - strtotime($this->fields['date'])
+                    - $this->fields["waiting_duration"]);
+            } catch (\Safe\Exceptions\DatetimeException $e) {
+                return 0;
+            }
         }
         return 0;
     }
@@ -5566,8 +5550,12 @@ abstract class CommonITILObject extends CommonDBTM
                                                              - $this->fields["waiting_duration"]);
             }
             // Not calendar defined
-            return max(0, strtotime($this->fields['closedate']) - strtotime($this->fields['date'])
-                       - $this->fields["waiting_duration"]);
+            try {
+                return max(0, strtotime($this->fields['closedate']) - strtotime($this->fields['date'])
+                    - $this->fields["waiting_duration"]);
+            } catch (\Safe\Exceptions\DatetimeException $e) {
+                return 0;
+            }
         }
         return 0;
     }
@@ -7816,30 +7804,28 @@ abstract class CommonITILObject extends CommonDBTM
                 $item['_can_delete'] = Document::canDelete() && $document_obj->canDeleteItem() && $canupdate_parent;
 
                 $timeline_key = $document_item['itemtype'] . "_" . $document_item['items_id'];
+                $doc_entry = [
+                    'type' => Document_Item::class,
+                    'item' => $item,
+                    '_is_image' => false,
+                ];
+                $docpath = GLPI_DOC_DIR . "/" . $item['filepath'];
+                $is_image = Document::isImage($docpath);
+                if ($is_image) {
+                    $doc_entry['_is_image'] = true;
+                    $doc_entry['_size'] = getimagesize($docpath);
+                }
                 if ($document_item['itemtype'] == static::getType()) {
                     // document associated directly to itilobject
-                    $timeline["Document_" . $document_item['documents_id']] = [
-                        'type' => 'Document_Item',
-                        'item' => $item,
-                        'object' => $document_obj,
-                    ];
+                    $doc_entry['object'] = $document_obj;
+                    $timeline["Document_" . $document_item['documents_id']] = $doc_entry;
                 } elseif (isset($timeline[$timeline_key])) {
                     // document associated to a sub item of itilobject
                     if (!isset($timeline[$timeline_key]['documents'])) {
                         $timeline[$timeline_key]['documents'] = [];
                     }
 
-                    $docpath = GLPI_DOC_DIR . "/" . $item['filepath'];
-                    $is_image = Document::isImage($docpath);
-                    $sub_document = [
-                        'type' => 'Document_Item',
-                        'item' => $item,
-                    ];
-                    if ($is_image) {
-                        $sub_document['_is_image'] = true;
-                        $sub_document['_size'] = getimagesize($docpath);
-                    }
-                    $timeline[$timeline_key]['documents'][] = $sub_document;
+                    $timeline[$timeline_key]['documents'][] = $doc_entry;
                 }
             }
         }

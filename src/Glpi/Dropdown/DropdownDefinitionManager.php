@@ -37,6 +37,9 @@ namespace Glpi\Dropdown;
 use Glpi\CustomObject\AbstractDefinition;
 use Glpi\CustomObject\AbstractDefinitionManager;
 
+use function Safe\preg_match;
+use function Safe\preg_replace;
+
 /**
  * @extends AbstractDefinitionManager<DropdownDefinition>
  */

@@ -39,6 +39,8 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\Features\AssignableItem;
 use Glpi\Toolbox\URL;
 
+use function Safe\preg_match;
+
 /**
  * External link class
  */

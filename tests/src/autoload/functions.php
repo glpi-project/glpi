@@ -808,11 +808,11 @@ function loadDataset()
     global $GLPI_CACHE;
     $GLPI_CACHE->clear();
 
-    // Force bootstraping of the created custom assets/dropdowns
+    // Force reboot of the created custom assets/dropdowns
     AssetDefinitionManager::unsetInstance();
-    AssetDefinitionManager::getInstance()->bootstrapDefinitions();
+    AssetDefinitionManager::getInstance()->bootDefinitions();
     DropdownDefinitionManager::unsetInstance();
-    DropdownDefinitionManager::getInstance()->bootstrapDefinitions();
+    DropdownDefinitionManager::getInstance()->bootDefinitions();
 }
 
 /**

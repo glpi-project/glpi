@@ -40,6 +40,8 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Symfony\Component\Filesystem\Path;
 
+use function Safe\preg_replace;
+
 /**
  * Generates an import map for JavaScript modules with cache busting parameters
  *

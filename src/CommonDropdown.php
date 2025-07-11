@@ -37,6 +37,8 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Dropdown\DropdownDefinition;
 use Glpi\Features\AssetImage;
 
+use function Safe\preg_grep;
+
 /// CommonDropdown class - generic dropdown
 abstract class CommonDropdown extends CommonDBTM
 {

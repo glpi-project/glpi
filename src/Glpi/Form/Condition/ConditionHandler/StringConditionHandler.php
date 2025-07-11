@@ -104,8 +104,8 @@ class StringConditionHandler implements ConditionHandlerInterface
             // There is no clean way to test that a regex is valid in PHP,
             // therefore the simplest way to deal with that is to ignore
             // warnings using the "@" prefix.
-            ValueOperator::MATCH_REGEX     => @preg_match($b, $a),
-            ValueOperator::NOT_MATCH_REGEX => !@preg_match($b, $a),
+            ValueOperator::MATCH_REGEX     => @preg_match($b, $a), // @phpstan-ignore theCodingMachineSafe.function
+            ValueOperator::NOT_MATCH_REGEX => !@preg_match($b, $a), // @phpstan-ignore theCodingMachineSafe.function
 
             // Length comparison operators
             ValueOperator::LENGTH_GREATER_THAN           => strlen($a) > intval($b),

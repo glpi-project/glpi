@@ -39,6 +39,10 @@ use Glpi\DBAL\QueryParam;
 use Glpi\Features\Clonable;
 use Glpi\Toolbox\ArrayNormalizer;
 use Glpi\Error\ErrorHandler;
+use Safe\DateTime;
+
+use function Safe\parse_url;
+use function Safe\preg_replace;
 
 /**
  * Saved searches class
@@ -1030,8 +1034,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         $cron_status = 0;
 
         if ($CFG_GLPI['show_count_on_tabs'] != -1) {
-            $lastdate = new \DateTime($task->getField('lastrun'));
-            $lastdate->sub(new \DateInterval('P7D'));
+            $lastdate = new DateTime($task->getField('lastrun'));
+            $lastdate->sub(new DateInterval('P7D'));
 
             $iterator = $DB->request(['FROM'   => self::getTable(),
                 'FIELDS' => ['id', 'query', 'itemtype', 'type'],

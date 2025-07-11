@@ -153,10 +153,6 @@ if (isset($_POST["validatortype"])) {
                 'items_id'      => $_POST['items_id_target'],
                 'rand'          => $_POST['rand'],
             ];
-            if (array_key_exists('name', $_POST)) {
-                // TODO Drop in GLPI 11.0
-                $param['name'] = !empty($_POST['name']) ? $_POST['name'] : '';
-            }
             if (array_key_exists('validation_class', $_POST)) {
                 $param['validation_class'] = $_POST['validation_class'];
             }

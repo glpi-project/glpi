@@ -41,6 +41,8 @@ use Glpi\RichText\RichText;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VTodo;
 
+use function Safe\preg_replace;
+
 /**
  * Reminder Class
  **/

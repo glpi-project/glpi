@@ -38,6 +38,8 @@ namespace Glpi\Dashboard\Filters;
 use Html;
 use Search;
 
+use function Safe\strtotime;
+
 abstract class AbstractFilter
 {
     /**

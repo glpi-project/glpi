@@ -41,7 +41,19 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\SessionExpiredException;
 use Glpi\Plugin\Hooks;
 use Glpi\Session\SessionInfo;
+use Safe\Exceptions\SessionException;
 use Symfony\Component\HttpFoundation\Request;
+
+use function Safe\ini_get;
+use function Safe\preg_match;
+use function Safe\scandir;
+use function Safe\session_unset;
+use function Safe\session_regenerate_id;
+use function Safe\session_id;
+use function Safe\session_save_path;
+use function Safe\session_start;
+use function Safe\session_write_close;
+use function Safe\strtotime;
 
 /**
  * Session Class
@@ -1166,7 +1178,11 @@ class Session
             UNLOCK => 'UNLOCK',
         ];
         // Close session and force the default language so the logged right name is standardized
-        session_write_close();
+        try {
+            session_write_close();
+        } catch (SessionException $e) {
+            //empty catch; session may already be closed
+        }
         $current_lang = $_SESSION['glpilanguage'];
         self::loadLanguage('en_GB');
 
@@ -1198,7 +1214,7 @@ class Session
     }
 
     /**
-     * Check if I have the right $right to module $module (conpare to session variable)
+     * Check if I have the right $right to module $module (compare to session variable)
      *
      * @param string  $module Module to check
      * @param integer $right  Right to check
@@ -1215,7 +1231,7 @@ class Session
     }
 
     /**
-     * Check if I one right of array $rights to module $module (conpare to session variable)
+     * Check if I one right of array $rights to module $module (compare to session variable)
      *
      * @param string $module Module to check
      * @param array  $rights Rights to check
@@ -1380,7 +1396,7 @@ class Session
 
 
     /**
-     * Have I the right $right to module $module (conpare to session variable)
+     * Have I the right $right to module $module (compare to session variable)
      *
      * @param string  $module Module to check
      * @param integer $right  Right to check
@@ -1413,7 +1429,7 @@ class Session
 
 
     /**
-     * Have I all rights of array $rights to module $module (conpare to session variable)
+     * Have I all rights of array $rights to module $module (compare to session variable)
      *
      * @param string    $module Module to check
      * @param integer[] $rights Rights to check
@@ -2282,7 +2298,7 @@ class Session
      */
     public static function getCurrentTime(): ?string
     {
-        // TODO (11.0 refactoring): replace references to $_SESSION['glpi_currenttime'] by a call to this function
+        // TODO replace references to $_SESSION['glpi_currenttime'] by a call to this function
         return $_SESSION['glpi_currenttime'] ?? null;
     }
 
@@ -2302,7 +2318,11 @@ class Session
      */
     public static function canWriteSessionFiles(): bool
     {
-        $session_handler = ini_get('session.save_handler');
+        try {
+            $session_handler = ini_get('session.save_handler');
+        } catch (\Safe\Exceptions\InfoException $e) {
+            $session_handler = false;
+        }
         return $session_handler !== false
             && (strtolower($session_handler) !== 'files' || is_writable(GLPI_SESSION_DIR));
     }

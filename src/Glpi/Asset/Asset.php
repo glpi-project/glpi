@@ -46,9 +46,13 @@ use Group_Item;
 use Location;
 use Log;
 use Manufacturer;
+use Safe\Exceptions\JsonException;
 use Session;
 use State;
 use User;
+
+use function Safe\json_decode;
+use function Safe\json_encode;
 
 abstract class Asset extends CommonDBTM
 {
@@ -419,7 +423,13 @@ abstract class Asset extends CommonDBTM
 
     private function getDecodedCustomFields(): array
     {
-        return json_decode($this->fields['custom_fields'] ?? '[]', true) ?? [];
+        $return = [];
+        try {
+            $return = json_decode($this->fields['custom_fields'] ?? '[]', true);
+        } catch (JsonException $e) {
+            //empty catch
+        }
+        return $return;
     }
 
     public function getEmpty()

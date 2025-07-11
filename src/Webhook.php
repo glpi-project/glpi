@@ -48,6 +48,9 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Search\FilterableInterface;
 use Glpi\Search\FilterableTrait;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+
 class Webhook extends CommonDBTM implements FilterableInterface
 {
     use Glpi\Features\Clonable;

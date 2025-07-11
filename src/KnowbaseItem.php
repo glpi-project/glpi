@@ -42,6 +42,10 @@ use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
 use Glpi\RichText\RichText;
 use Glpi\UI\IllustrationManager;
 
+use function Safe\preg_match;
+use function Safe\preg_replace;
+use function Safe\preg_replace_callback;
+
 /**
  * KnowbaseItem Class
  **/

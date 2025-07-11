@@ -38,6 +38,8 @@ use Glpi\Form\Question;
 use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Form\Tag\QuestionTagProvider;
 
+use function Safe\preg_match_all;
+
 /**
  * Provides common functionality for converting legacy tags to new format
  */

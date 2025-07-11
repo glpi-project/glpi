@@ -39,6 +39,9 @@ use Glpi\DBAL\QueryUnion;
 use Glpi\Plugin\Hooks;
 use Glpi\Socket;
 
+use function Safe\preg_replace;
+use function Safe\strtotime;
+
 /**
  * NetworkPort Class
  *

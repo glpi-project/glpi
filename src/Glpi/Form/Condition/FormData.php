@@ -38,6 +38,8 @@ use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use ReflectionClass;
 
+use function Safe\json_decode;
+
 final class FormData
 {
     /** @var SectionData[] $sections_data */

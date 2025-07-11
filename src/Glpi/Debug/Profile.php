@@ -35,6 +35,11 @@
 
 namespace Glpi\Debug;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\gzdecode;
+use function Safe\gzencode;
+
 final class Profile
 {
     private string $id;

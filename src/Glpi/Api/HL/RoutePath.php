@@ -44,6 +44,10 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
 
+use function Safe\preg_match;
+use function Safe\preg_match_all;
+use function Safe\preg_replace_callback;
+
 /**
  * @phpstan-type RoutePathCacheHint array{key: string, path: string, compiled_path: string, methods: string[], priority: int, security: int}
  */

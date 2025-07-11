@@ -40,6 +40,9 @@ use Glpi\Api\HL\Search;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 
+use function Safe\preg_match;
+use function Safe\preg_replace;
+
 /**
  * Parses tokens from the RSQL lexer into a SQL criteria array to be used by the {@link \DBmysqlIterator} class.
  */

@@ -39,6 +39,13 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\preg_grep;
+use function Safe\preg_match;
+use function Safe\preg_replace;
+use function Safe\realpath;
+
 /**
  * Database utilities
  *
@@ -2072,10 +2079,9 @@ final class DbUtils
             return [];
         }
 
-        $tab = json_decode($data, true);
-
-        // Use old scheme to decode
-        if (!is_array($tab)) {
+        try {
+            $tab = json_decode($data, true);
+        } catch (\Safe\Exceptions\JsonException $e) {
             $tab = [];
 
             foreach (explode(" ", $data) as $item) {
