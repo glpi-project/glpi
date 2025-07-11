@@ -206,12 +206,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Cluster.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBChild.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter &\\$item by\\-ref type of method CommonDBConnexity\\:\\:canConnexityItem\\(\\) expects CommonDBTM\\|null, CommonDBTM\\|false given\\.$#',
 	'identifier' => 'parameterByRef.type',
 	'count' => 1,
@@ -606,12 +600,6 @@ $ignoreErrors[] = [
 	'identifier' => 'booleanAnd.rightAlwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Domain_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Dropdown.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Dropdown\\:\\:getDropdownConnect\\(\\) should return array\\|string but empty return statement found\\.$#',
@@ -1167,12 +1155,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Dashboard/FakeProvider.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array\\<mixed\\> will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Dashboard/Filters/DatesModFilter.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to an undefined static method CommonDBVisible\\:\\:getVisibilityCriteria\\(\\)\\.$#',
 	'identifier' => 'staticMethod.notFound',
 	'count' => 1,
@@ -1377,12 +1359,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/SearchEngine.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/SearchEngine.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type Glpi\\\\Search\\\\Input\\\\SearchInputInterface is not subtype of native type string\\.$#',
 	'identifier' => 'varTag.nativeType',
 	'count' => 2,
@@ -1423,12 +1399,6 @@ $ignoreErrors[] = [
 	'identifier' => 'property.onlyWritten',
 	'count' => 1,
 	'path' => __DIR__ . '/src/HTMLTableSuperHeader.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with bool will always evaluate to false\\.$#',
@@ -1677,12 +1647,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Link.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Log.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Access to an undefined property Laminas\\\\Mail\\\\Storage\\\\Message\\:\\:\\$date\\.$#',
 	'identifier' => 'property.notFound',
 	'count' => 1,
@@ -1747,12 +1711,6 @@ $ignoreErrors[] = [
 	'identifier' => 'nullCoalesce.property',
 	'count' => 1,
 	'path' => __DIR__ . '/src/MassiveAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Migration.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Monitor\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
@@ -2079,12 +2037,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Printer.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with non\\-empty\\-array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Printer_CartridgeInfo.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Loose comparison using \\!\\= between \'\' and \'\' will always evaluate to false\\.$#',
 	'identifier' => 'notEqual.alwaysFalse',
 	'count' => 1,
@@ -2095,12 +2047,6 @@ $ignoreErrors[] = [
 	'identifier' => 'varTag.nativeType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Problem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Profile.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$interface \\=\\= \'all\' \\? array\\<string, array\\<string, array\\<string, RightDefinition\\[\\]\\>\\>\\> \\: \\(\\$form \\=\\= \'all\' \\? array\\<string, array\\<string, RightDefinition\\[\\]\\>\\> \\: \\(\\$group \\=\\= \'all\' \\? array\\<string, RightDefinition\\[\\]\\> \\: RightDefinition\\[\\]\\)\\)\\)\\: Unexpected token "\\$interface", expected type at offset 517 on line 12$#',
