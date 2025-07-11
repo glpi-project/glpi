@@ -48,11 +48,13 @@ class HLAPITestCase extends \DbTestCase
 {
     private $bearer_token = null;
 
-    public function afterTestMethod($method)
+    public function tearDown(): void
     {
         // kill session
         Session::destroy();
-        parent::afterTestMethod($method);
+        // Reset the router
+        Router::resetInstance();
+        parent::tearDown();
     }
 
     public function resetSession()
