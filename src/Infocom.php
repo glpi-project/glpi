@@ -957,7 +957,7 @@ class Infocom extends CommonDBChild
      * @param number        $value
      * @param string        $date_achat    (default '')
      *
-     * @return float
+     * @return string
      **/
     public static function showTco($ticket_tco, $value, $date_achat = "")
     {

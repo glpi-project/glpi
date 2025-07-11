@@ -59,7 +59,7 @@ final class QueryBuilder implements SearchInputInterface
      *
      * @return void
      **/
-    public static function showGenericSearch($itemtype, array $params)
+    public static function showGenericSearch(string $itemtype, array $params): void
     {
         // Default values of parameters
         $p['sort']         = '';

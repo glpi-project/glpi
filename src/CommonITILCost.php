@@ -448,21 +448,20 @@ abstract class CommonITILCost extends CommonDBChild
     /**
      * Print the item costs
      *
-     * @param CommonITILObject $item object or Project
-     * @param boolean $withtemplate Template or basic item (default 0)
+     * @param CommonITILObject $item         object or Project
+     * @param int              $withtemplate Template or basic item (default 0)
      *
      * @return false|integer total cost
      **/
     public static function showForObject($item, $withtemplate = 0)
     {
         /**
-         * @var array $CFG_GLPI
          * @var \DBmysql $DB
          */
-        global $CFG_GLPI, $DB;
+        global $DB;
 
         $forproject = false;
-        if (is_a($item, 'Project', true)) {
+        if (is_a($item, Project::class, true)) {
             $forproject = true;
         }
 

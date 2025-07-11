@@ -664,44 +664,41 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
      **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item::class === self::class) {
-            switch ($tabnum) {
-                case 1:
-                    $item->showChildren();
-                    break;
-
-                case 2:
-                    self::showStandardOptions($item);
-                    break;
-
-                case 3:
-                    self::showAdvancedOptions($item);
-                    break;
-
-                case 4:
-                    self::showNotificationOptions($item);
-                    break;
-
-                case 5:
-                    self::showHelpdeskOptions($item);
-                    break;
-
-                case 6:
-                    self::showInventoryOptions($item);
-                    break;
-
-                case 7:
-                    self::showUiCustomizationOptions($item);
-                    break;
-                case 8:
-                    self::showSecurityOptions($item);
-                    break;
-                case 9:
-                    $item->showHelpdeskHomeConfig();
-                    break;
-            }
+        if (!$item instanceof self) {
+            return false;
         }
-        return true;
+
+        switch ($tabnum) {
+            case 1:
+                return $item->showChildren();
+
+            case 2:
+                return self::showStandardOptions($item);
+
+            case 3:
+                return self::showAdvancedOptions($item);
+
+            case 4:
+                return self::showNotificationOptions($item);
+
+            case 5:
+                return self::showHelpdeskOptions($item);
+
+            case 6:
+                return self::showInventoryOptions($item);
+
+            case 7:
+                return self::showUiCustomizationOptions($item);
+
+            case 8:
+                return self::showSecurityOptions($item);
+
+            case 9:
+                return $item->showHelpdeskHomeConfig();
+
+            default:
+                return false;
+        }
     }
 
     public function showForm($ID, array $options = [])
@@ -1693,12 +1690,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         return $entities;
     }
 
-    /**
-     * @since 0.84
-     *
-     * @param Entity $entity object
-     **/
-    public static function showStandardOptions(Entity $entity)
+    public static function showStandardOptions(Entity $entity): bool
     {
         $ID = $entity->getField('id');
         if (!$entity->can($ID, READ)) {
@@ -1713,12 +1705,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         return true;
     }
 
-    /**
-     * @since 0.84 (before in entitydata.class)
-     *
-     * @param Entity $entity object
-     **/
-    public static function showAdvancedOptions(Entity $entity)
+    public static function showAdvancedOptions(Entity $entity): bool
     {
         $ID          = $entity->getField('id');
         if (!$entity->can($ID, READ)) {
@@ -1734,12 +1721,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         return true;
     }
 
-    /**
-     * @since 0.84 (before in entitydata.class)
-     *
-     * @param Entity $entity object
-     **/
-    public static function showInventoryOptions(Entity $entity)
+    public static function showInventoryOptions(Entity $entity): bool
     {
         $ID = $entity->getField('id');
         if (!$entity->can($ID, READ)) {
@@ -1826,12 +1808,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         return true;
     }
 
-    /**
-     * @since 0.84 (before in entitydata.class)
-     *
-     * @param Entity $entity object
-     **/
-    public static function showNotificationOptions(Entity $entity)
+    public static function showNotificationOptions(Entity $entity): bool
     {
 
         $ID = $entity->getField('id');
@@ -1922,16 +1899,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         return true;
     }
 
-    /**
-     * UI customization configuration form.
-     *
-     * @param Entity $entity object
-     *
-     * @return void
-     *
-     * @since 9.5.0
-     */
-    public static function showUiCustomizationOptions(Entity $entity)
+    public static function showUiCustomizationOptions(Entity $entity): bool
     {
         $ID = $entity->getField('id');
         if (!$entity->can($ID, READ) || !Session::haveRight(Config::$rightname, UPDATE)) {
@@ -1975,16 +1943,11 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
                 'candel' => false, // No deleting from the non-main tab
             ],
         ]);
+
+        return true;
     }
 
-    /**
-     * Security configuration form.
-     *
-     * @param Entity $entity The entity
-     * @return void|false
-     * @since 11.0.0
-     */
-    public static function showSecurityOptions(Entity $entity)
+    public static function showSecurityOptions(Entity $entity): bool
     {
         $ID = $entity->getField('id');
         if (!$entity->can($ID, READ)) {
@@ -1999,6 +1962,8 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'action' => Toolbox::getItemTypeFormURL(__CLASS__),
             'inherited_value' => $entity->getInheritedValueBadge('2fa_enforcement_strategy', '2fa_enforcement_strategy'),
         ]);
+
+        return true;
     }
 
     /**
@@ -2120,12 +2085,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         return false;
     }
 
-    /**
-     * @param Entity $entity
-     * @return false|void
-     * @since 0.84 (before in entitydata.class)
-     **/
-    public static function showHelpdeskOptions(Entity $entity)
+    public static function showHelpdeskOptions(Entity $entity): bool
     {
         $ID = $entity->getField('id');
         if (
@@ -2177,6 +2137,8 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
                 'formfooter' => false,
             ],
         ]);
+
+        return true;
     }
 
     /**

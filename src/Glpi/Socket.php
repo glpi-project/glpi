@@ -634,12 +634,13 @@ class Socket extends CommonDBChild
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
-        if ($item->getType() == 'Location') {
-            self::showForLocation($item);
-        } elseif (in_array($item->getType(), $CFG_GLPI['socket_types'])) {
-            self::showListForItem($item);
+        if ($item instanceof Location) {
+            return self::showForLocation($item);
+        } elseif (in_array($item::class, $CFG_GLPI['socket_types'])) {
+            /** @var CommonDBTM $item */
+            return self::showListForItem($item);
         }
-        return true;
+        return false;
     }
 
     /**
@@ -647,9 +648,9 @@ class Socket extends CommonDBChild
      *
      * @param CommonDBTM $item
      *
-     * @return void
+     * @return bool
      **/
-    public static function showListForItem($item)
+    public static function showListForItem($item): bool
     {
 
         /** @var \DBmysql $DB */
@@ -795,6 +796,8 @@ class Socket extends CommonDBChild
                 ],
             ],
         ]);
+
+        return true;
     }
 
     /**
@@ -802,9 +805,9 @@ class Socket extends CommonDBChild
      *
      * @param Location $item
      *
-     * @return void
+     * @return bool
      **/
-    public static function showForLocation($item)
+    public static function showForLocation(Location $item): bool
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -824,7 +827,6 @@ class Socket extends CommonDBChild
         }
         $rand = mt_rand();
         $number = countElementsInTable('glpi_sockets', ['locations_id' => $ID]);
-        $socket_form_url = self::getFormURL();
 
         if ($canedit) {
             $socket_itemtypes = array_keys(self::getSocketLinkTypes());
@@ -849,7 +851,6 @@ class Socket extends CommonDBChild
             'START' => $start,
             'LIMIT' => $_SESSION['glpilist_limit'],
         ]);
-        $socket_form_url = htmlescape(self::getFormURL());
 
         foreach ($it as $data) {
             $name = sprintf(
@@ -915,6 +916,8 @@ class Socket extends CommonDBChild
                 ],
             ],
         ]);
+
+        return true;
     }
 
     /**

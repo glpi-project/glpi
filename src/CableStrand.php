@@ -86,24 +86,18 @@ class CableStrand extends CommonDropdown
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
-        if ($item->getType() == __CLASS__) {
-            /** @var CableStrand $item */
-            switch ($tabnum) {
-                case 1:
-                    $item->showItems();
-                    break;
-            }
+        if ($item instanceof self) {
+            return $item->showItems();
         }
-        return true;
+        return false;
     }
 
     /**
      * Print the HTML array of items related to cable strand.
      *
-     * @return void
+     * @return bool
      */
-    public function showItems()
+    public function showItems(): bool
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -214,6 +208,8 @@ class CableStrand extends CommonDropdown
             echo "<p class='center b'>" . __s('No results found') . "</p>";
         }
         echo "</table></div>";
+
+        return true;
     }
 
     public static function getIcon()

@@ -167,9 +167,9 @@ abstract class CommonDBVisible extends CommonDBTM
      *
      * @since 9.2 moved from each class to parent class
      *
-     * @return void
+     * @return bool
      **/
-    public function showVisibility()
+    public function showVisibility(): bool
     {
         $ID      = (int) $this->fields['id'];
         $canedit = $this->canEdit($ID);

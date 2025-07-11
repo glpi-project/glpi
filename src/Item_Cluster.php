@@ -62,8 +62,10 @@ class Item_Cluster extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        self::showItems($item);
-        return true;
+        if (!$item instanceof Cluster) {
+            return false;
+        }
+        return self::showItems($item);
     }
 
     public function getForbiddenStandardMassiveAction()
@@ -79,9 +81,9 @@ class Item_Cluster extends CommonDBRelation
     /**
      * Print enclosure items
      *
-     * @return void
+     * @return bool
      **/
-    public static function showItems(Cluster $cluster)
+    public static function showItems(Cluster $cluster): bool
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -144,6 +146,8 @@ class Item_Cluster extends CommonDBRelation
                 'container'     => 'mass' . static::class . $rand,
             ],
         ]);
+
+        return true;
     }
 
     public function showForm($ID, array $options = [])
