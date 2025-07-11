@@ -395,7 +395,7 @@ final class SearchEngine
         /// Get the items to display
         // Add searched items
 
-        $forcetoview = (is_array($forcedisplay) && count($forcedisplay)) || isset($p['forcetoview']);
+        $forcetoview = count($forcedisplay) || isset($p['forcetoview']);
         $data['search']['all_search']  = false;
         $data['search']['view_search'] = false;
         // If no research limit research to display item and compute number of item using simple request

@@ -1826,7 +1826,7 @@ HTML;
             'add_data_attributes_itemtype_dropdown' => '',
         ];
 
-        if (is_array($options) && count($options)) {
+        if (count($options)) {
             foreach ($options as $key => $val) {
                 $params[$key] = $val;
             }

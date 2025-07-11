@@ -116,6 +116,6 @@ class DatesModFilter extends AbstractFilter
 JAVASCRIPT;
         $field .= Html::scriptBlock($js);
 
-        return self::field('dates_mod', $field, $label, is_array($values) && count($values) > 0);
+        return self::field('dates_mod', $field, $label, count($values) > 0);
     }
 }
