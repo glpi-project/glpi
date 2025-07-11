@@ -3784,13 +3784,13 @@ final class SQLProvider implements SearchProviderInterface
      * @param string  $searchtype     search type ('contains' or 'equals')
      * @param string  $val            value search
      *
-     * @return array|false HAVING criteria as an array
+     * @return array HAVING criteria as an array
      **/
-    public static function getHavingCriteria(string $LINK, bool $NOT, string $itemtype, int $ID, string $searchtype, string $val): array|false
+    public static function getHavingCriteria(string $LINK, bool $NOT, string $itemtype, int $ID, string $searchtype, string $val): array
     {
         $searchopt  = SearchOption::getOptionsForItemtype($itemtype);
         if (!isset($searchopt[$ID]['table'])) {
-            return false;
+            return [];
         }
         $table = $searchopt[$ID]["table"];
         $NAME = "ITEM_{$itemtype}_{$ID}";
@@ -4723,9 +4723,7 @@ final class SQLProvider implements SearchProviderInterface
                         $criterion['searchtype'],
                         $criterion['value']
                     );
-                    if ($new_having !== false) {
-                        $sql .= $new_having;
-                    }
+                    $sql .= $new_having;
                 } else {
                     if ($is_having) {
                         // the having part has been already managed in the first pass
