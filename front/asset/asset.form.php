@@ -46,7 +46,7 @@ use Glpi\Exception\Http\BadRequestHttpException;
 
 if (array_key_exists('id', $_REQUEST) && !Asset::isNewId($_REQUEST['id'])) {
     $asset = Asset::getById($_REQUEST['id']);
-    if ($asset === false) {
+    if (!$asset instanceof Asset) {
         $asset = null;
     }
 } else {

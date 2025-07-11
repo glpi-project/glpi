@@ -1686,10 +1686,10 @@ final class SQLProvider implements SearchProviderInterface
                     $toadd2 = " OR `$table`.`$field` IS NULL";
                 }
 
-                return new QueryExpression(" (((`$table`.`tickets_id_1` $compare '$val'
+                return [new QueryExpression(" (((`$table`.`tickets_id_1` $compare '$val'
                               $tmplink `$table`.`tickets_id_2` $compare '$val')
                              AND `glpi_tickets`.`id` <> '$val')
-                            $toadd2)");
+                            $toadd2)")];
 
             case "glpi_tickets.priority":
             case "glpi_tickets.impact":
@@ -6012,7 +6012,7 @@ final class SQLProvider implements SearchProviderInterface
                         return __('Unlimited');
                     }
                     if (empty($data[$ID][0]['name'])) {
-                        return 0;
+                        return '';
                     }
                     return $data[$ID][0]['name'];
 

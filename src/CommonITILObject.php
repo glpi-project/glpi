@@ -7873,8 +7873,10 @@ abstract class CommonITILObject extends CommonDBTM
         $autoreminders = $autoreminder_obj->find(['items_id'  => $this->getID()]);
         foreach ($autoreminders as $autoreminder_id => $autoreminder) {
             $autoreminder_obj = ITILReminder::getByID($autoreminder_id);
+            if (!$autoreminder_obj instanceof ITILReminder) {
+                continue;
+            }
             $pending_reason = $autoreminder_obj->getPendingReason();
-            $followup_template = ITILFollowupTemplate::getById($pending_reason->fields['itilfollowuptemplates_id']);
             $content = sprintf(
                 '<span>%1$s%2$s (<span data-bs-toggle="popover" data-bs-html="true" data-bs-sanitize="true" data-bs-content="%3$s"><u>%4$s</u></span>)</span>',
                 '<i class="ti ti-refresh-alert text-warning me-1"></i>',

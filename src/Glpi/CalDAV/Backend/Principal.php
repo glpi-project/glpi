@@ -94,7 +94,7 @@ class Principal extends AbstractBackend
         $item = $this->getPrincipalItemFromUri($path);
 
         if (null === $item) {
-            return;
+            return [];
         }
 
         return $this->getPrincipalFromItem($item);

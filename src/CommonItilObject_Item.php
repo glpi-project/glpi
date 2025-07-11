@@ -1293,7 +1293,7 @@ TWIG, $twig_params);
         $iterator = $DB->request(['FROM' => $union]);
 
         if ($p['hide_if_no_elements'] && $iterator->count() === 0) {
-            return;
+            return false;
         }
 
         $output = [];

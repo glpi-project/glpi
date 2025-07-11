@@ -308,7 +308,7 @@ TWIG, $twig_params);
 
     public function getName($options = [])
     {
-        return $this->getID();
+        return (string)$this->getID();
     }
 
     /**

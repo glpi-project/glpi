@@ -344,7 +344,7 @@ class RuleAction extends CommonDBChild
      *     <li>alreadyused: if an action of the same type was already used for the rule (default false)</li>
      *     <li>display: if the dropdown should be displayed< (default true)/li>
      * </ul>
-     * @return string|int Returns the dropdown HTML if display is false, otherwise the random number used to create the dropdown is returned.
+     * @return string|int|false Returns the dropdown HTML if display is false, otherwise the random number used to create the dropdown is returned.
      **/
     public static function dropdownActions($options = [])
     {
