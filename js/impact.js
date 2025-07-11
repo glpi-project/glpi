@@ -2051,27 +2051,27 @@ var GLPIImpact = {
             this.cy.getElementById(startNode.id).data("highlight", 1);
 
             // Set undo/redo data
-            var data = {
+            var undoData = {
                 edges: eles.edges().map(function(edge){ return edge.data(); }),
                 compounds: [],
                 nodes: [],
             };
             eles.nodes().forEach(function(node) {
                 if (node.isParent()) {
-                    data.compounds.push({
+                    undoData.compounds.push({
                         compoundData    : _.clone(node.data()),
                         compoundChildren: node.children().map(function(n) {
                             return n.data('id');
                         }),
                     });
                 } else {
-                    data.nodes.push({
+                    undoData.nodes.push({
                         nodeData    : _.clone(node.data()),
                         nodePosition: _.clone(node.position()),
                     });
                 }
             });
-            this.addToUndo(this.ACTION_ADD_GRAPH, data);
+            this.addToUndo(this.ACTION_ADD_GRAPH, undoData);
             return;
         }
 
