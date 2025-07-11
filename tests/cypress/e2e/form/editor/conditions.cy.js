@@ -78,7 +78,7 @@ function addSection(name) {
 }
 
 function getSubmitButtonContainer() {
-    return cy.get('.editor-footer [data-glpi-form-editor-visibility-dropdown-container]');
+    return cy.get('#glpi-form-properties-accordion [data-glpi-form-editor-visibility-dropdown-container]');
 }
 
 function getAndFocusQuestion(name) {
@@ -344,6 +344,42 @@ describe ('Conditions', () => {
                 'Is equal to',
                 'I love GLPI'
             );
+            closeConditionEditor();
+        });
+    });
+
+    it('displays the correct dynamic label for submit button visibility strategy', () => {
+        createForm();
+        addQuestion('My first question');
+        saveAndReload();
+
+        // Test that the initial label is "Always visible"
+        getSubmitButtonContainer().within(() => {
+            openConditionEditor();
+            checkThatSelectedVisibilityOptionIs('Always visible');
+
+            // Change to "Visible if..." and verify the label updates
+            setConditionStrategy('Visible if...');
+            checkThatSelectedVisibilityOptionIs('Visible if...');
+            fillCondition(0, null, 'My first question', 'Is equal to', 'I love GLPI');
+
+            // Change to "Hidden if..." and verify the label updates
+            setConditionStrategy('Hidden if...');
+            checkThatSelectedVisibilityOptionIs('Hidden if...');
+
+            // Change back to "Always visible" and verify the label updates
+            setConditionStrategy('Always visible');
+            checkThatSelectedVisibilityOptionIs('Always visible');
+
+            closeConditionEditor();
+        });
+
+        // Save and reload to test persistence
+        saveAndReload();
+
+        getSubmitButtonContainer().within(() => {
+            openConditionEditor();
+            checkThatSelectedVisibilityOptionIs('Always visible');
             closeConditionEditor();
         });
     });

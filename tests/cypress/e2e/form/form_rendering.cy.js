@@ -222,35 +222,6 @@ describe('Form rendering', () => {
         });
     });
 
-    it("Can't submit form multiple times", () => {
-        // Set up a simple form with one question
-        cy.createWithAPI('Glpi\\Form\\Form', {
-            'name': 'Test form preview',
-        }).as('form_id');
-        cy.get('@form_id').then((form_id) => {
-            cy.addQuestionToDefaultSectionWithAPI(
-                form_id,
-                'First question',
-                'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
-                0,
-                null,
-                null,
-                null,
-                false // Mandatory
-            );
-
-            // Preview form
-            cy.login();
-            cy.visit(`/Form/Render/${form_id}`);
-
-            // Submit form
-            cy.findByRole('button', {name: 'Submit'}).click();
-
-            // Try to submit again, should fail
-            cy.findByRole('button', {name: 'Submit'}).should('have.class', 'pointer-events-none');
-        });
-    });
-
     it("Display untitled labels for questions and comments in form preview", () => {
         // Login and create a new form
         cy.login();

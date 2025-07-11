@@ -874,4 +874,70 @@ describe ('Form editor', () => {
             { name: 'Third question', description: 'Third question description', type: 'Long answer' }
         ]);
     });
+
+    it('can change render layout', () => {
+        cy.createFormWithAPI().as('form_id').then((form_id) => {
+            // Add question to default section
+            cy.addQuestionToDefaultSectionWithAPI(
+                form_id,
+                'First question',
+                'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                0
+            );
+
+            // Add second section with a question
+            cy.createWithAPI('Glpi\\Form\\Section', {
+                'name': 'Second section',
+                'rank': 1,
+                'forms_forms_id': form_id,
+            }).then((second_section_id) => {
+                cy.createWithAPI('Glpi\\Form\\Question', {
+                    'name': 'Second question',
+                    'type': 'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                    'vertical_rank': 1,
+                    'forms_sections_id': second_section_id,
+                });
+            });
+
+            // Visit form tab
+            cy.get('@form_id').visitFormTab('Form');
+
+            // Validate default render layout
+            cy.getDropdownByLabelText('Render layout').hasDropdownValue('Step by step');
+
+            // Go to preview
+            cy.findByRole('link', { 'name': "Preview" })
+                .invoke('removeAttr', 'target') // Cypress can't handle tab changes
+                .click()
+            ;
+
+            // Validate layout
+            cy.findByRole('heading', {'name': 'First section'}).should('exist');
+            cy.findByRole('heading', {'name': 'Second section'}).should('not.exist');
+            cy.findByRole('button', {'name': 'Continue'}).should('exist');
+            cy.findByRole('button', {'name': 'Submit'}).should('not.exist');
+
+            // Go back to form editor
+            cy.get('@form_id').visitFormTab('Form');
+
+            // Change render layout to "Single page"
+            cy.getDropdownByLabelText('Render layout').selectDropdownValue('Single page');
+
+            // Save form
+            cy.findByRole('button', {'name': 'Save'}).click();
+            cy.checkAndCloseAlert('Item successfully updated');
+
+            // Go to preview
+            cy.findByRole('link', { 'name': "Preview" })
+                .invoke('removeAttr', 'target') // Cypress can't handle tab changes
+                .click()
+            ;
+
+            // Validate layout
+            cy.findByRole('heading', {'name': 'First section'}).should('exist');
+            cy.findByRole('heading', {'name': 'Second section'}).should('exist');
+            cy.findByRole('button', {'name': 'Continue'}).should('not.exist');
+            cy.findByRole('button', {'name': 'Submit'}).should('exist');
+        });
+    });
 });
