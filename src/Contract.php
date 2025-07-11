@@ -1625,12 +1625,13 @@ class Contract extends CommonDBTM
         );
     }
 
+    #[Override]
     public static function getMassiveActionsForItemtype(
         array &$actions,
-        $itemtype,
-        $is_deleted = false,
+        string $itemtype,
+        bool $is_deleted = false,
         ?CommonDBTM $checkitem = null
-    ) {
+    ): void {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 

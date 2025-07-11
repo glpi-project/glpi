@@ -275,12 +275,13 @@ class KnowbaseItem_Item extends CommonDBRelation
         return $forbidden;
     }
 
+    #[Override]
     public static function getMassiveActionsForItemtype(
         array &$actions,
-        $itemtype,
-        $is_deleted = false,
+        string $itemtype,
+        bool $is_deleted = false,
         ?CommonDBTM $checkitem = null
-    ) {
+    ): void {
 
         $kb_item = new KnowbaseItem();
         $kb_item->getEmpty();

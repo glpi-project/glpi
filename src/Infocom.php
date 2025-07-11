@@ -2037,13 +2037,13 @@ JS;
         return htmlescape(Html::convDate(date("Y-m-d", $timestamp)));
     }
 
-
+    #[Override]
     public static function getMassiveActionsForItemtype(
         array &$actions,
-        $itemtype,
-        $is_deleted = false,
+        string $itemtype,
+        bool $is_deleted = false,
         ?CommonDBTM $checkitem = null
-    ) {
+    ): void {
 
         $action_name = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'activate';
 
