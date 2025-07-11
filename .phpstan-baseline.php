@@ -3098,12 +3098,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/AnswersHandler/AnswersHandler.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\$specific_actors of class Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ValidationFieldConfig constructor expects array\\<int\\>, array\\<string\\> given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/ValidationField.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$domain of function __ expects string, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,

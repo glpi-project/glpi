@@ -66,6 +66,11 @@ describe('Validation configuration', () => {
             cy.createWithAPI('ITILValidationTemplate', {
                 'name': `Validation configuration test validation template - ${form_id}`
             });
+
+            cy.createWithAPI('ValidationStep', {
+                'name': `Validation configuration test validation step - ${form_id}`,
+                'minimal_required_validation_percent': 100,
+            });
         });
     });
 
@@ -97,14 +102,18 @@ describe('Validation configuration', () => {
 
         // Switch to "Specific actors"
         cy.get('@validation_dropdown').selectDropdownValue('Specific actors');
+        cy.get('@config').getDropdownByLabelText('Select validation step...').as('validation_step_dropdown');
         cy.get('@config').getDropdownByLabelText('Select actors...').as('specific_actors_dropdown');
         cy.get('@form_id').then((form_id) => {
+            cy.get('@validation_step_dropdown').selectDropdownValue(`Validation configuration test validation step - ${form_id}`);
+
             cy.get('@specific_actors_dropdown').selectDropdownValue(`Validation configuration test user - ${form_id}`);
             cy.get('@specific_actors_dropdown').selectDropdownValue(`Validation configuration test group - ${form_id}`);
 
             cy.findByRole('button', {'name': 'Update item'}).click();
             cy.checkAndCloseAlert('Item successfully updated');
             cy.get('@validation_dropdown').should('have.text', 'Specific actors');
+            cy.get('@validation_step_dropdown').should('have.text', `Validation configuration test validation step - ${form_id}`);
             cy.get('@specific_actors_dropdown').should(
                 'have.text',
                 `×Validation configuration test user - ${form_id}×Validation configuration test group - ${form_id}`
@@ -113,17 +122,98 @@ describe('Validation configuration', () => {
 
         // Switch to "Answer from specific questions"
         cy.get('@validation_dropdown').selectDropdownValue('Answer from specific questions');
+        cy.get('@config').getDropdownByLabelText('Select validation step...').as('validation_step_dropdown');
         cy.get('@config').getDropdownByLabelText('Select questions...').as('specific_answers_dropdown');
         cy.get('@specific_answers_dropdown').selectDropdownValue('My User question');
         cy.get('@specific_answers_dropdown').selectDropdownValue('My Assignee question');
 
+        cy.get('@form_id').then((form_id) => {
+            cy.get('@validation_step_dropdown').selectDropdownValue(`Validation configuration test validation step - ${form_id}`);
+        });
+
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
         cy.get('@validation_dropdown').should('have.text', 'Answer from specific questions');
+        cy.get('@form_id').then((form_id) => {
+            cy.get('@validation_step_dropdown')
+                .should(
+                    'have.text',
+                    `Validation configuration test validation step - ${form_id}`
+                );
+        });
         cy.get('@specific_answers_dropdown').should(
             'have.text',
             '×My User question×My Assignee question'
         );
+    });
+
+    it('can define multiple strategies at once', () => {
+        cy.findByRole('region', {'name': "Approval configuration"}).as("config");
+        cy.get('@config').getDropdownByLabelText('Select strategy...').as("validation_dropdown");
+
+        // Add first strategy
+        cy.get('@validation_dropdown').selectDropdownValue('Specific actors');
+        cy.get('@config').getDropdownByLabelText('Select actors...').eq(0).as('specific_actors_dropdown');
+        cy.get('@form_id').then((form_id) => {
+            cy.get('@specific_actors_dropdown').selectDropdownValue(`Validation configuration test user - ${form_id}`);
+            cy.get('@specific_actors_dropdown').selectDropdownValue(`Validation configuration test group - ${form_id}`);
+        });
+
+        // Add second strategy
+        cy.get('@config').findByRole('button', {'name': 'Combine with another option'}).click();
+        cy.get('@validation_dropdown').eq(-1).selectDropdownValue('Specific Approval templates');
+        cy.get('@config').getDropdownByLabelText('Select approval templates...').as('specific_templates_dropdown');
+        cy.get('@form_id').then((form_id) => {
+            cy.get('@specific_templates_dropdown').selectDropdownValue(`Validation configuration test validation template - ${form_id}`);
+        });
+
+        // Add third strategy
+        cy.get('@config').findByRole('button', {'name': 'Combine with another option'}).click();
+        cy.get('@validation_dropdown').eq(-1).selectDropdownValue('Answer from specific questions');
+        cy.get('@config').getDropdownByLabelText('Select questions...').as('specific_answers_dropdown');
+        cy.get('@specific_answers_dropdown').selectDropdownValue('My User question');
+        cy.get('@specific_answers_dropdown').selectDropdownValue('My Assignee question');
+
+        // Add fourth strategy
+        cy.get('@config').findByRole('button', {'name': 'Combine with another option'}).click();
+        cy.get('@validation_dropdown').eq(-1).selectDropdownValue('Specific actors');
+        cy.get('@config').getDropdownByLabelText('Select actors...').eq(-1).as('specific_actors_dropdown_2');
+        cy.get('@form_id').then((form_id) => {
+            cy.get('@specific_actors_dropdown_2').selectDropdownValue(`Validation configuration test user - ${form_id}`);
+        });
+
+        // Save
+        cy.findByRole('button', {'name': 'Update item'}).click();
+        cy.checkAndCloseAlert('Item successfully updated');
+
+        // Check values
+        cy.get('@form_id').then((form_id) => {
+            cy.get('@validation_dropdown').should('have.length', 4);
+
+            cy.get('@validation_dropdown').eq(0).should('have.text', 'Specific actors');
+            cy.get('@specific_actors_dropdown').should(
+                'have.text',
+                `×Validation configuration test user - ${form_id}×Validation configuration test group - ${form_id}`
+            );
+
+            cy.get('@validation_dropdown').eq(1).should('have.text', 'Specific Approval templates');
+            cy.get('@specific_templates_dropdown').should(
+                'have.text',
+                `×Validation configuration test validation template - ${form_id}`
+            );
+
+            cy.get('@validation_dropdown').eq(2).should('have.text', 'Answer from specific questions');
+            cy.get('@specific_answers_dropdown').should(
+                'have.text',
+                '×My User question×My Assignee question'
+            );
+
+            cy.get('@validation_dropdown').eq(3).should('have.text', 'Specific actors');
+            cy.get('@specific_actors_dropdown_2').should(
+                'have.text',
+                `×Validation configuration test user - ${form_id}`
+            );
+        });
     });
 
     it('can create ticket using a specific question answer', () => {

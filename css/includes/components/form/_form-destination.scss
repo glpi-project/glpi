@@ -168,6 +168,18 @@
                             border-top-left-radius: 0 !important;
                             border-top-right-radius: 0 !important;
                         }
+
+                        >div:has(.select2-selection) {
+                            &:not(:last-child) {
+                                .select2-selection {
+                                    border-radius: 0 !important;
+                                }
+                            }
+
+                            &:not(:first-child) {
+                                margin-top: calc(-1 * var(--tblr-border-width));
+                            }
+                        }
                     }
                 }
             }

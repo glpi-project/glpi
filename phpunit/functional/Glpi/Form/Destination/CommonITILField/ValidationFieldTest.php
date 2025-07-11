@@ -38,6 +38,7 @@ use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\ValidationField;
 use Glpi\Form\Destination\CommonITILField\ValidationFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ValidationFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\ValidationFieldStrategyConfig;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeAssignee;
@@ -48,6 +49,7 @@ use Group;
 use Group_User;
 use ITILValidationTemplate;
 use Override;
+use TicketValidationStep;
 use User;
 use ValidationStep;
 
@@ -68,9 +70,9 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
         // No validation with no answers and no specific actors
         $this->sendFormAndAssertValidations(
             form: $form,
-            config: new ValidationFieldConfig(
-                strategies: [ValidationFieldStrategy::NO_VALIDATION]
-            ),
+            config: new ValidationFieldConfig([
+                new ValidationFieldStrategyConfig(ValidationFieldStrategy::NO_VALIDATION),
+            ]),
             answers: [],
             expected_validations: [],
             keys_to_be_considered: []
@@ -79,14 +81,16 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
         // No validation with no answers and specific actors
         $this->sendFormAndAssertValidations(
             form: $form,
-            config: new ValidationFieldConfig(
-                strategies: [ValidationFieldStrategy::NO_VALIDATION],
-                specific_actors: [
-                    'users_id-' . $users[0]->getID(),
-                    'users_id-' . $users[1]->getID(),
-                    'groups_id-' . $groups[0]->getID(),
-                ]
-            ),
+            config: new ValidationFieldConfig([
+                new ValidationFieldStrategyConfig(
+                    strategy: ValidationFieldStrategy::NO_VALIDATION,
+                    specific_actors: [
+                        'users_id-' . $users[0]->getID(),
+                        'users_id-' . $users[1]->getID(),
+                        'groups_id-' . $groups[0]->getID(),
+                    ]
+                ),
+            ]),
             answers: [],
             expected_validations: [],
             keys_to_be_considered: []
@@ -95,9 +99,9 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
         // No validation with answers and no specific actors
         $this->sendFormAndAssertValidations(
             form: $form,
-            config: new ValidationFieldConfig(
-                strategies: [ValidationFieldStrategy::NO_VALIDATION]
-            ),
+            config: new ValidationFieldConfig([
+                new ValidationFieldStrategyConfig(ValidationFieldStrategy::NO_VALIDATION),
+            ]),
             answers: [
                 "Assignee" => Group::getForeignKeyField() . '-' . $groups[0]->getID(),
                 "GLPI User" => [
@@ -112,14 +116,16 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
         // No validation with answers and specific actors
         $this->sendFormAndAssertValidations(
             form: $form,
-            config: new ValidationFieldConfig(
-                strategies: [ValidationFieldStrategy::NO_VALIDATION],
-                specific_actors: [
-                    'users_id-' . $users[0]->getID(),
-                    'users_id-' . $users[1]->getID(),
-                    'groups_id-' . $groups[0]->getID(),
-                ]
-            ),
+            config: new ValidationFieldConfig([
+                new ValidationFieldStrategyConfig(
+                    strategy: ValidationFieldStrategy::NO_VALIDATION,
+                    specific_actors: [
+                        'users_id-' . $users[0]->getID(),
+                        'users_id-' . $users[1]->getID(),
+                        'groups_id-' . $groups[0]->getID(),
+                    ]
+                ),
+            ]),
             answers: [
                 "Assignee" => User::getForeignKeyField() . '-' . $users[2]->getID(),
                 "GLPI User" => [
@@ -132,7 +138,7 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
         );
     }
 
-    public function testFollowupForSpecificValues(): void
+    public function testValidationForSpecificValues(): void
     {
         $this->login();
 
@@ -147,13 +153,15 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
         // With no answers
         $this->sendFormAndAssertValidations(
             form: $form,
-            config: new ValidationFieldConfig(
-                strategies: [ValidationFieldStrategy::SPECIFIC_VALUES],
-                specific_validationtemplate_ids: [
-                    $templates[0]->getID(),
-                    $templates[1]->getID(),
-                ]
-            ),
+            config: new ValidationFieldConfig([
+                new ValidationFieldStrategyConfig(
+                    strategy: ValidationFieldStrategy::SPECIFIC_VALUES,
+                    specific_validationtemplate_ids: [
+                        $templates[0]->getID(),
+                        $templates[1]->getID(),
+                    ]
+                ),
+            ]),
             answers: [],
             expected_validations: [
                 [
@@ -171,13 +179,15 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
         // With answers
         $this->sendFormAndAssertValidations(
             form: $form,
-            config: new ValidationFieldConfig(
-                strategies: [ValidationFieldStrategy::SPECIFIC_VALUES],
-                specific_validationtemplate_ids: [
-                    $templates[0]->getID(),
-                    $templates[1]->getID(),
-                ]
-            ),
+            config: new ValidationFieldConfig([
+                new ValidationFieldStrategyConfig(
+                    strategy: ValidationFieldStrategy::SPECIFIC_VALUES,
+                    specific_validationtemplate_ids: [
+                        $templates[0]->getID(),
+                        $templates[1]->getID(),
+                    ]
+                ),
+            ]),
             answers: [
                 "Assignee" => Group::getForeignKeyField() . '-' . $groups[1]->getID(),
                 "GLPI User" => [
@@ -206,47 +216,57 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
         $users = $this->createAndGetUserActors();
         $groups = $this->createAndGetGroupActors();
+        $validation_step = $this->createAndGetValidationStep();
 
         // With no answers
         $this->sendFormAndAssertValidations(
             form: $form,
-            config: new ValidationFieldConfig(
-                strategies: [ValidationFieldStrategy::SPECIFIC_ACTORS],
-                specific_actors: [
-                    'users_id-' . $users[0]->getID(),
-                    'users_id-' . $users[1]->getID(),
-                    'groups_id-' . $groups[0]->getID(),
-                ]
-            ),
+            config: new ValidationFieldConfig([
+                new ValidationFieldStrategyConfig(
+                    strategy: ValidationFieldStrategy::SPECIFIC_ACTORS,
+                    specific_actors: [
+                        'users_id-' . $users[0]->getID(),
+                        'users_id-' . $users[1]->getID(),
+                        'groups_id-' . $groups[0]->getID(),
+                    ],
+                    specific_validation_step_id: $validation_step->getID()
+                ),
+            ]),
             answers: [],
             expected_validations: [
                 [
-                    'itemtype_target' => 'User',
-                    'items_id_target' => $users[0]->getID(),
+                    'itemtype_target'    => 'User',
+                    'items_id_target'    => $users[0]->getID(),
+                    'validationsteps_id' => $validation_step->getID(),
                 ],
                 [
-                    'itemtype_target' => 'User',
-                    'items_id_target' => $users[1]->getID(),
+                    'itemtype_target'    => 'User',
+                    'items_id_target'    => $users[1]->getID(),
+                    'validationsteps_id' => $validation_step->getID(),
                 ],
                 [
-                    'itemtype_target' => 'Group',
-                    'items_id_target' => $groups[0]->getID(),
+                    'itemtype_target'    => 'Group',
+                    'items_id_target'    => $groups[0]->getID(),
+                    'validationsteps_id' => $validation_step->getID(),
                 ],
             ],
-            keys_to_be_considered: ['itemtype_target', 'items_id_target']
+            keys_to_be_considered: ['itemtype_target', 'items_id_target', 'validationsteps_id']
         );
 
         // With answers
         $this->sendFormAndAssertValidations(
             form: $form,
-            config: new ValidationFieldConfig(
-                strategies: [ValidationFieldStrategy::SPECIFIC_ACTORS],
-                specific_actors: [
-                    'users_id-' . $users[0]->getID(),
-                    'users_id-' . $users[1]->getID(),
-                    'groups_id-' . $groups[0]->getID(),
-                ]
-            ),
+            config: new ValidationFieldConfig([
+                new ValidationFieldStrategyConfig(
+                    strategy: ValidationFieldStrategy::SPECIFIC_ACTORS,
+                    specific_actors: [
+                        'users_id-' . $users[0]->getID(),
+                        'users_id-' . $users[1]->getID(),
+                        'groups_id-' . $groups[0]->getID(),
+                    ],
+                    specific_validation_step_id: $validation_step->getID()
+                ),
+            ]),
             answers: [
                 "Assignee" => Group::getForeignKeyField() . '-' . $groups[1]->getID(),
                 "GLPI User" => [
@@ -258,17 +278,20 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
                 [
                     'itemtype_target' => 'User',
                     'items_id_target' => $users[0]->getID(),
+                    'validationsteps_id' => $validation_step->getID(),
                 ],
                 [
                     'itemtype_target' => 'User',
                     'items_id_target' => $users[1]->getID(),
+                    'validationsteps_id' => $validation_step->getID(),
                 ],
                 [
                     'itemtype_target' => 'Group',
                     'items_id_target' => $groups[0]->getID(),
+                    'validationsteps_id' => $validation_step->getID(),
                 ],
             ],
-            keys_to_be_considered: ['itemtype_target', 'items_id_target']
+            keys_to_be_considered: ['itemtype_target', 'items_id_target', 'validationsteps_id']
         );
     }
 
@@ -279,14 +302,18 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
         $users = $this->createAndGetUserActors();
         $groups = $this->createAndGetGroupActors();
+        $validation_step = $this->createAndGetValidationStep();
 
         // Using answer from first question
         $this->sendFormAndAssertValidations(
             form: $form,
-            config: new ValidationFieldConfig(
-                strategies: [ValidationFieldStrategy::SPECIFIC_ANSWERS],
-                specific_question_ids: [$this->getQuestionId($form, "Assignee")]
-            ),
+            config: new ValidationFieldConfig([
+                new ValidationFieldStrategyConfig(
+                    strategy: ValidationFieldStrategy::SPECIFIC_ANSWERS,
+                    specific_question_ids: [$this->getQuestionId($form, "Assignee")],
+                    specific_validation_step_id: $validation_step->getID()
+                ),
+            ]),
             answers: [
                 "Assignee" => Group::getForeignKeyField() . '-' . $groups[0]->getID(),
                 "GLPI User" => [
@@ -298,18 +325,22 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
                 [
                     'itemtype_target' => 'Group',
                     'items_id_target' => $groups[0]->getID(),
+                    'validationsteps_id' => $validation_step->getID(),
                 ],
             ],
-            keys_to_be_considered: ['itemtype_target', 'items_id_target']
+            keys_to_be_considered: ['itemtype_target', 'items_id_target', 'validationsteps_id']
         );
 
         // Using answer from second question
         $this->sendFormAndAssertValidations(
             form: $form,
-            config: new ValidationFieldConfig(
-                strategies: [ValidationFieldStrategy::SPECIFIC_ANSWERS],
-                specific_question_ids: [$this->getQuestionId($form, "GLPI User")]
-            ),
+            config: new ValidationFieldConfig([
+                new ValidationFieldStrategyConfig(
+                    strategy: ValidationFieldStrategy::SPECIFIC_ANSWERS,
+                    specific_question_ids: [$this->getQuestionId($form, "GLPI User")],
+                    specific_validation_step_id: $validation_step->getID()
+                ),
+            ]),
             answers: [
                 "Assignee" => Group::getForeignKeyField() . '-' . $groups[0]->getID(),
                 "GLPI User" => [
@@ -321,9 +352,10 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
                 [
                     'itemtype_target' => 'User',
                     'items_id_target' => $users[1]->getID(),
+                    'validationsteps_id' => $validation_step->getID(),
                 ],
             ],
-            keys_to_be_considered: ['itemtype_target', 'items_id_target']
+            keys_to_be_considered: ['itemtype_target', 'items_id_target', 'validationsteps_id']
         );
     }
 
@@ -338,29 +370,39 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
             $this->createITILValidationTemplate(User::class, $users[3]->getID()),
             $this->createITILValidationTemplate(Group::class, $groups[2]->getID()),
         ];
+        $first_validation_step = $this->createAndGetValidationStep();
+        $second_validation_step = $this->createAndGetValidationStep();
+        $third_validation_step = $this->createAndGetValidationStep();
 
         // Multiple strategies: SPECIFIC_VALUES, SPECIFIC_ACTORS and SPECIFIC_ANSWERS
         $this->sendFormAndAssertValidations(
             form: $form,
-            config: new ValidationFieldConfig(
-                strategies: [
-                    ValidationFieldStrategy::SPECIFIC_VALUES,
-                    ValidationFieldStrategy::SPECIFIC_ACTORS,
-                    ValidationFieldStrategy::SPECIFIC_ANSWERS,
-                ],
-                specific_validationtemplate_ids: [
-                    $templates[0]->getID(),
-                    $templates[1]->getID(),
-                ],
-                specific_actors: [
-                    'users_id-' . $users[0]->getID(),
-                    'groups_id-' . $groups[0]->getID(),
-                ],
-                specific_question_ids: [
-                    $this->getQuestionId($form, "Assignee"),
-                    $this->getQuestionId($form, "GLPI User"),
-                ]
-            ),
+            config: new ValidationFieldConfig([
+                new ValidationFieldStrategyConfig(
+                    strategy: ValidationFieldStrategy::SPECIFIC_VALUES,
+                    specific_validationtemplate_ids: [
+                        $templates[0]->getID(),
+                        $templates[1]->getID(),
+                    ],
+                    specific_validation_step_id: $first_validation_step->getID()
+                ),
+                new ValidationFieldStrategyConfig(
+                    strategy: ValidationFieldStrategy::SPECIFIC_ACTORS,
+                    specific_actors: [
+                        'users_id-' . $users[0]->getID(),
+                        'groups_id-' . $groups[0]->getID(),
+                    ],
+                    specific_validation_step_id: $second_validation_step->getID()
+                ),
+                new ValidationFieldStrategyConfig(
+                    strategy: ValidationFieldStrategy::SPECIFIC_ANSWERS,
+                    specific_question_ids: [
+                        $this->getQuestionId($form, "Assignee"),
+                        $this->getQuestionId($form, "GLPI User"),
+                    ],
+                    specific_validation_step_id: $third_validation_step->getID()
+                ),
+            ]),
             answers: [
                 "Assignee" => Group::getForeignKeyField() . '-' . $groups[1]->getID(),
                 "GLPI User" => [
@@ -371,30 +413,36 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
             expected_validations: [
                 [
                     'itemtype_target' => 'User',
-                    'items_id_target' => $users[0]->getID(),
-                ],
-                [
-                    'itemtype_target' => 'User',
-                    'items_id_target' => $users[1]->getID(),
-                ],
-                [
-                    'itemtype_target' => 'Group',
-                    'items_id_target' => $groups[0]->getID(),
-                ],
-                [
-                    'itemtype_target' => 'Group',
-                    'items_id_target' => $groups[1]->getID(),
-                ],
-                [
-                    'itemtype_target' => 'User',
                     'items_id_target' => $users[3]->getID(),
+                    'validationsteps_id' => $first_validation_step->getID(),
                 ],
                 [
                     'itemtype_target' => 'Group',
                     'items_id_target' => $groups[2]->getID(),
+                    'validationsteps_id' => $first_validation_step->getID(),
+                ],
+                [
+                    'itemtype_target' => 'User',
+                    'items_id_target' => $users[0]->getID(),
+                    'validationsteps_id' => $second_validation_step->getID(),
+                ],
+                [
+                    'itemtype_target' => 'Group',
+                    'items_id_target' => $groups[0]->getID(),
+                    'validationsteps_id' => $second_validation_step->getID(),
+                ],
+                [
+                    'itemtype_target' => 'Group',
+                    'items_id_target' => $groups[1]->getID(),
+                    'validationsteps_id' => $third_validation_step->getID(),
+                ],
+                [
+                    'itemtype_target' => 'User',
+                    'items_id_target' => $users[1]->getID(),
+                    'validationsteps_id' => $third_validation_step->getID(),
                 ],
             ],
-            keys_to_be_considered: ['itemtype_target', 'items_id_target']
+            keys_to_be_considered: ['itemtype_target', 'items_id_target', 'validationsteps_id']
         );
     }
 
@@ -406,9 +454,11 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
             'fields_to_set' => [
                 'commonitil_validation_rule' => 1, // PluginFormcreatorAbstractItilTarget::VALIDATION_NONE
             ],
-            'field_config' => new ValidationFieldConfig(
-                strategies: [ValidationFieldStrategy::NO_VALIDATION],
-            ),
+            'field_config' => new ValidationFieldConfig([
+                new ValidationFieldStrategyConfig(
+                    strategy: ValidationFieldStrategy::NO_VALIDATION,
+                ),
+            ]),
         ];
 
         yield 'Specific user or group' => [
@@ -420,10 +470,14 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
                     'values' => [getItemByTypeName(User::class, 'glpi', true)],
                 ]),
             ],
-            'field_config' => new ValidationFieldConfig(
-                strategies: [ValidationFieldStrategy::SPECIFIC_ACTORS],
-                specific_actors: ['User' => [getItemByTypeName(User::class, 'glpi', true)]]
-            ),
+            'field_config' => new ValidationFieldConfig([
+                new ValidationFieldStrategyConfig(
+                    strategy: ValidationFieldStrategy::SPECIFIC_ACTORS,
+                    specific_actors: [
+                        'User' => [getItemByTypeName(User::class, 'glpi', true)]
+                    ]
+                ),
+            ]),
         ];
 
         yield 'User from question answer' => [
@@ -432,13 +486,15 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
                 'commonitil_validation_rule'     => 3, // PluginFormcreatorAbstractItilTarget::VALIDATION_ANSWER_USER
                 'commonitil_validation_question' => 75, // Question ID
             ],
-            'field_config' => fn($migration, $form) => new ValidationFieldConfig(
-                strategies: [ValidationFieldStrategy::SPECIFIC_ANSWERS],
-                specific_question_ids: [
-                    $migration->getMappedItemTarget('PluginFormcreatorQuestion', 75)['items_id']
-                        ?? throw new \Exception("Question not found"),
-                ]
-            ),
+            'field_config' => fn($migration, $form) => new ValidationFieldConfig([
+                new ValidationFieldStrategyConfig(
+                    strategy: ValidationFieldStrategy::SPECIFIC_ANSWERS,
+                    specific_question_ids: [
+                        $migration->getMappedItemTarget('PluginFormcreatorQuestion', 75)['items_id']
+                            ?? throw new \Exception("Question not found"),
+                    ]
+                ),
+            ]),
         ];
 
         yield 'Group from question answer' => [
@@ -447,13 +503,15 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
                 'commonitil_validation_rule'     => 4, // PluginFormcreatorAbstractItilTarget::VALIDATION_ANSWER_GROUP
                 'commonitil_validation_question' => 76, // Question ID
             ],
-            'field_config' => fn($migration, $form) => new ValidationFieldConfig(
-                strategies: [ValidationFieldStrategy::SPECIFIC_ANSWERS],
-                specific_question_ids: [
-                    $migration->getMappedItemTarget('PluginFormcreatorQuestion', 76)['items_id']
-                        ?? throw new \Exception("Question not found"),
-                ]
-            ),
+            'field_config' => fn($migration, $form) => new ValidationFieldConfig([
+                new ValidationFieldStrategyConfig(
+                    strategy: ValidationFieldStrategy::SPECIFIC_ANSWERS,
+                    specific_question_ids: [
+                        $migration->getMappedItemTarget('PluginFormcreatorQuestion', 76)['items_id']
+                            ?? throw new \Exception("Question not found"),
+                    ]
+                ),
+            ]),
         ];
     }
 
@@ -471,7 +529,15 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
         $this->updateItem(
             $destination::getType(),
             $destination->getId(),
-            ['config' => [ValidationField::getKey() => $config->jsonSerialize()]],
+            ['config' => [ValidationField::getKey() => array_merge(
+                [
+                    ValidationFieldConfig::STRATEGIES => array_map(
+                        fn(ValidationFieldStrategy $strategy) => $strategy->value,
+                        $config->getStrategies()
+                    ),
+                ],
+                $config->jsonSerialize()[ValidationFieldConfig::STRATEGY_CONFIGS]
+            )]],
             ["config"],
         );
 
@@ -510,11 +576,28 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
         $validations = $validation->find([
             'tickets_id' => $ticket->getID(),
         ]);
-        $this->assertArrayIsEqualToArrayOnlyConsideringListOfKeys(
-            $expected_validations,
-            $validations,
-            $keys_to_be_considered
-        );
+
+        // Retrive validation_step_id for each validation
+        foreach ($validations as $key => $validation) {
+            if (!isset($validation['itils_validationsteps_id'])) {
+                continue;
+            }
+
+            $itil_validation_step = TicketValidationStep::getById($validation['itils_validationsteps_id']);
+            if ($itil_validation_step) {
+                $validations[$key][ValidationStep::getForeignKeyField()] = $itil_validation_step->fields[ValidationStep::getForeignKeyField()];
+            }
+        }
+
+        // Check that expected validations match actual validations
+        foreach ($expected_validations as $index => $expected_validation) {
+            $actual_validation = array_values($validations)[$index];
+            $this->assertArrayIsEqualToArrayOnlyConsideringListOfKeys(
+                $expected_validation,
+                $actual_validation,
+                $keys_to_be_considered
+            );
+        }
     }
 
     private function createAndGetFormWithMultipleActorsQuestions(): Form
@@ -612,9 +695,20 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
         return $this->createItem(ITILValidationTemplate::class, [
             'name'               => 'ITIL Validation Template',
             'entities_id'        => $this->getTestRootEntity()->getID(),
-            'validationsteps_id' => getItemByTypeName(ValidationStep::class, 'Approval', true),
+            'validationsteps_id' => $this->createAndGetValidationStep()->getID(),
             'itemtype_target'    => $itemtype,
             'items_id_target'    => $items_id,
         ], ['itemtype_target', 'items_id_target']);
+    }
+
+    private function createAndGetValidationStep(): ValidationStep
+    {
+        return $this->createItem(
+            ValidationStep::class,
+            [
+                'name'                                => 'Validation configuration test validation step',
+                'minimal_required_validation_percent' => 100,
+            ]
+        );
     }
 }
