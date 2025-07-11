@@ -8834,15 +8834,6 @@ CREATE TABLE `glpi_itilfollowuptemplates_users` (
   KEY `users_id` (`users_id`)
 ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `glpi_savedsearches_usertargets`;
-CREATE TABLE `glpi_savedsearches_usertargets` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `savedsearches_id` int unsigned  NOT NULL DEFAULT '0',
-  `users_id` int unsigned  NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `savedsearches_id` (`savedsearches_id`),
-  KEY `users_id` (`users_id`)
-) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_itilfollowups`;
 CREATE TABLE `glpi_itilfollowups` (
