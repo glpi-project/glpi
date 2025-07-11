@@ -90,7 +90,7 @@ abstract class CommonITILCost extends CommonDBChild
      **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        self::showForObject($item, $withtemplate);
+        self::showForObject($item);
         return true;
     }
 
@@ -448,12 +448,9 @@ abstract class CommonITILCost extends CommonDBChild
     /**
      * Print the item costs
      *
-     * @param CommonITILObject $item         object or Project
-     * @param int              $withtemplate Template or basic item (default 0)
-     *
-     * @return false|integer total cost
+     * @return false|float total cost
      **/
-    public static function showForObject($item, $withtemplate = 0)
+    public static function showForObject(CommonITILObject|Project $item): false|float
     {
         /**
          * @var \DBmysql $DB
@@ -542,7 +539,7 @@ abstract class CommonITILCost extends CommonDBChild
 TWIG, $twig_params);
         }
 
-        $total          = 0;
+        $total          = 0.;
         $total_time     = 0;
         $total_costtime = 0;
         $total_fixed    = 0;
