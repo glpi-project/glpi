@@ -2696,7 +2696,7 @@ final class SQLProvider implements SearchProviderInterface
      * @param string  $new_table            New table to join
      * @param string  $linkfield            Linkfield for LeftJoin
      * @param boolean $meta                 Is it a meta item? (default 0)
-     * @param class-string<CommonDBTM> $meta_type Meta type table (default 0)
+     * @param string  $meta_type            Meta type table (default 0)
      * @param array   $joinparams           Array join parameters (condition / joinbefore...)
      * @param string  $field                Field to display (needed for translation join) (default '')
      *
