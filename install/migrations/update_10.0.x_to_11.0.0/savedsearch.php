@@ -33,31 +33,32 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\QueryExpression;
 
-require_once(__DIR__ . '/_check_webserver_config.php');
+/**
+ * @var \DBmysql $DB
+ * @var \Migration $migration
+ * @var array $DELFROMDISPLAYPREF
+ */
 
-if (Session::getCurrentInterface() == "helpdesk") {
-    Html::helpHeader(SavedSearch::getTypeName(Session::getPluralNumber()));
-} else {
-    Html::header(SavedSearch::getTypeName(Session::getPluralNumber()), '', 'tools', 'savedsearch');
+$table = SavedSearch::getTable();
+$field = 'is_private';
+if ($DB->fieldExists($table, $field)) {
+    $DB->insert('glpi_entities_savedsearches', new QuerySubQuery([
+        'SELECT' => [
+            new QueryExpression('null AS `id`'),
+            'id as savedsearches_id',
+            'entities_id',
+            'is_recursive',
+        ],
+        'FROM'   => 'glpi_savedsearches',
+        'WHERE'  => [
+            'is_private' => ['<>', 0],
+        ],
+    ]));
+
+    $migration->dropField($table, $field);
+
+    $DELFROMDISPLAYPREF['SavedSearch'] = 4;
 }
-
-$savedsearch = new SavedSearch();
-
-if (
-    isset($_GET['action']) && $_GET["action"] == "load"
-    && isset($_GET["id"]) && ($_GET["id"] > 0)
-) {
-    $savedsearch->getFromDB($_GET['id']);
-    if ($savedsearch->canViewItem()) {
-        $savedsearch->load($_GET["id"]);
-    } else {
-        $info = "User can not access the SavedSearch " . $_GET['id'];
-        throw new AccessDeniedHttpException($info);
-    }
-    return;
-}
-
-Search::show('SavedSearch');
-Html::footer();

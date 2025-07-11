@@ -37,7 +37,7 @@
         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
         <div class="d-flex flex-wrap">
             {{ fields.dropdownItemTypes('_type', '', add_target_msg, {
-                types: ['Entity', 'Group', 'Profile', 'User'],
+                types: types,
                 rand: rand,
                 inline_add_field_html: true,
                 add_field_html: "<span id='visibility" ~ rand ~ "'></span>",

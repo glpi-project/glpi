@@ -59,8 +59,8 @@
           {% endif %}
       </div>
       <div class="d-flex flex-nowrap align-items-center">
-         {% if search['is_private'] == 1 %}
-         <i class="ti ti-lock fs-5 text-muted me-1" title="{{ __('private') }}"
+          {% if search['users_id'] == current_user %}
+              <i class="ti ti-lock fs-5 text-muted me-1" title="{{ __('Owner') }}"
             data-bs-toggle="tooltip" data-bs-placement="right"></i>
          {% endif %}
          <span class="badge bg-secondary text-secondary-fg">
