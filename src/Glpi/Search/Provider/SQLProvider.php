@@ -193,10 +193,9 @@ final class SQLProvider implements SearchProviderInterface
      * @param class-string<CommonDBTM> $itemtype Item type
      * @param int $ID Search option ID
      * @param bool $meta If true, this is for a meta relation
-     * @param class-string<CommonDBTM> $meta_type Meta item type
-     * @return array|QueryExpression
+     * @param string $meta_type Meta item type
      */
-    public static function getSelectCriteria(string $itemtype, int $ID, bool $meta = false, string $meta_type = '')
+    public static function getSelectCriteria(string $itemtype, int $ID, bool $meta = false, string $meta_type = ''): array|QueryExpression
     {
         /**
          * @var array $CFG_GLPI
