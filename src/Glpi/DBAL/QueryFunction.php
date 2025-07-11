@@ -108,12 +108,12 @@ class QueryFunction
     /**
      * Build an DATE_ADD SQL function call
      * @param string|QueryExpression $date Date to add interval to
-     * @param string|QueryExpression $interval Interval to add
+     * @param int|string|QueryExpression $interval Interval to add
      * @param int|string|QueryExpression $interval_unit Interval unit
      * @param string|null $alias Function result alias (will be automatically quoted)
      * @return QueryExpression
      */
-    public static function dateAdd(string|QueryExpression $date, int|string|QueryExpression $interval, string $interval_unit, ?string $alias = null): QueryExpression
+    public static function dateAdd(string|QueryExpression $date, int|string|QueryExpression $interval, int|string|QueryExpression $interval_unit, ?string $alias = null): QueryExpression
     {
         /** @var \DBmysql $DB */
         global $DB;
