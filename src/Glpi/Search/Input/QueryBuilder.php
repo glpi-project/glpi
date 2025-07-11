@@ -938,7 +938,7 @@ final class QueryBuilder implements SearchInputInterface
      *
      * @return array Criteria
      */
-    public static function getDefaultCriteria($itemtype = ''): array
+    public static function getDefaultCriteria(string $itemtype): array
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
