@@ -86,6 +86,7 @@ use Glpi\Form\Destination\CommonITILField\UrgencyFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ValidationField;
 use Glpi\Form\Destination\CommonITILField\ValidationFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ValidationFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\ValidationFieldStrategyConfig;
 use Glpi\Form\Export\Serializer\FormSerializer;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
@@ -255,13 +256,15 @@ final class FormSerializerDestinationTest extends \DbTestCase
 
         yield 'ValidationField' => [
             'field_key'        => ValidationField::getKey(),
-            'config_fn'        => fn($created_items) => new ValidationFieldConfig(
-                strategies: [ValidationFieldStrategy::SPECIFIC_ACTORS],
-                specific_actors: [
-                    getForeignKeyFieldForItemType(\User::class) . '-' . $created_items[0]->getId(),
-                    getForeignKeyFieldForItemType(\Group::class) . '-' . $created_items[1]->getId(),
-                ]
-            ),
+            'config_fn'        => fn($created_items) => new ValidationFieldConfig([
+                new ValidationFieldStrategyConfig(
+                    strategy: ValidationFieldStrategy::SPECIFIC_ACTORS,
+                    specific_actors: [
+                        \User::class => [$created_items[0]->getId()],
+                        \Group::class => [$created_items[1]->getId()],
+                    ]
+                ),
+            ]),
             'items_to_create'  => [
                 [
                     'itemtype' => \User::class,
@@ -278,13 +281,15 @@ final class FormSerializerDestinationTest extends \DbTestCase
             ],
             'check_fn' => function ($imported_destinations, $created_items) {
                 assertEquals(
-                    (new ValidationFieldConfig(
-                        strategies: [ValidationFieldStrategy::SPECIFIC_ACTORS],
-                        specific_actors: [
-                            \User::class => [$created_items[0]->getId()],
-                            \Group::class => [$created_items[1]->getId()],
-                        ]
-                    ))->jsonSerialize(),
+                    (new ValidationFieldConfig([
+                        new ValidationFieldStrategyConfig(
+                            strategy: ValidationFieldStrategy::SPECIFIC_ACTORS,
+                            specific_actors: [
+                                \User::class => [$created_items[0]->getId()],
+                                \Group::class => [$created_items[1]->getId()],
+                            ]
+                        ),
+                    ]))->jsonSerialize(),
                     end($imported_destinations)->getConfig()[ValidationField::getKey()]
                 );
             },
@@ -639,15 +644,17 @@ final class FormSerializerDestinationTest extends \DbTestCase
 
         yield 'ValidationField' => [
             'field_key' => ValidationField::getKey(),
-            'config_fn'    => fn($questions) => new ValidationFieldConfig(
-                strategies: [ValidationFieldStrategy::SPECIFIC_ANSWERS],
-                specific_question_ids: [
-                    current($questions)->getId(),
-                    next($questions)->getId(),
-                    next($questions)->getId(),
-                    next($questions)->getId(),
-                ],
-            ),
+            'config_fn'    => fn($questions) => new ValidationFieldConfig([
+                new ValidationFieldStrategyConfig(
+                    strategy: ValidationFieldStrategy::SPECIFIC_ANSWERS,
+                    specific_question_ids: [
+                        current($questions)->getId(),
+                        next($questions)->getId(),
+                        next($questions)->getId(),
+                        next($questions)->getId(),
+                    ],
+                ),
+            ]),
             'questions_to_create' => [
                 [
                     'type' => QuestionTypeItem::class,
@@ -669,6 +676,15 @@ final class FormSerializerDestinationTest extends \DbTestCase
                 ],
             ],
             'question_id_key' => 'specific_question_ids',
+            'question_id_extractor' => function (array $config) {
+                // Extract question IDs from the first strategy config that has them
+                foreach ($config['strategy_configs'] as $strategy_config) {
+                    if (isset($strategy_config['specific_question_ids'])) {
+                        return $strategy_config['specific_question_ids'];
+                    }
+                }
+                return [];
+            },
         ];
 
         yield 'RequesterField' => [
@@ -773,7 +789,8 @@ final class FormSerializerDestinationTest extends \DbTestCase
         ?JsonFieldInterface $config = null,
         ?callable $config_fn = null,
         array $questions_to_create = [],
-        string $question_id_key = 'specific_question_id'
+        string $question_id_key = 'specific_question_id',
+        ?callable $question_id_extractor = null
     ) {
         $this->login();
 
@@ -801,23 +818,29 @@ final class FormSerializerDestinationTest extends \DbTestCase
         );
         $imported_destinations = $imported_form->getDestinations();
 
-        $this->assertNotEquals(
-            $config->jsonSerialize()[$question_id_key],
-            end($imported_destinations)->getConfig()[$field_key][$question_id_key]
-        );
+        // Extract question IDs from original and imported configs using the appropriate strategy
+        if ($question_id_extractor !== null) {
+            $original_question_ids = $question_id_extractor($config->jsonSerialize());
+            $imported_question_ids = $question_id_extractor(end($imported_destinations)->getConfig()[$field_key]);
+        } else {
+            $original_question_ids = $config->jsonSerialize()[$question_id_key];
+            $imported_question_ids = end($imported_destinations)->getConfig()[$field_key][$question_id_key];
+        }
 
-        if (is_array($config->jsonSerialize()[$question_id_key])) {
-            foreach ($config->jsonSerialize()[$question_id_key] as $key => $question_id) {
+        $this->assertNotEquals($original_question_ids, $imported_question_ids);
+
+        if (is_array($original_question_ids)) {
+            foreach ($original_question_ids as $key => $question_id) {
                 // Retrieve the question id from the imported form
                 $this->assertEquals(
                     $form->getQuestions()[$question_id]->getName(),
-                    $imported_form->getQuestions()[end($imported_destinations)->getConfig()[$field_key][$question_id_key][$key]]->getName()
+                    $imported_form->getQuestions()[$imported_question_ids[$key]]->getName()
                 );
             }
         } else {
             $this->assertEquals(
-                $form->getQuestions()[$config->jsonSerialize()[$question_id_key]]->getName(),
-                $imported_form->getQuestions()[end($imported_destinations)->getConfig()[$field_key][$question_id_key]]->getName()
+                $form->getQuestions()[$original_question_ids]->getName(),
+                $imported_form->getQuestions()[$imported_question_ids]->getName()
             );
         }
     }

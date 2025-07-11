@@ -57,7 +57,7 @@ enum ValidationFieldStrategy: string
     }
 
     public function getValidation(
-        ValidationFieldConfig $config,
+        ValidationFieldStrategyConfig $config,
         AnswersSet $answers_set,
     ): ?array {
         return match ($this) {

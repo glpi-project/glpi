@@ -32,7 +32,10 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-<div data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_VALUES }}">
+<div
+    class="d-none"
+    data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_VALUES }}"
+>
     {{ fields.dropdownField(
         "ITILValidationTemplate",
         specific_value_extra_field.input_name,
@@ -48,7 +51,25 @@
     ) }}
 </div>
 
-<div data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_ACTORS }}">
+<div
+    class="d-none"
+    data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_ACTORS }}"
+>
+    {{ fields.dropdownField(
+        'ValidationStep',
+        specific_validation_step_extra_field.input_name,
+        specific_validation_step_extra_field.value|default(0),
+        '',
+        options|merge({
+            field_class: '',
+            mb: '',
+            no_label: true,
+            emptylabel: specific_validation_step_extra_field.empty_label,
+            aria_label: specific_validation_step_extra_field.aria_label,
+            rand: random(),
+        })
+    ) }}
+
     {% set actors_dropdown = call('Glpi\\Form\\Dropdown\\FormActorsDropdown::show', [
         specific_values_extra_field.input_name,
         specific_values_extra_field.values,
@@ -72,7 +93,25 @@
     ) }}
 </div>
 
-<div data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_ANSWERS }}">
+<div
+    class="d-none"
+    data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_ANSWERS }}"
+>
+    {{ fields.dropdownField(
+        'ValidationStep',
+        specific_validation_step_extra_field.input_name,
+        specific_validation_step_extra_field.value|default(0),
+        '',
+        options|merge({
+            field_class: '',
+            mb: '',
+            no_label: true,
+            emptylabel: specific_validation_step_extra_field.empty_label,
+            aria_label: specific_validation_step_extra_field.aria_label,
+            rand: random(),
+        })
+    ) }}
+
     {{ fields.dropdownArrayField(
         specific_answers_extra_field.input_name,
         '',
