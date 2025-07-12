@@ -2060,11 +2060,11 @@ class CommonDBTM extends CommonGLPI
     /**
      * Actions done after the UPDATE of the item in the database
      *
-     * @param boolean $history store changes history ? (default true)
+     * @param bool $history store changes history ? (default true)
      *
      * @return void
      **/
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true): void
     {
         if (count($this->updates) > 0) {
             UserMention::handleUserMentions($this);
@@ -4057,7 +4057,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param array      $actions    Array of the actions to update where the keys are the internal identifier for the action and the values are the displayed value.
      *          Displayed values may contain HTML code, so text data must be sanitized before returning them from this method.
-     * @param string $itemtype   the type of the item for which we want the actions
+     * @param class-string<CommonDBTM> $itemtype   the type of the item for which we want the actions
      * @param boolean    $is_deleted (default false)
      * @param ?CommonDBTM $checkitem  (default NULL)
      *
@@ -4067,10 +4067,10 @@ class CommonDBTM extends CommonGLPI
      */
     public static function getMassiveActionsForItemtype(
         array &$actions,
-        $itemtype,
-        $is_deleted = false,
+        string $itemtype,
+        bool $is_deleted = false,
         ?CommonDBTM $checkitem = null
-    ) {}
+    ): void {}
 
 
     /**

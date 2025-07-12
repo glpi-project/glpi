@@ -361,7 +361,8 @@ class ITILSolution extends CommonDBChild
         return $input;
     }
 
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, ['force_update' => true]);

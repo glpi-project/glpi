@@ -46,7 +46,8 @@ class TicketCost extends CommonITILCost
 
     public static $rightname        = 'ticketcost';
 
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         parent::post_updateItem($history);
 

@@ -547,18 +547,9 @@ abstract class CommonDBChild extends CommonDBConnexity
     }
 
 
-    /**
-     * Actions done after the UPDATE of the item in the database
-     *
-     * @since 0.84
-     *
-     * @param integer|boolean $history store changes history ?
-     *
-     * @return void
-     **/
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
-
         if (
             !((isset($this->input['_no_history']) && $this->input['_no_history']))
             && static::$logs_for_parent

@@ -532,12 +532,13 @@ abstract class CommonDBConnexity extends CommonDBTM
         ];
     }
 
+    #[Override]
     public static function getMassiveActionsForItemtype(
         array &$actions,
-        $itemtype,
-        $is_deleted = false,
+        string $itemtype,
+        bool $is_deleted = false,
         ?CommonDBTM $checkitem = null
-    ) {
+    ): void {
 
         $unaffect = false;
         $affect   = false;

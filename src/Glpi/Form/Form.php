@@ -347,7 +347,7 @@ final class Form extends CommonDBTM implements
     }
 
     #[Override]
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true): void
     {
         /** @var \DBmysql $DB */
         global $DB;

@@ -284,12 +284,13 @@ class Unmanaged extends CommonDBTM
         return $actions;
     }
 
+    #[Override]
     public static function getMassiveActionsForItemtype(
         array &$actions,
-        $itemtype,
-        $is_deleted = false,
+        string $itemtype,
+        bool $is_deleted = false,
         ?CommonDBTM $checkitem = null
-    ) {
+    ): void {
         if (self::canUpdate()) {
             $actions['Unmanaged' . MassiveAction::CLASS_ACTION_SEPARATOR . 'convert']    = __s('Convert');
         }

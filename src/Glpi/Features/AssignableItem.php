@@ -274,7 +274,7 @@ trait AssignableItem
         $this->updateGroupFields();
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true): void
     {
         parent::post_updateItem($history);
         $this->updateGroupFields();

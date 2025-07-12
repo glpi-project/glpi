@@ -196,12 +196,13 @@ class Consumable extends CommonDBChild
         return false;
     }
 
+    #[Override]
     public static function getMassiveActionsForItemtype(
         array &$actions,
-        $itemtype,
-        $is_deleted = 0,
+        string $itemtype,
+        bool $is_deleted = false,
         ?CommonDBTM $checkitem = null
-    ) {
+    ): void {
         // Special actions only for self
         if ($itemtype !== static::class) {
             return;

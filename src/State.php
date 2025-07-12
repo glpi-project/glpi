@@ -338,7 +338,8 @@ class State extends CommonTreeDropdown
         parent::post_addItem();
     }
 
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         $state_visibility = new DropdownVisibility();
         foreach ($this->getvisibilityFields() as $itemtype => $field) {

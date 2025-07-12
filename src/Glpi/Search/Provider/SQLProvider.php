@@ -193,10 +193,9 @@ final class SQLProvider implements SearchProviderInterface
      * @param class-string<CommonDBTM> $itemtype Item type
      * @param int $ID Search option ID
      * @param bool $meta If true, this is for a meta relation
-     * @param class-string<CommonDBTM> $meta_type Meta item type
-     * @return array|QueryExpression
+     * @param string $meta_type Meta item type
      */
-    public static function getSelectCriteria(string $itemtype, int $ID, bool $meta = false, string $meta_type = '')
+    public static function getSelectCriteria(string $itemtype, int $ID, bool $meta = false, string $meta_type = ''): array|QueryExpression
     {
         /**
          * @var array $CFG_GLPI
@@ -2697,7 +2696,7 @@ final class SQLProvider implements SearchProviderInterface
      * @param string  $new_table            New table to join
      * @param string  $linkfield            Linkfield for LeftJoin
      * @param boolean $meta                 Is it a meta item? (default 0)
-     * @param class-string<CommonDBTM> $meta_type Meta type table (default 0)
+     * @param string  $meta_type            Meta type table (default 0)
      * @param array   $joinparams           Array join parameters (condition / joinbefore...)
      * @param string  $field                Field to display (needed for translation join) (default '')
      *
@@ -5377,22 +5376,22 @@ final class SQLProvider implements SearchProviderInterface
      * @since 9.4: $num param has been dropped
      *
      * @param string  $itemtype        item type
-     * @param integer $ID              ID of the SEARCH_OPTION item
+     * @param int     $ID              ID of the SEARCH_OPTION item
      * @param array   $data            array containing data results
-     * @param boolean $meta            is a meta item? (default false)
+     * @param bool    $meta            is a meta item? (default false)
      * @param array   $addobjectparams array added parameters for union search
-     * @param string  $orig_itemtype   Original itemtype, used for union_search_type
+     * @param string|null $orig_itemtype Original itemtype, used for union_search_type
      *
      * @return string String to print
      **/
     public static function giveItem(
-        $itemtype,
-        $ID,
+        string $itemtype,
+        int $ID,
         array $data,
-        $meta = 0,
+        bool $meta = false,
         array $addobjectparams = [],
-        $orig_itemtype = null
-    ) {
+        ?string $orig_itemtype = null
+    ): string {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
@@ -5452,7 +5451,6 @@ final class SQLProvider implements SearchProviderInterface
         if (isset($so["table"])) {
             $table        = $so["table"];
             $field        = $so["field"];
-            $linkfield    = $so["linkfield"];
             $opt_itemtype = $so['itemtype'] ?? getItemTypeForTable($table);
 
             /// TODO try to clean all specific cases using SpecificToDisplay
@@ -5482,14 +5480,14 @@ final class SQLProvider implements SearchProviderInterface
                                         if (
                                             Session::getCurrentInterface() == 'helpdesk'
                                             && $orig_id == 5 // -> Assigned user
-                                            && !empty($anon_name = \User::getAnonymizedNameForUser(
+                                            && !empty($anon_name = User::getAnonymizedNameForUser(
                                                 $data[$ID][$k]['name'],
                                                 $itemtype::getById($data['id'])->getEntityId()
                                             ))
                                         ) {
                                             $out .= $anon_name;
                                         } else {
-                                            $user = new \User();
+                                            $user = new User();
                                             if ($user->getFromDB($data[$ID][$k]['name'])) {
                                                 $tooltip = "";
                                                 if (Session::haveRight('user', READ)) {
@@ -5539,7 +5537,7 @@ final class SQLProvider implements SearchProviderInterface
                         if ($data[$ID][0]['id'] > 0) {
                             $toadd = '';
                             if (is_subclass_of($itemtype, CommonITILObject::class)) {
-                                $user = new \User();
+                                $user = new User();
                                 if (Session::haveRight('user', READ) && $user->getFromDB($data[$ID][0]['id'])) {
                                     $toadd    = Html::showToolTip(
                                         $user->getInfoCard(),
@@ -5746,7 +5744,7 @@ final class SQLProvider implements SearchProviderInterface
                     if ($so["datatype"] == 'count') {
                         if (
                             ($data[$ID][0]['name'] > 0)
-                            && Session::haveRight("problem", \Problem::READALL)
+                            && Session::haveRight("problem", CommonITILObject::READALL)
                         ) {
                             if ($itemtype == 'ITILCategory') {
                                 $options['criteria'][0]['field']      = 7;
@@ -5784,7 +5782,7 @@ final class SQLProvider implements SearchProviderInterface
                     if ($so["datatype"] == 'count') {
                         if (
                             ($data[$ID][0]['name'] > 0)
-                            && Session::haveRight("ticket", Ticket::READALL)
+                            && Session::haveRight("ticket", CommonITILObject::READALL)
                         ) {
                             if ($itemtype == User::class) {
                                 // Requester
@@ -5870,8 +5868,8 @@ final class SQLProvider implements SearchProviderInterface
                             return '';
                         }
                         if (
-                            ($data[$ID][0]['status'] == Ticket::SOLVED)
-                            || ($data[$ID][0]['status'] == Ticket::CLOSED)
+                            ($data[$ID][0]['status'] == CommonITILObject::SOLVED)
+                            || ($data[$ID][0]['status'] == CommonITILObject::CLOSED)
                         ) {
                             return $out;
                         }
@@ -6041,9 +6039,9 @@ final class SQLProvider implements SearchProviderInterface
                         "</span>";
 
                 case 'glpi_problems.status':
-                    $status = \Problem::getStatus($data[$ID][0]['name']);
+                    $status = Problem::getStatus($data[$ID][0]['name']);
                     return "<span class='text-nowrap'>" .
-                        \Problem::getStatusIcon($data[$ID][0]['name']) . "&nbsp;$status" .
+                        Problem::getStatusIcon($data[$ID][0]['name']) . "&nbsp;$status" .
                         "</span>";
 
                 case 'glpi_tickets.status':
@@ -6364,7 +6362,7 @@ final class SQLProvider implements SearchProviderInterface
             is_subclass_of($itemtype, CommonITILObject::class)
             && Session::getCurrentInterface() == 'helpdesk'
             && $orig_id == 8
-            && !empty($anon_name = \Group::getAnonymizedName(
+            && !empty($anon_name = Group::getAnonymizedName(
                 $itemtype::getById($data['id'])->getEntityId()
             ))
         ) {

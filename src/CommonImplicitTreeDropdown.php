@@ -97,9 +97,9 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
         parent::post_addItem();
     }
 
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
-
         $this->alterElementInsideTree("update");
         parent::post_updateItem($history);
     }

@@ -152,7 +152,8 @@ class DropdownTranslation extends CommonDBChild
         return true;
     }
 
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         if (!isset($this->input['_no_completename'])) {
             $translation = new self();

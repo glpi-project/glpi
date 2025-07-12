@@ -2338,7 +2338,8 @@ abstract class CommonITILObject extends CommonDBTM
         return $input;
     }
 
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, ['force_update' => true]);
@@ -6922,7 +6923,7 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
     /**
-     * @param array{ticket_stats: bool} $params
+     * @param array{ticket_stats?: bool} $params
      * @return array{columns: array, formatters: array} Array of columns and formatters to be used in datatables (templates/components/datatable.html.twig) that are common to all ITIL objects.
      * @see CommonITILObject::getDatatableEntries()
      * @note If the columns are changed, you must also update the `getDatatableEntries` method to match the new columns.
@@ -6978,11 +6979,11 @@ abstract class CommonITILObject extends CommonDBTM
      *        - item_id: The ID of the ITIL object
      *        - id: The ID of the entry in the datatable (probably the ID of the link between the ITIL item and another item)
      *       - itemtype: The class name of the ITIL object
-     * @param array{ticket_stats: bool} $params
+     * @param array{ticket_stats?: bool} $params
      * @return array The data with the other required fields added
      * @see CommonITILObject::getCommonDatatableColumns()
      */
-    public static function getDatatableEntries(array $data, $params = []): array
+    public static function getDatatableEntries(array $data, array $params = []): array
     {
         $params = array_replace([
             'ticket_stats' => false,

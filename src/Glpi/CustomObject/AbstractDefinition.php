@@ -41,6 +41,7 @@ use Gettext\Languages\CldrData as Language_CldrData;
 use Gettext\Languages\Language;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CustomFieldDefinition;
+use Override;
 use Profile;
 use ProfileRight;
 use Session;
@@ -560,7 +561,8 @@ abstract class AbstractDefinition extends CommonDBTM
         }
     }
 
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         // Register and bootstrap the definition to make it usable right now.
         $this->registerAndBootstrapDefinition();

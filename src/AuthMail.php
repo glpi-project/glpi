@@ -210,10 +210,8 @@ class AuthMail extends CommonDBTM
         ]);
     }
 
-    /**
-     * @return void
-     */
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         if ($this->fields["is_default"] === 1) {
             $this->removeDefaultFromOtherItems();

@@ -1696,7 +1696,8 @@ class Config extends CommonDBTM
         $this->logConfigChange($this->fields['context'], $this->fields['name'], (string) $this->fields['value'], '');
     }
 
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         /**
          * @var array $CFG_GLPI

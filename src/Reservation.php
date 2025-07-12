@@ -119,7 +119,8 @@ class Reservation extends CommonDBChild
         return parent::prepareInputForUpdate($input);
     }
 
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -1157,7 +1158,8 @@ JAVASCRIPT;
         return "ti ti-calendar-event";
     }
 
-    public static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0, ?CommonDBTM $checkitem = null)
+    #[Override]
+    public static function getMassiveActionsForItemtype(array &$actions, string $itemtype, bool $is_deleted = false, ?CommonDBTM $checkitem = null): void
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;

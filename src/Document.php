@@ -1534,12 +1534,13 @@ class Document extends CommonDBTM
         return $out;
     }
 
+    #[Override]
     public static function getMassiveActionsForItemtype(
         array &$actions,
-        $itemtype,
-        $is_deleted = false,
+        string $itemtype,
+        bool $is_deleted = false,
         ?CommonDBTM $checkitem = null
-    ) {
+    ): void {
         $action_prefix = 'Document_Item' . MassiveAction::CLASS_ACTION_SEPARATOR;
 
         if (self::canApplyOn($itemtype)) {

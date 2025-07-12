@@ -2024,7 +2024,8 @@ JS
         $this->handleRankChange(true);
     }
 
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         parent::post_updateItem($history);
         $this->handleRankChange();

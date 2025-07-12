@@ -46,6 +46,7 @@ use Group_Item;
 use Location;
 use Log;
 use Manufacturer;
+use Override;
 use Safe\Exceptions\JsonException;
 use Session;
 use State;
@@ -480,7 +481,8 @@ abstract class Asset extends CommonDBTM
         $this->addFilesFromRichTextCustomFields();
     }
 
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         $this->post_updateItemFromAssignableItem($history);
         if ($this->dohistory && $history && in_array('custom_fields', $this->updates, true)) {

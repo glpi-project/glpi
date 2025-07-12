@@ -855,7 +855,8 @@ class Certificate extends CommonDBTM
     }
 
 
-    public function post_updateItem($history = true)
+    #[Override]
+    public function post_updateItem(bool $history = true): void
     {
         $this->post_updateItemAssignableItem($history);
         $this->cleanAlerts([Alert::END]);

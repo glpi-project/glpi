@@ -1291,12 +1291,16 @@ TWIG);
         ];
     }
 
+    // Note: this method is from CommonDBTM, it should not exist on an item that
+    // extends CommonGLPI instead.
+    // TODO: investigate, either this method must be removed or the parent definition
+    // must be moved from CommonDBTM to CommonGLPI
     public static function getMassiveActionsForItemtype(
         array &$actions,
-        $itemtype,
-        $is_deleted = false,
+        string $itemtype,
+        bool $is_deleted = false,
         ?CommonDBTM $checkitem = null
-    ) {
+    ): void {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
