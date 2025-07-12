@@ -232,7 +232,7 @@ final class ResourceAccessor
         $itemtype = $schema['x-itemtype'] ?? null;
         // No item-level checks done here. They are handled when generating the SQL using the x-rights-condtions schema property
         if (($itemtype !== null) && !$itemtype::canView()) {
-            return AbstractController::getCRUDErrorResponse(AbstractController::CRUD_ACTION_LIST);
+            return AbstractController::getAccessDeniedErrorResponse();
         }
         if (isset($schema['x-subtypes'])) {
             // For this case, we need to filter out the schemas that the user doesn't have read rights on

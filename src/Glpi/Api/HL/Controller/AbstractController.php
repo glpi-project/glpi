@@ -67,7 +67,6 @@ abstract class AbstractController
     public const CRUD_ACTION_DELETE = 'delete';
     public const CRUD_ACTION_PURGE = 'purge';
     public const CRUD_ACTION_RESTORE = 'restore';
-    public const CRUD_ACTION_LIST = 'list';
 
     protected const PARAMETER_RSQL_FILTER = [
         'name' => 'filter',
