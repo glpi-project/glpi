@@ -270,11 +270,11 @@ final class ITILController extends AbstractController
                             // Permission to see tickets as direct requester, observer or writer
                             $criteria['WHERE']['OR'][] = [
                                 '_.users_id_recipient' => Session::getLoginUserID(),
-                                [
-                                    'AND' => [
-                                        'glpi_tickets_users' . '.users_id' => Session::getLoginUserID(),
-                                        'glpi_tickets_users' . '.type' => [CommonITILActor::REQUESTER, CommonITILActor::OBSERVER],
-                                    ],
+                            ];
+                            $criteria['WHERE']['OR'][] = [
+                                'AND' => [
+                                    'glpi_tickets_users' . '.users_id' => Session::getLoginUserID(),
+                                    'glpi_tickets_users' . '.type' => [CommonITILActor::REQUESTER, CommonITILActor::OBSERVER],
                                 ],
                             ];
                         }
