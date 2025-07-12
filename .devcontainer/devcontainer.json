@@ -30,6 +30,7 @@
         "vscode": {
             "extensions": [
                 "bmewburn.vscode-intelephense-client",
+                "Vue.volar",
                 "xdebug.php-debug",
                 "mblode.twig-language-2",
                 "dbaeumer.vscode-eslint"
