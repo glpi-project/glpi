@@ -181,7 +181,7 @@ var GLPIPlanning  = {
                     `
                 });
                 
-                element.append(eventtype_marker);
+                element.append(eventtype_marker.prop('outerHTML'));
 
                 var content = extProps.content;
                 var tooltip = extProps.tooltip;
