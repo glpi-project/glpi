@@ -34,7 +34,13 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
+use Change;
+use ChangeValidation;
+use CommonITILObject;
 use Glpi\Http\Request;
+use Problem;
+use Ticket;
+use TicketValidation;
 
 class ITILControllerTest extends \HLAPITestCase
 {
@@ -408,5 +414,26 @@ class ITILControllerTest extends \HLAPITestCase
                 $this->assertEquals('Ticket', $content['itemtype']);
             });
         });
+    }
+
+    public function testNoRights()
+    {
+        /** @var array<class-string<CommonITILObject>, string> $itil_types */
+        $itil_types = [
+            Ticket::class => 'Ticket',
+            Change::class => 'Change',
+            Problem::class => 'Problem',
+        ];
+        // Access on validations affects `canView` of ITIL objects
+        $_SESSION['glpiactiveprofile'][TicketValidation::$rightname] = 0;
+        $_SESSION['glpiactiveprofile'][ChangeValidation::$rightname] = 0;
+        foreach ($itil_types as $itil_type => $schema_name) {
+            $this->api->autoTestCRUDNoRights(
+                endpoint: '/Assistance/' . $schema_name,
+                itemtype: $itil_type,
+                items_id: getItemByTypeName($itil_type, strtolower('_' . $itil_type . '01'), true),
+                deny_read: static fn () => $_SESSION['glpiactiveprofile'][$itil_type::$rightname] = 0
+            );
+        }
     }
 }
