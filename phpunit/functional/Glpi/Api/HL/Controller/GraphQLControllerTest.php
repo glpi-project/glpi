@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
+use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Http\Request;
 
 class GraphQLControllerTest extends \HLAPITestCase
@@ -227,6 +228,93 @@ GRAPHQL);
                     $this->assertArrayHasKey('name', $content['data']['Computer'][0]['status']);
                     $this->assertTrue($content['data']['Computer'][0]['status']['visibilities']['computer']);
                     $this->assertFalse($content['data']['Computer'][0]['status']['visibilities']['monitor']);
+                });
+        });
+    }
+
+    public function testGetDirectlyWithoutRight()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $this->assertTrue($DB->insert('glpi_tickets', [
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]));
+        $tickets_id = $DB->insertId();
+
+        $this->loginWeb();
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+
+        $_SESSION['glpi_use_mode'] = 2;
+
+        // Can see no tickets
+        $_SESSION['glpiactiveprofile']['ticket'] = 0;
+        $this->api->call(new Request('POST', '/GraphQL', [], 'query { Ticket { id name } }'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->status(fn($status) => $this->assertEquals(200, $status))
+                ->jsonContent(function ($content) {
+                    $this->assertEmpty($content['data']['Ticket']);
+                });
+        });
+
+        // Can only see my own tickets
+        $_SESSION['glpiactiveprofile']['ticket'] = READ;
+
+        $this->api->call(new Request('POST', '/GraphQL', [], 'query { Ticket { id name } }'), function ($call) use ($tickets_id) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->status(fn($status) => $this->assertEquals(200, $status))
+                ->jsonContent(function ($content) use ($tickets_id) {
+                    $this->assertNotContains($tickets_id, array_column($content['data']['Ticket'], 'id'));
+                });
+        });
+        $this->api->call(new Request('POST', '/GraphQL', [], 'query { Ticket(id: ' . $tickets_id . ') { id name } }'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->status(fn($status) => $this->assertEquals(200, $status))
+                ->jsonContent(function ($content) {
+                    $this->assertEmpty($content['data']['Ticket']);
+                });
+        });
+    }
+
+    public function testGetTicketIndirectlyWithoutRight()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $this->assertTrue($DB->insert('glpi_tickets', [
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]));
+        $this->assertTrue($DB->update('glpi_entities', [
+            'comment' => 'Should not be visible',
+        ], [
+            'id' => $this->getTestRootEntity(true),
+        ]));
+
+        $this->loginWeb();
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+
+        $_SESSION['glpi_use_mode'] = 2;
+
+        // Can see no entities
+        $_SESSION['glpiactiveprofile']['entity'] = 0;
+        $this->api->call(new Request('POST', '/GraphQL', [], 'query { Ticket { id name entity { id name comment } } }'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->status(fn($status) => $this->assertEquals(200, $status))
+                ->jsonContent(function ($content) {
+                    foreach ($content['data']['Ticket'] as $ticket) {
+                        // The name is part of the partial schema, so it is always visible
+                        $this->assertNotNull($ticket['entity']['name']);
+                        // The comment comes from the full schema which the user has no right to see
+                        $this->assertNull($ticket['entity']['comment']);
+                    }
                 });
         });
     }

@@ -659,7 +659,14 @@ function loadDataset()
         ], 'Change' => [
             [
                 'name'           => '_change01',
-                'content'        => 'Content for ticket _change01',
+                'content'        => 'Content for change _change01',
+                'users_id_recipient' => TU_USER,
+                'entities_id'    => '_test_root_entity',
+            ],
+        ], 'Problem' => [
+            [
+                'name'           => '_problem01',
+                'content'        => 'Content for problem _problem01',
                 'users_id_recipient' => TU_USER,
                 'entities_id'    => '_test_root_entity',
             ],
@@ -668,7 +675,7 @@ function loadDataset()
             [
                 'redirect_uri' => ["/api.php/oauth2/redirection"],
                 'grants' => ['password', 'client_credentials', 'authorization_code'],
-                'scopes' => [],
+                'scopes' => ['api'],
                 'is_active' => 1,
                 'is_confidential' => 1,
                 'name' => 'Test OAuth Client',
