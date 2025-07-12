@@ -519,8 +519,7 @@ final class HLAPIHelper
         ?callable $deny_delete = null,
         ?callable $deny_purge = null,
         ?callable $deny_restore = null
-    ): self
-    {
+    ): self {
         $this->test->loginWeb();
         $this->router->registerAuthMiddleware(new InternalAuthMiddleware());
         $item = getItemForItemtype($itemtype);
