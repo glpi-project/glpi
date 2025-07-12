@@ -93,7 +93,7 @@ var GLPIPlanning  = {
             theme:       true,
             weekNumbers: options.full_view ? true : false,
             timeFormat:  'H:mm',
-            eventLimit:  true, // show 'more' button when too mmany events
+            eventLimit:  true, // show 'more' button when too many events
             minTime:     CFG_GLPI.planning_begin,
             maxTime:     CFG_GLPI.planning_end,
             schedulerLicenseKey: "GPL-My-Project-Is-Open-Source",
@@ -173,7 +173,14 @@ var GLPIPlanning  = {
                 // append event data to dom (to re-use they in clone behavior)
                 element.data('myevent', event);
 
-                var eventtype_marker = `<span class="event_type" style="background-color: ${extProps.typeColor}"></span>`;
+                //var eventtype_marker = `<span class="event_type" style="background-color: ${extProps.typeColor}"></span>`;
+                var eventtype_marker = $('<span>', {
+                    class: 'event_type',
+                    style: `
+                        background-color: ${extProps.typeColor};
+                    `
+                });
+                
                 element.append(eventtype_marker);
 
                 var content = extProps.content;
