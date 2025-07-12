@@ -55,6 +55,7 @@
                            {{ include(timeline_itemtype.template, {
                               'item': item,
                               'subitem': timeline_itemtype.item,
+                              'subitem_template': timeline_itemtype.template_obj,
                               'mention_options': mention_options,
                            }) }}
                         {% else %}

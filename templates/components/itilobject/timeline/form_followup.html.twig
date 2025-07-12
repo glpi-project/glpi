@@ -143,6 +143,7 @@
                               'on_change': 'itilfollowuptemplate_update' ~ rand ~ '(this.value)',
                               'entity': item.fields['entities_id'],
                               'rand': rand,
+                              'condition': subitem_template.getDropdownCondition()
                            }
                         ) }}
 
