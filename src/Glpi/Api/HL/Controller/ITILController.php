@@ -43,6 +43,7 @@ use CommonITILObject;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
+use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
 use Glpi\Api\HL\Search;
@@ -701,7 +702,7 @@ final class ITILController extends AbstractController
     public function search(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::searchBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
@@ -723,7 +724,7 @@ final class ITILController extends AbstractController
     public function getItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::getOneBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}', methods: ['POST'])]
@@ -741,7 +742,7 @@ final class ITILController extends AbstractController
     public function createItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::createBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'])]
@@ -765,7 +766,7 @@ final class ITILController extends AbstractController
     public function updateItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::updateBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'])]
@@ -784,7 +785,7 @@ final class ITILController extends AbstractController
     public function deleteItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     private function getRequiredTimelineItemFields(CommonITILObject $item, Request $request, string $subitem_type): array
@@ -853,7 +854,7 @@ final class ITILController extends AbstractController
                 $filters .= ';is_private==0';
             }
 
-            $subitem_results = Search::searchBySchema($schema, [
+            $subitem_results = ResourceAccessor::searchBySchema($schema, [
                 'filter' => $filters,
                 'limit' => 1000,
             ]);
@@ -1146,7 +1147,7 @@ final class ITILController extends AbstractController
         $parameters = $request->getParameters();
         $parameters = array_merge($parameters, $this->getRequiredTimelineItemFields($item, $request, $subitem_type));
         $schema = $this->getKnownSubitemSchema($item, $subitem_type, $this->getAPIVersion($request));
-        return Search::createBySchema($schema, $parameters, [self::class, 'getTimelineItem'], [
+        return ResourceAccessor::createBySchema($schema, $parameters, [self::class, 'getTimelineItem'], [
             'mapped' => [
                 'itemtype' => $item::getType(),
                 'subitem_type' => $subitem_type,
@@ -1182,7 +1183,7 @@ final class ITILController extends AbstractController
         $parameters = $request->getParameters();
         $parameters = array_merge($parameters, $this->getRequiredTimelineItemFields($item, $request, 'Task'));
         $schema = $this->getKnownSubitemSchema($item, 'Task', $this->getAPIVersion($request));
-        return Search::createBySchema($schema, $parameters, [self::class, 'getTimelineTask'], [
+        return ResourceAccessor::createBySchema($schema, $parameters, [self::class, 'getTimelineTask'], [
             'mapped' => [
                 'itemtype' => $item::getType(),
                 'subitem_type' => 'Task',
@@ -1220,7 +1221,7 @@ final class ITILController extends AbstractController
         $parameters = $request->getParameters();
         $parameters = array_merge($parameters, $this->getRequiredTimelineItemFields($item, $request, 'Validation'));
         $schema = $this->getKnownSubitemSchema($item, 'Validation', $this->getAPIVersion($request));
-        return Search::createBySchema($schema, $parameters, [self::class, 'getTimelineValidation'], [
+        return ResourceAccessor::createBySchema($schema, $parameters, [self::class, 'getTimelineValidation'], [
             'mapped' => [
                 'itemtype' => $item::getType(),
                 'subitem_type' => 'Validation',
@@ -1265,7 +1266,7 @@ final class ITILController extends AbstractController
         }
         $attributes = $request->getAttributes();
         $attributes['id'] = $request->getAttribute('subitem_id');
-        return Search::updateBySchema($this->getKnownSubitemSchema($item, $subitem_type, $this->getAPIVersion($request)), $attributes, $parameters);
+        return ResourceAccessor::updateBySchema($this->getKnownSubitemSchema($item, $subitem_type, $this->getAPIVersion($request)), $attributes, $parameters);
     }
 
     #[Route(path: '/{itemtype}/{id}/Timeline/Task/{subitem_id}', methods: ['PATCH'], requirements: [
@@ -1301,7 +1302,7 @@ final class ITILController extends AbstractController
         }
         $attributes = $request->getAttributes();
         $attributes['id'] = $request->getAttribute('subitem_id');
-        return Search::updateBySchema($this->getKnownSubitemSchema($item, 'Task', $this->getAPIVersion($request)), $attributes, $parameters);
+        return ResourceAccessor::updateBySchema($this->getKnownSubitemSchema($item, 'Task', $this->getAPIVersion($request)), $attributes, $parameters);
     }
 
     #[Route(path: '/{itemtype}/{id}/Timeline/Validation/{subitem_id}', methods: ['PATCH'], requirements: [
@@ -1338,7 +1339,7 @@ final class ITILController extends AbstractController
         }
         $attributes = $request->getAttributes();
         $attributes['id'] = $request->getAttribute('subitem_id');
-        return Search::updateBySchema($this->getKnownSubitemSchema($item, 'Validation', $this->getAPIVersion($request)), $attributes, $parameters);
+        return ResourceAccessor::updateBySchema($this->getKnownSubitemSchema($item, 'Validation', $this->getAPIVersion($request)), $attributes, $parameters);
     }
 
     #[Route(path: '/{itemtype}/{id}/Timeline/{subitem_type}/{subitem_id}', methods: ['DELETE'], requirements: [
@@ -1364,7 +1365,7 @@ final class ITILController extends AbstractController
         $subitem_type = $request->getAttribute('subitem_type');
         $attributes = $request->getAttributes();
         $attributes['id'] = $request->getAttribute('subitem_id');
-        return Search::deleteBySchema($this->getKnownSubitemSchema($item, $subitem_type, $this->getAPIVersion($request)), $attributes, $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSubitemSchema($item, $subitem_type, $this->getAPIVersion($request)), $attributes, $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}/Timeline/Task/{subitem_id}', methods: ['DELETE'], requirements: [
@@ -1388,7 +1389,7 @@ final class ITILController extends AbstractController
         $item = $request->getParameter('_item');
         $attributes = $request->getAttributes();
         $attributes['id'] = $request->getAttribute('subitem_id');
-        return Search::deleteBySchema($this->getKnownSubitemSchema($item, 'Task', $this->getAPIVersion($request)), $attributes, $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSubitemSchema($item, 'Task', $this->getAPIVersion($request)), $attributes, $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}/Timeline/Validation/{subitem_id}', methods: ['DELETE'], requirements: [
@@ -1413,7 +1414,7 @@ final class ITILController extends AbstractController
         $item = $request->getParameter('_item');
         $attributes = $request->getAttributes();
         $attributes['id'] = $request->getAttribute('subitem_id');
-        return Search::deleteBySchema($this->getKnownSubitemSchema($item, 'Validation', $this->getAPIVersion($request)), $attributes, $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSubitemSchema($item, 'Validation', $this->getAPIVersion($request)), $attributes, $request->getParameters());
     }
 
     /**
@@ -1636,7 +1637,7 @@ final class ITILController extends AbstractController
     )]
     public function searchRecurringTickets(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('RecurringTicket', $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('RecurringTicket', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/RecurringTicket/{id}', methods: ['GET'], requirements: [
@@ -1651,7 +1652,7 @@ final class ITILController extends AbstractController
     )]
     public function getRecurringTicket(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('RecurringTicket', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('RecurringTicket', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/RecurringTicket', methods: ['POST'])]
@@ -1668,7 +1669,7 @@ final class ITILController extends AbstractController
     )]
     public function createRecurringTicket(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('RecurringTicket', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getRecurringTicket']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema('RecurringTicket', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getRecurringTicket']);
     }
 
     #[Route(path: '/RecurringTicket/{id}', methods: ['PATCH'], requirements: [
@@ -1687,7 +1688,7 @@ final class ITILController extends AbstractController
     )]
     public function updateRecurringTicket(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('RecurringTicket', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('RecurringTicket', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/RecurringTicket/{id}', methods: ['DELETE'], requirements: [
@@ -1699,7 +1700,7 @@ final class ITILController extends AbstractController
     )]
     public function deleteRecurringTicket(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('RecurringTicket', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('RecurringTicket', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/RecurringChange', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
@@ -1713,7 +1714,7 @@ final class ITILController extends AbstractController
     )]
     public function searchRecurringChanges(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('RecurringChange', $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('RecurringChange', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/RecurringChange/{id}', methods: ['GET'], requirements: [
@@ -1728,7 +1729,7 @@ final class ITILController extends AbstractController
     )]
     public function getRecurringChange(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('RecurringChange', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('RecurringChange', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/RecurringChange', methods: ['POST'])]
@@ -1745,7 +1746,7 @@ final class ITILController extends AbstractController
     )]
     public function createRecurringChange(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('RecurringChange', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getRecurringChange']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema('RecurringChange', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getRecurringChange']);
     }
 
     #[Route(path: '/RecurringChange/{id}', methods: ['PATCH'], requirements: [
@@ -1764,7 +1765,7 @@ final class ITILController extends AbstractController
     )]
     public function updateRecurringChange(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('RecurringChange', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('RecurringChange', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/RecurringChange/{id}', methods: ['DELETE'], requirements: [
@@ -1776,7 +1777,7 @@ final class ITILController extends AbstractController
     )]
     public function deleteRecurringChange(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('RecurringChange', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('RecurringChange', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/ExternalEvent', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
@@ -1790,7 +1791,7 @@ final class ITILController extends AbstractController
     )]
     public function searchExternalEvent(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('ExternalEvent', $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('ExternalEvent', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/ExternalEvent/{id}', methods: ['GET'], requirements: [
@@ -1805,7 +1806,7 @@ final class ITILController extends AbstractController
     )]
     public function getExternalEvent(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('ExternalEvent', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('ExternalEvent', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/ExternalEvent', methods: ['POST'])]
@@ -1822,7 +1823,7 @@ final class ITILController extends AbstractController
     )]
     public function createExternalEvent(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('ExternalEvent', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getExternalEvent']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema('ExternalEvent', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getExternalEvent']);
     }
 
     #[Route(path: '/ExternalEvent/{id}', methods: ['PATCH'], requirements: [
@@ -1841,7 +1842,7 @@ final class ITILController extends AbstractController
     )]
     public function updateExternalEvent(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('ExternalEvent', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('ExternalEvent', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/ExternalEvent/{id}', methods: ['DELETE'], requirements: [
@@ -1853,6 +1854,6 @@ final class ITILController extends AbstractController
     )]
     public function deleteExternalEvent(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('ExternalEvent', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('ExternalEvent', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 }

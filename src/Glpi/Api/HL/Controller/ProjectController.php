@@ -36,6 +36,7 @@
 namespace Glpi\Api\HL\Controller;
 
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
+use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
 use Glpi\Api\HL\Search;
@@ -251,7 +252,7 @@ final class ProjectController extends AbstractController
     )]
     public function searchProjects(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('Project', $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('Project', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
@@ -264,7 +265,7 @@ final class ProjectController extends AbstractController
     )]
     public function getProject(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('Project', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('Project', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/', methods: ['POST'])]
@@ -278,7 +279,7 @@ final class ProjectController extends AbstractController
     ])]
     public function createProject(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('Project', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getProject']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema('Project', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getProject']);
     }
 
     #[Route(path: '/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
@@ -298,7 +299,7 @@ final class ProjectController extends AbstractController
     )]
     public function updateProject(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('Project', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('Project', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
@@ -306,7 +307,7 @@ final class ProjectController extends AbstractController
     #[Doc\Route(description: 'Delete a project by ID')]
     public function deleteProject(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('Project', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('Project', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Task', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
@@ -320,7 +321,7 @@ final class ProjectController extends AbstractController
     )]
     public function searchTasks(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('ProjectTask', $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('ProjectTask', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Task/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
@@ -333,7 +334,7 @@ final class ProjectController extends AbstractController
     )]
     public function getTask(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('ProjectTask', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('ProjectTask', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Task', methods: ['POST'])]
@@ -347,7 +348,7 @@ final class ProjectController extends AbstractController
     ])]
     public function createTask(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('ProjectTask', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getTask']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema('ProjectTask', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getTask']);
     }
 
     #[Route(path: '/Task/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
@@ -360,7 +361,7 @@ final class ProjectController extends AbstractController
     )]
     public function updateTask(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('ProjectTask', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('ProjectTask', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Task/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
@@ -368,7 +369,7 @@ final class ProjectController extends AbstractController
     #[Doc\Route(description: 'Delete a task by ID')]
     public function deleteTask(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('ProjectTask', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('ProjectTask', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/{project_id}/Task', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
@@ -387,7 +388,7 @@ final class ProjectController extends AbstractController
             $params['filter'] = [];
         }
         $params['filter']['project'] = $request->getAttributes()['project_id'];
-        return Search::searchBySchema($this->getKnownSchema('ProjectTask', $this->getAPIVersion($request)), $params);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('ProjectTask', $this->getAPIVersion($request)), $params);
     }
 
     #[Route(path: '/{project_id}/Task', methods: ['POST'])]
@@ -403,6 +404,6 @@ final class ProjectController extends AbstractController
     {
         $params = $request->getParameters();
         $params['project'] = $request->getAttributes()['project_id'];
-        return Search::createBySchema($this->getKnownSchema('ProjectTask', $this->getAPIVersion($request)), $params, [self::class, 'getTask']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema('ProjectTask', $this->getAPIVersion($request)), $params, [self::class, 'getTask']);
     }
 }
