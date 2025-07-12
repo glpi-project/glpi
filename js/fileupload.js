@@ -42,7 +42,7 @@ function uploadFile(file, editor) {
     insertIntoEditor[file.name] = isImage(file);
 
     // Search for fileupload container.
-    // First try to find an uplaoder having same name as editor element.
+    // First try to find an uploader having same name as editor element.
     var uploader = $(`[data-uploader-name="${editor.getElement().name}"]`);
     if (uploader.length === 0) {
         // Fallback to uploader using default name
@@ -53,17 +53,16 @@ function uploadFile(file, editor) {
         uploader = $(editor.getElement()).closest('form').find('[data-uploader-name=]').first();
     }
 
-    uploader.fileupload('add', {files: [file]});
+    uploader.fileupload('add', { files: [file] });
 }
 
 var handleUploadedFile = function (files, files_data, input_name, container, editor_id) {
-    $.ajax(
+    $.post(
         {
-            type: 'POST',
             url: `${CFG_GLPI.root_doc}/ajax/getFileTag.php`,
-            data: {data: files_data},
+            data: { data: files_data },
             dataType: 'JSON',
-            success: function(tags) {
+            success: function (tags) {
                 $.each(
                     files,
                     (index, file) => {
@@ -104,8 +103,8 @@ var handleUploadedFile = function (files, files_data, input_name, container, edi
             complete: function () {
                 $.each(
                     files,
-                    (index, file) => {
-                        delete(insertIntoEditor[file.name]);
+                    (_, file) => {
+                        delete (insertIntoEditor[file.name]);
                     }
                 );
             }
@@ -122,36 +121,42 @@ var handleUploadedFile = function (files, files_data, input_name, container, edi
  * @param      {String}  input_name    Name of generated input hidden (default filename)
  * @param      {Object}  container     The fileinfo container
  */
-var displayUploadedFile = function(file, tag, editor, input_name, filecontainer) {
+var displayUploadedFile = function (file, tag, editor, input_name, filecontainer) {
     var fileindex = $(`input[name^="_${input_name}["]`).length;
     var ext = file.name.split('.').pop();
 
-    var p = $('<p></p>')
-        .attr('id',file.id)
-        .html(`${getExtIcon(ext)}&nbsp;<b>${_.escape(file.display)}</b>&nbsp;(${getSize(file.size)})&nbsp;`).appendTo(filecontainer);
+    var p = $('<p>', {
+        id: file.id,
+        html: `${getExtIcon(ext)}&nbsp;<b>${_.escape(file.display)}</b>&nbsp;(${getSize(file.size)})&nbsp;`
+    }).appendTo(filecontainer);
 
     // File
-    $('<input/>')
-        .attr('type', 'hidden')
-        .attr('name', `_${input_name}[${fileindex}]`)
-        .attr('value', file.name).appendTo(p);
+    $('<input>', {
+        type: 'hidden',
+        name: `_${input_name}[${fileindex}]`,
+        value: file.name
+    }).appendTo(p);
 
     // Prefix
-    $('<input/>')
-        .attr('type', 'hidden')
-        .attr('name', `_prefix_${input_name}[${fileindex}]`)
-        .attr('value', file.prefix).appendTo(p);
+    $('<input>', {
+        type: 'hidden',
+        name: `_prefix_${input_name}[${fileindex}]`,
+        value: file.prefix
+    }).appendTo(p);
 
     // Tag
-    $('<input/>')
-        .attr('type', 'hidden')
-        .attr('name', `_tag_${input_name}[${fileindex}]`)
-        .attr('value', tag.name)
-        .appendTo(p);
+    $('<input>', {
+        type: 'hidden',
+        name: `_tag_${input_name}[${fileindex}]`,
+        value: tag.name
+    }).appendTo(p);
 
     // Delete button
-    var elementsIdToRemove = {0:file.id, 1:`${file.id}2`};
-    $('<span class="ti ti-circle-x pointer remove_file_upload"></span>').on('click', () => {
+    var elementsIdToRemove = { 0: file.id, 1: `${file.id}2` };
+
+    $('<span>', {
+        class: "ti ti-circle-x pointer remove_file_upload"
+    }).on('click', () => {
         deleteImagePasted(elementsIdToRemove, tag.tag, editor);
     }).appendTo(p);
 };
@@ -163,14 +168,14 @@ var displayUploadedFile = function(file, tag, editor, input_name, filecontainer)
  * @param      {string}  tagToRemove         The tag to remove
  * @param      {Object}  editor              The editor
  */
-var deleteImagePasted = function(elementsIdToRemove, tagToRemove, editor) {
+var deleteImagePasted = function (elementsIdToRemove, tagToRemove, editor) {
     // Remove file display lines
-    $.each(elementsIdToRemove, (index, element) => {
+    $.each(elementsIdToRemove, (_, element) => {
         $(`#${element}`).remove();
     });
 
     if (typeof editor !== "undefined" && editor !== null
-       && typeof editor.dom !== "undefined") {
+        && typeof editor.dom !== "undefined") {
         var regex = new RegExp('#', 'g');
         editor.dom.remove(tagToRemove.replace(regex, ''));
     }
@@ -179,7 +184,7 @@ var deleteImagePasted = function(elementsIdToRemove, tagToRemove, editor) {
 /**
  * Set given rich text editor content.
  */
-const setRichTextEditorContent = function(editor_id, content) {
+const setRichTextEditorContent = function (editor_id, content) {
     if (typeof tinyMCE === 'undefined') {
         return;
     }
@@ -238,7 +243,7 @@ if (typeof tinyMCE != 'undefined') {
             // Trigger upload process for each pasted image
             var fragment = $('<div></div>');
             fragment.append(event.content);
-            fragment.find('img').each(function() {
+            fragment.find('img').each(function () {
                 const image = $(this);
                 let src = image.attr('src');
                 const file_pattern = '^file://';
@@ -263,15 +268,15 @@ if (typeof tinyMCE != 'undefined') {
                         // `response.blob()` returns a `File`, instead of a `Blob`, with a read-only `name` property.
                         // So, to be able to force file.name, it have to be converted into a `Blob`.
                         if (file instanceof File) {
-                            file = new Blob([file], {type: file.type});
+                            file = new Blob([file], { type: file.type });
                         }
 
                         const ext = file.type.replace('image/', '');
-                        file.name = `image_paste${Math.floor((Math.random() * 10000000) + 1)}.${  ext}`;
+                        file.name = `image_paste${Math.floor((Math.random() * 10000000) + 1)}.${ext}`;
                         uploaded_images.push(
                             {
                                 upload_id: upload_id,
-                                filename:  file.name
+                                filename: file.name
                             }
                         );
                         uploadFile(file, editor);
