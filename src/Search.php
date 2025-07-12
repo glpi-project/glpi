@@ -475,14 +475,13 @@ class Search
      * @since 9.4: $num param has been dropped
      *
      * @param string  $LINK           link to use
-     * @param string  $NOT            is is a negative search ?
+     * @param bool    $NOT            is is a negative search ?
      * @param string  $itemtype       item type
-     * @param integer $ID             ID of the item to search
+     * @param int     $ID             ID of the item to search
      * @param string  $searchtype     search type ('contains' or 'equals')
      * @param string  $val            value search
      *
-     * @return string|false HAVING clause sub-string (Does not include the "HAVING" keyword).
-     *                      May return false if the related search option is not valid for SQL searching.
+     * @return string HAVING clause sub-string (Does not include the "HAVING" keyword).
      **/
     public static function addHaving($LINK, $NOT, $itemtype, $ID, $searchtype, $val)
     {
@@ -490,6 +489,7 @@ class Search
         global $DB;
         $criteria = SQLProvider::getHavingCriteria($LINK, $NOT, $itemtype, $ID, $searchtype, $val);
         if (count($criteria) === 0) {
+            // Related search option is not valid for SQL searching.
             return '';
         }
         $iterator = new DBmysqlIterator($DB);

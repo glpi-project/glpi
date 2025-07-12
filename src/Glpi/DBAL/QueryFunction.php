@@ -108,8 +108,8 @@ class QueryFunction
     /**
      * Build an DATE_ADD SQL function call
      * @param string|QueryExpression $date Date to add interval to
-     * @param string|QueryExpression $interval Interval to add
-     * @param int|string|QueryExpression $interval_unit Interval unit
+     * @param int|string|QueryExpression $interval Interval to add
+     * @param string $interval_unit Interval unit
      * @param string|null $alias Function result alias (will be automatically quoted)
      * @return QueryExpression
      */
