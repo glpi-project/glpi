@@ -735,7 +735,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
             $this->getFromDB($id);
 
             //validate CRA if needed
-            if (isset($this->fields['use_cra_challenge']) && $this->fields['use_cra_challenge']) {
+            if (GLPI_WEBHOOK_CRA_MANDATORY || (isset($this->fields['use_cra_challenge']) && $this->fields['use_cra_challenge'])) {
                 $response = self::validateCRAChallenge($this->fields['url'], 'validate_cra_challenge', $this->fields['secret']);
                 if (!$response['status']) {
                     $this->fields['is_cra_challenge_valid'] = false;
@@ -1289,7 +1289,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
     public function post_getEmpty()
     {
-        $this->fields['is_cra_challenge_valid']                        = 0;
+        $this->fields['is_cra_challenge_valid'] = 0;
     }
 
     public static function getMenuContent()

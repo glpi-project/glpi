@@ -169,6 +169,7 @@ final class SystemConfigurator
                 'GLPI_SYSTEM_CRON'            => false, // `true` to use the system cron provided by the downstream package
                 'GLPI_TEXT_MAXSIZE'           => '4000', // character threshold for displaying read more button
                 'GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING' => '0', // allow (1) or not (0) to save webhook response in database
+                'GLPI_WEBHOOK_CRA_MANDATORY' => false, // make challenge-response authentication mandatory or not for webhooks
             ],
         ];
 

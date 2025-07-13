@@ -63,6 +63,7 @@ parameters:
         - GLPI_USER_AGENT_EXTRA_COMMENTS
         - GLPI_VAR_DIR
         - GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING
+        - GLPI_WEBHOOK_CRA_MANDATORY
         - TU_USER
     ignoreErrors:
         - '~Instantiated class XHProfRuns_Default not found~'
