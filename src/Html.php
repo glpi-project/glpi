@@ -1107,6 +1107,7 @@ TWIG,
                     'charts',
                     'clipboard',
                 ]);
+                Html::requireJs('');
             }
 
             if (in_array('planning', $jslibs)) {
@@ -5876,6 +5877,8 @@ JS);
             case 'planning':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/planning.js';
                 break;
+            case 'dashboard':
+                $_SESSION['glpi_js_toload'][$name][] = 'js/dashboard.js';
             case 'flatpickr':
                 $_SESSION['glpi_js_toload'][$name][] = 'lib/flatpickr.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/flatpickr_buttons_plugin.js';
