@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\DBAL\QueryExpression;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/profile.class.php */
@@ -355,5 +356,61 @@ class ProfileTest extends DbTestCase
 
         $failures = array_unique($failures);
         $this->assertEmpty($failures, sprintf('The following rights do not have a search option: %s', implode(', ', $failures)));
+    }
+
+    public function testDefaultProfileMoreThanRights()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Some profiles are not directly heirarchically comparable, so we list the rights that can be ignored for this test
+        $profiles_by_permission_level = [
+            'Super-Admin' => [],
+            'Admin' => [],
+            'Supervisor' => [],
+            'Technician' => ['ticket'], // Hotliners can see new tickets, but not technicians
+            //'Observer' => [], Not able to be compared well with other profiles
+            'Hotliner' => ['reservation', 'reminder_public', 'rssfeed_public'], // Hotliner cannot reserver items, or see public reminders/rss feeds
+            'Self-Service' => [],
+        ];
+        $this->login();
+        for ($i = 0; $i < count($profiles_by_permission_level) - 1; $i++) {
+            $profiles_id = getItemByTypeName('Profile', array_keys($profiles_by_permission_level)[$i], true);
+            $rights_to_ignore = array_values($profiles_by_permission_level)[$i];
+            \Session::changeProfile($profiles_id);
+            $lower_profiles = array_slice(array_keys($profiles_by_permission_level), $i + 1);
+            foreach ($lower_profiles as $lower_profile_name) {
+                $lower_profile_id = getItemByTypeName('Profile', $lower_profile_name, true);
+                // Not using `Profile::currentUserHaveMoreRightThan` as it has some conditions that are not suitable here
+                $criteria = [
+                    'FROM' => 'glpi_profilerights AS pa',
+                    'LEFT JOIN' => [
+                        'glpi_profilerights AS pb' => [
+                            'ON' => [
+                                'pa' => 'name',
+                                'pb' => 'name',
+                                ['AND' => ['pb.profiles_id' => $lower_profile_id]]
+                            ],
+                        ],
+                    ],
+                    'WHERE' => [
+                        'pa.profiles_id' => $profiles_id,
+                        new QueryExpression('(pb.rights | pa.rights) <> pa.rights'),
+                    ],
+                ];
+                if (!empty($rights_to_ignore)) {
+                    $criteria['WHERE'][] = [
+                        'NOT' => ['pa.name' => $rights_to_ignore]
+                    ];
+                }
+                $lower_rights = $DB->request($criteria);
+                $this->assertCount(0, $lower_rights, sprintf(
+                    'Profile %s should have more rights than %s but has less rights for: %s',
+                    array_keys($profiles_by_permission_level)[$i],
+                    $lower_profile_name,
+                    implode(', ', array_column(iterator_to_array($lower_rights), 'name')),
+                ));
+            }
+        }
     }
 }
