@@ -32,145 +32,153 @@
 
 {% extends "generic_show_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
 {% set params  = params ?? [] %}
 {% set rand_field = rand|default(random()) %}
 
 {% block form_fields %}
-   {% block more_fields %}
+    {% block more_fields %}
 
-      {{ fields.passwordField(
-         'secret',
-         item.fields['secret'],
-         __('Secret'),
-         field_options|merge({
-            is_disclosable: true,
-            can_regenerate: true,
-            helper: __('The webhook secret can be shared with a target server to allow it to validate requests are actually coming from the GLPI server and that the content was not modified between GLPI and the target.')
-         })
-      ) }}
+        {{ fields.passwordField(
+            'secret',
+            item.fields['secret'],
+            __('Secret'),
+            field_options|merge({
+                is_disclosable: true,
+                can_regenerate: true,
+                helper: __('The webhook secret can be shared with a target server to allow it to validate requests are actually coming from the GLPI server and that the content was not modified between GLPI and the target.')
+            })
+        ) }}
 
-      {{ fields.dropdownTimestampField(
-         'expiration',
-         item.fields['expiration'],
-         __('Expiration delay'),
-         field_options|merge({
-            'emptylabel': __('Disabled'),
-            'min': 0,
-            'max': constant('HOUR_TIMESTAMP') * 23,
-            'step': constant('HOUR_TIMESTAMP'),
-            'toadd': [
-               constant('MINUTE_TIMESTAMP'),
-               constant('MINUTE_TIMESTAMP') * 2,
-               constant('MINUTE_TIMESTAMP') * 5,
-               constant('MINUTE_TIMESTAMP') * 10,
-               constant('MINUTE_TIMESTAMP') * 15,
-               constant('MINUTE_TIMESTAMP') * 20,
-               constant('MINUTE_TIMESTAMP') * 30,
-               constant('HOUR_TIMESTAMP'),
-               constant('HOUR_TIMESTAMP') * 2,
-               constant('HOUR_TIMESTAMP') * 6,
-               constant('HOUR_TIMESTAMP') * 12,
-            ],
-            'width': 'auto',
-         })
-      ) }}
+        {{ fields.dropdownTimestampField(
+            'expiration',
+            item.fields['expiration'],
+            __('Expiration delay'),
+            field_options|merge({
+                'emptylabel': __('Disabled'),
+                'min': 0,
+                'max': constant('HOUR_TIMESTAMP') * 23,
+                'step': constant('HOUR_TIMESTAMP'),
+                'toadd': [
+                    constant('MINUTE_TIMESTAMP'),
+                    constant('MINUTE_TIMESTAMP') * 2,
+                    constant('MINUTE_TIMESTAMP') * 5,
+                    constant('MINUTE_TIMESTAMP') * 10,
+                    constant('MINUTE_TIMESTAMP') * 15,
+                    constant('MINUTE_TIMESTAMP') * 20,
+                    constant('MINUTE_TIMESTAMP') * 30,
+                    constant('HOUR_TIMESTAMP'),
+                    constant('HOUR_TIMESTAMP') * 2,
+                    constant('HOUR_TIMESTAMP') * 6,
+                    constant('HOUR_TIMESTAMP') * 12,
+                ],
+                'width': 'auto',
+            })
+        ) }}
 
-      {{ fields.smallTitle(__('Target authentication'), 'ti ti-fingerprint') }}
+        {{ fields.smallTitle(__('Target authentication'), 'ti ti-fingerprint') }}
 
-      {{ fields.checkboxField(
-         'use_cra_challenge',
-         item.fields['use_cra_challenge'],
-         __('Use CRA Challenge?'),
-         field_options|merge({
-            helper: __('Challenge–response authentication can be used to validate the identity of the target server before any data is sent from GLPI. This uses the shared secret that was generated in the above section.')
-         })
-      ) }}
+        {% set cra_tooltip = __('Challenge–response authentication can be used to validate the identity of the target server before any data is sent from GLPI. This uses the shared secret that was generated in the above section.') %}
 
-      {% set cra_btn %}
-         <button class="btn btn-primary me-2" type="button" name="validate_challenge" value="1">
-            <i class="ti ti-lock-check"></i>
-            <span>{{ _x('button', 'Validate') }}</span>
-         </button>
-      {% endset %}
+        {% if constant('GLPI_WEBHOOK_CRA_MANDATORY') %}
+            {{ alerts.alert_info(__('CRA is mandatory due to GLPI configuration'), [cra_tooltip]) }}
+            <input type="hidden" name="use_cra_challenge" value="1" />
+        {% else %}
+            {{ fields.checkboxField(
+                'use_cra_challenge',
+                item.fields['use_cra_challenge'],
+                __('Use CRA Challenge?'),
+                field_options|merge({
+                    helper: __('Challenge–response authentication can be used to validate the identity of the target server before any data is sent from GLPI. This uses the shared secret that was generated in the above section.')
+                })
+            ) }}
+        {% endif %}
 
-      {{ fields.htmlField(
-         '',
-         cra_btn,
-         __('CRA Challenge'),
-         field_options|merge({
-            add_field_class: (item.fields['use_cra_challenge']) ? '' : 'd-none',
-         })
-      ) }}
+        {% set cra_btn %}
+            <button class="btn btn-primary me-2" type="button" name="validate_challenge" value="1">
+                <i class="ti ti-lock-check"></i>
+                <span>{{ _x('button', 'Validate') }}</span>
+            </button>
+        {% endset %}
 
-      {% set cra_challenge_infi %}
-         <span name="cra_result">
+        {{ fields.htmlField(
+            '',
+            cra_btn,
+            __('CRA Challenge'),
+            field_options|merge({
+                add_field_class: (item.fields['use_cra_challenge']) ? '' : 'd-none',
+            })
+        ) }}
+
+        {% set cra_challenge_infi %}
+            <span name="cra_result">
          </span>
-      {% endset %}
+        {% endset %}
 
-      {{ fields.htmlField(
-         '',
-         cra_challenge_infi,
-         __('CRA result'),
-         field_options|merge({
-            add_field_class: (item.fields['use_cra_challenge']) ? '' : 'd-none',
-         })
-      ) }}
+        {{ fields.htmlField(
+            '',
+            cra_challenge_infi,
+            __('CRA result'),
+            field_options|merge({
+                add_field_class: (item.fields['use_cra_challenge']) ? '' : 'd-none',
+            })
+        ) }}
 
-      {{ fields.smallTitle(__('OAuth Authentication'), 'ti ti-key') }}
-      {{ fields.checkboxField('use_oauth', item.fields['use_oauth'], __('Use OAuth')) }}
-      {{ fields.textField('oauth_url', item.fields['oauth_url'], __('URL')) }}
-      {{ fields.textField('clientid', item.fields['clientid'], __('Client ID')) }}
-      {# The autocomplete, readonly, and onfocus stuff for the password field is an attempt to keep browsers from filling or asking to save the content automatically #}
-      {{ fields.passwordField('clientsecret', item.fields['clientsecret'], __('Client Secret'), {
-         is_disclosable: true,
-         readonly: true,
-         additional_attributes: {
-            autocomplete: 'off',
-            onfocus: 'this.removeAttribute("readonly");'
-         }
-      }) }}
+        {{ fields.smallTitle(__('OAuth Authentication'), 'ti ti-key') }}
+        {{ fields.checkboxField('use_oauth', item.fields['use_oauth'], __('Use OAuth')) }}
+        {{ fields.textField('oauth_url', item.fields['oauth_url'], __('URL')) }}
+        {{ fields.textField('clientid', item.fields['clientid'], __('Client ID')) }}
+        {# The autocomplete, readonly, and onfocus stuff for the password field is an attempt to keep browsers from filling or asking to save the content automatically #}
+        {{ fields.passwordField('clientsecret', item.fields['clientsecret'], __('Client Secret'), {
+            is_disclosable: true,
+            readonly: true,
+            additional_attributes: {
+                autocomplete: 'off',
+                onfocus: 'this.removeAttribute("readonly");'
+            }
+        }) }}
 
-      <script>
-          $('input[name="use_cra_challenge"]').change(function () {
-              if ($('input[name="use_cra_challenge"]').is(":checked")) {
-                  $('button[name="validate_challenge"]').parent().parent().parent().removeClass('d-none');
-                  $('span[name="cra_result"]').parent().parent().parent().removeClass('d-none');
-                  $('button[name="validate_challenge"]').trigger('click');
-              } else {
-                  $('button[name="validate_challenge"]').parent().parent().parent().addClass('d-none');
-                  $('span[name="cra_result"]').parent().parent().parent().addClass('d-none');
-              }
-          });
+        <script>
+            $('input[name="use_cra_challenge"]').change(function () {
+                if ($('input[name="use_cra_challenge"]').is(":checked")) {
+                    $('button[name="validate_challenge"]').parent().parent().parent().removeClass('d-none');
+                    $('span[name="cra_result"]').parent().parent().parent().removeClass('d-none');
+                    $('button[name="validate_challenge"]').trigger('click');
+                } else {
+                    $('button[name="validate_challenge"]').parent().parent().parent().addClass('d-none');
+                    $('span[name="cra_result"]').parent().parent().parent().addClass('d-none');
+                }
+            });
 
-          $('button[name="validate_challenge"]').click(function () {
-              secret = $('input[name="secret"]').val();
+            $('button[name="validate_challenge"]').click(function () {
+                secret = $('input[name="secret"]').val();
 
-              $.ajax({
-                  type: 'POST',
-                  url: '{{ path('/ajax/webhook.php') }}',
-                  data: {
-                      action: 'valide_cra_challenge',
-                      webhook_id: {{ item.fields['id'] }},
-                      secret: secret,
-                  },
-                  success: function(json_response) {
-                      if (json_response.status) {
-                          $('input[name="is_cra_challenge_valid"]').val(1);
-                          $('span[name="cra_result"]').html('<i class="ti ti-circle-check icon-pulse fs-2" style="color: #36d601;"></i> ' + (json_response.status_code ? json_response.status_code + ' ' : ' ') + json_response.message);
-                      } else {
-                          $('input[name="is_cra_challenge_valid"]').val(0);
-                          $('span[name="cra_result"]').html('<i class="ti ti-alert-triangle icon-pulse fs-2" style="color: #ff0000;"></i> ' + (json_response.status_code ? json_response.status_code + ' ' : ' ') + json_response.message);
-                      }
-                  },
-              });
-          });
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ path('/ajax/webhook.php') }}',
+                    data: {
+                        action: 'valide_cra_challenge',
+                        webhook_id: {{ item.fields['id'] }},
+                        secret: secret,
+                    },
+                    success: function(json_response) {
+                        if (json_response.status) {
+                            $('input[name="is_cra_challenge_valid"]').val(1);
+                            $('span[name="cra_result"]').html('<i class="ti ti-circle-check icon-pulse fs-2" style="color: #36d601;"></i> ' + (json_response.status_code ? json_response.status_code + ' ' : ' ') + json_response.message);
+                        } else {
+                            $('input[name="is_cra_challenge_valid"]').val(0);
+                            $('span[name="cra_result"]').html('<i class="ti ti-alert-triangle icon-pulse fs-2" style="color: #ff0000;"></i> ' + (json_response.status_code ? json_response.status_code + ' ' : ' ') + json_response.message);
+                        }
+                    },
+                });
+            });
 
-          $(function() {
-              if ($('input[name="use_cra_challenge"]').is(":checked") ) {
-                  $('button[name="validate_challenge"]').click();
-              }
-          });
-      </script>
+            $(function() {
+                if ($('input[name="use_cra_challenge"]').is(":checked") ) {
+                    $('button[name="validate_challenge"]').click();
+                }
+            });
+        </script>
 
-   {% endblock %}
+    {% endblock %}
 {% endblock %}

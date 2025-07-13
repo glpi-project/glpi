@@ -179,7 +179,7 @@ class QueuedWebhook extends CommonDBChild
             return false;
         }
 
-        if ($webhook->fields['use_cra_challenge']) {
+        if (GLPI_WEBHOOK_CRA_MANDATORY || $webhook->fields['use_cra_challenge']) {
             // Send CRA challenge
             $result = $webhook::validateCRAChallenge($queued_webhook->fields['url'], 'validate_cra_challenge', $webhook->fields['secret']);
             if ($result === false || $result['status'] !== true) {
