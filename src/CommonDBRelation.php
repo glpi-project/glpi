@@ -38,7 +38,11 @@ use Glpi\DBAL\QueryFunction;
 
 use function Safe\preg_match;
 
-/// Common DataBase Relation Table Manager Class
+/**
+ * 
+ * Common DataBase Relation Table Manager Class
+ * 
+ */
 abstract class CommonDBRelation extends CommonDBConnexity
 {
     // Item 1 information

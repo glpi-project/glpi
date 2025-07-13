@@ -44,6 +44,7 @@ use Glpi\DBAL\QueryFunction;
  **/
 abstract class CommonITILCost extends CommonDBChild
 {
+    /** @var bool */
     public $dohistory        = true;
 
 
@@ -62,9 +63,12 @@ abstract class CommonITILCost extends CommonDBChild
         return str_replace('Cost', '', static::class);
     }
 
+    /**
+     * @param CommonGLPI $item
+     * @param integer    $withtemplate (default 0)
+     */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         // can exists for template
         if (
             (get_class($item) == static::$itemtype)
@@ -85,16 +89,16 @@ abstract class CommonITILCost extends CommonDBChild
 
     /**
      * @param CommonGLPI $item object
-     * @param integer $tabnum          (default 1)
-     * @param integer $withtemplate    (default 0)
+     * @param integer $tabnum        (default 1)
+     * @param integer $withtemplate  Template or basic item  (default 0)
      **/
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         self::showForObject($item, $withtemplate);
         return true;
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = [];
 
@@ -198,7 +202,12 @@ abstract class CommonITILCost extends CommonDBChild
         return $tab;
     }
 
-    public static function rawSearchOptionsToAdd()
+    /**
+     * Search for options to add using raw SQL
+     * 
+     * @return array
+     */
+    public static function rawSearchOptionsToAdd(): array
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -315,6 +324,8 @@ abstract class CommonITILCost extends CommonDBChild
 
     /**
      * Init cost for creation based on previous cost
+     * 
+     * @return bool|void
      **/
     public function initBasedOnPrevious()
     {
@@ -372,6 +383,7 @@ abstract class CommonITILCost extends CommonDBChild
             'FROM'   => static::getTable(),
             'WHERE'  => [static::$items_id => $items_id],
         ])->current();
+
         return $result['sumtime'];
     }
 
