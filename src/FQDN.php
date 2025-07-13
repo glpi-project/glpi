@@ -33,8 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-/// Class FQDN : Fully Qualified Domain Name
-/// since version 0.84
+/**
+ * Fully Qualified Domain Name
+ * @since 0.84
+ */
 class FQDN extends CommonDropdown
 {
     public $dohistory = true;
