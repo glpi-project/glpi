@@ -582,7 +582,10 @@ class Webhook extends CommonDBTM implements FilterableInterface
         ];
         foreach ($parent_itemtypes as $parent_itemtype => $parent_itemtype_data) {
             $parent_schema = self::getAPISchemaBySupportedItemtype($parent_itemtype);
-            $schema['x-subtypes'][] = $parent_itemtype_data['name'];
+            $schema['x-subtypes'][] = [
+                'itemtype' => $parent_itemtype,
+                'schema_name' => $parent_itemtype_data['name'],
+            ];
             foreach ($parent_schema['properties'] as $property_name => $property_data) {
                 // Save current parents
                 $existing_parents = $schema['properties'][$property_name]['x-parent-itemtype'] ?? [];
@@ -623,6 +626,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
             }
         }
         $parent_schema['x-itemtype'] = $parent_itemtype;
+        unset($parent_schema['x-subtypes']);
         $parent_result = \Glpi\Api\HL\Search::getOneBySchema($parent_schema, [
             'itemtype' => $parent_itemtype,
             'id' => $parent_id,
@@ -944,7 +948,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         $subtype_labels = [];
         if (isset($parent_schema['x-subtypes'])) {
             foreach ($parent_schema['x-subtypes'] as $subtype) {
-                $subtype_labels[$subtype] = $subtype::getTypeName(1);
+                $subtype_labels[$subtype] = $subtype['itemtype']::getTypeName(1);
             }
         }
         foreach ($props as $prop_name => $prop_data) {

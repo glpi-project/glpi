@@ -233,7 +233,7 @@ final class Parser
         // Loop through operators and set the keys to the operator property
         $operators = array_combine(array_column($operators, 'operator'), $operators);
 
-        $flat_props = $this->search->getFlattenedProperties();
+        $flat_props = $this->search->getContext()->getFlattenedProperties();
         $invalid_filters = [];
 
         $buffer = [];

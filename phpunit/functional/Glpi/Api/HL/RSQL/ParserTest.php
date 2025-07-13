@@ -126,9 +126,12 @@ class ParserTest extends GLPITestCase
         ];
         $search_class = new \ReflectionClass(Search::class);
         $search = $search_class->newInstanceWithoutConstructor();
-        $search_class->getProperty('schema')->setValue($search, $schema);
-        $search_class->getProperty('flattened_properties')->setValue($search, Schema::flattenProperties($schema['properties']));
-        $search_class->getProperty('joins')->setValue($search, Schema::getJoins($schema['properties']));
+        $context_class = new \ReflectionClass(Search\SearchContext::class);
+        $context = $context_class->newInstanceWithoutConstructor();
+        $context_class->getProperty('schema')->setValue($context, $schema);
+        $context_class->getProperty('flattened_properties')->setValue($context, Schema::flattenProperties($schema['properties']));
+        $context_class->getProperty('joins')->setValue($context, Schema::getJoins($schema['properties']));
+        $search_class->getProperty('context')->setValue($search, $context);
         $parser = new Parser($search);
         $this->assertEquals($expected, (string) $parser->parse($tokens)->getSQLWhereCriteria());
     }
@@ -153,9 +156,12 @@ class ParserTest extends GLPITestCase
 
         $search_class = new \ReflectionClass(Search::class);
         $search = $search_class->newInstanceWithoutConstructor();
-        $search_class->getProperty('schema')->setValue($search, $schema);
-        $search_class->getProperty('flattened_properties')->setValue($search, Schema::flattenProperties($schema['properties']));
-        $search_class->getProperty('joins')->setValue($search, Schema::getJoins($schema['properties']));
+        $context_class = new \ReflectionClass(Search\SearchContext::class);
+        $context = $context_class->newInstanceWithoutConstructor();
+        $context_class->getProperty('schema')->setValue($context, $schema);
+        $context_class->getProperty('flattened_properties')->setValue($context, Schema::flattenProperties($schema['properties']));
+        $context_class->getProperty('joins')->setValue($context, Schema::getJoins($schema['properties']));
+        $search_class->getProperty('context')->setValue($search, $context);
         $parser = new Parser($search);
 
         $result = $parser->parse([[5, 'test'], [6, '=='], [7, 'test']]);
