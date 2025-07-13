@@ -1107,7 +1107,6 @@ TWIG,
                     'charts',
                     'clipboard',
                 ]);
-                Html::requireJs('');
             }
 
             if (in_array('planning', $jslibs)) {
