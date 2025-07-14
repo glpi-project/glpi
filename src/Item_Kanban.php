@@ -166,7 +166,7 @@ class Item_Kanban extends CommonDBRelation
 
         if (count($iterator)) {
             $data = $iterator->current();
-            if ($timestamp !== null) {
+            if (!empty($timestamp)) {
                 if (strtotime($timestamp) < strtotime($data['date_mod'])) {
                     return json_decode($data['state'], true);
                 } else {
