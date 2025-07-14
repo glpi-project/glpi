@@ -86,7 +86,7 @@ class Impact extends CommonGLPI
         /** @var \DBmysql $DB */
         global $DB;
 
-        if ($withtemplate != 0) {
+        if ((int) $withtemplate > 0) {
             return '';
         }
 
