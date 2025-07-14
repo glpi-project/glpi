@@ -1225,7 +1225,7 @@ abstract class API
                         "ERROR_FIELD_NOT_FOUND"
                     );
                 }
-                if (!empty($filter_value)) {
+                if ((string) $filter_value !== '') {
                     $search_value = Search::makeTextSearch($DB->escape($filter_value));
                     $where .= " AND (" . $DB->quoteName("$table.$filter_field") . " $search_value)";
                 }
