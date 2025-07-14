@@ -42,9 +42,7 @@
 {% set footers = footers|default([]) %}
 {% set showmassiveactions = showmassiveactions|default(false) %}
 
-{# This value should be false by default because paging will no work on usages
-   of this template unless it is explicitly implemented #}
-{% set use_pager = use_pager|default(false) %}
+{% set use_pager = use_pager|default(start is defined and limit is defined and filtered_number is defined) %}
 
 {# nopager is deprecated, use "use_pager" instead #}
 {% set use_pager = nopager is defined ? not nopager : use_pager %}
