@@ -2428,7 +2428,7 @@ class Session
     public static function isRTL($locale): bool
     {
         if (function_exists('locale_is_right_to_left')) {
-            locale_is_right_to_left($locale);
+            return locale_is_right_to_left($locale);
         }
 
         return (bool) preg_match('/^(?:ar|he|fa|ur|ps|sd|ug|ckb|yi|dv|ku_arab|ku-arab)(?:[_-].*)?$/i', $locale);
