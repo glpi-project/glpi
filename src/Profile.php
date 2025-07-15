@@ -942,7 +942,7 @@ class Profile extends CommonDBTM
                                 'field' => 'devicesimcard_pinpuk',
                                 'rights'    => [
                                     READ    => __('Read'),
-                                    UPDATE  => __('Update')
+                                    UPDATE  => __('Update'),
                                 ]
                             ]),
                         ],
