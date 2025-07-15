@@ -342,7 +342,7 @@ class InfocomTest extends DbTestCase
             'autofill_delivery_date' => Infocom::ON_STATUS_CHANGE . '_' . $status_in_use->getID(),
             'autofill_warranty_date' => Infocom::ON_STATUS_CHANGE . '_' . $status_in_use->getID(),
             'autofill_order_date' => Infocom::ON_STATUS_CHANGE . '_' . $status_in_use->getID(),
-            'autofill_decommission_date' => Infocom::ON_STATUS_CHANGE . '_' . $status_decom->getID()
+            'autofill_decommission_date' => Infocom::ON_STATUS_CHANGE . '_' . $status_decom->getID(),
         ]);
         $_SESSION['glpi_currenttime'] = '2025-07-14 9:15:20';
         $CFG_GLPI['auto_create_infocoms'] = true;
