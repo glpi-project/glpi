@@ -940,6 +940,10 @@ class Profile extends CommonDBTM
                             $fn_get_rights(DeviceSimcard::class, 'central', [
                                 'label' => __('Simcard PIN/PUK'),
                                 'field' => 'devicesimcard_pinpuk',
+                                'rights'    => [
+                                    READ    => __('Read'),
+                                    UPDATE  => __('Update'),
+                                ],
                             ]),
                         ],
                     ],
