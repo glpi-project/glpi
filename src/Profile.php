@@ -943,7 +943,7 @@ class Profile extends CommonDBTM
                                 'rights'    => [
                                     READ    => __('Read'),
                                     UPDATE  => __('Update'),
-                                ]
+                                ],
                             ]),
                         ],
                     ],
