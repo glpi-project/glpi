@@ -139,6 +139,10 @@ $empty_data_builder = new class {
             'notifications_mailing' => '0',
             'admin_email' => 'admsys@localhost',
             'admin_email_name' => '',
+            'admin_email_noreply' => '',
+            'admin_email_noreply_name' => '',
+            'admin_reply' => '',
+            'admin_reply_name' => '',
             'from_email' => '',
             'from_email_name' => '',
             'noreply_email' => '',
@@ -368,6 +372,9 @@ $empty_data_builder = new class {
             'projecttask_completed_states_id' => 0,
             'non_reusable_passwords_count' => 1,
             'plugins_execution_mode' => Plugin::EXECUTION_MODE_ON,
+            'glpinetwork_registration_key' => null,
+            'impact_assets_list' => '[]',
+            'timezone' => null,
         ];
 
         $tables['glpi_configs'] = [];

@@ -56,3 +56,10 @@ $migration->addField(
 );
 
 $migration->removeConfig(['url_base_api']);
+
+// Add config entries that were missing from the default installation data since GLPI 9.5.
+$migration->addConfig([
+    'glpinetwork_registration_key' => null,
+    'impact_assets_list' => '[]',
+    'timezone' => null,
+]);
