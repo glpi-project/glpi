@@ -6023,7 +6023,7 @@ TWIG, $twig_params);
      *
      * @param int|null $id ID of the item to get
      *
-     * @return self|false
+     * @return static|false
      */
     public static function getById(?int $id)
     {
@@ -6045,7 +6045,7 @@ TWIG, $twig_params);
      *
      * @param int[] $ids
      *
-     * @return self[]
+     * @return static[]
      */
     public static function getByIds(array $ids): array
     {
