@@ -3224,8 +3224,6 @@ class CommonDBTM extends CommonGLPI
     /**
      * Get the ID of entity assigned to the object
      *
-     * Can be overloaded (ex : infocom)
-     *
      * @return integer ID of the entity
      **/
     public function getEntityID()
@@ -3240,8 +3238,6 @@ class CommonDBTM extends CommonGLPI
 
     /**
      * Is the object assigned to an entity
-     *
-     * Can be overloaded (ex : infocom)
      *
      * @return boolean
      **/
@@ -3258,8 +3254,6 @@ class CommonDBTM extends CommonGLPI
     /**
      * Is the object may be recursive
      *
-     * Can be overloaded (ex : infocom)
-     *
      * @return boolean
      **/
     public function maybeRecursive()
@@ -3275,18 +3269,14 @@ class CommonDBTM extends CommonGLPI
     /**
      * Is the object recursive
      *
-     * Can be overloaded (ex : infocom)
-     *
-     * @return boolean|0
+     * @return boolean
      **/
     public function isRecursive()
     {
-
         if ($this->maybeRecursive()) {
-            return $this->fields["is_recursive"];
+            return (bool) $this->fields["is_recursive"];
         }
-        // Return integer value to be used to fill is_recursive field
-        return 0;
+        return false;
     }
 
 
@@ -3308,16 +3298,14 @@ class CommonDBTM extends CommonGLPI
     /**
      * Is the object deleted
      *
-     * @return boolean|0
+     * @return boolean
      **/
     public function isDeleted()
     {
-
         if ($this->maybeDeleted()) {
-            return $this->fields["is_deleted"];
+            return (bool) $this->fields["is_deleted"];
         }
-        // Return integer value to be used to fill is_deleted field
-        return 0;
+        return false;
     }
 
 
@@ -3343,16 +3331,14 @@ class CommonDBTM extends CommonGLPI
      *
      * @since 9.2
      *
-     * @return boolean|1
+     * @return boolean
      **/
     public function isActive()
     {
-
         if ($this->maybeActive()) {
-            return $this->fields["is_active"];
+            return (bool) $this->fields["is_active"];
         }
-        // Return integer value to be used to fill is_active field
-        return 1;
+        return true;
     }
 
 
@@ -3374,16 +3360,14 @@ class CommonDBTM extends CommonGLPI
     /**
      * Is the object a template
      *
-     * @return boolean|0
+     * @return boolean
      **/
     public function isTemplate()
     {
-
         if ($this->maybeTemplate()) {
-            return $this->fields["is_template"];
+            return (bool) $this->fields["is_template"];
         }
-        // Return integer value to be used to fill is_template field
-        return 0;
+        return false;
     }
 
 
@@ -3427,7 +3411,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function isDynamic()
     {
-
         if ($this->maybeDynamic()) {
             return (bool) $this->fields['is_dynamic'];
         }
@@ -3458,7 +3441,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function isPrivate()
     {
-
         if ($this->maybePrivate()) {
             return (bool) $this->fields["is_private"];
         }
