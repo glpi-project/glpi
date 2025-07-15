@@ -451,10 +451,10 @@ class PlanningTest extends \DbTestCase
             $params['begin'],
             $params['end'],
             $params['except_task'] ? [
-                    \TicketTask::class => [
-                        $task->getID(),
-                    ],
-                ] : [],
+                \TicketTask::class => [
+                    $task->getID(),
+                ],
+            ] : [],
         ), $expected['is_busy']);
         if ($expected['is_busy']) {
             $warning = "The user <a href=\"/glpi/front/user.form.php?id=$tech_id\">tech</a> is busy at the selected timeframe.<br/>- Ticket task: from 2025-05-13 00:00 to 2025-05-13 01:00:<br/><a href='/glpi/front/ticket.form.php?id=$ticket_id&amp;forcetab=TicketTask$1'>$ticket_name</a><br/>";
