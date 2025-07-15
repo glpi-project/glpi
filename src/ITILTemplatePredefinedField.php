@@ -427,8 +427,6 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
             Html::showMassiveActions($massiveactionparams);
             Html::closeForm();
         }
-                                                                echo "TEST";
-
         echo "</div>";
     }
 }
