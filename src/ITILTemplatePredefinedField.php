@@ -316,7 +316,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
         if ($canedit) {
             echo "<div class='firstbloc'>";
             echo "<tr class='tab_bg_2'><td><div class='alert alert-info'>" .
-                  __('Predefined task templates will be added according to their creation order') .
+                  __s('Predefined task templates will be added according to their creation order') .
                  "</div></td></tr>\n";
             echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
                action='" . static::getFormURL() . "'>";
