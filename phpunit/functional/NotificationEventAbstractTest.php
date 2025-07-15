@@ -117,18 +117,17 @@ class NotificationEventAbstractTest extends DbTestCase
             'Each user should get a unique template ID even if they are the same type'
         );
 
-        // Verify templates are cached separately (both user-specific templates should be in cache now)
-        // Note: There may also be a base template entry, but we're only counting user-specific ones
-        $user_specific_templates = 0;
+        // Verify that only the base template is cached (user-specific templates are not cached)
+        $base_template_count = 0;
         foreach ($template->templates_by_languages as $key => $value) {
-            if (strpos($key, '_base') === false) {
-                $user_specific_templates++;
+            if (strpos($key, '_base') !== false) {
+                $base_template_count++;
             }
         }
         $this->assertEquals(
-            2,
-            $user_specific_templates,
-            'Each user should have a separate template cache entry'
+            1,
+            $base_template_count,
+            'Only one base template should be cached for the same language/options'
         );
     }
 
