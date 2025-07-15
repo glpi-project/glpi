@@ -42,6 +42,8 @@ use Glpi\Http\JSONResponse;
 use Glpi\Http\Response;
 use Glpi\Toolbox\ArrayPathAccessor;
 
+use function Safe\preg_match;
+
 /**
  * Class contaning methods for accessing GLPI resources (items) from the HL API via schemas.
  */
@@ -183,7 +185,7 @@ final class ResourceAccessor
      * @param array $schema The schema
      * @param array $request_params The request parameters
      * @param array $get_route The GET route to use to get the created item. This should be an array containing the controller class and method.
-     * @phpstan-param array<class-string<AbstractController>, string> $get_route
+     * @phpstan-param array{0: class-string<AbstractController>, 1: string} $get_route
      * @param array $extra_get_route_params Additional parameters needed to generate the GET route. This should only be needed for complex routes.
      *      This is used to re-map the parameters to the GET route.
      *      The array can contain an 'id' property which is the name of the parameter that the resulting ID is set to ('id' by default).
