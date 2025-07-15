@@ -8658,11 +8658,11 @@ HTML,
         // Arrange: create 3 open tickets and 2 solved.
         $entity_id = $this->getTestRootEntity(true);
         $to_create = [
-            'Ticket 1' => CommonITILObject::INCOMING,
-            'Ticket 2' => CommonITILObject::INCOMING,
-            'Ticket 3' => CommonITILObject::INCOMING,
-            'Ticket 4' => CommonITILObject::SOLVED,
-            'Ticket 5' => CommonITILObject::SOLVED,
+            __FUNCTION__ . ' 1' => CommonITILObject::INCOMING,
+            __FUNCTION__ . ' 2' => CommonITILObject::INCOMING,
+            __FUNCTION__ . ' 3' => CommonITILObject::INCOMING,
+            __FUNCTION__ . ' 4' => CommonITILObject::SOLVED,
+            __FUNCTION__ . ' 5' => CommonITILObject::SOLVED,
         ];
         foreach ($to_create as $name => $status) {
             $this->createItem(Ticket::class, [
@@ -8676,9 +8676,15 @@ HTML,
         // Act: login as "tech" and get tickets using the default search request
         $criteria = Ticket::getDefaultSearchRequest();
         $results = Search::getDatas(Ticket::class, $criteria);
+        $count = 0;
+        foreach ($results['data']['rows'] as $item) {
+            if (str_starts_with($item['raw']['ITEM_Ticket_1'], __FUNCTION__)) {
+                $count++;
+            }
+        }
 
         // Assert: only the non solved tickets should be found.
-        $this->assertEquals(3, $results['data']['totalcount']);
+        $this->assertEquals(3, $count);
     }
 
     public function testHelpdeskUsersCanSeeSolvedTicketsByDefault(): void
