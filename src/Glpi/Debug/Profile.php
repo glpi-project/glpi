@@ -173,9 +173,7 @@ final class Profile
 
         $execution_time = -1;
         if (isset($this->additional_info['profiler'])) {
-            $main_section = array_values(array_filter($this->additional_info['profiler'], static function (array $section) {
-                return $section['category'] === Profiler::CATEGORY_CORE && $section['name'] === 'php_request';
-            }));
+            $main_section = array_values(array_filter($this->additional_info['profiler'], static fn(array $section) => $section['category'] === Profiler::CATEGORY_CORE && $section['name'] === 'php_request'));
             if (count($main_section)) {
                 $execution_time = $main_section[0]['end'] - $main_section[0]['start'];
             }

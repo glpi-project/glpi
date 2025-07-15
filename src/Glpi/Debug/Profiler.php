@@ -99,9 +99,7 @@ final class Profiler
     public function pause(string $name): void
     {
         // get the last section with the given name and stop it
-        $section = array_filter($this->current_sections, static function (ProfilerSection $section) use ($name) {
-            return $section->getName() === $name;
-        });
+        $section = array_filter($this->current_sections, static fn(ProfilerSection $section) => $section->getName() === $name);
         if (count($section)) {
             $section = array_pop($section);
             $section->pause();
@@ -116,9 +114,7 @@ final class Profiler
     public function resume(string $name): void
     {
         // get the last section with the given name and stop it
-        $section = array_filter($this->current_sections, static function (ProfilerSection $section) use ($name) {
-            return $section->getName() === $name;
-        });
+        $section = array_filter($this->current_sections, static fn(ProfilerSection $section) => $section->getName() === $name);
         if (count($section)) {
             $section = array_pop($section);
             $section->resume();
@@ -133,9 +129,7 @@ final class Profiler
     public function stop(string $name): int
     {
         // get the last section with the given name and stop it
-        $section = array_filter($this->current_sections, static function (ProfilerSection $section) use ($name) {
-            return $section->getName() === $name;
-        });
+        $section = array_filter($this->current_sections, static fn(ProfilerSection $section) => $section->getName() === $name);
         if (count($section)) {
             $k = array_key_last($section);
             $section = array_pop($section);
@@ -154,9 +148,7 @@ final class Profiler
      */
     public function getCurrentDuration(string $name): int
     {
-        $section = array_filter($this->current_sections, static function (ProfilerSection $section) use ($name) {
-            return $section->getName() === $name;
-        });
+        $section = array_filter($this->current_sections, static fn(ProfilerSection $section) => $section->getName() === $name);
         if (count($section)) {
             $section = array_pop($section);
             return $section->getDuration();
@@ -182,9 +174,7 @@ final class Profiler
      */
     public function isRunning(string $name): bool
     {
-        $section = array_filter($this->current_sections, static function (ProfilerSection $section) use ($name) {
-            return $section->getName() === $name;
-        });
+        $section = array_filter($this->current_sections, static fn(ProfilerSection $section) => $section->getName() === $name);
         return count($section) > 0;
     }
 }

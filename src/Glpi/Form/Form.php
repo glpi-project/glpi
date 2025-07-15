@@ -646,7 +646,7 @@ final class Form extends CommonDBTM implements
         return array_filter(
             $this->getQuestions(),
             function (Question $question) use ($types) {
-                $type = get_class($question->getQuestionType());
+                $type = $question->getQuestionType() !== null ? get_class($question->getQuestionType()) : self::class;
                 return in_array($type, $types);
             }
         );

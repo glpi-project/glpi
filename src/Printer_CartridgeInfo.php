@@ -245,9 +245,7 @@ TWIG, $twig_params);
         if (str_starts_with($field, '_virtual_')) {
             $type = preg_match('/_virtual_(.*)_percent/', $field, $matches) ? $matches[1] : '';
             $badges = array_filter(array_map(
-                static function ($data) use ($type) {
-                    return self::createCartridgeInformationBadge($data, $type);
-                },
+                static fn($data) => self::createCartridgeInformationBadge($data, $type),
                 $options['raw_data']['Printer_' . $printer->getSearchOptionIDByField('field', $field)]
             ));
 

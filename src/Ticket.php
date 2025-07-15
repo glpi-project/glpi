@@ -159,7 +159,7 @@ class Ticket extends CommonITILObject
 
         if (
             isset($this->fields['is_deleted']) && $this->fields['is_deleted'] == 1
-            || isset($this->fields['status']) && in_array($this->fields['status'], $this->getClosedStatusArray())
+            || isset($this->fields['status']) && in_array($this->fields['status'], static::getClosedStatusArray())
         ) {
             return false;
         }
@@ -640,7 +640,7 @@ class Ticket extends CommonITILObject
     public function canReopen()
     {
         return Session::haveRight('followup', CREATE)
-             && in_array($this->fields["status"], $this->getClosedStatusArray())
+             && in_array($this->fields["status"], static::getClosedStatusArray())
              && ($this->isAllowedStatus($this->fields['status'], self::INCOMING)
                  || $this->isAllowedStatus($this->fields['status'], self::ASSIGNED));
     }
@@ -1369,8 +1369,8 @@ class Ticket extends CommonITILObject
         if (
             isset($this->input['status'])
             && in_array('status', $this->updates)
-            && (in_array($this->input['status'], $this->getSolvedStatusArray())
-              || in_array($this->input['status'], $this->getClosedStatusArray()))
+            && (in_array($this->input['status'], static::getSolvedStatusArray())
+              || in_array($this->input['status'], static::getClosedStatusArray()))
         ) {
             CommonITILObject_CommonITILObject::manageLinksOnChange('Ticket', $this->getID(), [
                 'status'       => $this->input['status'],
@@ -1440,7 +1440,7 @@ class Ticket extends CommonITILObject
                 isset($this->input["status"])
                 && $this->input["status"]
                 && in_array("status", $this->updates)
-                && in_array($this->input["status"], $this->getSolvedStatusArray())
+                && in_array($this->input["status"], static::getSolvedStatusArray())
             ) {
                 $mailtype = "solved";
             }
@@ -1449,7 +1449,7 @@ class Ticket extends CommonITILObject
                 isset($this->input["status"])
                 && $this->input["status"]
                 && in_array("status", $this->updates)
-                && in_array($this->input["status"], $this->getClosedStatusArray())
+                && in_array($this->input["status"], static::getClosedStatusArray())
             ) {
                 $mailtype = "closed";
             }
@@ -1846,8 +1846,8 @@ class Ticket extends CommonITILObject
                 'glpi_items_tickets.items_id' => $items_id,
                 'NOT'                         => [
                     $this->getTable() . '.status' => array_merge(
-                        $this->getSolvedStatusArray(),
-                        $this->getClosedStatusArray()
+                        static::getSolvedStatusArray(),
+                        static::getClosedStatusArray()
                     ),
                 ],
             ],
@@ -1893,8 +1893,8 @@ class Ticket extends CommonITILObject
                 $this->getTable() . '.type'      => $type,
                 'NOT'                         => [
                     $this->getTable() . '.status' => array_merge(
-                        $this->getSolvedStatusArray(),
-                        $this->getClosedStatusArray()
+                        static::getSolvedStatusArray(),
+                        static::getClosedStatusArray()
                     ),
                 ],
             ],
@@ -1932,8 +1932,8 @@ class Ticket extends CommonITILObject
                 'glpi_items_tickets.itemtype' => $itemtype,
                 'glpi_items_tickets.items_id' => $items_id,
                 $this->getTable() . '.status' => array_merge(
-                    $this->getSolvedStatusArray(),
-                    $this->getClosedStatusArray()
+                    static::getSolvedStatusArray(),
+                    static::getClosedStatusArray()
                 ),
                 new QueryExpression(
                     QueryFunction::dateAdd(
@@ -3748,7 +3748,7 @@ JAVASCRIPT;
             ]);
         }
 
-        if ($ID && in_array($this->fields['status'], $this->getClosedStatusArray())) {
+        if ($ID && in_array($this->fields['status'], static::getClosedStatusArray())) {
             $canupdate = false;
             // No update for actors
             $options['_noupdate'] = true;
@@ -5692,7 +5692,7 @@ JAVASCRIPT;
     public function getForbiddenSingleMassiveActions()
     {
         $excluded = parent::getForbiddenSingleMassiveActions();
-        if (in_array($this->fields['status'], $this->getClosedStatusArray())) {
+        if (in_array($this->fields['status'], static::getClosedStatusArray())) {
             //for closed Tickets, only keep transfer and unlock
             $excluded[] = 'TicketValidation:submit_validation';
             $excluded[] = 'Ticket:*';
@@ -5710,7 +5710,7 @@ JAVASCRIPT;
     {
         $whitelist = parent::getWhitelistedSingleMassiveActions();
 
-        if (!in_array($this->fields['status'], $this->getClosedStatusArray())) {
+        if (!in_array($this->fields['status'], static::getClosedStatusArray())) {
             $whitelist[] = 'Item_Ticket:add_item';
         }
 

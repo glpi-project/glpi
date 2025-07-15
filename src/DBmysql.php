@@ -396,9 +396,7 @@ class DBmysql
             $warnings_string = implode(
                 "\n",
                 array_map(
-                    static function ($warning) {
-                        return sprintf('%s: %s', $warning['Code'], $warning['Message']);
-                    },
+                    static fn($warning) => sprintf('%s: %s', $warning['Code'], $warning['Message']),
                     $sql_warnings
                 )
             );
@@ -709,7 +707,7 @@ class DBmysql
                         [
                             'AND' => [
                                 'information_schema.tables.table_schema' => new QueryExpression(
-                                    $this->quoteName('information_schema.columns.table_schema')
+                                    static::quoteName('information_schema.columns.table_schema')
                                 ),
                             ],
                         ],
@@ -764,7 +762,7 @@ class DBmysql
                         [
                             'AND' => [
                                 'information_schema.tables.table_schema' => new QueryExpression(
-                                    $this->quoteName('information_schema.columns.table_schema')
+                                    static::quoteName('information_schema.columns.table_schema')
                                 ),
                             ],
                         ],
@@ -819,7 +817,7 @@ class DBmysql
                         [
                             'AND' => [
                                 'information_schema.tables.table_schema' => new QueryExpression(
-                                    $this->quoteName('information_schema.columns.table_schema')
+                                    static::quoteName('information_schema.columns.table_schema')
                                 ),
                             ],
                         ],
@@ -1285,7 +1283,7 @@ class DBmysql
             $fields = [];
             $values = [];
             foreach ($params as $key => $value) {
-                $fields[] = $this->quoteName($key);
+                $fields[] = static::quoteName($key);
                 if ($value instanceof QueryExpression) {
                     $values[] = $value->getValue();
                     unset($params[$key]);
@@ -2231,7 +2229,7 @@ class DBmysql
     {
         $query = sprintf(
             'SHOW GLOBAL VARIABLES WHERE %s IN (%s)',
-            $this->quoteName('Variable_name'),
+            static::quoteName('Variable_name'),
             implode(', ', array_map([$this, 'quote'], $variables))
         );
         $result = $this->doQuery($query);

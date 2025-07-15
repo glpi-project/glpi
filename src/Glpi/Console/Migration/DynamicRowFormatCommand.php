@@ -129,9 +129,7 @@ class DynamicRowFormatCommand extends AbstractCommand
 
         $errors = false;
 
-        $progress_message = function (string $table) {
-            return sprintf(__('Migrating table "%s"...'), $table);
-        };
+        $progress_message = (fn(string $table) => sprintf(__('Migrating table "%s"...'), $table));
 
         foreach ($this->iterate($tables, $progress_message) as $table) {
             $result = $this->db->doQuery(sprintf('ALTER TABLE %s ROW_FORMAT = DYNAMIC', $this->db->quoteName($table)));

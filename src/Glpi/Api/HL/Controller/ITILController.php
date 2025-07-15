@@ -239,9 +239,7 @@ final class ITILController extends AbstractController
                         'x-mapped-from' => 'status.id',
                         // The x-mapper property indicates this property is calculated.
                         // The mapper callable gets the value of the x-mapped-from field (id in this case) and returns the name.
-                        'x-mapper' => static function ($v) use ($itil_type) {
-                            return $itil_type::getStatus($v);
-                        },
+                        'x-mapper' => static fn($v) => $itil_type::getStatus($v),
                     ],
                 ],
             ];
@@ -1537,9 +1535,7 @@ final class ITILController extends AbstractController
         }
 
         $team = self::getCleanTeam($item);
-        $team = array_filter($team, static function ($v) use ($role_id) {
-            return $v['role'] === $role_id;
-        }, ARRAY_FILTER_USE_BOTH);
+        $team = array_filter($team, static fn($v) => $v['role'] === $role_id, ARRAY_FILTER_USE_BOTH);
         return new JSONResponse($team);
     }
 

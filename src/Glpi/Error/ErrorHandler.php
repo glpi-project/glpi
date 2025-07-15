@@ -171,7 +171,7 @@ final class ErrorHandler extends BaseErrorHandler
 
         self::displayErrorMessage(
             \sprintf('PHP %s (%s)', $error_type, $type),
-            \sprintf('%s in %s at line %s', $this->cleanPaths($message), $this->cleanPaths($file), $line),
+            \sprintf('%s in %s at line %s', self::cleanPaths($message), self::cleanPaths($file), $line),
             self::ERROR_LEVEL_MAP[$type],
         );
 

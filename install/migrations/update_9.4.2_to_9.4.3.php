@@ -83,14 +83,13 @@ function update942to943()
         ],
     ];
 
-    $fix_content_fct = function ($content, $itil_id, $itil_fkey) use ($missing_param_pattern) {
+    $fix_content_fct = (fn($content, $itil_id, $itil_fkey) =>
         // Add itil object param between docid param ($1) and ending quote ($2)
-        return preg_replace(
+        preg_replace(
             '/' . $missing_param_pattern . '/',
             '$1&amp;' . http_build_query([$itil_fkey => $itil_id]) . '$2',
             $content
-        );
-    };
+        ));
 
     foreach ($itil_mappings as $itil_type => $itil_specs) {
         $itil_fkey  = $itil_specs['itil_fkey'];

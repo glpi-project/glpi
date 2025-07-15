@@ -81,7 +81,7 @@ class Auth extends CommonGLPI
      * The user's email found during the validation part of the login workflow.
      * @var ?string
      */
-    private ?string $user_email;
+    private ?string $user_email = null;
 
     /**
      * The authentication method determined during the validation part of the login workflow.

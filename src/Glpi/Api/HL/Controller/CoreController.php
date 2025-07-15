@@ -569,15 +569,12 @@ HTML;
         $params = $request->getParameters();
         $transfer = new \Transfer();
 
-        $transfer_records = array_filter($params, static function ($param) {
+        $transfer_records = array_filter($params, static fn($param) =>
             // must have itemtype, items_id and entity keys
-            return is_array($param) && isset($param['itemtype'], $param['items_id'], $param['entity']);
-        });
+            is_array($param) && isset($param['itemtype'], $param['items_id'], $param['entity']));
         $original_record_count = count($transfer_records);
         // Filter out any records that would transfer to an entity the user doesn't have access to
-        $transfer_records = array_filter($transfer_records, static function ($record) {
-            return Session::haveAccessToEntity((int) $record['entity']);
-        });
+        $transfer_records = array_filter($transfer_records, static fn($record) => Session::haveAccessToEntity((int) $record['entity']));
         $is_partial_transfer = $original_record_count !== count($transfer_records);
 
         $controllers = Router::getInstance()->getControllers();

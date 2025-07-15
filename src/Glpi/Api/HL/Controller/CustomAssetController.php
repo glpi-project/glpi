@@ -89,13 +89,11 @@ final class CustomAssetController extends AbstractController
                 'x-itemtype' => $asset_class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'x-rights-conditions' => [
-                    'read' => static function () use ($definition) {
-                        return [
-                            'WHERE' => [
-                                '_.assets_assetdefinitions_id' => $definition->getID(),
-                            ],
-                        ];
-                    },
+                    'read' => static fn() => [
+                        'WHERE' => [
+                            '_.assets_assetdefinitions_id' => $definition->getID(),
+                        ],
+                    ],
                 ],
                 'properties' => [
                     'id' => [
@@ -247,16 +245,12 @@ final class CustomAssetController extends AbstractController
                     'picture_front' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'x-mapped-from' => 'picture_front',
-                        'x-mapper' => static function ($v) {
-                            return \Toolbox::getPictureUrl($v, true) ?? '';
-                        },
+                        'x-mapper' => static fn($v) => \Toolbox::getPictureUrl($v, true) ?? '',
                     ],
                     'picture_rear' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'x-mapped-from' => 'picture_back',
-                        'x-mapper' => static function ($v) {
-                            return \Toolbox::getPictureUrl($v, true) ?? '';
-                        },
+                        'x-mapper' => static fn($v) => \Toolbox::getPictureUrl($v, true) ?? '',
                     ],
                     'pictures' => [
                         'type' => Doc\Schema::TYPE_ARRAY,
@@ -265,9 +259,7 @@ final class CustomAssetController extends AbstractController
                             'x-mapped-from' => 'pictures',
                             'x-mapper' => static function ($v) {
                                 $pictures = importArrayFromDB($v);
-                                return array_map(static function ($picture) {
-                                    return \Toolbox::getPictureUrl($picture, true) ?? '';
-                                }, $pictures);
+                                return array_map(static fn($picture) => \Toolbox::getPictureUrl($picture, true) ?? '', $pictures);
                             },
                         ],
                     ],

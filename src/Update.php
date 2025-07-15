@@ -215,18 +215,16 @@ class Update
             $sql_mode = $DB->doQuery(sprintf('SELECT @@sql_mode as %s', $DB->quoteName('sql_mode')))->fetch_assoc()['sql_mode'] ?? '';
             $sql_mode_flags = array_filter(
                 explode(',', $sql_mode),
-                function (string $flag) {
-                    return !in_array(
-                        trim($flag),
-                        [
-                            'STRICT_ALL_TABLES',
-                            'STRICT_TRANS_TABLES',
-                            'NO_ZERO_IN_DATE',
-                            'NO_ZERO_DATE',
-                            'ERROR_FOR_DIVISION_BY_ZERO',
-                        ]
-                    );
-                }
+                fn(string $flag) => !in_array(
+                    trim($flag),
+                    [
+                        'STRICT_ALL_TABLES',
+                        'STRICT_TRANS_TABLES',
+                        'NO_ZERO_IN_DATE',
+                        'NO_ZERO_DATE',
+                        'ERROR_FOR_DIVISION_BY_ZERO',
+                    ]
+                )
             );
             $DB->doQuery(sprintf('SET SESSION sql_mode = %s', $DB->quote(implode(',', $sql_mode_flags))));
         }

@@ -48,7 +48,7 @@ if ($_REQUEST['action'] === 'get_all_fields') {
     $all_fields = $definition->getAllFields();
     $field_results = [];
     foreach ($all_fields as $k => $v) {
-        if (!empty($_POST['searchText']) && stripos($v['text'], $_POST['searchText']) === false) {
+        if (!empty($_POST['searchText']) && stripos($v['text'], (string) $_POST['searchText']) === false) {
             continue;
         }
         $v['id'] = $k;

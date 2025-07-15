@@ -1559,11 +1559,7 @@ HTML;
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
-
-        if (isset($CFG_GLPI["languages"][$value][0])) {
-            return $CFG_GLPI["languages"][$value][0];
-        }
-        return $value;
+        return $CFG_GLPI["languages"][$value][0] ?? $value;
     }
 
 
@@ -2407,9 +2403,7 @@ HTML;
             if (!empty($param['add_data_attributes'])) {
                 if (is_array($param['add_data_attributes'])) {
                     $output .= ' ' . implode(' ', array_map(
-                        function ($key, $value) {
-                            return htmlescape('data-' . $key) . '="' . htmlescape($value) . '"';
-                        },
+                        fn($key, $value) => htmlescape('data-' . $key) . '="' . htmlescape($value) . '"',
                         array_keys($param['add_data_attributes']),
                         $param['add_data_attributes']
                     ));
@@ -4179,7 +4173,7 @@ HTML;
         }
 
         for ($i = $post['min']; $i <= $post['max']; $i += $post['step']) {
-            if (!empty($post['searchText']) && strstr($i, $post['searchText']) || empty($post['searchText'])) {
+            if (!empty($post['searchText']) && strstr($i, (string) $post['searchText']) || empty($post['searchText'])) {
                 if (!in_array($i, $used)) {
                     $values["$i"] = $i;
                 }

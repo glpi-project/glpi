@@ -448,9 +448,7 @@ class DatabaseSchemaIntegrityChecker
             . '$/i';
         $columns = preg_replace_callback(
             $column_pattern,
-            function ($matches) {
-                return $matches['name'] . ' ' . strtolower($matches['type']) . ($matches['length'] ?? '') . ($matches['extra'] ?? '');
-            },
+            fn($matches) => $matches['name'] . ' ' . strtolower($matches['type']) . ($matches['length'] ?? '') . ($matches['extra'] ?? ''),
             $columns
         );
 

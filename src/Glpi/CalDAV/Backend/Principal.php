@@ -80,9 +80,7 @@ class Principal extends AbstractBackend
 
         usort(
             $principals,
-            function ($p1, $p2) {
-                return $p1['id'] - $p2['id'];
-            }
+            fn($p1, $p2) => $p1['id'] - $p2['id']
         );
 
         return $principals;

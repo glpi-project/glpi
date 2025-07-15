@@ -70,13 +70,13 @@ class GLPIMailer
      * Errors that may have occurred during email sending.
      * @var string|null
      */
-    private ?string $error;
+    private ?string $error = null;
 
     /**
      * Debug log.
      * @var string|null
      */
-    private ?string $debug;
+    private ?string $debug = null;
 
     public function __construct(?TransportInterface $transport = null)
     {

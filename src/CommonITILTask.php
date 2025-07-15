@@ -353,7 +353,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         /** @var CommonDBTM $item */
         if (
             ($item->getType() == static::getItilObjectItemType())
-            && $this->canView()
+            && static::canView()
         ) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
@@ -913,7 +913,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                     $this->fields['taskcategories_id']
                 );
             }
-            return $this->getTypeName(1);
+            return static::getTypeName(1);
         }
         return '';
     }
@@ -2131,7 +2131,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      */
     public function countPlannedTasks(): int
     {
-        $parent_item = getItemForItemtype($this->getItilObjectItemType());
+        $parent_item = getItemForItemtype(static::getItilObjectItemType());
         if (!$parent_item) {
             return 0;
         }

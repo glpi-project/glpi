@@ -1150,18 +1150,14 @@ final class DbUtils
         if (!is_array($items_id)) {
             $items_id = (array) $items_id;
         }
-        $ids_needed_to_fetch = array_map(static function ($id) {
-            return (int) $id;
-        }, $items_id);
+        $ids_needed_to_fetch = array_map(static fn($id) => (int) $id, $items_id);
 
         if ($ckey !== null && ($ancestors = $GLPI_CACHE->get($ckey)) !== null) {
             // If we only need to get ancestors for a single item, we can use the cached values if they exist
             return $ancestors;
         } elseif ($ckey === null) {
             // For multiple IDs, we need to check the cache for each ID
-            $from_cache = $GLPI_CACHE->getMultiple(array_map(static function ($id) use ($table) {
-                return "ancestors_cache_{$table}_{$id}";
-            }, $ids_needed_to_fetch));
+            $from_cache = $GLPI_CACHE->getMultiple(array_map(static fn($id) => "ancestors_cache_{$table}_{$id}", $ids_needed_to_fetch));
             foreach ($ids_needed_to_fetch as $id) {
                 if (($ancestors = $from_cache["ancestors_cache_{$table}_{$id}"]) !== null) {
                     $ancestors_by_id[$id] = $ancestors;

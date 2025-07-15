@@ -153,10 +153,7 @@ class Manufacturer extends CommonDropdown
             $output,
             []
         );
-        if (isset($output["name"])) {
-            return $output["name"];
-        }
-        return $old_name;
+        return $output["name"] ?? $old_name;
     }
 
 

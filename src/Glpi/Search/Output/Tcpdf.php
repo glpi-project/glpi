@@ -62,21 +62,19 @@ class Tcpdf extends \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf
         };
 
         //remove size considerations so TCPDF do its work.
-        $callback = function ($html) {
-            return preg_replace(
-                [
-                    '|</style>|',
-                    '|width:\d+pt"|',
-                    '|padding-left:\dpx;|',
-                ],
-                [
-                    'table { width: 100%; };</style>',
-                    '"',
-                    '',
-                ],
-                $html
-            );
-        };
+        $callback = (fn($html) => preg_replace(
+            [
+                '|</style>|',
+                '|width:\d+pt"|',
+                '|padding-left:\dpx;|',
+            ],
+            [
+                'table { width: 100%; };</style>',
+                '"',
+                '',
+            ],
+            $html
+        ));
         $this->setEditHtmlCallback($callback);
 
         return $instance;

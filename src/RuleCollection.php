@@ -440,15 +440,13 @@ class RuleCollection extends CommonDBTM
 
         $rules = self::getRules();
         // exclude inventory rules from the "others" block
-        $rules = array_filter($rules, function ($rule) {
-            return !in_array($rule['sub_type'], [
-                'RuleImportEntity',
-                'RuleLocation',
-                'RuleImportAsset',
-                'RuleAsset',
-                'RuleDefineItemtype',
-            ]);
-        });
+        $rules = array_filter($rules, fn($rule) => !in_array($rule['sub_type'], [
+            'RuleImportEntity',
+            'RuleLocation',
+            'RuleImportAsset',
+            'RuleAsset',
+            'RuleDefineItemtype',
+        ]));
 
         TemplateRenderer::getInstance()->display('pages/admin/rules/index.html.twig', [
             'rules_group' => [

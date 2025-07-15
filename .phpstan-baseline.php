@@ -638,18 +638,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Router.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Api\\\\HL\\\\Router\\:\\:\\$final_request \\(Glpi\\\\Http\\\\Request\\|null\\) is never assigned null so it can be removed from the property type\\.$#',
-	'identifier' => 'property.unusedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Router.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Api\\\\HL\\\\Router\\:\\:\\$original_request \\(Glpi\\\\Http\\\\Request\\|null\\) is never assigned null so it can be removed from the property type\\.$#',
-	'identifier' => 'property.unusedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Router.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Glpi\\\\Asset\\\\Asset\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,

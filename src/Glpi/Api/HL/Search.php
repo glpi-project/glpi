@@ -663,9 +663,7 @@ final class Search
             if ($fkey === 'id') {
                 // This is a primary key on a main item
                 if ($this->context->isUnionSearchMode()) {
-                    $subtype = array_filter($this->context->getSchemaSubtypes(), static function ($subtype) use ($schema_name) {
-                        return $subtype['schema_name'] === $schema_name;
-                    });
+                    $subtype = array_filter($this->context->getSchemaSubtypes(), static fn($subtype) => $subtype['schema_name'] === $schema_name);
                     if (count($subtype) !== 1) {
                         throw new RuntimeException('Cannot find subtype for schema ' . $schema_name);
                     }
@@ -759,9 +757,7 @@ final class Search
                 continue;
             }
             $needed_ids = explode(chr(0x1D), $dehydrated_row[$dehydrated_ref] ?? '');
-            $needed_ids = array_filter($needed_ids, static function ($id) {
-                return $id !== chr(0x0);
-            });
+            $needed_ids = array_filter($needed_ids, static fn($id) => $id !== chr(0x0));
             if ($dehydrated_ref === 'id') {
                 // Add the main item fields
                 $main_record = $fetched_records[$table][$needed_ids[0]];
@@ -825,9 +821,7 @@ final class Search
     private function fixupAssembledRecord(array &$record): void
     {
         // Fix keys for array properties. Currently, the keys are probably the IDs of the joined records. They should be the index of the record in the array.
-        $array_joins = array_filter($this->context->getJoins(), static function ($v) {
-            return isset($v['parent_type']) && $v['parent_type'] === Doc\Schema::TYPE_ARRAY;
-        }, ARRAY_FILTER_USE_BOTH);
+        $array_joins = array_filter($this->context->getJoins(), static fn($v) => isset($v['parent_type']) && $v['parent_type'] === Doc\Schema::TYPE_ARRAY, ARRAY_FILTER_USE_BOTH);
         foreach (array_keys($array_joins) as $name) {
             // Get all paths in the array that match the join name. Paths may or may not have number parts between the parts of the join name (separated by '.')
             $pattern = str_replace('.', '\.(?:\d+\.)?', $name);
@@ -845,9 +839,7 @@ final class Search
         }
 
         // Fix empty array values for objects by replacing them with null
-        $obj_joins = array_filter($this->context->getJoins(), function ($v, $k) {
-            return isset($v['parent_type']) && $v['parent_type'] === Doc\Schema::TYPE_OBJECT && !isset($this->context->getFlattenedProperties()[$k]);
-        }, ARRAY_FILTER_USE_BOTH);
+        $obj_joins = array_filter($this->context->getJoins(), fn($v, $k) => isset($v['parent_type']) && $v['parent_type'] === Doc\Schema::TYPE_OBJECT && !isset($this->context->getFlattenedProperties()[$k]), ARRAY_FILTER_USE_BOTH);
         foreach (array_keys($obj_joins) as $name) {
             // Get all paths in the array that match the join name. Paths may or may not have number parts between the parts of the join name (separated by '.')
             $pattern = str_replace('.', '\.(?:\d+\.)?', $name);
@@ -921,9 +913,7 @@ final class Search
                             // We aren't handling joins or mapped fields here
                             $prop_name = str_replace(chr(0x1F), '.', $prop_name);
                             $prop_parent = substr($prop_name, 0, strrpos($prop_name, '.'));
-                            $is_join = count(array_filter($this->context->getJoins(), static function ($j_name) use ($prop_parent) {
-                                return str_starts_with($prop_parent, $j_name);
-                            }, ARRAY_FILTER_USE_KEY)) > 0;
+                            $is_join = count(array_filter($this->context->getJoins(), static fn($j_name) => str_starts_with($prop_parent, $j_name), ARRAY_FILTER_USE_KEY)) > 0;
                             return !$is_join && !$mapped_from_other;
                         }, ARRAY_FILTER_USE_BOTH);
                         $criteria['FROM'] = "$table AS " . $this->db_read::quoteName('_');
@@ -1035,9 +1025,7 @@ final class Search
         $ids = $search->getMatchingRecords();
         $results = $search->hydrateRecords($ids);
 
-        $mapped_props = array_filter($search->context->getFlattenedProperties(), static function ($prop) {
-            return isset($prop['x-mapper']);
-        });
+        $mapped_props = array_filter($search->context->getFlattenedProperties(), static fn($prop) => isset($prop['x-mapper']));
 
         foreach ($results as &$result) {
             // Handle mapped fields

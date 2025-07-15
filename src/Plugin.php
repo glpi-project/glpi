@@ -754,13 +754,11 @@ class Plugin extends CommonDBTM
         // Filter information to keep only fields expected to be inserted/updated into the DB.
         $information = array_filter(
             $information,
-            function ($key) {
-                return in_array(
-                    $key,
-                    ['name', 'version', 'author', 'homepage', 'license'],
-                    true
-                );
-            },
+            fn($key) => in_array(
+                $key,
+                ['name', 'version', 'author', 'homepage', 'license'],
+                true
+            ),
             ARRAY_FILTER_USE_KEY
         );
 

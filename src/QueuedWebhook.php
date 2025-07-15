@@ -216,9 +216,7 @@ class QueuedWebhook extends CommonDBChild
         $client = Toolbox::getGuzzleClient($guzzle_options);
         $headers = json_decode($queued_webhook->fields['headers'], true);
         // Remove headers with empty values
-        $headers = array_filter($headers, static function ($value) {
-            return !empty($value);
-        });
+        $headers = array_filter($headers, static fn($value) => !empty($value));
         if ($bearer_token !== null) {
             $headers['Authorization'] = 'Bearer ' . $bearer_token;
         }

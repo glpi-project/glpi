@@ -462,9 +462,7 @@ class Application extends BaseApplication
         }
 
         $config_files_to_update = array_map(
-            function ($path) {
-                return GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . $path;
-            },
+            fn($path) => GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . $path,
             $command->getConfigurationFilesToUpdate($input)
         );
         if (!Filesystem::canWriteFiles($config_files_to_update)) {

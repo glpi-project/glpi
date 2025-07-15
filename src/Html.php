@@ -3512,9 +3512,7 @@ JS;
         }
         $content_css = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('lib/base.css', ['force_no_version' => true]));
         $content_css .= ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('lib/tabler.css', ['force_no_version' => true]));
-        $content_css .= ',' . implode(',', array_map(static function ($path) {
-            return preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss($path, ['force_no_version' => true]));
-        }, $content_css_paths));
+        $content_css .= ',' . implode(',', array_map(static fn($path) => preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss($path, ['force_no_version' => true])), $content_css_paths));
         // Fix & encoding so it can be loaded as expected in debug mode
         $content_css = str_replace('&amp;', '&', $content_css);
         $skin_url = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('css/tinymce_empty_skin', ['force_no_version' => true], false));

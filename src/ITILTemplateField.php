@@ -90,11 +90,7 @@ abstract class ITILTemplateField extends CommonDBChild
     {
         $tt     = getItemForItemtype(static::$itemtype);
         $fields = $tt->getAllowedFieldsNames(true);
-
-        if (isset($fields[$this->fields["num"]])) {
-            return $fields[$this->fields["num"]];
-        }
-        return '';
+        return $fields[$this->fields["num"]] ?? '';
     }
 
 

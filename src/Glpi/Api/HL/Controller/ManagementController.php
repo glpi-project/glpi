@@ -317,9 +317,7 @@ final class ManagementController extends AbstractController
         $schemas['Document']['properties']['filepath'] = [
             'type' => Doc\Schema::TYPE_STRING,
             'x-mapped-from' => 'id',
-            'x-mapper' => static function ($v) use ($CFG_GLPI) {
-                return $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $v;
-            },
+            'x-mapper' => static fn($v) => $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $v,
         ];
         $schemas['Document']['properties']['mime'] = ['type' => Doc\Schema::TYPE_STRING];
         $schemas['Document']['properties']['sha1sum'] = ['type' => Doc\Schema::TYPE_STRING];
@@ -350,9 +348,7 @@ final class ManagementController extends AbstractController
                 'filepath' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'x-mapped-from' => 'documents_id',
-                    'x-mapper' => static function ($v) use ($CFG_GLPI) {
-                        return $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $v;
-                    },
+                    'x-mapper' => static fn($v) => $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $v,
                 ],
             ],
         ];

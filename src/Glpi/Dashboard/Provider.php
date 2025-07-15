@@ -817,9 +817,7 @@ class Provider
 
         // try to autodetect searchoption id
         $searchoptions = $item->rawSearchOptions();
-        $found_so = array_filter($searchoptions, function ($searchoption) use ($fk_table) {
-            return isset($searchoption['table']) && $searchoption['table'] === $fk_table;
-        });
+        $found_so = array_filter($searchoptions, fn($searchoption) => isset($searchoption['table']) && $searchoption['table'] === $fk_table);
         $found_so = array_shift($found_so);
         $found_so_id = $found_so['id'] ?? 0;
 

@@ -237,9 +237,7 @@ class Item_Kanban extends CommonDBRelation
         if (method_exists($item, 'getAllKanbanColumns')) {
             $all_columns = $item->getAllKanbanColumns();
         }
-        $new_column_index = array_keys(array_filter($state, function ($c, $k) use ($column) {
-            return $c['column'] === $column;
-        }, ARRAY_FILTER_USE_BOTH));
+        $new_column_index = array_keys(array_filter($state, fn($c, $k) => $c['column'] === $column, ARRAY_FILTER_USE_BOTH));
         if (count($new_column_index)) {
             $new_column_index = reset($new_column_index);
             if (isset($all_columns[(int) $column])) {

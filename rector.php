@@ -105,5 +105,5 @@ return RectorConfig::configure()
         CodeQuality\NotEqual\CommonNotEqualRector::class,
         CodeQuality\Ternary\UnnecessaryTernaryExpressionRector::class,
     ])
-    ->withPhpSets(php56: true) // apply PHP sets up to PHP 5.6
+    ->withPhpSets(php74: true) // apply PHP sets up to PHP 7.4
 ;

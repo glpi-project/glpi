@@ -204,8 +204,6 @@ class TemplateManager
      */
     public static function computeParameters(array $parameters)
     {
-        return array_map(function ($parameter) {
-            return $parameter->compute();
-        }, $parameters);
+        return array_map(fn($parameter) => $parameter->compute(), $parameters);
     }
 }

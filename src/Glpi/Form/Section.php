@@ -200,9 +200,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
         $groupedBlocks = [];
 
         // Sort blocks by their vertical rank
-        usort($blocks, function ($a, $b) {
-            return $a->fields['vertical_rank'] <=> $b->fields['vertical_rank'];
-        });
+        usort($blocks, fn($a, $b) => $a->fields['vertical_rank'] <=> $b->fields['vertical_rank']);
 
         // Group blocks by their vertical rank
         foreach ($blocks as $block) {
@@ -225,9 +223,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
                 continue;
             }
 
-            usort($group, function ($a, $b) {
-                return $a->fields['horizontal_rank'] <=> $b->fields['horizontal_rank'];
-            });
+            usort($group, fn($a, $b) => $a->fields['horizontal_rank'] <=> $b->fields['horizontal_rank']);
         }
 
         return $groupedBlocks;

@@ -4308,10 +4308,8 @@ final class SQLProvider implements SearchProviderInterface
         //// 7 - Manage GROUP BY
         $GROUPBY = "";
         // Meta Search / Search All / Count tickets
-        $criteria_with_meta = array_filter($data['search']['criteria'], function ($criterion) {
-            return isset($criterion['meta'])
-                && $criterion['meta'];
-        });
+        $criteria_with_meta = array_filter($data['search']['criteria'], fn($criterion) => isset($criterion['meta'])
+            && $criterion['meta']);
         if (
             (count($data['search']['metacriteria']))
             || count($criteria_with_meta)
@@ -5419,7 +5417,7 @@ final class SQLProvider implements SearchProviderInterface
         $so = $searchopt[$ID];
         $so['id'] = $ID; // Keep track of search option id so it can be used by functions using $so as a parameter
         $orig_id = $ID;
-        $ID = ($orig_itemtype !== null ? $orig_itemtype : $itemtype) . '_' . $ID;
+        $ID = ($orig_itemtype ?? $itemtype) . '_' . $ID;
 
         if (count($addobjectparams)) {
             $so = array_merge($so, $addobjectparams);

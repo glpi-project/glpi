@@ -184,12 +184,12 @@ class AuthLDAP extends CommonDBTM
      * Message of last error occurred during connection.
      * @var ?string
      */
-    private static ?string $last_error;
+    private static ?string $last_error = null;
     /**
      * Numero of last error occurred during connection.
      * @var ?int
      */
-    private static ?int $last_errno;
+    private static ?int $last_errno = null;
 
     public static function getTypeName($nb = 0)
     {
@@ -2349,9 +2349,7 @@ TWIG, $twig_params);
 
             usort(
                 $groups,
-                static function ($a, $b) {
-                    return strcasecmp($a['cn'], $b['cn']);
-                }
+                static fn($a, $b) => strcasecmp($a['cn'], $b['cn'])
             );
         }
         return $groups;

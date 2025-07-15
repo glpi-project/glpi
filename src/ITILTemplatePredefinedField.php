@@ -58,11 +58,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
 
         $tt     = getItemForItemtype(static::$itemtype);
         $fields = $tt->getAllowedFieldsNames(true, true);
-
-        if (isset($fields[$this->fields["num"]])) {
-            return $fields[$this->fields["num"]];
-        }
-        return '';
+        return $fields[$this->fields["num"]] ?? '';
     }
 
 

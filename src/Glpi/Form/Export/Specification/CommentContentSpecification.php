@@ -42,7 +42,7 @@ final class CommentContentSpecification
     public string $name;
     public string $description;
     public int $vertical_rank;
-    public ?int $horizontal_rank;
+    public ?int $horizontal_rank = null;
     public int $section_id;
     public string $visibility_strategy;
 
