@@ -38,10 +38,10 @@ namespace Glpi\Api\HL\Controller;
 use CommonDevice;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
+use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\Router;
 use Glpi\Api\HL\RouteVersion;
-use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -704,7 +704,7 @@ class ComponentController extends AbstractController
     public function listComponentTypes(Request $request): Response
     {
         $component_type = $request->getAttribute('component_type');
-        return Search::searchBySchema($this->getKnownSchema($component_type, $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema($component_type, $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Components/{component_type}/{id}', methods: ['GET'], requirements: [
@@ -721,7 +721,7 @@ class ComponentController extends AbstractController
     public function getComponentType(Request $request): Response
     {
         $component_type = $request->getAttribute('component_type');
-        return Search::getOneBySchema($this->getKnownSchema($component_type, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema($component_type, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Components/{component_type}', methods: ['POST'], requirements: [
@@ -743,7 +743,7 @@ class ComponentController extends AbstractController
         $component_type = $request->getAttribute('component_type');
         // Needed to determine the correct URL for getComponentsOfType route
         $request->setParameter('component_type', $component_type);
-        return Search::createBySchema($this->getKnownSchema($component_type, $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getComponentType']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema($component_type, $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getComponentType']);
     }
 
     #[Route(path: '/Components/{component_type}/{id}/Items', methods: ['GET'], requirements: [
@@ -779,7 +779,7 @@ class ComponentController extends AbstractController
         }
 
         $request->setParameter($component_property, $component_id);
-        return Search::searchBySchema($item_schema, $request->getParameters());
+        return ResourceAccessor::searchBySchema($item_schema, $request->getParameters());
     }
 
     #[Route(path: '/Components/{component_type}/{id}', methods: ['PATCH'], requirements: [
@@ -800,7 +800,7 @@ class ComponentController extends AbstractController
     public function updateComponentType(Request $request): Response
     {
         $component_type = $request->getAttribute('component_type');
-        return Search::updateBySchema($this->getKnownSchema($component_type, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema($component_type, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Components/{component_type}/{id}', methods: ['DELETE'], requirements: [
@@ -814,7 +814,7 @@ class ComponentController extends AbstractController
     public function deleteComponentType(Request $request): Response
     {
         $component_type = $request->getAttribute('component_type');
-        return Search::deleteBySchema($this->getKnownSchema($component_type, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema($component_type, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Components/{component_type}/Items/{id}', methods: ['GET'], requirements: [
@@ -833,7 +833,7 @@ class ComponentController extends AbstractController
         $component_type = $request->getAttribute('component_type');
         $item_schema = $this->getKnownSchema($component_type . 'Item', $this->getAPIVersion($request));
 
-        return Search::getOneBySchema($item_schema, $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($item_schema, $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Assets/{itemtype}/{id}/Component/{component_type}', methods: ['GET'], requirements: [
@@ -860,6 +860,6 @@ class ComponentController extends AbstractController
         $component_type = $request->getAttribute('component_type');
         $item_schema = $this->getKnownSchema($component_type . 'Item', $this->getAPIVersion($request));
 
-        return Search::searchBySchema($item_schema, $request->getParameters());
+        return ResourceAccessor::searchBySchema($item_schema, $request->getParameters());
     }
 }

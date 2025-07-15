@@ -78,13 +78,13 @@ final class GraphQL
                         $completed_schema = self::expandSchemaFromRequestedFields($schema, $field_selection, null, $api_version);
 
                         if (isset($args['id'])) {
-                            $result = Search::getOneBySchema($completed_schema, ['id' => $args['id']], []);
+                            $result = ResourceAccessor::getOneBySchema($completed_schema, ['id' => $args['id']], []);
                             if ($result->getStatusCode() !== 200) {
                                 throw new Error($result->getBody());
                             }
                             return [json_decode($result->getBody(), true)];
                         }
-                        $result = Search::searchBySchema($completed_schema, $args);
+                        $result = ResourceAccessor::searchBySchema($completed_schema, $args);
                         if ($result->getStatusCode() !== 200) {
                             throw new Error($result->getBody());
                         }

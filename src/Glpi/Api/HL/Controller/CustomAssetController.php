@@ -37,9 +37,9 @@ namespace Glpi\Api\HL\Controller;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
+use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
-use Glpi\Api\HL\Search;
 use Glpi\Asset\Asset;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\DBAL\QueryExpression;
@@ -344,7 +344,7 @@ final class CustomAssetController extends AbstractController
     public function search(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::searchBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[RouteVersion(introduced: '2.0')]
@@ -361,7 +361,7 @@ final class CustomAssetController extends AbstractController
     public function getItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::getOneBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[RouteVersion(introduced: '2.0')]
@@ -381,7 +381,7 @@ final class CustomAssetController extends AbstractController
     public function createItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::createBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
     }
 
     #[RouteVersion(introduced: '2.0')]
@@ -402,7 +402,7 @@ final class CustomAssetController extends AbstractController
     public function updateItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::updateBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[RouteVersion(introduced: '2.0')]
@@ -416,7 +416,7 @@ final class CustomAssetController extends AbstractController
     public function deleteItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::deleteBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[RouteVersion(introduced: '2.0')]
@@ -433,7 +433,7 @@ final class CustomAssetController extends AbstractController
     public function searchModels(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::searchBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[RouteVersion(introduced: '2.0')]
@@ -450,7 +450,7 @@ final class CustomAssetController extends AbstractController
     public function getItemModel(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::getOneBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[RouteVersion(introduced: '2.0')]
@@ -470,7 +470,7 @@ final class CustomAssetController extends AbstractController
     public function createItemModel(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::createBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
     }
 
     #[RouteVersion(introduced: '2.0')]
@@ -491,7 +491,7 @@ final class CustomAssetController extends AbstractController
     public function updateItemModel(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::updateBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[RouteVersion(introduced: '2.0')]
@@ -505,7 +505,7 @@ final class CustomAssetController extends AbstractController
     public function deleteItemModel(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::deleteBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[RouteVersion(introduced: '2.0')]
@@ -522,7 +522,7 @@ final class CustomAssetController extends AbstractController
     public function searchTypes(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::searchBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[RouteVersion(introduced: '2.0')]
@@ -539,7 +539,7 @@ final class CustomAssetController extends AbstractController
     public function getItemType(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::getOneBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[RouteVersion(introduced: '2.0')]
@@ -559,7 +559,7 @@ final class CustomAssetController extends AbstractController
     public function createItemType(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::createBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
     }
 
     #[RouteVersion(introduced: '2.0')]
@@ -580,7 +580,7 @@ final class CustomAssetController extends AbstractController
     public function updateItemType(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::updateBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[RouteVersion(introduced: '2.0')]
@@ -594,6 +594,6 @@ final class CustomAssetController extends AbstractController
     public function deleteItemType(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::deleteBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('CustomAsset_' . $itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 }

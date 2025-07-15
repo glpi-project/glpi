@@ -39,6 +39,7 @@ use Glpi\Api\HL\Controller\CustomAssetController;
 use Glpi\Api\HL\Controller\ITILController;
 use Glpi\Api\HL\Controller\ManagementController;
 use Glpi\Api\HL\Doc\Schema;
+use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Router;
 use Glpi\Application\Environment;
 use Glpi\Asset\AssetDefinition;
@@ -627,7 +628,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         }
         $parent_schema['x-itemtype'] = $parent_itemtype;
         unset($parent_schema['x-subtypes']);
-        $parent_result = \Glpi\Api\HL\Search::getOneBySchema($parent_schema, [
+        $parent_result = ResourceAccessor::getOneBySchema($parent_schema, [
             'itemtype' => $parent_itemtype,
             'id' => $parent_id,
         ], []);

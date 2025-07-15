@@ -42,9 +42,9 @@ use Enclosure;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
+use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
-use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -1484,7 +1484,7 @@ final class AssetController extends AbstractController
     )]
     public function searchAll(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('CommonAsset', $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('CommonAsset', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}', methods: ['GET'], requirements: [
@@ -1501,7 +1501,7 @@ final class AssetController extends AbstractController
     public function search(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::searchBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['GET'], requirements: [
@@ -1518,7 +1518,7 @@ final class AssetController extends AbstractController
     public function getItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::getOneBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}/Infocom', methods: ['GET'], requirements: [
@@ -1543,7 +1543,7 @@ final class AssetController extends AbstractController
         $filter = 'itemtype==' . $itemtype . ';items_id==' . $items_id;
         $params['filter'] = $filter;
         $management_controller = new ManagementController();
-        $result = Search::searchBySchema($management_controller->getKnownSchema('Infocom', $this->getAPIVersion($request)), $params);
+        $result = ResourceAccessor::searchBySchema($management_controller->getKnownSchema('Infocom', $this->getAPIVersion($request)), $params);
         if ($result->getStatusCode() !== 200) {
             return $result;
         }
@@ -1572,7 +1572,7 @@ final class AssetController extends AbstractController
     public function createItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::createBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'], requirements: [
@@ -1593,7 +1593,7 @@ final class AssetController extends AbstractController
     public function updateItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::updateBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'], requirements: [
@@ -1607,7 +1607,7 @@ final class AssetController extends AbstractController
     public function deleteItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Cartridge', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
@@ -1621,7 +1621,7 @@ final class AssetController extends AbstractController
     )]
     public function searchCartridgeItems(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('CartridgeItem', $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('CartridgeItem', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Cartridge/{id}', methods: ['GET'], requirements: [
@@ -1636,7 +1636,7 @@ final class AssetController extends AbstractController
     )]
     public function getCartridgeItem(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('CartridgeItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('CartridgeItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Cartridge', methods: ['POST'], tags: ['Assets'])]
@@ -1653,7 +1653,7 @@ final class AssetController extends AbstractController
     )]
     public function createCartridgeItems(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('CartridgeItem', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getCartridgeItem']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema('CartridgeItem', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getCartridgeItem']);
     }
 
     #[Route(path: '/Cartridge/{id}', methods: ['PATCH'], requirements: [
@@ -1672,7 +1672,7 @@ final class AssetController extends AbstractController
     )]
     public function updateCartridgeItems(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('CartridgeItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('CartridgeItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Cartridge/{id}', methods: ['DELETE'], requirements: [
@@ -1684,7 +1684,7 @@ final class AssetController extends AbstractController
     )]
     public function deleteCartridgeItems(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('CartridgeItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('CartridgeItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Cartridge/{cartridgeitems_id}/{id}', methods: ['GET'], requirements: [
@@ -1700,7 +1700,7 @@ final class AssetController extends AbstractController
     )]
     public function getCartridge(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('Cartridge', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('Cartridge', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Cartridge/{cartridgeitems_id}', methods: ['POST'], tags: ['Assets'], requirements: [
@@ -1719,7 +1719,7 @@ final class AssetController extends AbstractController
     )]
     public function createCartridges(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('Cartridge', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getCartridge']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema('Cartridge', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getCartridge']);
     }
 
     #[Route(path: '/Cartridge/{cartridgeitems_id}/{id}', methods: ['PATCH'], requirements: [
@@ -1739,7 +1739,7 @@ final class AssetController extends AbstractController
     )]
     public function updateCartridges(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('Cartridge', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('Cartridge', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Cartridge/{cartridgeitems_id}/{id}', methods: ['DELETE'], requirements: [
@@ -1752,7 +1752,7 @@ final class AssetController extends AbstractController
     )]
     public function deleteCartridges(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('Cartridge', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('Cartridge', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Consumable', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
@@ -1766,7 +1766,7 @@ final class AssetController extends AbstractController
     )]
     public function searchConsumableItems(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('ConsumableItem', $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('ConsumableItem', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Consumable/{id}', methods: ['GET'], requirements: [
@@ -1781,7 +1781,7 @@ final class AssetController extends AbstractController
     )]
     public function getConsumableItem(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('ConsumableItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('ConsumableItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Consumable', methods: ['POST'], tags: ['Assets'])]
@@ -1798,7 +1798,7 @@ final class AssetController extends AbstractController
     )]
     public function createConsumableItems(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('ConsumableItem', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getConsumableItem']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema('ConsumableItem', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getConsumableItem']);
     }
 
     #[Route(path: '/Consumable/{id}', methods: ['PATCH'], requirements: [
@@ -1817,7 +1817,7 @@ final class AssetController extends AbstractController
     )]
     public function updateConsumableItems(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('ConsumableItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('ConsumableItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Consumable/{id}', methods: ['DELETE'], requirements: [
@@ -1829,7 +1829,7 @@ final class AssetController extends AbstractController
     )]
     public function deleteConsumableItems(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('ConsumableItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('ConsumableItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Consumable/{consumableitems_id}/{id}', methods: ['GET'], requirements: [
@@ -1845,7 +1845,7 @@ final class AssetController extends AbstractController
     )]
     public function getConsumable(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('Consumable', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('Consumable', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Consumable/{consumableitems_id}', methods: ['POST'], requirements: [
@@ -1864,7 +1864,7 @@ final class AssetController extends AbstractController
     )]
     public function createConsumables(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('Consumable', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getConsumable']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema('Consumable', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getConsumable']);
     }
 
     #[Route(path: '/Consumable/{consumableitems_id}/{id}', methods: ['PATCH'], requirements: [
@@ -1884,7 +1884,7 @@ final class AssetController extends AbstractController
     )]
     public function updateConsumable(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('Consumable', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('Consumable', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Consumable/{consumableitems_id}/{id}', methods: ['DELETE'], requirements: [
@@ -1897,7 +1897,7 @@ final class AssetController extends AbstractController
     )]
     public function deleteConsumable(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('Consumable', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('Consumable', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Software', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
@@ -1911,7 +1911,7 @@ final class AssetController extends AbstractController
     )]
     public function searchSoftware(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('Software', $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('Software', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Software/{id}', methods: ['GET'], requirements: [
@@ -1926,7 +1926,7 @@ final class AssetController extends AbstractController
     )]
     public function getSoftware(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('Software', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('Software', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Software', methods: ['POST'], tags: ['Assets'])]
@@ -1943,7 +1943,7 @@ final class AssetController extends AbstractController
     )]
     public function createSoftware(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('Software', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getSoftware']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema('Software', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getSoftware']);
     }
 
     #[Route(path: '/Software/{id}', methods: ['PATCH'], requirements: [
@@ -1962,7 +1962,7 @@ final class AssetController extends AbstractController
     )]
     public function updateSoftware(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('Software', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('Software', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Software/{id}', methods: ['DELETE'], requirements: [
@@ -1974,7 +1974,7 @@ final class AssetController extends AbstractController
     )]
     public function deleteSoftware(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('Software', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('Software', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Rack', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
@@ -1988,7 +1988,7 @@ final class AssetController extends AbstractController
     )]
     public function searchRack(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('Rack', $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('Rack', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Rack/{id}', methods: ['GET'], requirements: [
@@ -2003,7 +2003,7 @@ final class AssetController extends AbstractController
     )]
     public function getRack(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('Rack', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('Rack', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Rack', methods: ['POST'], tags: ['Assets'])]
@@ -2020,7 +2020,7 @@ final class AssetController extends AbstractController
     )]
     public function createRack(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('Rack', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getRack']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema('Rack', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getRack']);
     }
 
     #[Route(path: '/Rack/{id}', methods: ['PATCH'], requirements: [
@@ -2039,7 +2039,7 @@ final class AssetController extends AbstractController
     )]
     public function updateRack(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('Rack', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('Rack', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Rack/{id}', methods: ['DELETE'], requirements: [
@@ -2051,7 +2051,7 @@ final class AssetController extends AbstractController
     )]
     public function deleteRack(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('Rack', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('Rack', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Rack/{rack_id}/Item', methods: ['GET'], requirements: [
@@ -2069,7 +2069,7 @@ final class AssetController extends AbstractController
         $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
         $filters .= ';rack.id==' . $request->getAttribute('rack_id');
         $request->setParameter('filter', $filters);
-        return Search::searchBySchema($this->getKnownSchema('RackItem', $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('RackItem', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Rack/{rack_id}/Item/{id}', methods: ['GET'], requirements: [
@@ -2088,7 +2088,7 @@ final class AssetController extends AbstractController
         $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
         $filters .= ';rack.id==' . $request->getAttribute('rack_id');
         $request->setParameter('filter', $filters);
-        return Search::getOneBySchema($this->getKnownSchema('RackItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('RackItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Rack/{rack_id}/Item/{id}', methods: ['PATCH'], requirements: [
@@ -2108,7 +2108,7 @@ final class AssetController extends AbstractController
     )]
     public function updateRackItem(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('RackItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('RackItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Rack/{rack_id}/Item', methods: ['POST'], requirements: [
@@ -2137,7 +2137,7 @@ final class AssetController extends AbstractController
         }
 
         $request->setParameter('rack', $request->getAttribute('rack_id'));
-        return Search::createBySchema($this->getKnownSchema('RackItem', $this->getAPIVersion($request)), $request->getParameters(), [
+        return ResourceAccessor::createBySchema($this->getKnownSchema('RackItem', $this->getAPIVersion($request)), $request->getParameters(), [
             self::class, 'getRackItem',
         ], [
             'mapped' => [
@@ -2156,7 +2156,7 @@ final class AssetController extends AbstractController
     )]
     public function deleteRackItem(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('RackItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('RackItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Enclosure', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
@@ -2170,7 +2170,7 @@ final class AssetController extends AbstractController
     )]
     public function searchEnclosure(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('Enclosure', $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('Enclosure', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Enclosure/{id}', methods: ['GET'], requirements: [
@@ -2185,7 +2185,7 @@ final class AssetController extends AbstractController
     )]
     public function getEnclosure(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('Enclosure', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('Enclosure', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Enclosure', methods: ['POST'], tags: ['Assets'])]
@@ -2202,7 +2202,7 @@ final class AssetController extends AbstractController
     )]
     public function createEnclosure(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('Enclosure', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getEnclosure']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema('Enclosure', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getEnclosure']);
     }
 
     #[Route(path: '/Enclosure/{id}', methods: ['PATCH'], requirements: [
@@ -2221,7 +2221,7 @@ final class AssetController extends AbstractController
     )]
     public function updateEnclosure(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('Enclosure', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('Enclosure', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Enclosure/{id}', methods: ['DELETE'], requirements: [
@@ -2233,7 +2233,7 @@ final class AssetController extends AbstractController
     )]
     public function deleteEnclosure(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('Enclosure', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('Enclosure', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/PDU', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
@@ -2247,7 +2247,7 @@ final class AssetController extends AbstractController
     )]
     public function searchPDU(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('PDU', $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('PDU', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/PDU/{id}', methods: ['GET'], requirements: [
@@ -2262,7 +2262,7 @@ final class AssetController extends AbstractController
     )]
     public function getPDU(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('PDU', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('PDU', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/PDU', methods: ['POST'], tags: ['Assets'])]
@@ -2279,7 +2279,7 @@ final class AssetController extends AbstractController
     )]
     public function createPDU(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('PDU', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getPDU']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema('PDU', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getPDU']);
     }
 
     #[Route(path: '/PDU/{id}', methods: ['PATCH'], requirements: [
@@ -2298,7 +2298,7 @@ final class AssetController extends AbstractController
     )]
     public function updatePDU(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('PDU', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('PDU', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/PDU/{id}', methods: ['DELETE'], requirements: [
@@ -2310,7 +2310,7 @@ final class AssetController extends AbstractController
     )]
     public function deletePDU(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('PDU', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('PDU', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/PassiveDCEquipment', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
@@ -2324,7 +2324,7 @@ final class AssetController extends AbstractController
     )]
     public function searchPassiveDCEquipment(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('PassiveDCEquipment', $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('PassiveDCEquipment', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/PassiveDCEquipment/{id}', methods: ['GET'], requirements: [
@@ -2339,7 +2339,7 @@ final class AssetController extends AbstractController
     )]
     public function getPassiveDCEquipment(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('PassiveDCEquipment', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('PassiveDCEquipment', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/PassiveDCEquipment', methods: ['POST'], tags: ['Assets'])]
@@ -2356,7 +2356,7 @@ final class AssetController extends AbstractController
     )]
     public function createPassiveDCEquipment(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('PassiveDCEquipment', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getPassiveDCEquipment']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema('PassiveDCEquipment', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getPassiveDCEquipment']);
     }
 
     #[Route(path: '/PassiveDCEquipment/{id}', methods: ['PATCH'], requirements: [
@@ -2375,7 +2375,7 @@ final class AssetController extends AbstractController
     )]
     public function updatePassiveDCEquipment(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('PassiveDCEquipment', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('PassiveDCEquipment', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/PassiveDCEquipment/{id}', methods: ['DELETE'], requirements: [
@@ -2387,7 +2387,7 @@ final class AssetController extends AbstractController
     )]
     public function deletePassiveDCEquipment(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('PassiveDCEquipment', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('PassiveDCEquipment', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Cable', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
@@ -2401,7 +2401,7 @@ final class AssetController extends AbstractController
     )]
     public function searchCables(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('Cable', $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('Cable', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Cable/{id}', methods: ['GET'], requirements: [
@@ -2416,7 +2416,7 @@ final class AssetController extends AbstractController
     )]
     public function getCable(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('Cable', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('Cable', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Cable', methods: ['POST'], tags: ['Assets'])]
@@ -2433,7 +2433,7 @@ final class AssetController extends AbstractController
     )]
     public function createCable(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('Cable', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getCable']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema('Cable', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getCable']);
     }
 
     #[Route(path: '/Cable/{id}', methods: ['PATCH'], requirements: [
@@ -2452,7 +2452,7 @@ final class AssetController extends AbstractController
     )]
     public function updateCable(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('Cable', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('Cable', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Cable/{id}', methods: ['DELETE'], requirements: [
@@ -2464,7 +2464,7 @@ final class AssetController extends AbstractController
     )]
     public function deleteCable(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('Cable', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('Cable', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Socket', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
@@ -2478,7 +2478,7 @@ final class AssetController extends AbstractController
     )]
     public function searchSockets(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('Socket', $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('Socket', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Socket/{id}', methods: ['GET'], requirements: [
@@ -2493,7 +2493,7 @@ final class AssetController extends AbstractController
     )]
     public function getSocket(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('Socket', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('Socket', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Socket', methods: ['POST'], tags: ['Assets'])]
@@ -2510,7 +2510,7 @@ final class AssetController extends AbstractController
     )]
     public function createSocket(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('Socket', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getSocket']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema('Socket', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getSocket']);
     }
 
     #[Route(path: '/Socket/{id}', methods: ['PATCH'], requirements: [
@@ -2529,7 +2529,7 @@ final class AssetController extends AbstractController
     )]
     public function updateSocket(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('Socket', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('Socket', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Socket/{id}', methods: ['DELETE'], requirements: [
@@ -2541,7 +2541,7 @@ final class AssetController extends AbstractController
     )]
     public function deleteSocket(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('Socket', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('Socket', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Software/{software_id}/Version', methods: ['GET'], requirements: [
@@ -2560,7 +2560,7 @@ final class AssetController extends AbstractController
         $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
         $filters .= ';software.id==' . $request->getAttribute('software_id');
         $request->setParameter('filter', $filters);
-        return Search::searchBySchema($this->getKnownSchema('SoftwareVersion', $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('SoftwareVersion', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Software/{software_id}/Version/{id}', methods: ['GET'], requirements: [
@@ -2579,7 +2579,7 @@ final class AssetController extends AbstractController
         $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
         $filters .= ';software.id==' . $request->getAttribute('software_id');
         $request->setParameter('filter', $filters);
-        return Search::getOneBySchema($this->getKnownSchema('SoftwareVersion', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('SoftwareVersion', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Software/{software_id}/Version', methods: ['POST'], requirements: [
@@ -2599,7 +2599,7 @@ final class AssetController extends AbstractController
     public function createSoftwareVersion(Request $request): Response
     {
         $request->setParameter('software', $request->getAttribute('software_id'));
-        return Search::createBySchema($this->getKnownSchema('SoftwareVersion', $this->getAPIVersion($request)), $request->getParameters(), [
+        return ResourceAccessor::createBySchema($this->getKnownSchema('SoftwareVersion', $this->getAPIVersion($request)), $request->getParameters(), [
             self::class, 'getSoftwareVersion',
         ], [
             'mapped' => [
@@ -2625,7 +2625,7 @@ final class AssetController extends AbstractController
     )]
     public function updateSoftwareVersion(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('SoftwareVersion', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('SoftwareVersion', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Software/{software_id}/Version/{id}', methods: ['DELETE'], requirements: [
@@ -2638,6 +2638,6 @@ final class AssetController extends AbstractController
     )]
     public function deleteSoftwareVersion(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('SoftwareVersion', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('SoftwareVersion', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 }
