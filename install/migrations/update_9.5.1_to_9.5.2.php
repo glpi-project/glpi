@@ -86,7 +86,7 @@ function update951to952()
             preg_match_all('/document\\.send\\.php\\?docid=([0-9]+)/', $data[$field], $matches);
 
             // No inline documents found in this item, skip to next
-            if (!isset($matches[1])) {
+            if (count($matches[1]) === 0) {
                 continue;
             }
 
