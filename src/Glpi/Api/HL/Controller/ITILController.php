@@ -203,7 +203,6 @@ final class ITILController extends AbstractController
 
         $itil_types = [Ticket::class, Change::class, Problem::class];
 
-        /** @var class-string<CommonITILObject> $itil_type */
         foreach ($itil_types as $itil_type) {
             $schemas[$itil_type] = $base_schema;
             $schemas[$itil_type]['x-version-introduced'] = '2.0';
