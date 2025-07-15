@@ -237,16 +237,14 @@ final class FormSerializer extends AbstractFormSerializer
         /** @var \DBmysql $DB */
         global $DB;
 
-        $use_transaction = !$DB->inTransaction();
-
-        if ($use_transaction) {
-            $DB->beginTransaction();
+        $DB->beginTransaction();
+        try {
             $forms = $this->doImportFormFormSpecs($form_spec, $mapper);
             $DB->commit();
-        } else {
-            $forms = $this->doImportFormFormSpecs($form_spec, $mapper);
+        } catch (\Throwable $e) {
+            $DB->rollback();
+            throw $e;
         }
-
         return $forms;
     }
 

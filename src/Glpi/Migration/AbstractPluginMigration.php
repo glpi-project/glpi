@@ -97,8 +97,11 @@ abstract class AbstractPluginMigration
 
         $fully_processed = false;
         try {
+            $need_rollback_on_throw = false;
+
             if ($this->validatePrerequisites()) {
                 $this->db->beginTransaction();
+                $need_rollback_on_throw = true;
 
                 $fully_processed = $this->processMigration();
 
@@ -118,7 +121,7 @@ abstract class AbstractPluginMigration
 
             $this->logger?->error($e->getMessage(), context: ['exception' => $e]);
 
-            if ($this->db->inTransaction()) {
+            if ($need_rollback_on_throw) {
                 $this->db->rollBack();
             }
         }

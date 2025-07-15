@@ -1069,10 +1069,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                     $_SESSION['glpigroups'] = [];
                 }
 
-                $in_transaction = $DB->inTransaction();
-                if (!$in_transaction) {
-                    $DB->beginTransaction();
-                }
+                $DB->beginTransaction();
+
                 foreach ($iterator as $row) {
                     try {
                         $self->fields = $row;
@@ -1089,9 +1087,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                 }
 
                 $stmt->close();
-                if (!$in_transaction) {
-                    $DB->commit();
-                }
+                $DB->commit();
 
                 $cron_status = 1;
             }

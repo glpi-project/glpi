@@ -171,30 +171,19 @@ final class AnswersHandler
         /** @var \DBmysql $DB */
         global $DB;
 
-        if ($DB->inTransaction()) {
-            return $this->doSaveAnswers($form, $answers, $users_id, $delegation, $files);
-        } else {
-            // We do not want to commit the answers unless everything was processed
-            // correctly
-            $DB->beginTransaction();
+        // We do not want to commit the answers unless everything was processed
+        // correctly
+        $DB->beginTransaction();
 
-            try {
-                $answers_set = $this->doSaveAnswers($form, $answers, $users_id, $delegation, $files);
-                $DB->commit();
-                return $answers_set;
-            } catch (\Throwable $e) {
-                $DB->rollback();
+        try {
+            $answers_set = $this->doSaveAnswers($form, $answers, $users_id, $delegation, $files);
+            $DB->commit();
+            return $answers_set;
+        } catch (\Throwable $e) {
+            $DB->rollback();
 
-                /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
-                global $PHPLOGGER;
-                $PHPLOGGER->error(
-                    "Failed to save answers: " . $e->getMessage(),
-                    ['exception' => $e]
-                );
-
-                // Propagate the exception
-                throw $e;
-            }
+            // Propagate the exception
+            throw $e;
         }
     }
 

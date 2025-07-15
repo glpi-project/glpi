@@ -287,7 +287,7 @@ class Inventory
 
         $main_start = microtime(true); //bench
         try {
-            if (!$DB->inTransaction()) {
+            if (!defined('TU_USER')) {
                 $DB->beginTransaction();
             }
 
@@ -423,7 +423,9 @@ class Inventory
                 }
             }
         } catch (\Throwable $e) {
-            $DB->rollback();
+            if (!defined('TU_USER')) {
+                $DB->rollback();
+            }
             throw $e;
         } finally {
             unset($_SESSION['glpiinventoryuserrunning']);

@@ -352,30 +352,22 @@ final class Form extends CommonDBTM implements
         /** @var \DBmysql $DB */
         global $DB;
 
-        // Tests will already be running inside a transaction, we can't create
-        // a new one in this case
-        if ($DB->inTransaction()) {
+        $DB->beginTransaction();
+        try {
             // Update questions and sections
             $this->updateExtraFormData();
-        } else {
-            $DB->beginTransaction();
+            $DB->commit();
+        } catch (\Throwable $e) {
+            // Delete the "Item sucessfully updated" message if it exist
+            Session::deleteMessageAfterRedirect(
+                $this->formatSessionMessageAfterAction(__('Item successfully updated'))
+            );
 
-            try {
-                // Update questions and sections
-                $this->updateExtraFormData();
-                $DB->commit();
-            } catch (\Throwable $e) {
-                // Delete the "Item sucessfully updated" message if it exist
-                Session::deleteMessageAfterRedirect(
-                    $this->formatSessionMessageAfterAction(__('Item successfully updated'))
-                );
+            // Do not keep half updated data
+            $DB->rollback();
 
-                // Do not keep half updated data
-                $DB->rollback();
-
-                // Propagate exception to ensure the server return an error code
-                throw $e;
-            }
+            // Propagate exception to ensure the server return an error code
+            throw $e;
         }
     }
 
