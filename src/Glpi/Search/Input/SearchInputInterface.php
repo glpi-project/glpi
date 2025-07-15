@@ -39,7 +39,8 @@ namespace Glpi\Search\Input;
  *
  * @internal Not for use outside {@link Search} class and the "Glpi\Search" namespace.
  */
-interface SearchInputInterface {
+interface SearchInputInterface
+{
     /**
      * Print generic search form
      *

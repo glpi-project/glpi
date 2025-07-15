@@ -270,7 +270,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         }
         switch ($tabnum) {
             case 1:
-                return (bool)$item->showFull();
+                return (bool) $item->showFull();
 
             case 2:
                 return $item->showVisibility();
