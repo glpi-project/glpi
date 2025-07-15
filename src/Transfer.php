@@ -233,11 +233,8 @@ final class Transfer extends CommonDBTM
         // Store to
         $this->to = $to;
 
-        $intransaction = $DB->inTransaction();
         try {
-            if (!$intransaction) {
-                $DB->beginTransaction();
-            }
+            $DB->beginTransaction();
 
             // Simulate transfers To know which items need to be transfer
             $this->simulateTransfer($items);
@@ -267,13 +264,9 @@ final class Transfer extends CommonDBTM
             // FIXME: only if Software or SoftwareLicense has been changed?
             $this->cleanSoftwareVersions();
             $this->cleanSoftwares();
-            if (!$intransaction && $DB->inTransaction()) {
-                $DB->commit();
-            }
+            $DB->commit();
         } catch (\Throwable $e) {
-            if (!$intransaction && $DB->inTransaction()) {
-                $DB->rollBack();
-            }
+            $DB->rollBack();
             ErrorHandler::logCaughtException($e);
             ErrorHandler::displayCaughtExceptionMessage($e);
         }

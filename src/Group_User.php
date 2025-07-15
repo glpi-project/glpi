@@ -794,10 +794,8 @@ class Group_User extends CommonDBRelation
             ]
         );
         $stmt = $DB->prepare($query);
-        $in_transaction = $DB->inTransaction();
-        if (!$in_transaction) {
-            $DB->beginTransaction();
-        }
+        $DB->beginTransaction();
+
         foreach ($users as $user) {
             $users_id  = $user['id'];
             $plannings = importArrayFromDB($user['plannings']);
@@ -821,9 +819,7 @@ class Group_User extends CommonDBRelation
             $DB->executeStatement($stmt);
         }
 
-        if (!$in_transaction) {
-            $DB->commit();
-        }
+        $DB->commit();
         $stmt->close();
 
         // Group cache must be invalidated when a user is added to a group
@@ -881,10 +877,7 @@ class Group_User extends CommonDBRelation
             ]
         );
         $stmt = $DB->prepare($query);
-        $in_transaction = $DB->inTransaction();
-        if (!$in_transaction) {
-            $DB->beginTransaction();
-        }
+        $DB->beginTransaction();
         foreach ($users as $user) {
             $users_id  = $user['id'];
             $plannings = importArrayFromDB($user['plannings']);
@@ -903,9 +896,7 @@ class Group_User extends CommonDBRelation
             $DB->executeStatement($stmt);
         }
 
-        if (!$in_transaction) {
-            $DB->commit();
-        }
+        $DB->commit();
         $stmt->close();
 
         // Group cache must be invalidated when a user is remove from a group

@@ -164,7 +164,6 @@ class AbstractPluginMigrationTest extends DbTestCase
     {
         // Arrange
         $db = $this->createMock(DBmysql::class);
-        $db->method('inTransaction')->willReturn(true);
         $db->expects($this->once())->method('beginTransaction'); // A transtation will be started ...
         $db->expects($this->once())->method('rollBack'); // ... but a roll-back will be done.
         $db->expects($this->never())->method('commit');
@@ -243,7 +242,6 @@ class AbstractPluginMigrationTest extends DbTestCase
     {
         // Arrange
         $db = $this->createMock(DBmysql::class);
-        $db->method('inTransaction')->willReturn(true);
         $db->expects($this->once())->method('beginTransaction'); // A transtation will be started ...
         $db->expects($this->once())->method('rollBack'); // ... but a roll-back will be done.
         $db->expects($this->never())->method('commit');

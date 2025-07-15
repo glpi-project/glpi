@@ -5764,14 +5764,13 @@ JAVASCRIPT;
             }
             return false;
         }
-        $in_transaction = $DB->inTransaction();
 
-        if ($p['full_transaction'] && !$in_transaction) {
+        if ($p['full_transaction']) {
             $DB->beginTransaction();
         }
         foreach ($ticket_ids as $id) {
             try {
-                if (!$p['full_transaction'] && !$in_transaction) {
+                if (!$p['full_transaction']) {
                     $DB->beginTransaction();
                 }
                 if ($merge_target->canUpdateItem() && $ticket->can($id, DELETE)) {
@@ -5982,7 +5981,7 @@ JAVASCRIPT;
                     if (!$ticket->delete(['id' => $id, '_disablenotif' => true])) {
                         throw new \RuntimeException(sprintf(__('Failed to delete ticket %d'), $id), 1);
                     }
-                    if (!$p['full_transaction'] && !$in_transaction) {
+                    if (!$p['full_transaction']) {
                         $DB->commit();
                     }
                     $status[$id] = 0;
@@ -6008,15 +6007,13 @@ JAVASCRIPT;
                     $status[$id] = $e->getCode();
                 }
                 Toolbox::logDebug($e->getMessage());
-                if (!$in_transaction) {
-                    $DB->rollBack();
-                }
+                $DB->rollBack();
                 if ($p['full_transaction']) {
                     return false;
                 }
             }
         }
-        if ($p['full_transaction'] && !$in_transaction) {
+        if ($p['full_transaction']) {
             $DB->commit();
         }
         return true;
