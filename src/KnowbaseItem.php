@@ -265,22 +265,22 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item::class === self::class) {
-            switch ($tabnum) {
-                case 1:
-                    $item->showFull();
-                    break;
-
-                case 2:
-                    $item->showVisibility();
-                    break;
-
-                case 3:
-                    $item->showForm($item->getID());
-                    break;
-            }
+        if (!$item instanceof self) {
+            return false;
         }
-        return true;
+        switch ($tabnum) {
+            case 1:
+                return (bool) $item->showFull();
+
+            case 2:
+                return $item->showVisibility();
+
+            case 3:
+                return $item->showForm($item->getID());
+
+            default:
+                return false;
+        }
     }
 
     /**
@@ -779,7 +779,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         NotificationEvent::raiseEvent('delete', $this);
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         // show kb item form
         if (

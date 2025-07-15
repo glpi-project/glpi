@@ -306,24 +306,14 @@ class Document_Item extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        switch ($item::class) {
-            case Document::class:
-                switch ($tabnum) {
-                    case 1:
-                        self::showForDocument($item);
-                        break;
-
-                    case 2:
-                        self::showForItem($item, $withtemplate);
-                        break;
-                }
-                break;
-
-            default:
-                self::showForitem($item, $withtemplate);
-                break;
+        if (!$item instanceof CommonDBTM) {
+            return false;
         }
-        return true;
+
+        if ($item instanceof Document && $tabnum === 1) {
+            return self::showForDocument($item);
+        }
+        return self::showForItem($item, $withtemplate);
     }
 
     /**
@@ -333,9 +323,9 @@ class Document_Item extends CommonDBRelation
      *
      * @param Document $doc Document object
      *
-     * @return void
+     * @return bool
      **/
-    public static function showForDocument(Document $doc)
+    public static function showForDocument(Document $doc): bool
     {
         $instID = $doc->fields['id'];
         if (!$doc->can($instID, READ)) {
@@ -491,6 +481,8 @@ TWIG, $twig_params);
                 'container'     => 'mass' . static::class . $rand,
             ],
         ]);
+
+        return true;
     }
 
     /**
@@ -498,10 +490,12 @@ TWIG, $twig_params);
      *
      * @since 0.84
      *
-     * @param CommonDBTM $item Object for which associated documents must be displayed
-     * @param $withtemplate    (default 0)
+     * @param CommonDBTM $item         Object for which associated documents must be displayed
+     * @param int        $withtemplate (default 0)
+     *
+     * @return bool
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $item, $withtemplate = 0): bool
     {
         $ID = $item->getField('id');
 
@@ -523,6 +517,8 @@ TWIG, $twig_params);
 
         self::showAddFormForItem($item, $withtemplate, $params);
         self::showListForItem($item, $withtemplate, $params);
+
+        return true;
     }
 
     /**

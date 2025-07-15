@@ -1755,9 +1755,9 @@ class MailCollector extends CommonDBTM
     /**
      * Cron action on mailgate : retrieve mail and create tickets
      *
-     * @param $task
+     * @param CronTask $task
      *
-     * @return -1 : done but not finish 1 : done with success
+     * @return int -1 : done but not finish 1 : done with success
      **/
     public static function cronMailgate($task)
     {
@@ -1795,7 +1795,7 @@ class MailCollector extends CommonDBTM
         }
 
         if ($max == $task->fields['param']) {
-            return 0; // Nothin to do
+            return 0; // Nothing to do
         } elseif ($max === 0 || count($iterator) < countElementsInTable('glpi_mailcollectors', ['is_active' => 1])) {
             return -1; // still messages to retrieve
         }

@@ -86,7 +86,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
     /**
      * Profile rights to update after profile update.
-     * @var array
+     * @var ?array
      */
     private $profileRight;
 
@@ -3492,16 +3492,17 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      **/
     public function displayRightsChoiceMatrix(array $rights, array $options = [])
     {
-        $param                  = [];
-        $param['title']         = '';
-        $param['canedit']       = true;
-        $param['default_class'] = '';
+        $param = [
+            'title' => '',
+            'canedit' => true,
+            'default_class' => '',
+        ];
 
         if ($rights === []) {
             return mt_rand();
         }
 
-        if (is_array($options) && count($options)) {
+        if (count($options)) {
             foreach ($options as $key => $val) {
                 $param[$key] = $val;
             }
@@ -3640,18 +3641,19 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     public static function getLinearRightChoice(array $elements, array $options = [])
     {
 
-        $param                  = [];
-        $param['canedit']       = true;
-        $param['field']         = '';
-        $param['value']         = '';
-        $param['max_per_line']  = 10;
-        $param['check_all']     = false;
-        $param['rand']          = mt_rand();
-        $param['zero_on_empty'] = true;
-        $param['display']       = true;
-        $param['check_method']  = static fn($element, $field) => (($field & $element) === $element);
+        $param = [
+            'canedit' => true,
+            'field' => '',
+            'value' => '',
+            'max_per_line' => 10,
+            'check_all' => false,
+            'rand' => mt_rand(),
+            'zero_on_empty' => true,
+            'display' => true,
+            'check_method' => static fn($element, $field) => (($field & $element) === $element),
+        ];
 
-        if (is_array($options) && count($options)) {
+        if (count($options)) {
             foreach ($options as $key => $val) {
                 $param[$key] = $val;
             }

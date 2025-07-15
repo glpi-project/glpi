@@ -92,6 +92,14 @@ abstract class AssetModel extends \CommonDCModelDropdown
         return Toolbox::getItemTypeFormURL(self::class, $full) . '?class=' . static::getDefinition()->fields['system_name'];
     }
 
+    /**
+     * Retrieve an item from the database
+     *
+     * @param int|null $id ID of the item to get
+     *
+     * @return self|false
+     */
+
     public static function getById(?int $id)
     {
         if ($id === null) {

@@ -221,7 +221,7 @@ HTML;
             'yellow'        => __('Yellow'),
         ];
 
-        if (isset($data['property'], $data['value']) && is_array($data) && str_starts_with($data['property'], $type)) {
+        if (isset($data['property'], $data['value']) && str_starts_with($data['property'], $type)) {
             $color = str_replace($type, '', $data['property']);
             $twig_params = [
                 'color_translated' => $color_translations[$color] ?? ucwords($color),

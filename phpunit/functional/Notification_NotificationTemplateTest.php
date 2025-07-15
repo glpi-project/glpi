@@ -85,7 +85,7 @@ class Notification_NotificationTemplateTest extends DbTestCase
     {
         $n_nt = new \Notification_NotificationTemplate();
         $this->assertTrue($n_nt->getFromDB(1));
-        $this->assertSame(1, $n_nt->getName());
+        $this->assertSame('1', $n_nt->getName());
     }
 
     public function testShowForFormNotLogged()

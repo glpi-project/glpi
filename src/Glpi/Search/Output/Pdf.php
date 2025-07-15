@@ -63,9 +63,10 @@ final class Pdf extends Spreadsheet
             ->setLeft($margin);
 
         \PhpOffice\PhpSpreadsheet\IOFactory::registerWriter('GLPIPdf', Tcpdf::class);
-        $this->writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->spread, 'GLPIPdf');
-
-        $this->writer->setOrientation($orientation);
+        /** @var \PhpOffice\PhpSpreadsheet\Writer\Pdf $writer */
+        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->spread, 'GLPIPdf');
+        $writer->setOrientation($orientation);
+        $this->writer = $writer;
     }
 
     public function getMime(): string

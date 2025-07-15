@@ -94,8 +94,10 @@ class ProjectCost extends CommonDBChild
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        self::showForProject($item, $withtemplate);
-        return true;
+        if ($item instanceof Project) {
+            return self::showForProject($item);
+        }
+        return false;
     }
 
     public function rawSearchOptions()
@@ -289,12 +291,12 @@ class ProjectCost extends CommonDBChild
     /**
      * Print the project costs
      *
-     * @param Project $project object
-     * @param boolean $withtemplate Template or basic item (default 0)
+     * @param Project $project      object
+     * @param int     $withtemplate Template or basic item (default 0)
      *
-     * @return void
+     * @return bool
      **/
-    public static function showForProject(Project $project, $withtemplate = 0)
+    public static function showForProject(Project $project, $withtemplate = 0): bool
     {
         /**
          * @var array $CFG_GLPI
@@ -422,5 +424,7 @@ class ProjectCost extends CommonDBChild
         echo "<div class='b'>";
         printf(__s('%1$s: %2$s'), __('Total cost'), $total + $ticketcost);
         echo "</div>";
+
+        return true;
     }
 }

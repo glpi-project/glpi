@@ -335,6 +335,9 @@ abstract class CommonDCModelDropdown extends CommonDropdown
         $positionsToCheck = [];
         foreach ($this->getItemsRackForModel() as $item_rack) {
             $rack = Rack::getById($item_rack['racks_id']);
+            if (!$rack instanceof Rack) {
+                continue;
+            }
             $filled = $rack->getFilled($itemtype, $item_rack['items_id']);
             $requiredUnits = $input['required_units'] ?? $this->fields['required_units'];
             $orientation = $item_rack['orientation'];

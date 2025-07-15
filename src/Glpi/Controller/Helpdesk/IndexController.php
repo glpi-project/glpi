@@ -65,7 +65,9 @@ final class IndexController extends AbstractController
     {
         $session_info = Session::getCurrentSessionInfo();
 
+        /** @var User $user */
         $user = User::getById($session_info->getUserId());
+        /** @var Entity $entity */
         $entity = Entity::getById($session_info->getCurrentEntityId());
 
         return $this->render('pages/helpdesk/index.html.twig', [

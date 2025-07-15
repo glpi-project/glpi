@@ -746,7 +746,7 @@ class Html
             'colors'    => null,
         ];
 
-        if (is_array($options) && count($options)) {
+        if (count($options)) {
             foreach ($options as $key => $val) {
                 if ($key === 'colors' && $val !== null) {
                     $params['colors'] = array_merge([
@@ -2111,7 +2111,7 @@ TWIG,
         $params['tag_for_massive'] = '';
         $params['container_id']    = '';
 
-        if (is_array($options) && count($options)) {
+        if (count($options)) {
             foreach ($options as $key => $val) {
                 $params[$key] = $val;
             }
@@ -5532,7 +5532,7 @@ HTML;
         $param['col_check_all']        = false;
         $param['rand']                 = mt_rand();
 
-        if (is_array($options) && count($options)) {
+        if (count($options)) {
             foreach ($options as $key => $val) {
                 $param[$key] = $val;
             }

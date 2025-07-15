@@ -131,7 +131,6 @@ final class SearchOption implements \ArrayAccess
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
-        $item = null;
 
         $search = [];
 

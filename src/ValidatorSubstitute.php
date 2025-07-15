@@ -44,11 +44,12 @@ final class ValidatorSubstitute extends CommonDBTM
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        switch ($item->getType()) {
-            case Preference::class:
-                $user = User::getById(Session::getLoginUserID());
+        if ($item instanceof Preference) {
+            $user = User::getById(Session::getLoginUserID());
+            if ($user instanceof User) {
                 $nb = $_SESSION['glpishow_count_on_tabs'] ? count($user->getSubstitutes()) : 0;
                 return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            }
         }
 
         return '';
@@ -61,11 +62,12 @@ final class ValidatorSubstitute extends CommonDBTM
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        switch ($item->getType()) {
-            case Preference::class:
-                $user = User::getById(Session::getLoginUserID());
+        if ($item instanceof Preference) {
+            $user = User::getById(Session::getLoginUserID());
+            if ($user instanceof User) {
                 $substitute = new ValidatorSubstitute();
                 return $substitute->showForUser($user);
+            }
         }
 
         return false;

@@ -266,11 +266,11 @@ final class DefaultDataManager
             'entities_id'  => 0,
         ]);
 
-        if (!$form_id) {
+        $form = Form::getById($form_id);
+        if (!$form_id || !$form instanceof Form) {
             throw new \RuntimeException("Failed to create form");
         }
 
-        $form = Form::getById($form_id);
         return $form;
     }
 

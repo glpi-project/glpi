@@ -537,7 +537,7 @@ abstract class API
     /**
      * Return the current active profile
      *
-     * @return integer the profiles_id
+     * @return array the profiles_id
      */
     protected function getActiveProfile()
     {

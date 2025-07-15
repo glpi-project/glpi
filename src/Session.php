@@ -847,7 +847,7 @@ class Session
         $TRANSLATE = new class ($i18n_cache) extends Laminas\I18n\Translator\Translator { // @phpstan-ignore class.extendsFinalByPhpDoc
             public function __construct(?I18nCache $cache)
             {
-                $this->cache = $cache;
+                $this->cache = $cache; // @phpstan-ignore assign.propertyType (laminas...)
             }
         };
 
@@ -2382,7 +2382,7 @@ class Session
         }
 
         $profile = Profile::getById($profile_id);
-        if (!$profile) {
+        if (!$profile instanceof Profile) {
             throw new RuntimeException("Failed to load profile: $profile_id");
         }
 

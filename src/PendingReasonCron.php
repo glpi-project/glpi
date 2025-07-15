@@ -102,7 +102,7 @@ class PendingReasonCron extends CommonDBTM
             $pending_item = PendingReason_Item::getById($row['id']);
             $itemtype = $pending_item->fields['itemtype'];
             $item = $itemtype::getById($pending_item->fields['items_id']);
-            if (!$item) {
+            if (!$item instanceof $itemtype || !$pending_item instanceof PendingReason_Item) {
                 trigger_error("Failed to load item", E_USER_WARNING);
                 continue;
             }
@@ -143,6 +143,14 @@ class PendingReasonCron extends CommonDBTM
                     continue;
                 }
 
+                $itilfup_template = ITILFollowupTemplate::getById(
+                    $pending_reason->fields['itilfollowuptemplates_id']
+                );
+                $content = '';
+                if ($itilfup_template instanceof ITILFollowupTemplate) {
+                    $content = $itilfup_template->getRenderedContent($item);
+                }
+
                 // Add reminder (new ITILReminder)
                 $reminder = new ITILReminder();
                 $reminder->add([
@@ -150,9 +158,7 @@ class PendingReasonCron extends CommonDBTM
                     'items_id' => $item->getID(),
                     'pendingreasons_id' => $pending_reason->getID(),
                     'name' => $pending_reason->fields['name'],
-                    'content' => ITILFollowupTemplate::getById(
-                        $pending_reason->fields['itilfollowuptemplates_id']
-                    )->getRenderedContent($item),
+                    'content' => $content,
                 ]);
                 $task->addVolume(1);
 
@@ -161,7 +167,7 @@ class PendingReasonCron extends CommonDBTM
             } elseif ($resolve && $now > $resolve) {
                 // Load solution template
                 $solution_template = SolutionTemplate::getById($pending_reason->fields['solutiontemplates_id']);
-                if (!$solution_template) {
+                if (!$solution_template instanceof SolutionTemplate) {
                     trigger_error("Failed to load SolutionTemplate::{$pending_reason->fields['solutiontemplates_id']}", E_USER_WARNING);
                     continue;
                 }

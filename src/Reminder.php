@@ -500,10 +500,8 @@ class Reminder extends CommonDBVisible implements
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        switch (get_class($item)) {
-            case Reminder::class:
-                $item->showVisibility();
-                return true;
+        if ($item instanceof self) {
+            return $item->showVisibility();
         }
         return false;
     }

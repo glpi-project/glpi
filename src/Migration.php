@@ -780,7 +780,7 @@ class Migration
 
         if (
             $DB->tableExists("$table")
-            && is_array($input) && (count($input) > 0)
+            && (count($input) > 0)
         ) {
             $values = [];
             foreach ($input as $field => $value) {

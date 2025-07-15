@@ -783,6 +783,10 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!$item instanceof self) {
+            return false;
+        }
+
         if ((int) $tabnum === 1) {
             $item->showSecurityForm();
             return true;

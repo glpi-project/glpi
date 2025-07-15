@@ -194,7 +194,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * @return array<class-string<CommonDBTM>, array<string, array>>
+     * @return array<class-string<CommonDBTM>, array<string, mixed>>
      */
     private static function getAssetCounts(): array
     {
@@ -249,7 +249,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * @return array<string, array<int, array>>
+     * @return array<int, array<string, mixed>>
      */
     private static function getOSInstallCounts(): array
     {

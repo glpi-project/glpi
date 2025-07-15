@@ -278,9 +278,9 @@ abstract class CommonDBChild extends CommonDBConnexity
     public static function displayRecursiveItems(array $recursiveItems, $elementToDisplay, bool $display = true)
     {
 
-        if ((!is_array($recursiveItems)) || (count($recursiveItems) == 0)) {
+        if ($recursiveItems === []) {
             echo __('Item not linked to an object');
-            return;
+            return false;
         }
 
         switch ($elementToDisplay) {
@@ -310,6 +310,8 @@ abstract class CommonDBChild extends CommonDBConnexity
                 }
                 break;
         }
+
+        return true;
     }
 
 

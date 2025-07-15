@@ -39,4 +39,17 @@ namespace Glpi\Search\Input;
  *
  * @internal Not for use outside {@link Search} class and the "Glpi\Search" namespace.
  */
-interface SearchInputInterface {}
+interface SearchInputInterface
+{
+    /**
+     * Print generic search form
+     *
+     * Params need to parsed before using Search::manageParams function
+     *
+     * @param string $itemtype  Type to display the form
+     * @param array  $params    Array of parameters may include sort, is_deleted, criteria, metacriteria
+     *
+     * @return void
+     **/
+    public static function showGenericSearch(string $itemtype, array $params);
+}

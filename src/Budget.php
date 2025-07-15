@@ -112,12 +112,10 @@ class Budget extends CommonDropdown
         if ($item instanceof self) {
             switch ($tabnum) {
                 case 1:
-                    $item->showValuesByEntity();
-                    break;
+                    return $item->showValuesByEntity();
 
                 case 2:
-                    $item->showItems();
-                    break;
+                    return $item->showItems();
             }
         }
         return true;
@@ -439,9 +437,9 @@ class Budget extends CommonDropdown
     /**
      * Print the HTML array of Items on a budget
      *
-     * @return void
+     * @return bool
      **/
-    public function showItems()
+    public function showItems(): bool
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -533,14 +531,16 @@ class Budget extends CommonDropdown
             'filtered_number' => $total_count,
             'showmassiveactions' => false,
         ]);
+
+        return true;
     }
 
     /**
      * Print the HTML array of value consumed for a budget
      *
-     * @return void
+     * @return bool
      **/
-    public function showValuesByEntity()
+    public function showValuesByEntity(): bool
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -655,6 +655,8 @@ class Budget extends CommonDropdown
             'filtered_number' => count($entries),
             'showmassiveactions' => false,
         ]);
+
+        return true;
     }
 
     public static function getIcon()
