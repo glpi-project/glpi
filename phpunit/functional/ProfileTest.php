@@ -389,7 +389,7 @@ class ProfileTest extends DbTestCase
                             'ON' => [
                                 'pa' => 'name',
                                 'pb' => 'name',
-                                ['AND' => ['pb.profiles_id' => $lower_profile_id]]
+                                ['AND' => ['pb.profiles_id' => $lower_profile_id]],
                             ],
                         ],
                     ],
@@ -400,7 +400,7 @@ class ProfileTest extends DbTestCase
                 ];
                 if (!empty($rights_to_ignore)) {
                     $criteria['WHERE'][] = [
-                        'NOT' => ['pa.name' => $rights_to_ignore]
+                        'NOT' => ['pa.name' => $rights_to_ignore],
                     ];
                 }
                 $lower_rights = $DB->request($criteria);
