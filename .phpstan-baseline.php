@@ -2067,10 +2067,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Webhook.php',
 ];
 $ignoreErrors[] = [
-	'count' => 1,
-	'path' => __DIR__ . '/src/Webhook.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Right side of && is always true\\.$#',
 	'identifier' => 'booleanAnd.rightAlwaysTrue',
 	'count' => 1,
