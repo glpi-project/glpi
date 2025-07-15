@@ -165,9 +165,7 @@ class Utf8mb4Command extends AbstractCommand implements ConfigurationCommandInte
             // Early update property to prevent warnings related to bad collation detection.
             $this->db->use_utf8mb4 = true;
 
-            $progress_message = function (string $table) {
-                return sprintf(__('Migrating table "%s"...'), $table);
-            };
+            $progress_message = (fn(string $table) => sprintf(__('Migrating table "%s"...'), $table));
 
             foreach ($this->iterate($tables, $progress_message) as $table) {
                 $result = $this->db->doQuery(

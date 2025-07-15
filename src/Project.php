@@ -1676,10 +1676,9 @@ TWIG, $twig_params);
         }
         $project_ids = array_map(
             static fn($e) => $e['id'],
-            array_filter($projects, static function ($e) use ($ID) {
+            array_filter($projects, static fn($e) =>
                 // Filter tasks of closed projects in Global view
-                return ($ID > 0 || !$e['is_finished']);
-            })
+                $ID > 0 || !$e['is_finished'])
         );
         $projectteams = count($project_ids) ? $projectteam->find(['projects_id' => $project_ids]) : [];
 
@@ -1706,9 +1705,7 @@ TWIG, $twig_params);
         foreach ($supported_teamtypes as $itemtype => $fields) {
             $all_ids = array_map(
                 static fn($e) => $e['items_id'],
-                array_filter(array_merge($projectteams, $projecttaskteams), static function ($e) use ($itemtype) {
-                    return ($e['itemtype'] === $itemtype);
-                })
+                array_filter(array_merge($projectteams, $projecttaskteams), static fn($e) => $e['itemtype'] === $itemtype)
             );
             if (count($all_ids)) {
                 $itemtable = $itemtype::getTable();
@@ -1745,25 +1742,19 @@ TWIG, $twig_params);
             $project->fields = $subproject;
             $item['_readonly'] = !Project::canUpdate() || !$project->canUpdateItem();
 
-            $subproject_teams = array_filter($projectteams, static function ($e) use ($subproject) {
-                return $e['projects_id'] === $subproject['id'];
-            });
+            $subproject_teams = array_filter($projectteams, static fn($e) => $e['projects_id'] === $subproject['id']);
             foreach ($subproject_teams as $teammember) {
                 switch ($teammember['itemtype']) {
                     case 'Group':
                     case 'Supplier':
-                        $matches = array_filter($all_members[$teammember['itemtype']], static function ($e) use ($teammember) {
-                            return ($e['id'] === $teammember['items_id']);
-                        });
+                        $matches = array_filter($all_members[$teammember['itemtype']], static fn($e) => $e['id'] === $teammember['items_id']);
                         if (count($matches)) {
                             $item['_team'][] = array_merge($teammember, reset($matches));
                         }
                         break;
                     case 'User':
                     case 'Contact':
-                        $contact_matches = array_filter($all_members[$teammember['itemtype']], static function ($e) use ($teammember) {
-                            return ($e['id'] === $teammember['items_id']);
-                        });
+                        $contact_matches = array_filter($all_members[$teammember['itemtype']], static fn($e) => $e['id'] === $teammember['items_id']);
                         if (count($contact_matches)) {
                             $match = reset($contact_matches);
                             // contact -> name, user -> realname
@@ -1794,25 +1785,19 @@ TWIG, $twig_params);
             $projecttask->fields = $subtask;
             $item['_readonly'] = !ProjectTask::canUpdate() || !$projecttask->canUpdateItem();
 
-            $subtask_teams = array_filter($projecttaskteams, static function ($e) use ($subtask) {
-                return $e['projecttasks_id'] == $subtask['id'];
-            });
+            $subtask_teams = array_filter($projecttaskteams, static fn($e) => $e['projecttasks_id'] == $subtask['id']);
             foreach ($subtask_teams as $teammember) {
                 switch ($teammember['itemtype']) {
                     case 'Group':
                     case 'Supplier':
-                        $matches = array_filter($all_members[$teammember['itemtype']], static function ($e) use ($teammember) {
-                            return ($e['id'] === $teammember['items_id']);
-                        });
+                        $matches = array_filter($all_members[$teammember['itemtype']], static fn($e) => $e['id'] === $teammember['items_id']);
                         if (count($matches)) {
                             $item['_team'][] = array_merge($teammember, reset($matches));
                         }
                         break;
                     case 'User':
                     case 'Contact':
-                        $contact_matches = array_filter($all_members[$teammember['itemtype']], static function ($e) use ($teammember) {
-                            return ($e['id'] === $teammember['items_id']);
-                        });
+                        $contact_matches = array_filter($all_members[$teammember['itemtype']], static fn($e) => $e['id'] === $teammember['items_id']);
                         if (count($contact_matches)) {
                             $match = reset($contact_matches);
                             if ($teammember['itemtype'] === 'User') {
@@ -1892,9 +1877,7 @@ TWIG, $twig_params);
             }
             $content .= "<div class='flex-break'></div>";
             if ($itemtype === 'ProjectTask' && $item['projecttasktypes_id'] !== 0) {
-                $typematches = array_filter($alltypes, static function ($t) use ($item) {
-                    return $t['id'] === $item['projecttasktypes_id'];
-                });
+                $typematches = array_filter($alltypes, static fn($t) => $t['id'] === $item['projecttasktypes_id']);
                 $content .= reset($typematches)['name'] . '&nbsp;';
             }
             if (array_key_exists('is_milestone', $item) && $item['is_milestone']) {

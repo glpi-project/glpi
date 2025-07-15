@@ -187,7 +187,7 @@ class Config extends CommonDBTM
                 unset($input['config_class']);
                 $input = call_user_func($config_method, $input);
             }
-            $this->setConfigurationValues($config_context, $input);
+            static::setConfigurationValues($config_context, $input);
             return false;
         }
 
@@ -363,11 +363,9 @@ class Config extends CommonDBTM
             '_dbreplicate_dbdefault',
         ];
 
-        $input = array_filter($input, function ($key) use ($values_to_filter) {
-            return !in_array($key, $values_to_filter);
-        }, ARRAY_FILTER_USE_KEY);
+        $input = array_filter($input, fn($key) => !in_array($key, $values_to_filter), ARRAY_FILTER_USE_KEY);
 
-        $this->setConfigurationValues('core', $input);
+        static::setConfigurationValues('core', $input);
 
         return false;
     }

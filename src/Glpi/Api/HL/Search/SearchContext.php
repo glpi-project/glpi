@@ -192,9 +192,7 @@ final class SearchContext
             return true;
         }
         $prop_parent = substr($prop_name, 0, strrpos($prop_name, '.'));
-        return count(array_filter($this->joins, static function ($j_name) use ($prop_parent) {
-            return str_starts_with($prop_parent, $j_name);
-        }, ARRAY_FILTER_USE_KEY)) > 0;
+        return count(array_filter($this->joins, static fn($j_name) => str_starts_with($prop_parent, $j_name), ARRAY_FILTER_USE_KEY)) > 0;
     }
 
     /**
@@ -218,10 +216,9 @@ final class SearchContext
         $primary_key = $join_params[$pkey_field];
         $prop_matches = array_filter(
             $this->getFlattenedProperties(),
-            static function ($prop_name) use ($primary_key, $join) {
+            static fn($prop_name) =>
                 // Filter matches for the primary key
-                return preg_match('/^' . preg_quote($join, '/') . '\.' . preg_quote($primary_key, '/') . '$/', $prop_name);
-            },
+                preg_match('/^' . preg_quote($join, '/') . '\.' . preg_quote($primary_key, '/') . '$/', $prop_name),
             ARRAY_FILTER_USE_KEY
         );
 

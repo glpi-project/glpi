@@ -1097,7 +1097,7 @@ class Toolbox
     public static function testWriteAccessToDirectory($dir)
     {
 
-        $rand = rand();
+        $rand = random_int(0, mt_getrandmax());
 
         // Check directory creation which can be denied by SElinux
         $sdir = sprintf("%s/test_glpi_%08x", $dir, $rand);
@@ -2409,7 +2409,7 @@ class Toolbox
         $string = trim($string, '-');
 
         if ($force_special_dash) {
-            $string = preg_replace('~[^-\w]+~', '-', $string);
+            $string = preg_replace('~[^\-\w]+~', '-', $string);
         }
 
         if ($string == '') {

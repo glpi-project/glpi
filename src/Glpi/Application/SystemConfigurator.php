@@ -230,9 +230,7 @@ final class SystemConfigurator
                 // Replace {GLPI_*} by value of corresponding constant
                 $value = preg_replace_callback(
                     '/\{(?<name>GLPI_[\w]+)\}/',
-                    function ($matches) {
-                        return defined($matches['name']) ? constant($matches['name']) : '';
-                    },
+                    fn($matches) => defined($matches['name']) ? constant($matches['name']) : '',
                     $constants[GLPI_ENVIRONMENT_TYPE][$name] ?? $constants['default'][$name]
                 );
 

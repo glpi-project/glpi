@@ -782,9 +782,7 @@ class MassiveAction
 
         // Remove icons for outputs that doesn't expect html
         if ($items_id === null || isAPI()) {
-            $actions = array_map(function ($action) {
-                return strip_tags($action);
-            }, $actions);
+            $actions = array_map(fn($action) => strip_tags($action), $actions);
         }
 
         return $actions;
@@ -963,9 +961,7 @@ class MassiveAction
 
                     echo "</tr><tr>";
                     // Remove empty option groups
-                    $options = array_filter($options, static function ($v) {
-                        return !is_array($v) || count($v) > 0;
-                    });
+                    $options = array_filter($options, static fn($v) => !is_array($v) || count($v) > 0);
                     if ($choose_field) {
                         echo "<td>";
                         $field_rand = Dropdown::showFromArray(

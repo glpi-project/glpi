@@ -160,7 +160,7 @@ class Item_Devices extends CommonDBRelation
             'massiveaction'      => false,
         ];
 
-        $deviceType = $this->getDeviceType();
+        $deviceType = static::getDeviceType();
         $tab[] = [
             'id'                 => '4',
             'table'              => getTableForItemType($deviceType),
@@ -440,11 +440,8 @@ class Item_Devices extends CommonDBRelation
         global $CFG_GLPI;
 
         $conf_param = str_replace('_', '', strtolower(static::class)) . '_types';
-        if (isset($CFG_GLPI[$conf_param])) {
-            return $CFG_GLPI[$conf_param];
-        }
 
-        return $CFG_GLPI["itemdevices_itemaffinity"];
+        return $CFG_GLPI[$conf_param] ?? $CFG_GLPI["itemdevices_itemaffinity"];
     }
 
 
@@ -819,7 +816,7 @@ class Item_Devices extends CommonDBRelation
 
             // Entity restrict
             $criteria['WHERE'] = [
-                $this->getDeviceForeignKey()  => $item->getID(),
+                static::getDeviceForeignKey()  => $item->getID(),
                 "$ctable.itemtype"            => $peer_type,
                 "$ctable.is_deleted"          => 0,
             ];
@@ -847,7 +844,7 @@ class Item_Devices extends CommonDBRelation
                 $criteria['WHERE'] += getEntitiesRestrictCriteria($ctable);
             }
         } else {
-            $fk = $this->getDeviceForeignKey();
+            $fk = static::getDeviceForeignKey();
 
             $criteria['WHERE'] = [
                 'itemtype'     => $item->getType(),
@@ -921,7 +918,7 @@ class Item_Devices extends CommonDBRelation
                 $peer_column->setItemType($peer_type, $itemtype_nav_title);
             }
         } else {
-            $peer_type   = $this->getDeviceType();
+            $peer_type   = static::getDeviceType();
 
             $table_group = $table->createGroup($peer_type, '');
 
@@ -948,7 +945,7 @@ class Item_Devices extends CommonDBRelation
         $link_column         = $table_group->addHeader('spec_link', '', $specific_column);
         $spec_column         = $link_column;
 
-        foreach ($this->getSpecificities() as $field => $attributs) {
+        foreach (static::getSpecificities() as $field => $attributs) {
             $spec_column                 = $table_group->addHeader(
                 'spec_' . $field,
                 $attributs['long name'],
@@ -1000,7 +997,7 @@ class Item_Devices extends CommonDBRelation
         }
 
         $criteria = $this->getTableGroupCriteria($item, $peer_type);
-        $fk = $item instanceof CommonDevice ? 'items_id' : $this->getDeviceForeignKey();
+        $fk = $item instanceof CommonDevice ? 'items_id' : static::getDeviceForeignKey();
 
         if (!empty($peer_type)) {
             $peer = getItemForItemtype($peer_type);
@@ -1056,7 +1053,7 @@ class Item_Devices extends CommonDBRelation
                 "<a href='" . $this->getLinkURL() . "'>$mode</a>"
             );
 
-            foreach ($this->getSpecificities() as $field => $attributs) {
+            foreach (static::getSpecificities() as $field => $attributs) {
                 $content = '';
 
                 if (!empty($link[$field])) {
@@ -1131,8 +1128,8 @@ class Item_Devices extends CommonDBRelation
                             'items_id'  => $link['id'],
                         ],
                         [
-                            'itemtype'  => $this->getDeviceType(),
-                            'items_id'  => $link[$this->getDeviceForeignKey()],
+                            'itemtype'  => static::getDeviceType(),
+                            'items_id'  => $link[static::getDeviceForeignKey()],
                         ],
                     ],
                 ],
@@ -1486,7 +1483,7 @@ class Item_Devices extends CommonDBRelation
             }
 
             $specificities = [];
-            $rand = rand();
+            $rand = random_int(0, mt_getrandmax());
 
             // Can the user view the value of the field ?
             if (!isset($attributs['right'])) {

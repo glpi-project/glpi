@@ -69,9 +69,7 @@ class InfoCommand extends AbstractMarketplaceCommand
         $controller = new Controller();
         $plugins = $controller::getAPI()->getAllPlugins();
 
-        $result = array_filter($plugins, static function ($p) use ($plugin) {
-            return strtolower($p['key']) === strtolower($plugin);
-        });
+        $result = array_filter($plugins, static fn($p) => strtolower($p['key']) === strtolower($plugin));
 
         if (count($result) === 0) {
             $output->writeln('<error>' . sprintf(__('Plugin %1$s not found!'), $plugin) . '</error>');

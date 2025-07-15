@@ -211,11 +211,7 @@ class ItemTranslation extends CommonDBChild
             $translations_handlers,
             function ($handler) use (&$translated_handlers, &$total_handlers) {
                 if (
-                    !empty($this->getForItemKeyAndLanguage(
-                        $handler->getItem(),
-                        $handler->getKey(),
-                        $this->fields['language']
-                    )?->getTranslation())
+                    !empty(static::getForItemKeyAndLanguage($handler->getItem(), $handler->getKey(), $this->fields['language'])?->getTranslation())
                 ) {
                     $translated_handlers++;
                 }
@@ -241,11 +237,7 @@ class ItemTranslation extends CommonDBChild
             $translations_handlers,
             function ($handler) use (&$translated_handlers, &$total_handlers) {
                 if (
-                    !empty($this->getForItemKeyAndLanguage(
-                        $handler->getItem(),
-                        $handler->getKey(),
-                        $this->fields['language']
-                    )?->getTranslation())
+                    !empty(static::getForItemKeyAndLanguage($handler->getItem(), $handler->getKey(), $this->fields['language'])?->getTranslation())
                 ) {
                     $translated_handlers++;
                 }

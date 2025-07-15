@@ -384,7 +384,7 @@ abstract class ITILTemplate extends CommonDropdown
 
         $itiltype = static::getITILObjectClass();
         $searchOption = SearchOption::getOptionsForItemtype($itiltype);
-        $tab          = $this->getAllowedFields($withtypeandcategory, $with_items_id);
+        $tab          = static::getAllowedFields($withtypeandcategory, $with_items_id);
         foreach (array_keys($tab) as $ID) {
             switch ($ID) {
                 case -2:

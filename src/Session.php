@@ -1009,11 +1009,7 @@ class Session
         ) { // Check cron jobs
             return $_SESSION["glpicronuserrunning"] ?? $_SESSION['glpiinventoryuserrunning'];
         }
-
-        if (isset($_SESSION["glpiID"])) {
-            return $_SESSION["glpiID"];
-        }
-        return false;
+        return $_SESSION["glpiID"] ?? false;
     }
 
     /**
@@ -1480,10 +1476,7 @@ class Session
     public static function getActiveTab($itemtype)
     {
 
-        if (isset($_SESSION['glpi_tabs'][strtolower($itemtype)])) {
-            return $_SESSION['glpi_tabs'][strtolower($itemtype)];
-        }
-        return "";
+        return $_SESSION['glpi_tabs'][strtolower($itemtype)] ?? "";
     }
 
     /**
@@ -1614,11 +1607,7 @@ class Session
         if (isset($_REQUEST[$name])) {
             return $_SESSION['glpi_saved'][$itemtype][$name] = $_REQUEST[$name];
         }
-
-        if (isset($_SESSION['glpi_saved'][$itemtype][$name])) {
-            return $_SESSION['glpi_saved'][$itemtype][$name];
-        }
-        return $defvalue;
+        return $_SESSION['glpi_saved'][$itemtype][$name] ?? $defvalue;
     }
 
 

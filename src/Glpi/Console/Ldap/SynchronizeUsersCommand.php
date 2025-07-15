@@ -166,9 +166,7 @@ class SynchronizeUsersCommand extends AbstractCommand
         $description .= implode(
             "\n",
             array_map(
-                static function ($key, $value) {
-                    return '- ' . sprintf(__('%1$s: %2$s'), $key, $value);
-                },
+                static fn($key, $value) => '- ' . sprintf(__('%1$s: %2$s'), $key, $value),
                 array_keys($restored_strategies),
                 $restored_strategies
             )
@@ -193,9 +191,7 @@ class SynchronizeUsersCommand extends AbstractCommand
         return implode(
             "\n",
             array_map(
-                function ($key, $value) {
-                    return '- ' . sprintf(__('%1$s: %2$s'), $key, $value);
-                },
+                fn($key, $value) => '- ' . sprintf(__('%1$s: %2$s'), $key, $value),
                 array_keys($options),
                 $options
             )
@@ -327,10 +323,10 @@ class SynchronizeUsersCommand extends AbstractCommand
                     [
                         'authldaps_id' => $server_id,
                         'mode'         => $action,
-                        'ldap_filter'  => null !== $ldap_filter ? $ldap_filter : '',
+                        'ldap_filter'  => $ldap_filter ?? '',
                         'script'       => true,
-                        'begin_date'   => null !== $begin_date ? $begin_date : '',
-                        'end_date'     => null !== $end_date ? $end_date : '',
+                        'begin_date'   => $begin_date ?? '',
+                        'end_date'     => $end_date ?? '',
                     ],
                     $results,
                     $limitexceeded

@@ -82,7 +82,7 @@ class Change extends CommonITILObject
 
         return (self::isAllowedStatus($this->fields['status'], self::SOLVED)
               // No edition on closed status
-              && !in_array($this->fields['status'], $this->getClosedStatusArray())
+              && !in_array($this->fields['status'], static::getClosedStatusArray())
               && (Session::haveRight(self::$rightname, UPDATE)
                   || (Session::haveRight(self::$rightname, self::READMY)
                       && ($this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
@@ -154,7 +154,7 @@ class Change extends CommonITILObject
     public function canReopen()
     {
         return Session::haveRight('followup', CREATE)
-             && in_array($this->fields["status"], $this->getClosedStatusArray())
+             && in_array($this->fields["status"], static::getClosedStatusArray())
              && ($this->isAllowedStatus($this->fields['status'], self::INCOMING)
                  || $this->isAllowedStatus($this->fields['status'], self::EVALUATION));
     }
@@ -345,7 +345,7 @@ class Change extends CommonITILObject
             if (
                 isset($this->input["status"]) && $this->input["status"]
                 && in_array("status", $this->updates)
-                && in_array($this->input["status"], $this->getSolvedStatusArray())
+                && in_array($this->input["status"], static::getSolvedStatusArray())
             ) {
                 $mailtype = "solved";
             }
@@ -354,7 +354,7 @@ class Change extends CommonITILObject
                 isset($this->input["status"])
                 && $this->input["status"]
                 && in_array("status", $this->updates)
-                && in_array($this->input["status"], $this->getClosedStatusArray())
+                && in_array($this->input["status"], static::getClosedStatusArray())
             ) {
                 $mailtype = "closed";
             }
@@ -1003,8 +1003,8 @@ class Change extends CommonITILObject
                 $this->getTable() . '.is_deleted' => 0,
                 'NOT'                         => [
                     $this->getTable() . '.status' => array_merge(
-                        $this->getSolvedStatusArray(),
-                        $this->getClosedStatusArray()
+                        static::getSolvedStatusArray(),
+                        static::getClosedStatusArray()
                     ),
                 ],
             ],

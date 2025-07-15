@@ -562,7 +562,7 @@ class User extends CommonDBTM
             $dashboard_filters->deleteByCriteria(['users_id' => $this->fields['id']]);
         }
 
-        $this->dropPictureFiles($this->fields['picture']);
+        static::dropPictureFiles($this->fields['picture']);
 
         // Ticket rules use various _users_id_*
         Rule::cleanForItemAction($this, '_users_id%');
@@ -2787,7 +2787,7 @@ HTML;
                    || (($this->fields["authtype"] == Auth::NOT_YET_AUTHENTIFIED)
                        && !empty($this->fields["password"])));
 
-        $formtitle = $this->getTypeName(1);
+        $formtitle = static::getTypeName(1);
 
         $options['formtitle']      = $formtitle;
         $options['formoptions']    = ($options['formoptions'] ?? '') . " enctype='multipart/form-data'";
@@ -5300,7 +5300,7 @@ HTML;
 
         // Randomly increase the response time to prevent an attacker to be able to detect whether
         // a notification was sent (a longer response time could correspond to a SMTP operation).
-        sleep(rand(1, 3));
+        sleep(random_int(1, 3));
 
         // Try to find a single user matching the given email
         if (!$this->getFromDBbyEmail($email, $condition)) {
@@ -5769,9 +5769,7 @@ HTML;
 
         $ret = preg_replace_callback(
             '/%{(.*)}/U',
-            function ($matches) use ($res) {
-                return ($res[0][$matches[1]][0] ?? '');
-            },
+            fn($matches) => $res[0][$matches[1]][0] ?? '',
             $map
         );
 
@@ -6259,7 +6257,7 @@ HTML;
     {
         $this->initForm($ID, $options);
 
-        $formtitle = $this->getTypeName(1);
+        $formtitle = static::getTypeName(1);
         $options['formtitle']   = $formtitle;
         $options['formoptions'] = ($options['formoptions'] ?? '') . " enctype='multipart/form-data'";
         $options['candel'] = false;

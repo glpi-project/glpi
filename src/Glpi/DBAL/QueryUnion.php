@@ -117,9 +117,7 @@ class QueryUnion extends AbstractQuery
         }
         $query = '(' . implode(" $keyword ", $queries) . ')';
 
-        $alias = $this->alias !== null
-            ? $this->alias
-            : 'union_' . md5($query);
+        $alias = $this->alias ?? 'union_' . md5($query);
         $query .= ' AS ' . DBmysql::quoteName($alias);
 
         return $query;

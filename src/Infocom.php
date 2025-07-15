@@ -738,12 +738,8 @@ class Infocom extends CommonDBChild
 
         foreach ($items_infos as $entity => $items) {
             // We will ignore items that have been deleted but aren't expired, in case they are restored before the warranty expires
-            $not_deleted_items = array_filter($items, static function ($item) {
-                return $item['is_deleted'] === 0;
-            });
-            $deleted_expired_items = array_filter($items, static function ($item) {
-                return $item['is_deleted'] === 1 && $item['warrantyexpiration'] < $_SESSION['glpi_currenttime'];
-            });
+            $not_deleted_items = array_filter($items, static fn($item) => $item['is_deleted'] === 0);
+            $deleted_expired_items = array_filter($items, static fn($item) => $item['is_deleted'] === 1 && $item['warrantyexpiration'] < $_SESSION['glpi_currenttime']);
             if (
                 NotificationEvent::raiseEvent("alert", new self(), [
                     'entities_id' => $entity,

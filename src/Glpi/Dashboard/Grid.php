@@ -204,9 +204,7 @@ HTML;
 
         $viewable = self::$all_dashboards;
         if ($context) {
-            $viewable = array_filter(self::$all_dashboards, function ($dashboard) use ($context) {
-                return $dashboard['context'] === $context;
-            });
+            $viewable = array_filter(self::$all_dashboards, fn($dashboard) => $dashboard['context'] === $context);
         }
         return (count($viewable) > 0);
     }

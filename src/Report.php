@@ -153,7 +153,7 @@ class Report extends CommonGLPI
                     if ($file = $fn_find_selected($data)) {
                         return $file;
                     }
-                } elseif (stripos($_SERVER['REQUEST_URI'], $data['file']) !== false) {
+                } elseif (stripos($_SERVER['REQUEST_URI'], (string) $data['file']) !== false) {
                     return $data['file'];
                 }
             }
@@ -906,9 +906,7 @@ TWIG, $twig_params);
         global $CFG_GLPI, $DB;
 
         // Filter the itemtypes to only keep the ones that are valid
-        $itemtypes = array_filter($itemtypes, static function (string $itemtype) use ($CFG_GLPI): bool {
-            return in_array($itemtype, $CFG_GLPI['report_types'], true);
-        });
+        $itemtypes = array_filter($itemtypes, static fn(string $itemtype): bool => in_array($itemtype, $CFG_GLPI['report_types'], true));
 
         $report = [
             'title' => __("Equipment's report by year"),
@@ -1162,9 +1160,7 @@ TWIG, $twig_params);
         global $CFG_GLPI, $DB;
 
         // Filter the itemtypes to only keep the ones that are valid
-        $itemtypes = array_filter($itemtypes, static function (string $itemtype) use ($CFG_GLPI): bool {
-            return in_array($itemtype, $CFG_GLPI['contract_types'], true);
-        });
+        $itemtypes = array_filter($itemtypes, static fn(string $itemtype): bool => in_array($itemtype, $CFG_GLPI['contract_types'], true));
 
         $report = [
             'title' => __('List of the hardware under contract'),

@@ -1363,9 +1363,7 @@ abstract class API
 
         // Map values for deprecated itemtypes
         if ($this->isDeprecated()) {
-            $found = array_map(function ($fields) {
-                return $this->deprecated_item->mapCurrentToDeprecatedFields($fields);
-            }, $found);
+            $found = array_map(fn($fields) => $this->deprecated_item->mapCurrentToDeprecatedFields($fields), $found);
         }
 
         return array_values($found);
@@ -1865,9 +1863,7 @@ abstract class API
         }
 
         if ($this->isDeprecated()) {
-            $input = array_map(function ($item) {
-                return $this->deprecated_item->mapDeprecatedToCurrentFields($item);
-            }, $input);
+            $input = array_map(fn($item) => $this->deprecated_item->mapDeprecatedToCurrentFields($item), $input);
         }
 
         if (is_array($input)) {
@@ -1997,9 +1993,7 @@ abstract class API
         }
 
         if ($this->isDeprecated()) {
-            $input = array_map(function ($item) {
-                return $this->deprecated_item->mapDeprecatedToCurrentFields($item);
-            }, $input);
+            $input = array_map(fn($item) => $this->deprecated_item->mapDeprecatedToCurrentFields($item), $input);
         }
 
         if (is_array($input)) {
@@ -2124,9 +2118,7 @@ abstract class API
         }
 
         if ($this->isDeprecated()) {
-            $input = array_map(function ($item) {
-                return $this->deprecated_item->mapDeprecatedToCurrentFields($item);
-            }, $input);
+            $input = array_map(fn($item) => $this->deprecated_item->mapDeprecatedToCurrentFields($item), $input);
         }
 
         if (is_array($input)) {
@@ -2473,7 +2465,7 @@ abstract class API
 
         if ($html) {
             if (empty($title)) {
-                $title = $this->getTypeName();
+                $title = static::getTypeName();
             }
 
             Html::includeHeader($title);

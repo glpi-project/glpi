@@ -1465,9 +1465,7 @@ final class AssetController extends AbstractController
     private static function getGlobalAssetSchema($asset_schemas)
     {
         $asset_types = self::getAssetTypes();
-        $asset_schemas = array_filter($asset_schemas, static function ($key) use ($asset_types) {
-            return !str_starts_with($key, '_') && in_array($key, $asset_types, true);
-        }, ARRAY_FILTER_USE_KEY);
+        $asset_schemas = array_filter($asset_schemas, static fn($key) => !str_starts_with($key, '_') && in_array($key, $asset_types, true), ARRAY_FILTER_USE_KEY);
         $union_schema = Doc\Schema::getUnionSchema($asset_schemas);
         $union_schema['x-version-introduced'] = '2.0';
         return $union_schema;

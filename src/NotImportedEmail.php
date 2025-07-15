@@ -219,10 +219,7 @@ class NotImportedEmail extends CommonDBTM
     {
 
         $tab = self::getAllReasons();
-        if (isset($tab[$reason_id])) {
-            return $tab[$reason_id];
-        }
-        return NOT_AVAILABLE;
+        return $tab[$reason_id] ?? NOT_AVAILABLE;
     }
 
 

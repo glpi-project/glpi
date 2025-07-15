@@ -527,9 +527,7 @@ class ReportController extends AbstractController
                 continue;
             }
 
-            $fn_get_stats = static function ($stat, $field, $items_id) use ($itemtype, $date_start, $date_end) {
-                return \Stat::constructEntryValues($itemtype, $stat, $date_start, $date_end, $field, $items_id, 0);
-            };
+            $fn_get_stats = (static fn($stat, $field, $items_id) => \Stat::constructEntryValues($itemtype, $stat, $date_start, $date_end, $field, $items_id, 0));
 
             $result = [];
             if (isset($item['itemtype'])) {
@@ -901,9 +899,7 @@ class ReportController extends AbstractController
                 continue;
             }
 
-            $fn_get_stats = static function ($stat, $field, $items_id) use ($itemtype, $date_start, $date_end, $param) {
-                return \Stat::constructEntryValues($itemtype, $stat, $date_start, $date_end, $param, $items_id, $field);
-            };
+            $fn_get_stats = (static fn($stat, $field, $items_id) => \Stat::constructEntryValues($itemtype, $stat, $date_start, $date_end, $param, $items_id, $field));
 
             $result = [];
             if (isset($item['itemtype'])) {

@@ -258,7 +258,7 @@ class PrinterLog extends CommonDBChild
 
         // build graph data
         $params = [
-            'label'         => $this->getTypeName(),
+            'label'         => static::getTypeName(),
             'icon'          => Printer::getIcon(),
             'apply_filters' => [],
         ];
@@ -316,7 +316,7 @@ class PrinterLog extends CommonDBChild
                     $series[$printer_id]['data'][array_search($metric['date'], $labels, false)] = $metric[$compare_printer_stat];
                 } else {
                     foreach ($metric as $key => $value) {
-                        $label = $this->getLabelFor($key);
+                        $label = static::getLabelFor($key);
                         if ($label && $valuesum > 0) {
                             $series[$key]['name'] = $label;
                             $series[$key]['data'][] = $value;

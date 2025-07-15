@@ -455,18 +455,14 @@ class Dashboard extends \CommonDBTM
                 $key = $dashboard['key'];
                 $id  = $dashboard['id'];
 
-                $d_rights = array_filter($rights, static function ($right_line) use ($id) {
-                    return $right_line['dashboards_dashboards_id'] == $id;
-                });
+                $d_rights = array_filter($rights, static fn($right_line) => $right_line['dashboards_dashboards_id'] == $id);
                 $dashboardItem = new self($key);
                 if ($check_rights && !$dashboardItem->canViewCurrent()) {
                     continue;
                 }
                 $dashboard['rights'] = self::convertRights($d_rights);
 
-                $d_items = array_filter($items, static function ($item) use ($id) {
-                    return $item['dashboards_dashboards_id'] == $id;
-                });
+                $d_items = array_filter($items, static fn($item) => $item['dashboards_dashboards_id'] == $id);
                 $d_items = array_map(static function ($item) {
                     $item['card_options'] = importArrayFromDB($item['card_options']);
                     return $item;
@@ -479,9 +475,7 @@ class Dashboard extends \CommonDBTM
 
         // Return dashboards filtered by context (if applicable)
         if ($context !== null && $context !== '') {
-            return array_filter(self::$all_dashboards, static function ($dashboard) use ($context) {
-                return $dashboard['context'] === $context;
-            });
+            return array_filter(self::$all_dashboards, static fn($dashboard) => $dashboard['context'] === $context);
         }
 
         return self::$all_dashboards;

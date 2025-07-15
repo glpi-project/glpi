@@ -309,11 +309,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
             'update' => __('Update'),
             'delete' => __("Delete"),
         ];
-
-        if (isset($events[$event_name])) {
-            return $events[$event_name];
-        }
-        return NOT_AVAILABLE;
+        return $events[$event_name] ?? NOT_AVAILABLE;
     }
 
     /**
@@ -968,9 +964,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
             $applicable_types = array_intersect($prop_data['x-parent-itemtype'] ?? [], array_keys($subtype_labels));
             if ($applicable_types !== array_keys($subtype_labels) && count($applicable_types)) {
                 //Note: In cases of child properties, there may not be any applicable types listed. They are handled at the top level only.
-                $suggestion['detail'] = '[' . implode(', ', array_map(static function ($type) use ($subtype_labels) {
-                    return $subtype_labels[$type];
-                }, $applicable_types)) . ']';
+                $suggestion['detail'] = '[' . implode(', ', array_map(static fn($type) => $subtype_labels[$type], $applicable_types)) . ']';
             }
 
             $response_schema[] = $suggestion;

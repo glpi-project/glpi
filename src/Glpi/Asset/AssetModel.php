@@ -316,9 +316,7 @@ abstract class AssetModel extends \CommonDCModelDropdown
                 'label'  => __('Is half rack'),
             ];
         } else {
-            $fields = array_filter($fields, static function ($option) {
-                return $option['name'] !== 'picture_front' && $option['name'] !== 'picture_rear';
-            });
+            $fields = array_filter($fields, static fn($option) => $option['name'] !== 'picture_front' && $option['name'] !== 'picture_rear');
         }
 
         return $fields;

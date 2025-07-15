@@ -314,9 +314,7 @@ TWIG;
             'entries' => $entries,
             'total_number' => count($entries),
             'filtered_number' => count($entries),
-            'showmassiveactions' => count(array_filter($entries, static function ($entry) {
-                return $entry['showmassiveactions'];
-            })) > 0,
+            'showmassiveactions' => count(array_filter($entries, static fn($entry) => $entry['showmassiveactions'])) > 0,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . mt_rand(),
@@ -372,9 +370,7 @@ TWIG, $twig_params);
             // Calculate reverse lookup array to avoid array_search in the callback
             $types_flipped = array_flip($types);
             // Sort results to match the order of the types in $CFG_GLPI['directconnect_types']
-            usort($results, static function ($a, $b) use ($types_flipped) {
-                return $types_flipped[$a['itemtype_peripheral']] - $types_flipped[$b['itemtype_peripheral']];
-            });
+            usort($results, static fn($a, $b) => $types_flipped[$a['itemtype_peripheral']] - $types_flipped[$b['itemtype_peripheral']]);
 
             $subtable = [
                 'columns' => [

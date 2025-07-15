@@ -397,9 +397,7 @@ final class SearchOption implements \ArrayAccess
         }
 
         $infocom_options = \Infocom::rawSearchOptionsToAdd($itemtype);
-        $found_infocoms  = array_filter($infocom_options, static function ($option) use ($searchID) {
-            return isset($option['id']) && $searchID == $option['id'];
-        });
+        $found_infocoms  = array_filter($infocom_options, static fn($option) => isset($option['id']) && $searchID == $option['id']);
 
         return (count($found_infocoms) > 0);
     }
@@ -706,12 +704,8 @@ final class SearchOption implements \ArrayAccess
             // Add the related search option for the 'name' OR 'id' field. If none is found, add the search option 1 (how it was handled before).
             // Since not all itemtypes have ID set to 1, it used to add other, heavier search options like content in the case of Followups.
             $options = array_filter(self::getOptionsForItemtype($itemtype, false), static fn($o) => is_numeric($o), ARRAY_FILTER_USE_KEY);
-            $id_field = array_filter($options, static function ($option) use ($itemtype) {
-                return $option['field'] === $itemtype::getIndexName() && $option['table'] === $itemtype::getTable();
-            });
-            $name_field = array_filter($options, static function ($option) use ($itemtype) {
-                return $option['field'] === $itemtype::getNameField() && $option['table'] === $itemtype::getTable();
-            });
+            $id_field = array_filter($options, static fn($option) => $option['field'] === $itemtype::getIndexName() && $option['table'] === $itemtype::getTable());
+            $name_field = array_filter($options, static fn($option) => $option['field'] === $itemtype::getNameField() && $option['table'] === $itemtype::getTable());
         } else {
             $id_field = [];
             $name_field = [];

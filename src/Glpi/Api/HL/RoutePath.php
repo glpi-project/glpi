@@ -225,9 +225,7 @@ final class RoutePath
     public function isValidPath($path): bool
     {
         // Ensure no placeholders are left
-        $dynamic_expandable_placeholders = array_filter($this->getRouteRequirements(), static function ($v, $k) {
-            return is_callable($v);
-        }, ARRAY_FILTER_USE_BOTH);
+        $dynamic_expandable_placeholders = array_filter($this->getRouteRequirements(), static fn($v, $k) => is_callable($v), ARRAY_FILTER_USE_BOTH);
         $leftover_placeholders = [];
         preg_match_all('/\{([^}]+)\}/', $path, $leftover_placeholders);
         // Remove dynamic expandable placeholders
@@ -465,9 +463,7 @@ final class RoutePath
         // Set parameters to defaults if not provided and a default is available
         $params = $request->getParameters();
         $docs = $this->getRouteDocs();
-        $matched_doc = array_filter($docs, static function (Doc\Route $doc) use ($request) {
-            return !count($doc->getMethods()) || in_array($request->getMethod(), $doc->getMethods(), true);
-        });
+        $matched_doc = array_filter($docs, static fn(Doc\Route $doc) => !count($doc->getMethods()) || in_array($request->getMethod(), $doc->getMethods(), true));
         if (count($matched_doc)) {
             $route_params = $matched_doc[0]->getParameters();
             /** @var Parameter $param */

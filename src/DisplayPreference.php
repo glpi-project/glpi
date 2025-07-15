@@ -785,9 +785,7 @@ class DisplayPreference extends CommonDBTM
         /** @var \DBmysql $DB */
         global $DB;
         $tables = require(GLPI_ROOT . '/install/empty_data.php');
-        $prefs = array_filter($tables[self::getTable()], static function ($pref) use ($itemtype) {
-            return $pref['itemtype'] === $itemtype;
-        });
+        $prefs = array_filter($tables[self::getTable()], static fn($pref) => $pref['itemtype'] === $itemtype);
         if (!count($prefs)) {
             // plugin type or not supported
             $plugin_opts = Plugin::doHookFunction(Hooks::DEFAULT_DISPLAY_PREFS, [

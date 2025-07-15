@@ -2140,9 +2140,7 @@ JS
         $output = $this->preProcessPreviewResults($output);
 
         foreach ($output as $criteria => $value) {
-            $action_def = array_filter($actions, static function ($def, $key) use ($criteria) {
-                return $key === $criteria || (array_key_exists('appendto', $def) && $def['appendto'] === $criteria);
-            }, ARRAY_FILTER_USE_BOTH);
+            $action_def = array_filter($actions, static fn($def, $key) => $key === $criteria || (array_key_exists('appendto', $def) && $def['appendto'] === $criteria), ARRAY_FILTER_USE_BOTH);
             $action_def_key = key($action_def);
             if (count($action_def)) {
                 $action_def = reset($action_def);

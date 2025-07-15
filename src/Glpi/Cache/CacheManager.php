@@ -422,7 +422,7 @@ class CacheManager
         }
         $scheme = $matches['scheme'];
 
-        return in_array($scheme, array_keys($this->getAvailableAdapters())) ? $scheme : null;
+        return in_array($scheme, array_keys(static::getAvailableAdapters())) ? $scheme : null;
     }
 
     /**
@@ -532,7 +532,7 @@ PHP;
             return reset($schemes) === self::SCHEME_MEMCACHED;
         }
 
-        return in_array($this->extractScheme($dsn), array_keys($this->getAvailableAdapters()));
+        return in_array($this->extractScheme($dsn), array_keys(static::getAvailableAdapters()));
     }
 
     /**

@@ -1878,7 +1878,7 @@ class Stat extends CommonGLPI
         foreach ($values as $reports) {
             if (is_array($reports)) {
                 foreach (array_keys($reports) as $key) {
-                    if (stripos($_SERVER['REQUEST_URI'], $key) !== false) {
+                    if (stripos($_SERVER['REQUEST_URI'], (string) $key) !== false) {
                         $selected = $key;
                     }
                 }

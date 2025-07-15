@@ -156,9 +156,7 @@ final class GraphQLGenerator
         foreach ($schema['properties'] as $name => $property) {
             $fields[$name] = [
                 'type' => $this->convertRESTPropertyToGraphQLType($property, $name, $schema_name),
-                'resolve' => function () {
-                    return '';
-                },
+                'resolve' => fn() => '',
             ];
         }
         return new ObjectType([
@@ -194,15 +192,11 @@ final class GraphQLGenerator
             foreach ($properties as $prop_name => $prop_value) {
                 $fields[$prop_name] = [
                     'type' => $this->convertRESTPropertyToGraphQLType($prop_value, $prop_name, $prefix),
-                    'resolve' => function () {
-                        return '';
-                    },
+                    'resolve' => fn() => '',
                 ];
             }
             if (isset($property['x-full-schema'])) {
-                return function () use ($property) {
-                    return $this->types[$property['x-full-schema']];
-                };
+                return fn() => $this->types[$property['x-full-schema']];
             }
             return new ObjectType([
                 'name' => "_{$prefix}_{$name}",

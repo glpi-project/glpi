@@ -158,9 +158,9 @@ class NotificationTarget extends CommonDBChild
 
         if (
             $this->getFromDBByCrit([
-                $this->getTable() . '.notifications_id'   => $notifications_id,
-                $this->getTable() . '.items_id'           => $ID,
-                $this->getTable() . '.type'               => $type,
+                static::getTable() . '.notifications_id'   => $notifications_id,
+                static::getTable() . '.items_id'           => $ID,
+                static::getTable() . '.type'               => $type,
             ])
         ) {
             return true;
@@ -322,7 +322,7 @@ class NotificationTarget extends CommonDBChild
         if ($reference_event === null || $event !== $reference_event) {
             // Add random, unless event is the reference event for the related item.
             // eg. no random will be added for `new` event of a ticket, but a random will be added for `add_followup` events.
-            $message_id .= sprintf('.%d.%d', time(), rand());
+            $message_id .= sprintf('.%d.%d', time(), random_int(0, mt_getrandmax()));
         }
 
         $message_id .= sprintf('@%s', php_uname('n'));
@@ -339,14 +339,8 @@ class NotificationTarget extends CommonDBChild
     protected function computeFriendlyName()
     {
 
-        if (
-            isset($this->notification_targets_labels[$this->getField("type")]
-                                                  [$this->getField("items_id")])
-        ) {
-            return $this->notification_targets_labels[$this->getField("type")]
-                                                  [$this->getField("items_id")];
-        }
-        return '';
+        return $this->notification_targets_labels[$this->getField("type")]
+                                              [$this->getField("items_id")] ?? '';
     }
 
     /**
@@ -1641,7 +1635,7 @@ class NotificationTarget extends CommonDBChild
                 case Notification::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
-                            $this->getTable(),
+                            static::getTable(),
                             ['notifications_id' => $item->getID()]
                         );
                     }

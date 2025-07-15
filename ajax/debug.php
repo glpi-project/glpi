@@ -107,9 +107,7 @@ if (isset($_GET['action'])) {
         } catch (Throwable $e) {
             $options = [];
         }
-        $options = array_filter($options, static function ($k) {
-            return is_numeric($k);
-        }, ARRAY_FILTER_USE_KEY);
+        $options = array_filter($options, static fn($k) => is_numeric($k), ARRAY_FILTER_USE_KEY);
         echo json_encode($options);
         return;
     }

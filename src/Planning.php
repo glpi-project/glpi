@@ -1867,18 +1867,14 @@ TWIG, $twig_params);
         }
 
         // fill type of planning
-        $raw_events = array_map(static function ($arr) use ($actor) {
-            return $arr + ['resourceId' => $actor];
-        }, $raw_events);
+        $raw_events = array_map(static fn($arr) => $arr + ['resourceId' => $actor], $raw_events);
 
         if ($_SESSION['glpi_plannings']['filters']['NotPlanned']['display']) {
-            $not_planned = array_map(static function ($arr) use ($actor) {
-                return $arr + [
-                    'not_planned' => true,
-                    'resourceId' => $actor,
-                    'event_type_color' => $_SESSION['glpi_plannings']['filters']['NotPlanned']['color'],
-                ];
-            }, $not_planned);
+            $not_planned = array_map(static fn($arr) => $arr + [
+                'not_planned' => true,
+                'resourceId' => $actor,
+                'event_type_color' => $_SESSION['glpi_plannings']['filters']['NotPlanned']['color'],
+            ], $not_planned);
         }
     }
 

@@ -110,14 +110,14 @@ class Router
      * @var ?Request
      * @internal Only intended to be used by tests
      */
-    private ?Request $original_request;
+    private ?Request $original_request = null;
 
     /**
      * The final state of the request after it was modified by the request middlewares.
      * @var ?Request
      * @internal Only intended to be used by tests
      */
-    private ?Request $final_request;
+    private ?Request $final_request = null;
 
     /**
      * The last route that was matched and invoked.
@@ -246,9 +246,7 @@ EOT;
 
             self::$instance->registerRequestMiddleware(new IPRestrictionRequestMiddleware());
             self::$instance->registerRequestMiddleware(new OAuthRequestMiddleware());
-            self::$instance->registerRequestMiddleware(new CRUDRequestMiddleware(), 0, static function (RoutePath $route_path) {
-                return \Toolbox::hasTrait($route_path->getControllerInstance(), CRUDControllerTrait::class);
-            });
+            self::$instance->registerRequestMiddleware(new CRUDRequestMiddleware(), 0, static fn(RoutePath $route_path) => \Toolbox::hasTrait($route_path->getControllerInstance(), CRUDControllerTrait::class));
             self::$instance->registerRequestMiddleware(new DebugRequestMiddleware());
             self::$instance->registerRequestMiddleware(new RSQLRequestMiddleware());
 
@@ -338,9 +336,7 @@ EOT;
             'condition' => $condition ?? static fn(RoutePath $route_path) => true,
         ];
         // Sort by priority (Higher priority last due to how the processing is done)
-        usort($this->auth_middlewares, static function ($a, $b) {
-            return $a['priority'] <=> $b['priority'];
-        });
+        usort($this->auth_middlewares, static fn($a, $b) => $a['priority'] <=> $b['priority']);
     }
 
     /**
@@ -360,9 +356,7 @@ EOT;
             'condition' => $condition ?? static fn(RoutePath $route_path) => true,
         ];
         // Sort by priority (Higher priority last due to how the processing is done)
-        usort($this->request_middlewares, static function ($a, $b) {
-            return $a['priority'] <=> $b['priority'];
-        });
+        usort($this->request_middlewares, static fn($a, $b) => $a['priority'] <=> $b['priority']);
     }
 
     /**
@@ -382,9 +376,7 @@ EOT;
             'condition' => $condition ?? static fn(RoutePath $route_path) => true,
         ];
         // Sort by priority (Higher priority last due to how the processing is done)
-        usort($this->response_middlewares, static function ($a, $b) {
-            return $a['priority'] <=> $b['priority'];
-        });
+        usort($this->response_middlewares, static fn($a, $b) => $a['priority'] <=> $b['priority']);
     }
 
     /**
@@ -481,9 +473,7 @@ EOT;
             ];
         }
         // Sort by href
-        usort($paths, static function ($a, $b) {
-            return strcmp($a['href'], $b['href']);
-        });
+        usort($paths, static fn($a, $b) => strcmp($a['href'], $b['href']));
         return $paths;
     }
 
@@ -527,9 +517,7 @@ EOT;
         }
 
         // Sort routes by priority (descending)
-        usort($routes, static function (RoutePath $a, RoutePath $b) {
-            return ($a->getRoutePriority() < $b->getRoutePriority()) ? -1 : 1;
-        });
+        usort($routes, static fn(RoutePath $a, RoutePath $b) => ($a->getRoutePriority() < $b->getRoutePriority()) ? -1 : 1);
 
         return array_reverse($routes);
     }
@@ -563,9 +551,7 @@ EOT;
 
     private function doRequestMiddleware(MiddlewareInput $input): ?Response
     {
-        $action = static function (MiddlewareInput $input, ?callable $next = null) {
-            return null;
-        };
+        $action = (static fn(MiddlewareInput $input, ?callable $next = null) => null);
         foreach ($this->request_middlewares as $middleware) {
             $explicit_include = in_array(get_class($middleware['middleware']), $input->route_path->getMiddlewares());
             $conditions_met = $explicit_include || $middleware['condition']($input->route_path);

@@ -490,9 +490,7 @@ EOT;
         if ($route_doc === null) {
             return null;
         }
-        $request_params = array_filter($route_doc->getParameters(), static function (Doc\Parameter $param) {
-            return $param->getLocation() === Doc\Parameter::LOCATION_BODY;
-        });
+        $request_params = array_filter($route_doc->getParameters(), static fn(Doc\Parameter $param) => $param->getLocation() === Doc\Parameter::LOCATION_BODY);
         if (count($request_params) === 0) {
             return null;
         }
@@ -508,9 +506,7 @@ EOT;
         ];
 
         // If there is a parameter with the location of body and name of "_", it should be an object that represents the entire request body (or at least the base schema of it)
-        $request_body_param = array_filter($request_params, static function (Doc\Parameter $param) {
-            return $param->getName() === '_';
-        });
+        $request_body_param = array_filter($request_params, static fn(Doc\Parameter $param) => $param->getName() === '_');
         if (count($request_body_param) > 0) {
             $request_body_param = array_values($request_body_param)[0];
             if ($request_body_param->getSchema() instanceof SchemaReference) {

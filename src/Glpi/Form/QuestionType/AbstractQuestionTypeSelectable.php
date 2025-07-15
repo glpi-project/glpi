@@ -204,9 +204,7 @@ TWIG;
         }
 
         // Return the indexes of the default values
-        return array_map(function ($value) use ($options) {
-            return array_search($value, $options);
-        }, $default_values);
+        return array_map(fn($value) => array_search($value, $options), $default_values);
     }
 
     #[Override]

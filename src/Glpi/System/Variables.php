@@ -71,9 +71,7 @@ class Variables
     public static function getDataDirectories()
     {
         return array_map(
-            function (string $constant) {
-                return constant($constant);
-            },
+            fn(string $constant) => constant($constant),
             self::getDataDirectoriesConstants()
         );
     }
