@@ -565,7 +565,6 @@ $ignoreErrors[] = [
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/API.php',
 ];
-
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\API\\:\\:applyMassiveAction\\(\\) with return type void returns array\\|null but should not return anything\\.$#',
 	'identifier' => 'return.void',
