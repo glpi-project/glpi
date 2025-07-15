@@ -8,6 +8,7 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,27 +33,35 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @var \Migration $migration
- */
+namespace Glpi\Console\Plugin;
 
-$migration->addConfig([
-    'password_init_token_delay' => '86400',
-    'toast_location'    => 'bottom-right',
-    'set_followup_tech' => '0',
-    'set_solution_tech' => '0',
-    'is_demo_dashboards' => '0',
-    'planned_task_state' => '1',
-    'plugins_execution_mode' => 'on', // Plugin::EXECUTION_MODE_ON
-]);
-$migration->addField('glpi_users', 'toast_location', 'string');
+use Glpi\Console\AbstractCommand;
+use Plugin;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
-$migration->addField('glpi_users', 'set_followup_tech', 'tinyint DEFAULT NULL');
-$migration->addField('glpi_users', 'set_solution_tech', 'tinyint DEFAULT NULL');
-$migration->addField(
-    'glpi_users',
-    'planned_task_state',
-    'int DEFAULT NULL'
-);
+class SuspendExecutionCommand extends AbstractCommand
+{
+    protected function configure()
+    {
+        parent::configure();
 
-$migration->removeConfig(['url_base_api']);
+        $this->setName('plugin:suspend_execution');
+        $this->setDescription(__('Suspend execution of all active plugins'));
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        if (!(new Plugin())->suspendAllPluginsExecution()) {
+            $this->output->writeln(
+                '<error>' . __('An unexpected error occurred') . '</error>',
+                OutputInterface::VERBOSITY_QUIET
+            );
+            return self::FAILURE;
+        }
+
+        $output->writeln('<info>' . __('Execution of all active plugins has been suspended.') . '</info>');
+
+        return self::SUCCESS;
+    }
+}

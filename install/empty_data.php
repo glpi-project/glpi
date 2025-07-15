@@ -367,6 +367,7 @@ $empty_data_builder = new class {
             'projecttask_inprogress_states_id' => 0,
             'projecttask_completed_states_id' => 0,
             'non_reusable_passwords_count' => 1,
+            'plugins_execution_mode' => Plugin::EXECUTION_MODE_ON,
         ];
 
         $tables['glpi_configs'] = [];

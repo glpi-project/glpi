@@ -42,7 +42,6 @@ use Glpi\Kernel\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
 use Plugin;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Update;
 
 final readonly class CheckPluginsStates implements EventSubscriberInterface
 {
@@ -68,15 +67,7 @@ final readonly class CheckPluginsStates implements EventSubscriberInterface
 
         Profiler::getInstance()->start('CheckPluginsStates::execute', Profiler::CATEGORY_BOOT);
 
-        $plugin = new Plugin();
-
-        if (Update::isUpdateMandatory()) {
-            // Disable all plugins once a new mandatory update is detected.
-            // This prevents incompatible plugins to be loaded.
-            $plugin->unactivateAll();
-        } else {
-            $plugin->checkStates();
-        }
+        (new Plugin())->checkStates();
 
         Profiler::getInstance()->stop('CheckPluginsStates::execute');
     }
