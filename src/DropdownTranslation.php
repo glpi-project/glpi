@@ -185,7 +185,7 @@ class DropdownTranslation extends CommonDBChild
     public static function getNumberOfTranslations($itemtype, $items_id, $field, $language): int
     {
         return countElementsInTable(
-            getTableForItemType(__CLASS__),
+            getTableForItemType(self::class),
             [
                 'itemtype' => $itemtype,
                 'items_id' => $items_id,
@@ -205,7 +205,7 @@ class DropdownTranslation extends CommonDBChild
     public static function getNumberOfTranslationsForItem($item)
     {
         return countElementsInTable(
-            getTableForItemType(__CLASS__),
+            getTableForItemType(self::class),
             [
                 'itemtype' => $item->getType(),
                 'items_id' => $item->getID(),
@@ -391,7 +391,7 @@ TWIG, $twig_params);
         }
 
         $iterator = $DB->request([
-            'FROM'   => getTableForItemType(__CLASS__),
+            'FROM'   => getTableForItemType(self::class),
             'WHERE'  => [
                 'itemtype'  => $item->getType(),
                 'items_id'  => $item->getID(),

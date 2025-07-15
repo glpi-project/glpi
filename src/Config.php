@@ -150,7 +150,7 @@ class Config extends CommonDBTM
     {
 
         $ong = [];
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab(DisplayPreference::class, $ong, $options);
         $this->addStandardTab(GLPINetwork::class, $ong, $options);
         $this->addStandardTab(Log::class, $ong, $options);
@@ -669,7 +669,7 @@ class Config extends CommonDBTM
         global $CFG_GLPI, $DB;
 
         $userpref  = false;
-        $url       = Toolbox::getItemTypeFormURL(__CLASS__);
+        $url       = Toolbox::getItemTypeFormURL(self::class);
 
         $canedit = static::canUpdate();
         $canedituser = Session::haveRight('personalization', UPDATE);

@@ -95,13 +95,13 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         $value = null;
         switch ($property) {
             case 'profileRight':
-                Toolbox::deprecated(sprintf('Reading private property %s::%s is deprecated', __CLASS__, $property));
+                Toolbox::deprecated(sprintf('Reading private property %s::%s is deprecated', self::class, $property));
                 $value = $this->$property;
                 break;
             default:
                 $trace = debug_backtrace();
                 trigger_error(
-                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    sprintf('Undefined property: %s::%s in %s on line %d', self::class, $property, $trace[0]['file'], $trace[0]['line']),
                     E_USER_WARNING
                 );
                 break;
@@ -113,13 +113,13 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     {
         switch ($property) {
             case 'profileRight':
-                Toolbox::deprecated(sprintf('Writing private property %s::%s is deprecated', __CLASS__, $property));
+                Toolbox::deprecated(sprintf('Writing private property %s::%s is deprecated', self::class, $property));
                 $this->$property = $value;
                 break;
             default:
                 $trace = debug_backtrace();
                 trigger_error(
-                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    sprintf('Undefined property: %s::%s in %s on line %d', self::class, $property, $trace[0]['file'], $trace[0]['line']),
                     E_USER_WARNING
                 );
                 break;
@@ -148,7 +148,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addImpactTab($ong, $options);
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab(Profile_User::class, $ong, $options);
         $this->addStandardTab(Log::class, $ong, $options);
 
@@ -918,7 +918,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                             $fn_get_rights(User::class, 'central'),
                             $fn_get_rights(Entity::class, 'central', ['scope' => 'global']),
                             $fn_get_rights(Group::class, 'central', ['scope' => 'global']),
-                            $fn_get_rights(__CLASS__, 'central', ['scope' => 'global']),
+                            $fn_get_rights(self::class, 'central', ['scope' => 'global']),
                             $fn_get_rights(QueuedNotification::class, 'central', ['scope' => 'global']),
                             $fn_get_rights(Log::class, 'central', ['scope' => 'global']),
                             $fn_get_rights(Event::class, 'central', [
@@ -1419,7 +1419,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         TemplateRenderer::getInstance()->display('pages/2fa/2fa_config.html.twig', [
             'canedit' => $canedit,
             'item'   => $this,
-            'action' => Toolbox::getItemTypeFormURL(__CLASS__),
+            'action' => Toolbox::getItemTypeFormURL(self::class),
         ]);
     }
 

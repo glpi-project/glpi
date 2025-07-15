@@ -1945,7 +1945,7 @@ class DBmysql
         for ($i = 0; $i < $linecount; $i++) {
             if (($i != ($linecount - 1)) || (strlen($lines[$i]) > 0)) {
                 if (isset($lines[$i][0])) {
-                    if ($lines[$i][0] != "#" && substr($lines[$i], 0, 2) != "--") {
+                    if ($lines[$i][0] != "#" && !str_starts_with($lines[$i], "--")) {
                         $output .= $lines[$i] . "\n";
                     } else {
                         $output .= "\n";
@@ -2171,7 +2171,7 @@ class DBmysql
 
         $mapping = null;
         foreach (self::CHARS_MAPPING as $htmlentity) {
-            if (strpos($value, $htmlentity) !== false) {
+            if (str_contains($value, $htmlentity)) {
                 // Value was cleaned using new char mapping, so it must be uncleaned with same mapping
                 $mapping = self::CHARS_MAPPING;
                 break;

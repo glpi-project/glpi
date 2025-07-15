@@ -520,7 +520,7 @@ class Group extends CommonTreeDropdown
         TemplateRenderer::getInstance()->display('pages/2fa/2fa_config.html.twig', [
             'canedit' => $canedit,
             'item'   => $this,
-            'action' => Toolbox::getItemTypeFormURL(__CLASS__),
+            'action' => Toolbox::getItemTypeFormURL(self::class),
         ]);
     }
 

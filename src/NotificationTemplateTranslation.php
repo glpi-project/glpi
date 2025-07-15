@@ -444,8 +444,8 @@ TWIG, $twig_params);
 
         // Criteria Form
         $key   = getForeignKeyFieldForItemType($item::class);
-        $id    = Session::getSavedOption(__CLASS__, $key, 0);
-        $event = Session::getSavedOption(__CLASS__, $key . '_event', '');
+        $id    = Session::getSavedOption(self::class, $key, 0);
+        $event = Session::getSavedOption(self::class, $key . '_event', '');
 
         $data = null;
 

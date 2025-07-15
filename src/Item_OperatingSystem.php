@@ -225,9 +225,9 @@ class Item_OperatingSystem extends CommonDBRelation
             && $number
             && ($withtemplate < 2)
         ) {
-            Html::openMassiveActionsForm('mass' . __CLASS__ . $params['rand']);
+            Html::openMassiveActionsForm('mass' . self::class . $params['rand']);
             $massiveactionparams = ['num_displayed'  => min($_SESSION['glpilist_limit'], $number),
-                'container'      => 'mass' . __CLASS__ . $params['rand'],
+                'container'      => 'mass' . self::class . $params['rand'],
             ];
             Html::showMassiveActions($massiveactionparams);
         }
@@ -243,9 +243,9 @@ class Item_OperatingSystem extends CommonDBRelation
             && $number
             && ($withtemplate < 2)
         ) {
-            $header_top    .= "<th width='11'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $params['rand']);
+            $header_top    .= "<th width='11'>" . Html::getCheckAllAsCheckbox('mass' . self::class . $params['rand']);
             $header_top    .= "</th>";
-            $header_bottom .= "<th width='11'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $params['rand']);
+            $header_bottom .= "<th width='11'>" . Html::getCheckAllAsCheckbox('mass' . self::class . $params['rand']);
             $header_bottom .= "</th>";
         }
 
@@ -274,7 +274,7 @@ class Item_OperatingSystem extends CommonDBRelation
                     && ($withtemplate < 2)
                 ) {
                     echo "<td width='10'>";
-                    Html::showMassiveActionCheckBox(__CLASS__, $data["assocID"]);
+                    Html::showMassiveActionCheckBox(self::class, $data["assocID"]);
                     echo "</td>";
                 }
                 $version = htmlescape($data['version']);

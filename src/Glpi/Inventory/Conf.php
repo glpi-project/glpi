@@ -300,7 +300,7 @@ class Conf extends CommonGLPI
     public function defineTabs($options = [])
     {
         $ong = [];
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
 
         return $ong;
     }
@@ -324,7 +324,7 @@ class Conf extends CommonGLPI
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item->getType() == __CLASS__) {
+        if ($item->getType() == self::class) {
             /** @var self $item */
             switch ($tabnum) {
                 case 1:

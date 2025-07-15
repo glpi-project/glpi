@@ -256,7 +256,7 @@ HTML;
                 // Filter out this route
                 $controller = $route->getController();
                 $controller_method = $route->getMethod();
-                if ($controller === __CLASS__ && $controller_method->getShortName() === 'defaultRoute') {
+                if ($controller === self::class && $controller_method->getShortName() === 'defaultRoute') {
                     continue;
                 }
                 $allowed_methods[] = $method;

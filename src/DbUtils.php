@@ -79,7 +79,7 @@ final class DbUtils
     public function isForeignKeyField($field)
     {
         //check empty, then strpos, then regexp; for performances
-        return !empty($field) && strpos($field, '_id', 1) !== false && preg_match("/._id(_.+)?$/", $field);
+        return !empty($field) && str_contains(substr($field, 1), '_id') && preg_match("/._id(_.+)?$/", $field);
     }
 
 
@@ -237,7 +237,7 @@ final class DbUtils
             $table   = strtolower($plug['class']);
         } else {
             $table = strtolower($singular);
-            if (substr($singular, 0, \strlen(NS_GLPI)) === NS_GLPI) {
+            if (str_starts_with($singular, NS_GLPI)) {
                 $table = substr($table, \strlen(NS_GLPI));
             }
         }
@@ -1879,7 +1879,7 @@ final class DbUtils
 
         $autoNum = Toolbox::substr($objectName, 1, Toolbox::strlen($objectName) - 2);
         $mask    = $matches[1];
-        $global  = ((strpos($autoNum, '\\g') !== false) && ($itemtype != 'Infocom')) ? 1 : 0;
+        $global  = ((str_contains($autoNum, '\\g')) && ($itemtype != 'Infocom')) ? 1 : 0;
 
         //do not add extra escapements for now
         //substring position would be wrong if name contains "_"

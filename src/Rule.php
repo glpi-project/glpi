@@ -114,7 +114,7 @@ class Rule extends CommonDBTM
 
     public static function getTable($classname = null)
     {
-        return parent::getTable(__CLASS__);
+        return parent::getTable(self::class);
     }
 
     public static function getTypeName($nb = 0)
@@ -617,10 +617,10 @@ class Rule extends CommonDBTM
             unset($actions[MassiveAction::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_transfer_list']);
         }
         if ($isadmin) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_rule'] = "<i class='ti ti-arrows-vertical'></i>"
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_rule'] = "<i class='ti ti-arrows-vertical'></i>"
                 . __s('Move');
         }
-        $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'export'] = "<i class='ti ti-file-download'></i>"
+        $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'export'] = "<i class='ti ti-file-download'></i>"
             . _sx('button', 'Export');
 
         return $actions;
@@ -700,7 +700,7 @@ class Rule extends CommonDBTM
     public function getForbiddenSingleMassiveActions()
     {
         $excluded = parent::getForbiddenSingleMassiveActions();
-        $excluded[] = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_rule';
+        $excluded[] = self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_rule';
         return $excluded;
     }
 
@@ -3030,7 +3030,7 @@ JS
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;

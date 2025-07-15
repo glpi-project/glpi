@@ -348,7 +348,7 @@ class User extends CommonDBTM
     {
 
         switch ($item->getType()) {
-            case __CLASS__:
+            case self::class:
                 $ong    = [];
                 $ong[1] = self::createTabEntry(__('Used items'), 0, $item::getType(), 'ti ti-package');
                 $ong[2] = self::createTabEntry(__('Managed items'), 0, $item::getType(), 'ti ti-package');
@@ -414,7 +414,7 @@ class User extends CommonDBTM
         $this->addStandardTab(Profile_User::class, $ong, $options);
         $this->addStandardTab(Group_User::class, $ong, $options);
         $this->addStandardTab(Config::class, $ong, $options);
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab(Consumable::class, $ong, $options);
         $this->addStandardTab(Item_Ticket::class, $ong, $options);
         $this->addStandardTab(Item_Problem::class, $ong, $options);
@@ -3004,7 +3004,7 @@ HTML;
 
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
-        $prefix = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR;
+        $prefix = self::class . MassiveAction::CLASS_ACTION_SEPARATOR;
 
         if ($isadmin) {
             $actions['Group_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
@@ -4325,7 +4325,7 @@ HTML;
             'specific_tags'       => $p['specific_tags'],
             'toadd'               => $p['toadd'],
             'class'               => $p['class'],
-            '_idor_token'         => Session::getNewIDORToken(__CLASS__, [
+            '_idor_token'         => Session::getNewIDORToken(self::class, [
                 'right'           => $p['right'],
                 'entity_restrict' => $entity_restrict,
             ]),
@@ -4529,7 +4529,7 @@ HTML;
                             Auth::getMethodName($authtype, $server)
                         ),
                     ];
-                    Log::history($ID, __CLASS__, $changes, '', Log::HISTORY_LOG_SIMPLE_MESSAGE);
+                    Log::history($ID, self::class, $changes, '', Log::HISTORY_LOG_SIMPLE_MESSAGE);
                 }
 
                 return true;
@@ -4765,7 +4765,7 @@ HTML;
             'showmassiveactions'    => true,
             'massiveactionparams'   => [
                 'num_displayed'    => min($_SESSION['glpilist_limit'], $number),
-                'container'        => 'mass' . __CLASS__ . mt_rand(),
+                'container'        => 'mass' . self::class . mt_rand(),
                 'specific_actions' => [
                     'update' => __('Update'),
                 ],

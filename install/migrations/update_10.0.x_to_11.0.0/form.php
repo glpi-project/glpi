@@ -389,11 +389,11 @@ $migration->changeField(
 $migration->addRight("form", ALLSTANDARDRIGHT, ['config' => UPDATE]);
 
 // Name (forced), Entities (forced), Child entities, Active, Last update
-$ADDTODISPLAYPREF['Glpi\Form\Form'] = [1, 80, 86, 3, 4];
-$ADDTODISPLAYPREF['Glpi\Form\AnswersSet'] = [1, 3, 4];
+$ADDTODISPLAYPREF[\Glpi\Form\Form::class] = [1, 80, 86, 3, 4];
+$ADDTODISPLAYPREF[\Glpi\Form\AnswersSet::class] = [1, 3, 4];
 
 $migration->addCrontask(
-    'Glpi\Form\Form',
+    \Glpi\Form\Form::class,
     'purgedraftforms',
     DAY_TIMESTAMP,
     param: 7

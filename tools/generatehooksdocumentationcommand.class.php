@@ -75,7 +75,7 @@ final class GenerateHooksDocumentationCommand extends AbstractCommand
                     '/\{@link\s+([^\s]+)\s*\}/',
                     static function ($matches) {
                         $link = $matches[1];
-                        if (strpos($link, 'self::') === 0) {
+                        if (str_starts_with($link, 'self::')) {
                             return str_replace('self::', 'Hooks::', $link);
                         }
                         return $link;

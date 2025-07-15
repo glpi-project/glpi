@@ -262,7 +262,7 @@ class Plugins
 
         if (strlen($string_filter) > 0) {
             $plugins_colct = array_filter($plugins_colct, function ($plugin) use ($string_filter) {
-                return strpos(strtolower(json_encode($plugin)), strtolower($string_filter)) !== false;
+                return str_contains(strtolower(json_encode($plugin)), strtolower($string_filter));
             });
         }
 

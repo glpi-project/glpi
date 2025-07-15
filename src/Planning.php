@@ -180,7 +180,7 @@ class Planning extends CommonGLPI
         $ong               = [];
         $ong['no_all_tab'] = true;
 
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
 
         return $ong;
     }

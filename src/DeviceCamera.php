@@ -177,7 +177,7 @@ class DeviceCamera extends CommonDevice
             return $father;
         }
 
-        Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+        Manufacturer::getHTMLTableHeader(self::class, $base, $super, $father, $options);
         $base->addHeader('devicecamera_model', _n('Model', 'Models', 1), $super, $father);
         $base->addHeader('flashunit', __('Flashunit'), $super, $father);
         $base->addHeader('lensfacing', __('lensfacing'), $super, $father);

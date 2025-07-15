@@ -95,7 +95,7 @@ class QueuedWebhook extends CommonDBChild
         $actions = parent::getSpecificMassiveActions($checkitem);
 
         if ($isadmin && !$is_deleted) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'send'] = _sx('button', 'Send');
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'send'] = _sx('button', 'Send');
         }
 
         return $actions;

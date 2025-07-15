@@ -172,6 +172,6 @@ if (isset($_POST["add"]) || isset($_POST["execute_single"]) || isset($_POST["exe
         ];
     }
 
-    $menus = ["assets", "cable", "Glpi\\Socket"];
+    $menus = ["assets", "cable", \Glpi\Socket::class];
     Socket::displayFullPageForItem($_GET["id"], $menus, $options);
 }

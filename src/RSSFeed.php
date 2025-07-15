@@ -452,7 +452,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;

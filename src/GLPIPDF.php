@@ -169,13 +169,13 @@ class GLPIPDF extends TCPDF
 
             // skip subfonts
             if (
-                ((substr($font, -1) == 'b') || (substr($font, -1) == 'i'))
+                ((str_ends_with($font, 'b')) || (str_ends_with($font, 'i')))
                 && isset($list[substr($font, 0, -1)])
             ) {
                 return;
             }
             if (
-                ((substr($font, -2) == 'bi'))
+                ((str_ends_with($font, 'bi')))
                 && isset($list[substr($font, 0, -2)])
             ) {
                 return;

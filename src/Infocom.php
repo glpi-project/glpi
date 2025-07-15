@@ -687,7 +687,7 @@ class Infocom extends CommonDBChild
                 ],
                 'WHERE'     => [
                     new QueryExpression(
-                        '(' . $DB->quoteName('glpi_infocoms.alert') . ' & ' . pow(2, Alert::END) . ') > 0'
+                        '(' . $DB->quoteName('glpi_infocoms.alert') . ' & ' . 2 ** Alert::END . ') > 0'
                     ),
                     "$table.entities_id"       => $entity,
                     "$table.warranty_duration" => ['>', 0],
@@ -818,7 +818,7 @@ class Infocom extends CommonDBChild
     {
 
         $tmp[0]                  = Dropdown::EMPTY_VALUE;
-        $tmp[pow(2, Alert::END)] = __('Warranty expiration date');
+        $tmp[2 ** Alert::END] = __('Warranty expiration date');
 
         if (is_null($val)) {
             return $tmp;
@@ -2045,7 +2045,7 @@ JS;
         ?CommonDBTM $checkitem = null
     ) {
 
-        $action_name = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'activate';
+        $action_name = self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'activate';
 
         if (
             Infocom::canApplyOn($itemtype)

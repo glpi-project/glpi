@@ -82,7 +82,7 @@ class Budget extends CommonDropdown
 
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab(Document_Item::class, $ong, $options);
         $this->addStandardTab(KnowbaseItem_Item::class, $ong, $options);
         $this->addStandardTab(ManualLink::class, $ong, $options);
@@ -97,7 +97,7 @@ class Budget extends CommonDropdown
 
         if (!$withtemplate) {
             switch ($item->getType()) {
-                case __CLASS__:
+                case self::class:
                     return [1 => self::createTabEntry(__('Main')),
                         2 => self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), 0, $item::getType(), 'ti ti-package'),
                     ];

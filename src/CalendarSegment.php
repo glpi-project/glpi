@@ -405,7 +405,7 @@ class CalendarSegment extends CommonDBChild
         $entries = [];
         foreach ($iterator as $data) {
             $entries[] = [
-                'itemtype' => __CLASS__,
+                'itemtype' => self::class,
                 'id'    => $data['id'],
                 'day'   => $daysofweek[$data['day']],
                 'begin' => $data['begin'],
@@ -428,7 +428,7 @@ class CalendarSegment extends CommonDBChild
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
                 'specific_actions' => ['purge' => _x('button', 'Delete permanently')],
-                'container'     => 'mass' . __CLASS__ . $rand,
+                'container'     => 'mass' . self::class . $rand,
             ],
         ]);
     }

@@ -227,7 +227,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     public function defineTabs($options = [])
     {
         $ong = [];
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab(KnowbaseItem_Item::class, $ong, $options);
         $this->addStandardTab(Document_Item::class, $ong, $options);
         $this->addStandardTab(KnowbaseItemTranslation::class, $ong, $options);

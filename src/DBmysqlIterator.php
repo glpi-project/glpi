@@ -878,7 +878,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      */
     private function convertOldRequestArgsToCriteria(array $args, string $method): array
     {
-        if (is_string($args[0]) && strpos($args[0], " ") !== false) {
+        if (is_string($args[0]) && str_contains($args[0], " ")) {
             $names = preg_split('/\s+AS\s+/i', $args[0]);
             if (isset($names[1]) && strpos($names[1], ' ') || !isset($names[1]) || strpos($names[0], ' ')) {
                 throw new \InvalidArgumentException(

@@ -414,7 +414,7 @@ class Toolbox
             foreach ($traces as $trace) {
                 $script = ($trace["file"] ?? "") . ":" .
                         ($trace["line"] ?? "");
-                if (strpos($script, GLPI_ROOT) === 0) {
+                if (str_starts_with($script, GLPI_ROOT)) {
                     $script = substr($script, strlen(GLPI_ROOT) + 1);
                 }
                 if (strlen($script) > 50) {
@@ -695,7 +695,7 @@ class Toolbox
         global $DB;
 
         $value = ((array) $value === $value)
-                  ? array_map([__CLASS__, 'addslashes_deep'], $value)
+                  ? array_map([self::class, 'addslashes_deep'], $value)
                   : (
                       is_null($value)
                        ? null : (is_resource($value) || is_object($value)
@@ -726,7 +726,7 @@ class Toolbox
         Toolbox::deprecated();
 
         $value = ((array) $value === $value)
-                  ? array_map([__CLASS__, 'stripslashes_deep'], $value)
+                  ? array_map([self::class, 'stripslashes_deep'], $value)
                   : (is_null($value)
                         ? null : (is_resource($value) || is_object($value)
                                     ? $value : stripslashes($value)));
@@ -1154,7 +1154,7 @@ class Toolbox
             $item = str_replace('\\', '/', strtolower($plug['class']));
         } else { // Standard case
             $item = strtolower($itemtype);
-            if (substr($itemtype, 0, \strlen(NS_GLPI)) === NS_GLPI) {
+            if (str_starts_with($itemtype, NS_GLPI)) {
                 $item = str_replace('\\', '/', substr($item, \strlen(NS_GLPI)));
             }
         }
@@ -1189,7 +1189,7 @@ class Toolbox
                 $itemtype = 'ConsumableItem';
             }
             $item = strtolower($itemtype);
-            if (substr($itemtype, 0, \strlen(NS_GLPI)) === NS_GLPI) {
+            if (str_starts_with($itemtype, NS_GLPI)) {
                 $item = str_replace('\\', '/', substr($item, \strlen(NS_GLPI)));
             }
         }
@@ -1885,14 +1885,14 @@ class Toolbox
             'imap' => [
                 //TRANS: IMAP mail server protocol
                 'label'    => __('IMAP'),
-                'protocol' => 'Laminas\Mail\Protocol\Imap',
-                'storage'  => 'Laminas\Mail\Storage\Imap',
+                'protocol' => \Laminas\Mail\Protocol\Imap::class,
+                'storage'  => \Laminas\Mail\Storage\Imap::class,
             ],
             'pop'  => [
                 //TRANS: POP3 mail server protocol
                 'label'    => __('POP'),
-                'protocol' => 'Laminas\Mail\Protocol\Pop3',
-                'storage'  => 'Laminas\Mail\Storage\Pop3',
+                'protocol' => \Laminas\Mail\Protocol\Pop3::class,
+                'storage'  => \Laminas\Mail\Storage\Pop3::class,
             ],
         ];
 
@@ -2478,7 +2478,7 @@ class Toolbox
                     // Add only image files : try to detect mime type
                     if (
                         $document->getFromDB($id)
-                        && strpos($document->fields['mime'], 'image/') !== false
+                        && str_contains($document->fields['mime'], 'image/')
                     ) {
                         // append object reference in image link
                         $linked_object = null;
@@ -3004,7 +3004,7 @@ class Toolbox
             $suffix = "T";
         }
 
-        if (strpos($formatted, '.') === false) {
+        if (!str_contains($formatted, '.')) {
             $precision = 0;
         }
 
@@ -3166,10 +3166,10 @@ HTML;
      */
     public static function isAPIDeprecated(string $class): bool
     {
-        $deprecated = "Glpi\Api\Deprecated\DeprecatedInterface";
+        $deprecated = \Glpi\Api\Deprecated\DeprecatedInterface::class;
 
         // Insert namespace if missing
-        if (strpos($class, "Glpi\Api\Deprecated") === false) {
+        if (!str_contains($class, "Glpi\Api\Deprecated")) {
             $class = "Glpi\Api\Deprecated\\$class";
         }
 
@@ -3404,7 +3404,7 @@ HTML;
         if (count($matches) >= 3 && isset($supported_sizes[strtolower($matches[2])])) {
             // Known format
             $size = (int) $matches[1];
-            $size *= pow(1024, $supported_sizes[strtolower($matches[2])]);
+            $size *= 1024 ** $supported_sizes[strtolower($matches[2])];
         }
         return $size;
     }

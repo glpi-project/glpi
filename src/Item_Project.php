@@ -108,7 +108,7 @@ class Item_Project extends CommonDBRelation
         if ($canedit) {
             echo "<div class='firstbloc'>";
             echo "<form name='projectitem_form$rand' id='projectitem_form$rand' method='post'
-                action='" . htmlescape(Toolbox::getItemTypeFormURL(__CLASS__)) . "'>";
+                action='" . htmlescape(Toolbox::getItemTypeFormURL(self::class)) . "'>";
 
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_2'><th colspan='2'>" . __s('Add an item') . "</th></tr>";
@@ -135,8 +135,8 @@ class Item_Project extends CommonDBRelation
 
         echo "<div class='spaced'>";
         if ($canedit && $number) {
-            Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-            $massiveactionparams = ['container' => 'mass' . __CLASS__ . $rand];
+            Html::openMassiveActionsForm('mass' . self::class . $rand);
+            $massiveactionparams = ['container' => 'mass' . self::class . $rand];
             Html::showMassiveActions($massiveactionparams);
         }
         echo "<table class='tab_cadre_fixe'>";
@@ -145,9 +145,9 @@ class Item_Project extends CommonDBRelation
         $header_bottom = '';
         $header_end    = '';
         if ($canedit && $number) {
-            $header_top    .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
+            $header_top    .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . self::class . $rand);
             $header_top    .= "</th>";
-            $header_bottom .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
+            $header_bottom .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . self::class . $rand);
             $header_bottom .= "</th>";
         }
         $header_end .= "<th>" . _sn('Type', 'Types', 1) . "</th>";
@@ -183,7 +183,7 @@ class Item_Project extends CommonDBRelation
                     echo "<tr class='tab_bg_1'>";
                     if ($canedit) {
                         echo "<td width='10'>";
-                        Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
+                        Html::showMassiveActionCheckBox(self::class, $data["linkid"]);
                         echo "</td>";
                     }
                     if ($prem) {

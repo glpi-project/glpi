@@ -149,7 +149,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
         if ($canedit) {
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
                 'rand' => $rand,
-                'link_itemtype' => __CLASS__,
+                'link_itemtype' => self::class,
                 'source_itemtype' => Problem::class,
                 'source_items_id' => $ID,
                 'link_types' => $link_types,
@@ -241,7 +241,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
         if ($canedit) {
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
                 'rand' => $rand,
-                'link_itemtype' => __CLASS__,
+                'link_itemtype' => self::class,
                 'source_itemtype' => Change::class,
                 'source_items_id' => $ID,
                 'link_types' => $link_types,

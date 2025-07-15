@@ -248,7 +248,7 @@ if ($id > 0) {
     }
 
     $url = KnowbaseItem::getFormURLWithParam($_GET) . '&_in_modal=1&item_itemtype=Ticket&item_items_id=' . $id;
-    if (strpos($url, '_to_kb=') !== false) {
+    if (str_contains($url, '_to_kb=')) {
         $options['after_display'] = Ajax::createIframeModalWindow(
             'savetokb',
             $url,

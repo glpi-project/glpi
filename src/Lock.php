@@ -1304,8 +1304,8 @@ TWIG);
             return;
         }
 
-        $action_unlock_component = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'unlock_component';
-        $action_unlock_fields = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'unlock_fields';
+        $action_unlock_component = self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'unlock_component';
+        $action_unlock_fields = self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'unlock_fields';
 
         if (
             Session::haveRight($itemtype::$rightname, UPDATE)

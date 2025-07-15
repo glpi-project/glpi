@@ -285,7 +285,7 @@ class KnowbaseItem_Item extends CommonDBRelation
         $kb_item = new KnowbaseItem();
         $kb_item->getEmpty();
         if ($kb_item->canViewItem()) {
-            $action_prefix = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR;
+            $action_prefix = self::class . MassiveAction::CLASS_ACTION_SEPARATOR;
 
             $actions[$action_prefix . 'add']
             = "<i class='" . self::getIcon() . "'></i>" .

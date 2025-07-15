@@ -167,7 +167,7 @@ class ProjectTask_Ticket extends CommonDBRelation
             ];
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
                 'rand' => $rand,
-                'link_itemtype' => __CLASS__,
+                'link_itemtype' => self::class,
                 'source_itemtype' => ProjectTask::class,
                 'source_items_id' => $ID,
                 'target_itemtype' => Ticket::class,
@@ -306,7 +306,7 @@ class ProjectTask_Ticket extends CommonDBRelation
 
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
                 'rand' => $rand,
-                'link_itemtype' => __CLASS__,
+                'link_itemtype' => self::class,
                 'source_itemtype' => Ticket::class,
                 'source_items_id' => $ID,
                 'target_itemtype' => ProjectTask::class,

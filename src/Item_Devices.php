@@ -537,7 +537,7 @@ class Item_Devices extends CommonDBRelation
     public static function getDeviceType()
     {
 
-        $devicetype = get_called_class();
+        $devicetype = static::class;
         if ($plug = isPluginItemType($devicetype)) {
             return 'Plugin' . $plug['plugin'] . str_replace('Item_', '', $plug['class']);
         }
@@ -652,7 +652,7 @@ class Item_Devices extends CommonDBRelation
         $rand = mt_rand();
         if ($canedit) {
             echo "\n<form id='form_device_add$rand' name='form_device_add$rand'
-                  action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "' method='post'>\n";
+                  action='" . Toolbox::getItemTypeFormURL(self::class) . "' method='post'>\n";
             echo "\t<input type='hidden' name='items_id' value='$ID'>\n";
             echo "\t<input type='hidden' name='itemtype' value='" . htmlescape($item->getType()) . "'>\n";
         }
@@ -779,7 +779,7 @@ class Item_Devices extends CommonDBRelation
 
         if ($canedit) {
             echo "\n<form id='form_device_action$rand' name='form_device_action$rand'
-                  action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "' method='post'>\n";
+                  action='" . Toolbox::getItemTypeFormURL(self::class) . "' method='post'>\n";
             echo "\t<input type='hidden' name='items_id' value='$ID'>\n";
             echo "\t<input type='hidden' name='itemtype' value='" . htmlescape($item->getType()) . "'>\n";
         }
@@ -1633,7 +1633,7 @@ class Item_Devices extends CommonDBRelation
         global $CFG_GLPI;
 
         $dir = ($full ? $CFG_GLPI['root_doc'] : '');
-        $itemtype = get_called_class();
+        $itemtype = static::class;
         $link = "$dir/front/item_device.php?itemtype=$itemtype";
 
         return $link;

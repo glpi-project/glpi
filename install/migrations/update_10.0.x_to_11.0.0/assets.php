@@ -114,7 +114,7 @@ SQL;
     }
 }
 
-$ADDTODISPLAYPREF['Glpi\\Asset\\AssetDefinition'] = [2, 3, 4, 5, 6];
+$ADDTODISPLAYPREF[\Glpi\Asset\AssetDefinition::class] = [2, 3, 4, 5, 6];
 
 if (!$DB->tableExists('glpi_assets_assets')) {
     $query = <<<SQL

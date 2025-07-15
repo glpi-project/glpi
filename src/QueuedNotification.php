@@ -105,7 +105,7 @@ class QueuedNotification extends CommonDBTM
         $forbidden = parent::getForbiddenSingleMassiveActions();
 
         if ($this->fields['mode'] === Notification_NotificationTemplate::MODE_AJAX) {
-            $forbidden[] = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'send';
+            $forbidden[] = self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'send';
         }
 
         return $forbidden;
@@ -117,7 +117,7 @@ class QueuedNotification extends CommonDBTM
         $actions = parent::getSpecificMassiveActions($checkitem);
 
         if ($isadmin && !$is_deleted) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'send'] = "<i class='ti ti-send'></i>" . _sx('button', 'Send');
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'send'] = "<i class='ti ti-send'></i>" . _sx('button', 'Send');
         }
 
         return $actions;

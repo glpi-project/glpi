@@ -106,7 +106,7 @@ class View extends CommonGLPI
         $tabs = [
             'no_all_tab' => true,
         ];
-        $this->addStandardTab(__CLASS__, $tabs, $options);
+        $this->addStandardTab(self::class, $tabs, $options);
 
         return $tabs;
     }
@@ -117,7 +117,7 @@ class View extends CommonGLPI
         if (!Controller::isWebAllowed()) {
             return '';
         }
-        if ($item->getType() == __CLASS__) {
+        if ($item->getType() == self::class) {
             return [
                 self::createTabEntry(__("Installed")),
                 self::createTabEntry(__("Discover")),
@@ -132,7 +132,7 @@ class View extends CommonGLPI
         if (!Controller::isWebAllowed()) {
             return false;
         }
-        if ($item->getType() == __CLASS__) {
+        if ($item->getType() == self::class) {
             switch ($tabnum) {
                 case 0:
                     self::installed();
@@ -241,7 +241,7 @@ class View extends CommonGLPI
 
             if (
                 strlen($string_filter)
-                && strpos(strtolower(json_encode($plugin)), strtolower($string_filter)) === false
+                && !str_contains(strtolower(json_encode($plugin)), strtolower($string_filter))
             ) {
                 continue;
             }

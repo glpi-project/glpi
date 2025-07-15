@@ -789,7 +789,7 @@ class Socket extends CommonDBChild
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
-                'container' => 'mass' . str_replace('\\', '', __CLASS__) . $rand,
+                'container' => 'mass' . str_replace('\\', '', self::class) . $rand,
                 'specific_actions' => [
                     'update' => _x('button', 'Update'),
                     'purge'  => _x('button', 'Delete permanently'),
@@ -910,7 +910,7 @@ class Socket extends CommonDBChild
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], $number),
-                'container' => 'mass' . str_replace('\\', '', __CLASS__) . $rand,
+                'container' => 'mass' . str_replace('\\', '', self::class) . $rand,
                 'specific_actions' => [
                     'purge' => _x('button', 'Delete permanently'),
                 ],
@@ -935,7 +935,7 @@ class Socket extends CommonDBChild
         $options = []
     ) {
 
-        $column_name = __CLASS__;
+        $column_name = self::class;
 
         if (isset($options['dont_display'][$column_name])) {
             return;

@@ -53,7 +53,7 @@ final class HomePageTabs extends CommonGLPI
     public function defineTabs($options = []): array
     {
         $tabs = [];
-        $this->addStandardTab(__CLASS__, $tabs, $options);
+        $this->addStandardTab(self::class, $tabs, $options);
         $tabs['no_all_tab'] = true;
 
         return $tabs;

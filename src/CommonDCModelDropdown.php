@@ -224,7 +224,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
      */
     public function getItemtypeForModel(): string
     {
-        return str_replace('Model', '', get_called_class());
+        return str_replace('Model', '', static::class);
     }
 
     /**
@@ -483,7 +483,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
 
     public static function getIcon()
     {
-        $model_class  = get_called_class();
+        $model_class  = static::class;
         $device_class = str_replace('Model', '', $model_class);
         return $device_class::getIcon();
     }

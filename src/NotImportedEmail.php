@@ -75,7 +75,7 @@ class NotImportedEmail extends CommonDBTM
         $actions = parent::getSpecificMassiveActions($checkitem);
 
         if ($isadmin) {
-            $prefix                          = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR;
+            $prefix                          = self::class . MassiveAction::CLASS_ACTION_SEPARATOR;
             $actions[$prefix . 'delete_email'] = __s('Delete emails');
             $actions[$prefix . 'import_email'] = _sx('button', 'Import');
         }

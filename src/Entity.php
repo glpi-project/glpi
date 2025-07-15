@@ -612,7 +612,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addImpactTab($ong, $options);
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab(Profile_User::class, $ong, $options);
         $this->addStandardTab(Rule::class, $ong, $options);
         $this->addStandardTab(Document_Item::class, $ong, $options);
@@ -1960,7 +1960,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         TemplateRenderer::getInstance()->display('pages/2fa/2fa_config.html.twig', [
             'canedit' => $canedit,
             'item'   => $entity,
-            'action' => Toolbox::getItemTypeFormURL(__CLASS__),
+            'action' => Toolbox::getItemTypeFormURL(self::class),
             'inherited_value' => $entity->getInheritedValueBadge('2fa_enforcement_strategy', '2fa_enforcement_strategy'),
         ]);
 

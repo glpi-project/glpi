@@ -278,7 +278,7 @@ class NetworkEquipment extends CommonDBTM
                => "<i class='ti ti-key'></i>" .
                   _sx('button', 'Add a license'),
             ];
-            KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
+            KnowbaseItem_Item::getMassiveActionsForItemtype($actions, self::class, 0, $checkitem);
         }
 
         return $actions;

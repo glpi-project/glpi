@@ -509,7 +509,7 @@ class Appliance extends CommonDBTM
             $actions[$prefix . 'remove'] = "<i class='ti ti-package-off'></i>" . _sx('button', 'Remove an item');
         }
 
-        KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
+        KnowbaseItem_Item::getMassiveActionsForItemtype($actions, self::class, 0, $checkitem);
 
         return $actions;
     }

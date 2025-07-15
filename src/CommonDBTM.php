@@ -225,7 +225,7 @@ class CommonDBTM extends CommonGLPI
     public static function getTable($classname = null)
     {
         if ($classname === null) {
-            $classname = get_called_class();
+            $classname = static::class;
         }
 
         if (!class_exists($classname) || $classname::$notable) {
@@ -3895,7 +3895,7 @@ class CommonDBTM extends CommonGLPI
                     vsprintf(
                         'Invalid search option in "%1$s": missing "%2$s" field(s). %3$s',
                         [
-                            get_called_class(),
+                            static::class,
                             implode('", "', $missingFields),
                             print_r($opt, true),
                         ]
@@ -3994,7 +3994,7 @@ class CommonDBTM extends CommonGLPI
     {
         $options = [];
 
-        $classname = get_called_class();
+        $classname = static::class;
         $method_name = 'rawSearchOptionsToAdd';
         if (!method_exists($classname, $method_name)) {
             return $options;
@@ -4009,7 +4009,7 @@ class CommonDBTM extends CommonGLPI
             // FIXME In GLPI 11.0, trigger a warning on invalid datatype (see `tests\units\Search::testSearchOptionsDatatype()`)
 
             if (!isset($opt['id'])) {
-                throw new \Exception(get_called_class() . ': invalid search option! ' . print_r($opt, true));
+                throw new \Exception(static::class . ': invalid search option! ' . print_r($opt, true));
             }
             $optid = $opt['id'];
             unset($opt['id']);
@@ -4230,7 +4230,7 @@ class CommonDBTM extends CommonGLPI
     {
         /// TODO try to revert usage : Dropdown::show calling this function
         /// TODO use this function instead of Dropdown::show
-        return Dropdown::show(get_called_class(), $options);
+        return Dropdown::show(static::class, $options);
     }
 
 

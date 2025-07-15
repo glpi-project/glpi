@@ -2884,19 +2884,19 @@ TWIG;
         $actions = [];
 
         if (Session::getCurrentInterface() === 'central' && Config::canUpdate()) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'install']
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'install']
             = "<i class='ti ti-folder-plus'></i>" .
             __s('Install');
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall']
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall']
             = "<i class='ti ti-folder-minus'></i>" .
             __s('Uninstall');
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'enable']
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'enable']
             = "<i class='ti ti-toggle-right-filled'></i>" .
             __s('Enable');
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'disable']
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'disable']
             = "<i class='ti ti-toggle-left-filled'></i>" .
             __s('Disable');
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'clean']
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'clean']
             = "<i class='ti ti-recycle'></i>" .
             __s('Clean');
         }

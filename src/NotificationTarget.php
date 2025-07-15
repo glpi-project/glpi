@@ -134,7 +134,7 @@ class NotificationTarget extends CommonDBChild
 
     public static function getTable($classname = null)
     {
-        return parent::getTable(__CLASS__);
+        return parent::getTable(self::class);
     }
 
     public static function getIcon()
@@ -386,7 +386,7 @@ class NotificationTarget extends CommonDBChild
      */
     public static function getInstanceClass(string $itemtype): string
     {
-        if (strpos($itemtype, "\\") != false) {
+        if (str_contains($itemtype, "\\")) {
             // namespace case
             $ns_parts = explode("\\", $itemtype);
             $classname = array_pop($ns_parts);

@@ -703,7 +703,7 @@ TWIG, $twig_params);
             'networkports_id'    => $ID,
             'comments'           => $p['comments'],
             'myname'             => $p['name'],
-            'instantiation_type' => get_called_class(),
+            'instantiation_type' => static::class,
         ];
 
         Ajax::updateItemOnSelectEvent(

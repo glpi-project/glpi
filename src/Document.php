@@ -1551,7 +1551,7 @@ class Document extends CommonDBTM
             }
         }
 
-        if ((is_a($itemtype, __CLASS__, true)) && (static::canUpdate())) {
+        if ((is_a($itemtype, self::class, true)) && (static::canUpdate())) {
             $actions[$action_prefix . 'add_item']    = "<i class='ti ti-package'></i>" . _sx('button', 'Add an item');
             $actions[$action_prefix . 'remove_item'] = "<i class='ti ti-package-off'></i>" . _sx('button', 'Remove an item');
         }
