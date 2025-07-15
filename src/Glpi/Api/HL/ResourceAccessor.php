@@ -321,7 +321,7 @@ final class ResourceAccessor
         $items_id = $field === 'id' ? $request_attrs['id'] : self::getIDForOtherUniqueFieldBySchema($schema, $field, $request_attrs[$field]);
         $item = self::getItemFromSchema($schema);
         $force = $request_params['force'] ?? false;
-        $input = ['id' => (int)$items_id];
+        $input = ['id' => (int) $items_id];
         $purge = !$item->maybeDeleted() || $force;
         if (!$item->can($items_id, $purge ? PURGE : DELETE, $input)) {
             return AbstractController::getAccessDeniedErrorResponse();
