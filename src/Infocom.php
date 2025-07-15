@@ -507,7 +507,6 @@ class Infocom extends CommonDBChild
      **/
     public static function autofillDates(&$infocoms = [], $field = '', $action = 0, $params = [])
     {
-
         if (isset($infocoms[$field]) || is_null($infocoms[$field])) {
             switch ($action) {
                 default:
@@ -550,7 +549,8 @@ class Infocom extends CommonDBChild
     public static function getAutoManagemendDatesFields()
     {
 
-        return ['autofill_buy_date'         => 'buy_date',
+        return [
+            'autofill_buy_date'         => 'buy_date',
             'autofill_use_date'         => 'use_date',
             'autofill_delivery_date'    => 'delivery_date',
             'autofill_warranty_date'    => 'warranty_date',

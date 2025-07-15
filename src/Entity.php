@@ -1759,6 +1759,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         }
 
         foreach ($states as $state) {
+            $warranty_options[Infocom::ON_STATUS_CHANGE . '_' . $state['id']] = sprintf(__('Fill when shifting to state %s'), $state['name']);
             $decom_options[Infocom::ON_STATUS_CHANGE . '_' . $state['id']] = sprintf(__('Fill when shifting to state %s'), $state['name']);
         }
 
@@ -2832,6 +2833,12 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
                     Infocom::COPY_DELIVERY_DATE => __('Copy the delivery date'),
                     self::CONFIG_PARENT         => __('Inheritance of the parent entity'),
                 ];
+                $states = getAllDataFromTable('glpi_states');
+                foreach ($states as $state) {
+                    $tab[Infocom::ON_STATUS_CHANGE . '_' . $state['id']]
+                        //TRANS: %s is the name of the state
+                        = sprintf(__('Fill when shifting to state %s'), $state['name']);
+                }
                 $options['value'] = $values[$field];
                 return Dropdown::showFromArray($name, $tab, $options);
 
