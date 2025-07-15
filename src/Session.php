@@ -840,6 +840,8 @@ class Session
             $_SESSION['glpipluralnumber'] = $CFG_GLPI["languages"][$trytoload][5];
         }
 
+        $_SESSION['glpiisrtl'] = self::isRTL($trytoload);
+
         // Redefine Translator caching logic to be able to drop laminas/laminas-cache dependency.
         $i18n_cache = !defined('TU_USER') ? new I18nCache((new CacheManager())->getTranslationsCacheInstance()) : null;
         $TRANSLATE = new class ($i18n_cache) extends Laminas\I18n\Translator\Translator { // @phpstan-ignore class.extendsFinalByPhpDoc
@@ -2413,5 +2415,22 @@ class Session
     public static function isRightChecksDisabled(): bool
     {
         return self::$bypass_right_checks;
+    }
+
+    /**
+     * Is locale RTL
+     * See native PHP 8.5 function locale_is_right_to_left
+     *
+     * @param $locale
+     *
+     * @return bool
+     */
+    public static function isRTL($locale): bool
+    {
+        if (function_exists('locale_is_right_to_left')) {
+            return locale_is_right_to_left($locale);
+        }
+
+        return (bool) preg_match('/^(?:ar|he|fa|ur|ps|sd|ug|ckb|yi|dv|ku_arab|ku-arab)(?:[_-].*)?$/i', $locale);
     }
 }
