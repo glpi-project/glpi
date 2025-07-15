@@ -1036,11 +1036,11 @@ abstract class MainAsset extends InventoryAsset
                 $asset->setEntityRecursive($this->getEntityRecursive());
                 $asset->setExtraData($this->assets);
                 foreach ($this->assets as $asset_type => $asset_list) {
-                    if ($asset_type != '\\' . get_class($asset)) {
+                    if ($asset_type !== $asset::class) {
                         $asset->setExtraData([$asset_type => $asset_list]);
                     }
                 }
-                $asset->setExtraData(['\\' . get_class($this) => $mainasset]);
+                $asset->setExtraData([static::class => $mainasset]);
                 $asset->handleLinks();
                 $asset->handle();
                 $ignored_controllers = array_merge($ignored_controllers, $asset->getIgnored('controllers'));
@@ -1052,7 +1052,7 @@ abstract class MainAsset extends InventoryAsset
             $asset->setEntityID($this->getEntityID());
             $asset->setEntityRecursive($this->getEntityRecursive());
             $asset->setExtraData($this->assets);
-            $asset->setExtraData(['\\' . get_class($this) => $mainasset]);
+            $asset->setExtraData([static::class => $mainasset]);
             //do not handle ignored controllers
             $asset->setExtraData(['ignored' => $ignored_controllers]);
             $asset->handleLinks();
