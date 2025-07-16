@@ -4987,21 +4987,12 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
             case 'internal_time_to_resolve':
                 $ola_type_to_filter ??= SLM::TTR;
 
-                // force table value to glpi_items_olas, it can't be something else
-                $table = 'glpi_items_olas';
                 // QueryFunction::max is used to match a late ola amongst associated OLAs
                 return QueryFunction::max(
                     QueryFunction::if(
                         condition: [
-                            // remove OLA of other type, fitering in Ticket::rawSearchOptions() is not working, because it does a left join, not an inner join.
-                            "{$table}.olas_id" => new QuerySubQuery(
-                                [
-                                    'SELECT' => 'id',
-                                    'FROM' => 'glpi_olas',
-                                    'WHERE' => ['type' => $ola_type_to_filter],
-                                ]
-                            ),
-                            // + ticket status is not WAITING
+                            "{$table}.ola_type" => $ola_type_to_filter,
+                            // + ticket status is not WAITING // @todoseb à implementer ?
                             "$table.is_late" => 1,
                         ],
                         true_expression: new QueryExpression('1'),

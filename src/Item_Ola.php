@@ -97,9 +97,9 @@ class Item_Ola extends CommonDBRelation
         // update waiting_time (to do before due_time)
         // update waiting_time for TTR only, TTO is not impacted by waiting time
         if (
-            $ola->fields['type'] === SLM::TTR
+            $item_ola_data['type'] === SLM::TTR
             && !is_null($ticket->fields['begin_waiting_date'])
-            && ($key = array_search('status', $ticket->updates)) !== false
+            && (array_search('status', $ticket->updates)) !== false
             && (
                 $ticket->oldvalues['status'] == CommonITILObject::WAITING
                 // From solved to another state than closed
@@ -129,7 +129,7 @@ class Item_Ola extends CommonDBRelation
 
         // - update end_time
         // for TTO, endtime is when the ticket is assigned to the dedicated group.
-        if ($ola->fields['type'] === SLM::TTO) {
+        if ($item_ola_data['type'] === SLM::TTO) {
             if ($item_ola_data['end_time'] == null
                 &&
                 (
@@ -143,7 +143,7 @@ class Item_Ola extends CommonDBRelation
 
         // For TTR, end_time is when the ticket is closed
         // set it only if it is not already set
-        if ($ola->fields['type'] === SLM::TTR && $item_ola_data['end_time'] == null) {
+        if ($item_ola_data['type'] === SLM::TTR && $item_ola_data['end_time'] == null) {
             if ($ticket->isClosed() || $ticket->isSolved()) {
                 $item_ola_data['end_time'] = Session::getCurrentTime();
             }
