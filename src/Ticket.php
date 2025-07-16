@@ -5424,13 +5424,10 @@ JAVASCRIPT;
             $label = __('OLA') . ' ' . OLA::getOneTypeName($ola_data['type']) . ' ' . $ola_data['name'] . ' ' . __('due time');
             $label .= "<a href=\"{$ola->getLinkURL()}\"><i class=\"ti ti-stopwatch slt\" title=\"{$ola->getName()}\"></i></a>";
 
-            // @todoseb utiliser le champs is_late quand ça sera implémenté
-            $class = (strtotime($ola_data['end_time'] ?? Session::getCurrentTime()) > $due_time) ? 'passed' : 'checked';
-
             $dates_olas[$key] = [
                 'timestamp' => $due_time,
                 'label'     => $label,
-                'class'     => $class,
+                'class'     => $ola_data['is_late'] ? 'passed' : 'checked',
             ];
 
         }

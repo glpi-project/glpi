@@ -39,7 +39,6 @@ use CronTask;
 use DateInterval;
 use Group;
 use OLA;
-use OlaLevel_Ticket;
 use SLA;
 use SlaLevel_Ticket;
 use SLM;
