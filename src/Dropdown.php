@@ -2867,8 +2867,8 @@ HTML;
         } elseif (
             isset($post["entity_restrict"])
             && !is_array($post["entity_restrict"])
-            && (substr($post["entity_restrict"], 0, 1) === '[')
-            && (substr($post["entity_restrict"], -1) === ']')
+            && (str_starts_with($post["entity_restrict"], '['))
+            && (str_ends_with($post["entity_restrict"], ']'))
         ) {
             $decoded = Toolbox::jsonDecode($post['entity_restrict']);
             $entities = [];

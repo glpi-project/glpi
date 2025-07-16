@@ -69,7 +69,7 @@ class NotificationSettingConfig extends CommonDBTM
 
         $config = new Config();
         foreach ($input as $k => $v) {
-            if (substr($k, 0, strlen('notifications_')) === 'notifications_') {
+            if (str_starts_with($k, 'notifications_')) {
                 $tmp = [
                     'id' => $config_id,
                     $k    => $v,

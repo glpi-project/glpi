@@ -50,7 +50,7 @@ class RuleImportAssetCollection extends RuleCollection
     {
         $ong = parent::defineTabs();
 
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
 
         return $ong;
     }
@@ -86,7 +86,7 @@ class RuleImportAssetCollection extends RuleCollection
     {
         // current tab
         $active_tab = $options['_glpi_tab'] ?? Session::getActiveTab($this->getType());
-        $current_tab = str_replace(__CLASS__ . '$', '', $active_tab);
+        $current_tab = str_replace(self::class . '$', '', $active_tab);
         $tabs = $this->getTabNameForItem($this);
 
         if (!isset($tabs[$current_tab])) {

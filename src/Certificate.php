@@ -492,7 +492,7 @@ class Certificate extends CommonDBTM
     {
         $ong = [];
         $this->addDefaultFormTab($ong)
-         ->addStandardTab(__CLASS__, $ong, $options)
+         ->addStandardTab(self::class, $ong, $options)
          ->addStandardTab(Certificate_Item::class, $ong, $options)
          ->addStandardTab(Domain_Item::class, $ong, $options)
          ->addStandardTab(Infocom::class, $ong, $options)
@@ -576,9 +576,9 @@ class Certificate extends CommonDBTM
 
         if (Session::getCurrentInterface() == 'central') {
             if (self::canUpdate()) {
-                $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'install']
+                $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'install']
                  =  "<i class='ti ti-link'></i>" . _sx('button', 'Associate certificate');
-                $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall']
+                $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall']
                  = "<i class='ti ti-link-off'></i>" . _sx('button', 'Dissociate certificate');
             }
         }
@@ -589,8 +589,8 @@ class Certificate extends CommonDBTM
     {
 
         switch ($ma->getAction()) {
-            case __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'install':
-            case __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall':
+            case self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'install':
+            case self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall':
                 Dropdown::showSelectItemFromItemtypes(['items_id_name' => 'item_item',
                     'itemtype_name' => 'typeitem',
                     'itemtypes'     => self::getTypes(true),
@@ -621,7 +621,7 @@ class Certificate extends CommonDBTM
         $certif_item = new Certificate_Item();
 
         switch ($ma->getAction()) {
-            case __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item':
+            case self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item':
                 $input = $ma->getInput();
                 foreach ($ids as $id) {
                     $input = ['certificates_id' => $input['certificates_id'],
@@ -641,7 +641,7 @@ class Certificate extends CommonDBTM
 
                 return;
 
-            case __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'install':
+            case self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'install':
                 $input = $ma->getInput();
                 foreach ($ids as $key) {
                     if ($item->can($key, UPDATE)) {
@@ -661,7 +661,7 @@ class Certificate extends CommonDBTM
                 }
                 return;
 
-            case __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall':
+            case self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall':
                 $input = $ma->getInput();
                 foreach ($ids as $key) {
                     if ($certif_item->deleteItemByCertificatesAndItem($key, $input['item_item'], $input['typeitem'])) {
@@ -768,7 +768,7 @@ class Certificate extends CommonDBTM
                                 'glpi_certificates' => 'id',
                                 [
                                     'AND' => [
-                                        'glpi_alerts.itemtype' => __CLASS__,
+                                        'glpi_alerts.itemtype' => self::class,
                                         'glpi_alerts.type'     => Alert::END,
                                     ],
                                 ],
@@ -821,7 +821,7 @@ class Certificate extends CommonDBTM
                     // Add alert
                     $input = [
                         'type'     => Alert::END,
-                        'itemtype' => __CLASS__,
+                        'itemtype' => self::class,
                         'items_id' => $certificate_id,
                     ];
                     $alert = new Alert();

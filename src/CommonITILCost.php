@@ -470,7 +470,7 @@ abstract class CommonITILCost extends CommonDBChild
         }
         $canedit = false;
         if (!$forproject) {
-            $canedit = $item->canAddItem(__CLASS__);
+            $canedit = $item->canAddItem(self::class);
         }
 
         $items_ids = $ID;

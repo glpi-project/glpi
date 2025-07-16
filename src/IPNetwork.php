@@ -1011,14 +1011,14 @@ class IPNetwork extends CommonImplicitTreeDropdown
             return;
         }
 
-        $column_name = __CLASS__;
+        $column_name = self::class;
         if (isset($options['dont_display'][$column_name])) {
             return;
         }
 
         $content     = self::getTypeName();
         $this_header = $base->addHeader($column_name, $content, $super, $father);
-        $this_header->setItemType(__CLASS__);
+        $this_header->setItemType(self::class);
     }
 
 
@@ -1047,12 +1047,12 @@ class IPNetwork extends CommonImplicitTreeDropdown
             return;
         }
 
-        $column_name = __CLASS__;
+        $column_name = self::class;
         if (isset($options['dont_display'][$column_name])) {
             return;
         }
 
-        $header = $row->getGroup()->getHeaderByName('Internet', __CLASS__);
+        $header = $row->getGroup()->getHeaderByName('Internet', self::class);
         if (!$header) {
             return;
         }

@@ -644,15 +644,15 @@ class DisplayPreference extends CommonDBTM
 
         $specific_actions = [];
         if ($users_id > 0) {
-            $specific_actions[ __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete_for_user'] = _x('button', 'Delete permanently');
+            $specific_actions[ self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete_for_user'] = _x('button', 'Delete permanently');
         } else {
-            $specific_actions[ __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'reset_to_default'] = _x('button', 'Reset to default');
+            $specific_actions[ self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'reset_to_default'] = _x('button', 'Reset to default');
         }
         $rand = mt_rand();
         $massiveactionparams = [
             'width'            => 400,
             'height'           => 200,
-            'container'        => 'mass' . __CLASS__ . $rand,
+            'container'        => 'mass' . self::class . $rand,
             'specific_actions' => $specific_actions,
             'extraparams'      => ['massive_action_fields' => ['users_id']],
         ];
@@ -678,7 +678,7 @@ class DisplayPreference extends CommonDBTM
     public function defineTabs($options = [])
     {
         $ong = [];
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
         $ong['no_all_tab'] = true;
         return $ong;
     }
@@ -692,7 +692,7 @@ class DisplayPreference extends CommonDBTM
                 }
                 break;
 
-            case __CLASS__:
+            case self::class:
                 $forced_tab = $_REQUEST['forcetab'] ?? null;
                 $allow_tab_switch = !isset($_REQUEST['no_switch']) || !$_REQUEST['no_switch'];
                 $global_only = $forced_tab === 'DisplayPreference$1' && !$allow_tab_switch;
@@ -714,7 +714,7 @@ class DisplayPreference extends CommonDBTM
                 return $ong;
 
             case Config::class:
-                return self::createTabEntry(self::getTypeName(1), 0, __CLASS__, 'ti ti-columns-3');
+                return self::createTabEntry(self::getTypeName(1), 0, self::class, 'ti ti-columns-3');
         }
         return '';
     }
@@ -726,7 +726,7 @@ class DisplayPreference extends CommonDBTM
                 self::showForUser(Session::getLoginUserID());
                 return true;
 
-            case __CLASS__:
+            case self::class:
                 /** @var DisplayPreference $item */
                 switch ($tabnum) {
                     case 1:

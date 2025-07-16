@@ -1143,7 +1143,7 @@ class Contract extends CommonDBTM
                 'WHERE'     => [
                     [
                         'RAW' => [
-                            DBmysql::quoteName('glpi_contracts.alert') . ' & ' . pow(2, Alert::NOTICE) => ['>', 0],
+                            DBmysql::quoteName('glpi_contracts.alert') . ' & ' . 2 ** Alert::NOTICE => ['>', 0],
                         ],
                     ],
                     'glpi_alerts.date'           => null,
@@ -1181,7 +1181,7 @@ class Contract extends CommonDBTM
                 'WHERE'     => [
                     [
                         'RAW' => [
-                            DBmysql::quoteName('glpi_contracts.alert') . ' & ' . pow(2, Alert::END) => ['>', 0],
+                            DBmysql::quoteName('glpi_contracts.alert') . ' & ' . 2 ** Alert::END => ['>', 0],
                         ],
                     ],
                     'glpi_alerts.date'           => null,
@@ -1233,7 +1233,7 @@ class Contract extends CommonDBTM
             }
 
             // Get contrats with periodicity alerts
-            $valPow = pow(2, Alert::PERIODICITY);
+            $valPow = 2 ** Alert::PERIODICITY;
             $query_periodicity = ['FROM' => 'glpi_contracts',
                 'WHERE' => ['alert' => ['&', $valPow],
                     'entities_id' => $entity,
@@ -1248,7 +1248,7 @@ class Contract extends CommonDBTM
                 // For contracts with begin date and periodicity
                 if (!empty($data['begin_date']) && $data['periodicity']) {
                     $todo = ['periodicity' => Alert::PERIODICITY];
-                    if ($data['alert'] & pow(2, Alert::NOTICE)) {
+                    if ($data['alert'] & 2 ** Alert::NOTICE) {
                         $todo['periodicitynotice'] = Alert::NOTICE;
                     }
 
@@ -1259,7 +1259,7 @@ class Contract extends CommonDBTM
                          */
                         // Get previous alerts from DB
                         $previous_alert = [
-                            $type => Alert::getAlertDate(__CLASS__, $data['id'], $event),
+                            $type => Alert::getAlertDate(self::class, $data['id'], $event),
                         ];
                         // If alert never occurs...
                         if (empty($previous_alert[$type])) {
@@ -1290,7 +1290,7 @@ class Contract extends CommonDBTM
                         // If this date is passed : clean alerts and send again
                         if ($next_alert[$type] <= date('Y-m-d')) {
                             $alert = new Alert();
-                            $alert->clear(__CLASS__, $data['id'], $event);
+                            $alert->clear(self::class, $data['id'], $event);
                             // Computation of the real date => add Config [alert xxx days before]
                             $real_alert_date = date('Y-m-d', strtotime($next_alert[$type] . " +" . ($before) . " day"));
                             $message = sprintf(__('%1$s: %2$s') . "<br>\n", $data["name"], Html::convDate($real_alert_date));
@@ -1347,7 +1347,7 @@ class Contract extends CommonDBTM
 
                         $alert = new Alert();
                         $input = [
-                            'itemtype' => __CLASS__,
+                            'itemtype' => self::class,
                             'type'     => $type,
                         ];
                         foreach (array_keys($contracts) as $id) {

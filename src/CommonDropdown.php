@@ -835,7 +835,7 @@ abstract class CommonDropdown extends CommonDBTM
             && (count($_SESSION['glpiactiveentities']) > 1)
             && !in_array('merge', $forbidden_actions)
         ) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'merge'] = __s('Merge and assign to current entity');
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'merge'] = __s('Merge and assign to current entity');
         }
 
         return $actions;

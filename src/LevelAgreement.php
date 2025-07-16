@@ -1023,7 +1023,7 @@ TWIG, $twig_params);
     public function post_clone($source, $history)
     {
         // Clone levels
-        $classname = get_called_class();
+        $classname = static::class;
         $fk        = getForeignKeyFieldForItemType($classname);
         $level     = getItemForItemtype(static::$levelclass);
         foreach ($level->find([$fk => $source->getID()]) as $data) {

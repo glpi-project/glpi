@@ -65,7 +65,7 @@ class KnowbaseItemTranslation extends CommonDBChild
     public function defineTabs($options = [])
     {
         $ong = [];
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab(Log::class, $ong, $options);
         $this->addStandardTab(KnowbaseItem_Revision::class, $ong, $options);
         $this->addStandardTab(KnowbaseItem_Comment::class, $ong, $options);
@@ -311,7 +311,7 @@ TWIG, $twig_params);
     public static function getNumberOfTranslationsForItem($item)
     {
         return countElementsInTable(
-            getTableForItemType(__CLASS__),
+            getTableForItemType(self::class),
             ['knowbaseitems_id' => $item->getID()]
         );
     }

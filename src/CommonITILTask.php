@@ -1785,7 +1785,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         $displayed_row_count = min((int) $_SESSION['glpidisplay_count_on_home'], $total_row_count);
 
         if ($total_row_count > 0) {
-            $itemtype = get_called_class();
+            $itemtype = static::class;
             switch ($status) {
                 case "todo":
                     $options  = [

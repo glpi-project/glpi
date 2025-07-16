@@ -185,7 +185,7 @@ abstract class API
 
         // retrieve ip of client
         $this->iptxt = Toolbox::getRemoteIpAddress();
-        $this->ipnum = (strstr($this->iptxt, ':') === false ? ip2long($this->iptxt) : '');
+        $this->ipnum = (!str_contains($this->iptxt, ':') ? ip2long($this->iptxt) : '');
 
         // check ip access
         $apiclient = new APIClient();

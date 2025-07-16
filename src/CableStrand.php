@@ -55,7 +55,7 @@ class CableStrand extends CommonDropdown
     {
 
         $ong = parent::defineTabs($options);
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
 
         return $ong;
     }
@@ -72,7 +72,7 @@ class CableStrand extends CommonDropdown
         if (!$withtemplate) {
             $nb = 0;
             switch ($item->getType()) {
-                case __CLASS__:
+                case self::class:
                     /** @var CableStrand $item */
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(

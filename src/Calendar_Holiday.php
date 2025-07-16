@@ -153,7 +153,7 @@ class Calendar_Holiday extends CommonDBRelation
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
-                'container'     => 'mass' . __CLASS__ . $rand,
+                'container'     => 'mass' . self::class . $rand,
             ],
         ]);
     }

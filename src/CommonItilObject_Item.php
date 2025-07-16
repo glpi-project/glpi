@@ -797,7 +797,7 @@ TWIG, $twig_params);
 
         if (
             $_SESSION["glpiactiveprofile"]["helpdesk_hardware"]
-            & pow(2, CommonITILObject::HELPDESK_MY_HARDWARE)
+            & 2 ** CommonITILObject::HELPDESK_MY_HARDWARE
         ) {
             $my_devices = array_merge(
                 ['' => Dropdown::EMPTY_VALUE],

@@ -399,7 +399,7 @@ class Location extends CommonTreeDropdown
         $this->addImpactTab($ong, $options);
         $this->addStandardTab(Socket::class, $ong, $options);
         $this->addStandardTab(Document_Item::class, $ong, $options);
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
 
         return $ong;
     }

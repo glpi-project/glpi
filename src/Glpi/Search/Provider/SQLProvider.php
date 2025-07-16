@@ -5127,11 +5127,11 @@ final class SQLProvider implements SearchProviderInterface
                         $fieldname = $matches['fieldname'] ?? 'name';
 
                         // No Group_concat case
-                        if ($fieldname == 'content' || !is_string($val) || strpos($val, Search::LONGSEP) === false) {
+                        if ($fieldname == 'content' || !is_string($val) || !str_contains($val, Search::LONGSEP)) {
                             $newrow[$j]['count'] = 1;
 
                             $handled = false;
-                            if ($fieldname != 'content' && is_string($val) && strpos($val, Search::SHORTSEP) !== false) {
+                            if ($fieldname != 'content' && is_string($val) && str_contains($val, Search::SHORTSEP)) {
                                 $split2                    = Search::explodeWithID(Search::SHORTSEP, $val);
                                 if ($j == "User_80") {
                                     $newrow[$j][0][$fieldname] = $split2[0];
@@ -5167,7 +5167,7 @@ final class SQLProvider implements SearchProviderInterface
                             $newrow[$j]['count'] = count($split);
                             foreach ($split as $key2 => $val2) {
                                 $handled = false;
-                                if (strpos($val2, Search::SHORTSEP) !== false) {
+                                if (str_contains($val2, Search::SHORTSEP)) {
                                     $split2                  = Search::explodeWithID(Search::SHORTSEP, $val2);
                                     if ($j == "User_80") {
                                         $newrow[$j][$key2][$fieldname] = $split2[0];

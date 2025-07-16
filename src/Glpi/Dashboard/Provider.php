@@ -169,7 +169,7 @@ class Provider
      */
     public static function __callStatic(string $name = "", array $arguments = [])
     {
-        if (strpos($name, 'bigNumber') !== false) {
+        if (str_contains($name, 'bigNumber')) {
             $itemtype = str_replace('bigNumber', '', $name);
             if (is_subclass_of($itemtype, 'CommonDBTM')) {
                 $item = new $itemtype();
@@ -179,8 +179,8 @@ class Provider
         }
 
         if (
-            strpos($name, 'multipleNumber') !== false
-            && strpos($name, 'By') !== false
+            str_contains($name, 'multipleNumber')
+            && str_contains($name, 'By')
         ) {
             $tmp = str_replace('multipleNumber', '', $name);
             $tmp = explode('By', $tmp);
@@ -197,7 +197,7 @@ class Provider
             }
         }
 
-        if (strpos($name, 'getArticleList') !== false) {
+        if (str_contains($name, 'getArticleList')) {
             $itemtype = str_replace('getArticleList', '', $name);
             if (is_subclass_of($itemtype, 'CommonDBTM')) {
                 $item = new $itemtype();

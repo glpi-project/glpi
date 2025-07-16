@@ -444,7 +444,7 @@ class Item_SoftwareLicense extends CommonDBRelation
         global $DB;
 
         $license_table = SoftwareLicense::getTable();
-        $item_license_table = self::getTable(__CLASS__);
+        $item_license_table = self::getTable(self::class);
 
         $iterator = $DB->request([
             'SELECT'    => ['itemtype'],
@@ -525,7 +525,7 @@ class Item_SoftwareLicense extends CommonDBRelation
 
         $softwarelicense_id = $license->getField('id');
         $license_table = SoftwareLicense::getTable();
-        $item_license_table = self::getTable(__CLASS__);
+        $item_license_table = self::getTable(self::class);
 
         if (!Software::canView() || !$softwarelicense_id) {
             return false;
@@ -617,7 +617,7 @@ class Item_SoftwareLicense extends CommonDBRelation
 
         $canedit         = Session::haveRightsOr("software", [CREATE, UPDATE, DELETE, PURGE]);
         $canshowitems  = [];
-        $item_license_table = self::getTable(__CLASS__);
+        $item_license_table = self::getTable(self::class);
 
         $start = (int) ($_GET["start"] ?? 0);
         $order = ($_GET['order'] ?? 'ASC') === 'DESC' ? 'DESC' : 'ASC';
@@ -940,15 +940,15 @@ JAVASCRIPT;
 
         if ($data = $iterator->current()) {
             if ($canedit) {
-                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
+                Html::openMassiveActionsForm('mass' . self::class . $rand);
                 $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], count($iterator)),
-                    'container'        => 'mass' . __CLASS__ . $rand,
+                    'container'        => 'mass' . self::class . $rand,
                     'specific_actions' => ['purge' => _x('button', 'Delete permanently')],
                 ];
 
                 // show transfer only if multi licenses for this software
                 if (self::countLicenses($data['softid']) > 1) {
-                    $massiveactionparams['specific_actions'][__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_license'] = _x('button', 'Move');
+                    $massiveactionparams['specific_actions'][self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_license'] = _x('button', 'Move');
                 }
 
                 // Options to update license
@@ -995,8 +995,8 @@ JAVASCRIPT;
             $header_end    = '';
             if ($canedit) {
                 $header_begin  .= "<th width='10'>";
-                $header_top    .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                $header_bottom .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
+                $header_top    .= Html::getCheckAllAsCheckbox('mass' . self::class . $rand);
+                $header_bottom .= Html::getCheckAllAsCheckbox('mass' . self::class . $rand);
                 $header_end    .= "</th>";
             }
 
@@ -1023,7 +1023,7 @@ JAVASCRIPT;
                     if ($data['itemtype'] == 'User') {
                         $class = SoftwareLicense_User::class;
                     } else {
-                        $class = __CLASS__;
+                        $class = self::class;
                     }
                     echo "<td>" . Html::getMassiveActionCheckBox($class, $data["id"]) . "</td>";
                 }
@@ -1117,7 +1117,7 @@ JAVASCRIPT;
         global $DB;
 
         $lic = [];
-        $item_license_table = self::getTable(__CLASS__);
+        $item_license_table = self::getTable(self::class);
 
         $iterator = $DB->request([
             'SELECT'       => [

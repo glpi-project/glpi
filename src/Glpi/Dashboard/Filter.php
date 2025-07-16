@@ -58,7 +58,7 @@ use Glpi\Dashboard\Filters\{
  **/
 class Filter extends \CommonDBChild
 {
-    public static $itemtype = "Glpi\\Dashboard\\Dashboard";
+    public static $itemtype = \Glpi\Dashboard\Dashboard::class;
     public static $items_id = 'dashboards_dashboards_id';
 
     /**

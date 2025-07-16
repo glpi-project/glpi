@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-if (!class_exists('Glpi\\Kernel\\Kernel', autoload: false)) {
+if (!class_exists(\Glpi\Kernel\Kernel::class, autoload: false)) {
     // `Glpi\Kernel\Kernel` class will exists if the request was processed by the `/public/index.php` file,
     // and will not be found otherwise.
     header('HTTP/1.1 404 Not Found');

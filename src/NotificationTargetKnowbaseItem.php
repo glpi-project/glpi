@@ -197,7 +197,7 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
         ];
 
         foreach ($tags as $tag => $label) {
-            if (strpos($tag, 'document.') != false || strpos($tag, 'target.') != false) {
+            if (str_contains($tag, 'document.') || str_contains($tag, 'target.')) {
                 $this->addTagToList([
                     'tag'   => $tag,
                     'label' => $label,

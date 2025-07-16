@@ -273,7 +273,7 @@ TWIG, $twig_params);
     public static function getNumberOfTranslationsForItem($item)
     {
         return countElementsInTable(
-            getTableForItemType(__CLASS__),
+            getTableForItemType(self::class),
             ['reminders_id' => $item->getID()]
         );
     }

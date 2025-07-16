@@ -671,7 +671,7 @@ class Consumable extends CommonDBChild
             'showmassiveactions' => true,
             'massiveactionparams' => [
                 'num_displayed'    => min($_SESSION['glpilist_limit'], $filtered_number),
-                'container'        => 'mass' . __CLASS__ . mt_rand(),
+                'container'        => 'mass' . self::class . mt_rand(),
                 'specific_actions' => [
                     'delete' => __('Delete permanently'),
                     'Consumable' . MassiveAction::CLASS_ACTION_SEPARATOR . 'backtostock' => __('Back to stock'),

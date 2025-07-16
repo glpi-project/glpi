@@ -310,7 +310,7 @@ class GLPIMailer
                 break;
             default:
                 trigger_error(
-                    sprintf('Undefined property %s::$%s', __CLASS__, $property),
+                    sprintf('Undefined property %s::$%s', self::class, $property),
                     E_USER_WARNING
                 );
                 $deprecation = false;
@@ -366,7 +366,7 @@ class GLPIMailer
                 break;
             default:
                 trigger_error(
-                    sprintf('Undefined property %s::$%s', __CLASS__, $property),
+                    sprintf('Undefined property %s::$%s', self::class, $property),
                     E_USER_WARNING
                 );
                 $deprecation = false;
@@ -374,7 +374,7 @@ class GLPIMailer
         }
 
         if ($deprecation) {
-            Toolbox::deprecated(sprintf('Usage of property %s::$%s is deprecated', __CLASS__, $property));
+            Toolbox::deprecated(sprintf('Usage of property %s::$%s is deprecated', self::class, $property));
         }
     }
 
@@ -387,7 +387,7 @@ class GLPIMailer
                 // public function addCustomHeader($name, $value = null)
                 $name  = array_key_exists(0, $arguments) && is_string($arguments[0]) ? $arguments[0] : null;
                 $value = array_key_exists(1, $arguments) && is_string($arguments[1]) ? $arguments[1] : null;
-                if (null === $value && strpos($name, ':') !== false) {
+                if (null === $value && str_contains($name, ':')) {
                     [$name, $value] = explode(':', $name, 2);
                 }
                 if ($name !== null && $value !== null) {
@@ -467,10 +467,10 @@ class GLPIMailer
                 // Trigger fatal error to block execution.
                 // As we cannot know which return value type is expected, it is safer to to ensure
                 // that caller will not continue execution using a void return value.
-                throw new \RuntimeException(sprintf('Call to undefined method %s::%s()', __CLASS__, $method));
+                throw new \RuntimeException(sprintf('Call to undefined method %s::%s()', self::class, $method));
         }
 
-        Toolbox::deprecated(sprintf('Usage of method %s::%s() is deprecated', __CLASS__, $method));
+        Toolbox::deprecated(sprintf('Usage of method %s::%s() is deprecated', self::class, $method));
     }
 
     public static function __callstatic(string $method, array $arguments)
@@ -478,6 +478,6 @@ class GLPIMailer
         // Trigger fatal error to block execution.
         // As we cannot know which return value type is expected, it is safer to to ensure
         // that caller will not continue execution using a void return value.
-        throw new \RuntimeException(sprintf('Call to undefined method %s::%s()', __CLASS__, $method));
+        throw new \RuntimeException(sprintf('Call to undefined method %s::%s()', self::class, $method));
     }
 }

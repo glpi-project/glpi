@@ -61,7 +61,7 @@ class PurgeLogs extends CommonDBTM
             self::purgePlugins();
             self::purgeAll();
             $logs_after = self::getLogsCount();
-            Log::history(0, __CLASS__, [0, $logs_before, $logs_after], '', Log::HISTORY_LOG_SIMPLE_MESSAGE);
+            Log::history(0, self::class, [0, $logs_before, $logs_after], '', Log::HISTORY_LOG_SIMPLE_MESSAGE);
             $task->addVolume($logs_before - $logs_after);
             $cron_status = 1;
         } else {

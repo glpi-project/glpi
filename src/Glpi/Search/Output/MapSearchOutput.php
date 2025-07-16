@@ -107,7 +107,7 @@ final class MapSearchOutput extends HTMLSearchOutput
             $parameters = "as_map=0&amp;" . $sort_params . '&amp;' .
                 $globallinkto;
 
-            if (strpos($target, '?') == false) {
+            if (!str_contains($target, '?')) {
                 $fulltarget = $target . "?" . $parameters;
             } else {
                 $fulltarget = $target . "&" . $parameters;

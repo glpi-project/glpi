@@ -146,7 +146,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         if (static::canView() && !$withtemplate) {
             $nb = 0;
             switch ($item::class) {
-                case __CLASS__:
+                case self::class:
                     $ong    = [];
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
@@ -191,7 +191,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         $this->addImpactTab($ong, $options);
         $this->addStandardTab(ProjectTask::class, $ong, $options);
         $this->addStandardTab(ProjectTeam::class, $ong, $options);
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab(ProjectCost::class, $ong, $options);
         $this->addStandardTab(Itil_Project::class, $ong, $options);
         $this->addStandardTab(Item_Project::class, $ong, $options);

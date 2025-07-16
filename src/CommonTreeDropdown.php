@@ -687,7 +687,7 @@ TWIG, $twig_params);
         $actions = parent::getSpecificMassiveActions($checkitem);
 
         if ($isadmin) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_under']
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_under']
                   = "<i class='ti ti-sitemap'></i>" .
                     _sx('button', 'Move under');
         }

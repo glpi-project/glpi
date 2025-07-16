@@ -1182,6 +1182,6 @@ class Search
      */
     public static function isVirtualField(string $field): bool
     {
-        return strpos($field, '_virtual') === 0;
+        return str_starts_with($field, '_virtual');
     }
 }

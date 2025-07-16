@@ -145,7 +145,7 @@ class Appliance_Item extends CommonDBRelation
             echo "<div class='firstbloc'>";
             echo "<form method='post' name='appliances_form$rand'
                      id='appliances_form$rand'
-                     action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
+                     action='" . Toolbox::getItemTypeFormURL(self::class) . "'>";
 
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_2'>";
@@ -250,7 +250,7 @@ class Appliance_Item extends CommonDBRelation
         if ($canedit && ($withtemplate != 2)) {
             echo "<div class='mt-1 mb-3 text-center'>";
             echo "<form name='applianceitem_form$rand' id='applianceitem_form$rand' method='post'
-                action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
+                action='" . Toolbox::getItemTypeFormURL(self::class) . "'>";
             echo "<input type='hidden' name='items_id' value='$ID'>";
             echo "<input type='hidden' name='itemtype' value='" . htmlescape($item::class) . "'>";
 

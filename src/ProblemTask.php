@@ -53,7 +53,7 @@ class ProblemTask extends CommonITILTask
      **/
     public static function populatePlanning($options = []): array
     {
-        return parent::genericPopulatePlanning(__CLASS__, $options);
+        return parent::genericPopulatePlanning(self::class, $options);
     }
 
 
@@ -69,7 +69,7 @@ class ProblemTask extends CommonITILTask
      */
     public static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
     {
-        return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete);
+        return parent::genericDisplayPlanningItem(self::class, $val, $who, $type, $complete);
     }
 
     /**
@@ -85,6 +85,6 @@ class ProblemTask extends CommonITILTask
      **/
     public static function populateNotPlanned($options = []): array
     {
-        return parent::genericPopulateNotPlanned(__CLASS__, $options);
+        return parent::genericPopulateNotPlanned(self::class, $options);
     }
 }

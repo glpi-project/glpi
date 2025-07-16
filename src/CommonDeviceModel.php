@@ -51,7 +51,7 @@ abstract class CommonDeviceModel extends CommonDropdown
         global $CFG_GLPI;
 
         $dir = ($full ? $CFG_GLPI['root_doc'] : '');
-        $itemtype = get_called_class();
+        $itemtype = static::class;
         $link = "$dir/front/devicemodel.form.php?itemtype=$itemtype";
 
         return $link;
@@ -63,7 +63,7 @@ abstract class CommonDeviceModel extends CommonDropdown
         global $CFG_GLPI;
 
         $dir = ($full ? $CFG_GLPI['root_doc'] : '');
-        $itemtype = get_called_class();
+        $itemtype = static::class;
         $link = "$dir/front/devicemodel.php?itemtype=$itemtype";
 
         return $link;
@@ -71,7 +71,7 @@ abstract class CommonDeviceModel extends CommonDropdown
 
     public static function getIcon()
     {
-        $model_class  = get_called_class();
+        $model_class  = static::class;
         $device_class = str_replace('Model', '', $model_class);
         return $device_class::getIcon();
     }

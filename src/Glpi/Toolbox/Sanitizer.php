@@ -352,7 +352,7 @@ class Sanitizer
 
         $mapping = null;
         foreach (self::CHARS_MAPPING as $htmlentity) {
-            if (strpos($value, $htmlentity) !== false) {
+            if (str_contains($value, $htmlentity)) {
                 // Value was cleaned using new char mapping, so it must be uncleaned with same mapping
                 $mapping = self::CHARS_MAPPING;
                 break;

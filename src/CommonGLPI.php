@@ -136,7 +136,7 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public static function getType()
     {
-        return get_called_class();
+        return static::class;
     }
 
     /**
@@ -820,7 +820,7 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public static function getTabsURL($full = true)
     {
-        return Toolbox::getItemTypeTabsURL(get_called_class(), $full);
+        return Toolbox::getItemTypeTabsURL(static::class, $full);
     }
 
     /**
@@ -832,7 +832,7 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public static function getSearchURL($full = true)
     {
-        return Toolbox::getItemTypeSearchURL(get_called_class(), $full);
+        return Toolbox::getItemTypeSearchURL(static::class, $full);
     }
 
     /**
@@ -844,7 +844,7 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public static function getFormURL($full = true)
     {
-        return Toolbox::getItemTypeFormURL(get_called_class(), $full);
+        return Toolbox::getItemTypeFormURL(static::class, $full);
     }
 
     /**

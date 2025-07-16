@@ -151,9 +151,9 @@ class IPNetwork_Vlan extends CommonDBRelation
 
         echo "<div class='spaced'>";
         if ($canedit && $number) {
-            Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
+            Html::openMassiveActionsForm('mass' . self::class . $rand);
             $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $number),
-                'container'     => 'mass' . __CLASS__ . $rand,
+                'container'     => 'mass' . self::class . $rand,
             ];
             Html::showMassiveActions($massiveactionparams);
         }
@@ -164,9 +164,9 @@ class IPNetwork_Vlan extends CommonDBRelation
         $header_bottom = '';
         $header_end    = '';
         if ($canedit && $number) {
-            $header_top    .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
+            $header_top    .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . self::class . $rand);
             $header_top    .= "</th>";
-            $header_bottom .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
+            $header_bottom .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . self::class . $rand);
             $header_bottom .= "</th>";
         }
         $header_end .= "<th>" . __s('Name') . "</th>";
@@ -180,7 +180,7 @@ class IPNetwork_Vlan extends CommonDBRelation
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
                 echo "<td>";
-                Html::showMassiveActionCheckBox(__CLASS__, $data["assocID"]);
+                Html::showMassiveActionCheckBox(self::class, $data["assocID"]);
                 echo "</td>";
             }
             $name = htmlescape($data["name"]);

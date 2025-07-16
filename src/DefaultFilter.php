@@ -141,7 +141,7 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
                         $filter_table => 'items_id',
                     ],
                     'AND'   => [
-                        "$filter_table.itemtype" => __CLASS__,
+                        "$filter_table.itemtype" => self::class,
                     ],
                 ],
             ],

@@ -205,7 +205,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab(ProjectTaskTeam::class, $ong, $options);
         $this->addStandardTab(Document_Item::class, $ong, $options);
         $this->addStandardTab(ProjectTask_Ticket::class, $ong, $options);

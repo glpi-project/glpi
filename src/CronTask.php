@@ -1350,7 +1350,7 @@ TWIG, ['msg' => __('Last run list')]);
         $actions = parent::getSpecificMassiveActions($checkitem);
 
         if ($isadmin) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'reset'] = __s('Reset last run');
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'reset'] = __s('Reset last run');
         }
         return $actions;
     }

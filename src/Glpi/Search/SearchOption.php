@@ -106,7 +106,7 @@ final class SearchOption implements \ArrayAccess
      */
     public function isVirtual(): bool
     {
-        return strpos($this['field'], '_virtual') === 0;
+        return str_starts_with($this['field'], '_virtual');
     }
 
     public function isForceGroupBy(): bool

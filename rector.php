@@ -35,6 +35,7 @@
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\CodeQuality\Rector as CodeQuality;
 use Rector\Config\RectorConfig;
+use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\ValueObject\PhpVersion;
 
 return RectorConfig::configure()
@@ -48,6 +49,11 @@ return RectorConfig::configure()
         __DIR__ . '/routes',
         __DIR__ . '/src',
         __DIR__ . '/tools',
+    ])
+    ->withSkip([
+        StringClassNameToClassConstantRector::class => [
+            __DIR__ . '/install/migrations',
+        ],
     ])
     ->withPhpVersion(PhpVersion::PHP_82)
     ->withCache(
@@ -99,4 +105,5 @@ return RectorConfig::configure()
         CodeQuality\NotEqual\CommonNotEqualRector::class,
         CodeQuality\Ternary\UnnecessaryTernaryExpressionRector::class,
     ])
+    ->withPhpSets(php56: true) // apply PHP sets up to PHP 5.6
 ;

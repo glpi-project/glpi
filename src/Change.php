@@ -218,8 +218,8 @@ class Change extends CommonITILObject
         $actions = parent::getSpecificMassiveActions($checkitem);
 
         if ($this->canAdminActors()) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_actor'] = __s('Add an actor');
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'update_notif']
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_actor'] = __s('Add an actor');
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'update_notif']
                = __s('Set notifications for all actors');
         }
 
@@ -231,7 +231,7 @@ class Change extends CommonITILObject
 
         if (static::canView()) {
             switch ($item->getType()) {
-                case __CLASS__:
+                case self::class:
                     $ong = [];
                     if ($item->canUpdate()) {
                         $ong[1] = static::createTabEntry(__('Statistics'), 0, null, 'ti ti-chart-pie');
@@ -274,7 +274,7 @@ class Change extends CommonITILObject
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab(ChangeValidation::class, $ong, $options);
         $this->addStandardTab(ChangeCost::class, $ong, $options);
         $this->addStandardTab(Itil_Project::class, $ong, $options);
@@ -845,7 +845,7 @@ class Change extends CommonITILObject
                 // Mini search engine
                 /** @var Group $item */
                 if ($item->haveChildren()) {
-                    $tree = (int) Session::getSavedOption(__CLASS__, 'tree', 0);
+                    $tree = (int) Session::getSavedOption(self::class, 'tree', 0);
                     TemplateRenderer::getInstance()->display('components/form/item_itilobject_group.html.twig', [
                         'tree' => $tree,
                     ]);
@@ -875,7 +875,7 @@ class Change extends CommonITILObject
             case Group::class:
                 /** @var Group $item */
                 if ($item->haveChildren()) {
-                    $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
+                    $tree = Session::getSavedOption(self::class, 'tree', 0);
                 } else {
                     $tree = 0;
                 }

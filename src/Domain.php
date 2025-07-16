@@ -711,7 +711,7 @@ class Domain extends CommonDBTM
                             'glpi_domains' => 'id',
                             [
                                 'AND' => [
-                                    'glpi_alerts.itemtype' => __CLASS__,
+                                    'glpi_alerts.itemtype' => self::class,
                                     'glpi_alerts.type'     => $alert_type,
                                 ],
                             ],
@@ -751,7 +751,7 @@ class Domain extends CommonDBTM
                         // Add alert
                         $input = [
                             'type'     => $alert_type,
-                            'itemtype' => __CLASS__,
+                            'itemtype' => self::class,
                             'items_id' => $domain_id,
                         ];
                         $alert = new Alert();

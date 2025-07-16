@@ -580,7 +580,7 @@ class MassiveAction
             && Session::isMultiEntitiesMode()
             && !isAPI()
         ) {
-            $actions[__CLASS__ . self::CLASS_ACTION_SEPARATOR . 'add_transfer_list']
+            $actions[self::class . self::CLASS_ACTION_SEPARATOR . 'add_transfer_list']
                   = "<i class='ti ti-corner-right-up'></i>" .
                     _x('button', 'Add to transfer list');
         }
@@ -626,7 +626,7 @@ class MassiveAction
         }
 
         $actions   = [];
-        $self_pref = __CLASS__ . self::CLASS_ACTION_SEPARATOR;
+        $self_pref = self::class . self::CLASS_ACTION_SEPARATOR;
 
         if ($is_deleted) {
             if ($canpurge) {
