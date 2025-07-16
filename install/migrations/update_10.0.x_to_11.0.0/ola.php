@@ -34,6 +34,11 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @var DBmysql $DB
+ * @var Migration $migration
+ */
+
 use function Safe\json_encode;
 
 $migration->log('Group managed olas', false);
@@ -42,6 +47,7 @@ add_groups_id_field_in_olas($migration);
 create_items_olas_table($migration);
 migrate_items_olas_data($migration);
 remove_olas_fields_in_tickets($migration);
+update_crontask($migration, $DB);
 
 $migration->executeMigration();
 return;
@@ -156,6 +162,43 @@ function migrate_items_olas_data(Migration $migration): void
             if (!$io->add($_data)) {
                 throw new Exception('Failed to migrato OLA TTO data: ' . json_encode($_data));
             }
+        }
+    }
+}
+
+function update_crontask(Migration $migration, DBmysql $DB): void
+{
+    // find if cron task already exists to choose against adding it or updating it
+    $crontask = $DB->request([
+        'SELECT' => ['id'],
+        'FROM' => CronTask::getTable(),
+        'WHERE' => [
+            'name' => 'olaticket',
+        ],
+    ]);
+    $id = $crontask->current() ? $crontask->current()['id'] : null;
+
+    if (is_null($id)) {
+        // add new crontask
+        $migration->insertInTable(
+            'glpi_crontasks',
+            [
+                'itemtype' => 'Item_Ola',
+                'name' => 'olaticket',
+                'frequency' => 5 * MINUTE_TIMESTAMP,
+                'param' => null,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_INTERNAL,
+                'lastrun' => null,
+                'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
+            ]
+        );
+    } else {
+        // update existing crontask
+        if (false === $DB->doQuery($DB->buildUpdate('glpi_crontasks', ['itemtype' => 'Item_Ola'], ['id' => $id]))) {
+            throw new Exception('Failed to update crontask itemtype');
         }
     }
 }

@@ -151,56 +151,6 @@ class OlaLevel_Ticket extends CommonDBTM
     }
 
     /**
-     * Cron for ticket's automatic close
-     *
-     * @param $task : CronTask object
-     *
-     * @return integer (0 : nothing done - 1 : done)
-     * @used-by CronTask
-     **/
-    public static function cronOlaTicket(CronTask $task)
-    {
-        global $DB;
-
-        $tot = 0;
-        $now = Session::getCurrentTime();
-
-        $iterator = $DB->request([
-            'SELECT'    => [
-                'glpi_olalevels_tickets.*',
-                'glpi_olas.type AS type',
-                'glpi_olas.id AS olas_id',
-            ],
-            'FROM'      => 'glpi_olalevels_tickets',
-            'LEFT JOIN' => [
-                'glpi_olalevels'  => [
-                    'ON' => [
-                        'glpi_olalevels_tickets'   => 'olalevels_id',
-                        'glpi_olalevels'           => 'id',
-                    ],
-                ],
-                'glpi_olas'       => [
-                    'ON' => [
-                        'glpi_olalevels'  => 'olas_id',
-                        'glpi_olas'       => 'id',
-                    ],
-                ],
-            ],
-            'WHERE'     => [
-                'glpi_olalevels_tickets.date' => ['<', $now],
-            ],
-        ]);
-
-        foreach ($iterator as $data) {
-            $tot++;
-            self::doLevelForTicket($data, $data['type']);
-        }
-
-        $task->setVolume($tot);
-        return ($tot > 0 ? 1 : 0);
-    }
-
-    /**
      * Do a specific OLAlevel for a ticket
      *
      * @param array{id: int, tickets_id: int, olalevels_id:int, olas_id: int} $data data of an entry of olalevels_tickets
