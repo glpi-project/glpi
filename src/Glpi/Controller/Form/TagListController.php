@@ -73,7 +73,7 @@ final class TagListController extends AbstractController
         }
 
         $form = Form::getById($forms_id);
-        if (!$form) {
+        if (!$form instanceof Form) {
             throw new NotFoundHttpException();
         }
 

@@ -95,7 +95,7 @@ class QueuedWebhook extends CommonDBChild
         $actions = parent::getSpecificMassiveActions($checkitem);
 
         if ($isadmin && !$is_deleted) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'send'] = _sx('button', 'Send');
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'send'] = _sx('button', 'Send');
         }
 
         return $actions;
@@ -179,7 +179,7 @@ class QueuedWebhook extends CommonDBChild
             return false;
         }
 
-        if ($webhook->fields['use_cra_challenge']) {
+        if (GLPI_WEBHOOK_CRA_MANDATORY || $webhook->fields['use_cra_challenge']) {
             // Send CRA challenge
             $result = $webhook::validateCRAChallenge($queued_webhook->fields['url'], 'validate_cra_challenge', $webhook->fields['secret']);
             if ($result === false || $result['status'] !== true) {
@@ -216,9 +216,7 @@ class QueuedWebhook extends CommonDBChild
         $client = Toolbox::getGuzzleClient($guzzle_options);
         $headers = json_decode($queued_webhook->fields['headers'], true);
         // Remove headers with empty values
-        $headers = array_filter($headers, static function ($value) {
-            return !empty($value);
-        });
+        $headers = array_filter($headers, static fn($value) => !empty($value));
         if ($bearer_token !== null) {
             $headers['Authorization'] = 'Bearer ' . $bearer_token;
         }

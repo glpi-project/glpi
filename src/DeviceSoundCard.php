@@ -108,7 +108,7 @@ class DeviceSoundCard extends CommonDevice
 
         switch ($itemtype) {
             case Computer::class:
-                Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+                Manufacturer::getHTMLTableHeader(self::class, $base, $super, $father, $options);
                 $base->addHeader('devicesoundcard_type', _n('Type', 'Types', 1), $super, $father);
                 break;
         }

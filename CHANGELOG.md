@@ -537,6 +537,7 @@ The present file will list all changes made to the project; according to the
 - `PlanningRecall::specificForm()`
 - `Plugin::haveImport()`
 - `Plugin::migrateItemType()`
+- `Plugin::unactivateAll()`
 - `ProfileRight::updateProfileRightAsOtherRight()`
 - `ProfileRight::updateProfileRightsAsOtherRights()`
 - `Project::commonListHeader()`
@@ -639,7 +640,28 @@ The present file will list all changes made to the project; according to the
 - Usage of the `$link` and `$name` parameters in `Auth::getMethodName()`.
 
 
-## [10.0.19] unreleased
+## [10.0.20] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.19] 2025-07-16
 
 ### Added
 

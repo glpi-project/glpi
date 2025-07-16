@@ -731,7 +731,7 @@ class Stat extends CommonGLPI
                 $timedisplay = $nb_solved > 0 ? array_sum($data) / $nb_solved : 0;
 
                 if ($is_html_output || $output instanceof Pdf) {
-                    $timedisplay = Html::timestampToString($timedisplay, 0, false);
+                    $timedisplay = Html::timestampToString($timedisplay, false, false);
                 } elseif ($output instanceof Csv) {
                     $timedisplay = Html::timestampToCsvString($timedisplay);
                 }
@@ -766,7 +766,7 @@ class Stat extends CommonGLPI
                 $timedisplay = 0;
             }
             if ($is_html_output || $output instanceof Pdf) {
-                $timedisplay = Html::timestampToString($timedisplay, 0, false);
+                $timedisplay = Html::timestampToString($timedisplay, false, false);
             } elseif ($output instanceof Csv) {
                 $timedisplay = Html::timestampToCsvString($timedisplay);
             }
@@ -800,7 +800,7 @@ class Stat extends CommonGLPI
                 $timedisplay = 0;
             }
             if ($is_html_output || $output instanceof Pdf) {
-                $timedisplay = Html::timestampToString($timedisplay, 0, false);
+                $timedisplay = Html::timestampToString($timedisplay, false, false);
             } elseif ($output instanceof Csv) {
                 $timedisplay = Html::timestampToCsvString($timedisplay);
             }
@@ -852,7 +852,7 @@ class Stat extends CommonGLPI
             }
 
             if ($is_html_output || $output instanceof Pdf) {
-                $timedisplay = Html::timestampToString($timedisplay, 0, false);
+                $timedisplay = Html::timestampToString($timedisplay, false, false);
             } elseif ($output instanceof Csv) {
                 $timedisplay = Html::timestampToCsvString($timedisplay);
             }
@@ -869,7 +869,7 @@ class Stat extends CommonGLPI
             $timedisplay = $total_actiontime;
 
             if ($is_html_output || $output instanceof Pdf) {
-                $timedisplay = Html::timestampToString($timedisplay, 0, false);
+                $timedisplay = Html::timestampToString($timedisplay, false, false);
             } elseif ($output instanceof Csv) {
                 $timedisplay = Html::timestampToCsvString($timedisplay);
             }
@@ -935,7 +935,7 @@ class Stat extends CommonGLPI
      * @param string $begin
      * @param string $end
      * @param string $param
-     * @param array $value
+     * @param string|array $value
      * @param string $value2 (default '')
      * @param $add_criteria          (default [''])
      *
@@ -1878,7 +1878,7 @@ class Stat extends CommonGLPI
         foreach ($values as $reports) {
             if (is_array($reports)) {
                 foreach (array_keys($reports) as $key) {
-                    if (stripos($_SERVER['REQUEST_URI'], $key) !== false) {
+                    if (stripos($_SERVER['REQUEST_URI'], (string) $key) !== false) {
                         $selected = $key;
                     }
                 }

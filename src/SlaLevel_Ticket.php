@@ -272,7 +272,7 @@ class SlaLevel_Ticket extends CommonDBTM
                         $input['_auto_update'] = true;
 
                         if (
-                            $slalevel->getRuleWithCriteriasAndActions($data['slalevels_id'], 1, 1)
+                            $slalevel->getRuleWithCriteriasAndActions($data['slalevels_id'], true, true)
                             && $sla->getFromDB($ticket->fields[$slaField])
                         ) {
                             $doit = true;

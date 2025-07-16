@@ -90,13 +90,13 @@ class NetworkPort extends CommonDBChild
             case 'input_for_instantiation':
             case 'input_for_NetworkName':
             case 'input_for_NetworkPortConnect':
-                Toolbox::deprecated(sprintf('Reading private property %s::%s is deprecated', __CLASS__, $property));
+                Toolbox::deprecated(sprintf('Reading private property %s::%s is deprecated', self::class, $property));
                 $value = $this->$property;
                 break;
             default:
                 $trace = debug_backtrace();
                 trigger_error(
-                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    sprintf('Undefined property: %s::%s in %s on line %d', self::class, $property, $trace[0]['file'], $trace[0]['line']),
                     E_USER_WARNING
                 );
                 break;
@@ -115,13 +115,13 @@ class NetworkPort extends CommonDBChild
             case 'input_for_instantiation':
             case 'input_for_NetworkName':
             case 'input_for_NetworkPortConnect':
-                Toolbox::deprecated(sprintf('Writing private property %s::%s is deprecated', __CLASS__, $property));
+                Toolbox::deprecated(sprintf('Writing private property %s::%s is deprecated', self::class, $property));
                 $this->$property = $value;
                 break;
             default:
                 $trace = debug_backtrace();
                 trigger_error(
-                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    sprintf('Undefined property: %s::%s in %s on line %d', self::class, $property, $trace[0]['file'], $trace[0]['line']),
                     E_USER_WARNING
                 );
                 break;
@@ -644,7 +644,7 @@ class NetworkPort extends CommonDBChild
         ];
 
         $so = $netport->rawSearchOptions();
-        foreach (Plugin::getAddSearchOptions(__CLASS__) as $key => $data) {
+        foreach (Plugin::getAddSearchOptions(self::class) as $key => $data) {
             $so[] = ['id' => $key] + $data;
         }
 
@@ -732,7 +732,7 @@ class NetworkPort extends CommonDBChild
 
         $rand = mt_rand();
         if ($showmassiveactions) {
-            Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
+            Html::openMassiveActionsForm('mass' . self::class . $rand);
         }
 
         Session::initNavigateListItems(
@@ -750,7 +750,7 @@ class NetworkPort extends CommonDBChild
             $massiveactionparams = [
                 'num_displayed'  => min($_SESSION['glpilist_limit'], count($ports_iterator)),
                 'check_itemtype' => $itemtype,
-                'container'      => 'mass' . __CLASS__ . $rand,
+                'container'      => 'mass' . self::class . $rand,
                 'check_items_id' => $items_id,
             ];
             Html::showMassiveActions($massiveactionparams);
@@ -780,7 +780,7 @@ class NetworkPort extends CommonDBChild
         //display table headers
         echo "<tr>";
         if ($canedit) {
-            echo "<td>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand, '__RAND__') . "</td>";
+            echo "<td>" . Html::getCheckAllAsCheckbox('mass' . self::class . $rand, '__RAND__') . "</td>";
         }
         foreach ($dprefs as $dpref) {
             echo "<th>";
@@ -915,7 +915,7 @@ class NetworkPort extends CommonDBChild
         $port_number = $port['logical_number'] ?? "";
         $whole_output = "<tr class='$css_class' id='port_number_{$port_number}'>";
         if ($canedit && $with_ma) {
-            $whole_output .= "<td>" . Html::getMassiveActionCheckBox(__CLASS__, $port['id']) . "</td>";
+            $whole_output .= "<td>" . Html::getMassiveActionCheckBox(self::class, $port['id']) . "</td>";
         }
         foreach ($dprefs as $dpref) {
             $output = '';
@@ -1228,12 +1228,12 @@ class NetworkPort extends CommonDBChild
                                 $netport_table = $this->getTable();
                                 $already_link_tables = [];
                                 $join = Search::addLeftJoin(
-                                    __CLASS__,
+                                    self::class,
                                     $netport_table,
                                     $already_link_tables,
                                     $option["table"],
                                     $option["linkfield"],
-                                    0,
+                                    false,
                                     0,
                                     $option["joinparams"],
                                     $option["field"]

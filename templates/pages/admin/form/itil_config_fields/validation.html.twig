@@ -32,6 +32,22 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
+<div data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_VALUES }}">
+    {{ fields.dropdownField(
+        "ITILValidationTemplate",
+        specific_value_extra_field.input_name,
+        specific_value_extra_field.value,
+        "",
+        options|merge({
+            field_class: '',
+            mb: '',
+            multiple: true,
+            no_label: true,
+            aria_label: specific_value_extra_field.aria_label,
+        })
+    ) }}
+</div>
+
 <div data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_ACTORS }}">
     {% set actors_dropdown = call('Glpi\\Form\\Dropdown\\FormActorsDropdown::show', [
         specific_values_extra_field.input_name,

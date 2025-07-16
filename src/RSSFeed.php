@@ -452,7 +452,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
@@ -460,19 +460,19 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        switch (get_class($item)) {
-            case RSSFeed::class:
-                switch ($tabnum) {
-                    case 1:
-                        $item->showFeedContent();
-                        return true;
-
-                    case 2:
-                        $item->showVisibility();
-                        return true;
-                }
+        if (!$item instanceof self) {
+            return false;
         }
-        return false;
+        switch ($tabnum) {
+            case 1:
+                return $item->showFeedContent();
+
+            case 2:
+                return $item->showVisibility();
+
+            default:
+                return false;
+        }
     }
 
     public function prepareInputForAdd($input)
@@ -632,7 +632,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
     /**
      * Show the feed content
      **/
-    public function showFeedContent()
+    public function showFeedContent(): bool
     {
         if (!$this->canViewItem()) {
             return false;
@@ -661,6 +661,8 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
         TemplateRenderer::getInstance()->display('components/rss_feed.html.twig', [
             'rss_feed'  => $rss_feed,
         ]);
+
+        return true;
     }
 
     /**

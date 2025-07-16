@@ -164,10 +164,15 @@ class ImpactTest extends \DbTestCase
         // Create an impact graph
         $this->addDbEdge($computer1, $computer2);
         $this->addDbEdge($computer2, $computer3);
-        $tab_name = $impact->getTabNameForItem($computer2);
+        $this->assertEquals("Impact analysis 2", strip_tags($impact->getTabNameForItem($computer2)));
+        $this->assertEquals("Impact analysis 2", strip_tags($impact->getTabNameForItem($computer2, '')));
+        $this->assertEquals("Impact analysis 2", strip_tags($impact->getTabNameForItem($computer2, '0')));
+        $this->assertEquals("Impact analysis 2", strip_tags($impact->getTabNameForItem($computer2, 0)));
+        $this->assertEquals('', $impact->getTabNameForItem($computer2, 1));
+        $this->assertEquals('', $impact->getTabNameForItem($computer2, '1'));
+        $this->assertEquals('', $impact->getTabNameForItem($computer2, 2));
+        $this->assertEquals('', $impact->getTabNameForItem($computer2, '2'));
         $_SESSION['glpishow_count_on_tabs'] = $old_session;
-
-        $this->assertEquals("Impact analysis 2", strip_tags($tab_name));
     }
 
     public function testGetTabNameForItem_ITILObject()

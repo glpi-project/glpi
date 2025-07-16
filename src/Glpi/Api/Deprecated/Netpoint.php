@@ -35,6 +35,8 @@
 
 namespace Glpi\Api\Deprecated;
 
+use Glpi\Socket;
+
 /**
  * @since 10.0.0
  */
@@ -44,7 +46,7 @@ class Netpoint implements DeprecatedInterface
 
     public function getType(): string
     {
-        return "Socket";
+        return Socket::class;
     }
 
     public function mapCurrentToDeprecatedHateoas(array $hateoas): array

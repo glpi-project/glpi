@@ -69,9 +69,7 @@ final class FakeProvider extends Provider
             ['Zachariah', 'Ellis'],
             ['Rena', 'Velez'],
         ];
-        return array_map(static function ($name) {
-            return formatUserName(0, '', $name[1], $name[0]);
-        }, $names);
+        return array_map(static fn($name) => formatUserName(0, '', $name[1], $name[0]), $names);
     }
 
     /**
@@ -322,9 +320,7 @@ final class FakeProvider extends Provider
             ];
         }
         // sort by date so newest is first
-        usort($data, static function ($a, $b) {
-            return $b['date'] <=> $a['date'];
-        });
+        usort($data, static fn($a, $b) => $b['date'] <=> $a['date']);
         return [
             'data'   => $data,
             'number' => 5,

@@ -82,7 +82,7 @@ class Budget extends CommonDropdown
 
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab(Document_Item::class, $ong, $options);
         $this->addStandardTab(KnowbaseItem_Item::class, $ong, $options);
         $this->addStandardTab(ManualLink::class, $ong, $options);
@@ -97,7 +97,7 @@ class Budget extends CommonDropdown
 
         if (!$withtemplate) {
             switch ($item->getType()) {
-                case __CLASS__:
+                case self::class:
                     return [1 => self::createTabEntry(__('Main')),
                         2 => self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), 0, $item::getType(), 'ti ti-package'),
                     ];
@@ -112,12 +112,10 @@ class Budget extends CommonDropdown
         if ($item instanceof self) {
             switch ($tabnum) {
                 case 1:
-                    $item->showValuesByEntity();
-                    break;
+                    return $item->showValuesByEntity();
 
                 case 2:
-                    $item->showItems();
-                    break;
+                    return $item->showItems();
             }
         }
         return true;
@@ -439,9 +437,9 @@ class Budget extends CommonDropdown
     /**
      * Print the HTML array of Items on a budget
      *
-     * @return void
+     * @return bool
      **/
-    public function showItems()
+    public function showItems(): bool
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -533,14 +531,16 @@ class Budget extends CommonDropdown
             'filtered_number' => $total_count,
             'showmassiveactions' => false,
         ]);
+
+        return true;
     }
 
     /**
      * Print the HTML array of value consumed for a budget
      *
-     * @return void
+     * @return bool
      **/
-    public function showValuesByEntity()
+    public function showValuesByEntity(): bool
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -655,6 +655,8 @@ class Budget extends CommonDropdown
             'filtered_number' => count($entries),
             'showmassiveactions' => false,
         ]);
+
+        return true;
     }
 
     public static function getIcon()

@@ -444,7 +444,7 @@ class Item_SoftwareLicense extends CommonDBRelation
         global $DB;
 
         $license_table = SoftwareLicense::getTable();
-        $item_license_table = self::getTable(__CLASS__);
+        $item_license_table = self::getTable(self::class);
 
         $iterator = $DB->request([
             'SELECT'    => ['itemtype'],
@@ -516,16 +516,16 @@ class Item_SoftwareLicense extends CommonDBRelation
      *
      * @param SoftwareLicense $license SoftwareLicense instance
      *
-     * @return void
+     * @return bool
      **/
-    public static function showForLicenseByEntity(SoftwareLicense $license)
+    public static function showForLicenseByEntity(SoftwareLicense $license): bool
     {
         /** @var \DBmysql $DB */
         global $DB;
 
         $softwarelicense_id = $license->getField('id');
         $license_table = SoftwareLicense::getTable();
-        $item_license_table = self::getTable(__CLASS__);
+        $item_license_table = self::getTable(self::class);
 
         if (!Software::canView() || !$softwarelicense_id) {
             return false;
@@ -589,6 +589,8 @@ class Item_SoftwareLicense extends CommonDBRelation
             echo "<tr class='tab_bg_1'><td colspan='2 b'>" . __s('No results found') . "</td></tr>\n";
         }
         echo "</table></div>";
+
+        return true;
     }
 
 
@@ -597,9 +599,9 @@ class Item_SoftwareLicense extends CommonDBRelation
      *
      * @param SoftwareLicense $license SoftwareLicense instance
      *
-     * @return void
+     * @return bool
      **/
-    public static function showForLicense(SoftwareLicense $license)
+    public static function showForLicense(SoftwareLicense $license): bool
     {
         /**
          * @var array $CFG_GLPI
@@ -615,7 +617,7 @@ class Item_SoftwareLicense extends CommonDBRelation
 
         $canedit         = Session::haveRightsOr("software", [CREATE, UPDATE, DELETE, PURGE]);
         $canshowitems  = [];
-        $item_license_table = self::getTable(__CLASS__);
+        $item_license_table = self::getTable(self::class);
 
         $start = (int) ($_GET["start"] ?? 0);
         $order = ($_GET['order'] ?? 'ASC') === 'DESC' ? 'DESC' : 'ASC';
@@ -719,7 +721,7 @@ JAVASCRIPT;
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr><th>" . __s('No results found') . "</th></tr>";
             echo "</table></div>\n";
-            return;
+            return true;
         }
 
         // Display the pager
@@ -938,15 +940,15 @@ JAVASCRIPT;
 
         if ($data = $iterator->current()) {
             if ($canedit) {
-                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
+                Html::openMassiveActionsForm('mass' . self::class . $rand);
                 $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], count($iterator)),
-                    'container'        => 'mass' . __CLASS__ . $rand,
+                    'container'        => 'mass' . self::class . $rand,
                     'specific_actions' => ['purge' => _x('button', 'Delete permanently')],
                 ];
 
                 // show transfer only if multi licenses for this software
                 if (self::countLicenses($data['softid']) > 1) {
-                    $massiveactionparams['specific_actions'][__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_license'] = _x('button', 'Move');
+                    $massiveactionparams['specific_actions'][self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_license'] = _x('button', 'Move');
                 }
 
                 // Options to update license
@@ -993,8 +995,8 @@ JAVASCRIPT;
             $header_end    = '';
             if ($canedit) {
                 $header_begin  .= "<th width='10'>";
-                $header_top    .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                $header_bottom .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
+                $header_top    .= Html::getCheckAllAsCheckbox('mass' . self::class . $rand);
+                $header_bottom .= Html::getCheckAllAsCheckbox('mass' . self::class . $rand);
                 $header_end    .= "</th>";
             }
 
@@ -1021,7 +1023,7 @@ JAVASCRIPT;
                     if ($data['itemtype'] == 'User') {
                         $class = SoftwareLicense_User::class;
                     } else {
-                        $class = __CLASS__;
+                        $class = self::class;
                     }
                     echo "<td>" . Html::getMassiveActionCheckBox($class, $data["id"]) . "</td>";
                 }
@@ -1074,6 +1076,8 @@ JAVASCRIPT;
         Html::printAjaxPager(__s('Affected items'), $start, $number);
 
         echo "</div>\n";
+
+        return true;
     }
 
     /**
@@ -1113,7 +1117,7 @@ JAVASCRIPT;
         global $DB;
 
         $lic = [];
-        $item_license_table = self::getTable(__CLASS__);
+        $item_license_table = self::getTable(self::class);
 
         $iterator = $DB->request([
             'SELECT'       => [
@@ -1180,17 +1184,15 @@ JAVASCRIPT;
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item::class === SoftwareLicense::class) {
+        if ($item instanceof SoftwareLicense) {
             switch ($tabnum) {
                 case 1:
-                    self::showForLicenseByEntity($item);
-                    break;
+                    return self::showForLicenseByEntity($item);
                 case 2:
-                    self::showForLicense($item);
-                    break;
+                    return self::showForLicense($item);
             }
         }
-        return true;
+        return false;
     }
 
     /**

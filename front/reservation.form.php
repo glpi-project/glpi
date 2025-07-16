@@ -53,20 +53,17 @@ if (Session::getCurrentInterface() == "helpdesk") {
 }
 
 if (isset($_POST["update"])) {
+    $rr->check($_POST["id"], UPDATE);
     Toolbox::manageBeginAndEndPlanDates($_POST['resa']);
-    if (
-        Session::haveRight("reservation", UPDATE)
-        || (Session::getLoginUserID() == $_POST["users_id"])
-    ) {
-        $_POST['_item']   = key($_POST["items"]);
-        $_POST['begin']   = $_POST['resa']["begin"];
-        $_POST['end']     = $_POST['resa']["end"];
-        $rr->update($_POST);
-        Html::back();
-    }
+    $_POST['_item']   = key($_POST["items"]);
+    $_POST['begin']   = $_POST['resa']["begin"];
+    $_POST['end']     = $_POST['resa']["end"];
+    $rr->update($_POST);
+    Html::back();
 } elseif (isset($_POST["purge"])) {
+    $rr->check($_POST["id"], PURGE);
     $reservationitems_id = key($_POST["items"]);
-    if ($rr->delete($_POST, 1)) {
+    if ($rr->delete($_POST, true)) {
         Event::log(
             $_POST["id"],
             "reservation",
@@ -85,9 +82,11 @@ if (isset($_POST["update"])) {
     Html::redirect($CFG_GLPI["root_doc"] . "/front/reservation.php?reservationitems_id=" .
                   "$reservationitems_id&mois_courant=$begin_month&annee_courante=$begin_year");
 } elseif (isset($_POST["add"])) {
+    Session::checkRight('reservation', CREATE);
     Reservation::handleAddForm($_POST);
     Html::back();
 } elseif (isset($_GET["id"])) {
+    $rr->check($_GET['id'], READ);
     if (!isset($_GET['begin'])) {
         $_GET['begin'] = date('Y-m-d H:00:00');
     }

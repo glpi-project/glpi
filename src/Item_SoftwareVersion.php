@@ -280,7 +280,7 @@ class Item_SoftwareVersion extends CommonDBRelation
         /** @var \DBmysql $DB */
         global $DB;
 
-        $item_version_table = self::getTable(__CLASS__);
+        $item_version_table = self::getTable(self::class);
         $iterator = $DB->request([
             'SELECT'    => ['itemtype'],
             'DISTINCT'  => true,
@@ -462,7 +462,7 @@ class Item_SoftwareVersion extends CommonDBRelation
 
         $canedit       = Session::haveRightsOr("software", [CREATE, UPDATE, DELETE, PURGE]);
         $canshowitems  = [];
-        $item_version_table = self::getTable(__CLASS__);
+        $item_version_table = self::getTable(self::class);
 
         $refcolumns = [
             'version'           => _n('Version', 'Versions', Session::getPluralNumber()),
@@ -681,14 +681,14 @@ class Item_SoftwareVersion extends CommonDBRelation
 
             if ($canedit) {
                 $rand = mt_rand();
-                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
+                Html::openMassiveActionsForm('mass' . self::class . $rand);
                 $massiveactionparams
                  = ['num_displayed'
                         => min($_SESSION['glpilist_limit'], $number),
                      'container'
-                        => 'mass' . __CLASS__ . $rand,
+                        => 'mass' . self::class . $rand,
                      'specific_actions'
-                        => [__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_version'
+                        => [self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_version'
                                        => _x('button', 'Move'),
                             'purge' => _x('button', 'Delete permanently'),
                         ],
@@ -713,8 +713,8 @@ class Item_SoftwareVersion extends CommonDBRelation
             $header_end    = '';
             if ($canedit) {
                 $header_begin  .= "<th width='10'>";
-                $header_top    .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                $header_bottom .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
+                $header_top    .= Html::getCheckAllAsCheckbox('mass' . self::class . $rand);
+                $header_bottom .= Html::getCheckAllAsCheckbox('mass' . self::class . $rand);
                 $header_end    .= "</th>";
             }
             $columns = $refcolumns;
@@ -744,7 +744,7 @@ class Item_SoftwareVersion extends CommonDBRelation
                 echo "<tr class='tab_bg_2'>";
                 if ($canedit) {
                     echo "<td>";
-                    Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
+                    Html::showMassiveActionCheckBox(self::class, $data["id"]);
                     echo "</td>";
                 }
 
@@ -898,7 +898,7 @@ class Item_SoftwareVersion extends CommonDBRelation
         /** @var \DBmysql $DB */
         global $DB;
 
-        $selftable     = self::getTable(__CLASS__);
+        $selftable     = self::getTable(self::class);
 
         $select = [
             'glpi_softwares.softwarecategories_id',
@@ -978,7 +978,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             $request['WHERE']["{$selftable}.is_deleted"] = 0;
         }
 
-        $crit = Session::getSavedOption(__CLASS__, 'criterion', -1);
+        $crit = Session::getSavedOption(self::class, 'criterion', -1);
         if ($crit > -1) {
             $request['WHERE']['glpi_softwares.softwarecategories_id'] = (int) $crit;
         }
@@ -1011,7 +1011,7 @@ class Item_SoftwareVersion extends CommonDBRelation
         $canedit       = Session::haveRightsOr("software", [CREATE, UPDATE, DELETE, PURGE]);
         $entities_id   = $item->fields["entities_id"];
 
-        $crit         = Session::getSavedOption(__CLASS__, 'criterion', -1);
+        $crit         = Session::getSavedOption(self::class, 'criterion', -1);
 
         $iterator = self::getFromItem($item, null, null, $filters);
 
@@ -1083,12 +1083,12 @@ class Item_SoftwareVersion extends CommonDBRelation
             echo "<div class='table-responsive'>";
             if ($canedit) {
                 $rand = mt_rand();
-                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
+                Html::openMassiveActionsForm('mass' . self::class . $rand);
                 $massiveactionparams
                 = ['num_displayed'
                          => min($_SESSION['glpilist_limit'], $number),
                     'container'
-                         => 'mass' . __CLASS__ . $rand,
+                         => 'mass' . self::class . $rand,
                     'specific_actions'
                          => ['purge' => _x('button', 'Delete permanently')],
                 ];
@@ -1103,8 +1103,8 @@ class Item_SoftwareVersion extends CommonDBRelation
             $header_end    = '';
             if ($canedit) {
                 $header_begin  .= "<th width='10'>";
-                $header_top    .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                $header_bottom .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
+                $header_top    .= Html::getCheckAllAsCheckbox('mass' . self::class . $rand);
+                $header_bottom .= Html::getCheckAllAsCheckbox('mass' . self::class . $rand);
                 $header_end    .= "</th>";
             }
             $header_end .= "<th>" . __s('Name') . "</th>";
@@ -1383,7 +1383,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
                 echo "<td>";
-                Html::showMassiveActionCheckBox(__CLASS__, $ID);
+                Html::showMassiveActionCheckBox(self::class, $ID);
                 echo "</td>";
             }
             echo "<td>";
@@ -1638,7 +1638,7 @@ class Item_SoftwareVersion extends CommonDBRelation
 
     protected static function getListForItemParams(CommonDBTM $item, $noent = false)
     {
-        $table = self::getTable(__CLASS__);
+        $table = self::getTable(self::class);
 
         $params = parent::getListForItemParams($item);
         unset($params['SELECT'], $params['ORDER']);

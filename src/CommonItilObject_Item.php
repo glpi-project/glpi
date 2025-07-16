@@ -797,7 +797,7 @@ TWIG, $twig_params);
 
         if (
             $_SESSION["glpiactiveprofile"]["helpdesk_hardware"]
-            & pow(2, CommonITILObject::HELPDESK_MY_HARDWARE)
+            & 2 ** CommonITILObject::HELPDESK_MY_HARDWARE
         ) {
             $my_devices = array_merge(
                 ['' => Dropdown::EMPTY_VALUE],
@@ -1293,7 +1293,7 @@ TWIG, $twig_params);
         $iterator = $DB->request(['FROM' => $union]);
 
         if ($p['hide_if_no_elements'] && $iterator->count() === 0) {
-            return;
+            return false;
         }
 
         $output = [];

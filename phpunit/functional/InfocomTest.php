@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use Cartridge;
+use Computer;
 use Consumable;
 use DbTestCase;
 use Glpi\Asset\Capacity;
@@ -42,6 +43,7 @@ use Glpi\Asset\Capacity\HasInfocomCapacity;
 use Glpi\Features\Clonable;
 use Infocom;
 use PHPUnit\Framework\Attributes\DataProvider;
+use State;
 use Toolbox;
 
 class InfocomTest extends DbTestCase
@@ -319,5 +321,44 @@ class InfocomTest extends DbTestCase
         $this->assertCount(2, $alerts);
         $this->assertSame($not_deleted_infocom_id, $alerts[0]['items_id']);
         $this->assertSame($deleted_expired_infocom_id, $alerts[1]['items_id']);
+    }
+
+    /**
+     * @return void
+     */
+    public function testAutofill()
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+        $entity = new \Entity();
+        $status_in_use = $this->createItem(State::class, ['name' => __FUNCTION__ . '_InUse']);
+        $status_decom = $this->createItem(State::class, ['name' => __FUNCTION__ . '_Decommissioned']);
+        $this->assertTrue($entity->getFromDB($_SESSION['glpiactive_entity']));
+        $entity->update([
+            'id' => $entity->getID(),
+            'autofill_buy_date' => Infocom::COPY_WARRANTY_DATE,
+            'autofill_use_date' => Infocom::COPY_ORDER_DATE,
+            'autofill_delivery_date' => Infocom::ON_STATUS_CHANGE . '_' . $status_in_use->getID(),
+            'autofill_warranty_date' => Infocom::ON_STATUS_CHANGE . '_' . $status_in_use->getID(),
+            'autofill_order_date' => Infocom::ON_STATUS_CHANGE . '_' . $status_in_use->getID(),
+            'autofill_decommission_date' => Infocom::ON_STATUS_CHANGE . '_' . $status_decom->getID(),
+        ]);
+        $_SESSION['glpi_currenttime'] = '2025-07-14 9:15:20';
+        $CFG_GLPI['auto_create_infocoms'] = true;
+
+        $computer = $this->createItem(Computer::class, [
+            'name' => __FUNCTION__ . '_Computer',
+            'states_id' => $status_in_use->getID(),
+            'entities_id' => $entity->getID(),
+        ]);
+        $infocom = new Infocom();
+        $infocom->getFromDBforDevice(Computer::class, $computer->getID());
+        $this->assertEquals('2025-07-14', $infocom->fields['delivery_date'], 'Delivery date should be set on status change');
+        $this->assertEquals('2025-07-14', $infocom->fields['order_date'], 'Order date should be set on status change');
+        $this->assertEquals('2025-07-14', $infocom->fields['buy_date'], 'Buy date should be copied from warranty date');
+        $this->assertEquals('2025-07-14', $infocom->fields['use_date'], 'Use date should be copied from order date');
+        $this->assertEquals('2025-07-14', $infocom->fields['warranty_date'], 'Warranty date should be set on status change');
+        $this->assertEmpty($infocom->fields['decommission_date'], 'Decommission date should be empty');
     }
 }

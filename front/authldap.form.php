@@ -64,7 +64,7 @@ if (isset($_POST["update"])) {
     }
     Html::back();
 } elseif (isset($_POST["purge"])) {
-    $config_ldap->delete($_POST, 1);
+    $config_ldap->delete($_POST, true);
     $_SESSION['glpi_authconfig'] = 1;
     $config_ldap->redirectToList();
 } elseif (isset($_POST["add_replicate"])) {

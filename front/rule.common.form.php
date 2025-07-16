@@ -77,7 +77,7 @@ if (isset($_POST["update"])) {
 } elseif (isset($_POST["purge"])) {
     $rulecollection->checkGlobal(PURGE);
     $rulecollection->deleteRuleOrder($_POST["ranking"]);
-    $rule->delete($_POST, 1);
+    $rule->delete($_POST, true);
 
     Event::log(
         $_POST["id"],

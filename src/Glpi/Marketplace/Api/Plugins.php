@@ -215,9 +215,7 @@ class Plugins
                 foreach ($plugins_colct as &$plugin) {
                     usort(
                         $plugin['versions'],
-                        function ($a, $b) {
-                            return version_compare($a['num'], $b['num']);
-                        }
+                        fn($a, $b) => version_compare($a['num'], $b['num'])
                     );
                 }
 
@@ -232,9 +230,7 @@ class Plugins
             // without having to purge the cache manually.
             foreach ($plugins_colct as &$plugin) {
                 if (!GLPI_MARKETPLACE_PRERELEASES) {
-                    $plugin['versions'] = array_filter($plugin['versions'], function ($version) {
-                        return !isset($version['stability']) || $version['stability'] === "stable";
-                    });
+                    $plugin['versions'] = array_filter($plugin['versions'], fn($version) => !isset($version['stability']) || $version['stability'] === "stable");
                 }
 
                 if (count($plugin['versions']) === 0) {
@@ -261,9 +257,7 @@ class Plugins
         }
 
         if (strlen($string_filter) > 0) {
-            $plugins_colct = array_filter($plugins_colct, function ($plugin) use ($string_filter) {
-                return strpos(strtolower(json_encode($plugin)), strtolower($string_filter)) !== false;
-            });
+            $plugins_colct = array_filter($plugins_colct, fn($plugin) => str_contains(strtolower(json_encode($plugin)), strtolower($string_filter)));
         }
 
         // manage sorting of collection

@@ -823,7 +823,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
         }
         $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], $number),
             'specific_actions' => $actions,
-            'container'        => 'mass' . __CLASS__ . $rand,
+            'container'        => 'mass' . self::class . $rand,
             'rand'             => $rand,
         ];
 
@@ -1117,12 +1117,12 @@ TWIG, ['printer_id' => $printer->getID()]);
         $pages = $printer->fields['init_pages_counter'];
         if (!$old) {
             $actions = [
-                __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall' => __('End of life'),
-                __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'backtostock' => __('Back to stock'),
+                self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall' => __('End of life'),
+                self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'backtostock' => __('Back to stock'),
             ];
         } else {
             $actions = [
-                __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'updatepages' => __('Update printer counter'),
+                self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'updatepages' => __('Update printer counter'),
                 'purge' => _x('button', 'Delete permanently'),
             ];
         }

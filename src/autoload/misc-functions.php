@@ -78,7 +78,7 @@ function isPluginItemType($classname)
         $plug['plugin'] = $matches[1];
         $plug['class']  = $matches[2];
         return $plug;
-    } elseif (substr($classname, 0, \strlen(NS_PLUG)) === NS_PLUG) {
+    } elseif (str_starts_with($classname, NS_PLUG)) {
         $tab = explode('\\', $classname, 3);
         $plug           = [];
         $plug['plugin'] = $tab[1];

@@ -603,7 +603,7 @@ class APIRest extends API
         // try to retrieve user_token in header
         if (
             isset($headers['Authorization'])
-            && (strpos($headers['Authorization'], 'user_token') !== false)
+            && (str_contains($headers['Authorization'], 'user_token'))
         ) {
             $auth = explode(' ', $headers['Authorization']);
             if (isset($auth[1])) {
@@ -633,7 +633,6 @@ class APIRest extends API
 
         $this->parameters = $parameters;
 
-        return "";
     }
 
 

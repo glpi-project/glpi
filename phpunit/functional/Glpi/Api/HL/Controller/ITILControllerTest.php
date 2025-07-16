@@ -34,7 +34,14 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
+use Change;
+use ChangeValidation;
+use CommonITILObject;
+use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Http\Request;
+use Problem;
+use Ticket;
+use TicketValidation;
 
 class ITILControllerTest extends \HLAPITestCase
 {
@@ -408,5 +415,194 @@ class ITILControllerTest extends \HLAPITestCase
                 $this->assertEquals('Ticket', $content['itemtype']);
             });
         });
+    }
+
+    public function testCRUDNoRights()
+    {
+        /** @var array<class-string<CommonITILObject>, string> $itil_types */
+        $itil_types = [
+            Ticket::class => 'Ticket',
+            Change::class => 'Change',
+            Problem::class => 'Problem',
+        ];
+
+        foreach ($itil_types as $itil_type => $schema_name) {
+            $this->api->autoTestCRUDNoRights(
+                endpoint: '/Assistance/' . $schema_name,
+                itemtype: $itil_type,
+                items_id: getItemByTypeName($itil_type, strtolower('_' . $itil_type . '01'), true),
+                deny_read: static function () use ($itil_type) {
+                    // Access on validations affects `canView` of ITIL objects
+                    $_SESSION['glpiactiveprofile'][TicketValidation::$rightname] = 0;
+                    $_SESSION['glpiactiveprofile'][ChangeValidation::$rightname] = 0;
+                    $_SESSION['glpiactiveprofile'][$itil_type::$rightname] = 0;
+                }
+            );
+        }
+    }
+
+    public function testRestrictedRead()
+    {
+        $func_name = __FUNCTION__;
+        $this->loginWeb();
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+        $_SESSION['glpiactiveprofile'][TicketValidation::$rightname] = 0;
+        $_SESSION['glpiactiveprofile'][ChangeValidation::$rightname] = 0;
+
+        /** @var class-string<CommonITILObject> $itil_type */
+        foreach ([Change::class, Problem::class, Ticket::class] as $itil_type) {
+            $this->createItems($itil_type, [
+                [
+                    'name' => $func_name . '1',
+                    'content' => 'test',
+                    'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                ],
+                [
+                    'name' => $func_name . '2',
+                    'content' => 'test',
+                    'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                    'users_id_recipient' => 1, // Some other user
+                    '_users_id_requester' => 1, // Some other user
+                    '_skip_auto_assign' => 1,
+                ],
+                [
+                    'name' => $func_name . '3',
+                    'content' => 'test',
+                    'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                    'users_id_recipient' => 1, // Some other user,
+                    '_users_id_requester' => $_SESSION['glpiID'],
+                    '_skip_auto_assign' => 1,
+                ],
+                [
+                    'name' => $func_name . '4',
+                    'content' => 'test',
+                    'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                    'users_id_recipient' => 1, // Some other user,
+                    '_groups_id_requester' => getItemByTypeName('Group', '_test_group_1', true),
+                    '_skip_auto_assign' => 1,
+                ],
+                [
+                    'name' => $func_name . '5',
+                    'content' => 'test',
+                    'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                    'users_id_recipient' => 1, // Some other user,
+                    '_groups_id_requester' => getItemByTypeName('Group', '_test_group_2', true), // Some other group,
+                    '_skip_auto_assign' => 1,
+                ],
+                [
+                    'name' => $func_name . '6',
+                    'content' => 'test',
+                    'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                    'users_id_recipient' => 1, // Some other user
+                    '_users_id_requester' => 1,
+                    '_users_id_assign' => $_SESSION['glpiID'],
+                    '_skip_auto_assign' => 1,
+                ],
+                [
+                    'name' => $func_name . '7',
+                    'content' => 'test',
+                    'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                    'users_id_recipient' => 1, // Some other user
+                    '_users_id_requester' => 1,
+                    '_groups_id_assign' => getItemByTypeName('Group', '_test_group_1', true),
+                    '_skip_auto_assign' => 1,
+                ],
+                [
+                    'name' => $func_name . '8',
+                    'content' => 'test',
+                    'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                    'status' => CommonITILObject::ASSIGNED,
+                    'users_id_recipient' => 1, // Some other user
+                    '_users_id_requester' => 1, // Some other user
+                    '_skip_auto_assign' => 1,
+                ],
+            ]);
+            $_SESSION['glpigroups'][] = getItemByTypeName('Group', '_test_group_1', true); // Group of the ticket
+            $request = new Request('GET', '/Assistance/' . $itil_type);
+            $request->setParameter('filter', ['name=ilike=' . $func_name . '*']);
+
+            if ($itil_type !== Ticket::class) {
+                $_SESSION['glpiactiveprofile'][$itil_type::$rightname] = CommonITILObject::READMY;
+                $this->api->call($request, function ($call) use ($func_name) {
+                    /** @var \HLAPICallAsserter $call */
+                    $call->response
+                        ->isOK()
+                        ->jsonContent(function ($content) use ($func_name) {
+                            $readable_names = array_column($content, 'name');
+                            $this->assertCount(5, $readable_names);
+                            $this->assertContains($func_name . '1', $readable_names);
+                            $this->assertContains($func_name . '3', $readable_names);
+                            $this->assertContains($func_name . '4', $readable_names);
+                            $this->assertContains($func_name . '6', $readable_names);
+                            $this->assertContains($func_name . '7', $readable_names);
+                        });
+                });
+            } else {
+                $_SESSION['glpiactiveprofile'][$itil_type::$rightname] = CommonITILObject::READMY;
+                $this->api->call($request, function ($call) use ($func_name) {
+                    /** @var \HLAPICallAsserter $call */
+                    $call->response
+                        ->isOK()
+                        ->jsonContent(function ($content) use ($func_name) {
+                            $readable_names = array_column($content, 'name');
+                            $this->assertCount(2, $readable_names);
+                            $this->assertContains($func_name . '1', $readable_names);
+                            $this->assertContains($func_name . '3', $readable_names);
+                        });
+                });
+
+                $_SESSION['glpiactiveprofile'][$itil_type::$rightname] = Ticket::READGROUP;
+                $this->api->call($request, function ($call) use ($func_name) {
+                    /** @var \HLAPICallAsserter $call */
+                    $call->response
+                        ->isOK()
+                        ->jsonContent(function ($content) use ($func_name) {
+                            $readable_names = array_column($content, 'name');
+                            $this->assertContains($func_name . '4', $readable_names);
+                        });
+                });
+
+                $_SESSION['glpiactiveprofile'][$itil_type::$rightname] = Ticket::OWN;
+                $this->api->call($request, function ($call) use ($func_name) {
+                    /** @var \HLAPICallAsserter $call */
+                    $call->response
+                        ->isOK()
+                        ->jsonContent(function ($content) use ($func_name) {
+                            $readable_names = array_column($content, 'name');
+                            $this->assertCount(1, $readable_names);
+                            $this->assertContains($func_name . '6', $readable_names);
+                        });
+                });
+
+                $_SESSION['glpiactiveprofile'][$itil_type::$rightname] = Ticket::READASSIGN;
+                $this->api->call($request, function ($call) use ($func_name) {
+                    /** @var \HLAPICallAsserter $call */
+                    $call->response
+                        ->isOK()
+                        ->jsonContent(function ($content) use ($func_name) {
+                            $readable_names = array_column($content, 'name');
+                            $this->assertCount(2, $readable_names);
+                            $this->assertContains($func_name . '6', $readable_names);
+                            $this->assertContains($func_name . '7', $readable_names);
+                        });
+                });
+
+                $_SESSION['glpiactiveprofile'][$itil_type::$rightname] = Ticket::READNEWTICKET;
+                $this->api->call($request, function ($call) use ($func_name) {
+                    /** @var \HLAPICallAsserter $call */
+                    $call->response
+                        ->isOK()
+                        ->jsonContent(function ($content) use ($func_name) {
+                            $readable_names = array_column($content, 'name');
+                            $this->assertCount(5, $readable_names);
+                            $this->assertContains($func_name . '1', $readable_names);
+                            $this->assertContains($func_name . '2', $readable_names);
+                            $this->assertContains($func_name . '3', $readable_names);
+                            $this->assertContains($func_name . '4', $readable_names);
+                            $this->assertContains($func_name . '5', $readable_names);
+                        });
+                });
+            }
+        }
     }
 }

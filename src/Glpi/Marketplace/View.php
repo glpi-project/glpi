@@ -106,7 +106,7 @@ class View extends CommonGLPI
         $tabs = [
             'no_all_tab' => true,
         ];
-        $this->addStandardTab(__CLASS__, $tabs, $options);
+        $this->addStandardTab(self::class, $tabs, $options);
 
         return $tabs;
     }
@@ -117,7 +117,7 @@ class View extends CommonGLPI
         if (!Controller::isWebAllowed()) {
             return '';
         }
-        if ($item->getType() == __CLASS__) {
+        if ($item->getType() == self::class) {
             return [
                 self::createTabEntry(__("Installed")),
                 self::createTabEntry(__("Discover")),
@@ -132,7 +132,7 @@ class View extends CommonGLPI
         if (!Controller::isWebAllowed()) {
             return false;
         }
-        if ($item->getType() == __CLASS__) {
+        if ($item->getType() == self::class) {
             switch ($tabnum) {
                 case 0:
                     self::installed();
@@ -241,7 +241,7 @@ class View extends CommonGLPI
 
             if (
                 strlen($string_filter)
-                && strpos(strtolower(json_encode($plugin)), strtolower($string_filter)) === false
+                && !str_contains(strtolower(json_encode($plugin)), strtolower($string_filter))
             ) {
                 continue;
             }
@@ -408,6 +408,9 @@ HTML;
                 echo $marketplace;
                 return;
             }
+            $suspend_banner = $tab === "installed"
+                ? (new Plugin())->getPluginsListSuspendBanner()
+                : '';
             $tags_list    = $tab != "installed"
                 ? "<div class='left-panel'>" . self::getTagsHtml() . "</div>"
                 : "";
@@ -460,6 +463,7 @@ HTML;
                 <div class='marketplace $tab' data-tab='{$tab}'>
                     {$tags_list}
                     <div class='right-panel'>
+                        {$suspend_banner}
                         <div class='top-panel'>
                             <input type='search' class='filter-list form-control' placeholder='{$search_label}'>
                             <div class='controls'>
@@ -589,6 +593,13 @@ JS;
          * @var array $PLUGIN_HOOKS
          */
         global $CFG_GLPI, $PLUGIN_HOOKS;
+
+        if ((new Plugin())->isPluginsExecutionSuspended()) {
+            return \sprintf(
+                '<span class="text-info" data-bs-toggle="tooltip" title="%s"><i class="ti ti-info-circle-filled"></i></span>',
+                __s('The plugins maintenance actions are disabled when the plugins execution is suspended.')
+            );
+        }
 
         $plugin_inst        = new Plugin();
         $exists             = $plugin_inst->getFromDBbyDir($plugin_key);

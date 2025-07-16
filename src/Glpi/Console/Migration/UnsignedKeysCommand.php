@@ -90,9 +90,7 @@ class UnsignedKeysCommand extends AbstractCommand implements ConfigurationComman
 
             $foreign_keys = $this->db->getForeignKeysContraints();
 
-            $progress_message = function (array $column) {
-                return sprintf(__('Migrating column "%s.%s"...'), $column['TABLE_NAME'], $column['COLUMN_NAME']);
-            };
+            $progress_message = (fn(array $column) => sprintf(__('Migrating column "%s.%s"...'), $column['TABLE_NAME'], $column['COLUMN_NAME']));
 
             foreach ($this->iterate($columns, $progress_message) as $column) {
                 $table_name  = $column['TABLE_NAME'];
@@ -162,7 +160,7 @@ class UnsignedKeysCommand extends AbstractCommand implements ConfigurationComman
                             __('Column "%s.%s" contains negative values. Updating them to "%s"...'),
                             $table_name,
                             $column_name,
-                            $forced_value === null ? 'NULL' : $forced_value
+                            $forced_value ?? 'NULL'
                         );
                         $this->outputMessage('<comment>' . $message . '</comment>');
 

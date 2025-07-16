@@ -121,9 +121,9 @@ abstract class Asset extends CommonDBTM
         $search_options = array_merge($search_options, Location::rawSearchOptionsToAdd());
 
         /** @var AssetModel $asset_model_class */
-        $asset_model_class = $this->getDefinition()->getAssetModelClassName();
+        $asset_model_class = static::getDefinition()->getAssetModelClassName();
         /** @var AssetType $asset_type_class */
-        $asset_type_class = $this->getDefinition()->getAssetTypeClassName();
+        $asset_type_class = static::getDefinition()->getAssetTypeClassName();
 
         $search_options[] = [
             'id'            => '2',
@@ -563,5 +563,10 @@ abstract class Asset extends CommonDBTM
             $relations = [...$relations, ...$capacity->getCloneRelations()];
         }
         return array_unique($relations);
+    }
+
+    public static function getSystemSQLCriteria(?string $tablename = null): array
+    {
+        return static::getDefinition()->getSystemSQLCriteriaForConcreteClass($tablename);
     }
 }

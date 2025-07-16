@@ -185,7 +185,7 @@ abstract class API
 
         // retrieve ip of client
         $this->iptxt = Toolbox::getRemoteIpAddress();
-        $this->ipnum = (strstr($this->iptxt, ':') === false ? ip2long($this->iptxt) : '');
+        $this->ipnum = (!str_contains($this->iptxt, ':') ? ip2long($this->iptxt) : '');
 
         // check ip access
         $apiclient = new APIClient();
@@ -537,7 +537,7 @@ abstract class API
     /**
      * Return the current active profile
      *
-     * @return integer the profiles_id
+     * @return array the profiles_id
      */
     protected function getActiveProfile()
     {
@@ -1263,7 +1263,7 @@ abstract class API
                         "ERROR_FIELD_NOT_FOUND"
                     );
                 }
-                if (!empty($filter_value)) {
+                if ((string) $filter_value !== '') {
                     $criteria['WHERE']["$table.$filter_field"] = ['LIKE', SQLProvider::makeTextSearchValue($filter_value)];
                 }
             }
@@ -1363,9 +1363,7 @@ abstract class API
 
         // Map values for deprecated itemtypes
         if ($this->isDeprecated()) {
-            $found = array_map(function ($fields) {
-                return $this->deprecated_item->mapCurrentToDeprecatedFields($fields);
-            }, $found);
+            $found = array_map(fn($fields) => $this->deprecated_item->mapCurrentToDeprecatedFields($fields), $found);
         }
 
         return array_values($found);
@@ -1865,9 +1863,7 @@ abstract class API
         }
 
         if ($this->isDeprecated()) {
-            $input = array_map(function ($item) {
-                return $this->deprecated_item->mapDeprecatedToCurrentFields($item);
-            }, $input);
+            $input = array_map(fn($item) => $this->deprecated_item->mapDeprecatedToCurrentFields($item), $input);
         }
 
         if (is_array($input)) {
@@ -1997,9 +1993,7 @@ abstract class API
         }
 
         if ($this->isDeprecated()) {
-            $input = array_map(function ($item) {
-                return $this->deprecated_item->mapDeprecatedToCurrentFields($item);
-            }, $input);
+            $input = array_map(fn($item) => $this->deprecated_item->mapDeprecatedToCurrentFields($item), $input);
         }
 
         if (is_array($input)) {
@@ -2124,9 +2118,7 @@ abstract class API
         }
 
         if ($this->isDeprecated()) {
-            $input = array_map(function ($item) {
-                return $this->deprecated_item->mapDeprecatedToCurrentFields($item);
-            }, $input);
+            $input = array_map(fn($item) => $this->deprecated_item->mapDeprecatedToCurrentFields($item), $input);
         }
 
         if (is_array($input)) {
@@ -2473,7 +2465,7 @@ abstract class API
 
         if ($html) {
             if (empty($title)) {
-                $title = $this->getTypeName();
+                $title = static::getTypeName();
             }
 
             Html::includeHeader($title);
@@ -3432,7 +3424,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
 
         if ($results['ok'] == 0 && $results['noaction'] == 0 && $results['ko'] == 0 && $results['noright'] == 0) {
             // No items were processed, invalid action key -> 400
-            return $this->returnError(
+            $this->returnError(
                 "Invalid action key parameter, run 'getMassiveActions' endpoint to see available keys",
                 400,
                 "ERROR_MASSIVEACTION_KEY"

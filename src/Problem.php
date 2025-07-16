@@ -81,7 +81,7 @@ class Problem extends CommonITILObject
 
         return (self::isAllowedStatus($this->fields['status'], self::SOLVED)
               // No edition on closed status
-              && !in_array($this->fields['status'], $this->getClosedStatusArray())
+              && !in_array($this->fields['status'], static::getClosedStatusArray())
               && (Session::haveRight(self::$rightname, UPDATE)
                   || (Session::haveRight(self::$rightname, self::READMY)
                       && ($this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
@@ -154,7 +154,7 @@ class Problem extends CommonITILObject
     public function canReopen()
     {
         return Session::haveRight('followup', CREATE)
-             && in_array($this->fields["status"], $this->getClosedStatusArray())
+             && in_array($this->fields["status"], static::getClosedStatusArray())
              && ($this->isAllowedStatus($this->fields['status'], self::INCOMING)
                  || $this->isAllowedStatus($this->fields['status'], self::ASSIGNED));
     }
@@ -177,7 +177,7 @@ class Problem extends CommonITILObject
 
         if (static::canView()) {
             switch ($item->getType()) {
-                case __CLASS__:
+                case self::class:
                     $ong = [];
                     if ($item->canUpdate()) {
                         $ong[1] = static::createTabEntry(__('Statistics'), 0, null, 'ti ti-chart-pie');
@@ -194,7 +194,7 @@ class Problem extends CommonITILObject
     {
 
         switch (get_class($item)) {
-            case __CLASS__:
+            case self::class:
                 switch ($tabnum) {
                     case 1:
                         $item->showStats();
@@ -209,7 +209,7 @@ class Problem extends CommonITILObject
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab(Problem_Ticket::class, $ong, $options);
         $this->addStandardTab(Change_Problem::class, $ong, $options);
         $this->addStandardTab(ProblemCost::class, $ong, $options);
@@ -272,7 +272,7 @@ class Problem extends CommonITILObject
             if (
                 isset($this->input["status"]) && $this->input["status"]
                 && in_array("status", $this->updates)
-                && in_array($this->input["status"], $this->getSolvedStatusArray())
+                && in_array($this->input["status"], static::getSolvedStatusArray())
             ) {
                 $mailtype = "solved";
             }
@@ -281,7 +281,7 @@ class Problem extends CommonITILObject
                 isset($this->input["status"])
                 && $this->input["status"]
                 && in_array("status", $this->updates)
-                && in_array($this->input["status"], $this->getClosedStatusArray())
+                && in_array($this->input["status"], static::getClosedStatusArray())
             ) {
                 $mailtype = "closed";
             }
@@ -416,11 +416,11 @@ class Problem extends CommonITILObject
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
         if (ProblemTask::canCreate()) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_task'] = __s('Add a new task');
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_task'] = __s('Add a new task');
         }
         if ($this->canAdminActors()) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_actor'] = __s('Add an actor');
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'update_notif']
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_actor'] = __s('Add an actor');
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'update_notif']
                = __s('Set notifications for all actors');
         }
 
@@ -1348,7 +1348,7 @@ class Problem extends CommonITILObject
                 // Mini search engine
                 /** @var Group $item */
                 if ($item->haveChildren()) {
-                    $tree = (int) Session::getSavedOption(__CLASS__, 'tree', 0);
+                    $tree = (int) Session::getSavedOption(self::class, 'tree', 0);
                     TemplateRenderer::getInstance()->display('components/form/item_itilobject_group.html.twig', [
                         'tree' => $tree,
                     ]);
@@ -1378,7 +1378,7 @@ class Problem extends CommonITILObject
             case Group::class:
                 /** @var Group $item */
                 if ($item->haveChildren()) {
-                    $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
+                    $tree = Session::getSavedOption(self::class, 'tree', 0);
                 } else {
                     $tree = 0;
                 }
@@ -1515,8 +1515,8 @@ class Problem extends CommonITILObject
                 $this->getTable() . '.is_deleted' => 0,
                 'NOT'                         => [
                     $this->getTable() . '.status' => array_merge(
-                        $this->getSolvedStatusArray(),
-                        $this->getClosedStatusArray()
+                        static::getSolvedStatusArray(),
+                        static::getClosedStatusArray()
                     ),
                 ],
             ],

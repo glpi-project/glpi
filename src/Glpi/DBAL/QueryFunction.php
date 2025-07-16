@@ -80,9 +80,7 @@ class QueryFunction
     {
         /** @var \DBmysql $DB */
         global $DB;
-        $params = array_map(static function ($p) use ($DB) {
-            return $p instanceof QueryExpression || $p === null ? $p : $DB::quoteName($p);
-        }, $params);
+        $params = array_map(static fn($p) => $p instanceof QueryExpression || $p === null ? $p : $DB::quoteName($p), $params);
         return new QueryExpression($func_name . '(' . implode(', ', $params) . ')', $alias);
     }
 
@@ -108,8 +106,8 @@ class QueryFunction
     /**
      * Build an DATE_ADD SQL function call
      * @param string|QueryExpression $date Date to add interval to
-     * @param string|QueryExpression $interval Interval to add
-     * @param int|string|QueryExpression $interval_unit Interval unit
+     * @param int|string|QueryExpression $interval Interval to add
+     * @param string $interval_unit Interval unit
      * @param string|null $alias Function result alias (will be automatically quoted)
      * @return QueryExpression
      */
@@ -464,9 +462,7 @@ class QueryFunction
     {
         /** @var \DBmysql $DB */
         global $DB;
-        $params = array_map(static function ($p) use ($DB) {
-            return $p instanceof QueryExpression || $p === null ? $p : $DB::quoteName($p);
-        }, $params);
+        $params = array_map(static fn($p) => $p instanceof QueryExpression || $p === null ? $p : $DB::quoteName($p), $params);
         $separator = $separator instanceof QueryExpression ? $separator : $DB::quoteName($separator);
         return new QueryExpression('CONCAT_WS(' . $separator . ', ' . implode(', ', $params) . ')', $alias);
     }

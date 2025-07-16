@@ -76,6 +76,7 @@ foreach ($fields as $field) {
         );
     }
 }
+$migration->removeConfig($fields);
 
 $fields = [
     'state_autoupdate_mode',
@@ -98,6 +99,7 @@ foreach ($fields as $field) {
         );
     }
 }
+$migration->removeConfig($fields);
 
 /** Add base url for entities to be used in notification */
 if (!$DB->fieldExists("glpi_entities", "url_base", false)) {

@@ -348,7 +348,7 @@ class User extends CommonDBTM
     {
 
         switch ($item->getType()) {
-            case __CLASS__:
+            case self::class:
                 $ong    = [];
                 $ong[1] = self::createTabEntry(__('Used items'), 0, $item::getType(), 'ti ti-package');
                 $ong[2] = self::createTabEntry(__('Managed items'), 0, $item::getType(), 'ti ti-package');
@@ -414,7 +414,7 @@ class User extends CommonDBTM
         $this->addStandardTab(Profile_User::class, $ong, $options);
         $this->addStandardTab(Group_User::class, $ong, $options);
         $this->addStandardTab(Config::class, $ong, $options);
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab(Consumable::class, $ong, $options);
         $this->addStandardTab(Item_Ticket::class, $ong, $options);
         $this->addStandardTab(Item_Problem::class, $ong, $options);
@@ -562,7 +562,7 @@ class User extends CommonDBTM
             $dashboard_filters->deleteByCriteria(['users_id' => $this->fields['id']]);
         }
 
-        $this->dropPictureFiles($this->fields['picture']);
+        static::dropPictureFiles($this->fields['picture']);
 
         // Ticket rules use various _users_id_*
         Rule::cleanForItemAction($this, '_users_id%');
@@ -1602,6 +1602,7 @@ class User extends CommonDBTM
                 if (count($authtype)) {
                     // Clean groups
                     $this->input["_groups"] = array_unique($this->input["_groups"]);
+                    $_SESSION["_ldap_groups"] = $this->input["_groups"];
 
                     // Delete not available groups like to LDAP
                     $iterator = $DB->request([
@@ -2787,7 +2788,7 @@ HTML;
                    || (($this->fields["authtype"] == Auth::NOT_YET_AUTHENTIFIED)
                        && !empty($this->fields["password"])));
 
-        $formtitle = $this->getTypeName(1);
+        $formtitle = static::getTypeName(1);
 
         $options['formtitle']      = $formtitle;
         $options['formoptions']    = ($options['formoptions'] ?? '') . " enctype='multipart/form-data'";
@@ -3004,7 +3005,7 @@ HTML;
 
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
-        $prefix = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR;
+        $prefix = self::class . MassiveAction::CLASS_ACTION_SEPARATOR;
 
         if ($isadmin) {
             $actions['Group_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
@@ -4325,7 +4326,7 @@ HTML;
             'specific_tags'       => $p['specific_tags'],
             'toadd'               => $p['toadd'],
             'class'               => $p['class'],
-            '_idor_token'         => Session::getNewIDORToken(__CLASS__, [
+            '_idor_token'         => Session::getNewIDORToken(self::class, [
                 'right'           => $p['right'],
                 'entity_restrict' => $entity_restrict,
             ]),
@@ -4529,7 +4530,7 @@ HTML;
                             Auth::getMethodName($authtype, $server)
                         ),
                     ];
-                    Log::history($ID, __CLASS__, $changes, '', Log::HISTORY_LOG_SIMPLE_MESSAGE);
+                    Log::history($ID, self::class, $changes, '', Log::HISTORY_LOG_SIMPLE_MESSAGE);
                 }
 
                 return true;
@@ -4765,7 +4766,7 @@ HTML;
             'showmassiveactions'    => true,
             'massiveactionparams'   => [
                 'num_displayed'    => min($_SESSION['glpilist_limit'], $number),
-                'container'        => 'mass' . __CLASS__ . mt_rand(),
+                'container'        => 'mass' . self::class . mt_rand(),
                 'specific_actions' => [
                     'update' => __('Update'),
                 ],
@@ -5300,7 +5301,7 @@ HTML;
 
         // Randomly increase the response time to prevent an attacker to be able to detect whether
         // a notification was sent (a longer response time could correspond to a SMTP operation).
-        sleep(rand(1, 3));
+        sleep(random_int(1, 3));
 
         // Try to find a single user matching the given email
         if (!$this->getFromDBbyEmail($email, $condition)) {
@@ -5769,9 +5770,7 @@ HTML;
 
         $ret = preg_replace_callback(
             '/%{(.*)}/U',
-            function ($matches) use ($res) {
-                return ($res[0][$matches[1]][0] ?? '');
-            },
+            fn($matches) => $res[0][$matches[1]][0] ?? '',
             $map
         );
 
@@ -6170,7 +6169,12 @@ HTML;
                     'is_dynamic' => true,
                 ]);
                 foreach ($groups as $group) {
-                    $group_user->delete($group);
+                    if (!isset($_SESSION['_ldap_groups']) || !in_array($group['groups_id'], $_SESSION['_ldap_groups'])) {
+                        $group_user->delete($group);
+                    }
+                }
+                if (isset($_SESSION['_ldap_groups'])) {
+                    unset($_SESSION['_ldap_groups']);
                 }
             }
             return;
@@ -6259,7 +6263,7 @@ HTML;
     {
         $this->initForm($ID, $options);
 
-        $formtitle = $this->getTypeName(1);
+        $formtitle = static::getTypeName(1);
         $options['formtitle']   = $formtitle;
         $options['formoptions'] = ($options['formoptions'] ?? '') . " enctype='multipart/form-data'";
         $options['candel'] = false;

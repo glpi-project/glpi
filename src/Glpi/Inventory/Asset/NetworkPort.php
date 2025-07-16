@@ -71,7 +71,7 @@ class NetworkPort extends InventoryAsset
         $this->aggregates = [];
         $this->vlans = [];
 
-        $this->extra_data['\\' . $this->main_asset::class] = null;
+        $this->extra_data[$this->main_asset::class] = null;
         $mapping = [
             'ifname'       => 'name',
             'ifnumber'     => 'logical_number',
@@ -146,6 +146,11 @@ class NetworkPort extends InventoryAsset
 
             if (!property_exists($val, 'trunk')) {
                 $val->trunk = 0;
+            }
+
+            //Port name "Management" is reserved
+            if (property_exists($val, 'name') && $val->name === 'Management') {
+                $val->name .= ' port';
             }
         }
 
@@ -618,7 +623,7 @@ class NetworkPort extends InventoryAsset
 
     public function handle()
     {
-        $this->ports += $this->extra_data['\\' . $this->main_asset::class]->getManagementPorts();
+        $this->ports += $this->extra_data[$this->main_asset::class]->getManagementPorts();
         $this->handlePorts();
     }
 
@@ -664,7 +669,15 @@ class NetworkPort extends InventoryAsset
             //not yet existing, create
             $input = (array) $port;
             $input['entities_id'] = $this->entities_id;
-            if (property_exists($port, 'mac') && (!property_exists($port, 'name') || empty($port->name) || is_numeric($port->name) || preg_match('@([\w-]+)?(\d+)/\d+(/\d+)?@', $port->name))) {
+            if (
+                property_exists($port, 'mac')
+                && (
+                    !property_exists($port, 'name')
+                    || empty($port->name)
+                    || is_numeric($port->name)
+                    || preg_match('@([\w-]+)?(\d+)/\d+(/\d+)?@', $port->name)
+                )
+            ) {
                 if ($name = $this->getNameForMac($port->mac)) {
                     $input['name'] = $name;
                 }
@@ -784,12 +797,12 @@ class NetworkPort extends InventoryAsset
 
     public function handlePorts($itemtype = null, $items_id = null)
     {
-        $mainasset = $this->extra_data['\\' . $this->main_asset::class];
+        $mainasset = $this->extra_data[$this->main_asset::class];
 
         //remove management port for Printer on netinventory
         //to prevent twice IP (NetworkPortAggregate / NetworkPortEthernet)
         if ($mainasset instanceof Printer && !$this->item->isNewItem()) {
-            if (empty($this->extra_data['\\' . $this->main_asset::class]->getManagementPorts())) {
+            if (empty($this->extra_data[$this->main_asset::class]->getManagementPorts())) {
                 //remove all port management ports
                 $networkport = new GlobalNetworkPort();
                 $networkport->deleteByCriteria([
@@ -797,7 +810,7 @@ class NetworkPort extends InventoryAsset
                     "items_id"           => $this->item->getID(),
                     "instantiation_type" => NetworkPortAggregate::getType(),
                     "name"               => "Management",
-                ], 1);
+                ], true);
             }
         }
 
@@ -810,9 +823,9 @@ class NetworkPort extends InventoryAsset
             foreach ($this->ports as $k => $val) {
                 $matches = [];
                 if (
-                    preg_match('@[\w\s+]*(\d+)/[\w]@', $val->name, $matches)
+                    preg_match('@[\w\s+]*(\d+)[/:][\w]@', $val->name, $matches)
                 ) {
-                    //reset increment when name lenght differ
+                    //reset increment when name length differ
                     //Gi0/0 then Gi0/0/1, Gi0/0/2, Gi0/0/3
                     if ($count_char && $count_char != strlen($val->name)) {
                         $need_increment_index = false;

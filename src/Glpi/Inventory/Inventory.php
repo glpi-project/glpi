@@ -673,88 +673,88 @@ class Inventory
                 case 'pagecounters': //handled from Asset\Printer
                     break;
                 case 'cpus':
-                    $assettype = '\Glpi\Inventory\Asset\Processor';
+                    $assettype = \Glpi\Inventory\Asset\Processor::class;
                     break;
                 case 'drives':
-                    $assettype = '\Glpi\Inventory\Asset\Volume';
+                    $assettype = \Glpi\Inventory\Asset\Volume::class;
                     break;
                 case 'memories':
-                    $assettype = '\Glpi\Inventory\Asset\Memory';
+                    $assettype = \Glpi\Inventory\Asset\Memory::class;
                     break;
                 case 'monitors':
-                    $assettype = '\Glpi\Inventory\Asset\Monitor';
+                    $assettype = \Glpi\Inventory\Asset\Monitor::class;
                     break;
                 case 'networks':
-                    $assettype = '\Glpi\Inventory\Asset\NetworkCard';
+                    $assettype = \Glpi\Inventory\Asset\NetworkCard::class;
                     break;
                 case 'operatingsystem':
-                    $assettype = '\Glpi\Inventory\Asset\OperatingSystem';
+                    $assettype = \Glpi\Inventory\Asset\OperatingSystem::class;
                     break;
                 case 'printers':
-                    $assettype = '\Glpi\Inventory\Asset\Printer';
+                    $assettype = \Glpi\Inventory\Asset\Printer::class;
                     break;
                 case 'softwares':
-                    $assettype = '\Glpi\Inventory\Asset\Software';
+                    $assettype = \Glpi\Inventory\Asset\Software::class;
                     break;
                 case 'sounds':
-                    $assettype = '\Glpi\Inventory\Asset\SoundCard';
+                    $assettype = \Glpi\Inventory\Asset\SoundCard::class;
                     break;
                 case 'storages':
-                    $assettype = '\Glpi\Inventory\Asset\Drive';
+                    $assettype = \Glpi\Inventory\Asset\Drive::class;
                     break;
                 case 'usbdevices':
-                    $assettype = '\Glpi\Inventory\Asset\Peripheral';
+                    $assettype = \Glpi\Inventory\Asset\Peripheral::class;
                     break;
                 case 'antivirus':
-                    $assettype = '\Glpi\Inventory\Asset\Antivirus';
+                    $assettype = \Glpi\Inventory\Asset\Antivirus::class;
                     break;
                 case 'bios':
-                    $assettype = '\Glpi\Inventory\Asset\Bios';
+                    $assettype = \Glpi\Inventory\Asset\Bios::class;
                     break;
                 case 'firmwares':
-                    $assettype = '\Glpi\Inventory\Asset\Firmware';
+                    $assettype = \Glpi\Inventory\Asset\Firmware::class;
                     break;
                 case 'batteries':
-                    $assettype = '\Glpi\Inventory\Asset\Battery';
+                    $assettype = \Glpi\Inventory\Asset\Battery::class;
                     break;
                 case 'controllers':
-                    $assettype = '\Glpi\Inventory\Asset\Controller';
+                    $assettype = \Glpi\Inventory\Asset\Controller::class;
                     break;
                 case 'videos':
-                    $assettype = '\Glpi\Inventory\Asset\GraphicCard';
+                    $assettype = \Glpi\Inventory\Asset\GraphicCard::class;
                     break;
                 case 'simcards':
-                    $assettype = '\Glpi\Inventory\Asset\Simcard';
+                    $assettype = \Glpi\Inventory\Asset\Simcard::class;
                     break;
                 case 'virtualmachines':
-                    $assettype = '\Glpi\Inventory\Asset\VirtualMachine';
+                    $assettype = \Glpi\Inventory\Asset\VirtualMachine::class;
                     break;
                 case 'processes':
-                    $assettype = '\Glpi\Inventory\Asset\Process';
+                    $assettype = \Glpi\Inventory\Asset\Process::class;
                     break;
                 case 'envs':
-                    $assettype = '\Glpi\Inventory\Asset\Environment';
+                    $assettype = \Glpi\Inventory\Asset\Environment::class;
                     break;
                 case 'sensors':
-                    $assettype = '\Glpi\Inventory\Asset\Sensor';
+                    $assettype = \Glpi\Inventory\Asset\Sensor::class;
                     break;
                 case 'network_ports':
-                    $assettype = '\Glpi\Inventory\Asset\NetworkPort';
+                    $assettype = \Glpi\Inventory\Asset\NetworkPort::class;
                     break;
                 case 'cartridges':
-                    $assettype = '\Glpi\Inventory\Asset\Cartridge';
+                    $assettype = \Glpi\Inventory\Asset\Cartridge::class;
                     break;
                 case 'remote_mgmt':
-                    $assettype = '\Glpi\Inventory\Asset\RemoteManagement';
+                    $assettype = \Glpi\Inventory\Asset\RemoteManagement::class;
                     break;
                 case 'cameras':
-                    $assettype = '\Glpi\Inventory\Asset\Camera';
+                    $assettype = \Glpi\Inventory\Asset\Camera::class;
                     break;
                 case 'databases_services':
-                    $assettype = '\Glpi\Inventory\Asset\DatabaseInstance';
+                    $assettype = \Glpi\Inventory\Asset\DatabaseInstance::class;
                     break;
                 case 'powersupplies':
-                    $assettype = '\Glpi\Inventory\Asset\PowerSupply';
+                    $assettype = \Glpi\Inventory\Asset\PowerSupply::class;
                     break;
                 default:
                     if (method_exists($this, 'processExtraInventoryData')) {

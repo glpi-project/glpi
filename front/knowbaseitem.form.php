@@ -89,7 +89,7 @@ if (isset($_POST["add"])) {
 } elseif (isset($_POST["purge"])) {
     // effacer un item dans la base de connaissances
     $kb->check($_POST["id"], PURGE);
-    $kb->delete($_POST, 1);
+    $kb->delete($_POST, true);
     Event::log(
         $_POST["id"],
         "knowbaseitem",

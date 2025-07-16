@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
+
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
@@ -49,8 +51,8 @@ if (
     && isset($_POST['items_id']) && ($_POST['items_id'] > 0)
 ) {
     // Security
-    if (!class_exists($_POST['itemtype'])) {
-        return;
+    if (!($item = getItemForItemtype($_POST['itemtype'])) || !$item->can($_POST['items_id'], READ)) {
+        throw new AccessDeniedHttpException();
     }
 
     $days   = 3;

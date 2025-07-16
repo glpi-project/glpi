@@ -53,7 +53,7 @@ class OlaLevel extends LevelAgreementLevel
 
     public static function getTable($classname = null)
     {
-        return CommonDBTM::getTable(__CLASS__);
+        return CommonDBTM::getTable(self::class);
     }
 
     public static function getSectorizedDetails(): array

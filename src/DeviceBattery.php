@@ -115,7 +115,7 @@ class DeviceBattery extends CommonDevice
             return $father;
         }
 
-        Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+        Manufacturer::getHTMLTableHeader(self::class, $base, $super, $father, $options);
         $base->addHeader('devicebattery_type', _n('Type', 'Types', 1), $super, $father);
         $base->addHeader('voltage', sprintf('%1$s (%2$s)', __('Voltage'), __('mV')), $super, $father);
         $base->addHeader('capacity', sprintf('%1$s (%2$s)', __('Capacity'), __('mWh')), $super, $father);

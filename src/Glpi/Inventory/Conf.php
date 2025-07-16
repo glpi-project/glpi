@@ -300,7 +300,7 @@ class Conf extends CommonGLPI
     public function defineTabs($options = [])
     {
         $ong = [];
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
 
         return $ong;
     }
@@ -324,7 +324,7 @@ class Conf extends CommonGLPI
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item->getType() == __CLASS__) {
+        if ($item->getType() == self::class) {
             /** @var self $item */
             switch ($tabnum) {
                 case 1:
@@ -1124,9 +1124,7 @@ class Conf extends CommonGLPI
         $defaults = self::getDefaults();
         unset($values['_glpi_csrf_token']);
 
-        $ext_configs = array_filter($values, static function ($k, $v) {
-            return str_starts_with($v, '_');
-        }, ARRAY_FILTER_USE_BOTH);
+        $ext_configs = array_filter($values, static fn($k, $v) => str_starts_with($v, '_'), ARRAY_FILTER_USE_BOTH);
 
         $unknown = array_diff_key($values, $defaults, $ext_configs);
         if (count($unknown)) {

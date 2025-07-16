@@ -70,7 +70,7 @@ class Software extends InventoryAsset
 
     /** @var array */
     protected $extra_data = [
-        '\Glpi\Inventory\Asset\OperatingSystem' => null,
+        \Glpi\Inventory\Asset\OperatingSystem::class => null,
     ];
 
     public function prepare(): array
@@ -283,11 +283,11 @@ class Software extends InventoryAsset
         //Get operating system
         $operatingsystems_id = 0;
 
-        if (isset($this->extra_data['\Glpi\Inventory\Asset\OperatingSystem'])) {
-            if (is_array($this->extra_data['\Glpi\Inventory\Asset\OperatingSystem'])) {
-                $os = $this->extra_data['\Glpi\Inventory\Asset\OperatingSystem'][0];
+        if (isset($this->extra_data[\Glpi\Inventory\Asset\OperatingSystem::class])) {
+            if (is_array($this->extra_data[\Glpi\Inventory\Asset\OperatingSystem::class])) {
+                $os = $this->extra_data[\Glpi\Inventory\Asset\OperatingSystem::class][0];
             } else {
-                $os = $this->extra_data['\Glpi\Inventory\Asset\OperatingSystem'];
+                $os = $this->extra_data[\Glpi\Inventory\Asset\OperatingSystem::class];
             }
             $operatingsystems_id = $os->getId();
 
@@ -434,7 +434,7 @@ class Software extends InventoryAsset
                     "id" => $db_software[$key_w_version]['id'],
                     "is_dynamic" => 1,
                     "date_install" => $val->date_install,
-                ], 0);
+                ], false);
             }
 
             if (isset($db_software[$key_w_version])) {

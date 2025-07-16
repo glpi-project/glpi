@@ -68,9 +68,7 @@ class Sanitizer
 
         if (is_array($value)) {
             return array_map(
-                function ($val) use ($db_escape) {
-                    return self::sanitize($val, $db_escape);
-                },
+                fn($val) => self::sanitize($val, $db_escape),
                 $value
             );
         }
@@ -112,9 +110,7 @@ class Sanitizer
 
         if (is_array($value)) {
             return array_map(
-                function ($val) {
-                    return self::unsanitize($val);
-                },
+                fn($val) => self::unsanitize($val),
                 $value
             );
         }
@@ -352,7 +348,7 @@ class Sanitizer
 
         $mapping = null;
         foreach (self::CHARS_MAPPING as $htmlentity) {
-            if (strpos($value, $htmlentity) !== false) {
+            if (str_contains($value, $htmlentity)) {
                 // Value was cleaned using new char mapping, so it must be uncleaned with same mapping
                 $mapping = self::CHARS_MAPPING;
                 break;

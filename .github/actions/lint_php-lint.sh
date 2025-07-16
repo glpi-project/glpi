@@ -7,7 +7,7 @@ composer run lint
 
 vendor/bin/composer-dependency-analyser
 
-PHP_CS_FIXER_IGNORE_ENV=1 vendor/bin/php-cs-fixer check \
+vendor/bin/php-cs-fixer check \
   --show-progress=dots \
   --verbose \
   --diff

@@ -224,7 +224,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
      */
     public function getItemtypeForModel(): string
     {
-        return str_replace('Model', '', get_called_class());
+        return str_replace('Model', '', static::class);
     }
 
     /**
@@ -335,6 +335,9 @@ abstract class CommonDCModelDropdown extends CommonDropdown
         $positionsToCheck = [];
         foreach ($this->getItemsRackForModel() as $item_rack) {
             $rack = Rack::getById($item_rack['racks_id']);
+            if (!$rack instanceof Rack) {
+                continue;
+            }
             $filled = $rack->getFilled($itemtype, $item_rack['items_id']);
             $requiredUnits = $input['required_units'] ?? $this->fields['required_units'];
             $orientation = $item_rack['orientation'];
@@ -480,7 +483,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
 
     public static function getIcon()
     {
-        $model_class  = get_called_class();
+        $model_class  = static::class;
         $device_class = str_replace('Model', '', $model_class);
         return $device_class::getIcon();
     }

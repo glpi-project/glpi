@@ -215,7 +215,7 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
         if ($canedit) {
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
                 'rand' => $rand,
-                'link_itemtype' => __CLASS__,
+                'link_itemtype' => self::class,
                 'source_itemtype' => Problem::class,
                 'source_items_id' => $ID,
                 'link_types' => $link_types,
@@ -252,8 +252,8 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
                 'container'     => 'mass' . static::class . $rand,
                 'specific_actions' => [
                     'purge' => _sx('button', 'Delete permanently'),
-                    __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'solveticket' => __s('Solve tickets'),
-                    __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_task' => __s('Add a new task'),
+                    self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'solveticket' => __s('Solve tickets'),
+                    self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_task' => __s('Add a new task'),
                 ],
                 'extraparams'      => ['problems_id' => $problem->getID()],
             ],
@@ -289,7 +289,7 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
         if ($canedit) {
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
                 'rand' => $rand,
-                'link_itemtype' => __CLASS__,
+                'link_itemtype' => self::class,
                 'source_itemtype' => Ticket::class,
                 'source_items_id' => $ID,
                 'link_types' => $link_types,

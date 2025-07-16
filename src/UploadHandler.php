@@ -263,7 +263,7 @@ class UploadHandler
 
     protected function get_upload_path($file_name = null, $version = null)
     {
-        $file_name = $file_name ? $file_name : '';
+        $file_name = $file_name ?: '';
         if (empty($version)) {
             $version_path = '';
         } else {
@@ -279,7 +279,7 @@ class UploadHandler
 
     protected function get_query_separator($url)
     {
-        return strpos($url, '?') === false ? '?' : '&';
+        return !str_contains($url, '?') ? '?' : '&';
     }
 
     protected function get_download_url($file_name, $version = null, $direct = false)
@@ -636,7 +636,7 @@ class UploadHandler
     ) {
         // Add missing file extension for known image types:
         if (
-            strpos($name, '.') === false &&
+            !str_contains($name, '.') &&
             preg_match('/^image\/(gif|jpe?g|png)/', $type, $matches)
         ) {
             $name .= '.' . $matches[1];
@@ -756,7 +756,7 @@ class UploadHandler
 
     protected function gd_destroy_image_object($file_path)
     {
-        $image = (isset($this->image_objects[$file_path])) ? $this->image_objects[$file_path] : null ;
+        $image = $this->image_objects[$file_path] ?? null ;
         if ($image) {
             try {
                 imagedestroy($image);
@@ -1065,7 +1065,7 @@ class UploadHandler
                     $file->size = $this->get_file_size($file_path, true);
                 }
             } else {
-                $failed_versions[] = $version ? $version : 'original';
+                $failed_versions[] = $version ?: 'original';
             }
         }
         if (count($failed_versions)) {
@@ -1288,7 +1288,7 @@ class UploadHandler
     protected function send_content_type_header()
     {
         $this->header('Vary: Accept');
-        if (strpos($this->get_server_var('HTTP_ACCEPT'), 'application/json') !== false) {
+        if (str_contains($this->get_server_var('HTTP_ACCEPT'), 'application/json')) {
             $this->header('Content-type: application/json');
         } else {
             $this->header('Content-type: text/plain');
@@ -1393,8 +1393,8 @@ class UploadHandler
                 foreach (array_keys($upload['tmp_name']) as $index) {
                     $files[] = $this->handle_file_upload(
                         $upload['tmp_name'][$index],
-                        $file_name ? $file_name : $upload['name'][$index],
-                        $size ? $size : $upload['size'][$index],
+                        $file_name ?: $upload['name'][$index],
+                        $size ?: $upload['size'][$index],
                         $upload['type'][$index],
                         $upload['error'][$index],
                         $index,
@@ -1406,8 +1406,8 @@ class UploadHandler
                 // $upload is a one-dimensional array:
                 $files[] = $this->handle_file_upload(
                     $upload['tmp_name'] ?? null,
-                    $file_name ? $file_name : ($upload['name'] ?? null),
-                    $size ? $size : ($upload['size'] ?? $this->get_server_var('CONTENT_LENGTH')),
+                    $file_name ?: $upload['name'] ?? null,
+                    $size ?: $upload['size'] ?? $this->get_server_var('CONTENT_LENGTH'),
                     $upload['type'] ?? $this->get_server_var('CONTENT_TYPE'),
                     $upload['error'] ?? null,
                     null,

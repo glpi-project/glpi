@@ -71,7 +71,7 @@ abstract class MainAsset extends InventoryAsset
         'hardware'     => null,
         'bios'         => null,
         'users'        => null,
-        '\Glpi\Inventory\Asset\NetworkCard' => null,
+        \Glpi\Inventory\Asset\NetworkCard::class => null,
     ];
     /** @var mixed */
     protected $raw_data;
@@ -452,9 +452,9 @@ abstract class MainAsset extends InventoryAsset
             $input['name'] = '';
         }
 
-        if (isset($this->extra_data['\Glpi\Inventory\Asset\NetworkCard'])) {
+        if (isset($this->extra_data[\Glpi\Inventory\Asset\NetworkCard::class])) {
             $blacklist = new Blacklist();
-            foreach ($this->extra_data['\Glpi\Inventory\Asset\NetworkCard'] as $networkcard) {
+            foreach ($this->extra_data[\Glpi\Inventory\Asset\NetworkCard::class] as $networkcard) {
                 $netports = $networkcard->getNetworkPorts();
                 $this->ports += $netports;
                 foreach ($netports as $network) {
@@ -829,8 +829,8 @@ abstract class MainAsset extends InventoryAsset
                     'is_dynamic' => 1,
                     ['NOT' => ['domains_id' => $domain->getID()]],
                 ],
-                1,
-                0
+                true,
+                false
             );
         }
 
@@ -924,7 +924,7 @@ abstract class MainAsset extends InventoryAsset
                     $fw->setAgent($this->getAgent());
                     $fw->prepare();
                     $fw->handleLinks();
-                    $this->assets['Glpi\Inventory\Asset\Firmware'] = [$fw];
+                    $this->assets[\Glpi\Inventory\Asset\Firmware::class] = [$fw];
                     unset($val->firmware);
                 }
             }
@@ -1025,9 +1025,9 @@ abstract class MainAsset extends InventoryAsset
 
         //ensure controllers are done last, some components will
         //ask to ignore their associated controller
-        if (isset($assets_list['\Glpi\Inventory\Asset\Controller'])) {
-            $controllers = $assets_list['\Glpi\Inventory\Asset\Controller'];
-            unset($assets_list['\Glpi\Inventory\Asset\Controller']);
+        if (isset($assets_list[\Glpi\Inventory\Asset\Controller::class])) {
+            $controllers = $assets_list[\Glpi\Inventory\Asset\Controller::class];
+            unset($assets_list[\Glpi\Inventory\Asset\Controller::class]);
         }
 
         foreach ($assets_list as $assets) {
@@ -1036,11 +1036,11 @@ abstract class MainAsset extends InventoryAsset
                 $asset->setEntityRecursive($this->getEntityRecursive());
                 $asset->setExtraData($this->assets);
                 foreach ($this->assets as $asset_type => $asset_list) {
-                    if ($asset_type != '\\' . get_class($asset)) {
+                    if ($asset_type !== $asset::class) {
                         $asset->setExtraData([$asset_type => $asset_list]);
                     }
                 }
-                $asset->setExtraData(['\\' . get_class($this) => $mainasset]);
+                $asset->setExtraData([static::class => $mainasset]);
                 $asset->handleLinks();
                 $asset->handle();
                 $ignored_controllers = array_merge($ignored_controllers, $asset->getIgnored('controllers'));
@@ -1052,7 +1052,7 @@ abstract class MainAsset extends InventoryAsset
             $asset->setEntityID($this->getEntityID());
             $asset->setEntityRecursive($this->getEntityRecursive());
             $asset->setExtraData($this->assets);
-            $asset->setExtraData(['\\' . get_class($this) => $mainasset]);
+            $asset->setExtraData([static::class => $mainasset]);
             //do not handle ignored controllers
             $asset->setExtraData(['ignored' => $ignored_controllers]);
             $asset->handleLinks();

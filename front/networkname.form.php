@@ -77,7 +77,7 @@ if (isset($_POST["add"])) {
     Html::back();
 } elseif (isset($_POST["purge"])) {
     $nn->check($_POST['id'], PURGE);
-    $nn->delete($_POST, 1);
+    $nn->delete($_POST, true);
     Event::log(
         $_POST["id"],
         "networkname",

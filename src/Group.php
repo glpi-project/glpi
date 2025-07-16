@@ -520,7 +520,7 @@ class Group extends CommonTreeDropdown
         TemplateRenderer::getInstance()->display('pages/2fa/2fa_config.html.twig', [
             'canedit' => $canedit,
             'item'   => $this,
-            'action' => Toolbox::getItemTypeFormURL(__CLASS__),
+            'action' => Toolbox::getItemTypeFormURL(self::class),
         ]);
     }
 
@@ -944,7 +944,7 @@ class Group extends CommonTreeDropdown
         }
     }
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         parent::post_updateItem($history);
         // Changing a group's parent might invalidate the group cache if recursive

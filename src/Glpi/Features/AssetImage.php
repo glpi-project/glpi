@@ -90,7 +90,7 @@ trait AssetImage
             $pictures = importArrayFromDB($this->fields['pictures']);
             $to_remove = [];
             foreach ($input_keys as $input_key) {
-                if (strpos($input_key, '_blank_pictures_') === 0 && $input[$input_key]) {
+                if (str_starts_with($input_key, '_blank_pictures_') && $input[$input_key]) {
                     $i = (int) str_replace('_blank_pictures_', '', $input_key);
                     if (isset($pictures[$i])) {
                         Toolbox::deletePicture($pictures[$i]);

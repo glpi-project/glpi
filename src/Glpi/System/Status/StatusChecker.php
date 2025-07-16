@@ -483,9 +483,7 @@ final class StatusChecker
                 global $DB;
 
                 $crontasks = getAllDataFromTable('glpi_crontasks');
-                $running = count(array_filter($crontasks, static function ($crontask) {
-                    return $crontask['state'] === CronTask::STATE_RUNNING;
-                }));
+                $running = count(array_filter($crontasks, static fn($crontask) => $crontask['state'] === CronTask::STATE_RUNNING));
                 $stuck_crontasks = CronTask::getZombieCronTasks();
                 foreach ($stuck_crontasks as $ct) {
                     $status['stuck'][] = $ct['name'];

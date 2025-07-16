@@ -118,7 +118,7 @@ final class SessionInfo
 
         if ($this->profile === null) {
             $profile = Profile::getById($this->profile_id);
-            if (!$profile) {
+            if (!$profile instanceof Profile) {
                 return null;
             }
 

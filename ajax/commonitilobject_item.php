@@ -35,6 +35,11 @@
 
 use Glpi\Exception\Http\BadRequestHttpException;
 
+/**
+ * @var \DBmysql $DB
+ */
+global $DB;
+
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
@@ -47,33 +52,39 @@ if (!$valid_obj || !($item_obj instanceof CommonItilObject_Item)) {
     throw new BadRequestHttpException();
 }
 
-switch ($_GET['action']) {
+switch ($_POST['action']) {
     case 'add':
-        if (!empty($_GET['my_items'])) {
-            [$_GET['itemtype'], $_GET['items_id']] = explode('_', $_GET['my_items']);
+        if (!empty($_POST['my_items'])) {
+            [$_POST['itemtype'], $_POST['items_id']] = explode('_', $_POST['my_items']);
         }
-        if (isset($_GET['itemtype']) && !empty($_GET['items_id'])) {
-            $_GET['params']['items_id'][$_GET['itemtype']][$_GET['items_id']] = $_GET['items_id'];
+        if (isset($_POST['itemtype']) && !empty($_POST['items_id'])) {
+            $_POST['params']['items_id'][$_POST['itemtype']][$_POST['items_id']] = $_POST['items_id'];
         }
-        $item_obj::itemAddForm($obj, $_GET['params'] ?? []);
+        $item_obj::itemAddForm($obj, $_POST['params'] ?? []);
         break;
 
     case 'delete':
-        if (isset($_GET['itemtype']) && !empty($_GET['items_id'])) {
-            $deleted = true;
-            if ($_GET['params']['id'] > 0) {
-                $obj_fkey = $obj::getForeignKeyField();
-                $relation = new $item_obj();
-                $deleted  = $relation->deleteByCriteria([
-                    $obj_fkey  => $_GET['params']['id'],
-                    'items_id' => $_GET['items_id'],
-                    'itemtype' => $_GET['itemtype'],
-                ]);
+        if (isset($_POST['itemtype']) && !empty($_POST['items_id'])) {
+            if ($_POST['params']['id'] > 0) {
+                if ($item_obj->canPurge()) {
+                    $iterator = $DB->request([
+                        'FROM' => $item_obj::getTable(),
+                        'WHERE' => [
+                            'tickets_id' => $_POST['params']['id'],
+                            'items_id' => $_POST['items_id'],
+                            'itemtype' => $_POST['itemtype'],
+                        ],
+                    ]);
+                    foreach ($iterator as $data) {
+                        $item_obj->getFromDB($data['id']);
+                        if ($item_obj->can($data['id'], DELETE)) {
+                            $item_obj->delete(['id' => $data['id']]);
+                        }
+                    }
+                }
+                unset($_POST['params']['items_id'][$_POST['itemtype']][array_search($_POST['items_id'], $_POST['params']['items_id'][$_POST['itemtype']])]);
             }
-            if ($deleted) {
-                unset($_GET['params']['items_id'][$_GET['itemtype']][array_search($_GET['items_id'], $_GET['params']['items_id'][$_GET['itemtype']])]);
-            }
-            $item_obj::itemAddForm($obj, $_GET['params'] ?? []);
+            $item_obj::itemAddForm($obj, $_POST['params'] ?? []);
         }
 
         break;

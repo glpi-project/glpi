@@ -646,7 +646,7 @@ class ITILFollowup extends CommonDBChild
             if ($this->fields['requesttypes_id']) {
                 return Dropdown::getDropdownName('glpi_requesttypes', $this->fields['requesttypes_id']);
             }
-            return $this->getTypeName();
+            return static::getTypeName();
         }
         return '';
     }

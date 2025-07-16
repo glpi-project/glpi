@@ -99,7 +99,7 @@ if (isset($_POST["add"])) {
     Html::redirect(Project::getFormURLWithID($task->fields['projects_id']));
 } elseif (isset($_POST["purge"])) {
     $task->check($_POST['id'], PURGE);
-    $task->delete($_POST, 1);
+    $task->delete($_POST, true);
 
     Event::log(
         $task->fields['projects_id'],

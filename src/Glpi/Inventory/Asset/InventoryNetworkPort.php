@@ -259,7 +259,7 @@ trait InventoryNetworkPort
     }
 
     /**
-     * Add a network port into dtaabase
+     * Add a network port into database
      *
      * @param \stdClass $port Port data
      *
@@ -682,7 +682,7 @@ trait InventoryNetworkPort
                     "items_id"           => $this->items_id,
                     "instantiation_type" => NetworkPortAggregate::getType(),
                     "name"               => "Management",
-                ], 1);
+                ], true);
             }
         }
     }

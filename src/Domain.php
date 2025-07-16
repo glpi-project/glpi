@@ -377,7 +377,7 @@ class Domain extends CommonDBTM
      *
      * @param $options array of possible options
      *
-     * @return void
+     * @return string|int string (rendered html) if $option['display'] is false, else int (rand value)
      * */
     public static function dropdownDomains($options = [])
     {
@@ -711,7 +711,7 @@ class Domain extends CommonDBTM
                             'glpi_domains' => 'id',
                             [
                                 'AND' => [
-                                    'glpi_alerts.itemtype' => __CLASS__,
+                                    'glpi_alerts.itemtype' => self::class,
                                     'glpi_alerts.type'     => $alert_type,
                                 ],
                             ],
@@ -751,11 +751,11 @@ class Domain extends CommonDBTM
                         // Add alert
                         $input = [
                             'type'     => $alert_type,
-                            'itemtype' => __CLASS__,
+                            'itemtype' => self::class,
                             'items_id' => $domain_id,
                         ];
                         $alert = new Alert();
-                        $alert->deleteByCriteria($input, 1);
+                        $alert->deleteByCriteria($input, true);
                         $alert->add($input);
 
                         $total++;

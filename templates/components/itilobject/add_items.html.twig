@@ -85,6 +85,7 @@
             return;
          }
          $.ajax({
+            method: 'POST',
             url: CFG_GLPI.root_doc + '/ajax/{{ item_class|lower }}.php',
             dataType: 'html',
             data: {

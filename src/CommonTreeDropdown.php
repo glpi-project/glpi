@@ -521,9 +521,9 @@ abstract class CommonTreeDropdown extends CommonDropdown
     /**
      * Print the HTML array children of a TreeDropdown
      *
-     * @return void
+     * @return bool
      */
-    public function showChildren()
+    public function showChildren(): bool
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -676,6 +676,8 @@ TWIG, $twig_params);
                 'container'     => 'mass' . Toolbox::slugify(static::class) . mt_rand(),
             ],
         ]);
+
+        return true;
     }
 
 
@@ -685,7 +687,7 @@ TWIG, $twig_params);
         $actions = parent::getSpecificMassiveActions($checkitem);
 
         if ($isadmin) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_under']
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_under']
                   = "<i class='ti ti-sitemap'></i>" .
                     _sx('button', 'Move under');
         }

@@ -184,12 +184,12 @@ class AuthLDAP extends CommonDBTM
      * Message of last error occurred during connection.
      * @var ?string
      */
-    private static ?string $last_error;
+    private static ?string $last_error = null;
     /**
      * Numero of last error occurred during connection.
      * @var ?int
      */
-    private static ?int $last_errno;
+    private static ?int $last_errno = null;
 
     public static function getTypeName($nb = 0)
     {
@@ -830,7 +830,7 @@ TWIG, ['authldaps_id' => $ID]);
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
         $this->addImpactTab($ong, $options);
         $this->addStandardTab(Log::class, $ong, $options);
 
@@ -1251,7 +1251,7 @@ TWIG, ['authldaps_id' => $ID]);
      * @param string  $ldapstamp        LDAP timestamp
      * @param integer $ldap_time_offset time offset (default 0)
      *
-     * @return integer unix timestamp
+     * @return integer|'' unix timestamp or an empty string if the LDAP timestamp is invalid
      */
     public static function ldapStamp2UnixStamp($ldapstamp, $ldap_time_offset = 0)
     {
@@ -1647,10 +1647,10 @@ TWIG, $twig_params);
 
         if ($values['mode']) {
             $textbutton  = _x('button', 'Synchronize');
-            $form_action = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'sync';
+            $form_action = self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'sync';
         } else {
             $textbutton  = _x('button', 'Import');
-            $form_action = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'import';
+            $form_action = self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'import';
         }
 
         $entries = [];
@@ -2221,7 +2221,7 @@ TWIG, $twig_params);
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . self::class . mt_rand(),
                 'specific_actions' => [
-                    __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'import_group' => _sx('button', 'Import'),
+                    self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'import_group' => _sx('button', 'Import'),
                 ],
                 'extraparams' => [
                     'authldaps_id' => $_REQUEST['authldaps_id'],
@@ -2349,9 +2349,7 @@ TWIG, $twig_params);
 
             usort(
                 $groups,
-                static function ($a, $b) {
-                    return strcasecmp($a['cn'], $b['cn']);
-                }
+                static fn($a, $b) => strcasecmp($a['cn'], $b['cn'])
             );
         }
         return $groups;
@@ -2615,7 +2613,7 @@ TWIG, $twig_params);
      * Import a user from a specific ldap server
      *
      * @param array $params of parameters: method (IDENTIFIER_LOGIN or IDENTIFIER_EMAIL) + value
-     * @param boolean $action synchoronize (true) or import (false)
+     * @param int $action synchoronize (true) or import (false)
      * @param integer $ldap_server ID of the LDAP server to use
      * @param boolean $display display message information on redirect (false by default)
      *

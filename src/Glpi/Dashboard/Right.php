@@ -39,7 +39,7 @@ use Glpi\DBAL\QueryParam;
 
 class Right extends \CommonDBChild
 {
-    public static $itemtype = "Glpi\\Dashboard\\Dashboard";
+    public static $itemtype = \Glpi\Dashboard\Dashboard::class;
     public static $items_id = 'dashboards_dashboards_id';
 
     // prevent bad getFromDB when bootstraping tests suite

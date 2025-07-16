@@ -507,7 +507,6 @@ class Infocom extends CommonDBChild
      **/
     public static function autofillDates(&$infocoms = [], $field = '', $action = 0, $params = [])
     {
-
         if (isset($infocoms[$field]) || is_null($infocoms[$field])) {
             switch ($action) {
                 default:
@@ -550,7 +549,8 @@ class Infocom extends CommonDBChild
     public static function getAutoManagemendDatesFields()
     {
 
-        return ['autofill_buy_date'         => 'buy_date',
+        return [
+            'autofill_buy_date'         => 'buy_date',
             'autofill_use_date'         => 'use_date',
             'autofill_delivery_date'    => 'delivery_date',
             'autofill_warranty_date'    => 'warranty_date',
@@ -687,7 +687,7 @@ class Infocom extends CommonDBChild
                 ],
                 'WHERE'     => [
                     new QueryExpression(
-                        '(' . $DB->quoteName('glpi_infocoms.alert') . ' & ' . pow(2, Alert::END) . ') > 0'
+                        '(' . $DB->quoteName('glpi_infocoms.alert') . ' & ' . 2 ** Alert::END . ') > 0'
                     ),
                     "$table.entities_id"       => $entity,
                     "$table.warranty_duration" => ['>', 0],
@@ -738,12 +738,8 @@ class Infocom extends CommonDBChild
 
         foreach ($items_infos as $entity => $items) {
             // We will ignore items that have been deleted but aren't expired, in case they are restored before the warranty expires
-            $not_deleted_items = array_filter($items, static function ($item) {
-                return $item['is_deleted'] === 0;
-            });
-            $deleted_expired_items = array_filter($items, static function ($item) {
-                return $item['is_deleted'] === 1 && $item['warrantyexpiration'] < $_SESSION['glpi_currenttime'];
-            });
+            $not_deleted_items = array_filter($items, static fn($item) => $item['is_deleted'] === 0);
+            $deleted_expired_items = array_filter($items, static fn($item) => $item['is_deleted'] === 1 && $item['warrantyexpiration'] < $_SESSION['glpi_currenttime']);
             if (
                 NotificationEvent::raiseEvent("alert", new self(), [
                     'entities_id' => $entity,
@@ -818,7 +814,7 @@ class Infocom extends CommonDBChild
     {
 
         $tmp[0]                  = Dropdown::EMPTY_VALUE;
-        $tmp[pow(2, Alert::END)] = __('Warranty expiration date');
+        $tmp[2 ** Alert::END] = __('Warranty expiration date');
 
         if (is_null($val)) {
             return $tmp;
@@ -957,7 +953,7 @@ class Infocom extends CommonDBChild
      * @param number        $value
      * @param string        $date_achat    (default '')
      *
-     * @return float
+     * @return string
      **/
     public static function showTco($ticket_tco, $value, $date_achat = "")
     {
@@ -2045,7 +2041,7 @@ JS;
         ?CommonDBTM $checkitem = null
     ) {
 
-        $action_name = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'activate';
+        $action_name = self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'activate';
 
         if (
             Infocom::canApplyOn($itemtype)

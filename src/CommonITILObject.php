@@ -598,7 +598,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         $canupdate = !$ID || (Session::getCurrentInterface() == "central" && $this->canUpdateItem());
 
-        if ($ID && in_array($this->fields['status'], $this->getClosedStatusArray())) {
+        if ($ID && in_array($this->fields['status'], static::getClosedStatusArray())) {
             $canupdate = false;
             // No update for actors
             $options['_noupdate'] = true;
@@ -944,7 +944,7 @@ abstract class CommonITILObject extends CommonDBTM
     {
         if (
             isset($this->fields['is_deleted']) && $this->fields['is_deleted'] == 1
-            || isset($this->fields['status']) && in_array($this->fields['status'], $this->getClosedStatusArray())
+            || isset($this->fields['status']) && in_array($this->fields['status'], static::getClosedStatusArray())
         ) {
             return false;
         }
@@ -1129,7 +1129,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     final protected function isUserValidationRequested(int $users_id, bool $search_in_groups): bool
     {
-        $validation = $this->getValidationClassInstance();
+        $validation = static::getValidationClassInstance();
         if ($validation === null) {
             // Object cannot be validated
             return false;
@@ -1160,7 +1160,7 @@ abstract class CommonITILObject extends CommonDBTM
                    && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"])))
               && static::isAllowedStatus($this->fields['status'], self::SOLVED)
               // No edition on closed status
-              && !in_array($this->fields['status'], $this->getClosedStatusArray()));
+              && !in_array($this->fields['status'], static::getClosedStatusArray()));
     }
 
     /**
@@ -1271,11 +1271,7 @@ abstract class CommonITILObject extends CommonDBTM
     public function getUsers($type)
     {
 
-        if (isset($this->users[$type])) {
-            return $this->users[$type];
-        }
-
-        return [];
+        return $this->users[$type] ?? [];
     }
 
 
@@ -1289,11 +1285,7 @@ abstract class CommonITILObject extends CommonDBTM
     public function getGroups($type)
     {
 
-        if (isset($this->groups[$type])) {
-            return $this->groups[$type];
-        }
-
-        return [];
+        return $this->groups[$type] ?? [];
     }
 
 
@@ -1337,11 +1329,7 @@ abstract class CommonITILObject extends CommonDBTM
     public function getSuppliers($type)
     {
 
-        if (isset($this->suppliers[$type])) {
-            return $this->suppliers[$type];
-        }
-
-        return [];
+        return $this->suppliers[$type] ?? [];
     }
 
 
@@ -1528,8 +1516,8 @@ abstract class CommonITILObject extends CommonDBTM
                 "$itemtable.is_deleted" => 0,
                 "NOT"                   => [
                     "$itemtable.status" => array_merge(
-                        $this->getSolvedStatusArray(),
-                        $this->getClosedStatusArray()
+                        static::getSolvedStatusArray(),
+                        static::getClosedStatusArray()
                     ),
                 ],
             ] + getEntitiesRestrictCriteria($itemtable)
@@ -1709,8 +1697,8 @@ abstract class CommonITILObject extends CommonDBTM
                     [
                         'NOT' => [
                             $this->getTable() . '.status' => array_merge(
-                                $this->getClosedStatusArray(),
-                                $this->getSolvedStatusArray()
+                                static::getClosedStatusArray(),
+                                static::getSolvedStatusArray()
                             ),
                         ],
                     ],
@@ -1788,12 +1776,12 @@ abstract class CommonITILObject extends CommonDBTM
             !Session::isCron()
             && (!Session::haveRight(static::$rightname, UPDATE)
             // Closed tickets
-            || in_array($this->fields['status'], $this->getClosedStatusArray()))
+            || in_array($this->fields['status'], static::getClosedStatusArray()))
         ) {
             $allowed_fields                    = ['id'];
             $check_allowed_fields_for_template = true;
 
-            if (in_array($this->fields['status'], $this->getClosedStatusArray())) {
+            if (in_array($this->fields['status'], static::getClosedStatusArray())) {
                 $allowed_fields[] = 'status';
 
                 // probably transfer
@@ -2217,12 +2205,12 @@ abstract class CommonITILObject extends CommonDBTM
                                 $input['_forcenotif']                  = true;
                                 if (
                                     ((!isset($input['status'])
-                                    && in_array($this->fields['status'], $this->getNewStatusArray()))
+                                    && in_array($this->fields['status'], static::getNewStatusArray()))
                                     || (isset($input['status'])
-                                    && in_array($input['status'], $this->getNewStatusArray())))
+                                    && in_array($input['status'], static::getNewStatusArray())))
                                     && !$this->isStatusComputationBlocked($input)
                                 ) {
-                                    if (in_array(self::ASSIGNED, array_keys($this->getAllStatusArray()))) {
+                                    if (in_array(self::ASSIGNED, array_keys(static::getAllStatusArray()))) {
                                         $input['status'] = self::ASSIGNED;
                                     }
                                 }
@@ -2245,12 +2233,12 @@ abstract class CommonITILObject extends CommonDBTM
                                 $input['_forcenotif']                  = true;
                                 if (
                                     ((!isset($input['status'])
-                                    && (in_array($this->fields['status'], $this->getNewStatusArray())))
+                                    && (in_array($this->fields['status'], static::getNewStatusArray())))
                                     || (isset($input['status'])
-                                    && (in_array($input['status'], $this->getNewStatusArray()))))
+                                    && (in_array($input['status'], static::getNewStatusArray()))))
                                     && !$this->isStatusComputationBlocked($input)
                                 ) {
-                                    if (in_array(self::ASSIGNED, array_keys($this->getAllStatusArray()))) {
+                                    if (in_array(self::ASSIGNED, array_keys(static::getAllStatusArray()))) {
                                         $input['status'] = self::ASSIGNED;
                                     }
                                 }
@@ -2274,12 +2262,12 @@ abstract class CommonITILObject extends CommonDBTM
                                 $input['_forcenotif']                  = true;
                                 if (
                                     ((!isset($input['status'])
-                                    && (in_array($this->fields['status'], $this->getNewStatusArray())))
+                                    && (in_array($this->fields['status'], static::getNewStatusArray())))
                                     || (isset($input['status'])
-                                    && (in_array($input['status'], $this->getNewStatusArray()))))
+                                    && (in_array($input['status'], static::getNewStatusArray()))))
                                     && !$this->isStatusComputationBlocked($input)
                                 ) {
-                                    if (in_array(self::ASSIGNED, array_keys($this->getAllStatusArray()))) {
+                                    if (in_array(self::ASSIGNED, array_keys(static::getAllStatusArray()))) {
                                         $input['status'] = self::ASSIGNED;
                                     }
                                 }
@@ -2296,8 +2284,8 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         $solvedclosed = array_merge(
-            $this->getSolvedStatusArray(),
-            $this->getClosedStatusArray()
+            static::getSolvedStatusArray(),
+            static::getClosedStatusArray()
         );
 
         if (
@@ -2307,7 +2295,7 @@ abstract class CommonITILObject extends CommonDBTM
             $input['solvedate'] = 'NULL';
         }
 
-        if (isset($input["status"]) && !in_array($input["status"], $this->getClosedStatusArray())) {
+        if (isset($input["status"]) && !in_array($input["status"], static::getClosedStatusArray())) {
             $input['closedate'] = 'NULL';
         }
 
@@ -2416,7 +2404,7 @@ abstract class CommonITILObject extends CommonDBTM
             // status changed to solved
             if (
                 in_array("status", $this->updates)
-                && in_array($this->input["status"], $this->getSolvedStatusArray())
+                && in_array($this->input["status"], static::getSolvedStatusArray())
             ) {
                 $this->updates[]              = "solvedate";
                 $this->oldvalues['solvedate'] = $this->fields["solvedate"];
@@ -2430,7 +2418,7 @@ abstract class CommonITILObject extends CommonDBTM
             // status changed to closed
             if (
                 in_array("status", $this->updates)
-                && in_array($this->input["status"], $this->getClosedStatusArray())
+                && in_array($this->input["status"], static::getClosedStatusArray())
             ) {
                 $this->updates[]              = "closedate";
                 $this->oldvalues['closedate'] = $this->fields["closedate"];
@@ -2490,7 +2478,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         // Status close: check dates
         if (
-            in_array($this->fields["status"], $this->getClosedStatusArray())
+            in_array($this->fields["status"], static::getClosedStatusArray())
             && (in_array("date", $this->updates) || in_array("closedate", $this->updates))
         ) {
             // Invalid dates : no change
@@ -2528,7 +2516,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         // Status solved: check dates
         if (
-            in_array($this->fields["status"], $this->getSolvedStatusArray())
+            in_array($this->fields["status"], static::getSolvedStatusArray())
             && (in_array("date", $this->updates) || in_array("solvedate", $this->updates))
         ) {
             // Invalid dates : no change
@@ -2555,13 +2543,13 @@ abstract class CommonITILObject extends CommonDBTM
                 $this->oldvalues['status'] == self::WAITING
             // From solved to another state than closed
             || (
-                in_array($this->oldvalues["status"], $this->getSolvedStatusArray())
-               && !in_array($this->fields["status"], $this->getClosedStatusArray())
+                in_array($this->oldvalues["status"], static::getSolvedStatusArray())
+               && !in_array($this->fields["status"], static::getClosedStatusArray())
             )
             // From closed to any open state
             || (
-                in_array($this->oldvalues["status"], $this->getClosedStatusArray())
-               && in_array($this->fields["status"], $this->getNotSolvedStatusArray())
+                in_array($this->oldvalues["status"], static::getClosedStatusArray())
+               && in_array($this->fields["status"], static::getNotSolvedStatusArray())
             )
             )
         ) {
@@ -2695,7 +2683,7 @@ abstract class CommonITILObject extends CommonDBTM
         if (
             (($key = array_search('status', $this->updates)) !== false)
             && (($this->fields['status'] == self::WAITING)
-              || in_array($this->fields["status"], $this->getSolvedStatusArray()))
+              || in_array($this->fields["status"], static::getSolvedStatusArray()))
         ) {
             $this->updates[]                    = "begin_waiting_date";
             $this->fields["begin_waiting_date"] = $_SESSION["glpi_currenttime"];
@@ -2723,8 +2711,8 @@ abstract class CommonITILObject extends CommonDBTM
 
         //Look for reopening
         $statuses = array_merge(
-            $this->getSolvedStatusArray(),
-            $this->getClosedStatusArray()
+            static::getSolvedStatusArray(),
+            static::getClosedStatusArray()
         );
         if (
             ($key = array_search('status', $this->updates)) !== false
@@ -2854,7 +2842,7 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         if ($canpriority && !isset($input["priority"]) || !$canpriority) {
-            $input["priority"] = $this->computePriority($input["urgency"], $input["impact"]);
+            $input["priority"] = static::computePriority($input["urgency"], $input["impact"]);
         }
 
         // set last updater if interactive user
@@ -2904,10 +2892,10 @@ abstract class CommonITILObject extends CommonDBTM
         $input = $this->computeDefaultValuesForAdd($input);
 
         // Do not check mandatory on auto import (mailgates)
-        $key = $this->getTemplateFormFieldName();
+        $key = static::getTemplateFormFieldName();
         if (!isset($input['_auto_import'])) {
             if (isset($input[$key]) && $input[$key]) {
-                $tt_class = $this->getTemplateClass();
+                $tt_class = static::getTemplateClass();
                 $tt = getItemForItemtype($tt_class);
                 if ($tt->getFromDBWithData($input[$key])) {
                     if (count($tt->mandatory)) {
@@ -3091,7 +3079,7 @@ abstract class CommonITILObject extends CommonDBTM
             $input["date"] = $_SESSION["glpi_currenttime"];
         }
 
-        if (in_array($input["status"], $this->getSolvedStatusArray())) {
+        if (in_array($input["status"], static::getSolvedStatusArray())) {
             if (
                 !isset($input["solvedate"])
                 || $input["solvedate"] < $input["date"]
@@ -3100,7 +3088,7 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-        if (in_array($input["status"], $this->getClosedStatusArray())) {
+        if (in_array($input["status"], static::getClosedStatusArray())) {
             if (
                 !isset($input["closedate"])
                 || $input["closedate"] < $input["date"]
@@ -3225,12 +3213,8 @@ abstract class CommonITILObject extends CommonDBTM
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
-
-        if (isset($CFG_GLPI[static::MATRIX_FIELD][$urgency][$impact])) {
-            return $CFG_GLPI[static::MATRIX_FIELD][$urgency][$impact];
-        }
         // Failback to trivial
-        return (int) round(($urgency + $impact) / 2);
+        return $CFG_GLPI[static::MATRIX_FIELD][$urgency][$impact] ?? (int) round(($urgency + $impact) / 2);
     }
 
 
@@ -3826,8 +3810,8 @@ abstract class CommonITILObject extends CommonDBTM
         return !in_array(
             $this->fields['status'],
             array_merge(
-                $this->getSolvedStatusArray(),
-                $this->getClosedStatusArray()
+                static::getSolvedStatusArray(),
+                static::getClosedStatusArray()
             )
         );
     }
@@ -3843,9 +3827,9 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public function isSolved(bool $include_closed = false)
     {
-        $status = $this->getSolvedStatusArray();
+        $status = static::getSolvedStatusArray();
         if ($include_closed) {
-            $status = array_merge($status, $this->getClosedStatusArray());
+            $status = array_merge($status, static::getClosedStatusArray());
         }
 
         return in_array(
@@ -3865,7 +3849,7 @@ abstract class CommonITILObject extends CommonDBTM
     {
         return in_array(
             $this->fields['status'] ?? null,
-            $this->getClosedStatusArray()
+            static::getClosedStatusArray()
         );
     }
 
@@ -3978,9 +3962,7 @@ abstract class CommonITILObject extends CommonDBTM
                 if (isset($p['value']) && !empty($p['value'])) {
                     $allowed_statuses[] = $p['value'];
                 }
-                $tab = array_filter($tab, static function ($status) use ($allowed_statuses) {
-                    return in_array($status, $allowed_statuses, false);
-                }, ARRAY_FILTER_USE_KEY);
+                $tab = array_filter($tab, static fn($status) => in_array($status, $allowed_statuses, false), ARRAY_FILTER_USE_KEY);
             }
         }
 
@@ -4523,13 +4505,13 @@ abstract class CommonITILObject extends CommonDBTM
 
         $tab[] = [
             'id'                 => '401',
-            'table'              => $this->getTemplateClass()::getTable(),
+            'table'              => static::getTemplateClass()::getTable(),
             'field'              => 'name',
             'name'               => _n('Template', 'Templates', 1),
             'massiveaction'      => false,
             'searchtype'         => ['equals', 'notequals'],
             'datatype'           => 'dropdown',
-            'linkfield'          => $this->getTemplateClass()::getForeignKeyField(),
+            'linkfield'          => static::getTemplateClass()::getForeignKeyField(),
         ];
 
         $location_so = Location::rawSearchOptionsToAdd();
@@ -5386,7 +5368,7 @@ abstract class CommonITILObject extends CommonDBTM
         global $DB;
 
         $tot       = 0;
-        $tasktable = getTableForItemType($this->getTaskClass());
+        $tasktable = getTableForItemType(static::getTaskClass());
 
         $result = $DB->request([
             'SELECT' => ['SUM' => 'actiontime as sumtime'],
@@ -5592,7 +5574,7 @@ abstract class CommonITILObject extends CommonDBTM
             echo "<td>" . Html::convDateTime($this->fields['solvedate']) . "</td></tr>";
         }
 
-        if (in_array($this->fields['status'], $this->getClosedStatusArray())) {
+        if (in_array($this->fields['status'], static::getClosedStatusArray())) {
             echo "<tr class='tab_bg_2'><td>" . __s('Closing date') . "</td>";
             echo "<td>" . Html::convDateTime($this->fields['closedate']) . "</td></tr>";
         }
@@ -5608,7 +5590,7 @@ abstract class CommonITILObject extends CommonDBTM
         if (isset($this->fields['takeintoaccount_delay_stat'])) {
             echo "<tr class='tab_bg_2'><td>" . __s('Take into account') . "</td><td>";
             if ($this->fields['takeintoaccount_delay_stat'] > 0) {
-                echo Html::timestampToString($this->fields['takeintoaccount_delay_stat'], 0, false);
+                echo Html::timestampToString($this->fields['takeintoaccount_delay_stat'], false, false);
             } else {
                 echo '&nbsp;';
             }
@@ -5619,14 +5601,14 @@ abstract class CommonITILObject extends CommonDBTM
             echo "<tr class='tab_bg_2'><td>" . __s('Resolution') . "</td><td>";
 
             if ($this->fields['solve_delay_stat'] > 0) {
-                echo Html::timestampToString($this->fields['solve_delay_stat'], 0, false);
+                echo Html::timestampToString($this->fields['solve_delay_stat'], false, false);
             } else {
                 echo '&nbsp;';
             }
             echo "</td></tr>";
         }
 
-        if (in_array($this->fields['status'], $this->getClosedStatusArray())) {
+        if (in_array($this->fields['status'], static::getClosedStatusArray())) {
             echo "<tr class='tab_bg_2'><td>" . __s('Closure') . "</td><td>";
             if ($this->fields['close_delay_stat'] > 0) {
                 echo Html::timestampToString($this->fields['close_delay_stat'], true, false);
@@ -5638,7 +5620,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         echo "<tr class='tab_bg_2'><td>" . __s('Pending') . "</td><td>";
         if ($this->fields['waiting_duration'] > 0) {
-            echo Html::timestampToString($this->fields['waiting_duration'], 0, false);
+            echo Html::timestampToString($this->fields['waiting_duration'], false, false);
         } else {
             echo '&nbsp;';
         }
@@ -6269,7 +6251,7 @@ abstract class CommonITILObject extends CommonDBTM
         /** @var \DBmysql $DB */
         global $DB;
 
-        $linktable = getTableForItemType($this->getTaskClass());
+        $linktable = getTableForItemType(static::getTaskClass());
 
         $ctable = $this->getTable();
         $criteria = [
@@ -6922,7 +6904,7 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
     /**
-     * @param array{ticket_stats: bool} $params
+     * @param array{ticket_stats?: bool} $params
      * @return array{columns: array, formatters: array} Array of columns and formatters to be used in datatables (templates/components/datatable.html.twig) that are common to all ITIL objects.
      * @see CommonITILObject::getDatatableEntries()
      * @note If the columns are changed, you must also update the `getDatatableEntries` method to match the new columns.
@@ -6978,7 +6960,7 @@ abstract class CommonITILObject extends CommonDBTM
      *        - item_id: The ID of the ITIL object
      *        - id: The ID of the entry in the datatable (probably the ID of the link between the ITIL item and another item)
      *       - itemtype: The class name of the ITIL object
-     * @param array{ticket_stats: bool} $params
+     * @param array{ticket_stats?: bool} $params
      * @return array The data with the other required fields added
      * @see CommonITILObject::getCommonDatatableColumns()
      */
@@ -7354,7 +7336,7 @@ abstract class CommonITILObject extends CommonDBTM
         $canadd_document = $canadd_fup || ($this->canAddItem('Document') && !in_array($this->fields["status"], $solved_closed_statuses, true));
         $canadd_solution = $obj_type::canUpdate() && $this->canSolve() && !in_array($this->fields["status"], $solved_statuses, true) && $this->checkRequiredFieldsFilled();
 
-        $validation = $this->getValidationClassInstance();
+        $validation = static::getValidationClassInstance();
         $canadd_validation = $validation !== null
             && $validation->can(-1, CREATE, $tmp)
             && !in_array($this->fields["status"], $solved_closed_statuses, true);
@@ -7524,7 +7506,7 @@ abstract class CommonITILObject extends CommonDBTM
         $foreignKey = static::getForeignKeyField();
         $timeline = [];
 
-        $canupdate_parent = $this->canUpdateItem() && !in_array($this->fields['status'], $this->getClosedStatusArray());
+        $canupdate_parent = $this->canUpdateItem() && !in_array($this->fields['status'], static::getClosedStatusArray());
 
         //checks rights
         $restrict_fup = $restrict_task = [];
@@ -7873,8 +7855,10 @@ abstract class CommonITILObject extends CommonDBTM
         $autoreminders = $autoreminder_obj->find(['items_id'  => $this->getID()]);
         foreach ($autoreminders as $autoreminder_id => $autoreminder) {
             $autoreminder_obj = ITILReminder::getByID($autoreminder_id);
+            if (!$autoreminder_obj instanceof ITILReminder) {
+                continue;
+            }
             $pending_reason = $autoreminder_obj->getPendingReason();
-            $followup_template = ITILFollowupTemplate::getById($pending_reason->fields['itilfollowuptemplates_id']);
             $content = sprintf(
                 '<span>%1$s%2$s (<span data-bs-toggle="popover" data-bs-html="true" data-bs-sanitize="true" data-bs-content="%3$s"><u>%4$s</u></span>)</span>',
                 '<i class="ti ti-refresh-alert text-warning me-1"></i>',
@@ -8483,7 +8467,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public function getAssociatedDocumentsCriteria($bypass_rights = false): array
     {
-        $task_class = $this->getTaskClass();
+        $task_class = static::getTaskClass();
         /** @var DBmysql $DB */
         global $DB; // Used to get subquery results - better performance
 
@@ -8740,7 +8724,7 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         // Add tasks in tasktemplates if defined in itiltemplate
-        $itiltask   = $this->getTaskClassInstance();
+        $itiltask   = static::getTaskClassInstance();
         foreach ($this->input['_tasktemplates_id'] as $tasktemplates_id) {
             $itiltask->add([
                 '_tasktemplates_id'           => $tasktemplates_id,
@@ -8828,10 +8812,10 @@ abstract class CommonITILObject extends CommonDBTM
                 ]
             ) > 0;
 
-            if (in_array($status, $this->getSolvedStatusArray()) && !$has_waiting_solution) {
+            if (in_array($status, static::getSolvedStatusArray()) && !$has_waiting_solution) {
                 NotificationEvent::raiseEvent('solved', $this);
             }
-            if (in_array($status, $this->getClosedStatusArray())) {
+            if (in_array($status, static::getClosedStatusArray())) {
                 NotificationEvent::raiseEvent('closed', $this);
             }
         }
@@ -8881,7 +8865,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public function manageValidationAdd($input)
     {
-        $validation = $this->getValidationClassInstance();
+        $validation = static::getValidationClassInstance();
 
         if ($validation === null) {
             return true;
@@ -9161,10 +9145,9 @@ abstract class CommonITILObject extends CommonDBTM
                     ? sprintf('_additional_%ss', $actor_type)
                     : sprintf('_additional_%ss_%ss', strtolower($actor_itemtype), $actor_type);
 
-                $get_unique_key = function (array $actor) use ($actors_id_input_key): string {
+                $get_unique_key = (fn(array $actor): string =>
                     // Use alternative_email in value key for "email" actors
-                    return sprintf('%s_%s', $actors_id_input_key, $actor['items_id'] ?: $actor['alternative_email'] ?? '');
-                };
+                    sprintf('%s_%s', $actors_id_input_key, $actor['items_id'] ?: $actor['alternative_email'] ?? ''));
 
                 if (array_key_exists($actors_id_input_key, $this->input)) {
                     if (is_array($this->input[$actors_id_input_key])) {
@@ -9389,10 +9372,10 @@ abstract class CommonITILObject extends CommonDBTM
                 if (
                     $actor['type'] === CommonITILActor::ASSIGN
                     && (
-                        (!isset($this->input['status']) && in_array($this->fields['status'], $this->getNewStatusArray()))
-                        || (isset($this->input['status']) && in_array($this->input['status'], $this->getNewStatusArray()))
+                        (!isset($this->input['status']) && in_array($this->fields['status'], static::getNewStatusArray()))
+                        || (isset($this->input['status']) && in_array($this->input['status'], static::getNewStatusArray()))
                     )
-                    && in_array(self::ASSIGNED, array_keys($this->getAllStatusArray()))
+                    && in_array(self::ASSIGNED, array_keys(static::getAllStatusArray()))
                     && !$this->isStatusComputationBlocked($this->input)
                 ) {
                     $self = new static();
@@ -9527,7 +9510,7 @@ abstract class CommonITILObject extends CommonDBTM
     protected function assign(array $input)
     {
         // FIXME Deprecate this method in GLPI 11.0.
-        if (!in_array(self::ASSIGNED, array_keys($this->getAllStatusArray()))) {
+        if (!in_array(self::ASSIGNED, array_keys(static::getAllStatusArray()))) {
             return $input;
         }
 
@@ -9537,7 +9520,7 @@ abstract class CommonITILObject extends CommonDBTM
                 || $this->hasValidActorInInput($input, Group::class, CommonITILActor::ASSIGN)
                 || $this->hasValidActorInInput($input, Supplier::class, CommonITILActor::ASSIGN)
             )
-            && (in_array($input['status'], $this->getNewStatusArray()))
+            && (in_array($input['status'], static::getNewStatusArray()))
             && !$this->isStatusComputationBlocked($input)
         ) {
             $input["status"] = self::ASSIGNED;
@@ -9982,9 +9965,7 @@ abstract class CommonITILObject extends CommonDBTM
             // Core content
             $content .= "<div class='kanban-core-content'>";
             if (isset($item['_steps']) && count($item['_steps'])) {
-                $done = count(array_filter($item['_steps'], static function ($l) {
-                    return in_array($l['status'], static::getClosedStatusArray());
-                }));
+                $done = count(array_filter($item['_steps'], static fn($l) => in_array($l['status'], static::getClosedStatusArray())));
                 $total = count($item['_steps']);
                 $content .= "<div class='flex-break'></div>";
                 $content .= sprintf(__('%s / %s tasks complete'), $done, $total);
@@ -10039,9 +10020,7 @@ abstract class CommonITILObject extends CommonDBTM
                 }
             }
         }
-        $category_ids = array_filter(array_unique($category_ids), static function ($id) {
-            return $id > 0;
-        });
+        $category_ids = array_filter(array_unique($category_ids), static fn($id) => $id > 0);
 
         $categories = [];
         if ($category_ids !== []) {
@@ -10820,7 +10799,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         if (
             in_array("status", $this->updates)
-            && in_array($this->input["status"], $this->getClosedStatusArray())
+            && in_array($this->input["status"], static::getClosedStatusArray())
             && ($delay == 0)
             && ($rate > 0)
             && (mt_rand(1, 100) <= $rate)
@@ -10871,13 +10850,11 @@ abstract class CommonITILObject extends CommonDBTM
                     continue;
                 }
 
-                $get_input_key = function (string $actor_itemtype, string $actor_type): string {
-                    return sprintf(
-                        '_%s_%s',
-                        getForeignKeyFieldForItemType($actor_itemtype),
-                        $actor_type
-                    );
-                };
+                $get_input_key = (fn(string $actor_itemtype, string $actor_type): string => sprintf(
+                    '_%s_%s',
+                    getForeignKeyFieldForItemType($actor_itemtype),
+                    $actor_type
+                ));
 
                 // Normalize all keys.
                 foreach ([User::class, Group::class, Supplier::class] as $actor_itemtype) {
@@ -11183,9 +11160,7 @@ abstract class CommonITILObject extends CommonDBTM
                 continue;
             }
 
-            $input[$key] = array_filter($input[$key], static function ($value) use ($values_to_drop) {
-                return !in_array($value, $values_to_drop);
-            });
+            $input[$key] = array_filter($input[$key], static fn($value) => !in_array($value, $values_to_drop));
             if (empty($input[$key])) {
                 unset($input[$key]);
             }
@@ -11235,7 +11210,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     final protected function canAddDocuments(): bool
     {
-        if (in_array($this->fields['status'], $this->getClosedStatusArray())) {
+        if (in_array($this->fields['status'], static::getClosedStatusArray())) {
             return false;
         }
 

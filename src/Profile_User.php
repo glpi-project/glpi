@@ -158,7 +158,7 @@ class Profile_User extends CommonDBRelation
         $entries = [];
         foreach ($iterator as $data) {
             $entry = [
-                'itemtype' => __CLASS__,
+                'itemtype' => self::class,
                 'id'       => $data['linkid'],
             ];
             $link = $data["completename"];
@@ -226,7 +226,7 @@ class Profile_User extends CommonDBRelation
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed'    => min($_SESSION['glpilist_limit'], count($entries)),
-                'container'        => 'mass' . __CLASS__ . mt_rand(),
+                'container'        => 'mass' . self::class . mt_rand(),
                 'specific_actions' => ['purge' => _x('button', 'Delete permanently')],
             ],
         ]);
@@ -419,7 +419,7 @@ TWIG, $avatar_params) . $username;
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed'    => min($_SESSION['glpilist_limit'], $nb),
-                'container'        => 'mass' . __CLASS__ . $rand,
+                'container'        => 'mass' . self::class . $rand,
                 'specific_actions' => ['purge' => _x('button', 'Delete permanently')],
             ],
         ]);
@@ -612,7 +612,7 @@ TWIG, $avatar_params) . $username;
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed'    => min($_SESSION['glpilist_limit'], $nb),
-                'container'        => 'mass' . __CLASS__ . $rand,
+                'container'        => 'mass' . self::class . $rand,
                 'specific_actions' => ['purge' => _x('button', 'Delete permanently')],
             ],
         ]);
@@ -1179,6 +1179,11 @@ TWIG, $avatar_params) . $username;
     protected function isLastSuperAdminAuthorization(): bool
     {
         $profile = Profile::getById($this->fields["profiles_id"]);
+
+        if (!$profile instanceof Profile) {
+            return false;
+        }
+
         if (!$profile->isLastSuperAdminProfile()) {
             // Can't be the last super admin auth if not targeting the last
             // super admin profile

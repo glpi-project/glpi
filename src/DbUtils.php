@@ -79,7 +79,7 @@ final class DbUtils
     public function isForeignKeyField($field)
     {
         //check empty, then strpos, then regexp; for performances
-        return !empty($field) && strpos($field, '_id', 1) !== false && preg_match("/._id(_.+)?$/", $field);
+        return !empty($field) && str_contains(substr($field, 1), '_id') && preg_match("/._id(_.+)?$/", $field);
     }
 
 
@@ -237,7 +237,7 @@ final class DbUtils
             $table   = strtolower($plug['class']);
         } else {
             $table = strtolower($singular);
-            if (substr($singular, 0, \strlen(NS_GLPI)) === NS_GLPI) {
+            if (str_starts_with($singular, NS_GLPI)) {
                 $table = substr($table, \strlen(NS_GLPI));
             }
         }
@@ -1150,18 +1150,14 @@ final class DbUtils
         if (!is_array($items_id)) {
             $items_id = (array) $items_id;
         }
-        $ids_needed_to_fetch = array_map(static function ($id) {
-            return (int) $id;
-        }, $items_id);
+        $ids_needed_to_fetch = array_map(static fn($id) => (int) $id, $items_id);
 
         if ($ckey !== null && ($ancestors = $GLPI_CACHE->get($ckey)) !== null) {
             // If we only need to get ancestors for a single item, we can use the cached values if they exist
             return $ancestors;
         } elseif ($ckey === null) {
             // For multiple IDs, we need to check the cache for each ID
-            $from_cache = $GLPI_CACHE->getMultiple(array_map(static function ($id) use ($table) {
-                return "ancestors_cache_{$table}_{$id}";
-            }, $ids_needed_to_fetch));
+            $from_cache = $GLPI_CACHE->getMultiple(array_map(static fn($id) => "ancestors_cache_{$table}_{$id}", $ids_needed_to_fetch));
             foreach ($ids_needed_to_fetch as $id) {
                 if (($ancestors = $from_cache["ancestors_cache_{$table}_{$id}"]) !== null) {
                     $ancestors_by_id[$id] = $ancestors;
@@ -1311,7 +1307,7 @@ final class DbUtils
      * @param boolean $withcomment 1 if you want to give the array with the comments (false by default)
      * @param boolean $translate   (true by default)
      *
-     * @return string name of the element
+     * @return ($withcomment is true ? array : string)
      *
      * @see DbUtils::getTreeValueCompleteName
      */
@@ -1414,7 +1410,7 @@ final class DbUtils
      * @param boolean $tooltip     (true by default) returns a tooltip, else returns only 'comment'
      * @param string  $default     default value returned when item not exists
      *
-     * @return string completename of the element
+     * @return ($withcomment is true ? array : string)
      *
      * @see DbUtils::getTreeLeafValueName
      *
@@ -1525,7 +1521,7 @@ final class DbUtils
      * @param string  $wholename current name to complete (use for recursivity) (default '')
      * @param integer $level     current level of recursion (default 0)
      *
-     * @return string name
+     * @return array
      */
     public function getTreeValueName($table, $ID, $wholename = "", $level = 0)
     {
@@ -1879,7 +1875,7 @@ final class DbUtils
 
         $autoNum = Toolbox::substr($objectName, 1, Toolbox::strlen($objectName) - 2);
         $mask    = $matches[1];
-        $global  = ((strpos($autoNum, '\\g') !== false) && ($itemtype != 'Infocom')) ? 1 : 0;
+        $global  = ((str_contains($autoNum, '\\g')) && ($itemtype != 'Infocom')) ? 1 : 0;
 
         //do not add extra escapements for now
         //substring position would be wrong if name contains "_"
@@ -2103,7 +2099,7 @@ final class DbUtils
      *
      * @param string $time datetime time
      *
-     * @return  array
+     * @return string
      */
     public function getHourFromSql($time)
     {

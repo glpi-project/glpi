@@ -157,6 +157,9 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
         $this->data['##knowbaseitem.numberofdocuments##']      = count($associateddocuments);
         foreach ($associateddocuments as $docid) {
             $document = Document::getById($docid['documents_id']);
+            if (!$document instanceof Document) {
+                continue;
+            }
             $this->data['documents'][] = [
                 '##document.downloadurl##'             => $document->getDownloadLink(),
                 '##document.url##'                     => $document->getLink(),
@@ -194,7 +197,7 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
         ];
 
         foreach ($tags as $tag => $label) {
-            if (strpos($tag, 'document.') != false || strpos($tag, 'target.') != false) {
+            if (str_contains($tag, 'document.') || str_contains($tag, 'target.')) {
                 $this->addTagToList([
                     'tag'   => $tag,
                     'label' => $label,

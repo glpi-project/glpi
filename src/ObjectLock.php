@@ -219,7 +219,7 @@ class ObjectLock extends CommonDBTM
         if (!isset($_SESSION['glpilocksavedprofile']) && isset($CFG_GLPI['lock_lockprofile'])) {
             if (!self::$shutdownregistered) {
                 // this is a security in case of a fatal error that can prevent correct revert of profile
-                register_shutdown_function([__CLASS__,  'revertProfile']);
+                register_shutdown_function([self::class,  'revertProfile']);
                 self::$shutdownregistered = true;
             }
             $_SESSION['glpilocksavedprofile'] = $_SESSION['glpiactiveprofile'];
@@ -446,7 +446,7 @@ TWIG;
         $task->setVolume(0); // start with zero
 
         $lockedItems = getAllDataFromTable(
-            getTableForItemType(__CLASS__),
+            getTableForItemType(self::class),
             [
                 'date' => ['<', date("Y-m-d H:i:s", time() - ($task->fields['param'] * HOUR_TIMESTAMP))],
             ]

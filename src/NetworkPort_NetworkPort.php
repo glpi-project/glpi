@@ -237,7 +237,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation
                 'items_id'  => $unmanageds_id,
             ]);
             if (count($networkports) < 2) {
-                $unmanaged->delete(['id' => $unmanageds_id], 1);
+                $unmanaged->delete(['id' => $unmanageds_id], true);
             } elseif (count($networkports) === 2) {
                 $switchs_id = 0;
                 $others_id  = 0;

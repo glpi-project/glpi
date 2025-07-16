@@ -92,7 +92,7 @@ if (isset($_POST["add"])) {
 } elseif (isset($_POST["purge"])) {
     $constype->check($_POST["id"], PURGE);
 
-    if ($constype->delete($_POST, 1)) {
+    if ($constype->delete($_POST, true)) {
         Event::log(
             $_POST["id"],
             "consumableitems",

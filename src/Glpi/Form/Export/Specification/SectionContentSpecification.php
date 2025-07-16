@@ -40,7 +40,7 @@ final class SectionContentSpecification
     public int $id;
     public string $uuid;
     public string $name;
-    public ?string $description;
+    public ?string $description = null;
     public int $rank;
     public string $visibility_strategy;
 

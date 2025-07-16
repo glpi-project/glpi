@@ -419,7 +419,7 @@ TWIG, $p);
                     $cron_status         = 1;
                     $task->addVolume(1);
                     $alert               = new Alert();
-                    $input["itemtype"]   = __CLASS__;
+                    $input["itemtype"]   = self::class;
                     $input["type"]       = Alert::ACTION;
                     $input["items_id"]   = $data['id'];
 

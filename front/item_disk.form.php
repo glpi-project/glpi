@@ -83,7 +83,7 @@ if (isset($_POST["add"])) {
 } elseif (isset($_POST["purge"])) {
     $disk->check($_POST["id"], PURGE);
 
-    if ($disk->delete($_POST, 1)) {
+    if ($disk->delete($_POST, true)) {
         Event::log(
             $disk->fields['items_id'],
             $disk->fields['itemtype'],

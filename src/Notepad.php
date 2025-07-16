@@ -193,7 +193,7 @@ class Notepad extends CommonDBChild
         $document_obj = new Document();
 
         foreach ($iterator as $note) {
-            $document_items = Document_Item::getItemsAssociatedTo(__CLASS__, $note['id']);
+            $document_items = Document_Item::getItemsAssociatedTo(self::class, $note['id']);
             foreach ($document_items as $document_item) {
                 if (!$document_obj->getFromDB($document_item->fields['documents_id'])) {
                     continue;

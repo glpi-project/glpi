@@ -38,7 +38,9 @@ use Glpi\DBAL\QueryFunction;
 
 use function Safe\preg_match;
 
-/// Common DataBase Relation Table Manager Class
+/**
+ * Common DataBase Relation Table Manager Class
+ */
 abstract class CommonDBRelation extends CommonDBConnexity
 {
     // Item 1 information
@@ -750,7 +752,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             // Set the item to allow parent::prepareinputforadd to get the right item ...
             if (
                 ($itemToGetEntity instanceof CommonDBTM)
-                && $itemToGetEntity->isEntityForwardTo(get_called_class())
+                && $itemToGetEntity->isEntityForwardTo(static::class)
             ) {
                 $input['entities_id']  = $itemToGetEntity->getEntityID();
                 $input['is_recursive'] = intval($itemToGetEntity->isRecursive());
@@ -941,7 +943,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                     $new1->getID(),
                     $new1->getType(),
                     $changes,
-                    get_called_class() . '#' . $field,
+                    static::class . '#' . $field,
                     static::$log_history_1_update
                 );
             }
@@ -953,7 +955,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                     $new2->getID(),
                     $new2->getType(),
                     $changes,
-                    get_called_class() . '#' . $field,
+                    static::class . '#' . $field,
                     static::$log_history_2_update
                 );
             }
@@ -1224,8 +1226,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
         array $options = []
     ) {
 
-        if (isset($options[get_called_class() . '_side'])) {
-            $side = $options[get_called_class() . '_side'];
+        if (isset($options[static::class . '_side'])) {
+            $side = $options[static::class . '_side'];
         } else {
             $side = 0;
         }
@@ -1246,7 +1248,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             class_exists($oppositetype)
             && method_exists($oppositetype, 'getHTMLTableHeader')
         ) {
-            $oppositetype::getHTMLTableHeader(get_called_class(), $base, $super, $father, $options);
+            $oppositetype::getHTMLTableHeader(static::class, $base, $super, $father, $options);
         }
     }
 
@@ -1629,7 +1631,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 !$specificities['can_remove_all_at_once']
                 && !$specificities['only_remove_all_at_once']
             ) {
-                return false;
+                return;
             }
             $peer = false;
         }

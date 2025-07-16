@@ -78,7 +78,7 @@ if (isset($_POST["delete"])) {
     $queuedwebhook->redirectToList();
 } elseif (isset($_POST["purge"])) {
     $queuedwebhook->check($_POST["id"], PURGE);
-    if ($queuedwebhook->delete($_POST, 1)) {
+    if ($queuedwebhook->delete($_POST, true)) {
         Event::log(
             $_POST["id"],
             QueuedWebhook::class,

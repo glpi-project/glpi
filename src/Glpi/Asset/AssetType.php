@@ -91,6 +91,14 @@ abstract class AssetType extends CommonType
         return Toolbox::getItemTypeFormURL(self::class, $full) . '?class=' . static::getDefinition()->fields['system_name'];
     }
 
+    /**
+     * Retrieve an item from the database
+     *
+     * @param int|null $id ID of the item to get
+     *
+     * @return self|false
+     */
+
     public static function getById(?int $id)
     {
         if ($id === null) {
@@ -127,20 +135,7 @@ abstract class AssetType extends CommonType
 
     public static function getSystemSQLCriteria(?string $tablename = null): array
     {
-        $table_prefix = $tablename !== null
-            ? $tablename . '.'
-            : '';
-
-        // Keep only items from current definition must be shown.
-        $criteria = [
-            $table_prefix . AssetDefinition::getForeignKeyField() => static::getDefinition()->getID(),
-        ];
-
-        // Add another layer to the array to prevent losing duplicates keys if the
-        // result of the function is merged with another array.
-        $criteria = [crc32(serialize($criteria)) => $criteria];
-
-        return $criteria;
+        return static::getDefinition()->getSystemSQLCriteriaForConcreteClass($tablename);
     }
 
     public function prepareInputForAdd($input)

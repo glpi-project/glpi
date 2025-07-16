@@ -246,7 +246,7 @@ class Line extends CommonDBTM
         return "ti ti-phone-calling";
     }
 
-    public static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0, ?CommonDBTM $checkitem = null)
+    public static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = false, ?CommonDBTM $checkitem = null)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -259,7 +259,7 @@ class Line extends CommonDBTM
                 _sx('button', 'Add a line');
             $actions[$action_prefix . 'remove'] = _sx('button', 'Remove a line');
         }
-        if ((is_a($itemtype, __CLASS__, true)) && (static::canUpdate())) {
+        if ((is_a($itemtype, self::class, true)) && (static::canUpdate())) {
             $actions[$action_prefix . 'add_item']    = _sx('button', 'Add an item');
             $actions[$action_prefix . 'remove_item'] = _sx('button', 'Remove an item');
         }

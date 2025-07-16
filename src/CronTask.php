@@ -579,7 +579,7 @@ class CronTask extends CommonDBTM
 
             // Delete existing outdated alerts
             $alert = new Alert();
-            $alert->deleteByCriteria(['itemtype' => 'CronTask', 'items_id' => $this->fields['id']], 1);
+            $alert->deleteByCriteria(['itemtype' => 'CronTask', 'items_id' => $this->fields['id']], true);
 
             // Create a new alert
             $alert->add(
@@ -1350,7 +1350,7 @@ TWIG, ['msg' => __('Last run list')]);
         $actions = parent::getSpecificMassiveActions($checkitem);
 
         if ($isadmin) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'reset'] = __s('Reset last run');
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'reset'] = __s('Reset last run');
         }
         return $actions;
     }

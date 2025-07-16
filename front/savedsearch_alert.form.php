@@ -67,7 +67,7 @@ if (isset($_POST["add"])) {
 } elseif (isset($_POST["purge"])) {
     $alert->check($_POST["id"], PURGE);
 
-    if ($alert->delete($_POST, 1)) {
+    if ($alert->delete($_POST, true)) {
         Event::log(
             $alert->fields['savedsearches_id'],
             "savedsearches",

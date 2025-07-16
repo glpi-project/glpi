@@ -114,7 +114,7 @@ class Rule extends CommonDBTM
 
     public static function getTable($classname = null)
     {
-        return parent::getTable(__CLASS__);
+        return parent::getTable(self::class);
     }
 
     public static function getTypeName($nb = 0)
@@ -617,10 +617,10 @@ class Rule extends CommonDBTM
             unset($actions[MassiveAction::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_transfer_list']);
         }
         if ($isadmin) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_rule'] = "<i class='ti ti-arrows-vertical'></i>"
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_rule'] = "<i class='ti ti-arrows-vertical'></i>"
                 . __s('Move');
         }
-        $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'export'] = "<i class='ti ti-file-download'></i>"
+        $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'export'] = "<i class='ti ti-file-download'></i>"
             . _sx('button', 'Export');
 
         return $actions;
@@ -700,7 +700,7 @@ class Rule extends CommonDBTM
     public function getForbiddenSingleMassiveActions()
     {
         $excluded = parent::getForbiddenSingleMassiveActions();
-        $excluded[] = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_rule';
+        $excluded[] = self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_rule';
         return $excluded;
     }
 
@@ -2140,9 +2140,7 @@ JS
         $output = $this->preProcessPreviewResults($output);
 
         foreach ($output as $criteria => $value) {
-            $action_def = array_filter($actions, static function ($def, $key) use ($criteria) {
-                return $key === $criteria || (array_key_exists('appendto', $def) && $def['appendto'] === $criteria);
-            }, ARRAY_FILTER_USE_BOTH);
+            $action_def = array_filter($actions, static fn($def, $key) => $key === $criteria || (array_key_exists('appendto', $def) && $def['appendto'] === $criteria), ARRAY_FILTER_USE_BOTH);
             $action_def_key = key($action_def);
             if (count($action_def)) {
                 $action_def = reset($action_def);
@@ -2721,7 +2719,7 @@ JS
     public function showRulePreviewCriteriasForm($rules_id)
     {
         $criteria = $this->getAllCriteria();
-        if (!$this->getRuleWithCriteriasAndActions($rules_id, 1, 0)) {
+        if (!$this->getRuleWithCriteriasAndActions($rules_id, true, false)) {
             return;
         }
         $criteria_names = [];
@@ -2946,7 +2944,7 @@ JS
 
         foreach ($iterator as $rule) {
             $affect_rule = new Rule();
-            $affect_rule->getRuleWithCriteriasAndActions($rule["id"], 0, 1);
+            $affect_rule->getRuleWithCriteriasAndActions($rule["id"], false, true);
             $rules[]     = $affect_rule;
         }
         return $rules;
@@ -3030,7 +3028,7 @@ JS
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
@@ -3308,7 +3306,7 @@ JS
         } elseif ($item instanceof LevelAgreement) {
             $item->showRulesList();
         } elseif ($item instanceof self) {
-            $item->getRuleWithCriteriasAndActions($item->getID(), 1, 1);
+            $item->getRuleWithCriteriasAndActions($item->getID(), true, true);
             switch ($tabnum) {
                 case 1:
                     $item->showCriteriasList($item->getID());

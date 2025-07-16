@@ -49,7 +49,7 @@ if (!isset($_GET["withtemplate"])) {
 $refusedequipment = new RefusedEquipment();
 if (isset($_POST["purge"])) {
     $refusedequipment->check($_POST["id"], PURGE);
-    if ($refusedequipment->delete($_POST, 1)) {
+    if ($refusedequipment->delete($_POST, true)) {
         Event::log(
             $_POST["id"],
             "refusedequipment",

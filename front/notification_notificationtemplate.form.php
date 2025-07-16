@@ -55,7 +55,7 @@ if (isset($_POST["add"])) {
     Html::back();
 } elseif (isset($_POST["purge"])) {
     $notiftpl->check($_POST["id"], PURGE);
-    $notiftpl->delete($_POST, 1);
+    $notiftpl->delete($_POST, true);
     Html::redirect(Notification::getFormURLWithID($notiftpl->fields['notifications_id']));
 } elseif (isset($_POST["update"])) {
     $notiftpl->check($_POST["id"], UPDATE);

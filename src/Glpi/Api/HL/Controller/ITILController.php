@@ -38,14 +38,16 @@ namespace Glpi\Api\HL\Controller;
 use Calendar;
 use Change;
 use ChangeTemplate;
+use ChangeValidation;
 use CommonDBTM;
+use CommonITILActor;
 use CommonITILObject;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
+use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
-use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -54,8 +56,10 @@ use Group;
 use PlanningEventCategory;
 use PlanningExternalEventTemplate;
 use Problem;
+use Session;
 use Ticket;
 use TicketTemplate;
+use TicketValidation;
 use User;
 
 use function Safe\json_decode;
@@ -199,10 +203,141 @@ final class ITILController extends AbstractController
 
         $itil_types = [Ticket::class, Change::class, Problem::class];
 
-        /** @var class-string<CommonITILObject> $itil_type */
         foreach ($itil_types as $itil_type) {
             $schemas[$itil_type] = $base_schema;
             $schemas[$itil_type]['x-version-introduced'] = '2.0';
+
+            $schemas[$itil_type]['x-rights-conditions'] = [
+                'read' => static function () use ($itil_type) {
+                    if (Session::haveRight($itil_type::$rightname, CommonITILObject::READALL)) {
+                        return true; // Can see all. No extra SQL conditions needed.
+                    }
+
+                    if ($itil_type !== Ticket::class) {
+                        if (Session::haveRight($itil_type::$rightname, CommonITILObject::READMY)) {
+                            $item = new $itil_type();
+                            $group_table = $item->grouplinkclass::getTable();
+                            $user_table = $item->userlinkclass::getTable();
+                            $criteria = [
+                                'LEFT JOIN' => [
+                                    $user_table => [
+                                        'ON' => [
+                                            $user_table => $itil_type::getForeignKeyField(),
+                                            '_' => 'id',
+                                        ],
+                                    ],
+                                ],
+                                'WHERE' => [
+                                    'OR' => [
+                                        '_.users_id_recipient' => Session::getLoginUserID(),
+                                        $user_table . '.users_id' => Session::getLoginUserID(),
+                                    ],
+                                ],
+                            ];
+
+                            if (!empty($_SESSION['glpigroups'])) {
+                                $criteria['LEFT JOIN'][$group_table] = [
+                                    'ON' => [
+                                        $group_table => $itil_type::getForeignKeyField(),
+                                        '_' => 'id',
+                                    ],
+                                ];
+                                $criteria['WHERE']['OR'][$group_table . '.groups_id'] = $_SESSION['glpigroups'];
+                            }
+                            return $criteria;
+                        }
+                    } else {
+                        // Tickets have expanded permissions
+                        $criteria = [
+                            'LEFT JOIN' => [
+                                'glpi_tickets_users' => [
+                                    'ON' => [
+                                        'glpi_tickets_users' => Ticket::getForeignKeyField(),
+                                        '_' => 'id',
+                                    ],
+                                ],
+                                'glpi_groups_tickets' => [
+                                    'ON' => [
+                                        'glpi_groups_tickets' => Ticket::getForeignKeyField(),
+                                        '_' => 'id',
+                                    ],
+                                ],
+                            ],
+                            'WHERE' => ['OR' => []],
+                        ];
+                        if (Session::haveRight(Ticket::$rightname, CommonITILObject::READMY)) {
+                            // Permission to see tickets as direct requester, observer or writer
+                            $criteria['WHERE']['OR'][] = [
+                                '_.users_id_recipient' => Session::getLoginUserID(),
+                            ];
+                            $criteria['WHERE']['OR'][] = [
+                                'AND' => [
+                                    'glpi_tickets_users' . '.users_id' => Session::getLoginUserID(),
+                                    'glpi_tickets_users' . '.type' => [CommonITILActor::REQUESTER, CommonITILActor::OBSERVER],
+                                ],
+                            ];
+                        }
+                        if (!empty($_SESSION['glpigroups']) && Session::haveRight(Ticket::$rightname, Ticket::READGROUP)) {
+                            // Permission to see tickets as requester or observer group member
+                            $criteria['WHERE']['OR'][] = [
+                                'AND' => [
+                                    'glpi_groups_tickets.groups_id' => $_SESSION['glpigroups'],
+                                    'glpi_groups_tickets.type' => [CommonITILActor::REQUESTER, CommonITILActor::OBSERVER],
+                                ],
+                            ];
+                        }
+
+                        if (Session::haveRight(Ticket::$rightname, Ticket::OWN) || Session::haveRight(Ticket::$rightname, Ticket::READASSIGN)) {
+                            $criteria['WHERE']['OR'][] = [
+                                'AND' => [
+                                    'glpi_tickets_users' . '.users_id' => Session::getLoginUserID(),
+                                    'glpi_tickets_users' . '.type' => CommonITILActor::ASSIGN,
+                                ],
+                            ];
+                        }
+                        if (Session::haveRight(Ticket::$rightname, Ticket::READASSIGN)) {
+                            $criteria['WHERE']['OR'][] = [
+                                'AND' => [
+                                    'glpi_groups_tickets.groups_id' => $_SESSION['glpigroups'],
+                                    'glpi_groups_tickets.type' => CommonITILActor::ASSIGN,
+                                ],
+                            ];
+                        }
+                        if (Session::haveRight(Ticket::$rightname, Ticket::READNEWTICKET)) {
+                            $criteria['WHERE']['OR'][] = [
+                                '_.status' => CommonITILObject::INCOMING,
+                            ];
+                        }
+
+                        if (
+                            Session::haveRightsOr(
+                                'ticketvalidation',
+                                [\TicketValidation::VALIDATEINCIDENT,
+                                    \TicketValidation::VALIDATEREQUEST,
+                                ]
+                            )
+                        ) {
+                            $criteria['OR'][] = [
+                                'AND' => [
+                                    "glpi_ticketvalidations.itemtype_target" => User::class,
+                                    "glpi_ticketvalidations.items_id_target" => Session::getLoginUserID(),
+                                ],
+                            ];
+                            if (count($_SESSION['glpigroups'])) {
+                                $criteria['OR'][] = [
+                                    'AND' => [
+                                        "glpi_ticketvalidations.itemtype_target" => Group::class,
+                                        "glpi_ticketvalidations.items_id_target" => $_SESSION['glpigroups'],
+                                    ],
+                                ];
+                            }
+                        }
+                        return empty($criteria['WHERE']['OR']) ? false : $criteria;
+                    }
+                    return false; // Cannot see anything.
+                },
+            ];
+
             if ($itil_type === Ticket::class) {
                 $schemas[$itil_type]['properties']['type'] = [
                     'type' => Doc\Schema::TYPE_INTEGER,
@@ -239,9 +374,7 @@ final class ITILController extends AbstractController
                         'x-mapped-from' => 'status.id',
                         // The x-mapper property indicates this property is calculated.
                         // The mapper callable gets the value of the x-mapped-from field (id in this case) and returns the name.
-                        'x-mapper' => static function ($v) use ($itil_type) {
-                            return $itil_type::getStatus($v);
-                        },
+                        'x-mapper' => static fn($v) => $itil_type::getStatus($v),
                     ],
                 ],
             ];
@@ -471,12 +604,32 @@ final class ITILController extends AbstractController
 
         $schemas['TicketValidation'] = $base_validation_schema;
         $schemas['TicketValidation']['x-version-introduced'] = '2.0';
-        $schemas['TicketValidation']['x-itemtype'] = \TicketValidation::class;
+        $schemas['TicketValidation']['x-itemtype'] = TicketValidation::class;
+        $schemas['TicketValidation']['x-rights-conditions'] = [
+            'read' => static fn() => Session::haveRightsOr(
+                TicketValidation::$rightname,
+                array_merge(
+                    TicketValidation::getCreateRights(),
+                    TicketValidation::getValidateRights(),
+                    TicketValidation::getPurgeRights()
+                )
+            ),
+        ];
         $schemas['TicketValidation']['properties'][Ticket::getForeignKeyField()] = ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64];
 
         $schemas['ChangeValidation'] = $base_validation_schema;
         $schemas['ChangeValidation']['x-version-introduced'] = '2.0';
-        $schemas['ChangeValidation']['x-itemtype'] = \ChangeValidation::class;
+        $schemas['ChangeValidation']['x-itemtype'] = ChangeValidation::class;
+        $schemas['ChangeValidation']['x-rights-conditions'] = [
+            'read' => static fn() => Session::haveRightsOr(
+                ChangeValidation::$rightname,
+                array_merge(
+                    ChangeValidation::getCreateRights(),
+                    ChangeValidation::getValidateRights(),
+                    ChangeValidation::getPurgeRights()
+                )
+            ),
+        ];
         $schemas['ChangeValidation']['properties'][Change::getForeignKeyField()] = ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64];
 
         $schemas['RecurringTicket'] = [
@@ -701,7 +854,7 @@ final class ITILController extends AbstractController
     public function search(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::searchBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
@@ -723,7 +876,7 @@ final class ITILController extends AbstractController
     public function getItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::getOneBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}', methods: ['POST'])]
@@ -741,7 +894,7 @@ final class ITILController extends AbstractController
     public function createItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::createBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'])]
@@ -765,7 +918,7 @@ final class ITILController extends AbstractController
     public function updateItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::updateBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'])]
@@ -784,7 +937,7 @@ final class ITILController extends AbstractController
     public function deleteItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     private function getRequiredTimelineItemFields(CommonITILObject $item, Request $request, string $subitem_type): array
@@ -853,7 +1006,7 @@ final class ITILController extends AbstractController
                 $filters .= ';is_private==0';
             }
 
-            $subitem_results = Search::searchBySchema($schema, [
+            $subitem_results = ResourceAccessor::searchBySchema($schema, [
                 'filter' => $filters,
                 'limit' => 1000,
             ]);
@@ -1146,7 +1299,7 @@ final class ITILController extends AbstractController
         $parameters = $request->getParameters();
         $parameters = array_merge($parameters, $this->getRequiredTimelineItemFields($item, $request, $subitem_type));
         $schema = $this->getKnownSubitemSchema($item, $subitem_type, $this->getAPIVersion($request));
-        return Search::createBySchema($schema, $parameters, [self::class, 'getTimelineItem'], [
+        return ResourceAccessor::createBySchema($schema, $parameters, [self::class, 'getTimelineItem'], [
             'mapped' => [
                 'itemtype' => $item::getType(),
                 'subitem_type' => $subitem_type,
@@ -1182,7 +1335,7 @@ final class ITILController extends AbstractController
         $parameters = $request->getParameters();
         $parameters = array_merge($parameters, $this->getRequiredTimelineItemFields($item, $request, 'Task'));
         $schema = $this->getKnownSubitemSchema($item, 'Task', $this->getAPIVersion($request));
-        return Search::createBySchema($schema, $parameters, [self::class, 'getTimelineTask'], [
+        return ResourceAccessor::createBySchema($schema, $parameters, [self::class, 'getTimelineTask'], [
             'mapped' => [
                 'itemtype' => $item::getType(),
                 'subitem_type' => 'Task',
@@ -1220,7 +1373,7 @@ final class ITILController extends AbstractController
         $parameters = $request->getParameters();
         $parameters = array_merge($parameters, $this->getRequiredTimelineItemFields($item, $request, 'Validation'));
         $schema = $this->getKnownSubitemSchema($item, 'Validation', $this->getAPIVersion($request));
-        return Search::createBySchema($schema, $parameters, [self::class, 'getTimelineValidation'], [
+        return ResourceAccessor::createBySchema($schema, $parameters, [self::class, 'getTimelineValidation'], [
             'mapped' => [
                 'itemtype' => $item::getType(),
                 'subitem_type' => 'Validation',
@@ -1265,7 +1418,7 @@ final class ITILController extends AbstractController
         }
         $attributes = $request->getAttributes();
         $attributes['id'] = $request->getAttribute('subitem_id');
-        return Search::updateBySchema($this->getKnownSubitemSchema($item, $subitem_type, $this->getAPIVersion($request)), $attributes, $parameters);
+        return ResourceAccessor::updateBySchema($this->getKnownSubitemSchema($item, $subitem_type, $this->getAPIVersion($request)), $attributes, $parameters);
     }
 
     #[Route(path: '/{itemtype}/{id}/Timeline/Task/{subitem_id}', methods: ['PATCH'], requirements: [
@@ -1301,7 +1454,7 @@ final class ITILController extends AbstractController
         }
         $attributes = $request->getAttributes();
         $attributes['id'] = $request->getAttribute('subitem_id');
-        return Search::updateBySchema($this->getKnownSubitemSchema($item, 'Task', $this->getAPIVersion($request)), $attributes, $parameters);
+        return ResourceAccessor::updateBySchema($this->getKnownSubitemSchema($item, 'Task', $this->getAPIVersion($request)), $attributes, $parameters);
     }
 
     #[Route(path: '/{itemtype}/{id}/Timeline/Validation/{subitem_id}', methods: ['PATCH'], requirements: [
@@ -1338,7 +1491,7 @@ final class ITILController extends AbstractController
         }
         $attributes = $request->getAttributes();
         $attributes['id'] = $request->getAttribute('subitem_id');
-        return Search::updateBySchema($this->getKnownSubitemSchema($item, 'Validation', $this->getAPIVersion($request)), $attributes, $parameters);
+        return ResourceAccessor::updateBySchema($this->getKnownSubitemSchema($item, 'Validation', $this->getAPIVersion($request)), $attributes, $parameters);
     }
 
     #[Route(path: '/{itemtype}/{id}/Timeline/{subitem_type}/{subitem_id}', methods: ['DELETE'], requirements: [
@@ -1364,7 +1517,7 @@ final class ITILController extends AbstractController
         $subitem_type = $request->getAttribute('subitem_type');
         $attributes = $request->getAttributes();
         $attributes['id'] = $request->getAttribute('subitem_id');
-        return Search::deleteBySchema($this->getKnownSubitemSchema($item, $subitem_type, $this->getAPIVersion($request)), $attributes, $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSubitemSchema($item, $subitem_type, $this->getAPIVersion($request)), $attributes, $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}/Timeline/Task/{subitem_id}', methods: ['DELETE'], requirements: [
@@ -1388,7 +1541,7 @@ final class ITILController extends AbstractController
         $item = $request->getParameter('_item');
         $attributes = $request->getAttributes();
         $attributes['id'] = $request->getAttribute('subitem_id');
-        return Search::deleteBySchema($this->getKnownSubitemSchema($item, 'Task', $this->getAPIVersion($request)), $attributes, $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSubitemSchema($item, 'Task', $this->getAPIVersion($request)), $attributes, $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}/Timeline/Validation/{subitem_id}', methods: ['DELETE'], requirements: [
@@ -1413,7 +1566,7 @@ final class ITILController extends AbstractController
         $item = $request->getParameter('_item');
         $attributes = $request->getAttributes();
         $attributes['id'] = $request->getAttribute('subitem_id');
-        return Search::deleteBySchema($this->getKnownSubitemSchema($item, 'Validation', $this->getAPIVersion($request)), $attributes, $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSubitemSchema($item, 'Validation', $this->getAPIVersion($request)), $attributes, $request->getParameters());
     }
 
     /**
@@ -1537,9 +1690,7 @@ final class ITILController extends AbstractController
         }
 
         $team = self::getCleanTeam($item);
-        $team = array_filter($team, static function ($v) use ($role_id) {
-            return $v['role'] === $role_id;
-        }, ARRAY_FILTER_USE_BOTH);
+        $team = array_filter($team, static fn($v) => $v['role'] === $role_id, ARRAY_FILTER_USE_BOTH);
         return new JSONResponse($team);
     }
 
@@ -1636,7 +1787,7 @@ final class ITILController extends AbstractController
     )]
     public function searchRecurringTickets(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('RecurringTicket', $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('RecurringTicket', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/RecurringTicket/{id}', methods: ['GET'], requirements: [
@@ -1651,7 +1802,7 @@ final class ITILController extends AbstractController
     )]
     public function getRecurringTicket(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('RecurringTicket', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('RecurringTicket', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/RecurringTicket', methods: ['POST'])]
@@ -1668,7 +1819,7 @@ final class ITILController extends AbstractController
     )]
     public function createRecurringTicket(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('RecurringTicket', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getRecurringTicket']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema('RecurringTicket', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getRecurringTicket']);
     }
 
     #[Route(path: '/RecurringTicket/{id}', methods: ['PATCH'], requirements: [
@@ -1687,7 +1838,7 @@ final class ITILController extends AbstractController
     )]
     public function updateRecurringTicket(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('RecurringTicket', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('RecurringTicket', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/RecurringTicket/{id}', methods: ['DELETE'], requirements: [
@@ -1699,7 +1850,7 @@ final class ITILController extends AbstractController
     )]
     public function deleteRecurringTicket(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('RecurringTicket', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('RecurringTicket', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/RecurringChange', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
@@ -1713,7 +1864,7 @@ final class ITILController extends AbstractController
     )]
     public function searchRecurringChanges(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('RecurringChange', $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('RecurringChange', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/RecurringChange/{id}', methods: ['GET'], requirements: [
@@ -1728,7 +1879,7 @@ final class ITILController extends AbstractController
     )]
     public function getRecurringChange(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('RecurringChange', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('RecurringChange', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/RecurringChange', methods: ['POST'])]
@@ -1745,7 +1896,7 @@ final class ITILController extends AbstractController
     )]
     public function createRecurringChange(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('RecurringChange', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getRecurringChange']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema('RecurringChange', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getRecurringChange']);
     }
 
     #[Route(path: '/RecurringChange/{id}', methods: ['PATCH'], requirements: [
@@ -1764,7 +1915,7 @@ final class ITILController extends AbstractController
     )]
     public function updateRecurringChange(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('RecurringChange', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('RecurringChange', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/RecurringChange/{id}', methods: ['DELETE'], requirements: [
@@ -1776,7 +1927,7 @@ final class ITILController extends AbstractController
     )]
     public function deleteRecurringChange(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('RecurringChange', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('RecurringChange', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/ExternalEvent', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
@@ -1790,7 +1941,7 @@ final class ITILController extends AbstractController
     )]
     public function searchExternalEvent(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('ExternalEvent', $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('ExternalEvent', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/ExternalEvent/{id}', methods: ['GET'], requirements: [
@@ -1805,7 +1956,7 @@ final class ITILController extends AbstractController
     )]
     public function getExternalEvent(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('ExternalEvent', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('ExternalEvent', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/ExternalEvent', methods: ['POST'])]
@@ -1822,7 +1973,7 @@ final class ITILController extends AbstractController
     )]
     public function createExternalEvent(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('ExternalEvent', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getExternalEvent']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema('ExternalEvent', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getExternalEvent']);
     }
 
     #[Route(path: '/ExternalEvent/{id}', methods: ['PATCH'], requirements: [
@@ -1841,7 +1992,7 @@ final class ITILController extends AbstractController
     )]
     public function updateExternalEvent(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('ExternalEvent', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('ExternalEvent', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/ExternalEvent/{id}', methods: ['DELETE'], requirements: [
@@ -1853,6 +2004,6 @@ final class ITILController extends AbstractController
     )]
     public function deleteExternalEvent(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('ExternalEvent', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('ExternalEvent', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 }

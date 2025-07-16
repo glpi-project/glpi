@@ -39,6 +39,7 @@ use Glpi\Api\HL\Controller\CustomAssetController;
 use Glpi\Api\HL\Controller\ITILController;
 use Glpi\Api\HL\Controller\ManagementController;
 use Glpi\Api\HL\Doc\Schema;
+use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Router;
 use Glpi\Application\Environment;
 use Glpi\Asset\AssetDefinition;
@@ -118,7 +119,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
             array_keys($parent_tabs)[0] => array_shift($parent_tabs),
         ];
 
-        $this->addStandardTab(__CLASS__, $tabs, $options);
+        $this->addStandardTab(self::class, $tabs, $options);
         // Add common tabs
         $tabs = array_merge($tabs, $parent_tabs);
         $this->addStandardTab(Log::class, $tabs, $options);
@@ -308,11 +309,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
             'update' => __('Update'),
             'delete' => __("Delete"),
         ];
-
-        if (isset($events[$event_name])) {
-            return $events[$event_name];
-        }
-        return NOT_AVAILABLE;
+        return $events[$event_name] ?? NOT_AVAILABLE;
     }
 
     /**
@@ -582,7 +579,10 @@ class Webhook extends CommonDBTM implements FilterableInterface
         ];
         foreach ($parent_itemtypes as $parent_itemtype => $parent_itemtype_data) {
             $parent_schema = self::getAPISchemaBySupportedItemtype($parent_itemtype);
-            $schema['x-subtypes'][] = $parent_itemtype_data['name'];
+            $schema['x-subtypes'][] = [
+                'itemtype' => $parent_itemtype,
+                'schema_name' => $parent_itemtype_data['name'],
+            ];
             foreach ($parent_schema['properties'] as $property_name => $property_data) {
                 // Save current parents
                 $existing_parents = $schema['properties'][$property_name]['x-parent-itemtype'] ?? [];
@@ -623,7 +623,8 @@ class Webhook extends CommonDBTM implements FilterableInterface
             }
         }
         $parent_schema['x-itemtype'] = $parent_itemtype;
-        $parent_result = \Glpi\Api\HL\Search::getOneBySchema($parent_schema, [
+        unset($parent_schema['x-subtypes']);
+        $parent_result = ResourceAccessor::getOneBySchema($parent_schema, [
             'itemtype' => $parent_itemtype,
             'id' => $parent_id,
         ], []);
@@ -735,7 +736,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
             $this->getFromDB($id);
 
             //validate CRA if needed
-            if (isset($this->fields['use_cra_challenge']) && $this->fields['use_cra_challenge']) {
+            if (GLPI_WEBHOOK_CRA_MANDATORY || (isset($this->fields['use_cra_challenge']) && $this->fields['use_cra_challenge'])) {
                 $response = self::validateCRAChallenge($this->fields['url'], 'validate_cra_challenge', $this->fields['secret']);
                 if (!$response['status']) {
                     $this->fields['is_cra_challenge_valid'] = false;
@@ -783,6 +784,10 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!$item instanceof self) {
+            return false;
+        }
+
         if ((int) $tabnum === 1) {
             $item->showSecurityForm();
             return true;
@@ -940,7 +945,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         $subtype_labels = [];
         if (isset($parent_schema['x-subtypes'])) {
             foreach ($parent_schema['x-subtypes'] as $subtype) {
-                $subtype_labels[$subtype] = $subtype::getTypeName(1);
+                $subtype_labels[$subtype] = $subtype['itemtype']::getTypeName(1);
             }
         }
         foreach ($props as $prop_name => $prop_data) {
@@ -959,9 +964,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
             $applicable_types = array_intersect($prop_data['x-parent-itemtype'] ?? [], array_keys($subtype_labels));
             if ($applicable_types !== array_keys($subtype_labels) && count($applicable_types)) {
                 //Note: In cases of child properties, there may not be any applicable types listed. They are handled at the top level only.
-                $suggestion['detail'] = '[' . implode(', ', array_map(static function ($type) use ($subtype_labels) {
-                    return $subtype_labels[$type];
-                }, $applicable_types)) . ']';
+                $suggestion['detail'] = '[' . implode(', ', array_map(static fn($type) => $subtype_labels[$type], $applicable_types)) . ']';
             }
 
             $response_schema[] = $suggestion;
@@ -1024,14 +1027,8 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
     /**
      * Validate Challenge Response Answer
-     *
-     * @param string $url
-     * @param string $body
-     * @param string $secret
-     *
-     * @return boolean
      */
-    public static function validateCRAChallenge($url, $body, $secret): array
+    public static function validateCRAChallenge(string $url, string $body, string $secret): array
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -1295,7 +1292,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
     public function post_getEmpty()
     {
-        $this->fields['is_cra_challenge_valid']                        = 0;
+        $this->fields['is_cra_challenge_valid'] = 0;
     }
 
     public static function getMenuContent()

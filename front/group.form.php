@@ -76,7 +76,7 @@ if (isset($_POST["add"])) {
         $group->showDeleteConfirmForm();
         Html::footer();
     } else {
-        $group->delete($_POST, 1);
+        $group->delete($_POST, true);
         Event::log(
             $_POST["id"],
             "groups",
@@ -105,7 +105,7 @@ if (isset($_POST["add"])) {
     Html::popFooter();
 } elseif (isset($_POST["replace"])) {
     $group->check($_POST["id"], PURGE);
-    $group->delete($_POST, 1);
+    $group->delete($_POST, true);
 
     Event::log(
         $_POST["id"],

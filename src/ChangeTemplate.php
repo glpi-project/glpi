@@ -36,7 +36,7 @@
 /**
  * Chang Template class
  *
- * since version 9.5.0
+ * @since 9.5.0
  **/
 class ChangeTemplate extends ITILTemplate
 {

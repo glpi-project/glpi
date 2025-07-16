@@ -84,7 +84,7 @@ if (isset($_POST["add"])) {
     Html::back();
 } elseif (isset($_POST["purge"])) {
     $item_device->check($_POST["id"], PURGE);
-    $item_device->delete($_POST, 1);
+    $item_device->delete($_POST, true);
 
     Event::log(
         $_POST["id"],

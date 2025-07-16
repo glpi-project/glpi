@@ -179,7 +179,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $osasset->handle();
 
         $extra_data = (array) $json->content;
-        $extra_data['\Glpi\Inventory\Asset\OperatingSystem'] = $osasset;
+        $extra_data[\Glpi\Inventory\Asset\OperatingSystem::class] = $osasset;
 
         $asset->setExtraData($extra_data);
         $result = $asset->prepare();
@@ -226,7 +226,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $osasset->handle();
 
         $extra_data = (array) $json->content;
-        $extra_data['\Glpi\Inventory\Asset\OperatingSystem'] = $osasset;
+        $extra_data[\Glpi\Inventory\Asset\OperatingSystem::class] = $osasset;
 
         $asset->setExtraData($extra_data);
         $result = $asset->prepare();

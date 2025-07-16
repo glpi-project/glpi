@@ -256,7 +256,7 @@ HTML;
                 // Filter out this route
                 $controller = $route->getController();
                 $controller_method = $route->getMethod();
-                if ($controller === __CLASS__ && $controller_method->getShortName() === 'defaultRoute') {
+                if ($controller === self::class && $controller_method->getShortName() === 'defaultRoute') {
                     continue;
                 }
                 $allowed_methods[] = $method;
@@ -439,7 +439,7 @@ HTML;
             $response = Server::getAuthorizationServer()->completeAuthorizationRequest($auth_request, new Response());
             return $response;
         } catch (OAuthServerException $exception) {
-            return $exception->generateHttpResponse(new Response());
+            return $exception->generateHttpResponse(new Response()); // @phpstan-ignore return.type (Response vs ResponseInterface)
         } catch (\Throwable $exception) {
             ErrorHandler::logCaughtException($exception);
             return new JSONResponse(null, 500);
@@ -458,7 +458,7 @@ HTML;
             $response = Server::getAuthorizationServer()->respondToAccessTokenRequest($request, new JSONResponse());
             return $response;
         } catch (OAuthServerException $exception) {
-            return $exception->generateHttpResponse(new JSONResponse());
+            return $exception->generateHttpResponse(new JSONResponse()); // @phpstan-ignore return.type (Response vs ResponseInterface)
         } catch (\Throwable $exception) {
             ErrorHandler::logCaughtException($exception);
             return new JSONResponse(null, 500);
@@ -569,15 +569,12 @@ HTML;
         $params = $request->getParameters();
         $transfer = new \Transfer();
 
-        $transfer_records = array_filter($params, static function ($param) {
+        $transfer_records = array_filter($params, static fn($param) =>
             // must have itemtype, items_id and entity keys
-            return is_array($param) && isset($param['itemtype'], $param['items_id'], $param['entity']);
-        });
+            is_array($param) && isset($param['itemtype'], $param['items_id'], $param['entity']));
         $original_record_count = count($transfer_records);
         // Filter out any records that would transfer to an entity the user doesn't have access to
-        $transfer_records = array_filter($transfer_records, static function ($record) {
-            return Session::haveAccessToEntity((int) $record['entity']);
-        });
+        $transfer_records = array_filter($transfer_records, static fn($record) => Session::haveAccessToEntity((int) $record['entity']));
         $is_partial_transfer = $original_record_count !== count($transfer_records);
 
         $controllers = Router::getInstance()->getControllers();

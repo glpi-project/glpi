@@ -133,7 +133,7 @@ class Process extends InventoryAsset
             foreach ($db_itemProcess as $dbid => $data) {
                 if ($data['is_dynamic'] == 1) {
                     //Delete only dynamics
-                    $itemProcess->delete(['id' => $dbid], 1);
+                    $itemProcess->delete(['id' => $dbid], true);
                 }
             }
         }

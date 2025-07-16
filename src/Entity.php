@@ -612,7 +612,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addImpactTab($ong, $options);
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab(Profile_User::class, $ong, $options);
         $this->addStandardTab(Rule::class, $ong, $options);
         $this->addStandardTab(Document_Item::class, $ong, $options);
@@ -664,44 +664,41 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
      **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item::class === self::class) {
-            switch ($tabnum) {
-                case 1:
-                    $item->showChildren();
-                    break;
-
-                case 2:
-                    self::showStandardOptions($item);
-                    break;
-
-                case 3:
-                    self::showAdvancedOptions($item);
-                    break;
-
-                case 4:
-                    self::showNotificationOptions($item);
-                    break;
-
-                case 5:
-                    self::showHelpdeskOptions($item);
-                    break;
-
-                case 6:
-                    self::showInventoryOptions($item);
-                    break;
-
-                case 7:
-                    self::showUiCustomizationOptions($item);
-                    break;
-                case 8:
-                    self::showSecurityOptions($item);
-                    break;
-                case 9:
-                    $item->showHelpdeskHomeConfig();
-                    break;
-            }
+        if (!$item instanceof self) {
+            return false;
         }
-        return true;
+
+        switch ($tabnum) {
+            case 1:
+                return $item->showChildren();
+
+            case 2:
+                return self::showStandardOptions($item);
+
+            case 3:
+                return self::showAdvancedOptions($item);
+
+            case 4:
+                return self::showNotificationOptions($item);
+
+            case 5:
+                return self::showHelpdeskOptions($item);
+
+            case 6:
+                return self::showInventoryOptions($item);
+
+            case 7:
+                return self::showUiCustomizationOptions($item);
+
+            case 8:
+                return self::showSecurityOptions($item);
+
+            case 9:
+                return $item->showHelpdeskHomeConfig();
+
+            default:
+                return false;
+        }
     }
 
     public function showForm($ID, array $options = [])
@@ -1693,12 +1690,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         return $entities;
     }
 
-    /**
-     * @since 0.84
-     *
-     * @param Entity $entity object
-     **/
-    public static function showStandardOptions(Entity $entity)
+    public static function showStandardOptions(Entity $entity): bool
     {
         $ID = $entity->getField('id');
         if (!$entity->can($ID, READ)) {
@@ -1713,12 +1705,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         return true;
     }
 
-    /**
-     * @since 0.84 (before in entitydata.class)
-     *
-     * @param Entity $entity object
-     **/
-    public static function showAdvancedOptions(Entity $entity)
+    public static function showAdvancedOptions(Entity $entity): bool
     {
         $ID          = $entity->getField('id');
         if (!$entity->can($ID, READ)) {
@@ -1734,12 +1721,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         return true;
     }
 
-    /**
-     * @since 0.84 (before in entitydata.class)
-     *
-     * @param Entity $entity object
-     **/
-    public static function showInventoryOptions(Entity $entity)
+    public static function showInventoryOptions(Entity $entity): bool
     {
         $ID = $entity->getField('id');
         if (!$entity->can($ID, READ)) {
@@ -1777,6 +1759,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         }
 
         foreach ($states as $state) {
+            $warranty_options[Infocom::ON_STATUS_CHANGE . '_' . $state['id']] = sprintf(__('Fill when shifting to state %s'), $state['name']);
             $decom_options[Infocom::ON_STATUS_CHANGE . '_' . $state['id']] = sprintf(__('Fill when shifting to state %s'), $state['name']);
         }
 
@@ -1826,12 +1809,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         return true;
     }
 
-    /**
-     * @since 0.84 (before in entitydata.class)
-     *
-     * @param Entity $entity object
-     **/
-    public static function showNotificationOptions(Entity $entity)
+    public static function showNotificationOptions(Entity $entity): bool
     {
 
         $ID = $entity->getField('id');
@@ -1922,16 +1900,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         return true;
     }
 
-    /**
-     * UI customization configuration form.
-     *
-     * @param Entity $entity object
-     *
-     * @return void
-     *
-     * @since 9.5.0
-     */
-    public static function showUiCustomizationOptions(Entity $entity)
+    public static function showUiCustomizationOptions(Entity $entity): bool
     {
         $ID = $entity->getField('id');
         if (!$entity->can($ID, READ) || !Session::haveRight(Config::$rightname, UPDATE)) {
@@ -1975,16 +1944,11 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
                 'candel' => false, // No deleting from the non-main tab
             ],
         ]);
+
+        return true;
     }
 
-    /**
-     * Security configuration form.
-     *
-     * @param Entity $entity The entity
-     * @return void|false
-     * @since 11.0.0
-     */
-    public static function showSecurityOptions(Entity $entity)
+    public static function showSecurityOptions(Entity $entity): bool
     {
         $ID = $entity->getField('id');
         if (!$entity->can($ID, READ)) {
@@ -1996,9 +1960,11 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         TemplateRenderer::getInstance()->display('pages/2fa/2fa_config.html.twig', [
             'canedit' => $canedit,
             'item'   => $entity,
-            'action' => Toolbox::getItemTypeFormURL(__CLASS__),
+            'action' => Toolbox::getItemTypeFormURL(self::class),
             'inherited_value' => $entity->getInheritedValueBadge('2fa_enforcement_strategy', '2fa_enforcement_strategy'),
         ]);
+
+        return true;
     }
 
     /**
@@ -2120,12 +2086,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         return false;
     }
 
-    /**
-     * @param Entity $entity
-     * @return false|void
-     * @since 0.84 (before in entitydata.class)
-     **/
-    public static function showHelpdeskOptions(Entity $entity)
+    public static function showHelpdeskOptions(Entity $entity): bool
     {
         $ID = $entity->getField('id');
         if (
@@ -2177,6 +2138,8 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
                 'formfooter' => false,
             ],
         ]);
+
+        return true;
     }
 
     /**
@@ -2518,7 +2481,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             self::CONFIG_PARENT => __('Inheritance of the parent entity'),
             self::ANONYMIZE_DISABLED => __('Disabled'),
             self::ANONYMIZE_USE_GENERIC => __("Replace the agent and group name with a generic name"),
-            self::ANONYMIZE_USE_NICKNAME => __("Replace the agent and group name with a customisable nickname"),
+            self::ANONYMIZE_USE_NICKNAME => __("Replace the agent name with a customisable nickname and the group name with a generic name"),
             self::ANONYMIZE_USE_GENERIC_USER => __("Replace the agent's name with a generic name"),
             self::ANONYMIZE_USE_NICKNAME_USER => __("Replace the agent's name with a customisable nickname"),
             self::ANONYMIZE_USE_GENERIC_GROUP => __("Replace the group's name with a generic name"),
@@ -2870,6 +2833,12 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
                     Infocom::COPY_DELIVERY_DATE => __('Copy the delivery date'),
                     self::CONFIG_PARENT         => __('Inheritance of the parent entity'),
                 ];
+                $states = getAllDataFromTable('glpi_states');
+                foreach ($states as $state) {
+                    $tab[Infocom::ON_STATUS_CHANGE . '_' . $state['id']]
+                        //TRANS: %s is the name of the state
+                        = sprintf(__('Fill when shifting to state %s'), $state['name']);
+                }
                 $options['value'] = $values[$field];
                 return Dropdown::showFromArray($name, $tab, $options);
 

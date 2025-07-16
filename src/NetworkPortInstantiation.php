@@ -133,6 +133,15 @@ class NetworkPortInstantiation extends CommonDBChild
                     "networkports_id" => $this->fields['networkports_id'],
                 ]);
             }
+        } else {
+            // Retrieve the associated socket to disconnect it from the NetworkPortEthernet
+            $socket = new Socket();
+            if ($socket->getFromDBByCrit(["networkports_id" => $this->fields['networkports_id']])) {
+                $socket->update([
+                    "id" => $socket->getID(),
+                    "networkports_id" => 0,
+                ]);
+            }
         }
     }
 
@@ -703,7 +712,7 @@ TWIG, $twig_params);
             'networkports_id'    => $ID,
             'comments'           => $p['comments'],
             'myname'             => $p['name'],
-            'instantiation_type' => get_called_class(),
+            'instantiation_type' => static::class,
         ];
 
         Ajax::updateItemOnSelectEvent(

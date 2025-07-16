@@ -97,9 +97,7 @@ final class FormAccessControlManager
         $access_controls = $this->getActiveAccessControlsForForm($form);
         return array_reduce(
             $access_controls,
-            function ($acc, $control) {
-                return $acc || $control->getStrategy()->allowUnauthenticated($control->getConfig());
-            },
+            fn($acc, $control) => $acc || $control->getStrategy()->allowUnauthenticated($control->getConfig()),
             false
         );
     }

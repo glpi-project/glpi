@@ -329,7 +329,7 @@ function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate 
  * @param $wholename    string   current name to complete (use for recursivity) (default '')
  * @param $level        integer  current level of recursion (default 0)
  *
- * @return string name
+ * @return array name
  **/
 function getTreeValueName($table, $ID, $wholename = "", $level = 0)
 {
@@ -568,7 +568,7 @@ function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1
  * @param string $begin  begin date
  * @param string $end    end date
  *
- * @return string
+ * @return array
  **/
 function getDateCriteria($field, $begin, $end)
 {
@@ -609,7 +609,7 @@ function importArrayFromDB($DATA)
  *
  * @param $time datetime: time
  *
- * @return  array
+ * @return string
  **/
 function get_hour_from_sql($time)
 {

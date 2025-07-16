@@ -258,7 +258,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         $is_deleted = false,
         ?CommonDBTM $checkitem = null
     ) {
-        $action_prefix = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR;
+        $action_prefix = self::class . MassiveAction::CLASS_ACTION_SEPARATOR;
         $specificities = self::getRelationMassiveActionsSpecificities();
 
         if (in_array($itemtype, $specificities['itemtypes'], true)) {
@@ -700,7 +700,7 @@ TWIG, $twig_params);
         return $rand;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;

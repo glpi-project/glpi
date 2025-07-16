@@ -126,7 +126,7 @@ class DeviceNetworkCard extends CommonDevice
         array $options = []
     ) {
 
-        $column_name = __CLASS__;
+        $column_name = self::class;
 
         if (isset($options['dont_display'][$column_name])) {
             return;
@@ -139,7 +139,7 @@ class DeviceNetworkCard extends CommonDevice
             if ($column == $father) {
                 return $father;
             }
-            Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+            Manufacturer::getHTMLTableHeader(self::class, $base, $super, $father, $options);
             $base->addHeader('devicenetworkcard_bandwidth', __('Flow'), $super, $father);
         }
     }
@@ -151,7 +151,7 @@ class DeviceNetworkCard extends CommonDevice
         array $options = []
     ) {
 
-        $column_name = __CLASS__;
+        $column_name = self::class;
 
         if (isset($options['dont_display'][$column_name])) {
             return;

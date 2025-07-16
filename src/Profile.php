@@ -86,7 +86,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
     /**
      * Profile rights to update after profile update.
-     * @var array
+     * @var ?array
      */
     private $profileRight;
 
@@ -95,13 +95,13 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         $value = null;
         switch ($property) {
             case 'profileRight':
-                Toolbox::deprecated(sprintf('Reading private property %s::%s is deprecated', __CLASS__, $property));
+                Toolbox::deprecated(sprintf('Reading private property %s::%s is deprecated', self::class, $property));
                 $value = $this->$property;
                 break;
             default:
                 $trace = debug_backtrace();
                 trigger_error(
-                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    sprintf('Undefined property: %s::%s in %s on line %d', self::class, $property, $trace[0]['file'], $trace[0]['line']),
                     E_USER_WARNING
                 );
                 break;
@@ -113,13 +113,13 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     {
         switch ($property) {
             case 'profileRight':
-                Toolbox::deprecated(sprintf('Writing private property %s::%s is deprecated', __CLASS__, $property));
+                Toolbox::deprecated(sprintf('Writing private property %s::%s is deprecated', self::class, $property));
                 $this->$property = $value;
                 break;
             default:
                 $trace = debug_backtrace();
                 trigger_error(
-                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    sprintf('Undefined property: %s::%s in %s on line %d', self::class, $property, $trace[0]['file'], $trace[0]['line']),
                     E_USER_WARNING
                 );
                 break;
@@ -148,7 +148,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addImpactTab($ong, $options);
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab(Profile_User::class, $ong, $options);
         $this->addStandardTab(Log::class, $ong, $options);
 
@@ -889,6 +889,10 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                             $fn_get_rights(DeviceSimcard::class, 'central', [
                                 'label' => __('Simcard PIN/PUK'),
                                 'field' => 'devicesimcard_pinpuk',
+                                'rights'    => [
+                                    READ    => __('Read'),
+                                    UPDATE  => __('Update'),
+                                ],
                             ]),
                         ],
                     ],
@@ -918,7 +922,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                             $fn_get_rights(User::class, 'central'),
                             $fn_get_rights(Entity::class, 'central', ['scope' => 'global']),
                             $fn_get_rights(Group::class, 'central', ['scope' => 'global']),
-                            $fn_get_rights(__CLASS__, 'central', ['scope' => 'global']),
+                            $fn_get_rights(self::class, 'central', ['scope' => 'global']),
                             $fn_get_rights(QueuedNotification::class, 'central', ['scope' => 'global']),
                             $fn_get_rights(Log::class, 'central', ['scope' => 'global']),
                             $fn_get_rights(Event::class, 'central', [
@@ -1419,7 +1423,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         TemplateRenderer::getInstance()->display('pages/2fa/2fa_config.html.twig', [
             'canedit' => $canedit,
             'item'   => $this,
-            'action' => Toolbox::getItemTypeFormURL(__CLASS__),
+            'action' => Toolbox::getItemTypeFormURL(self::class),
         ]);
     }
 
@@ -3492,16 +3496,17 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      **/
     public function displayRightsChoiceMatrix(array $rights, array $options = [])
     {
-        $param                  = [];
-        $param['title']         = '';
-        $param['canedit']       = true;
-        $param['default_class'] = '';
+        $param = [
+            'title' => '',
+            'canedit' => true,
+            'default_class' => '',
+        ];
 
         if ($rights === []) {
             return mt_rand();
         }
 
-        if (is_array($options) && count($options)) {
+        if (count($options)) {
             foreach ($options as $key => $val) {
                 $param[$key] = $val;
             }
@@ -3640,18 +3645,19 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     public static function getLinearRightChoice(array $elements, array $options = [])
     {
 
-        $param                  = [];
-        $param['canedit']       = true;
-        $param['field']         = '';
-        $param['value']         = '';
-        $param['max_per_line']  = 10;
-        $param['check_all']     = false;
-        $param['rand']          = mt_rand();
-        $param['zero_on_empty'] = true;
-        $param['display']       = true;
-        $param['check_method']  = static fn($element, $field) => (($field & $element) === $element);
+        $param = [
+            'canedit' => true,
+            'field' => '',
+            'value' => '',
+            'max_per_line' => 10,
+            'check_all' => false,
+            'rand' => mt_rand(),
+            'zero_on_empty' => true,
+            'display' => true,
+            'check_method' => static fn($element, $field) => (($field & $element) === $element),
+        ];
 
-        if (is_array($options) && count($options)) {
+        if (count($options)) {
             foreach ($options as $key => $val) {
                 $param[$key] = $val;
             }

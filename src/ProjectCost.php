@@ -94,8 +94,10 @@ class ProjectCost extends CommonDBChild
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        self::showForProject($item, $withtemplate);
-        return true;
+        if ($item instanceof Project) {
+            return self::showForProject($item);
+        }
+        return false;
     }
 
     public function rawSearchOptions()
@@ -178,17 +180,14 @@ class ProjectCost extends CommonDBChild
         return $tab;
     }
 
-    /**
-     * Init cost for creation based on previous cost
-     **/
-    public function initBasedOnPrevious()
+    public function initBasedOnPrevious(): void
     {
         $ticket = new Ticket();
         if (
             !isset($this->fields['projects_id'])
             || !$ticket->getFromDB($this->fields['projects_id'])
         ) {
-            return false;
+            return;
         }
 
         $lastdata = $this->getLastCostForProject($this->fields['projects_id']);
@@ -289,12 +288,12 @@ class ProjectCost extends CommonDBChild
     /**
      * Print the project costs
      *
-     * @param Project $project object
-     * @param boolean $withtemplate Template or basic item (default 0)
+     * @param Project $project      object
+     * @param int     $withtemplate Template or basic item (default 0)
      *
-     * @return void
+     * @return bool
      **/
-    public static function showForProject(Project $project, $withtemplate = 0)
+    public static function showForProject(Project $project, $withtemplate = 0): bool
     {
         /**
          * @var array $CFG_GLPI
@@ -326,7 +325,7 @@ class ProjectCost extends CommonDBChild
             echo "<div id='viewcost" . $ID . "_$rand'></div>\n";
             echo "<script type='text/javascript' >\n";
             echo "function viewAddCost" . $ID . "_$rand() {\n";
-            $params = ['type'         => __CLASS__,
+            $params = ['type'         => self::class,
                 'parenttype'   => 'Project',
                 'projects_id' => $ID,
                 'id'           => -1,
@@ -356,7 +355,7 @@ class ProjectCost extends CommonDBChild
             echo "</tr>";
 
             Session::initNavigateListItems(
-                __CLASS__,
+                self::class,
                 //TRANS : %1$s is the itemtype name,
                 //        %2$s is the name of the item (used for headings of a list)
                 sprintf(
@@ -386,7 +385,7 @@ class ProjectCost extends CommonDBChild
                 if ($canedit) {
                     echo "<script type='text/javascript' >";
                     echo "function viewEditCost" . $data['projects_id'] . "_" . $data["id"] . "_$rand() {\n";
-                    $params = ['type'         => __CLASS__,
+                    $params = ['type'         => self::class,
                         'parenttype'   => 'Project',
                         'projects_id' => $data["projects_id"],
                         'id'           => $data["id"],
@@ -406,7 +405,7 @@ class ProjectCost extends CommonDBChild
                 echo "<td class='numeric'>" . Html::formatNumber($data['cost']) . "</td>";
                 $total += $data['cost'];
                 echo "</tr>";
-                Session::addToNavigateListItems(__CLASS__, $data['id']);
+                Session::addToNavigateListItems(self::class, $data['id']);
             }
             echo "<tr class='b noHover'><td colspan='3'>&nbsp;</td>";
             echo "<td class='right'>" . __s('Total cost') . '</td>';
@@ -422,5 +421,7 @@ class ProjectCost extends CommonDBChild
         echo "<div class='b'>";
         printf(__s('%1$s: %2$s'), __('Total cost'), $total + $ticketcost);
         echo "</div>";
+
+        return true;
     }
 }

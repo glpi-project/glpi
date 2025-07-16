@@ -150,7 +150,7 @@ class Config extends CommonDBTM
     {
 
         $ong = [];
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab(DisplayPreference::class, $ong, $options);
         $this->addStandardTab(GLPINetwork::class, $ong, $options);
         $this->addStandardTab(Log::class, $ong, $options);
@@ -187,7 +187,7 @@ class Config extends CommonDBTM
                 unset($input['config_class']);
                 $input = call_user_func($config_method, $input);
             }
-            $this->setConfigurationValues($config_context, $input);
+            static::setConfigurationValues($config_context, $input);
             return false;
         }
 
@@ -363,11 +363,9 @@ class Config extends CommonDBTM
             '_dbreplicate_dbdefault',
         ];
 
-        $input = array_filter($input, function ($key) use ($values_to_filter) {
-            return !in_array($key, $values_to_filter);
-        }, ARRAY_FILTER_USE_KEY);
+        $input = array_filter($input, fn($key) => !in_array($key, $values_to_filter), ARRAY_FILTER_USE_KEY);
 
-        $this->setConfigurationValues('core', $input);
+        static::setConfigurationValues('core', $input);
 
         return false;
     }
@@ -669,7 +667,7 @@ class Config extends CommonDBTM
         global $CFG_GLPI, $DB;
 
         $userpref  = false;
-        $url       = Toolbox::getItemTypeFormURL(__CLASS__);
+        $url       = Toolbox::getItemTypeFormURL(self::class);
 
         $canedit = static::canUpdate();
         $canedituser = Session::haveRight('personalization', UPDATE);

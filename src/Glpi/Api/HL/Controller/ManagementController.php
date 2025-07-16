@@ -49,9 +49,9 @@ use Domain;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
+use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
-use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -317,9 +317,7 @@ final class ManagementController extends AbstractController
         $schemas['Document']['properties']['filepath'] = [
             'type' => Doc\Schema::TYPE_STRING,
             'x-mapped-from' => 'id',
-            'x-mapper' => static function ($v) use ($CFG_GLPI) {
-                return $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $v;
-            },
+            'x-mapper' => static fn($v) => $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $v,
         ];
         $schemas['Document']['properties']['mime'] = ['type' => Doc\Schema::TYPE_STRING];
         $schemas['Document']['properties']['sha1sum'] = ['type' => Doc\Schema::TYPE_STRING];
@@ -350,9 +348,7 @@ final class ManagementController extends AbstractController
                 'filepath' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'x-mapped-from' => 'documents_id',
-                    'x-mapper' => static function ($v) use ($CFG_GLPI) {
-                        return $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $v;
-                    },
+                    'x-mapper' => static fn($v) => $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $v,
                 ],
             ],
         ];
@@ -508,7 +504,7 @@ final class ManagementController extends AbstractController
     public function searchItems(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::searchBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['GET'], requirements: [
@@ -525,7 +521,7 @@ final class ManagementController extends AbstractController
     public function getItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::getOneBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Document/{id}/Download', methods: ['GET'], requirements: ['id' => '\d+'])]
@@ -573,7 +569,7 @@ final class ManagementController extends AbstractController
     public function createItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::createBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'], requirements: [
@@ -597,7 +593,7 @@ final class ManagementController extends AbstractController
     public function updateItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::updateBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'], requirements: [
@@ -609,6 +605,6 @@ final class ManagementController extends AbstractController
     public function deleteItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 }

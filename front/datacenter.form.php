@@ -93,7 +93,7 @@ if (isset($_POST["add"])) {
 } elseif (isset($_POST["purge"])) {
     $datacenter->check($_POST["id"], PURGE);
 
-    $datacenter->delete($_POST, 1);
+    $datacenter->delete($_POST, true);
     Event::log(
         $_POST["id"],
         "datacenters",

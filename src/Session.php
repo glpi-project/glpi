@@ -803,7 +803,7 @@ class Session
      * @param string  $forcelang     Force to load a specific lang
      * @param boolean $with_plugins  Whether to load plugin languages or not
      *
-     * @return void
+     * @return string
      **/
     public static function loadLanguage($forcelang = '', $with_plugins = true)
     {
@@ -840,12 +840,14 @@ class Session
             $_SESSION['glpipluralnumber'] = $CFG_GLPI["languages"][$trytoload][5];
         }
 
+        $_SESSION['glpiisrtl'] = self::isRTL($trytoload);
+
         // Redefine Translator caching logic to be able to drop laminas/laminas-cache dependency.
         $i18n_cache = !defined('TU_USER') ? new I18nCache((new CacheManager())->getTranslationsCacheInstance()) : null;
         $TRANSLATE = new class ($i18n_cache) extends Laminas\I18n\Translator\Translator { // @phpstan-ignore class.extendsFinalByPhpDoc
             public function __construct(?I18nCache $cache)
             {
-                $this->cache = $cache;
+                $this->cache = $cache; // @phpstan-ignore assign.propertyType (laminas...)
             }
         };
 
@@ -1007,11 +1009,7 @@ class Session
         ) { // Check cron jobs
             return $_SESSION["glpicronuserrunning"] ?? $_SESSION['glpiinventoryuserrunning'];
         }
-
-        if (isset($_SESSION["glpiID"])) {
-            return $_SESSION["glpiID"];
-        }
-        return false;
+        return $_SESSION["glpiID"] ?? false;
     }
 
     /**
@@ -1478,10 +1476,7 @@ class Session
     public static function getActiveTab($itemtype)
     {
 
-        if (isset($_SESSION['glpi_tabs'][strtolower($itemtype)])) {
-            return $_SESSION['glpi_tabs'][strtolower($itemtype)];
-        }
-        return "";
+        return $_SESSION['glpi_tabs'][strtolower($itemtype)] ?? "";
     }
 
     /**
@@ -1612,11 +1607,7 @@ class Session
         if (isset($_REQUEST[$name])) {
             return $_SESSION['glpi_saved'][$itemtype][$name] = $_REQUEST[$name];
         }
-
-        if (isset($_SESSION['glpi_saved'][$itemtype][$name])) {
-            return $_SESSION['glpi_saved'][$itemtype][$name];
-        }
-        return $defvalue;
+        return $_SESSION['glpi_saved'][$itemtype][$name] ?? $defvalue;
     }
 
 
@@ -2380,7 +2371,7 @@ class Session
         }
 
         $profile = Profile::getById($profile_id);
-        if (!$profile) {
+        if (!$profile instanceof Profile) {
             throw new RuntimeException("Failed to load profile: $profile_id");
         }
 
@@ -2413,5 +2404,22 @@ class Session
     public static function isRightChecksDisabled(): bool
     {
         return self::$bypass_right_checks;
+    }
+
+    /**
+     * Is locale RTL
+     * See native PHP 8.5 function locale_is_right_to_left
+     *
+     * @param $locale
+     *
+     * @return bool
+     */
+    public static function isRTL($locale): bool
+    {
+        if (function_exists('locale_is_right_to_left')) {
+            return locale_is_right_to_left($locale);
+        }
+
+        return (bool) preg_match('/^(?:ar|he|fa|ur|ps|sd|ug|ckb|yi|dv|ku_arab|ku-arab)(?:[_-].*)?$/i', $locale);
     }
 }

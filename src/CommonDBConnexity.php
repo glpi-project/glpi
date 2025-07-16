@@ -127,7 +127,7 @@ abstract class CommonDBConnexity extends CommonDBTM
             $iterator = $DB->request($criteria);
             foreach ($iterator as $data) {
                 $input[$this->getIndexName()] = $data[$this->getIndexName()];
-                $this->delete($input, 1);
+                $this->delete($input, true);
             }
         }
     }
@@ -326,8 +326,8 @@ abstract class CommonDBConnexity extends CommonDBTM
                     $new_item->getTypeName(),
                     $new_item->getID()
                 )),
-                INFO,
-                true
+                false,
+                INFO
             );
             return false;
 
@@ -561,7 +561,7 @@ abstract class CommonDBConnexity extends CommonDBTM
             return;
         }
 
-        $prefix = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR;
+        $prefix = self::class . MassiveAction::CLASS_ACTION_SEPARATOR;
 
         if ($unaffect) {
             $actions[$prefix . 'unaffect'] = $specificities['action_name']['unaffect'];
@@ -589,7 +589,7 @@ abstract class CommonDBConnexity extends CommonDBTM
         $itemtypes_affect   = [];
         $itemtypes_unaffect = [];
         foreach (array_keys($items) as $itemtype) {
-            if (!is_a($itemtype, __CLASS__, true)) {
+            if (!is_a($itemtype, self::class, true)) {
                 continue;
             }
             $specificities = $itemtype::getConnexityMassiveActionsSpecificities();
@@ -737,7 +737,7 @@ abstract class CommonDBConnexity extends CommonDBTM
         array $ids
     ) {
 
-        if (!is_a($item, __CLASS__, true)) {
+        if (!$item instanceof \CommonDBConnexity) {
             parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
             return;
         }

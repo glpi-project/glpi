@@ -153,10 +153,7 @@ class Manufacturer extends CommonDropdown
             $output,
             []
         );
-        if (isset($output["name"])) {
-            return $output["name"];
-        }
-        return $old_name;
+        return $output["name"] ?? $old_name;
     }
 
 
@@ -184,7 +181,7 @@ class Manufacturer extends CommonDropdown
         array $options = []
     ) {
 
-        $column_name = __CLASS__;
+        $column_name = self::class;
 
         if (isset($options['dont_display'][$column_name])) {
             return;
@@ -209,7 +206,7 @@ class Manufacturer extends CommonDropdown
         array $options = []
     ) {
 
-        $column_name = __CLASS__;
+        $column_name = self::class;
 
         if (isset($options['dont_display'][$column_name])) {
             return;

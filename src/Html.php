@@ -91,7 +91,7 @@ class Html
         Toolbox::deprecated();
 
         if (is_array($value)) {
-            return array_map([__CLASS__, 'entity_decode_deep'], $value);
+            return array_map([self::class, 'entity_decode_deep'], $value);
         }
         if (!is_string($value)) {
             return $value;
@@ -114,7 +114,7 @@ class Html
         Toolbox::deprecated();
 
         if (is_array($value)) {
-            return array_map([__CLASS__, 'entities_deep'], $value);
+            return array_map([self::class, 'entities_deep'], $value);
         }
         if (!is_string($value)) {
             return $value;
@@ -445,7 +445,7 @@ class Html
      * Redirection hack
      *
      * @param string $dest Redirection destination
-     * @param string $http_response_code Forces the HTTP response code to the specified value
+     * @param int    $http_response_code Forces the HTTP response code to the specified value
      *
      * @return never
      **/
@@ -709,7 +709,7 @@ class Html
             $out          .= ")){ ";
             $close_string .= "return true;} else { return false;}";
         }
-        $out .= $additionalactions . (substr($additionalactions, -1) != ';' ? ';' : '') . $close_string;
+        $out .= $additionalactions . (!str_ends_with($additionalactions, ';') ? ';' : '') . $close_string;
         return $out;
     }
 
@@ -746,7 +746,7 @@ class Html
             'colors'    => null,
         ];
 
-        if (is_array($options) && count($options)) {
+        if (count($options)) {
             foreach ($options as $key => $val) {
                 if ($key === 'colors' && $val !== null) {
                     $params['colors'] = array_merge([
@@ -1316,8 +1316,8 @@ TWIG,
                 'title' => __('Administration'),
                 'types' => [
                     'User', 'Group', 'Entity', 'Rule',
-                    'Profile', 'QueuedNotification', 'Glpi\System\Log\LogViewer',
-                    'Glpi\Inventory\Inventory', 'Glpi\Form\Form',
+                    'Profile', 'QueuedNotification', \Glpi\System\Log\LogViewer::class,
+                    \Glpi\Inventory\Inventory::class, \Glpi\Form\Form::class,
                 ],
                 'icon'  => 'ti ti-shield-check',
             ],
@@ -2111,7 +2111,7 @@ TWIG,
         $params['tag_for_massive'] = '';
         $params['container_id']    = '';
 
-        if (is_array($options) && count($options)) {
+        if (count($options)) {
             foreach ($options as $key => $val) {
                 $params[$key] = $val;
             }
@@ -3512,9 +3512,7 @@ JS;
         }
         $content_css = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('lib/base.css', ['force_no_version' => true]));
         $content_css .= ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('lib/tabler.css', ['force_no_version' => true]));
-        $content_css .= ',' . implode(',', array_map(static function ($path) {
-            return preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss($path, ['force_no_version' => true]));
-        }, $content_css_paths));
+        $content_css .= ',' . implode(',', array_map(static fn($path) => preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss($path, ['force_no_version' => true])), $content_css_paths));
         // Fix & encoding so it can be loaded as expected in debug mode
         $content_css = str_replace('&amp;', '&', $content_css);
         $skin_url = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('css/tinymce_empty_skin', ['force_no_version' => true], false));
@@ -3878,7 +3876,7 @@ JAVASCRIPT
             $back = $start - $list_limit;
         }
 
-        if (!empty($additional_params) && strpos($additional_params, '&') !== 0) {
+        if (!empty($additional_params) && !str_starts_with($additional_params, '&')) {
             $additional_params = '&' . $additional_params;
         }
 
@@ -4057,7 +4055,7 @@ JAVASCRIPT
         echo "<div><table class='table align-middle'>";
         echo "<tr>";
 
-        if (strpos($target, '?') == false) {
+        if (!str_contains($target, '?')) {
             $fulltarget = $target . "?" . $parameters;
         } else {
             $fulltarget = $target . "&" . $parameters;
@@ -4104,7 +4102,7 @@ JAVASCRIPT
             }
 
             $parameters = trim($parameters, '&amp;');
-            if (strstr($parameters, 'start') === false) {
+            if (!str_contains($parameters, 'start')) {
                 $parameters .= "&amp;start=$start";
             }
 
@@ -4159,7 +4157,7 @@ JAVASCRIPT
     public static function printPagerForm($action = "", $display = true, $additional_params = '')
     {
 
-        if (!empty($additional_params) && strpos($additional_params, '&') !== 0) {
+        if (!empty($additional_params) && !str_starts_with($additional_params, '&')) {
             $additional_params = '&' . $additional_params;
         }
 
@@ -4270,9 +4268,9 @@ JAVASCRIPT
         if (empty($btimage)) {
             $link .= $btlabel;
         } else {
-            if (strpos($btimage, 'fa-') === 0) {
+            if (str_starts_with($btimage, 'fa-')) {
                 $link .= "<span class='fas $btimage' title='$btlabel'><span class='sr-only'>$btlabel</span>";
-            } elseif (strpos($btimage, 'ti-') === 0) {
+            } elseif (str_starts_with($btimage, 'ti-')) {
                 $link .= "<span class='ti $btimage' title='$btlabel'><span class='sr-only'>$btlabel</span>";
             } else {
                 $link .= "<img src='$btimage' title='$btlabel' alt='$btlabel' class='pointer'>";
@@ -5111,7 +5109,7 @@ HTML;
                 unset($options['version']);
             }
 
-            $url .= ((strpos($url, '?') !== false) ? '&' : '?') . 'v=' . FrontEnd::getVersionCacheKey($version);
+            $url .= ((str_contains($url, '?')) ? '&' : '?') . 'v=' . FrontEnd::getVersionCacheKey($version);
         }
 
         // Convert filesystem path to URL path (fix issues with Windows directory separator)
@@ -5532,7 +5530,7 @@ HTML;
         $param['col_check_all']        = false;
         $param['rand']                 = mt_rand();
 
-        if (is_array($options) && count($options)) {
+        if (count($options)) {
             foreach ($options as $key => $val) {
                 $param[$key] = $val;
             }
@@ -6009,8 +6007,8 @@ JS);
 
         if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax'] && !Session::isImpersonateActive()) {
             $options = [
-                'interval'  => ($CFG_GLPI['notifications_ajax_check_interval'] ? $CFG_GLPI['notifications_ajax_check_interval'] : 5) * 1000,
-                'sound'     => $CFG_GLPI['notifications_ajax_sound'] ? $CFG_GLPI['notifications_ajax_sound'] : false,
+                'interval'  => ($CFG_GLPI['notifications_ajax_check_interval'] ?: 5) * 1000,
+                'sound'     => $CFG_GLPI['notifications_ajax_sound'] ?: false,
                 'icon'      => ($CFG_GLPI["notifications_ajax_icon_url"] ? $CFG_GLPI['root_doc'] . $CFG_GLPI['notifications_ajax_icon_url'] : false),
                 'user_id'   => Session::getLoginUserID(),
             ];

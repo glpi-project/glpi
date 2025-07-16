@@ -45,7 +45,7 @@ if (isset($_POST["purge"])) {
     $answers_set = new AnswersSet();
     // TODO: Add a specific right to ensure the user can delete an answer
     $answers_set->check($id, DELETE);
-    $answers_set->delete($_POST, 1);
+    $answers_set->delete($_POST, true);
     $answers_set->redirectToList();
 } else {
     Session::checkRight(Form::$rightname, READ);

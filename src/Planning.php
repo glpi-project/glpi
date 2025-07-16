@@ -180,7 +180,7 @@ class Planning extends CommonGLPI
         $ong               = [];
         $ong['no_all_tab'] = true;
 
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
 
         return $ong;
     }
@@ -337,6 +337,10 @@ JAVASCRIPT;
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
+
+        if ($users_id === 0) {
+            return false;
+        }
 
         $planned = false;
         $message = '';
@@ -1046,13 +1050,9 @@ TWIG, $twig_params);
     {
         $item = getItemForItemtype($params['itemtype']);
         if ($item instanceof CommonDBTM) {
-            echo "<div class='center'>";
-            echo "<a href='" . htmlescape($params['url']) . "' class='btn btn-outline-secondary'>" .
-                "<i class='ti ti-eye'></i>" .
-                "<span>" . __s("View this item in its context") . "</span>" .
-            "</a>";
-            echo "</div>";
-            echo "<hr>";
+            $item->getFromDB((int) $params['id']);
+            $url = $item->getLinkURL();
+
             $rand = mt_rand();
             $options = [
                 'from_planning_edit_ajax' => true,
@@ -1062,8 +1062,16 @@ TWIG, $twig_params);
             if (isset($params['parentitemtype'])) {
                 $options['parent'] = getItemForItemtype($params['parentitemtype']);
                 $options['parent']->getFromDB($params['parentid']);
+                $url = $options['parent']->getLinkURL();
             }
-            $item->getFromDB((int) $params['id']);
+
+            echo "<div class='center'>";
+            echo "<a href='" . htmlescape($url) . "' class='btn btn-outline-secondary'>" .
+                "<i class='ti ti-eye'></i>" .
+                "<span>" . __s("View this item in its context") . "</span>" .
+            "</a>";
+            echo "</div>";
+            echo "<hr>";
             $item->showForm((int) $params['id'], $options);
             $callback = "glpi_close_all_dialogs();
                       GLPIPlanning.refresh();
@@ -1867,18 +1875,14 @@ TWIG, $twig_params);
         }
 
         // fill type of planning
-        $raw_events = array_map(static function ($arr) use ($actor) {
-            return $arr + ['resourceId' => $actor];
-        }, $raw_events);
+        $raw_events = array_map(static fn($arr) => $arr + ['resourceId' => $actor], $raw_events);
 
         if ($_SESSION['glpi_plannings']['filters']['NotPlanned']['display']) {
-            $not_planned = array_map(static function ($arr) use ($actor) {
-                return $arr + [
-                    'not_planned' => true,
-                    'resourceId' => $actor,
-                    'event_type_color' => $_SESSION['glpi_plannings']['filters']['NotPlanned']['color'],
-                ];
-            }, $not_planned);
+            $not_planned = array_map(static fn($arr) => $arr + [
+                'not_planned' => true,
+                'resourceId' => $actor,
+                'event_type_color' => $_SESSION['glpi_plannings']['filters']['NotPlanned']['color'],
+            ], $not_planned);
         }
     }
 
@@ -2094,7 +2098,7 @@ TWIG, $twig_params);
                     if (is_subclass_of($item, "CommonITILTask")) {
                         $parentitemtype = $item::getItilObjectItemType();
                         if (!$update["_job"] = getItemForItemtype($parentitemtype)) {
-                            return;
+                            return false;
                         }
 
                         $fkfield = $update["_job"]::getForeignKeyField();

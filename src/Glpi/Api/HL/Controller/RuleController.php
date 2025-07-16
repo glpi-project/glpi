@@ -37,9 +37,9 @@ namespace Glpi\Api\HL\Controller;
 
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
+use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
-use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -311,7 +311,7 @@ final class RuleController extends AbstractController
     {
         $params = $request->getParameters();
         // Only allow updating if the criterion exists in the rule
-        $result = Search::getOneBySchema($this->getKnownSchema($schema, $this->getAPIVersion($request)), $request->getAttributes(), $params);
+        $result = ResourceAccessor::getOneBySchema($this->getKnownSchema($schema, $this->getAPIVersion($request)), $request->getAttributes(), $params);
         try {
             $decoded = json_decode((string) $result->getBody(), true, 512, JSON_THROW_ON_ERROR);
             return isset($decoded['rule']['id']) && $decoded['rule']['id'] === (int) $request->getAttribute('rule_id');
@@ -526,7 +526,7 @@ final class RuleController extends AbstractController
         $filter .= ';sub_type==Rule' . $request->getAttribute('collection');
         $params['filter'] = $filter;
 
-        return Search::searchBySchema($this->getKnownSchema('Rule', $this->getAPIVersion($request)), $params);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('Rule', $this->getAPIVersion($request)), $params);
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
@@ -551,7 +551,7 @@ final class RuleController extends AbstractController
         $filter .= ';sub_type==Rule' . $request->getAttribute('collection');
         $params['filter'] = $filter;
 
-        return Search::getOneBySchema($this->getKnownSchema('Rule', $this->getAPIVersion($request)), $request->getAttributes(), $params);
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('Rule', $this->getAPIVersion($request)), $request->getAttributes(), $params);
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{id}/Criteria', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
@@ -576,7 +576,7 @@ final class RuleController extends AbstractController
         $filter .= ';rule==' . $request->getAttribute('id');
         $params['filter'] = $filter;
 
-        return Search::searchBySchema($this->getKnownSchema('RuleCriteria', $this->getAPIVersion($request)), $params);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('RuleCriteria', $this->getAPIVersion($request)), $params);
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Criteria/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
@@ -601,7 +601,7 @@ final class RuleController extends AbstractController
         $filter .= ';rule==' . $request->getAttribute('rule_id');
         $params['filter'] = $filter;
 
-        return Search::getOneBySchema($this->getKnownSchema('RuleCriteria', $this->getAPIVersion($request)), $request->getAttributes(), $params);
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('RuleCriteria', $this->getAPIVersion($request)), $request->getAttributes(), $params);
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{id}/Action', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
@@ -626,7 +626,7 @@ final class RuleController extends AbstractController
         $filter .= ';rule==' . $request->getAttribute('rule_id');
         $params['filter'] = $filter;
 
-        return Search::searchBySchema($this->getKnownSchema('RuleAction', $this->getAPIVersion($request)), $params);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('RuleAction', $this->getAPIVersion($request)), $params);
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Action/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
@@ -651,7 +651,7 @@ final class RuleController extends AbstractController
         $filter .= ';rule==' . $request->getAttribute('rule_id');
         $params['filter'] = $filter;
 
-        return Search::getOneBySchema($this->getKnownSchema('RuleAction', $this->getAPIVersion($request)), $request->getAttributes(), $params);
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('RuleAction', $this->getAPIVersion($request)), $request->getAttributes(), $params);
     }
 
     #[Route(path: '/Collection/{collection}/Rule', methods: ['POST'])]
@@ -675,7 +675,7 @@ final class RuleController extends AbstractController
         $params = $request->getParameters();
         $params['sub_type'] = 'Rule' . $request->getAttribute('collection');
 
-        return Search::createBySchema($this->getKnownSchema('Rule', $this->getAPIVersion($request)), $params, [self::class, 'getRule'], [
+        return ResourceAccessor::createBySchema($this->getKnownSchema('Rule', $this->getAPIVersion($request)), $params, [self::class, 'getRule'], [
             'mapped' => [
                 'collection' => $request->getAttribute('collection'),
             ],
@@ -703,7 +703,7 @@ final class RuleController extends AbstractController
         $params = $request->getParameters();
         $params['sub_type'] = 'Rule' . $request->getAttribute('collection');
 
-        return Search::updateBySchema($this->getKnownSchema('Rule', $this->getAPIVersion($request)), $request->getAttributes(), $params);
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('Rule', $this->getAPIVersion($request)), $request->getAttributes(), $params);
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{id}', methods: ['DELETE'])]
@@ -716,7 +716,7 @@ final class RuleController extends AbstractController
         if ($response = $this->checkCollectionAccess($request, PURGE)) {
             return $response;
         }
-        return Search::deleteBySchema($this->getKnownSchema('Rule', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('Rule', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Criteria', methods: ['POST'], middlewares: [ResultFormatterMiddleware::class])]
@@ -740,7 +740,7 @@ final class RuleController extends AbstractController
         $params = $request->getParameters();
         $params['rule'] = $request->getAttribute('rule_id');
 
-        return Search::createBySchema($this->getKnownSchema('RuleCriteria', $this->getAPIVersion($request)), $params, [self::class, 'getRuleCriterion'], [
+        return ResourceAccessor::createBySchema($this->getKnownSchema('RuleCriteria', $this->getAPIVersion($request)), $params, [self::class, 'getRuleCriterion'], [
             'mapped' => [
                 'rule_id' => $request->getAttribute('rule_id'),
                 'collection' => $request->getAttribute('collection'),
@@ -774,7 +774,7 @@ final class RuleController extends AbstractController
         $params['id'] = $request->getAttribute('id');
         $params['rule.id'] = $request->getAttribute('rule_id');
 
-        return Search::updateBySchema($this->getKnownSchema('RuleCriteria', $this->getAPIVersion($request)), $request->getAttributes(), $params);
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('RuleCriteria', $this->getAPIVersion($request)), $request->getAttributes(), $params);
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Criteria/{id}', methods: ['DELETE'], middlewares: [ResultFormatterMiddleware::class])]
@@ -798,7 +798,7 @@ final class RuleController extends AbstractController
             return self::getNotFoundErrorResponse();
         }
 
-        return Search::deleteBySchema($this->getKnownSchema('RuleCriteria', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('RuleCriteria', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Action', methods: ['POST'], middlewares: [ResultFormatterMiddleware::class])]
@@ -822,7 +822,7 @@ final class RuleController extends AbstractController
         $params = $request->getParameters();
         $params['rule'] = $request->getAttribute('rule_id');
 
-        return Search::createBySchema($this->getKnownSchema('RuleAction', $this->getAPIVersion($request)), $params, [self::class, 'getRuleAction'], [
+        return ResourceAccessor::createBySchema($this->getKnownSchema('RuleAction', $this->getAPIVersion($request)), $params, [self::class, 'getRuleAction'], [
             'mapped' => [
                 'rule_id' => $request->getAttribute('rule_id'),
                 'collection' => $request->getAttribute('collection'),
@@ -856,7 +856,7 @@ final class RuleController extends AbstractController
         $params['id'] = $request->getAttribute('id');
         $params['rule.id'] = $request->getAttribute('rule_id');
 
-        return Search::updateBySchema($this->getKnownSchema('RuleAction', $this->getAPIVersion($request)), $request->getAttributes(), $params);
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('RuleAction', $this->getAPIVersion($request)), $request->getAttributes(), $params);
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Action/{id}', methods: ['DELETE'], middlewares: [ResultFormatterMiddleware::class])]
@@ -880,7 +880,7 @@ final class RuleController extends AbstractController
             return self::getNotFoundErrorResponse();
         }
 
-        return Search::deleteBySchema($this->getKnownSchema('RuleAction', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('RuleAction', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     private function getRuleInstanceFromRequest(Request $request): Rule

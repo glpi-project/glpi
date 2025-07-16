@@ -580,7 +580,7 @@ class MassiveAction
             && Session::isMultiEntitiesMode()
             && !isAPI()
         ) {
-            $actions[__CLASS__ . self::CLASS_ACTION_SEPARATOR . 'add_transfer_list']
+            $actions[self::class . self::CLASS_ACTION_SEPARATOR . 'add_transfer_list']
                   = "<i class='ti ti-corner-right-up'></i>" .
                     _x('button', 'Add to transfer list');
         }
@@ -626,7 +626,7 @@ class MassiveAction
         }
 
         $actions   = [];
-        $self_pref = __CLASS__ . self::CLASS_ACTION_SEPARATOR;
+        $self_pref = self::class . self::CLASS_ACTION_SEPARATOR;
 
         if ($is_deleted) {
             if ($canpurge) {
@@ -782,9 +782,7 @@ class MassiveAction
 
         // Remove icons for outputs that doesn't expect html
         if ($items_id === null || isAPI()) {
-            $actions = array_map(function ($action) {
-                return strip_tags($action);
-            }, $actions);
+            $actions = array_map(fn($action) => strip_tags($action), $actions);
         }
 
         return $actions;
@@ -963,9 +961,7 @@ class MassiveAction
 
                     echo "</tr><tr>";
                     // Remove empty option groups
-                    $options = array_filter($options, static function ($v) {
-                        return !is_array($v) || count($v) > 0;
-                    });
+                    $options = array_filter($options, static fn($v) => !is_array($v) || count($v) > 0);
                     if ($choose_field) {
                         echo "<td>";
                         $field_rand = Dropdown::showFromArray(
@@ -1359,14 +1355,14 @@ class MassiveAction
             case 'purge':
                 foreach ($ids as $id) {
                     if ($item->can($id, PURGE)) {
-                        $force = 1;
+                        $force = true;
                         // Only mark deletion for
                         if (
                             $item->maybeDeleted()
                             && $item->useDeletedToLockIfDynamic()
                             && $item->isDynamic()
                         ) {
-                            $force = 0;
+                            $force = false;
                         }
                         $delete_array = ['id' => $id];
                         if ($action == 'purge_item_but_devices') {
@@ -1376,7 +1372,7 @@ class MassiveAction
                         if ($item instanceof CommonDropdown) {
                             if ($item->haveChildren()) {
                                 if ($action != 'purge_but_item_linked') {
-                                    $force = 0;
+                                    $force = false;
                                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                                     $ma->addMessage(__("You can't delete that item by massive actions, because it has sub-items"));
                                     $ma->addMessage(__("but you can do it by the form of the item"));
@@ -1385,7 +1381,7 @@ class MassiveAction
                             }
                             if ($item->isUsed()) {
                                 if ($action != 'purge_but_item_linked') {
-                                    $force = 0;
+                                    $force = false;
                                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                                     $ma->addMessage(__("You can't delete that item, because it is used for one or more items"));
                                     $ma->addMessage(__("but you can do it by the form of the item"));

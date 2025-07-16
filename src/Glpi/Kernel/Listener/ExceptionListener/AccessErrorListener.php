@@ -105,7 +105,7 @@ final readonly class AccessErrorListener implements EventSubscriberInterface
                 '%s/front/logout.php?noAUTO=1',
                 $request->getBasePath()
             );
-            $redirect = $request->request->get('redirect') ?: $request->query->get('redirect') ?: null;
+            $redirect = ($request->request->get('redirect') ?: $request->query->get('redirect')) ?: null;
             if ($redirect !== null) {
                 $login_url .= '&redirect=' . \rawurlencode($redirect);
             }

@@ -100,7 +100,7 @@ if (isset($_POST["add"])) {
     $handled = true;
 } elseif (isset($_POST["purge"])) {
     $fup->check($_POST['id'], PURGE);
-    $fup->delete($_POST, 1);
+    $fup->delete($_POST, true);
 
     Event::log(
         $fup->getField('items_id'),

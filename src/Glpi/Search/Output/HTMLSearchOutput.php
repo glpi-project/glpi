@@ -125,7 +125,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
         }
 
         $search['target'] = URL::sanitizeURL($search['target']);
-        $prehref = $search['target'] . (strpos($search['target'], "?") !== false ? "&" : "?");
+        $prehref = $search['target'] . (str_contains($search['target'], "?") ? "&" : "?");
         $href    = $prehref . $parameters;
 
         \Session::initNavigateListItems($data['itemtype'], '', $href);

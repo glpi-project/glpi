@@ -136,7 +136,7 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public static function getType()
     {
-        return get_called_class();
+        return static::class;
     }
 
     /**
@@ -329,7 +329,7 @@ class CommonGLPI implements CommonGLPIInterface
 
         // Object with class with 'addtabon' attribute
         if (!$this->isNewItem()) {
-            $othertabs = self::getOtherTabs($this->getType());
+            $othertabs = self::getOtherTabs(static::getType());
             foreach ($othertabs as $typetab) {
                 $this->addStandardTab($typetab, $onglets, $options);
             }
@@ -820,7 +820,7 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public static function getTabsURL($full = true)
     {
-        return Toolbox::getItemTypeTabsURL(get_called_class(), $full);
+        return Toolbox::getItemTypeTabsURL(static::class, $full);
     }
 
     /**
@@ -832,7 +832,7 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public static function getSearchURL($full = true)
     {
-        return Toolbox::getItemTypeSearchURL(get_called_class(), $full);
+        return Toolbox::getItemTypeSearchURL(static::class, $full);
     }
 
     /**
@@ -844,7 +844,7 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public static function getFormURL($full = true)
     {
-        return Toolbox::getItemTypeFormURL(get_called_class(), $full);
+        return Toolbox::getItemTypeFormURL(static::class, $full);
     }
 
     /**
@@ -923,7 +923,7 @@ class CommonGLPI implements CommonGLPIInterface
         }
 
         if (count($onglets)) {
-            $tabs_url   = $this->getTabsURL();
+            $tabs_url   = static::getTabsURL();
             $parsed_url = parse_url($tabs_url);
             $tab_path   = $parsed_url['path'];
             $tab_params = [];
@@ -937,7 +937,7 @@ class CommonGLPI implements CommonGLPIInterface
                 $tab_params,
                 [
                     '_target' => $target,
-                    '_itemtype' => $this->getType(),
+                    '_itemtype' => static::getType(),
                     'id' => $ID,
                 ]
             );
@@ -970,7 +970,7 @@ class CommonGLPI implements CommonGLPIInterface
                 'tabspanel',
                 'tabcontent',
                 $tabs,
-                $this->getType(),
+                static::getType(),
                 $ID,
                 $this->taborientation,
                 $options
@@ -1021,18 +1021,18 @@ class CommonGLPI implements CommonGLPIInterface
         }
 
         if (
-            !$this->isNewID($ID)
-            && $this->getType()
+            !static::isNewID($ID)
+            && static::getType()
             && $this->displaylist
         ) {
-            $glpilistitems = & $_SESSION['glpilistitems'][$this->getType()];
-            $glpilisttitle = & $_SESSION['glpilisttitle'][$this->getType()];
-            $glpilisturl   = & $_SESSION['glpilisturl'][$this->getType()];
+            $glpilistitems = & $_SESSION['glpilistitems'][static::getType()];
+            $glpilisttitle = & $_SESSION['glpilisttitle'][static::getType()];
+            $glpilisturl   = & $_SESSION['glpilisturl'][static::getType()];
             if ($this instanceof CommonDBChild && $parent = $this->getItem(true, false)) {
                 $glpilisturl = $parent::getFormURLWithID($parent->fields['id'], true);
             }
             if (empty($glpilisturl)) {
-                $glpilisturl = $this->getSearchURL();
+                $glpilisturl = static::getSearchURL();
             }
 
             $next = $prev = $first = $last = -1;
@@ -1213,7 +1213,7 @@ class CommonGLPI implements CommonGLPIInterface
             if (
                 $this instanceof CommonDBTM
                 && isset($options['id'])
-                && !$this->isNewID($options['id'])
+                && !static::isNewID($options['id'])
             ) {
                 if (!$this->getFromDB($options['id'])) {
                     throw new NotFoundHttpException();
@@ -1243,7 +1243,7 @@ class CommonGLPI implements CommonGLPIInterface
         echo "<div class='row'>";
         if ($this instanceof CommonDBTM) {
             TemplateRenderer::getInstance()->display('layout/parts/saved_searches.html.twig', [
-                'itemtype' => $this->getType(),
+                'itemtype' => static::getType(),
             ]);
         }
         echo "<div class='col'>";
@@ -1301,7 +1301,7 @@ class CommonGLPI implements CommonGLPIInterface
             'FROM'   => KnowbaseItem::getTable(),
             'WHERE'  => [
                 KnowbaseItem_Item::getTable() . '.items_id'  => $this->fields['id'],
-                KnowbaseItem_Item::getTable() . '.itemtype'  => $this->getType(),
+                KnowbaseItem_Item::getTable() . '.itemtype'  => static::getType(),
             ],
             'INNER JOIN'   => [
                 KnowbaseItem_Item::getTable() => [

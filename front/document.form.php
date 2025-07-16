@@ -112,7 +112,7 @@ if (isset($_POST["add"])) {
 } elseif (isset($_POST["purge"])) {
     $doc->check($_POST["id"], PURGE);
 
-    if ($doc->delete($_POST, 1)) {
+    if ($doc->delete($_POST, true)) {
         Event::log(
             $_POST["id"],
             "documents",

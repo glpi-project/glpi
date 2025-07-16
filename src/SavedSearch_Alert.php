@@ -442,7 +442,7 @@ class SavedSearch_Alert extends CommonDBChild
                         $alert->deleteByCriteria([
                             'itemtype' => SavedSearch_Alert::class,
                             'items_id' => $row['id'],
-                        ], 1);
+                        ], true);
                         $alert->add([
                             'type'     => Alert::PERIODICITY,
                             'itemtype' => SavedSearch_Alert::class,

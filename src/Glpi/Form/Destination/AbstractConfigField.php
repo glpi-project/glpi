@@ -77,7 +77,7 @@ abstract class AbstractConfigField implements DestinationFieldInterface
         }
 
         // Try to load config if defined
-        $config = $config[$this->getKey()] ?? null;
+        $config = $config[static::getKey()] ?? null;
         if ($config === null) {
             return $this->getDefaultConfig($form);
         }
@@ -88,7 +88,7 @@ abstract class AbstractConfigField implements DestinationFieldInterface
 
     public function isAutoConfigurated(array $config): bool
     {
-        return $config[$this->getAutoConfigKey()] ?? true;
+        return $config[static::getAutoConfigKey()] ?? true;
     }
 
     public static function getAutoConfigKey(): string
@@ -109,9 +109,9 @@ abstract class AbstractConfigField implements DestinationFieldInterface
             /** @var class-string<ConfigFieldWithStrategiesInterface> $config_class */
             if (
                 $this->canHaveMultipleStrategies() === false
-                && is_array($input[$this->getKey()][$config_class::getStrategiesInputName()] ?? null)
+                && is_array($input[static::getKey()][$config_class::getStrategiesInputName()] ?? null)
             ) {
-                $input[$this->getKey()][$config_class::getStrategiesInputName()] = $input[$this->getKey()][$config_class::getStrategiesInputName()][0];
+                $input[static::getKey()][$config_class::getStrategiesInputName()] = $input[static::getKey()][$config_class::getStrategiesInputName()][0];
             }
         }
 

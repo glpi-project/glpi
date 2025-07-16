@@ -246,7 +246,7 @@ class MailCollector extends CommonDBTM
 
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
         $this->addImpactTab($ong, $options);
         $this->addStandardTab(Log::class, $ong, $options);
 
@@ -1478,7 +1478,7 @@ class MailCollector extends CommonDBTM
                 !$part->getHeaders()->has('content-type')
                 || !(($content_type_header = $part->getHeader('content-type')) instanceof ContentType)
             ) {
-                return false; // Ignore attachements with no content-type
+                return; // Ignore attachements with no content-type
             }
             $content_type = $content_type_header->getType();
 
@@ -1486,7 +1486,7 @@ class MailCollector extends CommonDBTM
                 // Ignore attachements with no content-disposition only if they corresponds to a text part.
                 // Indeed, some mail clients (like some Outlook versions) does not set any content-disposition
                 // header on inlined images.
-                return false;
+                return;
             }
 
             // fix monoparted mail
@@ -1573,7 +1573,7 @@ class MailCollector extends CommonDBTM
                         Toolbox::getSize($part->getSize())
                     )
                 );
-                return false;
+                return;
             }
 
             if (!Document::isValidDoc($filename)) {
@@ -1587,7 +1587,7 @@ class MailCollector extends CommonDBTM
                         $content_type
                     )
                 );
-                return false;
+                return;
             }
 
             $contents = $this->getDecodedContent($part);
@@ -1755,9 +1755,9 @@ class MailCollector extends CommonDBTM
     /**
      * Cron action on mailgate : retrieve mail and create tickets
      *
-     * @param $task
+     * @param CronTask $task
      *
-     * @return -1 : done but not finish 1 : done with success
+     * @return int -1 : done but not finish 1 : done with success
      **/
     public static function cronMailgate($task)
     {
@@ -1795,7 +1795,7 @@ class MailCollector extends CommonDBTM
         }
 
         if ($max == $task->fields['param']) {
-            return 0; // Nothin to do
+            return 0; // Nothing to do
         } elseif ($max === 0 || count($iterator) < countElementsInTable('glpi_mailcollectors', ['is_active' => 1])) {
             return -1; // still messages to retrieve
         }

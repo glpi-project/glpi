@@ -126,7 +126,7 @@ final class DropdownFormController extends AbstractController
 
                 return new Response($content);
             } else {
-                $dropdown->delete($input, 1);
+                $dropdown->delete($input, true);
 
                 Event::log(
                     $input["id"],
@@ -143,7 +143,7 @@ final class DropdownFormController extends AbstractController
 
         if (isset($input["replace"])) {
             $dropdown->check($input["id"], PURGE);
-            $dropdown->delete($input, 1);
+            $dropdown->delete($input, true);
 
             Event::log(
                 $input["id"],

@@ -67,7 +67,6 @@ abstract class AbstractController
     public const CRUD_ACTION_DELETE = 'delete';
     public const CRUD_ACTION_PURGE = 'purge';
     public const CRUD_ACTION_RESTORE = 'restore';
-    public const CRUD_ACTION_LIST = 'list';
 
     protected const PARAMETER_RSQL_FILTER = [
         'name' => 'filter',
@@ -266,14 +265,12 @@ abstract class AbstractController
         $messages = $_SESSION['MESSAGE_AFTER_REDIRECT'] ?? [];
         $additional_messages = [];
         if (count($messages) > 0) {
-            $get_priority_name = static function ($priority) {
-                return match ($priority) {
-                    0 => 'info',
-                    1 => 'error',
-                    2 => 'warning',
-                    default => 'unknown',
-                };
-            };
+            $get_priority_name = (static fn($priority) => match ($priority) {
+                0 => 'info',
+                1 => 'error',
+                2 => 'warning',
+                default => 'unknown',
+            });
             foreach ($messages as $priority => $message_texts) {
                 foreach ($message_texts as $message) {
                     $additional_messages[] = [
@@ -364,9 +361,10 @@ abstract class AbstractController
     public static function getAPIPathForRouteFunction(string $controller, string $function, array $params = [], bool $allow_invalid = false): string
     {
         $route_paths = Router::getInstance()->getAllRoutes();
-        $matches = array_filter($route_paths, static function (/** @var RoutePath $route_path */$route_path) use ($controller, $function) {
-            return $route_path->getController() === $controller && $route_path->getMethod()->getName() === $function;
-        });
+        $matches = array_filter($route_paths, static fn(
+            /** @var RoutePath $route_path */
+            $route_path
+        ) => $route_path->getController() === $controller && $route_path->getMethod()->getName() === $function);
         if (count($matches) === 0) {
             return '/';
         }

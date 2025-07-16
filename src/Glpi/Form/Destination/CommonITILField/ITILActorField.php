@@ -342,7 +342,7 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
                     return false;
                 }
 
-                return class_uses($question_itemtype)['Glpi\Features\AssignableItem'] ?? false;
+                return class_uses($question_itemtype)[\Glpi\Features\AssignableItem::class] ?? false;
             }
         );
 

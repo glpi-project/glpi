@@ -56,7 +56,7 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 // See https://github.com/symfony-cli/symfony-cli/blob/b5c22ed3d10c79784cbb7a771af94f683e8f1795/local/php/php_builtin_server.go#L53-L57
 $self_script = DIRECTORY_SEPARATOR . basename(__FILE__);
 if (php_sapi_name() === 'cli-server' && $_SERVER['SCRIPT_NAME'] !== $self_script) {
-    $_SERVER['DOCUMENT_ROOT']   = dirname(__FILE__);
+    $_SERVER['DOCUMENT_ROOT']   = __DIR__;
     $_SERVER['SCRIPT_FILENAME'] = $_SERVER['DOCUMENT_ROOT'] . $self_script;
     $_SERVER['SCRIPT_NAME']     = $self_script;
     $_SERVER['PHP_SELF']        = $self_script;

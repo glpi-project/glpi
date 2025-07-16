@@ -114,7 +114,7 @@ final class RendererController extends AbstractController
         }
 
         $form = Form::getById($forms_id);
-        if (!$form) {
+        if (!$form instanceof Form) {
             throw new NotFoundHttpException();
         }
 

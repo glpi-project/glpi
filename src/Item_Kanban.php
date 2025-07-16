@@ -137,7 +137,7 @@ class Item_Kanban extends CommonDBRelation
      * @param string $itemtype Type of the item.
      * @param int $items_id ID of the item.
      * @param string $timestamp Timestamp string of last check or null to always get the state.
-     * @return array Array of Kanban column state data.
+     * @return ?array Array of Kanban column state data.
      *       Null is returned if $timestamp is specified, but no changes have been made to the state since then
      *       An empty array is returned if the state is not in the DB.
      */
@@ -166,7 +166,7 @@ class Item_Kanban extends CommonDBRelation
 
         if (count($iterator)) {
             $data = $iterator->current();
-            if ($timestamp !== null) {
+            if (!empty($timestamp)) {
                 if (strtotime($timestamp) < strtotime($data['date_mod'])) {
                     return json_decode($data['state'], true);
                 } else {
@@ -237,9 +237,7 @@ class Item_Kanban extends CommonDBRelation
         if (method_exists($item, 'getAllKanbanColumns')) {
             $all_columns = $item->getAllKanbanColumns();
         }
-        $new_column_index = array_keys(array_filter($state, function ($c, $k) use ($column) {
-            return $c['column'] === $column;
-        }, ARRAY_FILTER_USE_BOTH));
+        $new_column_index = array_keys(array_filter($state, fn($c, $k) => $c['column'] === $column, ARRAY_FILTER_USE_BOTH));
         if (count($new_column_index)) {
             $new_column_index = reset($new_column_index);
             if (isset($all_columns[(int) $column])) {

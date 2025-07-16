@@ -116,7 +116,7 @@ if (isset($_GET['getvcard'])) {
     $user->redirectToList();
 } elseif (isset($_POST["purge"])) {
     $user->check($_POST['id'], PURGE);
-    $user->delete($_POST, 1);
+    $user->delete($_POST, true);
     Event::log(
         $_POST["id"],
         "users",

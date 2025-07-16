@@ -159,7 +159,7 @@ class Ticket extends CommonITILObject
 
         if (
             isset($this->fields['is_deleted']) && $this->fields['is_deleted'] == 1
-            || isset($this->fields['status']) && in_array($this->fields['status'], $this->getClosedStatusArray())
+            || isset($this->fields['status']) && in_array($this->fields['status'], static::getClosedStatusArray())
         ) {
             return false;
         }
@@ -640,7 +640,7 @@ class Ticket extends CommonITILObject
     public function canReopen()
     {
         return Session::haveRight('followup', CREATE)
-             && in_array($this->fields["status"], $this->getClosedStatusArray())
+             && in_array($this->fields["status"], static::getClosedStatusArray())
              && ($this->isAllowedStatus($this->fields['status'], self::INCOMING)
                  || $this->isAllowedStatus($this->fields['status'], self::ASSIGNED));
     }
@@ -775,7 +775,7 @@ class Ticket extends CommonITILObject
                         break;
 
                     default:
-                        if ($item->getType() != __CLASS__) {
+                        if ($item->getType() != self::class) {
                             // Deprecated, these items should use the Item_Ticket tab instead
                             \Toolbox::deprecated("You should register the `Item_Ticket` tab instead of the `Ticket` tab");
                             return (new Item_Ticket())->getTabNameForItem($item, $withtemplate);
@@ -784,7 +784,7 @@ class Ticket extends CommonITILObject
                 }
             }
             // Not for Ticket class
-            if ($item->getType() != __CLASS__) {
+            if ($item->getType() != self::class) {
                 return self::createTabEntry($title, $nb, $item::getType());
             }
         }
@@ -844,7 +844,7 @@ class Ticket extends CommonITILObject
         $this->addDefaultFormTab($tabs);
 
         if (Session::getCurrentInterface() == 'central') {
-            $this->addStandardTab(__CLASS__, $tabs, $options);
+            $this->addStandardTab(self::class, $tabs, $options);
             $this->addStandardTab(TicketValidation::class, $tabs, $options);
             $this->addStandardTab(KnowbaseItem_Item::class, $tabs, $options);
             $this->addStandardTab(Item_Ticket::class, $tabs, $options);
@@ -1369,8 +1369,8 @@ class Ticket extends CommonITILObject
         if (
             isset($this->input['status'])
             && in_array('status', $this->updates)
-            && (in_array($this->input['status'], $this->getSolvedStatusArray())
-              || in_array($this->input['status'], $this->getClosedStatusArray()))
+            && (in_array($this->input['status'], static::getSolvedStatusArray())
+              || in_array($this->input['status'], static::getClosedStatusArray()))
         ) {
             CommonITILObject_CommonITILObject::manageLinksOnChange('Ticket', $this->getID(), [
                 'status'       => $this->input['status'],
@@ -1440,7 +1440,7 @@ class Ticket extends CommonITILObject
                 isset($this->input["status"])
                 && $this->input["status"]
                 && in_array("status", $this->updates)
-                && in_array($this->input["status"], $this->getSolvedStatusArray())
+                && in_array($this->input["status"], static::getSolvedStatusArray())
             ) {
                 $mailtype = "solved";
             }
@@ -1449,7 +1449,7 @@ class Ticket extends CommonITILObject
                 isset($this->input["status"])
                 && $this->input["status"]
                 && in_array("status", $this->updates)
-                && in_array($this->input["status"], $this->getClosedStatusArray())
+                && in_array($this->input["status"], static::getClosedStatusArray())
             ) {
                 $mailtype = "closed";
             }
@@ -1846,8 +1846,8 @@ class Ticket extends CommonITILObject
                 'glpi_items_tickets.items_id' => $items_id,
                 'NOT'                         => [
                     $this->getTable() . '.status' => array_merge(
-                        $this->getSolvedStatusArray(),
-                        $this->getClosedStatusArray()
+                        static::getSolvedStatusArray(),
+                        static::getClosedStatusArray()
                     ),
                 ],
             ],
@@ -1893,8 +1893,8 @@ class Ticket extends CommonITILObject
                 $this->getTable() . '.type'      => $type,
                 'NOT'                         => [
                     $this->getTable() . '.status' => array_merge(
-                        $this->getSolvedStatusArray(),
-                        $this->getClosedStatusArray()
+                        static::getSolvedStatusArray(),
+                        static::getClosedStatusArray()
                     ),
                 ],
             ],
@@ -1932,8 +1932,8 @@ class Ticket extends CommonITILObject
                 'glpi_items_tickets.itemtype' => $itemtype,
                 'glpi_items_tickets.items_id' => $items_id,
                 $this->getTable() . '.status' => array_merge(
-                    $this->getSolvedStatusArray(),
-                    $this->getClosedStatusArray()
+                    static::getSolvedStatusArray(),
+                    static::getClosedStatusArray()
                 ),
                 new QueryExpression(
                     QueryFunction::dateAdd(
@@ -2138,7 +2138,7 @@ class Ticket extends CommonITILObject
 
         if (Session::getCurrentInterface() === 'central') {
             if (Ticket::canUpdate() && Ticket::canDelete()) {
-                $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'merge_as_followup']
+                $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'merge_as_followup']
                  = "<i class='ti ti-git-merge'></i>" .
                  __s('Merge as Followup');
             }
@@ -2158,7 +2158,7 @@ class Ticket extends CommonITILObject
 
             if (TicketTask::canCreate()) {
                 $icon = TicketTask::getIcon();
-                $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_task']
+                $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_task']
                 = "<i class='$icon'></i>" .
                  __s('Add a new task');
             }
@@ -2176,20 +2176,20 @@ class Ticket extends CommonITILObject
             }
 
             if (Session::haveRight(self::$rightname, UPDATE)) {
-                $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_actor'] = "<i class='ti ti-user'></i>" . __s('Add an actor');
-                $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'update_notif'] = __s('Set notifications for all actors');
+                $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_actor'] = "<i class='ti ti-user'></i>" . __s('Add an actor');
+                $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'update_notif'] = __s('Set notifications for all actors');
                 if (ProjectTask_Ticket::canCreate()) {
                     $actions['ProjectTask_Ticket' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
                         = "<i class='ti ti-link'></i>" .
                         _sx('button', 'Link project task');
                 }
                 if (Ticket_Contract::canCreate()) {
-                    $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_contract']
+                    $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_contract']
                         = "<i class='" . Contract::getIcon() . "'></i>" .
                         _sx('button', 'Add contract');
                 }
 
-                KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
+                KnowbaseItem_Item::getMassiveActionsForItemtype($actions, self::class, false, $checkitem);
             }
 
             if (self::canUpdate()) {
@@ -3748,7 +3748,7 @@ JAVASCRIPT;
             ]);
         }
 
-        if ($ID && in_array($this->fields['status'], $this->getClosedStatusArray())) {
+        if ($ID && in_array($this->fields['status'], static::getClosedStatusArray())) {
             $canupdate = false;
             // No update for actors
             $options['_noupdate'] = true;
@@ -4879,7 +4879,7 @@ JAVASCRIPT;
                 // Mini search engine
                 /** @var Group $item */
                 if ($item->haveChildren()) {
-                    $tree = (int) Session::getSavedOption(__CLASS__, 'tree', 0);
+                    $tree = (int) Session::getSavedOption(self::class, 'tree', 0);
                     TemplateRenderer::getInstance()->display('components/form/item_itilobject_group.html.twig', [
                         'tree' => $tree,
                     ]);
@@ -5393,7 +5393,7 @@ JAVASCRIPT;
             foreach ($matches[0] as $src_attr) {
                 // Set tag if image matches
                 foreach ($files as $data => $filename) {
-                    if (preg_match("/" . $data . "/i", $src_attr)) {
+                    if (preg_match("/" . preg_quote($data, '/') . "/i", $src_attr)) {
                         $html = preg_replace("/<img[^>]*" . preg_quote($src_attr, '/') . "[^>]*>/s", "<p>" . Document::getImageTag($tags[$filename]) . "</p>", $html);
                     }
                 }
@@ -5692,7 +5692,7 @@ JAVASCRIPT;
     public function getForbiddenSingleMassiveActions()
     {
         $excluded = parent::getForbiddenSingleMassiveActions();
-        if (in_array($this->fields['status'], $this->getClosedStatusArray())) {
+        if (in_array($this->fields['status'], static::getClosedStatusArray())) {
             //for closed Tickets, only keep transfer and unlock
             $excluded[] = 'TicketValidation:submit_validation';
             $excluded[] = 'Ticket:*';
@@ -5710,7 +5710,7 @@ JAVASCRIPT;
     {
         $whitelist = parent::getWhitelistedSingleMassiveActions();
 
-        if (!in_array($this->fields['status'], $this->getClosedStatusArray())) {
+        if (!in_array($this->fields['status'], static::getClosedStatusArray())) {
             $whitelist[] = 'Item_Ticket:add_item';
         }
 
@@ -6314,7 +6314,7 @@ JAVASCRIPT;
             case Group::class:
                 /** @var Group $item */
                 if ($item->haveChildren()) {
-                    $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
+                    $tree = Session::getSavedOption(self::class, 'tree', 0);
                 } else {
                     $tree = 0;
                 }
@@ -6389,7 +6389,7 @@ JAVASCRIPT;
             case Group::class:
                 /** @var Group $item */
                 if ($item->haveChildren()) {
-                    $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
+                    $tree = Session::getSavedOption(self::class, 'tree', 0);
                 } else {
                     $tree = 0;
                 }

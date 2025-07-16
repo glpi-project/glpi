@@ -190,18 +190,14 @@ class ContractCost extends CommonDBChild
         return $tab;
     }
 
-    /**
-     * Init cost for creation based on previous cost
-     * @return void|boolean
-     **/
-    public function initBasedOnPrevious()
+    public function initBasedOnPrevious(): void
     {
         $contract = new Contract();
         if (
             !isset($this->fields['contracts_id'])
             || !$contract->getFromDB($this->fields['contracts_id'])
         ) {
-            return false;
+            return;
         }
 
         $lastdata = $this->getLastCostForContract($this->fields['contracts_id']);

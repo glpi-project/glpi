@@ -42,8 +42,8 @@ final class FormContentSpecification
     public int $id;
     public string $uuid;
     public string $name;
-    public ?string $header;
-    public ?string $description;
+    public ?string $header = null;
+    public ?string $description = null;
     public string $illustration;
     public string $category_name;
     public string $entity_name;

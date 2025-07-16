@@ -134,7 +134,7 @@ class Software extends CommonDBTM
         $this->addStandardTab(Domain_Item::class, $ong, $options);
         $this->addStandardTab(Appliance_Item::class, $ong, $options);
         $this->addStandardTab(Log::class, $ong, $options);
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
 
         return $ong;
     }
@@ -241,7 +241,7 @@ class Software extends CommonDBTM
             $isadmin
             && (countElementsInTable("glpi_rules", ['sub_type' => 'RuleSoftwareCategory']) > 0)
         ) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'compute_software_category']
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'compute_software_category']
             = "<i class='ti ti-calculator'></i>" .
               __s('Recalculate the category');
         }
@@ -250,13 +250,13 @@ class Software extends CommonDBTM
             Session::haveRightsOr("rule_dictionnary_software", [CREATE, UPDATE])
             && (countElementsInTable("glpi_rules", ['sub_type' => 'RuleDictionnarySoftware']) > 0)
         ) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'replay_dictionnary']
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'replay_dictionnary']
             = "<i class='ti ti-arrow-back-up'></i>" .
               __s('Replay the dictionary rules');
         }
 
         if ($isadmin) {
-            KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
+            KnowbaseItem_Item::getMassiveActionsForItemtype($actions, self::class, false, $checkitem);
         }
 
         return $actions;
@@ -990,7 +990,7 @@ class Software extends CommonDBTM
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . mt_rand(),
                 'specific_actions' => [
-                    __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'merge' => __('Merge'),
+                    self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'merge' => __('Merge'),
                 ],
                 'item'          => $this,
             ],

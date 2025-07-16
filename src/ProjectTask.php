@@ -205,7 +205,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab(ProjectTaskTeam::class, $ong, $options);
         $this->addStandardTab(Document_Item::class, $ong, $options);
         $this->addStandardTab(ProjectTask_Ticket::class, $ong, $options);
@@ -585,9 +585,13 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     {
         // Clone all sub-tasks of the source and link them to the cloned task
         foreach (self::getAllForProjectTask($source->getID()) as $task) {
-            self::getById($task['id'])->clone([
-                'projecttasks_id' => $this->getID(),
-            ]);
+            if ($task = self::getById($task['id'])) {
+                if (method_exists($task, 'clone')) {
+                    $task->clone([
+                        'projecttasks_id' => $this->getID(),
+                    ]);
+                }
+            }
         }
     }
 
@@ -1972,8 +1976,7 @@ TWIG, $twig_params);
                     $interv[$key]["ajaxurl"] = $CFG_GLPI["root_doc"] . "/ajax/planning.php" .
                                           "?action=edit_event_form" .
                                           "&itemtype=ProjectTask" .
-                                          "&id=" . $data['id'] .
-                                          "&url=" . $interv[$key]["url"];
+                                          "&id=" . $data['id'];
 
                     $interv[$key][$task::getForeignKeyField()] = $data["id"];
                     $interv[$key]["id"]                        = $data["id"];

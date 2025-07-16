@@ -289,8 +289,8 @@ class RuleCollection extends CommonDBTM
                     if (
                         $tempRule->getRuleWithCriteriasAndActions(
                             $rule["id"],
-                            $retrieve_criteria,
-                            $retrieve_action
+                            (bool) $retrieve_criteria,
+                            (bool) $retrieve_action
                         )
                     ) {
                         //Add the object to the list of rules
@@ -440,15 +440,13 @@ class RuleCollection extends CommonDBTM
 
         $rules = self::getRules();
         // exclude inventory rules from the "others" block
-        $rules = array_filter($rules, function ($rule) {
-            return !in_array($rule['sub_type'], [
-                'RuleImportEntity',
-                'RuleLocation',
-                'RuleImportAsset',
-                'RuleAsset',
-                'RuleDefineItemtype',
-            ]);
-        });
+        $rules = array_filter($rules, fn($rule) => !in_array($rule['sub_type'], [
+            'RuleImportEntity',
+            'RuleLocation',
+            'RuleImportAsset',
+            'RuleAsset',
+            'RuleDefineItemtype',
+        ]));
 
         TemplateRenderer::getInstance()->display('pages/admin/rules/index.html.twig', [
             'rules_group' => [
@@ -1945,7 +1943,7 @@ TWIG, $twig_params);
     public function defineTabs($options = [])
     {
         $ong               = [];
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
         $ong['no_all_tab'] = true;
         return $ong;
     }

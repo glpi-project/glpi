@@ -136,6 +136,57 @@ class TestUpdatedDataCommand extends Command
             }
         };
 
+        $error = false;
+
+        if (!$this->hasSameConfigurationEntries($fresh_db, $updated_db, $output)) {
+            $error = true;
+        }
+
+        if ($this->hasMissingRowsInUpdatedDb($fresh_db, $updated_db, $output)) {
+            $error = true;
+        }
+
+        return $error ? self::FAILURE : self::SUCCESS;
+    }
+
+    /**
+     * Check if there are a the same configuration entries in both fresh and update table.
+     */
+    private function hasSameConfigurationEntries(DBmysql $fresh_db, DBmysql $updated_db, OutputInterface $output): bool
+    {
+        $fresh_config_entries = \array_map(
+            fn(array $row) => $row['context'] . ':' . $row['name'],
+            \iterator_to_array($fresh_db->request(['FROM' => 'glpi_configs']))
+        );
+        \sort($fresh_config_entries);
+
+        $updated_config_entries = \array_map(
+            fn(array $row) => $row['context'] . ':' . $row['name'],
+            \iterator_to_array($updated_db->request(['FROM' => 'glpi_configs']))
+        );
+        \sort($updated_config_entries);
+
+        if ($fresh_config_entries !== $updated_config_entries) {
+            foreach (\array_diff($fresh_config_entries, $updated_config_entries) as $missing_config) {
+                $msg = sprintf('Unable to find the following configuration entry in the updated database: %s', $missing_config);
+                $output->writeln('<error>‣</error> ' . $msg, OutputInterface::VERBOSITY_QUIET);
+            }
+            foreach (\array_diff($updated_config_entries, $fresh_config_entries) as $unexpected_config) {
+                $msg = sprintf('Unexpected configuration entry found in the updated database: %s', $unexpected_config);
+                $output->writeln('<error>‣</error> ' . $msg, OutputInterface::VERBOSITY_QUIET);
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if there are missing table rows in the updated database compared to the fresh database.
+     */
+    private function hasMissingRowsInUpdatedDb(DBmysql $fresh_db, DBmysql $updated_db, OutputInterface $output): bool
+    {
         $missing = false;
 
         $table_iterator = $fresh_db->listTables(
@@ -212,7 +263,7 @@ class TestUpdatedDataCommand extends Command
             }
         }
 
-        return $missing ? 1 : 0;
+        return $missing;
     }
 
     /**
@@ -223,6 +274,9 @@ class TestUpdatedDataCommand extends Command
     private function getExcludedTables(): array
     {
         return [
+            // Config entries are tested separately (see `self::hasSameConfigurationEntries()`)
+            'glpi_configs',
+
             // Root entity configuration is never updated during migration
             'glpi_entities',
 
@@ -273,9 +327,6 @@ class TestUpdatedDataCommand extends Command
                 // By definition, any uuid fields should always be unique
                 'uuid',
                 'forms_sections_uuid',
-            ],
-            'glpi_configs' => [
-                'value', // Default values may have changed
             ],
             'glpi_crontasks' => [
                 'frequency', // Field default value may have changed

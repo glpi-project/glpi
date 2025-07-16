@@ -199,7 +199,7 @@ class Consumable extends CommonDBChild
     public static function getMassiveActionsForItemtype(
         array &$actions,
         $itemtype,
-        $is_deleted = 0,
+        $is_deleted = false,
         ?CommonDBTM $checkitem = null
     ) {
         // Special actions only for self
@@ -671,7 +671,7 @@ class Consumable extends CommonDBChild
             'showmassiveactions' => true,
             'massiveactionparams' => [
                 'num_displayed'    => min($_SESSION['glpilist_limit'], $filtered_number),
-                'container'        => 'mass' . __CLASS__ . mt_rand(),
+                'container'        => 'mass' . self::class . mt_rand(),
                 'specific_actions' => [
                     'delete' => __('Delete permanently'),
                     'Consumable' . MassiveAction::CLASS_ACTION_SEPARATOR . 'backtostock' => __('Back to stock'),

@@ -33,8 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-// Relation between CartridgeItem and PrinterModel
-// since version 0.84
+/**
+ *  Relation between CartridgeItem and PrinterModel
+ *  @since 0.84
+ **/
 class CartridgeItem_PrinterModel extends CommonDBRelation
 {
     // From CommonDBRelation
@@ -136,9 +138,9 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
             echo "<div class='spaced'>";
             if ($canedit) {
                 $rand     = mt_rand();
-                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
+                Html::openMassiveActionsForm('mass' . self::class . $rand);
                 $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], count($used)),
-                    'container'     => 'mass' . __CLASS__ . $rand,
+                    'container'     => 'mass' . self::class . $rand,
                 ];
                 Html::showMassiveActions($massiveactionparams);
             }
@@ -150,8 +152,8 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
             $header_end    = '';
             if ($canedit) {
                 $header_begin  .= "<th width='10'>";
-                $header_top    .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                $header_bottom .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
+                $header_top    .= Html::getCheckAllAsCheckbox('mass' . self::class . $rand);
+                $header_bottom .= Html::getCheckAllAsCheckbox('mass' . self::class . $rand);
                 $header_end    .= "</th>";
             }
             $header_end .= "<th>" . _sn('Model', 'Models', 1) . "</th></tr>";
@@ -161,7 +163,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
                 echo "<tr class='tab_bg_1'>";
                 if ($canedit) {
                     echo "<td width='10'>";
-                    Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
+                    Html::showMassiveActionCheckBox(self::class, $data["linkid"]);
                     echo "</td>";
                 }
                 $opt = [

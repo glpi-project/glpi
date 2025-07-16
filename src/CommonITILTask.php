@@ -353,7 +353,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         /** @var CommonDBTM $item */
         if (
             ($item->getType() == static::getItilObjectItemType())
-            && $this->canView()
+            && static::canView()
         ) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
@@ -617,7 +617,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 // change ticket status (from splitted button)
                 $this->input['_job'] = static::getItilObjectItemInstance();
                 if (!$this->input['_job']->getFromDB($this->fields[$this->input['_job']->getForeignKeyField()])) {
-                    return false;
+                    return;
                 }
 
                 $this->updateParentStatus($this->input['_job'], $this->input);
@@ -913,7 +913,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                     $this->fields['taskcategories_id']
                 );
             }
-            return $this->getTypeName(1);
+            return static::getTypeName(1);
         }
         return '';
     }
@@ -1297,7 +1297,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      *    - color
      *    - event_type_color
      *
-     * @return array of planning item
+     * @return false|array of planning item
      **/
     public static function genericPopulatePlanning($itemtype, $options = [])
     {
@@ -1317,20 +1317,20 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         }
 
         if (!$item = getItemForItemtype($itemtype)) {
-            return;
+            return false;
         }
 
         if (!$item instanceof CommonITILTask) {
-            return;
+            return false;
         }
 
         $parentitemtype = $item::getItilObjectItemType();
         if (!$parentitem = getItemForItemtype($parentitemtype)) {
-            return;
+            return false;
         }
 
         if (!$parentitem instanceof CommonITILObject) {
-            return;
+            return false;
         }
 
         $default_options = [
@@ -1502,8 +1502,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                                              "&itemtype=" . $itemtype .
                                              "&parentitemtype=" . $parentitemtype .
                                              "&parentid=" . $item->fields[$parentitem->getForeignKeyField()] .
-                                             "&id=" . $data['id'] .
-                                             "&url=" . $interv[$key]["url"];
+                                             "&id=" . $data['id'];
 
                         $interv[$key][$item->getForeignKeyField()] = $data["id"];
                         $interv[$key]["id"]                        = $data["id"];
@@ -1586,7 +1585,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      * @param string          $type      position of the item in the time block (in, through, begin or end)
      * @param integer|boolean $complete  complete display (more details) (default 0)
      *
-     * @return string Output
+     * @return false|string Output
      **/
     public static function genericDisplayPlanningItem($itemtype, array $val, $who, $type = "", $complete = 0)
     {
@@ -1607,11 +1606,11 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         $parenttype = str_replace('Task', '', $itemtype);
         if ($parent = getItemForItemtype($parenttype)) {
             if (!$parent instanceof CommonITILObject) {
-                return;
+                return false;
             }
             $parenttype_fk = $parent->getForeignKeyField();
         } else {
-            return;
+            return false;
         }
 
         $html .= "<img src='" . $CFG_GLPI["root_doc"] . "/pics/rdv_interv.png' alt='' title=\"" .
@@ -1785,7 +1784,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         $displayed_row_count = min((int) $_SESSION['glpidisplay_count_on_home'], $total_row_count);
 
         if ($total_row_count > 0) {
-            $itemtype = get_called_class();
+            $itemtype = static::class;
             switch ($status) {
                 case "todo":
                     $options  = [
@@ -2007,7 +2006,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      *
      * @param array $criteria
      *
-     * @return \Sabre\VObject\Component\VCalendar[]
+     * @return false|\Sabre\VObject\Component\VCalendar[]
      */
     private static function getItemsAsVCalendars(array $criteria)
     {
@@ -2018,7 +2017,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         $item = new static();
         $parent_item = getItemForItemtype($item::getItilObjectItemType());
         if (!$parent_item) {
-            return;
+            return false;
         }
 
         $query = [
@@ -2131,7 +2130,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      */
     public function countPlannedTasks(): int
     {
-        $parent_item = getItemForItemtype($this->getItilObjectItemType());
+        $parent_item = getItemForItemtype(static::getItilObjectItemType());
         if (!$parent_item) {
             return 0;
         }

@@ -57,7 +57,7 @@ class Central extends CommonGLPI
     {
 
         $ong = [];
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
 
         return $ong;
     }
@@ -66,7 +66,7 @@ class Central extends CommonGLPI
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
-        if ($item->getType() == __CLASS__) {
+        if ($item->getType() == self::class) {
             $tabs = [
                 1 => self::createTabEntry(__('Personal View'), 0, null, User::getIcon()),
                 2 => self::createTabEntry(__('Group View'), 0, null, Group::getIcon()),

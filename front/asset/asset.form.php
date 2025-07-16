@@ -46,7 +46,7 @@ use Glpi\Exception\Http\BadRequestHttpException;
 
 if (array_key_exists('id', $_REQUEST) && !Asset::isNewId($_REQUEST['id'])) {
     $asset = Asset::getById($_REQUEST['id']);
-    if ($asset === false) {
+    if (!$asset instanceof Asset) {
         $asset = null;
     }
 } else {
@@ -107,7 +107,7 @@ if (isset($_POST['add'])) {
     $asset->redirectToList();
 } elseif (isset($_POST['purge'])) {
     $asset->check($_POST['id'], PURGE);
-    if ($asset->delete($_POST, 1)) {
+    if ($asset->delete($_POST, true)) {
         Event::log(
             $_POST['id'],
             $asset::class,
@@ -119,7 +119,7 @@ if (isset($_POST['add'])) {
     $asset->redirectToList();
 } elseif (isset($_POST['restore'])) {
     $asset->check($_POST['id'], DELETE);
-    if ($asset->restore($_POST, 1)) {
+    if ($asset->restore($_POST)) {
         Event::log(
             $_POST['id'],
             $asset::class,

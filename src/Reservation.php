@@ -652,7 +652,7 @@ JAVASCRIPT;
      * </ul>
      * @return bool
      */
-    public static function updateEvent(array $event = []): bool
+    public static function updateEvent(array $event): bool
     {
         $reservation = new static();
         if (!$reservation->getFromDB((int) $event['id'])) {
@@ -783,7 +783,7 @@ JAVASCRIPT;
      * @param string $end    Planning end (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)
      * @param array{type: 'day'|'week'|'month', end: string, subtype?: string, days?: integer} $options Periodicity parameters
      **/
-    public static function computePeriodicities($begin, $end, $options = [])
+    public static function computePeriodicities($begin, $end, $options)
     {
         $toadd = [];
         if (!isset($options['type'], $options['end'])) {
@@ -1157,7 +1157,7 @@ JAVASCRIPT;
         return "ti ti-calendar-event";
     }
 
-    public static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0, ?CommonDBTM $checkitem = null)
+    public static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = false, ?CommonDBTM $checkitem = null)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -1202,7 +1202,7 @@ JAVASCRIPT;
     public static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids)
     {
         if (!ReservationItem::canUpdate()) {
-            return false;
+            return;
         }
         $reservation_item = new ReservationItem();
 

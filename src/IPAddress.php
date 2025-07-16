@@ -88,7 +88,7 @@ class IPAddress extends CommonDBChild
      *
      * For IPv4 addresses, the first three bytes are set to [0, 0, 0xffff]
      * This is used for SQL requests.
-     * @var int[]
+     * @var string|int[]
      */
     protected $binary  = [0, 0, 0, 0];
 
@@ -1072,7 +1072,7 @@ class IPAddress extends CommonDBChild
         array $options = []
     ) {
 
-        $column_name = __CLASS__;
+        $column_name = self::class;
 
         $content = self::getTypeName();
 
@@ -1101,7 +1101,7 @@ class IPAddress extends CommonDBChild
                 );
             }
 
-            IPNetwork::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+            IPNetwork::getHTMLTableHeader(self::class, $base, $super, $father, $options);
         }
     }
 
@@ -1375,7 +1375,7 @@ class IPAddress extends CommonDBChild
                 return;
             }
 
-            $header = $row->getGroup()->getHeaderByName('Internet', __CLASS__);
+            $header = $row->getGroup()->getHeaderByName('Internet', self::class);
             if (!$header) {
                 return;
             }
@@ -1412,7 +1412,7 @@ class IPAddress extends CommonDBChild
                     $this_cell = $row->addCell($header, $content, $father);
 
                     if (isset($options['display_isDynamic']) && ($options['display_isDynamic'])) {
-                        $dyn_header = $row->getGroup()->getHeaderByName('Internet', __CLASS__ . '_dynamic');
+                        $dyn_header = $row->getGroup()->getHeaderByName('Internet', self::class . '_dynamic');
                         $this_cell  = $row->addCell(
                             $dyn_header,
                             Dropdown::getYesNo($address->fields['is_dynamic']),

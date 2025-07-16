@@ -54,9 +54,9 @@ abstract class LevelAgreement extends CommonDBChild
 
     protected static $prefix            = '';
     protected static $prefixticket      = '';
-    /** @var class-string<LevelAgreementLevel> */
+    /** @var string|class-string<LevelAgreementLevel> */
     protected static $levelclass        = '';
-    /** @var class-string<CommonDBTM> */
+    /** @var string|class-string<CommonDBTM> */
     protected static $levelticketclass  = '';
 
 
@@ -1023,7 +1023,7 @@ TWIG, $twig_params);
     public function post_clone($source, $history)
     {
         // Clone levels
-        $classname = get_called_class();
+        $classname = static::class;
         $fk        = getForeignKeyFieldForItemType($classname);
         $level     = getItemForItemtype(static::$levelclass);
         foreach ($level->find([$fk => $source->getID()]) as $data) {
