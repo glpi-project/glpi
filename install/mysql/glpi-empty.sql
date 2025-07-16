@@ -6746,6 +6746,7 @@ CREATE TABLE `glpi_items_olas` (
   `items_id` int unsigned NOT NULL,
   `itemtype` varchar(255) NOT NULL,
   `olas_id` int unsigned NOT NULL,
+  `ola_type` tinyint NOT NULL,
   `start_time` timestamp,
   `waiting_time` int NOT NULL DEFAULT 0,
   `is_late` tinyint(1) NOT NULL DEFAULT 0,

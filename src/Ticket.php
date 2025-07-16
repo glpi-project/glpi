@@ -2681,11 +2681,11 @@ JAVASCRIPT;
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
-                'condition'          => ['NEWTABLE.type' => SLM::TTO],
                 'beforejoin'         => [
                     'table'              => Item_Ola::getTable(),
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.ola_type' => SLM::TTO],
                     ],
                 ],
             ],
@@ -2703,23 +2703,8 @@ JAVASCRIPT;
             'massiveaction' => false,
             'additionalfields' => ['TABLE.status', 'TABLE.takeintoaccount_delay_stat', 'TABLE.date', 'olas_id', 'waiting_time', 'end_time'],
             'joinparams' => [
-                'jointype' => 'child',
-                'linkfield' => 'olas_id',
-                'condition' => [
-                    'NEWTABLE.id' => new QueryExpression('glpi_items_olas.id'),
-                ],
-                'beforejoin' => [
-                    'table' => 'glpi_olas',
-                    'joinparams' => [
-                        'condition' => ['NEWTABLE.type' => SLM::TTO,],
-                        'beforejoin' => [
-                            'table' => Item_Ola::getTable(),
-                            'joinparams' => [
-                                'jointype' => 'itemtype_item',
-                            ],
-                        ],
-                    ],
-                ],
+                'jointype'  => 'itemtype_item',
+                'condition' => ['NEWTABLE.ola_type' => SLM::TTO,],
             ],
             'forcegroupby' => true,
         ];
@@ -2735,23 +2720,8 @@ JAVASCRIPT;
             'nosearch'           => true,
             'additionalfields' => ['TABLE.status', 'TABLE.takeintoaccount_delay_stat', 'TABLE.date', 'olas_id', 'waiting_time', 'end_time'],
             'joinparams' => [
-                'jointype' => 'child',
-                'linkfield' => 'olas_id',
-                'condition' => [
-                    'NEWTABLE.id' => new QueryExpression('glpi_items_olas.id'),
-                ],
-                'beforejoin' => [
-                    'table' => 'glpi_olas',
-                    'joinparams' => [
-                        'condition' => ['NEWTABLE.type' => SLM::TTO,],
-                        'beforejoin' => [
-                            'table' => Item_Ola::getTable(),
-                            'joinparams' => [
-                                'jointype' => 'itemtype_item',
-                            ],
-                        ],
-                    ],
-                ],
+                'jointype'  => 'itemtype_item',
+                'condition' => ['NEWTABLE.ola_type' => SLM::TTO,],
             ],
             'forcegroupby' => true,
         ];
@@ -2766,23 +2736,8 @@ JAVASCRIPT;
             'massiveaction'      => false,
             'computation'        => self::generateSLAOLAComputation('internal_time_to_own'),
             'joinparams' => [
-                'jointype' => 'child',
-                'linkfield' => 'olas_id',
-                'condition' => [
-                    'NEWTABLE.id' => new QueryExpression('glpi_items_olas.id'),
-                ],
-                'beforejoin' => [
-                    'table' => 'glpi_olas',
-                    'joinparams' => [
-                        'condition' => ['NEWTABLE.type' => SLM::TTO,],
-                        'beforejoin' => [
-                            'table' => Item_Ola::getTable(),
-                            'joinparams' => [
-                                'jointype' => 'itemtype_item',
-                            ],
-                        ],
-                    ],
-                ],
+                'jointype'  => 'itemtype_item',
+                'condition' => ['NEWTABLE.ola_type' => SLM::TTO,],
             ],
             'forcegroupby'       => true,
             'usehaving' => true, // needed because of generateSLAOLAComputation() use a group function (max).
@@ -2797,11 +2752,11 @@ JAVASCRIPT;
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
-                'condition'          => ['NEWTABLE.type' => SLM::TTR],
                 'beforejoin'         => [
                     'table'              => Item_Ola::getTable(),
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.ola_type' => SLM::TTO],
                     ],
                 ],
             ],
@@ -2819,23 +2774,8 @@ JAVASCRIPT;
             'datatype'           => 'datetime',
             'additionalfields' => ['TABLE.status', 'TABLE.takeintoaccount_delay_stat', 'TABLE.date', 'olas_id', 'waiting_time', 'end_time'],
             'joinparams' => [
-                'jointype' => 'child',
-                'linkfield' => 'olas_id',
-                'condition' => [
-                    'NEWTABLE.id' => new QueryExpression('glpi_items_olas.id'),
-                ],
-                'beforejoin' => [
-                    'table' => 'glpi_olas',
-                    'joinparams' => [
-                        'condition' => ['NEWTABLE.type' => SLM::TTR,],
-                        'beforejoin' => [
-                            'table' => Item_Ola::getTable(),
-                            'joinparams' => [
-                                'jointype' => 'itemtype_item',
-                            ],
-                        ],
-                    ],
-                ],
+                'jointype'  => 'itemtype_item',
+                'condition' => ['NEWTABLE.ola_type' => SLM::TTR,],
             ],
             'forcegroupby'       => true,
         ];
@@ -2851,23 +2791,8 @@ JAVASCRIPT;
             'nosearch'           => true,
             'additionalfields' => ['TABLE.status', 'TABLE.takeintoaccount_delay_stat', 'TABLE.date', 'olas_id', 'waiting_time', 'end_time'],
             'joinparams' => [
-                'jointype' => 'child',
-                'linkfield' => 'olas_id',
-                'condition' => [
-                    'NEWTABLE.id' => new QueryExpression('glpi_items_olas.id'),
-                ],
-                'beforejoin' => [
-                    'table' => 'glpi_olas',
-                    'joinparams' => [
-                        'condition' => ['NEWTABLE.type' => SLM::TTR,],
-                        'beforejoin' => [
-                            'table' => Item_Ola::getTable(),
-                            'joinparams' => [
-                                'jointype' => 'itemtype_item',
-                            ],
-                        ],
-                    ],
-                ],
+                'jointype'  => 'itemtype_item',
+                'condition' => ['NEWTABLE.ola_type' => SLM::TTR,],
             ],
             'forcegroupby' => true,
         ];
@@ -2882,24 +2807,8 @@ JAVASCRIPT;
             'massiveaction'      => false,
             'computation'        => self::generateSLAOLAComputation('internal_time_to_resolve'),
             'joinparams' => [
-                'jointype' => 'child',
-                'linkfield' => 'olas_id',
-                'condition' => [
-                    'NEWTABLE.id' => new QueryExpression('glpi_items_olas.id'),
-                ],
-                'beforejoin' => [
-                    'table' => 'glpi_olas',
-                    'joinparams' => [
-                        'condition' => ['NEWTABLE.type' => SLM::TTR,],
-                        'jointype' => 'default',
-                        'beforejoin' => [
-                            'table' => Item_Ola::getTable(),
-                            'joinparams' => [
-                                'jointype' => 'itemtype_item',
-                            ],
-                        ],
-                    ],
-                ],
+                'jointype'  => 'itemtype_item',
+                'condition' => ['NEWTABLE.ola_type' => SLM::TTR,],
             ],
             'forcegroupby'       => true,
             'usehaving' => true, // needed because of generateSLAOLAComputation() use a group function (max).
@@ -6557,12 +6466,15 @@ JAVASCRIPT;
         $toadd_olas_ids = array_unique(array_diff($request_olas_ids, $current_olas_ids));
         $items_ola = new Item_Ola();
         foreach ($toadd_olas_ids as $olas_id) {
+            $ola = new OLA();
+            $ola->getFromDB($olas_id);
             // insert in association table items_ola
             if (
                 !$items_ola->add([
                     'items_id' => $this->getID(),
                     'itemtype' => $this->getType(),
-                    'olas_id' => $olas_id,
+                    'olas_id' => $ola->getID(),
+                    'ola_type' => $ola->fields['type'],
                     // on creation, use date from ticket creation, on update use current time
                     'start_time' => $on_ticket_creation ? $this->fields['date'] : Session::getCurrentTime(),
                 ])

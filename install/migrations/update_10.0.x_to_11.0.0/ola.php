@@ -94,7 +94,7 @@ function create_items_olas_table(Migration $migration): void
         `itemtype`      varchar(255) NOT NULL,
         `items_id`      int unsigned NOT NULL,
         `olas_id`       int unsigned NOT NULL,
-        -- `ola_type` int NOT NULL, -- 1: TTO, 2: TTR -- https://outline.teclib.com/doc/specification-de-la-gestion-des-ola-dans-glpi-aozoEQaxH4?commentId=53e8214a-e798-4b81-9df9-f8cf800cc613
+        `ola_type`      int NOT NULL, -- 1: TTO, 2: TTR
         `start_time`    timestamp NULL DEFAULT NULL,
         `due_time`      timestamp NULL DEFAULT NULL,
         `end_time`      timestamp NULL DEFAULT NULL,
