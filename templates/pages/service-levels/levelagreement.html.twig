@@ -1,15 +1,20 @@
 {% extends "generic_show_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
-{# {% import 'components/form/basic_inputs_macros.html.twig' as inputs %} #}
 
-{# {% set params  = params ?? [] %} #}
-{# {% set edit_mode = edit_mode|default(false) %} #}
-
-{# {% block form_fields %} #}
+ {% set params  = params ?? [] %}
+{# {% set edit_mode = edit_mode|default(false) %}#}
 
 {% block more_fields %}
-    {# slm #}
-    {{ fields.dropdownField('SLM', 'slm', item.fields['slms_id'], __('SLM'), {'disabled': true}) }}
+
+    {# slm - hidden field + link #}
+    {{ fields.hiddenField('slms_id', item.fields['slms_id']) }}
+    {% set slm_link %}
+        {% set slm = get_item('SLM', item.fields['slms_id']) %}
+        <a href="{{ slm.getFormURLWithID(item.fields['slms_id']) }}" class="text-decoration-none">
+            {{ slm.fields['name'] }}
+        </a>
+    {% endset %}
+    {{ fields.htmlField('no_matter', slm_link, __('SLM')) }}
 
     {# lastupdate #}
     {{ fields.datetimeField('last_update', item.fields['date_mod'], __('Last update'), {'disabled': true}) }}
