@@ -44,7 +44,6 @@ use Glpi\DBAL\QueryFunction;
  **/
 abstract class CommonITILCost extends CommonDBChild
 {
-    /** @var bool */
     public $dohistory        = true;
 
 
