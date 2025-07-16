@@ -656,7 +656,7 @@ TWIG, $buttons_params);
      * @param CommonDBTM $item The item
      * @param array{id: int, name: string, link: string, data: string, open_window: ?bool} $params
      **/
-    public static function getAllLinksFor($item, $params = [])
+    public static function getAllLinksFor($item, $params)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;

@@ -445,7 +445,7 @@ class Html
      * Redirection hack
      *
      * @param string $dest Redirection destination
-     * @param string $http_response_code Forces the HTTP response code to the specified value
+     * @param int    $http_response_code Forces the HTTP response code to the specified value
      *
      * @return never
      **/

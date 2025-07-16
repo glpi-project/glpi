@@ -193,7 +193,7 @@ final class SQLProvider implements SearchProviderInterface
      * @param class-string<CommonDBTM> $itemtype Item type
      * @param int $ID Search option ID
      * @param bool $meta If true, this is for a meta relation
-     * @param class-string<CommonDBTM> $meta_type Meta item type
+     * @param string $meta_type Meta item type
      * @return array|QueryExpression
      */
     public static function getSelectCriteria(string $itemtype, int $ID, bool $meta = false, string $meta_type = '')
@@ -2310,7 +2310,7 @@ final class SQLProvider implements SearchProviderInterface
                     "glpi_profiles_users",
                     "profiles_users_id",
                     false,
-                    0,
+                    '',
                     ['jointype' => 'child']
                 );
                 break;
@@ -2349,7 +2349,7 @@ final class SQLProvider implements SearchProviderInterface
                     "glpi_projecttaskteams",
                     "projecttaskteams_id",
                     false,
-                    0,
+                    '',
                     ['jointype' => 'child']
                 ));
                 $out = array_merge_recursive($out, self::getLeftJoinCriteria(
@@ -2359,7 +2359,7 @@ final class SQLProvider implements SearchProviderInterface
                     "glpi_projectteams",
                     "projectteams_id",
                     false,
-                    0,
+                    '',
                     ['jointype' => 'child']
                 ));
                 break;
@@ -2374,7 +2374,7 @@ final class SQLProvider implements SearchProviderInterface
                         "glpi_projectteams",
                         "projectteams_id",
                         false,
-                        0,
+                        '',
                         ['jointype' => 'child']
                     );
                 }
@@ -2393,7 +2393,7 @@ final class SQLProvider implements SearchProviderInterface
                         "glpi_tickets_users",
                         "tickets_users_id",
                         false,
-                        0,
+                        '',
                         $searchopt[4]['joinparams']['beforejoin']['joinparams']
                     );
 
@@ -2406,7 +2406,7 @@ final class SQLProvider implements SearchProviderInterface
                                 "glpi_groups_tickets",
                                 "groups_tickets_id",
                                 false,
-                                0,
+                                '',
                                 $searchopt[71]['joinparams']['beforejoin']
                                 ['joinparams']
                             ));
@@ -2421,7 +2421,7 @@ final class SQLProvider implements SearchProviderInterface
                         "glpi_tickets_users",
                         "tickets_users_id",
                         false,
-                        0,
+                        '',
                         $searchopt[66]['joinparams']['beforejoin']['joinparams']
                     ));
 
@@ -2433,7 +2433,7 @@ final class SQLProvider implements SearchProviderInterface
                             "glpi_groups_tickets",
                             "groups_tickets_id",
                             false,
-                            0,
+                            '',
                             $searchopt[65]['joinparams']['beforejoin']['joinparams']
                         ));
                     }
@@ -2446,7 +2446,7 @@ final class SQLProvider implements SearchProviderInterface
                             "glpi_tickets_users",
                             "tickets_users_id",
                             false,
-                            0,
+                            '',
                             $searchopt[5]['joinparams']['beforejoin']['joinparams']
                         ));
                     }
@@ -2459,7 +2459,7 @@ final class SQLProvider implements SearchProviderInterface
                             "glpi_tickets_users",
                             "tickets_users_id",
                             false,
-                            0,
+                            '',
                             $searchopt[5]['joinparams']['beforejoin']['joinparams']
                         ));
 
@@ -2471,7 +2471,7 @@ final class SQLProvider implements SearchProviderInterface
                                 "glpi_groups_tickets",
                                 "groups_tickets_id",
                                 false,
-                                0,
+                                '',
                                 $searchopt[8]['joinparams']['beforejoin']
                                 ['joinparams']
                             ));
@@ -2493,7 +2493,7 @@ final class SQLProvider implements SearchProviderInterface
                             "glpi_ticketvalidations",
                             "ticketvalidations_id",
                             false,
-                            0,
+                            '',
                             $searchopt[58]['joinparams']['beforejoin']['joinparams']
                         ));
                     }
@@ -2528,7 +2528,7 @@ final class SQLProvider implements SearchProviderInterface
                             "glpi_" . $table . "_users",
                             $table . "_users_id",
                             false,
-                            0,
+                            '',
                             $searchopt[4]['joinparams']['beforejoin']['joinparams']
                         ));
                         if (count($_SESSION['glpigroups'])) {
@@ -2539,7 +2539,7 @@ final class SQLProvider implements SearchProviderInterface
                                 $groupetable,
                                 $linkfield,
                                 false,
-                                0,
+                                '',
                                 $searchopt[71]['joinparams']['beforejoin']['joinparams']
                             ));
                         }
@@ -2552,7 +2552,7 @@ final class SQLProvider implements SearchProviderInterface
                             "glpi_" . $table . "_users",
                             $table . "_users_id",
                             false,
-                            0,
+                            '',
                             $searchopt[66]['joinparams']['beforejoin']['joinparams']
                         ));
                         if (count($_SESSION['glpigroups'])) {
@@ -2563,7 +2563,7 @@ final class SQLProvider implements SearchProviderInterface
                                 $groupetable,
                                 $linkfield,
                                 false,
-                                0,
+                                '',
                                 $searchopt[65]['joinparams']['beforejoin']['joinparams']
                             ));
                         }
@@ -2576,7 +2576,7 @@ final class SQLProvider implements SearchProviderInterface
                             "glpi_" . $table . "_users",
                             $table . "_users_id",
                             false,
-                            0,
+                            '',
                             $searchopt[5]['joinparams']['beforejoin']['joinparams']
                         ));
                         if (count($_SESSION['glpigroups'])) {
@@ -2587,7 +2587,7 @@ final class SQLProvider implements SearchProviderInterface
                                 $groupetable,
                                 $linkfield,
                                 false,
-                                0,
+                                '',
                                 $searchopt[8]['joinparams']['beforejoin']['joinparams']
                             ));
                         }
@@ -2697,7 +2697,7 @@ final class SQLProvider implements SearchProviderInterface
      * @param string  $new_table            New table to join
      * @param string  $linkfield            Linkfield for LeftJoin
      * @param boolean $meta                 Is it a meta item? (default 0)
-     * @param class-string<CommonDBTM> $meta_type Meta type table (default 0)
+     * @param class-string<CommonDBTM>|'' $meta_type Meta type table (default 0)
      * @param array   $joinparams           Array join parameters (condition / joinbefore...)
      * @param string  $field                Field to display (needed for translation join) (default '')
      *
@@ -5385,7 +5385,7 @@ final class SQLProvider implements SearchProviderInterface
         $itemtype,
         $ID,
         array $data,
-        $meta = 0,
+        $meta = false,
         array $addobjectparams = [],
         $orig_itemtype = null
     ) {
