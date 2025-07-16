@@ -318,16 +318,26 @@ class Item_Ola extends CommonDBRelation
     }
 
     /**
+     * Ola Cron Tasks
+     *
+     * - recompute ola data is_late field
+     * - refresh ola levels_todo
+     * - closes ticket (via compute()->doLevelForTicket())
+     *
      * update items_ola which has no end_time of tickets
      * @todo also filter by ticket status ? to ovoid useless updates
+     * @used-by CronTask
+     *
+     * @return int 1 if at least one item_ola has been processed, 0 otherwise
      */
-    public static function cron(CronTask $cronTask)
+    public static function cronOlaTicket(CronTask $cronTask): int
     {
         $io = new static();
         $ios = $io->find(['end_time' => null, 'itemtype' => Ticket::class]);
 
         OLA::deleteAllLevelsToDo(); // todo levels are rebuild in Item_Ola::compute()
 
+        $processed = 0;
         foreach ($ios as $io) {
             $itil = getItemForItemtype($io['itemtype']);
             if (!$itil instanceof Ticket) {
@@ -335,7 +345,12 @@ class Item_Ola extends CommonDBRelation
             }
             $itil->getFromDB($io['items_id']);
             static::compute($itil, $io['olas_id']);
+            $processed++;
         }
+
+        $cronTask->setVolume($processed);
+
+        return (int) ($processed > 0);
     }
 
     /**
