@@ -487,12 +487,16 @@ final class Search
      * If the schema has a read right condition, add it to the criteria.
      * @param array $criteria The current criteria. Will be modified in-place.
      * @return void
+     * @throws RightConditionNotMetException If the read condition check returns false indicating we know the user cannot view any of the resources without needing to check the database.
      */
     private function addReadRestrictCriteria(array &$criteria): void
     {
         $read_right_criteria = $this->context->getSchemaReadRestrictCriteria();
         if (is_callable($read_right_criteria)) {
             $read_right_criteria = $read_right_criteria();
+        }
+        if ($read_right_criteria === false) {
+            throw new RightConditionNotMetException();
         }
         if (!empty($read_right_criteria)) {
             $join_types = ['LEFT JOIN', 'INNER JOIN', 'RIGHT JOIN'];
@@ -570,30 +574,38 @@ final class Search
 
         $criteria['FROM'] = $this->getFrom($criteria);
 
-        if ($this->context->isUnionSearchMode()) {
-            unset($criteria['LEFT JOIN'], $criteria['INNER JOIN'], $criteria['RIGHT JOIN'], $criteria['WHERE']);
-        } else {
-            $this->addReadRestrictCriteria($criteria);
-        }
-
-        if ($this->context->isUnionSearchMode()) {
-            $criteria['SELECT'] = ['_.id'];
-            $criteria['SELECT'][] = '_itemtype';
-            $criteria['GROUPBY'] = ['_itemtype', '_.id'];
-        } else {
-            $criteria['SELECT'][] = '_.id';
-            foreach (array_keys($this->context->getJoins()) as $join_alias) {
-                $s = $this->getSelectCriteriaForProperty($this->context->getPrimaryKeyPropertyForJoin($join_alias), true);
-                if ($s !== null) {
-                    $criteria['SELECT'][] = $s;
-                }
+        try {
+            if ($this->context->isUnionSearchMode()) {
+                unset($criteria['LEFT JOIN'], $criteria['INNER JOIN'], $criteria['RIGHT JOIN'], $criteria['WHERE']);
+            } else {
+                $this->addReadRestrictCriteria($criteria);
             }
-            $criteria['GROUPBY'] = ['_.id'];
-        }
 
-        // request just to get the ids/union itemtypes
-        $iterator = $this->db_read->request($criteria);
-        $this->validateIterator($iterator);
+            if ($this->context->isUnionSearchMode()) {
+                $criteria['SELECT'] = ['_.id'];
+                $criteria['SELECT'][] = '_itemtype';
+                $criteria['GROUPBY'] = ['_itemtype', '_.id'];
+            } else {
+                $criteria['SELECT'][] = '_.id';
+                foreach (array_keys($this->context->getJoins()) as $join_alias) {
+                    $s = $this->getSelectCriteriaForProperty($this->context->getPrimaryKeyPropertyForJoin($join_alias), true);
+                    if ($s !== null) {
+                        $criteria['SELECT'][] = $s;
+                    }
+                }
+                $criteria['GROUPBY'] = ['_.id'];
+            }
+
+            // request just to get the ids/union itemtypes
+            $iterator = $this->db_read->request($criteria);
+            $this->validateIterator($iterator);
+        } catch (RightConditionNotMetException) {
+            // The read restrict check seems to have returned false indicating that we already know the user cannot view any of these resources
+            /** @var \DBmysql $DB */
+            global $DB;
+            $iterator = new \DBmysqlIterator($DB);
+            // No validation done because we know the inner result isn't a mysqli result
+        }
 
         if ($this->context->isUnionSearchMode()) {
             // group by _itemtype

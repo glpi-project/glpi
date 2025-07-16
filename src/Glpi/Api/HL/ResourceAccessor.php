@@ -232,7 +232,7 @@ final class ResourceAccessor
         $itemtype = $schema['x-itemtype'] ?? null;
         // No item-level checks done here. They are handled when generating the SQL using the x-rights-condtions schema property
         if (($itemtype !== null) && !$itemtype::canView()) {
-            return AbstractController::getCRUDErrorResponse(AbstractController::CRUD_ACTION_LIST);
+            return AbstractController::getAccessDeniedErrorResponse();
         }
         if (isset($schema['x-subtypes'])) {
             // For this case, we need to filter out the schemas that the user doesn't have read rights on
@@ -300,7 +300,11 @@ final class ResourceAccessor
             return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getUserMessage()), $e->getCode() ?: 400);
         } catch (\Throwable $e) {
             $message = (new APIException())->getUserMessage();
-            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message), 500);
+            $detail = null;
+            if ($_SESSION['glpi_use_mode'] === \Session::DEBUG_MODE) {
+                $detail = $e->getMessage();
+            }
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message, $detail), 500);
         }
         if (count($results['results']) === 0) {
             return AbstractController::getNotFoundErrorResponse();

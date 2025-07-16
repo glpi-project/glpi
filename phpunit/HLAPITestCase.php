@@ -34,6 +34,7 @@
 
 use Glpi\Api\HL\Controller\CoreController;
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RoutePath;
@@ -62,7 +63,7 @@ class HLAPITestCase extends \DbTestCase
         parent::resetSession();
     }
 
-    protected function loginWeb(string $user_name = TU_USER, string $user_pass = TU_PASS, bool $noauto = true, bool $expected = true): \Auth
+    public function loginWeb(string $user_name = TU_USER, string $user_pass = TU_PASS, bool $noauto = true, bool $expected = true): \Auth
     {
         return parent::login($user_name, $user_pass, $noauto, $expected);
     }
@@ -77,7 +78,7 @@ class HLAPITestCase extends \DbTestCase
             'client_secret' => TU_OAUTH_CLIENT_SECRET,
             'username' => $user_name,
             'password' => $user_pass,
-            'scope' => '',
+            'scope' => 'api',
         ]));
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
@@ -484,6 +485,124 @@ final class HLAPIHelper
         return $this;
     }
 
+    /**
+     * @param string $endpoint The base endpoint to test
+     * @param class-string<CommonDBTM> $itemtype The itemtype related to this endpoint
+     * @param int $items_id A specific, existing itm ID to test with
+     * @param callable|null $deny_read A callable to customize how READ access is denied.
+     *     The callable should "reset" the permissions in a way so that only READ is denied.
+     *     If not specified, the permissions for the specified itemtype are set to (ALLSTANDARDRIGHT & ~READ).
+     * @param callable|null $deny_create A callable to customize how CREATE access is denied.
+     *     The callable should "reset" the permissions in a way so that only CREATE is denied.
+     *     If not specified, the permissions for the specified itemtype are set to (ALLSTANDARDRIGHT & ~CREATE).
+     * @param callable|null $deny_update A callable to customize how UPDATE access is denied.
+     *     The callable should "reset" the permissions in a way so that only UPDATE is denied.
+     *     If not specified, the permissions for the specified itemtype are set to (ALLSTANDARDRIGHT & ~UPDATE).
+     * @param callable|null $deny_delete A callable to customize how DELETE access is denied.
+     *     The callable should "reset" the permissions in a way so that only DELETE is denied.
+     *     If not specified, the permissions for the specified itemtype are set to (ALLSTANDARDRIGHT & ~DELETE).
+     * @param callable|null $deny_purge A callable to customize how PURGE access is denied.
+     *     The callable should "reset" the permissions in a way so that only PURGE is denied.
+     *     If not specified, the permissions for the specified itemtype are set to (ALLSTANDARDRIGHT & ~PURGE).
+     * @param callable|null $deny_restore A callable to customize how RESTORE access is denied.
+     *     The callable should "reset" the permissions in a way so that only RESTORE is denied.
+     *     If not specified, the permissions for the specified itemtype are set to (ALLSTANDARDRIGHT & ~DELETE & ~UPDATE).
+     * @return $this
+     */
+    public function autoTestCRUDNoRights(
+        string $endpoint,
+        string $itemtype,
+        int $items_id,
+        ?callable $deny_read = null,
+        ?callable $deny_create = null,
+        ?callable $deny_update = null,
+        ?callable $deny_delete = null,
+        ?callable $deny_purge = null,
+        ?callable $deny_restore = null
+    ): self {
+        $this->test->loginWeb();
+        $this->router->registerAuthMiddleware(new InternalAuthMiddleware());
+        $item = getItemForItemtype($itemtype);
+
+        $deny_read ??= static function () use ($itemtype) {
+            $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~READ;
+        };
+        $deny_create ??= static function () use ($itemtype) {
+            $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~CREATE;
+        };
+        $deny_update ??= static function () use ($itemtype) {
+            $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
+        };
+        $deny_delete ??= static function () use ($itemtype) {
+            $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~DELETE;
+        };
+        $deny_purge ??= static function () use ($itemtype) {
+            $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~PURGE;
+        };
+        $deny_restore ??= static function () use ($itemtype) {
+            $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~DELETE & ~UPDATE;
+        };
+
+        $deny_read();
+        // No READ = No List
+        $this->call(new Request('GET', $endpoint), function ($call) {
+            /** @var HLAPICallAsserter $call */
+            $call->response->isAccessDenied();
+        });
+        // No READ = No GET. Access denied on specific items currently returns 404 for security/obsurity reasons
+        $this->call(new Request('GET', $endpoint . '/' . $items_id), function ($call) {
+            /** @var HLAPICallAsserter $call */
+            $call->response->isNotFoundError();
+        });
+
+        $deny_create();
+        // No CREATE = Access denied
+        $this->call(new Request('POST', $endpoint), function ($call) {
+            /** @var HLAPICallAsserter $call */
+            $call->response->isAccessDenied();
+        });
+
+        $deny_update();
+        $update_request = new Request('PATCH', $endpoint . '/' . $items_id);
+        // Property does not need to exist, but we try to act like a real update
+        $update_request->setParameter('name', 'updated');
+        // No UPDATE = Access denied
+        $this->call($update_request, function ($call) {
+            /** @var HLAPICallAsserter $call */
+            $call->response->isAccessDenied();
+        });
+
+        if ($item->maybeDeleted()) {
+            $deny_delete();
+            // No DELETE = Access denied
+            $this->call(new Request('DELETE', $endpoint . '/' . $items_id), function ($call) {
+                /** @var HLAPICallAsserter $call */
+                $call->response->isAccessDenied();
+            });
+
+            $deny_restore();
+            // No RESTORE = Access denied
+            $restore_request = new Request('PATCH', $endpoint . '/' . $items_id);
+            $restore_request->setParameter('is_deleted', 0);
+            $this->call($restore_request, function ($call) {
+                /** @var HLAPICallAsserter $call */
+                $call->response
+                    ->isAccessDenied();
+            });
+        }
+
+        $deny_purge();
+        // No PURGE = Access denied
+        $purge_request = new Request('DELETE', $endpoint . '/' . $items_id);
+        $purge_request->setParameter('force', 1);
+        $this->call($purge_request, function ($call) {
+            /** @var HLAPICallAsserter $call */
+            $call->response->isAccessDenied();
+        });
+
+        return $this;
+    }
+
     public function autoTestSearch(string $endpoint, array $dataset, string $unique_field = 'name'): self
     {
         $this->test->resetSession();
@@ -802,6 +921,18 @@ final class HLAPIResponseAsserter
         $decoded_content = json_decode((string) $this->response->getBody(), true);
         $this->call_asserter->test->assertCount(3, array_intersect(['title', 'detail', 'status'], array_keys($decoded_content)), 'Response from ' . $uri . ' is not a valid error response');
         $this->call_asserter->test->assertEquals('ERROR_UNAUTHENTICATED', $decoded_content['status'], 'Status property in response from ' . $uri . ' is not ERROR_UNAUTHENTICATED');
+        return $this;
+    }
+
+    public function isAccessDenied(): HLAPIResponseAsserter
+    {
+        $uri = $this->call_asserter->originalRequest->getUri();
+        // Status is 403
+        $this->call_asserter->test
+            ->assertEquals(403, $this->response->getStatusCode(), 'Status code for call to ' . $uri . ' is not 403');
+        $decoded_content = json_decode((string) $this->response->getBody(), true);
+        $this->call_asserter->test->assertCount(3, array_intersect(['title', 'detail', 'status'], array_keys($decoded_content)), 'Response from ' . $uri . ' is not a valid error response');
+        $this->call_asserter->test->assertEquals('ERROR_RIGHT_MISSING', $decoded_content['status'], 'Status property in response from ' . $uri . ' is not ERROR_RIGHT_MISSING');
         return $this;
     }
 
