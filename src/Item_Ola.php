@@ -99,7 +99,7 @@ class Item_Ola extends CommonDBRelation
         if (
             $item_ola_data['type'] === SLM::TTR
             && !is_null($ticket->fields['begin_waiting_date'])
-            && (array_search('status', $ticket->updates)) !== false
+            && in_array('status', $ticket->updates)
             && (
                 $ticket->oldvalues['status'] == CommonITILObject::WAITING
                 // From solved to another state than closed
@@ -175,20 +175,8 @@ class Item_Ola extends CommonDBRelation
         throw new \RuntimeException('Linked OLA not found');
     }
 
-    private static function ticketHasAnAssigneeOfOlaGroup(Ticket $ticket, OLA $ola): bool
-    {
-        $users_ids_of_ticket = array_column($ticket->getUsers(\CommonITILActor::ASSIGN), 'users_id');
-        $users_of_dedicated_group = array_column(Group_User::getGroupUsers($ola->fields['groups_id']), 'id');
-
-        return !empty(array_intersect(
-            $users_ids_of_ticket,
-            $users_of_dedicated_group
-        ));
-    }
-
     /**
      * Get data from Item_Ola + linked OLA for a Ticket
-     * // @todoseb déplacer plus haut
      * @param \Ticket $ticket
      *
      * @return array<array{olas_id: int, items_olas_id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, end_time: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|\LevelAgreementLevel, group_name: string}>
@@ -206,6 +194,17 @@ class Item_Ola extends CommonDBRelation
         }
 
         return  $this->sort($merged_data);
+    }
+
+    private static function ticketHasAnAssigneeOfOlaGroup(Ticket $ticket, OLA $ola): bool
+    {
+        $users_ids_of_ticket = array_column($ticket->getUsers(\CommonITILActor::ASSIGN), 'users_id');
+        $users_of_dedicated_group = array_column(Group_User::getGroupUsers($ola->fields['groups_id']), 'id');
+
+        return !empty(array_intersect(
+            $users_ids_of_ticket,
+            $users_of_dedicated_group
+        ));
     }
 
 
@@ -300,14 +299,17 @@ class Item_Ola extends CommonDBRelation
 
         // if linkid is set (items_olas exists), use it to populate the data
         if (isset($ola_data['linkid'])) {
-            $instance = new static();
-            if (!$instance->getFromDB($_merged_data['linkid'])) {
+            $item_Ola = new static();
+            if (!$item_Ola->getFromDB($_merged_data['linkid'])) {
                 throw new \LogicException('Item_Ola not found for linkid ' . $_merged_data['linkid']);
             }
 
-            $_merged_data = array_merge($_merged_data, $instance->fields);
+            $_merged_data = array_merge($_merged_data, $item_Ola->fields);
             $_merged_data['items_olas_id'] = $ola_data['linkid'];
             $_merged_data['olas_id'] = $ola_data['id'];
+            if($ola_data['type'] !== $item_Ola->fields['type']) {
+                throw new \LogicException('inconsistent type for Item_Ola #' . $item_Ola->getID());
+            }
         }
 
         if (isset($_merged_data['id'])) {

@@ -35,7 +35,6 @@
 namespace Glpi\PHPUnit\Tests\Glpi;
 
 use OLA;
-use OlaLevel_Ticket;
 use SLA;
 use SlaLevel_Ticket;
 use SLM;
