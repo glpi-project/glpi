@@ -1410,13 +1410,9 @@ JAVASCRIPT;
     {
         $item = getItemForItemtype($params['itemtype']);
         if ($item instanceof CommonDBTM) {
-            echo "<div class='center'>";
-            echo "<a href='" . $params['url'] . "' class='btn btn-outline-secondary'>" .
-                "<i class='ti ti-eye'></i>" .
-                "<span>" . __("View this item in its context") . "</span>" .
-            "</a>";
-            echo "</div>";
-            echo "<hr>";
+            $item->getFromDB((int) $params['id']);
+            $url = $item->getLinkURL();
+
             $rand = mt_rand();
             $options = [
                 'from_planning_edit_ajax' => true,
@@ -1426,8 +1422,16 @@ JAVASCRIPT;
             if (isset($params['parentitemtype'])) {
                 $options['parent'] = getItemForItemtype($params['parentitemtype']);
                 $options['parent']->getFromDB($params['parentid']);
+                $url = $options['parent']->getLinkURL();
             }
-            $item->getFromDB((int) $params['id']);
+
+            echo "<div class='center'>";
+            echo "<a href='" . $url . "' class='btn btn-outline-secondary'>" .
+                "<i class='ti ti-eye'></i>" .
+                "<span>" . __("View this item in its context") . "</span>" .
+            "</a>";
+            echo "</div>";
+            echo "<hr>";
             $item->showForm((int) $params['id'], $options);
             $callback = "glpi_close_all_dialogs();
                       GLPIPlanning.refresh();
