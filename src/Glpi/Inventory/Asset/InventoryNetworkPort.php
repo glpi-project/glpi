@@ -682,7 +682,7 @@ trait InventoryNetworkPort
                     "items_id"           => $this->items_id,
                     "instantiation_type" => NetworkPortAggregate::getType(),
                     "name"               => "Management",
-                ], 1);
+                ], true);
             }
         }
     }

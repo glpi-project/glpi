@@ -45,6 +45,6 @@ if (isset($_POST['add'])) {
 } elseif (isset($_POST['update'])) {
     $translation->update($_POST);
 } elseif (isset($_POST['purge'])) {
-    $translation->delete($_POST, 1);
+    $translation->delete($_POST, true);
 }
 Html::back();

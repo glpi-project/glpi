@@ -579,7 +579,7 @@ class CronTask extends CommonDBTM
 
             // Delete existing outdated alerts
             $alert = new Alert();
-            $alert->deleteByCriteria(['itemtype' => 'CronTask', 'items_id' => $this->fields['id']], 1);
+            $alert->deleteByCriteria(['itemtype' => 'CronTask', 'items_id' => $this->fields['id']], true);
 
             // Create a new alert
             $alert->add(

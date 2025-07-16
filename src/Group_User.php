@@ -247,7 +247,7 @@ class Group_User extends CommonDBRelation
      **/
     private static function showAddUserForm(Group $group, $used_ids, $entityrestrict)
     {
-        $res  = User::getSqlSearchResult(true, "all", $entityrestrict, 0, $used_ids, '', 0, -1, 0, 1);
+        $res  = User::getSqlSearchResult(true, "all", $entityrestrict, 0, $used_ids, '', 0, -1, false, 1);
         $nb = count($res);
         if ($nb) {
             $group_user = new self();

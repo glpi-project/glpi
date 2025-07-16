@@ -95,7 +95,7 @@ if (isset($_POST["add"])) {
     $change->redirectToList();
 } elseif (isset($_POST["purge"])) {
     $change->check($_POST["id"], PURGE);
-    $change->delete($_POST, 1);
+    $change->delete($_POST, true);
 
     Event::log(
         $_POST["id"],

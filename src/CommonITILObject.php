@@ -5590,7 +5590,7 @@ abstract class CommonITILObject extends CommonDBTM
         if (isset($this->fields['takeintoaccount_delay_stat'])) {
             echo "<tr class='tab_bg_2'><td>" . __s('Take into account') . "</td><td>";
             if ($this->fields['takeintoaccount_delay_stat'] > 0) {
-                echo Html::timestampToString($this->fields['takeintoaccount_delay_stat'], 0, false);
+                echo Html::timestampToString($this->fields['takeintoaccount_delay_stat'], false, false);
             } else {
                 echo '&nbsp;';
             }
@@ -5601,7 +5601,7 @@ abstract class CommonITILObject extends CommonDBTM
             echo "<tr class='tab_bg_2'><td>" . __s('Resolution') . "</td><td>";
 
             if ($this->fields['solve_delay_stat'] > 0) {
-                echo Html::timestampToString($this->fields['solve_delay_stat'], 0, false);
+                echo Html::timestampToString($this->fields['solve_delay_stat'], false, false);
             } else {
                 echo '&nbsp;';
             }
@@ -5620,7 +5620,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         echo "<tr class='tab_bg_2'><td>" . __s('Pending') . "</td><td>";
         if ($this->fields['waiting_duration'] > 0) {
-            echo Html::timestampToString($this->fields['waiting_duration'], 0, false);
+            echo Html::timestampToString($this->fields['waiting_duration'], false, false);
         } else {
             echo '&nbsp;';
         }

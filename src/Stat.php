@@ -731,7 +731,7 @@ class Stat extends CommonGLPI
                 $timedisplay = $nb_solved > 0 ? array_sum($data) / $nb_solved : 0;
 
                 if ($is_html_output || $output instanceof Pdf) {
-                    $timedisplay = Html::timestampToString($timedisplay, 0, false);
+                    $timedisplay = Html::timestampToString($timedisplay, false, false);
                 } elseif ($output instanceof Csv) {
                     $timedisplay = Html::timestampToCsvString($timedisplay);
                 }
@@ -766,7 +766,7 @@ class Stat extends CommonGLPI
                 $timedisplay = 0;
             }
             if ($is_html_output || $output instanceof Pdf) {
-                $timedisplay = Html::timestampToString($timedisplay, 0, false);
+                $timedisplay = Html::timestampToString($timedisplay, false, false);
             } elseif ($output instanceof Csv) {
                 $timedisplay = Html::timestampToCsvString($timedisplay);
             }
@@ -800,7 +800,7 @@ class Stat extends CommonGLPI
                 $timedisplay = 0;
             }
             if ($is_html_output || $output instanceof Pdf) {
-                $timedisplay = Html::timestampToString($timedisplay, 0, false);
+                $timedisplay = Html::timestampToString($timedisplay, false, false);
             } elseif ($output instanceof Csv) {
                 $timedisplay = Html::timestampToCsvString($timedisplay);
             }
@@ -852,7 +852,7 @@ class Stat extends CommonGLPI
             }
 
             if ($is_html_output || $output instanceof Pdf) {
-                $timedisplay = Html::timestampToString($timedisplay, 0, false);
+                $timedisplay = Html::timestampToString($timedisplay, false, false);
             } elseif ($output instanceof Csv) {
                 $timedisplay = Html::timestampToCsvString($timedisplay);
             }
@@ -869,7 +869,7 @@ class Stat extends CommonGLPI
             $timedisplay = $total_actiontime;
 
             if ($is_html_output || $output instanceof Pdf) {
-                $timedisplay = Html::timestampToString($timedisplay, 0, false);
+                $timedisplay = Html::timestampToString($timedisplay, false, false);
             } elseif ($output instanceof Csv) {
                 $timedisplay = Html::timestampToCsvString($timedisplay);
             }

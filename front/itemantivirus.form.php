@@ -70,7 +70,7 @@ if (isset($_POST["add"])) {
 } elseif (isset($_POST["purge"])) {
     $antivirus->check($_POST["id"], PURGE);
 
-    if ($antivirus->delete($_POST, 1)) {
+    if ($antivirus->delete($_POST, true)) {
         Event::log(
             $antivirus->fields['items_id'],
             $antivirus->fields['itemtype'],

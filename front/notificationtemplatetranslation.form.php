@@ -58,7 +58,7 @@ if (isset($_POST["add"])) {
     Html::back();
 } elseif (isset($_POST["purge"])) {
     $language->check($_POST["id"], PURGE);
-    $language->delete($_POST, 1);
+    $language->delete($_POST, true);
 
     Event::log(
         $_POST["id"],

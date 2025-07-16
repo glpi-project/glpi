@@ -1606,7 +1606,7 @@ class Toolbox
                                 && $item->getFromDB($data[1])
                                 && !Session::haveAccessToEntity($item->getEntityID())
                             ) {
-                                Session::changeActiveEntities($item->getEntityID(), 1);
+                                Session::changeActiveEntities($item->getEntityID(), true);
                             }
                             // force redirect to timeline when timeline is enabled and viewing
                             // Tasks or Followups
@@ -1659,7 +1659,7 @@ class Toolbox
                                     && $item->getFromDB($data[1])
                                     && !Session::haveAccessToEntity($item->getEntityID())
                                 ) {
-                                    Session::changeActiveEntities($item->getEntityID(), 1);
+                                    Session::changeActiveEntities($item->getEntityID(), true);
                                 }
                                 // force redirect to timeline when timeline is enabled
                                 $forcetab = str_replace(['TicketFollowup$1', 'TicketTask$1', 'ITILFollowup$1'], 'Ticket$1', $forcetab);

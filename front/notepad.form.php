@@ -58,7 +58,7 @@ if (isset($_POST['add'])) {
     Html::back();
 } elseif (isset($_POST["purge"])) {
     $note->check($_POST["id"], PURGE);
-    $note->delete($_POST, 1);
+    $note->delete($_POST, true);
     Event::log(
         $_POST["id"],
         "notepad",

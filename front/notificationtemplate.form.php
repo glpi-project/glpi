@@ -61,7 +61,7 @@ if (isset($_POST["add"])) {
     Html::redirect($url);
 } elseif (isset($_POST["purge"])) {
     $notificationtemplate->check($_POST["id"], PURGE);
-    $notificationtemplate->delete($_POST, 1);
+    $notificationtemplate->delete($_POST, true);
 
     Event::log(
         $_POST["id"],

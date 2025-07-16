@@ -57,7 +57,7 @@ if (isset($_POST['update'])) {
     Html::back();
 } elseif (isset($_POST['purge'])) {
     $iapp->check($_POST['id'], PURGE);
-    $iapp->delete($_POST, 1);
+    $iapp->delete($_POST, true);
     $url = $app->getFormURLWithID($_POST['appliances_id']);
     Html::redirect($url);
 }

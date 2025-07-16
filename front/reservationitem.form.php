@@ -77,7 +77,7 @@ if (isset($_POST["add"])) {
     Html::back();
 } elseif (isset($_POST["purge"])) {
     $ri->check($_POST["id"], PURGE);
-    $ri->delete($_POST, 1);
+    $ri->delete($_POST, true);
 
     Event::log(
         $_POST['id'],

@@ -417,7 +417,7 @@ class Unmanaged extends CommonDBTM
             ];
             $lockfield->update($row);
         }
-        $this->deleteFromDB(1);
+        $this->deleteFromDB(true);
         return $assets_id;
     }
 

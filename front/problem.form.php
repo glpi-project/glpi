@@ -95,7 +95,7 @@ if (isset($_POST["add"])) {
 } elseif (isset($_POST["purge"])) {
     $problem->check($_POST["id"], PURGE);
 
-    $problem->delete($_POST, 1);
+    $problem->delete($_POST, true);
     Event::log(
         $_POST["id"],
         "problem",

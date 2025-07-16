@@ -4420,7 +4420,7 @@ class CommonDBTM extends CommonGLPI
                 __('At least one field has an incorrect value'),
                 implode(',', $fails)
             );
-            Session::addMessageAfterRedirect(htmlescape($message), INFO, true);
+            Session::addMessageAfterRedirect(htmlescape($message), false, INFO);
         }
     }
 
@@ -5780,7 +5780,7 @@ TWIG, $twig_params);
      *
      * @since 9.4
      *
-     * @param boolean $condition the condition (RuleAsset::ONADD or RuleAsset::ONUPDATE)
+     * @param int $condition the condition (RuleAsset::ONADD or RuleAsset::ONUPDATE)
      *
      * @return void
      */
@@ -6697,7 +6697,7 @@ TWIG, $twig_params);
                 'items_id' => $this->fields['id'],
             ];
             $alert = new Alert();
-            $alert->deleteByCriteria($input, 1);
+            $alert->deleteByCriteria($input, true);
         }
     }
 

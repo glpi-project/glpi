@@ -94,7 +94,7 @@ if (isset($_POST["add"])) {
     $project->redirectToList();
 } elseif (isset($_POST["purge"])) {
     $project->check($_POST["id"], PURGE);
-    $project->delete($_POST, 1);
+    $project->delete($_POST, true);
 
     Event::log(
         $_POST["id"],

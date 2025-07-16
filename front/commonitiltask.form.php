@@ -82,7 +82,7 @@ if (isset($_POST["add"])) {
     $handled = true;
 } elseif (isset($_POST["purge"])) {
     $task->check($_POST['id'], PURGE);
-    $task->delete($_POST, 1);
+    $task->delete($_POST, true);
 
     Event::log(
         $task->getField($fk),

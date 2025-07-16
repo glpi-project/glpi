@@ -1233,7 +1233,7 @@ class NetworkPort extends CommonDBChild
                                     $already_link_tables,
                                     $option["table"],
                                     $option["linkfield"],
-                                    0,
+                                    false,
                                     0,
                                     $option["joinparams"],
                                     $option["field"]

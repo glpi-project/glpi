@@ -2309,7 +2309,7 @@ final class SQLProvider implements SearchProviderInterface
                     $already_link_tables,
                     "glpi_profiles_users",
                     "profiles_users_id",
-                    0,
+                    false,
                     0,
                     ['jointype' => 'child']
                 );
@@ -2348,7 +2348,7 @@ final class SQLProvider implements SearchProviderInterface
                     $already_link_tables,
                     "glpi_projecttaskteams",
                     "projecttaskteams_id",
-                    0,
+                    false,
                     0,
                     ['jointype' => 'child']
                 ));
@@ -2358,7 +2358,7 @@ final class SQLProvider implements SearchProviderInterface
                     $already_link_tables,
                     "glpi_projectteams",
                     "projectteams_id",
-                    0,
+                    false,
                     0,
                     ['jointype' => 'child']
                 ));
@@ -2373,7 +2373,7 @@ final class SQLProvider implements SearchProviderInterface
                         $already_link_tables,
                         "glpi_projectteams",
                         "projectteams_id",
-                        0,
+                        false,
                         0,
                         ['jointype' => 'child']
                     );
@@ -2392,7 +2392,7 @@ final class SQLProvider implements SearchProviderInterface
                         $already_link_tables,
                         "glpi_tickets_users",
                         "tickets_users_id",
-                        0,
+                        false,
                         0,
                         $searchopt[4]['joinparams']['beforejoin']['joinparams']
                     );
@@ -2405,7 +2405,7 @@ final class SQLProvider implements SearchProviderInterface
                                 $already_link_tables,
                                 "glpi_groups_tickets",
                                 "groups_tickets_id",
-                                0,
+                                false,
                                 0,
                                 $searchopt[71]['joinparams']['beforejoin']
                                 ['joinparams']
@@ -2420,7 +2420,7 @@ final class SQLProvider implements SearchProviderInterface
                         $already_link_tables,
                         "glpi_tickets_users",
                         "tickets_users_id",
-                        0,
+                        false,
                         0,
                         $searchopt[66]['joinparams']['beforejoin']['joinparams']
                     ));
@@ -2432,7 +2432,7 @@ final class SQLProvider implements SearchProviderInterface
                             $already_link_tables,
                             "glpi_groups_tickets",
                             "groups_tickets_id",
-                            0,
+                            false,
                             0,
                             $searchopt[65]['joinparams']['beforejoin']['joinparams']
                         ));
@@ -2445,7 +2445,7 @@ final class SQLProvider implements SearchProviderInterface
                             $already_link_tables,
                             "glpi_tickets_users",
                             "tickets_users_id",
-                            0,
+                            false,
                             0,
                             $searchopt[5]['joinparams']['beforejoin']['joinparams']
                         ));
@@ -2458,7 +2458,7 @@ final class SQLProvider implements SearchProviderInterface
                             $already_link_tables,
                             "glpi_tickets_users",
                             "tickets_users_id",
-                            0,
+                            false,
                             0,
                             $searchopt[5]['joinparams']['beforejoin']['joinparams']
                         ));
@@ -2470,7 +2470,7 @@ final class SQLProvider implements SearchProviderInterface
                                 $already_link_tables,
                                 "glpi_groups_tickets",
                                 "groups_tickets_id",
-                                0,
+                                false,
                                 0,
                                 $searchopt[8]['joinparams']['beforejoin']
                                 ['joinparams']
@@ -2492,7 +2492,7 @@ final class SQLProvider implements SearchProviderInterface
                             $already_link_tables,
                             "glpi_ticketvalidations",
                             "ticketvalidations_id",
-                            0,
+                            false,
                             0,
                             $searchopt[58]['joinparams']['beforejoin']['joinparams']
                         ));
@@ -2527,7 +2527,7 @@ final class SQLProvider implements SearchProviderInterface
                             $already_link_tables,
                             "glpi_" . $table . "_users",
                             $table . "_users_id",
-                            0,
+                            false,
                             0,
                             $searchopt[4]['joinparams']['beforejoin']['joinparams']
                         ));
@@ -2538,7 +2538,7 @@ final class SQLProvider implements SearchProviderInterface
                                 $already_link_tables,
                                 $groupetable,
                                 $linkfield,
-                                0,
+                                false,
                                 0,
                                 $searchopt[71]['joinparams']['beforejoin']['joinparams']
                             ));
@@ -2551,7 +2551,7 @@ final class SQLProvider implements SearchProviderInterface
                             $already_link_tables,
                             "glpi_" . $table . "_users",
                             $table . "_users_id",
-                            0,
+                            false,
                             0,
                             $searchopt[66]['joinparams']['beforejoin']['joinparams']
                         ));
@@ -2562,7 +2562,7 @@ final class SQLProvider implements SearchProviderInterface
                                 $already_link_tables,
                                 $groupetable,
                                 $linkfield,
-                                0,
+                                false,
                                 0,
                                 $searchopt[65]['joinparams']['beforejoin']['joinparams']
                             ));
@@ -2575,7 +2575,7 @@ final class SQLProvider implements SearchProviderInterface
                             $already_link_tables,
                             "glpi_" . $table . "_users",
                             $table . "_users_id",
-                            0,
+                            false,
                             0,
                             $searchopt[5]['joinparams']['beforejoin']['joinparams']
                         ));
@@ -2586,7 +2586,7 @@ final class SQLProvider implements SearchProviderInterface
                                 $already_link_tables,
                                 $groupetable,
                                 $linkfield,
-                                0,
+                                false,
                                 0,
                                 $searchopt[8]['joinparams']['beforejoin']['joinparams']
                             ));
@@ -4189,7 +4189,7 @@ final class SQLProvider implements SearchProviderInterface
                     $already_link_tables,
                     $searchopt[$val]["table"],
                     $searchopt[$val]["linkfield"],
-                    0,
+                    false,
                     0,
                     $searchopt[$val]["joinparams"],
                     $searchopt[$val]["field"]
@@ -4209,7 +4209,7 @@ final class SQLProvider implements SearchProviderInterface
                             $already_link_tables,
                             $searchopt[$key]["table"],
                             $searchopt[$key]["linkfield"],
-                            0,
+                            false,
                             0,
                             $searchopt[$key]["joinparams"],
                             $searchopt[$key]["field"]
@@ -4673,7 +4673,7 @@ final class SQLProvider implements SearchProviderInterface
                     && $criterion['field'] != "view")
             ) {
                 $LINK    = " ";
-                $NOT     = 0;
+                $NOT     = false;
                 $tmplink = "";
 
                 if (
@@ -4682,7 +4682,7 @@ final class SQLProvider implements SearchProviderInterface
                 ) {
                     if (strstr($criterion['link'], "NOT")) {
                         $tmplink = " " . str_replace(" NOT", "", $criterion['link']);
-                        $NOT     = 1;
+                        $NOT     = true;
                     } else {
                         $tmplink = " " . $criterion['link'];
                     }
@@ -4746,7 +4746,7 @@ final class SQLProvider implements SearchProviderInterface
                 && strlen($criterion['value']) > 0
             ) { // view and all search
                 $LINK       = " OR ";
-                $NOT        = 0;
+                $NOT        = false;
                 $globallink = " AND ";
                 if (isset($criterion['link'])) {
                     switch ($criterion['link']) {
@@ -4756,7 +4756,7 @@ final class SQLProvider implements SearchProviderInterface
                             break;
                         case "AND NOT":
                             $LINK       = ($criterion['searchtype'] == 'notcontains') ? ' OR ' : ' AND ';
-                            $NOT        = 1;
+                            $NOT        = true;
                             $globallink = " AND ";
                             break;
                         case "OR":
@@ -4765,7 +4765,7 @@ final class SQLProvider implements SearchProviderInterface
                             break;
                         case "OR NOT":
                             $LINK       = ($criterion['searchtype'] == 'notcontains') ? ' OR ' : ' AND ';
-                            $NOT        = 1;
+                            $NOT        = true;
                             $globallink = " OR ";
                             break;
                     }
@@ -4900,7 +4900,7 @@ final class SQLProvider implements SearchProviderInterface
                 $already_link_tables,
                 $sopt["table"],
                 $sopt["linkfield"],
-                1,
+                true,
                 $m_itemtype,
                 $sopt["joinparams"],
                 $sopt["field"]

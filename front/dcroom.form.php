@@ -93,7 +93,7 @@ if (isset($_POST["add"])) {
 } elseif (isset($_POST["purge"])) {
     $room->check($_POST["id"], PURGE);
 
-    $room->delete($_POST, 1);
+    $room->delete($_POST, true);
     Event::log(
         $_POST["id"],
         "dcrooms",

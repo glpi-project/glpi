@@ -56,7 +56,7 @@ if (isset($_POST['unlock']) && isset($_POST["id"])) {
     }
     if (
         $ol->getFromDB($_POST["id"])
-        && $ol->deleteFromDB(1)
+        && $ol->deleteFromDB(true)
     ) {
         Log::history(
             $ol->fields['items_id'],

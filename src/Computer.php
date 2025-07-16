@@ -411,7 +411,7 @@ class Computer extends CommonDBTM
                     _sx('button', 'Remove a domain'),
             ];
 
-            KnowbaseItem_Item::getMassiveActionsForItemtype($actions, self::class, 0, $checkitem);
+            KnowbaseItem_Item::getMassiveActionsForItemtype($actions, self::class, false, $checkitem);
         }
 
         return $actions;

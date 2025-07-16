@@ -1558,7 +1558,7 @@ final class Transfer extends CommonDBTM
                             $carttype->delete(['id' => $data['cartridgeitems_id']]);
                         }
                         if ($this->options['clean_cartridgeitem'] == 2) { // purge
-                            $carttype->delete(['id' => $data['cartridgeitems_id']], 1);
+                            $carttype->delete(['id' => $data['cartridgeitems_id']], true);
                         }
                     }
                 }
@@ -2121,7 +2121,7 @@ final class Transfer extends CommonDBTM
                             $certificate->delete(['id' => $item_ID]);
                         }
                         if ($this->options['clean_certificate'] == 2) { // purge
-                            $certificate->delete(['id' => $item_ID], 1);
+                            $certificate->delete(['id' => $item_ID], true);
                         }
                     }
                 }
@@ -2306,7 +2306,7 @@ final class Transfer extends CommonDBTM
                             $contract->delete(['id' => $item_ID]);
                         }
                         if ($this->options['clean_contract'] == 2) { // purge
-                            $contract->delete(['id' => $item_ID], 1);
+                            $contract->delete(['id' => $item_ID], true);
                         }
                     }
                 }
@@ -2501,7 +2501,7 @@ final class Transfer extends CommonDBTM
                             $document->delete(['id' => $item_ID]);
                         }
                         if ($this->options['clean_document'] == 2) { // purge
-                            $document->delete(['id' => $item_ID], 1);
+                            $document->delete(['id' => $item_ID], true);
                         }
                     }
                 }
@@ -2697,7 +2697,7 @@ final class Transfer extends CommonDBTM
                                 $link_item->delete(['id' => $item_ID]);
                             }
                             if ($clean == 2) { // purge
-                                $link_item->delete(['id' => $item_ID], 1);
+                                $link_item->delete(['id' => $item_ID], true);
                             }
                         }
                     }
@@ -2713,7 +2713,7 @@ final class Transfer extends CommonDBTM
                         if ($clean == 1) {
                             $link_item->delete(['id' => $item_ID]);
                         } elseif ($clean == 2) { // purge
-                            $link_item->delete(['id' => $item_ID], 1);
+                            $link_item->delete(['id' => $item_ID], true);
                         }
                     }
                 }
@@ -3451,7 +3451,7 @@ final class Transfer extends CommonDBTM
                             $contact->delete(['id' => $item_ID]);
                         }
                         if ($this->options['clean_contact'] == 2) { // purge
-                            $contact->delete(['id' => $item_ID], 1);
+                            $contact->delete(['id' => $item_ID], true);
                         }
                     }
                 }
@@ -3718,7 +3718,7 @@ final class Transfer extends CommonDBTM
                     // Not a copy -> delete
                     if ($ID == $newID) {
                         foreach ($iterator as $data) {
-                            $np->delete(['id' => $data['id']], 1);
+                            $np->delete(['id' => $data['id']], true);
                         }
                     }
                     // Copy -> do nothing

@@ -68,7 +68,7 @@ if (isset($_POST["add"])) {
 } elseif (isset($_POST["purge"])) {
     $alias->check($_POST['id'], PURGE);
     $item = $alias->getItem();
-    $alias->delete($_POST, 1);
+    $alias->delete($_POST, true);
     Event::log(
         $_POST["id"],
         "networkname",

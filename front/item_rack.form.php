@@ -59,7 +59,7 @@ if (isset($_POST['update'])) {
     Html::redirect($url);
 } elseif (isset($_POST['purge'])) {
     $ira->check($_POST['id'], PURGE);
-    $ira->delete($_POST, 1);
+    $ira->delete($_POST, true);
     $url = $rack->getFormURLWithID($_POST['racks_id']);
     Html::redirect($url);
 }

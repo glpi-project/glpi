@@ -47,7 +47,7 @@ if (array_key_exists('id', $_REQUEST) && !$link->getFromDB($_REQUEST['id'])) {
 if (array_key_exists('purge', $_POST) || array_key_exists('delete', $_POST)) {
     $link->check($_POST['id'], PURGE);
 
-    if ($link->delete($_POST, 1)) {
+    if ($link->delete($_POST, true)) {
         Event::log(
             $_POST['id'],
             'manuallinks',

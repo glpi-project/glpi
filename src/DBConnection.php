@@ -734,7 +734,7 @@ class DBConnection extends CommonDBTM
                 $output .= sprintf(
                     __('%1$s: %2$s') . "<br>",
                     __('Difference between main and replica'),
-                    Html::timestampToString($diff, 1)
+                    Html::timestampToString($diff, true)
                 );
             } else {
                 $output .= sprintf(__('%1$s: %2$s') . "<br>", __('Difference between main and replica'), __('None'));

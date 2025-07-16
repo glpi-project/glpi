@@ -894,7 +894,7 @@ abstract class CommonDropdown extends CommonDBTM
                                     // delete with purge for dropdown with trashbin (Budget)
                                     $item->delete(['id'          => $key,
                                         '_replace_by' => $newid,
-                                    ], 1);
+                                    ], true);
                                 } elseif ($newid > 0 && $key == $newid) {
                                     $input2['id'] = $newid;
                                     $item->update($input2);

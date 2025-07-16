@@ -63,7 +63,7 @@ if (isset($_POST["add"])) {
 } elseif (isset($_POST["purge"])) {
     $defaultfilter->check($_POST["id"], PURGE);
 
-    if ($defaultfilter->delete($_POST, 1)) {
+    if ($defaultfilter->delete($_POST, true)) {
         Event::log(
             $_POST["id"],
             "defaultfilters",

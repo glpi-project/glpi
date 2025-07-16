@@ -469,7 +469,7 @@ abstract class LevelAgreementLevel extends RuleTicket
         $la_level = new static();
         foreach ($iterator as $data) {
             $la_level->getFromResultSet($data);
-            $la_level->getRuleWithCriteriasAndActions($la_level->getID(), 1, 1);
+            $la_level->getRuleWithCriteriasAndActions($la_level->getID(), true, true);
 
             if ($la_level->fields["execution_time"] !== 0) {
                 $execution_time = Html::timestampToString($la_level->fields["execution_time"], false);

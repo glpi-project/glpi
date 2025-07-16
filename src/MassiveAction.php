@@ -1355,14 +1355,14 @@ class MassiveAction
             case 'purge':
                 foreach ($ids as $id) {
                     if ($item->can($id, PURGE)) {
-                        $force = 1;
+                        $force = true;
                         // Only mark deletion for
                         if (
                             $item->maybeDeleted()
                             && $item->useDeletedToLockIfDynamic()
                             && $item->isDynamic()
                         ) {
-                            $force = 0;
+                            $force = false;
                         }
                         $delete_array = ['id' => $id];
                         if ($action == 'purge_item_but_devices') {
@@ -1372,7 +1372,7 @@ class MassiveAction
                         if ($item instanceof CommonDropdown) {
                             if ($item->haveChildren()) {
                                 if ($action != 'purge_but_item_linked') {
-                                    $force = 0;
+                                    $force = false;
                                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                                     $ma->addMessage(__("You can't delete that item by massive actions, because it has sub-items"));
                                     $ma->addMessage(__("but you can do it by the form of the item"));
@@ -1381,7 +1381,7 @@ class MassiveAction
                             }
                             if ($item->isUsed()) {
                                 if ($action != 'purge_but_item_linked') {
-                                    $force = 0;
+                                    $force = false;
                                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                                     $ma->addMessage(__("You can't delete that item, because it is used for one or more items"));
                                     $ma->addMessage(__("but you can do it by the form of the item"));

@@ -69,7 +69,7 @@ if (isset($_POST["add"])) {
 } elseif (isset($_POST["purge"])) {
     $cost->check($_POST["id"], PURGE);
 
-    if ($cost->delete($_POST, 1)) {
+    if ($cost->delete($_POST, true)) {
         Event::log(
             $cost->fields['contracts_id'],
             "contracts",

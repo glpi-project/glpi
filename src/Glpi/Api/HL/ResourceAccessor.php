@@ -328,7 +328,7 @@ final class ResourceAccessor
         if (!$item->can($items_id, $purge ? PURGE : DELETE, $input)) {
             return AbstractController::getAccessDeniedErrorResponse();
         }
-        $result = $item->delete($input, $purge ? 1 : 0);
+        $result = $item->delete($input, $purge);
 
         if ($result === false) {
             return AbstractController::getCRUDErrorResponse(AbstractController::CRUD_ACTION_DELETE);

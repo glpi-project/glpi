@@ -51,7 +51,7 @@ Toolbox::deprecated();
 if (isset($_POST['purge'])) {
     $ticket_ticket->check($_POST['id'], PURGE);
 
-    $ticket_ticket->delete($_POST, 1);
+    $ticket_ticket->delete($_POST, true);
 
     Event::log(
         $_POST['tickets_id'],

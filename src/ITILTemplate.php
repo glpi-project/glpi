@@ -351,7 +351,7 @@ abstract class ITILTemplate extends CommonDropdown
                 )] = 'locations_id';
 
             //add specific itil type fields
-            $allowed_fields[$itiltype][$withtypeandcategory][$withitemtype] += static::getExtraAllowedFields($withtypeandcategory, $withitemtype);
+            $allowed_fields[$itiltype][$withtypeandcategory][$withitemtype] += static::getExtraAllowedFields((bool) $withtypeandcategory, (bool) $withitemtype);
         }
 
         return $allowed_fields[$itiltype][$withtypeandcategory][$withitemtype];
@@ -815,7 +815,7 @@ abstract class ITILTemplate extends CommonDropdown
             $this->mergeTemplateITILCategories($ID, $input['id']);
 
             // Delete source
-            $this->delete($input, 1);
+            $this->delete($input, true);
 
             // Update destination with source input
             $input['id'] = $ID;

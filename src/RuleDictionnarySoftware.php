@@ -127,7 +127,7 @@ class RuleDictionnarySoftware extends Rule
     public function showSpecificCriteriasForPreview($fields)
     {
         if (isset($this->fields['id'])) {
-            $this->getRuleWithCriteriasAndActions($this->fields['id'], 0, 1);
+            $this->getRuleWithCriteriasAndActions($this->fields['id'], false, true);
         }
 
         $twig_params = [

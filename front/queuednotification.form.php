@@ -77,7 +77,7 @@ if (isset($_POST["delete"])) {
     $queuednotification->redirectToList();
 } elseif (isset($_POST["purge"])) {
     $queuednotification->check($_POST["id"], PURGE);
-    $queuednotification->delete($_POST, 1);
+    $queuednotification->delete($_POST, true);
 
     Event::log(
         $_POST["id"],

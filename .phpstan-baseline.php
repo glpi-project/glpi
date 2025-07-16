@@ -8,274 +8,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/ajax/impact.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$withcomment of static method Dropdown\\:\\:getDropdownName\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/itilfollowup.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$withcomment of static method Dropdown\\:\\:getDropdownName\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/solution.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$withcomment of static method Dropdown\\:\\:getDropdownName\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/task.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$force of method CommonDBTM\\:\\:deleteFromDB\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/unlockobject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/appliance_item.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/appliance_item_relation.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/asset/asset.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$history of method CommonDBTM\\:\\:restore\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/asset/asset.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/authldap.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/cartridge.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/change.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/commonitilcost.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/commonitiltask.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/commonitilvalidation.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/consumableitem.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/contractcost.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/database.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/databaseinstance.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/datacenter.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/dcroom.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/defaultfilter.form.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#5 \\$option of static method Html\\:\\:header\\(\\) expects string, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/front/dictionnary.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/document.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/domain.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/domainrecord.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/dropdowntranslation.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/form/answersset.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/front/group.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_device.common.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_disk.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_enclosure.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_line.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_operatingsystem.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_plug.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_rack.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_remotemanagement.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/itemantivirus.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/itemvirtualmachine.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/itilfollowup.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/knowbaseitem.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/manuallink.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/networkalias.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/networkequipment.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/networkname.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/front/networkport.form.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#3 \\$tagged of method NetworkPort_Vlan\\:\\:assignVlan\\(\\) expects bool\\|int, string given\\.$#',
@@ -284,28 +20,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/networkport_vlan.form.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/notepad.form.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$options of method CommonDBTM\\:\\:add\\(\\) expects array, false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/front/notepad.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/notification.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/notification_notificationtemplate.form.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to an undefined method Glpi\\\\Mail\\\\SMTP\\\\OauthProvider\\\\ProviderInterface\\:\\:getState\\(\\)\\.$#',
@@ -314,130 +32,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/notificationmailingsetting.form.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/notificationtemplate.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/notificationtemplatetranslation.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/olalevel.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/olalevelaction.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/olalevelcriteria.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/pdu_rack.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/planningexternalevent.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/problem.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/profile.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/project.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/projectcost.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/projecttask.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/queuednotification.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/queuedwebhook.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/rack.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/refusedequipment.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/reminder.form.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of static method Search\\:\\:showList\\(\\) expects class\\-string\\<CommonDBTM\\>, class\\-string\\<CommonGLPI\\> given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/front/report.dynamic.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/reservation.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/reservationitem.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/rssfeed.form.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#5 \\$option of static method Html\\:\\:header\\(\\) expects string, int given\\.$#',
@@ -446,46 +44,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/rule.backup.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/rule.common.form.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#5 \\$option of static method Html\\:\\:header\\(\\) expects string, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/front/rule.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$withcriterias of method Rule\\:\\:getRuleWithCriteriasAndActions\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/rule.test.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$withactions of method Rule\\:\\:getRuleWithCriteriasAndActions\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/rule.test.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/ruleaction.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/rulecriteria.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/savedsearch_alert.form.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#5 \\$option of static method Html\\:\\:header\\(\\) expects string, int given\\.$#',
@@ -494,54 +56,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/setup.auth.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/slalevel.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/slalevelaction.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/slalevelcriteria.form.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$token of method Glpi\\\\Mail\\\\SMTP\\\\OauthProvider\\\\ProviderInterface\\:\\:getResourceOwner\\(\\) expects League\\\\OAuth2\\\\Client\\\\Token\\\\AccessToken, League\\\\OAuth2\\\\Client\\\\Token\\\\AccessTokenInterface given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/front/smtp_oauth2_callback.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/snmpcredential.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/socket.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/front/softwarelicense.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/softwareversion.form.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#4 \\$month of function Safe\\\\mktime expects int\\|null, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -588,30 +108,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/front/stat.tracking.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/ticket.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/ticket_ticket.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/ticketcost.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/user.form.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#5 \\$port of class mysqli constructor expects int\\|null, string given\\.$#',
@@ -1094,12 +590,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/AbstractRightsDropdown.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:deleteByCriteria\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Alert.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Appliance\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
@@ -1113,12 +603,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$items_id of static method CommonDBConnexity\\:\\:getItemsAssociatedTo\\(\\) expects string, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Appliance.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$is_deleted of static method KnowbaseItem_Item\\:\\:getMassiveActionsForItemtype\\(\\) expects bool, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Appliance.php',
@@ -1208,9 +692,9 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/AuthLDAP.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$action of static method AuthLDAP\\:\\:ldapImportUserByServerId\\(\\) expects bool, int given\\.$#',
+	'message' => '#^Parameter \\#2 \\$action of static method AuthLDAP\\:\\:ldapImportUserByServerId\\(\\) expects int, true given\\.$#',
 	'identifier' => 'argument.type',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/AuthLDAP.php',
 ];
 $ignoreErrors[] = [
@@ -1430,12 +914,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Certificate.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:deleteByCriteria\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Certificate.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$items_id of static method CommonDBConnexity\\:\\:getItemsAssociatedTo\\(\\) expects string, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -1508,18 +986,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Cluster.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$check_once of static method Session\\:\\:addMessageAfterRedirect\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBConnexity.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBConnexity.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$items_id of static method CommonDBConnexity\\:\\:getItemsAssociatedTo\\(\\) expects string, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -1527,12 +993,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$items_id of static method CommonDBConnexity\\:\\:getSQLCriteriaToSearchForItem\\(\\) expects int, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBConnexity.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$message_type of static method Session\\:\\:addMessageAfterRedirect\\(\\) expects int, true given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDBConnexity.php',
@@ -1592,37 +1052,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$condition of method CommonDBTM\\:\\:assetBusinessRules\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$integer of static method Toolbox\\:\\:cleanInteger\\(\\) expects string, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$check_once of static method Session\\:\\:addMessageAfterRedirect\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:deleteByCriteria\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#3 \\$message_type of static method Session\\:\\:addMessageAfterRedirect\\(\\) expects int, bool given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$message_type of static method Session\\:\\:addMessageAfterRedirect\\(\\) expects int, true given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDBTM.php',
@@ -1654,12 +1090,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Instanceof between \\$this\\(CommonDropdown\\) and IPAddress will always evaluate to false\\.$#',
 	'identifier' => 'instanceof.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDropdown.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDropdown.php',
 ];
@@ -1751,12 +1181,6 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$type of static method CommonITILObject\\:\\:getActorFieldNameType\\(\\) expects int, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$display_sec of static method Html\\:\\:timestampToString\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
@@ -1958,12 +1382,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Computer.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$is_deleted of static method KnowbaseItem_Item\\:\\:getMassiveActionsForItemtype\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Computer.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#4 \\$checkitem of static method KnowbaseItem_Item\\:\\:getMassiveActionsForItemtype\\(\\) expects CommonDBTM\\|null, CommonGLPI\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -2084,20 +1502,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Contract_Item.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:deleteByCriteria\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CronTask.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$first_connection on null\\.$#',
 	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBConnection.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$display_sec of static method Html\\:\\:timestampToString\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DBConnection.php',
 ];
@@ -2242,12 +1648,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method Domain\\:\\:dropdownDomains\\(\\) with return type void returns int\\|string but should not return anything\\.$#',
 	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Domain.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:deleteByCriteria\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Domain.php',
 ];
@@ -2397,12 +1797,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#5 \\$ln of method TCPDF\\:\\:Cell\\(\\) expects int, false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/GLPIPDF.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#7 \\$fill of method TCPDF\\:\\:Cell\\(\\) expects bool, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/GLPIPDF.php',
@@ -3158,12 +2552,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ReportController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$withcomment of static method Dropdown\\:\\:getDropdownName\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ReportController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#4 \\$month of function Safe\\\\mktime expects int\\|null, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 3,
@@ -3306,12 +2694,6 @@ $ignoreErrors[] = [
 	'identifier' => 'smaller.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/RSQL/Lexer.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/ResourceAccessor.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Expression "\\$action\\(\\$input\\)" on a separate line does not do anything\\.$#',
@@ -3650,12 +3032,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$action of static method AuthLDAP\\:\\:ldapImportUserByServerId\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Ldap/SynchronizeUsersCommand.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$output of class Glpi\\\\Progress\\\\ConsoleProgressIndicator constructor expects Symfony\\\\Component\\\\Console\\\\Output\\\\ConsoleOutputInterface, Symfony\\\\Component\\\\Console\\\\Output\\\\OutputInterface given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -3722,28 +3098,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/Config/Helpdesk/CopyParentEntityController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Controller/DropdownFormController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$form_translation of method Glpi\\\\Controller\\\\Form\\\\Translation\\\\UpdateFormTranslationController\\:\\:updateTranslation\\(\\) expects Glpi\\\\Form\\\\FormTranslation, Glpi\\\\ItemTranslation\\\\ItemTranslation given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/Form/Translation/UpdateFormTranslationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/GenericFormController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$display of method MailCollector\\:\\:collect\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/ItemType/Form/MailCollectorFormController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
@@ -3968,18 +3326,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Cartridge.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Environment.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:deleteByCriteria\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$array of function array_keys expects array, false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -3998,36 +3344,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:deleteByCriteria\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Process.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$history of method CommonDBTM\\:\\:update\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Software.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/VirtualMachine.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:deleteByCriteria\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/VirtualMachine.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$path of method Glpi\\\\Inventory\\\\Conf\\:\\:importContentFile\\(\\) expects string, null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -4038,18 +3354,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Inventory.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:deleteByCriteria\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/MainAsset.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$history of method CommonDBTM\\:\\:deleteByCriteria\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/MainAsset.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#3 \\$rules_id of method Glpi\\\\Inventory\\\\MainAsset\\\\MainAsset\\:\\:rulepassed\\(\\) expects int, null given\\.$#',
@@ -4184,21 +3488,9 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$NOT of static method Search\\:\\:addHaving\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$characters of function ltrim expects string, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$nott of static method Search\\:\\:addWhere\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
@@ -4211,18 +3503,6 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#3 \\$field of method DBmysql\\:\\:result\\(\\) expects string, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#6 \\$meta of static method Glpi\\\\Search\\\\Provider\\\\SQLProvider\\:\\:getLeftJoinCriteria\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 18,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#6 \\$meta of static method Search\\:\\:addLeftJoin\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
@@ -4304,12 +3584,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/System/Log/LogViewer.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$is_dark of class Glpi\\\\UI\\\\Theme constructor expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/UI/ThemeManager.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Default value of the parameter \\#1 \\$history \\(int\\) of method Group\\:\\:post_updateItem\\(\\) is incompatible with type bool\\.$#',
 	'identifier' => 'parameter.defaultValue',
 	'count' => 1,
@@ -4335,12 +3609,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#4 \\$is_recursive of function getEntitiesRestrictCriteria expects \'auto\'\\|bool, 1 given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Group_User.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#9 \\$inactive_deleted of static method User\\:\\:getSqlSearchResult\\(\\) expects bool, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Group_User.php',
@@ -4487,24 +3755,6 @@ $ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type CommonITILObject is not subtype of native type string\\.$#',
 	'identifier' => 'varTag.nativeType',
 	'count' => 3,
-	'path' => __DIR__ . '/src/ITILTemplate.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$withtypeandcategory of static method ITILTemplate\\:\\:getExtraAllowedFields\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ITILTemplate.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ITILTemplate.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$withitemtype of static method ITILTemplate\\:\\:getExtraAllowedFields\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
 	'path' => __DIR__ . '/src/ITILTemplate.php',
 ];
 $ignoreErrors[] = [
@@ -4886,34 +4136,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/LevelAgreementLevel.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$withcriterias of method Rule\\:\\:getRuleWithCriteriasAndActions\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/LevelAgreementLevel.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$withactions of method Rule\\:\\:getRuleWithCriteriasAndActions\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/LevelAgreementLevel.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Default value of the parameter \\#3 \\$is_deleted \\(int\\) of method Line\\:\\:getMassiveActionsForItemtype\\(\\) is incompatible with type bool\\.$#',
 	'identifier' => 'parameter.defaultValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Line.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$check_once of static method Session\\:\\:addMessageAfterRedirect\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/LineOperator.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$message_type of static method Session\\:\\:addMessageAfterRedirect\\(\\) expects int, true given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/LineOperator.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Default value of the parameter \\#2 \\$params \\(array\\{\\}\\) of method Link\\:\\:getAllLinksFor\\(\\) is incompatible with type array\\{id\\: int, name\\: string, link\\: string, data\\: string, open_window\\: bool\\|null\\}\\.$#',
@@ -5036,12 +4262,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/MassiveAction.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/MassiveAction.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$items_id of function getAncestorsOf expects array\\|string, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -5090,18 +4310,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Monitor.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$is_deleted of static method Glpi\\\\Asset\\\\Asset_PeripheralAsset\\:\\:getMassiveActionsForItemtype\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Monitor.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$is_deleted of static method KnowbaseItem_Item\\:\\:getMassiveActionsForItemtype\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Monitor.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#4 \\$checkitem of static method Glpi\\\\Asset\\\\Asset_PeripheralAsset\\:\\:getMassiveActionsForItemtype\\(\\) expects CommonDBTM\\|null, CommonGLPI\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -5133,12 +4341,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$items_id of static method CommonDBConnexity\\:\\:getItemsAssociatedTo\\(\\) expects string, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkEquipment.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$is_deleted of static method KnowbaseItem_Item\\:\\:getMassiveActionsForItemtype\\(\\) expects bool, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NetworkEquipment.php',
@@ -5198,12 +4400,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NetworkPort.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#6 \\$meta of static method Search\\:\\:addLeftJoin\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkPort.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#7 \\$meta_type of static method Search\\:\\:addLeftJoin\\(\\) expects string, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -5226,12 +4422,6 @@ $ignoreErrors[] = [
 	'identifier' => 'instanceof.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NetworkPortInstantiation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkPort_NetworkPort.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\=\\=\\= between mixed~\'NetworkEquipment\' and \'NetworkEquipment\' will always evaluate to false\\.$#',
@@ -5342,18 +4532,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/OlaLevel_Ticket.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$withcriterias of method Rule\\:\\:getRuleWithCriteriasAndActions\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/OlaLevel_Ticket.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$withactions of method Rule\\:\\:getRuleWithCriteriasAndActions\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/OlaLevel_Ticket.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(PDU\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
@@ -5456,18 +4634,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Peripheral.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$is_deleted of static method Glpi\\\\Asset\\\\Asset_PeripheralAsset\\:\\:getMassiveActionsForItemtype\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Peripheral.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$is_deleted of static method KnowbaseItem_Item\\:\\:getMassiveActionsForItemtype\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Peripheral.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#4 \\$checkitem of static method Glpi\\\\Asset\\\\Asset_PeripheralAsset\\:\\:getMassiveActionsForItemtype\\(\\) expects CommonDBTM\\|null, CommonGLPI\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -5493,18 +4659,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$items_id of static method CommonDBConnexity\\:\\:getItemsAssociatedTo\\(\\) expects string, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Phone.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$is_deleted of static method Glpi\\\\Asset\\\\Asset_PeripheralAsset\\:\\:getMassiveActionsForItemtype\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Phone.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$is_deleted of static method KnowbaseItem_Item\\:\\:getMassiveActionsForItemtype\\(\\) expects bool, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Phone.php',
@@ -5679,18 +4833,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$items_id of static method CommonDBConnexity\\:\\:getItemsAssociatedTo\\(\\) expects string, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Printer.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$is_deleted of static method Glpi\\\\Asset\\\\Asset_PeripheralAsset\\:\\:getMassiveActionsForItemtype\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Printer.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$is_deleted of static method KnowbaseItem_Item\\:\\:getMassiveActionsForItemtype\\(\\) expects bool, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Printer.php',
@@ -6050,18 +5192,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Rule.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$withcriterias of method Rule\\:\\:getRuleWithCriteriasAndActions\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Rule.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$withactions of method Rule\\:\\:getRuleWithCriteriasAndActions\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Rule.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Default value of the parameter \\#1 \\$options \\(array\\{\\}\\) of method RuleAction\\:\\:dropdownActions\\(\\) is incompatible with type array\\{subtype\\: string, name\\: string, field\\: string, value\\?\\: string, alreadyused\\?\\: bool, display\\?\\: bool\\}\\.$#',
 	'identifier' => 'parameter.defaultValue',
 	'count' => 1,
@@ -6072,18 +5202,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$withcriterias of method Rule\\:\\:getRuleWithCriteriasAndActions\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleCollection.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$withactions of method Rule\\:\\:getRuleWithCriteriasAndActions\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleCollection.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type CommonITILObject is not subtype of native type string\\.$#',
@@ -6122,18 +5240,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleDictionnaryDropdownCollection.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$withcriterias of method Rule\\:\\:getRuleWithCriteriasAndActions\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleDictionnarySoftware.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$withactions of method Rule\\:\\:getRuleWithCriteriasAndActions\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleDictionnarySoftware.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$items_id of function getAncestorsOf expects array\\|string, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -6158,12 +5264,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleRight.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$check_once of static method Session\\:\\:addMessageAfterRedirect\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/SavedSearch.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$items_id of static method CommonDBConnexity\\:\\:getItemsAssociatedTo\\(\\) expects string, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -6171,12 +5271,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$search of static method SavedSearch_Alert\\:\\:showForSavedSearch\\(\\) expects SavedSearch, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/SavedSearch_Alert.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:deleteByCriteria\\(\\) expects bool, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/SavedSearch_Alert.php',
@@ -6201,18 +5295,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$slaType of static method SlaLevel_Ticket\\:\\:doLevelForTicket\\(\\) expects 0\\|1, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/SlaLevel_Ticket.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$withcriterias of method Rule\\:\\:getRuleWithCriteriasAndActions\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/SlaLevel_Ticket.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$withactions of method Rule\\:\\:getRuleWithCriteriasAndActions\\(\\) expects bool, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/SlaLevel_Ticket.php',
@@ -6257,12 +5339,6 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$output of method RuleCollection\\:\\:processAllRules\\(\\) expects array, null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 3,
-	'path' => __DIR__ . '/src/Software.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$is_deleted of static method KnowbaseItem_Item\\:\\:getMassiveActionsForItemtype\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
 	'path' => __DIR__ . '/src/Software.php',
 ];
 $ignoreErrors[] = [
@@ -6356,12 +5432,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Stat.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$display_sec of static method Html\\:\\:timestampToString\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 5,
-	'path' => __DIR__ . '/src/Stat.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$id of static method Dropdown\\:\\:getDropdownName\\(\\) expects int, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 3,
@@ -6452,12 +5522,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Ticket.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$is_deleted of static method KnowbaseItem_Item\\:\\:getMassiveActionsForItemtype\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Ticket.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#4 \\$checkitem of static method KnowbaseItem_Item\\:\\:getMassiveActionsForItemtype\\(\\) expects CommonDBTM\\|null, CommonGLPI\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -6524,12 +5588,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$is_recursive of static method Session\\:\\:changeActiveEntities\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#3 \\$subject of function Safe\\\\preg_replace expects array\\<string\\>\\|string, float given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -6554,22 +5612,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Transfer.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 6,
-	'path' => __DIR__ . '/src/Transfer.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$items_id of function getAncestorsOf expects array\\|string, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Transfer.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$force of method CommonDBTM\\:\\:deleteFromDB\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Unmanaged.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$max_steps of method Glpi\\\\Progress\\\\AbstractProgressIndicator\\:\\:setMaxSteps\\(\\) expects int, float given\\.$#',
@@ -6615,12 +5661,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$user of static method AuthLDAP\\:\\:forceOneUserSynchronization\\(\\) expects User, CommonDBTM given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/User.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$action of static method AuthLDAP\\:\\:ldapImportUserByServerId\\(\\) expects bool, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/User.php',

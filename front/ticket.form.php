@@ -146,7 +146,7 @@ if (isset($_POST["add"])) {
     $track->redirectToList();
 } elseif (isset($_POST['purge'])) {
     $track->check($_POST['id'], PURGE);
-    if ($track->delete($_POST, 1)) {
+    if ($track->delete($_POST, true)) {
         Event::log(
             $_POST["id"],
             "ticket",

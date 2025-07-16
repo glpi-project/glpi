@@ -60,7 +60,7 @@ if (isset($_POST["add"])) {
     Html::back();
 } elseif (isset($_POST["purge"])) {
     $remind->check($_POST["id"], PURGE);
-    $remind->delete($_POST, 1);
+    $remind->delete($_POST, true);
     Event::log(
         $_POST["id"],
         "reminder",

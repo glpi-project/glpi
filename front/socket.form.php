@@ -107,7 +107,7 @@ if (isset($_POST["add"]) || isset($_POST["execute_single"]) || isset($_POST["exe
 } elseif (isset($_POST["purge"])) {
     $socket->check($_POST["id"], PURGE);
 
-    if ($socket->delete($_POST, 1)) {
+    if ($socket->delete($_POST, true)) {
         Event::log(
             $socket->fields['items_id'],
             $socket->fields['itemtype'],
