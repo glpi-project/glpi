@@ -43,7 +43,7 @@ include('../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkLoginUser();
+Session::checkRight("config", READ);
 
 $mailcollector = new MailCollector();
 
@@ -72,8 +72,13 @@ if (isset($_REQUEST['action'])) {
                 }
             }
 
-            if (isset($input['mail_server']) && !empty($input['mail_server'])) {
+            if (!empty($input['mail_server'])) {
                 $input["host"] = Toolbox::constructMailServerConfig($input);
+                if (!isset($input['passwd'])) {
+                    throw new \RuntimeException(
+                        __('Password is required to list mail folders.')
+                    );
+                }
             }
 
             if (!isset($input['errors'])) {

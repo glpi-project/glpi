@@ -379,6 +379,12 @@ class MailCollector extends CommonDBTM
                // Force empty value for server_mailbox
                data += '&server_mailbox=';
 
+               // Ask for password if missing
+               if ($(this).closest('form').find('input[name=\"passwd\"]').val() == '') {
+                  var passwd = prompt(__('Please enter password to list folders'));
+                  data += '&passwd=' + encodeURIComponent(passwd);
+               }
+
                glpi_ajax_dialog({
                   title: __('Select a folder'),
                   url: '" . $CFG_GLPI['root_doc'] . "/ajax/mailcollector.php',
