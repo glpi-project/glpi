@@ -80,10 +80,26 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
     }
 
     $item = getItemForItemtype($_REQUEST['type']);
+
+    if (!$item->canView()) {
+        throw new AccessDeniedHttpException();
+    }
     $parent = getItemForItemtype($_REQUEST['parenttype']);
 
     if (!$parent instanceof CommonITILObject) {
         throw new BadRequestHttpException();
+    }
+
+    if (
+        isset($_REQUEST[$parent::getForeignKeyField()])
+        && !$parent->can($_REQUEST[$parent::getForeignKeyField()], READ)
+    ) {
+        throw new AccessDeniedHttpException();
+    }
+
+    $id = isset($_REQUEST['id']) && (int) $_REQUEST['id'] > 0 ? $_REQUEST['id'] : null;
+    if (!$item->can($id, READ)) {
+        throw new AccessDeniedHttpException();
     }
 
     $twig = TemplateRenderer::getInstance();

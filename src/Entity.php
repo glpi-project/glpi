@@ -2481,7 +2481,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             self::CONFIG_PARENT => __('Inheritance of the parent entity'),
             self::ANONYMIZE_DISABLED => __('Disabled'),
             self::ANONYMIZE_USE_GENERIC => __("Replace the agent and group name with a generic name"),
-            self::ANONYMIZE_USE_NICKNAME => __("Replace the agent and group name with a customisable nickname"),
+            self::ANONYMIZE_USE_NICKNAME => __("Replace the agent name with a customisable nickname and the group name with a generic name"),
             self::ANONYMIZE_USE_GENERIC_USER => __("Replace the agent's name with a generic name"),
             self::ANONYMIZE_USE_NICKNAME_USER => __("Replace the agent's name with a customisable nickname"),
             self::ANONYMIZE_USE_GENERIC_GROUP => __("Replace the group's name with a generic name"),

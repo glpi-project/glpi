@@ -1263,7 +1263,7 @@ abstract class API
                         "ERROR_FIELD_NOT_FOUND"
                     );
                 }
-                if (!empty($filter_value)) {
+                if ((string) $filter_value !== '') {
                     $criteria['WHERE']["$table.$filter_field"] = ['LIKE', SQLProvider::makeTextSearchValue($filter_value)];
                 }
             }

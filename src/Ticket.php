@@ -5393,7 +5393,7 @@ JAVASCRIPT;
             foreach ($matches[0] as $src_attr) {
                 // Set tag if image matches
                 foreach ($files as $data => $filename) {
-                    if (preg_match("/" . $data . "/i", $src_attr)) {
+                    if (preg_match("/" . preg_quote($data, '/') . "/i", $src_attr)) {
                         $html = preg_replace("/<img[^>]*" . preg_quote($src_attr, '/') . "[^>]*>/s", "<p>" . Document::getImageTag($tags[$filename]) . "</p>", $html);
                     }
                 }

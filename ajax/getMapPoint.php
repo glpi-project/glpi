@@ -65,19 +65,26 @@ if (!isset($_POST['itemtype']) || !isset($_POST['items_id']) || (int) $_POST['it
     if (!count($result)) {
         /** @var CommonDBTM $item */
         $item = getItemForItemtype($itemtype);
-        $item->getFromDB($items_id);
-        if (!empty($item->fields['latitude']) && !empty($item->fields['longitude'])) {
-            $result = [
-                'name'   => $item->getName(),
-                'lat'    => $item->fields['latitude'],
-                'lng'    => $item->fields['longitude'],
-            ];
-        } else {
+        if (!$item->can($items_id, READ)) {
             $result = [
                 'success'   => false,
-                'message'   => "<h3>" . __("Location seems not geolocalized!") . "</h3>" .
-                           "<a href='" . $item->getLinkURL() . "'>" . __s("Consider filling latitude and longitude on this location.") . "</a>",
+                'message'   => __('Not allowed'),
             ];
+        } else {
+            $item->getFromDB($items_id);
+            if (!empty($item->fields['latitude']) && !empty($item->fields['longitude'])) {
+                $result = [
+                    'name'   => $item->getName(),
+                    'lat'    => $item->fields['latitude'],
+                    'lng'    => $item->fields['longitude'],
+                ];
+            } else {
+                $result = [
+                    'success'   => false,
+                    'message'   => "<h3>" . __("Location seems not geolocalized!") . "</h3>" .
+                               "<a href='" . $item->getLinkURL() . "'>" . __s("Consider filling latitude and longitude on this location.") . "</a>",
+                ];
+            }
         }
     }
 }

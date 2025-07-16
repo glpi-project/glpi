@@ -3205,6 +3205,9 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
 
     public function testStackedExtremeNetworks3650GTS()
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/extreme_3650GTS.xml');
         // Import the switch(es) into GLPI
         $converter = new \Glpi\Inventory\Converter();
@@ -3241,6 +3244,87 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
                 'items_id' => $networkEquipment->getID(),
             ]);
             $this->assertCount($nb_port, $found_np, 'Must have ' . $nb_port . ' ports');
+        }
+    }
+
+    public function testStackedExtremeNetworks5420F()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/extreme_5420F.xml');
+        // Import the switch(es) into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = json_decode($converter->convert($xml_source));
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->assertFalse($inventory->inError());
+        $this->assertSame([], $inventory->getErrors());
+
+        $networkEquipment = new \NetworkEquipment();
+        $networkPort      = new \NetworkPort();
+
+        $server_serial = [
+            'JA062340G-00739' => [
+                'name' => 'Stack - 5420F-48T-4XE - 1',
+                'nb_ports' => 58,
+            ],
+            'JA042347G-00330' => [
+                'name' => 'Stack - 5420F-48P-4XE - 2',
+                'nb_ports' => 58,
+            ],
+        ];
+
+        foreach ($server_serial as $serial => $row) {
+            $this->assertTrue(
+                $networkEquipment->getFromDBByCrit(['serial' => $serial]),
+                "Switch s/n $serial doesn't exist"
+            );
+            $this->assertSame($row['name'], $networkEquipment->fields['name']);
+
+            $found_np = $networkPort->find([
+                'itemtype' => $networkEquipment->getType(),
+                'items_id' => $networkEquipment->getID(),
+            ]);
+            $this->assertCount($row['nb_ports'], $found_np, 'Must have ' . $row['nb_ports'] . ' ports');
+        }
+
+        //run again, same results
+        $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/extreme_5420F.xml');
+        // Import the switch(es) into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = json_decode($converter->convert($xml_source));
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->assertFalse($inventory->inError());
+        $this->assertSame([], $inventory->getErrors());
+
+        foreach ($server_serial as $serial => $row) {
+            $this->assertTrue(
+                $networkEquipment->getFromDBByCrit(['serial' => $serial]),
+                "Switch s/n $serial doesn't exist"
+            );
+            $this->assertSame($row['name'], $networkEquipment->fields['name']);
+
+            $found_np = $networkPort->find([
+                'itemtype' => $networkEquipment->getType(),
+                'items_id' => $networkEquipment->getID(),
+            ]);
+            $this->assertCount($row['nb_ports'], $found_np, 'Must have ' . $row['nb_ports'] . ' ports');
         }
     }
 

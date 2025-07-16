@@ -133,6 +133,15 @@ class NetworkPortInstantiation extends CommonDBChild
                     "networkports_id" => $this->fields['networkports_id'],
                 ]);
             }
+        } else {
+            // Retrieve the associated socket to disconnect it from the NetworkPortEthernet
+            $socket = new Socket();
+            if ($socket->getFromDBByCrit(["networkports_id" => $this->fields['networkports_id']])) {
+                $socket->update([
+                    "id" => $socket->getID(),
+                    "networkports_id" => 0,
+                ]);
+            }
         }
     }
 

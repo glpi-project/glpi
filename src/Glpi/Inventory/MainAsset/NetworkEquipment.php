@@ -302,6 +302,7 @@ class NetworkEquipment extends MainAsset
             return false;
         }
 
+        $stack_component = $this->getStackComponentName($components);
         $elt_count = 0;
         foreach ($components as $component) {
             if (!property_exists($component, 'type')) {
@@ -313,7 +314,7 @@ class NetworkEquipment extends MainAsset
                         $elt_count += $this->isStackedSwitch($component->index);
                     }
                     break;
-                case 'chassis':
+                case $stack_component:
                     if (property_exists($component, 'serial')) {
                         ++$elt_count;
                     }
@@ -325,7 +326,7 @@ class NetworkEquipment extends MainAsset
     }
 
     /**
-     * Get detected switches (osrted by their index)
+     * Get detected switches (sorted by their index)
      *
      * @return array
      */
@@ -336,21 +337,20 @@ class NetworkEquipment extends MainAsset
             return [];
         }
 
+        $stack_component = $this->getStackComponentName($components);
         $switches = [];
         $stack_number = 1;
         foreach ($components as $component) {
-            switch ($component->type) {
-                case 'chassis':
-                    if (property_exists($component, 'serial')) {
-                        if (property_exists($component, 'stack_number')) {
-                            $stack_number = $component->stack_number;
-                        } else {
-                            $component->stack_number = $stack_number;
-                        }
-                        $switches[$component->index] = $component;
+            if ($component->type == $stack_component) {
+                if (property_exists($component, 'serial')) {
+                    if (property_exists($component, 'stack_number')) {
+                        $stack_number = $component->stack_number;
+                    } else {
+                        $component->stack_number = $stack_number;
                     }
-                    $stack_number++;
-                    break;
+                    $switches[$component->index] = $component;
+                }
+                $stack_number++;
             }
         }
 
@@ -359,14 +359,42 @@ class NetworkEquipment extends MainAsset
     }
 
     /**
+     * Get stack component name
+     *
+     * @param array $components Network components
+     *
+     * @return string
+     */
+    public function getStackComponentName(array $components): string
+    {
+        $name = null;
+        foreach ($components as $component) {
+            if (!property_exists($component, 'type')) {
+                continue;
+            }
+            switch ($component->type) {
+                case 'chassis':
+                    if (property_exists($component, 'serial')) {
+                        $name = 'chassis';
+                    }
+                    break;
+                case 'module':
+                    if (property_exists($component, 'serial') && $name === null) {
+                        $name = 'module';
+                    }
+                    break;
+            }
+        }
+        return $name ?? 'chassis';
+    }
+
+    /**
      * Is device a wireless controller
      * Relies on level/dependencies of network_components
      *
-     * @param integer $parent_index Parent index for recursive calls
-     *
      * @return boolean
      */
-    public function isWirelessController($parent_index = 0): bool
+    public function isWirelessController(): bool
     {
         $components = $this->extra_data['network_components'] ?? [];
         if (!count($components)) {

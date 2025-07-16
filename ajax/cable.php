@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Socket;
 
 /** @var array $CFG_GLPI */
@@ -44,6 +45,15 @@ Html::header_nocache();
 Session::checkCentralAccess();
 
 $action = $_POST['action'] ?? $_GET["action"];
+
+$itemtype = $_POST['itemtype'] ?? $_GET["itemtype"] ?? null;
+$item = getItemForItemtype($itemtype);
+if (
+    !$item->canView()
+    || (isset($_GET['items_id']) && !$item->can($_GET['items_id'], READ))
+) {
+    throw new AccessDeniedHttpException();
+}
 
 switch ($action) {
     case 'get_items_from_itemtype':

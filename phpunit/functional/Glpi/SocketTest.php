@@ -39,6 +39,8 @@ use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasSocketCapacity;
 use Glpi\Features\Clonable;
 use Glpi\Socket;
+use NetworkPort;
+use NetworkPortEthernet;
 use Toolbox;
 
 class SocketTest extends DbTestCase
@@ -92,4 +94,89 @@ class SocketTest extends DbTestCase
         $this->assertSame(null, $socket->fields['itemtype']);
         $this->assertSame(0, $socket->fields['items_id']);
     }
+
+
+    public function testSocketDisconnect()
+    {
+        // Create socket
+        $socket = new \Glpi\Socket();
+        $socketId = $socket->add([
+            'name'      => __FUNCTION__,
+            'items_id'  => '',
+            'itemtype'  => '',
+        ]);
+
+        $this->assertTrue($socket->getFromDB($socketId));
+        $this->assertNull($socket->fields['itemtype']);
+        $this->assertSame(0, $socket->fields['items_id']);
+
+        // Retrieve test computer
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $this->assertNotFalse($computer);
+
+        // Create NetworkPortEthernet
+        $networkPort = new NetworkPort();
+        $networkPortId = $networkPort->add([
+            'items_id'                    => $computer->getID(),
+            'itemtype'                    => 'Computer',
+            'entities_id'                 => $computer->fields['entities_id'],
+            'is_recursive'                => 0,
+            'logical_number'              => 3,
+            'mac'                         => '00:24:81:eb:c6:d2',
+            'instantiation_type'          => 'NetworkPortEthernet',
+            'name'                        => 'eth1',
+            'comment'                     => 'Comment me!',
+            'items_devicenetworkcards_id' => 0,
+            'type'                        => 'T',
+            'speed'                       => 1000,
+            'speed_other_value'           => '',
+            'NetworkName_name'            => 'test1',
+            'NetworkName_comment'         => 'test1 comment',
+            'NetworkName_fqdns_id'        => 0,
+            'NetworkName__ipaddresses'    => ['-1' => '192.168.20.1'],
+            '_create_children'            => true,
+        ]);
+
+        // Verify NetworkPort creation
+        $this->assertTrue($networkPort->getFromDBByCrit([
+            'itemtype'           => 'Computer',
+            'items_id'           => $computer->getID(),
+            'name'               => 'eth1',
+            'instantiation_type' => 'NetworkPortEthernet',
+        ]));
+
+        // Get NetworkPortEthernet instantiation
+        $ethernetPort = new NetworkPortEthernet();
+        $this->assertTrue($ethernetPort->getFromDBByCrit([
+            'networkports_id' => $networkPort->getID(),
+        ]));
+
+        // Connect socket to ethernet port
+        $this->assertTrue($ethernetPort->update([
+            'id'               => $ethernetPort->getID(),
+            'sockets_id'       => $socketId,
+            'networkports_id'  => $networkPortId,
+        ]));
+
+        // Check that socket is correctly linked
+        $this->assertTrue($socket->getFromDB($socketId));
+        $this->assertSame('Computer', $socket->fields['itemtype']);
+        $this->assertSame($computer->getID(), $socket->fields['items_id']);
+        $this->assertSame($networkPortId, $socket->fields['networkports_id']);
+
+        // Disconnect socket
+        $this->assertTrue($ethernetPort->update([
+            'id'               => $ethernetPort->getID(),
+            'sockets_id'       => 0,
+            'networkports_id'  => $networkPortId,
+        ]));
+
+        // Verify socket is disconnected from network port but still linked to main item
+        $this->assertTrue($socket->getFromDB($socketId));
+        $this->assertSame('Computer', $socket->fields['itemtype']);
+        $this->assertSame($computer->getID(), $socket->fields['items_id']);
+        $this->assertSame(0, $socket->fields['networkports_id']);
+    }
+
+
 }
