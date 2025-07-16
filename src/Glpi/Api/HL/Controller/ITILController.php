@@ -608,16 +608,14 @@ final class ITILController extends AbstractController
         $schemas['TicketValidation']['x-version-introduced'] = '2.0';
         $schemas['TicketValidation']['x-itemtype'] = TicketValidation::class;
         $schemas['TicketValidation']['x-rights-conditions'] = [
-            'read' => static function () {
-                return Session::haveRightsOr(
-                    TicketValidation::$rightname,
-                    array_merge(
-                        TicketValidation::getCreateRights(),
-                        TicketValidation::getValidateRights(),
-                        TicketValidation::getPurgeRights()
-                    )
-                );
-            },
+            'read' => static fn() => Session::haveRightsOr(
+                TicketValidation::$rightname,
+                array_merge(
+                    TicketValidation::getCreateRights(),
+                    TicketValidation::getValidateRights(),
+                    TicketValidation::getPurgeRights()
+                )
+            ),
         ];
         $schemas['TicketValidation']['properties'][Ticket::getForeignKeyField()] = ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64];
 
@@ -625,16 +623,14 @@ final class ITILController extends AbstractController
         $schemas['ChangeValidation']['x-version-introduced'] = '2.0';
         $schemas['ChangeValidation']['x-itemtype'] = ChangeValidation::class;
         $schemas['ChangeValidation']['x-rights-conditions'] = [
-            'read' => static function () {
-                return Session::haveRightsOr(
-                    ChangeValidation::$rightname,
-                    array_merge(
-                        ChangeValidation::getCreateRights(),
-                        ChangeValidation::getValidateRights(),
-                        ChangeValidation::getPurgeRights()
-                    )
-                );
-            },
+            'read' => static fn() => Session::haveRightsOr(
+                ChangeValidation::$rightname,
+                array_merge(
+                    ChangeValidation::getCreateRights(),
+                    ChangeValidation::getValidateRights(),
+                    ChangeValidation::getPurgeRights()
+                )
+            ),
         ];
         $schemas['ChangeValidation']['properties'][Change::getForeignKeyField()] = ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64];
 
