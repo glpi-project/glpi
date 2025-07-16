@@ -34,7 +34,11 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
+use Entity;
+use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Http\Request;
+use Project;
+use ProjectTask;
 
 class ProjectControllerTest extends \HLAPITestCase
 {
@@ -131,6 +135,100 @@ class ProjectControllerTest extends \HLAPITestCase
 
         // Verify not found
         $this->api->call(new Request('GET', $new_item_location), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isNotFoundError();
+        });
+    }
+
+    public function testCRUDNoRights()
+    {
+        $this->api->autoTestCRUDNoRights(
+            endpoint: '/Project',
+            itemtype: Project::class,
+            items_id: getItemByTypeName(Project::class, strtolower('_project01'), true)
+        );
+    }
+
+    public function testRestrictedProjectRead()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $this->loginWeb();
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+        $project = getItemByTypeName(Project::class, strtolower('_project01'));
+        $request = new Request('GET', '/Project/' . $project->getID());
+        $_SESSION['glpiactiveprofile'][Project::$rightname] = 0;
+
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isNotFoundError();
+        });
+
+        $_SESSION['glpiactiveprofile'][Project::$rightname] = Project::READMY;
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isOK();
+        });
+
+        $this->assertTrue($project->update([
+            'id' => $project->getID(),
+            'users_id' => $_SESSION['glpiID'] + 1 // Created by another user
+        ]));
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isNotFoundError();
+        });
+
+        $DB->insert('glpi_projectteams', [
+            'projects_id' => $project->getID(),
+            'itemtype'   => 'User',
+            'items_id'   => $_SESSION['glpiID'],
+        ]);
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isOK();
+        });
+
+        $this->assertTrue($DB->update(Project::getTable(), [
+            'entities_id' => 0, // Out of user's entities
+            'is_recursive' => 0,
+        ], ['id' => $project->getID()]));
+        $project->getFromDB($project->getID());
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isNotFoundError();
+        });
+    }
+
+    public function testRestrictedProjectTaskRead()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $this->loginWeb();
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+        $project = getItemByTypeName(Project::class, strtolower('_project01'));
+        $project_task = $this->createItem(ProjectTask::class, [
+            'projects_id' => $project->getID(),
+            'name'     => __FUNCTION__,
+            'entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+        ]);
+        $this->api->call(new Request('GET', '/Project/' . $project->getID() . '/Task'), function ($call) use ($project_task) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(static fn ($c) => count($c) === 1 && $c[0]['id'] === $project_task->getID());
+        });
+
+        $_SESSION['glpiactiveprofile'][Project::$rightname] = 0;
+        $this->api->call(new Request('GET', '/Project/' . $project->getID() . '/Task'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(static fn ($c) => empty($c));
+        });
+        $this->api->call(new Request('GET', '/Project/Task/' . $project_task->getID()), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response->isNotFoundError();
         });
