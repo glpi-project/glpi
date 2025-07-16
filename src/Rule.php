@@ -2719,7 +2719,7 @@ JS
     public function showRulePreviewCriteriasForm($rules_id)
     {
         $criteria = $this->getAllCriteria();
-        if (!$this->getRuleWithCriteriasAndActions($rules_id, 1, 0)) {
+        if (!$this->getRuleWithCriteriasAndActions($rules_id, true, false)) {
             return;
         }
         $criteria_names = [];
@@ -2944,7 +2944,7 @@ JS
 
         foreach ($iterator as $rule) {
             $affect_rule = new Rule();
-            $affect_rule->getRuleWithCriteriasAndActions($rule["id"], 0, 1);
+            $affect_rule->getRuleWithCriteriasAndActions($rule["id"], false, true);
             $rules[]     = $affect_rule;
         }
         return $rules;
@@ -3306,7 +3306,7 @@ JS
         } elseif ($item instanceof LevelAgreement) {
             $item->showRulesList();
         } elseif ($item instanceof self) {
-            $item->getRuleWithCriteriasAndActions($item->getID(), 1, 1);
+            $item->getRuleWithCriteriasAndActions($item->getID(), true, true);
             switch ($tabnum) {
                 case 1:
                     $item->showCriteriasList($item->getID());

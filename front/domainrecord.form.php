@@ -63,7 +63,7 @@ if (isset($_POST["add"])) {
     $record->redirectToList();
 } elseif (isset($_POST["purge"])) {
     $record->check($_POST['id'], PURGE);
-    $record->delete($_POST, 1);
+    $record->delete($_POST, true);
     $record->redirectToList();
 } elseif (isset($_POST["update"])) {
     $record->check($_POST['id'], UPDATE);

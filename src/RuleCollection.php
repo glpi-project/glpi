@@ -289,8 +289,8 @@ class RuleCollection extends CommonDBTM
                     if (
                         $tempRule->getRuleWithCriteriasAndActions(
                             $rule["id"],
-                            $retrieve_criteria,
-                            $retrieve_action
+                            (bool) $retrieve_criteria,
+                            (bool) $retrieve_action
                         )
                     ) {
                         //Add the object to the list of rules

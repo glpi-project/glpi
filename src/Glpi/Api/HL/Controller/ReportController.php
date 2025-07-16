@@ -533,7 +533,7 @@ class ReportController extends AbstractController
             if (isset($item['itemtype'])) {
                 $result['item'] = [
                     'id' => $item['id'],
-                    'name' => \Dropdown::getDropdownName($item['itemtype']::getTable(), $item['id'], 0, true, true, ''),
+                    'name' => \Dropdown::getDropdownName($item['itemtype']::getTable(), $item['id'], false, true, true, ''),
                 ];
             } else {
                 $result['item'] = [
@@ -906,7 +906,7 @@ class ReportController extends AbstractController
                 $result['item'] = [
                     'itemtype' => $param_item::getType(),
                     'id' => $item['id'],
-                    'name' => \Dropdown::getDropdownName($item['itemtype']::getTable(), $item['id'], 0, true, true, ''),
+                    'name' => \Dropdown::getDropdownName($item['itemtype']::getTable(), $item['id'], false, true, true, ''),
                 ];
             } else {
                 $result['item'] = [

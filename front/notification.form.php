@@ -62,7 +62,7 @@ if (isset($_POST["add"])) {
     Html::back();
 } elseif (isset($_POST["purge"])) {
     $notification->check($_POST["id"], PURGE);
-    $notification->delete($_POST, 1);
+    $notification->delete($_POST, true);
 
     Event::log(
         $_POST["id"],

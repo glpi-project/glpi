@@ -51,7 +51,7 @@ if (isset($_POST['purge'], $_POST['id'])) {
     $_POST['id'] = $link_id;
     $itil_itil->check($_POST['id'], PURGE);
 
-    $itil_itil->delete($_POST, 1);
+    $itil_itil->delete($_POST, true);
 
     Event::log(
         $_POST['items_id'],

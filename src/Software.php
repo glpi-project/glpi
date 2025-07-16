@@ -256,7 +256,7 @@ class Software extends CommonDBTM
         }
 
         if ($isadmin) {
-            KnowbaseItem_Item::getMassiveActionsForItemtype($actions, self::class, 0, $checkitem);
+            KnowbaseItem_Item::getMassiveActionsForItemtype($actions, self::class, false, $checkitem);
         }
 
         return $actions;

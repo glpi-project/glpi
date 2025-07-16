@@ -63,7 +63,7 @@ if (isset($_POST["update"])) {
 } elseif (isset($_POST["purge"])) {
     $rr->check($_POST["id"], PURGE);
     $reservationitems_id = key($_POST["items"]);
-    if ($rr->delete($_POST, 1)) {
+    if ($rr->delete($_POST, true)) {
         Event::log(
             $_POST["id"],
             "reservation",

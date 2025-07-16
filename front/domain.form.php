@@ -64,7 +64,7 @@ if (isset($_POST["add"])) {
     $domain->redirectToList();
 } elseif (isset($_POST["purge"])) {
     $domain->check($_POST['id'], PURGE);
-    $domain->delete($_POST, 1);
+    $domain->delete($_POST, true);
     $domain->redirectToList();
 } elseif (isset($_POST["update"])) {
     $domain->check($_POST['id'], UPDATE);

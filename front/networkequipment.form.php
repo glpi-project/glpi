@@ -93,7 +93,7 @@ if (isset($_POST["add"])) {
 } elseif (isset($_POST["purge"])) {
     $netdevice->check($_POST["id"], PURGE);
 
-    $netdevice->delete($_POST, 1);
+    $netdevice->delete($_POST, true);
     Event::log(
         $_POST["id"],
         "networkequipment",

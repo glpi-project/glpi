@@ -96,7 +96,7 @@ if ($template->fields['requesttypes_id']) {
         $template->fields['requesttypes_name'] = Dropdown::getDropdownName(
             getTableForItemType(RequestType::getType()),
             $template->fields['requesttypes_id'],
-            0,
+            false,
             true,
             false,
             //default value like "(id)" is the default behavior of GLPI when field 'name' is empty

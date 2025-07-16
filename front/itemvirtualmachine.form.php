@@ -88,7 +88,7 @@ if (isset($_POST["add"])) {
 } elseif (isset($_POST["purge"])) {
     $item_vm->check($_POST["id"], PURGE);
 
-    if ($item_vm->delete($_POST, 1)) {
+    if ($item_vm->delete($_POST, true)) {
         Event::log(
             $item_vm->fields['items_id'],
             $item_vm->fields['itemtype'],

@@ -55,7 +55,7 @@ if (isset($_POST["add"])) {
     Html::back();
 } elseif (isset($_POST["purge"])) {
     $action->check($_POST['id'], PURGE);
-    $action->delete($_POST, 1);
+    $action->delete($_POST, true);
 
     Html::back();
 }

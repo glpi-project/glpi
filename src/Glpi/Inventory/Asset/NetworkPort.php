@@ -810,7 +810,7 @@ class NetworkPort extends InventoryAsset
                     "items_id"           => $this->item->getID(),
                     "instantiation_type" => NetworkPortAggregate::getType(),
                     "name"               => "Management",
-                ], 1);
+                ], true);
             }
         }
 

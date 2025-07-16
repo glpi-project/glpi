@@ -116,7 +116,7 @@ if (isset($_POST["add"])) {
     }
 } elseif (isset($_POST["purge"])) {
     $np->check($_POST['id'], PURGE);
-    $np->delete($_POST, 1);
+    $np->delete($_POST, true);
     Event::log(
         $_POST['id'],
         "networkport",
@@ -132,7 +132,7 @@ if (isset($_POST["add"])) {
     Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
 } elseif (isset($_POST["delete"])) {
     $np->check($_POST['id'], DELETE);
-    $np->delete($_POST, 0);
+    $np->delete($_POST);
     Event::log(
         $_POST['id'],
         "networkport",

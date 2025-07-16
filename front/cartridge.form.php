@@ -61,7 +61,7 @@ if (isset($_POST["add"])) {
 } elseif (isset($_POST["purge"])) {
     $cartype->check($_POST["cartridgeitems_id"], PURGE);
 
-    if ($cart->delete($_POST, 1)) {
+    if ($cart->delete($_POST, true)) {
         Event::log(
             $_POST["cartridgeitems_id"],
             "cartridgeitems",

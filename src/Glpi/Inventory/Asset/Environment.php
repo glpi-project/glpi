@@ -109,7 +109,7 @@ final class Environment extends InventoryAsset
             foreach ($db_itemEnvs as $dbid => $data) {
                 if ($data['is_dynamic'] == 1) {
                     //Delete only dynamics
-                    $itemEnv->delete(['id' => $dbid], 1);
+                    $itemEnv->delete(['id' => $dbid], true);
                 }
             }
         }

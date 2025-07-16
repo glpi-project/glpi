@@ -64,7 +64,7 @@ if (isset($_POST["add"])) {
     Html::redirect($rssfeed->getFormURLWithID($newID));
 } elseif (isset($_POST["purge"])) {
     $rssfeed->check($_POST["id"], PURGE);
-    $rssfeed->delete($_POST, 1);
+    $rssfeed->delete($_POST, true);
     Event::log(
         $_POST["id"],
         "rssfeed",

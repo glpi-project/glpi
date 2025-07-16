@@ -93,7 +93,7 @@ if (isset($_POST["add"])) {
 } elseif (isset($_POST["purge"])) {
     $database->check($_POST["id"], PURGE);
 
-    $database->delete($_POST, 1);
+    $database->delete($_POST, true);
     Event::log(
         $_POST["id"],
         "database",

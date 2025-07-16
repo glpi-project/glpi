@@ -69,7 +69,7 @@ if (isset($_POST["test_rule"])) {
     $params = [];
     //Unset values that must not be processed by the rule
     unset($_POST["test_rule"], $_POST["rules_id"], $_POST["sub_type"]);
-    $rule->getRuleWithCriteriasAndActions($rules_id, 1, 1);
+    $rule->getRuleWithCriteriasAndActions($rules_id, true, true);
 
     //Add rules specific POST fields to the param array
     $params = $rule->addSpecificParamsForPreview($params);

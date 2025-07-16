@@ -118,7 +118,7 @@ class GLPIPDF extends TCPDF
     public function Header() // phpcs:ignore PSR1.Methods.CamelCapsMethodName
     {
         // Title
-        $this->Cell(0, $this->config['margin_bottom'], $this->title, 0, false, 'C', 0, '', 0, false, 'M', 'M');
+        $this->Cell(0, $this->config['margin_bottom'], $this->title, 0, false, 'C', false, '', 0, false, 'M', 'M');
     }
 
 
@@ -138,7 +138,7 @@ class GLPIPDF extends TCPDF
         $text .= sprintf(" - %s/%s", $this->getAliasNumPage(), $this->getAliasNbPages());
 
         // Page number
-        $this->Cell(0, $this->config['margin_footer'], $text, 0, false, 'C', 0, '', 0, false, 'T', 'M');
+        $this->Cell(0, $this->config['margin_footer'], $text, 0, false, 'C', false, '', 0, false, 'T', 'M');
     }
 
     /**

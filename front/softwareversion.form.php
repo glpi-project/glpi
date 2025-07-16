@@ -65,7 +65,7 @@ if (isset($_POST["add"])) {
     Html::back();
 } elseif (isset($_POST["purge"])) {
     $version->check($_POST['id'], PURGE);
-    $version->delete($_POST, 1);
+    $version->delete($_POST, true);
     Event::log(
         $version->fields['softwares_id'],
         "software",

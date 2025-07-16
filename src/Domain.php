@@ -755,7 +755,7 @@ class Domain extends CommonDBTM
                             'items_id' => $domain_id,
                         ];
                         $alert = new Alert();
-                        $alert->deleteByCriteria($input, 1);
+                        $alert->deleteByCriteria($input, true);
                         $alert->add($input);
 
                         $total++;

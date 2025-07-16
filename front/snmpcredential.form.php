@@ -92,7 +92,7 @@ if (isset($_POST["add"])) {
     $cred->redirectToList();
 } elseif (isset($_POST["purge"])) {
     $cred->check($_POST["id"], PURGE);
-    if ($cred->delete($_POST, 1)) {
+    if ($cred->delete($_POST, true)) {
         Event::log(
             $_POST["id"],
             "snmpcredential",

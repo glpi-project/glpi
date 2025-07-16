@@ -62,7 +62,7 @@ if (isset($_POST['update'])) {
     Html::redirect($url);
 } elseif (isset($_POST['purge'])) {
     $item_line->check($_POST['id'], PURGE);
-    $item_line->delete($_POST, 1);
+    $item_line->delete($_POST, true);
     if (isset($_POST['_from']) && $_POST['_from'] === 'item') {
         $url = $_POST['itemtype']::getFormURLWithID($_POST['items_id']);
     } else {

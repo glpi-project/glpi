@@ -268,7 +268,7 @@ class VirtualMachine extends InventoryAsset
         if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_vms) != 0) {
             // Delete virtual machines links in DB
             foreach (array_keys($db_vms) as $idtmp) {
-                $itemVirtualmachine->delete(['id' => $idtmp], 1);
+                $itemVirtualmachine->delete(['id' => $idtmp], true);
             }
         }
 

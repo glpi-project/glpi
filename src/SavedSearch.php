@@ -1171,7 +1171,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                 'date_creation' => date('Y-m-d H:i:s'),
             ]);
 
-            Session::addMessageAfterRedirect(__s('Notification has been created!'), INFO);
+            Session::addMessageAfterRedirect(__s('Notification has been created!'), false, INFO);
         }
     }
 

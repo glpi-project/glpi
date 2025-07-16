@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
     $license->redirectToList();
 } elseif (isset($_POST["delete"])) {
     $license->check($_POST['id'], DELETE);
-    $license->delete($_POST, 0);
+    $license->delete($_POST);
     Event::log(
         $license->fields['softwares_id'],
         "software",
@@ -93,7 +93,7 @@ if (isset($_POST["add"])) {
     $license->redirectToList();
 } elseif (isset($_POST["purge"])) {
     $license->check($_POST['id'], PURGE);
-    $license->delete($_POST, 1);
+    $license->delete($_POST, true);
     Event::log(
         $license->fields['softwares_id'],
         "software",

@@ -165,7 +165,7 @@ class ThemeManager
                     }
                     // Guess dark mode based on if the file contains "$is-dark: true;"
                     $file_content = file_get_contents($file);
-                    $is_dark = preg_match('/^\s*\$is-dark:\s*true;\s*$/im', $file_content);
+                    $is_dark = preg_match('/^\s*\$is-dark:\s*true;\s*$/im', $file_content) === 1;
                     $theme_name = ucfirst(str_replace('_', ' ', $file_name));
                     $this->custom_themes[] = new Theme($file_name, $theme_name, $is_dark, true);
                 }

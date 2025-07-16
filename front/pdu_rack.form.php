@@ -56,7 +56,7 @@ if (isset($_POST['update'])) {
     Html::redirect($url);
 } elseif (isset($_POST['purge'])) {
     $pra->check($_POST['id'], PURGE);
-    $pra->delete($_POST, 1);
+    $pra->delete($_POST, true);
     $url = $rack->getFormURLWithID($_POST['racks_id']);
     Html::redirect($url);
 }

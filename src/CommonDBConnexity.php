@@ -127,7 +127,7 @@ abstract class CommonDBConnexity extends CommonDBTM
             $iterator = $DB->request($criteria);
             foreach ($iterator as $data) {
                 $input[$this->getIndexName()] = $data[$this->getIndexName()];
-                $this->delete($input, 1);
+                $this->delete($input, true);
             }
         }
     }
@@ -326,8 +326,8 @@ abstract class CommonDBConnexity extends CommonDBTM
                     $new_item->getTypeName(),
                     $new_item->getID()
                 )),
-                INFO,
-                true
+                false,
+                INFO
             );
             return false;
 

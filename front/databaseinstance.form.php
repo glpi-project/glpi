@@ -94,7 +94,7 @@ if (isset($_POST["add"])) {
 } elseif (isset($_POST["purge"])) {
     $instance->check($_POST["id"], PURGE);
 
-    if ($instance->delete($_POST, 1)) {
+    if ($instance->delete($_POST, true)) {
         Event::log(
             $_POST['id'],
             "databaseinstance",

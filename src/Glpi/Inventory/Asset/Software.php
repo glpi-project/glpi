@@ -434,7 +434,7 @@ class Software extends InventoryAsset
                     "id" => $db_software[$key_w_version]['id'],
                     "is_dynamic" => 1,
                     "date_install" => $val->date_install,
-                ], 0);
+                ], false);
             }
 
             if (isset($db_software[$key_w_version])) {

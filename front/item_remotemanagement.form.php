@@ -70,7 +70,7 @@ if (isset($_POST["add"])) {
 } elseif (isset($_POST["purge"])) {
     $mgmt->check($_POST["id"], PURGE);
 
-    if ($mgmt->delete($_POST, 1)) {
+    if ($mgmt->delete($_POST, true)) {
         Event::log(
             $mgmt->fields['items_id'],
             $mgmt->fields['itemtype'],

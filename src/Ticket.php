@@ -2189,7 +2189,7 @@ class Ticket extends CommonITILObject
                         _sx('button', 'Add contract');
                 }
 
-                KnowbaseItem_Item::getMassiveActionsForItemtype($actions, self::class, 0, $checkitem);
+                KnowbaseItem_Item::getMassiveActionsForItemtype($actions, self::class, false, $checkitem);
             }
 
             if (self::canUpdate()) {

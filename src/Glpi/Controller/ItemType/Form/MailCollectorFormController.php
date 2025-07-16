@@ -53,7 +53,7 @@ class MailCollectorFormController extends GenericFormController
         ) {
             $object = new MailCollector();
             $object->check($request->request->get('id'), UPDATE);
-            $object->collect($request->request->get('id'), 1);
+            $object->collect($request->request->get('id'), true);
 
             return new RedirectResponse($object->getLinkURL());
         }

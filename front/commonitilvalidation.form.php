@@ -105,7 +105,7 @@ if (isset($_POST["add"])) {
     Html::back();
 } elseif (isset($_POST["purge"])) {
     $validation->check($_POST['id'], PURGE);
-    $validation->delete($_POST, 1);
+    $validation->delete($_POST, true);
 
     Event::log(
         $validation->getField($fk),
