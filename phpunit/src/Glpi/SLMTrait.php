@@ -144,8 +144,7 @@ trait SLMTrait
 
     private function runOlaCron(): void
     {
-        OlaLevel_Ticket::cronOlaTicket(getItemByTypeName(\CronTask::class, 'slaticket')); // at the moment only slaticketcron exists
-        \Item_Ola::cron(getItemByTypeName(\CronTask::class, 'slaticket'));
+        \Item_Ola::cronOlaTicket(getItemByTypeName(\CronTask::class, 'slaticket'));
     }
 
     private function runSlaCron(): void
