@@ -1,0 +1,102 @@
+Received: from VI0PR01MB11344.eurprd01.prod.exchangelabs.com
+ (2603:10a6:800:26a::15) by PAXPR01MB8202.eurprd01.prod.exchangelabs.com with
+ HTTPS; Fri, 11 Jul 2025 12:16:50 +0000
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=groupe-lempereur.com;
+Received: from AS1PR01MB9084.eurprd01.prod.exchangelabs.com
+ (2603:10a6:20b:4d8::16) by VI0PR01MB11344.eurprd01.prod.exchangelabs.com
+ (2603:10a6:800:26a::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8922.21; Fri, 11 Jul
+ 2025 12:16:46 +0000
+Received: from AS1PR01MB9084.eurprd01.prod.exchangelabs.com
+ ([fe80::91ba:f4dd:9b9:9b99]) by AS1PR01MB9084.eurprd01.prod.exchangelabs.com
+ ([fe80::91ba:f4dd:9b9:9b99%3]) with mapi id 15.20.8922.017; Fri, 11 Jul 2025
+ 12:16:45 +0000
+Content-Type: multipart/mixed;
+	boundary="------------------------6c0999136ea956fa"
+From: <tech@glpi-project.org>
+Date: Fri, 11 Jul 2025 12:16:45 +0000
+To: <unittests@glpi-project.org>
+CC:
+MessageId: <51a166a3-ea47-4aeb-a357-d86b12506bbb@tech@glpi-project.org>
+Subject: Message with multiple message IDs
+X-MS-Exchange-Organization-ExpirationStartTime: 11 Jul 2025 12:16:45.5150
+ (UTC)
+X-MS-Exchange-Organization-ExpirationStartTimeReason: OriginalSubmit
+X-MS-Exchange-Organization-ExpirationInterval: 1:00:00:00.0000000
+X-MS-Exchange-Organization-ExpirationIntervalReason: OriginalSubmit
+X-MS-Exchange-Organization-Network-Message-Id: 3c3e78e4-aee9-4066-ccad-08ddc074cda1
+X-MS-Exchange-Organization-AuthSource: AS1PR01MB9084.eurprd01.prod.exchangelabs.com
+X-MS-Exchange-Organization-AuthAs: Internal
+X-MS-Exchange-Organization-AuthMechanism: 06
+X-ClientProxiedBy: PAZP264CA0204.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:102:237::17) To AS1PR01MB9084.eurprd01.prod.exchangelabs.com
+ (2603:10a6:20b:4d8::16)
+X-MS-Exchange-Organization-MessageDirectionality: Originating
+Return-Path: tech@glpi-project.org
+Message-ID: <AS1PR01MB90844B50647179E18980085EEF4BA@AS1PR01MB9084.eurprd01.prod.exchangelabs.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS1PR01MB9084:EE_|VI0PR01MB11344:EE_|PAXPR01MB8202:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3c3e78e4-aee9-4066-ccad-08ddc074cda1
+X-MS-Exchange-Organization-SCL: 1
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|41050700001;
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS1PR01MB9084.eurprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(41050700001);DIR:INT;
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3c3e78e4-aee9-4066-ccad-08ddc074cda1
+X-MS-Exchange-CrossTenant-AuthSource: AS1PR01MB9084.eurprd01.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jul 2025 12:16:45.9263
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: eba5ce34-4d49-43f3-8425-fe906982c219
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WzvK5lunTE46DEWq8qj2K+U0XVxo9AZINd1om+OT1v6lWIGt/GpH0ThgTN4nizRKvjNatvuOMr+RCJGq40v+IhAOysZwyJ6NpH1AcrzUNteORP5iSVZDUM2vxNw6IDZe
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI0PR01MB11344
+X-MS-Exchange-Transport-EndToEndLatency: 00:00:04.1591075
+X-MS-Exchange-Processed-By-BccFoldering: 15.20.8922.017
+X-Microsoft-Antispam-Mailbox-Delivery:
+	ucf:0;jmr:0;auth:0;dest:I;ENG:(910005)(944506478)(944626604)(920097)(425001)(930097)(140003);
+X-Microsoft-Antispam-Message-Info:
+	t1hHg5d0nYkdzuxj8nwOZAlkByVKAfKrDaaIMVkTGm4V5vhn8KJo+TPrQe+qowyYU5jVA4Ht2pzX6pcOgh5jcQGyvrcz81062yuYvxFQUzKeeujvKkfndrQo5krbyejPIRnDSLtHr7A+H2qRuw0UfLkLbQdrPF4rPw6186DX0cbh/aCywdrtWmGGyuKC2P2bwOMUR/7AP/oN5lhyqgUqGT3vlhXIQR9T3bOUjhHaVFHTmA7PvwUlYMyuNIg4lql6hp4d5kXlTCtmbxHDQtZ2eC51Uvg47GnWjdyn5W9JCk8kUZWVceimGq1uje3+HZRwM5MJH3PjuFy5F3H+HrctRA7Qvfvoy6Q1dCRCyLLP6usFTsn4Jfx1lfGla4mmDdS6hPcl2RvML2kJwtfZcsAx9dZc7QdbsILq3LYP2vg9fVRrV4Nf89JOYdS9bo8lyjr5aPglQXAXG/DpYoxIzbJDeXZvDaGMj1V/9nhu9S1/9MXm9nnJLuRVrOzOmezvKatrcDfLeKOquFoH/suVHPvKKuk5Klky/Z2fSh6uLR57TfxYvZbCRVKabRMF1L1KkIjMyF7KEXDSP2Yf9B5Vsz1mIEUq15QKL2EVdRwdgzgtwPX40446KsB9PXSi+IGUWph17f0u9VWRWL1V1ft8Wj4A26s4ykD8hucYjcIAnzOpByL7Sz8p8+Cm2NlR1pjqfBrLK9dLHj06Sp6/cuzZx3Ht0A/qZUOAsT60peMVhzOZ+IkRUWGAC1blh/I54db9G1P+zmIEBCZ7Oa9fGj2MDLqitlPWam9cdZyIVmmmlxO1A9U=
+MIME-Version: 1.0
+
+--------------------------6c0999136ea956fa
+Content-Disposition: inline
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+=3D=3D IDENTIFICATION =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=0A=
+System name: UPS-VALENCIENNES1=0A=
+ =0A=
+-- Communication module ------------------------------------=0A=
+Product: Gigabit Network Card 3=0A=
+Vendor: Eaton=0A=
+C/N: Gigabit Network Card 3=0A=
+P/N: managers/1=0A=
+S/N: G337P47343=0A=
+FW version: 1.0.3=0A=
+HW version: 0=0A=
+Host address (eth0): https://mysite.local=0A=
+MAC address (eth0): 00:20:85:d0:ad:ca=0A=
+ =0A=
+-- Monitored device ----------------------------------------=0A=
+Product: 1000i RT 2U=0A=
+Vendor: EATON=0A=
+P/N: 9PX1000iRT2U=0A=
+CTO: 9PX1000iRT2U=0A=
+S/N: GA10R05029=0A=
+FW version: 01.24.6755=0A=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A=
+ =0A=
+=3D TEST EMAIL =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=0A=
+Date (UTC) - Severity - Code - Description=0A=
+2025-07-11T12:15:52+0000 - Info - 00C00F00 - Test email=0A=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A=
+
+--------------------------6c0999136ea956fa--
