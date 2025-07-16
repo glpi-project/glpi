@@ -52,7 +52,7 @@ final class Item_Environment extends CommonDBChild
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if ($item::canView()) {
             $nb = countElementsInTable(

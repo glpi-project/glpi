@@ -1478,7 +1478,7 @@ class MailCollector extends CommonDBTM
                 !$part->getHeaders()->has('content-type')
                 || !(($content_type_header = $part->getHeader('content-type')) instanceof ContentType)
             ) {
-                return false; // Ignore attachements with no content-type
+                return; // Ignore attachements with no content-type
             }
             $content_type = $content_type_header->getType();
 
@@ -1486,7 +1486,7 @@ class MailCollector extends CommonDBTM
                 // Ignore attachements with no content-disposition only if they corresponds to a text part.
                 // Indeed, some mail clients (like some Outlook versions) does not set any content-disposition
                 // header on inlined images.
-                return false;
+                return;
             }
 
             // fix monoparted mail
@@ -1573,7 +1573,7 @@ class MailCollector extends CommonDBTM
                         Toolbox::getSize($part->getSize())
                     )
                 );
-                return false;
+                return;
             }
 
             if (!Document::isValidDoc($filename)) {
@@ -1587,7 +1587,7 @@ class MailCollector extends CommonDBTM
                         $content_type
                     )
                 );
-                return false;
+                return;
             }
 
             $contents = $this->getDecodedContent($part);

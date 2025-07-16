@@ -60,7 +60,7 @@ final class LogViewer extends CommonGLPI
         return _n('Log', 'Logs', $nb);
     }
 
-    public static function getMenuContent()
+    public static function getMenuContent(): array
     {
         $menu = [];
 

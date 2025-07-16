@@ -509,8 +509,8 @@ class Schema implements \ArrayAccess
 
     /**
      * Combine multiple schemas into a single 'union' schema that allows searching across all of them
-     * @param non-empty-array<string, array> $schemas
-     * @return array{x-subtypes: array{schema_name: string, itemtype: string}, type: self::TYPE_OBJECT, properties: array}
+     * @param non-empty-array<string, array{x-itemtype: string, properties: mixed}> $schemas
+     * @return array{x-subtypes: list<array{schema_name: string, itemtype: string}>, type: self::TYPE_OBJECT, properties: array}
      * @see getUnionSchemaForItemtypes
      */
     public static function getUnionSchema(array $schemas): array
@@ -533,7 +533,7 @@ class Schema implements \ArrayAccess
     /**
      * Combine schemas related to multiple GLPI itemtypes into a single 'union' schema that allows searching across all of them
      * @param non-empty-array<string, class-string<CommonGLPI>> $itemtypes
-     * @return array{x-subtypes: array{schema_name: string, itemtype: string}, type: self::TYPE_OBJECT, properties: array}
+     * @return array{x-subtypes: list<array{schema_name: string, itemtype: string}>, type: self::TYPE_OBJECT, properties: array}
      * @see getUnionSchema
      */
     public static function getUnionSchemaForItemtypes(array $itemtypes, string $api_version): array

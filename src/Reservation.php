@@ -1202,7 +1202,7 @@ JAVASCRIPT;
     public static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids)
     {
         if (!ReservationItem::canUpdate()) {
-            return false;
+            return;
         }
         $reservation_item = new ReservationItem();
 

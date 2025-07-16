@@ -1631,7 +1631,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 !$specificities['can_remove_all_at_once']
                 && !$specificities['only_remove_all_at_once']
             ) {
-                return false;
+                return;
             }
             $peer = false;
         }

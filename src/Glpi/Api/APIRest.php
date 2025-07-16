@@ -633,7 +633,7 @@ class APIRest extends API
 
         $this->parameters = $parameters;
 
-        return "";
+        return;
     }
 
 

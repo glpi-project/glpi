@@ -1423,7 +1423,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
     /**
      * Returns fallback room id.
      *
-     * @return number
+     * @return int
      */
     private function getFallbackRoomId()
     {
@@ -1457,7 +1457,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
     /**
      * Returns verbosity level for import errors.
      *
-     * @return number
+     * @return int
      */
     private function getImportErrorsVerbosity()
     {

@@ -42,7 +42,7 @@ final class ValidatorSubstitute extends CommonDBTM
         return _n('Authorized substitute', 'Authorized substitutes', $nb);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if ($item instanceof Preference) {
             $user = User::getById(Session::getLoginUserID());
@@ -156,7 +156,7 @@ final class ValidatorSubstitute extends CommonDBTM
         return true;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         if (isset($input['users_id']) && $input['users_id'] != $this->fields['users_id']) {
             // Do not change the user.
