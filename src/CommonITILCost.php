@@ -93,7 +93,7 @@ abstract class CommonITILCost extends CommonDBChild
         return true;
     }
 
-    public function rawSearchOptions(): array
+    public function rawSearchOptions()
     {
         $tab = [];
 
