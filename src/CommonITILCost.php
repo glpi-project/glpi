@@ -62,10 +62,6 @@ abstract class CommonITILCost extends CommonDBChild
         return str_replace('Cost', '', static::class);
     }
 
-    /**
-     * @param CommonGLPI $item
-     * @param integer    $withtemplate (default 0)
-     */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         // can exists for template
