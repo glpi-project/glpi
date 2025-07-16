@@ -745,7 +745,7 @@ class Group extends CommonTreeDropdown
                 'name'     => $item->getLink(['comments' => true]),
                 'entity'   => $entity_names[$item->getEntityID()],
             ];
-            if ($item->canViewItem() || ($item->canViewItem() && self::canUpdate())) {
+            if ($item->canViewItem() && self::canUpdate()) {
                 // Show massive actions if there is at least one viewable/updatable item.
                 $show_massive_actions = true;
             } else {

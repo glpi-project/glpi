@@ -4973,7 +4973,7 @@ class CommonDBTM extends CommonGLPI
                             if (!$user->getFromDB($value)) {
                                 return '';
                             }
-                            if ($param['comments']) {
+                            if ($options['comments']) {
                                 return $user->getLink() . '&nbsp;' . Html::showToolTip(
                                     $user->getInfoCard(),
                                     ['display' => false]
@@ -4982,7 +4982,7 @@ class CommonDBTM extends CommonGLPI
                             return getUserName($value);
                         }
                         $name = Dropdown::getDropdownName($searchoptions['table'], $value);
-                        if ($param['comments']) {
+                        if ($options['comments']) {
                             $comments = Dropdown::getDropdownComments($searchoptions['table'], (int) $value);
                             return htmlescape($name) . '&nbsp;' . Html::showToolTip(
                                 $comments,

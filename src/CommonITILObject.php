@@ -8213,7 +8213,7 @@ abstract class CommonITILObject extends CommonDBTM
             if ($categ->getFromDB($itilcategories_id)) {
                 $field = $this->getTemplateFieldName($type);
 
-                if (!empty($categ->fields[$field]) && $categ->fields[$field]) {
+                if ($categ->fields[$field]) {
                     // without type and categ
                     if ($tt->getFromDBWithData($categ->fields[$field], false)) {
                         $template_loaded = true;
@@ -8228,7 +8228,7 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         //Get template from profile
-        if (!$template_loaded && $type) {
+        if ($type) {
             $field = $this->getTemplateFieldName($type);
             $field = str_replace(['_incident', '_demand'], ['', ''], $field);
             // load default profile one if not already loaded

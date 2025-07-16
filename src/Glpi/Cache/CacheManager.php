@@ -445,8 +445,7 @@ class CacheManager
                     continue;
                 }
                 if (
-                    !$this->isContextValid($context, true)
-                    || !is_array($context_config)
+                    !is_array($context_config)
                     || !array_key_exists('dsn', $context_config)
                     || !$this->isDsnValid($context_config['dsn'])
                     || (array_key_exists('options', $context_config) && !is_array($context_config['options']))

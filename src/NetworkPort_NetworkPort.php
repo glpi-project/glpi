@@ -309,7 +309,9 @@ class NetworkPort_NetworkPort extends CommonDBRelation
             $netports_id = $this->fields['networkports_id_1'];
         } else {
             $netport->getFromDB($this->fields['networkports_id_2']);
-            if ($netport->fields['itemtype'] === NetworkEquipment::class) {
+            // Note: phpstan doens't understand that `$netport->getFromDB` will
+            // modify the content of `$netport->fields`
+            if ($netport->fields['itemtype'] === NetworkEquipment::class) { // @phpstan-ignore identical.alwaysFalse
                 $netports_id = $this->fields['networkports_id_2'];
             }
         }

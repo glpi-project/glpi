@@ -1492,7 +1492,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $pending_reason_item = new PendingReason_Item();
             $followup_template = ITILFollowupTemplate::getById($pending_reason->fields['itilfollowuptemplates_id']);
             if (
-                $pending_reason && $pending_reason_item->getFromDBByRequest([
+                $pending_reason_item->getFromDBByRequest([
                     'WHERE'  => [
                         'itemtype'  => $objettype,
                         'items_id'  => $item->fields['id'],

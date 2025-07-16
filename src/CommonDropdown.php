@@ -550,17 +550,10 @@ abstract class CommonDropdown extends CommonDBTM
 
             foreach ($fields as $field) {
                 if (is_array($field)) {
-                    // Relation based on 'itemtype'/'items_id' (polymorphic relationship)
-                    if ($this instanceof IPAddress && in_array('mainitemtype', $field) && in_array('mainitems_id', $field)) {
-                        // glpi_ipaddresses relationship that does not respect naming conventions
-                        $itemtype_field = 'mainitemtype';
-                        $items_id_field = 'mainitems_id';
-                    } else {
-                        $itemtype_matches = preg_grep('/^itemtype/', $field);
-                        $items_id_matches = preg_grep('/^items_id/', $field);
-                        $itemtype_field = reset($itemtype_matches);
-                        $items_id_field = reset($items_id_matches);
-                    }
+                    $itemtype_matches = preg_grep('/^itemtype/', $field);
+                    $items_id_matches = preg_grep('/^items_id/', $field);
+                    $itemtype_field = reset($itemtype_matches);
+                    $items_id_field = reset($items_id_matches);
                     $or_criteria[] = [
                         $itemtype_field => $this->getType(),
                         $items_id_field => $this->getID(),

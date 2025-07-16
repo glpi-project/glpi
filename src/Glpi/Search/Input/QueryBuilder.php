@@ -271,7 +271,7 @@ final class QueryBuilder implements SearchInputInterface
             case "lessthan":
             case "under":
             case "notunder":
-                if (!$display && isset($searchopt['field'])) {
+                if (isset($searchopt['field'])) {
                     // Specific cases
                     switch ($searchopt['table'] . "." . $searchopt['field']) {
                         // Add mygroups choice to searchopt
@@ -320,7 +320,7 @@ final class QueryBuilder implements SearchInputInterface
                     }
 
                     // Standard datatype usage
-                    if (!$display && isset($searchopt['datatype'])) {
+                    if (isset($searchopt['datatype'])) {
                         switch ($searchopt['datatype']) {
                             case "date":
                             case "date_delay":

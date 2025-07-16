@@ -571,9 +571,7 @@ class Supplier extends CommonDBTM
                         if ($prem) {
                             $prem = false;
                             $title = $item->getTypeName($nb);
-                            if ($nb > 0) {
-                                $title = sprintf(__('%1$s: %2$s'), $title, $nb);
-                            }
+                            $title = sprintf(__('%1$s: %2$s'), $title, $nb);
                             echo "<td class='center top' rowspan='$nb'>" . htmlescape($title) . "</td>";
                         }
                         echo "<td class='center'>" . Dropdown::getDropdownName(

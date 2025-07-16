@@ -2182,7 +2182,7 @@ class Plugin extends CommonDBTM
             if (isset($infos['requirements']['glpi'])) {
                 $glpi = $infos['requirements']['glpi'];
                 if (isset($glpi['min']) || isset($glpi['max'])) {
-                    $ret = $ret && $this->checkGlpiVersion($infos['requirements']['glpi']);
+                    $ret = $this->checkGlpiVersion($infos['requirements']['glpi']);
                 }
                 if (isset($glpi['params'])) {
                     $ret = $ret && $this->checkGlpiParameters($glpi['params']);
@@ -2756,9 +2756,8 @@ class Plugin extends CommonDBTM
                         }
                     } else {
                         $missing = '';
-                        if (!function_exists("plugin_" . $directory . "_install")) {
-                            $missing .= "plugin_" . $directory . "_install";
-                        }
+                        $missing .= "plugin_" . $directory . "_install";
+
                         //TRANS: %s is the list of missing functions
                         $output .= sprintf(
                             __('%1$s: %2$s'),
@@ -3069,7 +3068,9 @@ TWIG;
                     $plugin->getFromDB($id);
                     if ($plugin->isInstalled($plugin->fields['directory'])) {
                         $plugin->uninstall($id);
-                        if (!$plugin->isInstalled($plugin->fields['directory'])) {
+                        // Note: phpstan doesn't seems to understand here that $plugin->uninstall will modify the return
+                        // value of $plugin->isInstalled().
+                        if (!$plugin->isInstalled($plugin->fields['directory'])) { // @phpstan-ignore booleanNot.alwaysFalse
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                         } else {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
@@ -3084,7 +3085,9 @@ TWIG;
                     $plugin->getFromDB($id);
                     if ($plugin->isInstalled($plugin->fields['directory']) && !$plugin->isActivated($plugin->fields['directory'])) {
                         $plugin->activate($id);
-                        if ($plugin->isActivated($plugin->fields['directory'])) {
+                        // Note: phpstan doesn't seems to understand here that $plugin->activate will modify the return
+                        // value of $plugin->isActivated().
+                        if ($plugin->isActivated($plugin->fields['directory'])) { // @phpstan-ignore if.alwaysFalse
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                         } else {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
@@ -3099,7 +3102,9 @@ TWIG;
                     $plugin->getFromDB($id);
                     if ($plugin->isActivated($plugin->fields['directory'])) {
                         $plugin->unactivate($id);
-                        if (!$plugin->isActivated($plugin->fields['directory'])) {
+                        // Note: phpstan doesn't seems to understand here that $plugin->unactivate will modify the return
+                        // value of $plugin->isActivated().
+                        if (!$plugin->isActivated($plugin->fields['directory'])) { // @phpstan-ignore booleanNot.alwaysFalse
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                         } else {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);

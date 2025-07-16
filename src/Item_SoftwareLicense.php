@@ -1002,14 +1002,9 @@ JAVASCRIPT;
 
             foreach ($columns as $key => $val) {
                 $val = htmlescape($val);
-                // Non order column
-                if ($key[0] == '_') {
-                    $header_end .= "<th>$val</th>";
-                } else {
-                    $header_end .= "<th" . ($sort == "`$key`" ? " class='order_$order'" : '') . ">" .
-                              "<a href='javascript:reloadTab(\"sort=$key&amp;order=" .
-                              (($order == "ASC") ? "DESC" : "ASC") . "&amp;start=0\");'>$val</a></th>";
-                }
+                $header_end .= "<th" . ($sort == "`$key`" ? " class='order_$order'" : '') . ">" .
+                            "<a href='javascript:reloadTab(\"sort=$key&amp;order=" .
+                            (($order == "ASC") ? "DESC" : "ASC") . "&amp;start=0\");'>$val</a></th>";
             }
 
             $header_end .= "</tr>\n";

@@ -230,10 +230,7 @@ class GLPIMailer
             ErrorHandler::logCaughtException($e);
         }
 
-        if ($this->error !== null) {
-            Toolbox::logInFile('mail-error', $this->error . "\n");
-        }
-
+        Toolbox::logInFile('mail-error', $this->error . "\n");
         return false;
     }
 

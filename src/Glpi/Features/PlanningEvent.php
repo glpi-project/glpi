@@ -439,7 +439,9 @@ trait PlanningEvent
             $_SESSION["glpiactiveprofile"][static::$rightname] = READ;
         }
         $visibility_criteria = [];
-        if ($event_obj instanceof ExtraVisibilityCriteria) {
+        // TODO: avoid instanceof in a trait, bad practice.
+        // PHPstan doesn't like it but we can't fix it now.
+        if ($event_obj instanceof ExtraVisibilityCriteria) { // @phpstan-ignore instanceof.alwaysTrue
             $visibility_criteria = $event_obj::getVisibilityCriteria(true);
         }
         $nreadpub  = [];

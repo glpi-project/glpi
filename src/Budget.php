@@ -407,11 +407,7 @@ class Budget extends CommonDropdown
             if ($entity_restrict) {
                 $criteria['WHERE'] += getEntitiesRestrictCriteria($item_table);
             }
-            if ($item instanceof Item_Devices) {
-                $criteria['ORDERBY'][] = $item_table . '.itemtype';
-            } else {
-                $criteria['ORDERBY'][] = $item_table . '.name';
-            }
+            $criteria['ORDERBY'][] = $item_table . '.name';
 
             $criteria['SELECT'][] = match ($itemtype) {
                 'Ticket', 'Problem', 'Change' => QueryFunction::sum(

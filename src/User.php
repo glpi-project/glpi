@@ -5489,7 +5489,9 @@ HTML;
             if ($row['cpt'] == 0) {
                 return $key;
             }
-        } while (!$ok);
+        } while (!$ok); // @phpstan-ignore booleanNot.alwaysTrue
+        // Note: this condition is always true but there is a return statement
+        // above that will be executed when a unique token is generated.
     }
 
 

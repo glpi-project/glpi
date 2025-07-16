@@ -396,9 +396,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                     }
 
                     $mail->text($current->fields['body_text']);
-                    if ($is_html) {
-                        $mail->html($current->fields['body_html']);
-                    }
+                    $mail->html($current->fields['body_html']);
                 }
 
                 self::attachDocuments($mail, $documents_to_attach);

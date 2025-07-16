@@ -1047,7 +1047,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
                 'query' => ['crc_token' => self::getSignature($body, $secret)],
             ]);
 
-            if ($response->getStatusCode() == 200 && $response->getBody()) {
+            if ($response->getStatusCode() == 200) {
                 $response_challenge = $response->getBody()->getContents();
                 //check response
                 if ($response_challenge == hash_hmac('sha256', self::getSignature($body, $secret), $secret)) {

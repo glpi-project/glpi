@@ -4347,10 +4347,8 @@ final class SQLProvider implements SearchProviderInterface
 
             if (!empty($COMMONWHERE)) {
                 $LINK = " AND ";
-                if ($first) {
-                    $LINK  = " WHERE ";
-                    $first = false;
-                }
+                $LINK  = " WHERE ";
+                $first = false;
                 $query_num .= $LINK . $COMMONWHERE;
             }
             // Union Search :
@@ -4380,12 +4378,12 @@ final class SQLProvider implements SearchProviderInterface
                             $query_num .= " AND `$ctable`.`id` IS NOT NULL ";
 
                             // Add deleted if item have it
-                            if ($citem && $citem->maybeDeleted()) {
+                            if ($citem->maybeDeleted()) {
                                 $query_num .= " AND `$ctable`.`is_deleted` = 0 ";
                             }
 
                             // Remove template items
-                            if ($citem && $citem->maybeTemplate()) {
+                            if ($citem->maybeTemplate()) {
                                 $query_num .= " AND `$ctable`.`is_template` = 0 ";
                             }
                         } else {// Ref table case
@@ -4487,12 +4485,12 @@ final class SQLProvider implements SearchProviderInterface
                         $tmpquery .= " AND `$ctable`.`id` IS NOT NULL ";
 
                         // Add deleted if item have it
-                        if ($citem && $citem->maybeDeleted()) {
+                        if ($citem->maybeDeleted()) {
                             $tmpquery .= " AND `$ctable`.`is_deleted` = 0 ";
                         }
 
                         // Remove template items
-                        if ($citem && $citem->maybeTemplate()) {
+                        if ($citem->maybeTemplate()) {
                             $tmpquery .= " AND `$ctable`.`is_template` = 0 ";
                         }
 
@@ -5075,15 +5073,13 @@ final class SQLProvider implements SearchProviderInterface
                 if (key($searchopt) !== null) {
                     //search optgroup (non array option)
                     while (
-                        key($searchopt) !== null
-                        && is_numeric(key($searchopt))
+                        is_numeric(key($searchopt))
                         && is_array(current($searchopt))
                     ) {
                         prev($searchopt);
                     }
                     if (
-                        key($searchopt) !== null
-                        && key($searchopt) !== "common"
+                        key($searchopt) !== "common"
                         && !isset($data['data']['cols'][$num]['groupname'])
                     ) {
                         $data['data']['cols'][$num]['groupname'] = current($searchopt);
@@ -6666,21 +6662,19 @@ final class SQLProvider implements SearchProviderInterface
                     }
 
                     $out = "";
-                    if ($progressbar_data['percent'] !== null) {
-                        $out = <<<HTML
-                  <span class='text-nowrap'>
-                     {$progressbar_data['text']}
-                  </span>
-                  <div class="progress" style="height: 16px">
-                     <div class="progress-bar progress-bar-striped" role="progressbar"
-                          style="width: {$progressbar_data['percent']}%; background-color: {$progressbar_data['color']};"
-                          aria-valuenow="{$progressbar_data['percent']}"
-                          aria-valuemin="0" aria-valuemax="100">
-                        {$progressbar_data['percent_text']}%
-                     </div>
-                  </div>
+                    $out = <<<HTML
+                <span class='text-nowrap'>
+                    {$progressbar_data['text']}
+                </span>
+                <div class="progress" style="height: 16px">
+                    <div class="progress-bar progress-bar-striped" role="progressbar"
+                        style="width: {$progressbar_data['percent']}%; background-color: {$progressbar_data['color']};"
+                        aria-valuenow="{$progressbar_data['percent']}"
+                        aria-valuemin="0" aria-valuemax="100">
+                    {$progressbar_data['percent_text']}%
+                    </div>
+                </div>
 HTML;
-                    }
 
                     return $out;
             }
