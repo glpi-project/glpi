@@ -32,7 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Search\CriteriaFilter;
 use Glpi\Search\FilterableInterface;
 use Glpi\Search\FilterableTrait;
 
@@ -122,11 +122,11 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
 
     public static function getSearchCriteria(string $itemtype): ?array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $default_table = self::getTable();
-        $filter_table = \Glpi\Search\CriteriaFilter::getTable();
+        $filter_table = CriteriaFilter::getTable();
 
         $criteria = [
             'SELECT' => [

@@ -362,7 +362,7 @@ function step4($databasename, $newdatabasename)
 //send telemetry information
 function step6()
 {
-    /** @var \DBmysql $DB */
+    /** @var DBmysql $DB */
     global $DB;
 
     include_once(GLPI_CONFIG_DIR . "/config_db.php");
@@ -430,7 +430,7 @@ function update1($dbname)
     if (empty($dbname)) {
         $error = __('Please select a database.');
     } else {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $DB = DBConnection::getDbInstanceUsingParameters($host, $user, $password, $dbname);
         $update = new Update($DB);

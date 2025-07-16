@@ -31,11 +31,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \Migration $migration
+ * @var Migration $migration
  */
-
 // Add pendingreasons_id field
 $migration->addField("glpi_tasktemplates", "pendingreasons_id", "fkey");
 $migration->addKey("glpi_tasktemplates", "pendingreasons_id");

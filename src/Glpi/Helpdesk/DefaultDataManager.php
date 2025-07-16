@@ -35,6 +35,7 @@
 
 namespace Glpi\Helpdesk;
 
+use RuntimeException;
 use Entity;
 use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
@@ -268,7 +269,7 @@ final class DefaultDataManager
 
         $form = Form::getById($form_id);
         if (!$form_id || !$form instanceof Form) {
-            throw new \RuntimeException("Failed to create form");
+            throw new RuntimeException("Failed to create form");
         }
 
         return $form;
@@ -288,7 +289,7 @@ final class DefaultDataManager
         // Create question
         $question = new Question();
         if (!$question->add($question_data)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 "Failed to create question: " . json_encode($question_data)
             );
         }
@@ -379,7 +380,7 @@ final class DefaultDataManager
         ]);
 
         if (!$success) {
-            throw new \RuntimeException("Failed configure destination");
+            throw new RuntimeException("Failed configure destination");
         }
     }
 }

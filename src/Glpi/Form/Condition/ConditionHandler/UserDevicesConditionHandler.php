@@ -34,6 +34,7 @@
 
 namespace Glpi\Form\Condition\ConditionHandler;
 
+use CommonDBTM;
 use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ValueOperator;
 use Override;
@@ -161,7 +162,7 @@ final class UserDevicesConditionHandler implements ConditionHandlerInterface
     /**
      * Get all device types supported by getMyDevices
      *
-     * @return class-string<\CommonDBTM>[]
+     * @return class-string<CommonDBTM>[]
      */
     private function getSupportedDeviceTypes(): array
     {

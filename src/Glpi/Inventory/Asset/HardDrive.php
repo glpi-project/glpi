@@ -35,6 +35,7 @@
 
 namespace Glpi\Inventory\Asset;
 
+use Item_DeviceHardDrive;
 use Glpi\Inventory\Conf;
 
 class HardDrive extends Device
@@ -77,6 +78,6 @@ class HardDrive extends Device
 
     public function getItemtype(): string
     {
-        return \Item_DeviceHardDrive::class;
+        return Item_DeviceHardDrive::class;
     }
 }

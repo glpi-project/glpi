@@ -76,7 +76,7 @@ class Stat extends CommonGLPI
      */
     public static function getItems($itemtype, $date1, $date2, $type, $parent = 0)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (!$item = getItemForItemtype($itemtype)) {
@@ -953,7 +953,7 @@ class Stat extends CommonGLPI
     ) {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
-        $DB = \DBConnection::getReadConnection();
+        $DB = DBConnection::getReadConnection();
 
         if (!$item = getItemForItemtype($itemtype)) {
             return;

@@ -31,12 +31,10 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 $validation_tables = ['glpi_ticketvalidations', 'glpi_changevalidations'];

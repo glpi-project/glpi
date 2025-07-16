@@ -348,7 +348,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
             );
             if (!$is_state_ok) {
                 // Should not happens as installation should put plugin in awaited state
-                throw new \Symfony\Component\Console\Exception\LogicException('Unexpected plugin state.');
+                throw new LogicException('Unexpected plugin state.');
             }
         }
 
@@ -409,7 +409,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
             $result = $this->db->delete($table, [1]);
 
             if (!$result) {
-                throw new \Symfony\Component\Console\Exception\RuntimeException(
+                throw new RuntimeException(
                     sprintf('Unable to truncate table "%s"', $table)
                 );
             }
@@ -583,7 +583,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 }
 
                 if (null === $new_model_itemtype) {
-                    throw new \Symfony\Component\Console\Exception\LogicException(
+                    throw new LogicException(
                         sprintf('Answer "%s" has no corresponding itemtype.', $answer)
                     );
                 }

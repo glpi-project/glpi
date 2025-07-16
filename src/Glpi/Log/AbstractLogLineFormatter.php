@@ -34,13 +34,15 @@
 
 namespace Glpi\Log;
 
+use Override;
+use Throwable;
 use Glpi\Error\ErrorUtils;
 use Monolog\Formatter\LineFormatter;
 
 abstract class AbstractLogLineFormatter extends LineFormatter
 {
-    #[\Override()]
-    protected function normalizeException(\Throwable $e, int $depth = 0): string
+    #[Override()]
+    protected function normalizeException(Throwable $e, int $depth = 0): string
     {
         $message = \sprintf(
             "\n  Backtrace :\n%s",
@@ -57,7 +59,7 @@ abstract class AbstractLogLineFormatter extends LineFormatter
             )
         );
 
-        if (($previous = $e->getPrevious()) instanceof \Throwable) {
+        if (($previous = $e->getPrevious()) instanceof Throwable) {
             do {
                 $depth++;
                 $message .= sprintf(

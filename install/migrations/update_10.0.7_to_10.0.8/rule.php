@@ -31,18 +31,15 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-
 //move criteria 'os_name' to 'name' for 'RuleDictionnaryOperatingSystem'
 //move criteria 'os_version' to 'name' for 'RuleDictionnaryOperatingSystemVersion'
 //move criteria 'os_edition' to 'name' for 'RuleDictionnaryOperatingSystemEdition'
 //move criteria 'arch_name' to 'name' for 'RuleDictionnaryOperatingSystemArchitecture'
 //move criteria 'servicepack_name' to 'name' for 'RuleDictionnaryOperatingSystemServicePack'
-
 $sub_types = [
     'servicepack_name' => 'RuleDictionnaryOperatingSystemServicePack',
     'os_edition' => 'RuleDictionnaryOperatingSystemEdition',

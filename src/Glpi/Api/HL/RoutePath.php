@@ -35,6 +35,9 @@
 
 namespace Glpi\Api\HL;
 
+use Exception;
+use Throwable;
+use RuntimeException;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Doc\Parameter;
 use Glpi\Api\HL\Middleware\AbstractMiddleware;
@@ -152,20 +155,20 @@ final class RoutePath
             [$controller, $method] = explode('::', $this->key);
             try {
                 if (!\is_a($controller, AbstractController::class, true)) {
-                    throw new \Exception('Invalid controller');
+                    throw new Exception('Invalid controller');
                 }
                 $this->controller = new ReflectionClass($controller);
                 $this->method = $this->controller->getMethod($method);
                 if (!$this->method->isPublic()) {
-                    throw new \Exception('Method is not public');
+                    throw new Exception('Method is not public');
                 }
                 $route_attributes = $this->method->getAttributes(Route::class);
                 if (count($route_attributes) === 0) {
-                    throw new \Exception("RoutePath has no Route attribute");
+                    throw new Exception("RoutePath has no Route attribute");
                 }
                 $this->route = $route_attributes[0]->newInstance();
-            } catch (\Throwable $e) {
-                throw new \RuntimeException(
+            } catch (Throwable $e) {
+                throw new RuntimeException(
                     "Unable to hydrate RoutePath {$this->key}: {$e->getMessage()}",
                     0,
                     $e
@@ -442,7 +445,7 @@ final class RoutePath
         }, $compiled_path);
 
         if ($compiled_path === null) {
-            throw new \RuntimeException('Failed to compile path');
+            throw new RuntimeException('Failed to compile path');
         }
 
         // Ensure the compiled path starts with a slash but does not end with one (unless the path is just '/')
@@ -477,7 +480,7 @@ final class RoutePath
         if ($response instanceof Response) {
             return $response;
         }
-        throw new \RuntimeException('Controller method must return a Response object');
+        throw new RuntimeException('Controller method must return a Response object');
     }
 
     /**

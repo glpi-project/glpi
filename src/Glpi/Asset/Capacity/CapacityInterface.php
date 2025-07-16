@@ -34,6 +34,7 @@
 
 namespace Glpi\Asset\Capacity;
 
+use CommonDBTM;
 use Glpi\Asset\Asset;
 use Glpi\Asset\CapacityConfig;
 
@@ -74,7 +75,7 @@ interface CapacityInterface
     /**
      * Get the search options related to the capacity.
      *
-     * @param class-string<\Glpi\Asset\Asset> $classname
+     * @param class-string<Asset> $classname
      * @return array
      */
     public function getSearchOptions(string $classname): array;
@@ -90,14 +91,14 @@ interface CapacityInterface
     /**
      * Get array of classes related to the capacity which should be cloned when the asset is cloned.
      * @return array
-     * @phpstan-return class-string<\CommonDBTM>[]
+     * @phpstan-return class-string<CommonDBTM>[]
      */
     public function getCloneRelations(): array;
 
     /**
      * Indicates whether the capacity is used by given asset class.
      *
-     * @param class-string<\Glpi\Asset\Asset> $classname
+     * @param class-string<Asset> $classname
      * @return bool
      */
     public function isUsed(string $classname): bool;
@@ -105,7 +106,7 @@ interface CapacityInterface
     /**
      * Get the capacity usage description for given asset class.
      *
-     * @param class-string<\Glpi\Asset\Asset> $classname
+     * @param class-string<Asset> $classname
      * @return string
      */
     public function getCapacityUsageDescription(string $classname): string;
@@ -113,7 +114,7 @@ interface CapacityInterface
     /**
      * Method executed during asset classes bootstraping.
      *
-     * @param class-string<\Glpi\Asset\Asset> $classname
+     * @param class-string<Asset> $classname
      * @param CapacityConfig $config
      * @return void
      */
@@ -122,7 +123,7 @@ interface CapacityInterface
     /**
      * Method executed when capacity is enabled on given asset class.
      *
-     * @param class-string<\Glpi\Asset\Asset> $classname
+     * @param class-string<Asset> $classname
      * @param CapacityConfig $config
      * @return void
      */
@@ -131,7 +132,7 @@ interface CapacityInterface
     /**
      * Method executed when capacity is disabled on given asset class.
      *
-     * @param class-string<\Glpi\Asset\Asset> $classname
+     * @param class-string<Asset> $classname
      * @param CapacityConfig $config
      * @return void
      */
@@ -140,7 +141,7 @@ interface CapacityInterface
     /**
      * Method executed when capacity is updated on given asset class.
      *
-     * @param class-string<\Glpi\Asset\Asset> $classname
+     * @param class-string<Asset> $classname
      * @param CapacityConfig $old_config
      * @param CapacityConfig $new_config
      * @return void

@@ -34,6 +34,8 @@
 
 namespace Glpi\Kernel\Listener\ExceptionListener;
 
+use Throwable;
+use Psr\Log\LoggerInterface;
 use Glpi\Progress\ProgressStorage;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -54,8 +56,8 @@ final readonly class ProgressErrorListener implements EventSubscriberInterface
     {
         try {
             $this->progress_storage->failCurrentProcessIndicators();
-        } catch (\Throwable $e) {
-            /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+        } catch (Throwable $e) {
+            /** @var LoggerInterface $PHPLOGGER */
             global $PHPLOGGER;
             $PHPLOGGER->error(
                 $e->getMessage(),

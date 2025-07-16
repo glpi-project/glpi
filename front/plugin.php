@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Marketplace\View;
+use Glpi\Application\View\TemplateRenderer;
+
 require_once(__DIR__ . '/_check_webserver_config.php');
 
 Session::checkRight("config", UPDATE);
@@ -44,13 +47,13 @@ $plugin->checkStates(true);
 
 Html::header(__('Setup'), '', "config", "plugin");
 
-\Glpi\Marketplace\View::showFeatureSwitchDialog();
+View::showFeatureSwitchDialog();
 
 echo $plugin->getPluginsListSuspendBanner();
 
 Search::show('Plugin');
 
-echo \Glpi\Application\View\TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
     <div class="text-center my-2">
         <a href="https://plugins.glpi-project.org" class="btn btn-primary" role="button">
             <i class="ti ti-eye"></i>

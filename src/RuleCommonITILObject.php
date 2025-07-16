@@ -71,7 +71,7 @@ abstract class RuleCommonITILObject extends Rule
         }
 
         if ($itemtype === null) {
-            throw new \RuntimeException(sprintf('Unable to compute related itemtype for class "%s".', static::class));
+            throw new RuntimeException(sprintf('Unable to compute related itemtype for class "%s".', static::class));
         }
 
         return $itemtype;

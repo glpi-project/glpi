@@ -34,6 +34,7 @@
 
 namespace Glpi\Migration;
 
+use CommonDBTM;
 use Glpi\Message\MessageType;
 
 /**
@@ -49,25 +50,25 @@ class PluginMigrationResult
     /**
      * Migration messages.
      *
-     * @var array<int, array{type: \Glpi\Message\MessageType, message: string}>
+     * @var array<int, array{type: MessageType, message: string}>
      */
     private array $messages = [];
 
     /**
      * IDs of created items.
-     * @var array<class-string<\CommonDBTM>, array<int, int>>
+     * @var array<class-string<CommonDBTM>, array<int, int>>
      */
     private array $created_items_ids = [];
 
     /**
      * IDs of reused items.
-     * @var array<class-string<\CommonDBTM>, array<int, int>>
+     * @var array<class-string<CommonDBTM>, array<int, int>>
      */
     private array $reused_items_ids = [];
 
     /**
      * IDs of ignored items.
-     * @var array<class-string<\CommonDBTM>, array<int, int>>
+     * @var array<class-string<CommonDBTM>, array<int, int>>
      */
     private array $ignored_items_ids = [];
 
@@ -113,7 +114,7 @@ class PluginMigrationResult
     /**
      * Get the messages.
      *
-     * @return array<int, array{type: \Glpi\Message\MessageType, message: string}>
+     * @return array<int, array{type: MessageType, message: string}>
      */
     public function getMessages(): array
     {
@@ -123,7 +124,7 @@ class PluginMigrationResult
     /**
      * Mark an item as created.
      *
-     * @param class-string<\CommonDBTM> $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      * @param int $id
      */
     public function markItemAsCreated(string $itemtype, int $id): void
@@ -138,7 +139,7 @@ class PluginMigrationResult
     /**
      * Return the IDs of the created items.
      *
-     * @return array<class-string<\CommonDBTM>, array<int, int>>
+     * @return array<class-string<CommonDBTM>, array<int, int>>
      */
     public function getCreatedItemsIds(): array
     {
@@ -148,7 +149,7 @@ class PluginMigrationResult
     /**
      * Mark an item as reused.
      *
-     * @param class-string<\CommonDBTM> $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      * @param int $id
      */
     public function markItemAsReused(string $itemtype, int $id): void
@@ -163,7 +164,7 @@ class PluginMigrationResult
     /**
      * Return the IDs of the reused items.
      *
-     * @return array<class-string<\CommonDBTM>, array<int, int>>
+     * @return array<class-string<CommonDBTM>, array<int, int>>
      */
     public function getReusedItemsIds(): array
     {
@@ -173,7 +174,7 @@ class PluginMigrationResult
     /**
      * Mark an item as ignored.
      *
-     * @param class-string<\CommonDBTM> $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      * @param int $id
      */
     public function markItemAsIgnored(string $itemtype, int $id): void
@@ -188,7 +189,7 @@ class PluginMigrationResult
     /**
      * Return the IDs of the ignored items.
      *
-     * @return array<class-string<\CommonDBTM>, array<int, int>>
+     * @return array<class-string<CommonDBTM>, array<int, int>>
      */
     public function getIgnoredItemsIds(): array
     {

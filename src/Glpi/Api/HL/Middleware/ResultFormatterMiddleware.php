@@ -35,6 +35,8 @@
 
 namespace Glpi\Api\HL\Middleware;
 
+use JsonException;
+use SimpleXMLElement;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Response;
 
@@ -48,7 +50,7 @@ class ResultFormatterMiddleware extends AbstractMiddleware implements ResponseMi
         }
         try {
             $data = json_decode($input->response->getBody(), true, 512, JSON_THROW_ON_ERROR);
-        } catch (\JsonException $e) {
+        } catch (JsonException $e) {
             $next($input);
             return;
         }
@@ -96,7 +98,7 @@ class ResultFormatterMiddleware extends AbstractMiddleware implements ResponseMi
 
     private function formatXML(array $data): string
     {
-        $xml = new \SimpleXMLElement('<root/>');
+        $xml = new SimpleXMLElement('<root/>');
         $fn_get_data = static function ($data, $xml) use (&$fn_get_data) {
             if (is_array($data)) {
                 foreach ($data as $key => $value) {

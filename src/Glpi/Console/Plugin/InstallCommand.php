@@ -35,6 +35,7 @@
 
 namespace Glpi\Console\Plugin;
 
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Auth;
 use Plugin;
 use Session;
@@ -99,7 +100,7 @@ class InstallCommand extends AbstractPluginCommand
         parent::interact($input, $output);
 
         if (null === $input->getOption('username')) {
-            /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
+            /** @var QuestionHelper $question_helper */
             $question_helper = $this->getHelper('question');
             $value = $question_helper->ask(
                 $input,
@@ -257,7 +258,7 @@ class InstallCommand extends AbstractPluginCommand
             $_SESSION['glpi_use_mode'] = $session_use_mode;
             Session::loadLanguage();
         } else {
-            throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 __('User name defined by --username option is invalid.')
             );
         }

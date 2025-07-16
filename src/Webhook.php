@@ -32,7 +32,12 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Features\Clonable;
+use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
+use Twig\Extra\Markdown\MarkdownExtension;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\GuzzleException;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Controller\AssetController;
 use Glpi\Api\HL\Controller\CustomAssetController;
@@ -54,7 +59,7 @@ use function Safe\json_encode;
 
 class Webhook extends CommonDBTM implements FilterableInterface
 {
-    use Glpi\Features\Clonable;
+    use Clonable;
     use FilterableTrait;
 
     public static $rightname         = 'config';
@@ -485,7 +490,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
     private function getAPIResponse(string $path): ?array
     {
         $router = Router::getInstance();
-        $router->registerAuthMiddleware(new \Glpi\Api\HL\Middleware\InternalAuthMiddleware());
+        $router->registerAuthMiddleware(new InternalAuthMiddleware());
         $path = rtrim($path, '/');
         $request = new Request('GET', $path);
         $response = Session::callAsSystem(static fn() => $router->handleRequest($request));
@@ -539,7 +544,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
                 };
                 $data = $fn_desanitize($data);
                 try {
-                    return TemplateManager::render($payload_template, $data, false, [new \Twig\Extra\Markdown\MarkdownExtension()]);
+                    return TemplateManager::render($payload_template, $data, false, [new MarkdownExtension()]);
                 } catch (Throwable $e) {
                     return null;
                 }
@@ -1067,7 +1072,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
                     'message' => $response->getReasonPhrase(),
                 ];
             }
-        } catch (\GuzzleHttp\Exception\ClientException | \GuzzleHttp\Exception\RequestException $e) {
+        } catch (ClientException | RequestException $e) {
             $challenge_response['status'] = false;
             if ($e->hasResponse()) {
                 $response = $e->getResponse();
@@ -1077,7 +1082,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
                 $challenge_response['message'] = $e->getMessage();
                 $challenge_response['status_code'] = 503;
             }
-        } catch (\GuzzleHttp\Exception\GuzzleException $e) {
+        } catch (GuzzleException $e) {
             $challenge_response['status'] = false;
             $challenge_response['message'] = $e->getMessage();
         }
@@ -1093,7 +1098,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
      */
     public static function raise(string $event, CommonDBTM $item): void
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // Ignore raising if the table doesn't exist (happens during install/update)
@@ -1139,7 +1144,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
             $match_entity = false;
             if ($item->isEntityAssign()) {
                 if ($webhook_data['is_recursive']) {
-                    $parent_entities = getAncestorsOf(\Entity::getTable(), $item->getEntityID());
+                    $parent_entities = getAncestorsOf(Entity::getTable(), $item->getEntityID());
                     if (in_array($webhook_data['entities_id'], $parent_entities, true)) {
                         $match_entity = true;
                     }
@@ -1177,7 +1182,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
             foreach ($custom_headers as $key => $value) {
                 try {
                     $custom_headers[$key] = TemplateManager::render($value, $api_data, false);
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     // Header will not be sent
                 }
             }

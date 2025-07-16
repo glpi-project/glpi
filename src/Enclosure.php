@@ -32,7 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Features\DCBreadcrumb;
+use Glpi\Features\Clonable;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssignableItem;
 
@@ -41,8 +42,8 @@ use Glpi\Features\AssignableItem;
  **/
 class Enclosure extends CommonDBTM
 {
-    use Glpi\Features\DCBreadcrumb;
-    use Glpi\Features\Clonable;
+    use DCBreadcrumb;
+    use Clonable;
     use Glpi\Features\State;
     use AssignableItem {
         prepareInputForAdd as prepareInputForAddAssignableItem;
@@ -276,7 +277,7 @@ class Enclosure extends CommonDBTM
      */
     public function getFilled($itemtype = null, $items_id = null)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

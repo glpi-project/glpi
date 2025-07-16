@@ -35,6 +35,9 @@
 
 namespace Glpi\UI;
 
+use Toolbox;
+use RuntimeException;
+
 use function Safe\glob;
 use function Safe\file_get_contents;
 use function Safe\preg_match;
@@ -161,7 +164,7 @@ class ThemeManager
             foreach ($file_matches as $file_name => $file) {
                 if (!in_array($file_name, $core_keys, true)) {
                     if (str_contains($file, self::CORE_THEME_ROOT)) {
-                        \Toolbox::deprecated('Custom theme file "' . $file_name . '" should be moved to ' . $custom_themes_dir);
+                        Toolbox::deprecated('Custom theme file "' . $file_name . '" should be moved to ' . $custom_themes_dir);
                     }
                     // Guess dark mode based on if the file contains "$is-dark: true;"
                     $file_content = file_get_contents($file);
@@ -201,7 +204,7 @@ class ThemeManager
         }
         // If the theme is still null, trigger an error
         if ($theme === null) {
-            throw new \RuntimeException('Theme "' . $current . '" not found');
+            throw new RuntimeException('Theme "' . $current . '" not found');
         }
         return $theme;
     }

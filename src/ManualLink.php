@@ -151,7 +151,7 @@ class ManualLink extends CommonDBChild
      */
     public static function getForItem(CommonDBTM $item): iterable
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $iterator = $DB->request([
             'FROM'         => 'glpi_manuallinks',

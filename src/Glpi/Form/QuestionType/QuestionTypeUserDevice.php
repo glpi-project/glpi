@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\QuestionType;
 
+use CommonDBTM;
 use CommonItilObject_Item;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
@@ -228,7 +229,7 @@ TWIG;
             $device_parts = [];
             if (
                 preg_match('/^(?<itemtype>.+)_(?<id>\d+)$/', $device, $device_parts) !== 1
-                || !is_a($device_parts['itemtype'], \CommonDBTM::class, true)
+                || !is_a($device_parts['itemtype'], CommonDBTM::class, true)
                 || $device_parts['itemtype']::getById($device_parts['id']) === false
             ) {
                 continue;

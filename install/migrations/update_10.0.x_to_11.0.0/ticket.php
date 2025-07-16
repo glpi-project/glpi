@@ -31,14 +31,12 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-
-$migration->addRight('ticket', \Ticket::READNEWTICKET, [
-    'ticket' => \Ticket::ASSIGN,
+$migration->addRight('ticket', Ticket::READNEWTICKET, [
+    'ticket' => Ticket::ASSIGN,
 ]);
 
 if (!$DB->fieldExists('glpi_tickets', 'externalid')) {

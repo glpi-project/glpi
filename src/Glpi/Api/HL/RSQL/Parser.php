@@ -35,7 +35,9 @@
 
 namespace Glpi\Api\HL\RSQL;
 
-use Glpi\Api\HL\Doc;
+use DBmysql;
+use DBmysqlIterator;
+use Glpi\Api\HL\Doc\Schema;
 use Glpi\Api\HL\Search;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
@@ -50,11 +52,11 @@ final class Parser
 {
     private Search $search;
 
-    private \DBmysql $db;
+    private DBmysql $db;
 
     public function __construct(Search $search)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $this->search = $search;
         $this->db = $DB;
@@ -220,7 +222,7 @@ final class Parser
      */
     public function parse(array $tokens): Result
     {
-        $it = new \DBmysqlIterator($this->db);
+        $it = new DBmysqlIterator($this->db);
         // We are building a SQL string instead of criteria array because it isn't worth the complexity or overhead.
         // Everything done here should be standard SQL. If there is a platform difference, it should be handled in the callables for each operator.
         // SQL already will process logical separators (AND, OR) in the correct order, so we don't need to worry about that.
@@ -279,7 +281,7 @@ final class Parser
                     if (isset($flat_props[$buffer['property']])) {
                         $value = match ($flat_props[$buffer['property']]['type']) {
                             // Boolean values are stored as 0 or 1 in the database, but the user may try using "true" or "false" in the RSQL query
-                            Doc\Schema::TYPE_BOOLEAN => filter_var($value, FILTER_VALIDATE_BOOLEAN) ? 1 : 0,
+                            Schema::TYPE_BOOLEAN => filter_var($value, FILTER_VALIDATE_BOOLEAN) ? 1 : 0,
                             default => $value,
                         };
                     }

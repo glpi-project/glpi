@@ -32,7 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Features\Clonable;
+use Glpi\Inventory\Conf;
+use Glpi\Dashboard\Grid;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\DBAL\QueryExpression;
@@ -48,7 +50,7 @@ use Glpi\Toolbox\ArrayNormalizer;
  **/
 class Profile extends CommonDBTM implements LinkableToTilesInterface
 {
-    use \Glpi\Features\Clonable;
+    use Clonable;
 
     // Specific ones
 
@@ -220,7 +222,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
     public function post_updateItem($history = true)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (count($this->profileRight) > 0) {
@@ -269,7 +271,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
     public function post_addItem()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         ProfileRight::fillProfileRights($this->fields['id']);
@@ -702,7 +704,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      **/
     public static function currentUserHaveMoreRightThan($IDs = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (Session::isCron()) {
@@ -932,7 +934,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                             $fn_get_rights(Form::class, 'central'),
                         ],
                         'inventory' => [
-                            $fn_get_rights(\Glpi\Inventory\Conf::class, 'central', [
+                            $fn_get_rights(Conf::class, 'central', [
                                 'label' => __('Inventory'),
                                 'field' => 'inventory',
                                 'scope' => 'global',
@@ -1048,7 +1050,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                                 'field'  => 'personalization',
                                 'scope'     => 'entity',
                             ]),
-                            $fn_get_rights(\Glpi\Dashboard\Grid::class, 'central', [
+                            $fn_get_rights(Grid::class, 'central', [
                                 'label'     => __('All dashboards'),
                                 'field'     => 'dashboard',
                                 'scope'     => 'entity',
@@ -2102,7 +2104,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'field'              => 'rights',
             'name'               => __('All dashboards'),
             'datatype'           => 'right',
-            'rightclass'         => Glpi\Dashboard\Grid::class,
+            'rightclass'         => Grid::class,
             'rightname'          => 'dashboard',
             'joinparams'         => [
                 'jointype'           => 'child',
@@ -2588,11 +2590,11 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'field'              => 'rights',
             'name'               => __('Inventory'),
             'datatype'           => 'right',
-            'rightclass'         => \Glpi\Inventory\Conf::class,
-            'rightname'          => \Glpi\Inventory\Conf::$rightname,
+            'rightclass'         => Conf::class,
+            'rightname'          => Conf::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => \Glpi\Inventory\Conf::$rightname],
+                'condition'          => ['NEWTABLE.name' => Conf::$rightname],
             ],
         ];
 
@@ -3227,7 +3229,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      **/
     public static function dropdownUnder($options = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $p['name']  = 'profiles_id';
@@ -3270,7 +3272,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      **/
     public static function getDefault()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $profiles = $DB->request([
@@ -3362,7 +3364,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      */
     public function getDomainRecordTypes()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -3419,7 +3421,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      */
     public static function haveUserRight($user_id, $rightname, $rightvalue, $entity_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request(

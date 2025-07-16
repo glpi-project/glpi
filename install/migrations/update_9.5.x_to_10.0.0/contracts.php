@@ -31,11 +31,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \Migration $migration
+ * @var Migration $migration
  */
-
 $migration->changeField(Contract::getTable(), 'use_monday', 'use_sunday', 'bool');
 $migration->dropKey(Contract::getTable(), 'use_monday');
 $migration->changeField(Contract::getTable(), 'monday_begin_hour', 'sunday_begin_hour', 'time', [

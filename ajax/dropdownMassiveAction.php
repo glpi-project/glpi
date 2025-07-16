@@ -40,7 +40,7 @@ Html::header_nocache();
 
 try {
     $ma = new MassiveAction($_POST, $_GET, 'specialize');
-} catch (\Throwable $e) {
+} catch (Throwable $e) {
     $twig_params = [
         'title' => __('Warning'),
         'text' => $e->getMessage(),

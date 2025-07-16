@@ -35,7 +35,9 @@
 
 namespace Glpi\Exception;
 
-class PasswordTooWeakException extends \Exception
+use Exception;
+
+class PasswordTooWeakException extends Exception
 {
     private $messages = [];
 

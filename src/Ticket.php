@@ -173,7 +173,7 @@ class Ticket extends CommonITILObject
     {
         $ticket = new Ticket();
         if ($ticket->getFromDB($ticket_id)) {
-            $ticket_user = new \Ticket_User();
+            $ticket_user = new Ticket_User();
             $ticket_user = $ticket_user->find([
                 'tickets_id' => $ticket_id,
                 'users_id'   => $user_id,
@@ -777,7 +777,7 @@ class Ticket extends CommonITILObject
                     default:
                         if ($item->getType() != self::class) {
                             // Deprecated, these items should use the Item_Ticket tab instead
-                            \Toolbox::deprecated("You should register the `Item_Ticket` tab instead of the `Ticket` tab");
+                            Toolbox::deprecated("You should register the `Item_Ticket` tab instead of the `Ticket` tab");
                             return (new Item_Ticket())->getTabNameForItem($item, $withtemplate);
                         }
                         break;
@@ -831,7 +831,7 @@ class Ticket extends CommonITILObject
             case SLA::class:
             case OLA::class:
             default:
-                \Toolbox::deprecated("You should register the `Item_Ticket` tab instead of the `Ticket` tab");
+                Toolbox::deprecated("You should register the `Item_Ticket` tab instead of the `Ticket` tab");
                 return Item_Ticket::displayTabContentForItem($item, $tabnum, $withtemplate);
         }
         return true;
@@ -1827,7 +1827,7 @@ class Ticket extends CommonITILObject
      **/
     public function countActiveTicketsForItem($itemtype, $items_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -1868,7 +1868,7 @@ class Ticket extends CommonITILObject
      */
     public function getActiveTicketsForItem($itemtype, $items_id, $type)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         return $DB->request([
@@ -1914,7 +1914,7 @@ class Ticket extends CommonITILObject
      **/
     public function countSolvedTicketsForItemLastDays($itemtype, $items_id, $days)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -2581,7 +2581,7 @@ JAVASCRIPT;
 
     public function rawSearchOptions()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $tab = [];
@@ -3407,7 +3407,7 @@ JAVASCRIPT;
      **/
     public static function computeTco(CommonDBTM $item)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $totalcost = 0;
@@ -3821,7 +3821,7 @@ JAVASCRIPT;
      */
     public static function showCentralList($start, $status = "process", bool $showgrouptickets = true, bool $display = true)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (
@@ -4102,7 +4102,7 @@ JAVASCRIPT;
 
                 // Is the survey still valid?
                 $is_valid = $duration_cache[$entities_id] === 0
-                    || (\Safe\strtotime($result['date_begin']) + $duration_cache[$entities_id] * DAY_TIMESTAMP) > \Safe\strtotime($_SESSION['glpi_currenttime']);
+                    || (strtotime($result['date_begin']) + $duration_cache[$entities_id] * DAY_TIMESTAMP) > strtotime($_SESSION['glpi_currenttime']);
                 if (!$is_valid) {
                     // Remove the result from the list
                     unset($results[$k]);
@@ -4654,7 +4654,7 @@ JAVASCRIPT;
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -4785,7 +4785,7 @@ JAVASCRIPT;
 
     public static function showCentralNewList()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (!Session::haveRightsOr(self::$rightname, [self::READALL, self::READNEWTICKET])) {
@@ -5099,7 +5099,7 @@ JAVASCRIPT;
      **/
     public static function cronCloseTicket($task)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ticket = new self();
@@ -5187,7 +5187,7 @@ JAVASCRIPT;
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -5256,7 +5256,7 @@ JAVASCRIPT;
      **/
     public static function cronPurgeTicket(CronTask $task)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ticket = new self();
@@ -5740,7 +5740,7 @@ JAVASCRIPT;
      */
     public static function merge(int $merge_target_id, array $ticket_ids, array &$status, array $params = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $p = [
             'linktypes'          => [],
@@ -5776,7 +5776,7 @@ JAVASCRIPT;
                 if ($merge_target->canUpdateItem() && $ticket->can($id, DELETE)) {
                     if (!$ticket->getFromDB($id)) {
                         //Cannot retrieve ticket. Abort/fail the merge
-                        throw new \RuntimeException(sprintf(__('Failed to load ticket %d'), $id), 1);
+                        throw new RuntimeException(sprintf(__('Failed to load ticket %d'), $id), 1);
                     }
                     //Build followup from the original ticket
                     $input = [
@@ -5791,7 +5791,7 @@ JAVASCRIPT;
                     ];
                     if (!$fup->add($input)) {
                         //Cannot add followup. Abort/fail the merge
-                        throw new \RuntimeException(sprintf(__('Failed to add followup to ticket %d'), $merge_target_id), 1);
+                        throw new RuntimeException(sprintf(__('Failed to add followup to ticket %d'), $merge_target_id), 1);
                     }
                     if (in_array('ITILFollowup', $p['linktypes'])) {
                         // Copy any followups to the ticket
@@ -5806,14 +5806,14 @@ JAVASCRIPT;
                             unset($fup2['id']);
                             if (!$fup->add($fup2)) {
                                 // Cannot add followup. Abort/fail the merge
-                                throw new \RuntimeException(sprintf(__('Failed to add followup to ticket %d'), $merge_target_id), 1);
+                                throw new RuntimeException(sprintf(__('Failed to add followup to ticket %d'), $merge_target_id), 1);
                             }
                         }
                     }
                     if (in_array('TicketTask', $p['linktypes'])) {
                         $merge_tmp = ['tickets_id' => $merge_target_id];
                         if (!$task->can(-1, CREATE, $merge_tmp)) {
-                            throw new \RuntimeException(sprintf(__('Not enough rights to merge tickets %d and %d'), $merge_target_id, $id), 2);
+                            throw new RuntimeException(sprintf(__('Not enough rights to merge tickets %d and %d'), $merge_target_id, $id), 2);
                         }
                         // Copy any tasks to the ticket
                         $tomerge = $task->find([
@@ -5827,13 +5827,13 @@ JAVASCRIPT;
                             unset($task2['uuid']);
                             if (!$task->add($task2)) {
                                 //Cannot add followup. Abort/fail the merge
-                                throw new \RuntimeException(sprintf(__('Failed to add task to ticket %d'), $merge_target_id), 1);
+                                throw new RuntimeException(sprintf(__('Failed to add task to ticket %d'), $merge_target_id), 1);
                             }
                         }
                     }
                     if (in_array('Document', $p['linktypes'])) {
                         if (!$merge_target->canAddItem('Document')) {
-                            throw new \RuntimeException(sprintf(__('Not enough rights to merge tickets %d and %d'), $merge_target_id, $id), 2);
+                            throw new RuntimeException(sprintf(__('Not enough rights to merge tickets %d and %d'), $merge_target_id, $id), 2);
                         }
                         $tomerge = $document_item->find([
                             'itemtype' => 'Ticket',
@@ -5855,7 +5855,7 @@ JAVASCRIPT;
                             unset($document_item2['id']);
                             if (!$document_item->add($document_item2)) {
                                 //Cannot add document. Abort/fail the merge
-                                throw new \RuntimeException(sprintf(__('Failed to add document to ticket %d'), $merge_target_id), 1);
+                                throw new RuntimeException(sprintf(__('Failed to add document to ticket %d'), $merge_target_id), 1);
                             }
                         }
                     }
@@ -5885,7 +5885,7 @@ JAVASCRIPT;
                         ]);
                         if (!$tt->add($linkparams)) {
                             //Cannot link tickets. Abort/fail the merge
-                            throw new \RuntimeException(sprintf(__('Failed to link tickets %d and %d'), $merge_target_id, $id), 1);
+                            throw new RuntimeException(sprintf(__('Failed to link tickets %d and %d'), $merge_target_id, $id), 1);
                         }
                     }
                     if (isset($p['append_actors'])) {
@@ -5979,7 +5979,7 @@ JAVASCRIPT;
                     }
                     //Delete this ticket
                     if (!$ticket->delete(['id' => $id, '_disablenotif' => true])) {
-                        throw new \RuntimeException(sprintf(__('Failed to delete ticket %d'), $id), 1);
+                        throw new RuntimeException(sprintf(__('Failed to delete ticket %d'), $id), 1);
                     }
                     if (!$p['full_transaction']) {
                         $DB->commit();
@@ -5998,9 +5998,9 @@ JAVASCRIPT;
                         )
                     );
                 } else {
-                    throw new \RuntimeException(sprintf(__('Not enough rights to merge tickets %d and %d'), $merge_target_id, $id), 2);
+                    throw new RuntimeException(sprintf(__('Not enough rights to merge tickets %d and %d'), $merge_target_id, $id), 2);
                 }
-            } catch (\RuntimeException $e) {
+            } catch (RuntimeException $e) {
                 if ($e->getCode() < 1 || $e->getCode() > 2) {
                     $status[$id] = 1;
                 } else {
@@ -6029,7 +6029,7 @@ JAVASCRIPT;
     public static function getMergedTickets(int $id): array
     {
         /**
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $DB;
 

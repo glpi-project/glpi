@@ -90,7 +90,7 @@ class NetworkPort_Vlan extends CommonDBRelation
     public static function showForNetworkPort(NetworkPort $port)
     {
         /**
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $DB;
 
@@ -202,7 +202,7 @@ TWIG, $twig_params);
     public static function showForVlan(Vlan $vlan)
     {
         /**
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $DB;
 
@@ -275,7 +275,7 @@ TWIG, $twig_params);
      */
     public static function getVlansForNetworkPort($portID)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $vlans = [];

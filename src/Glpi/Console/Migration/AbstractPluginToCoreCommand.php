@@ -35,6 +35,8 @@
 
 namespace Glpi\Console\Migration;
 
+use Glpi\Console\Exception\EarlyExitException;
+use LogicException;
 use CommonDBTM;
 use Infocom;
 use Plugin;
@@ -137,7 +139,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
                         $plugin->fields['version'],
                         $required_version
                     );
-                    throw new \Glpi\Console\Exception\EarlyExitException(
+                    throw new EarlyExitException(
                         '<error>' . $msg . '</error>',
                         self::ERROR_PLUGIN_VERSION_OR_DATA_INVALID
                     );
@@ -176,7 +178,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
         }
 
         if ($missing_fields) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . __('Migration cannot be done.') . '</error>',
                 self::ERROR_PLUGIN_VERSION_OR_DATA_INVALID
             );
@@ -221,7 +223,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
         }
 
         if (!$skip_errors && !$prevent_exit) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . __('Plugin data import failed.') . '</error>',
                 self::ERROR_PLUGIN_IMPORT_FAILED
             );
@@ -329,7 +331,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
     protected function storeItem(string $itemtype, ?int $existing_item_id, array $input, ?ProgressBar $progress_bar = null): ?CommonDBTM
     {
         if (!is_a($itemtype, CommonDBTM::class, true)) {
-            throw new \LogicException(sprintf('Invalid itemtype "%s".', $itemtype));
+            throw new LogicException(sprintf('Invalid itemtype "%s".', $itemtype));
         }
 
         $item = new $itemtype();

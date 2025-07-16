@@ -44,7 +44,7 @@ class ImpactContext extends CommonDBTM
      * @param ImpactItem $item
      * @return ImpactContext|false
      */
-    public static function findForImpactItem(\ImpactItem $item)
+    public static function findForImpactItem(ImpactItem $item)
     {
         $impactContext = new self();
         $exist = $impactContext->getFromDB($item->fields['impactcontexts_id']);

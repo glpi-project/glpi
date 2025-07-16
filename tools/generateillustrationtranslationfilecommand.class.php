@@ -68,7 +68,7 @@ final class GenerateIllustrationTranslationFileCommand extends Command
             $content
         );
         if ($written_bytes !== strlen($content)) {
-            throw new \RuntimeException('Unable to write the illustration translations file contents.');
+            throw new RuntimeException('Unable to write the illustration translations file contents.');
         }
 
         $output->writeln('Illustration translations file generated successfully.');

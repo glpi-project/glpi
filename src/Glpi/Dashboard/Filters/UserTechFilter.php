@@ -35,6 +35,9 @@
 
 namespace Glpi\Dashboard\Filters;
 
+use UnexpectedValueException;
+use CommonITILActor;
+use DBmysql;
 use Change;
 use Problem;
 use Session;
@@ -55,7 +58,7 @@ class UserTechFilter extends AbstractFilter
 
     public static function canBeApplied(string $table): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         return $DB->fieldExists($table, 'users_id_tech')
@@ -64,7 +67,7 @@ class UserTechFilter extends AbstractFilter
 
     public static function getCriteria(string $table, $value): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = [];
@@ -86,7 +89,7 @@ class UserTechFilter extends AbstractFilter
                     Ticket::getTable() => new Ticket(),
                     Change::getTable() => new Change(),
                     Problem::getTable() => new Problem(),
-                    default => throw new \UnexpectedValueException(),
+                    default => throw new UnexpectedValueException(),
                 };
                 $userlink  = $main_item->userlinkclass;
                 $ul_table  = $userlink::getTable();
@@ -101,7 +104,7 @@ class UserTechFilter extends AbstractFilter
                     ],
                 ];
                 $criteria["WHERE"] = [
-                    "ul.type"     => \CommonITILActor::ASSIGN,
+                    "ul.type"     => CommonITILActor::ASSIGN,
                     "ul.users_id" => $users_id,
                 ];
             }
@@ -112,7 +115,7 @@ class UserTechFilter extends AbstractFilter
 
     public static function getSearchCriteria(string $table, $value): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = [];

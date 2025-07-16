@@ -31,12 +31,10 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 // Remove the `NOT NULL` flag of comment fields and fix collation

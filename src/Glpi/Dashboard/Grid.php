@@ -35,6 +35,10 @@
 
 namespace Glpi\Dashboard;
 
+use Throwable;
+use ReflectionClass;
+use Psr\SimpleCache\CacheInterface;
+use DBmysql;
 use Config;
 use Dropdown;
 use Glpi\Application\Environment;
@@ -240,7 +244,7 @@ HTML;
      */
     public function show(bool $mini = false, ?string $token = null)
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
+        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $rand = mt_rand();
@@ -602,7 +606,7 @@ TWIG, $twig_params);
      */
     public function getGridItemsHtml(bool $with_lock = true, bool $embed = false): string
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if ($embed) {
@@ -944,7 +948,7 @@ HTML;
      */
     public function getCardHtml(string $card_id = "", array $card_options = []): string
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
+        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $gridstack_id = $card_options['args']['gridstack_id'] ?? $card_id;
@@ -1048,7 +1052,7 @@ HTML;
             if ($html === '') {
                 return $notfound_html;
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $html = $render_error_html;
             // Log the error message without exiting
             ErrorHandler::logCaughtException($e);
@@ -1138,7 +1142,7 @@ HTML;
                     return false;
                 }
 
-                $testClass = new \ReflectionClass($itemtype);
+                $testClass = new ReflectionClass($itemtype);
                 return !$testClass->isAbstract();
             });
         }
@@ -1177,7 +1181,7 @@ HTML;
     {
         /**
          * @var array $CFG_GLPI
-         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+         * @var CacheInterface $GLPI_CACHE
          */
         global $CFG_GLPI, $GLPI_CACHE;
 

@@ -36,6 +36,7 @@
 
 namespace Glpi\Inventory\Asset;
 
+use DBmysql;
 use Glpi\Inventory\Conf;
 use Item_Process;
 
@@ -77,7 +78,7 @@ class Process extends InventoryAsset
 
     protected function getExisting(): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $db_existing = [];

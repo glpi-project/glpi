@@ -34,6 +34,7 @@
 
 namespace Glpi\Controller;
 
+use Glpi\Security\TOTPManager;
 use Auth;
 use CronTask;
 use Dropdown;
@@ -119,7 +120,7 @@ final class IndexController extends AbstractController
             }
             if (isset($_GET['mfa_setup']) && isset($_POST['secret'], $_POST['totp_code'])) {
                 $code = is_array($_POST['totp_code']) ? implode('', $_POST['totp_code']) : $_POST['totp_code'];
-                $totp = new \Glpi\Security\TOTPManager();
+                $totp = new TOTPManager();
                 if (Session::validateIDOR($_POST) && ($algorithm = $totp->verifyCodeForSecret($code, $_POST['secret'])) !== false) {
                     $totp->setSecretForUser((int) $_SESSION['mfa_pre_auth']['user']['id'], $_POST['secret'], $algorithm);
                 } else {
@@ -131,11 +132,11 @@ final class IndexController extends AbstractController
             return new StreamedResponse(static function () {
                 if (isset($_GET['mfa_setup'])) {
                     // Login started. 2FA needs configured.
-                    $totp = new \Glpi\Security\TOTPManager();
+                    $totp = new TOTPManager();
                     $totp->showTOTPSetupForm((int) $_SESSION['mfa_pre_auth']['user']['id']);
                 } else {
                     // Login started. Need to ask for the TOTP code.
-                    $totp = new \Glpi\Security\TOTPManager();
+                    $totp = new TOTPManager();
                     $totp->showTOTPPrompt((int) $_SESSION['mfa_pre_auth']['user']['id']);
                 }
             });

@@ -113,7 +113,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
      **/
     public static function showForNotification(Notification $notif, $withtemplate = 0): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $notif->getID();
@@ -218,7 +218,7 @@ TWIG, $twig_params);
      */
     public static function showForNotificationTemplate(NotificationTemplate $template, $withtemplate = 0): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $template->getID();
@@ -501,7 +501,7 @@ TWIG, $twig_params);
             $classname = 'Notification' . ucfirst($mode) . 'Setting';
         } else {
             if ($extratype !== '') {
-                throw new \LogicException(sprintf('Unknown type `%s`.', $extratype));
+                throw new LogicException(sprintf('Unknown type `%s`.', $extratype));
             }
             $classname = 'Notification' . ucfirst($mode);
         }

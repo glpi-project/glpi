@@ -245,7 +245,7 @@ class DropdownTranslation extends CommonDBChild
      **/
     public function generateCompletename($input, $add = true)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $itemtype = $input['itemtype'];
@@ -344,7 +344,7 @@ class DropdownTranslation extends CommonDBChild
     public static function showTranslations(CommonDropdown $item)
     {
         /**
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $DB;
 
@@ -486,7 +486,7 @@ TWIG, $twig_params);
      **/
     public static function dropdownFields(CommonDBTM $item, $language = '', $value = '')
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $options = [];
@@ -536,7 +536,7 @@ TWIG, $twig_params);
      **/
     public static function getTranslatedValue($ID, $itemtype, $field = 'name', $language = '', $value = '')
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (!is_a($itemtype, CommonDropdown::class, true)) {
@@ -612,7 +612,7 @@ TWIG, $twig_params);
      **/
     public static function getTranslationID($ID, $itemtype, $field, $language)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -640,7 +640,7 @@ TWIG, $twig_params);
      **/
     public static function getTranslationsForAnItem($itemtype, $items_id, $field)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -696,7 +696,7 @@ TWIG, $twig_params);
      **/
     public static function getAvailableTranslations($language)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $tab = [];

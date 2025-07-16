@@ -35,6 +35,7 @@
 
 namespace Glpi\Console\Migration;
 
+use Glpi\Console\Exception\EarlyExitException;
 use DBConnection;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
@@ -109,7 +110,7 @@ class Utf8mb4Command extends AbstractCommand implements ConfigurationCommandInte
             foreach ($config_requirement->getValidationMessages() as $validation_message) {
                 $msg .= "\n" . '<error> - ' . $validation_message . '</error>';
             }
-            throw new \Glpi\Console\Exception\EarlyExitException($msg, self::ERROR_INCOMPATIBLE_DB_CONFIG);
+            throw new EarlyExitException($msg, self::ERROR_INCOMPATIBLE_DB_CONFIG);
         }
 
         // Check that all tables are using InnoDB engine
@@ -117,7 +118,7 @@ class Utf8mb4Command extends AbstractCommand implements ConfigurationCommandInte
             $msg = sprintf(__('%d tables are using the deprecated MyISAM storage engine.'), $myisam_count)
             . ' '
             . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:myisam_to_innodb');
-            throw new \Glpi\Console\Exception\EarlyExitException('<error>' . $msg . '</error>', self::ERROR_INNODB_REQUIRED);
+            throw new EarlyExitException('<error>' . $msg . '</error>', self::ERROR_INNODB_REQUIRED);
         }
 
         // Check that all tables are using the "Dynamic" row format
@@ -125,7 +126,7 @@ class Utf8mb4Command extends AbstractCommand implements ConfigurationCommandInte
             $msg = sprintf(__('%d tables are still using Compact or Redundant row format.'), $myisam_count)
             . ' '
             . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:dynamic_row_format');
-            throw new \Glpi\Console\Exception\EarlyExitException('<error>' . $msg . '</error>', self::ERROR_DYNAMIC_ROW_FORMAT_REQUIRED);
+            throw new EarlyExitException('<error>' . $msg . '</error>', self::ERROR_DYNAMIC_ROW_FORMAT_REQUIRED);
         }
     }
 
@@ -183,14 +184,14 @@ class Utf8mb4Command extends AbstractCommand implements ConfigurationCommandInte
         }
 
         if (!DBConnection::updateConfigProperty(DBConnection::PROPERTY_USE_UTF8MB4, true)) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . __('Unable to update DB configuration file.') . '</error>',
                 self::ERROR_UNABLE_TO_UPDATE_CONFIG
             );
         }
 
         if ($errors) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . __('Errors occurred during migration.') . '</error>',
                 self::ERROR_MIGRATION_FAILED_FOR_SOME_TABLES
             );

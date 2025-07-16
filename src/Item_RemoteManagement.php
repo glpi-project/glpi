@@ -91,7 +91,7 @@ class Item_RemoteManagement extends CommonDBChild
      */
     public static function getFromItem(CommonDBTM $item, $sort = null, $order = null): DBmysqlIterator
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -268,11 +268,11 @@ class Item_RemoteManagement extends CommonDBChild
         } elseif (isset($this->fields['itemtype']) && !empty($this->fields['itemtype'])) {
             $itemtype = $this->fields['itemtype'];
         } else {
-            throw new \RuntimeException('Unable to retrieve itemtype');
+            throw new RuntimeException('Unable to retrieve itemtype');
         }
 
         if (!is_a($itemtype, CommonDBTM::class, true)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf(
                     'Item type %s is not a valid item type',
                     $itemtype

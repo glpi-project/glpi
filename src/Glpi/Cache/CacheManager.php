@@ -35,6 +35,10 @@
 
 namespace Glpi\Cache;
 
+use InvalidArgumentException;
+use RuntimeException;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Psr\Log\LoggerInterface;
 use DirectoryIterator;
 use Glpi\Kernel\Kernel;
 use Psr\Cache\CacheItemPoolInterface;
@@ -144,10 +148,10 @@ class CacheManager
     public function setConfiguration(string $context, $dsn, array $options = []): bool
     {
         if (!$this->isContextValid($context, true)) {
-            throw new \InvalidArgumentException(sprintf('Invalid or non configurable context: "%s".', $context));
+            throw new InvalidArgumentException(sprintf('Invalid or non configurable context: "%s".', $context));
         }
         if (!$this->isDsnValid($dsn)) {
-            throw new \InvalidArgumentException(sprintf('Invalid DSN: %s.', json_encode($dsn, JSON_UNESCAPED_SLASHES)));
+            throw new InvalidArgumentException(sprintf('Invalid DSN: %s.', json_encode($dsn, JSON_UNESCAPED_SLASHES)));
         }
 
         $config = $this->getRawConfig();
@@ -169,7 +173,7 @@ class CacheManager
     public function unsetConfiguration(string $context): bool
     {
         if (!$this->isContextValid($context, true)) {
-            throw new \InvalidArgumentException(sprintf('Invalid or non configurable context: "%s".', $context));
+            throw new InvalidArgumentException(sprintf('Invalid or non configurable context: "%s".', $context));
         }
 
         $config = $this->getRawConfig();
@@ -195,7 +199,7 @@ class CacheManager
                 $stats = $client->getStats();
                 if ($stats === false) {
                     // Memcached::getStats() will return false if server cannot be reached.
-                    throw new \RuntimeException('Unable to connect to Memcached server.');
+                    throw new RuntimeException('Unable to connect to Memcached server.');
                 }
                 break;
             case self::SCHEME_REDIS:
@@ -224,15 +228,15 @@ class CacheManager
     /**
      * Get cache storage adapter for given context.
      *
-     * @return \Psr\Cache\CacheItemPoolInterface
+     * @return CacheItemPoolInterface
      */
     public function getCacheStorageAdapter(string $context): CacheItemPoolInterface
     {
-        /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+        /** @var LoggerInterface $PHPLOGGER */
         global $PHPLOGGER;
 
         if (!$this->isContextValid($context)) {
-            throw new \InvalidArgumentException(sprintf('Invalid context: "%s".', $context));
+            throw new InvalidArgumentException(sprintf('Invalid context: "%s".', $context));
         }
 
         $raw_config = $this->getRawConfig();
@@ -275,7 +279,7 @@ class CacheManager
                     break;
 
                 default:
-                    throw new \RuntimeException(sprintf('Invalid cache DSN %s.', var_export($dsn, true)));
+                    throw new RuntimeException(sprintf('Invalid cache DSN %s.', var_export($dsn, true)));
             }
         }
 
@@ -584,7 +588,7 @@ PHP;
 
         // Execute the `cache:clear` command provided by Symfony itself, not our own `cache:clear` command.
         // This command will clear the Symfony cache gracefully.
-        $app = new \Symfony\Bundle\FrameworkBundle\Console\Application($localKernel);
+        $app = new Application($localKernel);
         $app->setAutoExit(false);
         $app->run(new ArrayInput(['command' => 'cache:clear']), new NullOutput());
     }

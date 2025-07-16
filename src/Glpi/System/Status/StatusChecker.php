@@ -35,6 +35,10 @@
 
 namespace Glpi\System\Status;
 
+use GLPIKey;
+use RuntimeException;
+use Throwable;
+use DBmysql;
 use AuthLDAP;
 use CronTask;
 use DBConnection;
@@ -264,7 +268,7 @@ final class StatusChecker
                                 @AuthLDAP::tryToConnectToServer(
                                     $method,
                                     $method['rootdn'],
-                                    (new \GLPIKey())->decrypt($method['rootdn_passwd'])
+                                    (new GLPIKey())->decrypt($method['rootdn_passwd'])
                                 )
                             ) {
                                 $status['servers'][$display_name] = [
@@ -278,7 +282,7 @@ final class StatusChecker
                                 $total_error++;
                                 $global_status = self::STATUS_PROBLEM;
                             }
-                        } catch (\RuntimeException $e) {
+                        } catch (RuntimeException $e) {
                             // May be missing LDAP extension (Probably test environment)
                             $status['servers'][$method['name']] = [
                                 'status' => self::STATUS_PROBLEM,
@@ -440,7 +444,7 @@ final class StatusChecker
                                 $status['servers'][$display_name] = [
                                     'status' => self::STATUS_OK,
                                 ];
-                            } catch (\Throwable $e) {
+                            } catch (Throwable $e) {
                                 $status['servers'][$display_name] = [
                                     'status'       => self::STATUS_PROBLEM,
                                     'error_code'   => $e->getCode(),
@@ -479,7 +483,7 @@ final class StatusChecker
                 'stuck' => [],
             ];
             if (self::isDBAvailable()) {
-                /** @var \DBmysql $DB */
+                /** @var DBmysql $DB */
                 global $DB;
 
                 $crontasks = getAllDataFromTable('glpi_crontasks');

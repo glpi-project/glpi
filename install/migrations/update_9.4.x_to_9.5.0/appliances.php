@@ -31,13 +31,11 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
  * @var array $ADDTODISPLAYPREF
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-
 if (!$DB->tableExists('glpi_appliances')) {
     $query = "CREATE TABLE `glpi_appliances` (
          `id` int NOT NULL auto_increment,

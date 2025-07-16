@@ -32,7 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Features\Clonable;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Features\AssignableItem;
@@ -45,7 +45,7 @@ use function Safe\strtotime;
  */
 class Certificate extends CommonDBTM
 {
-    use Glpi\Features\Clonable;
+    use Clonable;
     use Glpi\Features\State;
     use AssignableItem {
         prepareInputForAdd as prepareInputForAddAssignableItem;
@@ -723,7 +723,7 @@ class Certificate extends CommonDBTM
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 

@@ -34,6 +34,7 @@
 
 namespace Glpi\Asset\Capacity;
 
+use DBmysql;
 use CommonGLPI;
 use Glpi\Asset\CapacityConfig;
 use Item_SoftwareLicense;
@@ -81,7 +82,7 @@ class HasSoftwaresCapacity extends AbstractCapacity
 
     public function getCapacityUsageDescription(string $classname): string
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $assets_ids = [];

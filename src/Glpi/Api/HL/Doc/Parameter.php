@@ -35,10 +35,12 @@
 
 namespace Glpi\Api\HL\Doc;
 
+use ArrayAccess;
+
 /**
- * @implements \ArrayAccess<string, null|string|bool|Schema>
+ * @implements ArrayAccess<string, null|string|bool|Schema>
  */
-class Parameter implements \ArrayAccess
+class Parameter implements ArrayAccess
 {
     public const LOCATION_QUERY = 'query';
     public const LOCATION_PATH = 'path';

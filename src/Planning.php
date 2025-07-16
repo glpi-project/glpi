@@ -32,7 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Sabre\VObject\ParseException;
+use Glpi\CalDAV\Backend\Calendar;
+use Psr\Log\LoggerInterface;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
 use Glpi\RichText\RichText;
@@ -1413,7 +1415,7 @@ TWIG, $twig_params);
             $key = match ($event['actor']['itemtype']) {
                 "group" => "groups_id_tech",
                 "user" => isset($item->fields['users_id_tech']) ? "users_id_tech" : "users_id",
-                default => throw new \RuntimeException(sprintf('Unexpected event actor itemtype `%s`.', $event['actor']['itemtype'])),
+                default => throw new RuntimeException(sprintf('Unexpected event actor itemtype `%s`.', $event['actor']['itemtype'])),
             };
 
             unset(
@@ -1908,8 +1910,8 @@ TWIG, $twig_params);
             }
             try {
                 $vcalendar = Reader::read($calendar_data);
-            } catch (\Sabre\VObject\ParseException $exception) {
-                /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+            } catch (ParseException $exception) {
+                /** @var LoggerInterface $PHPLOGGER */
                 global $PHPLOGGER;
                 $PHPLOGGER->error(
                     sprintf('Unable to parse calendar data from URL "%s"', $planning_params['url']),
@@ -2399,20 +2401,20 @@ TWIG, ['msg' => __('Your planning')]);
      *
      * @return string|null
      */
-    private static function getCaldavBaseCalendarUrl(\CommonDBTM $item)
+    private static function getCaldavBaseCalendarUrl(CommonDBTM $item)
     {
         $calendar_uri = null;
 
         switch (get_class($item)) {
-            case \Group::class:
-                $calendar_uri = \Glpi\CalDAV\Backend\Calendar::PREFIX_GROUPS
+            case Group::class:
+                $calendar_uri = Calendar::PREFIX_GROUPS
                  . '/' . $item->fields['id']
-                 . '/' . \Glpi\CalDAV\Backend\Calendar::BASE_CALENDAR_URI;
+                 . '/' . Calendar::BASE_CALENDAR_URI;
                 break;
-            case \User::class:
-                $calendar_uri = \Glpi\CalDAV\Backend\Calendar::PREFIX_USERS
+            case User::class:
+                $calendar_uri = Calendar::PREFIX_USERS
                 . '/' . $item->fields['name']
-                . '/' . \Glpi\CalDAV\Backend\Calendar::BASE_CALENDAR_URI;
+                . '/' . Calendar::BASE_CALENDAR_URI;
                 break;
         }
 

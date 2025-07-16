@@ -35,11 +35,13 @@
 
 namespace Glpi\Dashboard;
 
+use CommonDBChild;
+use DBmysql;
 use Glpi\DBAL\QueryParam;
 
-class Item extends \CommonDBChild
+class Item extends CommonDBChild
 {
-    public static $itemtype = \Glpi\Dashboard\Dashboard::class;
+    public static $itemtype = Dashboard::class;
     public static $items_id = 'dashboards_dashboards_id';
 
     // prevent bad getFromDB when bootstraping tests suite
@@ -55,7 +57,7 @@ class Item extends \CommonDBChild
      */
     public static function getForDashboard(int $dashboards_id = 0): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $di_iterator = $DB->request([
@@ -93,7 +95,7 @@ class Item extends \CommonDBChild
      */
     public static function addForDashboard(int $dashboards_id = 0, array $items = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $query_items = $DB->buildInsert(

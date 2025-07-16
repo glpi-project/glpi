@@ -31,12 +31,10 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-
 use function Safe\json_decode;
 
 $iterator = $DB->request(['FROM' => 'glpi_configs', 'WHERE' => ['name' => 'lock_use_lock_item']]);

@@ -32,7 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Safe\Exceptions\JsonException;
+use Psr\SimpleCache\CacheInterface;
 use Glpi\Application\Environment;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
@@ -392,7 +393,7 @@ final class DbUtils
      */
     public function fixItemtypeCase(string $itemtype, $root_dir = GLPI_ROOT, array $plugins_dirs = GLPI_PLUGINS_DIRECTORIES)
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
+        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         // If a class exists for this itemtype, just return the declared class name.
@@ -580,7 +581,7 @@ final class DbUtils
      */
     public function countElementsInTable($table, $condition = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (!is_array($table)) {
@@ -689,7 +690,7 @@ final class DbUtils
      */
     public function getAllDataFromTable($table, $criteria = [], $usecache = false, $order = '')
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         static $cache = [];
@@ -734,7 +735,7 @@ final class DbUtils
      */
     public function isIndex($table, $field)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (!$DB->tableExists($table)) {
@@ -764,7 +765,7 @@ final class DbUtils
      */
     public function isForeignKeyContraint($table, $keyname)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $query = [
@@ -806,7 +807,7 @@ final class DbUtils
         $is_recursive = false,
         $complete_request = false
     ) {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $query = $separator . " ( ";
@@ -997,8 +998,8 @@ final class DbUtils
     public function getSonsOf($table, $IDf)
     {
         /**
-         * @var \DBmysql $DB
-         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+         * @var DBmysql $DB
+         * @var CacheInterface $GLPI_CACHE
          */
         global $DB, $GLPI_CACHE;
 
@@ -1111,8 +1112,8 @@ final class DbUtils
     public function getAncestorsOf($table, $items_id)
     {
         /**
-         * @var \DBmysql $DB
-         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+         * @var DBmysql $DB
+         * @var CacheInterface $GLPI_CACHE
          */
         global $DB, $GLPI_CACHE;
 
@@ -1313,7 +1314,7 @@ final class DbUtils
      */
     public function getTreeLeafValueName($table, $ID, $withcomment = false, $translate = true)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $name    = "";
@@ -1422,7 +1423,7 @@ final class DbUtils
             Toolbox::deprecated('Usage of the `$withcomment` parameter is deprecated. Use `Dropdown::getDropdownComments()` instead.');
         }
 
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $name    = "";
@@ -1525,7 +1526,7 @@ final class DbUtils
      */
     public function getTreeValueName($table, $ID, $wholename = "", $level = 0)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $parentIDfield = $this->getForeignKeyFieldForTable($table);
@@ -1564,7 +1565,7 @@ final class DbUtils
      */
     public function getTreeForItem($table, $IDf)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $parentIDfield = $this->getForeignKeyFieldForTable($table);
@@ -1779,7 +1780,7 @@ final class DbUtils
      */
     public function getUserName($ID, $link = 0, $disable_anon = false)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $username   = "";
@@ -1858,7 +1859,7 @@ final class DbUtils
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -2021,7 +2022,7 @@ final class DbUtils
      */
     public function getDateCriteria($field, $begin, $end)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $date_pattern = '/^\d{4}-\d{2}-\d{2}( \d{2}:\d{2}:\d{2})?$/'; // `YYYY-mm-dd` optionaly followed by ` HH:ii:ss`
@@ -2077,7 +2078,7 @@ final class DbUtils
 
         try {
             $tab = json_decode($data, true);
-        } catch (\Safe\Exceptions\JsonException $e) {
+        } catch (JsonException $e) {
             $tab = [];
 
             foreach (explode(" ", $data) as $item) {

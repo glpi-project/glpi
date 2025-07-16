@@ -148,7 +148,7 @@ class Link extends CommonDBTM
 
     public function getLinkedItemtypes(): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         return array_column(iterator_to_array($DB->request([
             'SELECT' => ['itemtype'],
@@ -166,7 +166,7 @@ class Link extends CommonDBTM
     private function getTagCompletions(): array
     {
         /**
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          * @var array $CFG_GLPI
          */
         global $DB, $CFG_GLPI;
@@ -290,7 +290,7 @@ class Link extends CommonDBTM
     private static function getIPAndMACForItem(CommonDBTM $item, $get_ip = false, $get_mac = false): array
     {
         /**
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $DB;
 
@@ -429,7 +429,7 @@ class Link extends CommonDBTM
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -774,7 +774,7 @@ TWIG, $buttons_params);
 
     public static function getLinksDataForItem(CommonDBTM $item)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $restrict = self::getEntityRestrictForItem($item);
@@ -865,7 +865,7 @@ TWIG, $buttons_params);
 
     public function post_updateItem($history = true)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         parent::post_updateItem($history);

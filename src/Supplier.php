@@ -32,7 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Features\Clonable;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Features\AssetImage;
@@ -43,7 +43,7 @@ use Glpi\Features\AssetImage;
 class Supplier extends CommonDBTM
 {
     use AssetImage;
-    use Glpi\Features\Clonable;
+    use Clonable;
 
     // From CommonDBTM
     public $dohistory           = true;
@@ -155,7 +155,7 @@ class Supplier extends CommonDBTM
 
     public function rawSearchOptions()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $tab = [];
@@ -415,7 +415,7 @@ class Supplier extends CommonDBTM
      **/
     public function showInfocoms()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $instID = $this->fields['id'];
@@ -609,7 +609,7 @@ class Supplier extends CommonDBTM
      **/
     public static function getSuppliersByEmail($email)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         return $DB->request([

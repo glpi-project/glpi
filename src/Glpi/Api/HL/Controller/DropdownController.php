@@ -35,6 +35,9 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use Glpi\Api\HL\Doc\Parameter;
+use Glpi\Api\HL\Doc\Schema;
+use DropdownVisibility;
 use Calendar;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
@@ -49,14 +52,14 @@ use State;
         [
             'name' => 'itemtype',
             'description' => 'Dropdown type',
-            'location' => Doc\Parameter::LOCATION_PATH,
-            'schema' => ['type' => Doc\Schema::TYPE_STRING],
+            'location' => Parameter::LOCATION_PATH,
+            'schema' => ['type' => Schema::TYPE_STRING],
         ],
         [
             'name' => 'id',
             'description' => 'The ID of the dropdown item',
-            'location' => Doc\Parameter::LOCATION_PATH,
-            'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
+            'location' => Parameter::LOCATION_PATH,
+            'schema' => ['type' => Schema::TYPE_INTEGER],
         ],
     ]
 )]
@@ -73,60 +76,60 @@ final class DropdownController extends AbstractController
 
         $schemas['Location'] = [
             'x-version-introduced' => '2.0',
-            'type' => Doc\Schema::TYPE_OBJECT,
+            'type' => Schema::TYPE_OBJECT,
             'x-itemtype' => Location::class,
             'description' => Location::getTypeName(1),
             'properties' => [
                 'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'type' => Schema::TYPE_INTEGER,
+                    'format' => Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'completename' => ['type' => Doc\Schema::TYPE_STRING],
-                'code' => ['type' => Doc\Schema::TYPE_STRING],
-                'aliases' => ['type' => Doc\Schema::TYPE_STRING],
-                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'name' => ['type' => Schema::TYPE_STRING],
+                'completename' => ['type' => Schema::TYPE_STRING],
+                'code' => ['type' => Schema::TYPE_STRING],
+                'aliases' => ['type' => Schema::TYPE_STRING],
+                'comment' => ['type' => Schema::TYPE_STRING],
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
-                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_recursive' => ['type' => Schema::TYPE_BOOLEAN],
                 'parent' => self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location'),
-                'level' => ['type' => Doc\Schema::TYPE_INTEGER],
-                'room' => ['type' => Doc\Schema::TYPE_STRING],
-                'building' => ['type' => Doc\Schema::TYPE_STRING],
-                'address' => ['type' => Doc\Schema::TYPE_STRING],
-                'town' => ['type' => Doc\Schema::TYPE_STRING],
-                'postcode' => ['type' => Doc\Schema::TYPE_STRING],
-                'state' => ['type' => Doc\Schema::TYPE_STRING],
-                'country' => ['type' => Doc\Schema::TYPE_STRING],
-                'latitude' => ['type' => Doc\Schema::TYPE_STRING],
-                'longitude' => ['type' => Doc\Schema::TYPE_STRING],
-                'altitude' => ['type' => Doc\Schema::TYPE_STRING],
-                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'level' => ['type' => Schema::TYPE_INTEGER],
+                'room' => ['type' => Schema::TYPE_STRING],
+                'building' => ['type' => Schema::TYPE_STRING],
+                'address' => ['type' => Schema::TYPE_STRING],
+                'town' => ['type' => Schema::TYPE_STRING],
+                'postcode' => ['type' => Schema::TYPE_STRING],
+                'state' => ['type' => Schema::TYPE_STRING],
+                'country' => ['type' => Schema::TYPE_STRING],
+                'latitude' => ['type' => Schema::TYPE_STRING],
+                'longitude' => ['type' => Schema::TYPE_STRING],
+                'altitude' => ['type' => Schema::TYPE_STRING],
+                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
         $schemas['State'] = [
             'x-version-introduced' => '2.0',
-            'type' => Doc\Schema::TYPE_OBJECT,
+            'type' => Schema::TYPE_OBJECT,
             'x-itemtype' => State::class,
             'description' => State::getTypeName(1),
             'properties' => [
                 'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'type' => Schema::TYPE_INTEGER,
+                    'format' => Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'completename' => ['type' => Doc\Schema::TYPE_STRING],
-                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'name' => ['type' => Schema::TYPE_STRING],
+                'completename' => ['type' => Schema::TYPE_STRING],
+                'comment' => ['type' => Schema::TYPE_STRING],
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
-                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_recursive' => ['type' => Schema::TYPE_BOOLEAN],
                 'parent' => self::getDropdownTypeSchema(class: State::class, full_schema: 'State'),
-                'level' => ['type' => Doc\Schema::TYPE_INTEGER],
-                'is_visible_helpdesk' => ['x-field' => 'is_helpdesk_visible', 'type' => Doc\Schema::TYPE_BOOLEAN],
-                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'level' => ['type' => Schema::TYPE_INTEGER],
+                'is_visible_helpdesk' => ['x-field' => 'is_helpdesk_visible', 'type' => Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
@@ -146,21 +149,21 @@ final class DropdownController extends AbstractController
 
         $schemas['State_Visibilities'] = [
             'x-version-introduced' => '2.0',
-            'type' => Doc\Schema::TYPE_OBJECT,
+            'type' => Schema::TYPE_OBJECT,
             'properties' => [],
         ];
         $schemas['State']['properties']['visibilities'] = [
-            'type' => Doc\Schema::TYPE_OBJECT,
+            'type' => Schema::TYPE_OBJECT,
             'x-full-schema' => 'State_Visibilities',
         ];
 
         foreach ($visiblities as $state_type => $visiblity) {
             $schemas['State_Visibilities']['properties'][$visiblity] = [
-                'type' => Doc\Schema::TYPE_BOOLEAN,
+                'type' => Schema::TYPE_BOOLEAN,
                 'x-field' => 'is_visible',
                 'x-readonly' => true,
                 'x-join' => [
-                    'table' => \DropdownVisibility::getTable(),
+                    'table' => DropdownVisibility::getTable(),
                     'fkey' => 'id',
                     'field' => 'items_id',
                     'condition' => [
@@ -174,39 +177,39 @@ final class DropdownController extends AbstractController
 
         $schemas['Manufacturer'] = [
             'x-version-introduced' => '2.0',
-            'type' => Doc\Schema::TYPE_OBJECT,
+            'type' => Schema::TYPE_OBJECT,
             'x-itemtype' => Manufacturer::class,
             'description' => Manufacturer::getTypeName(1),
             'properties' => [
                 'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'type' => Schema::TYPE_INTEGER,
+                    'format' => Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'name' => ['type' => Schema::TYPE_STRING],
+                'comment' => ['type' => Schema::TYPE_STRING],
+                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
         $schemas['Calendar'] = [
             'x-version-introduced' => '2.0',
-            'type' => Doc\Schema::TYPE_OBJECT,
+            'type' => Schema::TYPE_OBJECT,
             'x-itemtype' => Calendar::class,
             'description' => Calendar::getTypeName(1),
             'properties' => [
                 'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'type' => Schema::TYPE_INTEGER,
+                    'format' => Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'name' => ['type' => Schema::TYPE_STRING],
+                'comment' => ['type' => Schema::TYPE_STRING],
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
-                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'is_recursive' => ['type' => Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 

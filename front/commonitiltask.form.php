@@ -39,7 +39,7 @@ use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 
-/** @var \DBmysql $DB */
+/** @var DBmysql $DB */
 global $DB;
 
 /**

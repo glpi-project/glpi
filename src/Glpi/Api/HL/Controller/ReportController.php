@@ -35,6 +35,12 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use Glpi\Api\HL\Doc\Schema;
+use Entity;
+use Stat;
+use Dropdown;
+use Search;
+use CommonDevice;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
@@ -57,271 +63,271 @@ class ReportController extends AbstractController
         return [
             'StatReport' => [
                 'x-version-introduced' => '2.0',
-                'type' => Doc\Schema::TYPE_OBJECT,
+                'type' => Schema::TYPE_OBJECT,
                 'properties' => [
                     'assistance_type' => [
-                        'type' => Doc\Schema::TYPE_STRING,
+                        'type' => Schema::TYPE_STRING,
                         'description' => 'The assistance type the stats are for such as "Ticket", "Change" or "Problem"',
                     ],
                     'report_type' => [
-                        'type' => Doc\Schema::TYPE_STRING,
+                        'type' => Schema::TYPE_STRING,
                         'description' => 'The report type',
                     ],
                     'report_title' => [
-                        'type' => Doc\Schema::TYPE_STRING,
+                        'type' => Schema::TYPE_STRING,
                         'description' => 'The report title',
                     ],
                     'report_group_fields' => [
-                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'type' => Schema::TYPE_ARRAY,
                         'description' => 'The fields the report can be grouped by',
                         'items' => [
-                            'type' => Doc\Schema::TYPE_STRING,
+                            'type' => Schema::TYPE_STRING,
                         ],
                     ],
                 ],
             ],
             'GlobalStats' => [
                 'x-version-introduced' => '2.0',
-                'type' => Doc\Schema::TYPE_OBJECT,
+                'type' => Schema::TYPE_OBJECT,
                 'properties' => [
                     'sample_dates' => [
-                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'type' => Schema::TYPE_ARRAY,
                         'description' => 'The dates the stats are for',
                         'items' => [
-                            'type' => Doc\Schema::TYPE_STRING,
-                            'format' => Doc\Schema::FORMAT_STRING_DATE,
+                            'type' => Schema::TYPE_STRING,
+                            'format' => Schema::FORMAT_STRING_DATE,
                         ],
                     ],
                     'number_open' => [
-                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'type' => Schema::TYPE_ARRAY,
                         'description' => 'The number of assistance items opened during the period',
                         'items' => [
-                            'type' => Doc\Schema::TYPE_INTEGER,
+                            'type' => Schema::TYPE_INTEGER,
                         ],
                     ],
                     'number_solved' => [
-                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'type' => Schema::TYPE_ARRAY,
                         'description' => 'The number of assistance items solved during the period',
                         'items' => [
-                            'type' => Doc\Schema::TYPE_INTEGER,
+                            'type' => Schema::TYPE_INTEGER,
                         ],
                     ],
                     'number_late' => [
-                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'type' => Schema::TYPE_ARRAY,
                         'description' => 'The number of late assistance items during the period',
                         'items' => [
-                            'type' => Doc\Schema::TYPE_INTEGER,
+                            'type' => Schema::TYPE_INTEGER,
                         ],
                     ],
                     'number_closed' => [
-                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'type' => Schema::TYPE_ARRAY,
                         'description' => 'The number of assistance items closed during the period',
                         'items' => [
-                            'type' => Doc\Schema::TYPE_INTEGER,
+                            'type' => Schema::TYPE_INTEGER,
                         ],
                     ],
                     'satisfaction_surveys_open' => [
-                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'type' => Schema::TYPE_ARRAY,
                         'description' => 'The number of satisfaction surveys opened during the period',
                         'items' => [
-                            'type' => Doc\Schema::TYPE_INTEGER,
+                            'type' => Schema::TYPE_INTEGER,
                         ],
                     ],
                     'satisfaction_surveys_answered' => [
-                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'type' => Schema::TYPE_ARRAY,
                         'description' => 'The number of satisfaction surveys answered during the period',
                         'items' => [
-                            'type' => Doc\Schema::TYPE_INTEGER,
+                            'type' => Schema::TYPE_INTEGER,
                         ],
                     ],
                     'satisfaction_surveys_avg_rating' => [
-                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'type' => Schema::TYPE_ARRAY,
                         'description' => 'The average rating of the satisfaction surveys based on the answer date',
                         'items' => [
-                            'type' => Doc\Schema::TYPE_NUMBER,
-                            'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
+                            'type' => Schema::TYPE_NUMBER,
+                            'format' => Schema::FORMAT_NUMBER_FLOAT,
                         ],
                     ],
                     'time_solve_avg' => [
-                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'type' => Schema::TYPE_ARRAY,
                         'description' => 'The average time it took to resolve the assistance items (in seconds)',
                         'items' => [
-                            'type' => Doc\Schema::TYPE_INTEGER,
+                            'type' => Schema::TYPE_INTEGER,
                         ],
                     ],
                     'time_close_avg' => [
-                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'type' => Schema::TYPE_ARRAY,
                         'description' => 'The average time it took to close the assistance items (in seconds)',
                         'items' => [
-                            'type' => Doc\Schema::TYPE_INTEGER,
+                            'type' => Schema::TYPE_INTEGER,
                         ],
                     ],
                     'time_treatment_avg' => [
-                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'type' => Schema::TYPE_ARRAY,
                         'description' => 'The average time it took to completely treat the assistance items (in seconds)',
                         'items' => [
-                            'type' => Doc\Schema::TYPE_INTEGER,
+                            'type' => Schema::TYPE_INTEGER,
                         ],
                     ],
                 ],
             ],
             'ITILStats' => [
                 'x-version-introduced' => '2.0',
-                'type' => Doc\Schema::TYPE_OBJECT,
+                'type' => Schema::TYPE_OBJECT,
                 'properties' => [
                     'item' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'type' => Schema::TYPE_OBJECT,
                         'description' => 'The item the stats are grouped by',
                         'properties' => [
                             'id' => [
-                                'type' => Doc\Schema::TYPE_INTEGER,
-                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'type' => Schema::TYPE_INTEGER,
+                                'format' => Schema::FORMAT_INTEGER_INT64,
                             ],
                             'name' => [
-                                'type' => Doc\Schema::TYPE_STRING,
+                                'type' => Schema::TYPE_STRING,
                             ],
                         ],
                     ],
                     'number_open' => [
-                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'type' => Schema::TYPE_INTEGER,
                         'description' => 'The number of open assistance items',
                     ],
                     'number_solved' => [
-                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'type' => Schema::TYPE_INTEGER,
                         'description' => 'The number of solved assistance items',
                     ],
                     'number_late' => [
-                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'type' => Schema::TYPE_INTEGER,
                         'description' => 'The number of late assistance items',
                     ],
                     'number_closed' => [
-                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'type' => Schema::TYPE_INTEGER,
                         'description' => 'The number of closed assistance items',
                     ],
                     'satisfaction_surveys_open' => [
-                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'type' => Schema::TYPE_INTEGER,
                         'description' => 'The number of open satisfaction surveys',
                     ],
                     'satisfaction_surveys_answered' => [
-                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'type' => Schema::TYPE_INTEGER,
                         'description' => 'The number of answered satisfaction surveys',
                     ],
                     'satisfaction_surveys_avg_rating' => [
-                        'type' => Doc\Schema::TYPE_NUMBER,
-                        'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
+                        'type' => Schema::TYPE_NUMBER,
+                        'format' => Schema::FORMAT_NUMBER_FLOAT,
                         'description' => 'The average rating of the satisfaction surveys',
                     ],
                     'time_take_into_account_avg' => [
-                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'type' => Schema::TYPE_INTEGER,
                         'description' => 'The average time it took to take the assistance items into account (in seconds)',
                     ],
                     'time_solve_avg' => [
-                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'type' => Schema::TYPE_INTEGER,
                         'description' => 'The average time it took to resolve the assistance items (in seconds)',
                     ],
                     'time_close_avg' => [
-                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'type' => Schema::TYPE_INTEGER,
                         'description' => 'The average time it took to close the assistance items (in seconds)',
                     ],
                     'time_treatment_avg' => [
-                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'type' => Schema::TYPE_INTEGER,
                         'description' => 'The average time it took to completely treat the assistance items (in seconds)',
                     ],
                     'time_treatment_total' => [
-                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'type' => Schema::TYPE_INTEGER,
                         'description' => 'The total time it took to completely treat the assistance items (in seconds)',
                     ],
                 ],
             ],
             'AssetStats' => [
                 'x-version-introduced' => '2.0',
-                'type' => Doc\Schema::TYPE_OBJECT,
+                'type' => Schema::TYPE_OBJECT,
                 'properties' => [
                     'item' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'type' => Schema::TYPE_OBJECT,
                         'description' => 'The item the stats are grouped by',
                         'properties' => [
                             'itemtype' => [
-                                'type' => Doc\Schema::TYPE_STRING,
+                                'type' => Schema::TYPE_STRING,
                                 'description' => 'The itemtype of the item',
                             ],
                             'id' => [
-                                'type' => Doc\Schema::TYPE_INTEGER,
-                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'type' => Schema::TYPE_INTEGER,
+                                'format' => Schema::FORMAT_INTEGER_INT64,
                             ],
                             'name' => [
-                                'type' => Doc\Schema::TYPE_STRING,
+                                'type' => Schema::TYPE_STRING,
                             ],
-                            'entity' => self::getDropdownTypeSchema(class: \Entity::class, full_schema: 'Entity') + [
+                            'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity') + [
                                 'description' => 'The entity the item belongs to',
                             ],
                             'is_deleted' => [
-                                'type' => Doc\Schema::TYPE_BOOLEAN,
+                                'type' => Schema::TYPE_BOOLEAN,
                                 'description' => 'Whether the item is deleted or not',
                             ],
                         ],
                     ],
                     'number_open' => [
-                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'type' => Schema::TYPE_INTEGER,
                         'description' => 'The number of open assistance items',
                     ],
                 ],
             ],
             'AssetCharacteristicsStats' => [
                 'x-version-introduced' => '2.0',
-                'type' => Doc\Schema::TYPE_OBJECT,
+                'type' => Schema::TYPE_OBJECT,
                 'properties' => [
                     'characteristic' => [
-                        'type' => Doc\Schema::TYPE_STRING,
+                        'type' => Schema::TYPE_STRING,
                         'description' => 'The characteristic value',
                     ],
                     'number_open' => [
-                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'type' => Schema::TYPE_INTEGER,
                         'description' => 'The number of open assistance items',
                     ],
                     'number_solved' => [
-                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'type' => Schema::TYPE_INTEGER,
                         'description' => 'The number of solved assistance items',
                     ],
                     'number_late' => [
-                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'type' => Schema::TYPE_INTEGER,
                         'description' => 'The number of late assistance items',
                     ],
                     'number_closed' => [
-                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'type' => Schema::TYPE_INTEGER,
                         'description' => 'The number of closed assistance items',
                     ],
                     'satisfaction_surveys_open' => [
-                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'type' => Schema::TYPE_INTEGER,
                         'description' => 'The number of open satisfaction surveys',
                     ],
                     'satisfaction_surveys_answered' => [
-                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'type' => Schema::TYPE_INTEGER,
                         'description' => 'The number of answered satisfaction surveys',
                     ],
                     'satisfaction_surveys_avg_rating' => [
-                        'type' => Doc\Schema::TYPE_NUMBER,
-                        'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
+                        'type' => Schema::TYPE_NUMBER,
+                        'format' => Schema::FORMAT_NUMBER_FLOAT,
                         'description' => 'The average rating of the satisfaction surveys',
                     ],
                     'time_take_into_account_avg' => [
-                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'type' => Schema::TYPE_INTEGER,
                         'description' => 'The average time it took to take the assistance items into account (in seconds)',
                     ],
                     'time_solve_avg' => [
-                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'type' => Schema::TYPE_INTEGER,
                         'description' => 'The average time it took to resolve the assistance items (in seconds)',
                     ],
                     'time_close_avg' => [
-                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'type' => Schema::TYPE_INTEGER,
                         'description' => 'The average time it took to close the assistance items (in seconds)',
                     ],
                     'time_treatment_avg' => [
-                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'type' => Schema::TYPE_INTEGER,
                         'description' => 'The average time it took to completely treat the assistance items (in seconds)',
                     ],
                     'time_treatment_total' => [
-                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'type' => Schema::TYPE_INTEGER,
                         'description' => 'The total time it took to completely treat the assistance items (in seconds)',
                     ],
                 ],
@@ -341,7 +347,7 @@ class ReportController extends AbstractController
     )]
     public function listStatisticReports(Request $request): Response
     {
-        $available_reports = \Stat::getAvailableStatistics();
+        $available_reports = Stat::getAvailableStatistics();
         $results = [];
         // We cannot handle stats from plugins here. Plugins should add their own routes to handle them such as `/Assistance/Stat/PluginName/ReportName`.
         // They could even use a response middleware to modify the response of this endpoint to let users discover the new reports in the same way.
@@ -352,9 +358,9 @@ class ReportController extends AbstractController
                     if (!preg_match($plugin_pattern, $key)) {
                         $group_fields = [];
                         if (stripos($key, '/front/stat.tracking.php') !== false) {
-                            $group_fields = \Stat::getITILStatFields($group);
+                            $group_fields = Stat::getITILStatFields($group);
                         } elseif (stripos($key, '/front/stat.location.php') !== false) {
-                            $group_fields = \Stat::getItemCharacteristicStatFields(); // Not actually about location...
+                            $group_fields = Stat::getItemCharacteristicStatFields(); // Not actually about location...
                         }
                         // flatten the grouped group_fields
                         $flattened_group_fields = [];
@@ -407,8 +413,8 @@ class ReportController extends AbstractController
                 'location' => 'query',
                 'example' => '2024-01-30',
                 'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                    'type' => Schema::TYPE_STRING,
+                    'format' => Schema::FORMAT_STRING_DATE,
                 ],
             ],
             [
@@ -417,8 +423,8 @@ class ReportController extends AbstractController
                 'location' => 'query',
                 'example' => '2024-01-30',
                 'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                    'type' => Schema::TYPE_STRING,
+                    'format' => Schema::FORMAT_STRING_DATE,
                 ],
             ],
         ],
@@ -434,16 +440,16 @@ class ReportController extends AbstractController
         $date_end = $request->getQueryParams()['date_end'] ?? date('Y-m-d', strtotime($_SESSION['glpi_currenttime']));
         $date_start = $request->getQueryParams()['date_start'] ?? date('Y-m-d', strtotime('-1 year', strtotime($date_end)));
 
-        $nb_open_stats = \Stat::constructEntryValues($itemtype, 'inter_total', $date_start, $date_end);
-        $nb_solved_stats = \Stat::constructEntryValues($itemtype, 'inter_solved', $date_start, $date_end);
-        $nb_late_stats = \Stat::constructEntryValues($itemtype, 'inter_solved_late', $date_start, $date_end);
-        $nb_closed_stats = \Stat::constructEntryValues($itemtype, 'inter_closed', $date_start, $date_end);
-        $nb_opensatisfaction_stats = \Stat::constructEntryValues($itemtype, 'inter_opensatisfaction', $date_start, $date_end);
-        $nb_answersatisfaction_stats = \Stat::constructEntryValues($itemtype, 'inter_answersatisfaction', $date_start, $date_end);
-        $avg_satisfaction_stats = \Stat::constructEntryValues($itemtype, 'inter_avgsatisfaction', $date_start, $date_end);
-        $avg_solvedtime_stats = \Stat::constructEntryValues($itemtype, 'inter_avgsolvedtime', $date_start, $date_end);
-        $avg_closedtime_stats = \Stat::constructEntryValues($itemtype, 'inter_avgclosedtime', $date_start, $date_end);
-        $avg_actiontime_stats = \Stat::constructEntryValues($itemtype, 'inter_avgactiontime', $date_start, $date_end);
+        $nb_open_stats = Stat::constructEntryValues($itemtype, 'inter_total', $date_start, $date_end);
+        $nb_solved_stats = Stat::constructEntryValues($itemtype, 'inter_solved', $date_start, $date_end);
+        $nb_late_stats = Stat::constructEntryValues($itemtype, 'inter_solved_late', $date_start, $date_end);
+        $nb_closed_stats = Stat::constructEntryValues($itemtype, 'inter_closed', $date_start, $date_end);
+        $nb_opensatisfaction_stats = Stat::constructEntryValues($itemtype, 'inter_opensatisfaction', $date_start, $date_end);
+        $nb_answersatisfaction_stats = Stat::constructEntryValues($itemtype, 'inter_answersatisfaction', $date_start, $date_end);
+        $avg_satisfaction_stats = Stat::constructEntryValues($itemtype, 'inter_avgsatisfaction', $date_start, $date_end);
+        $avg_solvedtime_stats = Stat::constructEntryValues($itemtype, 'inter_avgsolvedtime', $date_start, $date_end);
+        $avg_closedtime_stats = Stat::constructEntryValues($itemtype, 'inter_avgclosedtime', $date_start, $date_end);
+        $avg_actiontime_stats = Stat::constructEntryValues($itemtype, 'inter_avgactiontime', $date_start, $date_end);
         return new JSONResponse([
             'sample_dates' => array_keys($nb_open_stats),
             'number_open' => array_values($nb_open_stats),
@@ -472,8 +478,8 @@ class ReportController extends AbstractController
                 'location' => 'query',
                 'example' => '2024-01-30',
                 'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                    'type' => Schema::TYPE_STRING,
+                    'format' => Schema::FORMAT_STRING_DATE,
                 ],
             ],
             [
@@ -482,8 +488,8 @@ class ReportController extends AbstractController
                 'location' => 'query',
                 'example' => '2024-01-30',
                 'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                    'type' => Schema::TYPE_STRING,
+                    'format' => Schema::FORMAT_STRING_DATE,
                 ],
             ],
             [
@@ -491,7 +497,7 @@ class ReportController extends AbstractController
                 'description' => 'The field to group the statistics by',
                 'location' => 'query',
                 'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
+                    'type' => Schema::TYPE_STRING,
                 ],
                 'required' => true,
             ],
@@ -513,7 +519,7 @@ class ReportController extends AbstractController
             date('Y-m-d', strtotime('-1 year', strtotime($date_end)));
         $field = $request->getParameter('field');
 
-        $items = \Stat::getItems(
+        $items = Stat::getItems(
             $itemtype,
             $date_start,
             $date_end,
@@ -527,13 +533,13 @@ class ReportController extends AbstractController
                 continue;
             }
 
-            $fn_get_stats = (static fn($stat, $field, $items_id) => \Stat::constructEntryValues($itemtype, $stat, $date_start, $date_end, $field, $items_id, 0));
+            $fn_get_stats = (static fn($stat, $field, $items_id) => Stat::constructEntryValues($itemtype, $stat, $date_start, $date_end, $field, $items_id, 0));
 
             $result = [];
             if (isset($item['itemtype'])) {
                 $result['item'] = [
                     'id' => $item['id'],
-                    'name' => \Dropdown::getDropdownName($item['itemtype']::getTable(), $item['id'], false, true, true, ''),
+                    'name' => Dropdown::getDropdownName($item['itemtype']::getTable(), $item['id'], false, true, true, ''),
                 ];
             } else {
                 $result['item'] = [
@@ -591,8 +597,8 @@ class ReportController extends AbstractController
                 'location' => 'query',
                 'example' => '2024-01-30',
                 'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                    'type' => Schema::TYPE_STRING,
+                    'format' => Schema::FORMAT_STRING_DATE,
                 ],
             ],
             [
@@ -601,8 +607,8 @@ class ReportController extends AbstractController
                 'location' => 'query',
                 'example' => '2024-01-30',
                 'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                    'type' => Schema::TYPE_STRING,
+                    'format' => Schema::FORMAT_STRING_DATE,
                 ],
             ],
             [
@@ -610,7 +616,7 @@ class ReportController extends AbstractController
                 'description' => 'The field to group the statistics by',
                 'location' => 'query',
                 'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
+                    'type' => Schema::TYPE_STRING,
                 ],
                 'required' => true,
             ],
@@ -619,7 +625,7 @@ class ReportController extends AbstractController
                 'description' => 'The format to export the statistics to',
                 'location' => 'header',
                 'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
+                    'type' => Schema::TYPE_STRING,
                     'enum' => ['text/csv', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/pdf'],
                 ],
             ],
@@ -628,15 +634,15 @@ class ReportController extends AbstractController
     public function exportITILStats(Request $request): Response
     {
         $format = match ($request->getHeaderLine('Accept')) {
-            'text/csv' => \Search::CSV_OUTPUT,
-            'application/vnd.oasis.opendocument.spreadsheet' => \Search::ODS_OUTPUT,
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => \Search::XLSX_OUTPUT,
-            default => \Search::PDF_OUTPUT_LANDSCAPE,
+            'text/csv' => Search::CSV_OUTPUT,
+            'application/vnd.oasis.opendocument.spreadsheet' => Search::ODS_OUTPUT,
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => Search::XLSX_OUTPUT,
+            default => Search::PDF_OUTPUT_LANDSCAPE,
         };
         $ext = match ($format) {
-            \Search::CSV_OUTPUT => 'csv',
-            \Search::ODS_OUTPUT => 'ods',
-            \Search::XLSX_OUTPUT => 'xlsx',
+            Search::CSV_OUTPUT => 'csv',
+            Search::ODS_OUTPUT => 'ods',
+            Search::XLSX_OUTPUT => 'xlsx',
             default => 'pdf',
         };
 
@@ -644,7 +650,7 @@ class ReportController extends AbstractController
         $start = $request->hasParameter('date_start') ? $request->getParameter('date_start') : null;
         $end = $request->hasParameter('date_end') ? $request->getParameter('date_end') : null;
         $field = $request->getParameter('field');
-        $value = \Stat::getItems(
+        $value = Stat::getItems(
             $itemtype,
             $start,
             $end,
@@ -658,14 +664,14 @@ class ReportController extends AbstractController
         ob_start();
         $_GET['display_type'] = $format;
         $_GET['export_all'] = 1;
-        \Stat::showTable($itemtype, $field, $start, $end, 0, $value, 0);
+        Stat::showTable($itemtype, $field, $start, $end, 0, $value, 0);
         $export = ob_get_clean();
         $filename = 'assistance_stats_' . date('Y-m-d_H-i-s') . '.' . $ext;
         return new Response(200, [
             'Content-Type' => match ($format) {
-                \Search::CSV_OUTPUT => 'text/csv',
-                \Search::ODS_OUTPUT => 'application/vnd.oasis.opendocument.spreadsheet',
-                \Search::XLSX_OUTPUT => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                Search::CSV_OUTPUT => 'text/csv',
+                Search::ODS_OUTPUT => 'application/vnd.oasis.opendocument.spreadsheet',
+                Search::XLSX_OUTPUT => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 default => 'application/pdf',
             },
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',
@@ -685,8 +691,8 @@ class ReportController extends AbstractController
                 'location' => 'query',
                 'example' => '2024-01-30',
                 'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                    'type' => Schema::TYPE_STRING,
+                    'format' => Schema::FORMAT_STRING_DATE,
                 ],
             ],
             [
@@ -695,8 +701,8 @@ class ReportController extends AbstractController
                 'location' => 'query',
                 'example' => '2024-01-30',
                 'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                    'type' => Schema::TYPE_STRING,
+                    'format' => Schema::FORMAT_STRING_DATE,
                 ],
             ],
         ],
@@ -716,7 +722,7 @@ class ReportController extends AbstractController
             $request->getParameter('date_start') :
             date('Y-m-d', strtotime('-1 year', strtotime($date_end)));
 
-        $assets = \Stat::getAssetsWithITIL($date_start, $date_end, $itemtype);
+        $assets = Stat::getAssetsWithITIL($date_start, $date_end, $itemtype);
         $results = [];
 
         foreach ($assets as $asset) {
@@ -751,8 +757,8 @@ class ReportController extends AbstractController
                 'location' => 'query',
                 'example' => '2024-01-30',
                 'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                    'type' => Schema::TYPE_STRING,
+                    'format' => Schema::FORMAT_STRING_DATE,
                 ],
             ],
             [
@@ -761,8 +767,8 @@ class ReportController extends AbstractController
                 'location' => 'query',
                 'example' => '2024-01-30',
                 'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                    'type' => Schema::TYPE_STRING,
+                    'format' => Schema::FORMAT_STRING_DATE,
                 ],
             ],
             [
@@ -770,7 +776,7 @@ class ReportController extends AbstractController
                 'description' => 'The format to export the statistics to',
                 'location' => 'header',
                 'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
+                    'type' => Schema::TYPE_STRING,
                     'enum' => ['text/csv', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/pdf'],
                 ],
             ],
@@ -779,22 +785,22 @@ class ReportController extends AbstractController
     public function exportAssetStats(Request $request): Response
     {
         $format = match ($request->getHeaderLine('Accept')) {
-            'text/csv' => \Search::CSV_OUTPUT,
-            'application/vnd.oasis.opendocument.spreadsheet' => \Search::ODS_OUTPUT,
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => \Search::XLSX_OUTPUT,
-            default => \Search::PDF_OUTPUT_LANDSCAPE,
+            'text/csv' => Search::CSV_OUTPUT,
+            'application/vnd.oasis.opendocument.spreadsheet' => Search::ODS_OUTPUT,
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => Search::XLSX_OUTPUT,
+            default => Search::PDF_OUTPUT_LANDSCAPE,
         };
         $ext = match ($format) {
-            \Search::CSV_OUTPUT => 'csv',
-            \Search::ODS_OUTPUT => 'ods',
-            \Search::XLSX_OUTPUT => 'xlsx',
+            Search::CSV_OUTPUT => 'csv',
+            Search::ODS_OUTPUT => 'ods',
+            Search::XLSX_OUTPUT => 'xlsx',
             default => 'pdf',
         };
 
         $itemtype = $request->getAttribute('assistance_type');
         $start = $request->hasParameter('date_start') ? $request->getParameter('date_start') : null;
         $end = $request->hasParameter('date_end') ? $request->getParameter('date_end') : null;
-        $value = \Stat::getItems(
+        $value = Stat::getItems(
             $itemtype,
             $start,
             $end,
@@ -808,14 +814,14 @@ class ReportController extends AbstractController
         ob_start();
         $_GET['display_type'] = $format;
         $_GET['export_all'] = 1;
-        \Stat::showTable($itemtype, 'hardwares', $start, $end, 0, $value, 0);
+        Stat::showTable($itemtype, 'hardwares', $start, $end, 0, $value, 0);
         $export = ob_get_clean();
         $filename = 'assistance_asset_stats_' . date('Y-m-d_H-i-s') . '.' . $ext;
         return new Response(200, [
             'Content-Type' => match ($format) {
-                \Search::CSV_OUTPUT => 'text/csv',
-                \Search::ODS_OUTPUT => 'application/vnd.oasis.opendocument.spreadsheet',
-                \Search::XLSX_OUTPUT => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                Search::CSV_OUTPUT => 'text/csv',
+                Search::ODS_OUTPUT => 'application/vnd.oasis.opendocument.spreadsheet',
+                Search::XLSX_OUTPUT => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 default => 'application/pdf',
             },
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',
@@ -835,8 +841,8 @@ class ReportController extends AbstractController
                 'location' => 'query',
                 'example' => '2024-01-30',
                 'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                    'type' => Schema::TYPE_STRING,
+                    'format' => Schema::FORMAT_STRING_DATE,
                 ],
             ],
             [
@@ -845,8 +851,8 @@ class ReportController extends AbstractController
                 'location' => 'query',
                 'example' => '2024-01-30',
                 'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                    'type' => Schema::TYPE_STRING,
+                    'format' => Schema::FORMAT_STRING_DATE,
                 ],
             ],
             [
@@ -854,7 +860,7 @@ class ReportController extends AbstractController
                 'description' => 'The characteristic field to group the statistics by',
                 'location' => 'query',
                 'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
+                    'type' => Schema::TYPE_STRING,
                 ],
                 'required' => true,
             ],
@@ -876,7 +882,7 @@ class ReportController extends AbstractController
             date('Y-m-d', strtotime('-1 year', strtotime($date_end)));
         $field = $request->getParameter('field');
 
-        $items = \Stat::getItems(
+        $items = Stat::getItems(
             $itemtype,
             $date_start,
             $date_end,
@@ -890,7 +896,7 @@ class ReportController extends AbstractController
                 ],
             ]);
         }
-        $param = $param_item instanceof \CommonDevice ? 'device' : 'comp_champ';
+        $param = $param_item instanceof CommonDevice ? 'device' : 'comp_champ';
 
         $results = [];
 
@@ -899,14 +905,14 @@ class ReportController extends AbstractController
                 continue;
             }
 
-            $fn_get_stats = (static fn($stat, $field, $items_id) => \Stat::constructEntryValues($itemtype, $stat, $date_start, $date_end, $param, $items_id, $field));
+            $fn_get_stats = (static fn($stat, $field, $items_id) => Stat::constructEntryValues($itemtype, $stat, $date_start, $date_end, $param, $items_id, $field));
 
             $result = [];
             if (isset($item['itemtype'])) {
                 $result['item'] = [
                     'itemtype' => $param_item::getType(),
                     'id' => $item['id'],
-                    'name' => \Dropdown::getDropdownName($item['itemtype']::getTable(), $item['id'], false, true, true, ''),
+                    'name' => Dropdown::getDropdownName($item['itemtype']::getTable(), $item['id'], false, true, true, ''),
                 ];
             } else {
                 $result['item'] = [
@@ -965,8 +971,8 @@ class ReportController extends AbstractController
                 'location' => 'query',
                 'example' => '2024-01-30',
                 'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                    'type' => Schema::TYPE_STRING,
+                    'format' => Schema::FORMAT_STRING_DATE,
                 ],
             ],
             [
@@ -975,8 +981,8 @@ class ReportController extends AbstractController
                 'location' => 'query',
                 'example' => '2024-01-30',
                 'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                    'type' => Schema::TYPE_STRING,
+                    'format' => Schema::FORMAT_STRING_DATE,
                 ],
             ],
             [
@@ -984,7 +990,7 @@ class ReportController extends AbstractController
                 'description' => 'The field to group the statistics by',
                 'location' => 'query',
                 'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
+                    'type' => Schema::TYPE_STRING,
                 ],
                 'required' => true,
             ],
@@ -993,7 +999,7 @@ class ReportController extends AbstractController
                 'description' => 'The format to export the statistics to',
                 'location' => 'header',
                 'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
+                    'type' => Schema::TYPE_STRING,
                     'enum' => ['text/csv', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/pdf'],
                 ],
             ],
@@ -1002,15 +1008,15 @@ class ReportController extends AbstractController
     public function exportAssetCharacteristicsStats(Request $request): Response
     {
         $format = match ($request->getHeaderLine('Accept')) {
-            'text/csv' => \Search::CSV_OUTPUT,
-            'application/vnd.oasis.opendocument.spreadsheet' => \Search::ODS_OUTPUT,
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => \Search::XLSX_OUTPUT,
-            default => \Search::PDF_OUTPUT_LANDSCAPE,
+            'text/csv' => Search::CSV_OUTPUT,
+            'application/vnd.oasis.opendocument.spreadsheet' => Search::ODS_OUTPUT,
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => Search::XLSX_OUTPUT,
+            default => Search::PDF_OUTPUT_LANDSCAPE,
         };
         $ext = match ($format) {
-            \Search::CSV_OUTPUT => 'csv',
-            \Search::ODS_OUTPUT => 'ods',
-            \Search::XLSX_OUTPUT => 'xlsx',
+            Search::CSV_OUTPUT => 'csv',
+            Search::ODS_OUTPUT => 'ods',
+            Search::XLSX_OUTPUT => 'xlsx',
             default => 'pdf',
         };
 
@@ -1018,7 +1024,7 @@ class ReportController extends AbstractController
         $start = $request->hasParameter('date_start') ? $request->getParameter('date_start') : null;
         $end = $request->hasParameter('date_end') ? $request->getParameter('date_end') : null;
         $field = $request->getParameter('field');
-        $value = \Stat::getItems(
+        $value = Stat::getItems(
             $itemtype,
             $start,
             $end,
@@ -1032,14 +1038,14 @@ class ReportController extends AbstractController
         ob_start();
         $_GET['display_type'] = $format;
         $_GET['export_all'] = 1;
-        \Stat::showTable($itemtype, $field, $start, $end, 0, $value, 0);
+        Stat::showTable($itemtype, $field, $start, $end, 0, $value, 0);
         $export = ob_get_clean();
         $filename = 'assistance_asset_characteristics_stats_' . date('Y-m-d_H-i-s') . '.' . $ext;
         return new Response(200, [
             'Content-Type' => match ($format) {
-                \Search::CSV_OUTPUT => 'text/csv',
-                \Search::ODS_OUTPUT => 'application/vnd.oasis.opendocument.spreadsheet',
-                \Search::XLSX_OUTPUT => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                Search::CSV_OUTPUT => 'text/csv',
+                Search::ODS_OUTPUT => 'application/vnd.oasis.opendocument.spreadsheet',
+                Search::XLSX_OUTPUT => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 default => 'application/pdf',
             },
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',

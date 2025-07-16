@@ -35,6 +35,7 @@
 
 namespace Glpi\Console\Cache;
 
+use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Glpi\Cache\CacheManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -78,7 +79,7 @@ class DebugCommand extends Command
         $keys = $input->getOption('key');
         $context = $input->getOption('context');
         if (!in_array($context, $cache_manager->getKnownContexts())) {
-            throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 sprintf(__('Invalid cache context: "%s".'), $context)
             );
         }

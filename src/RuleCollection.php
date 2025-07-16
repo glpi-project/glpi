@@ -32,7 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Event;
@@ -111,7 +111,7 @@ class RuleCollection extends CommonDBTM
         $condition = 0,
         $children = 0
     ) {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $restrict = $this->getRuleListCriteria([
@@ -221,7 +221,7 @@ class RuleCollection extends CommonDBTM
      **/
     public function getCollectionPart($options = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $p['start']     = 0;
@@ -261,7 +261,7 @@ class RuleCollection extends CommonDBTM
      **/
     public function getCollectionDatas($retrieve_criteria = 0, $retrieve_action = 0, $condition = 0)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if ($this->RuleList === null) {
@@ -693,7 +693,7 @@ TWIG, $twig_params);
      **/
     public function changeRuleOrder($ID, $action, $condition = 0)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = [
@@ -816,7 +816,7 @@ TWIG, $twig_params);
      **/
     public function deleteRuleOrder($ranking)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->update(
@@ -843,7 +843,7 @@ TWIG, $twig_params);
      **/
     public function moveRule($ID, $ref_ID, $type = self::MOVE_AFTER, $new_rule = false)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ruleDescription = new Rule();
@@ -1112,7 +1112,7 @@ TWIG, $twig_params);
      **/
     public static function previewImportRules()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (!isset($_FILES["xml_file"]) || ($_FILES["xml_file"]["size"] == 0)) {
@@ -1320,7 +1320,7 @@ TWIG, $twig_params);
      **/
     public static function processImportRules()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $ruleCriteria = new RuleCriteria();
         $ruleAction   = new RuleAction();
@@ -1677,7 +1677,7 @@ TWIG, $twig_params);
      **/
     public function prepareInputDataForTestProcess($condition = 0)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $limit = [];
@@ -1722,7 +1722,7 @@ TWIG, $twig_params);
      */
     public function showRulesEnginePreviewResultsForm(array $input, $condition = 0)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $output = [];
 
@@ -1899,7 +1899,7 @@ TWIG, $twig_params);
      **/
     public function getFieldsToLookFor()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $params = [];
@@ -2124,7 +2124,7 @@ TWIG, $twig_params);
             ];
         }
 
-        $custom_assets = \Glpi\Asset\AssetDefinitionManager::getInstance()->getDefinitions(true);
+        $custom_assets = AssetDefinitionManager::getInstance()->getDefinitions(true);
 
         if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
             $model_dictionaries = [

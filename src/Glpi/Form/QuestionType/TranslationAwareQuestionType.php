@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\QuestionType;
 
+use Glpi\ItemTranslation\Context\TranslationHandler;
 use Glpi\Form\Question;
 
 /**
@@ -45,7 +46,7 @@ interface TranslationAwareQuestionType
     /**
      * Returns the list of form translations handlers.
      *
-     * @return array<int, \Glpi\ItemTranslation\Context\TranslationHandler>
+     * @return array<int, TranslationHandler>
      */
     public function listTranslationsHandlers(Question $question): array;
 }

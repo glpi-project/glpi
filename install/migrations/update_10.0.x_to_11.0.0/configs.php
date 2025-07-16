@@ -31,11 +31,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \Migration $migration
+ * @var Migration $migration
  */
-
 $migration->addConfig([
     'password_init_token_delay' => '86400',
     'toast_location'    => 'bottom-right',

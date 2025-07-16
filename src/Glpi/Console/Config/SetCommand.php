@@ -35,6 +35,7 @@
 
 namespace Glpi\Console\Config;
 
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Config;
 use Glpi\Console\AbstractCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -68,7 +69,7 @@ class SetCommand extends AbstractCommand
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         if (null === $input->getArgument('value')) {
-            /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
+            /** @var QuestionHelper $question_helper */
             $question_helper = $this->getHelper('question');
             $question = new Question(__('Configuration value:'), '');
             $question->setHidden(true); // Hide prompt as configuration value may be sensitive

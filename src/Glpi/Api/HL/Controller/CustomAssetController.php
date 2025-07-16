@@ -34,6 +34,10 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use Glpi\Api\HL\Doc\Parameter;
+use Glpi\Api\HL\Doc\Schema;
+use Toolbox;
+use DBmysql;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
@@ -59,14 +63,14 @@ use User;
         [
             'name' => 'itemtype',
             'description' => 'Asset type',
-            'location' => Doc\Parameter::LOCATION_PATH,
-            'schema' => ['type' => Doc\Schema::TYPE_STRING],
+            'location' => Parameter::LOCATION_PATH,
+            'schema' => ['type' => Schema::TYPE_STRING],
         ],
         [
             'name' => 'id',
             'description' => 'The ID of the Asset',
-            'location' => Doc\Parameter::LOCATION_PATH,
-            'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
+            'location' => Parameter::LOCATION_PATH,
+            'schema' => ['type' => Schema::TYPE_INTEGER],
         ],
     ]
 )]
@@ -74,7 +78,7 @@ final class CustomAssetController extends AbstractController
 {
     protected static function getRawKnownSchemas(): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $custom_assets = [];
@@ -87,7 +91,7 @@ final class CustomAssetController extends AbstractController
             $custom_assets[$schema_name] = [
                 'x-version-introduced' => '2.0',
                 'x-itemtype' => $asset_class,
-                'type' => Doc\Schema::TYPE_OBJECT,
+                'type' => Schema::TYPE_OBJECT,
                 'x-rights-conditions' => [
                     'read' => static fn() => [
                         'WHERE' => [
@@ -97,21 +101,21 @@ final class CustomAssetController extends AbstractController
                 ],
                 'properties' => [
                     'id' => [
-                        'type' => Doc\Schema::TYPE_INTEGER,
-                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'type' => Schema::TYPE_INTEGER,
+                        'format' => Schema::FORMAT_INTEGER_INT64,
                         'x-readonly' => true,
                     ],
-                    'name' => ['type' => Doc\Schema::TYPE_STRING],
-                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                    'serial' => ['type' => Doc\Schema::TYPE_STRING],
-                    'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
-                    'contact' => ['type' => Doc\Schema::TYPE_STRING],
-                    'contact_num' => ['type' => Doc\Schema::TYPE_STRING],
+                    'name' => ['type' => Schema::TYPE_STRING],
+                    'comment' => ['type' => Schema::TYPE_STRING],
+                    'serial' => ['type' => Schema::TYPE_STRING],
+                    'otherserial' => ['type' => Schema::TYPE_STRING],
+                    'contact' => ['type' => Schema::TYPE_STRING],
+                    'contact_num' => ['type' => Schema::TYPE_STRING],
                     'user' => self::getDropdownTypeSchema(class: User::class, field: 'users_id', full_schema: 'User'),
                     'group' => [
-                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'type' => Schema::TYPE_ARRAY,
                         'items' => [
-                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'type' => Schema::TYPE_OBJECT,
                             'x-full-schema' => 'Group',
                             'x-join' => [
                                 'table' => 'glpi_groups', // The table with the desired data
@@ -129,19 +133,19 @@ final class CustomAssetController extends AbstractController
                             ],
                             'properties' => [
                                 'id' => [
-                                    'type' => Doc\Schema::TYPE_INTEGER,
-                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                    'type' => Schema::TYPE_INTEGER,
+                                    'format' => Schema::FORMAT_INTEGER_INT64,
                                     'description' => 'ID',
                                 ],
-                                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                                'name' => ['type' => Schema::TYPE_STRING],
                             ],
                         ],
                     ],
                     'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
                     'group_tech' => [
-                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'type' => Schema::TYPE_ARRAY,
                         'items' => [
-                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'type' => Schema::TYPE_OBJECT,
                             'x-full-schema' => 'Group',
                             'x-join' => [
                                 'table' => 'glpi_groups', // The table with the desired data
@@ -159,11 +163,11 @@ final class CustomAssetController extends AbstractController
                             ],
                             'properties' => [
                                 'id' => [
-                                    'type' => Doc\Schema::TYPE_INTEGER,
-                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                    'type' => Schema::TYPE_INTEGER,
+                                    'format' => Schema::FORMAT_INTEGER_INT64,
                                     'description' => 'ID',
                                 ],
-                                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                                'name' => ['type' => Schema::TYPE_STRING],
                             ],
                         ],
                     ],
@@ -171,12 +175,12 @@ final class CustomAssetController extends AbstractController
                     'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
                     'state' => self::getDropdownTypeSchema(class: State::class, full_schema: 'State'),
                     'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
-                    'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                    'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'is_recursive' => ['type' => Schema::TYPE_BOOLEAN],
+                    'is_deleted' => ['type' => Schema::TYPE_BOOLEAN],
+                    'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
                     'custom_fields' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'type' => Schema::TYPE_OBJECT,
                         'x-readonly' => true,
                         'properties' => [],
                     ],
@@ -188,7 +192,7 @@ final class CustomAssetController extends AbstractController
                 $field_name = $field->fields['system_name'];
                 $default_value = is_array($field->fields['default_value']) ? exportArrayToDB($field->fields['default_value']) : $field->fields['default_value'];
                 $custom_assets[$schema_name]['properties']['custom_fields']['properties'][$field_name] = [
-                    'type' => Doc\Schema::TYPE_STRING,
+                    'type' => Schema::TYPE_STRING,
                     'x-field' => "custom_$field_name",
                     'computation' =>  QueryFunction::coalesce([
                         QueryFunction::jsonUnquote(
@@ -207,17 +211,17 @@ final class CustomAssetController extends AbstractController
             $custom_assets[$type_schema_name] = [
                 'x-version-introduced' => '2.0',
                 'x-itemtype' => $asset_type_class,
-                'type' => Doc\Schema::TYPE_OBJECT,
+                'type' => Schema::TYPE_OBJECT,
                 'properties' => [
                     'id' => [
-                        'type' => Doc\Schema::TYPE_INTEGER,
-                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'type' => Schema::TYPE_INTEGER,
+                        'format' => Schema::FORMAT_INTEGER_INT64,
                         'x-readonly' => true,
                     ],
-                    'name' => ['type' => Doc\Schema::TYPE_STRING],
-                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'name' => ['type' => Schema::TYPE_STRING],
+                    'comment' => ['type' => Schema::TYPE_STRING],
+                    'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
                 ],
             ];
 
@@ -226,45 +230,45 @@ final class CustomAssetController extends AbstractController
             $custom_assets[$model_schema_name] = [
                 'x-version-introduced' => '2.0',
                 'x-itemtype' => $asset_model_class,
-                'type' => Doc\Schema::TYPE_OBJECT,
+                'type' => Schema::TYPE_OBJECT,
                 'properties' => [
                     'id' => [
-                        'type' => Doc\Schema::TYPE_INTEGER,
-                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'type' => Schema::TYPE_INTEGER,
+                        'format' => Schema::FORMAT_INTEGER_INT64,
                         'x-readonly' => true,
                     ],
-                    'name' => ['type' => Doc\Schema::TYPE_STRING],
-                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                    'product_number' => ['type' => Doc\Schema::TYPE_STRING],
-                    'weight' => ['type' => Doc\Schema::TYPE_INTEGER],
-                    'required_units' => ['type' => Doc\Schema::TYPE_INTEGER],
-                    'depth' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT],
-                    'power_connections' => ['type' => Doc\Schema::TYPE_INTEGER],
-                    'power_consumption' => ['type' => Doc\Schema::TYPE_INTEGER],
-                    'is_half_rack' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'name' => ['type' => Schema::TYPE_STRING],
+                    'comment' => ['type' => Schema::TYPE_STRING],
+                    'product_number' => ['type' => Schema::TYPE_STRING],
+                    'weight' => ['type' => Schema::TYPE_INTEGER],
+                    'required_units' => ['type' => Schema::TYPE_INTEGER],
+                    'depth' => ['type' => Schema::TYPE_NUMBER, 'format' => Schema::FORMAT_NUMBER_FLOAT],
+                    'power_connections' => ['type' => Schema::TYPE_INTEGER],
+                    'power_consumption' => ['type' => Schema::TYPE_INTEGER],
+                    'is_half_rack' => ['type' => Schema::TYPE_BOOLEAN],
                     'picture_front' => [
-                        'type' => Doc\Schema::TYPE_STRING,
+                        'type' => Schema::TYPE_STRING,
                         'x-mapped-from' => 'picture_front',
-                        'x-mapper' => static fn($v) => \Toolbox::getPictureUrl($v, true) ?? '',
+                        'x-mapper' => static fn($v) => Toolbox::getPictureUrl($v, true) ?? '',
                     ],
                     'picture_rear' => [
-                        'type' => Doc\Schema::TYPE_STRING,
+                        'type' => Schema::TYPE_STRING,
                         'x-mapped-from' => 'picture_back',
-                        'x-mapper' => static fn($v) => \Toolbox::getPictureUrl($v, true) ?? '',
+                        'x-mapper' => static fn($v) => Toolbox::getPictureUrl($v, true) ?? '',
                     ],
                     'pictures' => [
-                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'type' => Schema::TYPE_ARRAY,
                         'items' => [
-                            'type' => Doc\Schema::TYPE_STRING,
+                            'type' => Schema::TYPE_STRING,
                             'x-mapped-from' => 'pictures',
                             'x-mapper' => static function ($v) {
                                 $pictures = importArrayFromDB($v);
-                                return array_map(static fn($picture) => \Toolbox::getPictureUrl($picture, true) ?? '', $pictures);
+                                return array_map(static fn($picture) => Toolbox::getPictureUrl($picture, true) ?? '', $pictures);
                             },
                         ],
                     ],
-                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
                 ],
             ];
         }
@@ -295,13 +299,13 @@ final class CustomAssetController extends AbstractController
             '200' => [
                 'description' => 'List of custom asset types',
                 'schema' => [
-                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'type' => Schema::TYPE_ARRAY,
                     'items' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'type' => Schema::TYPE_OBJECT,
                         'properties' => [
-                            'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
-                            'name' => ['type' => Doc\Schema::TYPE_STRING],
-                            'href' => ['type' => Doc\Schema::TYPE_STRING],
+                            'itemtype' => ['type' => Schema::TYPE_STRING],
+                            'name' => ['type' => Schema::TYPE_STRING],
+                            'href' => ['type' => Schema::TYPE_STRING],
                         ],
                     ],
                 ],
@@ -365,7 +369,7 @@ final class CustomAssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
+                'location' => Parameter::LOCATION_BODY,
                 'schema' => 'CustomAsset_{itemtype}',
             ],
         ]
@@ -386,7 +390,7 @@ final class CustomAssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
+                'location' => Parameter::LOCATION_BODY,
                 'schema' => 'CustomAsset_{itemtype}',
             ],
         ]
@@ -454,7 +458,7 @@ final class CustomAssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
+                'location' => Parameter::LOCATION_BODY,
                 'schema' => 'CustomAsset_{itemtype}Model',
             ],
         ]
@@ -475,7 +479,7 @@ final class CustomAssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
+                'location' => Parameter::LOCATION_BODY,
                 'schema' => 'CustomAsset_{itemtype}Model',
             ],
         ]
@@ -543,7 +547,7 @@ final class CustomAssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
+                'location' => Parameter::LOCATION_BODY,
                 'schema' => 'CustomAsset_{itemtype}Type',
             ],
         ]
@@ -564,7 +568,7 @@ final class CustomAssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
+                'location' => Parameter::LOCATION_BODY,
                 'schema' => 'CustomAsset_{itemtype}Type',
             ],
         ]

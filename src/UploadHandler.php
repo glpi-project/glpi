@@ -356,7 +356,7 @@ class UploadHandler
     protected function get_file_object($file_name)
     {
         if ($this->is_valid_file_object($file_name)) {
-            $file = new \stdClass();
+            $file = new stdClass();
             $file->name = $file_name;
             $file->size = $this->get_file_size(
                 $this->get_upload_path($file_name)
@@ -1010,7 +1010,7 @@ class UploadHandler
     {
         try {
             return $this->gd_create_scaled_image($file_name, $version, $options);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             error_log($e->getMessage());
             return false;
         }
@@ -1085,7 +1085,7 @@ class UploadHandler
         $index = null,
         $content_range = null
     ) {
-        $file = new \stdClass();
+        $file = new stdClass();
         $file->name = $this->get_file_name(
             $uploaded_file,
             $name,

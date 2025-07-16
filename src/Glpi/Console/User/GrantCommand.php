@@ -34,6 +34,11 @@
 
 namespace Glpi\Console\User;
 
+use Profile;
+use Entity;
+use User;
+use Profile_User;
+use DBmysql;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -48,8 +53,8 @@ class GrantCommand extends AbstractUserCommand
         $this->setName('user:grant');
         $this->setDescription(__('Grant a profile assignment to a user'));
 
-        $this->addOption('profile', 'p', InputOption::VALUE_REQUIRED, \Profile::getTypeName(1));
-        $this->addOption('entity', 'e', InputOption::VALUE_REQUIRED, \Entity::getTypeName(1), 0);
+        $this->addOption('profile', 'p', InputOption::VALUE_REQUIRED, Profile::getTypeName(1));
+        $this->addOption('entity', 'e', InputOption::VALUE_REQUIRED, Entity::getTypeName(1), 0);
         $this->addOption('recursive', 'r', InputOption::VALUE_NONE, __('Recursive'));
     }
 
@@ -60,8 +65,8 @@ class GrantCommand extends AbstractUserCommand
         $entity = $input->getOption('entity');
         $recursive = $input->getOption('recursive');
 
-        $profile_obj = new \Profile();
-        $entity_obj = new \Entity();
+        $profile_obj = new Profile();
+        $entity_obj = new Entity();
         if (!$profile_obj->getFromDB($profile)) {
             $output->writeln('<error>' . __('Profile not found') . '</error>');
             return 1;
@@ -71,13 +76,13 @@ class GrantCommand extends AbstractUserCommand
             return 1;
         }
 
-        $user = new \User();
+        $user = new User();
         if (!$user->getFromDBbyName($username)) {
             $output->writeln('<error>' . __('User not found') . '</error>');
             return 1;
         }
 
-        $profile_user = new \Profile_User();
+        $profile_user = new Profile_User();
         $profile_user_input = [
             'users_id' => $user->getID(),
             'profiles_id' => $profile_obj->getID(),
@@ -103,20 +108,20 @@ class GrantCommand extends AbstractUserCommand
 
     private function askForProfile(InputInterface $input, OutputInterface $output): string
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $profiles = [];
         $it = $DB->request([
             'SELECT' => ['id', 'name'],
-            'FROM' => \Profile::getTable(),
+            'FROM' => Profile::getTable(),
         ]);
         foreach ($it as $row) {
             $profiles[$row['id']] = $row['name'];
         }
 
         $helper = $this->getHelper('question');
-        $question = new ChoiceQuestion(\Profile::getTypeName(1), $profiles);
+        $question = new ChoiceQuestion(Profile::getTypeName(1), $profiles);
         return $helper->ask($input, $output, $question);
     }
 }

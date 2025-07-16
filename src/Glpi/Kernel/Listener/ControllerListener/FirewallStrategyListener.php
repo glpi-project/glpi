@@ -34,6 +34,7 @@
 
 namespace Glpi\Kernel\Listener\ControllerListener;
 
+use RuntimeException;
 use Glpi\Http\Firewall;
 use Glpi\Http\SessionManager;
 use Glpi\Security\Attribute\SecurityStrategy;
@@ -66,7 +67,7 @@ final readonly class FirewallStrategyListener implements EventSubscriberInterfac
         $attributes = $event->getAttributes(SecurityStrategy::class);
         $number_of_attributes = \count($attributes);
         if ($number_of_attributes > 1) {
-            throw new \RuntimeException(\sprintf(
+            throw new RuntimeException(\sprintf(
                 'You can apply only one security strategy per HTTP request. You actually used the "%s" attribute %d times.',
                 SecurityStrategy::class,
                 $number_of_attributes,

@@ -34,6 +34,7 @@
 
 namespace Glpi\Console\User;
 
+use User;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -50,7 +51,7 @@ class DisableCommand extends AbstractUserCommand
     protected function execute(InputInterface $input, OutputInterface $output): ?int
     {
         $username = $input->getArgument('username');
-        $user = new \User();
+        $user = new User();
         if ($user->getFromDBbyName($username)) {
             $user->update([
                 'id' => $user->getID(),

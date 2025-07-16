@@ -79,14 +79,14 @@ abstract class CommonITILValidation extends CommonDBChild
         $class = static::getItilObjectItemType();
 
         if (!is_a($class, CommonITILObject::class, true)) {
-            throw new \LogicException();
+            throw new LogicException();
         }
 
         return new $class();
     }
 
     /**
-     * @return class-string<\ITIL_ValidationStep>|null
+     * @return class-string<ITIL_ValidationStep>|null
      */
     public static function getValidationStepClassName(): ?string
     {
@@ -229,7 +229,7 @@ abstract class CommonITILValidation extends CommonDBChild
      **/
     public static function canValidate($items_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -250,7 +250,7 @@ abstract class CommonITILValidation extends CommonDBChild
      */
     final public function canAnswer(): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -369,7 +369,7 @@ abstract class CommonITILValidation extends CommonDBChild
 
         $itilobject = $this->getItem();
         if (!($itilobject instanceof CommonITILObject)) {
-            throw new \RuntimeException();
+            throw new RuntimeException();
         }
 
         // Handle rich-text images
@@ -550,7 +550,7 @@ abstract class CommonITILValidation extends CommonDBChild
             ];
 
             if (!$item->update($input)) {
-                throw new \RuntimeException(sprintf('Failed to update related `%s` approval status.', $item::class));
+                throw new RuntimeException(sprintf('Failed to update related `%s` approval status.', $item::class));
             }
         }
     }
@@ -761,7 +761,7 @@ abstract class CommonITILValidation extends CommonDBChild
      **/
     public static function getNumberToValidate($users_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $itil_class = static::getItilObjectItemType();
@@ -1009,7 +1009,7 @@ abstract class CommonITILValidation extends CommonDBChild
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -1298,7 +1298,7 @@ HTML;
             $this->check(-1, CREATE, $options);
         }
 
-        /** @var \CommonITILObject $itil */
+        /** @var CommonITILObject $itil */
         $itil = $this->getItem();
 
         $ivs = $itil::getValidationStepInstance();
@@ -2061,7 +2061,7 @@ HTML;
         if (!$itil_validationstep->getFromDBByCrit($relation_fields)) {
             $validationstep = new ValidationStep();
             if (!$validationstep->getFromDB($input['_validationsteps_id'])) {
-                throw new \RuntimeException();
+                throw new RuntimeException();
             };
 
             $step_input = $relation_fields + [
@@ -2069,7 +2069,7 @@ HTML;
             ];
 
             if (!$itil_validationstep->add($step_input)) {
-                throw new \RuntimeException();
+                throw new RuntimeException();
             }
         }
 
@@ -2097,7 +2097,7 @@ HTML;
 
         $itil_validationstep = static::getItilObjectItemType()::getValidationStepInstance();
         if (!$itil_validationstep->delete(['id' => $itils_validationsteps_id])) {
-            throw new \RuntimeException('Failed to delete unused approval step.');
+            throw new RuntimeException('Failed to delete unused approval step.');
         };
     }
 
@@ -2105,7 +2105,7 @@ HTML;
     {
         $itil_object = $this->getItem();
         if (!($itil_object instanceof CommonITILObject)) {
-            throw new \RuntimeException();
+            throw new RuntimeException();
         }
 
         $update = $itil_object->update([
@@ -2114,7 +2114,7 @@ HTML;
             '_from_itilvalidation' => true,
         ]);
         if (!$update) {
-            throw new \RuntimeException('Failed to update Itil global approval status.');
+            throw new RuntimeException('Failed to update Itil global approval status.');
         }
     }
 }

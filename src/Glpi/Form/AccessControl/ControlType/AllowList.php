@@ -35,6 +35,8 @@
 
 namespace Glpi\Form\AccessControl\ControlType;
 
+use InvalidArgumentException;
+use CommonDBTM;
 use AbstractRightsDropdown;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\AccessVote;
@@ -82,7 +84,7 @@ final class AllowList implements ControlTypeInterface
     {
         $config = $access_control->getConfig();
         if (!$config instanceof AllowListConfig) {
-            throw new \InvalidArgumentException("Invalid config class");
+            throw new InvalidArgumentException("Invalid config class");
         }
 
         $twig = TemplateRenderer::getInstance();
@@ -118,7 +120,7 @@ final class AllowList implements ControlTypeInterface
         FormAccessParameters $parameters
     ): AccessVote {
         if (!$config instanceof AllowListConfig) {
-            throw new \InvalidArgumentException("Invalid config class");
+            throw new InvalidArgumentException("Invalid config class");
         }
 
         if (!$parameters->isAuthenticated()) {
@@ -209,8 +211,7 @@ final class AllowList implements ControlTypeInterface
         $data = $config->jsonSerialize();
         $requirements = [];
         foreach ($to_handle as $itemtype => $data_key) {
-            /** @var class-string<\CommonDBTM> $itemtype */
-
+            /** @var class-string<CommonDBTM> $itemtype */
             // Iterate on ids
             $ids = $data[$data_key] ?? [];
             foreach ($ids as $i => $item_id) {
@@ -251,8 +252,7 @@ final class AllowList implements ControlTypeInterface
 
         // Handler users, groups and profiles ids.
         foreach ($to_handle as $itemtype => $data_key) {
-            /** @var class-string<\CommonDBTM> $itemtype */
-
+            /** @var class-string<CommonDBTM> $itemtype */
             // Iterate on names
             $names = $config[$data_key] ?? [];
             foreach ($names as $i => $name) {

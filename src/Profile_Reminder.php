@@ -56,7 +56,7 @@ class Profile_Reminder extends CommonDBRelation
      **/
     public static function getProfiles($reminders_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $prof  = [];

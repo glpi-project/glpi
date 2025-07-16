@@ -288,9 +288,9 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
     public static function getLinkedTo(string $itemtype, int $items_id): array
     {
         if (static::class === self::class) {
-            throw new \LogicException(sprintf('%s should be called only from sub classes.', __METHOD__));
+            throw new LogicException(sprintf('%s should be called only from sub classes.', __METHOD__));
         }
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $links = [];
@@ -522,10 +522,10 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
     public static function countLinksByStatus(string $itemtype, int $items_id, array $status = [], array $link_types = []): int
     {
         if (static::class === self::class) {
-            throw new \LogicException(sprintf('%s should be called only from sub classes.', __METHOD__));
+            throw new LogicException(sprintf('%s should be called only from sub classes.', __METHOD__));
         }
 
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $count = 0;

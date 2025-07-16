@@ -394,7 +394,7 @@ class ItemVirtualMachine extends CommonDBChild
      **/
     public static function findVirtualMachine($fields = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (!isset($fields['uuid']) || empty($fields['uuid'])) {
@@ -422,7 +422,7 @@ class ItemVirtualMachine extends CommonDBChild
             $result = $iterator->current();
             return $result['id'];
         } elseif (count($iterator) > 1) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf(
                     '`%1$s::findVirtualMachine()` expects to get one result, %2$s found in query "%3$s".',
                     static::class,

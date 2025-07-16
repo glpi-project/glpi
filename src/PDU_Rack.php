@@ -204,7 +204,7 @@ class PDU_Rack extends CommonDBRelation
 
     public function showForm($ID, array $options = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // search used racked (or sided mounted) pdus
@@ -304,7 +304,7 @@ class PDU_Rack extends CommonDBRelation
 
     public static function showListForRack(Rack $rack)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         echo "<h2>" . __s("Side pdus") . "</h2>";
@@ -359,7 +359,7 @@ class PDU_Rack extends CommonDBRelation
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -673,7 +673,7 @@ JAVASCRIPT;
      */
     public static function getForRackSide(Rack $rack, $side)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         return $DB->request([
@@ -694,7 +694,7 @@ JAVASCRIPT;
      */
     public static function getUsed($fields_requested = ['*'])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         return $DB->request([

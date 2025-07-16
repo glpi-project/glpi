@@ -135,7 +135,7 @@ class ProjectTaskTeam extends CommonDBRelation
      **/
     public static function getTeamFor($tasks_id, bool $expand = false)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $team = [];
@@ -167,7 +167,7 @@ class ProjectTaskTeam extends CommonDBRelation
 
     public function prepareInputForAdd($input)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (!isset($input['itemtype'])) {
@@ -226,7 +226,7 @@ class ProjectTaskTeam extends CommonDBRelation
                 //only Users can be checked for planning conflicts
                 break;
             default:
-                throw new \RuntimeException($input['itemtype'] . " is not (yet?) handled.");
+                throw new RuntimeException($input['itemtype'] . " is not (yet?) handled.");
         }
 
         return $input;

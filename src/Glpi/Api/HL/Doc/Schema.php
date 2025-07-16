@@ -35,6 +35,7 @@
 
 namespace Glpi\Api\HL\Doc;
 
+use ArrayAccess;
 use CommonGLPI;
 use Glpi\Api\HL\Router;
 use Glpi\Toolbox\ArrayPathAccessor;
@@ -43,9 +44,9 @@ use function Safe\preg_match;
 use function Safe\strtotime;
 
 /**
- * @implements \ArrayAccess<string, null|string|array<string, Schema>>
+ * @implements ArrayAccess<string, null|string|array<string, Schema>>
  */
-class Schema implements \ArrayAccess
+class Schema implements ArrayAccess
 {
     public const TYPE_STRING = 'string';
     public const TYPE_INTEGER = 'integer';

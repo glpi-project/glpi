@@ -34,6 +34,7 @@
 
 namespace Glpi\Controller;
 
+use Throwable;
 use Config;
 use DBConnection;
 use Glpi\Application\Environment;
@@ -51,7 +52,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ErrorController extends AbstractController
 {
-    public function __invoke(Request $request, ?\Throwable $exception = null): Response
+    public function __invoke(Request $request, ?Throwable $exception = null): Response
     {
         if ($exception === null) {
             return new Response('', 500);

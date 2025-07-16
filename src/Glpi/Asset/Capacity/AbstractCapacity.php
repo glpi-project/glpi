@@ -34,6 +34,9 @@
 
 namespace Glpi\Asset\Capacity;
 
+use Exception;
+use CommonDBTM;
+use DBmysql;
 use CommonDBRelation;
 use DisplayPreference;
 use Glpi\Asset\Asset;
@@ -95,14 +98,14 @@ abstract class AbstractCapacity implements CapacityInterface
      * The count is based on the number of distinct peer items IDs found in the table of the relation class
      * in rows linked to the given asset class.
      *
-     * @param class-string<\CommonDBTM> $asset_classname
-     * @param class-string<\CommonDBTM> $relation_classname
+     * @param class-string<CommonDBTM> $asset_classname
+     * @param class-string<CommonDBTM> $relation_classname
      * @param array $specific_criteria
      * @return int
      */
     final protected function countPeerItemsUsage(string $asset_classname, string $relation_classname, array $specific_criteria = []): int
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (is_a($relation_classname, CommonDBRelation::class, true)) {
@@ -115,7 +118,7 @@ abstract class AbstractCapacity implements CapacityInterface
                 $distinct_field  = $relation_classname::$items_id_1;
             }
             if ($distinct_field === null) {
-                throw new \Exception('Unable to compute peer item foreign key field.');
+                throw new Exception('Unable to compute peer item foreign key field.');
             }
 
             return countDistinctElementsInTable(
@@ -140,7 +143,7 @@ abstract class AbstractCapacity implements CapacityInterface
             );
         }
 
-        throw new \Exception('Unable to compute peer items usage.');
+        throw new Exception('Unable to compute peer items usage.');
     }
 
     /**
@@ -148,8 +151,8 @@ abstract class AbstractCapacity implements CapacityInterface
      *
      * The count is based on the number of distinct assets IDs found in the table of the relation class.
      *
-     * @param class-string<\CommonDBTM> $asset_classname
-     * @param class-string<\CommonDBTM> $relation_classname
+     * @param class-string<CommonDBTM> $asset_classname
+     * @param class-string<CommonDBTM> $relation_classname
      * @param array $specific_criteria
      * @return int
      */
@@ -168,7 +171,7 @@ abstract class AbstractCapacity implements CapacityInterface
     /**
      * Count the number of assets for the given asset definition.
      *
-     * @param class-string<\Glpi\Asset\Asset> $classname
+     * @param class-string<Asset> $classname
      * @param array<string, mixed>            $where_clause
      *
      * @return int
@@ -207,7 +210,7 @@ abstract class AbstractCapacity implements CapacityInterface
         string $linked_itemtype,
         bool $both_sides = true
     ): void {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = [
@@ -240,7 +243,7 @@ abstract class AbstractCapacity implements CapacityInterface
      */
     protected function deleteFieldsLogs(string $itemtype, array $search_options): void
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ids = $this->extractOptionsIds($search_options);

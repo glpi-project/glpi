@@ -34,6 +34,7 @@
 
 namespace Glpi\Asset\Capacity;
 
+use DBmysql;
 use CommonDevice;
 use CommonGLPI;
 use Glpi\Asset\CapacityConfig;
@@ -89,7 +90,7 @@ class HasDevicesCapacity extends AbstractCapacity
     private function countAssetsLinkedToDevices(string $classname): int
     {
         /**
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $DB;
 

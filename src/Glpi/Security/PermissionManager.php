@@ -35,6 +35,7 @@
 
 namespace Glpi\Security;
 
+use DBmysql;
 use Profile;
 use Profile_User;
 
@@ -56,7 +57,7 @@ final class PermissionManager
 
     public function getAllEntities(int $users_id): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $profile_table = Profile::getTable();

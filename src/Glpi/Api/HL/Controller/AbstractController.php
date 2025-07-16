@@ -35,8 +35,12 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use Glpi\Api\HL\Doc\Schema;
+use Plugin;
+use Entity;
+use Session;
+use RuntimeException;
 use CommonDBTM;
-use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\RoutePath;
 use Glpi\Api\HL\Router;
 use Glpi\Http\JSONResponse;
@@ -73,7 +77,7 @@ abstract class AbstractController
         'description' => 'RSQL query string',
         'location' => 'query',
         'schema' => [
-            'type' => Doc\Schema::TYPE_STRING,
+            'type' => Schema::TYPE_STRING,
         ],
     ];
 
@@ -82,8 +86,8 @@ abstract class AbstractController
         'description' => 'The first item to return',
         'location' => 'query',
         'schema' => [
-            'type' => Doc\Schema::TYPE_INTEGER,
-            'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+            'type' => Schema::TYPE_INTEGER,
+            'format' => Schema::FORMAT_INTEGER_INT64,
             'minimum' => 0,
             'default' => 0,
         ],
@@ -94,8 +98,8 @@ abstract class AbstractController
         'description' => 'The maximum number of items to return',
         'location' => 'query',
         'schema' => [
-            'type' => Doc\Schema::TYPE_INTEGER,
-            'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+            'type' => Schema::TYPE_INTEGER,
+            'format' => Schema::FORMAT_INTEGER_INT64,
             'minimum' => 0,
             'default' => 100,
         ],
@@ -107,7 +111,7 @@ abstract class AbstractController
                           If no direction is provided, asc is assumed. Multiple sorts can be provided by separating them with a comma.',
         'location' => 'query',
         'schema' => [
-            'type' => Doc\Schema::TYPE_STRING,
+            'type' => Schema::TYPE_STRING,
         ],
     ];
 
@@ -139,7 +143,7 @@ abstract class AbstractController
     {
         $schemas = static::getRawKnownSchemas();
         // Allow plugins to inject or modify schemas
-        $schemas = \Plugin::doHookFunction(Hooks::REDEFINE_API_SCHEMAS, [
+        $schemas = Plugin::doHookFunction(Hooks::REDEFINE_API_SCHEMAS, [
             'controller' => static::class,
             'schemas' => $schemas,
         ])['schemas'];
@@ -149,7 +153,7 @@ abstract class AbstractController
                 if (str_starts_with($schema_name, '_')) {
                     continue;
                 }
-                $schema = Doc\Schema::filterSchemaByAPIVersion($schema, $api_version);
+                $schema = Schema::filterSchemaByAPIVersion($schema, $api_version);
             }
         }
         // Remove any null schemas
@@ -181,7 +185,7 @@ abstract class AbstractController
             $field = $class::getForeignKeyField();
         }
         $schema = [
-            'type' => Doc\Schema::TYPE_OBJECT,
+            'type' => Schema::TYPE_OBJECT,
             'x-field' => $field,
             'x-itemtype' => $class,
             'x-join' => [
@@ -191,11 +195,11 @@ abstract class AbstractController
             ],
             'properties' => [
                 'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => $class !== \Entity::class,
+                    'type' => Schema::TYPE_INTEGER,
+                    'format' => Schema::FORMAT_INTEGER_INT64,
+                    'x-readonly' => $class !== Entity::class,
                 ],
-                $name_field => ['type' => Doc\Schema::TYPE_STRING],
+                $name_field => ['type' => Schema::TYPE_STRING],
             ],
         ];
         if ($full_schema !== null) {
@@ -206,13 +210,13 @@ abstract class AbstractController
 
     /**
      * @return int
-     * @throws \RuntimeException if the user ID is not set in the current session
+     * @throws RuntimeException if the user ID is not set in the current session
      */
     protected function getMyUserID(): int
     {
-        $user_id = \Session::getLoginUserID();
+        $user_id = Session::getLoginUserID();
         if (!is_int($user_id)) {
-            throw new \RuntimeException('Invalid session');
+            throw new RuntimeException('Invalid session');
         }
         return $user_id;
     }

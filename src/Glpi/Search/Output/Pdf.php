@@ -35,6 +35,8 @@
 
 namespace Glpi\Search\Output;
 
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageMargins;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 
@@ -50,7 +52,7 @@ final class Pdf extends Spreadsheet
         $style = $this->spread->getDefaultStyle();
 
         $borders = $style->getBorders();
-        $borders->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);
+        $borders->getBottom()->setBorderStyle(Border::BORDER_DOTTED);
 
         $pagesetup = $this->spread->getActiveSheet()->getPageSetup();
         $pagesetup->setPaperSize(PageSetup::PAPERSIZE_A4);
@@ -62,9 +64,9 @@ final class Pdf extends Spreadsheet
             ->setRight($margin)
             ->setLeft($margin);
 
-        \PhpOffice\PhpSpreadsheet\IOFactory::registerWriter('GLPIPdf', Tcpdf::class);
+        IOFactory::registerWriter('GLPIPdf', Tcpdf::class);
         /** @var \PhpOffice\PhpSpreadsheet\Writer\Pdf $writer */
-        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->spread, 'GLPIPdf');
+        $writer = IOFactory::createWriter($this->spread, 'GLPIPdf');
         $writer->setOrientation($orientation);
         $this->writer = $writer;
     }

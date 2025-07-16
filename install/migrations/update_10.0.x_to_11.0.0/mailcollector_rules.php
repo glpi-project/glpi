@@ -35,10 +35,9 @@
 use Glpi\DBAL\QueryExpression;
 
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-
 // Add a rule to refuse emails that corresponds to a GLPI notification
 if (countElementsInTable('glpi_rules', ['uuid' => 'glpi_rule_mail_collector_glpi_notifications']) === 0) {
     // Add the missing rule

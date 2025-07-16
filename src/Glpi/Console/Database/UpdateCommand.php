@@ -35,6 +35,8 @@
 
 namespace Glpi\Console\Database;
 
+use Throwable;
+use Glpi\Console\Exception\EarlyExitException;
 use DBmysql;
 use Glpi\Cache\CacheManager;
 use Glpi\Console\AbstractCommand;
@@ -237,7 +239,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
                 $output->writeln('<error>' . __('Update failed.') . '</error>', OutputInterface::VERBOSITY_QUIET);
                 return self::ERROR_UPDATE_FAILED;
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $progress_indicator->fail();
 
             $message = sprintf(
@@ -322,7 +324,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
                     . ' '
                     . sprintf(__('Run the "%1$s" command to view found differences.'), 'php bin/console database:check_schema_integrity');
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $error = sprintf(__('Database integrity check failed with error (%s).'), $e->getMessage());
         }
 
@@ -333,7 +335,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
                 $this->output->writeln('<error>' . $error . '</error>', OutputInterface::VERBOSITY_QUIET);
             } else {
                 // On non-interactive mode, exit with error.
-                throw new \Glpi\Console\Exception\EarlyExitException(
+                throw new EarlyExitException(
                     '<error>' . $error . '</error>',
                     self::ERROR_DATABASE_INTEGRITY_CHECK_FAILED
                 );

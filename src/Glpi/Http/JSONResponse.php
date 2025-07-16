@@ -35,6 +35,8 @@
 
 namespace Glpi\Http;
 
+use JsonException;
+
 class JSONResponse extends Response
 {
     public function __construct(?array $content = [], int $status = 200, array $headers = [])
@@ -44,7 +46,7 @@ class JSONResponse extends Response
         if ($content !== null) {
             try {
                 $raw_content = json_encode($content, JSON_THROW_ON_ERROR);
-            } catch (\JsonException $e) {
+            } catch (JsonException $e) {
                 $status = 500;
                 $headers = [];
             }

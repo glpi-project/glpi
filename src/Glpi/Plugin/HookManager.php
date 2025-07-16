@@ -35,6 +35,7 @@
 
 namespace Glpi\Plugin;
 
+use LogicException;
 use Toolbox;
 
 class HookManager
@@ -95,7 +96,7 @@ class HookManager
         // Check if the given hook is a valid file hook
         $allowed_file_hooks = Hooks::getFileHooks();
         if (!in_array($hook, $allowed_file_hooks)) {
-            throw new \LogicException(sprintf('Invalid file hook `%s`.', $hook));
+            throw new LogicException(sprintf('Invalid file hook `%s`.', $hook));
         }
 
         // Init target array if needed
@@ -123,7 +124,7 @@ class HookManager
         // Check if the given hook is a valid functional hook
         $allowed_file_hooks = Hooks::getFunctionalHooks();
         if (!in_array($hook, $allowed_file_hooks)) {
-            throw new \LogicException(sprintf('Invalid functional hook `%s`.', $hook));
+            throw new LogicException(sprintf('Invalid functional hook `%s`.', $hook));
         }
 
         $PLUGIN_HOOKS[$hook][$this->plugin] = $function;
@@ -147,7 +148,7 @@ class HookManager
         // Check if the given hook is a valid item hook
         $allowed_file_hooks = Hooks::getItemHooks();
         if (!in_array($hook, $allowed_file_hooks)) {
-            throw new \LogicException(sprintf('Invalid item hook `%s`.', $hook));
+            throw new LogicException(sprintf('Invalid item hook `%s`.', $hook));
         }
 
         $PLUGIN_HOOKS[$hook][$this->plugin][$itemtype] = $function;

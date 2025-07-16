@@ -35,6 +35,11 @@
 
 namespace Glpi\Agent\Communication;
 
+use RuntimeException;
+use Config;
+use Glpi\Error\ErrorHandler;
+use UnexpectedValueException;
+use Glpi\Exception\Http\HttpException;
 use DOMDocument;
 use DOMElement;
 use Glpi\Agent\Communication\Headers\Common;
@@ -161,7 +166,7 @@ abstract class AbstractRequest
                 $this->response = [];
                 break;
             default:
-                throw new \RuntimeException("Unknown mode $mode");
+                throw new RuntimeException("Unknown mode $mode");
         }
         $this->prepareHeaders();
     }
@@ -234,7 +239,7 @@ abstract class AbstractRequest
 
         $auth_required = false;
         if (!$this->isLocal()) {
-            $auth_required = \Config::getConfigurationValue('inventory', 'auth_required');
+            $auth_required = Config::getConfigurationValue('inventory', 'auth_required');
         }
         if ($auth_required === Conf::CLIENT_CREDENTIALS) {
             $request = new Request('POST', $_SERVER['REQUEST_URI'], $this->headers->getHeaders());
@@ -245,7 +250,7 @@ abstract class AbstractRequest
                     return false;
                 }
             } catch (OAuth2KeyException $e) {
-                \Glpi\Error\ErrorHandler::logCaughtException($e);
+                ErrorHandler::logCaughtException($e);
                 $this->addError($e->getMessage());
                 return false;
             } catch (OAuthServerException) {
@@ -264,9 +269,9 @@ abstract class AbstractRequest
                 $allowed = false;
                 // if Authorization start with 'Basic'
                 if (preg_match('/^Basic\s+(.*)$/i', $authorization_header, $matches)) {
-                    $inventory_login = \Config::getConfigurationValue('inventory', 'basic_auth_login');
+                    $inventory_login = Config::getConfigurationValue('inventory', 'basic_auth_login');
                     $inventory_password = (new GLPIKey())
-                        ->decrypt(\Config::getConfigurationValue('inventory', 'basic_auth_password'));
+                        ->decrypt(Config::getConfigurationValue('inventory', 'basic_auth_password'));
                     $agent_credential = base64_decode($matches[1]);
                     [$agent_login, $agent_password] = explode(':', $agent_credential, 2);
                     if (
@@ -320,7 +325,7 @@ abstract class AbstractRequest
                     $data = gzinflate($data);
                     break;
                 default:
-                    throw new \UnexpectedValueException("Unknown compression mode" . $this->compression);
+                    throw new UnexpectedValueException("Unknown compression mode" . $this->compression);
             }
         }
 
@@ -411,7 +416,7 @@ abstract class AbstractRequest
      */
     public function handleJSONRequest(string $data): bool
     {
-        if (!\Toolbox::isJSON($data)) {
+        if (!Toolbox::isJSON($data)) {
             $this->addError('JSON not well formed!', 400);
             return false;
         }
@@ -560,7 +565,7 @@ abstract class AbstractRequest
     public function getContentType(): string
     {
         if ($this->mode === null) {
-            throw new \RuntimeException("Mode has not been set");
+            throw new RuntimeException("Mode has not been set");
         }
 
         if ($this->compression !== null) {
@@ -579,7 +584,7 @@ abstract class AbstractRequest
         return match ($this->mode) {
             self::XML_MODE => 'application/xml',
             self::JSON_MODE => 'application/json',
-            default => throw new \RuntimeException("Unknown mode " . $this->mode),
+            default => throw new RuntimeException("Unknown mode " . $this->mode),
         };
     }
 
@@ -594,17 +599,17 @@ abstract class AbstractRequest
         $data = "";
         if ($this->response !== null) {
             if ($this->mode === null) {
-                throw new \RuntimeException("Mode has not been set");
+                throw new RuntimeException("Mode has not been set");
             }
 
             $data = match ($this->mode) {
                 self::XML_MODE => trim($this->response->saveXML()),
                 self::JSON_MODE => json_encode($this->response),
-                default => throw new \UnexpectedValueException("Unknown mode " . $this->mode),
+                default => throw new UnexpectedValueException("Unknown mode " . $this->mode),
             };
 
             if ($this->compression === null) {
-                throw new \RuntimeException("Compression has not been set");
+                throw new RuntimeException("Compression has not been set");
             }
 
             if ($this->compression !== self::COMPRESS_NONE) {
@@ -629,7 +634,7 @@ abstract class AbstractRequest
                         $data = gzdeflate($data);
                         break;
                     default:
-                        throw new \UnexpectedValueException("Unknown compression mode" . $this->compression);
+                        throw new UnexpectedValueException("Unknown compression mode" . $this->compression);
                 }
             }
         }
@@ -658,7 +663,7 @@ abstract class AbstractRequest
             case 'application/x-br':
             case 'application/x-compress-br':
                 if (!function_exists('brotli_compress')) {
-                    $exception = new \Glpi\Exception\Http\HttpException(415, 'Brotli PHP extension is missing!');
+                    $exception = new HttpException(415, 'Brotli PHP extension is missing!');
                     $exception->setMessageToDisplay('Unsupported compression');
                     throw $exception;
                 } else {

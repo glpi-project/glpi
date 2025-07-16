@@ -44,7 +44,7 @@
 function update930to931()
 {
     /**
-     * @var \Migration $migration
+     * @var Migration $migration
      */
     global $migration;
 

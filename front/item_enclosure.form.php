@@ -39,7 +39,7 @@ use Glpi\Exception\Http\BadRequestHttpException;
 
 Session::checkCentralAccess();
 
-$ien = new \Item_Enclosure();
+$ien = new Item_Enclosure();
 $enclosure = new Enclosure();
 
 if (isset($_POST['update'])) {

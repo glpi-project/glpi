@@ -54,7 +54,7 @@ final readonly class CheckPluginsStates implements EventSubscriberInterface
 
     public function onPostBoot(): void
     {
-        /** @var \DBmysql|null $DB */
+        /** @var DBmysql|null $DB */
         global $DB;
         if (
             !DBConnection::isDbAvailable()

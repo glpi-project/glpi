@@ -34,6 +34,9 @@
 
 namespace Glpi\Migration;
 
+use Throwable;
+use RuntimeException;
+use InvalidArgumentException;
 use CommonDBConnexity;
 use CommonDBTM;
 use DBmysql;
@@ -68,7 +71,7 @@ abstract class AbstractPluginMigration
     /**
      * Mapping between plugin items and GLPI core items.
      *
-     * @var array<class-string<\CommonDBTM>, array<int, array{itemtype: class-string<\CommonDBTM>, items_id: int}>>
+     * @var array<class-string<CommonDBTM>, array<int, array{itemtype: class-string<CommonDBTM>, items_id: int}>>
      */
     private array $target_items_mapping = [];
 
@@ -113,7 +116,7 @@ abstract class AbstractPluginMigration
             } else {
                 $this->result->addMessage(MessageType::Error, __('Migration cannot be done.'));
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->result->addMessage(
                 MessageType::Error,
                 $e instanceof MigrationException ? $e->getLocalizedMessage() : __('An unexpected error occurred')
@@ -228,7 +231,7 @@ abstract class AbstractPluginMigration
     ): CommonDBTM {
         $item = \getItemForItemtype($itemtype);
         if ($item === false) {
-            throw new \RuntimeException(sprintf('Invalid itemtype `%s`.', $itemtype));
+            throw new RuntimeException(sprintf('Invalid itemtype `%s`.', $itemtype));
         }
 
         if ($reconciliation_criteria !== null && $item->getFromDBByCrit($reconciliation_criteria)) {
@@ -356,7 +359,7 @@ abstract class AbstractPluginMigration
     /**
      * Copy the items found using the given criteria, after application of the given replacements.
      *
-     * @param class-string<\CommonDBTM> $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      * @param array<mixed, mixed> $where
      * @param array<int, array{field: string, from: mixed, to: mixed}> $replacements
      * @param bool $disable_unicity_check
@@ -364,7 +367,7 @@ abstract class AbstractPluginMigration
     final protected function copyItems(string $itemtype, array $where, array $replacements, bool $disable_unicity_check = false): void
     {
         if (!\is_a($itemtype, CommonDBTM::class, true)) {
-            throw new \InvalidArgumentException(sprintf('`%s` is not a valid `%s` class.', $itemtype, CommonDBTM::class));
+            throw new InvalidArgumentException(sprintf('`%s` is not a valid `%s` class.', $itemtype, CommonDBTM::class));
         }
 
         $options = [];
@@ -421,9 +424,9 @@ abstract class AbstractPluginMigration
     /**
      * Copy the polymorphic relations related to the given source item and attach them to the given target item.
      *
-     * @param class-string<\CommonDBTM> $source_itemtype
+     * @param class-string<CommonDBTM> $source_itemtype
      * @param int $source_items_id
-     * @param class-string<\CommonDBTM> $target_itemtype
+     * @param class-string<CommonDBTM> $target_itemtype
      * @param int $target_items_id
      */
     final protected function copyPolymorphicConnexityItems(
@@ -497,9 +500,9 @@ abstract class AbstractPluginMigration
     /**
      * Map the target item with the given source item.
      *
-     * @param class-string<\CommonDBTM> $source_itemtype
+     * @param class-string<CommonDBTM> $source_itemtype
      * @param int                       $source_items_id
-     * @param class-string<\CommonDBTM> $target_itemtype
+     * @param class-string<CommonDBTM> $target_itemtype
      * @param int                       $target_items_id
      *
      * @return void
@@ -523,7 +526,7 @@ abstract class AbstractPluginMigration
     /**
      * Return the GLPI core item specs corresponding to the given plugin item.
      *
-     * @return array{itemtype: class-string<\CommonDBTM>, items_id: int}|null
+     * @return array{itemtype: class-string<CommonDBTM>, items_id: int}|null
      */
     final public function getMappedItemTarget(string $source_itemtype, int $source_items_id): ?array
     {
@@ -540,7 +543,7 @@ abstract class AbstractPluginMigration
     /**
      * Return the GLPI core items specs corresponding to the given plugin itemtype.
      *
-     * @return array<int, array{itemtype: class-string<\CommonDBTM>, items_id: int}>
+     * @return array<int, array{itemtype: class-string<CommonDBTM>, items_id: int}>
      */
     final public function getMappedItemsForItemtype(string $source_itemtype): array
     {

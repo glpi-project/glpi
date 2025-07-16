@@ -35,16 +35,18 @@
 
 namespace Glpi\System\Requirement;
 
+use DBmysql;
+
 final class DatabaseTablesEngine extends AbstractRequirement
 {
     /**
      * DB instance.
      *
-     * @var \DBmysql
+     * @var DBmysql
      */
     private $db;
 
-    public function __construct(\DBmysql $db)
+    public function __construct(DBmysql $db)
     {
         parent::__construct(
             __('Database tables engine')

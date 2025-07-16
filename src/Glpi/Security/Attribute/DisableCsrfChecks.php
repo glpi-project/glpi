@@ -34,5 +34,7 @@
 
 namespace Glpi\Security\Attribute;
 
-#[\Attribute(\Attribute::TARGET_METHOD)]
+use Attribute;
+
+#[Attribute(Attribute::TARGET_METHOD)]
 final readonly class DisableCsrfChecks {}

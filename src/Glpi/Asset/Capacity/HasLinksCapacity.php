@@ -34,6 +34,7 @@
 
 namespace Glpi\Asset\Capacity;
 
+use CommonDBTM;
 use CommonGLPI;
 use Glpi\Asset\CapacityConfig;
 use Link;
@@ -110,7 +111,7 @@ class HasLinksCapacity extends AbstractCapacity
             'itemtype' => $classname,
         ], true, false);
 
-        $link_itemtype = new \Link_Itemtype();
+        $link_itemtype = new Link_Itemtype();
         $link_itemtype->deleteByCriteria([
             'itemtype' => $classname,
         ], true, false);
@@ -126,7 +127,7 @@ class HasLinksCapacity extends AbstractCapacity
     /**
      * Count external links defined for given asset class.
      *
-     * @param class-string<\CommonDBTM> $asset_classname
+     * @param class-string<CommonDBTM> $asset_classname
      * @return int
      */
     private function countExternalLinks(string $asset_classname): int

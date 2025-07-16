@@ -32,7 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Safe\Exceptions\SodiumException;
 use Glpi\Plugin\Hooks;
 use Safe\Exceptions\FilesystemException;
 
@@ -173,7 +173,7 @@ class GLPIKey
      */
     public function generate(bool $update_db = true): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // Check ability to create/update key file.
@@ -285,7 +285,7 @@ class GLPIKey
      */
     protected function migrateFieldsInDb(?string $sodium_key): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $success = true;
@@ -330,7 +330,7 @@ class GLPIKey
      */
     protected function migrateConfigsInDb($sodium_key): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $success = true;
@@ -443,7 +443,7 @@ class GLPIKey
                 $key
             );
             return $plaintext;
-        } catch (\Safe\Exceptions\SodiumException $e) {
+        } catch (SodiumException $e) {
             trigger_error(
                 'Unable to decrypt string. It may have been crypted with another key.',
                 E_USER_WARNING

@@ -35,6 +35,7 @@
 
 namespace Glpi\ContentTemplates;
 
+use Glpi\ContentTemplates\Parameters\ParametersTypes\ParameterTypeInterface;
 use Glpi\Toolbox\MarkdownBuilder;
 
 /**
@@ -132,7 +133,7 @@ class TemplateDocumentation
 
         // Add a row for each parameters
         foreach ($parameters as $parameter) {
-            /** @var \Glpi\ContentTemplates\Parameters\ParametersTypes\ParameterTypeInterface $parameter */
+            /** @var ParameterTypeInterface $parameter */
             $row = [
                 $parameter->getDocumentationField(),
                 $parameter->getDocumentationLabel(),

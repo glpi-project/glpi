@@ -105,7 +105,7 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
         ?int $id,
     ): string {
         $options = [
-            'users_id_requester' => \Session::getLoginUserID(),
+            'users_id_requester' => Session::getLoginUserID(),
             'itemtype_target'    => null,
             'groups_id'          => null,
             'items_id_target'    => null,

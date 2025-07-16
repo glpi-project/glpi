@@ -170,7 +170,7 @@ class Domain_Item extends CommonDBRelation
      **/
     public static function showForDomain(Domain $domain)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $instID = $domain->fields['id'];
@@ -351,7 +351,7 @@ TWIG, $twig_params);
      */
     public static function getForItem(CommonDBTM $item): DBmysqlIterator
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = [
@@ -438,7 +438,7 @@ TWIG, $twig_params);
      */
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $item->getField('id');

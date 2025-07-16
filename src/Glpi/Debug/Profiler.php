@@ -35,6 +35,8 @@
 
 namespace Glpi\Debug;
 
+use Session;
+
 /**
  * Class that handles profiling sections of code.
  * The data is viewable in the debug bar only. If the current user is not in debug mode, the profiler is disabled.
@@ -77,7 +79,7 @@ final class Profiler
      */
     public function start(string $name, string $category = self::CATEGORY_CORE): void
     {
-        $debug_mode_or_pre_session = !isset($_SESSION['glpi_use_mode']) || $_SESSION['glpi_use_mode'] === \Session::DEBUG_MODE;
+        $debug_mode_or_pre_session = !isset($_SESSION['glpi_use_mode']) || $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE;
         if ($this->disabled || !$debug_mode_or_pre_session) {
             return;
         }

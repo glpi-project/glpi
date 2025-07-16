@@ -32,7 +32,10 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Features\DCBreadcrumb;
+use Glpi\Features\Clonable;
+use Glpi\Features\Inventoriable;
+use Glpi\Features\AssignableItem;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Socket;
@@ -42,11 +45,11 @@ use Glpi\Socket;
  **/
 class NetworkEquipment extends CommonDBTM
 {
-    use Glpi\Features\DCBreadcrumb;
-    use Glpi\Features\Clonable;
-    use Glpi\Features\Inventoriable;
+    use DCBreadcrumb;
+    use Clonable;
+    use Inventoriable;
     use Glpi\Features\State;
-    use Glpi\Features\AssignableItem {
+    use AssignableItem {
         prepareInputForAdd as prepareInputForAddAssignableItem;
     }
 
@@ -185,7 +188,7 @@ class NetworkEquipment extends CommonDBTM
      **/
     public function canUnrecurs()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $this->fields['id'];

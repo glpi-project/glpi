@@ -36,7 +36,7 @@
 use function Safe\preg_match;
 
 /**
- * @var \DBmysql $DB
+ * @var DBmysql $DB
  */
 global $DB;
 
@@ -66,7 +66,7 @@ if (isset($_POST["rubdoc"])) {
     }
 
     if (preg_match('/[^a-z_\-0-9]/i', $_POST['myname'])) {
-        throw new \RuntimeException('Invalid name provided!');
+        throw new RuntimeException('Invalid name provided!');
     }
 
     if (!isset($_POST['entity']) || $_POST['entity'] === '') {

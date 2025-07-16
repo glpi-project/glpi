@@ -537,7 +537,7 @@ class Dropdown
             Toolbox::deprecated('Usage of the `$withcomment` parameter is deprecated. Use `Dropdown::getDropdownComments()` instead.');
         }
 
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $id = (int) $id; // Prevent unexpected value type to be sent in the SQL request
@@ -650,7 +650,7 @@ class Dropdown
      **/
     public static function getDropdownComments(string $table, int $id, bool $translate = true, bool $tooltip = true): string
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $itemtype = getItemTypeForTable($table);
@@ -838,7 +838,7 @@ class Dropdown
      **/
     public static function getDropdownArrayNames($table, $ids)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $tabs = [];
@@ -931,7 +931,7 @@ class Dropdown
      **/
     public static function dropdownUsedItemTypes($name, $itemtype_ref, $options = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $p['value'] = 0;
@@ -2847,7 +2847,7 @@ HTML;
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -3723,7 +3723,7 @@ HTML;
 
     private static function filterDisplayWith(CommonDBTM $item, array $fields): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // Filter invalid fields
@@ -3755,7 +3755,7 @@ HTML;
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -3957,7 +3957,7 @@ HTML;
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -4469,10 +4469,10 @@ HTML;
         if (
             $post["actortype"] == 'assign'
             && !$template->isHiddenField("_suppliers_id_{$post['actortype']}")
-            && in_array(\Supplier::class, $post['returned_itemtypes'])
+            && in_array(Supplier::class, $post['returned_itemtypes'])
         ) {
             $supplier_params = [
-                'itemtype'            => \Supplier::class,
+                'itemtype'            => Supplier::class,
                 'display_emptychoice' => false,
                 'searchText'          => $post['searchText'],
                 'entity_restrict'     => $entity_restrict,
@@ -4482,7 +4482,7 @@ HTML;
                 $supplier_params['condition'] = static::addNewCondition(['is_active' => 1]);
             }
             // Bypass checks, idor token validation has already been made earlier in method
-            $supplier_idor = Session::getNewIDORToken(\Supplier::class, ['entity_restrict' => $entity_restrict, 'condition' => $supplier_params['condition']]);
+            $supplier_idor = Session::getNewIDORToken(Supplier::class, ['entity_restrict' => $entity_restrict, 'condition' => $supplier_params['condition']]);
             $suppliers    = Dropdown::getDropdownValue($supplier_params + ['_idor_token' => $supplier_idor], false);
             foreach ($suppliers['results'] as $supplier) {
                 if (isset($supplier['children'])) {

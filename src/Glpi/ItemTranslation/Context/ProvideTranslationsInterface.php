@@ -43,7 +43,7 @@ interface ProvideTranslationsInterface
     /**
      * Returns the list of form translations handlers.
      *
-     * @return array<string, array<int, \Glpi\ItemTranslation\Context\TranslationHandler>>
+     * @return array<string, array<int, TranslationHandler>>
      */
     public function listTranslationsHandlers(): array;
 }

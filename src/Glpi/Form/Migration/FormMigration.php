@@ -34,6 +34,8 @@
 
 namespace Glpi\Form\Migration;
 
+use Throwable;
+use DBmysqlIterator;
 use DBmysql;
 use Entity;
 use Glpi\DBAL\JsonFieldInterface;
@@ -612,7 +614,7 @@ class FormMigration extends AbstractPluginMigration
                     Question::class,
                     $question->getID()
                 );
-            } catch (\Throwable $th) {
+            } catch (Throwable $th) {
                 /** @var ?Section $section */
                 $section = Section::getById($section_id) ?: null;
                 $item = $section?->getItem() ?: null;
@@ -976,13 +978,13 @@ class FormMigration extends AbstractPluginMigration
     /**
      * Process migration of form destinations for a given destination type and target table
      *
-     * @param \DBmysqlIterator $raw_targets The raw targets to process
+     * @param DBmysqlIterator $raw_targets The raw targets to process
      * @param class-string<AbstractCommonITILFormDestination> $destinationClass The destination class
      * @param string $targetTable The target table name
      * @throws LogicException
      */
     private function processMigrationOfDestination(
-        \DBmysqlIterator $raw_targets,
+        DBmysqlIterator $raw_targets,
         string $destinationClass,
         string $targetTable
     ): void {
@@ -1015,7 +1017,7 @@ class FormMigration extends AbstractPluginMigration
                             $form,
                             $raw_target
                         )->jsonSerialize();
-                    } catch (\Throwable $th) {
+                    } catch (Throwable $th) {
                         $this->result->addMessage(
                             MessageType::Error,
                             sprintf(
@@ -1140,7 +1142,7 @@ class FormMigration extends AbstractPluginMigration
                         $destination->getItem(),
                         $actors
                     )->jsonSerialize();
-                } catch (\Throwable $th) {
+                } catch (Throwable $th) {
                     $this->result->addMessage(
                         MessageType::Error,
                         sprintf(

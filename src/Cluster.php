@@ -32,7 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Features\Clonable;
 use Glpi\Features\AssignableItem;
 
 /**
@@ -40,7 +40,7 @@ use Glpi\Features\AssignableItem;
  **/
 class Cluster extends CommonDBTM
 {
-    use Glpi\Features\Clonable;
+    use Clonable;
     use Glpi\Features\State;
     use AssignableItem;
 

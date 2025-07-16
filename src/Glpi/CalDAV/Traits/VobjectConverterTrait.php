@@ -35,6 +35,14 @@
 
 namespace Glpi\CalDAV\Traits;
 
+use CommonDBTM;
+use InvalidArgumentException;
+use VObject;
+use DateTimeZone;
+use Planning;
+use UnexpectedValueException;
+use DateTimeInterface;
+use DateInterval;
 use Glpi\Error\ErrorHandler;
 use Glpi\RichText\RichText;
 use RRule\RRule;
@@ -61,21 +69,21 @@ trait VobjectConverterTrait
     /**
      * Get VCalendar object for given item.
      *
-     * @param \CommonDBTM $item
+     * @param CommonDBTM $item
      * @param string      $component_type  Base component type (i.e. VEVENT, VTODO, ...).
      *
      * @return VCalendar
      */
-    protected function getVCalendarForItem(\CommonDBTM $item, $component_type): VCalendar
+    protected function getVCalendarForItem(CommonDBTM $item, $component_type): VCalendar
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!array_key_exists($component_type, VCalendar::$componentMap)) {
-            throw new \InvalidArgumentException(sprintf('Invalid component type "%s"', $component_type));
+            throw new InvalidArgumentException(sprintf('Invalid component type "%s"', $component_type));
         }
 
-        $vobject = new \VObject();
+        $vobject = new VObject();
         $vobject_crit = [
             'items_id' => $item->fields['id'],
             'itemtype' => $item->getType(),
@@ -102,7 +110,7 @@ trait VobjectConverterTrait
         }
 
         $fields = $item->fields;
-        $utc_tz = new \DateTimeZone('UTC');
+        $utc_tz = new DateTimeZone('UTC');
 
         if (array_key_exists('uuid', $fields)) {
             $vcomp->UID = $fields['uuid'];
@@ -167,15 +175,15 @@ trait VobjectConverterTrait
                 }
                 $rrule = new RRule($rrule_specs);
                 $vcomp->RRULE = $rrule->rfcString();
-            } catch (\InvalidArgumentException $e) {
+            } catch (InvalidArgumentException $e) {
                 ErrorHandler::logCaughtException($e);
             }
         }
 
         if ('VTODO' === $component_type && array_key_exists('state', $fields)) {
-            if (\Planning::TODO == $fields['state']) {
+            if (Planning::TODO == $fields['state']) {
                 $vcomp->STATUS = 'NEEDS-ACTION';
-            } elseif (\Planning::DONE == $fields['state']) {
+            } elseif (Planning::DONE == $fields['state']) {
                 $vcomp->STATUS = 'COMPLETED';
             }
         }
@@ -230,7 +238,7 @@ trait VobjectConverterTrait
             && !($vcomponent instanceof VTodo)
             && !($vcomponent instanceof VJournal)
         ) {
-            throw new \UnexpectedValueException(
+            throw new UnexpectedValueException(
                 'Component object must be a VEVENT, a VJOURNAL, or a VTODO'
             );
         }
@@ -239,7 +247,7 @@ trait VobjectConverterTrait
 
         if ($vcomponent->CREATED instanceof DateTime) {
             /* @var \DateTime|\DateTimeImmutable|null $created_datetime */
-            $user_tz = new \DateTimeZone(date_default_timezone_get());
+            $user_tz = new DateTimeZone(date_default_timezone_get());
             $created_datetime = $vcomponent->CREATED->getDateTime();
             $created_datetime = $created_datetime->setTimeZone($user_tz);
             $input['date_creation'] = $created_datetime->format('Y-m-d H:i:s');
@@ -306,7 +314,7 @@ trait VobjectConverterTrait
             return null;
         }
 
-        return 'COMPLETED' === $vcomponent->STATUS->getValue() ? \Planning::DONE : \Planning::TODO;
+        return 'COMPLETED' === $vcomponent->STATUS->getValue() ? Planning::DONE : Planning::TODO;
     }
 
     /**
@@ -327,7 +335,7 @@ trait VobjectConverterTrait
 
         /* @var \DateTime|\DateTimeImmutable|null $begin_datetime */
         /* @var \DateTime|\DateTimeImmutable|null $end_datetime */
-        $user_tz        = new \DateTimeZone(date_default_timezone_get());
+        $user_tz        = new DateTimeZone(date_default_timezone_get());
 
         $begin_datetime = $vcomponent->DTSTART->getDateTime();
         $begin_datetime = $begin_datetime->setTimeZone($user_tz);
@@ -344,10 +352,10 @@ trait VobjectConverterTrait
                 $end_datetime = $end_datetime->setTimeZone($user_tz);
             }
         }
-        if (!($end_datetime instanceof \DateTimeInterface)) {
+        if (!($end_datetime instanceof DateTimeInterface)) {
             // Event/Task objects does not accept empty end date, so set it to "+1 hour" by default.
             $end_datetime = clone $begin_datetime;
-            $end_datetime = $end_datetime->add(new \DateInterval('PT1H'));
+            $end_datetime = $end_datetime->add(new DateInterval('PT1H'));
         }
 
         return [
@@ -378,7 +386,7 @@ trait VobjectConverterTrait
         }
 
         if (array_key_exists('until', $rrule)) {
-            $user_tz        = new \DateTimeZone(date_default_timezone_get());
+            $user_tz        = new DateTimeZone(date_default_timezone_get());
             $until_datetime = new SafeDateTime($rrule['until']);
             $until_datetime->setTimezone($user_tz);
             $rrule['until'] = $until_datetime->format('Y-m-d H:i:s');

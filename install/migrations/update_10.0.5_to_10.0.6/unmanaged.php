@@ -31,11 +31,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \Migration $migration
+ * @var Migration $migration
  */
-
 //set default configuration for import_unmanaged
 $migration->addConfig(['import_unmanaged' => 1], 'inventory');
 

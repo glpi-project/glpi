@@ -34,10 +34,11 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use Glpi\Application\Environment;
 use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
 
 return static function (ContainerConfigurator $container): void {
-    if (!\Glpi\Application\Environment::get()->shouldEnableExtraDevAndDebugTools()) {
+    if (!Environment::get()->shouldEnableExtraDevAndDebugTools()) {
         // Don't use the web profiler elsewhere than dev.
         return;
     }

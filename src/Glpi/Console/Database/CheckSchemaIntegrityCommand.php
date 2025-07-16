@@ -35,6 +35,8 @@
 
 namespace Glpi\Console\Database;
 
+use Glpi\Console\Exception\EarlyExitException;
+use Throwable;
 use Glpi\Console\AbstractCommand;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Symfony\Component\Console\Input\InputInterface;
@@ -177,7 +179,7 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
             $message = $plugin_key === null
                 ? sprintf(__('Checking database integrity of version "%s" is not supported.'), $installed_version)
                 : sprintf(__('Checking database integrity of plugin "%s" is not supported.'), $plugin_key);
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . $message . '</error>',
                 self::ERROR_UNSUPPORTED_VERSION
             );
@@ -185,7 +187,7 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
 
         try {
             $differences = $checker->checkCompleteSchemaForVersion($installed_version, true, $context);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $output->writeln(
                 '<error>' . $e->getMessage() . '</error>',
                 OutputInterface::VERBOSITY_QUIET

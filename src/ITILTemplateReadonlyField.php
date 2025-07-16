@@ -76,7 +76,7 @@ abstract class ITILTemplateReadonlyField extends ITILTemplateField
 
     public function post_purgeItem()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         parent::post_purgeItem();
@@ -114,7 +114,7 @@ abstract class ITILTemplateReadonlyField extends ITILTemplateField
      **/
     public function getReadonlyFields($ID, $withtypeandcategory = false)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

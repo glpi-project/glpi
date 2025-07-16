@@ -47,8 +47,7 @@ abstract class CommonDBChild extends CommonDBConnexity
 {
     // Mapping between DB fields
     // * definition
-
-    /** @var class-string<\CommonDBTM>|string $itemtype Class name or field name (start with itemtype) for link to Parent */
+    /** @var class-string<CommonDBTM>|string $itemtype Class name or field name (start with itemtype) for link to Parent */
     public static $itemtype;
     public static $items_id; // Field name
     // * rights
@@ -913,7 +912,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      **/
     public static function showChildsForItemForm(CommonDBTM $item, $field_name, $canedit = null, bool $display = true)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $items_id = $item->getID();
@@ -1021,7 +1020,7 @@ abstract class CommonDBChild extends CommonDBConnexity
             return static::$items_id;
         }
 
-        throw new \RuntimeException('Cannot guess field for itemtype ' . $itemtype . ' on ' . static::class);
+        throw new RuntimeException('Cannot guess field for itemtype ' . $itemtype . ' on ' . static::class);
     }
 
     protected function autoinventoryInformation()

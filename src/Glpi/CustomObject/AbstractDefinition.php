@@ -34,6 +34,9 @@
 
 namespace Glpi\CustomObject;
 
+use LogicException;
+use DisplayPreference;
+use DBmysql;
 use CommonDBTM;
 use Dropdown;
 use Gettext\Languages\Category as Language_Category;
@@ -132,7 +135,7 @@ abstract class AbstractDefinition extends CommonDBTM
         $classname = $this->getCustomObjectClassName();
 
         if (!is_a($classname, CommonDBTM::class, true)) {
-            throw new \LogicException();
+            throw new LogicException();
         }
 
         return new $classname();
@@ -198,7 +201,7 @@ abstract class AbstractDefinition extends CommonDBTM
 
     public function showForm($ID, array $options = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $this->initForm($ID, $options);
@@ -254,7 +257,7 @@ abstract class AbstractDefinition extends CommonDBTM
      */
     protected function showProfilesForm(): void
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $possible_rights = $this->getPossibleCustomObjectRights();
@@ -596,12 +599,12 @@ abstract class AbstractDefinition extends CommonDBTM
     /**
      * Delete from the database all the data related to the given concrete class.
      *
-     * @param class-string<\CommonDBTM> $concrete_classname
+     * @param class-string<CommonDBTM> $concrete_classname
      */
     final protected function purgeConcreteClassFromDb(string $concrete_classname): void
     {
         if (!\is_a($concrete_classname, CommonDBTM::class, true)) {
-            throw new \LogicException();
+            throw new LogicException();
         }
 
         (new $concrete_classname())->deleteByCriteria(
@@ -609,7 +612,7 @@ abstract class AbstractDefinition extends CommonDBTM
             force: true,
             history: false
         );
-        (new \DisplayPreference())->deleteByCriteria(['itemtype' => $concrete_classname]);
+        (new DisplayPreference())->deleteByCriteria(['itemtype' => $concrete_classname]);
     }
 
     /**
@@ -658,7 +661,7 @@ abstract class AbstractDefinition extends CommonDBTM
      */
     protected function syncProfilesRights(): void
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $rightname = $this->getCustomObjectRightname();
@@ -1005,7 +1008,7 @@ TWIG, ['name' => $name, 'value' => $value]);
      */
     protected function validateProfileArray(mixed $profiles, bool $check_values = true): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (!is_array($profiles)) {

@@ -35,9 +35,10 @@
 
 namespace Glpi\Api\HL\Doc;
 
+use ArrayAccess;
 use Glpi\Api\HL\OpenAPIGenerator;
 
-final class SchemaReference implements \ArrayAccess
+final class SchemaReference implements ArrayAccess
 {
     public function __construct(
         private string $ref

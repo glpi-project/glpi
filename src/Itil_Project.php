@@ -32,7 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryUnion;
 use Glpi\Application\View\TemplateRenderer;
 
 /**
@@ -124,7 +125,7 @@ class Itil_Project extends CommonDBRelation
     public static function showForProject(Project $project): bool
     {
         /**
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          * @var array $CFG_GLPI
          */
         global $DB, $CFG_GLPI;
@@ -145,7 +146,7 @@ class Itil_Project extends CommonDBRelation
                 'SELECT'          => [
                     "$link_table.id AS linkid",
                     "$link_table.items_id AS id",
-                    new \Glpi\DBAL\QueryExpression($DB::quoteValue($itemtype), 'itemtype'),
+                    new QueryExpression($DB::quoteValue($itemtype), 'itemtype'),
                 ],
                 'DISTINCT'        => true,
                 'FROM'            => $link_table,
@@ -166,7 +167,7 @@ class Itil_Project extends CommonDBRelation
         }
 
         $it = $DB->request([
-            'FROM' => new \Glpi\DBAL\QueryUnion($queries),
+            'FROM' => new QueryUnion($queries),
         ]);
         $entries_by_itemtype = [];
         $used  = [];
@@ -254,7 +255,7 @@ TWIG, $twig_params);
      **/
     public static function showForItil(CommonITILObject $itil): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $itil->getID();

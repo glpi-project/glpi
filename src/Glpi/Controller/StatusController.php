@@ -34,6 +34,7 @@
 
 namespace Glpi\Controller;
 
+use Throwable;
 use Glpi\Http\Firewall;
 use Session;
 use Glpi\Api\HL\Router;
@@ -61,7 +62,7 @@ final class StatusController extends AbstractController
 
         try {
             $response = Router::getInstance()->handleRequest($request);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             ErrorHandler::logCaughtException($e);
             $response = new JSONResponse(null, 500);
         }

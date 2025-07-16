@@ -35,6 +35,9 @@
 
 namespace Glpi\DBAL;
 
+use RuntimeException;
+use DBmysql;
+
 /**
  *  Query expression class
  **/
@@ -53,7 +56,7 @@ class QueryExpression
     public function __construct($expression, ?string $alias = null)
     {
         if ($expression === null || $expression === '') {
-            throw new \RuntimeException('Cannot build an empty expression');
+            throw new RuntimeException('Cannot build an empty expression');
         }
         $this->expression = $expression;
         $this->alias = $alias;
@@ -66,7 +69,7 @@ class QueryExpression
      */
     public function getValue()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $sql = $this->expression;
         if (!empty($this->alias)) {

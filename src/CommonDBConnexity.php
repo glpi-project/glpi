@@ -32,6 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
+use Glpi\Features\Clonable;
 
 use function Safe\preg_match;
 
@@ -70,7 +71,7 @@ use function Safe\preg_match;
  **/
 abstract class CommonDBConnexity extends CommonDBTM
 {
-    use Glpi\Features\Clonable;
+    use Clonable;
 
     public const DONT_CHECK_ITEM_RIGHTS  = 1; // Don't check the parent => always can*Child
     public const HAVE_VIEW_RIGHT_ON_ITEM = 2; // canXXXChild = true if parent::canView == true
@@ -114,7 +115,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      **/
     public function cleanDBonItemDelete($itemtype, $items_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = static::getSQLCriteriaToSearchForItem($itemtype, $items_id);
@@ -201,7 +202,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      */
     public static function getItemsAssociationRequest($itemtype, $items_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         return $DB->request(static::getSQLCriteriaToSearchForItem($itemtype, $items_id));
     }

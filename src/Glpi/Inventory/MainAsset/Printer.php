@@ -36,6 +36,7 @@
 
 namespace Glpi\Inventory\MainAsset;
 
+use stdClass;
 use Blacklist;
 use CommonDBTM;
 use IPAddress;
@@ -72,7 +73,7 @@ class Printer extends NetworkEquipment
     {
         parent::prepare();
 
-        if (!property_exists($this->raw_data->content ?? new \stdClass(), 'network_device')) {
+        if (!property_exists($this->raw_data->content ?? new stdClass(), 'network_device')) {
             $autoupdatesystems_id = $this->data[0]->autoupdatesystems_id;
             $this->data = [];
             foreach ($this->raw_data as $val) {
@@ -192,9 +193,9 @@ class Printer extends NetworkEquipment
     /**
      * Get printer counters
      *
-     * @return \stdClass
+     * @return stdClass
      */
-    public function getCounters(): \stdClass
+    public function getCounters(): stdClass
     {
         return $this->counters;
     }

@@ -35,6 +35,8 @@
 
 namespace Glpi\Search\Output;
 
+use GLPIPDF;
+
 use function Safe\preg_replace;
 
 class Tcpdf extends \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf
@@ -53,7 +55,7 @@ class Tcpdf extends \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf
             $this->spreadsheet->getProperties()->getCustomPropertyValue('items count'),
             null,
             false
-        ) extends \GLPIPDF {
+        ) extends GLPIPDF {
             public function setPrintFooter($val = true)
             {
                 //override because \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf::save() explicitly calls setPrintFooter(false) -_-

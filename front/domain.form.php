@@ -77,7 +77,7 @@ if (isset($_POST["add"])) {
     }
     Html::back();
 } elseif (isset($_POST["addrecord"])) {
-    $record = new \DomainRecord();
+    $record = new DomainRecord();
     $_POST['id'] = $_POST['domainrecords_id'];
     unset($_POST['domainrecords_id']);
     $record->check(-1, UPDATE, $_POST);

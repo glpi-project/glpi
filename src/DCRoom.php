@@ -32,7 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Features\DCBreadcrumb;
 use Glpi\Application\View\TemplateRenderer;
 
 use function Safe\preg_match;
@@ -42,7 +42,7 @@ use function Safe\preg_match;
  **/
 class DCRoom extends CommonDBTM
 {
-    use Glpi\Features\DCBreadcrumb;
+    use DCBreadcrumb;
 
     // From CommonDBTM
     public $dohistory                   = true;
@@ -335,7 +335,7 @@ class DCRoom extends CommonDBTM
      **/
     public static function showForDatacenter(Datacenter $datacenter)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $datacenter->getID();
@@ -407,7 +407,7 @@ class DCRoom extends CommonDBTM
      */
     public function getFilled($current = null)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

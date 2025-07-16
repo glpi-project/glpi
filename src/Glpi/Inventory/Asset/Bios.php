@@ -36,6 +36,8 @@
 
 namespace Glpi\Inventory\Asset;
 
+use Item_DeviceFirmware;
+
 class Bios extends Device
 {
     public function prepare(): array
@@ -75,6 +77,6 @@ class Bios extends Device
 
     public function getItemtype(): string
     {
-        return \Item_DeviceFirmware::class;
+        return Item_DeviceFirmware::class;
     }
 }

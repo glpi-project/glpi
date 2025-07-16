@@ -34,6 +34,7 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
+use DBmysql;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
@@ -92,7 +93,7 @@ final class RequestSourceField extends AbstractConfigField
         array $input,
         AnswersSet $answers_set
     ): array {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (!$config instanceof RequestSourceFieldConfig) {

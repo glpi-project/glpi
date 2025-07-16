@@ -34,6 +34,11 @@
 
 namespace Glpi\Api\HL;
 
+use RuntimeException;
+use Glpi\Api\HL\Doc\Schema;
+use Throwable;
+use Session;
+use DBmysql;
 use CommonDBTM;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\RSQL\RSQLException;
@@ -57,10 +62,10 @@ final class ResourceAccessor
     {
         $itemtype = $schema['x-itemtype'] ?? ($schema['x-table'] ? getItemTypeForTable($schema['x-table']) : null);
         if ($itemtype === null) {
-            throw new \RuntimeException('Schema has no x-table or x-itemtype');
+            throw new RuntimeException('Schema has no x-table or x-itemtype');
         }
         if (!is_subclass_of($itemtype, CommonDBTM::class)) {
-            throw new \RuntimeException('Invalid itemtype');
+            throw new RuntimeException('Invalid itemtype');
         }
         return new $itemtype();
     }
@@ -74,11 +79,11 @@ final class ResourceAccessor
      */
     public static function getIDForOtherUniqueFieldBySchema(array $schema, string $field, mixed $value): ?int
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (!isset($schema['properties'][$field])) {
-            throw new \RuntimeException('Invalid primary key');
+            throw new RuntimeException('Invalid primary key');
         }
         $prop = $schema['properties'][$field];
         $pk_sql_name = $prop['x-field'] ?? $field;
@@ -108,8 +113,8 @@ final class ResourceAccessor
     public static function getInputParamsBySchema(array $schema, array $request_params): array
     {
         $params = [];
-        $flattened_properties = Doc\Schema::flattenProperties($schema['properties']);
-        $joins = Doc\Schema::getJoins($schema['properties']);
+        $flattened_properties = Schema::flattenProperties($schema['properties']);
+        $joins = Schema::getJoins($schema['properties']);
         $writable_props = array_filter($flattened_properties, static function ($v, $k) use ($joins) {
             $base_k = strstr($k, '.', true) ?: $k;
             $is_join = isset($joins[$base_k]);
@@ -256,10 +261,10 @@ final class ResourceAccessor
             return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, $e->getMessage(), $e->getDetails()), 400);
         } catch (APIException $e) {
             return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getUserMessage(), $e->getDetails()), $e->getCode() ?: 400);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $message = (new APIException())->getUserMessage();
             $detail = null;
-            if ($_SESSION['glpi_use_mode'] === \Session::DEBUG_MODE) {
+            if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
                 $detail = $e->getMessage();
             }
             return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message, $detail), 500);
@@ -298,10 +303,10 @@ final class ResourceAccessor
             return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, $e->getUserMessage()), 400);
         } catch (APIException $e) {
             return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getUserMessage()), $e->getCode() ?: 400);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $message = (new APIException())->getUserMessage();
             $detail = null;
-            if ($_SESSION['glpi_use_mode'] === \Session::DEBUG_MODE) {
+            if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
                 $detail = $e->getMessage();
             }
             return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message, $detail), 500);

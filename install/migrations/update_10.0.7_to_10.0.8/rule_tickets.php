@@ -31,11 +31,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \DBmysql $DB
+ * @var DBmysql $DB
  */
-
 $DB->update(
     'glpi_rulecriterias',
     [

@@ -609,7 +609,7 @@ TWIG, $twig_params);
      */
     protected static function countForActor(CommonDBTM $item): int
     {
-        /** @var \DBmysql $DB **/
+        /** @var DBmysql $DB **/
         global $DB;
 
         /** @var CommonITILObject $itil */
@@ -653,7 +653,7 @@ TWIG, $twig_params);
      **/
     public static function showListForItem(CommonDBTM $item, $withtemplate = 0, $options = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (!static::$itemtype_1::canView()) {
@@ -771,7 +771,7 @@ TWIG, $twig_params);
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -933,7 +933,7 @@ TWIG, $twig_params);
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -991,7 +991,7 @@ TWIG, $twig_params);
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -1093,7 +1093,7 @@ TWIG, $twig_params);
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -1164,7 +1164,7 @@ TWIG, $twig_params);
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -1251,7 +1251,7 @@ TWIG, $twig_params);
      **/
     public static function dropdown($options = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $p = array_replace([

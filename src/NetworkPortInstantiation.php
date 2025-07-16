@@ -156,7 +156,7 @@ class NetworkPortInstantiation extends CommonDBChild
      **/
     public static function getItemsByMac($mac, $wildcard_search = false)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $mac = strtolower($mac);
@@ -266,7 +266,7 @@ class NetworkPortInstantiation extends CommonDBChild
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -440,7 +440,7 @@ TWIG, $twig_params);
      **/
     public function showNetworkPortSelector($recursiveItems, $origin)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (count($recursiveItems) === 0) {
@@ -472,7 +472,7 @@ TWIG, $twig_params);
                 break;
 
             default:
-                throw new \RuntimeException(sprintf('Unexpected origin `%s`.', $origin));
+                throw new RuntimeException(sprintf('Unexpected origin `%s`.', $origin));
         }
 
         if (isset($this->fields[$field_name])) {

@@ -35,6 +35,10 @@
 
 namespace Glpi\Debug;
 
+use Throwable;
+use Toolbox;
+use Session;
+
 use function Safe\json_decode;
 use function Safe\json_encode;
 use function Safe\gzdecode;
@@ -118,7 +122,7 @@ final class Profile
             unset($_SESSION['debug_profiles'][$id]);
 
             return $profile;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return null;
         }
     }
@@ -189,7 +193,7 @@ final class Profile
                 'execution_time' => (float) $execution_time,
                 'memory_usage' => memory_get_usage(),
                 'memory_peak' => memory_get_peak_usage(),
-                'memory_limit' => \Toolbox::getMemoryLimit(),
+                'memory_limit' => Toolbox::getMemoryLimit(),
             ],
             'sql' => [
                 'queries' => [],
@@ -220,7 +224,7 @@ final class Profile
 
     public function save(): void
     {
-        if (($_SESSION['glpi_use_mode'] ?? null) !== \Session::DEBUG_MODE) {
+        if (($_SESSION['glpi_use_mode'] ?? null) !== Session::DEBUG_MODE) {
             // Don't save debug info for non-debug requests
             return;
         }
@@ -242,7 +246,7 @@ final class Profile
             $json = json_encode($info, JSON_THROW_ON_ERROR);
             $gz = gzencode($json, 9);
             $_SESSION['debug_profiles'][$this->id] = $gz;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Ignore
         }
     }

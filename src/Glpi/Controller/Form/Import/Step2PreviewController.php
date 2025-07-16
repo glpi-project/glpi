@@ -34,6 +34,7 @@
 
 namespace Glpi\Controller\Form\Import;
 
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Form\Export\Context\DatabaseMapper;
@@ -97,7 +98,7 @@ final class Step2PreviewController extends AbstractController
             return $request->request->get('json');
         }
 
-        /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
+        /** @var UploadedFile $file */
         $file = $request->files->get('import_file');
 
         return $file->getContent();

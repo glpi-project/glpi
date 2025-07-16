@@ -32,7 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Api\HL\Router;
+use Glpi\Event;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\Dashboard\Grid;
@@ -536,8 +537,8 @@ class Config extends CommonDBTM
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         * @var \DBmysql $DBslave
+         * @var DBmysql $DB
+         * @var DBmysql $DBslave
          */
         global $CFG_GLPI, $DB, $DBslave;
 
@@ -587,10 +588,10 @@ class Config extends CommonDBTM
         }
 
         // Options just for new API
-        $api_versions = \Glpi\Api\HL\Router::getAPIVersions();
+        $api_versions = Router::getAPIVersions();
         $legacy_version = array_filter($api_versions, static fn($version) => $version['api_version'] === '1');
         $legacy_version = reset($legacy_version);
-        $current_version = array_filter($api_versions, static fn($version) => $version['version'] === \Glpi\Api\HL\Router::API_VERSION);
+        $current_version = array_filter($api_versions, static fn($version) => $version['version'] === Router::API_VERSION);
         $current_version = reset($current_version);
         $getting_started_doc = $current_version['endpoint'] . '/getting-started';
         $endpoint_doc = $current_version['endpoint'] . '/doc';
@@ -662,7 +663,7 @@ class Config extends CommonDBTM
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -775,7 +776,7 @@ class Config extends CommonDBTM
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -967,7 +968,7 @@ class Config extends CommonDBTM
                     12 => self::createTabEntry(__('Management'), 0, $item::getType(), 'ti ti-wallet'),
                 ];
                 if (Config::canUpdate()) {
-                    $tabs[9]  = self::createTabEntry(__('Logs purge'), 0, $item::getType(), Glpi\Event::getIcon());
+                    $tabs[9]  = self::createTabEntry(__('Logs purge'), 0, $item::getType(), Event::getIcon());
                     $tabs[5]  = self::createTabEntry(__('System'));
                     $tabs[10] = self::createTabEntry(__('Security'), 0, $item::getType(), 'ti ti-shield-lock');
                     $tabs[7]  = self::createTabEntry(__('Performance'), 0, $item::getType(), 'ti ti-dashboard');
@@ -1126,7 +1127,7 @@ class Config extends CommonDBTM
     public static function checkDbEngine($raw = null)
     {
         if ($raw === null) {
-            /** @var \DBmysql $DB */
+            /** @var DBmysql $DB */
             global $DB;
             $raw = $DB->getVersion();
         }
@@ -1277,7 +1278,7 @@ class Config extends CommonDBTM
      **/
     public static function getConfigurationValues($context, array $names = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $query = [
@@ -1326,7 +1327,7 @@ class Config extends CommonDBTM
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql|null $DB
+         * @var DBmysql|null $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -1474,7 +1475,7 @@ class Config extends CommonDBTM
 
         //reload config for logged user
         if ($_SESSION['glpiID'] ?? false) {
-            $user = new \User();
+            $user = new User();
             if ($user->getFromDB($_SESSION['glpiID'])) {
                 $user->loadPreferencesInSession();
             }
@@ -1698,7 +1699,7 @@ class Config extends CommonDBTM
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
         // Check if password expiration mechanism has been activated
@@ -2059,7 +2060,7 @@ class Config extends CommonDBTM
      */
     public static function getConfigIDForContext(string $context)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $iterator = $DB->request([
             'SELECT' => ['MIN' => 'id AS id'],

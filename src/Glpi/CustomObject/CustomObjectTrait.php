@@ -34,6 +34,8 @@
 
 namespace Glpi\CustomObject;
 
+use LogicException;
+use RuntimeException;
 use Toolbox;
 
 trait CustomObjectTrait
@@ -119,7 +121,7 @@ trait CustomObjectTrait
         $instance = $definition->getCustomObjectClassInstance();
 
         if (!is_a($instance, static::class, true)) {
-            throw new \LogicException(); // To make PHPStan happy
+            throw new LogicException(); // To make PHPStan happy
         }
 
         if (!$instance->getFromDB($id)) {
@@ -165,14 +167,14 @@ trait CustomObjectTrait
             array_key_exists($definition_fkey, $input)
             && (int) $input[$definition_fkey] !== $definition_id
         ) {
-            throw new \RuntimeException('Definition does not match the current concrete class.');
+            throw new RuntimeException('Definition does not match the current concrete class.');
         }
 
         if (
             !$this->isNewItem()
             && (int) $this->fields[$definition_fkey] !== $definition_id
         ) {
-            throw new \RuntimeException('Definition cannot be changed.');
+            throw new RuntimeException('Definition cannot be changed.');
         }
 
         $input[$definition_fkey] = $definition_id;

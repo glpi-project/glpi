@@ -44,8 +44,8 @@ use function Safe\preg_replace;
 function update941to942()
 {
     /**
-     * @var \DBmysql $DB
-     * @var \Migration $migration
+     * @var DBmysql $DB
+     * @var Migration $migration
      */
     global $DB, $migration;
 

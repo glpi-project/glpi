@@ -37,6 +37,7 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Security\TOTPManager;
 
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
@@ -183,7 +184,7 @@ if (isset($_GET['getvcard'])) {
     Html::redirect(User::getFormURLWithID($impersonated_user_id));
 } elseif (isset($_POST['disable_2fa'])) {
     Session::checkRight('user', User::UPDATEAUTHENT);
-    (new \Glpi\Security\TOTPManager())->disable2FAForUser($_POST['id']);
+    (new TOTPManager())->disable2FAForUser($_POST['id']);
     Html::back();
 } else {
     if (isset($_GET["ext_auth"])) {

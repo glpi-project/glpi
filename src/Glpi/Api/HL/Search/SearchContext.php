@@ -34,8 +34,8 @@
 
 namespace Glpi\Api\HL\Search;
 
+use Glpi\Api\HL\Doc\Schema;
 use CommonDBTM;
-use Glpi\Api\HL\Doc;
 use RuntimeException;
 
 use function Safe\preg_match;
@@ -55,8 +55,8 @@ final class SearchContext
     {
         $this->schema = $schema;
         $this->request_params = $request_params;
-        $this->flattened_properties = Doc\Schema::flattenProperties($schema['properties']);
-        $this->joins = Doc\Schema::getJoins($schema['properties']);
+        $this->flattened_properties = Schema::flattenProperties($schema['properties']);
+        $this->joins = Schema::getJoins($schema['properties']);
         $this->union_table_schemas = $this->getUnionTables();
     }
 

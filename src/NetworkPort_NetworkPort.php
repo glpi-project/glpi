@@ -130,7 +130,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation
     public function connectToHub($ports_id, $hubs_id)
     {
 
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $netport = new NetworkPort();
@@ -198,9 +198,9 @@ class NetworkPort_NetworkPort extends CommonDBRelation
      */
     public function cleanHubPorts()
     {
-        $netport = new \NetworkPort();
-        $unmanaged = new \Unmanaged();
-        $netport_vlan = new \NetworkPort_Vlan();
+        $netport = new NetworkPort();
+        $unmanaged = new Unmanaged();
+        $netport_vlan = new NetworkPort_Vlan();
 
         $hubs_ids = [];
 

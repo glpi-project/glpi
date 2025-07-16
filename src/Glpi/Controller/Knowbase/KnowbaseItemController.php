@@ -34,6 +34,7 @@
 
 namespace Glpi\Controller\Knowbase;
 
+use DBmysql;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
@@ -105,7 +106,7 @@ final class KnowbaseItemController extends AbstractController
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 

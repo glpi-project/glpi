@@ -35,6 +35,8 @@
 
 namespace Glpi\Features;
 
+use Infocom;
+use DBmysql;
 use CommonDBConnexity;
 use CommonDBTM;
 use Session;
@@ -231,7 +233,7 @@ trait Clonable
      */
     public function clone(array $override_input = [], bool $history = true, bool $clone_as_template = false)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if ($DB->isSlave()) {
@@ -270,12 +272,12 @@ trait Clonable
             $new_item->post_clone($this, $history);
 
             if (
-                \Infocom::canApplyOn($this)
+                Infocom::canApplyOn($this)
                 && isset($new_item->input['states_id'])
                 && !($new_item->input['is_template'] ?? false)
             ) {
                 //Check if we have to automatically fill dates
-                \Infocom::manageDateOnStatusChange($new_item);
+                Infocom::manageDateOnStatusChange($new_item);
             }
         }
 

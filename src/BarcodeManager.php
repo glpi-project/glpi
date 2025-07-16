@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Com\Tecnick\Barcode\Barcode;
+
 class BarcodeManager
 {
     public function generateQRCode(CommonDBTM $item)
@@ -45,7 +47,7 @@ class BarcodeManager
         ) {
             return false;
         }
-        $barcode = new \Com\Tecnick\Barcode\Barcode();
+        $barcode = new Barcode();
         $qrcode = $barcode->getBarcodeObj(
             'QRCODE,H',
             $CFG_GLPI["url_base"] . $item->getLinkURL(),

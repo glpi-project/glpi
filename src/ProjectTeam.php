@@ -129,7 +129,7 @@ class ProjectTeam extends CommonDBRelation
      */
     public static function expandTeamData(array $team)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $subqueries = [];
 
@@ -227,7 +227,7 @@ class ProjectTeam extends CommonDBRelation
      */
     public static function getTeamFor($projects_id, bool $expand = false)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $team = [];

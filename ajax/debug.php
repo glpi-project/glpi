@@ -32,7 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Debug\Profiler;
+use Glpi\Debug\Profile;
+use Glpi\UI\ThemeManager;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 
@@ -45,12 +47,12 @@ if ($_SESSION['glpi_use_mode'] !== Session::DEBUG_MODE) {
     throw new AccessDeniedHttpException();
 }
 
-\Glpi\Debug\Profiler::getInstance()->disable();
+Profiler::getInstance()->disable();
 
 if (isset($_GET['ajax_id'])) {
     // Get debug data for a specific ajax call
     $ajax_id = $_GET['ajax_id'];
-    $profile = \Glpi\Debug\Profile::pull($ajax_id);
+    $profile = Profile::pull($ajax_id);
 
     // Close session ASAP to not block other requests.
     // DO NOT do it before call to `\Glpi\Debug\Profile::pull()`,
@@ -113,7 +115,7 @@ if (isset($_GET['action'])) {
     }
     if ($action === 'get_themes') {
         header('Content-Type: application/json');
-        $themes = \Glpi\UI\ThemeManager::getInstance()->getAllThemes();
+        $themes = ThemeManager::getInstance()->getAllThemes();
         echo json_encode($themes);
         return;
     }

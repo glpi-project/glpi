@@ -31,11 +31,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \Migration $migration
+ * @var Migration $migration
  */
-
 $migration->changeSearchOption('Computer', 129, 1429);
 $migration->changeSearchOption('Computer', 130, 1430);
 $migration->changeSearchOption('Computer', 131, 1431);

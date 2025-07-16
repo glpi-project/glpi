@@ -75,7 +75,7 @@ class Item_Enclosure extends CommonDBRelation
      **/
     public static function showItems(Enclosure $enclosure): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $enclosure->getID();
@@ -153,7 +153,7 @@ class Item_Enclosure extends CommonDBRelation
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 

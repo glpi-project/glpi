@@ -48,7 +48,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
 
     public function countTotalItemsForRulesReplay(array $params = []): int
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         return $DB->request($this->getIteratorCriteriaForRulesReplay())->count();
@@ -56,7 +56,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
 
     public function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // Model check : need to check using manufacturer extra data so specific function
@@ -112,7 +112,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
      **/
     public function replayRulesOnExistingDBForModel($offset = 0, $maxtime = 0)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (isCommandLine()) {

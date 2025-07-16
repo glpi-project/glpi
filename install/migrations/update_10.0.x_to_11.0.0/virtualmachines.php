@@ -31,12 +31,10 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \Migration $migration
- * @var \DBmysql $DB
+ * @var Migration $migration
+ * @var DBmysql $DB
  */
-
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 if ($DB->tableExists('glpi_computervirtualmachines')) {

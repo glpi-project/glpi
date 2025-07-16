@@ -35,6 +35,7 @@
 
 namespace Glpi\Console\Exception;
 
+use Exception;
 use Symfony\Component\Console\Exception\ExceptionInterface;
 
 /**
@@ -42,4 +43,4 @@ use Symfony\Component\Console\Exception\ExceptionInterface;
  *
  * @since 10.0.0
  */
-class EarlyExitException extends \Exception implements ExceptionInterface {}
+class EarlyExitException extends Exception implements ExceptionInterface {}

@@ -107,7 +107,7 @@ class ProjectTask_Ticket extends CommonDBRelation
      **/
     public static function getTicketsTotalActionTime($projecttasks_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -215,7 +215,7 @@ class ProjectTask_Ticket extends CommonDBRelation
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 

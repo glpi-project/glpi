@@ -209,7 +209,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
      **/
     public static function showForChange(Change $change)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $change->getField('id');
@@ -309,7 +309,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
      **/
     public static function showForTicket(Ticket $ticket)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $ticket->getField('id');

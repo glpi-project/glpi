@@ -34,6 +34,9 @@
 
 namespace Glpi\Controller;
 
+use Glpi\Api\APIRest;
+use InvalidArgumentException;
+use Throwable;
 use Glpi\Api\HL\Controller\AbstractController as ApiAbstractController;
 use Glpi\Api\HL\Router;
 use Glpi\Error\ErrorHandler;
@@ -75,7 +78,7 @@ final class ApiController extends AbstractController
         if (preg_match('/^\/v1(\/|$)/', $relative_uri)) {
             // @phpstan-ignore-next-line method.deprecatedClass (refactoring is planned later)
             return new HeaderlessStreamedResponse(function () {
-                $api = new \Glpi\Api\APIRest();
+                $api = new APIRest();
                 $api->call();
             });
         }
@@ -99,7 +102,7 @@ final class ApiController extends AbstractController
 
         try {
             $response = $router->handleRequest($request);
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             $response = new JSONResponse(
                 ApiAbstractController::getErrorResponseBody(
                     ApiAbstractController::ERROR_INVALID_PARAMETER,
@@ -107,7 +110,7 @@ final class ApiController extends AbstractController
                 ),
                 400
             );
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             ErrorHandler::logCaughtException($e);
             $response = new JSONResponse(null, 500);
         }

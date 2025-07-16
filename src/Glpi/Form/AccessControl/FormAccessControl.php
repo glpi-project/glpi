@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\AccessControl;
 
+use Psr\Log\LoggerInterface;
 use CommonDBChild;
 use CommonGLPI;
 use Glpi\Form\Export\Context\DatabaseMapper;
@@ -206,7 +207,7 @@ final class FormAccessControl extends CommonDBChild
                 $strategy = $this->createStrategy($strategy_class);
                 $input['_config'] = $strategy->getConfig();
             } catch (InvalidArgumentException $e) {
-                /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+                /** @var LoggerInterface $PHPLOGGER */
                 global $PHPLOGGER;
                 $PHPLOGGER->error(
                     "Invalid access control strategy: $strategy_class",

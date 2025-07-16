@@ -35,6 +35,11 @@
 
 namespace Glpi\Api\HL;
 
+use DBmysql;
+use DBConnection;
+use DBmysqlIterator;
+use Session;
+use Glpi\Api\HL\Doc\Schema;
 use CommonDBTM;
 use Entity;
 use ExtraVisibilityCriteria;
@@ -83,13 +88,13 @@ final class Search
      * @var array Cache of table names for foreign keys.
      */
     private array $fkey_tables = [];
-    private \DBmysql $db_read;
+    private DBmysql $db_read;
 
     private function __construct(array $schema, array $request_params)
     {
         $this->context = new SearchContext($schema, $request_params);
         $this->rsql_parser = new Parser($this);
-        $this->db_read = \DBConnection::getReadConnection();
+        $this->db_read = DBConnection::getReadConnection();
     }
 
     public function getContext(): SearchContext
@@ -100,11 +105,11 @@ final class Search
     /**
      * @throws APIException
      */
-    private function validateIterator(\DBmysqlIterator $iterator): void
+    private function validateIterator(DBmysqlIterator $iterator): void
     {
         if ($iterator->isFailed()) {
             $message = __('An internal error occurred while trying to fetch the data.');
-            if ($_SESSION['glpi_use_mode'] === \Session::DEBUG_MODE) {
+            if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
                 $message .= ' ' . __('For more information, check the GLPI logs.');
             }
             throw new APIException(
@@ -170,10 +175,10 @@ final class Search
         }
 
         // if prop is an array, set the params to the items
-        if (array_key_exists('type', $prop) && $prop['type'] === Doc\Schema::TYPE_ARRAY) {
+        if (array_key_exists('type', $prop) && $prop['type'] === Schema::TYPE_ARRAY) {
             $prop = $prop['items'];
         }
-        if (array_key_exists('type', $prop) && $prop['type'] !== Doc\Schema::TYPE_OBJECT) {
+        if (array_key_exists('type', $prop) && $prop['type'] !== Schema::TYPE_OBJECT) {
             if (isset($prop['x-mapper']) || isset($prop['x-mapped-property'])) {
                 // Do not select fields mapped after the results are retrieved
                 return null;
@@ -601,9 +606,9 @@ final class Search
             $this->validateIterator($iterator);
         } catch (RightConditionNotMetException) {
             // The read restrict check seems to have returned false indicating that we already know the user cannot view any of these resources
-            /** @var \DBmysql $DB */
+            /** @var DBmysql $DB */
             global $DB;
-            $iterator = new \DBmysqlIterator($DB);
+            $iterator = new DBmysqlIterator($DB);
             // No validation done because we know the inner result isn't a mysqli result
         }
 
@@ -724,7 +729,7 @@ final class Search
                 $next_id = array_shift($ids_path);
                 // if current path points to an object, we don't need to add the ID to the path
                 $path_without_ids = implode('.', array_filter(explode('.', $current_path), static fn($p) => !is_numeric($p)));
-                if (!isset($this->context->getJoins()[$path_without_ids]['parent_type']) && $this->context->getJoins()[$path_without_ids]['parent_type'] === Doc\Schema::TYPE_OBJECT) {
+                if (!isset($this->context->getJoins()[$path_without_ids]['parent_type']) && $this->context->getJoins()[$path_without_ids]['parent_type'] === Schema::TYPE_OBJECT) {
                     if (!empty($next_id) && preg_match('/\.\d+/', $current_path)) {
                         $items = ArrayPathAccessor::getElementByArrayPath($hydrated_record, $current_path);
                         // Remove numeric id parts from the path to get the join name
@@ -794,7 +799,7 @@ final class Search
                     }
                     $matched_record = $fetched_records[$table][(int) $id] ?? null;
 
-                    if (isset($this->context->getJoins()[$join_name]['parent_type']) && $this->context->getJoins()[$join_name]['parent_type'] === Doc\Schema::TYPE_OBJECT) {
+                    if (isset($this->context->getJoins()[$join_name]['parent_type']) && $this->context->getJoins()[$join_name]['parent_type'] === Schema::TYPE_OBJECT) {
                         ArrayPathAccessor::setElementByArrayPath($hydrated_record, $join_prop_path, $matched_record);
                     } else {
                         if ($matched_record !== null) {
@@ -833,7 +838,7 @@ final class Search
     private function fixupAssembledRecord(array &$record): void
     {
         // Fix keys for array properties. Currently, the keys are probably the IDs of the joined records. They should be the index of the record in the array.
-        $array_joins = array_filter($this->context->getJoins(), static fn($v) => isset($v['parent_type']) && $v['parent_type'] === Doc\Schema::TYPE_ARRAY, ARRAY_FILTER_USE_BOTH);
+        $array_joins = array_filter($this->context->getJoins(), static fn($v) => isset($v['parent_type']) && $v['parent_type'] === Schema::TYPE_ARRAY, ARRAY_FILTER_USE_BOTH);
         foreach (array_keys($array_joins) as $name) {
             // Get all paths in the array that match the join name. Paths may or may not have number parts between the parts of the join name (separated by '.')
             $pattern = str_replace('.', '\.(?:\d+\.)?', $name);
@@ -851,7 +856,7 @@ final class Search
         }
 
         // Fix empty array values for objects by replacing them with null
-        $obj_joins = array_filter($this->context->getJoins(), fn($v, $k) => isset($v['parent_type']) && $v['parent_type'] === Doc\Schema::TYPE_OBJECT && !isset($this->context->getFlattenedProperties()[$k]), ARRAY_FILTER_USE_BOTH);
+        $obj_joins = array_filter($this->context->getJoins(), fn($v, $k) => isset($v['parent_type']) && $v['parent_type'] === Schema::TYPE_OBJECT && !isset($this->context->getFlattenedProperties()[$k]), ARRAY_FILTER_USE_BOTH);
         foreach (array_keys($obj_joins) as $name) {
             // Get all paths in the array that match the join name. Paths may or may not have number parts between the parts of the join name (separated by '.')
             $pattern = str_replace('.', '\.(?:\d+\.)?', $name);
@@ -960,7 +965,7 @@ final class Search
                             $field_parts = explode('.', $sql_field);
                             $field_only = end($field_parts);
                             // Handle translatable fields
-                            if (\Session::haveTranslations($itemtype, $field_only)) {
+                            if (Session::haveTranslations($itemtype, $field_only)) {
                                 $trans_alias = "{$join_name}__{$field_only}__trans";
                                 $trans_alias = hash('xxh3', $trans_alias);
                                 if (!isset($criteria['LEFT JOIN'])) {
@@ -971,7 +976,7 @@ final class Search
                                         $join_name => 'id',
                                         $trans_alias => 'items_id', [
                                             'AND' => [
-                                                "$trans_alias.language" => \Session::getLanguage(),
+                                                "$trans_alias.language" => Session::getLanguage(),
                                                 "$trans_alias.itemtype" => $itemtype,
                                                 "$trans_alias.field" => $field_only,
                                             ],
@@ -1029,8 +1034,8 @@ final class Search
     public static function getSearchResultsBySchema(array $schema, array $request_params): array
     {
         // Schema must be an object type
-        if ($schema['type'] !== Doc\Schema::TYPE_OBJECT) {
-            throw new \RuntimeException('Schema must be an object type');
+        if ($schema['type'] !== Schema::TYPE_OBJECT) {
+            throw new RuntimeException('Schema must be an object type');
         }
         // Initialize a new search
         $search = new self($schema, $request_params);
@@ -1074,7 +1079,7 @@ final class Search
                 $data = array_merge($existing_data, $data);
                 ArrayPathAccessor::setElementByArrayPath($result, $path, $data);
             }
-            $result = Doc\Schema::fromArray($schema)->castProperties($result);
+            $result = Schema::fromArray($schema)->castProperties($result);
         }
         unset($result);
 

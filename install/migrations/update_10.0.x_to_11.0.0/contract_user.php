@@ -31,13 +31,11 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \Migration $migration
+ * @var Migration $migration
  * @var array $ADDTODISPLAYPREF
- * @var \DBmysql $DB
+ * @var DBmysql $DB
  */
-
 $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 

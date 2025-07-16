@@ -31,12 +31,10 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-
 // Fix default value for `autopurge_delay`
 $migration->changeField('glpi_entities', 'autopurge_delay', 'autopurge_delay', "int NOT NULL DEFAULT '-2'");
 

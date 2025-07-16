@@ -221,7 +221,7 @@ class KnowbaseItem_Item extends CommonDBRelation
      **/
     public static function getItems(CommonDBTM $item, $start = 0, $limit = 0, $used = false)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = [

@@ -46,7 +46,7 @@ use function Safe\preg_match;
 use function Safe\preg_replace;
 
 /**
- * @var \DBmysql $DB
+ * @var DBmysql $DB
  */
 global $DB;
 

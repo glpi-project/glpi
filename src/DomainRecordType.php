@@ -259,7 +259,7 @@ class DomainRecordType extends CommonDropdown
 
     public function post_updateItem($history = true)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (in_array('fields', $this->updates, true)) {
@@ -339,7 +339,7 @@ class DomainRecordType extends CommonDropdown
     public static function decodeFields(string $json_encoded_fields): ?array
     {
         $fields = null;
-        if (\Toolbox::isJSON($json_encoded_fields)) {
+        if (Toolbox::isJSON($json_encoded_fields)) {
             $fields = json_decode($json_encoded_fields, true);
         }
 

@@ -32,7 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Glpi\Error\ErrorHandler;
@@ -220,12 +220,12 @@ class GLPIMailer
             $sent_message = $this->transport->send($this->email);
             $this->debug = $sent_message->getDebug();
             return true;
-        } catch (\Symfony\Component\Mailer\Exception\TransportExceptionInterface $e) {
+        } catch (TransportExceptionInterface $e) {
             $this->error = $e->getMessage();
             $this->debug = $e->getDebug();
-        } catch (\LogicException $e) {
+        } catch (LogicException $e) {
             $this->error = $e->getMessage();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->error = $e->getMessage();
             ErrorHandler::logCaughtException($e);
         }
@@ -467,7 +467,7 @@ class GLPIMailer
                 // Trigger fatal error to block execution.
                 // As we cannot know which return value type is expected, it is safer to to ensure
                 // that caller will not continue execution using a void return value.
-                throw new \RuntimeException(sprintf('Call to undefined method %s::%s()', self::class, $method));
+                throw new RuntimeException(sprintf('Call to undefined method %s::%s()', self::class, $method));
         }
 
         Toolbox::deprecated(sprintf('Usage of method %s::%s() is deprecated', self::class, $method));
@@ -478,6 +478,6 @@ class GLPIMailer
         // Trigger fatal error to block execution.
         // As we cannot know which return value type is expected, it is safer to to ensure
         // that caller will not continue execution using a void return value.
-        throw new \RuntimeException(sprintf('Call to undefined method %s::%s()', self::class, $method));
+        throw new RuntimeException(sprintf('Call to undefined method %s::%s()', self::class, $method));
     }
 }

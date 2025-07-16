@@ -35,6 +35,8 @@
 
 namespace Glpi\DBAL;
 
+use RuntimeException;
+use DBmysql;
 use AbstractQuery;
 use DBmysqlIterator;
 
@@ -53,12 +55,12 @@ class QuerySubQuery extends AbstractQuery
      */
     public function __construct(array $crit, $alias = null)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         parent::__construct($alias);
         if ($crit === []) {
-            throw new \RuntimeException('Cannot build an empty subquery');
+            throw new RuntimeException('Cannot build an empty subquery');
         }
 
         $this->dbiterator = new DBmysqlIterator($DB);
@@ -73,7 +75,7 @@ class QuerySubQuery extends AbstractQuery
      */
     public function getQuery()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $sql = "(" . $this->dbiterator->getSql() . ")";

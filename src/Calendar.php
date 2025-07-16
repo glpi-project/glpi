@@ -32,6 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
+use Glpi\Features\Clonable;
 
 use function Safe\strtotime;
 
@@ -40,7 +41,7 @@ use function Safe\strtotime;
  **/
 class Calendar extends CommonDropdown
 {
-    use Glpi\Features\Clonable;
+    use Clonable;
 
     // From CommonDBTM
     public $dohistory                   = true;
@@ -132,7 +133,7 @@ class Calendar extends CommonDropdown
 
         switch ($ma->getAction()) {
             case 'duplicate': // For calendar duplicate in another entity
-                if (Toolbox::hasTrait($item, \Glpi\Features\Clonable::class)) {
+                if (Toolbox::hasTrait($item, Clonable::class)) {
                     $input = $ma->getInput();
                     $options = [];
                     if ($item->isEntityAssign()) {

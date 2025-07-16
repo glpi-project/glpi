@@ -31,12 +31,10 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-
 $text_cols = [
     ['glpi_notificationtemplatetranslations', 'content_text', 'longtext'],
     ['glpi_notificationtemplatetranslations', 'content_html', 'longtext'],

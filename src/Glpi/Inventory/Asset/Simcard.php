@@ -35,6 +35,7 @@
 
 namespace Glpi\Inventory\Asset;
 
+use Item_DeviceSimcard;
 use Glpi\Inventory\Conf;
 
 class Simcard extends Device
@@ -63,6 +64,6 @@ class Simcard extends Device
 
     public function getItemtype(): string
     {
-        return \Item_DeviceSimcard::class;
+        return Item_DeviceSimcard::class;
     }
 }

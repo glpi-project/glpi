@@ -35,6 +35,7 @@
 
 namespace Glpi\Console\Diagnostic;
 
+use Exception;
 use Glpi\Console\AbstractCommand;
 use Glpi\System\Diagnostic\SourceCodeIntegrityChecker;
 use Glpi\Toolbox\VersionParser;
@@ -94,7 +95,7 @@ class CheckSourceCodeIntegrityCommand extends AbstractCommand
 
         try {
             $summary = $checker->getSummary();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $output->writeln('<error>' . sprintf(__('Failed to validate GLPI source code integrity. Error was: %s'), $e->getMessage()) . '</error>');
             return 1;
         }

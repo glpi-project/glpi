@@ -43,8 +43,8 @@ use function Safe\scandir;
 function update10011to10012()
 {
     /**
-     * @var \DBmysql $DB
-     * @var \Migration $migration
+     * @var DBmysql $DB
+     * @var Migration $migration
      */
     global $DB, $migration;
 

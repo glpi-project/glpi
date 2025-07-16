@@ -103,7 +103,7 @@ TWIG, $twig_params);
 
     public function countTotalItemsForRulesReplay(array $params = []): int
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         return $DB->request($this->getIteratorCriteriaForRulesReplay($params))->count();
@@ -111,7 +111,7 @@ TWIG, $twig_params);
 
     public function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $i  = $offset;
@@ -227,7 +227,7 @@ TWIG, $twig_params);
      **/
     public function replayDictionnaryOnSoftwaresByID(array $IDs, $res_rule = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $new_softs  = [];
@@ -294,7 +294,7 @@ TWIG, $twig_params);
         $manufacturer,
         array &$soft_ids
     ) {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $input["name"]         = $name;
@@ -405,7 +405,7 @@ TWIG, $twig_params);
      **/
     public function putOldSoftsInTrash(array $soft_ids)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (count($soft_ids) > 0) {
@@ -453,7 +453,7 @@ TWIG, $twig_params);
      */
     public function moveVersions($ID, $new_software_id, $version_id, $old_version, $new_version, $entity)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $new_versionID = $this->versionExists($new_software_id, $new_version);
@@ -554,7 +554,7 @@ TWIG, $twig_params);
      **/
     public function moveLicenses($old_software_id, $new_software_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // Return false if one of the 2 software doesn't exist
@@ -588,7 +588,7 @@ TWIG, $twig_params);
      **/
     public function versionExists($software_id, $version)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // Check if the version exists

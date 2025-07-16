@@ -35,6 +35,8 @@
 
 namespace Glpi\Console\Build;
 
+use RuntimeException;
+use SplFileInfo;
 use Html;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -92,7 +94,7 @@ class CompileScssCommand extends Command
             try {
                 @mkdir($compile_directory);
             } catch (FilesystemException $e) {
-                throw new \RuntimeException(
+                throw new RuntimeException(
                     sprintf(
                         'Destination directory "%s" cannot be accessed.',
                         $compile_directory
@@ -123,7 +125,7 @@ class CompileScssCommand extends Command
                 new RecursiveDirectoryIterator($root_path . '/css'),
                 RecursiveIteratorIterator::SELF_FIRST
             );
-            /** @var \SplFileInfo $file */
+            /** @var SplFileInfo $file */
             foreach ($css_dir_iterator as $file) {
                 if (
                     !$file->isReadable() || !$file->isFile() || $file->getExtension() !== 'scss'

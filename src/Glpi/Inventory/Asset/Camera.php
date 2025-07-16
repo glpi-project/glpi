@@ -35,6 +35,11 @@
 
 namespace Glpi\Inventory\Asset;
 
+use ImageResolution;
+use Item_DeviceCamera_ImageResolution;
+use ImageFormat;
+use Item_DeviceCamera_ImageFormat;
+use Item_DeviceCamera;
 use Item_Devices;
 
 class Camera extends Device
@@ -93,7 +98,7 @@ class Camera extends Device
                 continue;
             }
 
-            $resolution = new \ImageResolution();
+            $resolution = new ImageResolution();
             if (!$resolution->getFromDBByCrit(['name' => $rsl])) {
                 $resolution->add([
                     'name'         => $rsl,
@@ -102,7 +107,7 @@ class Camera extends Device
                 ]);
             }
 
-            $cam_resolutions = new \Item_DeviceCamera_ImageResolution();
+            $cam_resolutions = new Item_DeviceCamera_ImageResolution();
             $data = [
                 'items_devicecameras_id' => $itemdevice->fields['devicecameras_id'],
                 'imageresolutions_id' => $resolution->fields['id'],
@@ -121,7 +126,7 @@ class Camera extends Device
             $val = [$val];
         }
 
-        $format = new \ImageFormat();
+        $format = new ImageFormat();
         foreach ($val as $fmt) {
             if (empty($fmt)) {
                 continue;
@@ -134,7 +139,7 @@ class Camera extends Device
                 ]);
             }
 
-            $cam_formats = new \Item_DeviceCamera_ImageFormat();
+            $cam_formats = new Item_DeviceCamera_ImageFormat();
             $data = [
                 'items_devicecameras_id' => $itemdevice->fields['devicecameras_id'],
                 'imageformats_id' => $format->fields['id'],
@@ -149,6 +154,6 @@ class Camera extends Device
 
     public function getItemtype(): string
     {
-        return \Item_DeviceCamera::class;
+        return Item_DeviceCamera::class;
     }
 }

@@ -54,7 +54,7 @@ class RuleAction extends CommonDBChild
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
 
-        if (isset($_POST['rule_class_name']) && is_subclass_of(\Rule::class, $_POST['rule_class_name'])) {
+        if (isset($_POST['rule_class_name']) && is_subclass_of(Rule::class, $_POST['rule_class_name'])) {
             $rule = getItemForItemtype($_POST['rule_class_name']);
             if ($rule->maxActionsCount() == 1) {
                 $forbidden[] = 'clone';
@@ -295,7 +295,7 @@ class RuleAction extends CommonDBChild
      **/
     public function getRuleActions($ID)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -449,7 +449,7 @@ class RuleAction extends CommonDBChild
      **/
     public function getAlreadyUsedForRuleID($rules_id, $sub_type)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if ($rule = getItemForItemtype($sub_type)) {

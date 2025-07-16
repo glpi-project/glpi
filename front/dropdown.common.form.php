@@ -48,7 +48,7 @@ if (!($this instanceof LegacyFileLoadController) || !($dropdown instanceof Commo
     throw new LogicException();
 }
 
-\Toolbox::deprecated(\sprintf(
+Toolbox::deprecated(\sprintf(
     'Requiring legacy dropdown files is deprecated. You can safely remove the `%s` file in order to make the `%s` controller used instead.',
     debug_backtrace()[0]['file'] ?? 'including',
     DropdownFormController::class,

@@ -38,7 +38,7 @@ use Glpi\Toolbox\VersionParser;
 
 /**
  * @var array $CFG_GLPI
- * @var \DBmysql $DB
+ * @var DBmysql $DB
  * @var bool $HEADER_LOADED
  */
 global $CFG_GLPI,
@@ -55,7 +55,7 @@ if (($_SESSION['can_process_update'] ?? false) && isset($_POST['update_end'])) {
 //test la connection a la base de donn???.
 function test_connect()
 {
-    /** @var \DBmysql $DB */
+    /** @var DBmysql $DB */
     global $DB;
 
     if ($DB->errno() == 0) {
@@ -71,7 +71,7 @@ function test_connect()
  */
 function showSecurityKeyCheckForm()
 {
-    /** @var \DBmysql $DB */
+    /** @var DBmysql $DB */
     global $DB;
 
     echo '<form action="update.php" method="post">';

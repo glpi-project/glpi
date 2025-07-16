@@ -83,7 +83,7 @@ class PurgeSoftwareCommand extends AbstractCommand
     {
         $max = $input->getOption('max');
         if (!is_numeric($max)) {
-            throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 __('Option --max must be an integer.')
             );
         }

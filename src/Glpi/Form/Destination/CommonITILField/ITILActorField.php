@@ -34,6 +34,7 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
+use Glpi\Features\AssignableItem;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
@@ -342,7 +343,7 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
                     return false;
                 }
 
-                return class_uses($question_itemtype)[\Glpi\Features\AssignableItem::class] ?? false;
+                return class_uses($question_itemtype)[AssignableItem::class] ?? false;
             }
         );
 

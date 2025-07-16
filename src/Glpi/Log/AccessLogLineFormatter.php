@@ -34,6 +34,8 @@
 
 namespace Glpi\Log;
 
+use Override;
+use Throwable;
 use Monolog\LogRecord;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
@@ -59,10 +61,10 @@ final class AccessLogLineFormatter extends AbstractLogLineFormatter
         self::$currentRequest = $request;
     }
 
-    #[\Override()]
+    #[Override()]
     public function format(LogRecord $record): string
     {
-        /** @var \Throwable $exception */
+        /** @var Throwable $exception */
         $exception = $record->context['exception'];
 
         $requested_uri = self::$currentRequest->getPathInfo();

@@ -36,6 +36,8 @@
 
 namespace Glpi\Inventory\MainAsset;
 
+use stdClass;
+use RuntimeException;
 use Blacklist;
 use Glpi\Inventory\Asset\NetworkPort;
 use NetworkEquipmentModel;
@@ -51,7 +53,7 @@ class NetworkEquipment extends MainAsset
     protected $extra_data = [
         'network_device'                          => null,
         'network_components'                      => null,
-        \Glpi\Inventory\Asset\NetworkPort::class       => null,
+        NetworkPort::class       => null,
     ];
 
     protected function getModelsFieldName(): string
@@ -104,7 +106,7 @@ class NetworkEquipment extends MainAsset
 
             if (property_exists($device, 'ips')) {
                 $portkey = 'management';
-                $port = new \stdClass();
+                $port = new stdClass();
                 if (property_exists($device, 'mac')) {
                     $port->mac = $device->mac;
                 }
@@ -165,7 +167,7 @@ class NetworkEquipment extends MainAsset
                     $wcontrol->ips = [$ap->ip];
 
                     //add internal port
-                    $port = new \stdClass();
+                    $port = new stdClass();
                     $port->mac = $ap->mac;
                     $port->name = 'Management';
                     $port->is_internal = true;
@@ -174,7 +176,7 @@ class NetworkEquipment extends MainAsset
                     $port->ipaddress = [$ap->ip];
                     $wcontrol->ap_port = $port;
 
-                    $firmware = new \stdClass();
+                    $firmware = new stdClass();
                     $firmware->description = $ap->comment ?? '';
                     $firmware->name = $ap->model ?? '';
                     $firmware->devicefirmwaretypes_id = 'device';
@@ -213,7 +215,7 @@ class NetworkEquipment extends MainAsset
                 ;
                 $np->prepare();
                 $np->handleLinks();
-                $this->assets = [\Glpi\Inventory\Asset\NetworkPort::class => [$np]];
+                $this->assets = [NetworkPort::class => [$np]];
             }
         }
 
@@ -227,11 +229,11 @@ class NetworkEquipment extends MainAsset
             ;
             $np->prepare();
             $np->handleLinks();
-            if (!isset($this->assets[\Glpi\Inventory\Asset\NetworkPort::class])) {
+            if (!isset($this->assets[NetworkPort::class])) {
                 $np->addNetworkPorts($mports);
-                $this->assets[\Glpi\Inventory\Asset\NetworkPort::class] = [$np];
+                $this->assets[NetworkPort::class] = [$np];
             } else {
-                $this->assets[\Glpi\Inventory\Asset\NetworkPort::class][0]->addNetworkPorts($np->getNetworkPorts());
+                $this->assets[NetworkPort::class][0]->addNetworkPorts($np->getNetworkPorts());
             }
         }
 
@@ -252,7 +254,7 @@ class NetworkEquipment extends MainAsset
         return parent::handleLinks();
     }
 
-    protected function portCreated(\stdClass $port, int $netports_id)
+    protected function portCreated(stdClass $port, int $netports_id)
     {
         if (property_exists($port, 'is_internal') && $port->is_internal) {
             return;
@@ -441,7 +443,7 @@ class NetworkEquipment extends MainAsset
     public function getStackId()
     {
         if (count($this->data) != 1) {
-            throw new \RuntimeException('Exactly one entry in data is expected.');
+            throw new RuntimeException('Exactly one entry in data is expected.');
         } else {
             $data = current($this->data);
 

@@ -34,6 +34,7 @@
 
 namespace Glpi\Controller;
 
+use Glpi\CalDAV\Server;
 use Glpi\Http\Firewall;
 use Glpi\Http\HeaderlessStreamedResponse;
 use Glpi\Security\Attribute\DisableCsrfChecks;
@@ -60,7 +61,7 @@ final class CaldavController extends AbstractController
             /** @var array $CFG_GLPI */
             global $CFG_GLPI;
 
-            $server = new \Glpi\CalDAV\Server();
+            $server = new Server();
             $server->setBaseUri($CFG_GLPI['root_doc'] . '/caldav.php');
             $server->start();
         });

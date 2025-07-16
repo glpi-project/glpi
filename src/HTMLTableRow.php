@@ -96,7 +96,7 @@ class HTMLTableRow extends HTMLTableEntity
     ) {
 
         if (!$this->group->haveHeader($header)) {
-            throw new \Exception('Unavailable header!');
+            throw new Exception('Unavailable header!');
         }
 
         $header_name = $header->getCompositeName();

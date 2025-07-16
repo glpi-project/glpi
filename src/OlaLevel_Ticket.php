@@ -59,7 +59,7 @@ class OlaLevel_Ticket extends CommonDBTM
      **/
     public function getFromDBForTicket($ID, $olaType)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -104,7 +104,7 @@ class OlaLevel_Ticket extends CommonDBTM
      **/
     public function deleteForTicket($tickets_id, $olaType)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -162,11 +162,11 @@ class OlaLevel_Ticket extends CommonDBTM
      **/
     public static function cronOlaTicket(CronTask $task)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $tot = 0;
-        $now = \Session::getCurrentTime();
+        $now = Session::getCurrentTime();
 
         $iterator = $DB->request([
             'SELECT'    => [
@@ -320,10 +320,10 @@ class OlaLevel_Ticket extends CommonDBTM
      */
     public static function replayForTicket($tickets_id, $olaType)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
-        $now = \Session::getCurrentTime();
+        $now = Session::getCurrentTime();
         $criteria = [
             'SELECT'    => 'glpi_olalevels_tickets.*',
             'FROM'      => 'glpi_olalevels_tickets',

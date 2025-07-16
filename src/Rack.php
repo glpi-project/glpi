@@ -32,7 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Features\DCBreadcrumb;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssignableItem;
 
@@ -41,7 +41,7 @@ use Glpi\Features\AssignableItem;
  **/
 class Rack extends CommonDBTM
 {
-    use Glpi\Features\DCBreadcrumb;
+    use DCBreadcrumb;
     use Glpi\Features\State;
     use AssignableItem {
         prepareInputForAdd as prepareInputForAddAssignableItem;
@@ -401,7 +401,7 @@ class Rack extends CommonDBTM
      **/
     public static function showForRoom(DCRoom $room): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $room_id = $room->getID();
@@ -617,7 +617,7 @@ class Rack extends CommonDBTM
      */
     public function getFilled($itemtype = null, $items_id = null)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

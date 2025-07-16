@@ -61,7 +61,7 @@ fclose($f);
 try {
     $inventory_request = new Request();
     $inventory_request->handleRequest($contents);
-} catch (\Throwable $e) {
+} catch (Throwable $e) {
     $inventory_request->addError($e->getMessage());
 }
 

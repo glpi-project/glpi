@@ -47,10 +47,10 @@ Html::header_nocache();
 Session::checkCentralAccess();
 
 if (!isset($_POST['kbid']) || !isset($_POST['oldid']) || !isset($_POST['diffid'])) {
-    throw new \RuntimeException('Required argument missing!');
+    throw new RuntimeException('Required argument missing!');
 }
 
-$item = new \KnowbaseItem();
+$item = new KnowbaseItem();
 if (!$item->getFromDB($_POST['kbid']) || !$item->can($_POST['kbid'], READ)) {
     return;
 }

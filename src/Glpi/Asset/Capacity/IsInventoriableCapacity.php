@@ -34,6 +34,15 @@
 
 namespace Glpi\Asset\Capacity;
 
+use Glpi\Inventory\MainAsset\GenericAsset;
+use Glpi\Inventory\MainAsset\GenericNetworkAsset;
+use NetworkEquipment;
+use Glpi\Inventory\MainAsset\GenericPrinterAsset;
+use Printer;
+use Agent;
+use AutoUpdateSystem;
+use RuleImportAsset;
+use DBmysql;
 use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CapacityConfig;
@@ -70,9 +79,9 @@ class IsInventoriableCapacity extends AbstractCapacity
                 'fieldname_prefix'    => $fieldname_prefix,
                 'current_config'      => $current_config,
                 'itemtype_choices'    => [
-                    \Glpi\Inventory\MainAsset\GenericAsset::class        => __('Generic'),
-                    \Glpi\Inventory\MainAsset\GenericNetworkAsset::class => \NetworkEquipment::getTypeName(1),
-                    \Glpi\Inventory\MainAsset\GenericPrinterAsset::class => \Printer::getTypeName(1),
+                    GenericAsset::class        => __('Generic'),
+                    GenericNetworkAsset::class => NetworkEquipment::getTypeName(1),
+                    GenericPrinterAsset::class => Printer::getTypeName(1),
                 ],
             ]
         );
@@ -80,12 +89,12 @@ class IsInventoriableCapacity extends AbstractCapacity
 
     public function getSearchOptions(string $classname): array
     {
-        $tab = \Agent::rawSearchOptionsToAdd();
+        $tab = Agent::rawSearchOptionsToAdd();
         $tab[] = [
             'id'                 => 42,
             'table'              => 'glpi_autoupdatesystems',
             'field'              => 'name',
-            'name'               => \AutoUpdateSystem::getTypeName(1),
+            'name'               => AutoUpdateSystem::getTypeName(1),
             'datatype'           => 'dropdown',
         ];
         return $tab;
@@ -129,7 +138,7 @@ class IsInventoriableCapacity extends AbstractCapacity
         $this->registerToTypeConfig('process_types', $classname);
         $this->registerToTypeConfig('ruleimportasset_types', $classname);
 
-        if ($config->getValue('inventory_mainasset') === \Glpi\Inventory\MainAsset\GenericPrinterAsset::class) {
+        if ($config->getValue('inventory_mainasset') === GenericPrinterAsset::class) {
             $this->registerToTypeConfig('printer_types', $classname);
         }
 
@@ -140,13 +149,13 @@ class IsInventoriableCapacity extends AbstractCapacity
     public function onCapacityEnabled(string $classname, CapacityConfig $config): void
     {
         //create rules
-        $rules = new \RuleImportAsset();
+        $rules = new RuleImportAsset();
         $rules->initRules(true, $classname);
     }
 
     public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $this->unregisterFromTypeConfig('inventory_types', $classname);
         $this->unregisterFromTypeConfig('agent_types', $classname);
@@ -169,7 +178,7 @@ class IsInventoriableCapacity extends AbstractCapacity
         $this->deleteRelationLogs($classname, Item_Process::class);
 
         //remove rules
-        $where = ['sub_type' => \RuleImportAsset::class];
+        $where = ['sub_type' => RuleImportAsset::class];
         $joins = [
             'LEFT JOIN' => [
                 'glpi_rulecriterias' => [
@@ -184,13 +193,13 @@ class IsInventoriableCapacity extends AbstractCapacity
             'criteria' => 'itemtype',
             'pattern' => $classname,
         ];
-        $DB->delete(\RuleImportAsset::getTable(), $where, $joins);
+        $DB->delete(RuleImportAsset::getTable(), $where, $joins);
     }
 
     public function onCapacityUpdated(string $classname, CapacityConfig $old_config, CapacityConfig $new_config): void
     {
         if ($old_config->getValue('inventory_mainasset') != $new_config->getValue('inventory_mainasset')) {
-            $rules = new \RuleImportAsset();
+            $rules = new RuleImportAsset();
             $rules->initRules(true, $classname);
         }
     }

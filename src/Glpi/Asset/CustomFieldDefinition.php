@@ -34,6 +34,9 @@
 
 namespace Glpi\Asset;
 
+use InvalidArgumentException;
+use RuntimeException;
+use DBmysql;
 use CommonDBChild;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CustomFieldType\DropdownType;
@@ -85,7 +88,7 @@ final class CustomFieldDefinition extends CommonDBChild
 
     public function cleanDBonPurge()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $it = $DB->request([
@@ -163,7 +166,7 @@ final class CustomFieldDefinition extends CommonDBChild
 
     private function validateSystemName(array &$input): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (!is_string($input['system_name']) || preg_match('/^[a-z0-9_]+$/', $input['system_name']) !== 1) {
@@ -202,7 +205,7 @@ final class CustomFieldDefinition extends CommonDBChild
         if (isset($input['default_value'])) {
             try {
                 $input['default_value'] = json_encode($field_for_validation->getFieldType()->formatValueForDB($input['default_value']));
-            } catch (\InvalidArgumentException) {
+            } catch (InvalidArgumentException) {
                 $input['default_value'] = null;
             }
         }
@@ -344,7 +347,7 @@ final class CustomFieldDefinition extends CommonDBChild
         if (in_array($this->fields['type'], $field_types, true)) {
             return new $this->fields['type']($this);
         }
-        throw new \RuntimeException('Invalid field type: ' . $this->fields['type']);
+        throw new RuntimeException('Invalid field type: ' . $this->fields['type']);
     }
 
     /**

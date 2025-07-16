@@ -35,6 +35,7 @@
 
 namespace Glpi;
 
+use DBmysql;
 use Cable;
 use CommonDBChild;
 use CommonDBTM;
@@ -207,7 +208,7 @@ class Socket extends CommonDBChild
      **/
     public static function getSocketAlreadyLinked(string $itemtype, int $items_id): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $already_use = [];
         $sub_query = [];
@@ -524,7 +525,7 @@ class Socket extends CommonDBChild
      **/
     public function findID(array &$input)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (!empty($input["name"])) {
@@ -566,7 +567,7 @@ class Socket extends CommonDBChild
 
     public function cleanIfStealNetworkPort()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         // find other socket with same networkport and reset it
         if ($this->fields['networkports_id'] > 0) {
@@ -653,7 +654,7 @@ class Socket extends CommonDBChild
     public static function showListForItem($item): bool
     {
 
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $canedit = self::canUpdate();
@@ -809,7 +810,7 @@ class Socket extends CommonDBChild
      **/
     public static function showForLocation(Location $item): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ID       = $item->getField('id');

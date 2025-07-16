@@ -59,7 +59,7 @@ class Link_Itemtype extends CommonDBChild
      */
     public static function deleteForItemtype($itemtype)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $DB->delete(

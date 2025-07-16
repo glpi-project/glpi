@@ -32,7 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Features\AssignableItem;
+use Glpi\Features\Clonable;
+use Glpi\Features\DCBreadcrumb;
 use Glpi\Socket;
 
 /**
@@ -40,9 +42,9 @@ use Glpi\Socket;
  **/
 class PassiveDCEquipment extends CommonDBTM
 {
-    use Glpi\Features\AssignableItem;
-    use Glpi\Features\Clonable;
-    use Glpi\Features\DCBreadcrumb;
+    use AssignableItem;
+    use Clonable;
+    use DCBreadcrumb;
     use Glpi\Features\State;
 
     // From CommonDBTM

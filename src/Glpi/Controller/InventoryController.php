@@ -34,6 +34,9 @@
 
 namespace Glpi\Controller;
 
+use Throwable;
+use RefusedEquipment;
+use Session;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\HttpException;
 use Glpi\Http\Firewall;
@@ -90,7 +93,7 @@ final class InventoryController extends AbstractController
             if ($handle) {
                 $inventory_request->handleRequest($contents);
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             //empty
             $inventory_request->addError($e->getMessage());
         } finally {
@@ -120,10 +123,10 @@ final class InventoryController extends AbstractController
         $inventory_request = new \Glpi\Inventory\Request();
         $refused_id = (int) $request->get('id');
 
-        $refused = new \RefusedEquipment();
+        $refused = new RefusedEquipment();
 
         try {
-            \Session::checkRight("config", READ);
+            Session::checkRight("config", READ);
             if ($refused->getFromDB($refused_id) && ($inventory_file = $refused->getInventoryFileName()) !== null) {
                 $contents = file_get_contents($inventory_file);
             } else {
@@ -133,7 +136,7 @@ final class InventoryController extends AbstractController
                 );
             }
             $inventory_request->handleRequest($contents);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             //empty
             $inventory_request->addError($e->getMessage());
         }

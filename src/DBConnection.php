@@ -327,7 +327,7 @@ class DBConnection extends CommonDBTM
      **/
     public static function createDBSlaveConfig()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         self::createSlaveConnectionFile(
             "localhost",
@@ -353,7 +353,7 @@ class DBConnection extends CommonDBTM
      **/
     public static function saveDBSlaveConf($host, $user, $password, $DBname)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         self::createSlaveConnectionFile(
             $host,
@@ -383,7 +383,7 @@ class DBConnection extends CommonDBTM
      **/
     public static function switchToSlave()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (self::isDBSlaveActive()) {
@@ -400,7 +400,7 @@ class DBConnection extends CommonDBTM
      **/
     public static function switchToMaster()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $DB = new DB();
@@ -418,7 +418,7 @@ class DBConnection extends CommonDBTM
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -493,7 +493,7 @@ class DBConnection extends CommonDBTM
      */
     public static function establishDBConnection($use_slave, $required)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $DB  = null;
@@ -666,7 +666,7 @@ class DBConnection extends CommonDBTM
      **/
     public static function cronCheckDBreplicate(CronTask $task)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         //Lauch cron only is :
@@ -817,7 +817,7 @@ class DBConnection extends CommonDBTM
                 $dbh->query("SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';");
                 break;
             default:
-                throw new \Exception(sprintf('Charset "%s" is not supported.', $charset));
+                throw new Exception(sprintf('Charset "%s" is not supported.', $charset));
         }
     }
 
@@ -830,7 +830,7 @@ class DBConnection extends CommonDBTM
      */
     public static function getDefaultCharset(): string
     {
-        /** @var \DBmysql|null $DB */
+        /** @var DBmysql|null $DB */
         global $DB;
 
         if ($DB instanceof DBmysql && !$DB->use_utf8mb4) {
@@ -849,7 +849,7 @@ class DBConnection extends CommonDBTM
      */
     public static function getDefaultCollation(): string
     {
-        /** @var \DBmysql|null $DB */
+        /** @var DBmysql|null $DB */
         global $DB;
 
         if ($DB instanceof DBmysql && !$DB->use_utf8mb4) {
@@ -868,7 +868,7 @@ class DBConnection extends CommonDBTM
      */
     public static function getDefaultPrimaryKeySignOption(): string
     {
-        /** @var \DBmysql|null $DB */
+        /** @var DBmysql|null $DB */
         global $DB;
 
         if ($DB instanceof DBmysql && $DB->allow_signed_keys) {
@@ -908,7 +908,7 @@ class DBConnection extends CommonDBTM
      */
     public static function isDbAvailable(): bool
     {
-        /** @var \DBmysql|null $DB */
+        /** @var DBmysql|null $DB */
         global $DB;
         return $DB instanceof DBmysql && $DB->connected;
     }

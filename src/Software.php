@@ -32,7 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Features\Clonable;
+use Glpi\Features\TreeBrowse;
+use Glpi\Features\AssignableItem;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssetImage;
 
@@ -40,10 +42,10 @@ use Glpi\Features\AssetImage;
  **/
 class Software extends CommonDBTM
 {
-    use Glpi\Features\Clonable;
-    use Glpi\Features\TreeBrowse;
+    use Clonable;
+    use TreeBrowse;
     use AssetImage;
-    use Glpi\Features\AssignableItem {
+    use AssignableItem {
         prepareInputForAdd as prepareInputForAddAssignableItem;
         prepareInputForUpdate as prepareInputForUpdateAssignableItem;
         getEmpty as getEmptyAssignableItem;
@@ -689,7 +691,7 @@ class Software extends CommonDBTM
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -809,7 +811,7 @@ class Software extends CommonDBTM
         $is_recursive = false,
         $is_helpdesk_visible = null
     ) {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // Look for the software by his name in GLPI for a specific entity
@@ -921,7 +923,7 @@ class Software extends CommonDBTM
      **/
     public function showMergeCandidates()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ID   = $this->getField('id');
@@ -1006,7 +1008,7 @@ class Software extends CommonDBTM
      */
     private function merge($item): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $this->getField('id');
