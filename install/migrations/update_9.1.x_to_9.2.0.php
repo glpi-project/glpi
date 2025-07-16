@@ -1637,7 +1637,7 @@ Regards,',
         //give full rights to profiles having config right
         $prights = $DB->request(['FROM' => 'glpi_profilerights', 'WHERE' => ['name' => 'config']]);
         foreach ($prights as $profrights) {
-            if ($profrights['rights'] & (READ + UPDATE)) {
+            if ($profrights['rights'] === (READ | UPDATE)) {
                 $rightValue = CREATE | READ | UPDATE | DELETE  | PURGE | READNOTE | UPDATENOTE | UNLOCK;
             } else {
                 $rightValue = 0;
@@ -1950,7 +1950,7 @@ Regards,',
         //give full rights to profiles having config right
         $prights = $DB->request(['FROM' => 'glpi_profilerights', 'WHERE' => ['name' => 'config']]);
         foreach ($prights as $profrights) {
-            if ($profrights['rights'] & (READ + UPDATE)) {
+            if ($profrights['rights'] === (READ | UPDATE)) {
                 $rightValue = CREATE | READ | UPDATE | DELETE | PURGE | READNOTE | UPDATENOTE;
             } else {
                 $rightValue = 0;
@@ -1972,7 +1972,7 @@ Regards,',
         //give full rights to profiles having config right
         $prights = $DB->request(['FROM' => 'glpi_profilerights', 'WHERE' => ['name' => 'config']]);
         foreach ($prights as $profrights) {
-            if ($profrights['rights'] & (READ + UPDATE)) {
+            if ($profrights['rights'] === (READ | UPDATE)) {
                 $rightValue = CREATE | READ | UPDATE | DELETE | PURGE;
             } else {
                 $rightValue = 0;
@@ -1994,7 +1994,7 @@ Regards,',
         //give full rights to profiles having config right
         $prights = $DB->request(['FROM' => 'glpi_profilerights', 'WHERE' => ['name' => 'config']]);
         foreach ($prights as $profrights) {
-            if ($profrights['rights'] & (READ + UPDATE)) {
+            if ($profrights['rights'] === (READ | UPDATE)) {
                 $rightValue = READ | UPDATE;
             } else {
                 $rightValue = 0;
