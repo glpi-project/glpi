@@ -70,7 +70,6 @@
     <script>
         $(function () {
                 const hideShowEndOfWorkingDay = () => {
-                    console.log('yep');
                     let selectedValue = $('#{{ definition_time_dom_id }}').val();
                     if (selectedValue === 'day' || selectedValue === 'month') {
                         $('#{{ end_of_working_day_dom_id }}').parent().parent().show();

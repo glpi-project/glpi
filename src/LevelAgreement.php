@@ -436,13 +436,17 @@ TWIG, $twig_params);
         return '';
     }
 
+    /**
+     * @param \SLM $item
+     * @param int $tabnum
+     * @param int $withtemplate
+     */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        switch (true) {
-            case $item instanceof SLM:
-                self::showForSLM($item);
-                break;
+        if ($item->getType() == 'SLM') {
+            self::showForSLM($item);
         }
+
         return true;
     }
 
