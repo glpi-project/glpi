@@ -9337,7 +9337,7 @@ abstract class CommonITILObject extends CommonDBTM
             $card = [
                 'id'              => "{$itemtype}-{$item['id']}",
                 'title'           => '<span class="pointer">' . $item['name'] . '</span>',
-                'title_tooltip'   => Html::resume_text(RichText::getTextFromHtml($item['content'], false, true), 100),
+                'title_tooltip'   => Html::resume_text(RichText::getTextFromHtml($item['content'], false, true, true), 100),
                 'is_deleted'      => $item['is_deleted'] ?? false,
             ];
 
