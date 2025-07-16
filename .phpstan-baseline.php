@@ -2228,12 +2228,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_Ticket.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Item_Ticket\\:\\:itemAddForm\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Ticket.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Item_Ticket\\:\\:showForTicket\\(\\) with return type void returns false but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,

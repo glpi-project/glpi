@@ -41,30 +41,41 @@ Html::header_nocache();
 Session::checkLoginUser();
 $item_ticket = new Item_Ticket();
 
-switch ($_GET['action']) {
+switch ($_POST['action']) {
     case 'add':
-        if (isset($_GET['my_items']) && !empty($_GET['my_items'])) {
-            [$_GET['itemtype'], $_GET['items_id']] = explode('_', $_GET['my_items']);
+        if (!empty($_POST['my_items'])) {
+            [$_POST['itemtype'], $_POST['items_id']] = explode('_', $_POST['my_items']);
         }
-        if (isset($_GET['items_id']) && isset($_GET['itemtype']) && !empty($_GET['items_id'])) {
-            $_GET['params']['items_id'][$_GET['itemtype']][$_GET['items_id']] = $_GET['items_id'];
+        if (!empty($_POST['itemtype']) && !empty($_POST['items_id'])) {
+            $_POST['params']['items_id'][$_POST['itemtype']][$_POST['items_id']] = $_POST['items_id'];
         }
-        Item_Ticket::itemAddForm(new Ticket(), $_GET['params']);
+        Item_Ticket::itemAddForm(new Ticket(), $_POST['params']);
         break;
 
     case 'delete':
-        if (isset($_GET['items_id']) && isset($_GET['itemtype']) && !empty($_GET['items_id'])) {
-            $deleted = true;
-            if ($_GET['params']['id'] > 0) {
-                $deleted = $item_ticket->deleteByCriteria(['tickets_id' => $_GET['params']['id'],
-                    'items_id'   => $_GET['items_id'],
-                    'itemtype'   => $_GET['itemtype'],
-                ]);
+        if (!empty($_POST['itemtype']) && !empty($_POST['items_id'])) {
+            if ($_POST['params']['id'] > 0) {
+                if ($item_ticket->canPurge()) {
+                    /** @var DBmysql $DB */
+                    global $DB;
+                    $iterator = $DB->request([
+                        'FROM' => Item_Ticket::getTable(),
+                        'WHERE' => [
+                            'tickets_id' => $_POST['params']['id'],
+                            'items_id' => $_POST['items_id'],
+                            'itemtype' => $_POST['itemtype'],
+                        ],
+                    ]);
+                    foreach ($iterator as $data) {
+                        if ($item_ticket->can($data['id'], DELETE)) {
+                            $item_ticket->getFromDB($data['id']);
+                            $item_ticket->delete(['id' => $data['id']]);
+                        }
+                    }
+                }
+                unset($_POST['params']['items_id'][$_POST['itemtype']][array_search($_POST['items_id'], $_POST['params']['items_id'][$_POST['itemtype']])]);
             }
-            if ($deleted) {
-                unset($_GET['params']['items_id'][$_GET['itemtype']][array_search($_GET['items_id'], $_GET['params']['items_id'][$_GET['itemtype']])]);
-            }
-            Item_Ticket::itemAddForm(new Ticket(), $_GET['params']);
+            Item_Ticket::itemAddForm(new Ticket(), $_POST['params']);
         }
 
         break;
