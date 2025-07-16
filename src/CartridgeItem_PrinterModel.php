@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-/** 
+/**
  *  Relation between CartridgeItem and PrinterModel
  *  @since 0.84
  **/

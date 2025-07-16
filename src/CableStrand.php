@@ -35,7 +35,7 @@
 
 use Glpi\Socket;
 
-/** 
+/**
  *  Class CableStrand
  **/
 class CableStrand extends CommonDropdown

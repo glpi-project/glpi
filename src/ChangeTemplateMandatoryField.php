@@ -35,7 +35,7 @@
 
 /**
  * Mandatory fields for change template class
- * 
+ *
  * @since 0.83
  */
 class ChangeTemplateMandatoryField extends ITILTemplateMandatoryField

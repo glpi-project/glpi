@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-/** 
+/**
  * Class CartridgeItemType
  **/
 class CartridgeItemType extends CommonType

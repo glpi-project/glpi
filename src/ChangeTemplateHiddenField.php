@@ -34,11 +34,9 @@
  */
 
 /**
- * 
- * Hidden fields for change template class 
- * 
- * @since 0.83
+ * Hidden fields for change template class
  *
+ * @since 0.83
  **/
 class ChangeTemplateHiddenField extends ITILTemplateHiddenField
 {
