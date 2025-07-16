@@ -197,11 +197,6 @@ abstract class CommonITILCost extends CommonDBChild
         return $tab;
     }
 
-    /**
-     * Search for options to add using raw SQL
-     * 
-     * @return array
-     */
     public static function rawSearchOptionsToAdd(): array
     {
         /** @var \DBmysql $DB */
