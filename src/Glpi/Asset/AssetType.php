@@ -135,20 +135,7 @@ abstract class AssetType extends CommonType
 
     public static function getSystemSQLCriteria(?string $tablename = null): array
     {
-        $table_prefix = $tablename !== null
-            ? $tablename . '.'
-            : '';
-
-        // Keep only items from current definition must be shown.
-        $criteria = [
-            $table_prefix . AssetDefinition::getForeignKeyField() => static::getDefinition()->getID(),
-        ];
-
-        // Add another layer to the array to prevent losing duplicates keys if the
-        // result of the function is merged with another array.
-        $criteria = [crc32(serialize($criteria)) => $criteria];
-
-        return $criteria;
+        return static::getDefinition()->getSystemSQLCriteriaForConcreteClass($tablename);
     }
 
     public function prepareInputForAdd($input)

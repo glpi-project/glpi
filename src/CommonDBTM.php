@@ -5333,8 +5333,8 @@ class CommonDBTM extends CommonGLPI
         $request = [
             'FROM'   => $item::getTable(),
             'WHERE'  => [
-                'is_template'  => 1,
-            ],
+                'is_template' => 1,
+            ] + $item::getSystemSQLCriteria(),
             'ORDER'  => ['template_name'],
         ];
 

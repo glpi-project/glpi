@@ -564,4 +564,9 @@ abstract class Asset extends CommonDBTM
         }
         return array_unique($relations);
     }
+
+    public static function getSystemSQLCriteria(?string $tablename = null): array
+    {
+        return static::getDefinition()->getSystemSQLCriteriaForConcreteClass($tablename);
+    }
 }

@@ -946,4 +946,25 @@ TWIG, $twig_params);
             }
         }
     }
+
+    /**
+     * Return the SQL system criteria to be used by the asset concrete classes.
+     */
+    public function getSystemSQLCriteriaForConcreteClass(?string $tablename = null): array
+    {
+        $table_prefix = $tablename !== null
+            ? $tablename . '.'
+            : '';
+
+        // Keep only items from current definition must be shown.
+        $criteria = [
+            $table_prefix . self::getForeignKeyField() => $this->getID(),
+        ];
+
+        // Add another layer to the array to prevent losing duplicates keys if the
+        // result of the function is merged with another array.
+        $criteria = [crc32(serialize($criteria)) => $criteria];
+
+        return $criteria;
+    }
 }
