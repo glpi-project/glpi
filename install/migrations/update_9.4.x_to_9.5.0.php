@@ -1597,7 +1597,7 @@ HTML,
     /** Marketplace */
     // crontask
     $migration->addCrontask(
-        \Glpi\Marketplace\Controller::class,
+        'Glpi\Marketplace\Controller',
         'checkAllUpdates',
         DAY_TIMESTAMP,
     );
@@ -1605,14 +1605,14 @@ HTML,
     // notification
     if (
         countElementsInTable('glpi_notifications', [
-            'itemtype' => \Glpi\Marketplace\Controller::class,
+            'itemtype' => 'Glpi\Marketplace\Controller',
         ]) === 0
     ) {
         $DB->insert(
             'glpi_notificationtemplates',
             [
                 'name'            => 'Plugin updates',
-                'itemtype'        => \Glpi\Marketplace\Controller::class,
+                'itemtype'        => 'Glpi\Marketplace\Controller',
                 'date_mod'        => new QueryExpression('NOW()'),
             ]
         );
@@ -1645,7 +1645,7 @@ HTML,
             [
                 'name'            => 'Check plugin updates',
                 'entities_id'     => 0,
-                'itemtype'        => \Glpi\Marketplace\Controller::class,
+                'itemtype'        => 'Glpi\Marketplace\Controller',
                 'event'           => 'checkpluginsupdate',
                 'comment'         => null,
                 'is_recursive'    => 1,

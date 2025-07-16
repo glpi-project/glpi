@@ -665,7 +665,7 @@ if (!$DB->tableExists('glpi_refusedequipments')) {
 $migration->addConfig(['purge_refusedequipment' => 0]);
 
 $migration->addCrontask(
-    \Glpi\Inventory\Inventory::class,
+    'Glpi\Inventory\Inventory',
     'cleantemp',
     DAY_TIMESTAMP,
     options: [
@@ -674,7 +674,7 @@ $migration->addCrontask(
 );
 
 $migration->addCrontask(
-    \Glpi\Inventory\Inventory::class,
+    'Glpi\Inventory\Inventory',
     'cleanorphans',
     WEEK_TIMESTAMP,
 );
