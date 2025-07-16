@@ -53,17 +53,22 @@ switch ($_SERVER['REQUEST_METHOD']) {
     case 'GET':
         $action = $_GET["action"]  ?? "";
 
+        $itemtype = $_GET["itemtype"] ?? "";
+        // Check required params
+        if (empty($itemtype)) {
+            Response::sendError(400, "Missing itemtype");
+        }
+
+        $item = getItemForItemtype($itemtype);
+        if (!$item->canView()) {
+            Response::sendError(403, "Not allowed");
+        }
+
         switch ($action) {
             case "search":
-                $itemtype = $_GET["itemtype"] ?? "";
                 $used     = $_GET["used"]     ?? "[]";
                 $filter   = $_GET["filter"]   ?? "";
                 $page     = $_GET["page"]     ?? 0;
-
-                // Check required params
-                if (empty($itemtype)) {
-                    Response::sendError(400, "Missing itemtype");
-                }
 
                 // Execute search
                 $assets = Impact::searchAsset($itemtype, json_decode($used), $filter, $page);
@@ -72,22 +77,24 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 break;
 
             case 'load':
-                $itemtype = $_GET["itemtype"]  ?? "";
                 $items_id = $_GET["items_id"]  ?? "";
                 $view     = $_GET["view"]      ?? "graph";
 
                 // Check required params
-                if (empty($itemtype) || empty($items_id)) {
-                    Response::sendError(400, "Missing itemtype or items_id");
+                if (empty($items_id)) {
+                    Response::sendError(400, "Missing items_id");
                 }
 
-                // Check that the the target asset exist
+                if (!$item->can($items_id, READ)) {
+                    Response::sendError(403, "Not allowed");
+                }
+
+                // Check that the target asset exists
                 if (!Impact::assetExist($itemtype, $items_id)) {
                     Response::sendError(400, "Object[class=$itemtype, id=$items_id] doesn't exist");
                 }
 
                 // Prepare graph
-                $item = new $itemtype();
                 $item->getFromDB($items_id);
                 $graph = Impact::buildGraph($item);
                 $params = Impact::prepareParams($item);

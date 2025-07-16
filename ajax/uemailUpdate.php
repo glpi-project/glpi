@@ -54,11 +54,17 @@ if (
     $emails        = [];
     if (isset($_POST['typefield']) && ($_POST['typefield'] == 'supplier')) {
         $supplier = new Supplier();
+        if (!$supplier->can($_POST["value"], READ)) {
+            throw new \RuntimeException('Not allowed');
+        }
         if ($supplier->getFromDB($_POST["value"])) {
             $default_email = $supplier->fields['email'];
         }
     } else {
         $user          = new User();
+        if (!$user->can($_POST["value"], READ)) {
+            throw new \RuntimeException('Not allowed');
+        }
         if ($user->getFromDB($_POST["value"])) {
             $default_email = $user->getDefaultEmail();
             $emails        = $user->getAllEmails();
@@ -70,8 +76,7 @@ if (
     $default_notif = $_POST['use_notification'][$user_index] ?? true;
 
     if (
-        isset($_POST['alternative_email'][$user_index])
-        && !empty($_POST['alternative_email'][$user_index])
+        !empty($_POST['alternative_email'][$user_index])
         && empty($default_email)
     ) {
         if (NotificationMailing::isUserAddressValid($_POST['alternative_email'][$user_index])) {
@@ -104,7 +109,7 @@ if (
         echo "<input type='hidden' size='25' name='" . $_POST['field'] . "[alternative_email][]'
              value=''>";
     } elseif (count($emails) > 1) {
-        // Several emails : select in the list
+        // Several emails: select in the list
         $emailtab = [];
         foreach ($emails as $new_email) {
             if ($new_email != $default_email) {

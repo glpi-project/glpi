@@ -34,6 +34,8 @@
  */
 
 // Direct access to file
+use Glpi\Http\Response;
+
 if (strpos($_SERVER['PHP_SELF'], "ticketiteminformation.php")) {
     $AJAX_INCLUDE = 1;
     include('../inc/includes.php');
@@ -56,8 +58,8 @@ if (
     && isset($_POST['items_id']) && ($_POST['items_id'] > 0)
 ) {
     // Security
-    if (!class_exists($_POST['itemtype'])) {
-        exit();
+    if (!($item = getItemForItemtype($_POST['itemtype'])) || !$item->can($_POST['items_id'], READ)) {
+        Response::sendError(403, 'Not allowed');
     }
 
     $days   = 3;
