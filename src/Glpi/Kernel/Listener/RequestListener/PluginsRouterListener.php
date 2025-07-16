@@ -34,13 +34,13 @@
 
 namespace Glpi\Kernel\Listener\RequestListener;
 
-use RuntimeException;
 use Glpi\Controller\AbstractController;
 use Glpi\DependencyInjection\PluginContainer;
 use Glpi\DependencyInjection\PublicService;
 use Glpi\Kernel\KernelListenerTrait;
 use Glpi\Kernel\ListenersPriority;
 use Plugin;
+use RuntimeException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;

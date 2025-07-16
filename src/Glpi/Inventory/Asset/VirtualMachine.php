@@ -36,14 +36,14 @@
 
 namespace Glpi\Inventory\Asset;
 
-use RuntimeException;
-use stdClass;
-use DBmysql;
 use AutoUpdateSystem;
 use Computer;
-use ItemVirtualMachine;
+use DBmysql;
 use Glpi\Inventory\Conf;
+use ItemVirtualMachine;
 use RuleImportAssetCollection;
+use RuntimeException;
+use stdClass;
 
 class VirtualMachine extends InventoryAsset
 {

@@ -35,16 +35,16 @@
 
 namespace Glpi\Asset;
 
-use LogicException;
-use DBmysql;
 use CommonDBRelation;
 use CommonDBTM;
 use CommonGLPI;
+use DBmysql;
 use Dropdown;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
 use Html;
+use LogicException;
 use MassiveAction;
 use Override;
 use Session;

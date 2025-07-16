@@ -32,16 +32,16 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Features\Kanban;
-use Glpi\Features\Clonable;
-use Glpi\Features\Teamwork;
-use Glpi\RichText\RichText;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
+use Glpi\Features\Clonable;
+use Glpi\Features\Kanban;
+use Glpi\Features\Teamwork;
 use Glpi\Plugin\Hooks;
+use Glpi\RichText\RichText;
 use Glpi\Team\Team;
 
 /**

@@ -35,15 +35,15 @@
 
 namespace Glpi\Inventory\MainAsset;
 
-use stdClass;
 use Agent;
-use Entity;
 use CommonDBTM;
+use Entity;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
 use NetworkPortInstantiation;
 use RefusedEquipment;
 use RuleMatchedLog;
+use stdClass;
 use Transfer;
 
 class Unmanaged extends MainAsset

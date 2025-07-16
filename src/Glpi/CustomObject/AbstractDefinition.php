@@ -34,16 +34,16 @@
 
 namespace Glpi\CustomObject;
 
-use LogicException;
-use DisplayPreference;
-use DBmysql;
 use CommonDBTM;
+use DBmysql;
+use DisplayPreference;
 use Dropdown;
 use Gettext\Languages\Category as Language_Category;
 use Gettext\Languages\CldrData as Language_CldrData;
 use Gettext\Languages\Language;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CustomFieldDefinition;
+use LogicException;
 use Profile;
 use ProfileRight;
 use Session;

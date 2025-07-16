@@ -35,13 +35,13 @@
 
 namespace Glpi\Form\QuestionType;
 
-use InvalidArgumentException;
 use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Export\Context\DatabaseMapper;
-use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\ConditionHandler\VisibilityConditionHandler;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Question;
+use InvalidArgumentException;
 use Override;
 
 abstract class AbstractQuestionType implements QuestionTypeInterface

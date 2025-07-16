@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Plugin\Hooks;
@@ -41,11 +42,10 @@ use Glpi\Search\Output\HTMLSearchOutput;
 use Glpi\Search\Output\Pdf;
 use Glpi\Search\SearchEngine;
 use Glpi\Stat\StatData;
-use Glpi\Application\View\TemplateRenderer;
 use Symfony\Component\HttpFoundation\Request;
 
-use function Safe\strtotime;
 use function Safe\mktime;
+use function Safe\strtotime;
 
 /**
  *  Stat class

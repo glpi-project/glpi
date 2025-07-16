@@ -34,9 +34,9 @@
 
 namespace Glpi\Dropdown;
 
-use DisplayPreference;
 use CommonDropdown;
 use CommonGLPI;
+use DisplayPreference;
 use Glpi\CustomObject\AbstractDefinition;
 use Session;
 

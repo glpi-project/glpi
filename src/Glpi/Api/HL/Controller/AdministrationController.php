@@ -35,15 +35,12 @@
 
 namespace Glpi\Api\HL\Controller;
 
-use Glpi\Api\HL\Doc\Schema;
-use Session;
-use Toolbox;
-use UserEmail;
-use Glpi\Api\HL\Doc\Parameter;
-use DBmysql;
 use CommonDBTM;
+use DBmysql;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\Doc\Parameter;
+use Glpi\Api\HL\Doc\Schema;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
@@ -53,7 +50,10 @@ use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Group;
 use Profile;
+use Session;
+use Toolbox;
 use User;
+use UserEmail;
 
 /**
  * @phpstan-type EmailData = array{id: int, email: string, is_default: int, _links: array{'self': array{href: non-empty-string}}}

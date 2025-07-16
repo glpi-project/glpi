@@ -34,8 +34,8 @@
 
 namespace Glpi\Asset\Capacity;
 
-use DBmysql;
 use CommonGLPI;
+use DBmysql;
 use Glpi\Asset\CapacityConfig;
 use Item_SoftwareLicense;
 use Item_SoftwareVersion;

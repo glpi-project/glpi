@@ -34,8 +34,8 @@
 
 namespace Glpi\Asset\Capacity;
 
-use DBmysql;
 use CommonGLPI;
+use DBmysql;
 use Glpi\Asset\Asset;
 use Glpi\Asset\CapacityConfig;
 use Log;

@@ -36,8 +36,6 @@
 namespace Glpi\Api\HL;
 
 use Exception;
-use Throwable;
-use RuntimeException;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Doc\Parameter;
 use Glpi\Api\HL\Middleware\AbstractMiddleware;
@@ -46,6 +44,8 @@ use Glpi\Http\Response;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
+use RuntimeException;
+use Throwable;
 
 use function Safe\preg_match;
 use function Safe\preg_match_all;

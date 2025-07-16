@@ -35,9 +35,9 @@
 
 namespace Glpi\Mail\SMTP\OauthProvider;
 
-use League\OAuth2\Client\Token\AccessTokenInterface;
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Token\AccessTokenInterface;
 
 interface ProviderInterface
 {

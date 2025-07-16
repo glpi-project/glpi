@@ -34,13 +34,13 @@
 
 namespace Glpi\Log;
 
-use Override;
-use Throwable;
 use Monolog\LogRecord;
+use Override;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Throwable;
 
 final class AccessLogLineFormatter extends AbstractLogLineFormatter
 {

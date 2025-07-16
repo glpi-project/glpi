@@ -66,8 +66,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 
-use function Safe\ob_start;
 use function Safe\ob_end_clean;
+use function Safe\ob_start;
 
 class RacksPluginToCoreCommand extends AbstractCommand
 {

@@ -34,22 +34,22 @@
 
 namespace Glpi\Asset\Capacity;
 
-use Glpi\Inventory\MainAsset\GenericAsset;
-use Glpi\Inventory\MainAsset\GenericNetworkAsset;
-use NetworkEquipment;
-use Glpi\Inventory\MainAsset\GenericPrinterAsset;
-use Printer;
 use Agent;
 use AutoUpdateSystem;
-use RuleImportAsset;
-use DBmysql;
 use CommonGLPI;
+use DBmysql;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CapacityConfig;
 use Glpi\Inventory\Inventory;
+use Glpi\Inventory\MainAsset\GenericAsset;
+use Glpi\Inventory\MainAsset\GenericNetworkAsset;
+use Glpi\Inventory\MainAsset\GenericPrinterAsset;
 use Item_Environment;
 use Item_Process;
+use NetworkEquipment;
 use Override;
+use Printer;
+use RuleImportAsset;
 use Session;
 
 class IsInventoriableCapacity extends AbstractCapacity

@@ -34,10 +34,10 @@
 
 namespace Glpi\Kernel\Listener\RequestListener;
 
-use Glpi\Exception\Http\HttpException;
 use Config;
 use DBmysql;
 use Glpi\Controller\InstallController;
+use Glpi\Exception\Http\HttpException;
 use Glpi\Kernel\KernelListenerTrait;
 use Glpi\Kernel\ListenersPriority;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

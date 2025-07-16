@@ -35,11 +35,11 @@
 
 namespace Glpi\UI;
 
-use Toolbox;
 use RuntimeException;
+use Toolbox;
 
-use function Safe\glob;
 use function Safe\file_get_contents;
+use function Safe\glob;
 use function Safe\preg_match;
 use function Safe\scandir;
 

@@ -35,18 +35,18 @@
 
 namespace Glpi\Api\HL\Controller;
 
-use Glpi\Api\HL\Doc\Schema;
-use Plugin;
-use Entity;
-use Session;
-use RuntimeException;
 use CommonDBTM;
+use Entity;
+use Glpi\Api\HL\Doc\Schema;
 use Glpi\Api\HL\RoutePath;
 use Glpi\Api\HL\Router;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Glpi\Plugin\Hooks;
+use Plugin;
+use RuntimeException;
+use Session;
 
 /**
  * @phpstan-type AdditionalErrorMessage array{priority: string, message: string}

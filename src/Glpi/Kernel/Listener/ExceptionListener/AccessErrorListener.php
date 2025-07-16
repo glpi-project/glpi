@@ -35,8 +35,8 @@
 namespace Glpi\Kernel\Listener\ExceptionListener;
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\AuthenticationFailedException;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\SessionExpiredException;
 use Glpi\Http\RedirectResponse;
 use Session;

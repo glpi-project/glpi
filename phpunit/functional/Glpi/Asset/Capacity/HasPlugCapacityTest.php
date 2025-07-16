@@ -37,8 +37,8 @@ namespace tests\units\Glpi\Asset\Capacity;
 use DbTestCase;
 use Entity;
 use Glpi\Asset\Capacity;
-use Item_Plug;
 use Glpi\PHPUnit\Tests\Glpi\Asset\CapacityUsageTestTrait;
+use Item_Plug;
 use Log;
 use Plug;
 

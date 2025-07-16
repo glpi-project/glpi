@@ -34,9 +34,9 @@
 
 namespace Glpi\Console\User;
 
-use User;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use User;
 
 class DisableCommand extends AbstractUserCommand
 {

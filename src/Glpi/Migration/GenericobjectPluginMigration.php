@@ -34,11 +34,7 @@
 
 namespace Glpi\Migration;
 
-use RuntimeException;
-use LogicException;
 use CommonDBTM;
-use Glpi\Asset\Capacity\AbstractCapacity;
-use Glpi\Asset\CustomFieldType\AbstractType;
 use CommonDropdown;
 use Domain_Item;
 use DropdownTranslation;
@@ -47,6 +43,7 @@ use Glpi\Asset\Asset;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetModel;
 use Glpi\Asset\AssetType;
+use Glpi\Asset\Capacity\AbstractCapacity;
 use Glpi\Asset\Capacity\AllowedInGlobalSearchCapacity;
 use Glpi\Asset\Capacity\HasContractsCapacity;
 use Glpi\Asset\Capacity\HasDevicesCapacity;
@@ -60,6 +57,7 @@ use Glpi\Asset\Capacity\HasPeripheralAssetsCapacity;
 use Glpi\Asset\Capacity\IsProjectAssetCapacity;
 use Glpi\Asset\Capacity\IsReservableCapacity;
 use Glpi\Asset\CustomFieldDefinition;
+use Glpi\Asset\CustomFieldType\AbstractType;
 use Glpi\Asset\CustomFieldType\BooleanType;
 use Glpi\Asset\CustomFieldType\DateTimeType;
 use Glpi\Asset\CustomFieldType\DateType;
@@ -72,8 +70,10 @@ use Glpi\Dropdown\Dropdown;
 use Glpi\Dropdown\DropdownDefinition;
 use Glpi\Message\MessageType;
 use Group_Item;
+use LogicException;
 use Profile;
 use ProfileRight;
+use RuntimeException;
 use Toolbox;
 
 use function Safe\preg_match;

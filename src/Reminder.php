@@ -32,13 +32,13 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Features\PlanningEvent;
-use Ramsey\Uuid\Uuid;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
 use Glpi\Features\Clonable;
+use Glpi\Features\PlanningEvent;
 use Glpi\RichText\RichText;
+use Ramsey\Uuid\Uuid;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VTodo;
 

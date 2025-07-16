@@ -34,7 +34,6 @@
 
 namespace Glpi\Controller;
 
-use Throwable;
 use Config;
 use DBConnection;
 use Glpi\Application\Environment;
@@ -49,6 +48,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Throwable;
 
 class ErrorController extends AbstractController
 {

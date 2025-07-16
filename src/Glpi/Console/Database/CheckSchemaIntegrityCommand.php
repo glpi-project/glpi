@@ -35,13 +35,13 @@
 
 namespace Glpi\Console\Database;
 
-use Glpi\Console\Exception\EarlyExitException;
-use Throwable;
 use Glpi\Console\AbstractCommand;
+use Glpi\Console\Exception\EarlyExitException;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Throwable;
 
 class CheckSchemaIntegrityCommand extends AbstractCommand
 {

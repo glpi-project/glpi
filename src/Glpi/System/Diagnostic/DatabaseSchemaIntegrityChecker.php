@@ -35,12 +35,12 @@
 
 namespace Glpi\System\Diagnostic;
 
-use RuntimeException;
-use Exception;
 use DBmysql;
+use Exception;
 use Glpi\Toolbox\DatabaseSchema;
 use Glpi\Toolbox\VersionParser;
 use Plugin;
+use RuntimeException;
 use Safe\Exceptions\FilesystemException;
 use SebastianBergmann\Diff\Differ;
 use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;

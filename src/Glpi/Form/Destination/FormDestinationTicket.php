@@ -35,11 +35,11 @@
 namespace Glpi\Form\Destination;
 
 use CommonITILObject;
+use Glpi\Form\Destination\CommonITILField\OLATTOField;
+use Glpi\Form\Destination\CommonITILField\OLATTRField;
 use Glpi\Form\Destination\CommonITILField\RequestTypeField;
 use Glpi\Form\Destination\CommonITILField\SLATTOField;
 use Glpi\Form\Destination\CommonITILField\SLATTRField;
-use Glpi\Form\Destination\CommonITILField\OLATTOField;
-use Glpi\Form\Destination\CommonITILField\OLATTRField;
 use Glpi\Form\Destination\CommonITILField\StatusField;
 use Override;
 use Ticket;

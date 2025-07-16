@@ -34,9 +34,9 @@
 
 namespace Glpi\Asset\Capacity;
 
-use DBmysql;
 use CommonDevice;
 use CommonGLPI;
+use DBmysql;
 use Glpi\Asset\CapacityConfig;
 use Item_Devices;
 use Override;

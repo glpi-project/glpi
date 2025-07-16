@@ -34,24 +34,24 @@
 
 namespace Glpi\Kernel\Listener\RequestListener;
 
-use Exception;
-use Plugin;
 use CommonDevice;
 use CommonDeviceModel;
 use CommonDeviceType;
 use CommonDropdown;
 use CommonGLPI;
+use Exception;
 use Glpi\Asset\Asset;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetModel;
 use Glpi\Asset\AssetType;
+use Glpi\Controller\DropdownFormController;
 use Glpi\Controller\GenericFormController;
 use Glpi\Controller\GenericListController;
-use Glpi\Controller\DropdownFormController;
 use Glpi\Dropdown\Dropdown;
 use Glpi\Dropdown\DropdownDefinition;
 use Glpi\Kernel\KernelListenerTrait;
 use Glpi\Kernel\ListenersPriority;
+use Plugin;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;

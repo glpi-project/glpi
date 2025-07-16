@@ -35,8 +35,8 @@
 
 namespace Glpi\System\Requirement;
 
-use Toolbox;
 use Safe\Exceptions\FilesystemException;
+use Toolbox;
 
 use function Safe\realpath;
 

@@ -35,8 +35,8 @@
 
 namespace Glpi\DBAL;
 
-use RuntimeException;
 use DBmysql;
+use RuntimeException;
 
 /**
  *  Query expression class

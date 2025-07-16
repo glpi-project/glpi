@@ -35,21 +35,21 @@
 
 namespace Glpi\Console\Build;
 
-use RuntimeException;
-use SplFileInfo;
 use Html;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use RuntimeException;
 use Safe\Exceptions\FilesystemException;
+use SplFileInfo;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Toolbox;
 
-use function Safe\mkdir;
-use function Safe\ini_set;
 use function Safe\file_put_contents;
+use function Safe\ini_set;
+use function Safe\mkdir;
 use function Safe\preg_match;
 use function Safe\preg_replace;
 use function Safe\realpath;

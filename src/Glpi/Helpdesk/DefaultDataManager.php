@@ -35,7 +35,6 @@
 
 namespace Glpi\Helpdesk;
 
-use RuntimeException;
 use Entity;
 use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
@@ -61,6 +60,7 @@ use Glpi\Helpdesk\Tile\GlpiPageTile;
 use Glpi\Helpdesk\Tile\TilesManager;
 use ITILCategory;
 use Location;
+use RuntimeException;
 use Session;
 use Ticket;
 

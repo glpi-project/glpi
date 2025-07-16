@@ -32,15 +32,15 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\AssetDefinitionManager;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
 
 use function Safe\file_get_contents;
-use function Safe\json_encode;
 use function Safe\json_decode;
+use function Safe\json_encode;
 use function Safe\preg_match;
 use function Safe\simplexml_load_string;
 

@@ -35,8 +35,8 @@
 
 namespace Glpi\Inventory\Asset;
 
-use Item_DeviceHardDrive;
 use Glpi\Inventory\Conf;
+use Item_DeviceHardDrive;
 
 class HardDrive extends Device
 {

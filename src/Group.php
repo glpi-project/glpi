@@ -32,12 +32,12 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Features\Clonable;
-use Psr\SimpleCache\CacheInterface;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Features\Clonable;
 use Glpi\Search\Provider\SQLProvider;
+use Psr\SimpleCache\CacheInterface;
 
 /**
  * Group class

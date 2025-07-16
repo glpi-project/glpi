@@ -35,14 +35,14 @@
 
 namespace Glpi\CalDAV\Plugin;
 
-use Group;
-use User;
 use Glpi\CalDAV\Backend\Calendar;
 use Glpi\CalDAV\Traits\CalDAVUriUtilTrait;
+use Group;
 use Sabre\CalDAV\Plugin;
 use Sabre\DAV\INode;
 use Sabre\DAV\IProperties;
 use Sabre\DAV\PropFind;
+use User;
 
 /**
  * CalDAV plugin for CalDAV server.

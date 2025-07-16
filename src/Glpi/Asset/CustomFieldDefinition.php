@@ -34,15 +34,15 @@
 
 namespace Glpi\Asset;
 
-use InvalidArgumentException;
-use RuntimeException;
-use DBmysql;
 use CommonDBChild;
+use DBmysql;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CustomFieldType\DropdownType;
 use Glpi\Asset\CustomFieldType\TypeInterface;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use InvalidArgumentException;
+use RuntimeException;
 use Session;
 
 use function Safe\json_decode;

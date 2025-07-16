@@ -39,6 +39,7 @@ use ChangeTask;
 use CommonITILObject;
 use DbTestCase;
 use ITILFollowup;
+use ITILFollowupTemplate;
 use Notification;
 use Notification_NotificationTemplate;
 use NotificationTemplate;
@@ -51,7 +52,6 @@ use ProblemTask;
 use SolutionTemplate;
 use Ticket;
 use TicketTask;
-use ITILFollowupTemplate;
 
 class PendingReasonTest extends DbTestCase
 {

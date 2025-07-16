@@ -32,9 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
-use Psr\SimpleCache\CacheInterface;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Toolbox\VersionParser;
+use Psr\SimpleCache\CacheInterface;
 
 use function Safe\json_decode;
 use function Safe\preg_replace;

@@ -35,8 +35,8 @@
 
 namespace Glpi\Inventory\Asset;
 
-use Item_DeviceSoundCard;
 use Glpi\Inventory\Conf;
+use Item_DeviceSoundCard;
 
 class SoundCard extends Device
 {

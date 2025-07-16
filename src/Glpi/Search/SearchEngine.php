@@ -35,23 +35,15 @@
 
 namespace Glpi\Search;
 
-use Search;
-use RuntimeException;
-use CommonDBTM;
-use CommonITILTask;
-use CommonITILValidation;
-use ITILFollowup;
-use ITILSolution;
-use Entity;
-use Glpi\Socket;
-use Toolbox;
-use KnowbaseItem;
 use AllAssets;
-use DisplayPreference;
-use Session;
-use Dropdown;
+use CommonDBTM;
 use CommonGLPI;
 use CommonITILObject;
+use CommonITILTask;
+use CommonITILValidation;
+use DisplayPreference;
+use Dropdown;
+use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Debug\Profiler;
@@ -71,7 +63,15 @@ use Glpi\Search\Output\TableSearchOutput;
 use Glpi\Search\Output\Xlsx;
 use Glpi\Search\Provider\SearchProviderInterface;
 use Glpi\Search\Provider\SQLProvider;
+use Glpi\Socket;
+use ITILFollowup;
+use ITILSolution;
+use KnowbaseItem;
 use Plugin;
+use RuntimeException;
+use Search;
+use Session;
+use Toolbox;
 
 use function Safe\preg_match;
 

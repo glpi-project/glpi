@@ -35,19 +35,19 @@
 
 namespace Glpi\System\Diagnostic;
 
-use RuntimeException;
-use Throwable;
-use Toolbox;
 use Exception;
-use JsonException;
 use FilesystemIterator;
 use Glpi\Toolbox\VersionParser;
 use GuzzleHttp\Exception\GuzzleException;
+use JsonException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use RuntimeException;
 use Safe\Exceptions\FilesystemException;
 use SebastianBergmann\Diff\Differ;
 use SebastianBergmann\Diff\Output\StrictUnifiedDiffOutputBuilder;
+use Throwable;
+use Toolbox;
 
 use function Safe\file_get_contents;
 use function Safe\fileperms;

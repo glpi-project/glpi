@@ -32,10 +32,10 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Features\Clonable;
-use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\AssetDefinitionManager;
 use Glpi\DBAL\QueryExpression;
+use Glpi\Features\Clonable;
 use Glpi\Plugin\Hooks;
 
 use function Safe\simplexml_load_file;

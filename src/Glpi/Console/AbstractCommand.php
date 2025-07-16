@@ -35,9 +35,9 @@
 
 namespace Glpi\Console;
 
-use Glpi\Console\Exception\EarlyExitException;
 use DBmysql;
 use Glpi\Console\Command\GlpiCommandInterface;
+use Glpi\Console\Exception\EarlyExitException;
 use Glpi\System\RequirementsManager;
 use Override;
 use Symfony\Component\Console\Command\Command;

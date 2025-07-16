@@ -41,11 +41,11 @@ use Glpi\Form\Destination\CommonITILField\SLMFieldStrategy;
 use Glpi\Form\Form;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Override;
 use SLA;
 use SLM;
 use Ticket;
 use TicketTemplatePredefinedField;
-use Override;
 
 include_once __DIR__ . '/../../../../../abstracts/AbstractDestinationFieldTest.php';
 

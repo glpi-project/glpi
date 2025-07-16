@@ -32,9 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Inventory\Request;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Inventory\Request;
 
 use function Safe\file_get_contents;
 

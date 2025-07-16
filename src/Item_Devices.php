@@ -32,9 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Features\State;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Features\State;
 
 /**
  * @since 0.84

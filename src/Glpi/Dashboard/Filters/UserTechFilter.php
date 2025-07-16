@@ -35,13 +35,13 @@
 
 namespace Glpi\Dashboard\Filters;
 
-use UnexpectedValueException;
+use Change;
 use CommonITILActor;
 use DBmysql;
-use Change;
 use Problem;
 use Session;
 use Ticket;
+use UnexpectedValueException;
 use User;
 
 class UserTechFilter extends AbstractFilter

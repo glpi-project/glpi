@@ -35,13 +35,13 @@
 
 namespace Glpi\Marketplace\Api;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\SimpleCache\CacheInterface;
 use GLPINetwork;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Message;
 use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
+use Psr\SimpleCache\CacheInterface;
 use Session;
 use Toolbox;
 

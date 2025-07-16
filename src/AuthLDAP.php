@@ -32,13 +32,13 @@
  *
  * ---------------------------------------------------------------------
  */
-use Safe\Exceptions\NetworkException;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Error\ErrorHandler;
 use Glpi\Toolbox\Filesystem;
 use LDAP\Connection;
 use Safe\Exceptions\DatetimeException;
 use Safe\Exceptions\LdapException;
+use Safe\Exceptions\NetworkException;
 
 use function Safe\fsockopen;
 use function Safe\gmmktime;

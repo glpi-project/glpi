@@ -32,11 +32,6 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Features\Clonable;
-use Glpi\Features\Timeline;
-use Glpi\Features\Kanban;
-use Glpi\Features\Teamwork;
-use Safe\Exceptions\DatetimeException;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\ContentTemplates\Parameters\CommonITILObjectParameters;
 use Glpi\DBAL\QueryExpression;
@@ -44,16 +39,21 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Event;
+use Glpi\Features\Clonable;
+use Glpi\Features\Kanban;
+use Glpi\Features\Teamwork;
+use Glpi\Features\Timeline;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
 use Glpi\Team\Team;
+use Safe\Exceptions\DatetimeException;
 
 use function Safe\getimagesize;
-use function Safe\ob_start;
 use function Safe\ob_get_clean;
+use function Safe\ob_start;
 use function Safe\preg_match;
 use function Safe\preg_replace;
 use function Safe\strtotime;

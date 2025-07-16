@@ -36,8 +36,8 @@
 namespace Glpi\Csv;
 
 use DateTimeZone;
-use User;
 use Safe\DateTime;
+use User;
 
 /**
  * Planning CSV export Class

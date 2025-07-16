@@ -32,9 +32,6 @@
  *
  * ---------------------------------------------------------------------
  */
-use Laminas\I18n\Translator\Translator;
-use Safe\Exceptions\InfoException;
-use Laminas\I18n\Translator\TranslatorInterface;
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\I18nCache;
 use Glpi\Controller\InventoryController;
@@ -43,17 +40,20 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\SessionExpiredException;
 use Glpi\Plugin\Hooks;
 use Glpi\Session\SessionInfo;
+use Laminas\I18n\Translator\Translator;
+use Laminas\I18n\Translator\TranslatorInterface;
+use Safe\Exceptions\InfoException;
 use Safe\Exceptions\SessionException;
 use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\ini_get;
 use function Safe\preg_match;
 use function Safe\scandir;
-use function Safe\session_unset;
-use function Safe\session_regenerate_id;
 use function Safe\session_id;
+use function Safe\session_regenerate_id;
 use function Safe\session_save_path;
 use function Safe\session_start;
+use function Safe\session_unset;
 use function Safe\session_write_close;
 use function Safe\strtotime;
 

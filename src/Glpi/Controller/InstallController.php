@@ -34,9 +34,8 @@
 
 namespace Glpi\Controller;
 
-use RuntimeException;
-use DBmysql;
 use DB;
+use DBmysql;
 use Glpi\Cache\CacheManager;
 use Glpi\Controller\Traits\AsyncOperationProgressControllerTrait;
 use Glpi\Exception\Http\AccessDeniedHttpException;
@@ -48,6 +47,7 @@ use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\VersionParser;
 use Migration;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Toolbox;

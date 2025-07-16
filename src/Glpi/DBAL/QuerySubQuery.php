@@ -35,10 +35,10 @@
 
 namespace Glpi\DBAL;
 
-use RuntimeException;
-use DBmysql;
 use AbstractQuery;
+use DBmysql;
 use DBmysqlIterator;
+use RuntimeException;
 
 /**
  *  Sub query class

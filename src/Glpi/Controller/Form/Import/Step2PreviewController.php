@@ -34,7 +34,6 @@
 
 namespace Glpi\Controller\Form\Import;
 
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Form\Export\Context\DatabaseMapper;
@@ -42,6 +41,7 @@ use Glpi\Form\Export\Serializer\FormSerializer;
 use Glpi\Form\Form;
 use Glpi\Http\RedirectResponse;
 use Session;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;

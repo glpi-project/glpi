@@ -54,6 +54,7 @@ use Profile_User;
 use ProfileRight;
 use Psr\Log\LogLevel;
 use Search;
+use Session;
 use Supplier;
 use Supplier_Ticket;
 use Symfony\Component\DomCrawler\Crawler;
@@ -61,7 +62,6 @@ use Ticket;
 use Ticket_User;
 use TicketValidation;
 use User;
-use Session;
 
 /* Test for inc/ticket.class.php */
 

@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 use Glpi\Dashboard\Dashboard;
-use Glpi\Debug\Profiler;
 use Glpi\Dashboard\Grid;
+use Glpi\Debug\Profiler;
 use Glpi\Error\ErrorHandler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 

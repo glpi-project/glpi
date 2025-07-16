@@ -35,11 +35,11 @@
 
 namespace Glpi\Form\QuestionType;
 
-use InvalidArgumentException;
 use DbUtils;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Question;
+use InvalidArgumentException;
 use ITILCategory;
 use Override;
 use Session;

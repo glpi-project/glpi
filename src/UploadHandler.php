@@ -44,9 +44,8 @@
 use Safe\Exceptions\FilesystemException;
 use Safe\Exceptions\ImageException;
 
-use function Safe\ob_flush;
-use function Safe\error_log;
 use function Safe\copy;
+use function Safe\error_log;
 use function Safe\fclose;
 use function Safe\file_put_contents;
 use function Safe\filemtime;
@@ -64,6 +63,7 @@ use function Safe\imagesavealpha;
 use function Safe\ini_get;
 use function Safe\json_encode;
 use function Safe\mkdir;
+use function Safe\ob_flush;
 use function Safe\parse_url;
 use function Safe\preg_match;
 use function Safe\preg_replace;

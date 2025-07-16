@@ -34,27 +34,27 @@
 
 namespace Glpi\Kernel;
 
-use Glpi\Kernel\Listener\PostBootListener\ProfilerStart;
-use Glpi\Kernel\Listener\PostBootListener\InitializeDbConnection;
-use Glpi\Kernel\Listener\PostBootListener\InitializeCache;
-use Glpi\Kernel\Listener\PostBootListener\LoadLegacyConfiguration;
-use Glpi\Kernel\Listener\PostBootListener\CustomObjectsAutoloaderRegistration;
-use Glpi\Kernel\Listener\PostBootListener\CheckPluginsStates;
 use Glpi\Kernel\Listener\PostBootListener\BootPlugins;
-use Glpi\Kernel\Listener\PostBootListener\SessionStart;
-use Glpi\Kernel\Listener\PostBootListener\LoadLanguage;
-use Glpi\Kernel\Listener\PostBootListener\InitializePlugins;
+use Glpi\Kernel\Listener\PostBootListener\CheckPluginsStates;
+use Glpi\Kernel\Listener\PostBootListener\CustomObjectsAutoloaderRegistration;
 use Glpi\Kernel\Listener\PostBootListener\CustomObjectsBoot;
+use Glpi\Kernel\Listener\PostBootListener\InitializeCache;
+use Glpi\Kernel\Listener\PostBootListener\InitializeDbConnection;
+use Glpi\Kernel\Listener\PostBootListener\InitializePlugins;
+use Glpi\Kernel\Listener\PostBootListener\LoadLanguage;
+use Glpi\Kernel\Listener\PostBootListener\LoadLegacyConfiguration;
+use Glpi\Kernel\Listener\PostBootListener\ProfilerStart;
+use Glpi\Kernel\Listener\PostBootListener\SessionStart;
+use Glpi\Kernel\Listener\RequestListener\CatchInventoryAgentRequestListener;
+use Glpi\Kernel\Listener\RequestListener\CheckDatabaseStatusListener;
+use Glpi\Kernel\Listener\RequestListener\CheckMaintenanceListener;
 use Glpi\Kernel\Listener\RequestListener\ErrorHandlerRequestListener;
 use Glpi\Kernel\Listener\RequestListener\FrontEndAssetsListener;
-use Glpi\Kernel\Listener\RequestListener\CheckMaintenanceListener;
-use Glpi\Kernel\Listener\RequestListener\SessionCheckCookieListener;
-use Glpi\Kernel\Listener\RequestListener\CheckDatabaseStatusListener;
-use Glpi\Kernel\Listener\RequestListener\CatchInventoryAgentRequestListener;
+use Glpi\Kernel\Listener\RequestListener\LegacyItemtypeRouteListener;
 use Glpi\Kernel\Listener\RequestListener\LegacyRouterListener;
 use Glpi\Kernel\Listener\RequestListener\PluginsRouterListener;
-use Glpi\Kernel\Listener\RequestListener\LegacyItemtypeRouteListener;
 use Glpi\Kernel\Listener\RequestListener\RedirectLegacyRouteListener;
+use Glpi\Kernel\Listener\RequestListener\SessionCheckCookieListener;
 use Glpi\Kernel\Listener\RequestListener\SessionVariables;
 
 final class ListenersPriority

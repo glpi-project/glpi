@@ -35,9 +35,9 @@
 
 namespace Glpi\DBAL;
 
-use RuntimeException;
 use AbstractQuery;
 use DBmysql;
+use RuntimeException;
 
 /**
  * UNION query class

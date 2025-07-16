@@ -37,8 +37,8 @@ namespace tests\units\Glpi\System\Status;
 use AuthLDAP;
 use AuthMail;
 use CronTask;
-use GlpiTestCase;
 use Glpi\System\Status\StatusChecker as GlpiStatusChecker;
+use GlpiTestCase;
 
 // Must not extends DBTestCase as call to GlpiStatusChecker::getDBStatus
 // will instanciate a new database connection which will autocommit the transaction

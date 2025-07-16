@@ -32,16 +32,16 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Features\Clonable;
-use Glpi\Debug\Profiler;
-use Psr\SimpleCache\CacheInterface;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Debug\Profiler;
 use Glpi\Event;
+use Glpi\Features\Clonable;
 use Glpi\Helpdesk\Tile\LinkableToTilesInterface;
 use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\UI\IllustrationManager;
+use Psr\SimpleCache\CacheInterface;
 use Ramsey\Uuid\Uuid;
 
 use function Safe\preg_match;

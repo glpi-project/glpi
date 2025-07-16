@@ -35,9 +35,9 @@
 
 namespace Glpi\Inventory\Asset;
 
-use PCIVendor;
-use Item_DeviceControl;
 use Glpi\Inventory\Conf;
+use Item_DeviceControl;
+use PCIVendor;
 
 class Controller extends Device
 {

@@ -36,8 +36,8 @@
 use Glpi\DBAL\QueryExpression;
 use Glpi\Plugin\Hooks;
 
-use function Safe\ob_start;
 use function Safe\ob_get_clean;
+use function Safe\ob_start;
 use function Safe\preg_match;
 
 /**

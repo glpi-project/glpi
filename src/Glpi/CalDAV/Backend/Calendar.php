@@ -35,30 +35,30 @@
 
 namespace Glpi\CalDAV\Backend;
 
-use Planning;
-use User;
 use CommonDBTM;
-use Sabre\DAV\Exception\NotImplemented;
-use Sabre\DAV\Exception\NotFound;
-use Group;
-use Sabre\DAV\Exception;
-use Sabre\DAV\Exception\Forbidden;
-use Sabre\DAV\Exception\UnsupportedMediaType;
-use PlanningExternalEvent;
-use Session;
-use VObject;
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Node\Property;
 use Glpi\CalDAV\Traits\CalDAVUriUtilTrait;
+use Group;
+use Planning;
+use PlanningExternalEvent;
 use Ramsey\Uuid\Uuid;
 use Sabre\CalDAV\Backend\AbstractBackend;
 use Sabre\CalDAV\Xml\Property\SupportedCalendarComponentSet;
+use Sabre\DAV\Exception;
+use Sabre\DAV\Exception\Forbidden;
+use Sabre\DAV\Exception\NotFound;
+use Sabre\DAV\Exception\NotImplemented;
+use Sabre\DAV\Exception\UnsupportedMediaType;
 use Sabre\DAV\Xml\Property\ResourceType;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Property\FlatText;
 use Sabre\VObject\Property\ICalendar\DateTime;
 use Sabre\VObject\Reader;
 use Safe\DateTime as SafeDateTime;
+use Session;
+use User;
+use VObject;
 
 /**
  * Calendar backend for CalDAV server.

@@ -34,8 +34,8 @@
 
 namespace Glpi\Log;
 
-use Override;
 use Monolog\LogRecord;
+use Override;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AccessLogHandler extends AbstractLogHandler

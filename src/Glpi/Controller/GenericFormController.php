@@ -34,14 +34,14 @@
 
 namespace Glpi\Controller;
 
-use RuntimeException;
 use CommonDBTM;
-use Html;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Http\RedirectResponse;
+use Html;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 

@@ -36,13 +36,13 @@
 namespace Glpi\CalDAV\Traits;
 
 use CommonDBTM;
-use Group;
-use User;
 use DBmysql;
 use Glpi\CalDAV\Backend\Principal;
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryUnion;
+use Group;
+use User;
 
 use function Sabre\Uri\split;
 use function Safe\preg_replace;

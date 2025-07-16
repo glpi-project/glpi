@@ -32,11 +32,11 @@
  *
  * ---------------------------------------------------------------------
  */
-use Safe\Exceptions\UrlException;
-use Psr\SimpleCache\CacheInterface;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\RichText\RichText;
 use Glpi\Toolbox\URL;
+use Psr\SimpleCache\CacheInterface;
+use Safe\Exceptions\UrlException;
 use SimplePie\SimplePie;
 
 use function Safe\parse_url;

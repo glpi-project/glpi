@@ -34,10 +34,10 @@
 
 namespace Glpi\Kernel\Listener\ControllerListener;
 
-use RuntimeException;
 use Glpi\Http\Firewall;
 use Glpi\Http\SessionManager;
 use Glpi\Security\Attribute\SecurityStrategy;
+use RuntimeException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\KernelEvents;

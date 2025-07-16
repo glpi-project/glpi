@@ -35,9 +35,9 @@
 
 namespace Glpi\Console\Rules;
 
-use Software;
-use RuleSoftwareCategoryCollection;
 use Glpi\Console\AbstractCommand;
+use RuleSoftwareCategoryCollection;
+use Software;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;

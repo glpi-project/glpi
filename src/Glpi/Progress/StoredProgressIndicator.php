@@ -34,8 +34,8 @@
 
 namespace Glpi\Progress;
 
-use RuntimeException;
 use Glpi\Message\MessageType;
+use RuntimeException;
 
 /**
  * @final

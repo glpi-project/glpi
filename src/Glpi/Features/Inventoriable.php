@@ -35,10 +35,10 @@
 
 namespace Glpi\Features;
 
-use DBmysql;
 use Agent;
 use Computer;
 use DatabaseInstance;
+use DBmysql;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
 use Glpi\Plugin\Hooks;

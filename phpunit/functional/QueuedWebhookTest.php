@@ -36,8 +36,8 @@ namespace tests\units;
 
 use CronTask;
 use DbTestCase;
-use Webhook;
 use QueuedWebhook;
+use Webhook;
 
 class QueuedWebhookTest extends DbTestCase
 {

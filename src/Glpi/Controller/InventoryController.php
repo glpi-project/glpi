@@ -34,9 +34,6 @@
 
 namespace Glpi\Controller;
 
-use Throwable;
-use RefusedEquipment;
-use Session;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\HttpException;
 use Glpi\Http\Firewall;
@@ -44,9 +41,12 @@ use Glpi\Http\RedirectResponse;
 use Glpi\Inventory\Conf;
 use Glpi\Security\Attribute\DisableCsrfChecks;
 use Glpi\Security\Attribute\SecurityStrategy;
+use RefusedEquipment;
+use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Throwable;
 
 use function Safe\file_get_contents;
 

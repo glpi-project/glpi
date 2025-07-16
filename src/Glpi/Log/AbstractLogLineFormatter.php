@@ -34,10 +34,10 @@
 
 namespace Glpi\Log;
 
-use Override;
-use Throwable;
 use Glpi\Error\ErrorUtils;
 use Monolog\Formatter\LineFormatter;
+use Override;
+use Throwable;
 
 abstract class AbstractLogLineFormatter extends LineFormatter
 {

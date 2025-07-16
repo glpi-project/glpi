@@ -34,12 +34,11 @@
 
 namespace Glpi\Asset;
 
-use Computer;
-use DisplayPreference;
-use LogicException;
 use AutoUpdateSystem;
-use DBmysql;
 use CommonGLPI;
+use Computer;
+use DBmysql;
+use DisplayPreference;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Capacity\CapacityInterface;
 use Glpi\Asset\CustomFieldType\DropdownType;
@@ -49,6 +48,7 @@ use Glpi\CustomObject\AbstractDefinition;
 use Glpi\Features\AssetImage;
 use Group;
 use Location;
+use LogicException;
 use Manufacturer;
 use Profile;
 use Session;

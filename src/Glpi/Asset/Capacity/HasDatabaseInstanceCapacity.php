@@ -34,10 +34,10 @@
 
 namespace Glpi\Asset\Capacity;
 
-use DBmysql;
 use CommonGLPI;
 use Database;
 use DatabaseInstance;
+use DBmysql;
 use Glpi\Asset\CapacityConfig;
 use Override;
 use Session;

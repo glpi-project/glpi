@@ -35,10 +35,10 @@
 namespace tests\units;
 
 use Auth;
-use DbTestCase;
 use Computer;
-use Preference;
+use DbTestCase;
 use DbUtils;
+use Preference;
 use Session;
 use User;
 

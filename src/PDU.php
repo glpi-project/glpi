@@ -34,8 +34,8 @@
  */
 
 use Glpi\Features\AssignableItem;
-use Glpi\Features\DCBreadcrumb;
 use Glpi\Features\Clonable;
+use Glpi\Features\DCBreadcrumb;
 
 /**
  * PDU Class

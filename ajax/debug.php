@@ -32,11 +32,11 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Debug\Profiler;
 use Glpi\Debug\Profile;
-use Glpi\UI\ThemeManager;
+use Glpi\Debug\Profiler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\UI\ThemeManager;
 
 use function Safe\json_encode;
 use function Safe\session_write_close;

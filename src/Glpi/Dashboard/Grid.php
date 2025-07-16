@@ -35,11 +35,8 @@
 
 namespace Glpi\Dashboard;
 
-use Throwable;
-use ReflectionClass;
-use Psr\SimpleCache\CacheInterface;
-use DBmysql;
 use Config;
+use DBmysql;
 use Dropdown;
 use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
@@ -50,11 +47,14 @@ use Glpi\Plugin\Hooks;
 use Html;
 use Item_Devices;
 use Plugin;
+use Psr\SimpleCache\CacheInterface;
 use Ramsey\Uuid\Uuid;
+use ReflectionClass;
 use Reminder;
 use Session;
 use ShareDashboardDropdown;
 use Telemetry;
+use Throwable;
 use Ticket;
 use Toolbox;
 

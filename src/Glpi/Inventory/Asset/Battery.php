@@ -36,8 +36,8 @@
 
 namespace Glpi\Inventory\Asset;
 
-use Item_DeviceBattery;
 use Glpi\Inventory\Conf;
+use Item_DeviceBattery;
 
 class Battery extends Device
 {

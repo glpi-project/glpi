@@ -35,10 +35,10 @@
 
 namespace Glpi\Console\Migration;
 
-use Glpi\Console\Exception\EarlyExitException;
 use DBConnection;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
+use Glpi\Console\Exception\EarlyExitException;
 use Glpi\System\Requirement\DbConfiguration;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

@@ -35,8 +35,8 @@
 
 namespace Glpi\Inventory\Asset;
 
-use Item_DeviceProcessor;
 use Glpi\Inventory\Conf;
+use Item_DeviceProcessor;
 
 class Processor extends Device
 {

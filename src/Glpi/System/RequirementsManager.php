@@ -36,7 +36,6 @@
 namespace Glpi\System;
 
 use DBmysql;
-use Psr\Log\LoggerInterface;
 use Glpi\System\Requirement\DbEngine;
 use Glpi\System\Requirement\DbTimezones;
 use Glpi\System\Requirement\DirectoriesWriteAccess;
@@ -52,6 +51,7 @@ use Glpi\System\Requirement\PhpVersion;
 use Glpi\System\Requirement\SeLinux;
 use Glpi\System\Requirement\SessionsConfiguration;
 use Glpi\System\Requirement\SessionsSecurityConfiguration;
+use Psr\Log\LoggerInterface;
 
 /**
  * @since 9.5.0

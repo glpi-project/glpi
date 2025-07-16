@@ -32,13 +32,13 @@
  *
  * ---------------------------------------------------------------------
  */
-use Safe\Exceptions\JsonException;
-use Psr\SimpleCache\CacheInterface;
 use Glpi\Application\Environment;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
+use Psr\SimpleCache\CacheInterface;
+use Safe\Exceptions\JsonException;
 
 use function Safe\json_decode;
 use function Safe\json_encode;

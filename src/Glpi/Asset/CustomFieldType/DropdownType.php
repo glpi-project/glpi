@@ -34,12 +34,12 @@
 
 namespace Glpi\Asset\CustomFieldType;
 
-use DBmysql;
 use CommonDBTM;
+use DBmysql;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CustomFieldOption\BooleanOption;
-use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 
 class DropdownType extends AbstractType
 {

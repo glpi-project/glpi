@@ -35,11 +35,11 @@
 
 namespace Glpi\Inventory\Asset;
 
-use ImageResolution;
-use Item_DeviceCamera_ImageResolution;
 use ImageFormat;
-use Item_DeviceCamera_ImageFormat;
+use ImageResolution;
 use Item_DeviceCamera;
+use Item_DeviceCamera_ImageFormat;
+use Item_DeviceCamera_ImageResolution;
 use Item_Devices;
 
 class Camera extends Device

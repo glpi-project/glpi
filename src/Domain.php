@@ -32,9 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Features\Clonable;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\Clonable;
 
 /// Class Domain
 class Domain extends CommonDBTM

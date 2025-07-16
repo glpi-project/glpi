@@ -35,13 +35,7 @@
 
 namespace Glpi\Api\HL;
 
-use Toolbox;
-use ReflectionClass;
-use RuntimeException;
-use Throwable;
 use Auth;
-use User;
-use Psr\SimpleCache\CacheInterface;
 use DropdownTranslation;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Controller\AdministrationController;
@@ -74,15 +68,21 @@ use Glpi\Api\HL\Middleware\SecurityResponseMiddleware;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
-use Glpi\Plugin\Hooks;
 use Glpi\OAuth\Server;
+use Glpi\Plugin\Hooks;
 use GuzzleHttp\Psr7\Utils;
 use League\OAuth2\Server\Exception\OAuthServerException;
+use Psr\SimpleCache\CacheInterface;
+use ReflectionClass;
+use RuntimeException;
 use Session;
+use Throwable;
+use Toolbox;
+use User;
 
 use function Safe\class_implements;
-use function Safe\ob_start;
 use function Safe\ob_end_clean;
+use function Safe\ob_start;
 use function Safe\preg_match;
 use function Safe\session_destroy;
 use function Safe\session_id;

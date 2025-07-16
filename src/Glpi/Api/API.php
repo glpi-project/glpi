@@ -39,11 +39,6 @@
 
 namespace Glpi\Api;
 
-use RuntimeException;
-use Glpi\Exception\ForgetPasswordException;
-use Glpi\Exception\PasswordTooWeakException;
-use LogicException;
-use DBmysql;
 use AllAssets;
 use APIClient;
 use Auth;
@@ -53,6 +48,7 @@ use CommonDevice;
 use CommonITILObject;
 use Config;
 use Contract;
+use DBmysql;
 use Document;
 use Dropdown;
 use Glpi\Api\Deprecated\DeprecatedInterface;
@@ -60,6 +56,9 @@ use Glpi\Api\HL\Router;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+use Glpi\Exception\ForgetPasswordException;
+use Glpi\Exception\PasswordTooWeakException;
 use Glpi\Search\Provider\SQLProvider;
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\MarkdownRenderer;
@@ -67,12 +66,13 @@ use Html;
 use Infocom;
 use Item_Devices;
 use Log;
+use LogicException;
 use MassiveAction;
 use NetworkEquipment;
 use NetworkPort;
 use Notepad;
 use Problem;
-use Glpi\DBAL\QueryFunction;
+use RuntimeException;
 use SavedSearch;
 use Search;
 use Session;
@@ -82,13 +82,13 @@ use Ticket;
 use Toolbox;
 use User;
 
-use function Safe\json_encode;
 use function Safe\file_get_contents;
+use function Safe\json_encode;
 use function Safe\ob_get_clean;
 use function Safe\ob_start;
 use function Safe\preg_match;
-use function Safe\session_id;
 use function Safe\session_destroy;
+use function Safe\session_id;
 use function Safe\session_write_close;
 
 abstract class API

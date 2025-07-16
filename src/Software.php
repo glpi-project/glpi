@@ -32,11 +32,11 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Features\Clonable;
-use Glpi\Features\TreeBrowse;
-use Glpi\Features\AssignableItem;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssetImage;
+use Glpi\Features\AssignableItem;
+use Glpi\Features\Clonable;
+use Glpi\Features\TreeBrowse;
 
 /** Software Class
  **/

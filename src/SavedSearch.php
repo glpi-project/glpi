@@ -36,9 +36,9 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
+use Glpi\Error\ErrorHandler;
 use Glpi\Features\Clonable;
 use Glpi\Toolbox\ArrayNormalizer;
-use Glpi\Error\ErrorHandler;
 use Safe\DateTime;
 
 use function Safe\parse_url;

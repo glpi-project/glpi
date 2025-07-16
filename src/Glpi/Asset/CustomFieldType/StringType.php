@@ -34,8 +34,8 @@
 
 namespace Glpi\Asset\CustomFieldType;
 
-use InvalidArgumentException;
 use Glpi\Application\View\TemplateRenderer;
+use InvalidArgumentException;
 
 class StringType extends AbstractType
 {

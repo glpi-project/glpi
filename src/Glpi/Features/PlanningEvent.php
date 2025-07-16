@@ -35,11 +35,10 @@
 
 namespace Glpi\Features;
 
-use Ramsey\Uuid\Uuid;
-use DBmysql;
 use CommonITILTask;
 use DateInterval;
 use DateTimeZone;
+use DBmysql;
 use Dropdown;
 use Entity;
 use ExtraVisibilityCriteria;
@@ -51,14 +50,15 @@ use Html;
 use Planning;
 use PlanningEventCategory;
 use PlanningRecall;
+use Ramsey\Uuid\Uuid;
 use Reminder;
 use RRule\RRule;
 use RRule\RSet;
+use Safe\DateTime;
 use Safe\Exceptions\JsonException;
 use Session;
 use Toolbox;
 use User;
-use Safe\DateTime;
 
 use function Safe\json_decode;
 use function Safe\json_encode;

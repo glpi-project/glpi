@@ -35,22 +35,22 @@
 
 namespace Glpi\Form\AccessControl\ControlType;
 
-use InvalidArgumentException;
-use CommonDBTM;
 use AbstractRightsDropdown;
+use CommonDBTM;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
-use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Form;
+use Glpi\Session\SessionInfo;
 use Group;
+use InvalidArgumentException;
 use Override;
 use Profile;
-use Glpi\Session\SessionInfo;
 use User;
 
 final class AllowList implements ControlTypeInterface

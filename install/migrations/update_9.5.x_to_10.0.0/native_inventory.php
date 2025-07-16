@@ -36,9 +36,9 @@
  * @var Migration $migration
  * @var array $ADDTODISPLAYPREF
  */
-use Glpi\Inventory\Conf;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
+use Glpi\Inventory\Conf;
 
 $migration->addConfig(Conf::getDefaults(), 'inventory');
 

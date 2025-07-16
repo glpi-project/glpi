@@ -32,32 +32,32 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Debug\Profile;
-use Glpi\Dashboard\Grid;
-use Glpi\System\Log\LogViewer;
-use Glpi\Inventory\Inventory;
-use Glpi\Form\Form;
-use Glpi\Debug\Profiler;
-use Psr\SimpleCache\CacheInterface;
 use donatj\UserAgent\UserAgentParser;
 use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Console\Application;
+use Glpi\Dashboard\Grid;
+use Glpi\Debug\Profile;
+use Glpi\Debug\Profiler;
 use Glpi\Error\ErrorHandler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Exception\RedirectException;
+use Glpi\Form\Form;
 use Glpi\Form\ServiceCatalog\ServiceCatalog;
+use Glpi\Inventory\Inventory;
 use Glpi\Plugin\Hooks;
+use Glpi\System\Log\LogViewer;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\Toolbox\URL;
 use Glpi\UI\ThemeManager;
+use Psr\SimpleCache\CacheInterface;
+use Safe\DateTime;
 use ScssPhp\ScssPhp\Compiler;
 use Symfony\Component\HttpFoundation\Request;
-use Safe\DateTime;
 
 use function Safe\file_get_contents;
 use function Safe\filemtime;

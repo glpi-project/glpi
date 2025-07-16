@@ -34,11 +34,11 @@
 
 namespace Glpi\Console\User;
 
-use User;
 use Auth;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use User;
 
 class ResetPasswordCommand extends AbstractUserCommand
 {

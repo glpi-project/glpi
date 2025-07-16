@@ -35,8 +35,8 @@
 
 namespace Glpi\System\Requirement;
 
-use UnexpectedValueException;
 use Psr\Log\LoggerInterface;
+use UnexpectedValueException;
 
 /**
  * @since 9.5.0

@@ -35,10 +35,10 @@
 
 namespace Glpi\Console\Marketplace;
 
-use GLPINetwork;
 use Glpi\Console\AbstractCommand;
 use Glpi\Marketplace\Controller;
 use Glpi\RichText\RichText;
+use GLPINetwork;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

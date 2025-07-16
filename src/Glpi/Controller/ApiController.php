@@ -35,8 +35,6 @@
 namespace Glpi\Controller;
 
 use Glpi\Api\APIRest;
-use InvalidArgumentException;
-use Throwable;
 use Glpi\Api\HL\Controller\AbstractController as ApiAbstractController;
 use Glpi\Api\HL\Router;
 use Glpi\Error\ErrorHandler;
@@ -46,9 +44,11 @@ use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Security\Attribute\DisableCsrfChecks;
 use Glpi\Security\Attribute\SecurityStrategy;
+use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use Throwable;
 
 use function Safe\file_get_contents;
 use function Safe\preg_match;

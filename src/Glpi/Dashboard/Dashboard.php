@@ -36,13 +36,13 @@
 namespace Glpi\Dashboard;
 
 use CommonDBTM;
-use RuntimeException;
-use Toolbox;
 use DBmysql;
-use Psr\SimpleCache\CacheInterface;
 use Glpi\Debug\Profiler;
+use Psr\SimpleCache\CacheInterface;
 use Ramsey\Uuid\Uuid;
+use RuntimeException;
 use Session;
+use Toolbox;
 
 use function Safe\json_decode;
 

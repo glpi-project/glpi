@@ -35,8 +35,8 @@
 
 namespace Glpi\System\Diagnostic;
 
-use Exception;
 use DBmysql;
+use Exception;
 
 /**
  * @since 10.0.0

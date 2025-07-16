@@ -36,12 +36,11 @@
 
 namespace Glpi\Inventory\Asset;
 
-use stdClass;
-use Computer;
 use Agent;
 use Blacklist;
 use CommonDBTM;
 use CommonDropdown;
+use Computer;
 use Dropdown;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
@@ -50,6 +49,7 @@ use Glpi\Inventory\Request;
 use Lockedfield;
 use Manufacturer;
 use OperatingSystemKernelVersion;
+use stdClass;
 
 use function Safe\preg_match;
 use function Safe\preg_replace;

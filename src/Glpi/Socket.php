@@ -35,11 +35,11 @@
 
 namespace Glpi;
 
-use DBmysql;
 use Cable;
 use CommonDBChild;
 use CommonDBTM;
 use CommonGLPI;
+use DBmysql;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QuerySubQuery;

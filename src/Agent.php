@@ -33,13 +33,13 @@
  *
  * ---------------------------------------------------------------------
  */
-use GuzzleHttp\Exception\ClientException;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Error\ErrorHandler;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Inventory;
 use Glpi\Plugin\Hooks;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Response;
 use Safe\DateTime;
 

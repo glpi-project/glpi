@@ -37,8 +37,8 @@ namespace Glpi\Asset\Capacity;
 use CommonGLPI;
 use Glpi\Asset\CapacityConfig;
 use ItemAntivirus;
-use Session;
 use Override;
+use Session;
 
 class HasAntivirusCapacity extends AbstractCapacity
 {

@@ -36,12 +36,10 @@
 
 namespace Glpi\Inventory\Asset;
 
-use RuntimeException;
-use stdClass;
-use Toolbox;
-use FQDNLabel;
 use DBmysql;
 use DBmysqlIterator;
+use FQDNLabel;
+use Glpi\DBAL\QueryParam;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\MainAsset\MainAsset;
 use IPAddress;
@@ -50,7 +48,9 @@ use Item_DeviceNetworkCard;
 use NetworkName;
 use NetworkPort;
 use NetworkPortAggregate;
-use Glpi\DBAL\QueryParam;
+use RuntimeException;
+use stdClass;
+use Toolbox;
 use Unmanaged;
 
 trait InventoryNetworkPort

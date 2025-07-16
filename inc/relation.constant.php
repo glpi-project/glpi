@@ -32,8 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\Socket;
 
 /**

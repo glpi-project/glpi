@@ -35,22 +35,22 @@
 
 namespace Glpi\Search\Input;
 
-use DisplayPreference;
-use RuntimeException;
-use Html;
-use Plugin;
-use Search;
-use SavedSearch_User;
-use SavedSearch;
-use DefaultFilter;
-use CommonDBTM;
 use AllAssets;
+use CommonDBTM;
+use DefaultFilter;
+use DisplayPreference;
 use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\URL;
+use Html;
+use Plugin;
+use RuntimeException;
+use SavedSearch;
+use SavedSearch_User;
+use Search;
 use Session;
 use Toolbox;
 

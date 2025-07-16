@@ -35,8 +35,8 @@
 
 namespace Glpi\Features;
 
-use LogicException;
 use DropdownVisibility;
+use LogicException;
 
 trait State
 {

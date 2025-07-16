@@ -32,12 +32,12 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Features\DCBreadcrumb;
-use Glpi\Features\Clonable;
-use Glpi\Features\Inventoriable;
-use Glpi\Features\AssignableItem;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\Features\AssignableItem;
+use Glpi\Features\Clonable;
+use Glpi\Features\DCBreadcrumb;
+use Glpi\Features\Inventoriable;
 
 /**
  * Monitor Class

@@ -39,11 +39,11 @@
 
 namespace Glpi\Api;
 
-use Document;
-use ReflectionClass;
-use CommonDBTM;
 use AllAssets;
+use CommonDBTM;
+use Document;
 use GLPIUploadHandler;
+use ReflectionClass;
 use Safe\Exceptions\JsonException;
 use stdClass;
 use Toolbox;

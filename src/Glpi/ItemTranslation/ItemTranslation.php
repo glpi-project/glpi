@@ -34,12 +34,12 @@
 
 namespace Glpi\ItemTranslation;
 
-use LogicException;
 use CommonDBChild;
 use CommonDBTM;
 use Gettext\Languages\Language;
 use Glpi\Form\FormTranslation;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
+use LogicException;
 use Override;
 use Session;
 

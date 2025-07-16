@@ -34,11 +34,6 @@
 
 namespace Glpi\Asset;
 
-use Glpi\Features\AssignableItem;
-use Glpi\Features\Clonable;
-use Glpi\Features\Inventoriable;
-use RuntimeException;
-use InvalidArgumentException;
 use CommonDBTM;
 use Dropdown;
 use Entity;
@@ -46,11 +41,16 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CustomFieldType\TextType;
 use Glpi\CustomObject\AbstractDefinition;
 use Glpi\CustomObject\CustomObjectTrait;
+use Glpi\Features\AssignableItem;
+use Glpi\Features\Clonable;
+use Glpi\Features\Inventoriable;
 use Group;
 use Group_Item;
+use InvalidArgumentException;
 use Location;
 use Log;
 use Manufacturer;
+use RuntimeException;
 use Safe\Exceptions\JsonException;
 use Session;
 use State;

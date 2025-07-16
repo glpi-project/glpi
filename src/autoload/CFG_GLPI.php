@@ -32,10 +32,10 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Socket;
-use Glpi\Marketplace\Controller;
-use Glpi\Form\Category;
 use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\Form\Category;
+use Glpi\Marketplace\Controller;
+use Glpi\Socket;
 use Glpi\SocketModel;
 
 /**

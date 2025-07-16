@@ -34,20 +34,20 @@
 
 namespace Glpi\Migration;
 
-use Throwable;
-use RuntimeException;
-use InvalidArgumentException;
 use CommonDBConnexity;
 use CommonDBTM;
 use DBmysql;
-use Glpi\Progress\AbstractProgressIndicator;
 use Glpi\Message\MessageType;
+use Glpi\Progress\AbstractProgressIndicator;
 use Glpi\RichText\RichText;
+use InvalidArgumentException;
 use Psr\Log\LoggerAwareTrait;
+use RuntimeException;
+use Throwable;
 
 use function Safe\json_decode;
-use function Safe\strtotime;
 use function Safe\preg_replace;
+use function Safe\strtotime;
 
 abstract class AbstractPluginMigration
 {

@@ -34,14 +34,14 @@
 
 namespace Glpi\Helpdesk\Tile;
 
-use Psr\Log\LoggerInterface;
-use DBmysql;
 use CommonDBTM;
+use DBmysql;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Session\SessionInfo;
 use InvalidArgumentException;
 use Profile;
+use Psr\Log\LoggerInterface;
 use RuntimeException;
 
 final class TilesManager

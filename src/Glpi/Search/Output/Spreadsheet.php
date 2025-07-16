@@ -35,10 +35,10 @@
 
 namespace Glpi\Search\Output;
 
-use PhpOffice\PhpSpreadsheet\Style\Fill;
 use Dropdown;
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\DataExport;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Writer\BaseWriter;
 use PhpOffice\PhpSpreadsheet\Writer\IWriter;
 use Session;

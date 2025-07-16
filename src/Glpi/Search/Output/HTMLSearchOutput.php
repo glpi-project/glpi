@@ -35,26 +35,26 @@
 
 namespace Glpi\Search\Output;
 
-use Session;
-use Toolbox;
-use Plugin;
-use DefaultFilter;
-use Search;
 use AllAssets;
-use MassiveAction;
-use DisplayPreference;
 use CommonDBTM;
-use Glpi\Features\TreeBrowse;
-use Html;
+use DefaultFilter;
+use DisplayPreference;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Dashboard\Grid;
+use Glpi\Features\TreeBrowse;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\CriteriaFilter;
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\URL;
+use Html;
+use MassiveAction;
 use Override;
+use Plugin;
 use SavedSearch;
+use Search;
+use Session;
 use Ticket;
+use Toolbox;
 
 use function Safe\preg_match;
 use function Safe\preg_replace;

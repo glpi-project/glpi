@@ -35,8 +35,8 @@
 
 namespace Glpi\Search\Output;
 
-use Toolbox;
 use Glpi\Toolbox\URL;
+use Toolbox;
 
 /**
  *

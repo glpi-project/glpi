@@ -32,8 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Features\Clonable;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\Clonable;
 
 /**
  * Cluster Class

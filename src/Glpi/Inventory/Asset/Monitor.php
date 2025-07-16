@@ -36,13 +36,13 @@
 
 namespace Glpi\Inventory\Asset;
 
-use RuleMatchedLog;
 use Computer;
 use DBmysql;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
 use Monitor as GMonitor;
 use RuleImportAssetCollection;
+use RuleMatchedLog;
 
 class Monitor extends InventoryAsset
 {

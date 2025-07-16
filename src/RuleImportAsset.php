@@ -33,13 +33,13 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Inventory\Conf;
-use Glpi\Inventory\MainAsset\MainAsset;
-use Glpi\Inventory\MainAsset\GenericNetworkAsset;
-use Glpi\Inventory\MainAsset\GenericPrinterAsset;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Asset\Capacity\IsInventoriableCapacity;
+use Glpi\Inventory\Conf;
+use Glpi\Inventory\MainAsset\GenericNetworkAsset;
+use Glpi\Inventory\MainAsset\GenericPrinterAsset;
+use Glpi\Inventory\MainAsset\MainAsset;
 use Glpi\Plugin\Hooks;
 
 class RuleImportAsset extends Rule

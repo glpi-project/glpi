@@ -37,8 +37,8 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
 
-use function Safe\preg_split;
 use function Safe\preg_replace;
+use function Safe\preg_split;
 
 /**
  *  Database iterator class for Mysql

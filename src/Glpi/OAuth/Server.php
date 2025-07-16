@@ -35,12 +35,12 @@
 
 namespace Glpi\OAuth;
 
-use GLPIKey;
 use DateInterval;
-use League\OAuth2\Server\Exception\OAuthServerException;
 use Glpi\Exception\OAuth2KeyException;
 use Glpi\Http\Request;
+use GLPIKey;
 use League\OAuth2\Server\AuthorizationServer;
+use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\Grant\AuthCodeGrant;
 use League\OAuth2\Server\Grant\ClientCredentialsGrant;
 use League\OAuth2\Server\Grant\PasswordGrant;
@@ -51,11 +51,11 @@ use Safe\Exceptions\FilesystemException;
 use Safe\Exceptions\OpensslException;
 use Throwable;
 
+use function Safe\chmod;
 use function Safe\file_put_contents;
 use function Safe\openssl_pkey_export_to_file;
 use function Safe\openssl_pkey_get_details;
 use function Safe\openssl_pkey_new;
-use function Safe\chmod;
 use function Safe\unlink;
 
 final class Server

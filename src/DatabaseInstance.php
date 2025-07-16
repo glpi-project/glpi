@@ -32,10 +32,10 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Features\Clonable;
-use Glpi\Features\Inventoriable;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\Clonable;
+use Glpi\Features\Inventoriable;
 
 class DatabaseInstance extends CommonDBTM
 {

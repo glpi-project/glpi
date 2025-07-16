@@ -35,14 +35,14 @@
 
 namespace Glpi\Debug;
 
+use Session;
 use Throwable;
 use Toolbox;
-use Session;
 
-use function Safe\json_decode;
-use function Safe\json_encode;
 use function Safe\gzdecode;
 use function Safe\gzencode;
+use function Safe\json_decode;
+use function Safe\json_encode;
 
 final class Profile
 {

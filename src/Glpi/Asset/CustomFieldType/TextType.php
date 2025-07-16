@@ -34,9 +34,9 @@
 
 namespace Glpi\Asset\CustomFieldType;
 
-use InvalidArgumentException;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CustomFieldOption\BooleanOption;
+use InvalidArgumentException;
 
 class TextType extends AbstractType
 {

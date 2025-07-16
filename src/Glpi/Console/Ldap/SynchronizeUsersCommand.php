@@ -35,11 +35,11 @@
 
 namespace Glpi\Console\Ldap;
 
-use Symfony\Component\Console\Exception\RuntimeException;
-use Symfony\Component\Console\Exception\InvalidArgumentException;
 use AuthLDAP;
 use Glpi\Console\AbstractCommand;
 use Safe\Exceptions\DatetimeException;
+use Symfony\Component\Console\Exception\InvalidArgumentException;
+use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;

@@ -35,7 +35,6 @@
 
 namespace Glpi\Form;
 
-use InvalidArgumentException;
 use CommonDBChild;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
@@ -49,6 +48,7 @@ use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\QuestionType\TranslationAwareQuestionType;
 use Glpi\ItemTranslation\Context\TranslationHandler;
+use InvalidArgumentException;
 use JsonException;
 use Log;
 use Override;

@@ -35,8 +35,8 @@
 
 namespace Glpi\Console\Migration;
 
-use Glpi\Console\Exception\EarlyExitException;
 use Glpi\Console\AbstractCommand;
+use Glpi\Console\Exception\EarlyExitException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 

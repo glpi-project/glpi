@@ -34,13 +34,13 @@
 
 namespace Glpi\Controller;
 
-use Glpi\Security\TOTPManager;
 use Auth;
 use CronTask;
 use Dropdown;
 use Glpi\Http\Firewall;
 use Glpi\Plugin\Hooks;
 use Glpi\Security\Attribute\SecurityStrategy;
+use Glpi\Security\TOTPManager;
 use Html;
 use Preference;
 use Session;

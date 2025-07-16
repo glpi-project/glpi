@@ -32,9 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssignableItem;
 use Glpi\Features\Clonable;
-use Glpi\Application\View\TemplateRenderer;
 use Glpi\Socket;
 use Glpi\SocketModel;
 
