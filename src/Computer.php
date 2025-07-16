@@ -32,7 +32,10 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Features\DCBreadcrumb;
+use Glpi\Features\Clonable;
+use Glpi\Features\Inventoriable;
+use Glpi\Features\AssignableItem;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Socket;
 
@@ -41,11 +44,11 @@ use Glpi\Socket;
  **/
 class Computer extends CommonDBTM
 {
-    use Glpi\Features\DCBreadcrumb;
-    use Glpi\Features\Clonable;
-    use Glpi\Features\Inventoriable;
+    use DCBreadcrumb;
+    use Clonable;
+    use Inventoriable;
     use Glpi\Features\State;
-    use Glpi\Features\AssignableItem {
+    use AssignableItem {
         prepareInputForAdd as prepareInputForAddAssignableItem;
         post_updateItem as post_updateItemAssignableItem;
     }
@@ -185,7 +188,7 @@ class Computer extends CommonDBTM
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -362,7 +365,7 @@ class Computer extends CommonDBTM
 
     public function getLinkedItems()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

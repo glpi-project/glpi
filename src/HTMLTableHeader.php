@@ -97,11 +97,11 @@ abstract class HTMLTableHeader extends HTMLTableEntity
     public function checkItemType(?CommonDBTM $item = null)
     {
         if (($item === null) && (count($this->itemtypes) > 0)) {
-            throw new \Exception('Implementation error: header requires an item');
+            throw new Exception('Implementation error: header requires an item');
         }
         if ($item !== null) {
             if (!isset($this->itemtypes[$item->getType()])) {
-                throw new \Exception('Implementation error: type mismatch between header and cell');
+                throw new Exception('Implementation error: type mismatch between header and cell');
             }
             $this->getTable()->addItemType($item->getType(), $this->itemtypes[$item->getType()]);
         }

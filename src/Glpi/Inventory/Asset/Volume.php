@@ -36,6 +36,8 @@
 
 namespace Glpi\Inventory\Asset;
 
+use stdClass;
+use DBmysql;
 use Glpi\Inventory\Conf;
 use Item_Disk;
 
@@ -119,7 +121,7 @@ class Volume extends InventoryAsset
      */
     protected function getExisting(): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $db_existing = [];
@@ -195,17 +197,17 @@ class Volume extends InventoryAsset
     /**
      * Check if asset is a network drive, based on its filesystem
      *
-     * @param \stdClass $raw_data Raw data from inventory
+     * @param stdClass $raw_data Raw data from inventory
      *
      * @return bool
      */
-    public function isNetworkDrive(\stdClass $raw_data): bool
+    public function isNetworkDrive(stdClass $raw_data): bool
     {
         return strtolower($raw_data->type ?? '') == 'network drive'
          || in_array(strtolower($raw_data->filesystem ?? ''), ['nfs', 'smbfs', 'afpfs']);
     }
 
-    public function isRemovableDrive(\stdClass $raw_data): bool
+    public function isRemovableDrive(stdClass $raw_data): bool
     {
         return in_array(strtolower($raw_data->type ?? ''), ['removable disk', 'compact disk']);
     }
@@ -220,6 +222,6 @@ class Volume extends InventoryAsset
 
     public function getItemtype(): string
     {
-        return \Item_Disk::class;
+        return Item_Disk::class;
     }
 }

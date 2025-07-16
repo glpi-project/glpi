@@ -35,6 +35,7 @@
 
 namespace Glpi\Form;
 
+use LogicException;
 use CommonDBChild;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionableVisibilityInterface;
@@ -143,7 +144,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
     {
         $form = $this->getItem();
         if (!$form instanceof Form) {
-            throw new \LogicException('Section must be attached to a form');
+            throw new LogicException('Section must be attached to a form');
         }
 
         $handlers = [];

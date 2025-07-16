@@ -32,7 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Features\PlanningEvent;
+use Glpi\Features\Teamwork;
+use Ramsey\Uuid\Uuid;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
@@ -54,9 +56,9 @@ use function Safe\strtotime;
  **/
 class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 {
-    use Glpi\Features\PlanningEvent;
+    use PlanningEvent;
     use VobjectConverterTrait;
-    use Glpi\Features\Teamwork;
+    use Teamwork;
 
     // From CommonDBTM
     public $dohistory = true;
@@ -230,7 +232,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -273,7 +275,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                         break;
                     default:
                         if (count($actors)) {
-                            throw new \RuntimeException($type . " is not (yet?) handled.");
+                            throw new RuntimeException($type . " is not (yet?) handled.");
                         }
                 }
             }
@@ -547,7 +549,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
 
         if (!isset($input['uuid'])) {
-            $input['uuid'] = \Ramsey\Uuid\Uuid::uuid4();
+            $input['uuid'] = Uuid::uuid4();
         }
         if (!isset($input['users_id'])) {
             $input['users_id'] = Session::getLoginUserID();
@@ -679,7 +681,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      **/
     public static function getAllForProject($ID)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $tasks = [];
@@ -706,7 +708,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      **/
     public static function getAllForProjectTask($ID)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $tasks = [];
@@ -733,7 +735,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      **/
     public static function getAllTicketsForProject($ID)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -827,7 +829,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      **/
     public static function getTotalEffectiveDuration($projecttasks_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $item = new static();
@@ -877,7 +879,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      **/
     public static function getTotalEffectiveDurationForProject($projects_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -901,7 +903,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      **/
     public static function getTotalPlannedDurationForProject($projects_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -1216,7 +1218,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      **/
     public static function showFor($item)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $item->getID();
@@ -1554,7 +1556,7 @@ TWIG, $twig_params);
      */
     public static function getActiveProjectTaskIDsForGroup(array $groups_id): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (count($groups_id) === 0) {
@@ -1609,7 +1611,7 @@ TWIG, $twig_params);
      */
     public static function getActiveProjectTaskIDsForUser(array $users_id, bool $search_in_groups = true): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (count($users_id) === 0) {
@@ -1815,7 +1817,7 @@ TWIG, $twig_params);
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -2125,7 +2127,7 @@ TWIG, $twig_params);
      */
     public static function recalculatePercentDone($ID)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $projecttask = new self();
@@ -2167,7 +2169,7 @@ TWIG, $twig_params);
      */
     public function recalculateStatus(array $input): int|false
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $auto_projectstates = $input['auto_projectstates'] ?? $this->fields['auto_projectstates'] ?? false;
@@ -2216,11 +2218,11 @@ TWIG, $twig_params);
      *
      * @param array $criteria
      *
-     * @return \Sabre\VObject\Component\VCalendar[]
+     * @return VCalendar[]
      */
     private static function getItemsAsVCalendars(array $criteria)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $query = [
@@ -2305,7 +2307,7 @@ TWIG, $twig_params);
         $vtodo = $vcalendar->getBaseComponent();
 
         if (null !== $vtodo->RRULE) {
-            throw new \UnexpectedValueException('RRULE not yet implemented for Project tasks');
+            throw new UnexpectedValueException('RRULE not yet implemented for Project tasks');
         }
 
         $input = $this->getCommonInputFromVcomponent($vtodo, $this->isNewItem());
@@ -2317,7 +2319,7 @@ TWIG, $twig_params);
 
         if ($vtodo->{'PERCENT-COMPLETE'} instanceof IntegerValue) {
             $input['percent_done'] = $vtodo->{'PERCENT-COMPLETE'}->getValue();
-        } elseif (array_key_exists('state', $input) && $input['state'] == \Planning::DONE) {
+        } elseif (array_key_exists('state', $input) && $input['state'] == Planning::DONE) {
             // Consider task as done if status is DONE
             $input['percent_done'] = 100;
         }
@@ -2327,7 +2329,7 @@ TWIG, $twig_params);
 
     public function prepareInputForClone($input)
     {
-        $input['uuid'] = \Ramsey\Uuid\Uuid::uuid4();
+        $input['uuid'] = Uuid::uuid4();
         return $input;
     }
 

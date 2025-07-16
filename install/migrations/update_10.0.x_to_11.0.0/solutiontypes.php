@@ -31,12 +31,10 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-
 if (!$DB->fieldExists("glpi_solutiontypes", "is_incident")) {
     $migration->addField('glpi_solutiontypes', 'is_incident', 'bool', ['value' => 1]);
     $migration->addKey('glpi_solutiontypes', 'is_incident');

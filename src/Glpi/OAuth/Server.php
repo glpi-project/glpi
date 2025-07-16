@@ -35,6 +35,9 @@
 
 namespace Glpi\OAuth;
 
+use GLPIKey;
+use DateInterval;
+use League\OAuth2\Server\Exception\OAuthServerException;
 use Glpi\Exception\OAuth2KeyException;
 use Glpi\Http\Request;
 use League\OAuth2\Server\AuthorizationServer;
@@ -105,11 +108,11 @@ final class Server
 
         $this->resource_server = new ResourceServer($this->access_token_repository, "file://" . self::PUBLIC_KEY_PATH);
 
-        $encryption_key = (new \GLPIKey())->get();
+        $encryption_key = (new GLPIKey())->get();
         $this->auth_server = new AuthorizationServer($this->client_repository, $this->access_token_repository, $this->scope_repository, "file://" . self::PRIVATE_KEY_PATH, $encryption_key);
         $this->auth_server->enableGrantType(
             new ClientCredentialsGrant(),
-            new \DateInterval(self::GLPI_OAUTH_ACCESS_TOKEN_EXPIRES)
+            new DateInterval(self::GLPI_OAUTH_ACCESS_TOKEN_EXPIRES)
         );
 
         $this->auth_server->enableGrantType(
@@ -117,21 +120,21 @@ final class Server
                 new UserRepository(),
                 new RefreshTokenRepository()
             ),
-            new \DateInterval(self::GLPI_OAUTH_ACCESS_TOKEN_EXPIRES)
+            new DateInterval(self::GLPI_OAUTH_ACCESS_TOKEN_EXPIRES)
         );
 
         $this->auth_server->enableGrantType(
             new AuthCodeGrant(
                 new AuthCodeRepository(),
                 new RefreshTokenRepository(),
-                new \DateInterval('PT10M')
+                new DateInterval('PT10M')
             ),
-            new \DateInterval(self::GLPI_OAUTH_ACCESS_TOKEN_EXPIRES)
+            new DateInterval(self::GLPI_OAUTH_ACCESS_TOKEN_EXPIRES)
         );
 
         $this->auth_server->enableGrantType(
             new RefreshTokenGrant(new RefreshTokenRepository()),
-            new \DateInterval(self::GLPI_OAUTH_ACCESS_TOKEN_EXPIRES)
+            new DateInterval(self::GLPI_OAUTH_ACCESS_TOKEN_EXPIRES)
         );
     }
 
@@ -153,7 +156,7 @@ final class Server
      * @param Request $request
      * @return array
      * @phpstan-return array{client_id: string, user_id: string, scopes: string[]}
-     * @throws \League\OAuth2\Server\Exception\OAuthServerException
+     * @throws OAuthServerException
      * @throws OAuth2KeyException
      */
     public static function validateAccessToken(Request $request): array

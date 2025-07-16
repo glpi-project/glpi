@@ -39,10 +39,10 @@ Html::header_nocache();
 Session::checkCentralAccess();
 
 if (!isset($_POST['kbitem_id'])) {
-    throw new \RuntimeException('Required argument missing!');
+    throw new RuntimeException('Required argument missing!');
 }
 
-$item = new \KnowbaseItem();
+$item = new KnowbaseItem();
 if (!$item->getFromDB($_POST['kbitem_id']) || !$item->can($_POST['kbitem_id'], READ)) {
     return;
 }

@@ -98,7 +98,7 @@ class OlaLevel extends LevelAgreementLevel
      **/
     public static function getFirstOlaLevel($olas_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -129,7 +129,7 @@ class OlaLevel extends LevelAgreementLevel
      **/
     public static function getNextOlaLevel($olas_id, $olalevels_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

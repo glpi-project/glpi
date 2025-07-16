@@ -232,7 +232,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
             $result = $this->db->delete($table, [1]);
 
             if (!$result) {
-                throw new \Symfony\Component\Console\Exception\RuntimeException(
+                throw new RuntimeException(
                     sprintf('Unable to truncate table "%s"', $table)
                 );
             }
@@ -243,7 +243,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
             'itemtype' => self::CORE_APPLIANCE_ITEMTYPE,
         ]);
         if (!$result) {
-            throw new \Symfony\Component\Console\Exception\RuntimeException(
+            throw new RuntimeException(
                 sprintf('Unable to clean table "%s"', $table)
             );
         }

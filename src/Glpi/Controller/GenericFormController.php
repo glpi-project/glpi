@@ -34,6 +34,7 @@
 
 namespace Glpi\Controller;
 
+use RuntimeException;
 use CommonDBTM;
 use Html;
 use Glpi\Event;
@@ -130,7 +131,7 @@ class GenericFormController extends AbstractController
             'delete', 'restore' => $object->can($id, DELETE, $post_data),
             'purge' => $object->can($id, PURGE, $post_data),
             'update', 'unglobalize' => $object->can($id, UPDATE, $post_data),
-            default => throw new \RuntimeException(\sprintf("Unsupported object action \"%s\".", $form_action)),
+            default => throw new RuntimeException(\sprintf("Unsupported object action \"%s\".", $form_action)),
         };
 
         if (!$can_do_action) {
@@ -145,7 +146,7 @@ class GenericFormController extends AbstractController
             'purge' => $object->delete($post_data, true),
             'update' => $object->update($post_data),
             'unglobalize' => $object->unglobalize(),
-            default => throw new \RuntimeException(\sprintf("Unsupported object action \"%s\".", $form_action)),
+            default => throw new RuntimeException(\sprintf("Unsupported object action \"%s\".", $form_action)),
         };
 
         if ($action_result) {

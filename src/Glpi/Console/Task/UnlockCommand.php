@@ -178,19 +178,19 @@ class UnlockCommand extends AbstractCommand
         $tasks = $input->getOption('task');
 
         if (null !== $cycle && null !== $delay) {
-            throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 __('Option --cycle is not compatible with option --delay.')
             );
         }
 
         if (null !== $cycle && !preg_match('/^\d+$/', $cycle)) {
-            throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 __('Option --cycle has to be an integer.')
             );
         }
 
         if (null !== $delay && !preg_match('/^\d+$/', $delay)) {
-            throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 __('Option --delay has to be an integer.')
             );
         }
@@ -200,13 +200,13 @@ class UnlockCommand extends AbstractCommand
         }
 
         if ($all && !empty($tasks)) {
-            throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 __('Option --all is not compatible with option --task.')
             );
         }
 
         if (!$all && empty($tasks)) {
-            throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 __('You have to specify which tasks to unlock using --all or --task options.')
             );
         }

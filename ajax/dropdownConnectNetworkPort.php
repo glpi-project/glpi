@@ -40,7 +40,7 @@
 use Glpi\DBAL\QueryExpression;
 
 /**
- * @var \DBmysql $DB
+ * @var DBmysql $DB
  */
 global $DB;
 

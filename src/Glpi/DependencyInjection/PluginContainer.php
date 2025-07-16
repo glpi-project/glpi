@@ -34,6 +34,9 @@
 
 namespace Glpi\DependencyInjection;
 
+use UnitEnum;
+use ReflectionObject;
+use Closure;
 use Glpi\Kernel\Kernel;
 use Glpi\Routing\PluginRoutesLoader;
 use Plugin;
@@ -84,7 +87,7 @@ class PluginContainer implements ContainerInterface
         return $this->internal_container->initialized($id);
     }
 
-    public function getParameter(string $name): \UnitEnum|float|array|bool|int|string|null
+    public function getParameter(string $name): UnitEnum|float|array|bool|int|string|null
     {
         return $this->internal_container->getParameter($name) ?? $this->symfony_container->getParameter($name);
     }
@@ -94,7 +97,7 @@ class PluginContainer implements ContainerInterface
         return $this->internal_container->hasParameter($name) || $this->symfony_container->hasParameter($name);
     }
 
-    public function setParameter(string $name, \UnitEnum|float|array|bool|int|string|null $value): void
+    public function setParameter(string $name, UnitEnum|float|array|bool|int|string|null $value): void
     {
         $this->internal_container->setParameter($name, $value);
     }
@@ -192,10 +195,10 @@ class PluginContainer implements ContainerInterface
 
         $loader = new DelegatingLoader($resolver);
 
-        $file = (new \ReflectionObject($this->kernel))->getFileName();
+        $file = (new ReflectionObject($this->kernel))->getFileName();
         /* @var PhpFileLoader $kernelLoader */
         $kernelLoader = $loader->getResolver()->resolve($file);
-        $instanceof = \Closure::bind(fn&() => $this->instanceof, $kernelLoader, $kernelLoader)();
+        $instanceof = Closure::bind(fn&() => $this->instanceof, $kernelLoader, $kernelLoader)();
         $configurator = new ContainerConfigurator($container, $kernelLoader, $instanceof, $file, $file, $this->kernel->getEnvironment());
 
         return $configurator;

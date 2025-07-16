@@ -35,6 +35,7 @@
 
 namespace Glpi\Marketplace;
 
+use wapmorgan\UnifiedArchive\Exceptions\ArchiveExtractionException;
 use CommonGLPI;
 use Config;
 use CronTask;
@@ -233,7 +234,7 @@ class Controller extends CommonGLPI
             try {
                 // copy files
                 $archive->extract(GLPI_MARKETPLACE_DIR) !== false;
-            } catch (\wapmorgan\UnifiedArchive\Exceptions\ArchiveExtractionException $e) {
+            } catch (ArchiveExtractionException $e) {
                 $error = true;
             }
         }

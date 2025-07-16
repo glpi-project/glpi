@@ -598,7 +598,7 @@ class Notification extends CommonDBTM implements FilterableInterface
         $classname = Notification_NotificationTemplate::getModeClass($options['mode']);
 
         if (!is_a($classname, NotificationInterface::class, true)) {
-            throw new \LogicException(sprintf('Invalid `%s` class.', $classname));
+            throw new LogicException(sprintf('Invalid `%s` class.', $classname));
         }
 
         $notif = new $classname();
@@ -636,7 +636,7 @@ class Notification extends CommonDBTM implements FilterableInterface
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 

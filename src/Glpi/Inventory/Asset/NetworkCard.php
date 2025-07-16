@@ -36,6 +36,8 @@
 
 namespace Glpi\Inventory\Asset;
 
+use PCIVendor;
+use Item_DeviceNetworkCard;
 use Glpi\Inventory\Conf;
 
 class NetworkCard extends Device
@@ -70,7 +72,7 @@ class NetworkCard extends Device
             'wwn'         => 'wwn',
             'speed'       => 'speed',
         ];
-        $pcivendor = new \PCIVendor();
+        $pcivendor = new PCIVendor();
 
         foreach ($this->data as $k => &$val) {
             if (
@@ -306,6 +308,6 @@ class NetworkCard extends Device
 
     public function getItemtype(): string
     {
-        return \Item_DeviceNetworkCard::class;
+        return Item_DeviceNetworkCard::class;
     }
 }

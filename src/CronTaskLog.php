@@ -64,7 +64,7 @@ class CronTaskLog extends CommonDBChild
      **/
     public static function cleanOld($id, $days)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $secs      = $days * DAY_TIMESTAMP;

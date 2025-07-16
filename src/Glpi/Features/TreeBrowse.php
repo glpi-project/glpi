@@ -35,6 +35,7 @@
 
 namespace Glpi\Features;
 
+use DBmysql;
 use CommonDBTM;
 use CommonDropdown;
 use CommonITILObject;
@@ -191,7 +192,7 @@ JAVASCRIPT;
      */
     public static function getTreeCategoryList(string $itemtype, array $params): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $cat_item = static::getCategoryItem($itemtype);
@@ -368,7 +369,7 @@ JAVASCRIPT;
     /**
      * Return category item for given itemtype.
      *
-     * @param class-string<\CommonDBTM> $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      */
     public static function getCategoryItem(string $itemtype): ?CommonDBTM
     {

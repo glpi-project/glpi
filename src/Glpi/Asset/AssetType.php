@@ -34,6 +34,7 @@
 
 namespace Glpi\Asset;
 
+use RuntimeException;
 use CommonType;
 use Toolbox;
 
@@ -57,7 +58,7 @@ abstract class AssetType extends CommonType
     {
         $definition = AssetDefinitionManager::getInstance()->getDefinition(static::$definition_system_name);
         if (!($definition instanceof AssetDefinition)) {
-            throw new \RuntimeException('Asset definition is expected to be defined in concrete class.');
+            throw new RuntimeException('Asset definition is expected to be defined in concrete class.');
         }
 
         return $definition;
@@ -163,14 +164,14 @@ abstract class AssetType extends CommonType
             array_key_exists($definition_fkey, $input)
             && (int) $input[$definition_fkey] !== $definition_id
         ) {
-            throw new \RuntimeException('Definition does not match the current concrete class.');
+            throw new RuntimeException('Definition does not match the current concrete class.');
         }
 
         if (
             !$this->isNewItem()
             && (int) $this->fields[$definition_fkey] !== $definition_id
         ) {
-            throw new \RuntimeException('Definition cannot be changed.');
+            throw new RuntimeException('Definition cannot be changed.');
         }
 
         $input[$definition_fkey] = $definition_id;

@@ -44,8 +44,8 @@
 function update922to923()
 {
     /**
-     * @var \DBmysql $DB
-     * @var \Migration $migration
+     * @var DBmysql $DB
+     * @var Migration $migration
      */
     global $DB, $migration;
 

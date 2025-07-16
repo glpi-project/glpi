@@ -32,7 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Debug\Profile;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
@@ -350,7 +350,7 @@ class DBmysql
      */
     public function query($query)
     {
-        throw new \Exception('Executing direct queries is not allowed!');
+        throw new Exception('Executing direct queries is not allowed!');
     }
 
     /**
@@ -376,7 +376,7 @@ class DBmysql
 
         $res = $this->dbh->query($query);
         if (!$res) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf(
                     'MySQL query error: %s (%d) in SQL query "%s".',
                     $this->dbh->error,
@@ -415,7 +415,7 @@ class DBmysql
         }
 
         if (isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
-            \Glpi\Debug\Profile::getCurrent()->addSQLQueryData(
+            Profile::getCurrent()->addSQLQueryData(
                 $debug_data['query'],
                 $debug_data['time'],
                 $debug_data['rows'],
@@ -445,7 +445,7 @@ class DBmysql
      */
     public function queryOrDie($query, $message = '')
     {
-        throw new \Exception('Executing direct queries is not allowed!');
+        throw new Exception('Executing direct queries is not allowed!');
     }
 
     /**
@@ -476,7 +476,7 @@ class DBmysql
     {
         $res = $this->dbh->prepare($query);
         if (!$res) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf(
                     'MySQL prepare error: %s (%d) in SQL query "%s".',
                     $this->dbh->error,
@@ -1217,7 +1217,7 @@ class DBmysql
         //handle aliases
         $names = preg_split('/\s+AS\s+/i', $name);
         if (count($names) > 2) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'Invalid field name ' . $name
             );
         }
@@ -1364,7 +1364,7 @@ class DBmysql
             $known_clauses = ['WHERE', 'ORDER', 'LIMIT', 'START'];
             foreach (array_keys($clauses) as $key) {
                 if (!in_array($key, $known_clauses)) {
-                    throw new \RuntimeException(
+                    throw new RuntimeException(
                         str_replace(
                             '%clause',
                             $key,
@@ -1376,10 +1376,10 @@ class DBmysql
         }
 
         if (!count($clauses['WHERE'])) {
-            throw new \RuntimeException('Cannot run an UPDATE query without WHERE clause!');
+            throw new RuntimeException('Cannot run an UPDATE query without WHERE clause!');
         }
         if (!count($params)) {
-            throw new \RuntimeException('Cannot run an UPDATE query without parameters!');
+            throw new RuntimeException('Cannot run an UPDATE query without parameters!');
         }
 
         $query  = "UPDATE " . self::quoteName($table);
@@ -1509,7 +1509,7 @@ class DBmysql
     {
 
         if (!count($where)) {
-            throw new \RuntimeException('Cannot run an DELETE query without WHERE clause!');
+            throw new RuntimeException('Cannot run an DELETE query without WHERE clause!');
         }
 
         $query  = "DELETE " . self::quoteName($table) . " FROM " . self::quoteName($table);
@@ -1660,7 +1660,7 @@ class DBmysql
             'FIELD',
         ];
         if (!in_array($type, $known_types)) {
-            throw new \InvalidArgumentException('Unknown type to drop: ' . $type);
+            throw new InvalidArgumentException('Unknown type to drop: ' . $type);
         }
 
         $name = $this::quoteName($name);
@@ -1845,7 +1845,7 @@ class DBmysql
 
         $list = []; //default $tz is empty
 
-        $from_php = \DateTimeZone::listIdentifiers();
+        $from_php = DateTimeZone::listIdentifiers();
         $now = new DateTime();
 
         $iterator = $this->request([
@@ -1855,7 +1855,7 @@ class DBmysql
         ]);
 
         foreach ($iterator as $from_mysql) {
-            $now->setTimezone(new \DateTimeZone($from_mysql['Name']));
+            $now->setTimezone(new DateTimeZone($from_mysql['Name']));
             $list[$from_mysql['Name']] = $from_mysql['Name'] . $now->format(" (T P)");
         }
 
@@ -2044,7 +2044,7 @@ class DBmysql
     public function executeStatement(mysqli_stmt $stmt): void
     {
         if (!$stmt->execute()) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf(
                     'MySQL statement error: %s (%d) in SQL query "%s".',
                     $stmt->error,

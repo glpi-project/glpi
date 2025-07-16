@@ -35,11 +35,13 @@
 
 namespace Glpi\Inventory\MainAsset;
 
+use Glpi\Asset\Asset;
+
 class GenericNetworkAsset extends NetworkEquipment
 {
     protected function getModelsFieldName(): string
     {
-        /** @var \Glpi\Asset\Asset $item */
+        /** @var Asset $item */
         $item = $this->item;
         $model_classname = $item->getDefinition()->getAssetModelClassName();
 
@@ -48,7 +50,7 @@ class GenericNetworkAsset extends NetworkEquipment
 
     protected function getTypesFieldName(): string
     {
-        /** @var \Glpi\Asset\Asset $item */
+        /** @var Asset $item */
         $item = $this->item;
         $type_classname = $item->getDefinition()->getAssetTypeClassName();
 

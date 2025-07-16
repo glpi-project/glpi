@@ -35,6 +35,7 @@
 
 namespace Glpi\Tools\Command;
 
+use Twig\Error\Error;
 use FilesystemIterator;
 use Glpi\Application\View\TemplateRenderer;
 use RecursiveDirectoryIterator;
@@ -85,7 +86,7 @@ class CheckTwigTemplatesSyntaxCommand extends Command
             try {
                 $token_stream = $environment->tokenize($source);
                 $environment->parse($token_stream);
-            } catch (\Twig\Error\Error $e) {
+            } catch (Error $e) {
                 $error_messages[] = sprintf(
                     '"%s" in template "%s" at line %s',
                     $e->getRawMessage(),

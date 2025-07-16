@@ -332,7 +332,7 @@ class Fieldblacklist extends CommonDropdown
      **/
     public static function dropdownField($itemtype, $options = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $p['name']    = 'field';
@@ -407,7 +407,7 @@ class Fieldblacklist extends CommonDropdown
      **/
     public static function isFieldBlacklisted($itemtype, $entities_id, $field, $value)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([

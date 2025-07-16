@@ -37,12 +37,13 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Dashboard\Dashboard;
+use Glpi\Dashboard\Grid;
 
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
 Session::checkCentralAccess();
-$default = Glpi\Dashboard\Grid::getDefaultDashboardForMenu('assets');
+$default = Grid::getDefaultDashboardForMenu('assets');
 
 // Redirect to "/front/computer.php" if no dashboard found
 if ($default == "") {
@@ -56,7 +57,7 @@ if (!$dashboard->canViewCurrent()) {
 
 Html::header(__('Assets Dashboard'), '', "assets", "dashboard");
 
-$grid = new Glpi\Dashboard\Grid($default);
+$grid = new Grid($default);
 $grid->showDefault();
 
 Html::footer();

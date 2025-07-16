@@ -35,6 +35,8 @@
 
 namespace Glpi\Inventory\Asset;
 
+use PCIVendor;
+use Item_DeviceControl;
 use Glpi\Inventory\Conf;
 
 class Controller extends Device
@@ -49,7 +51,7 @@ class Controller extends Device
             'type'          => 'interfacetypes_id',
             'model'         => 'devicecontrolmodels_id',
         ];
-        $pcivendor = new \PCIVendor();
+        $pcivendor = new PCIVendor();
 
         foreach ($this->data as $k => &$val) {
             if (property_exists($val, 'name')) {
@@ -99,6 +101,6 @@ class Controller extends Device
 
     public function getItemtype(): string
     {
-        return \Item_DeviceControl::class;
+        return Item_DeviceControl::class;
     }
 }

@@ -35,10 +35,9 @@
 use Glpi\DBAL\QueryExpression;
 
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-
 // Add user_dn_hash field
 $migration->addField('glpi_users', 'user_dn_hash', 'varchar(32)', [
     'after'  => 'user_dn',

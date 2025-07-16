@@ -43,8 +43,8 @@ use function Safe\preg_match;
 function update1009to10010()
 {
     /**
-     * @var \DBmysql $DB
-     * @var \Migration $migration
+     * @var DBmysql $DB
+     * @var Migration $migration
      */
     global $DB, $migration;
 

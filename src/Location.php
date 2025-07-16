@@ -469,7 +469,7 @@ class Location extends CommonTreeDropdown
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -595,7 +595,7 @@ class Location extends CommonTreeDropdown
                 $this->showMap();
                 break;
             default:
-                throw new \RuntimeException("Unknown {$field['type']}");
+                throw new RuntimeException("Unknown {$field['type']}");
         }
     }
 

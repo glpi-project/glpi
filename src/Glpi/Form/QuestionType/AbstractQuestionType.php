@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\QuestionType;
 
+use InvalidArgumentException;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
@@ -101,7 +102,7 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     {
         // By default only return the string answer
         if (!is_string($answer) && !is_numeric($answer)) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Raw answer must be a string or a method must be implemented to format the answer'
             );
         }

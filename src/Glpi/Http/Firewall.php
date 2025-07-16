@@ -34,6 +34,7 @@
 
 namespace Glpi\Http;
 
+use LogicException;
 use Config;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Session;
@@ -160,7 +161,7 @@ final class Firewall
                 // nothing to do
                 break;
             default:
-                throw new \LogicException(sprintf('Invalid firewall strategy `%s`.', $strategy));
+                throw new LogicException(sprintf('Invalid firewall strategy `%s`.', $strategy));
         }
     }
 

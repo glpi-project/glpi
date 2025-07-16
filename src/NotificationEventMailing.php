@@ -130,7 +130,7 @@ class NotificationEventMailing extends NotificationEventAbstract
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -421,7 +421,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                 if (!empty($current->fields['messageid'])) {
                     $mail->getHeaders()->addHeader('Message-Id', $current->fields['messageid']);
                 }
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 self::handleFailedSend($current, $e->getMessage());
             }
 

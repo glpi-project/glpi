@@ -40,7 +40,7 @@ use Glpi\FuzzyMatcher\PartialMatchStrategy;
 use KnowbaseItem;
 use Override;
 
-/** @implements LeafProviderInterface<\KnowbaseItem> */
+/** @implements LeafProviderInterface<KnowbaseItem> */
 final class KnowbaseItemProvider implements LeafProviderInterface
 {
     private FuzzyMatcher $matcher;

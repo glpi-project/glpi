@@ -34,6 +34,8 @@
 
 namespace Glpi\Kernel\Listener\RequestListener;
 
+use Exception;
+use Plugin;
 use CommonDevice;
 use CommonDeviceModel;
 use CommonDeviceType;
@@ -85,7 +87,7 @@ final readonly class LegacyItemtypeRouteListener implements EventSubscriberInter
             $this->url_matcher->match($request->getPathInfo());
             // The URL matches an existing route, let the symfony routing forward to the expected controller.
             return;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // The URL does not match any route, try to forward it to a generic controller.
         }
 
@@ -368,7 +370,7 @@ final readonly class LegacyItemtypeRouteListener implements EventSubscriberInter
 
     private function isPluginActive(string $plugin_name): bool
     {
-        $plugin = new \Plugin();
+        $plugin = new Plugin();
 
         return $plugin->isInstalled($plugin_name) && $plugin->isActivated($plugin_name);
     }

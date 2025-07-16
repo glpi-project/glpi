@@ -34,6 +34,8 @@
 
 namespace Glpi\Helpdesk\Tile;
 
+use Psr\Log\LoggerInterface;
+use DBmysql;
 use CommonDBTM;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
@@ -121,7 +123,7 @@ final class TilesManager
             } catch (InvalidTileException $e) {
                 // Should not happen unless the database is manually edited
                 // Log the error but do not block the exectuion.
-                /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+                /** @var LoggerInterface $PHPLOGGER */
                 global $PHPLOGGER;
                 $PHPLOGGER->error("Unable to load linked form", ['exception' => $e]);
                 continue;
@@ -268,7 +270,7 @@ final class TilesManager
     private function getMaxUsedRankForItem(
         CommonDBTM&LinkableToTilesInterface $item
     ): int {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $rank = $DB->request([

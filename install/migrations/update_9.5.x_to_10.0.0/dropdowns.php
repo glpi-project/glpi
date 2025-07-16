@@ -31,11 +31,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \Migration $migration
+ * @var Migration $migration
  */
-
 $dc_model_dropdowns = [
     'EnclosureModel', 'PeripheralModel', 'PDUModel', 'NetworkEquipmentModel', 'MonitorModel', 'ComputerModel',
     'PassiveDCEquipmentModel',

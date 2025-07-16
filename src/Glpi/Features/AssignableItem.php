@@ -35,6 +35,7 @@
 
 namespace Glpi\Features;
 
+use DBmysql;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Group_Item;
@@ -212,7 +213,7 @@ trait AssignableItem
      */
     private function updateGroupFields()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // Find existing links
@@ -294,7 +295,7 @@ trait AssignableItem
 
     private function loadGroupFields()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // Find existing links

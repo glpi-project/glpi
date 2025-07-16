@@ -180,7 +180,7 @@ class Appliance_Item_Relation extends CommonDBRelation
      */
     public static function getForApplianceItem(int $appliances_items_id = 0)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

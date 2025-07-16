@@ -32,7 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Dashboard\Grid;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Dashboard\Dashboard;
 use Glpi\Event;
@@ -74,7 +74,7 @@ class Central extends CommonGLPI
                 4 => self::createTabEntry(_n('RSS feed', 'RSS feeds', Session::getPluralNumber()), 0, null, RSSFeed::getIcon()),
             ];
 
-            $grid = new Glpi\Dashboard\Grid('central');
+            $grid = new Grid('central');
             if ($grid::canViewOneDashboard()) {
                 array_unshift($tabs, self::createTabEntry(__('Dashboard'), 0, null, Dashboard::getIcon()));
             }
@@ -124,8 +124,8 @@ class Central extends CommonGLPI
             self::showMessages();
         }
 
-        $default   = Glpi\Dashboard\Grid::getDefaultDashboardForMenu('central');
-        $dashboard = new Glpi\Dashboard\Grid($default);
+        $default   = Grid::getDefaultDashboardForMenu('central');
+        $dashboard = new Grid($default);
         $dashboard->show();
     }
 
@@ -319,7 +319,7 @@ class Central extends CommonGLPI
                 'itemtype'  => Project::class,
                 'widget'    => 'central_list',
                 'params'    => $card_params + [
-                    'itemtype'      => \User::getType(),
+                    'itemtype'      => User::getType(),
                     '_idor_token'  => $idor,
                 ],
             ];
@@ -330,7 +330,7 @@ class Central extends CommonGLPI
                 'itemtype'  => ProjectTask::class,
                 'widget'    => 'central_list',
                 'params'    => $card_params + [
-                    'itemtype'      => \User::getType(),
+                    'itemtype'      => User::getType(),
                     '_idor_token'  => $idor,
                 ],
             ];
@@ -477,7 +477,7 @@ class Central extends CommonGLPI
                 'itemtype'  => Project::class,
                 'widget'    => 'central_list',
                 'params'    => [
-                    'itemtype'    => \Group::getType(),
+                    'itemtype'    => Group::getType(),
                     '_idor_token' => $idor,
                 ],
             ];
@@ -488,7 +488,7 @@ class Central extends CommonGLPI
                 'itemtype'  => ProjectTask::class,
                 'widget'    => 'central_list',
                 'params'    => [
-                    'itemtype'    => \Group::getType(),
+                    'itemtype'    => Group::getType(),
                     '_idor_token' => $idor,
                 ],
             ];
@@ -502,7 +502,7 @@ class Central extends CommonGLPI
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -566,9 +566,9 @@ class Central extends CommonGLPI
              * Check if there are pending reasons items and the notification is not active
              * If so, display a warning message
              */
-            $notification = new \Notification();
+            $notification = new Notification();
             if (
-                \Config::getConfigurationValue('core', 'use_notifications')
+                Config::getConfigurationValue('core', 'use_notifications')
                 && countElementsInTable('glpi_pendingreasons_items') > 0
                 && !count($notification->find([
                     'itemtype' => 'Ticket',

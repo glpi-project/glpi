@@ -32,7 +32,10 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Features\DCBreadcrumb;
+use Glpi\Features\Clonable;
+use Glpi\Features\Inventoriable;
+use Glpi\Features\AssignableItem;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 
@@ -41,11 +44,11 @@ use Glpi\Asset\Asset_PeripheralAsset;
  **/
 class Monitor extends CommonDBTM
 {
-    use Glpi\Features\DCBreadcrumb;
-    use Glpi\Features\Clonable;
-    use Glpi\Features\Inventoriable;
+    use DCBreadcrumb;
+    use Clonable;
+    use Inventoriable;
     use Glpi\Features\State;
-    use Glpi\Features\AssignableItem {
+    use AssignableItem {
         prepareInputForAdd as prepareInputForAddAssignableItem;
     }
 
@@ -185,7 +188,7 @@ class Monitor extends CommonDBTM
      **/
     public function getLinkedItems()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Kernel\Kernel;
+
 if (PHP_SAPI != 'cli') {
     echo "This script must be run from command line";
     exit();
@@ -40,7 +42,7 @@ if (PHP_SAPI != 'cli') {
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-$kernel = new \Glpi\Kernel\Kernel();
+$kernel = new Kernel();
 $kernel->boot();
 
 $printers_id = false;

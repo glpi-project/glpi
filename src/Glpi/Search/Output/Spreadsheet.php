@@ -35,6 +35,8 @@
 
 namespace Glpi\Search\Output;
 
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use Dropdown;
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\DataExport;
 use PhpOffice\PhpSpreadsheet\Writer\BaseWriter;
@@ -197,7 +199,7 @@ abstract class Spreadsheet extends ExportSearchOutput
 
             if ($line_num % 2 != 0) {
                 $worksheet->getStyle('A' . $line_num . ':' . $worksheet->getHighestColumn() . $line_num)->getFill()
-                    ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                    ->setFillType(Fill::FILL_SOLID)
                     ->getStartColor()->setARGB('FFDDDDDD');
             }
         }
@@ -297,7 +299,7 @@ abstract class Spreadsheet extends ExportSearchOutput
                                     );
                                 }
 
-                                $gdname = \Dropdown::getDropdownName(
+                                $gdname = Dropdown::getDropdownName(
                                     $searchopt[$criteria['field']]["table"],
                                     $criteria['value']
                                 );
@@ -418,7 +420,7 @@ abstract class Spreadsheet extends ExportSearchOutput
                         )
                     );
 
-                    $gdname2 = \Dropdown::getDropdownName(
+                    $gdname2 = Dropdown::getDropdownName(
                         $searchopt[$metacriteria['field']]["table"],
                         $metacriteria['value']
                     );

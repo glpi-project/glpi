@@ -120,7 +120,7 @@ class KnowbaseItem_Comment extends CommonDBTM
      */
     public static function getCommentsForKbItem($kbitem_id, $lang, $parent = null, &$user_data_cache = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $where = [

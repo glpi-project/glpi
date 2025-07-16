@@ -60,7 +60,7 @@ if (isset($_POST["update"])) {
                 $auth_url = $provider->getAuthorizationUrl();
                 $_SESSION['smtp_oauth2_state'] = $provider->getState();
                 return new RedirectResponse($auth_url);
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 ErrorHandler::logCaughtException($e);
                 Session::addMessageAfterRedirect(
                     htmlescape(sprintf(_x('oauth', 'Authorization failed with error: %s'), $e->getMessage())),

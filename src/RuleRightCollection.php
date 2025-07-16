@@ -64,7 +64,7 @@ class RuleRightCollection extends RuleCollection
 
     public function getFieldsToLookFor()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $params = [];

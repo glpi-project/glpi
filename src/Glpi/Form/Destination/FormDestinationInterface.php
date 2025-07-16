@@ -34,6 +34,8 @@
 
 namespace Glpi\Form\Destination;
 
+use CommonDBTM;
+use Exception;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
@@ -48,9 +50,9 @@ interface FormDestinationInterface
      * @param AnswersSet $answers_set
      * @param array      $config
      *
-     * @return \CommonDBTM[]
+     * @return CommonDBTM[]
      *
-     * @throws \Exception Must be thrown if the item can't be created
+     * @throws Exception Must be thrown if the item can't be created
      */
     public function createDestinationItems(
         Form $form,

@@ -35,6 +35,8 @@
 
 namespace Glpi\Inventory\Asset;
 
+use CartridgeItem;
+use DBmysql;
 use Glpi\Inventory\Conf;
 use Printer_CartridgeInfo;
 
@@ -208,7 +210,7 @@ class Cartridge extends InventoryAsset
      */
     protected function getExisting(): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $db_existing = [];
@@ -275,6 +277,6 @@ class Cartridge extends InventoryAsset
 
     public function getItemtype(): string
     {
-        return \CartridgeItem::class;
+        return CartridgeItem::class;
     }
 }

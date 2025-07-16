@@ -79,7 +79,7 @@ class Item_Plug extends CommonDBRelation
      */
     public static function showItems(CommonDBTM $item): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $item->getID();

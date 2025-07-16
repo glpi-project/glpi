@@ -32,7 +32,13 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Debug\Profile;
+use Glpi\Dashboard\Grid;
+use Glpi\System\Log\LogViewer;
+use Glpi\Inventory\Inventory;
+use Glpi\Form\Form;
+use Glpi\Debug\Profiler;
+use Psr\SimpleCache\CacheInterface;
 use donatj\UserAgent\UserAgentParser;
 use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
@@ -149,7 +155,7 @@ class Html
 
         try {
             $date = new DateTime($time);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             ErrorHandler::logCaughtException($e);
             ErrorHandler::displayCaughtExceptionMessage($e);
             Session::addMessageAfterRedirect(
@@ -1225,7 +1231,7 @@ TWIG,
         $tpl_vars['js_modules'][] = ['path' => 'js/modules/Search/Table.js'];
 
         if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
-            $tpl_vars['glpi_request_id'] = \Glpi\Debug\Profile::getCurrent()->getID();
+            $tpl_vars['glpi_request_id'] = Profile::getCurrent()->getID();
         }
 
         if ($display) {
@@ -1249,8 +1255,8 @@ TWIG,
         global $CFG_GLPI;
 
         $can_read_dashboard      = Session::haveRight('dashboard', READ);
-        $default_asset_dashboard = defined('TU_USER') ? "" : Glpi\Dashboard\Grid::getDefaultDashboardForMenu('assets');
-        $default_asset_helpdesk  = defined('TU_USER') ? "" : Glpi\Dashboard\Grid::getDefaultDashboardForMenu('helpdesk');
+        $default_asset_dashboard = defined('TU_USER') ? "" : Grid::getDefaultDashboardForMenu('assets');
+        $default_asset_helpdesk  = defined('TU_USER') ? "" : Grid::getDefaultDashboardForMenu('helpdesk');
 
         $menu = [
             'assets' => [
@@ -1316,8 +1322,8 @@ TWIG,
                 'title' => __('Administration'),
                 'types' => [
                     'User', 'Group', 'Entity', 'Rule',
-                    'Profile', 'QueuedNotification', \Glpi\System\Log\LogViewer::class,
-                    \Glpi\Inventory\Inventory::class, \Glpi\Form\Form::class,
+                    'Profile', 'QueuedNotification', LogViewer::class,
+                    Inventory::class, Form::class,
                 ],
                 'icon'  => 'ti ti-shield-check',
             ],
@@ -1608,7 +1614,7 @@ TWIG,
         /**
          * @var array $CFG_GLPI
          * @var bool $HEADER_LOADED
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $HEADER_LOADED, $DB;
 
@@ -1625,9 +1631,9 @@ TWIG,
         $sector = strtolower($sector);
         $item   = strtolower($item);
 
-        \Glpi\Debug\Profiler::getInstance()->start('Html::includeHeader');
+        Profiler::getInstance()->start('Html::includeHeader');
         self::includeHeader($title, $sector, $item, $option, $add_id);
-        \Glpi\Debug\Profiler::getInstance()->stop('Html::includeHeader');
+        Profiler::getInstance()->stop('Html::includeHeader');
 
         $menu = self::generateMenuSession();
         $menu = Plugin::doHookFunction(Hooks::REDEFINE_MENUS, $menu);
@@ -1732,12 +1738,12 @@ TWIG,
         $tpl_vars['debug_info'] = null;
 
         self::displayMessageAfterRedirect();
-        \Glpi\Debug\Profiler::getInstance()->stopAll();
+        Profiler::getInstance()->stopAll();
         if (
             $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE
             && !str_starts_with(Request::createFromGlobals()->getPathInfo(), '/install/')
         ) {
-            $tpl_vars['debug_info'] = \Glpi\Debug\Profile::getCurrent()->getDebugInfo();
+            $tpl_vars['debug_info'] = Profile::getCurrent()->getDebugInfo();
         }
 
         TemplateRenderer::getInstance()->display('layout/parts/page_footer.html.twig', $tpl_vars);
@@ -3485,7 +3491,7 @@ JS;
     ) {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -6259,7 +6265,7 @@ JS);
                    . $hexcolor[2] . $hexcolor[2];
         }
         if (strlen($hexcolor) != 6) {
-            throw new \Exception('Invalid HEX color.');
+            throw new Exception('Invalid HEX color.');
         }
 
         $r = hexdec(substr($hexcolor, 0, 2));
@@ -6303,12 +6309,12 @@ JS);
     {
         /**
          * @var array $CFG_GLPI
-         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+         * @var CacheInterface $GLPI_CACHE
          */
         global $CFG_GLPI, $GLPI_CACHE;
 
         if (empty($args['file'])) {
-            throw new \InvalidArgumentException('"file" argument is required.');
+            throw new InvalidArgumentException('"file" argument is required.');
         }
 
         $ckey = 'css_';
@@ -6422,7 +6428,7 @@ JS);
                 $GLPI_CACHE->set($fckey, $file_hash);
             }
             Toolbox::logDebug(sprintf('Compiling the file `%s` took %s seconds.', $file, round(microtime(true) - $start, 2)));
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             ErrorHandler::logCaughtException($e);
             if (isset($args['debug'])) {
                 $msg = 'An error occurred during SCSS compilation: ' . $e->getMessage();
@@ -6441,7 +6447,7 @@ JS);
 CSS;
             }
 
-            /** @var \Glpi\Console\Application $application */
+            /** @var Application $application */
             global $application;
             if ($application instanceof Application) {
                 throw $e;

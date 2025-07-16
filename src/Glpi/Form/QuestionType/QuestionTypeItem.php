@@ -351,7 +351,7 @@ class QuestionTypeItem extends AbstractQuestionType implements FormQuestionDataC
         $default_value_data = $default_value_config->jsonSerialize();
 
         // Load linked item
-        /** @var class-string<\CommonDBTM> $itemtype */
+        /** @var class-string<CommonDBTM> $itemtype */
         $itemtype = $extra_data_config->getItemtype();
         $item = $itemtype::getById(
             $default_value_config->getItemsId()

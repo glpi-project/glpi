@@ -283,7 +283,7 @@ class Reservation extends CommonDBChild
      */
     public function getUniqueGroupFor($reservationitems_id): int
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         do {
@@ -310,7 +310,7 @@ class Reservation extends CommonDBChild
      **/
     public function is_reserved()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (
@@ -401,7 +401,7 @@ class Reservation extends CommonDBChild
 
     public function post_purgeItem()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (isset($this->input['_delete_group']) && $this->input['_delete_group']) {
@@ -500,7 +500,7 @@ JAVASCRIPT;
     public static function getEvents(array $params): array
     {
         /**
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          * @var array $CFG_GLPI
          */
         global $DB, $CFG_GLPI;
@@ -605,7 +605,7 @@ JAVASCRIPT;
 
     public static function getResources()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $res_i_table = ReservationItem::getTable();
@@ -951,7 +951,7 @@ JAVASCRIPT;
      */
     public static function getForUser(int $users_id): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $now = $_SESSION["glpi_currenttime"];

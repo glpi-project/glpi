@@ -149,6 +149,6 @@ final class ResourcesChecker
         // The file is special and will be executed before the autoload script
         // is loaded, thus we must require the needed file manually.
         require_once($this->root_dir . '/src/Glpi/Application/Environment.php');
-        return \Glpi\Application\Environment::get()->shouldExpectResourcesToChange($this->root_dir);
+        return Environment::get()->shouldExpectResourcesToChange($this->root_dir);
     }
 }

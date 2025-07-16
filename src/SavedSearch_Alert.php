@@ -128,7 +128,7 @@ class SavedSearch_Alert extends CommonDBChild
             if ($data = $search->execute()) {
                 $count = $data['data']['totalcount'];
             }
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             ErrorHandler::logCaughtException($e);
             ErrorHandler::displayCaughtExceptionMessage($e);
         }
@@ -154,7 +154,7 @@ class SavedSearch_Alert extends CommonDBChild
      **/
     public static function showForSavedSearch(SavedSearch $search, $withtemplate = 0)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $search->getID();
@@ -310,7 +310,7 @@ class SavedSearch_Alert extends CommonDBChild
      */
     public static function cronSavedSearchesAlerts($task)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -411,7 +411,7 @@ class SavedSearch_Alert extends CommonDBChild
                             $tr_op = __('greater than');
                             break;
                         default:
-                            throw new \RuntimeException("Unknown operator '{$row['operator']}'");
+                            throw new RuntimeException("Unknown operator '{$row['operator']}'");
                     }
 
                     //TRANS : %1$s is the name of the saved search,
@@ -449,7 +449,7 @@ class SavedSearch_Alert extends CommonDBChild
                             'items_id' => $row['id'],
                         ]);
                     }
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     self::restoreContext($context);
                     ErrorHandler::logCaughtException($e);
                     ErrorHandler::displayCaughtExceptionMessage($e);

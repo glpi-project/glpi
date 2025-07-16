@@ -35,6 +35,9 @@
 
 namespace Glpi\Api\HL;
 
+use ReflectionClass;
+use Session;
+use Glpi\Api\HL\Doc\Parameter;
 use CommonGLPI;
 use Glpi\Api\HL\Doc\Schema;
 use Glpi\Api\HL\Doc\SchemaReference;
@@ -148,7 +151,7 @@ EOT;
             $controllers = Router::getInstance()->getControllers();
             foreach ($controllers as $controller) {
                 $known_schemas = $controller::getKnownSchemas($api_version);
-                $short_name = (new \ReflectionClass($controller))->getShortName();
+                $short_name = (new ReflectionClass($controller))->getShortName();
                 $controller_name = str_replace('Controller', '', $short_name);
                 foreach ($known_schemas as $schema_name => $known_schema) {
                     // Ignore schemas starting with an underscore. They are only used internally.
@@ -160,7 +163,7 @@ EOT;
                         // For now, set the new calculated name to the short name of the controller + the schema name
                         $calculated_name = $controller_name . ' - ' . $schema_name;
                         // Change the existing schema name to its own calculated name
-                        $other_short_name = (new \ReflectionClass($schemas[$schema_name]['x-controller']))->getShortName();
+                        $other_short_name = (new ReflectionClass($schemas[$schema_name]['x-controller']))->getShortName();
                         $other_calculated_name = str_replace('Controller', '', $other_short_name) . ' - ' . $schema_name;
                         $schemas[$other_calculated_name] = $schemas[$schema_name];
                         unset($schemas[$schema_name]);
@@ -262,7 +265,7 @@ EOT;
         $schema['paths'] = $this->expandGenericPaths($paths);
 
         // Clean vendor extensions
-        if ($_SESSION['glpi_use_mode'] !== \Session::DEBUG_MODE) {
+        if ($_SESSION['glpi_use_mode'] !== Session::DEBUG_MODE) {
             $schema = $this->cleanVendorExtensions($schema);
         }
 
@@ -474,7 +477,7 @@ EOT;
      * @return array
      * @phpstan-return SchemaArray
      */
-    private function getRouteParamSchema(Doc\Parameter $route_param): array
+    private function getRouteParamSchema(Parameter $route_param): array
     {
         return $route_param->getSchema()->toArray();
     }
@@ -490,7 +493,7 @@ EOT;
         if ($route_doc === null) {
             return null;
         }
-        $request_params = array_filter($route_doc->getParameters(), static fn(Doc\Parameter $param) => $param->getLocation() === Doc\Parameter::LOCATION_BODY);
+        $request_params = array_filter($route_doc->getParameters(), static fn(Parameter $param) => $param->getLocation() === Parameter::LOCATION_BODY);
         if (count($request_params) === 0) {
             return null;
         }
@@ -506,7 +509,7 @@ EOT;
         ];
 
         // If there is a parameter with the location of body and name of "_", it should be an object that represents the entire request body (or at least the base schema of it)
-        $request_body_param = array_filter($request_params, static fn(Doc\Parameter $param) => $param->getName() === '_');
+        $request_body_param = array_filter($request_params, static fn(Parameter $param) => $param->getName() === '_');
         if (count($request_body_param) > 0) {
             $request_body_param = array_values($request_body_param)[0];
             if ($request_body_param->getSchema() instanceof SchemaReference) {
@@ -540,7 +543,7 @@ EOT;
      * @return array
      * @phpstan-return PathParameterSchema
      */
-    private function getPathParameterSchema(Doc\Parameter $route_param): array
+    private function getPathParameterSchema(Parameter $route_param): array
     {
         $schema = $this->getRouteParamSchema($route_param);
         return [
@@ -706,8 +709,8 @@ EOT;
                 if (count($route_params) > 0) {
                     foreach ($route_params as $route_param) {
                         $location = $route_param->getLocation();
-                        if ($location !== Doc\Parameter::LOCATION_BODY) {
-                            if ($location !== Doc\Parameter::LOCATION_PATH || (array_key_exists($route_param->getName(), $requirements) && str_contains($route_path->getRoutePath(), '{' . $route_param->getName() . '}'))) {
+                        if ($location !== Parameter::LOCATION_BODY) {
+                            if ($location !== Parameter::LOCATION_PATH || (array_key_exists($route_param->getName(), $requirements) && str_contains($route_path->getRoutePath(), '{' . $route_param->getName() . '}'))) {
                                 $path_schema['parameters'][$route_param->getName()] = $this->getPathParameterSchema($route_param);
                             }
                         }
@@ -751,7 +754,7 @@ EOT;
                         'name' => $existing['name'] ?? $param['name'],
                         'description' => $existing['description'] ?? '',
                         'in' => $in,
-                        'required' => $in === Doc\Parameter::LOCATION_PATH ? true : ($existing['required'] ?? $param['required']),
+                        'required' => $in === Parameter::LOCATION_PATH ? true : ($existing['required'] ?? $param['required']),
                     ];
                     /** @var SchemaArray $combined_schema */
                     $combined_schema = $param['schema'];

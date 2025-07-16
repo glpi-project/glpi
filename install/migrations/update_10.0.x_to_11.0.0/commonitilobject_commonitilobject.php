@@ -31,12 +31,10 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-
 $to_add_link = ['glpi_changes_problems', 'glpi_changes_tickets', 'glpi_problems_tickets'];
 
 foreach ($to_add_link as $table) {

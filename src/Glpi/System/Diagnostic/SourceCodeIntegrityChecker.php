@@ -35,6 +35,11 @@
 
 namespace Glpi\System\Diagnostic;
 
+use RuntimeException;
+use Throwable;
+use Toolbox;
+use Exception;
+use JsonException;
 use FilesystemIterator;
 use Glpi\Toolbox\VersionParser;
 use GuzzleHttp\Exception\GuzzleException;
@@ -100,7 +105,7 @@ class SourceCodeIntegrityChecker
      *
      * @return array{algorithm: string, files: array<string, string>}
      *
-     * @throws \JsonException
+     * @throws JsonException
      */
     private function getBaselineManifest(): array
     {
@@ -114,12 +119,12 @@ class SourceCodeIntegrityChecker
             $manifest = file_get_contents($manifest_path);
             $content = json_decode($manifest, associative: true, flags: JSON_THROW_ON_ERROR);
         } catch (FilesystemException $e) {
-            throw new \RuntimeException('Error while trying to read the source code file manifest.', $e->getCode(), $e);
-        } catch (\Throwable $e) {
-            throw new \RuntimeException('The source code file manifest is invalid.', $e->getCode(), previous: $e);
+            throw new RuntimeException('Error while trying to read the source code file manifest.', $e->getCode(), $e);
+        } catch (Throwable $e) {
+            throw new RuntimeException('The source code file manifest is invalid.', $e->getCode(), previous: $e);
         }
         if (!isset($content['algorithm'], $content['files']) || !is_string($content['algorithm']) || !is_array($content['files'])) {
-            throw new \RuntimeException('The source code file manifest is invalid.');
+            throw new RuntimeException('The source code file manifest is invalid.');
         }
         return $content;
     }
@@ -140,7 +145,7 @@ class SourceCodeIntegrityChecker
             $path = $this->root_dir . '/' . $item;
 
             if (!\file_exists($path)) {
-                throw new \RuntimeException(sprintf('`%s` does not exist in the filesystem.', $path));
+                throw new RuntimeException(sprintf('`%s` does not exist in the filesystem.', $path));
             }
 
             if (is_dir($path)) {
@@ -217,7 +222,7 @@ class SourceCodeIntegrityChecker
         $version_to_get = VersionParser::getNormalizedVersion(GLPI_VERSION);
         $gh_releases_endpoint = 'https://api.github.com/repos/glpi-project/glpi/releases/tags/' . $version_to_get;
 
-        $client = \Toolbox::getGuzzleClient([
+        $client = Toolbox::getGuzzleClient([
             'connect_timeout' => 10, // 10 seconds timeout
         ]);
 
@@ -285,7 +290,7 @@ class SourceCodeIntegrityChecker
             } else {
                 try {
                     $original_content = file_get_contents('phar://' . $release_path . '/glpi/' . $file);
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     $errors[] = sprintf('Failed to get original contents of file `%s`: %s', $file, $e->getMessage());
                     continue;
                 }
@@ -297,7 +302,7 @@ class SourceCodeIntegrityChecker
             } else {
                 try {
                     $current_content = file_get_contents($this->root_dir . '/' . $file);
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     $errors[] = sprintf('Failed to get current contents of file `%s`: %s', $file, $e->getMessage());
                     continue;
                 }
@@ -320,7 +325,7 @@ class SourceCodeIntegrityChecker
                     $diff .= "$extra_header\n";
                 }
                 $diff .= "$file_diff\n";
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $errors[] = $e->getMessage();
             }
         }

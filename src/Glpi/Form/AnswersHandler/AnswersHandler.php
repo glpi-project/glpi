@@ -35,6 +35,9 @@
 
 namespace Glpi\Form\AnswersHandler;
 
+use Throwable;
+use Exception;
+use DBmysql;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Form\Answer;
 use Glpi\Form\AnswersSet;
@@ -159,7 +162,7 @@ final class AnswersHandler
      *
      * @return AnswersSet The created AnswersSet object
      *
-     * @throws \Exception If the data can't be fully saved
+     * @throws Exception If the data can't be fully saved
      */
     public function saveAnswers(
         Form $form,
@@ -168,7 +171,7 @@ final class AnswersHandler
         array $files = [],
         DelegationData $delegation = new DelegationData(),
     ): AnswersSet {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // We do not want to commit the answers unless everything was processed
@@ -179,7 +182,7 @@ final class AnswersHandler
             $answers_set = $this->doSaveAnswers($form, $answers, $users_id, $delegation, $files);
             $DB->commit();
             return $answers_set;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $DB->rollback();
 
             // Propagate the exception
@@ -200,7 +203,7 @@ final class AnswersHandler
      *
      * @return AnswersSet The created AnswersSet object
      *
-     * @throws \Exception If the data can't be saved
+     * @throws Exception If the data can't be saved
      */
     protected function doSaveAnswers(
         Form $form,
@@ -239,7 +242,7 @@ final class AnswersHandler
      */
     protected function incrementFormUsageCount(Form $form): void
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // Note: Using direct DB update prevents race conditions
@@ -263,14 +266,14 @@ final class AnswersHandler
      *
      * @return AnswersSet The created AnswersSet object
      *
-     * @throws \Exception If the data can't be saved
+     * @throws Exception If the data can't be saved
      */
     protected function createAnswserSet(
         Form $form,
         array $answers,
         int $users_id
     ): AnswersSet {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // Find next answer index for this form
@@ -323,7 +326,7 @@ final class AnswersHandler
         // If we can't save the answers, throw an exception as it make no sense
         // to keep going
         if (!$id) {
-            throw new \Exception(
+            throw new Exception(
                 "Failed to save answers: " . json_encode($input)
             );
         }
@@ -337,7 +340,7 @@ final class AnswersHandler
      * @param Form       $form
      * @param AnswersSet $answers_set
      *
-     * @throws \Exception If the data can't be saved
+     * @throws Exception If the data can't be saved
      *
      * @return void
      */
@@ -380,7 +383,7 @@ final class AnswersHandler
                     'items_id'                       => $item->getID(),
                 ];
                 if (!$form_item->add($input)) {
-                    throw new \Exception(
+                    throw new Exception(
                         "Failed to create destination item: "
                         . json_encode($input)
                     );

@@ -31,11 +31,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \Migration $migration
+ * @var Migration $migration
  */
-
 $migration->addConfig([
     'default_central_tab'   => 0,
     'page_layout'           => 'vertical',

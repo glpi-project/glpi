@@ -35,13 +35,15 @@
 
 namespace Glpi\System;
 
+use IteratorAggregate;
+use ArrayIterator;
 use Glpi\System\Requirement\RequirementInterface;
 use Traversable;
 
 /**
  * @since 9.5.0
  */
-class RequirementsList implements \IteratorAggregate
+class RequirementsList implements IteratorAggregate
 {
     /**
      * Requirements.
@@ -65,7 +67,7 @@ class RequirementsList implements \IteratorAggregate
 
     public function getIterator(): Traversable
     {
-        return new \ArrayIterator($this->requirements);
+        return new ArrayIterator($this->requirements);
     }
 
     /**

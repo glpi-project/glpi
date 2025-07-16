@@ -34,6 +34,7 @@
 
 namespace Glpi\Kernel\Listener\RequestListener;
 
+use RuntimeException;
 use Glpi\Controller\AbstractController;
 use Glpi\DependencyInjection\PluginContainer;
 use Glpi\DependencyInjection\PublicService;
@@ -129,11 +130,11 @@ final readonly class PluginsRouterListener implements EventSubscriberInterface
         }
 
         if (!$class || !\is_string($class)) {
-            throw new \RuntimeException('Wrongly formed controller array');
+            throw new RuntimeException('Wrongly formed controller array');
         }
 
         if (!$this->plugin_container->has($class)) {
-            throw new \RuntimeException(\sprintf(
+            throw new RuntimeException(\sprintf(
                 'Expected controller class `%s` to be a public service, but did not find it in the service container.'
                     . ' You should either implement the `%s` interface, or extend the `%s` abstract class.',
                 $class,

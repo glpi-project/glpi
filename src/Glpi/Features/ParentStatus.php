@@ -35,6 +35,7 @@
 
 namespace Glpi\Features;
 
+use CommonITILTask;
 use CommonITILActor;
 use CommonITILObject;
 use PendingReason_Item;
@@ -145,7 +146,7 @@ trait ParentStatus
                     $needupdateparent = true;
                     // If begin date is defined, the status must be planned if it exists, rather than assigned.
                     if (
-                        ($this instanceof \CommonITILTask)
+                        ($this instanceof CommonITILTask)
                         && ($this->countPlannedTasks() > 0)
                         && $parentitem->isStatusExists(CommonITILObject::PLANNED)
                     ) {
@@ -180,7 +181,7 @@ trait ParentStatus
 
         if (!$is_set_pending) {
             if (
-                $this instanceof \CommonITILTask
+                $this instanceof CommonITILTask
                 && $this->countPlannedTasks() > 0
                 && $parentitem->isStatusExists(CommonITILObject::PLANNED)
                 && (
@@ -194,7 +195,7 @@ trait ParentStatus
             ) {
                 $input['_status'] = CommonITILObject::PLANNED;
             } elseif (
-                $this instanceof \CommonITILTask
+                $this instanceof CommonITILTask
                 && $parentitem->fields["status"] == CommonITILObject::PLANNED
             ) {
                 if ($this->countPlannedTasks() > 0) {

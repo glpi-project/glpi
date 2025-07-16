@@ -202,7 +202,7 @@ class FrontEndAssetsExtension extends AbstractExtension
      */
     public function customCss(): string
     {
-        /** @var \DBmysql|null $DB */
+        /** @var DBmysql|null $DB */
         global $DB;
 
         $css = '';

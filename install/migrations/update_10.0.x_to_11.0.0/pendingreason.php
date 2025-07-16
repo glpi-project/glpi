@@ -31,12 +31,10 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-
 $table = 'glpi_pendingreasons';
 // Add new "is_default" field on pendingreasons table
 if (!$DB->fieldExists($table, 'is_default')) {

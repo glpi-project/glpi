@@ -31,11 +31,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \Migration $migration
+ * @var Migration $migration
  */
-
 // Migrate user_deleted_ldap into 3 distinct fields
 $user_deleted_ldap = Config::getConfigurationValue('core', 'user_deleted_ldap');
 if ($user_deleted_ldap !== null) {

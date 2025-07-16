@@ -32,7 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Features\Clonable;
+use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Plugin\Hooks;
@@ -47,7 +48,7 @@ use function Safe\simplexml_load_file;
  **/
 class Rule extends CommonDBTM
 {
-    use Glpi\Features\Clonable;
+    use Clonable;
 
     public $dohistory             = true;
 
@@ -513,7 +514,7 @@ class Rule extends CommonDBTM
             }
         }
 
-        $asset_definitions = \Glpi\Asset\AssetDefinitionManager::getInstance()->getDefinitions(true);
+        $asset_definitions = AssetDefinitionManager::getInstance()->getDefinitions(true);
         foreach ($asset_definitions as $definition) {
             $model_dictionary_collection = $definition->getAssetModelDictionaryCollectionClassName();
             $model_dictionary = $model_dictionary_collection::getRuleClassName();
@@ -602,7 +603,7 @@ class Rule extends CommonDBTM
         } while ($parent !== CommonDBTM::class && $parent !== false && !class_exists($collection_class));
 
         if (!is_a($collection_class, RuleCollection::class, true)) {
-            throw new \LogicException(sprintf('Unable to find collection class for `%s`.', static::class));
+            throw new LogicException(sprintf('Unable to find collection class for `%s`.', static::class));
         }
 
         return new $collection_class();
@@ -2062,7 +2063,7 @@ JS
      **/
     public function getNextRanking(?string $sub_type = null)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -2915,7 +2916,7 @@ JS
      **/
     public function getRulesForCriteria($crit)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $rules = [];
@@ -3098,7 +3099,7 @@ JS
         $valfield,
         $fieldfield
     ) {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $fieldid = getForeignKeyFieldForTable($ruleitem->getTable());
@@ -3451,7 +3452,7 @@ JS
 
         $ranking_increment = 0;
         if ($reset === false) {
-            /** @var \DBmysql $DB */
+            /** @var DBmysql $DB */
             global $DB;
             $ranking_increment = $DB->request([
                 'SELECT' => ['MAX' => 'ranking AS rank'],

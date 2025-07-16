@@ -36,6 +36,11 @@
 
 namespace Glpi\Inventory\Asset;
 
+use RuntimeException;
+use stdClass;
+use Toolbox;
+use FQDNLabel;
+use DBmysql;
 use DBmysqlIterator;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\MainAsset\MainAsset;
@@ -140,7 +145,7 @@ trait InventoryNetworkPort
      */
     private function cleanUnmanageds()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $networkport = new NetworkPort();
@@ -193,7 +198,7 @@ trait InventoryNetworkPort
      */
     private function handleIpNetworks()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ipnetwork = new IPNetwork();
@@ -236,7 +241,7 @@ trait InventoryNetworkPort
             );
             if (false === $res) {
                 $msg = "Error binding params";
-                throw new \RuntimeException($msg);
+                throw new RuntimeException($msg);
             }
 
             $DB->executeStatement($stmt);
@@ -261,11 +266,11 @@ trait InventoryNetworkPort
     /**
      * Add a network port into database
      *
-     * @param \stdClass $port Port data
+     * @param stdClass $port Port data
      *
      * @return integer
      */
-    private function addNetworkPort(\stdClass $port)
+    private function addNetworkPort(stdClass $port)
     {
         $networkport = new NetworkPort();
 
@@ -349,7 +354,7 @@ trait InventoryNetworkPort
      */
     private function handleUpdates()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $db_ports = [];
@@ -472,8 +477,8 @@ trait InventoryNetworkPort
                         $netname_id = $row->id;
                     } else {
                         if (!empty($datadb['name'])) {
-                            $netname = \Toolbox::slugify($datadb['name']);
-                            if (!\FQDNLabel::checkFQDNLabel($netname)) {
+                            $netname = Toolbox::slugify($datadb['name']);
+                            if (!FQDNLabel::checkFQDNLabel($netname)) {
                                 $netname = null;
                             }
                         } else {
@@ -544,7 +549,7 @@ trait InventoryNetworkPort
         }
     }
 
-    protected function portUpdated(\stdClass $port, int $netports_id)
+    protected function portUpdated(stdClass $port, int $netports_id)
     {
         //does nothing
     }
@@ -553,7 +558,7 @@ trait InventoryNetworkPort
      * Handle network port instantiation
      *
      * @param string    $type     Instantiation class name
-     * @param \stdClass $data     Data
+     * @param stdClass $data Data
      * @param integer   $ports_id NetworkPort id
      * @param boolean   $load     Whether to load db results
      *
@@ -561,7 +566,7 @@ trait InventoryNetworkPort
      */
     private function handleInstantiation($type, $data, $ports_id, $load)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (!in_array($type, ['NetworkPortEthernet', 'NetworkPortFiberchannel'])) {
@@ -647,8 +652,8 @@ trait InventoryNetworkPort
             $netports_id = $this->addNetworkPort($port);
             if (count(($port->ipaddress ?? []))) {
                 if (property_exists($port, 'name')) {
-                    $netname = \Toolbox::slugify($port->name);
-                    if (!\FQDNLabel::checkFQDNLabel($netname)) {
+                    $netname = Toolbox::slugify($port->name);
+                    if (!FQDNLabel::checkFQDNLabel($netname)) {
                         $netname = null;
                     }
                 } else {
@@ -687,7 +692,7 @@ trait InventoryNetworkPort
         }
     }
 
-    protected function portCreated(\stdClass $port, int $netports_id)
+    protected function portCreated(stdClass $port, int $netports_id)
     {
         //does nothing
     }

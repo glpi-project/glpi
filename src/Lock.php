@@ -79,7 +79,7 @@ class Lock extends CommonGLPI
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -1369,7 +1369,7 @@ TWIG);
         CommonDBTM $baseitem,
         array $ids
     ) {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         switch ($ma->getAction()) {

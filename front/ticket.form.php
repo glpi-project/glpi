@@ -42,7 +42,7 @@ use function Safe\json_decode;
 
 /**
  * @var array $CFG_GLPI
- * @var \DBmysql $DB
+ * @var DBmysql $DB
  */
 global $CFG_GLPI, $DB;
 

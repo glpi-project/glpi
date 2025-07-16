@@ -34,6 +34,7 @@
 
 namespace Glpi\Asset\CustomFieldType;
 
+use InvalidArgumentException;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CustomFieldOption\BooleanOption;
 
@@ -70,7 +71,7 @@ TWIG, $twig_params);
         }
         $value = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
         if ($value === null) {
-            throw new \InvalidArgumentException('The value must be a boolean');
+            throw new InvalidArgumentException('The value must be a boolean');
         }
         return $value;
     }

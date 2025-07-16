@@ -31,11 +31,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \Migration $migration
+ * @var Migration $migration
  */
-
 $migration->addCrontask(
     'Agent',
     'Cleanoldagents',

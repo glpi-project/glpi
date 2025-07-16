@@ -213,7 +213,7 @@ class PlanningRecall extends CommonDBChild
      **/
     public static function managePlanningUpdates($itemtype, $items_id, $begin)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (isset($_SESSION['glpiplanningreminder_isavailable'])) {
@@ -360,7 +360,7 @@ TWIG, $p);
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -402,7 +402,7 @@ TWIG, $p);
                 //               -> ChangeTask ->  Change which have entity notion
                 //               -> ProblemTask -> Problem which have entity notion
                 $itemToNotify = $pr->getItem();
-                if ($itemToNotify instanceof \CommonITILTask) {
+                if ($itemToNotify instanceof CommonITILTask) {
                     /** @var CommonITILObject $linkedItem */
                     $linkedItem = $itemToNotify->getItem();
                     // No recall, if the parent item is in a closed status

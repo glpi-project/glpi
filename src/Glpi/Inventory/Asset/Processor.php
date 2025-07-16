@@ -35,6 +35,7 @@
 
 namespace Glpi\Inventory\Asset;
 
+use Item_DeviceProcessor;
 use Glpi\Inventory\Conf;
 
 class Processor extends Device
@@ -80,6 +81,6 @@ class Processor extends Device
 
     public function getItemtype(): string
     {
-        return \Item_DeviceProcessor::class;
+        return Item_DeviceProcessor::class;
     }
 }

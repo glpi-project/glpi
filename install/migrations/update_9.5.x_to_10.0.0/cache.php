@@ -31,12 +31,10 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-
 $had_custom_config = false;
 if (countElementsInTable('glpi_configs', ['name' => 'cache_db', 'context' => 'core'])) {
     $DB->delete('glpi_configs', ['name' => 'cache_db', 'context' => 'core']);

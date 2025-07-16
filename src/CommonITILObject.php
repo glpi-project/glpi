@@ -32,7 +32,11 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Features\Clonable;
+use Glpi\Features\Timeline;
+use Glpi\Features\Kanban;
+use Glpi\Features\Teamwork;
+use Safe\Exceptions\DatetimeException;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\ContentTemplates\Parameters\CommonITILObjectParameters;
 use Glpi\DBAL\QueryExpression;
@@ -63,10 +67,10 @@ use function Safe\strtotime;
  **/
 abstract class CommonITILObject extends CommonDBTM
 {
-    use \Glpi\Features\Clonable;
-    use \Glpi\Features\Timeline;
-    use \Glpi\Features\Kanban;
-    use \Glpi\Features\Teamwork;
+    use Clonable;
+    use Timeline;
+    use Kanban;
+    use Teamwork;
 
     /// Users by type
     protected $lazy_loaded_users = null;
@@ -138,7 +142,7 @@ abstract class CommonITILObject extends CommonDBTM
             return new $task_class();
         }
 
-        throw new \RuntimeException(sprintf(
+        throw new RuntimeException(sprintf(
             'Task class "%s" does not exist or is not a valid CommonITILTask.',
             $task_class
         ));
@@ -251,7 +255,7 @@ abstract class CommonITILObject extends CommonDBTM
                 return $this->lazy_loaded_suppliers;
 
             default:
-                throw new \RuntimeException(sprintf('Unknown property `%s`.', $property_name));
+                throw new RuntimeException(sprintf('Unknown property `%s`.', $property_name));
         }
     }
 
@@ -269,7 +273,7 @@ abstract class CommonITILObject extends CommonDBTM
                 return true;
 
             default:
-                throw new \RuntimeException(sprintf('Unknown property `%s`.', $property_name));
+                throw new RuntimeException(sprintf('Unknown property `%s`.', $property_name));
         }
     }
 
@@ -294,7 +298,7 @@ abstract class CommonITILObject extends CommonDBTM
                 break;
 
             default:
-                throw new \RuntimeException(sprintf('Unknown property `%s`.', $property_name));
+                throw new RuntimeException(sprintf('Unknown property `%s`.', $property_name));
         }
     }
 
@@ -1673,7 +1677,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getActiveOrSolvedLastDaysForItem($itemtype, $items_id, $days)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $result = [];
@@ -2358,7 +2362,7 @@ abstract class CommonITILObject extends CommonDBTM
 
     public function pre_updateInDB()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // get again object to reload actors
@@ -3163,7 +3167,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public function post_clone($source, $history)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $update = [];
         if (isset($source->fields['users_id_lastupdater'])) {
@@ -4569,7 +4573,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getSearchOptionsSolution()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $tab = [];
 
@@ -5031,7 +5035,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public static function generateSLAOLAComputation($type, $table = "TABLE")
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         switch ($type) {
@@ -5332,7 +5336,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function updateDateMod($ID, $no_stat_computation = false, $users_id_lastupdater = 0)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if ($this->getFromDB($ID)) {
@@ -5364,7 +5368,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function updateActionTime($ID)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $tot       = 0;
@@ -5493,7 +5497,7 @@ abstract class CommonITILObject extends CommonDBTM
             try {
                 return max(0, strtotime($this->fields['solvedate']) - strtotime($this->fields['date'])
                     - $this->fields["waiting_duration"]);
-            } catch (\Safe\Exceptions\DatetimeException $e) {
+            } catch (DatetimeException $e) {
                 return 0;
             }
         }
@@ -5535,7 +5539,7 @@ abstract class CommonITILObject extends CommonDBTM
             try {
                 return max(0, strtotime($this->fields['closedate']) - strtotime($this->fields['date'])
                     - $this->fields["waiting_duration"]);
-            } catch (\Safe\Exceptions\DatetimeException $e) {
+            } catch (DatetimeException $e) {
                 return 0;
             }
         }
@@ -5640,7 +5644,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getUsedAuthorBetween($date1 = '', $date2 = '')
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $linktable = $this->userlinkclass::getTable();
@@ -5720,7 +5724,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getUsedRecipientBetween($date1 = '', $date2 = '')
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ctable = $this->getTable();
@@ -5787,7 +5791,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getUsedGroupBetween($date1 = '', $date2 = '')
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $linktable = $this->grouplinkclass::getTable();
@@ -5860,7 +5864,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getUsedUserTitleOrTypeBetween($date1 = '', $date2 = '', $title = true)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $linktable = $this->userlinkclass::getTable();
@@ -5939,7 +5943,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getUsedPriorityBetween($date1 = '', $date2 = '')
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ctable = $this->getTable();
@@ -5984,7 +5988,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getUsedUrgencyBetween($date1 = '', $date2 = '')
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ctable = $this->getTable();
@@ -6030,7 +6034,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getUsedImpactBetween($date1 = '', $date2 = '')
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ctable = $this->getTable();
@@ -6076,7 +6080,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getUsedRequestTypeBetween($date1 = '', $date2 = '')
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ctable = $this->getTable();
@@ -6121,7 +6125,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getUsedSolutionTypeBetween($date1 = '', $date2 = '')
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ctable = $this->getTable();
@@ -6174,7 +6178,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getUsedTechBetween($date1 = '', $date2 = '')
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $linktable = $this->userlinkclass::getTable();
@@ -6248,7 +6252,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getUsedTechTaskBetween($date1 = '', $date2 = '')
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $linktable = getTableForItemType(static::getTaskClass());
@@ -6340,7 +6344,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getUsedSupplierBetween($date1 = '', $date2 = '')
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $linktable = $this->supplierlinkclass::getTable();
@@ -6409,7 +6413,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function getUsedAssignGroupBetween($date1 = '', $date2 = '')
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $linktable = $this->grouplinkclass::getTable();
@@ -6485,7 +6489,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public static function showShort($id, $options = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         //Toolbox::deprecated('Use CommonITILObject::getDatatableEntries() instead');
@@ -7946,7 +7950,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public function getITILActors()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $users_table = $this->getTable() . '_users';
@@ -8035,7 +8039,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function numberOfFollowups($with_private = true)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $RESTRICT = [];
@@ -8065,7 +8069,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function numberOfTasks($with_private = true)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $table = 'glpi_' . strtolower($this->getType()) . 'tasks';
@@ -8597,7 +8601,7 @@ abstract class CommonITILObject extends CommonDBTM
         } elseif (isset($this->fields['status'])) {
             $status = $this->fields['status'];
         } else {
-            throw new \LogicException("Can't get status value: no object loaded");
+            throw new LogicException("Can't get status value: no object loaded");
         }
 
         return $status == CommonITILObject::INCOMING;
@@ -8620,14 +8624,14 @@ abstract class CommonITILObject extends CommonDBTM
             case 'Ticket':
                 return 'glpi_items_tickets';
             default:
-                throw new \RuntimeException('Unknown ITIL type ' . static::getType());
+                throw new RuntimeException('Unknown ITIL type ' . static::getType());
         }
     }
 
 
     public function getLinkedItems(): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $assets = $DB->request([
@@ -8852,7 +8856,7 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         if ($success === false) {
-            throw new \RuntimeException('Unable to update the validation step threshold.');
+            throw new RuntimeException('Unable to update the validation step threshold.');
         }
     }
 
@@ -9424,7 +9428,7 @@ abstract class CommonITILObject extends CommonDBTM
             User::class => $this->userlinkclass,
             Group::class => $this->grouplinkclass,
             Supplier::class => $this->supplierlinkclass,
-            default => throw new \RuntimeException('Unexpected actor type.'),
+            default => throw new RuntimeException('Unexpected actor type.'),
         };
 
         $actor = getItemForItemtype($actor_class);
@@ -9632,7 +9636,7 @@ abstract class CommonITILObject extends CommonDBTM
 
     public static function getDataToDisplayOnKanban($ID, $criteria = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // List of items to return
@@ -9995,7 +9999,7 @@ abstract class CommonITILObject extends CommonDBTM
                 }
             }
             if (isset($card['_metadata']['content']) && is_string($card['_metadata']['content'])) {
-                $card['_metadata']['content'] = Glpi\RichText\RichText::getTextFromHtml(content: $card['_metadata']['content'], preserve_line_breaks: true);
+                $card['_metadata']['content'] = RichText::getTextFromHtml(content: $card['_metadata']['content'], preserve_line_breaks: true);
             } else {
                 $card['_metadata']['content'] = '';
             }
@@ -10024,7 +10028,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         $categories = [];
         if ($category_ids !== []) {
-            /** @var \DBmysql $DB */
+            /** @var DBmysql $DB */
             global $DB;
 
             $cat_table = ITILCategory::getTable();
@@ -10265,7 +10269,7 @@ abstract class CommonITILObject extends CommonDBTM
 
     public function getTeam(): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $team = [];
@@ -10325,7 +10329,7 @@ abstract class CommonITILObject extends CommonDBTM
 
     public function getTimelineStats(): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $stats = [
@@ -10391,7 +10395,7 @@ abstract class CommonITILObject extends CommonDBTM
 
 
     /**
-     * @return class-string<\ITIL_ValidationStep>|null
+     * @return class-string<ITIL_ValidationStep>|null
      */
     public static function getValidationStepClassName(): ?string
     {
@@ -10489,7 +10493,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     protected function fillInputForBusinessRules(array &$input)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $entities_id = $input['entities_id']
@@ -10585,7 +10589,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public static function cronCreateInquest($task)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $inquest_class = static::getType() . 'Satisfaction';
@@ -11000,7 +11004,7 @@ abstract class CommonITILObject extends CommonDBTM
         if (is_a($expected, RuleCommonITILObjectCollection::class, true)) {
             return new $expected($entity_id);
         }
-        throw new \RuntimeException(
+        throw new RuntimeException(
             sprintf(
                 'Collection class %s does not exists for rule type %s',
                 $expected,

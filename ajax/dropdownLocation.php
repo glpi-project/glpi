@@ -39,7 +39,7 @@ if (
     !isset($_REQUEST['itemtype'])
     && !is_subclass_of($_REQUEST['itemtype'], 'CommonDBTM')
 ) {
-    throw new \RuntimeException('Required argument missing or incorrect!');
+    throw new RuntimeException('Required argument missing or incorrect!');
 }
 
 $item = getItemForItemtype($_REQUEST['itemtype']);

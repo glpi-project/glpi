@@ -35,10 +35,9 @@
 use Glpi\DBAL\QueryExpression;
 
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 // `glpi_slas.calendars_id` will not exist if GLPI has been initialized on a 9.1.x version.

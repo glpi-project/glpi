@@ -34,6 +34,7 @@
 
 namespace Glpi\Console\User;
 
+use User;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -54,7 +55,7 @@ class CreateCommand extends AbstractUserCommand
     {
         $user_input = ['name' => $input->getArgument('username')];
 
-        $user = new \User();
+        $user = new User();
         if ($user->getFromDBbyName($user_input['name'])) {
             $output->writeln('<error>' . __('User already exists') . '</error>');
             return 1;

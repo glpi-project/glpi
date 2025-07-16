@@ -35,6 +35,7 @@
 
 namespace Glpi\Search\Output;
 
+use Toolbox;
 use Glpi\Toolbox\URL;
 
 /**
@@ -93,14 +94,14 @@ final class MapSearchOutput extends HTMLSearchOutput
                 'searchtype'   => 'equals',
                 'value'        => 'CURLOCATION',
             ];
-            $globallinkto = \Toolbox::append_params(
+            $globallinkto = Toolbox::append_params(
                 [
                     'criteria'     => $criteria,
                     'metacriteria' => $data['search']['metacriteria'],
                 ],
                 '&amp;'
             );
-            $sort_params = \Toolbox::append_params([
+            $sort_params = Toolbox::append_params([
                 'sort'   => $data['search']['sort'],
                 'order'  => $data['search']['order'],
             ], '&amp;');

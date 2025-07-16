@@ -265,7 +265,7 @@ final class Transfer extends CommonDBTM
             $this->cleanSoftwareVersions();
             $this->cleanSoftwares();
             $DB->commit();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $DB->rollBack();
             ErrorHandler::logCaughtException($e);
             ErrorHandler::displayCaughtExceptionMessage($e);

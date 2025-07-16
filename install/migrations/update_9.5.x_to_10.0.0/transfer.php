@@ -31,11 +31,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \Migration $migration
+ * @var Migration $migration
  */
-
 // Add certificate entry for transfers.
 $migration->addField('glpi_transfers', 'keep_certificate', "int NOT NULL DEFAULT '0'", [
     'update' => "'1'",

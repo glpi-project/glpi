@@ -32,7 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Features\Clonable;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
@@ -43,7 +44,7 @@ use Glpi\DBAL\QueryUnion;
  */
 class Budget extends CommonDropdown
 {
-    use Glpi\Features\Clonable;
+    use Clonable;
 
     // From CommonDBTM
     public $dohistory           = true;
@@ -284,7 +285,7 @@ class Budget extends CommonDropdown
      */
     private function getItemListCriteria(bool $entity_restrict = true): QueryUnion
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $budgets_id = $this->fields['id'];
@@ -370,7 +371,7 @@ class Budget extends CommonDropdown
                 $criteria['WHERE'][$item_table . '.is_template'] = 0;
             }
 
-            $queries[] = new \Glpi\DBAL\QuerySubQuery($criteria);
+            $queries[] = new QuerySubQuery($criteria);
         }
 
         foreach ($other_cost_tables as $itemtype => $cost_table) {
@@ -428,7 +429,7 @@ class Budget extends CommonDropdown
                 $criteria['WHERE'][$item_table . '.is_template'] = 0;
             }
 
-            $queries[] = new \Glpi\DBAL\QuerySubQuery($criteria);
+            $queries[] = new QuerySubQuery($criteria);
         }
 
         return new QueryUnion($queries);
@@ -441,7 +442,7 @@ class Budget extends CommonDropdown
      **/
     public function showItems(): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $budgets_id = $this->fields['id'];
@@ -542,7 +543,7 @@ class Budget extends CommonDropdown
      **/
     public function showValuesByEntity(): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $budgets_id = $this->fields['id'];

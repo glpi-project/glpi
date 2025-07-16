@@ -33,4 +33,4 @@
  * ---------------------------------------------------------------------
  */
 
-class HTMLTableCellFatherCoherentHeader extends \Exception {}
+class HTMLTableCellFatherCoherentHeader extends Exception {}

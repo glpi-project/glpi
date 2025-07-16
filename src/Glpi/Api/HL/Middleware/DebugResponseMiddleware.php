@@ -35,6 +35,7 @@
 
 namespace Glpi\Api\HL\Middleware;
 
+use Session;
 use Glpi\Http\JSONResponse;
 use GuzzleHttp\Psr7\Utils;
 use Safe\Exceptions\OutcontrolException;
@@ -54,8 +55,8 @@ class DebugResponseMiddleware extends AbstractMiddleware implements ResponseMidd
             $next($input);
             return;
         }
-        $use_mode = isset($_SESSION['glpi_use_mode']) ? (int) $_SESSION['glpi_use_mode'] : \Session::NORMAL_MODE;
-        if ($use_mode !== \Session::DEBUG_MODE) {
+        $use_mode = isset($_SESSION['glpi_use_mode']) ? (int) $_SESSION['glpi_use_mode'] : Session::NORMAL_MODE;
+        if ($use_mode !== Session::DEBUG_MODE) {
             $next($input);
             return;
         }

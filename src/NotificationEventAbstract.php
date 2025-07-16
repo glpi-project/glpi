@@ -49,7 +49,7 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
     ) {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
         if ($CFG_GLPI['notifications_' . $options['mode']]) {
@@ -97,7 +97,7 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                             // as we work on a copy of the item object, no reload is required after
                             if (
                                 isset($users_infos['additionnaloption']['timezone'])
-                                && $options['item'] instanceof \CommonDBTM // item may be a `CommonGLPI`
+                                && $options['item'] instanceof CommonDBTM // item may be a `CommonGLPI`
                             ) {
                                 /** @var CommonDBTM $item */
                                 $DB->setTimezone($users_infos['additionnaloption']['timezone']);

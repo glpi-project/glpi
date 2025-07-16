@@ -39,7 +39,7 @@ use Glpi\Exception\Http\BadRequestHttpException;
 
 Session::checkCentralAccess();
 
-$item_plug = new \Item_Plug();
+$item_plug = new Item_Plug();
 
 if (isset($_POST['update'], $_POST['itemtype'])) {
     $item_plug->check($_POST['id'], UPDATE);

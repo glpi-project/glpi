@@ -35,6 +35,7 @@
 
 namespace Glpi\Form;
 
+use InvalidArgumentException;
 use CommonDBChild;
 use CommonDBTM;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
@@ -93,7 +94,7 @@ final class AnswersSet extends CommonDBChild
         foreach ($raw_answers as $raw_answer) {
             try {
                 $answers[] = Answer::fromDecodedJsonData($raw_answer);
-            } catch (\InvalidArgumentException $e) {
+            } catch (InvalidArgumentException $e) {
                 // Skip invalid data
                 continue;
             }
@@ -202,7 +203,7 @@ final class AnswersSet extends CommonDBChild
     /**
      * Get items linked to this form answers set
      *
-     * @return \CommonDBTM[]
+     * @return CommonDBTM[]
      */
     public function getCreatedItems(): array
     {

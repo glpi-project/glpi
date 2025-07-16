@@ -31,12 +31,10 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-
 if (!$DB->fieldExists('glpi_users', '2fa')) {
     $migration->addField('glpi_users', '2fa', 'text');
 }

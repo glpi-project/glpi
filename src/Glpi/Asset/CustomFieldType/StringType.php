@@ -34,6 +34,7 @@
 
 namespace Glpi\Asset\CustomFieldType;
 
+use InvalidArgumentException;
 use Glpi\Application\View\TemplateRenderer;
 
 class StringType extends AbstractType
@@ -64,7 +65,7 @@ TWIG, $twig_params);
             return null;
         }
         if (!is_string($value)) {
-            throw new \InvalidArgumentException('The value must be a string');
+            throw new InvalidArgumentException('The value must be a string');
         }
         return substr($value, 0, 255);
     }

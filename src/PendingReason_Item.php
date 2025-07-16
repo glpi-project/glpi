@@ -259,7 +259,7 @@ class PendingReason_Item extends CommonDBRelation
      */
     public static function getLastPendingTimelineItemDataForItem(CommonITILObject $item)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $task_class = $item::getTaskClass();
@@ -337,7 +337,7 @@ class PendingReason_Item extends CommonDBRelation
      */
     public static function isLastTimelineItem(CommonDBTM $timeline_item): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if ($timeline_item instanceof ITILFollowup) {

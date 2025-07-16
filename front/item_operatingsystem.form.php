@@ -39,7 +39,7 @@ use Glpi\Exception\Http\BadRequestHttpException;
 
 Session::checkCentralAccess();
 
-$ios = new \Item_OperatingSystem();
+$ios = new Item_OperatingSystem();
 
 if (isset($_POST['update'])) {
     $ios->check($_POST['id'], UPDATE);

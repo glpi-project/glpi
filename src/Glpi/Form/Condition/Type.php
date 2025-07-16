@@ -34,6 +34,7 @@
 
 namespace Glpi\Form\Condition;
 
+use CommonDBTM;
 use Glpi\Form\Comment;
 use Glpi\Form\Question;
 use Glpi\Form\Section;
@@ -44,7 +45,7 @@ enum Type: string
     case SECTION = 'section';
     case COMMENT = 'comment';
 
-    /** @return class-string<\CommonDBTM> */
+    /** @return class-string<CommonDBTM> */
     public function getItemtype(): string
     {
         return match ($this) {

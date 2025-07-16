@@ -35,6 +35,8 @@
 
 namespace Glpi\Form\ServiceCatalog;
 
+use RuntimeException;
+use Glpi\Form\ServiceCatalog\Provider\ItemProviderInterface;
 use Glpi\Form\ServiceCatalog\Provider\CategoryProvider;
 use Glpi\Form\ServiceCatalog\Provider\CompositeProviderInterface;
 use Glpi\Form\ServiceCatalog\Provider\FormProvider;
@@ -47,7 +49,7 @@ final class ServiceCatalogManager
     /** @var int */
     public const ITEMS_PER_PAGE = 12;
 
-    /** @var \Glpi\Form\ServiceCatalog\Provider\ItemProviderInterface[] */
+    /** @var ItemProviderInterface[] */
     private array $providers;
 
     public function __construct()
@@ -138,7 +140,7 @@ final class ServiceCatalogManager
                 }
 
                 // Unknown implementation, should never happen.
-                throw new \RuntimeException("Unsupported item: " . get_class($item));
+                throw new RuntimeException("Unsupported item: " . get_class($item));
             }
         );
     }
@@ -168,7 +170,7 @@ final class ServiceCatalogManager
                 }
 
                 // Unknown implementation, should never happen.
-                throw new \RuntimeException("Unsupported item: " . get_class($item));
+                throw new RuntimeException("Unsupported item: " . get_class($item));
             }
         );
     }

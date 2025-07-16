@@ -33,13 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\PlanningEvent;
+
 /**
  * Template for PlanningExternalEvent
  * @since 9.5
  **/
 class PlanningExternalEventTemplate extends CommonDropdown
 {
-    use Glpi\Features\PlanningEvent {
+    use PlanningEvent {
         prepareInputForAdd as protected prepareInputForAddTrait;
         prepareInputForUpdate as protected prepareInputForUpdateTrait;
         rawSearchOptions as protected trait_rawSearchOptions;

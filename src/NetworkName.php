@@ -262,7 +262,7 @@ class NetworkName extends FQDNLabel
 
     public function post_updateItem($history = true)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $this->post_workOnItem();
@@ -314,7 +314,7 @@ class NetworkName extends FQDNLabel
      **/
     public static function unaffectAddressesOfItem($items_id, $itemtype)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -366,7 +366,7 @@ class NetworkName extends FQDNLabel
     public static function showFormForNetworkPort($networkPortID)
     {
         /**
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $DB;
 
@@ -481,7 +481,7 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
         ?HTMLTableCell $father = null,
         array $options = []
     ) {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $column_name = self::class;
@@ -818,7 +818,7 @@ TWIG, $twig_params);
      */
     public static function countForItem(CommonDBTM $item): int
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         switch ($item::class) {

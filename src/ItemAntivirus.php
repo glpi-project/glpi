@@ -294,7 +294,7 @@ class ItemAntivirus extends CommonDBChild
      **/
     private static function showForItem(CommonDBTM $asset, $withtemplate = 0)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $asset->fields['id'];

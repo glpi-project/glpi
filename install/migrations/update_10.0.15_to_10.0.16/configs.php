@@ -31,11 +31,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \Migration $migration
+ * @var Migration $migration
  */
-
 // Drop unexpected values related to SQL Replication
 $migration->removeConfig([
     '_dbslave_status',

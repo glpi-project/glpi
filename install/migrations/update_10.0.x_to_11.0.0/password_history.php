@@ -31,12 +31,10 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-
 $table = "glpi_users";
 if (!$DB->fieldExists($table, "password_history")) {
     $migration->addField($table, "password_history", "longtext");

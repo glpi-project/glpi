@@ -192,7 +192,7 @@ abstract class FQDNLabel extends CommonDBChild
      **/
     public static function getIDsByLabelAndFQDNID($label, $fqdns_id, $wildcard_search = false)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $label = strtolower($label);

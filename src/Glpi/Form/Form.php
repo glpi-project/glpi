@@ -35,6 +35,12 @@
 
 namespace Glpi\Form;
 
+use Throwable;
+use InvalidArgumentException;
+use DBmysql;
+use Glpi\Form\Condition\SectionData;
+use Glpi\Form\Condition\QuestionData;
+use Glpi\Form\Condition\CommentData;
 use AbstractRightsDropdown;
 use Change_Item;
 use CommonDBTM;
@@ -349,7 +355,7 @@ final class Form extends CommonDBTM implements
     #[Override]
     public function post_updateItem($history = true)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $DB->beginTransaction();
@@ -357,7 +363,7 @@ final class Form extends CommonDBTM implements
             // Update questions and sections
             $this->updateExtraFormData();
             $DB->commit();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Delete the "Item sucessfully updated" message if it exist
             Session::deleteMessageAfterRedirect(
                 $this->formatSessionMessageAfterAction(__('Item successfully updated'))
@@ -631,7 +637,7 @@ final class Form extends CommonDBTM implements
     {
         foreach ($types as $type) {
             if (!$this->isValidQuestionType($type)) {
-                throw new \InvalidArgumentException("Invalid question type: $type");
+                throw new InvalidArgumentException("Invalid question type: $type");
             }
         }
 
@@ -655,19 +661,19 @@ final class Form extends CommonDBTM implements
         return $this->getQuestionsByTypes([$type]);
     }
 
-    /** @return \Glpi\Form\Condition\SectionData[] */
+    /** @return SectionData[] */
     public function getSectionsStateForConditionEditor(): array
     {
         return FormData::createFromForm($this)->getSectionsData();
     }
 
-    /** @return \Glpi\Form\Condition\QuestionData[] */
+    /** @return QuestionData[] */
     public function getQuestionsStateForConditionEditor(): array
     {
         return FormData::createFromForm($this)->getQuestionsData();
     }
 
-    /** @return \Glpi\Form\Condition\CommentData[] */
+    /** @return CommentData[] */
     public function getCommentsStateForConditionEditor(): array
     {
         return FormData::createFromForm($this)->getCommentsData();
@@ -807,7 +813,7 @@ final class Form extends CommonDBTM implements
                 $section = new Section();
                 $success = $section->delete($row);
                 if (!$success) {
-                    throw new \RuntimeException("Failed to delete section");
+                    throw new RuntimeException("Failed to delete section");
                 }
             }
         }
@@ -925,7 +931,7 @@ final class Form extends CommonDBTM implements
                 $question = new Question();
                 $success = $question->delete($row);
                 if (!$success) {
-                    throw new \RuntimeException("Failed to delete question");
+                    throw new RuntimeException("Failed to delete question");
                 }
             }
         }
@@ -1043,7 +1049,7 @@ final class Form extends CommonDBTM implements
                 $comment = new Comment();
                 $success = $comment->delete($row);
                 if (!$success) {
-                    throw new \RuntimeException("Failed to delete comment");
+                    throw new RuntimeException("Failed to delete comment");
                 }
             }
         }

@@ -35,6 +35,8 @@
 
 namespace Glpi\Console\Diagnostic;
 
+use Glpi\Console\Exception\EarlyExitException;
+use DBmysql;
 use CommonDBTM;
 use Glpi\Console\AbstractCommand;
 use ITILFollowup;
@@ -178,7 +180,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
      */
     private function dumpObjects(): void
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $dump_content = '';
@@ -213,7 +215,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
                 OutputInterface::VERBOSITY_QUIET
             );
         } catch (FilesystemException $e) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<comment>' . sprintf(__('Failed to write rollback SQL queries in "%s" file.'), $dump_file_name) . '</comment>',
                 self::ERROR_ROLLBACK_FILE_FAILED,
                 $e
@@ -259,7 +261,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
      */
     private function fixOneItem(CommonDBTM $item, array $fields): void
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $itemtype = $item::getType();
@@ -355,7 +357,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
      */
     private function findTextFields(): void
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $table_iterator = $DB->listTables();
@@ -409,7 +411,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
      */
     private function scanField(string $itemtype, string $field): void
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $searches = [

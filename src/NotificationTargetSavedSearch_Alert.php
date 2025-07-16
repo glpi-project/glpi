@@ -37,7 +37,7 @@ class NotificationTargetSavedSearch_Alert extends NotificationTarget
 {
     public function getEvents()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $events = [];

@@ -34,6 +34,8 @@
 
 namespace Glpi\Log;
 
+use Override;
+use Throwable;
 use Monolog\Level;
 use Monolog\LogRecord;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
@@ -47,7 +49,7 @@ class ErrorLogHandler extends AbstractLogHandler
         $this->setFormatter(new ErrorLogLineFormatter());
     }
 
-    #[\Override()]
+    #[Override()]
     public function isHandling(LogRecord $record): bool
     {
         // Do not log "Notified event {...}" messages.
@@ -63,7 +65,7 @@ class ErrorLogHandler extends AbstractLogHandler
         // Do not log access errors.
         // 4xx errors logging is done by the `\Glpi\Log\AccessLogHandler` handler.
         if (isset($record->context['exception'])) {
-            /** @var \Throwable $exception */
+            /** @var Throwable $exception */
             $exception = $record->context['exception'];
             if (
                 $exception instanceof HttpExceptionInterface

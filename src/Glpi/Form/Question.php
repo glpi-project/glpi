@@ -35,6 +35,7 @@
 
 namespace Glpi\Form;
 
+use InvalidArgumentException;
 use CommonDBChild;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
@@ -348,7 +349,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
                 $is_extra_data_valid = $question_type->validateExtraDataInput($extra_data);
 
                 if (!$is_extra_data_valid) {
-                    throw new \InvalidArgumentException("Invalid extra data for question");
+                    throw new InvalidArgumentException("Invalid extra data for question");
                 }
 
                 // Prepare extra data

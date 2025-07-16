@@ -213,7 +213,7 @@ class ProjectCost extends CommonDBChild
      **/
     public function getLastCostForProject($projects_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -297,7 +297,7 @@ class ProjectCost extends CommonDBChild
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 

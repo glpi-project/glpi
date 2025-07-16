@@ -31,9 +31,7 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \Migration $migration
+ * @var Migration $migration
  */
-
 $migration->dropField("glpi_savedsearches", "path");

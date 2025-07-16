@@ -32,7 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Features\PlanningEvent;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
@@ -41,7 +41,7 @@ use Sabre\VObject\Component\VTodo;
 
 class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemInterface
 {
-    use Glpi\Features\PlanningEvent {
+    use PlanningEvent {
         rawSearchOptions as protected trait_rawSearchOptions;
     }
     use VobjectConverterTrait;
@@ -221,11 +221,11 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
      *
      * @param array $criteria
      *
-     * @return \Sabre\VObject\Component\VCalendar[]
+     * @return VCalendar[]
      */
     private static function getItemsAsVCalendars(array $criteria)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $query = [
@@ -277,7 +277,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
 
         if ($vcomp instanceof VTodo && !array_key_exists('state', $input)) {
             // Force default state to TO DO or event will be considered as VEVENT
-            $input['state'] = \Planning::TODO;
+            $input['state'] = Planning::TODO;
         }
 
         return $input;

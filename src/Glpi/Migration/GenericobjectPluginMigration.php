@@ -34,6 +34,11 @@
 
 namespace Glpi\Migration;
 
+use RuntimeException;
+use LogicException;
+use CommonDBTM;
+use Glpi\Asset\Capacity\AbstractCapacity;
+use Glpi\Asset\CustomFieldType\AbstractType;
 use CommonDropdown;
 use Domain_Item;
 use DropdownTranslation;
@@ -102,14 +107,14 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
     /**
      * Imported asset definitions.
      *
-     * @var array<string, \Glpi\Asset\AssetDefinition>
+     * @var array<string, AssetDefinition>
      */
     private array $asset_definitions = [];
 
     /**
      * Imported categories definitions.
      *
-     * @var array<string, \Glpi\Dropdown\DropdownDefinition>
+     * @var array<string, DropdownDefinition>
      */
     private array $dropdown_definitions = [];
 
@@ -518,7 +523,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                         $asset_definition->getID(),
                     )
                 );
-                throw new \RuntimeException('An error occurred during the item update.');
+                throw new RuntimeException('An error occurred during the item update.');
             }
 
             // Update profiles configuration
@@ -545,7 +550,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                                 $profile_data['id'],
                             )
                         );
-                        throw new \RuntimeException('An error occurred during the item update.');
+                        throw new RuntimeException('An error occurred during the item update.');
                     }
                 }
             }
@@ -600,7 +605,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
         foreach ($this->getGenericobjectTypesIterator() as $type_data) {
             $asset_definition = $this->asset_definitions[$type_data['itemtype']] ?? null;
             if (!($asset_definition instanceof AssetDefinition)) {
-                throw new \LogicException('The asset definition is expected to be imported.');
+                throw new LogicException('The asset definition is expected to be imported.');
             }
 
             $plugin_model_itemtype = $type_data['itemtype'] . 'Model';
@@ -620,7 +625,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
             );
 
             if (!is_a($dropdown_class, CommonDropdown::class, true)) {
-                throw new \LogicException(sprintf('Unexpected `%s` class.', $dropdown_class));
+                throw new LogicException(sprintf('Unexpected `%s` class.', $dropdown_class));
             }
 
             $dropdown_iterator = $this->db->request(['FROM' => $this->getExpectedTableForPluginClassName($plugin_itemtype)]);
@@ -717,7 +722,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
     private function importObjects(): bool
     {
         /**
-         * @var array<int, array{asset: \Glpi\Asset\Asset, fkeys_specs: array<int, array{field: string, peer_itemtype: class-string<\CommonDBTM>, peer_items_id: int}>}> $fkeys_to_process
+         * @var array<int, array{asset: Asset, fkeys_specs: array<int, array{field: string, peer_itemtype: class-string<CommonDBTM>, peer_items_id: int}>}> $fkeys_to_process
          */
         $fkeys_to_process = [];
 
@@ -728,7 +733,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
 
             $asset_definition = $this->asset_definitions[$type_data['itemtype']] ?? null;
             if (!($asset_definition instanceof AssetDefinition)) {
-                throw new \LogicException('The asset definition is expected to be imported.');
+                throw new LogicException('The asset definition is expected to be imported.');
             }
 
             $asset_class = $asset_definition->getAssetClassName();
@@ -944,7 +949,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
      * Return the list of capacities for the given GenericObject type.
      *
      * @param array<string, mixed> $type_data A row from the `glpi_plugin_genericobject_types` table.
-     * @return array<int, array{name: class-string<\Glpi\Asset\Capacity\AbstractCapacity>}>
+     * @return array<int, array{name: class-string<AbstractCapacity>}>
      */
     private function getCapacities(array $type_data): array
     {
@@ -980,7 +985,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
     {
         $table_matches = [];
         if (preg_match('/^glpi_plugin_genericobject_(?<itemtype_chunk>.+)$/', $table, $table_matches) !== 1) {
-            throw new \LogicException(
+            throw new LogicException(
                 sprintf('Table `%s` is not a Genericobject table.', $table)
             );
         }
@@ -999,7 +1004,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
     {
         $classname_matches = [];
         if (preg_match('/^PluginGenericobject(?<itemtype_chunk>.+)$/', $classname, $classname_matches) !== 1) {
-            throw new \LogicException(
+            throw new LogicException(
                 sprintf('`%s` is not a Genericobject class.', $classname)
             );
         }
@@ -1110,7 +1115,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
     /**
      * Get the target itemtype for the given genericobject plugin itemtype.
      *
-     * @return class-string<\CommonDBTM>
+     * @return class-string<CommonDBTM>
      */
     private function getTargetItemtype(string $itemtype): string
     {
@@ -1136,7 +1141,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
             }
         }
 
-        throw new \LogicException(
+        throw new LogicException(
             sprintf('Unable to find the target itemtype for `%s`.', $itemtype)
         );
     }
@@ -1144,7 +1149,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
     /**
      * Check whether a field with the given name is a custom field.
      *
-     * @param class-string<\CommonDBTM> $itemtype   The generic object itemtype.
+     * @param class-string<CommonDBTM> $itemtype The generic object itemtype.
      * @param string                    $field      The field name.
      */
     private function isACustomField(string $itemtype, string $field): bool
@@ -1192,21 +1197,11 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
     /**
      * Get the specifications related to a custom field.
      *
-     * @param class-string<\CommonDBTM> $itemtype   The generic object itemtype.
+     * @param class-string<CommonDBTM> $itemtype The generic object itemtype.
      * @param string                    $field_name The field name.
      * @param string                    $field_type The field type (fetched from a `SHOW COLUMNS FROM` query).
      *
-     * @return array{
-     *      system_name: string,
-     *      label: string,
-     *      type: class-string<\Glpi\Asset\CustomFieldType\AbstractType>,
-     *      itemtype?: class-string<\CommonDBTM>,
-     *      options?: array{
-     *          min?: int,
-     *          max?: int,
-     *          step?: int,
-     *      }
-     *  }
+     * @return array{system_name: string, label: string, type: class-string<AbstractType>, itemtype?: class-string<CommonDBTM>, options?: array{min?: int, max?: int, step?: int}}
      */
     private function getCustomFieldSpecs(
         string $itemtype,
@@ -1214,7 +1209,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
         string $field_type
     ): array {
         if (!$this->isACustomField($itemtype, $field_name)) {
-            throw new \LogicException();
+            throw new LogicException();
         }
 
         // Fallback values
@@ -1344,7 +1339,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
     /**
      * Get the target field for a given genericobject main item field.
      *
-     * @param class-string<\CommonDBTM> $itemtype       The generic object itemtype.
+     * @param class-string<CommonDBTM> $itemtype The generic object itemtype.
      * @param string                    $field          The field name.
      * @param bool                      $with_prefix    Whether to append the `custom_` prefix on custom fields.
      */

@@ -292,7 +292,7 @@ class Infocom extends CommonDBChild
      */
     public static function getDataForAssetInfocomReport(string $itemtype, string $begin, string $end): ?array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $itemtable = getTableForItemType($itemtype);
         if (!$DB->fieldExists($itemtable, "ticket_tco", false)) {
@@ -364,7 +364,7 @@ class Infocom extends CommonDBChild
      */
     public static function getDataForOtherInfocomReport(string $itemtype, string $begin, string $end): ?array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $itemtable = getTableForItemType($itemtype);
         if ($DB->fieldExists($itemtable, "ticket_tco", false)) {
@@ -653,7 +653,7 @@ class Infocom extends CommonDBChild
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -998,7 +998,7 @@ class Infocom extends CommonDBChild
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -1094,10 +1094,10 @@ JS;
 
         try {
             if ($fiscaldate == '') {
-                throw new \RuntimeException('Empty date');
+                throw new RuntimeException('Empty date');
             }
             $fiscaldate = new DateTime($fiscaldate, new DateTimeZone($TZ));
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             Session::addMessageAfterRedirect(
                 __s('Please fill you fiscal year date in preferences.'),
                 false,
@@ -1109,14 +1109,14 @@ JS;
         //get begin date. Work on use date if provided.
         try {
             if ($buydate == '' && $usedate == '') {
-                throw new \RuntimeException('Empty date');
+                throw new RuntimeException('Empty date');
             }
             if ($usedate != '') {
                 $usedate = new DateTime($usedate, new DateTimeZone($TZ));
             } else {
                 $usedate = new DateTime($buydate, new DateTimeZone($TZ));
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             Session::addMessageAfterRedirect(
                 __s('Please fill either buy or use date in preferences.'),
                 false,
@@ -2132,7 +2132,7 @@ JS;
      */
     public static function getTypes($where)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $types_iterator = $DB->request([

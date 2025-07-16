@@ -38,10 +38,9 @@ use function Safe\preg_replace;
 
 foreach (['glpi_computervirtualmachines', 'glpi_networkequipments'] as $table) {
     /**
-     * @var \DBmysql $DB
-     * @var \Migration $migration
+     * @var DBmysql $DB
+     * @var Migration $migration
      */
-
     // field has to be nullable to be able to set empty values to null
     $migration->changeField(
         $table,

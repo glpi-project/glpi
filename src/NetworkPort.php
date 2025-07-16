@@ -252,7 +252,7 @@ class NetworkPort extends CommonDBChild
 
     public function post_updateItem($history = true)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (count($this->updates)) {
@@ -569,7 +569,7 @@ class NetworkPort extends CommonDBChild
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -896,7 +896,8 @@ class NetworkPort extends CommonDBChild
      */
     protected function showPort(array $port, $dprefs, $so, $canedit, $agg, $rand, $with_ma = true)
     {
-        /**  @var \DBmysql $DB
+        /**
+         * @var DBmysql $DB
          * @var array $CFG_GLPI
          */
         global $DB, $CFG_GLPI;
@@ -1263,7 +1264,7 @@ class NetworkPort extends CommonDBChild
 
     protected function getIpsForPort($itemtype, $items_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -1818,7 +1819,7 @@ class NetworkPort extends CommonDBChild
      */
     public function isHubConnected($networkports_id): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $wired = new NetworkPort_NetworkPort();

@@ -34,6 +34,7 @@
 
 namespace Glpi\Asset\Capacity;
 
+use DBmysql;
 use CommonGLPI;
 use Glpi\Asset\Asset;
 use Glpi\Asset\CapacityConfig;
@@ -89,7 +90,7 @@ class HasHistoryCapacity extends AbstractCapacity
 
     public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // Do not use `CommonDBTM::deleteByCriteria()` to prevent performances issues

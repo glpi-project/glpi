@@ -36,6 +36,9 @@
 
 namespace Glpi\Inventory\Asset;
 
+use RuntimeException;
+use stdClass;
+use DBmysql;
 use AutoUpdateSystem;
 use Computer;
 use ItemVirtualMachine;
@@ -81,7 +84,7 @@ class VirtualMachine extends InventoryAsset
         ];
 
         if (!in_array($this->item->getType(), $CFG_GLPI['itemvirtualmachines_types'])) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf(
                     'Virtual machines are not handled for %s.',
                     $this->item->getType()
@@ -138,7 +141,7 @@ class VirtualMachine extends InventoryAsset
                 //create processor component
                 if (!property_exists($vm_val, 'cpus') && property_exists($vm_val, 'vcpu')) {
                     $cpus = [];
-                    $cpu = new \stdClass();
+                    $cpu = new stdClass();
                     $cpu->core = $vm_val->vcpu;
                     $cpus[] = $cpu;
                     $vm_val->cpus = $cpus;
@@ -147,7 +150,7 @@ class VirtualMachine extends InventoryAsset
                 //create memory component
                 if (!property_exists($vm_val, 'memories') && property_exists($vm_val, 'ram')) {
                     $memories = [];
-                    $memory = new \stdClass();
+                    $memory = new stdClass();
                     $memory->capacity = $vm_val->ram;
                     $memories[] = $memory;
                     $vm_val->memories = $memories;
@@ -195,7 +198,7 @@ class VirtualMachine extends InventoryAsset
      */
     protected function getExisting(): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $db_existing = [];
@@ -294,7 +297,7 @@ class VirtualMachine extends InventoryAsset
      */
     protected function createVmComputer()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $computervm = new Computer();
@@ -317,7 +320,7 @@ class VirtualMachine extends InventoryAsset
                 $rule = new RuleImportAssetCollection();
                 $rule->getCollectionPart();
                 $input = $this->handleInput($vm, $this->item);
-                $input['itemtype'] = \Computer::class;
+                $input['itemtype'] = Computer::class;
                 if ($computers_vm_id == 0) {
                     //call rules on current collected data to find item
                     //a callback on rulepassed() will be done if one is found.
@@ -353,7 +356,7 @@ class VirtualMachine extends InventoryAsset
                     $this->ports = $this->allports[$vm->uuid];
                     $this->handlePorts('Computer', $computers_vm_id);
                 } elseif (property_exists($vm, 'ipaddress')) {
-                    $net_val = new \stdClass();
+                    $net_val = new stdClass();
                     if (property_exists($vm, 'ipaddress')) {
                         $net_val->ip = [$vm->ipaddress];
                     }
@@ -410,9 +413,9 @@ class VirtualMachine extends InventoryAsset
         }
     }
 
-    public function getExistingVMAsComputer(\stdClass $vm): int
+    public function getExistingVMAsComputer(stdClass $vm): int
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $computers_vm_id = 0;
@@ -444,6 +447,6 @@ class VirtualMachine extends InventoryAsset
 
     public function getItemtype(): string
     {
-        return \ItemVirtualMachine::class;
+        return ItemVirtualMachine::class;
     }
 }

@@ -35,6 +35,9 @@
 
 namespace Glpi\Search\Provider;
 
+use CronTask;
+use ProjectState;
+use Link;
 use AllAssets;
 use Budget;
 use Calendar;
@@ -695,7 +698,7 @@ final class SQLProvider implements SearchProviderInterface
                 break;
 
             case Notification::class:
-                if (!\Config::canView()) {
+                if (!Config::canView()) {
                     $criteria = [
                         'NOT' => ['glpi_notifications.itemtype' => ['CronTask', 'DBConnection']],
                     ];
@@ -1442,7 +1445,7 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     return [new QueryExpression(self::makeTextCriteria("`$table`.`$field`", $val, $nott, ''))];
                 }
-                if ($_SESSION["glpinames_format"] == \User::FIRSTNAME_BEFORE) {
+                if ($_SESSION["glpinames_format"] == User::FIRSTNAME_BEFORE) {
                     $name1 = 'firstname';
                     $name2 = 'realname';
                 } else {
@@ -4021,7 +4024,7 @@ final class SQLProvider implements SearchProviderInterface
                 switch ($table . "." . $field) {
                     case "glpi_users.name":
                         if ($itemtype != User::class) {
-                            if ($_SESSION["glpinames_format"] == \User::FIRSTNAME_BEFORE) {
+                            if ($_SESSION["glpinames_format"] == User::FIRSTNAME_BEFORE) {
                                 $name1 = 'firstname';
                                 $name2 = 'realname';
                             } else {
@@ -4938,7 +4941,7 @@ final class SQLProvider implements SearchProviderInterface
         if ($result) {
             $data['data']['execution_time'] = $DBread->execution_time;
             if (isset($data['search']['savedsearches_id'])) {
-                \SavedSearch::updateExecutionTime(
+                SavedSearch::updateExecutionTime(
                     (int) $data['search']['savedsearches_id'],
                     $DBread->execution_time
                 );
@@ -5478,14 +5481,14 @@ final class SQLProvider implements SearchProviderInterface
                                         if (
                                             Session::getCurrentInterface() == 'helpdesk'
                                             && $orig_id == 5 // -> Assigned user
-                                            && !empty($anon_name = \User::getAnonymizedNameForUser(
+                                            && !empty($anon_name = User::getAnonymizedNameForUser(
                                                 $data[$ID][$k]['name'],
                                                 $itemtype::getById($data['id'])->getEntityId()
                                             ))
                                         ) {
                                             $out .= $anon_name;
                                         } else {
-                                            $user = new \User();
+                                            $user = new User();
                                             if ($user->getFromDB($data[$ID][$k]['name'])) {
                                                 $tooltip = "";
                                                 if (Session::haveRight('user', READ)) {
@@ -5535,7 +5538,7 @@ final class SQLProvider implements SearchProviderInterface
                         if ($data[$ID][0]['id'] > 0) {
                             $toadd = '';
                             if (is_subclass_of($itemtype, CommonITILObject::class)) {
-                                $user = new \User();
+                                $user = new User();
                                 if (Session::haveRight('user', READ) && $user->getFromDB($data[$ID][0]['id'])) {
                                     $toadd    = Html::showToolTip(
                                         $user->getInfoCard(),
@@ -5742,7 +5745,7 @@ final class SQLProvider implements SearchProviderInterface
                     if ($so["datatype"] == 'count') {
                         if (
                             ($data[$ID][0]['name'] > 0)
-                            && Session::haveRight("problem", \Problem::READALL)
+                            && Session::haveRight("problem", Problem::READALL)
                         ) {
                             if ($itemtype == 'ITILCategory') {
                                 $options['criteria'][0]['field']      = 7;
@@ -6027,7 +6030,7 @@ final class SQLProvider implements SearchProviderInterface
                     return $text;
 
                 case 'glpi_crontasks.description':
-                    $tmp = new \CronTask();
+                    $tmp = new CronTask();
                     return $tmp->getDescription($data[$ID][0]['name']);
 
                 case 'glpi_changes.status':
@@ -6037,9 +6040,9 @@ final class SQLProvider implements SearchProviderInterface
                         "</span>";
 
                 case 'glpi_problems.status':
-                    $status = \Problem::getStatus($data[$ID][0]['name']);
+                    $status = Problem::getStatus($data[$ID][0]['name']);
                     return "<span class='text-nowrap'>" .
-                        \Problem::getStatusIcon($data[$ID][0]['name']) . "&nbsp;$status" .
+                        Problem::getStatusIcon($data[$ID][0]['name']) . "&nbsp;$status" .
                         "</span>";
 
                 case 'glpi_tickets.status':
@@ -6055,7 +6058,7 @@ final class SQLProvider implements SearchProviderInterface
                         $name = $data[$ID][0]['trans'];
                     }
                     if ($itemtype == 'ProjectState') {
-                        $out =   "<a href='" . \ProjectState::getFormURLWithID($data[$ID][0]["id"]) . "'>" . \htmlescape($name) . "</a></div>";
+                        $out =   "<a href='" . ProjectState::getFormURLWithID($data[$ID][0]["id"]) . "'>" . \htmlescape($name) . "</a></div>";
                     } else {
                         $out = $name;
                     }
@@ -6254,10 +6257,10 @@ final class SQLProvider implements SearchProviderInterface
                         ($item = getItemForItemtype($itemtype))
                         && $item->getFromDB($data['id'])
                     ) {
-                        $data = \Link::getLinksDataForItem($item);
+                        $data = Link::getLinksDataForItem($item);
                         $count_display = 0;
                         foreach ($data as $val) {
-                            $links = \Link::getAllLinksFor($item, $val);
+                            $links = Link::getAllLinksFor($item, $val);
                             foreach ($links as $link) {
                                 if ($count_display) {
                                     $out .=  Search::LBBR;
@@ -6360,7 +6363,7 @@ final class SQLProvider implements SearchProviderInterface
             is_subclass_of($itemtype, CommonITILObject::class)
             && Session::getCurrentInterface() == 'helpdesk'
             && $orig_id == 8
-            && !empty($anon_name = \Group::getAnonymizedName(
+            && !empty($anon_name = Group::getAnonymizedName(
                 $itemtype::getById($data['id'])->getEntityId()
             ))
         ) {

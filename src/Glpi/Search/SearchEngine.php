@@ -35,6 +35,21 @@
 
 namespace Glpi\Search;
 
+use Search;
+use RuntimeException;
+use CommonDBTM;
+use CommonITILTask;
+use CommonITILValidation;
+use ITILFollowup;
+use ITILSolution;
+use Entity;
+use Glpi\Socket;
+use Toolbox;
+use KnowbaseItem;
+use AllAssets;
+use DisplayPreference;
+use Session;
+use Dropdown;
 use CommonGLPI;
 use CommonITILObject;
 use Glpi\Application\View\TemplateRenderer;
@@ -78,24 +93,24 @@ final class SearchEngine
     public static function getOutputForLegacyKey(int $output_type, array $data = []): AbstractSearchOutput
     {
         switch ($output_type) {
-            case \Search::GLOBAL_SEARCH:
+            case Search::GLOBAL_SEARCH:
                 return new GlobalSearchOutput();
-            case \Search::HTML_OUTPUT:
+            case Search::HTML_OUTPUT:
                 return (isset($data['as_map']) && $data['as_map']) ? new MapSearchOutput() : new TableSearchOutput();
-            case \Search::PDF_OUTPUT_LANDSCAPE:
+            case Search::PDF_OUTPUT_LANDSCAPE:
                 return new Pdf(Pdf::LANDSCAPE);
-            case \Search::PDF_OUTPUT_PORTRAIT:
+            case Search::PDF_OUTPUT_PORTRAIT:
                 return new Pdf(Pdf::PORTRAIT);
-            case \Search::CSV_OUTPUT:
+            case Search::CSV_OUTPUT:
                 return new Csv();
-            case \Search::ODS_OUTPUT:
+            case Search::ODS_OUTPUT:
                 return new Ods();
-            case \Search::XLSX_OUTPUT:
+            case Search::XLSX_OUTPUT:
                 return new Xlsx();
-            case \Search::NAMES_OUTPUT:
+            case Search::NAMES_OUTPUT:
                 return new NamesListSearchOutput();
             default:
-                throw new \RuntimeException('Unknown output type: ' . $output_type);
+                throw new RuntimeException('Unknown output type: ' . $output_type);
         }
     }
 
@@ -104,7 +119,7 @@ final class SearchEngine
      *
      * @param string $itemtype Type to display the form
      *
-     * @return class-string<\CommonDBTM>[] Array of available itemtype
+     * @return class-string<CommonDBTM>[] Array of available itemtype
      **/
     public static function getMetaItemtypeAvailable($itemtype): array
     {
@@ -116,7 +131,7 @@ final class SearchEngine
             return [];
         }
 
-        if (!(($item = getItemForItemtype($ref_itemtype)) instanceof \CommonDBTM)) {
+        if (!(($item = getItemForItemtype($ref_itemtype)) instanceof CommonDBTM)) {
             return [];
         }
 
@@ -126,17 +141,17 @@ final class SearchEngine
                 // Links are associated to all items of a type, it does not make any sense to use them in metasearch
                 continue;
             }
-            if ($key === 'ticket_types' && $item instanceof \CommonITILObject) {
+            if ($key === 'ticket_types' && $item instanceof CommonITILObject) {
                 // Linked are filtered by CommonITILObject::getAllTypesForHelpdesk()
                 $linked = array_merge($linked, array_keys($item::getAllTypesForHelpdesk()));
                 continue;
             }
 
             if ($key === 'itil_types') {
-                if ($item instanceof \CommonITILTask || $item instanceof \CommonITILValidation) {
+                if ($item instanceof CommonITILTask || $item instanceof CommonITILValidation) {
                     $linked[] = $item::getItilObjectItemType();
                 } else {
-                    $timeline_types = [\ITILFollowup::class, \ITILSolution::class];
+                    $timeline_types = [ITILFollowup::class, ITILSolution::class];
                     foreach ($timeline_types as $timeline_type) {
                         if ($item instanceof $timeline_type) {
                             $linked = [...$linked, ...$values];
@@ -157,8 +172,8 @@ final class SearchEngine
         }
 
         // Add entity meta if needed
-        if ($item->isField('entities_id') && !($item instanceof \Entity)) {
-            $linked[] = \Entity::getType();
+        if ($item->isField('entities_id') && !($item instanceof Entity)) {
+            $linked[] = Entity::getType();
         }
 
         return array_unique($linked);
@@ -186,7 +201,7 @@ final class SearchEngine
             'assignable_types'     => ['Group', 'User'],
             'project_asset_types'  => ['Project'],
             'rackable_types'       => ['Enclosure', 'Rack'],
-            'socket_types'         => [\Glpi\Socket::class],
+            'socket_types'         => [Socket::class],
             'ticket_types'         => ['Change', 'Problem', 'Ticket'],
         ];
 
@@ -195,7 +210,7 @@ final class SearchEngine
         }
 
         $itemclass = $matches[1];
-        if (is_a($itemclass, \CommonDBTM::class, true)) {
+        if (is_a($itemclass, CommonDBTM::class, true)) {
             return [$itemclass::getType()];
         }
 
@@ -216,7 +231,7 @@ final class SearchEngine
         global $CFG_GLPI;
 
         if (
-            is_a($parent_itemtype, \CommonITILObject::class, true)
+            is_a($parent_itemtype, CommonITILObject::class, true)
             && in_array($child_itemtype, array_keys($parent_itemtype::getAllTypesForHelpdesk()))
         ) {
             return true;
@@ -237,7 +252,7 @@ final class SearchEngine
     /**
      *
      * @param $itemtype
-     * @return class-string<\CommonDBTM>|false
+     * @return class-string<CommonDBTM>|false
      **/
     public static function getMetaReferenceItemtype($itemtype)
     {
@@ -294,7 +309,7 @@ final class SearchEngine
             'start'                     => 0,
             'is_deleted'                => 0,
             'export_all'                => 0,
-            'display_type'              => \Search::HTML_OUTPUT,
+            'display_type'              => Search::HTML_OUTPUT,
             'showmassiveactions'        => true,
             'dont_flush'                => false,
             'show_pager'                => true,
@@ -307,11 +322,11 @@ final class SearchEngine
         if (class_exists($itemtype)) {
             $p['target']       = $itemtype::getSearchURL();
         } else {
-            $p['target']       = \Toolbox::getItemTypeSearchURL($itemtype);
+            $p['target']       = Toolbox::getItemTypeSearchURL($itemtype);
         }
 
-        if ($itemtype == \KnowbaseItem::class) {
-            $params = \KnowbaseItem::getAdditionalSearchCriteria($params);
+        if ($itemtype == KnowbaseItem::class) {
+            $params = KnowbaseItem::getAdditionalSearchCriteria($params);
         }
 
         foreach ($params as $key => $val) {
@@ -351,8 +366,8 @@ final class SearchEngine
         // Set display type for export if define
         if (isset($p['display_type'])) {
             // Limit to 10 element
-            if ($p['display_type'] == \Search::GLOBAL_SEARCH) {
-                $p['list_limit'] = \Search::GLOBAL_DISPLAY_COUNT;
+            if ($p['display_type'] == Search::GLOBAL_SEARCH) {
+                $p['list_limit'] = Search::GLOBAL_DISPLAY_COUNT;
             }
         }
 
@@ -371,7 +386,7 @@ final class SearchEngine
         // Instanciate an object to access method
         $data['item'] = null;
 
-        if ($itemtype != \AllAssets::getType()) {
+        if ($itemtype != AllAssets::getType()) {
             $data['item'] = getItemForItemtype($itemtype);
         }
 
@@ -408,7 +423,7 @@ final class SearchEngine
         $data['meta_toview'] = [];
         if (!$forcetoview) {
             // Add items to display depending on personal prefs
-            $displaypref = \DisplayPreference::getForTypeUser($itemtype, \Session::getLoginUserID(), \Session::getCurrentInterface());
+            $displaypref = DisplayPreference::getForTypeUser($itemtype, Session::getLoginUserID(), Session::getCurrentInterface());
             if (count($displaypref)) {
                 foreach ($displaypref as $val) {
                     $data['toview'][] = $val;
@@ -520,7 +535,7 @@ final class SearchEngine
     {
         if ($only_not) {
             return [
-                'AND'     => \Dropdown::EMPTY_VALUE,
+                'AND'     => Dropdown::EMPTY_VALUE,
                 'AND NOT' => __("NOT"),
             ];
         }
@@ -542,7 +557,7 @@ final class SearchEngine
      */
     public static function getOrigTableName(string $itemtype): string
     {
-        return (is_a($itemtype, \CommonDBTM::class, true)) ? $itemtype::getTable() : getTableForItemType($itemtype);
+        return (is_a($itemtype, CommonDBTM::class, true)) ? $itemtype::getTable() : getTableForItemType($itemtype);
     }
 
     /**
@@ -594,7 +609,7 @@ final class SearchEngine
         $search_input_class = self::getSearchInputClass($params);
         $params = array_merge($params, $search_input_class::manageParams($itemtype, $_GET));
 
-        $params['display_type'] = \Search::HTML_OUTPUT;
+        $params['display_type'] = Search::HTML_OUTPUT;
 
         echo "<div class='search_page row'>";
         TemplateRenderer::getInstance()->display('layout/parts/saved_searches.html.twig', [
@@ -610,7 +625,7 @@ final class SearchEngine
         }
 
         $params = $output::prepareInputParams($itemtype, $params);
-        if ((int) $params['browse'] === 1 && \Toolbox::hasTrait($itemtype, TreeBrowse::class)) {
+        if ((int) $params['browse'] === 1 && Toolbox::hasTrait($itemtype, TreeBrowse::class)) {
             $itemtype::showBrowseView($itemtype, $params);
         } else {
             self::showOutput($itemtype, $params);
@@ -628,7 +643,7 @@ final class SearchEngine
         $search_provider_class = self::getSearchProviderClass($params);
 
         $output = self::getOutputForLegacyKey(
-            $params['display_type'] ?? \Search::HTML_OUTPUT,
+            $params['display_type'] ?? Search::HTML_OUTPUT,
             $params
         );
         if (!$output->canDisplayResultsContainerWithoutExecutingSearch()) {
@@ -655,7 +670,7 @@ final class SearchEngine
      */
     public static function showOutput(string $itemtype, array $params, array $forced_display = []): void
     {
-        $output = self::getOutputForLegacyKey($params['display_type'] ?? \Search::HTML_OUTPUT, $params);
+        $output = self::getOutputForLegacyKey($params['display_type'] ?? Search::HTML_OUTPUT, $params);
         $data = self::getData($itemtype, $params, $forced_display);
         $output->displayData($data, $params);
     }

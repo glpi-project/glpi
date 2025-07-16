@@ -35,6 +35,8 @@
 
 namespace Glpi\System\Requirement;
 
+use DBmysql;
+
 /**
  * @since 9.5.0
  */
@@ -43,11 +45,11 @@ class DbTimezones extends AbstractRequirement
     /**
      * DB instance.
      *
-     * @var \DBmysql
+     * @var DBmysql
      */
     private $db;
 
-    public function __construct(\DBmysql $db)
+    public function __construct(DBmysql $db)
     {
         parent::__construct(
             __('DB timezone data'),

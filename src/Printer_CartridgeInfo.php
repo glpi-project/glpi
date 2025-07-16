@@ -32,7 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Inventory\Asset\Cartridge;
 use Glpi\Application\View\TemplateRenderer;
 
 use function Safe\preg_match;
@@ -50,7 +50,7 @@ class Printer_CartridgeInfo extends CommonDBChild
 
     public function getInfoForPrinter(Printer $printer)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -72,7 +72,7 @@ class Printer_CartridgeInfo extends CommonDBChild
     {
         $info = $this->getInfoForPrinter($printer);
 
-        $asset = new Glpi\Inventory\Asset\Cartridge($printer);
+        $asset = new Cartridge($printer);
         $tags = $asset->knownTags();
         $entries = [];
 

@@ -31,9 +31,7 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \Migration $migration
+ * @var Migration $migration
  */
-
 $migration->addKey('glpi_queuednotifications', 'recipient', 'recipient', 'INDEX', 255);

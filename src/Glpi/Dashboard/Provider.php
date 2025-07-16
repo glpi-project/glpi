@@ -35,6 +35,8 @@
 
 namespace Glpi\Dashboard;
 
+use TicketValidation;
+use DBmysql;
 use CommonDBTM;
 use CommonDBVisible;
 use CommonITILActor;
@@ -353,7 +355,7 @@ class Provider
                 ];
 
                 if ($params['validation_check_user']) {
-                    $where[] = \TicketValidation::getTargetCriteriaForUser(Session::getLoginUserID());
+                    $where[] = TicketValidation::getTargetCriteriaForUser(Session::getLoginUserID());
                 }
 
                 $query_criteria = array_merge_recursive($query_criteria, [
@@ -465,7 +467,7 @@ class Provider
 
     public static function nbTicketsByAgreementStatusAndTechnician(array $params = []): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $DBread = DBConnection::getReadConnection();

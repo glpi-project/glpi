@@ -34,6 +34,9 @@
 
 namespace Glpi\Form\Export\Serializer;
 
+use Throwable;
+use Toolbox;
+use DBmysql;
 use CommonDBTM;
 use Entity;
 use Glpi\Form\AccessControl\FormAccessControl;
@@ -201,7 +204,7 @@ final class FormSerializer extends AbstractFormSerializer
 
         if (count($forms) === 1) {
             $form = current($forms);
-            $formatted_name = \Toolbox::slugify($form->fields['name']);
+            $formatted_name = Toolbox::slugify($form->fields['name']);
             $filename = "$formatted_name-$date";
         } else {
             // When exporting multiple forms, we compute an additionnal checksum
@@ -234,14 +237,14 @@ final class FormSerializer extends AbstractFormSerializer
         FormContentSpecification $form_spec,
         DatabaseMapper $mapper,
     ): Form {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $DB->beginTransaction();
         try {
             $forms = $this->doImportFormFormSpecs($form_spec, $mapper);
             $DB->commit();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $DB->rollback();
             throw $e;
         }

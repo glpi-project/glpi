@@ -35,6 +35,7 @@
 
 namespace Glpi\Api\HL;
 
+use Exception;
 use Throwable;
 
 /**
@@ -42,7 +43,7 @@ use Throwable;
  * A user message can be provided to be displayed to the user.
  * Otherwise, only a generic message will be displayed to the user.
  */
-class APIException extends \Exception
+class APIException extends Exception
 {
     private string $user_message;
 

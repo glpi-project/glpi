@@ -35,6 +35,8 @@
 
 namespace Glpi\Inventory\Asset;
 
+use RuntimeException;
+use DBmysql;
 use ItemAntivirus;
 use Glpi\Inventory\Conf;
 
@@ -46,7 +48,7 @@ class Antivirus extends InventoryAsset
         global $CFG_GLPI;
 
         if (!in_array($this->item->getType(), $CFG_GLPI['itemantivirus_types'])) {
-            throw new \RuntimeException('Antivirus are not handled for ' . $this->item->getType());
+            throw new RuntimeException('Antivirus are not handled for ' . $this->item->getType());
         }
         $mapping = [
             'company'      => 'manufacturers_id',
@@ -91,7 +93,7 @@ class Antivirus extends InventoryAsset
      */
     protected function getExisting(): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $db_existing = [];
@@ -168,6 +170,6 @@ class Antivirus extends InventoryAsset
 
     public function getItemtype(): string
     {
-        return \ItemAntivirus::class;
+        return ItemAntivirus::class;
     }
 }

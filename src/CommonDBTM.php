@@ -32,7 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Debug\Profiler;
+use Psr\SimpleCache\CacheInterface;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\DBAL\QueryFunction;
@@ -282,12 +283,12 @@ class CommonDBTM extends CommonGLPI
     {
 
         if (empty($field)) {
-            throw new \InvalidArgumentException('Argument $field cannot be empty.');
+            throw new InvalidArgumentException('Argument $field cannot be empty.');
         }
 
         $tablename = static::getTable($classname);
         if (empty($tablename)) {
-            throw new \LogicException('Invalid table name.');
+            throw new LogicException('Invalid table name.');
         }
 
         return sprintf('%s.%s', $tablename, $field);
@@ -330,7 +331,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function getFromDB($ID)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         // Make new database object and fill variables
 
@@ -351,7 +352,7 @@ class CommonDBTM extends CommonGLPI
             $this->post_getFromDB();
             return true;
         } elseif (count($iterator) > 1) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf(
                     '`%1$s::getFromDB()` expects to get one result, %2$s found in query "%3$s".',
                     static::class,
@@ -414,7 +415,7 @@ class CommonDBTM extends CommonGLPI
      */
     public function getFromDBByCrit(array $criteria)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = [
@@ -428,7 +429,7 @@ class CommonDBTM extends CommonGLPI
             $row = $iter->current();
             return $this->getFromDB($row[static::getIndexName()]);
         } elseif (count($iter) > 1) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf(
                     '`%1$s::getFromDBByCrit()` expects to get one result, %2$s found in query "%3$s".',
                     static::class,
@@ -454,7 +455,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function getFromDBByRequest(array $request)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // Limit the request to the useful expressions
@@ -473,7 +474,7 @@ class CommonDBTM extends CommonGLPI
             $this->post_getFromDB();
             return true;
         } elseif (count($iterator) > 1) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf(
                     '`%1$s::getFromDBByRequest()` expects to get one result, %2$s found in query "%3$s".',
                     static::class,
@@ -606,7 +607,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function find($condition = [], $order = [], $limit = null)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = [
@@ -654,7 +655,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function getEmpty()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // make an empty database object
@@ -714,7 +715,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function updateInDB($updates, $oldvalues = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $tobeupdated = [];
@@ -761,7 +762,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function addToDB()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $nb_fields = count($this->fields);
@@ -803,7 +804,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function restoreInDB()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if ($this->maybeDeleted()) {
@@ -830,7 +831,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function deleteFromDB($force = false)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (
@@ -893,7 +894,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function cleanHistory()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if ($this->dohistory) {
@@ -919,7 +920,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function cleanRelationData()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $RELATION = getDbRelations();
@@ -1075,7 +1076,7 @@ class CommonDBTM extends CommonGLPI
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -1158,9 +1159,9 @@ class CommonDBTM extends CommonGLPI
             Asset_PeripheralAsset::class   => $CFG_GLPI['directconnect_types'],
             Consumable::class              => $CFG_GLPI['consumables_types'],
             Contract_Item::class           => $CFG_GLPI['contract_types'],
-            Document_Item::class           => \Document::getItemtypesThatCanHave(),
+            Document_Item::class           => Document::getItemtypesThatCanHave(),
             Domain_Item::class             => $CFG_GLPI['domain_types'],
-            Infocom::class                 => \Infocom::getItemtypesThatCanHave(),
+            Infocom::class                 => Infocom::getItemtypesThatCanHave(),
             Item_Cluster::class            => $CFG_GLPI['cluster_types'],
             Item_Disk::class               => $CFG_GLPI['disk_types'],
             Item_Enclosure::class          => $CFG_GLPI['rackable_types'],
@@ -1298,7 +1299,7 @@ class CommonDBTM extends CommonGLPI
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -1308,7 +1309,7 @@ class CommonDBTM extends CommonGLPI
 
         // This means we are not adding a cloned object
         if (
-            (!Toolbox::hasTrait($this, \Glpi\Features\Clonable::class) || !isset($input['clone']))
+            (!Toolbox::hasTrait($this, Clonable::class) || !isset($input['clone']))
             && method_exists($this, 'clone')
         ) {
             // This means we are asked to clone the object (old way). This will clone the clone method
@@ -1366,7 +1367,7 @@ class CommonDBTM extends CommonGLPI
         }
 
         // Process business rules for assets
-        $this->assetBusinessRules(\RuleAsset::ONADD);
+        $this->assetBusinessRules(RuleAsset::ONADD);
 
         if ($this->input && is_array($this->input)) {
             $this->fields = [];
@@ -1654,8 +1655,8 @@ class CommonDBTM extends CommonGLPI
     public function update(array $input, $history = true, $options = [])
     {
         /**
-         * @var \DBmysql $DB
-         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+         * @var DBmysql $DB
+         * @var CacheInterface $GLPI_CACHE
          */
         global $DB, $GLPI_CACHE;
 
@@ -1698,7 +1699,7 @@ class CommonDBTM extends CommonGLPI
         }
 
         //Process business rules for assets
-        $this->assetBusinessRules(\RuleAsset::ONUPDATE);
+        $this->assetBusinessRules(RuleAsset::ONUPDATE);
 
         // Valid input for update
         if ($this->checkUnicity(false, $options)) {
@@ -1894,7 +1895,7 @@ class CommonDBTM extends CommonGLPI
      */
     protected function manageLocks()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $lockedfield = new Lockedfield();
@@ -1942,7 +1943,7 @@ class CommonDBTM extends CommonGLPI
      **/
     protected function forwardEntityInformations()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (!isset($this->fields['id']) || $this->fields['id'] < 0) {
@@ -2110,7 +2111,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function delete(array $input, $force = false, $history = true)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if ($DB->isSlave()) {
@@ -2608,7 +2609,7 @@ class CommonDBTM extends CommonGLPI
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -3523,7 +3524,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function isField($field)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (static::$notable === true) {
@@ -3888,7 +3889,7 @@ class CommonDBTM extends CommonGLPI
                 $missingFields[] = 'name';
             }
             if (count($missingFields) > 0) {
-                throw new \Exception(
+                throw new Exception(
                     vsprintf(
                         'Invalid search option in "%1$s": missing "%2$s" field(s). %3$s',
                         [
@@ -4006,7 +4007,7 @@ class CommonDBTM extends CommonGLPI
             // FIXME In GLPI 11.0, trigger a warning on invalid datatype (see `tests\units\Search::testSearchOptionsDatatype()`)
 
             if (!isset($opt['id'])) {
-                throw new \Exception(static::class . ': invalid search option! ' . print_r($opt, true));
+                throw new Exception(static::class . ': invalid search option! ' . print_r($opt, true));
             }
             $optid = $opt['id'];
             unset($opt['id']);
@@ -4183,7 +4184,7 @@ class CommonDBTM extends CommonGLPI
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -4724,7 +4725,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function deleteByCriteria($crit = [], $force = false, $history = true)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ok = false;
@@ -5309,7 +5310,7 @@ class CommonDBTM extends CommonGLPI
      */
     public static function listTemplates($itemtype, $target, $add = false)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (!($item = getItemForItemtype($itemtype))) {
@@ -5834,7 +5835,7 @@ class CommonDBTM extends CommonGLPI
      */
     public static function checkCircularRelation($items_id, $parents_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $fk = static::getForeignKeyField();
@@ -6119,7 +6120,7 @@ class CommonDBTM extends CommonGLPI
             return new $model_class();
         }
 
-        throw new \RuntimeException(sprintf(
+        throw new RuntimeException(sprintf(
             'Model class "%s" does not exist or is not a valid CommonDBTM.',
             $model_class
         ));
@@ -6256,7 +6257,7 @@ class CommonDBTM extends CommonGLPI
 
         foreach ($urls as $url) {
             if (!empty($url)) {
-                $resolved_url = \Toolbox::getPictureUrl($url);
+                $resolved_url = Toolbox::getPictureUrl($url);
                 $src_file = GLPI_PICTURE_DIR . '/' . $url;
                 if (file_exists($src_file)) {
                     $size = getimagesize($src_file);
@@ -6529,7 +6530,7 @@ class CommonDBTM extends CommonGLPI
         ?array $menus = null,
         array $options = []
     ): void {
-        \Glpi\Debug\Profiler::getInstance()->start(static::class . '::displayFullPageForItem');
+        Profiler::getInstance()->start(static::class . '::displayFullPageForItem');
         $id = (int) $id;
         $item = new static();
 
@@ -6566,9 +6567,9 @@ class CommonDBTM extends CommonGLPI
 
         // Show header
         if ($interface == 'central') {
-            \Glpi\Debug\Profiler::getInstance()->start(static::class . '::displayCentralHeader');
+            Profiler::getInstance()->start(static::class . '::displayCentralHeader');
             static::displayCentralHeader($title, $menus);
-            \Glpi\Debug\Profiler::getInstance()->stop(static::class . '::displayCentralHeader');
+            Profiler::getInstance()->stop(static::class . '::displayCentralHeader');
         } else {
             static::displayHelpdeskHeader($title, $menus);
         }
@@ -6578,9 +6579,9 @@ class CommonDBTM extends CommonGLPI
         }
         // Show item
         $options['loaded'] = true;
-        \Glpi\Debug\Profiler::getInstance()->start(static::class . '::display');
+        Profiler::getInstance()->start(static::class . '::display');
         $item->display($options);
-        \Glpi\Debug\Profiler::getInstance()->stop(static::class . '::display');
+        Profiler::getInstance()->stop(static::class . '::display');
 
         // Display extra html if needed
         if (!empty($options['after_display'] ?? "")) {
@@ -6613,7 +6614,7 @@ class CommonDBTM extends CommonGLPI
             $title = static::getTypeName(1);
         }
 
-        \Glpi\Debug\Profiler::getInstance()->start('Html::header');
+        Profiler::getInstance()->start('Html::header');
         Html::header(
             $title,
             '',
@@ -6622,7 +6623,7 @@ class CommonDBTM extends CommonGLPI
             $menus[2] ?? '',
             false
         );
-        \Glpi\Debug\Profiler::getInstance()->stop('Html::header');
+        Profiler::getInstance()->stop('Html::header');
     }
 
     /**
@@ -6680,9 +6681,9 @@ class CommonDBTM extends CommonGLPI
         }
 
         $confname = strtolower($this->gettype()) . 's_management_restrict';
-        if (\Config::getConfigurationValue('core', $confname) == Config::GLOBAL_MANAGEMENT) {
+        if (Config::getConfigurationValue('core', $confname) == Config::GLOBAL_MANAGEMENT) {
             $is_global = true;
-        } elseif (\Config::getConfigurationValue('core', $confname) == Config::UNIT_MANAGEMENT) {
+        } elseif (Config::getConfigurationValue('core', $confname) == Config::UNIT_MANAGEMENT) {
             $is_global = false;
         } else {
             $is_global = ($this->fields['is_global'] ?? false) == 1;

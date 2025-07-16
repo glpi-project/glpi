@@ -35,6 +35,9 @@
 
 namespace Glpi\Toolbox;
 
+use RecursiveIteratorIterator;
+use RecursiveArrayIterator;
+
 use function Safe\preg_match;
 
 final class ArrayPathAccessor
@@ -120,7 +123,7 @@ final class ArrayPathAccessor
     {
         // Get all paths including intermediate paths
         $paths = [];
-        $iterator = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($array), \RecursiveIteratorIterator::SELF_FIRST);
+        $iterator = new RecursiveIteratorIterator(new RecursiveArrayIterator($array), RecursiveIteratorIterator::SELF_FIRST);
         foreach ($iterator as $leafValue) {
             $keys = [];
             foreach (range(0, $iterator->getDepth()) as $depth) {

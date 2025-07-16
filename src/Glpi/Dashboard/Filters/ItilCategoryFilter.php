@@ -35,6 +35,7 @@
 
 namespace Glpi\Dashboard\Filters;
 
+use DBmysql;
 use ITILCategory;
 use Session;
 
@@ -52,7 +53,7 @@ class ItilCategoryFilter extends AbstractFilter
 
     public static function canBeApplied(string $table): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         return $DB->fieldExists($table, 'itilcategories_id');

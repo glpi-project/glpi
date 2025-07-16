@@ -35,6 +35,7 @@
 
 namespace Glpi\RichText;
 
+use Throwable;
 use CommonDBTM;
 use CommonITILActor;
 use CommonITILObject;
@@ -207,7 +208,7 @@ final class UserMention
                 $content_as_xml = simplexml_import_dom($dom);
             }
             libxml_clear_errors();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Sanitize process does not handle correctly `<` and `>` chars that are not surrounding html tags.
             // This generates invalid HTML that cannot be loaded by `SimpleXMLElement`.
             return [];

@@ -38,7 +38,7 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 use Glpi\Event;
 use Glpi\Exception\Http\BadRequestHttpException;
 
-/** @var \DBmysql $DB */
+/** @var DBmysql $DB */
 global $DB;
 
 $fup = new ITILFollowup();

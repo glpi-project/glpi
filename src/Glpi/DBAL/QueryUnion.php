@@ -35,6 +35,7 @@
 
 namespace Glpi\DBAL;
 
+use RuntimeException;
 use AbstractQuery;
 use DBmysql;
 
@@ -103,7 +104,7 @@ class QueryUnion extends AbstractQuery
         if (
             empty($union_queries)
         ) {
-            throw new \RuntimeException('Cannot build an empty union query');
+            throw new RuntimeException('Cannot build an empty union query');
         }
 
         $queries = [];

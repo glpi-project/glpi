@@ -34,6 +34,7 @@
 
 namespace Glpi\Kernel\Listener\RequestListener;
 
+use Psr\SimpleCache\CacheInterface;
 use Glpi\Kernel\KernelListenerTrait;
 use Glpi\Kernel\ListenersPriority;
 use Glpi\Toolbox\URL;
@@ -55,7 +56,7 @@ final class SessionVariables implements EventSubscriberInterface
 
     public function onKernelRequest(RequestEvent $event): void
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
+        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         if (!$event->isMainRequest()) {

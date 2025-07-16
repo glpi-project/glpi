@@ -31,12 +31,10 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-
 if (!$DB->fieldExists('glpi_groups_users', 'is_userdelegate')) {
     $migration->addField(
         'glpi_groups_users',

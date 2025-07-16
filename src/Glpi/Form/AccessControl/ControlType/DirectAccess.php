@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\AccessControl\ControlType;
 
+use InvalidArgumentException;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\FormAccessControl;
@@ -98,7 +99,7 @@ final class DirectAccess implements ControlTypeInterface
 
         $config = $access_control->getConfig();
         if (!$config instanceof DirectAccessConfig) {
-            throw new \InvalidArgumentException("Invalid config class");
+            throw new InvalidArgumentException("Invalid config class");
         }
 
         // Build form URL with integrated token parameter
@@ -138,7 +139,7 @@ final class DirectAccess implements ControlTypeInterface
         FormAccessParameters $parameters
     ): AccessVote {
         if (!$config instanceof DirectAccessConfig) {
-            throw new \InvalidArgumentException("Invalid config class");
+            throw new InvalidArgumentException("Invalid config class");
         }
 
         if (!$this->validateSession($config, $parameters)) {
@@ -192,7 +193,7 @@ final class DirectAccess implements ControlTypeInterface
     public function allowUnauthenticated(JsonFieldInterface $config): bool
     {
         if (!$config instanceof DirectAccessConfig) {
-            throw new \InvalidArgumentException("Invalid config class");
+            throw new InvalidArgumentException("Invalid config class");
         }
 
         return $config->allowUnauthenticated();

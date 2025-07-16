@@ -34,13 +34,15 @@
 
 namespace Glpi\Routing\Attribute;
 
+use Attribute;
+use CommonDBTM;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[\Attribute(\Attribute::IS_REPEATABLE | \Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_CLASS | Attribute::TARGET_METHOD)]
 class ItemtypeListRoute extends Route
 {
     /**
-     * @phpstan-param class-string<\CommonDBTM> $itemtype
+     * @phpstan-param class-string<CommonDBTM> $itemtype
      */
     public function __construct(string $itemtype)
     {

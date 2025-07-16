@@ -42,8 +42,8 @@ use function Safe\preg_match_all;
 function update951to952()
 {
     /**
-     * @var \DBmysql $DB
-     * @var \Migration $migration
+     * @var DBmysql $DB
+     * @var Migration $migration
      */
     global $DB, $migration;
 

@@ -42,7 +42,7 @@ global $CFG_GLPI;
 
 $itemDevice = getItemForItemtype($_GET['itemtype']);
 if (!$itemDevice) {
-    throw new \RuntimeException(
+    throw new RuntimeException(
         'Missing or incorrect item device type called!'
     );
 }

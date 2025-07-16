@@ -35,6 +35,8 @@
 
 namespace Glpi\Features;
 
+use Ramsey\Uuid\Uuid;
+use DBmysql;
 use CommonITILTask;
 use DateInterval;
 use DateTimeZone;
@@ -118,7 +120,7 @@ trait PlanningEvent
 
     public function prepareInputForAdd($input)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $input = $this->prepareGuestsInput($input);
@@ -134,7 +136,7 @@ trait PlanningEvent
         Toolbox::manageBeginAndEndPlanDates($input['plan']);
 
         if (!isset($input['uuid'])) {
-            $input['uuid'] = \Ramsey\Uuid\Uuid::uuid4();
+            $input['uuid'] = Uuid::uuid4();
         }
 
         $input["name"] = trim($input["name"]);
@@ -403,7 +405,7 @@ trait PlanningEvent
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 

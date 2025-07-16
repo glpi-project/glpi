@@ -574,7 +574,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      **/
     public function markDefault($ID)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (
@@ -618,7 +618,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      **/
     public function unmarkDefault($ID)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (
@@ -654,7 +654,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      **/
     public function unmarkDefaults(array $ids)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (Session::haveRight('config', UPDATE)) {
@@ -679,7 +679,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      */
     public function getMine(?string $itemtype = null, bool $inverse = false): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $searches = [];
@@ -730,7 +730,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                 $search_data = null;
                 try {
                     $search_data = $this->execute();
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     ErrorHandler::logCaughtException($e);
                     ErrorHandler::displayCaughtExceptionMessage($e);
                     $error = true;
@@ -844,7 +844,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      **/
     public static function getUsedItemtypes()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $types = [];
@@ -869,7 +869,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      **/
     public static function updateExecutionTime($id, $time)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if ($_SESSION['glpishow_count_on_tabs']) {
@@ -965,7 +965,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      */
     public function setDoCount(array $ids, $do_count)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->update(
@@ -991,7 +991,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      */
     public function setEntityRecur(array $ids, $eid, $recur)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->update(
@@ -1027,7 +1027,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -1080,7 +1080,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                             $stmt->bind_param('sss', $execution_time, $now, $row['id']);
                             $DB->executeStatement($stmt);
                         }
-                    } catch (\Throwable $e) {
+                    } catch (Throwable $e) {
                         ErrorHandler::logCaughtException($e);
                         ErrorHandler::displayCaughtExceptionMessage($e);
                     }
@@ -1128,7 +1128,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             $params = class_exists($this->getField('itemtype')) ? $query_tab : null;
 
             if (!$params) {
-                throw new \RuntimeException('Saved search #' . $this->getID() . ' seems to be broken!');
+                throw new RuntimeException('Saved search #' . $this->getID() . ' seems to be broken!');
             } else {
                 $params['silent_validation'] = true;
                 $data                   = $search->prepareDatasForSearch(
@@ -1188,7 +1188,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         unset($criteria['LEFT JOIN']);
         $criteria['FROM'] = self::getTable();
 
-        $it = new \DBmysqlIterator(null);
+        $it = new DBmysqlIterator(null);
         $it->buildQuery($criteria);
         $sql = $it->getSql();
         $sql = preg_replace('/.*WHERE /', '', $sql);

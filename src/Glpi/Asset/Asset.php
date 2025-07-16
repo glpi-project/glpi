@@ -34,6 +34,11 @@
 
 namespace Glpi\Asset;
 
+use Glpi\Features\AssignableItem;
+use Glpi\Features\Clonable;
+use Glpi\Features\Inventoriable;
+use RuntimeException;
+use InvalidArgumentException;
 use CommonDBTM;
 use Dropdown;
 use Entity;
@@ -58,15 +63,15 @@ abstract class Asset extends CommonDBTM
 {
     use CustomObjectTrait;
 
-    use \Glpi\Features\AssignableItem {
+    use AssignableItem {
         getEmpty as getEmptyFromAssignableItem;
         post_getFromDB as post_getFromDBFromAssignableItem;
         post_addItem as post_addItemFromAssignableItem;
         post_updateItem as post_updateItemFromAssignableItem;
     }
-    use \Glpi\Features\Clonable;
+    use Clonable;
     use \Glpi\Features\State;
-    use \Glpi\Features\Inventoriable;
+    use Inventoriable;
 
     /**
      * Asset definition system name.
@@ -93,7 +98,7 @@ abstract class Asset extends CommonDBTM
     {
         $definition = AssetDefinitionManager::getInstance()->getDefinition(static::$definition_system_name);
         if (!($definition instanceof AssetDefinition)) {
-            throw new \RuntimeException('Asset definition is expected to be defined in concrete class.');
+            throw new RuntimeException('Asset definition is expected to be defined in concrete class.');
         }
 
         return $definition;
@@ -315,7 +320,7 @@ abstract class Asset extends CommonDBTM
 
         $search_options[] = [
             'id' => 'customfields',
-            'name' => _n('Custom field', 'Custom fields', \Session::getPluralNumber()),
+            'name' => _n('Custom field', 'Custom fields', Session::getPluralNumber()),
         ];
         $custom_fields = static::getDefinition()->getCustomFieldDefinitions();
         foreach ($custom_fields as $custom_field) {
@@ -412,7 +417,7 @@ abstract class Asset extends CommonDBTM
 
             try {
                 $custom_fields[$custom_field->getID()] = $custom_field->getFieldType()->formatValueForDB($value);
-            } catch (\InvalidArgumentException) {
+            } catch (InvalidArgumentException) {
                 continue;
             }
         }

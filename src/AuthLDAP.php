@@ -32,7 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Safe\Exceptions\NetworkException;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Error\ErrorHandler;
 use Glpi\Toolbox\Filesystem;
@@ -564,7 +564,7 @@ TWIG, $twig_params);
      */
     public function showFormReplicatesConfig()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ID     = $this->getField('id');
@@ -1430,7 +1430,7 @@ TWIG, ['authldaps_id' => $ID]);
                 'success' => true,
                 'message' => sprintf(__('Connection to %s on port %s succeeded'), $host, $port_num),
             ];
-        } catch (\Safe\Exceptions\NetworkException $e) {
+        } catch (NetworkException $e) {
             return [
                 'success' => false,
                 'message' => sprintf(__('%s (ERR: %s) to %s on port %s'), $errstr, $errno, $host, $port_num),
@@ -1723,7 +1723,7 @@ TWIG, $twig_params);
     /**
      * Search users
      *
-     * @param \LDAP\Connection $ds            An LDAP link identifier
+     * @param Connection $ds An LDAP link identifier
      * @param array    $values        values to search
      * @param string   $filter        search filter
      * @param array    $attrs         An array of the required attributes
@@ -1892,7 +1892,7 @@ TWIG, $twig_params);
      */
     public static function getAllUsers(array $options, &$results, &$limitexceeded)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $config_ldap = new self();
@@ -2261,7 +2261,7 @@ TWIG, $twig_params);
         $entity,
         &$limitexceeded
     ) {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $config_ldap = new self();
@@ -2358,7 +2358,7 @@ TWIG, $twig_params);
     /**
      * Get the group's cn by giving his DN
      *
-     * @param \LDAP\Connection $ldap_connection ldap connection to use
+     * @param Connection $ldap_connection ldap connection to use
      * @param string   $group_dn        the group's dn
      *
      * @return false|string the group cn
@@ -2394,7 +2394,7 @@ TWIG, $twig_params);
      *
      * @since 0.84 new parameter $limitexceeded
      *
-     * @param \LDAP\Connection $ldap_connection  LDAP connection
+     * @param Connection $ldap_connection LDAP connection
      * @param object   $config_ldap      LDAP configuration
      * @param string   $filter           Filters
      * @param boolean  $limitexceeded    Is limit exceeded
@@ -2411,7 +2411,7 @@ TWIG, $twig_params);
         $search_in_groups = true,
         $groups = []
     ) {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         //First look for groups in group objects
@@ -2626,7 +2626,7 @@ TWIG, $twig_params);
         $ldap_server,
         $display = false
     ) {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $config_ldap = new self();
@@ -2761,7 +2761,7 @@ TWIG, $twig_params);
                         'id'     => $users_id,
                     ];
                 }
-            } catch (\RuntimeException $e) {
+            } catch (RuntimeException $e) {
                 ErrorHandler::logCaughtException($e);
                 ErrorHandler::displayCaughtExceptionMessage($e);
                 return false;
@@ -3274,7 +3274,7 @@ TWIG, $twig_params);
      */
     public static function tryLdapAuth($auth, $login, $password, $auths_id = 0, $user_dn = false, $break = true)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         //If no specific source is given, test all ldap directories
@@ -3351,7 +3351,7 @@ TWIG, $twig_params);
     /**
      * Get dn for a user
      *
-     * @param \LDAP\Connection $ds      LDAP link
+     * @param Connection $ds LDAP link
      * @param array    $options array of possible options:
      *          - basedn : base dn used to search
      *          - login_field : attribute to store login
@@ -3361,7 +3361,7 @@ TWIG, $twig_params);
      * @param bool|null $error  Boolean flag that will be set to `true` if a LDAP error occurs during operation
      *
      * @return array|boolean dn of the user, else false
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public static function searchUserDn($ds, $options = [], ?bool &$error = null)
     {
@@ -3460,7 +3460,7 @@ TWIG, $twig_params);
     /**
      * Get an object from LDAP by giving his DN
      *
-     * @param \LDAP\Connection  $ds         the active connection to the directory
+     * @param Connection $ds the active connection to the directory
      * @param string    $condition  the LDAP filter to use for the search
      * @param string    $dn         DN of the object
      * @param array     $attrs      Array of the attributes to retrieve
@@ -3507,7 +3507,7 @@ TWIG, $twig_params);
     /**
      * Get user by domain name
      *
-     * @param \LDAP\Connection  $ds         the active connection to the directory
+     * @param Connection $ds the active connection to the directory
      * @param string    $user_dn    domain name
      * @param array     $attrs      attributes
      * @param boolean   $clean      (true by default)
@@ -3527,7 +3527,7 @@ TWIG, $twig_params);
     /**
      * Get infos for groups
      *
-     * @param \LDAP\Connection $ds       LDAP link
+     * @param Connection $ds LDAP link
      * @param string   $group_dn dn of the group
      *
      * @return array|boolean group infos if found, else false
@@ -3551,7 +3551,7 @@ TWIG, $twig_params);
                 $entity->getFromDB($_SESSION['glpiactive_entity']);
                 $_REQUEST['authldaps_id'] = $entity->getField('authldaps_id');
                 if ((int) $_REQUEST['authldaps_id'] <= 0) {
-                    $defaultAuth = \Auth::getDefaultAuth();
+                    $defaultAuth = Auth::getDefaultAuth();
                     if ($defaultAuth instanceof AuthLDAP) {
                         $_REQUEST['authldaps_id'] = $defaultAuth->getID();
                     }
@@ -3662,7 +3662,7 @@ TWIG, $twig_params);
                 $_REQUEST['authldaps_id'] === NOT_AVAILABLE
                 || !$_REQUEST['authldaps_id']
             ) {
-                $defaultAuth = \Auth::getDefaultAuth();
+                $defaultAuth = Auth::getDefaultAuth();
                 if ($defaultAuth instanceof AuthLDAP) {
                     $_REQUEST['authldaps_id'] = $defaultAuth->getID();
 
@@ -3933,7 +3933,7 @@ TWIG, $twig_params);
      */
     public static function getServersWithImportByEmailActive()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ldaps = [];
@@ -4018,7 +4018,7 @@ TWIG, $twig_params);
     /**
      * Get ldap query results and clean them at the same time
      *
-     * @param \LDAP\Connection  $link   link to the directory connection
+     * @param Connection $link link to the directory connection
      * @param array     $result the query results
      * @param bool|null $error  Boolean flag that will be set to `true` if a LDAP error occurs during operation
      *
@@ -4051,7 +4051,7 @@ TWIG, $twig_params);
      */
     public static function getAllReplicateForAMaster($master_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $replicates = [];
@@ -4098,7 +4098,7 @@ TWIG, $twig_params);
      */
     public function getLdapExistingUser($name, $authldaps_id, $sync = null)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $user = new User();
 
@@ -4161,10 +4161,10 @@ TWIG, $twig_params);
             if (!self::isValidGuid($value)) {
                 $value = self::guidToString($value);
                 if (!self::isValidGuid($value)) {
-                    throw new \RuntimeException('Not an objectguid!');
+                    throw new RuntimeException('Not an objectguid!');
                 }
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // well... this is not an objectguid apparently
             $value = $infos[$field];
         }

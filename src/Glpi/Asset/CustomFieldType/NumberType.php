@@ -34,6 +34,7 @@
 
 namespace Glpi\Asset\CustomFieldType;
 
+use InvalidArgumentException;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CustomFieldOption\NumberOption;
 
@@ -80,7 +81,7 @@ TWIG, $twig_params);
             return null;
         }
         if (!is_numeric($value)) {
-            throw new \InvalidArgumentException('The value must be a number');
+            throw new InvalidArgumentException('The value must be a number');
         }
         $opts = $this->custom_field->fields['field_options'] ?? [];
         $min = $opts['min'] ?? 0;

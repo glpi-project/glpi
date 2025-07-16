@@ -32,7 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Features\Clonable;
+use Psr\SimpleCache\CacheInterface;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
@@ -43,7 +44,7 @@ use Glpi\Search\Provider\SQLProvider;
  **/
 class Group extends CommonTreeDropdown
 {
-    use Glpi\Features\Clonable;
+    use Clonable;
 
     public $dohistory       = true;
 
@@ -541,7 +542,7 @@ class Group extends CommonTreeDropdown
     public function getDataItems(bool $tech, bool $tree, bool $user, int $start, array &$res, array $extra_criteria = []): int
     {
         /**
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          * @var array $CFG_GLPI
          */
         global $DB, $CFG_GLPI;
@@ -821,7 +822,7 @@ class Group extends CommonTreeDropdown
 
     public function cleanRelationData()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         parent::cleanRelationData();
@@ -979,7 +980,7 @@ class Group extends CommonTreeDropdown
      */
     public static function updateLastGroupChange()
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
+        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
         $GLPI_CACHE->set('last_group_change', $_SESSION['glpi_currenttime']);
 

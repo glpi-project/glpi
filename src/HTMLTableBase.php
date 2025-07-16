@@ -65,7 +65,7 @@ abstract class HTMLTableBase
             && (!$this->super)
             && (!$allow_super_header)
         ) {
-            throw new \Exception(sprintf(
+            throw new Exception(sprintf(
                 'Implementation error: invalid super header name "%s"',
                 $header_name
             ));
@@ -74,7 +74,7 @@ abstract class HTMLTableBase
             !$header_object->isSuperHeader()
             && $this->super
         ) {
-            throw new \Exception(sprintf(
+            throw new Exception(sprintf(
                 'Implementation error: invalid super header name "%s"',
                 $header_name
             ));
@@ -131,7 +131,7 @@ abstract class HTMLTableBase
         $this->tryAddHeader();
         if (is_null($super)) {
             if (!$this->super) {
-                throw new \Exception('A sub header requires a super header');
+                throw new Exception('A sub header requires a super header');
             }
             return $this->appendHeader(new HTMLTableSuperHeader(
                 $this,
@@ -141,7 +141,7 @@ abstract class HTMLTableBase
             ));
         }
         if ($this->super) {
-            throw new \Exception('Cannot attach a super header to another header');
+            throw new Exception('Cannot attach a super header to another header');
         }
         return $this->appendHeader(new HTMLTableSubHeader($super, $name, $content, $father));
     }

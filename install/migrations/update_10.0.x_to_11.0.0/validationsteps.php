@@ -35,10 +35,9 @@
 use Glpi\DBAL\QuerySubQuery;
 
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  **/
-
 $validation_tables = ['glpi_ticketvalidations', 'glpi_changevalidations'];
 $itil_tables = ['glpi_tickets', 'glpi_changes'];
 
@@ -196,7 +195,7 @@ function add_itils_validationstep_to_existings_itils(Migration $migration, DBmys
         $itil_class = match ($validation_table) {
             'glpi_ticketvalidations' => 'Ticket',
             'glpi_changevalidations' => 'Change',
-            default => throw new \RuntimeException('Unexpected validation table: ' . $validation_table),
+            default => throw new RuntimeException('Unexpected validation table: ' . $validation_table),
         };
         $itil_table = match ($itil_class) {
             'Ticket' => 'glpi_tickets',
@@ -264,7 +263,7 @@ function remove_validation_percent_on_itils(Migration $migration, array $itil_ta
         $itil_class = match ($table) {
             'glpi_tickets' => 'Ticket',
             'glpi_changes' => 'Change',
-            default => throw new \RuntimeException('Unexpected ITIL table: ' . $table),
+            default => throw new RuntimeException('Unexpected ITIL table: ' . $table),
         };
         $migration->removeSearchOption($itil_class, 51); // 51 = validation_percent
     }
@@ -273,7 +272,7 @@ function remove_validation_percent_on_itils(Migration $migration, array $itil_ta
 /**
  * Migrate the validation rules.
  */
-function migrate_validation_rules(\DBmysql $DB, Migration $migration): void
+function migrate_validation_rules(DBmysql $DB, Migration $migration): void
 {
     // Validation threshold now applies to a specific step
     $migration->addPostQuery(

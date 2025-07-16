@@ -40,8 +40,8 @@
 function update93xto940()
 {
     /**
-     * @var \DBmysql $DB
-     * @var \Migration $migration
+     * @var DBmysql $DB
+     * @var Migration $migration
      */
     global $DB, $migration;
     $dbutils = new DbUtils();
@@ -84,12 +84,12 @@ function update93xto940()
         'condition'    => 3,
         'entities_id'  => 0,
         'uuid'         => 'fbeb1115-7a37b143-5a3a6fc1afdc17.92779763',
-        'match'        => \Rule::AND_MATCHING,
+        'match'        => Rule::AND_MATCHING,
     ];
     $criteria = [
-        ['criteria' => '_itemtype', 'condition' => \Rule::PATTERN_IS, 'pattern' => 'Computer'],
-        ['criteria' => '_auto', 'condition' => \Rule::PATTERN_IS, 'pattern' => 1],
-        ['criteria' => 'contact', 'condition' => \Rule::REGEX_MATCH, 'pattern' => '/(.*)@/'],
+        ['criteria' => '_itemtype', 'condition' => Rule::PATTERN_IS, 'pattern' => 'Computer'],
+        ['criteria' => '_auto', 'condition' => Rule::PATTERN_IS, 'pattern' => 1],
+        ['criteria' => 'contact', 'condition' => Rule::REGEX_MATCH, 'pattern' => '/(.*)@/'],
     ];
     $action = [['action_type' => 'regex_result', 'field' => '_affect_user_by_regex', 'value' => '#0']];
     $migration->createRule($rule, $criteria, $action);
@@ -101,12 +101,12 @@ function update93xto940()
         'condition'    => 3,
         'entities_id'  => 0,
         'uuid'         => 'fbeb1115-7a37b143-5a3a6fc1b03762.88595154',
-        'match'        => \Rule::AND_MATCHING,
+        'match'        => Rule::AND_MATCHING,
     ];
     $criteria = [
-        ['criteria' => '_itemtype', 'condition' => \Rule::PATTERN_IS, 'pattern' => 'Computer'],
-        ['criteria' => '_auto', 'condition' => \Rule::PATTERN_IS, 'pattern' => 1],
-        ['criteria' => 'contact', 'condition' => \Rule::REGEX_MATCH, 'pattern' => '/(.*),/'],
+        ['criteria' => '_itemtype', 'condition' => Rule::PATTERN_IS, 'pattern' => 'Computer'],
+        ['criteria' => '_auto', 'condition' => Rule::PATTERN_IS, 'pattern' => 1],
+        ['criteria' => 'contact', 'condition' => Rule::REGEX_MATCH, 'pattern' => '/(.*),/'],
     ];
     $migration->createRule($rule, $criteria, $action);
 
@@ -117,12 +117,12 @@ function update93xto940()
         'condition'    => 3,
         'entities_id'  => 0,
         'uuid'         => 'fbeb1115-7a37b143-5a3a6fc1b073e1.16257440',
-        'match'        => \Rule::AND_MATCHING,
+        'match'        => Rule::AND_MATCHING,
     ];
     $criteria = [
-        ['criteria' => '_itemtype', 'condition' => \Rule::PATTERN_IS, 'pattern' => 'Computer'],
-        ['criteria' => '_auto', 'condition' => \Rule::PATTERN_IS, 'pattern' => 1],
-        ['criteria' => 'contact', 'condition' => \Rule::REGEX_MATCH, 'pattern' => '/(.*)/'],
+        ['criteria' => '_itemtype', 'condition' => Rule::PATTERN_IS, 'pattern' => 'Computer'],
+        ['criteria' => '_auto', 'condition' => Rule::PATTERN_IS, 'pattern' => 1],
+        ['criteria' => 'contact', 'condition' => Rule::REGEX_MATCH, 'pattern' => '/(.*)/'],
     ];
     $migration->createRule($rule, $criteria, $action);
 

@@ -36,7 +36,7 @@
 Html::header_nocache();
 
 if (!isset($_REQUEST['id'])) {
-    throw new \RuntimeException('Required argument missing!');
+    throw new RuntimeException('Required argument missing!');
 }
 
 $id = $_REQUEST['id'];

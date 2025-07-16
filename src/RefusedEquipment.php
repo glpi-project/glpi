@@ -32,7 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Features\Inventoriable;
 use Glpi\Inventory\Inventory;
 use Glpi\Inventory\Request;
 
@@ -41,7 +41,7 @@ use Glpi\Inventory\Request;
  */
 class RefusedEquipment extends CommonDBTM
 {
-    use Glpi\Features\Inventoriable;
+    use Inventoriable;
 
     // From CommonDBTM
     public $dohistory                   = true;

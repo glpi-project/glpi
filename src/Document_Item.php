@@ -534,7 +534,7 @@ TWIG, $twig_params);
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -620,7 +620,7 @@ TWIG, $twig_params);
      */
     public static function showListForItem(CommonDBTM $item, $withtemplate = 0, $options = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $canedit = $item->canAddItem('Document') && Document::canView();

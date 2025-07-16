@@ -45,8 +45,8 @@ function update090xto910()
 {
     /**
      * @var array $CFG_GLPI
-     * @var \DBmysql $DB
-     * @var \Migration $migration
+     * @var DBmysql $DB
+     * @var Migration $migration
      */
     global $DB, $migration, $CFG_GLPI;
 

@@ -31,11 +31,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \Migration $migration
+ * @var Migration $migration
  */
-
 // Add index on level on all TreeDropdown tables
 $tables = [
     'glpi_businesscriticities',

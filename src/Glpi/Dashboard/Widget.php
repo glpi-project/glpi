@@ -35,6 +35,8 @@
 
 namespace Glpi\Dashboard;
 
+use Line;
+use Html;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Debug\Profiler;
 use Glpi\Plugin\Hooks;
@@ -133,7 +135,7 @@ class Widget
                 'height'     => 3,
             ],
             'line' => [
-                'label'      => \Line::getTypeName(1),
+                'label'      => Line::getTypeName(1),
                 'function'   => 'Glpi\\Dashboard\\Widget::simpleLine',
                 'image'      => $CFG_GLPI['root_doc'] . '/pics/charts/line.png',
                 'haspalette' => false,
@@ -1829,7 +1831,7 @@ HTML;
          });
       });
 JAVASCRIPT;
-        $js = \Html::scriptBlock($js);
+        $js = Html::scriptBlock($js);
 
         return $html . $js;
     }

@@ -35,6 +35,7 @@
 
 namespace Glpi\System\Log;
 
+use RuntimeException;
 use CommonGLPI;
 use Toolbox;
 
@@ -67,7 +68,7 @@ final class LogParser extends CommonGLPI
     public function __construct(string $directory = GLPI_LOG_DIR)
     {
         if (!is_dir($directory)) {
-            throw new \RuntimeException(sprintf('Invalid directory "%s".', $directory));
+            throw new RuntimeException(sprintf('Invalid directory "%s".', $directory));
         }
 
         $this->directory = $directory;

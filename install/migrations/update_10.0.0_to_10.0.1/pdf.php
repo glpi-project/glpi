@@ -31,12 +31,10 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-
 $fonts_mapping = [
     // xbriyaz => Arabic fonts
     'aealarabiya' => ['xbriyaz'],

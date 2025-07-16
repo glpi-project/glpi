@@ -35,6 +35,7 @@
 
 namespace Glpi\Toolbox;
 
+use League\CommonMark\Exception\CommonMarkException;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\MarkdownConverter;
@@ -51,7 +52,7 @@ class MarkdownRenderer
      *
      * @param string $md_content Markdown to render
      * @return string
-     * @throws \League\CommonMark\Exception\CommonMarkException
+     * @throws CommonMarkException
      */
     public function render(string $md_content): string
     {

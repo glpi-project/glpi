@@ -34,6 +34,7 @@
 
 namespace Glpi\Kernel;
 
+use Throwable;
 use Glpi\Application\Environment;
 use Glpi\Application\SystemConfigurator;
 use Override;
@@ -278,7 +279,7 @@ final class Kernel extends BaseKernel
     {
         try {
             $response->send();
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             $event = new ExceptionEvent($this, $request, self::MAIN_REQUEST, $exception);
 
             $dispatcher = $this->container->get('event_dispatcher');

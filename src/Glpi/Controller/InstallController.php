@@ -34,6 +34,8 @@
 
 namespace Glpi\Controller;
 
+use RuntimeException;
+use DBmysql;
 use DB;
 use Glpi\Cache\CacheManager;
 use Glpi\Controller\Traits\AsyncOperationProgressControllerTrait;
@@ -97,11 +99,11 @@ class InstallController extends AbstractController
         }
 
         if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
-            throw new \RuntimeException('Missing database configuration file.');
+            throw new RuntimeException('Missing database configuration file.');
         } else {
             include_once(GLPI_CONFIG_DIR . '/config_db.php');
             if (!\class_exists(DB::class)) {
-                throw new \RuntimeException('Invalid database configuration file.');
+                throw new RuntimeException('Invalid database configuration file.');
             }
         }
 
@@ -111,7 +113,7 @@ class InstallController extends AbstractController
         return $this->getProgressInitResponse(
             $progress_indicator,
             function () use ($logger, $progress_indicator) {
-                /** @var \DBmysql $DB */
+                /** @var DBmysql $DB */
                 global $DB;
                 $DB = new DB();
                 $DB->disableTableCaching(); // Prevents issues on fieldExists upgrading from old versions
@@ -152,7 +154,7 @@ class InstallController extends AbstractController
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql|null $DB
+         * @var DBmysql|null $DB
          */
         global $CFG_GLPI, $DB;
 

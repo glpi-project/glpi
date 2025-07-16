@@ -39,6 +39,11 @@
 
 namespace Glpi\Api;
 
+use RuntimeException;
+use Glpi\Exception\ForgetPasswordException;
+use Glpi\Exception\PasswordTooWeakException;
+use LogicException;
+use DBmysql;
 use AllAssets;
 use APIClient;
 use Auth;
@@ -600,7 +605,7 @@ abstract class API
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -1098,7 +1103,7 @@ abstract class API
      */
     protected function getItems($itemtype, $params = [], &$totalcount = 0)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $itemtype = $this->handleDepreciation($itemtype);
@@ -1897,7 +1902,7 @@ abstract class API
                     try {
                         $new_id = $item->add($object);
                         $message = $this->getGlpiLastMessage();
-                    } catch (\RuntimeException $e) {
+                    } catch (RuntimeException $e) {
                         $new_id = false;
                         $message = $e->getMessage();
                     }
@@ -2039,7 +2044,7 @@ abstract class API
                             $object = $this->inputObjectToArray($object);
                             $update_return = $item->update($object);
                             $message = $this->getGlpiLastMessage();
-                        } catch (\RuntimeException $e) {
+                        } catch (RuntimeException $e) {
                             $update_return = false;
                             $message = $e->getMessage();
                         }
@@ -2171,7 +2176,7 @@ abstract class API
                                 $params['history']
                             );
                             $message = $this->getGlpiLastMessage();
-                        } catch (\RuntimeException $e) {
+                        } catch (RuntimeException $e) {
                             $message = $e->getMessage();
                             $delete_return = false;
                         }
@@ -2235,7 +2240,7 @@ abstract class API
         if (!isset($params['password_forget_token'])) {
             try {
                 $user->forgetPassword($params['email']);
-            } catch (\Glpi\Exception\ForgetPasswordException $e) {
+            } catch (ForgetPasswordException $e) {
                 $this->returnError($e->getMessage());
             }
             return [
@@ -2250,9 +2255,9 @@ abstract class API
             ];
             try {
                 $user->updateForgottenPassword($input);
-            } catch (\Glpi\Exception\ForgetPasswordException $e) {
+            } catch (ForgetPasswordException $e) {
                 $this->returnError($e->getMessage());
-            } catch (\Glpi\Exception\PasswordTooWeakException $e) {
+            } catch (PasswordTooWeakException $e) {
                 implode('\n', $e->getMessages());
                 $this->returnError(implode('\n', $e->getMessages()));
             }
@@ -2937,7 +2942,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
         int $id,
         string $itemtype
     ): array {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $_networkports = [];
@@ -3167,7 +3172,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
             $class = "Glpi\Api\Deprecated\\$itemtype";
 
             if (!is_a($class, DeprecatedInterface::class, true)) {
-                throw new \LogicException();
+                throw new LogicException();
             }
 
             $this->deprecated_item = new $class();

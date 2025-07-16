@@ -35,4 +35,6 @@
 
 namespace Glpi\Exception;
 
-class ForgetPasswordException extends \Exception {}
+use Exception;
+
+class ForgetPasswordException extends Exception {}

@@ -34,6 +34,7 @@
 
 namespace Glpi\Asset\Capacity;
 
+use DBmysql;
 use Cable;
 use CommonGLPI;
 use Glpi\Asset\CapacityConfig;
@@ -94,7 +95,7 @@ class HasSocketCapacity extends AbstractCapacity
 
     public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $this->unregisterFromTypeConfig('socket_types', $classname);

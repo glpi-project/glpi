@@ -34,6 +34,7 @@
 
 namespace Glpi\ItemTranslation;
 
+use LogicException;
 use CommonDBChild;
 use CommonDBTM;
 use Gettext\Languages\Language;
@@ -201,7 +202,7 @@ class ItemTranslation extends CommonDBChild
     {
         $item = $this->getItem();
         if (!($item instanceof ProvideTranslationsInterface)) {
-            throw new \LogicException('Item does not provide translations');
+            throw new LogicException('Item does not provide translations');
         }
 
         $translated_handlers = 0;
@@ -227,7 +228,7 @@ class ItemTranslation extends CommonDBChild
     {
         $item = $this->getItem();
         if (!($item instanceof ProvideTranslationsInterface)) {
-            throw new \LogicException('Item does not provide translations');
+            throw new LogicException('Item does not provide translations');
         }
 
         $translated_handlers = 0;
@@ -253,7 +254,7 @@ class ItemTranslation extends CommonDBChild
     {
         $item = $this->getItem();
         if (!($item instanceof ProvideTranslationsInterface)) {
-            throw new \LogicException('Item does not provide translations');
+            throw new LogicException('Item does not provide translations');
         }
 
         $translations_to_review = 0;
