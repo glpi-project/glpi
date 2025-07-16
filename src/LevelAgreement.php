@@ -136,6 +136,11 @@ abstract class LevelAgreement extends CommonDBChild
 
     public function showForm($ID, array $options = [])
     {
+        if ($ID == 0 || $ID == -1) {
+            $options[static::$items_id] = $options['parent']->fields["id"];
+            $this->check(-1, CREATE, $options);
+        }
+
         TemplateRenderer::getInstance()->display('/pages/service-levels/levelagreement.html.twig', [
             'item'    => $this,
             'params'  => $options,
