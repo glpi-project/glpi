@@ -1117,6 +1117,7 @@ function update91xto920()
             'notifications_ajax_sound' => null,
             'notifications_ajax_icon_url'       => '/pics/glpi.png',
         ]);
+        $migration->removeConfig(['use_mailing']);
     }
 
     if (!$DB->tableExists('glpi_notifications_notificationtemplates')) {
