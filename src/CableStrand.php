@@ -35,7 +35,9 @@
 
 use Glpi\Socket;
 
-/// Class CableStrand
+/**
+ *  Class CableStrand
+ **/
 class CableStrand extends CommonDropdown
 {
     public static function getTypeName($nb = 0)

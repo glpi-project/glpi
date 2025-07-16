@@ -41,7 +41,7 @@ use Glpi\Features\AssignableItem;
 /**
  * CartridgeItem Class
  * This class is used to manage the various types of cartridges.
- * \see Cartridge
+ * @see Cartridge
  **/
 class CartridgeItem extends CommonDBTM
 {

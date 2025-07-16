@@ -64,7 +64,6 @@ abstract class CommonITILCost extends CommonDBChild
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         // can exists for template
         if (
             (get_class($item) == static::$itemtype)
@@ -83,11 +82,6 @@ abstract class CommonITILCost extends CommonDBChild
         return '';
     }
 
-    /**
-     * @param CommonGLPI $item object
-     * @param integer $tabnum          (default 1)
-     * @param integer $withtemplate    (default 0)
-     **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         self::showForObject($item);
@@ -198,7 +192,7 @@ abstract class CommonITILCost extends CommonDBChild
         return $tab;
     }
 
-    public static function rawSearchOptionsToAdd()
+    public static function rawSearchOptionsToAdd(): array
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -315,8 +309,10 @@ abstract class CommonITILCost extends CommonDBChild
 
     /**
      * Init cost for creation based on previous cost
+     *
+     * @return void
      **/
-    public function initBasedOnPrevious()
+    public function initBasedOnPrevious(): void
     {
 
         $item = getItemForItemtype(static::$itemtype);
@@ -324,7 +320,7 @@ abstract class CommonITILCost extends CommonDBChild
             !isset($this->fields[static::$items_id])
             || !$item->getFromDB($this->fields[static::$items_id])
         ) {
-            return false;
+            return;
         }
 
         // Set actiontime to
@@ -372,6 +368,7 @@ abstract class CommonITILCost extends CommonDBChild
             'FROM'   => static::getTable(),
             'WHERE'  => [static::$items_id => $items_id],
         ])->current();
+
         return $result['sumtime'];
     }
 

@@ -33,8 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-/// Mandatory fields for change template class
-/// since version 0.83
+/**
+ * Mandatory fields for change template class
+ *
+ * @since 0.83
+ */
 class ChangeTemplateMandatoryField extends ITILTemplateMandatoryField
 {
     // From CommonDBChild

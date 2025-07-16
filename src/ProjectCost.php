@@ -180,17 +180,14 @@ class ProjectCost extends CommonDBChild
         return $tab;
     }
 
-    /**
-     * Init cost for creation based on previous cost
-     **/
-    public function initBasedOnPrevious()
+    public function initBasedOnPrevious(): void
     {
         $ticket = new Ticket();
         if (
             !isset($this->fields['projects_id'])
             || !$ticket->getFromDB($this->fields['projects_id'])
         ) {
-            return false;
+            return;
         }
 
         $lastdata = $this->getLastCostForProject($this->fields['projects_id']);

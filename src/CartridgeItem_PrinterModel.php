@@ -33,8 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-// Relation between CartridgeItem and PrinterModel
-// since version 0.84
+/**
+ *  Relation between CartridgeItem and PrinterModel
+ *  @since 0.84
+ **/
 class CartridgeItem_PrinterModel extends CommonDBRelation
 {
     // From CommonDBRelation
