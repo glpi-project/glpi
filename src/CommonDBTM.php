@@ -5300,6 +5300,13 @@ class CommonDBTM extends CommonGLPI
         return Html::input($name, ['value' => $value]);
     }
 
+    public function getTemplateListCriteria(): array
+    {
+        return [
+            'is_template'  => 1,
+        ];
+    }
+
     /**
      * @param string  $itemtype Item type
      * @param string  $target   Target
@@ -5332,9 +5339,7 @@ class CommonDBTM extends CommonGLPI
 
         $request = [
             'FROM'   => $item::getTable(),
-            'WHERE'  => [
-                'is_template'  => 1,
-            ],
+            'WHERE'  => $item->getTemplateListCriteria(),
             'ORDER'  => ['template_name'],
         ];
 

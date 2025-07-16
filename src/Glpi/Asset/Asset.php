@@ -564,4 +564,13 @@ abstract class Asset extends CommonDBTM
         }
         return array_unique($relations);
     }
+
+    public function getTemplateListCriteria(): array
+    {
+        return [
+            'assets_assetdefinitions_id' => static::getDefinition()->getID(),
+            'is_template'  => 1,
+        ];
+    }
+
 }
