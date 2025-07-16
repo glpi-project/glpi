@@ -938,7 +938,7 @@ final class QueryBuilder implements SearchInputInterface
      *
      * @return array Criteria
      */
-    public static function getDefaultCriteria($itemtype = ''): array
+    public static function getDefaultCriteria($itemtype): array
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -979,7 +979,7 @@ final class QueryBuilder implements SearchInputInterface
      *
      * @return array|false The found criteria array or false if nothing found
      */
-    private static function findCriteriaInSession($itemtype = '', $num = 0, $parents_num = [])
+    private static function findCriteriaInSession($itemtype, $num, $parents_num)
     {
         if (!isset($_SESSION['glpisearch'][$itemtype]['criteria'])) {
             return false;

@@ -935,7 +935,7 @@ class Stat extends CommonGLPI
      * @param string $begin
      * @param string $end
      * @param string $param
-     * @param array $value
+     * @param string|array $value
      * @param string $value2 (default '')
      * @param $add_criteria          (default [''])
      *
