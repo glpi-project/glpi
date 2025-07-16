@@ -575,7 +575,7 @@ final class Search
         $criteria['FROM'] = $this->getFrom($criteria);
 
         try {
-            if ($this->context->()) {
+            if ($this->context->isUnionSearchMode()) {
                 unset($criteria['LEFT JOIN'], $criteria['INNER JOIN'], $criteria['RIGHT JOIN'], $criteria['WHERE']);
             } else {
                 $this->addReadRestrictCriteria($criteria);
@@ -587,7 +587,7 @@ final class Search
                 $criteria['GROUPBY'] = ['_itemtype', '_.id'];
             } else {
                 $criteria['SELECT'][] = '_.id';
-                foreach (array_keys($this->getJoins()) as $join_alias) {
+                foreach (array_keys($this->context->getJoins()) as $join_alias) {
                     $s = $this->getSelectCriteriaForProperty($this->context->getPrimaryKeyPropertyForJoin($join_alias), true);
                     if ($s !== null) {
                         $criteria['SELECT'][] = $s;

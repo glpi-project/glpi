@@ -300,7 +300,11 @@ final class ResourceAccessor
             return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getUserMessage()), $e->getCode() ?: 400);
         } catch (\Throwable $e) {
             $message = (new APIException())->getUserMessage();
-            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message), 500);
+            $detail = null;
+            if ($_SESSION['glpi_use_mode'] === \Session::DEBUG_MODE) {
+                $detail = $e->getMessage();
+            }
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message, $detail), 500);
         }
         if (count($results['results']) === 0) {
             return AbstractController::getNotFoundErrorResponse();
