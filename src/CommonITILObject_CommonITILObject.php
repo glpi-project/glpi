@@ -381,7 +381,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
         return $links;
     }
 
-    protected static function getITILLinkTypes(): array
+    public static function getITILLinkTypes(): array
     {
         return [
             self::LINK_TO => [

@@ -60,6 +60,25 @@ interface FormDestinationInterface
         array $config,
     ): array;
 
+    /**
+     * Post creation processing for destination items.
+     *
+     * This method is called after all destination items have been created.
+     *
+     * @param Form                     $form
+     * @param AnswersSet               $answers_set
+     * @param FormDestination          $destination
+     * @param array<int, CommonDBTM[]> $created_items Array of created items, indexed by destination ID.
+     *
+     * @return void
+     */
+    public function postCreateDestinationItems(
+        Form $form,
+        AnswersSet $answers_set,
+        FormDestination $destination,
+        array $created_items,
+    ): void;
+
 
     /**
      * Render the configuration form for this destination type.

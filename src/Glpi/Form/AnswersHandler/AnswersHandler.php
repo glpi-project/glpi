@@ -353,6 +353,9 @@ final class AnswersHandler
         $engine = new Engine($form, new EngineInput($answers_set->toArray()));
         $engine_output = $engine->computeItemsThatMustBeCreated();
 
+        // Store created items for post-creation processing
+        $created_items = [];
+
         /** @var FormDestination $destination */
         foreach ($destinations as $destination) {
             $concrete_destination = $destination->getConcreteDestinationItem();
@@ -389,6 +392,30 @@ final class AnswersHandler
                     );
                 }
             }
+
+            // Store created items for post-creation processing
+            $created_items[$destination->getID()] = $items;
+        }
+
+        foreach ($destinations as $destination) {
+            $concrete_destination = $destination->getConcreteDestinationItem();
+            if (!$concrete_destination) {
+                // The configured destination might belong to an inactive plugin
+                continue;
+            }
+
+            // Skip if the destination failed its required conditions.
+            if (!$engine_output->itemMustBeCreated($destination)) {
+                continue;
+            }
+
+            // Post creation processing for destination items
+            $concrete_destination->postCreateDestinationItems(
+                $form,
+                $answers_set,
+                $destination,
+                $created_items,
+            );
         }
     }
 }

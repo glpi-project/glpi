@@ -712,7 +712,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$source_itemtype of method Glpi\\\\Migration\\\\AbstractPluginMigration\\:\\:mapItem\\(\\) expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
 	'identifier' => 'argument.type',
-	'count' => 7,
+	'count' => 6,
 	'path' => __DIR__ . '/src/Glpi/Form/Migration/FormMigration.php',
 ];
 $ignoreErrors[] = [

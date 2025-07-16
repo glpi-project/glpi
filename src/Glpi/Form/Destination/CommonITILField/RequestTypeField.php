@@ -39,6 +39,7 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\AbstractConfigField;
+use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Form;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
@@ -66,6 +67,7 @@ final class RequestTypeField extends AbstractConfigField implements DestinationF
     #[Override]
     public function renderConfigForm(
         Form $form,
+        FormDestination $destination,
         JsonFieldInterface $config,
         string $input_name,
         array $display_options

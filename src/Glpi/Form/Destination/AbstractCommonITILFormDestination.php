@@ -45,6 +45,7 @@ use Glpi\Form\Destination\CommonITILField\EntityField;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryField;
 use Glpi\Form\Destination\CommonITILField\ITILFollowupField;
 use Glpi\Form\Destination\CommonITILField\ITILTaskField;
+use Glpi\Form\Destination\CommonITILField\LinkedITILObjectsField;
 use Glpi\Form\Destination\CommonITILField\LocationField;
 use Glpi\Form\Destination\CommonITILField\ObserverField;
 use Glpi\Form\Destination\CommonITILField\RequesterField;
@@ -202,6 +203,23 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
         return [$itil_object];
     }
 
+    #[Override]
+    public function postCreateDestinationItems(
+        Form $form,
+        AnswersSet $answers_set,
+        FormDestination $destination,
+        array $created_items,
+    ): void {
+        foreach ($this->getConfigurableFields() as $field) {
+            $field->applyConfiguratedValueAfterDestinationCreation(
+                $destination,
+                $field->getConfig($form, $destination->getConfig()),
+                $answers_set,
+                $created_items
+            );
+        }
+    }
+
     /**
      * Get the sorted configurable fields for this destination type.
      *
@@ -269,6 +287,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
             new RequesterField(),
             new ObserverField(),
             new AssigneeField(),
+            new LinkedITILObjectsField(),
         ];
     }
 

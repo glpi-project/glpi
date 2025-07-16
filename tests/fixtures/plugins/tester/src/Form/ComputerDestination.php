@@ -62,6 +62,16 @@ final class ComputerDestination implements FormDestinationInterface
     }
 
     #[Override]
+    public function postCreateDestinationItems(
+        Form $form,
+        AnswersSet $answers_set,
+        FormDestination $destination,
+        array $created_items,
+    ): void {
+        // No post-creation processing needed for this destination
+    }
+
+    #[Override]
     public function renderConfigForm(
         Form $form,
         FormDestination $destination,
