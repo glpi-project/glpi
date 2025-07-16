@@ -32,10 +32,10 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\OAuth\Server;
 use Glpi\Event;
 use Glpi\Helpdesk\DefaultDataManager;
 use Glpi\Message\MessageType;
+use Glpi\OAuth\Server;
 use Glpi\Progress\AbstractProgressIndicator;
 use Glpi\Rules\RulesManager;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;

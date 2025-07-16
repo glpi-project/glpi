@@ -36,21 +36,21 @@
 
 namespace Glpi\Inventory\Asset;
 
-use SoftwareCategory;
-use stdClass;
-use Throwable;
-use Log;
 use DBmysql;
 use DBmysqlIterator;
 use Dropdown;
 use Entity;
-use Glpi\Inventory\Conf;
 use Glpi\DBAL\QueryParam;
+use Glpi\Inventory\Conf;
 use Item_OperatingSystem;
 use Item_SoftwareVersion;
+use Log;
 use RuleDictionnarySoftwareCollection;
 use Software as GSoftware;
+use SoftwareCategory;
 use SoftwareVersion;
+use stdClass;
+use Throwable;
 
 use function Safe\json_encode;
 

@@ -34,9 +34,9 @@
 
 namespace Glpi\Asset\Capacity;
 
-use DBmysql;
 use Cable;
 use CommonGLPI;
+use DBmysql;
 use Glpi\Asset\CapacityConfig;
 use Glpi\Socket;
 use Override;

@@ -37,23 +37,23 @@ namespace Glpi\Dashboard;
 
 use CommonDBChild;
 use DBmysql;
-use Glpi\Plugin\Hooks;
-use Session;
-use Plugin;
-use Toolbox;
 use Glpi\Dashboard\Filters\{
     DatesFilter,
+    DatesModFilter,
+    GroupRequesterFilter,
+    GroupTechFilter,
     ItilCategoryFilter,
     LocationFilter,
     ManufacturerFilter,
     RequestTypeFilter,
     StateFilter,
     TicketTypeFilter,
-    GroupRequesterFilter,
-    GroupTechFilter,
-    UserTechFilter,
-    DatesModFilter
+    UserTechFilter
 };
+use Glpi\Plugin\Hooks;
+use Plugin;
+use Session;
+use Toolbox;
 
 /**
  * Filter class

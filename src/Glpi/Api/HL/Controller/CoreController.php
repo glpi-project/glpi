@@ -35,14 +35,9 @@
 
 namespace Glpi\Api\HL\Controller;
 
-use Glpi\Api\HL\Doc\Schema;
-use Html;
-use User;
-use Throwable;
-use Glpi\Api\HL\Doc\Parameter;
-use Transfer;
-use JsonException;
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\Doc\Parameter;
+use Glpi\Api\HL\Doc\Schema;
 use Glpi\Api\HL\Middleware\CookieAuthMiddleware;
 use Glpi\Api\HL\OpenAPIGenerator;
 use Glpi\Api\HL\Route;
@@ -56,8 +51,13 @@ use Glpi\Http\Response;
 use Glpi\OAuth\Server;
 use Glpi\System\Status\StatusChecker;
 use Glpi\Toolbox\MarkdownRenderer;
+use Html;
+use JsonException;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Session;
+use Throwable;
+use Transfer;
+use User;
 
 use function Safe\file_get_contents;
 use function Safe\preg_replace;

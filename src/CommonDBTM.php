@@ -32,12 +32,11 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Debug\Profiler;
-use Psr\SimpleCache\CacheInterface;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryParam;
+use Glpi\Debug\Profiler;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
@@ -50,6 +49,7 @@ use Glpi\RichText\UserMention;
 use Glpi\Search\FilterableInterface;
 use Glpi\Search\SearchOption;
 use Glpi\Socket;
+use Psr\SimpleCache\CacheInterface;
 
 use function Safe\getimagesize;
 use function Safe\preg_grep;

@@ -35,16 +35,16 @@
 
 namespace Glpi\Features;
 
-use DBmysql;
 use CommonDBTM;
 use CommonDropdown;
 use CommonITILObject;
 use CommonTreeDropdown;
+use DBmysql;
 use DropdownTranslation;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
 use Html;
 use ITILCategory;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\DBAL\QueryExpression;
 use Search;
 
 use function Safe\json_encode;

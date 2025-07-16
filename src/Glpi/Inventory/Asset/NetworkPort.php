@@ -36,22 +36,22 @@
 
 namespace Glpi\Inventory\Asset;
 
-use stdClass;
-use Vlan;
-use NetworkPort_Vlan;
-use RuleMatchedLog;
-use NetworkPort_NetworkPort;
 use DBmysql;
-use Psr\SimpleCache\CacheInterface;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\FilesToJSON;
 use NetworkPort as GlobalNetworkPort;
+use NetworkPort_NetworkPort;
+use NetworkPort_Vlan;
 use NetworkPortAggregate;
 use NetworkPortType;
+use Psr\SimpleCache\CacheInterface;
 use RuleImportAssetCollection;
+use RuleMatchedLog;
+use stdClass;
 use Unmanaged;
+use Vlan;
 
 use function Safe\file_get_contents;
 use function Safe\json_decode;

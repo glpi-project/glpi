@@ -34,7 +34,6 @@
 
 namespace Glpi\Kernel;
 
-use Throwable;
 use Glpi\Application\Environment;
 use Glpi\Application\SystemConfigurator;
 use Override;
@@ -52,6 +51,7 @@ use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
+use Throwable;
 
 final class Kernel extends BaseKernel
 {

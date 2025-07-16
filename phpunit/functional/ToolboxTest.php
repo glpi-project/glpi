@@ -43,9 +43,9 @@ use Glpi\Features\Kanban;
 use Glpi\Features\PlanningEvent;
 use ITILFollowup;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Psr\Log\LogLevel;
 use stdClass;
 use Ticket;
-use Psr\Log\LogLevel;
 
 /* Test for inc/toolbox.class.php */
 

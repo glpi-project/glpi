@@ -36,22 +36,22 @@
  * Based on cacti plugin system
  */
 use Composer\Autoload\ClassLoader;
-use Glpi\Debug\Profiler;
-use Psr\Log\LoggerInterface;
-use Laminas\I18n\Translator\Translator;
-use Psr\SimpleCache\CacheInterface;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\Dashboard\Grid;
+use Glpi\Debug\Profiler;
+use Glpi\Event;
 use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\VersionParser;
-use Glpi\Event;
+use Laminas\I18n\Translator\Translator;
+use Psr\Log\LoggerInterface;
+use Psr\SimpleCache\CacheInterface;
 
-use function Safe\ob_start;
-use function Safe\ob_end_clean;
 use function Safe\ini_get;
+use function Safe\ob_end_clean;
+use function Safe\ob_start;
 use function Safe\preg_grep;
 use function Safe\preg_match;
 use function Safe\scandir;

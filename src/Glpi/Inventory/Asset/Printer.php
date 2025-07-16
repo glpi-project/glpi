@@ -35,16 +35,16 @@
 
 namespace Glpi\Inventory\Asset;
 
-use RuntimeException;
-use RuleMatchedLog;
-use DBmysql;
 use AutoUpdateSystem;
 use CommonDBTM;
+use DBmysql;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
-use RuleDictionnaryPrinterCollection;
 use Printer as GPrinter;
+use RuleDictionnaryPrinterCollection;
 use RuleImportAssetCollection;
+use RuleMatchedLog;
+use RuntimeException;
 
 use function Safe\preg_match;
 use function Safe\preg_replace;

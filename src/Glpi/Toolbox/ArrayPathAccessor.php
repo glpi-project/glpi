@@ -35,8 +35,8 @@
 
 namespace Glpi\Toolbox;
 
-use RecursiveIteratorIterator;
 use RecursiveArrayIterator;
+use RecursiveIteratorIterator;
 
 use function Safe\preg_match;
 

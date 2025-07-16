@@ -35,9 +35,9 @@
 
 namespace Glpi\Toolbox;
 
-use Toolbox;
-use Stringable;
 use DBmysql;
+use Stringable;
+use Toolbox;
 
 use function Safe\preg_match;
 

@@ -36,15 +36,13 @@
 namespace Glpi\CalDAV\Traits;
 
 use CommonDBTM;
-use InvalidArgumentException;
-use VObject;
-use DateTimeZone;
-use Planning;
-use UnexpectedValueException;
-use DateTimeInterface;
 use DateInterval;
+use DateTimeInterface;
+use DateTimeZone;
 use Glpi\Error\ErrorHandler;
 use Glpi\RichText\RichText;
+use InvalidArgumentException;
+use Planning;
 use RRule\RRule;
 use Sabre\VObject\Component;
 use Sabre\VObject\Component\VCalendar;
@@ -56,6 +54,8 @@ use Sabre\VObject\Property\ICalendar\DateTime;
 use Sabre\VObject\Property\ICalendar\Recur;
 use Sabre\VObject\Reader;
 use Safe\DateTime as SafeDateTime;
+use UnexpectedValueException;
+use VObject;
 
 use function Safe\json_decode;
 

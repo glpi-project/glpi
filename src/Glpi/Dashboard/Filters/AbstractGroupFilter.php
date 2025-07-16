@@ -34,15 +34,15 @@
 
 namespace Glpi\Dashboard\Filters;
 
-use Toolbox;
-use UnexpectedValueException;
-use DBmysql;
 use Change;
+use DBmysql;
 use Glpi\Features\AssignableItem;
 use Group;
 use Group_Item;
 use Problem;
 use Ticket;
+use Toolbox;
+use UnexpectedValueException;
 
 abstract class AbstractGroupFilter extends AbstractFilter
 {

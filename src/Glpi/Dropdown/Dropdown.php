@@ -34,11 +34,11 @@
 
 namespace Glpi\Dropdown;
 
-use RuntimeException;
 use CommonTreeDropdown;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\CustomObject\AbstractDefinition;
 use Glpi\CustomObject\CustomObjectTrait;
+use RuntimeException;
 
 abstract class Dropdown extends CommonTreeDropdown
 {

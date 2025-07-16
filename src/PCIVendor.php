@@ -32,10 +32,10 @@
  *
  * ---------------------------------------------------------------------
  */
-use Psr\SimpleCache\InvalidArgumentException;
 use Glpi\Features\CacheableListInterface;
 use Glpi\Inventory\FilesToJSON;
 use Psr\SimpleCache\CacheInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 
 use function Safe\file_get_contents;
 use function Safe\json_decode;

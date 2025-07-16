@@ -32,12 +32,12 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Features\DCBreadcrumb;
-use Glpi\Features\Clonable;
-use Glpi\Features\Inventoriable;
-use Glpi\Features\AssignableItem;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Features\AssignableItem;
+use Glpi\Features\Clonable;
+use Glpi\Features\DCBreadcrumb;
+use Glpi\Features\Inventoriable;
 use Glpi\Socket;
 
 /**

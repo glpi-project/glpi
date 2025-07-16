@@ -34,14 +34,14 @@
 
 namespace Glpi\Controller;
 
-use RuntimeException;
 use Glpi\DependencyInjection\PublicService;
 use Glpi\Http\HeaderlessStreamedResponse;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-use function Safe\ob_start;
 use function Safe\ob_get_clean;
+use function Safe\ob_start;
 
 final class LegacyFileLoadController implements PublicService
 {

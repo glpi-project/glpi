@@ -32,10 +32,10 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Features\PlanningEvent;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
+use Glpi\Features\PlanningEvent;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VTodo;
 

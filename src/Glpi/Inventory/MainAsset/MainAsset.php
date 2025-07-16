@@ -36,25 +36,25 @@
 
 namespace Glpi\Inventory\MainAsset;
 
-use Glpi\Inventory\Asset\NetworkCard;
-use Exception;
-use Domain;
-use Domain_Item;
-use DomainRelation;
-use Entity;
 use Agent;
-use Glpi\Inventory\Asset\Controller;
-use DBmysql;
 use Auth;
 use AutoUpdateSystem;
 use Blacklist;
 use CommonDBTM;
+use DBmysql;
+use Domain;
+use Domain_Item;
+use DomainRelation;
 use Dropdown;
+use Entity;
+use Exception;
+use Glpi\Inventory\Asset\Controller;
 use Glpi\Inventory\Asset\Firmware;
 use Glpi\Inventory\Asset\InventoryAsset;
 use Glpi\Inventory\Asset\InventoryNetworkPort;
-use Glpi\Inventory\MainAsset\Printer as MainAssetPrinter;
+use Glpi\Inventory\Asset\NetworkCard;
 use Glpi\Inventory\Conf;
+use Glpi\Inventory\MainAsset\Printer as MainAssetPrinter;
 use Glpi\Inventory\Request;
 use NetworkEquipment;
 use Printer;

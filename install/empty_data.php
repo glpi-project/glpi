@@ -32,13 +32,13 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Marketplace\Controller;
-use Glpi\Inventory\Inventory;
+use Glpi\Application\Environment;
 use Glpi\Event;
 use Glpi\Form\AnswersSet;
-use Glpi\Application\Environment;
 use Glpi\Form\Form;
 use Glpi\Inventory\Conf;
+use Glpi\Inventory\Inventory;
+use Glpi\Marketplace\Controller;
 use Glpi\RichText\UserMention;
 use Glpi\Socket;
 

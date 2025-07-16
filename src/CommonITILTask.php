@@ -32,16 +32,16 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Features\ParentStatus;
-use Glpi\Features\PlanningEvent;
-use Ramsey\Uuid\Uuid;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Features\ParentStatus;
+use Glpi\Features\PlanningEvent;
 use Glpi\RichText\RichText;
+use Ramsey\Uuid\Uuid;
 use Sabre\VObject\Component\VCalendar;
 use Safe\DateTime;
 

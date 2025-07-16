@@ -34,16 +34,16 @@
 
 namespace Glpi\Error;
 
-use Override;
-use Throwable;
-use Glpi\Error\ErrorDisplayHandler\ErrorDisplayHandler;
 use Glpi\Application\Environment;
-use Glpi\Error\ErrorDisplayHandler\ConsoleErrorDisplayHandler;
 use Glpi\Error\ErrorDisplayHandler\CliDisplayHandler;
+use Glpi\Error\ErrorDisplayHandler\ConsoleErrorDisplayHandler;
+use Glpi\Error\ErrorDisplayHandler\ErrorDisplayHandler;
 use Glpi\Error\ErrorDisplayHandler\HtmlErrorDisplayHandler;
+use Override;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\ErrorHandler\ErrorHandler as BaseErrorHandler;
+use Throwable;
 
 use function Safe\ini_set;
 

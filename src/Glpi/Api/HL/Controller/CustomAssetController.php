@@ -34,12 +34,11 @@
 
 namespace Glpi\Api\HL\Controller;
 
-use Glpi\Api\HL\Doc\Parameter;
-use Glpi\Api\HL\Doc\Schema;
-use Toolbox;
 use DBmysql;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\Doc\Parameter;
+use Glpi\Api\HL\Doc\Schema;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
@@ -55,6 +54,7 @@ use Group_Item;
 use Location;
 use Manufacturer;
 use State;
+use Toolbox;
 use User;
 
 #[Route(path: '/Assets/Custom', priority: 1, tags: ['Custom Assets'])]

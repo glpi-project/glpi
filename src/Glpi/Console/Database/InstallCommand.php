@@ -36,23 +36,23 @@
 
 namespace Glpi\Console\Database;
 
-use mysqli;
-use Glpi\Console\Exception\EarlyExitException;
-use Symfony\Component\Console\Exception\RuntimeException;
-use Throwable;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use DBConnection;
 use DBmysql;
 use Glpi\Cache\CacheManager;
 use Glpi\Console\Command\ConfigurationCommandInterface;
+use Glpi\Console\Exception\EarlyExitException;
 use Glpi\Console\Traits\TelemetryActivationTrait;
 use Glpi\Progress\ConsoleProgressIndicator;
 use Glpi\System\Requirement\DbConfiguration;
 use GLPIKey;
+use mysqli;
+use Symfony\Component\Console\Exception\RuntimeException;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Throwable;
 use Toolbox;
 
 class InstallCommand extends AbstractConfigureCommand implements ConfigurationCommandInterface

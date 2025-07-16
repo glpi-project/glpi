@@ -34,11 +34,11 @@
 
 namespace Glpi\Log;
 
-use Override;
-use Throwable;
 use Monolog\Level;
 use Monolog\LogRecord;
+use Override;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Throwable;
 
 class ErrorLogHandler extends AbstractLogHandler
 {

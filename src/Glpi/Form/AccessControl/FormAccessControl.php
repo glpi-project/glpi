@@ -35,17 +35,17 @@
 
 namespace Glpi\Form\AccessControl;
 
-use Psr\Log\LoggerInterface;
 use CommonDBChild;
 use CommonGLPI;
-use Glpi\Form\Export\Context\DatabaseMapper;
-use Glpi\Form\Export\Serializer\DynamicExportData;
-use InvalidArgumentException;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportData;
 use Glpi\Form\Form;
+use InvalidArgumentException;
 use Override;
+use Psr\Log\LoggerInterface;
 use ReflectionClass;
 
 use function Safe\json_decode;

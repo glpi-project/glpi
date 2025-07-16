@@ -35,15 +35,15 @@
 
 namespace Glpi\ContentTemplates;
 
-use Twig\Error\Error;
-use Twig\Sandbox\SecurityError;
-use Twig\Error\SyntaxError;
 use CommonITILObject;
 use Glpi\Error\ErrorHandler;
 use Glpi\RichText\RichText;
 use Twig\Environment;
+use Twig\Error\Error;
+use Twig\Error\SyntaxError;
 use Twig\Extension\SandboxExtension;
 use Twig\Loader\ArrayLoader;
+use Twig\Sandbox\SecurityError;
 use Twig\Sandbox\SecurityPolicy;
 use Twig\Source;
 

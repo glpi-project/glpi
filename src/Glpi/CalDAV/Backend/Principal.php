@@ -35,19 +35,19 @@
 
 namespace Glpi\CalDAV\Backend;
 
-use Sabre\DAV\Exception\NotImplemented;
-use Group;
-use User;
-use Group_User;
 use CommonDBTM;
-use UserEmail;
 use DBmysql;
 use Glpi\CalDAV\Node\Property;
 use Glpi\CalDAV\Traits\CalDAVPrincipalsTrait;
 use Glpi\CalDAV\Traits\CalDAVUriUtilTrait;
 use Glpi\DBAL\QuerySubQuery;
+use Group;
+use Group_User;
+use Sabre\DAV\Exception\NotImplemented;
 use Sabre\DAV\PropPatch;
 use Sabre\DAVACL\PrincipalBackend\AbstractBackend;
+use User;
+use UserEmail;
 
 /**
  * Principal backend for CalDAV server.

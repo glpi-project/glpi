@@ -34,8 +34,8 @@
 
 namespace Glpi\Asset\CustomFieldType;
 
-use InvalidArgumentException;
 use Glpi\Application\View\TemplateRenderer;
+use InvalidArgumentException;
 
 use function Safe\preg_match;
 use function Safe\strtotime;

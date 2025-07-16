@@ -34,10 +34,8 @@
 
 namespace Glpi\Form\Export\Serializer;
 
-use Throwable;
-use Toolbox;
-use DBmysql;
 use CommonDBTM;
+use DBmysql;
 use Entity;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Category;
@@ -70,6 +68,8 @@ use Glpi\Form\Section;
 use InvalidArgumentException;
 use RuntimeException;
 use Session;
+use Throwable;
+use Toolbox;
 
 use function Safe\json_decode;
 use function Safe\json_encode;

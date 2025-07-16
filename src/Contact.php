@@ -32,11 +32,11 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Features\Clonable;
-use Sabre\VObject\Component\VCard;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssetImage;
+use Glpi\Features\Clonable;
 use Glpi\Plugin\Hooks;
+use Sabre\VObject\Component\VCard;
 
 /**
  * Contact class

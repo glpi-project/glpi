@@ -35,22 +35,22 @@
 
 namespace Glpi\Security;
 
-use GLPIKey;
-use SodiumException;
-use Entity;
-use Profile_User;
-use Group_User;
-use DBmysql;
-use JsonException;
-use Psr\Log\LoggerInterface;
-use Exception;
 use DateInterval;
+use DBmysql;
+use Entity;
+use Exception;
 use Glpi\Application\View\TemplateRenderer;
+use GLPIKey;
+use Group_User;
+use JsonException;
+use Profile_User;
+use Psr\Log\LoggerInterface;
 use RobThree\Auth\Algorithm;
 use RobThree\Auth\Providers\Qr\BaconQrCodeProvider;
 use RobThree\Auth\TwoFactorAuth;
 use RobThree\Auth\TwoFactorAuthException;
 use Safe\DateTimeImmutable;
+use SodiumException;
 
 use function Safe\json_encode;
 

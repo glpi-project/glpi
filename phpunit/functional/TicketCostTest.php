@@ -34,11 +34,11 @@
 
 namespace tests\units;
 
+use Computer;
 use DbTestCase;
 use Item_Ticket;
 use Ticket;
 use TicketCost;
-use Computer;
 
 class TicketCostTest extends DbTestCase
 {

@@ -35,28 +35,28 @@
 
 namespace Glpi\Agent\Communication;
 
-use RuntimeException;
 use Config;
-use Glpi\Error\ErrorHandler;
-use UnexpectedValueException;
-use Glpi\Exception\Http\HttpException;
 use DOMDocument;
 use DOMElement;
 use Glpi\Agent\Communication\Headers\Common;
+use Glpi\Error\ErrorHandler;
+use Glpi\Exception\Http\HttpException;
 use Glpi\Exception\OAuth2KeyException;
-use Glpi\Inventory\Conf;
 use Glpi\Http\Request;
+use Glpi\Inventory\Conf;
 use Glpi\OAuth\Server;
+use GLPIKey;
 use League\OAuth2\Server\Exception\OAuthServerException;
+use RuntimeException;
 use Safe\Exceptions\SimplexmlException;
 use Toolbox;
-use GLPIKey;
+use UnexpectedValueException;
 
 use function Safe\base64_decode;
 use function Safe\gzcompress;
+use function Safe\gzdecode;
 use function Safe\gzdeflate;
 use function Safe\gzencode;
-use function Safe\gzdecode;
 use function Safe\gzinflate;
 use function Safe\gzuncompress;
 use function Safe\iconv;

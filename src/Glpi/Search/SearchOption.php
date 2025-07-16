@@ -35,31 +35,31 @@
 
 namespace Glpi\Search;
 
-use ArrayAccess;
-use NetworkPort;
 use AllAssets;
-use Location;
-use User;
-use Group;
-use Manufacturer;
-use Entity;
-use Contract;
-use Document;
-use Infocom;
-use Domain;
 use Appliance;
-use Link;
-use ManualLink;
-use Reservation;
-use ReservationItem;
-use Plugin;
-use CommonTreeDropdown;
+use ArrayAccess;
 use Change;
 use CommonDBTM;
+use CommonTreeDropdown;
+use Contract;
+use Document;
+use Domain;
+use Entity;
 use Glpi\Socket;
+use Group;
+use Infocom;
+use Link;
+use Location;
+use ManualLink;
+use Manufacturer;
+use NetworkPort;
+use Plugin;
 use Problem;
+use Reservation;
+use ReservationItem;
 use Session;
 use Ticket;
+use User;
 
 /**
  * Object representing a search option.

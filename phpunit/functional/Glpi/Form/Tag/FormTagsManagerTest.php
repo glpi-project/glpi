@@ -44,9 +44,9 @@ use Glpi\Form\Tag\CommentTitleTagProvider;
 use Glpi\Form\Tag\FormTagProvider;
 use Glpi\Form\Tag\QuestionTagProvider;
 use Glpi\Form\Tag\SectionTagProvider;
+use Glpi\Form\Tag\Tag;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
-use Glpi\Form\Tag\Tag;
 
 final class FormTagsManagerTest extends DbTestCase
 {

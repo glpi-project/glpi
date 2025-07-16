@@ -35,10 +35,10 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use Entity;
+use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Doc\Parameter;
 use Glpi\Api\HL\Doc\Schema;
-use Session;
-use Entity;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
@@ -46,8 +46,8 @@ use Glpi\Api\HL\RouteVersion;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Project;
-use Glpi\Api\HL\Doc as Doc;
 use ProjectTask;
+use Session;
 
 #[Route(path: '/Project', tags: ['Project'], requirements: [
     'project_id' => '\d+',

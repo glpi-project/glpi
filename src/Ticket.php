@@ -47,10 +47,10 @@ use Glpi\RichText\UserMention;
 use Safe\DateTime;
 use Safe\Exceptions\DatetimeException;
 
-use function Safe\strtotime;
 use function Safe\preg_match;
 use function Safe\preg_match_all;
 use function Safe\preg_replace;
+use function Safe\strtotime;
 
 /**
  * Ticket Class

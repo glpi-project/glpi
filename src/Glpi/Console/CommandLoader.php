@@ -35,7 +35,6 @@
 
 namespace Glpi\Console;
 
-use Symfony\Component\Console\Exception\CommandNotFoundException;
 use AppendIterator;
 use DirectoryIterator;
 use Glpi\Application\Environment;
@@ -47,6 +46,7 @@ use ReflectionClass;
 use SplFileInfo;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\CommandLoader\CommandLoaderInterface;
+use Symfony\Component\Console\Exception\CommandNotFoundException;
 
 use function Safe\preg_match;
 

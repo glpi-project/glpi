@@ -32,25 +32,25 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Features\TreeBrowse;
-use Glpi\Features\ParentStatus;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
+use Glpi\Features\ParentStatus;
+use Glpi\Features\TreeBrowse;
 use Safe\Exceptions\FilesystemException;
 use Symfony\Component\HttpFoundation\Response;
 
 use function Safe\copy;
-use function Safe\finfo_open;
 use function Safe\filesize;
+use function Safe\finfo_open;
 use function Safe\getimagesize;
 use function Safe\mkdir;
 use function Safe\opendir;
 use function Safe\preg_match;
 use function Safe\rename;
-use function Safe\sha1_file;
 use function Safe\session_destroy;
 use function Safe\session_id;
+use function Safe\sha1_file;
 use function Safe\unlink;
 
 /**

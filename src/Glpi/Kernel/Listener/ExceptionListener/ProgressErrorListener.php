@@ -34,12 +34,12 @@
 
 namespace Glpi\Kernel\Listener\ExceptionListener;
 
-use Throwable;
-use Psr\Log\LoggerInterface;
 use Glpi\Progress\ProgressStorage;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Throwable;
 
 final readonly class ProgressErrorListener implements EventSubscriberInterface
 {

@@ -33,10 +33,10 @@
  * ---------------------------------------------------------------------
  */
 use Glpi\Api\HL\Router;
-use Glpi\Event;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\Dashboard\Grid;
+use Glpi\Event;
 use Glpi\Plugin\Hooks;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\ArrayNormalizer;
@@ -44,8 +44,8 @@ use Glpi\UI\ThemeManager;
 use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\chdir;
-use function Safe\getcwd;
 use function Safe\exec;
+use function Safe\getcwd;
 use function Safe\glob;
 use function Safe\json_decode;
 use function Safe\json_encode;

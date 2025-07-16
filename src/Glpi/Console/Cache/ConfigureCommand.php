@@ -35,15 +35,15 @@
 
 namespace Glpi\Console\Cache;
 
-use Symfony\Component\Console\Exception\InvalidArgumentException;
-use Glpi\Console\Exception\EarlyExitException;
-use Throwable;
 use Glpi\Cache\CacheManager;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
+use Glpi\Console\Exception\EarlyExitException;
+use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Throwable;
 
 use function Safe\json_encode;
 

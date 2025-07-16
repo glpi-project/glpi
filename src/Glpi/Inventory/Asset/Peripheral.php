@@ -36,7 +36,6 @@
 
 namespace Glpi\Inventory\Asset;
 
-use USBVendor;
 use Computer;
 use DBmysql;
 use Glpi\Asset\Asset_PeripheralAsset;
@@ -44,6 +43,7 @@ use Glpi\Inventory\Conf;
 use Peripheral as GPeripheral;
 use RuleImportAssetCollection;
 use RuleMatchedLog;
+use USBVendor;
 
 class Peripheral extends InventoryAsset
 {

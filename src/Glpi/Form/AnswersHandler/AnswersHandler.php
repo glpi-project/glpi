@@ -35,9 +35,8 @@
 
 namespace Glpi\Form\AnswersHandler;
 
-use Throwable;
-use Exception;
 use DBmysql;
+use Exception;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Form\Answer;
 use Glpi\Form\AnswersSet;
@@ -50,6 +49,7 @@ use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Form;
 use Glpi\Form\Section;
 use Glpi\Form\ValidationResult;
+use Throwable;
 
 use function Safe\json_encode;
 

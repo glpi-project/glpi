@@ -32,9 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Features\Clonable;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
+use Glpi\Features\Clonable;
 
 class Appliance_Item extends CommonDBRelation
 {

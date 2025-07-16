@@ -35,20 +35,20 @@
 
 namespace Glpi\Console\Plugin;
 
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Auth;
 use Plugin;
 use Session;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use User;
 
-use function Safe\opendir;
-use function Safe\ob_start;
 use function Safe\ob_end_clean;
+use function Safe\ob_start;
+use function Safe\opendir;
 
 class InstallCommand extends AbstractPluginCommand
 {

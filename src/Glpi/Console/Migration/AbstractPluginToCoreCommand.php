@@ -35,12 +35,12 @@
 
 namespace Glpi\Console\Migration;
 
-use Glpi\Console\Exception\EarlyExitException;
-use LogicException;
 use CommonDBTM;
-use Infocom;
-use Plugin;
 use Glpi\Console\AbstractCommand;
+use Glpi\Console\Exception\EarlyExitException;
+use Infocom;
+use LogicException;
+use Plugin;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;

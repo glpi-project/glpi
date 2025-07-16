@@ -35,14 +35,14 @@
 
 namespace Glpi\Form\ServiceCatalog;
 
-use RuntimeException;
-use Glpi\Form\ServiceCatalog\Provider\ItemProviderInterface;
 use Glpi\Form\ServiceCatalog\Provider\CategoryProvider;
 use Glpi\Form\ServiceCatalog\Provider\CompositeProviderInterface;
 use Glpi\Form\ServiceCatalog\Provider\FormProvider;
+use Glpi\Form\ServiceCatalog\Provider\ItemProviderInterface;
 use Glpi\Form\ServiceCatalog\Provider\KnowbaseItemProvider;
 use Glpi\Form\ServiceCatalog\Provider\LeafProviderInterface;
 use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyEnum;
+use RuntimeException;
 
 final class ServiceCatalogManager
 {

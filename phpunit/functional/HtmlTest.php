@@ -34,11 +34,11 @@
 
 namespace tests\units;
 
+use Glpi\Toolbox\FrontEnd;
 use GlpiPlugin\Tester\MyPsr4Class;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
-use Glpi\Toolbox\FrontEnd;
 
 /* Test for inc/html.class.php */
 

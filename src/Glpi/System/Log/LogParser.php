@@ -35,8 +35,8 @@
 
 namespace Glpi\System\Log;
 
-use RuntimeException;
 use CommonGLPI;
+use RuntimeException;
 use Toolbox;
 
 use function Safe\file_get_contents;
@@ -44,8 +44,8 @@ use function Safe\file_put_contents;
 use function Safe\filemtime;
 use function Safe\filesize;
 use function Safe\preg_match;
-use function Safe\preg_split;
 use function Safe\preg_replace_callback;
+use function Safe\preg_split;
 use function Safe\readfile;
 use function Safe\scandir;
 

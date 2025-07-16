@@ -32,9 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Dashboard\Grid;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Dashboard\Dashboard;
+use Glpi\Dashboard\Grid;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
 use Glpi\System\Requirement\PhpSupportedVersion;

@@ -35,10 +35,10 @@
 
 namespace Glpi\Inventory\Asset;
 
-use RuntimeException;
 use DBmysql;
 use Glpi\Inventory\Conf;
 use Item_RemoteManagement;
+use RuntimeException;
 
 class RemoteManagement extends InventoryAsset
 {

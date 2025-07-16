@@ -36,8 +36,8 @@
 
 namespace Glpi\Inventory\Asset;
 
-use Item_DeviceMemory;
 use Glpi\Inventory\Conf;
+use Item_DeviceMemory;
 
 use function Safe\preg_match;
 

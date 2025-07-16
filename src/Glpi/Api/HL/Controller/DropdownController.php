@@ -35,12 +35,12 @@
 
 namespace Glpi\Api\HL\Controller;
 
-use Glpi\Api\HL\Doc\Parameter;
-use Glpi\Api\HL\Doc\Schema;
-use DropdownVisibility;
 use Calendar;
+use DropdownVisibility;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\Doc\Parameter;
+use Glpi\Api\HL\Doc\Schema;
 use Glpi\Api\HL\Route;
 use Location;
 use Manufacturer;

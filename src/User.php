@@ -32,12 +32,6 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Features\Clonable;
-use Glpi\Features\TreeBrowse;
-use LDAP\Connection;
-use Glpi\Security\TOTPManager;
-use Sabre\VObject\Component\VCard;
-use Glpi\Exception\PasswordTooWeakException;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Dashboard\Dashboard;
 use Glpi\Dashboard\Filter;
@@ -45,10 +39,16 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Exception\ForgetPasswordException;
+use Glpi\Exception\PasswordTooWeakException;
+use Glpi\Features\Clonable;
+use Glpi\Features\TreeBrowse;
 use Glpi\Plugin\Hooks;
+use Glpi\Security\TOTPManager;
+use LDAP\Connection;
+use Sabre\VObject\Component\VCard;
+use Safe\DateTime;
 use Safe\Exceptions\FilesystemException;
 use Symfony\Component\HttpFoundation\Request;
-use Safe\DateTime;
 
 use function Safe\fclose;
 use function Safe\fopen;

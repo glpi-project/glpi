@@ -39,8 +39,8 @@ use Glpi\Progress\ConsoleProgressIndicator;
 use GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\ConsoleSectionOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class ConsoleProgressIndicatorTest extends GLPITestCase
 {

@@ -34,8 +34,8 @@
 
 namespace Glpi\Api\HL\Search;
 
-use Glpi\Api\HL\Doc\Schema;
 use CommonDBTM;
+use Glpi\Api\HL\Doc\Schema;
 use RuntimeException;
 
 use function Safe\preg_match;

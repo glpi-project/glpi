@@ -32,8 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
-use Psr\SimpleCache\CacheInterface;
 use Glpi\Application\View\TemplateRenderer;
+use Psr\SimpleCache\CacheInterface;
 
 class Calendar_Holiday extends CommonDBRelation
 {

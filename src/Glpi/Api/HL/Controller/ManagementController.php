@@ -35,12 +35,9 @@
 
 namespace Glpi\Api\HL\Controller;
 
-use LogicException;
-use Glpi\Api\HL\Doc\Schema;
-use BusinessCriticity;
-use Glpi\Api\HL\Doc\Parameter;
 use AutoUpdateSystem;
 use Budget;
+use BusinessCriticity;
 use Cluster;
 use CommonDBTM;
 use Contact;
@@ -52,6 +49,8 @@ use Document_Item;
 use Domain;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\Doc\Parameter;
+use Glpi\Api\HL\Doc\Schema;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
@@ -62,6 +61,7 @@ use Glpi\Http\Response;
 use Group_Item;
 use Line;
 use Location;
+use LogicException;
 use Manufacturer;
 use Network;
 use SoftwareLicense;

@@ -35,23 +35,23 @@
 
 namespace Glpi\Api\HL\Controller;
 
-use Glpi\Api\HL\Doc\Schema;
-use Entity;
-use Stat;
-use Dropdown;
-use Search;
 use CommonDevice;
+use Dropdown;
+use Entity;
+use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\Doc\Schema;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
-use Glpi\Api\HL\Doc as Doc;
+use Search;
+use Stat;
 
-use function Safe\ob_start;
-use function Safe\ob_get_clean;
 use function Safe\mktime;
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
 use function Safe\parse_url;
 use function Safe\preg_match;
 use function Safe\strtotime;

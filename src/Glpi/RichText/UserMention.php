@@ -35,7 +35,6 @@
 
 namespace Glpi\RichText;
 
-use Throwable;
 use CommonDBTM;
 use CommonITILActor;
 use CommonITILObject;
@@ -46,6 +45,7 @@ use ITILFollowup;
 use ITILSolution;
 use NotificationEvent;
 use Profile;
+use Throwable;
 use User;
 
 use function Safe\preg_replace;

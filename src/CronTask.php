@@ -43,8 +43,8 @@ use Glpi\Error\ErrorHandler;
 use Glpi\Event;
 use Safe\Exceptions\FilesystemException;
 
-use function Safe\glob;
 use function Safe\filemtime;
+use function Safe\glob;
 use function Safe\ini_get;
 use function Safe\pcntl_signal;
 use function Safe\preg_match;

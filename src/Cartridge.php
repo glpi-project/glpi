@@ -32,8 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Features\Clonable;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\Clonable;
 
 use function Safe\mktime;
 

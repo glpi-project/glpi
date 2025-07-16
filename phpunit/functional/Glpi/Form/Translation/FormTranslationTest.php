@@ -37,10 +37,10 @@ namespace tests\units\Glpi\Form;
 
 use Dropdown;
 use Glpi\Form\Form;
+use Glpi\Form\FormTranslation;
 use Glpi\Form\QuestionType\QuestionTypeDropdown;
 use Glpi\Form\QuestionType\QuestionTypeDropdownExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
-use Glpi\Form\FormTranslation;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Session;

@@ -32,26 +32,26 @@
  *
  * ---------------------------------------------------------------------
  */
-use Sabre\VObject\ParseException;
-use Glpi\CalDAV\Backend\Calendar;
-use Psr\Log\LoggerInterface;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\CalDAV\Backend\Calendar;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Features\PlanningEvent;
 use Glpi\RichText\RichText;
+use Psr\Log\LoggerInterface;
 use RRule\RRule;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VEvent;
 use Sabre\VObject\Component\VTodo;
+use Sabre\VObject\ParseException;
 use Sabre\VObject\Property\FlatText;
 use Sabre\VObject\Property\ICalendar\Recur;
 use Sabre\VObject\Reader;
-use Glpi\Features\PlanningEvent;
 use Safe\DateTime;
 
-use function Safe\strtotime;
 use function Safe\parse_url;
 use function Safe\preg_match;
 use function Safe\preg_replace;
+use function Safe\strtotime;
 
 /**
  * Planning Class

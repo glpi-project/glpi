@@ -35,9 +35,9 @@
 
 namespace Glpi\Agent\Communication\Headers;
 
-use RuntimeException;
 use ReflectionClass;
 use ReflectionProperty;
+use RuntimeException;
 
 class Common
 {

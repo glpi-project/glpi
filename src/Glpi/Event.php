@@ -35,27 +35,27 @@
 
 namespace Glpi;
 
-use RuntimeException;
-use Entity;
-use Dropdown;
-use DbUtils;
-use DBmysql;
 use Ajax;
 use CommonDBTM;
 use CommonGLPI;
 use CronTask;
+use DBmysql;
+use DbUtils;
 use Document;
+use Dropdown;
+use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\System\Log\LogViewer;
 use Html;
 use Infocom;
 use ITILSolution;
+use RuntimeException;
 use Session;
 use Toolbox;
 
-use function Safe\ob_start;
 use function Safe\ob_get_clean;
+use function Safe\ob_start;
 
 /**
  * Event Class

@@ -35,8 +35,8 @@
 
 namespace Glpi\Form\QuestionType;
 
-use Glpi\ItemTranslation\Context\TranslationHandler;
 use Glpi\Form\Question;
+use Glpi\ItemTranslation\Context\TranslationHandler;
 
 /**
  * Must be implemented by question that provide translations.

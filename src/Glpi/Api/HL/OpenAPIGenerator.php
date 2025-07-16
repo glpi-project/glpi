@@ -35,14 +35,14 @@
 
 namespace Glpi\Api\HL;
 
-use ReflectionClass;
-use Session;
-use Glpi\Api\HL\Doc\Parameter;
 use CommonGLPI;
+use Glpi\Api\HL\Doc\Parameter;
 use Glpi\Api\HL\Doc\Schema;
 use Glpi\Api\HL\Doc\SchemaReference;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\OAuth\Server;
+use ReflectionClass;
+use Session;
 
 use function Safe\preg_match;
 use function Safe\preg_replace;

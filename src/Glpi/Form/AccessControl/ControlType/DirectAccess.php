@@ -35,16 +35,16 @@
 
 namespace Glpi\Form\AccessControl\ControlType;
 
-use InvalidArgumentException;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\FormAccessControl;
-use Glpi\Form\AccessControl\FormAccessParameters;
-use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Form;
+use InvalidArgumentException;
 use Override;
 
 final class DirectAccess implements ControlTypeInterface

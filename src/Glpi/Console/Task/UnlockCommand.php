@@ -37,9 +37,9 @@ namespace Glpi\Console\Task;
 
 use CronTask;
 use Glpi\Console\AbstractCommand;
-use Glpi\Event;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Event;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;

@@ -32,8 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
 
 /**
  * @var array $ADDTODISPLAYPREF

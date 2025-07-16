@@ -36,9 +36,9 @@
 
 namespace Glpi\Inventory\Asset;
 
-use PCIVendor;
-use Item_DeviceNetworkCard;
 use Glpi\Inventory\Conf;
+use Item_DeviceNetworkCard;
+use PCIVendor;
 
 class NetworkCard extends Device
 {

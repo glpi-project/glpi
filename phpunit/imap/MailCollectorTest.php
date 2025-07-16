@@ -42,9 +42,9 @@ use NotificationTarget;
 use NotificationTargetSoftwareLicense;
 use NotificationTargetTicket;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Psr\Log\LogLevel;
 use SoftwareLicense;
 use Ticket;
-use Psr\Log\LogLevel;
 
 class MailCollectorTest extends DbTestCase
 {

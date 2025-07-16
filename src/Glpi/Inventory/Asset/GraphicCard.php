@@ -35,8 +35,8 @@
 
 namespace Glpi\Inventory\Asset;
 
-use Item_DeviceGraphicCard;
 use Glpi\Inventory\Conf;
+use Item_DeviceGraphicCard;
 
 class GraphicCard extends Device
 {

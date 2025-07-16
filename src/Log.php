@@ -35,8 +35,8 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryParam;
-use Glpi\Search\SearchOption;
 use Glpi\RichText\RichText;
+use Glpi\Search\SearchOption;
 
 use function Safe\preg_match;
 

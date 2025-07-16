@@ -34,9 +34,9 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
-use Glpi\Features\AssignableItem;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Features\AssignableItem;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\AbstractConfigField;
@@ -44,12 +44,12 @@ use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Form;
-use Glpi\Form\Question;
-use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
+use Glpi\Form\Question;
 use Glpi\Form\QuestionType\AbstractQuestionType;
 use Glpi\Form\QuestionType\AbstractQuestionTypeActors;
+use Glpi\Form\QuestionType\QuestionTypeItem;
 use Group;
 use InvalidArgumentException;
 use Override;

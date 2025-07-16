@@ -35,8 +35,8 @@
 
 namespace Glpi\Inventory\Asset;
 
-use Item_DevicePowerSupply;
 use Glpi\Inventory\Conf;
+use Item_DevicePowerSupply;
 
 class PowerSupply extends Device
 {

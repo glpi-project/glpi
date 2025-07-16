@@ -35,10 +35,10 @@
 namespace Glpi\Asset;
 
 use CommonDCModelDropdown;
-use RuntimeException;
-use DBmysql;
 use CommonDropdown;
+use DBmysql;
 use Glpi\Asset\Capacity\IsRackableCapacity;
+use RuntimeException;
 use Toolbox;
 
 abstract class AssetModel extends CommonDCModelDropdown

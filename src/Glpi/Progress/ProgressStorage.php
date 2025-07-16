@@ -34,9 +34,9 @@
 
 namespace Glpi\Progress;
 
-use RuntimeException;
-use LogicException;
 use Glpi\Message\MessageType;
+use LogicException;
+use RuntimeException;
 
 use function Safe\fclose;
 use function Safe\fflush;

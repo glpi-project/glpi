@@ -35,10 +35,10 @@
 
 namespace Glpi\Features;
 
-use Infocom;
-use DBmysql;
 use CommonDBConnexity;
 use CommonDBTM;
+use DBmysql;
+use Infocom;
 use Session;
 
 /**

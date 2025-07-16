@@ -32,9 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
-use Psr\SimpleCache\CacheInterface;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
+use Psr\SimpleCache\CacheInterface;
 
 /**
  * CommonTreeDropdown Class

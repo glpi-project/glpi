@@ -35,10 +35,10 @@
 
 namespace Glpi\Console\Database;
 
-use Glpi\Console\Exception\EarlyExitException;
 use DBConnection;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
+use Glpi\Console\Exception\EarlyExitException;
 use Glpi\System\Requirement\DbTimezones;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

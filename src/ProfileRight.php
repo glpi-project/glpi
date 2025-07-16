@@ -32,10 +32,10 @@
  *
  * ---------------------------------------------------------------------
  */
-use Psr\SimpleCache\CacheInterface;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
+use Psr\SimpleCache\CacheInterface;
 
 /**
  * Profile class

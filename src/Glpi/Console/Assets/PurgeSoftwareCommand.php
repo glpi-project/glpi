@@ -34,8 +34,8 @@
 
 namespace Glpi\Console\Assets;
 
-use PurgeSoftwareTask;
 use Glpi\Console\AbstractCommand;
+use PurgeSoftwareTask;
 use Software;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputInterface;

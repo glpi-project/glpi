@@ -34,9 +34,9 @@
 
 namespace Glpi\Asset;
 
-use RuntimeException;
 use Manufacturer;
 use RuleDictionnaryDropdown;
+use RuntimeException;
 use Toolbox;
 
 abstract class RuleDictionaryModel extends RuleDictionnaryDropdown

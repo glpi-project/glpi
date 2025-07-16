@@ -36,10 +36,10 @@
 
 namespace Glpi\Inventory\Asset;
 
-use stdClass;
 use DBmysql;
 use Glpi\Inventory\Conf;
 use Item_Disk;
+use stdClass;
 
 class Volume extends InventoryAsset
 {

@@ -32,12 +32,12 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Search\CriteriaFilter;
-use Glpi\Debug\Profiler;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Debug\Profiler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Plugin\Hooks;
+use Glpi\Search\CriteriaFilter;
 use Glpi\Search\FilterableInterface;
 use Symfony\Component\HttpFoundation\Request;
 

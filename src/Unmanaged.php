@@ -33,9 +33,9 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Features\Inventoriable;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\Inventoriable;
 
 /**
  * Not managed devices from inventory

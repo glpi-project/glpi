@@ -36,8 +36,8 @@
 namespace Glpi\Inventory\Asset;
 
 use Database;
-use DBmysql;
 use DatabaseInstance as GDatabaseInstance;
+use DBmysql;
 use Glpi\Inventory\Conf;
 use RuleImportAssetCollection;
 use RuleMatchedLog;

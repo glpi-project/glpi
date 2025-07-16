@@ -34,9 +34,9 @@
 
 namespace Glpi\Http;
 
-use LogicException;
 use Config;
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use LogicException;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 

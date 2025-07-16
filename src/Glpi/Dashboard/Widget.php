@@ -35,22 +35,22 @@
 
 namespace Glpi\Dashboard;
 
-use Line;
-use Html;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Debug\Profiler;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\Toolbox\MarkdownRenderer;
+use Html;
+use Line;
 use Mexitek\PHPColors\Color;
 use Plugin;
-use Symfony\Component\DomCrawler\Crawler;
 use Search;
+use Symfony\Component\DomCrawler\Crawler;
 use Toolbox;
 
-use function Safe\ob_start;
-use function Safe\ob_get_clean;
 use function Safe\json_encode;
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
 
 /**
  * Widget class

@@ -34,15 +34,15 @@
 
 namespace Glpi\Console\User;
 
-use Profile;
-use Entity;
-use User;
-use Profile_User;
 use DBmysql;
+use Entity;
+use Profile;
+use Profile_User;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
+use User;
 
 class GrantCommand extends AbstractUserCommand
 {

@@ -35,15 +35,15 @@
 
 namespace Glpi\Console\Build;
 
-use Throwable;
-use RuntimeException;
 use Glpi\Application\Environment;
 use Glpi\System\Diagnostic\SourceCodeIntegrityChecker;
 use Glpi\Toolbox\VersionParser;
+use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Throwable;
 
 use function Safe\file_put_contents;
 use function Safe\json_encode;

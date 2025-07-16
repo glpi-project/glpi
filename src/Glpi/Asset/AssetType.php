@@ -34,8 +34,8 @@
 
 namespace Glpi\Asset;
 
-use RuntimeException;
 use CommonType;
+use RuntimeException;
 use Toolbox;
 
 abstract class AssetType extends CommonType

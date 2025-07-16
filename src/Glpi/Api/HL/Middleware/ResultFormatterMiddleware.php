@@ -35,10 +35,10 @@
 
 namespace Glpi\Api\HL\Middleware;
 
-use JsonException;
-use SimpleXMLElement;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Response;
+use JsonException;
+use SimpleXMLElement;
 
 class ResultFormatterMiddleware extends AbstractMiddleware implements ResponseMiddlewareInterface
 {

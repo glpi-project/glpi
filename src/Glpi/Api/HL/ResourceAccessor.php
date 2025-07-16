@@ -34,18 +34,18 @@
 
 namespace Glpi\Api\HL;
 
-use RuntimeException;
-use Glpi\Api\HL\Doc\Schema;
-use Throwable;
-use Session;
-use DBmysql;
 use CommonDBTM;
+use DBmysql;
 use Glpi\Api\HL\Controller\AbstractController;
+use Glpi\Api\HL\Doc\Schema;
 use Glpi\Api\HL\RSQL\RSQLException;
 use Glpi\Api\HL\Search\SearchContext;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Response;
 use Glpi\Toolbox\ArrayPathAccessor;
+use RuntimeException;
+use Session;
+use Throwable;
 
 use function Safe\preg_match;
 

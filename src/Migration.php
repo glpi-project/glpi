@@ -35,8 +35,8 @@
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
-use Glpi\Progress\AbstractProgressIndicator;
 use Glpi\Message\MessageType;
+use Glpi\Progress\AbstractProgressIndicator;
 
 use function Safe\preg_replace;
 

@@ -36,7 +36,6 @@
 
 namespace Glpi\Inventory\MainAsset;
 
-use stdClass;
 use Blacklist;
 use CommonDBTM;
 use IPAddress;
@@ -44,6 +43,7 @@ use PrinterLog;
 use PrinterModel;
 use PrinterType;
 use RuleDictionnaryPrinterCollection;
+use stdClass;
 
 use function Safe\preg_match;
 use function Safe\preg_replace;

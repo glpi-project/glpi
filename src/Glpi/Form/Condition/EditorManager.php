@@ -34,8 +34,8 @@
 
 namespace Glpi\Form\Condition;
 
-use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Comment;
+use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Question;
 use Glpi\Form\Section;
 use Session;

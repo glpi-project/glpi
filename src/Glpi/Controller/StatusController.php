@@ -34,16 +34,16 @@
 
 namespace Glpi\Controller;
 
-use Throwable;
-use Glpi\Http\Firewall;
-use Session;
 use Glpi\Api\HL\Router;
 use Glpi\Error\ErrorHandler;
+use Glpi\Http\Firewall;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Security\Attribute\SecurityStrategy;
+use Session;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use Throwable;
 
 final class StatusController extends AbstractController
 {

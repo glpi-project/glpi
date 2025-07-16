@@ -35,15 +35,15 @@
 
 namespace Glpi\Cache;
 
-use InvalidArgumentException;
-use RuntimeException;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Psr\Log\LoggerInterface;
 use DirectoryIterator;
 use Glpi\Kernel\Kernel;
+use InvalidArgumentException;
 use Psr\Cache\CacheItemPoolInterface;
+use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
+use RuntimeException;
 use Safe\Exceptions\FilesystemException;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Adapter\MemcachedAdapter;
 use Symfony\Component\Cache\Adapter\RedisAdapter;

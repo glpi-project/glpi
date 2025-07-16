@@ -34,11 +34,11 @@
 
 namespace Glpi\Asset\Capacity;
 
-use Exception;
+use CommonDBRelation;
 use CommonDBTM;
 use DBmysql;
-use CommonDBRelation;
 use DisplayPreference;
+use Exception;
 use Glpi\Asset\Asset;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\CapacityConfig;

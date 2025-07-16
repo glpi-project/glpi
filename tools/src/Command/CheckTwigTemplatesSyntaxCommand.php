@@ -35,7 +35,6 @@
 
 namespace Glpi\Tools\Command;
 
-use Twig\Error\Error;
 use FilesystemIterator;
 use Glpi\Application\View\TemplateRenderer;
 use RecursiveDirectoryIterator;
@@ -44,6 +43,7 @@ use RegexIterator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Twig\Error\Error;
 
 class CheckTwigTemplatesSyntaxCommand extends Command
 {

@@ -35,9 +35,9 @@
 
 namespace Glpi\System;
 
-use IteratorAggregate;
 use ArrayIterator;
 use Glpi\System\Requirement\RequirementInterface;
+use IteratorAggregate;
 use Traversable;
 
 /**

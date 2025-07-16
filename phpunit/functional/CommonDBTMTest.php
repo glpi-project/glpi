@@ -35,8 +35,8 @@
 namespace tests\units;
 
 use CommonDBTM;
-use DbTestCase;
 use Computer;
+use DbTestCase;
 use Document;
 use Document_Item;
 use Entity;

@@ -34,9 +34,8 @@
 
 namespace Glpi\Asset;
 
-use CommonDBTM;
-use SplFileObject;
 use Change_Item;
+use CommonDBTM;
 use CommonGLPI;
 use DirectoryIterator;
 use Dropdown;
@@ -49,6 +48,7 @@ use Item_Problem;
 use Item_Ticket;
 use ReflectionClass;
 use Session;
+use SplFileObject;
 
 use function Safe\preg_match;
 use function Safe\preg_replace;

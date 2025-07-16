@@ -32,25 +32,25 @@
  *
  * ---------------------------------------------------------------------
  */
-use Laminas\Mail\Storage\Exception\InvalidArgumentException;
-use Laminas\Mail\Storage\Part;
-use Safe\Exceptions\IconvException;
-use Laminas\Mail\Storage\AbstractStorage;
-use Psr\Log\LoggerInterface;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Error\ErrorHandler;
 use Laminas\Mail\Address;
 use Laminas\Mail\Header\AbstractAddressList;
 use Laminas\Mail\Header\ContentDisposition;
 use Laminas\Mail\Header\ContentType;
 use Laminas\Mail\Storage;
+use Laminas\Mail\Storage\AbstractStorage;
+use Laminas\Mail\Storage\Exception\InvalidArgumentException;
 use Laminas\Mail\Storage\Folder;
 use Laminas\Mail\Storage\Message;
+use Laminas\Mail\Storage\Part;
 use LitEmoji\LitEmoji;
-use Glpi\Error\ErrorHandler;
+use Psr\Log\LoggerInterface;
+use Safe\Exceptions\IconvException;
 
 use function Safe\base64_decode;
-use function Safe\iconv;
 use function Safe\file_put_contents;
+use function Safe\iconv;
 use function Safe\mb_convert_encoding;
 use function Safe\preg_match;
 use function Safe\preg_replace;

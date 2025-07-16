@@ -32,19 +32,19 @@
  *
  * ---------------------------------------------------------------------
  */
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Glpi\Error\ErrorHandler;
 use Glpi\Mail\SMTP\OauthConfig;
 use League\OAuth2\Client\Grant\RefreshToken;
+use Safe\DateTime;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mailer\Transport\Smtp\Auth\XOAuth2Authenticator;
 use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
 use Symfony\Component\Mailer\Transport\TransportInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
-use Safe\DateTime;
 
 use function Safe\preg_replace;
 

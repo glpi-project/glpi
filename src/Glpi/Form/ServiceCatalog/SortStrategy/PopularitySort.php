@@ -34,9 +34,9 @@
 
 namespace Glpi\Form\ServiceCatalog\SortStrategy;
 
+use Glpi\Form\Form;
 use Glpi\Form\ServiceCatalog\ServiceCatalogCompositeInterface;
 use Glpi\Form\ServiceCatalog\ServiceCatalogItemInterface;
-use Glpi\Form\Form;
 use KnowbaseItem;
 
 final class PopularitySort extends AbstractSortStrategy

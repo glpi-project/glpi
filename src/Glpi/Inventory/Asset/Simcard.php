@@ -35,8 +35,8 @@
 
 namespace Glpi\Inventory\Asset;
 
-use Item_DeviceSimcard;
 use Glpi\Inventory\Conf;
+use Item_DeviceSimcard;
 
 class Simcard extends Device
 {

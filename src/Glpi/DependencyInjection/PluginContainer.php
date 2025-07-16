@@ -34,19 +34,18 @@
 
 namespace Glpi\DependencyInjection;
 
-use UnitEnum;
-use ReflectionObject;
 use Closure;
 use Glpi\Kernel\Kernel;
 use Glpi\Routing\PluginRoutesLoader;
 use Plugin;
 use Psr\Container\NotFoundExceptionInterface;
+use ReflectionObject;
 use Symfony\Component\Config\Builder\ConfigBuilderGenerator;
 use Symfony\Component\Config\Loader\DelegatingLoader;
 use Symfony\Component\Config\Loader\LoaderResolver;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
@@ -56,6 +55,7 @@ use Symfony\Component\HttpKernel\Config\FileLocator;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Loader\Psr4DirectoryLoader;
 use Symfony\Component\Routing\Router;
+use UnitEnum;
 
 class PluginContainer implements ContainerInterface
 {

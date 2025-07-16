@@ -35,14 +35,14 @@
 
 namespace Glpi\Form\Export\Context;
 
-use LogicException;
-use DBmysql;
 use CommonDBTM;
+use DBmysql;
 use Glpi\Form\Comment;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Question;
 use Glpi\Form\Section;
 use InvalidArgumentException;
+use LogicException;
 
 final class DatabaseMapper
 {

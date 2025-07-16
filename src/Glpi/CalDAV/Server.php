@@ -35,11 +35,6 @@
 
 namespace Glpi\CalDAV;
 
-use Sabre\DAV\SimpleCollection;
-use Sabre\DAVACL\PrincipalCollection;
-use Sabre\DAV\Auth\Plugin;
-use Throwable;
-use Sabre\DAV\Exception;
 use Glpi\CalDAV\Backend\Auth;
 use Glpi\CalDAV\Backend\Calendar;
 use Glpi\CalDAV\Backend\Principal;
@@ -49,6 +44,11 @@ use Glpi\CalDAV\Plugin\Browser;
 use Glpi\CalDAV\Plugin\CalDAV;
 use Glpi\Error\ErrorHandler;
 use Sabre\DAV;
+use Sabre\DAV\Auth\Plugin;
+use Sabre\DAV\Exception;
+use Sabre\DAV\SimpleCollection;
+use Sabre\DAVACL\PrincipalCollection;
+use Throwable;
 
 class Server extends DAV\Server
 {

@@ -35,8 +35,8 @@
 
 namespace Glpi\Dashboard\Filters;
 
-use DBmysql;
 use Change;
+use DBmysql;
 use Html;
 use Problem;
 use Ticket;

@@ -35,23 +35,23 @@
 
 namespace Glpi\Api\HL;
 
-use DBmysql;
-use DBConnection;
-use DBmysqlIterator;
-use Session;
-use Glpi\Api\HL\Doc\Schema;
 use CommonDBTM;
+use DBConnection;
+use DBmysql;
+use DBmysqlIterator;
 use Entity;
 use ExtraVisibilityCriteria;
+use Glpi\Api\HL\Doc\Schema;
 use Glpi\Api\HL\RSQL\Lexer;
 use Glpi\Api\HL\RSQL\Parser;
 use Glpi\Api\HL\RSQL\RSQLException;
 use Glpi\Api\HL\Search\SearchContext;
-use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Toolbox\ArrayPathAccessor;
 use RuntimeException;
+use Session;
 
 use function Safe\preg_match;
 use function Safe\preg_replace;

@@ -35,8 +35,8 @@
 
 namespace Glpi\Search\Output;
 
-use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageMargins;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 

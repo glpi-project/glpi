@@ -35,16 +35,16 @@
 
 namespace Glpi\System\Status;
 
-use GLPIKey;
-use RuntimeException;
-use Throwable;
-use DBmysql;
 use AuthLDAP;
 use CronTask;
 use DBConnection;
+use DBmysql;
 use Glpi\Plugin\Hooks;
+use GLPIKey;
 use MailCollector;
 use Plugin;
+use RuntimeException;
+use Throwable;
 use Toolbox;
 
 use function Safe\fclose;

@@ -36,13 +36,13 @@
 
 namespace Glpi\Inventory\MainAsset;
 
-use stdClass;
-use RuntimeException;
 use Blacklist;
 use Glpi\Inventory\Asset\NetworkPort;
 use NetworkEquipmentModel;
 use NetworkEquipmentType;
 use NetworkName;
+use RuntimeException;
+use stdClass;
 
 use function Safe\preg_replace;
 

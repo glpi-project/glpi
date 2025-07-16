@@ -35,11 +35,11 @@
 
 namespace Glpi\Api\HL;
 
-use Throwable;
 use Glpi\Api\HL\Doc\Schema;
-use Psr\Log\LoggerInterface;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
+use Psr\Log\LoggerInterface;
+use Throwable;
 
 final class GraphQLGenerator
 {

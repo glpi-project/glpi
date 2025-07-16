@@ -34,10 +34,10 @@
 
 namespace tests\units\Glpi\Application;
 
+use Glpi\Application\ResourcesChecker;
 use GLPITestCase;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Glpi\Application\ResourcesChecker;
 
 class ResourcesCheckerTest extends GLPITestCase
 {

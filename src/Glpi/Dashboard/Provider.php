@@ -35,35 +35,35 @@
 
 namespace Glpi\Dashboard;
 
-use TicketValidation;
-use DBmysql;
 use CommonDBTM;
 use CommonDBVisible;
+use CommonDevice;
 use CommonITILActor;
 use CommonITILObject;
 use CommonITILValidation;
 use CommonTreeDropdown;
-use CommonDevice;
 use Config;
 use DBConnection;
-use Glpi\Debug\Profiler;
-use Glpi\Search\Input\QueryBuilder;
-use Glpi\Search\SearchOption;
+use DBmysql;
 use Glpi\Dashboard\Filters\{
     DatesFilter,
     GroupTechFilter,
     UserTechFilter,
 };
-use Group;
-use Group_Ticket;
-use Profile_User;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Debug\Profiler;
+use Glpi\Search\Input\QueryBuilder;
+use Glpi\Search\SearchOption;
+use Group;
+use Group_Ticket;
+use Profile_User;
 use Session;
 use Stat;
 use Ticket;
 use Ticket_User;
+use TicketValidation;
 use Toolbox;
 use User;
 

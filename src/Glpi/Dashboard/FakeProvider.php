@@ -35,9 +35,9 @@
 
 namespace Glpi\Dashboard;
 
-use CommonITILObject;
 use CommonDBTM;
 use CommonDevice;
+use CommonITILObject;
 use Group;
 use Session;
 use Ticket;

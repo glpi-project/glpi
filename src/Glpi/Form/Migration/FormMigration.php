@@ -34,9 +34,8 @@
 
 namespace Glpi\Form\Migration;
 
-use Throwable;
-use DBmysqlIterator;
 use DBmysql;
+use DBmysqlIterator;
 use Entity;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\DBAL\QueryExpression;
@@ -57,8 +56,8 @@ use Glpi\Form\Condition\LogicOperator;
 use Glpi\Form\Condition\ValidationStrategy;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\Condition\VisibilityStrategy;
-use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Destination\AbstractCommonITILFormDestination;
+use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\ITILActorField;
 use Glpi\Form\Destination\FormDestination;
@@ -86,6 +85,7 @@ use Glpi\Form\Section;
 use Glpi\Message\MessageType;
 use Glpi\Migration\AbstractPluginMigration;
 use LogicException;
+use Throwable;
 
 use function Safe\json_decode;
 

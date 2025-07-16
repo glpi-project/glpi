@@ -35,10 +35,10 @@
 
 namespace Glpi\Inventory\Asset;
 
-use RuntimeException;
 use DBmysql;
-use ItemAntivirus;
 use Glpi\Inventory\Conf;
+use ItemAntivirus;
+use RuntimeException;
 
 class Antivirus extends InventoryAsset
 {

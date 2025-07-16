@@ -35,8 +35,8 @@
 
 namespace Glpi\Application\View\Extension;
 
-use Toolbox;
 use Glpi\Features\Teamwork;
+use Toolbox;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 

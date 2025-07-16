@@ -32,9 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Features\DCBreadcrumb;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\DCBreadcrumb;
 
 /**
  * Rack Class

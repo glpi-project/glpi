@@ -35,10 +35,10 @@
 
 namespace Glpi\Form;
 
-use InvalidArgumentException;
 use CommonDBChild;
 use CommonDBTM;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
+use InvalidArgumentException;
 use Override;
 use ReflectionClass;
 use User;

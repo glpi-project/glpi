@@ -35,15 +35,15 @@
 
 namespace Glpi\Form;
 
-use LogicException;
 use CommonDBChild;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionableVisibilityInterface;
 use Glpi\Form\Condition\ConditionableVisibilityTrait;
-use Glpi\ItemTranslation\Context\TranslationHandler;
-use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Glpi\Form\Condition\ConditionHandler\VisibilityConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
+use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
+use Glpi\ItemTranslation\Context\TranslationHandler;
+use LogicException;
 use Override;
 use Ramsey\Uuid\Uuid;
 

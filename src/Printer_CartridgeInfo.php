@@ -32,8 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Inventory\Asset\Cartridge;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Inventory\Asset\Cartridge;
 
 use function Safe\preg_match;
 

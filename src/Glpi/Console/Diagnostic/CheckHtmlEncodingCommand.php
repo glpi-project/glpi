@@ -35,19 +35,19 @@
 
 namespace Glpi\Console\Diagnostic;
 
-use Glpi\Console\Exception\EarlyExitException;
-use DBmysql;
 use CommonDBTM;
+use DBmysql;
 use Glpi\Console\AbstractCommand;
+use Glpi\Console\Exception\EarlyExitException;
 use ITILFollowup;
 use Safe\Exceptions\FilesystemException;
 use Search;
 use Session;
-use Ticket;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Ticket;
 
 use function Safe\file_put_contents;
 use function Safe\preg_replace;

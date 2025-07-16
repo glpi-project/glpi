@@ -38,8 +38,8 @@ use DateTimeImmutable;
 use Glpi\Log\ErrorLogLineFormatter;
 use Monolog\Level;
 use Monolog\LogRecord;
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 
 class ErrorLogLineFormatterTest extends TestCase
 {

@@ -34,8 +34,8 @@
 
 namespace Glpi\Asset\CustomFieldType;
 
-use InvalidArgumentException;
 use Glpi\Asset\CustomFieldOption\OptionInterface;
+use InvalidArgumentException;
 
 interface TypeInterface
 {

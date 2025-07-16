@@ -35,9 +35,9 @@
 
 namespace Glpi\Application\View\Extension;
 
-use Exception;
 use CommonDBTM;
 use CommonGLPI;
+use Exception;
 use Profile_User;
 use Session;
 use Twig\Extension\AbstractExtension;

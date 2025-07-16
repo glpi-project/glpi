@@ -35,9 +35,9 @@
 
 namespace Glpi\Features;
 
-use CommonITILTask;
 use CommonITILActor;
 use CommonITILObject;
+use CommonITILTask;
 use PendingReason_Item;
 use Session;
 

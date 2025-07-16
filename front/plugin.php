@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Marketplace\View;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Marketplace\View;
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 

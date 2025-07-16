@@ -35,10 +35,10 @@
 
 namespace Glpi\Api\HL\Middleware;
 
-use Session;
 use Glpi\Http\JSONResponse;
 use GuzzleHttp\Psr7\Utils;
 use Safe\Exceptions\OutcontrolException;
+use Session;
 use Symfony\Component\DomCrawler\Crawler;
 
 use function Safe\json_decode;

@@ -35,8 +35,8 @@
 
 namespace Glpi\Form;
 
-use InvalidArgumentException;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
+use InvalidArgumentException;
 use JsonSerializable;
 
 final readonly class Answer implements JsonSerializable

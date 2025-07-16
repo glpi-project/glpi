@@ -35,13 +35,13 @@
 
 namespace Glpi\Api\HL;
 
-use Throwable;
 use CommonDBTM;
-use Psr\Log\LoggerInterface;
 use Glpi\Http\Request;
 use GraphQL\Error\Error;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Utils\BuildSchema;
+use Psr\Log\LoggerInterface;
+use Throwable;
 
 use function Safe\json_decode;
 

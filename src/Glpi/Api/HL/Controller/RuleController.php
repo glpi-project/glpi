@@ -35,15 +35,10 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use Entity;
+use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Doc\Parameter;
 use Glpi\Api\HL\Doc\Schema;
-use Entity;
-use Session;
-use JsonException;
-use RuleCriteria;
-use RuleAction;
-use LogicException;
-use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
@@ -51,8 +46,13 @@ use Glpi\Api\HL\RouteVersion;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
+use JsonException;
+use LogicException;
 use Rule;
+use RuleAction;
 use RuleCollection;
+use RuleCriteria;
+use Session;
 
 #[Route(path: '/Rule', tags: ['Rule'], requirements: [
     'collection' => [self::class, 'getRuleCollections'],

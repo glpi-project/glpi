@@ -32,18 +32,18 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Debug\Profile;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
+use Glpi\Debug\Profile;
 use Glpi\System\Requirement\DbTimezones;
 use Safe\DateTime;
 
-use function Safe\ini_get;
 use function Safe\filesize;
 use function Safe\fopen;
 use function Safe\fread;
+use function Safe\ini_get;
 use function Safe\preg_match;
 use function Safe\preg_replace;
 use function Safe\preg_split;

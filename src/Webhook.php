@@ -32,27 +32,27 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Features\Clonable;
-use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
-use Twig\Extra\Markdown\MarkdownExtension;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Exception\GuzzleException;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Controller\AssetController;
 use Glpi\Api\HL\Controller\CustomAssetController;
 use Glpi\Api\HL\Controller\ITILController;
 use Glpi\Api\HL\Controller\ManagementController;
 use Glpi\Api\HL\Doc\Schema;
+use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Router;
 use Glpi\Application\Environment;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinition;
 use Glpi\ContentTemplates\TemplateManager;
+use Glpi\Features\Clonable;
 use Glpi\Http\Request;
-use Glpi\Application\View\TemplateRenderer;
 use Glpi\Search\FilterableInterface;
 use Glpi\Search\FilterableTrait;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
+use Twig\Extra\Markdown\MarkdownExtension;
 
 use function Safe\json_decode;
 use function Safe\json_encode;

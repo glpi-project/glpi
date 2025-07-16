@@ -32,10 +32,10 @@
  *
  * ---------------------------------------------------------------------
  */
-use Glpi\Features\ParentStatus;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Features\ParentStatus;
 
 /**
  * @since 9.4.0

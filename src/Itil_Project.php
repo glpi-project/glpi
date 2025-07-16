@@ -32,9 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryUnion;
-use Glpi\Application\View\TemplateRenderer;
 
 /**
  * Relation between Itil items and Projects

@@ -35,8 +35,8 @@
 
 namespace Glpi\ContentTemplates\Parameters;
 
-use Glpi\ContentTemplates\Parameters\ParametersTypes\ParameterTypeInterface;
 use CommonDBTM;
+use Glpi\ContentTemplates\Parameters\ParametersTypes\ParameterTypeInterface;
 
 /**
  * Twig content templates parameters definition interface.
