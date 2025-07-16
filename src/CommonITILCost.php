@@ -87,7 +87,7 @@ abstract class CommonITILCost extends CommonDBChild
      * @param integer $tabnum        (default 1)
      * @param integer $withtemplate  Template or basic item  (default 0)
      **/
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         self::showForObject($item, $withtemplate);
         return true;
