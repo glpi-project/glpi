@@ -3424,7 +3424,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
 
         if ($results['ok'] == 0 && $results['noaction'] == 0 && $results['ko'] == 0 && $results['noright'] == 0) {
             // No items were processed, invalid action key -> 400
-            return $this->returnError(
+            $this->returnError(
                 "Invalid action key parameter, run 'getMassiveActions' endpoint to see available keys",
                 400,
                 "ERROR_MASSIVEACTION_KEY"

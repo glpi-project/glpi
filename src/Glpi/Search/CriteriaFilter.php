@@ -56,7 +56,7 @@ final class CriteriaFilter extends CommonDBChild
         return __('Filter');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         // Only on filterable items
         if (!$item instanceof CommonDBTM || !$item instanceof FilterableInterface) {

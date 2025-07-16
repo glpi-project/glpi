@@ -667,7 +667,8 @@ trait PlanningEvent
 
 
     /**
-     * Display a Planning Item
+     * Generate the html code to display a Planning Item.
+     * Note: despite its name, this method do not display anything by itself.
      *
      * @param $val        array of the item to display
      * @param $who        ID of the user (0 if all)
@@ -675,7 +676,7 @@ trait PlanningEvent
      *                    default '')
      * @param $complete   complete display (more details) (default 0)
      *
-     * @return void (display function)
+     * @return string
      **/
     public static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
     {

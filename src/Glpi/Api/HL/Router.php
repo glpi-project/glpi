@@ -560,7 +560,11 @@ EOT;
             }
             $action = static fn($input) => $middleware['middleware']($input, $action);
         }
-        return $action($input);
+
+        /** @var ?Response $result  */
+        $result = $action($input);
+
+        return $result;
     }
 
     private function doResponseMiddleware(MiddlewareInput $input): void

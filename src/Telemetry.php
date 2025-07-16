@@ -299,10 +299,8 @@ class Telemetry extends CommonGLPI
      * Send telemetry information
      *
      * @param CronTask $task CronTask instance
-     *
-     * @return void
      */
-    public static function cronTelemetry($task)
+    public static function cronTelemetry($task): ?int
     {
         $data = self::getTelemetryInfos();
         $infos = json_encode(['data' => $data]);

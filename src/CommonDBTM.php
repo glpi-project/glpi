@@ -1946,7 +1946,7 @@ class CommonDBTM extends CommonGLPI
         global $DB;
 
         if (!isset($this->fields['id']) || $this->fields['id'] < 0) {
-            return false;
+            return;
         }
 
         if (count(static::$forward_entity_to)) {

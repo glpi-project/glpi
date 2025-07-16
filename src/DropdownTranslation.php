@@ -149,7 +149,6 @@ class DropdownTranslation extends CommonDBChild
                 $translation->generateCompletename($this->fields, false);
             }
         }
-        return true;
     }
 
     public function post_updateItem($history = true)

@@ -377,7 +377,7 @@ class Domain extends CommonDBTM
      *
      * @param $options array of possible options
      *
-     * @return void
+     * @return string|int string (rendered html) if $option['display'] is false, else int (rand value)
      * */
     public static function dropdownDomains($options = [])
     {

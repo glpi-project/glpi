@@ -331,7 +331,7 @@ class Search
      * @param array $data   Array of search datas prepared to get datas
      * @param array $params Array of parameters
      *
-     * @return void
+     * @return bool
      **/
     public static function displayData(array $data, array $params = [])
     {

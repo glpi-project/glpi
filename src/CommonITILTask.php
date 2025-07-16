@@ -617,7 +617,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 // change ticket status (from splitted button)
                 $this->input['_job'] = static::getItilObjectItemInstance();
                 if (!$this->input['_job']->getFromDB($this->fields[$this->input['_job']->getForeignKeyField()])) {
-                    return false;
+                    return;
                 }
 
                 $this->updateParentStatus($this->input['_job'], $this->input);

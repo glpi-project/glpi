@@ -700,7 +700,7 @@ TWIG, $twig_params);
         return $rand;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;

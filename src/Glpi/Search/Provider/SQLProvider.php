@@ -6780,9 +6780,9 @@ HTML;
     /**
      * @param string $pattern
      * @param string $subject
-     * @return string[]|false
+     * @return array<string|null>
      **/
-    public static function explodeWithID($pattern, $subject)
+    public static function explodeWithID($pattern, $subject): array
     {
 
         $tab = explode($pattern, $subject);

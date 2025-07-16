@@ -803,7 +803,7 @@ class Session
      * @param string  $forcelang     Force to load a specific lang
      * @param boolean $with_plugins  Whether to load plugin languages or not
      *
-     * @return void
+     * @return string
      **/
     public static function loadLanguage($forcelang = '', $with_plugins = true)
     {
