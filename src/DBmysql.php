@@ -1734,7 +1734,7 @@ class DBmysql
      */
     private function formatAndQuoteSavePointName(int $level): string
     {
-        return $this->quoteName($this->formatSavePointName($level));
+        return static::quoteName($this->formatSavePointName($level));
     }
 
     /**
