@@ -1920,6 +1920,30 @@ class Ticket extends CommonITILObject
             }
         }
 
+        if (!isset($input['_skip_auto_assign']) || $input['_skip_auto_assign'] === false) {
+            // Manage auto assign
+            $auto_assign_mode = Entity::getUsedConfig('auto_assign_mode', $input['entities_id']);
+
+            switch ($auto_assign_mode) {
+                case Entity::CONFIG_NEVER:
+                    break;
+
+                case Entity::AUTO_ASSIGN_HARDWARE_CATEGORY:
+                    // Auto assign tech/group from hardware
+                    $input = $this->setTechAndGroupFromHardware($input, $item);
+                    // Auto assign tech/group from Category
+                    $input = $this->setTechAndGroupFromItilCategory($input);
+                    break;
+
+                case Entity::AUTO_ASSIGN_CATEGORY_HARDWARE:
+                    // Auto assign tech/group from Category
+                    $input = $this->setTechAndGroupFromItilCategory($input);
+                    // Auto assign tech/group from hardware
+                    $input = $this->setTechAndGroupFromHardware($input, $item);
+                    break;
+            }
+        }
+
         $skip_rules = isset($input['_skip_rules']) && $input['_skip_rules'] !== false;
         $tmprequester = 0;
         if (!$skip_rules) {
@@ -1989,30 +2013,6 @@ class Ticket extends CommonITILObject
                     );
                     return false;
                 }
-            }
-        }
-
-        if (!isset($input['_skip_auto_assign']) || $input['_skip_auto_assign'] === false) {
-            // Manage auto assign
-            $auto_assign_mode = Entity::getUsedConfig('auto_assign_mode', $input['entities_id']);
-
-            switch ($auto_assign_mode) {
-                case Entity::CONFIG_NEVER:
-                    break;
-
-                case Entity::AUTO_ASSIGN_HARDWARE_CATEGORY:
-                    // Auto assign tech/group from hardware
-                    $input = $this->setTechAndGroupFromHardware($input, $item);
-                    // Auto assign tech/group from Category
-                    $input = $this->setTechAndGroupFromItilCategory($input);
-                    break;
-
-                case Entity::AUTO_ASSIGN_CATEGORY_HARDWARE:
-                    // Auto assign tech/group from Category
-                    $input = $this->setTechAndGroupFromItilCategory($input);
-                    // Auto assign tech/group from hardware
-                    $input = $this->setTechAndGroupFromHardware($input, $item);
-                    break;
             }
         }
 
