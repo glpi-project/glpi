@@ -97,7 +97,7 @@ class Item_Ola extends CommonDBRelation
         // update waiting_time (to do before due_time)
         // update waiting_time for TTR only, TTO is not impacted by waiting time
         if (
-            $item_ola_data['type'] === SLM::TTR
+            $item_ola_data['ola_type'] === SLM::TTR
             && !is_null($ticket->fields['begin_waiting_date'])
             && in_array('status', $ticket->updates)
             && (
@@ -129,7 +129,7 @@ class Item_Ola extends CommonDBRelation
 
         // - update end_time
         // for TTO, endtime is when the ticket is assigned to the dedicated group.
-        if ($item_ola_data['type'] === SLM::TTO) {
+        if ($item_ola_data['ola_type'] === SLM::TTO) {
             if ($item_ola_data['end_time'] == null
                 &&
                 (
@@ -143,7 +143,7 @@ class Item_Ola extends CommonDBRelation
 
         // For TTR, end_time is when the ticket is closed
         // set it only if it is not already set
-        if ($item_ola_data['type'] === SLM::TTR && $item_ola_data['end_time'] == null) {
+        if ($item_ola_data['ola_type'] === SLM::TTR && $item_ola_data['end_time'] == null) {
             if ($ticket->isClosed() || $ticket->isSolved()) {
                 $item_ola_data['end_time'] = Session::getCurrentTime();
             }
@@ -307,8 +307,8 @@ class Item_Ola extends CommonDBRelation
             $_merged_data = array_merge($_merged_data, $item_Ola->fields);
             $_merged_data['items_olas_id'] = $ola_data['linkid'];
             $_merged_data['olas_id'] = $ola_data['id'];
-            if ($ola_data['type'] !== $item_Ola->fields['type']) {
-                throw new \LogicException('inconsistent type for Item_Ola #' . $item_Ola->getID());
+            if ($ola_data['type'] !== $item_Ola->fields['ola_type']) {
+                throw new LogicException('inconsistent type for Item_Ola #' . $item_Ola->getID());
             }
         }
 

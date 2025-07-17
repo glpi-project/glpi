@@ -321,7 +321,7 @@ class Provider
 
                 $ola_ttr_late_criteria = new QuerySubQuery(
                     [
-                        'SELECT' => [Ticket::generateSLAOLAComputation('internal_time_to_resolve')],
+                        'SELECT' => [Ticket::generateSLAOLAComputation('internal_time_to_resolve', 'glpi_items_olas')],
                         'FROM' => new QueryExpression('glpi_tickets', 'glpi_tickets_subquery'),
                         'LEFT JOIN' => [
                             'glpi_items_olas' => [
@@ -338,7 +338,7 @@ class Provider
 
                 $ola_tto_late_criteria = new QuerySubQuery(
                     [
-                        'SELECT' => [Ticket::generateSLAOLAComputation('internal_time_to_own')],
+                        'SELECT' => [Ticket::generateSLAOLAComputation('internal_time_to_own', 'glpi_items_olas')],
                         'FROM' => new QueryExpression('glpi_tickets', 'glpi_tickets_subquery'),
                         'LEFT JOIN' => [
                             'glpi_items_olas' => [
