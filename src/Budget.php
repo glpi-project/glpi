@@ -338,7 +338,7 @@ class Budget extends CommonDropdown
                 'SELECT'       => [
                     new QueryExpression($DB::quoteValue($itemtype), '_itemtype'),
                     $item_table => ['id', 'entities_id'],
-                    'glpi_infocoms.value',
+
                 ],
                 'FROM'         => 'glpi_infocoms',
                 'INNER JOIN'   => [
@@ -367,6 +367,12 @@ class Budget extends CommonDropdown
             $criteria['SELECT'][$item_table][] = $item->maybeDeleted() ? 'is_deleted' : new QueryExpression('0', 'is_deleted');
             $criteria['SELECT'][$item_table][] = $item->isField('serial') ? 'serial' : new QueryExpression('NULL', 'serial');
             $criteria['SELECT'][$item_table][] = $item->isField('otherserial') ? 'otherserial' : new QueryExpression('NULL', 'otherserial');
+            if ($item instanceof Item_Devices) {
+                $criteria['SELECT'][$item_table][] = $item::$items_id_2 . ' AS devices_id';
+            } else {
+                $criteria['SELECT'][] = new QueryExpression('NULL', 'devices_id');
+            }
+            $criteria['SELECT'][] = 'glpi_infocoms.value';
             if ($item->maybeTemplate()) {
                 $criteria['WHERE'][$item_table . '.is_template'] = 0;
             }
@@ -383,6 +389,7 @@ class Budget extends CommonDropdown
                     $item_table => ['id', 'entities_id'],
                     new QueryExpression('NULL', 'serial'),
                     new QueryExpression('NULL', 'otherserial'),
+                    new QueryExpression('NULL', 'devices_id'),
                 ],
                 'FROM' => $cost_table,
                 'INNER JOIN' => [
@@ -487,8 +494,8 @@ class Budget extends CommonDropdown
             $name = NOT_AVAILABLE;
             if ($items[$itemtype]->getFromDB($data["id"])) {
                 if ($items[$itemtype] instanceof Item_Devices) {
-                    $tmpitem = getItemForItemtype($itemtype);
-                    if ($tmpitem->getFromDB($data[$items[$itemtype]::$items_id_2])) {
+                    $tmpitem = getItemForItemtype($items[$itemtype]::$itemtype_2);
+                    if ($tmpitem->getFromDB($data['devices_id'])) {
                         $name = $tmpitem->getLink(['additional' => true]);
                     }
                 } else {
