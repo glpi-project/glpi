@@ -1426,6 +1426,8 @@ class Plugin extends CommonDBTM
     /**
      * Is a plugin activated ?
      *
+     * @phpstan-impure
+     *
      * @param string $directory  Plugin directory
      *
      * @return boolean
@@ -1499,6 +1501,8 @@ class Plugin extends CommonDBTM
 
     /**
      * Is a plugin installed ?
+     *
+     * @phpstan-impure
      *
      * @param string $directory  Plugin directory
      *
@@ -3068,9 +3072,7 @@ TWIG;
                     $plugin->getFromDB($id);
                     if ($plugin->isInstalled($plugin->fields['directory'])) {
                         $plugin->uninstall($id);
-                        // Note: phpstan doesn't seems to understand here that $plugin->uninstall will modify the return
-                        // value of $plugin->isInstalled().
-                        if (!$plugin->isInstalled($plugin->fields['directory'])) { // @phpstan-ignore booleanNot.alwaysFalse
+                        if (!$plugin->isInstalled($plugin->fields['directory'])) {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                         } else {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
@@ -3085,9 +3087,7 @@ TWIG;
                     $plugin->getFromDB($id);
                     if ($plugin->isInstalled($plugin->fields['directory']) && !$plugin->isActivated($plugin->fields['directory'])) {
                         $plugin->activate($id);
-                        // Note: phpstan doesn't seems to understand here that $plugin->activate will modify the return
-                        // value of $plugin->isActivated().
-                        if ($plugin->isActivated($plugin->fields['directory'])) { // @phpstan-ignore if.alwaysFalse
+                        if ($plugin->isActivated($plugin->fields['directory'])) {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                         } else {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
@@ -3102,9 +3102,7 @@ TWIG;
                     $plugin->getFromDB($id);
                     if ($plugin->isActivated($plugin->fields['directory'])) {
                         $plugin->unactivate($id);
-                        // Note: phpstan doesn't seems to understand here that $plugin->unactivate will modify the return
-                        // value of $plugin->isActivated().
-                        if (!$plugin->isActivated($plugin->fields['directory'])) { // @phpstan-ignore booleanNot.alwaysFalse
+                        if (!$plugin->isActivated($plugin->fields['directory'])) {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                         } else {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
