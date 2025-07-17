@@ -2592,7 +2592,9 @@ abstract class CommonITILObject extends CommonDBTM
                     $this->fields["sla_waiting_duration"]
                 );
                 // Add current level to do
-                $sla->addLevelToDo($this);
+                if ($this instanceof Ticket) {
+                    $sla->addLevelToDo($this);
+                }
             } else { // sla set by date
                 // Using calendar
                 if (
@@ -2634,11 +2636,11 @@ abstract class CommonITILObject extends CommonDBTM
             $this->fields["begin_waiting_date"] = $_SESSION["glpi_currenttime"];
 
             // Specific for tickets
-            if (isset($this->fields['slas_id_ttr']) && ($this->fields['slas_id_ttr'] > 0)) {
+            if ($this instanceof Ticket && isset($this->fields['slas_id_ttr']) && ($this->fields['slas_id_ttr'] > 0)) {
                 SLA::deleteLevelsToDo($this);
             }
 
-            if (is_a($this, Ticket::class)) {
+            if ($this instanceof Ticket) {
                 OLA::deleteLevelsToDo($this);
             }
         }
