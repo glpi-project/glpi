@@ -5356,24 +5356,19 @@ class CommonDBTM extends CommonGLPI
             Html::redirect($target_blank);
         }
 
-        $columns = [
-            'template' => _n('Template', 'Templates', 1),
-        ];
-        if (!$add && Session::isMultiEntitiesMode()) {
-            $columns['entity'] = Entity::getTypeName(1);
-        }
-
         $entries = [];
         $entity_cache = [];
 
         if ($add) {
             $entries[] = [
-                'template' => '<a href="' . htmlescape($target_blank) . '">' . __s('Blank Template') . '</a>',
+                'name' => '<a href="' . htmlescape($target_blank) . '">' . __s('Blank Template') . '</a>',
             ];
         }
 
         foreach ($iterator as $data) {
-            $entry = [];
+            $entry = [
+                'id' => $data['id'],
+            ];
             $templname = $data["template_name"];
             if ($_SESSION["glpiis_ids_visible"] || empty($data["template_name"])) {
                 $templname = sprintf(__('%1$s (%2$s)'), $templname, $data["id"]);
@@ -5382,7 +5377,7 @@ class CommonDBTM extends CommonGLPI
                 $modify_params = (strpos($target, '?') ? '&' : '?') . "id=" . $data['id'] . "&withtemplate=1";
                 $target_modify = $target . $modify_params;
 
-                $entry['template'] = '<a href="' . htmlescape($target_modify) . '">' . htmlescape($templname) . '</a>';
+                $entry['name'] = '<a href="' . htmlescape($target_modify) . '">' . htmlescape($templname) . '</a>';
                 if (Session::isMultiEntitiesMode()) {
                     if (!isset($entity_cache[$data['entities_id']])) {
                         $entity_cache[$data['entities_id']] = Dropdown::getDropdownName('glpi_entities', $data['entities_id']);
@@ -5390,48 +5385,25 @@ class CommonDBTM extends CommonGLPI
                     $entity = Dropdown::getDropdownName('glpi_entities', $data['entities_id']);
                     $entry['entity'] = $entity;
                 }
+                $entry['can_delete'] = $item::canPurge() && $item->can($data['id'], PURGE);
             } else {
                 $add_params = (strpos($target, '?') ? '&' : '?') . "id=" . $data['id'] . "&withtemplate=2";
                 $target_add = $target . $add_params;
-                $entry['template'] = '<a href="' . htmlescape($target_add) . '">' . htmlescape($templname) . '</a>';
+                $entry['name'] = '<a href="' . htmlescape($target_add) . '">' . htmlescape($templname) . '</a>';
             }
             $entries[] = $entry;
         }
 
         $twig_params = [
-            'datatable_params' => [
-                'is_tab' => true,
-                'nofilter' => true,
-                'nosort' => true,
-                'columns' => $columns,
-                'formatters' => [
-                    'template' => 'raw_html',
-                ],
-                'entries' => $entries,
-                'total_number' => count($entries),
-                'filtered_number' => count($entries),
-                'showmassiveactions' => false,
-            ],
+            'add_mode' => (bool) $add,
+            'templates' => $entries,
+            'target' => $target,
+            'can_delete' => $item::canPurge(),
             'add_template' => $item::canCreate() && !$add,
             'target_create' => $target . (strpos($target, '?') ? '&id=-1&withtemplate=1' : '?id=-1&withtemplate=1'),
-            'add_template_label' => __('Add a template'),
         ];
 
-        // language=Twig
-        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-            <div class="d-flex mx-auto justify-content-center">
-                <div class="card col-10 col-sm-6 col-xxl-3">
-                    <div class="card-body p-0">
-                        {{ include('components/datatable.html.twig', datatable_params, with_context = false) }}
-                    </div>
-                    {% if add_template %}
-                        <div class="card-footer text-center py-2">
-                            <a href="{{ target_create }}" class="mt-3">{{ add_template_label }}</a>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-TWIG, $twig_params);
+        TemplateRenderer::getInstance()->display('pages/assets/template_list.html.twig', $twig_params);
     }
 
     /**

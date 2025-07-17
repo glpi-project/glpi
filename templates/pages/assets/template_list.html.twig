@@ -1,0 +1,97 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% macro template_row(template, target, add_mode) %}
+    <tr>
+        <td>
+            {{ template['name']|raw }}
+        </td>
+        {% if not add_mode and session('glpi_multientitiesmode')|default(false) %}
+            <td>{{ template['entity'] }}</td>
+        {% endif %}
+        {% if not add_mode %}
+            <td>
+                <form method="post" action="{{ target }}" data-submit-once>
+                    {% if template['can_delete'] %}
+                        <input type="hidden" name="id" value="{{ template['id'] }}">
+                        <button class="btn btn-danger me-2" type="submit" name="purge" value="1"
+                                onclick="return confirm('{{ __('Confirm the final deletion?') }}');">
+                            <i class="ti ti-trash"></i>
+                            <span>{{ _x('button', 'Delete permanently') }}</span>
+                        </button>
+                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                    {% endif %}
+                </form>
+            </td>
+        {% endif %}
+    </tr>
+{% endmacro %}
+
+<div class="d-flex mx-auto justify-content-center">
+    <div class="card col-10 col-sm-6">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table">
+                    {% if templates|length == 0 %}
+                        <tr>
+                            <td>
+                                <div class="alert alert-info">{{ __('No results found') }}</div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <thead>
+                            <tr>
+                                <th>{{ _n('Template', 'Templates', 1) }}</th>
+                                {% if not add_mode and session('glpi_multientitiesmode')|default(false) %}
+                                    <th>{{ 'Entity'|itemtype_name(1) }}</th>
+                                {% endif %}
+                                {% if not add_mode %}
+                                    <th>{{ _n('Action', 'Actions', get_plural_number()) }}</th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for template in templates %}
+                                {{ _self.template_row(template, target, add_mode) }}
+                            {% endfor %}
+                        </tbody>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+        {% if add_template %}
+            <div class="card-footer text-center py-2">
+                <a href="{{ target_create }}" class="mt-3">{{ __('Add a template') }}</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
