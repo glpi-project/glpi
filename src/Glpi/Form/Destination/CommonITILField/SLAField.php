@@ -36,17 +36,19 @@ namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
+use InvalidArgumentException;
+use Override;
 
 abstract class SLAField extends SLMField
 {
-    #[\Override]
+    #[Override]
     public function applyConfiguratedValueToInputUsingAnswers(
         JsonFieldInterface $config,
         array $input,
         AnswersSet $answers_set
     ): array {
         if (!$config instanceof SLMFieldConfig) {
-            throw new \InvalidArgumentException("Unexpected config class");
+            throw new InvalidArgumentException("Unexpected config class");
         }
 
         // Only one strategy is allowed
