@@ -5949,7 +5949,7 @@ final class SQLProvider implements SearchProviderInterface
 
                         $progressbar_data = [
                             'text'         => Html::convDateTime($data[$ID][0]['name']),
-                            'percent'      => $percentage,
+                            'percent'      => (int) $percentage,
                             'percent_text' => $percentage_text,
                             'color'        => $color,
                         ];
@@ -6121,7 +6121,7 @@ final class SQLProvider implements SearchProviderInterface
 
                             $progressbar_data = [
                                 'text' => $ola_name . ' : ' . \Html::convDateTime($due_time),
-                                'percent' => $percentage_done,
+                                'percent' => (int) $percentage_done,
                                 'percent_text' => (string) $percentage_done,
                                 'color' => $color,
                             ];
@@ -6783,21 +6783,14 @@ final class SQLProvider implements SearchProviderInterface
                         $bar_color = 'green';
                         $percent   = ltrim(($data[$ID][0]['name'] ?? ""), "0");
                         $progressbar_data = [
-                            'percent'      => $percent,
+                            'percent'      => (int) $percent,
                             'percent_text' => $percent,
                             'color'        => $bar_color,
                             'text'         => '',
                         ];
                     }
 
-                    $out = self::getProgressBar($progressbar_data);
-
-                    return $out;
-                case 'color':
-                    $color = \htmlescape($data[$ID][0]['name']);
-                    return "<div class='badge_block' style='border-color: $color'>
-                        <span style='background: $color'></span>&nbsp;" . $color . "
-                       </div>";
+                    return self::getProgressBar($progressbar_data);
             }
         }
         // Manage items with need group by / group_concat
