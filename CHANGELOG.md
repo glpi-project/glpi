@@ -83,6 +83,7 @@ The present file will list all changes made to the project; according to the
 - Renamed `From email header` and `To email header` criteria in the mails receiver rules to `From email address` and `To email address` respectively.
 - Replaced text mentions of "Validations" with "Approvals" to unify the terminology used.
 - User passwords are no longer wiped when the authentication source/server doesn't actually change during "Change of the authentication method" action.
+- Single item actions (Actions menu in item form) are now filtered by certain attributes of the item. For example, a Computer which has reservations enabled will not show the `Authorize reservations` action.
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
@@ -243,6 +244,8 @@ The present file will list all changes made to the project; according to the
 - The `PLUGINS_DIRECTORIES` constant has been renamed to `GLPI_PLUGINS_DIRECTORIES`.
 - Most of the `Profile::show*()` methods have been made private.
 - `server` parameter of `User::changeAuthMethod()` now defaults to '0' instead of '-1' which was an invalid value when using unsigned integers.
+- `checkitem` parameter of `CommonDBTM::getMassiveActionsForItemtype()` is now the actual item being acted on when in single item mode.
+  To identify the difference between the generic item instance given for multi-item mode, use the `isNewItem()` method.
 
 #### Deprecated
 - Usage of the `/marketplace` path for plugins URLs. All plugins URLs should now start with `/plugins`.

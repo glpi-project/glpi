@@ -6291,6 +6291,7 @@ class CommonDBTM extends CommonGLPI
     public function getMassiveActionsForItem(): MassiveAction
     {
         $params = [
+            '_from_single_item' => true,
             'item' => [
                 static::class => [
                     $this->fields['id'] => 1,
