@@ -49,19 +49,19 @@ class Item_Ola extends CommonDBRelation
      *
      * add start_time, due_time and is_late values.
      *
-     * @param array{start_time: string, olas_id: int, itemtype: class-string<\CommonITILObject>, items_id: int} $input
+     * @param array{start_time: string, olas_id: int, itemtype: class-string<CommonITILObject>, items_id: int} $input
      * @return array|false
      */
     public function prepareInputForAdd($input)
     {
         if (in_array(['due_time'], array_keys($input))) {
-            throw new \RuntimeException('due_time is not allowed in the input. Values is computed.');
+            throw new RuntimeException('due_time is not allowed in the input. Values is computed.');
         }
 
         // get the related ola (cannot use getConnexityItem() ou getOnePeer() because it is not in the database yet)
         $_ola = new OLA();
         if (!$_ola->getFromDB($input[static::$items_id_2])) {
-            throw new \RuntimeException('OLA not found #' . $input[static::$items_id_2]);
+            throw new RuntimeException('OLA not found #' . $input[static::$items_id_2]);
         }
 
         return parent::prepareInputForAdd([
@@ -74,14 +74,14 @@ class Item_Ola extends CommonDBRelation
     /**
      * Compute the OLA data for a ticket
      *
-     * @param \Ticket $ticket
+     * @param Ticket $ticket
      * @param mixed $olas_id must exist in the database
      */
     public static function compute(Ticket $ticket, mixed $olas_id): void
     {
         $item_ola = new self();
         if (!$item_ola->getFromDBByCrit(['items_id' => $ticket->getID(), 'itemtype' => $ticket::class, 'olas_id' => $olas_id])) {
-            throw new \RuntimeException('Item_Ola not found for ticket #' . $ticket->getID() . ' and OLA #' . $olas_id);
+            throw new RuntimeException('Item_Ola not found for ticket #' . $ticket->getID() . ' and OLA #' . $olas_id);
         };
 
         $calendars_id = $ticket->getCalendar();
@@ -158,7 +158,7 @@ class Item_Ola extends CommonDBRelation
         $item_ola_data['is_late'] = (int) $item_ola->isLate($ticket);
 
         if (!(new Item_Ola())->update($item_ola_data)) {
-            throw new \Exception('Failed to update item_ola');
+            throw new Exception('Failed to update item_ola');
         }
 
         // since dates may be changed, rebuild the levels todo
@@ -172,14 +172,14 @@ class Item_Ola extends CommonDBRelation
             return $item;
         }
 
-        throw new \RuntimeException('Linked OLA not found');
+        throw new RuntimeException('Linked OLA not found');
     }
 
     /**
      * Get data from Item_Ola + linked OLA for a Ticket
-     * @param \Ticket $ticket
+     * @param Ticket $ticket
      *
-     * @return array<array{olas_id: int, items_olas_id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, end_time: string, is_late: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|\LevelAgreementLevel, group_name: string}>
+     * @return array<array{olas_id: int, items_olas_id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, end_time: string, is_late: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|LevelAgreementLevel, group_name: string}>
      */
     public function getDataFromDBForTicket(Ticket $ticket): array
     {
@@ -198,7 +198,7 @@ class Item_Ola extends CommonDBRelation
 
     private static function ticketHasAnAssigneeOfOlaGroup(Ticket $ticket, OLA $ola): bool
     {
-        $users_ids_of_ticket = array_column($ticket->getUsers(\CommonITILActor::ASSIGN), 'users_id');
+        $users_ids_of_ticket = array_column($ticket->getUsers(CommonITILActor::ASSIGN), 'users_id');
         $users_of_dedicated_group = array_column(Group_User::getGroupUsers($ola->fields['groups_id']), 'id');
 
         return !empty(array_intersect(
@@ -209,7 +209,7 @@ class Item_Ola extends CommonDBRelation
 
 
     /**
-     * @param \Ticket $ticket
+     * @param Ticket $ticket
      * @param array<int> $olas_ids
      * @return array
      */
@@ -266,11 +266,11 @@ class Item_Ola extends CommonDBRelation
 
     /**
      * @param array $ola_data fields from ola + possibly 'linkid' field representing items_olas_id
-     * @param \Ticket $ticket
+     * @param Ticket $ticket
      *
      * If 'linkid' is set, it will be used to populate the data from Item_Ola otherwise it will be filled with default values.
      *
-     * @return array{olas_id: int, items_olas_id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, is_late: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|\LevelAgreementLevel, group_name: string}
+     * @return array{olas_id: int, items_olas_id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, is_late: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|LevelAgreementLevel, group_name: string}
      */
     private function fillItemOlaData(array $ola_data, Ticket $ticket): array
     {
@@ -301,7 +301,7 @@ class Item_Ola extends CommonDBRelation
         if (isset($ola_data['linkid'])) {
             $item_Ola = new static();
             if (!$item_Ola->getFromDB($_merged_data['linkid'])) {
-                throw new \LogicException('Item_Ola not found for linkid ' . $_merged_data['linkid']);
+                throw new LogicException('Item_Ola not found for linkid ' . $_merged_data['linkid']);
             }
 
             $_merged_data = array_merge($_merged_data, $item_Ola->fields);
@@ -343,7 +343,7 @@ class Item_Ola extends CommonDBRelation
         foreach ($ios as $io) {
             $itil = getItemForItemtype($io['itemtype']);
             if (!$itil instanceof Ticket) {
-                throw new \RuntimeException('Item_Ola cron only works for Ticket at the moment. Implemetation needed.');
+                throw new RuntimeException('Item_Ola cron only works for Ticket at the moment. Implemetation needed.');
             }
             $itil->getFromDB($io['items_id']);
             static::compute($itil, $io['olas_id']);

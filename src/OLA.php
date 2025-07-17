@@ -71,7 +71,7 @@ class OLA extends LevelAgreement
      */
     public function cleanDBonPurge()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // Clean levels
@@ -116,11 +116,11 @@ class OLA extends LevelAgreement
 
         $items_ola = new Item_Ola();
         if (!$items_ola->getFromDBByCrit(['olas_id' => $olas_id, 'items_id' => $ticket->fields['id'], 'itemtype' => Ticket::class])) {
-            throw new \LogicException('Item_ola not found');
+            throw new LogicException('Item_ola not found');
         }
         $ola = new OLA();
         if (!$ola->getFromDB($olas_id)) {
-            throw new \LogicException('OLA not found #' . $olas_id);
+            throw new LogicException('OLA not found #' . $olas_id);
         }
 
         $start_date = $items_ola->fields['start_time'];
@@ -169,7 +169,7 @@ class OLA extends LevelAgreement
 
     private static function deleteLevelsTodoByWhereCriteria(array $where_criteria): void
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $levelticket = getItemForItemtype(static::$levelticketclass);
