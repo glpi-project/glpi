@@ -179,7 +179,7 @@ class Item_Ola extends CommonDBRelation
      * Get data from Item_Ola + linked OLA for a Ticket
      * @param \Ticket $ticket
      *
-     * @return array<array{olas_id: int, items_olas_id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, end_time: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|\LevelAgreementLevel, group_name: string}>
+     * @return array<array{olas_id: int, items_olas_id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, end_time: string, is_late: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|\LevelAgreementLevel, group_name: string}>
      */
     public function getDataFromDBForTicket(Ticket $ticket): array
     {
@@ -270,7 +270,7 @@ class Item_Ola extends CommonDBRelation
      *
      * If 'linkid' is set, it will be used to populate the data from Item_Ola otherwise it will be filled with default values.
      *
-     * @return array{olas_id: int, items_olas_id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|\LevelAgreementLevel, group_name: string}
+     * @return array{olas_id: int, items_olas_id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, is_late: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|\LevelAgreementLevel, group_name: string}
      */
     private function fillItemOlaData(array $ola_data, Ticket $ticket): array
     {
@@ -307,7 +307,7 @@ class Item_Ola extends CommonDBRelation
             $_merged_data = array_merge($_merged_data, $item_Ola->fields);
             $_merged_data['items_olas_id'] = $ola_data['linkid'];
             $_merged_data['olas_id'] = $ola_data['id'];
-            if($ola_data['type'] !== $item_Ola->fields['type']) {
+            if ($ola_data['type'] !== $item_Ola->fields['type']) {
                 throw new \LogicException('inconsistent type for Item_Ola #' . $item_Ola->getID());
             }
         }
