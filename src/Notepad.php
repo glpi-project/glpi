@@ -186,7 +186,7 @@ class Notepad extends CommonDBChild
             ],
             'ORDERBY'   => 'date_mod DESC',
         ];
-        if ($target === 'Ticket') {
+        if ($target === Ticket::class) {
             $query['WHERE']['visible_from_ticket'] = true;
         }
         $iterator = $DB->request($query);
