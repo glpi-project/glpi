@@ -575,6 +575,14 @@ class FormMigration extends AbstractPluginMigration
             $fieldtype = $raw_question['fieldtype'];
             $type_class = $this->getTypesConvertMap()[$fieldtype] ?? null;
 
+            if ($type_class === null) {
+                $this->result->addMessage(
+                    MessageType::Error,
+                    "Unable to import question '{$raw_question['name']}' with unknown type '$fieldtype'"
+                );
+                continue;
+            }
+
             $default_value = null;
             $extra_data = null;
             if (is_a($type_class, FormQuestionDataConverterInterface::class, true)) {
