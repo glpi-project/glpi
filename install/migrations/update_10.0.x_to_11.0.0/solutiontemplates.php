@@ -40,60 +40,56 @@ use Glpi\DBAL\QueryExpression;
  * @var \Migration $migration
  */
 
-// Add pendingreasons_id field
-$migration->addField("glpi_itilfollowuptemplates", "pendingreasons_id", "fkey");
-$migration->addKey("glpi_itilfollowuptemplates", "pendingreasons_id");
-
 $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-if (!$DB->tableExists('glpi_entities_itilfollowuptemplates')) {
-    $query = "CREATE TABLE `glpi_entities_itilfollowuptemplates` (
+if (!$DB->tableExists('glpi_entities_solutiontemplates')) {
+    $query = "CREATE TABLE `glpi_entities_solutiontemplates` (
         `id` int unsigned NOT NULL AUTO_INCREMENT,
-        `itilfollowuptemplates_id` int unsigned  NOT NULL DEFAULT '0',
+        `solutiontemplates_id` int unsigned  NOT NULL DEFAULT '0',
         `entities_id` int unsigned  NOT NULL DEFAULT '0',
         `is_recursive` tinyint NOT NULL DEFAULT '0',
         PRIMARY KEY (`id`),
-        KEY `itilfollowuptemplates_id` (`itilfollowuptemplates_id`),
+        KEY `solutiontemplates_id` (`solutiontemplates_id`),
         KEY `entities_id` (`entities_id`),
         KEY `is_recursive` (`is_recursive`)
     ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->doQuery($query);
 }
 
-$DB->insert('glpi_entities_itilfollowuptemplates', new QuerySubQuery([
+$DB->insert('glpi_entities_solutiontemplates', new QuerySubQuery([
     'SELECT' => [
         new QueryExpression('null AS `id`'),
-        'id as itilfollowuptemplates_id',
+        'id as solutiontemplates_id',
         'entities_id',
         'is_recursive',
     ],
-    'FROM'   => 'glpi_itilfollowuptemplates',
+    'FROM'   => 'glpi_solutiontemplates',
 ]));
 
-if (!$DB->tableExists('glpi_itilfollowuptemplates_users')) {
-    $query = "CREATE TABLE `glpi_itilfollowuptemplates_users` (
+if (!$DB->tableExists('glpi_solutiontemplates_users')) {
+    $query = "CREATE TABLE `glpi_solutiontemplates_users` (
         `id` int unsigned NOT NULL AUTO_INCREMENT,
-        `itilfollowuptemplates_id` int unsigned  NOT NULL DEFAULT '0',
+        `solutiontemplates_id` int unsigned  NOT NULL DEFAULT '0',
         `users_id` int unsigned  NOT NULL DEFAULT '0',
         PRIMARY KEY (`id`),
-        KEY `itilfollowuptemplates_id` (`itilfollowuptemplates_id`),
+        KEY `solutiontemplates_id` (`solutiontemplates_id`),
         KEY `users_id` (`users_id`)
     ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->doQuery($query);
 }
 
-if (!$DB->tableExists('glpi_groups_itilfollowuptemplates')) {
-    $query = "CREATE TABLE `glpi_groups_itilfollowuptemplates` (
+if (!$DB->tableExists('glpi_groups_solutiontemplates')) {
+    $query = "CREATE TABLE `glpi_groups_solutiontemplates` (
         `id` int unsigned NOT NULL AUTO_INCREMENT,
-        `itilfollowuptemplates_id` int unsigned  NOT NULL DEFAULT '0',
+        `solutiontemplates_id` int unsigned  NOT NULL DEFAULT '0',
         `groups_id` int unsigned  NOT NULL DEFAULT '0',
         `entities_id` int unsigned  NULL,
         `is_recursive` tinyint NOT NULL DEFAULT '0',
         `no_entity_restriction` tinyint NOT NULL DEFAULT '0',
         PRIMARY KEY (`id`),
-        KEY `itilfollowuptemplates_id` (`itilfollowuptemplates_id`),
+        KEY `solutiontemplates_id` (`solutiontemplates_id`),
         KEY `groups_id` (`groups_id`),
         KEY `entities_id` (`entities_id`),
         KEY `is_recursive` (`is_recursive`)
@@ -101,16 +97,16 @@ if (!$DB->tableExists('glpi_groups_itilfollowuptemplates')) {
     $DB->doQuery($query);
 }
 
-if (!$DB->tableExists('glpi_profiles_itilfollowuptemplates')) {
-    $query = "CREATE TABLE `glpi_profiles_itilfollowuptemplates` (
+if (!$DB->tableExists('glpi_profiles_solutiontemplates')) {
+    $query = "CREATE TABLE `glpi_profiles_solutiontemplates` (
         `id` int unsigned NOT NULL AUTO_INCREMENT,
-        `itilfollowuptemplates_id` int unsigned  NOT NULL DEFAULT '0',
+        `solutiontemplates_id` int unsigned  NOT NULL DEFAULT '0',
         `profiles_id` int unsigned  NOT NULL DEFAULT '0',
         `entities_id` int unsigned  NULL,
         `is_recursive` tinyint NOT NULL DEFAULT '0',
         `no_entity_restriction` tinyint NOT NULL DEFAULT '0',
         PRIMARY KEY (`id`),
-        KEY `itilfollowuptemplates_id` (`itilfollowuptemplates_id`),
+        KEY `solutiontemplates_id` (`solutiontemplates_id`),
         KEY `profiles_id` (`profiles_id`),
         KEY `entities_id` (`entities_id`),
         KEY `is_recursive` (`is_recursive`)

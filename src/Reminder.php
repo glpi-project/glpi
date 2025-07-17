@@ -46,7 +46,7 @@ use function Safe\preg_replace;
 /**
  * Reminder Class
  **/
-class Reminder extends CommonDBVisible implements
+class Reminder extends CommonDBTM implements
     CalDAVCompatibleItemInterface,
     ExtraVisibilityCriteria
 {
@@ -55,7 +55,9 @@ class Reminder extends CommonDBVisible implements
     }
     use VobjectConverterTrait;
     use Clonable;
-
+    use CommonDBVisible {
+        CommonDBVisible::haveVisibilityAccess as traitHaveVisibilityAccess;
+    }
     // From CommonDBTM
     public $dohistory                   = true;
     public $can_be_translated           = true;
@@ -174,7 +176,7 @@ class Reminder extends CommonDBVisible implements
         if (!self::canView()) {
             return false;
         }
-        return parent::haveVisibilityAccess();
+        return $this->traitHaveVisibilityAccess();
     }
 
     /**

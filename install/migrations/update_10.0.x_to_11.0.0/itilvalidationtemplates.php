@@ -95,3 +95,63 @@ if (!$DB->fieldExists($table, $fkey_to_add, false)) {
 }
 
 $migration->addRight('itilvalidationtemplate', ALLSTANDARDRIGHT, ['dropdown' => UPDATE]);
+
+if (!$DB->tableExists('glpi_entities_itilvalidationtemplates')) {
+    $query = "CREATE TABLE `glpi_entities_itilvalidationtemplates` (
+        `id` int unsigned NOT NULL AUTO_INCREMENT,
+        `itilvalidationtemplates_id` int unsigned  NOT NULL DEFAULT '0',
+        `entities_id` int unsigned  NOT NULL DEFAULT '0',
+        `is_recursive` tinyint NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`),
+        KEY `itilvalidationtemplates_id` (`itilvalidationtemplates_id`),
+        KEY `entities_id` (`entities_id`),
+        KEY `is_recursive` (`is_recursive`)
+    ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
+    $DB->doQuery($query);
+}
+
+if (!$DB->tableExists('glpi_itilvalidationtemplates_users')) {
+    $query = "CREATE TABLE `glpi_itilvalidationtemplates_users` (
+        `id` int unsigned NOT NULL AUTO_INCREMENT,
+        `itilvalidationtemplates_id` int unsigned  NOT NULL DEFAULT '0',
+        `users_id` int unsigned  NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`),
+        KEY `itilvalidationtemplates_id` (`itilvalidationtemplates_id`),
+        KEY `users_id` (`users_id`)
+    ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
+    $DB->doQuery($query);
+}
+
+if (!$DB->tableExists('glpi_groups_itilvalidationtemplates')) {
+    $query = "CREATE TABLE `glpi_groups_itilvalidationtemplates` (
+        `id` int unsigned NOT NULL AUTO_INCREMENT,
+        `itilvalidationtemplates_id` int unsigned  NOT NULL DEFAULT '0',
+        `groups_id` int unsigned  NOT NULL DEFAULT '0',
+        `entities_id` int unsigned  NULL,
+        `is_recursive` tinyint NOT NULL DEFAULT '0',
+        `no_entity_restriction` tinyint NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`),
+        KEY `itilvalidationtemplates_id` (`itilvalidationtemplates_id`),
+        KEY `groups_id` (`groups_id`),
+        KEY `entities_id` (`entities_id`),
+        KEY `is_recursive` (`is_recursive`)
+    ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
+    $DB->doQuery($query);
+}
+
+if (!$DB->tableExists('glpi_profiles_itilvalidationtemplates')) {
+    $query = "CREATE TABLE `glpi_profiles_itilvalidationtemplates` (
+        `id` int unsigned NOT NULL AUTO_INCREMENT,
+        `itilvalidationtemplates_id` int unsigned  NOT NULL DEFAULT '0',
+        `profiles_id` int unsigned  NOT NULL DEFAULT '0',
+        `entities_id` int unsigned  NULL,
+        `is_recursive` tinyint NOT NULL DEFAULT '0',
+        `no_entity_restriction` tinyint NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`),
+        KEY `itilvalidationtemplates_id` (`itilvalidationtemplates_id`),
+        KEY `profiles_id` (`profiles_id`),
+        KEY `entities_id` (`entities_id`),
+        KEY `is_recursive` (`is_recursive`)
+    ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
+    $DB->doQuery($query);
+}

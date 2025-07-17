@@ -2866,6 +2866,36 @@ CREATE TABLE `glpi_entities` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
+### Dump table glpi_entities_itilfollowuptemplates
+
+DROP TABLE IF EXISTS `glpi_entities_itilfollowuptemplates`;
+CREATE TABLE `glpi_entities_itilfollowuptemplates` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `itilfollowuptemplates_id` int unsigned  NOT NULL DEFAULT '0',
+  `entities_id` int unsigned  NOT NULL DEFAULT '0',
+  `is_recursive` tinyint NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `itilfollowuptemplates_id` (`itilfollowuptemplates_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`)
+) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+
+### Dump table glpi_entities_itilvalidationtemplates
+
+DROP TABLE IF EXISTS `glpi_entities_itilvalidationtemplates`;
+CREATE TABLE `glpi_entities_itilvalidationtemplates` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `itilvalidationtemplates_id` int unsigned  NOT NULL DEFAULT '0',
+  `entities_id` int unsigned  NOT NULL DEFAULT '0',
+  `is_recursive` tinyint NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `itilvalidationtemplates_id` (`itilvalidationtemplates_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`)
+) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+
 ### Dump table glpi_entities_knowbaseitems
 
 DROP TABLE IF EXISTS `glpi_entities_knowbaseitems`;
@@ -2909,6 +2939,36 @@ CREATE TABLE `glpi_entities_rssfeeds` (
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+
+### Dump table glpi_entities_solutiontemplates
+
+DROP TABLE IF EXISTS `glpi_entities_solutiontemplates`;
+CREATE TABLE `glpi_entities_solutiontemplates` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `solutiontemplates_id` int unsigned  NOT NULL DEFAULT '0',
+  `entities_id` int unsigned  NOT NULL DEFAULT '0',
+  `is_recursive` tinyint NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `solutiontemplates_id` (`solutiontemplates_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`)
+) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+
+### Dump table glpi_entities_tasktemplates
+
+DROP TABLE IF EXISTS `glpi_entities_tasktemplates`;
+CREATE TABLE `glpi_entities_tasktemplates` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `tasktemplates_id` int unsigned  NOT NULL DEFAULT '0',
+  `entities_id` int unsigned  NOT NULL DEFAULT '0',
+  `is_recursive` tinyint NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `tasktemplates_id` (`tasktemplates_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`)
+) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_events
@@ -3067,6 +3127,43 @@ CREATE TABLE `glpi_groups` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
+### Dump table glpi_groups_itilfollowuptemplates
+
+DROP TABLE IF EXISTS `glpi_groups_itilfollowuptemplates`;
+CREATE TABLE `glpi_groups_itilfollowuptemplates` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `itilfollowuptemplates_id` int unsigned  NOT NULL DEFAULT '0',
+  `groups_id` int unsigned  NOT NULL DEFAULT '0',
+  `entities_id` int unsigned  NULL,
+  `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `no_entity_restriction` tinyint NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `itilfollowuptemplates_id` (`itilfollowuptemplates_id`),
+  KEY `groups_id` (`groups_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`)
+) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+
+### Dump table glpi_groups_itilvalidationtemplates
+
+DROP TABLE IF EXISTS `glpi_groups_itilvalidationtemplates`;
+CREATE TABLE `glpi_groups_itilvalidationtemplates` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `itilvalidationtemplates_id` int unsigned  NOT NULL DEFAULT '0',
+  `groups_id` int unsigned  NOT NULL DEFAULT '0',
+  `entities_id` int unsigned  NULL,
+  `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `no_entity_restriction` tinyint NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `itilvalidationtemplates_id` (`itilvalidationtemplates_id`),
+  KEY `groups_id` (`groups_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`)
+) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+
+
 ### Dump table glpi_groups_knowbaseitems
 
 DROP TABLE IF EXISTS `glpi_groups_knowbaseitems`;
@@ -3133,6 +3230,42 @@ CREATE TABLE `glpi_groups_rssfeeds` (
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+
+### Dump table glpi_groups_solutiontemplates
+
+DROP TABLE IF EXISTS `glpi_groups_solutiontemplates`;
+CREATE TABLE `glpi_groups_solutiontemplates` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `solutiontemplates_id` int unsigned  NOT NULL DEFAULT '0',
+  `groups_id` int unsigned  NOT NULL DEFAULT '0',
+  `entities_id` int unsigned  NULL,
+  `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `no_entity_restriction` tinyint NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `solutiontemplates_id` (`solutiontemplates_id`),
+  KEY `groups_id` (`groups_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`)
+) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+
+### Dump table glpi_groups_solutiontemplates
+
+DROP TABLE IF EXISTS `glpi_groups_tasktemplates`;
+CREATE TABLE `glpi_groups_tasktemplates` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `tasktemplates_id` int unsigned  NOT NULL DEFAULT '0',
+  `groups_id` int unsigned  NOT NULL DEFAULT '0',
+  `entities_id` int unsigned  NULL,
+  `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `no_entity_restriction` tinyint NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `tasktemplates_id` (`tasktemplates_id`),
+  KEY `groups_id` (`groups_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`)
+) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_groups_tickets
@@ -5870,6 +6003,41 @@ CREATE TABLE `glpi_profiles` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
+### Dump table glpi_profiles_itilfollowuptemplates
+
+DROP TABLE IF EXISTS `glpi_profiles_itilfollowuptemplates`;
+CREATE TABLE `glpi_profiles_itilfollowuptemplates` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `itilfollowuptemplates_id` int unsigned  NOT NULL DEFAULT '0',
+  `profiles_id` int unsigned  NOT NULL DEFAULT '0',
+  `entities_id` int unsigned  NULL,
+  `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `no_entity_restriction` tinyint NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `itilfollowuptemplates_id` (`itilfollowuptemplates_id`),
+  KEY `profiles_id` (`profiles_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`)
+) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+
+### Dump table glpi_profiles_itilvalidationtemplates
+
+DROP TABLE IF EXISTS `glpi_profiles_itilvalidationtemplates`;
+CREATE TABLE `glpi_profiles_itilvalidationtemplates` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `itilvalidationtemplates_id` int unsigned  NOT NULL DEFAULT '0',
+  `profiles_id` int unsigned  NOT NULL DEFAULT '0',
+  `entities_id` int unsigned  NULL,
+  `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `no_entity_restriction` tinyint NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `itilvalidationtemplates_id` (`itilvalidationtemplates_id`),
+  KEY `profiles_id` (`profiles_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`)
+) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
 ### Dump table glpi_profiles_reminders
 
 DROP TABLE IF EXISTS `glpi_profiles_reminders`;
@@ -5904,6 +6072,42 @@ CREATE TABLE `glpi_profiles_rssfeeds` (
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+
+### Dump table glpi_profiles_solutiontemplates
+
+DROP TABLE IF EXISTS `glpi_profiles_solutiontemplates`;
+CREATE TABLE `glpi_profiles_solutiontemplates` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `solutiontemplates_id` int unsigned  NOT NULL DEFAULT '0',
+  `profiles_id` int unsigned  NOT NULL DEFAULT '0',
+  `entities_id` int unsigned  NULL,
+  `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `no_entity_restriction` tinyint NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `solutiontemplates_id` (`solutiontemplates_id`),
+  KEY `profiles_id` (`profiles_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`)
+) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+
+### Dump table glpi_profiles_tasktemplates
+
+DROP TABLE IF EXISTS `glpi_profiles_tasktemplates`;
+CREATE TABLE `glpi_profiles_tasktemplates` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `tasktemplates_id` int unsigned  NOT NULL DEFAULT '0',
+  `profiles_id` int unsigned  NOT NULL DEFAULT '0',
+  `entities_id` int unsigned  NULL,
+  `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `no_entity_restriction` tinyint NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `tasktemplates_id` (`tasktemplates_id`),
+  KEY `profiles_id` (`profiles_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`)
+) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_profiles_users
@@ -6940,6 +7144,19 @@ CREATE TABLE `glpi_solutiontemplates` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
+### Dump table glpi_solutiontemplates_users
+
+DROP TABLE IF EXISTS `glpi_solutiontemplates_users`;
+CREATE TABLE `glpi_solutiontemplates_users` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `solutiontemplates_id` int unsigned  NOT NULL DEFAULT '0',
+  `users_id` int unsigned  NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `solutiontemplates_id` (`solutiontemplates_id`),
+  KEY `users_id` (`users_id`)
+) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+
 ### Dump table glpi_solutiontypes
 
 DROP TABLE IF EXISTS `glpi_solutiontypes`;
@@ -7190,6 +7407,19 @@ CREATE TABLE `glpi_tasktemplates` (
   KEY `groups_id_tech` (`groups_id_tech`),
   KEY `pendingreasons_id` (`pendingreasons_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+
+### Dump table glpi_tasktemplates_users
+
+DROP TABLE IF EXISTS `glpi_tasktemplates_users`;
+CREATE TABLE `glpi_tasktemplates_users` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `tasktemplates_id` int unsigned  NOT NULL DEFAULT '0',
+  `users_id` int unsigned  NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `tasktemplates_id` (`tasktemplates_id`),
+  KEY `users_id` (`users_id`)
+) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 
 ### Dump table glpi_ticketcosts
@@ -8634,6 +8864,17 @@ CREATE TABLE `glpi_itilfollowuptemplates` (
   KEY `pendingreasons_id` (`pendingreasons_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+DROP TABLE IF EXISTS `glpi_itilfollowuptemplates_users`;
+CREATE TABLE `glpi_itilfollowuptemplates_users` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `itilfollowuptemplates_id` int unsigned  NOT NULL DEFAULT '0',
+  `users_id` int unsigned  NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `itilfollowuptemplates_id` (`itilfollowuptemplates_id`),
+  KEY `users_id` (`users_id`)
+) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+
 DROP TABLE IF EXISTS `glpi_itilfollowups`;
 CREATE TABLE `glpi_itilfollowups` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -9838,6 +10079,18 @@ CREATE TABLE `glpi_itilvalidationtemplates_targets` (
   KEY `item` (`itemtype`,`items_id`),
   KEY `groups_id` (`groups_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+
+DROP TABLE IF EXISTS `glpi_itilvalidationtemplates_users`;
+CREATE TABLE `glpi_itilvalidationtemplates_users` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `itilvalidationtemplates_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id` int unsigned  NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `itilvalidationtemplates_id` (`itilvalidationtemplates_id`),
+  KEY `users_id` (`users_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 
 DROP TABLE IF EXISTS `glpi_itilreminders`;
 CREATE TABLE `glpi_itilreminders` (

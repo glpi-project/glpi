@@ -54,6 +54,7 @@ class TaskTemplate extends AbstractITILChildTemplate
         if (isset($this->fields['use_current_user']) && $this->fields['use_current_user']) {
             $this->fields['users_id_tech'] = -1;
         }
+        return parent::post_getFromDB();
     }
 
     public static function getTypeName($nb = 0)
