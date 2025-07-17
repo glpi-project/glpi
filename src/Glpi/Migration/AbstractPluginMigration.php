@@ -108,7 +108,7 @@ abstract class AbstractPluginMigration
                 if ($simulate === false && $fully_processed === true) {
                     $this->db->commit();
                 } else {
-                    $fully_processed = $this->processMigration();
+                    $this->db->rollBack();
                 }
             } else {
                 $this->result->addMessage(MessageType::Error, __('Migration cannot be done.'));
