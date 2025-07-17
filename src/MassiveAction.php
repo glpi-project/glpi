@@ -171,10 +171,20 @@ class MassiveAction
      **/
     public function __construct(array $POST, array $GET, $stage, ?int $items_id = null)
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $this->from_single_item = $GET['_from_single_item'] ?? false;
+        if (isset($GET['_single_item'])) {
+            $item = getItemForItemtype($GET['_single_item']['itemtype']);
+            if ($item->getFromDB($GET['_single_item']['id'])) {
+                $this->from_single_item = true;
+                $this->check_item = $item;
+            }
+        } elseif (($POST['_from_single_item'] ?? false) && isset($POST['item'])) {
+            $itemtype = array_keys($POST['item'])[0];
+            $item = getItemForItemtype($itemtype);
+            if ($item->getFromDB(array_keys($POST['item'][$itemtype])[0])) {
+                $this->from_single_item = true;
+                $this->check_item = $item;
+            }
+        }
 
         if ($POST !== []) {
             if (!isset($POST['is_deleted'])) {

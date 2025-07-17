@@ -34,10 +34,13 @@
 
 namespace tests\units;
 
+use Computer;
 use DbTestCase;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\IsReservableCapacity;
+use MassiveAction;
 use PHPUnit\Framework\Attributes\DataProvider;
+use ReservationItem;
 
 class ReservationTest extends DbTestCase
 {
@@ -196,5 +199,57 @@ class ReservationTest extends DbTestCase
         }
         $reservation->delete($firstres + ['_delete_group' => 'on']);
         $this->assertCount(0, $reservation->find());
+    }
+
+    public function testMassiveActions()
+    {
+        $this->login();
+
+        $actions = MassiveAction::getAllMassiveActions(Computer::class);
+        $this->assertArrayHasKey('Reservation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'enable', $actions);
+        $this->assertArrayHasKey('Reservation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'disable', $actions);
+        $this->assertArrayHasKey('Reservation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'available', $actions);
+        $this->assertArrayHasKey('Reservation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'unavailable', $actions);
+
+        $computer_template = $this->createItem(Computer::class, [
+            'template_name' => __FUNCTION__ . '_template',
+            'is_template' => 1,
+            'entities_id' => $_SESSION['glpiactive_entity'],
+        ]);
+        $computer = $this->createItem(Computer::class, [
+            'name' => __FUNCTION__ . '_1',
+            'entities_id' => $_SESSION['glpiactive_entity'],
+        ]);
+
+        $template_actions = MassiveAction::getAllMassiveActions(Computer::class, false, $computer_template, $computer_template->getID());
+        $this->assertArrayNotHasKey('Reservation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'enable', $template_actions);
+        $this->assertArrayNotHasKey('Reservation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'disable', $template_actions);
+        $this->assertArrayNotHasKey('Reservation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'available', $template_actions);
+        $this->assertArrayNotHasKey('Reservation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'unavailable', $template_actions);
+
+        $computer_actions = MassiveAction::getAllMassiveActions(Computer::class, false, $computer, $computer->getID());
+        $this->assertArrayHasKey('Reservation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'enable', $computer_actions);
+        $this->assertArrayNotHasKey('Reservation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'disable', $computer_actions);
+        $this->assertArrayNotHasKey('Reservation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'available', $computer_actions);
+        $this->assertArrayNotHasKey('Reservation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'unavailable', $computer_actions);
+
+        $ri = $this->createItem(ReservationItem::class, [
+            'itemtype' => Computer::class,
+            'items_id' => $computer->getID(),
+            'is_active' => 0,
+            'entities_id' => $_SESSION['glpiactive_entity'],
+        ]);
+        $computer_actions = MassiveAction::getAllMassiveActions(Computer::class, false, $computer, $computer->getID());
+        $this->assertArrayNotHasKey('Reservation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'enable', $computer_actions);
+        $this->assertArrayHasKey('Reservation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'disable', $computer_actions);
+        $this->assertArrayHasKey('Reservation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'available', $computer_actions);
+        $this->assertArrayNotHasKey('Reservation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'unavailable', $computer_actions);
+
+        $ri->update(['id' => $ri->getID(), 'is_active' => 1]);
+        $computer_actions = MassiveAction::getAllMassiveActions(Computer::class, false, $computer, $computer->getID());
+        $this->assertArrayNotHasKey('Reservation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'enable', $computer_actions);
+        $this->assertArrayHasKey('Reservation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'disable', $computer_actions);
+        $this->assertArrayNotHasKey('Reservation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'available', $computer_actions);
+        $this->assertArrayHasKey('Reservation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'unavailable', $computer_actions);
     }
 }

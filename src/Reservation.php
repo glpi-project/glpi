@@ -1164,10 +1164,31 @@ JAVASCRIPT;
 
         $action_prefix = 'Reservation' . MassiveAction::CLASS_ACTION_SEPARATOR;
         if (in_array($itemtype, $CFG_GLPI["reservation_types"], true)) {
-            $actions[$action_prefix . 'enable'] = "<i class='" . self::getIcon() . "'></i>" . __s('Authorize reservations');
-            $actions[$action_prefix . 'disable'] = "<i class='ti ti-calendar-off'></i>" . __s('Prohibit reservations');
-            $actions[$action_prefix . 'available'] = "<i class='" . self::getIcon() . "'></i>" . __s('Make available for reservations');
-            $actions[$action_prefix . 'unavailable'] = "<i class='ti ti-calendar-off'></i>" . __s('Make unavailable for reservations');
+            $show_all = $checkitem === null || $checkitem->isNewItem();
+            $reservable = false;
+            $available = false;
+            if (!$show_all) {
+                if ($checkitem->isTemplate()) {
+                    return;
+                }
+                $ri = new ReservationItem();
+                $reservable = $ri->getFromDBbyItem($checkitem::class, $checkitem->getID());
+                if ($reservable) {
+                    $available = (bool) $ri->fields['is_active'];
+                }
+            }
+            if ($show_all || !$reservable) {
+                $actions[$action_prefix . 'enable'] = "<i class='" . self::getIcon() . "'></i>" . __s('Authorize reservations');
+            }
+            if ($show_all || $reservable) {
+                $actions[$action_prefix . 'disable'] = "<i class='ti ti-calendar-off'></i>" . __s('Prohibit reservations');
+            }
+            if ($show_all || ($reservable && !$available)) {
+                $actions[$action_prefix . 'available'] = "<i class='" . self::getIcon() . "'></i>" . __s('Make available for reservations');
+            }
+            if ($show_all || $available) {
+                $actions[$action_prefix . 'unavailable'] = "<i class='ti ti-calendar-off'></i>" . __s('Make unavailable for reservations');
+            }
         }
     }
 
