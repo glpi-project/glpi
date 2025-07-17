@@ -71,6 +71,7 @@ use Glpi\Dropdown\DropdownDefinition;
 use Glpi\Message\MessageType;
 use Group_Item;
 use LogicException;
+use Override;
 use Profile;
 use ProfileRight;
 use RuntimeException;
@@ -117,6 +118,18 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
      * @var array<string, DropdownDefinition>
      */
     private array $dropdown_definitions = [];
+
+    #[Override]
+    protected function getHasBeenExecutedConfigurationKey(): string
+    {
+        return 'glpi_11_assets_migration';
+    }
+
+    #[Override]
+    protected function getMainPluginTables(): array
+    {
+        return ['glpi_plugin_genericobject_objects'];
+    }
 
     protected function validatePrerequisites(): bool
     {

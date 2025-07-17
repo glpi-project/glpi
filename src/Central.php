@@ -36,6 +36,9 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Dashboard\Dashboard;
 use Glpi\Dashboard\Grid;
 use Glpi\Event;
+use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\Migration\FormMigration;
+use Glpi\Migration\GenericobjectPluginMigration;
 use Glpi\Plugin\Hooks;
 use Glpi\System\Requirement\PhpSupportedVersion;
 use Glpi\System\Requirement\SessionsSecurityConfiguration;
@@ -560,6 +563,29 @@ class Central extends CommonGLPI
                 $messages['warnings'][] = sprintf(__('%d primary or foreign keys columns are using signed integers.'), $signed_keys_col_count)
                 . ' '
                 . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:unsigned_keys');
+            }
+
+            $form_migration = new FormMigration(
+                $DB,
+                FormAccessControlManager::getInstance(),
+            );
+            if (
+                !$form_migration->hasBeenExecuted()
+                && $form_migration->hasPluginData()
+            ) {
+                $messages['warnings'][] = __("You have some forms from the 'Formcreator' plugin.")
+                . ' '
+                . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:formcreator_plugin_to_core');
+            }
+
+            $assets_migration = new GenericobjectPluginMigration($DB);
+            if (
+                !$assets_migration->hasBeenExecuted()
+                && $assets_migration->hasPluginData()
+            ) {
+                $messages['warnings'][] = __("You have some assets from the 'Generic object' plugin.")
+                . ' '
+                . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:genericobject_plugin_to_core');
             }
 
             /*

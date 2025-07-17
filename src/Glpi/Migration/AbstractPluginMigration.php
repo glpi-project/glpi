@@ -36,6 +36,7 @@ namespace Glpi\Migration;
 
 use CommonDBConnexity;
 use CommonDBTM;
+use Config;
 use DBmysql;
 use Glpi\Message\MessageType;
 use Glpi\Progress\AbstractProgressIndicator;
@@ -78,6 +79,36 @@ abstract class AbstractPluginMigration
     public function __construct(DBmysql $db)
     {
         $this->db = $db;
+    }
+
+    abstract protected function getHasBeenExecutedConfigurationKey(): string;
+
+    /**
+     * Used to know if there is some potential data to migrate.
+     * Not all tables need to be listed, just the ones that indicate that data
+     * exist for this plugin.
+     */
+    abstract protected function getMainPluginTables(): array;
+
+    final public function hasBeenExecuted(): bool
+    {
+        /**
+         * @var array $CFG_GLPI
+         */
+        global $CFG_GLPI;
+
+        return (bool) $CFG_GLPI[$this->getHasBeenExecutedConfigurationKey()];
+    }
+
+    final public function hasPluginData(): bool
+    {
+        foreach ($this->getMainPluginTables() as $table) {
+            if ($this->db->tableExists($table) && countElementsInTable($table)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -130,7 +161,9 @@ abstract class AbstractPluginMigration
         }
 
         $this->result->setFullyProcessed($fully_processed);
-
+        Config::setConfigurationValues('core', [
+            $this->getHasBeenExecutedConfigurationKey() => 1,
+        ]);
         return $this->result;
     }
 

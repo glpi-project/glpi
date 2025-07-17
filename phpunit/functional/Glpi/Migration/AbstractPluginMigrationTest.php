@@ -70,6 +70,16 @@ class AbstractPluginMigrationTest extends DbTestCase
                 throw new \RuntimeException('This method is not supposed to be called when the prerequisites are not validated.');
                 return true;
             }
+
+            protected function getHasBeenExecutedConfigurationKey(): string
+            {
+                return 'config';
+            }
+
+            protected function getMainPluginTables(): array
+            {
+                return ['table'];
+            }
         };
 
         // Act
@@ -107,6 +117,16 @@ class AbstractPluginMigrationTest extends DbTestCase
             {
                 throw new \RuntimeException('This method is not supposed to be called when the prerequisites are not validated.');
             }
+
+            protected function getHasBeenExecutedConfigurationKey(): string
+            {
+                return 'config';
+            }
+
+            protected function getMainPluginTables(): array
+            {
+                return ['table'];
+            }
         };
 
         // Act
@@ -142,6 +162,16 @@ class AbstractPluginMigrationTest extends DbTestCase
                 // ... do something
                 $this->result->addMessage(MessageType::Success, 'All data has been imported.');
                 return true;
+            }
+
+            protected function getHasBeenExecutedConfigurationKey(): string
+            {
+                return 'config';
+            }
+
+            protected function getMainPluginTables(): array
+            {
+                return ['table'];
             }
         };
 
@@ -179,6 +209,16 @@ class AbstractPluginMigrationTest extends DbTestCase
             {
                 throw new \RuntimeException('Something went wrong during migration processing.');
                 return true;
+            }
+
+            protected function getHasBeenExecutedConfigurationKey(): string
+            {
+                return 'config';
+            }
+
+            protected function getMainPluginTables(): array
+            {
+                return ['table'];
             }
         };
 
@@ -221,6 +261,16 @@ class AbstractPluginMigrationTest extends DbTestCase
                 $this->result->addMessage(MessageType::Success, 'The migration simulation succeed.');
                 return true;
             }
+
+            protected function getHasBeenExecutedConfigurationKey(): string
+            {
+                return 'config';
+            }
+
+            protected function getMainPluginTables(): array
+            {
+                return ['table'];
+            }
         };
 
         // Act
@@ -257,6 +307,16 @@ class AbstractPluginMigrationTest extends DbTestCase
             {
                 throw new \RuntimeException('Something went wrong during migration processing.');
                 return true;
+            }
+
+            protected function getHasBeenExecutedConfigurationKey(): string
+            {
+                return 'config';
+            }
+
+            protected function getMainPluginTables(): array
+            {
+                return ['table'];
             }
         };
 
@@ -305,7 +365,7 @@ class AbstractPluginMigrationTest extends DbTestCase
 
         $instance = $this->getMockBuilder(AbstractPluginMigration::class)
             ->setConstructorArgs([$db])
-            ->onlyMethods(['execute', 'validatePrerequisites', 'processMigration'])
+            ->onlyMethods(['execute', 'validatePrerequisites', 'processMigration', 'getHasBeenExecutedConfigurationKey', 'getMainPluginTables'])
             ->getMock();
 
         $reflected_class = new ReflectionClass(AbstractPluginMigration::class);
@@ -442,6 +502,16 @@ class AbstractPluginMigrationTest extends DbTestCase
 
                 return true;
             }
+
+            protected function getHasBeenExecutedConfigurationKey(): string
+            {
+                return 'config';
+            }
+
+            protected function getMainPluginTables(): array
+            {
+                return ['table'];
+            }
         };
 
         // Act
@@ -513,6 +583,16 @@ class AbstractPluginMigrationTest extends DbTestCase
                 );
 
                 return true;
+            }
+
+            protected function getHasBeenExecutedConfigurationKey(): string
+            {
+                return 'config';
+            }
+
+            protected function getMainPluginTables(): array
+            {
+                return ['table'];
             }
         };
 
@@ -615,6 +695,16 @@ class AbstractPluginMigrationTest extends DbTestCase
                 );
 
                 return true;
+            }
+
+            protected function getHasBeenExecutedConfigurationKey(): string
+            {
+                return 'config';
+            }
+
+            protected function getMainPluginTables(): array
+            {
+                return ['table'];
             }
         };
 
@@ -787,6 +877,16 @@ class AbstractPluginMigrationTest extends DbTestCase
 
                 return true;
             }
+
+            protected function getHasBeenExecutedConfigurationKey(): string
+            {
+                return 'config';
+            }
+
+            protected function getMainPluginTables(): array
+            {
+                return ['table'];
+            }
         };
 
         // Act
@@ -883,7 +983,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         // Arrange
         $instance = $this->getMockBuilder(AbstractPluginMigration::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['execute', 'validatePrerequisites', 'processMigration'])
+            ->onlyMethods(['execute', 'validatePrerequisites', 'processMigration', 'getHasBeenExecutedConfigurationKey', 'getMainPluginTables'])
             ->getMock();
 
         // Act
@@ -938,7 +1038,7 @@ class AbstractPluginMigrationTest extends DbTestCase
 
         $instance = $this->getMockBuilder(AbstractPluginMigration::class)
             ->setConstructorArgs([$db])
-            ->onlyMethods(['validatePrerequisites', 'processMigration'])
+            ->onlyMethods(['validatePrerequisites', 'processMigration', 'getHasBeenExecutedConfigurationKey', 'getMainPluginTables'])
             ->getMock();
 
         // Act
