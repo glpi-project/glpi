@@ -2510,21 +2510,24 @@ class Toolbox
                         $regex = '/<img[^>]+' . preg_quote($image['tag'], '/') . '[^<]+>/im';
                         preg_match_all($regex, $content_text, $matches);
                         foreach ($matches[0] as $match_img) {
+                            $width = $height = null;
+
                             $attributes = [];
                             preg_match_all('/(width|height)="([^"]*)"/i', $match_img, $attributes);
                             if (isset($attributes[1][0])) {
-                                ${$attributes[1][0]} = $attributes[2][0];
+                                $width = $attributes[2][0];
                             }
                             if (isset($attributes[1][1])) {
-                                ${$attributes[1][1]} = $attributes[2][1];
+                                $height = $attributes[2][1];
                             }
 
                             // retrieve dimensions
-                            $path = GLPI_DOC_DIR . "/" . $image['filepath'];
-                            $img_infos  = getimagesize($path);
-                            $width = $img_infos[0];
-                            $height = $img_infos[1];
-
+                            if ($width == null || $height == null) {
+                                $path = GLPI_DOC_DIR . "/" . $image['filepath'];
+                                $img_infos  = getimagesize($path);
+                                $width = $img_infos[0];
+                                $height = $img_infos[1];
+                            }
                             // Avoids creating a link within a link, when the image is already in an <a> tag
                             $add_link_tmp = $add_link;
                             if ($add_link) {
