@@ -486,7 +486,7 @@ final class DbUtils
                 );
                 /** @var SplFileInfo $file */
                 foreach ($files_iterator as $file) {
-                    if (!$file->isReadable() || !$file->isFile() || $file->getExtension() !== '.php') {
+                    if (!$file->isReadable() || !$file->isFile() || $file->getExtension() !== 'php') {
                         continue;
                     }
                     $relative_path = str_replace($srcdir . DIRECTORY_SEPARATOR, '', $file->getPathname());
