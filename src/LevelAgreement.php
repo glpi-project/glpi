@@ -362,7 +362,7 @@ TWIG, $twig_params);
         $field      = match (static::class) {
             SLA::class => static::getFieldNames($this->fields['type'])[1],
             OLA::class => 'olas_id',
-            default => throw new \RuntimeException('Unexpected LevelAgreement class : ' . static::class),
+            default => throw new RuntimeException('Unexpected LevelAgreement class : ' . static::class),
         };
 
         $rule    = new RuleTicket();
@@ -438,7 +438,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param \SLM $item
+     * @param SLM $item
      * @param int $tabnum
      * @param int $withtemplate
      */
