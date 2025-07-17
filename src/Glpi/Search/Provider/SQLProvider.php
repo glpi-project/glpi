@@ -56,6 +56,7 @@ use Document;
 use Dropdown;
 use Entity;
 use Entity_KnowbaseItem;
+use Exception;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\DBAL\QueryExpression;
@@ -95,6 +96,7 @@ use SavedSearch;
 use Search;
 use Session;
 use SLA;
+use SLM;
 use Software;
 use Ticket;
 use TicketSatisfaction;
@@ -5846,7 +5848,7 @@ final class SQLProvider implements SearchProviderInterface
                 case "glpi_tickets.time_to_own":
                     // Due date + progress
                     if (in_array($orig_id, [151, 158, 181])) {
-                        $out = \Html::convDateTime($data[$ID][0]['name']);
+                        $out = Html::convDateTime($data[$ID][0]['name']);
 
                         $color = null;
                         if (
@@ -6023,7 +6025,7 @@ final class SQLProvider implements SearchProviderInterface
                                 continue;
                             }
                             if (!$ola->getFromDB($olas_id)) {
-                                throw new \Exception('Referenced OLA not found for item_olas ID: ' . $olas_id);
+                                throw new Exception('Referenced OLA not found for item_olas ID: ' . $olas_id);
                             }
                             $ola_name = $ola->fields['name'];
                             $ola_type = $ola->fields['type']; // won't change between loops
@@ -6036,16 +6038,16 @@ final class SQLProvider implements SearchProviderInterface
                             // For TTR : no display if ticket is in waiting status
                             if (
                                 $ticket_status == CommonITILObject::WAITING
-                                && $ola_type == \SLM::TTR) {
+                                && $ola_type == SLM::TTR) {
                                 continue;
                             }
 
                             // ticket is solved or closed, no progress to display, just display the date
                             if (
-                                ($ticket_status == \Ticket::SOLVED)
-                                || ($ticket_status == \Ticket::CLOSED)
+                                ($ticket_status == Ticket::SOLVED)
+                                || ($ticket_status == Ticket::CLOSED)
                             ) {
-                                $out .= $ola_name . ' : ' . \Html::convDateTime($due_time) . '</br>';
+                                $out .= $ola_name . ' : ' . Html::convDateTime($due_time) . '</br>';
                                 continue;
                             }
 
@@ -6056,10 +6058,10 @@ final class SQLProvider implements SearchProviderInterface
 
                             // no need to check $takeintoaccount_delay_stat, we rely on items_ola end_time
                             if (
-                                ($ola_type == \SLM::TTO && $ola_end_time)
+                                ($ola_type == SLM::TTO && $ola_end_time)
                                 || (in_array($orig_id, [180, 185]))
                             ) {
-                                $out .= $ola_name . ' : ' . \Html::convDateTime($due_time) . '</br>';
+                                $out .= $ola_name . ' : ' . Html::convDateTime($due_time) . '</br>';
                                 continue;
                             }
 
@@ -6116,7 +6118,7 @@ final class SQLProvider implements SearchProviderInterface
                             }
 
                             $progressbar_data = [
-                                'text' => $ola_name . ' : ' . \Html::convDateTime($due_time),
+                                'text' => $ola_name . ' : ' . Html::convDateTime($due_time),
                                 'percent' => (int) $percentage_done,
                                 'percent_text' => (string) $percentage_done,
                                 'color' => $color,

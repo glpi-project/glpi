@@ -137,9 +137,9 @@ class OLATest extends DbTestCase
         ];
 
         // act - create associations
-        $this->createItem(\Item_Ola::class, ['olas_id' => $ola_tto1->getID()] + $association_data);
-        $this->createItem(\Item_Ola::class, ['olas_id' => $ola_tto2->getID()] + $association_data);
-        $this->createItem(\Item_Ola::class, ['olas_id' => $ola_ttr->getID()] + $association_data);
+        $this->createItem(\Item_Ola::class, ['olas_id' => $ola_tto1->getID(), 'ola_type' => SLM::TTO] + $association_data);
+        $this->createItem(\Item_Ola::class, ['olas_id' => $ola_tto2->getID(), 'ola_type' => SLM::TTO] + $association_data);
+        $this->createItem(\Item_Ola::class, ['olas_id' => $ola_ttr->getID(), 'ola_type' => SLM::TTR] + $association_data);
 
         // assert - check if the ticket has the 3 OLA associated
         $ticket = $this->reloadItem($ticket);
@@ -504,6 +504,8 @@ class OLATest extends DbTestCase
 
         // waiting_time is not set
         $this->assertEquals(0, $ola_data['waiting_time'], 'Waiting time should not be set for TTO OLA.');
+
+        //        throw new \Exception('test de cohérence de type avec l ola origine');
     }
 
     /**
