@@ -2734,7 +2734,7 @@ JAVASCRIPT;
                     'table'              => Item_Ola::getTable(),
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
-                        'condition'          => ['NEWTABLE.ola_type' => SLM::TTO],
+                        'condition'          => ['NEWTABLE.ola_type' => SLM::TTR],
                     ],
                 ],
             ],
