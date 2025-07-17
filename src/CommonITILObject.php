@@ -2598,6 +2598,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 // Add current level to do
                 if ($this instanceof Ticket) { // TODO: rewrite with polymorphism...
                     $sla->addLevelToDo($this);
+                }
             } else { // sla set by date
                 // Using calendar
                 if (
@@ -2644,7 +2645,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     SLA::deleteLevelsToDo($this);
                 }
 
-            if (is_a($this, Ticket::class)) {
+            if ($this instanceof Ticket) {
             OLA::deleteLevelsToDo($this);
             }
         }
