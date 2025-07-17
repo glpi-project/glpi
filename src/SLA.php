@@ -49,7 +49,7 @@ class SLA extends LevelAgreement
     protected static $forward_entity_to = ['SlaLevel'];
 
     /**
-     * @param \Ticket $ticket
+     * @param Ticket $ticket
      * @param int $levels_id
      * @return void
      */
@@ -89,7 +89,7 @@ class SLA extends LevelAgreement
      **/
     public static function deleteLevelsToDo(Ticket $ticket)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ticketfield = static::$prefix . "levels_id_ttr";
@@ -131,7 +131,7 @@ class SLA extends LevelAgreement
 
     public function cleanDBonPurge()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // Clean levels

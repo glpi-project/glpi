@@ -453,14 +453,13 @@ class Ticket extends CommonITILObject
      *  - remove Item_Olas
      *  - OlaLevel_Ticket
      *
-     * @param class-string<\LevelAgreement> $laType
+     * @param class-string<LevelAgreement> $laType
      * @param integer $la_id the sla/ola id
      * @param SLM::TTR|SLM::TTO $subtype (SLM::TTR | SLM::TTO) TODO: use a real type (enum)
      * @param bool    $delete_date (default false)
      *
      * @return bool
      * @since 9.2
-     *
      */
     public function deleteLevelAgreement($laType, $la_id, $subtype, $delete_date = false)
     {
@@ -468,7 +467,7 @@ class Ticket extends CommonITILObject
             // delete Item_Ola, there is just one item_ola for one ticket + ola
             $item_ola = new Item_Ola();
             if (!$item_ola->deleteByCriteria(['olas_id' => (int) $la_id])) {
-                throw new \RuntimeException('Unable to delete Item_Ola #' . $la_id);
+                throw new RuntimeException('Unable to delete Item_Ola #' . $la_id);
             }
 
             // delete level agreement level to do
@@ -504,7 +503,7 @@ class Ticket extends CommonITILObject
 
             return $this->update($input);
         } else {
-            throw new \Exception('invalid level type');
+            throw new Exception('invalid level type');
         }
 
     }
@@ -6336,8 +6335,8 @@ JAVASCRIPT;
      * Get currently associated Ola from database
      * Data from ola + item_ola + custom data
      *
-     * @return array<array{olas_id: int, items_olas_id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, end_time: string, class: string, is_late: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|\LevelAgreementLevel, group_name: string}>
-    */
+     * @return array<array{olas_id: int, items_olas_id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, end_time: string, class: string, is_late: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|LevelAgreementLevel, group_name: string}>
+     */
     public function getOlasData(): array
     {
         return $this->isNewItem()
@@ -6378,7 +6377,7 @@ JAVASCRIPT;
      * // @todoseb faire une test
      * used in template templates/components/itilobject/service_levels.html.twig
      *
-     * @return array<array{id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|\LevelAgreementLevel}>
+     * @return array<array{id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|LevelAgreementLevel}>
      */
     public function getSlasData(): array
     {
@@ -6438,7 +6437,7 @@ JAVASCRIPT;
             ]);
 
             if (!$items_ola->delete(['id' => $items_ola->getID()])) {
-                throw new \Exception("Failed to dissociate OLA #$olas_id from ticket #{$this->getID()}");
+                throw new Exception("Failed to dissociate OLA #$olas_id from ticket #{$this->getID()}");
             }
         }
 
@@ -6459,7 +6458,7 @@ JAVASCRIPT;
                     'start_time' => $on_ticket_creation ? $this->fields['date'] : Session::getCurrentTime(),
                 ])
             ) {
-                throw new \Exception("Failed to associate OLA #$olas_id to ticket #{$this->getID()}");
+                throw new Exception("Failed to associate OLA #$olas_id to ticket #{$this->getID()}");
             }
         }
 
@@ -6526,7 +6525,7 @@ JAVASCRIPT;
 
         foreach ($ola_removed_inputs as $ola_removed_input) {
             if (isset($input[$ola_removed_input])) {
-                throw new \RuntimeException('Input field "' . $ola_removed_input . '" is not used anymore, Ola are only associated now, use "_olas_id" please update your code. see Ticket.php docbloc.');
+                throw new RuntimeException('Input field "' . $ola_removed_input . '" is not used anymore, Ola are only associated now, use "_olas_id" please update your code. see Ticket.php docbloc.');
             }
         }
     }
