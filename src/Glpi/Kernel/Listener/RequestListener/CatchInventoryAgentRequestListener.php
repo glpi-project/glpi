@@ -39,6 +39,7 @@ use Glpi\Kernel\KernelListenerTrait;
 use Glpi\Kernel\ListenersPriority;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 final readonly class CatchInventoryAgentRequestListener implements EventSubscriberInterface
@@ -67,9 +68,14 @@ final readonly class CatchInventoryAgentRequestListener implements EventSubscrib
             && !$request->request->has('totp_code')
             && $request->getContent() !== ''
         ) {
+            $sub_request = $request->duplicate();
+
             // Setting the `_controller` attribute will force Symfony to consider that routing was resolved already.
             // @see `\Symfony\Component\HttpKernel\EventListener\RouterListener::onKernelRequest()`
-            $request->attributes->set('_controller', InventoryController::class . '::index');
+            $sub_request->attributes->set('_controller', InventoryController::class . '::index');
+
+            $response = $event->getKernel()->handle($sub_request, HttpKernelInterface::SUB_REQUEST);
+            $event->setResponse($response);
         }
     }
 }
