@@ -5852,20 +5852,11 @@ final class SQLProvider implements SearchProviderInterface
                             case "glpi_tickets.time_to_own":
                                 $slaField = 'slas_id_tto';
                                 break;
-                            case "glpi_tickets.internal_time_to_own":
-                                $slaField = 'olas_id_tto';
-                                $sla_class = OLA::class;
-                                break;
-                            case "glpi_tickets.internal_time_to_resolve":
-                                $slaField = 'olas_id_ttr';
-                                $sla_class = OLA::class;
-                                break;
                         }
 
                         switch ($table . '.' . $field) {
                             // If ticket has been taken into account: no progression display
                             case "glpi_tickets.time_to_own":
-                            case "glpi_tickets.internal_time_to_own":
                                 if (($item->fields['takeintoaccount_delay_stat'] > 0)) {
                                     return $out;
                                 }

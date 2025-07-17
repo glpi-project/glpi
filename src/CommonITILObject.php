@@ -2910,7 +2910,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
                             if (static::getType() === Ticket::getType()) {
                                 // For time_to_resolve and time_to_own : check also slas
-                                // For internal_time_to_resolve and internal_time_to_own : check also olas
                                 foreach ([SLM::TTR, SLM::TTO] as $slmType) {
                                     [$dateField, $slaField] = SLA::getFieldNames($slmType);
                                     if (

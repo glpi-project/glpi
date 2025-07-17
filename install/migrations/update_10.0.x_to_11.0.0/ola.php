@@ -100,7 +100,7 @@ function create_items_olas_table(Migration $migration): void
         `itemtype`      varchar(255) NOT NULL,
         `items_id`      int unsigned NOT NULL,
         `olas_id`       int unsigned NOT NULL,
-        `ola_type`      int NOT NULL, -- 1: TTO, 2: TTR
+        `ola_type`      tinyint NOT NULL, -- 1: TTO, 2: TTR
         `start_time`    timestamp NULL DEFAULT NULL,
         `due_time`      timestamp NULL DEFAULT NULL,
         `end_time`      timestamp NULL DEFAULT NULL,
