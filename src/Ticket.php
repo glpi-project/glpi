@@ -2655,7 +2655,7 @@ JAVASCRIPT;
             'id'                 => '190',
             'table'              => 'glpi_olas',
             'field'              => 'name',
-            'name'               =>  __('OLA') . ' - ' . __('time to own'),
+            'name'               =>  __('OLA') . ' ' . __('time to own'),
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
