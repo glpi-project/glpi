@@ -558,8 +558,7 @@ abstract class CommonDropdown extends CommonDBTM
                         // glpi_ipaddresses relationship that does not respect naming conventions
                         $itemtype_field = 'mainitemtype';
                         $items_id_field = 'mainitems_id';
-                    }
-                    else {
+                    } else {
                         $itemtype_matches = preg_grep('/^itemtype/', $field);
                         $items_id_matches = preg_grep('/^items_id/', $field);
                         $itemtype_field = reset($itemtype_matches);
