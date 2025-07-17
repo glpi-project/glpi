@@ -2149,7 +2149,7 @@ class SLMTest extends DbTestCase
         // action : ticket priority -> 5
         $this->createItem(\OlaLevelAction::class, ['action_type' => 'assign', 'field' => 'priority', 'value' => 5, 'olalevels_id' => $level_2->getID()]);
 
-        // --- 10:00 - create ticket and affect olalevels_id_ttr
+        // --- 10:00 - create ticket
         $this->setCurrentTime('10:00:00', '2025-05-26');
         $this->runOlaCron(); // no changes will be triggered
         $ticket = $this->createTicket([
@@ -2179,7 +2179,6 @@ class SLMTest extends DbTestCase
         // --- 11:31 ticket : level 2 is reached
         $this->setCurrentTime('11:31:00', '2025-05-26');
         $this->runOlaCron();
-        // $this->assertEquals($level_2->getID(), $ticket->fields['olalevels_id_ttr']) // as noted above, this field does not change
         // no next level to be processed
         $this->assertFalse((new \OlaLevel_Ticket())->getFromDBByCrit(['tickets_id' => $ticket->getID()]));
         // priority changed to 5
