@@ -45,6 +45,7 @@ phpstan.neon
 /phpunit/files/
 /phpunit/config
 /phpunit/coverage/
+.php-cs-fixer.cache
 *.phar
 .env
 /resources/.illustrations_translations.php
