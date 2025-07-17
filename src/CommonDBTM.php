@@ -5367,7 +5367,7 @@ class CommonDBTM extends CommonGLPI
 
         foreach ($iterator as $data) {
             $entry = [
-                'id' => $data['id']
+                'id' => $data['id'],
             ];
             $templname = $data["template_name"];
             if ($_SESSION["glpiis_ids_visible"] || empty($data["template_name"])) {
