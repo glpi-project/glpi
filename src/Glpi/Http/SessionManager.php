@@ -114,6 +114,11 @@ final class SessionManager
             return true;
         }
 
+        if (in_array($path, ['/Inventory', '/front/inventory.php'], true)) {
+            // Inventory endpoints are machine to machine endpoints, they are not supposed to use sessions.
+            return true;
+        }
+
         if (
             $request->query->has('embed')
             && (

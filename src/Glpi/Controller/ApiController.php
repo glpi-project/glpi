@@ -38,12 +38,9 @@ use Glpi\Api\APIRest;
 use Glpi\Api\HL\Controller\AbstractController as ApiAbstractController;
 use Glpi\Api\HL\Router;
 use Glpi\Error\ErrorHandler;
-use Glpi\Http\Firewall;
 use Glpi\Http\HeaderlessStreamedResponse;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
-use Glpi\Security\Attribute\DisableCsrfChecks;
-use Glpi\Security\Attribute\SecurityStrategy;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
@@ -63,8 +60,6 @@ final class ApiController extends AbstractController
             'request_parameters' => '.*',
         ]
     )]
-    #[DisableCsrfChecks()]
-    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function __invoke(SymfonyRequest $request): SymfonyResponse
     {
         $_SERVER['PATH_INFO'] = $request->get('request_parameters');
