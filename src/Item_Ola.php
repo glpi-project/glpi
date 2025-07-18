@@ -36,6 +36,9 @@
 
 use function Safe\strtotime;
 
+/**
+ * @phpstan-type ItemOlaData array{olas_id: int, items_olas_id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, end_time: string, is_late: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|LevelAgreementLevel, group_name: string}
+ */
 class Item_Ola extends CommonDBRelation
 {
     public static $itemtype_1 = 'itemtype'; // Only Ticket at the moment
@@ -179,7 +182,7 @@ class Item_Ola extends CommonDBRelation
      * Get data from Item_Ola + linked OLA for a Ticket
      * @param Ticket $ticket
      *
-     * @return array<array{olas_id: int, items_olas_id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, end_time: string, is_late: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|LevelAgreementLevel, group_name: string}>
+     * @return array<ItemOlaData>
      */
     public function getDataFromDBForTicket(Ticket $ticket): array
     {
@@ -211,7 +214,7 @@ class Item_Ola extends CommonDBRelation
     /**
      * @param Ticket $ticket
      * @param array<int> $olas_ids
-     * @return array
+     * @return array<ItemOlaData>
      */
     public function getDataFromOlasIdsForTicket(Ticket $ticket, array $olas_ids): array
     {
@@ -270,7 +273,7 @@ class Item_Ola extends CommonDBRelation
      *
      * If 'linkid' is set, it will be used to populate the data from Item_Ola otherwise it will be filled with default values.
      *
-     * @return array{olas_id: int, items_olas_id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, is_late: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|LevelAgreementLevel, group_name: string}
+     * @return ItemOlaData
      */
     private function fillItemOlaData(array $ola_data, Ticket $ticket): array
     {
