@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e -u -x -o pipefail
 
-CONFIG_PATH="./tests/config"
-FILES_PATH="./tests/files"
+CONFIG_PATH="./tests/playwright/glpi_config"
+FILES_PATH="./tests/playwright/glpi_files"
 LOG_FILE="$FILES_PATH/_log/install.log"
 
 mkdir -p $(dirname "$LOG_FILE")
@@ -16,6 +16,7 @@ bin/console database:install \
   --force \
   --reconfigure --db-name=glpi --db-host=db --db-user=root --db-password="" \
   --strict-configuration \
+  --env=e2e_testing \
   | tee $LOG_FILE
 if [[ -n $(grep "Warning" $LOG_FILE) ]];
   then echo "database:install command FAILED" && exit 1;
