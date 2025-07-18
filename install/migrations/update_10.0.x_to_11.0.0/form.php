@@ -32,6 +32,11 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Form\Destination\CommonITILField\ValidationField;
+use Glpi\Form\Destination\CommonITILField\ValidationFieldConfig;
+use Glpi\Form\Destination\CommonITILField\ValidationFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\ValidationFieldStrategyConfig;
+use Glpi\Form\Destination\FormDestination;
 
 /**
  * @var DBmysql $DB
@@ -430,3 +435,36 @@ $migration->addCrontask(
     DAY_TIMESTAMP,
     param: 7
 );
+
+// Data format for ValidationField has changed
+if ($DB->tableExists('glpi_forms_destinations_formdestinations')) {
+    $iterator = $DB->request(['FROM' => 'glpi_forms_destinations_formdestinations']);
+    foreach ($iterator as $data) {
+        $config = json_decode($data['config'] ?? '[]', true) ?? [];
+        $strategies = $config[ValidationField::getKey()]['strategies'] ?? [];
+        $specific_actors = $config[ValidationField::getKey()]['specific_actors'] ?? [];
+        $specific_question_ids = $config[ValidationField::getKey()]['specific_question_ids'] ?? [];
+        $specific_validationtemplates_ids = $config[ValidationField::getKey()]['specific_validationtemplates_ids'] ?? [];
+
+        $validation_configs = [];
+        foreach ($strategies as $strategy) {
+            $validation_configs[] = new ValidationFieldStrategyConfig(
+                strategy: ValidationFieldStrategy::tryFrom($strategy) ?? ValidationFieldStrategy::NO_VALIDATION,
+                specific_validationtemplate_ids: $specific_validationtemplates_ids,
+                specific_question_ids: $specific_question_ids,
+                specific_actors: $specific_actors,
+            );
+        }
+
+        $config[ValidationField::getKey()] = (new ValidationFieldConfig(
+            strategy_configs: $validation_configs
+        ))->jsonSerialize();
+
+        // Update the config field
+        $DB->update(
+            'glpi_forms_destinations_formdestinations',
+            ['config' => json_encode($config)],
+            ['id' => $data['id']]
+        );
+    }
+}
