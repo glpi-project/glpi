@@ -173,7 +173,7 @@ class ProjectControllerTest extends \HLAPITestCase
 
         $this->assertTrue($project->update([
             'id' => $project->getID(),
-            'users_id' => $_SESSION['glpiID'] + 1 // Created by another user
+            'users_id' => $_SESSION['glpiID'] + 1, // Created by another user
         ]));
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
@@ -218,7 +218,7 @@ class ProjectControllerTest extends \HLAPITestCase
             /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
-                ->jsonContent(static fn ($c) => count($c) === 1 && $c[0]['id'] === $project_task->getID());
+                ->jsonContent(static fn($c) => count($c) === 1 && $c[0]['id'] === $project_task->getID());
         });
 
         $_SESSION['glpiactiveprofile'][Project::$rightname] = 0;
@@ -226,7 +226,7 @@ class ProjectControllerTest extends \HLAPITestCase
             /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
-                ->jsonContent(static fn ($c) => empty($c));
+                ->jsonContent(static fn($c) => empty($c));
         });
         $this->api->call(new Request('GET', '/Project/Task/' . $project_task->getID()), function ($call) {
             /** @var \HLAPICallAsserter $call */
