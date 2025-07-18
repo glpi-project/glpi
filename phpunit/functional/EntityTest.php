@@ -1680,4 +1680,203 @@ class EntityTest extends DbTestCase
         ;
         $this->assertEquals($expected, $title);
     }
+
+    public static function helpdeskSearchBarConfigIsAppliedProvider(): iterable
+    {
+        yield 'One entity without config' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => -2],
+            ],
+            'entity' => 'entity_a',
+            'should_be_enabled' => true, // Inherit from root
+        ];
+
+        yield 'Inherit enabled from parent' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 1],
+                ['name' => 'entity_aa', 'parent' => 'entity_a', 'config' => -2],
+            ],
+            'entity' => 'entity_aa',
+            'should_be_enabled' => true,
+        ];
+
+        yield 'Inherit disabled from parent' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 0],
+                ['name' => 'entity_aa', 'parent' => 'entity_a', 'config' => -2],
+            ],
+            'entity' => 'entity_aa',
+            'should_be_enabled' => false,
+        ];
+
+        yield 'Enabled from child' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 0],
+                ['name' => 'entity_aa', 'parent' => 'entity_a', 'config' => 1],
+            ],
+            'entity' => 'entity_aa',
+            'should_be_enabled' => true,
+        ];
+
+        yield 'Disabled from child' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 1],
+                ['name' => 'entity_aa', 'parent' => 'entity_a', 'config' => 0],
+            ],
+            'entity' => 'entity_aa',
+            'should_be_enabled' => false,
+        ];
+    }
+
+    #[DataProvider('helpdeskSearchBarConfigIsAppliedProvider')]
+    public function testHelpdeskSearchBarConfigIsApplied(
+        array $entities,
+        string $entity,
+        bool $should_be_enabled,
+    ): void {
+        $this->login();
+
+        // Arrange: create requested entities
+        $root = $this->getTestRootEntity(only_id: true);
+        foreach ($entities as $to_create) {
+            if (isset($to_create['parent'])) {
+                $parent = getItemByTypeName(
+                    Entity::class,
+                    $to_create['parent'],
+                    onlyid: true,
+                );
+            } else {
+                $parent = $root;
+            }
+
+            $this->createItem(Entity::class, [
+                'name'                            => $to_create['name'],
+                'entities_id'                     => $parent,
+                'enable_helpdesk_home_search_bar' => $to_create['config'],
+            ]);
+        }
+
+        // Act: render home page
+        $this->login('post-only');
+        $_SERVER['REQUEST_URI'] = ""; // Needed to avoid warnings
+        $renderer = TemplateRenderer::getInstance();
+        $content = $renderer->render('pages/helpdesk/index.html.twig', [
+            // Important, entity to test
+            'entity' => getItemByTypeName(Entity::class, $entity),
+            // We don't case about these, set minimal required values
+            'title' => '',
+            'tiles' => [],
+            'tabs'  => new HomePageTabs(),
+            'password_alert' => null,
+        ]);
+
+        // Assert: try to find the search bar on the page
+        $search_bar = (new Crawler($content))
+            ->filter('[data-testid=home-search]')
+        ;
+        $this->assertCount(
+            $should_be_enabled ? 1 : 0,
+            $search_bar
+        );
+    }
+
+    public static function helpdeskServiceCatalogConfigIsAppliedProvider(): iterable
+    {
+        yield 'One entity without config' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => -2],
+            ],
+            'entity' => 'entity_a',
+            'should_be_enabled' => true, // Inherit from root
+        ];
+
+        yield 'Inherit enabled from parent' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 1],
+                ['name' => 'entity_aa', 'parent' => 'entity_a', 'config' => -2],
+            ],
+            'entity' => 'entity_aa',
+            'should_be_enabled' => true,
+        ];
+
+        yield 'Inherit disabled from parent' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 0],
+                ['name' => 'entity_aa', 'parent' => 'entity_a', 'config' => -2],
+            ],
+            'entity' => 'entity_aa',
+            'should_be_enabled' => false,
+        ];
+
+        yield 'Enabled from child' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 0],
+                ['name' => 'entity_aa', 'parent' => 'entity_a', 'config' => 1],
+            ],
+            'entity' => 'entity_aa',
+            'should_be_enabled' => true,
+        ];
+
+        yield 'Disabled from child' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 1],
+                ['name' => 'entity_aa', 'parent' => 'entity_a', 'config' => 0],
+            ],
+            'entity' => 'entity_aa',
+            'should_be_enabled' => false,
+        ];
+    }
+
+    #[DataProvider('helpdeskServiceCatalogConfigIsAppliedProvider')]
+    public function testHelpdeskServiceCatalogConfigIsApplied(
+        array $entities,
+        string $entity,
+        bool $should_be_enabled,
+    ): void {
+        $this->login();
+
+        // Arrange: create requested entities
+        $root = $this->getTestRootEntity(only_id: true);
+        foreach ($entities as $to_create) {
+            if (isset($to_create['parent'])) {
+                $parent = getItemByTypeName(
+                    Entity::class,
+                    $to_create['parent'],
+                    onlyid: true,
+                );
+            } else {
+                $parent = $root;
+            }
+
+            $this->createItem(Entity::class, [
+                'name'                            => $to_create['name'],
+                'entities_id'                     => $parent,
+                'enable_helpdesk_service_catalog' => $to_create['config'],
+            ]);
+        }
+
+        // Act: render home page
+        $entity = getItemByTypeName(Entity::class, $entity);
+        $this->login('post-only');
+        $this->setEntity($entity->getId(), true); // Can't pass entity value for this one, it must be set in the session.
+        $_SERVER['REQUEST_URI'] = ""; // Needed to avoid warnings
+        $renderer = TemplateRenderer::getInstance();
+        $content = $renderer->render('pages/helpdesk/index.html.twig', [
+            // We don't case about these, set minimal required values
+            'entity' => $entity,
+            'title' => '',
+            'tiles' => [],
+            'tabs'  => new HomePageTabs(),
+            'password_alert' => null,
+        ]);
+
+        // Assert: try to find the search bar on the page
+        $search_bar = (new Crawler($content))
+            ->filter('[href="/ServiceCatalog"]')
+        ;
+        $this->assertCount(
+            $should_be_enabled ? 1 : 0,
+            $search_bar
+        );
+    }
 }
