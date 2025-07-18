@@ -34,6 +34,11 @@
 
 namespace Glpi\Features;
 
+use CommonDBTM;
+
+/**
+ * @phpstan-require-extends CommonDBTM
+ */
 interface AssignableItemInterface
 {
     public static function canView(): bool;
