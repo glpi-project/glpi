@@ -315,6 +315,24 @@ foreach ($fields as $field) {
     }
 }
 
+$fields = ['enable_helpdesk_home_search_bar', 'enable_helpdesk_service_catalog'];
+foreach ($fields as $field) {
+    if (!$DB->fieldExists("glpi_entities", $field)) {
+        $migration->addField(
+            'glpi_entities',
+            $field,
+            "tinyint NOT NULL DEFAULT -2"
+        );
+        $migration->addPostQuery(
+            $DB->buildUpdate(
+                'glpi_entities',
+                [$field => 1],
+                ['id' => 0]
+            )
+        );
+    }
+}
+
 if (!$DB->fieldExists('glpi_forms_forms', 'uuid')) {
     $migration->addField(
         'glpi_forms_forms',

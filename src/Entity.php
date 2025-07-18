@@ -174,7 +174,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'suppliers_as_private', 'autopurge_delay', 'anonymize_support_agents', 'display_users_initials',
             'contracts_strategy_default', 'contracts_id_default', 'show_tickets_properties_on_helpdesk',
             'custom_helpdesk_home_scene_left', 'custom_helpdesk_home_scene_right',
-            'custom_helpdesk_home_title',
+            'custom_helpdesk_home_title', 'enable_helpdesk_home_search_bar', 'enable_helpdesk_service_catalog',
         ],
         // Configuration
         'config' => ['enable_custom_css', 'custom_css_code'],
@@ -3324,6 +3324,36 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             // Custom value
             return $value;
         }
+    }
+
+    public function isHelpdeskSearchBarEnabled(): bool
+    {
+        $value = $this->fields['enable_helpdesk_home_search_bar'] ?? '';
+
+        // Load from parent if needed
+        if ($value == self::CONFIG_PARENT) {
+            $value = self::getUsedConfig(
+                'enable_helpdesk_home_search_bar',
+                $this->fields['entities_id']
+            );
+        }
+
+        return $value === 1;
+    }
+
+    public function isServiceCatalogEnabled(): bool
+    {
+        $value = $this->fields['enable_helpdesk_service_catalog'] ?? '';
+
+        // Load from parent if needed
+        if ($value == self::CONFIG_PARENT) {
+            $value = self::getUsedConfig(
+                'enable_helpdesk_service_catalog',
+                $this->fields['entities_id']
+            );
+        }
+
+        return $value === 1;
     }
 
     public function getDefaultHelpdeskHomeTitle(): string

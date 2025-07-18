@@ -49,25 +49,31 @@
                     {{ entity.getHelpdeskHomeTitle() }}
                 </h1>
 
-                <div id="search-overlay" class="search-overlay bg-dark"></div>
-                <div class="input-icon search-bar-container">
-                    <span class="input-icon-addon">
-                        <i class="ti ti-search"></i>
-                    </span>
-                    <input
-                        id="search-input"
-                        type="text"
-                        value=""
-                        class="form-control home-search"
-                        placeholder="{{ __("Search for knowledge base entries or forms") }}"
-                    >
-                    <section
-                        id="search-results"
-                        class="position-absolute search-result-container w-100 d-none"
-                        aria-label="{{ __("Search results") }}"
-                    >
-                    </section>
-                </div>
+                {% if entity.isHelpdeskSearchBarEnabled() %}
+                    <div id="search-overlay" class="search-overlay bg-dark"></div>
+                    <div class="input-icon search-bar-container">
+                        <span class="input-icon-addon">
+                            <i class="ti ti-search"></i>
+                        </span>
+                        <input
+                            id="search-input"
+                            type="text"
+                            value=""
+                            class="form-control home-search"
+                            placeholder="{{ __("Search for knowledge base entries or forms") }}"
+                            data-testid="home-search"
+                        >
+                        <section
+                            id="search-results"
+                            class="position-absolute search-result-container w-100 d-none"
+                            aria-label="{{ __("Search results") }}"
+                        >
+                        </section>
+                    </div>
+                {% else %}
+                    {# No search area but keep the same size to keep illustrations layout consistent #}
+                    <div class="search-bar-container-placeholder"></div>
+                {% endif %}
             </div>
             <div class="scene scene-right">
                 {{ render_scene(scene_right) }}

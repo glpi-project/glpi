@@ -174,27 +174,27 @@
 
 <div class="container-xl ms-0 mt-3 mb-5">
     <h2 class="fs-2 mb-2">
-        {{ __("Custom titles") }}
+        {{ __("General") }}
     </h2>
-
-    {% if is_root_entity %}
-        {% set title_options = {
-            (constant("Entity::HELPDESK_TITLE_DEFAULT")): __("Default value"),
-            (constant("Entity::HELPDESK_TITLE_CUSTOM")) : __("Custom value"),
-        } %}
-    {% else %}
-        {% set title_options = {
-            (constant("Entity::HELPDESK_TITLE_DEFAULT")): __("Default value"),
-            (constant("Entity::HELPDESK_TITLE_CUSTOM")) : __("Custom value"),
-            (constant("Entity::HELPDESK_TITLE_INHERIT")): __("Inherited from parent entity"),
-        } %}
-    {% endif %}
-
-    {% set title_config = entity.getHelpdeskHomeTitleConfigForDropdown() %}
 
     <form method="POST" action="{{ entity.getFormURL() }}">
         <div class="row mb-3">
             <div class="col-6">
+                {% if is_root_entity %}
+                    {% set title_options = {
+                        (constant("Entity::HELPDESK_TITLE_DEFAULT")): __("Default value"),
+                        (constant("Entity::HELPDESK_TITLE_CUSTOM")) : __("Custom value"),
+                    } %}
+                {% else %}
+                    {% set title_options = {
+                        (constant("Entity::HELPDESK_TITLE_DEFAULT")): __("Default value"),
+                        (constant("Entity::HELPDESK_TITLE_CUSTOM")) : __("Custom value"),
+                        (constant("Entity::HELPDESK_TITLE_INHERIT")): __("Inherited from parent entity"),
+                    } %}
+                {% endif %}
+
+                {% set title_config = entity.getHelpdeskHomeTitleConfigForDropdown() %}
+
                 <h3 class="mb-2 mt-1">{{ __("Main title") }}</h3>
                 <div class="mb-2">
                     {% do call('Dropdown::showFromArray', [
@@ -254,13 +254,73 @@
                     ) }}
                 </section>
             </div>
+
+            <div class="col-6">
+                {% if is_root_entity %}
+                    {% set search_bar_options = {
+                        1: __("Enabled"),
+                        0: __("Disabled"),
+                    } %}
+                {% else %}
+                    {% set search_bar_options_config = entity.isHelpdeskSearchBarEnabled() %}
+                    {% set search_bar_options = {
+                        1: __("Enabled"),
+                        0: __("Disabled"),
+                        (constant("Entity::CONFIG_PARENT")): __("Inherited from parent entity (%1$s)")|format(search_bar_options_config ? "Enabled" : "Disabled"),
+                    } %}
+                {% endif %}
+
+                <h3 class="mb-2 mt-1">{{ __("Search bar") }}</h3>
+                <div class="mb-2">
+                    {% do call('Dropdown::showFromArray', [
+                        'enable_helpdesk_home_search_bar',
+                        search_bar_options,
+                        {
+                            value: entity.fields.enable_helpdesk_home_search_bar,
+                            width: "100%",
+                            aria_label: __('Search bar'),
+                        }
+                    ]) %}
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-6">
+                {% if is_root_entity %}
+                    {% set service_catalog_options = {
+                        1: __("Enabled"),
+                        0: __("Disabled"),
+                    } %}
+                {% else %}
+                    {% set service_catalog_config = entity.isServiceCatalogEnabled() %}
+                    {% set service_catalog_options = {
+                        1: __("Enabled"),
+                        0: __("Disabled"),
+                        (constant("Entity::CONFIG_PARENT")): __("Inherited from parent entity (%1$s)")|format(service_catalog_config ? "Enabled" : "Disabled"),
+                    } %}
+                {% endif %}
+
+                <h3 class="mb-2 mt-1">{{ __("Service catalog") }}</h3>
+                <div class="mb-2">
+                    {% do call('Dropdown::showFromArray', [
+                        'enable_helpdesk_service_catalog',
+                        service_catalog_options,
+                        {
+                            value: entity.fields.enable_helpdesk_service_catalog,
+                            width: "100%",
+                            aria_label: __('Service catalog'),
+                        }
+                    ]) %}
+                </div>
+            </div>
         </div>
 
         {# Form actions #}
         <div class="d-flex mb-1">
             <button class="btn btn-primary ms-auto" name="update">
                 <i class="ti ti-upload me-2"></i>
-                {{ __("Save custom titles settings") }}
+                {{ __("Save general settings") }}
             </button>
         </div>
 
