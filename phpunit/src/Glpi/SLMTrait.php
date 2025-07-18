@@ -36,6 +36,7 @@ namespace Glpi\PHPUnit\Tests\Glpi;
 
 use OLA;
 use SLA;
+use SlaLevel_Ticket;
 use SLM;
 
 trait SLMTrait
@@ -70,12 +71,13 @@ trait SLMTrait
             OLA::class,
             $data + [
                 'name' => 'OLA ' . time(),
-                'is_recursive' => 1,
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
                 'type' => $ola_type,
                 'comment' => 'OLA comment ' . time(),
                 'number_time' => $amount,
                 'definition_time' => $unit,
                 'slms_id' => $slm->getID(),
+                'groups_id' => $group->getID(),
             ]
         );
 
@@ -128,5 +130,15 @@ trait SLMTrait
                 'calendars_id' => $calendar->getID(),
             ]
         );
+    }
+
+    private function runSlaCron(): void
+    {
+        SlaLevel_Ticket::cronSlaTicket(getItemByTypeName(\CronTask::class, 'slaticket'));
+    }
+
+    private function runOlaCron(): void
+    {
+        \Item_Ola::cronOlaTicket(getItemByTypeName(\CronTask::class, 'slaticket'));
     }
 }
