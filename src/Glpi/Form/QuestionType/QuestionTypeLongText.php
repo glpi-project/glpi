@@ -119,7 +119,7 @@ final class QuestionTypeLongText extends AbstractQuestionType implements
                 {
                     'placeholder'    : placeholder,
                     'enable_richtext': true,
-                    'editor_height'  : "0",
+                    'editor_height'  : "100",
                     'rows'           : 1,
                     'init'           : question is not null ? true: false,
                     'is_horizontal'  : false,
