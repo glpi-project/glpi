@@ -110,7 +110,7 @@
         </div>
         <section data-glpi-itildestination-field-configs>
             {% if config_field is instanceof('Glpi\\Form\\Destination\\ConfigFieldWithStrategiesInterface') %}
-                {% for strategy in config_field.getStrategies() %}
+                {% for index, strategy in config_field.getStrategies() %}
                     {# Update the random value for each iteration except the first one, to avoid conflicts with labels #}
                     {% if not loop.first %}
                         {% set rand = random() %}
@@ -147,7 +147,8 @@
                                 {
                                     'is_horizontal': false,
                                     'rand': rand,
-                                }|merge(extra_options)
+                                }|merge(extra_options),
+                                index
                             )|raw }}
                         </div>
                         {% if field.canHaveMultipleStrategies() %}
@@ -219,7 +220,8 @@
                             {
                                 'is_horizontal': false,
                                 'init': false,
-                            }|merge(extra_options)
+                            }|merge(extra_options),
+                            '__INDEX__'
                         )|raw }}
                     </div>
                     <button
@@ -240,6 +242,7 @@
         import("/js/modules/Forms/FieldDestinationMultipleConfig.js").then((m) => {
             new m.GlpiFormFieldDestinationMultipleConfig(
                 $('[data-glpi-itildestination-field="{{ field_container_rand }}"]'),
+                {{ field.getReusableStrategies()|json_encode|raw }}
             );
         });
     </script>
