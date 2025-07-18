@@ -1173,7 +1173,11 @@ class Ticket extends CommonITILObject
         $olalevels_id = OlaLevel::getFirstOlaLevel($olas_id);
 
         $ola = new OLA();
-        if ($olalevels_id && $ola->getFromDB($olas_id)) {
+        $ola_fetched = $ola->getFromDB($olas_id);
+        if (!$ola_fetched) {
+            throw new Exception('Ola not found #: ' . $olas_id);
+        }
+        if ($olalevels_id) {
             $calendars_id = Entity::getUsedConfig(
                 'calendars_strategy',
                 $this->fields['entities_id'],
@@ -1183,7 +1187,7 @@ class Ticket extends CommonITILObject
             $ola->setTicketCalendar($calendars_id);
             $ola->addLevelToDo($this, $olalevels_id, $olas_id);
         }
-        OlaLevel_Ticket::replayForTicket($this->getID(), $ola->getField('type'));
+        OlaLevel_Ticket::replayForTicket($this->getID(), $ola->fields['type']);
     }
 
     public function pre_updateInDB()
