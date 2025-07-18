@@ -93,7 +93,12 @@ trait AssignableItem
         return true;
     }
 
-    public static function getAssignableVisiblityCriteria(): array
+    /**
+     * @param string|null $item_table_reference Table name to use in criteria, defaults to static::getTable().
+     * Useful if the criteria that this will be used with uses aliases.
+     * @return array[]|QueryExpression[]
+     */
+    public static function getAssignableVisiblityCriteria(?string $item_table_reference = null): array
     {
         if (!Session::haveRightsOr(static::$rightname, [READ, READ_ASSIGNED, READ_OWNED])) {
             return [new QueryExpression('0')];
@@ -103,7 +108,7 @@ trait AssignableItem
             return [new QueryExpression('1')];
         }
 
-        $item_table     = static::getTable();
+        $item_table     = $item_table_reference ?? static::getTable();
         $relation_table = Group_Item::getTable();
 
         $or = [];
