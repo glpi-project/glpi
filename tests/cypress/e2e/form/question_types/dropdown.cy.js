@@ -427,7 +427,7 @@ describe('Dropdown form question type', () => {
         });
 
         // Add visibility condition on submit button
-        cy.findByRole('button', { name: 'Submit button visibility' }).click();
+        cy.findByRole('button', { name: 'Always visible' }).click();
         cy.findByRole('radio', { name: 'Visible if...' }).next().click();
         cy.getDropdownByLabelText('Item').selectDropdownValue("Test dropdown question");
         cy.getDropdownByLabelText('Value operator').selectDropdownValue("Is equal to");

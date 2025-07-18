@@ -130,6 +130,8 @@
 }
 
 [data-glpi-form-editor-form] {
+    height: fit-content;
+
     &[data-glpi-form-editor-active-form] {
         // Show secondary data on active form
         [data-glpi-form-editor-form-extra-details] {
