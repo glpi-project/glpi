@@ -40,7 +40,7 @@
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 
-/** @var \DBmysql $DB */
+/** @var DBmysql $DB */
 global $DB;
 
 header("Content-Type: text/html; charset=UTF-8");

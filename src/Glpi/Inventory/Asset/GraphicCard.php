@@ -36,6 +36,7 @@
 namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
+use Item_DeviceGraphicCard;
 
 class GraphicCard extends Device
 {
@@ -75,6 +76,6 @@ class GraphicCard extends Device
 
     public function getItemtype(): string
     {
-        return \Item_DeviceGraphicCard::class;
+        return Item_DeviceGraphicCard::class;
     }
 }

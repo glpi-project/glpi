@@ -46,6 +46,7 @@ use ReflectionClass;
 use SplFileInfo;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\CommandLoader\CommandLoaderInterface;
+use Symfony\Component\Console\Exception\CommandNotFoundException;
 
 use function Safe\preg_match;
 
@@ -100,7 +101,7 @@ class CommandLoader implements CommandLoaderInterface
         $commands = $this->getCommands();
 
         if (!array_key_exists($name, $commands)) {
-            throw new \Symfony\Component\Console\Exception\CommandNotFoundException(sprintf('Command "%s" does not exist.', $name));
+            throw new CommandNotFoundException(sprintf('Command "%s" does not exist.', $name));
         }
 
         return $commands[$name];

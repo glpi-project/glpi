@@ -35,6 +35,7 @@
 namespace Glpi\Progress;
 
 use Glpi\Message\MessageType;
+use RuntimeException;
 
 /**
  * @final
@@ -54,7 +55,7 @@ class StoredProgressIndicator extends AbstractProgressIndicator
     /**
      * Messages.
      *
-     * @var array<int, array{type: \Glpi\Message\MessageType, message: string}>
+     * @var array<int, array{type: MessageType, message: string}>
      */
     private array $messages = [];
 
@@ -98,7 +99,7 @@ class StoredProgressIndicator extends AbstractProgressIndicator
     protected function update(): void
     {
         if (!($this->progress_storage instanceof ProgressStorage)) {
-            throw new \RuntimeException('Progress indicator cannot be updated from a read-only context.');
+            throw new RuntimeException('Progress indicator cannot be updated from a read-only context.');
         }
 
         $this->store();
@@ -107,7 +108,7 @@ class StoredProgressIndicator extends AbstractProgressIndicator
     /**
      * Get the messages.
      *
-     * @return array<int, array{type: \Glpi\Message\MessageType, message: string}>
+     * @return array<int, array{type: MessageType, message: string}>
      */
     public function getMessages(): array
     {

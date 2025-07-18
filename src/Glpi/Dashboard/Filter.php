@@ -35,30 +35,32 @@
 
 namespace Glpi\Dashboard;
 
-use Glpi\Plugin\Hooks;
-use Session;
-use Plugin;
-use Toolbox;
+use CommonDBChild;
+use DBmysql;
 use Glpi\Dashboard\Filters\{
     DatesFilter,
+    DatesModFilter,
+    GroupRequesterFilter,
+    GroupTechFilter,
     ItilCategoryFilter,
     LocationFilter,
     ManufacturerFilter,
     RequestTypeFilter,
     StateFilter,
     TicketTypeFilter,
-    GroupRequesterFilter,
-    GroupTechFilter,
-    UserTechFilter,
-    DatesModFilter
+    UserTechFilter
 };
+use Glpi\Plugin\Hooks;
+use Plugin;
+use Session;
+use Toolbox;
 
 /**
  * Filter class
  **/
-class Filter extends \CommonDBChild
+class Filter extends CommonDBChild
 {
-    public static $itemtype = \Glpi\Dashboard\Dashboard::class;
+    public static $itemtype = Dashboard::class;
     public static $items_id = 'dashboards_dashboards_id';
 
     /**
@@ -155,7 +157,7 @@ class Filter extends \CommonDBChild
      */
     public static function getForDashboard(int $dashboards_id = 0): string
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $dr_iterator = $DB->request([
@@ -181,7 +183,7 @@ class Filter extends \CommonDBChild
      */
     public static function addForDashboard(int $dashboards_id = 0, string $settings = '')
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $DB->updateOrInsert(

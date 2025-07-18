@@ -35,15 +35,16 @@
 
 namespace Glpi\Form\QuestionType;
 
+use CommonDBTM;
 use Exception;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Condition\ConditionHandler\ActorConditionHandler;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
-use Glpi\Form\Condition\ConditionHandler\ActorConditionHandler;
-use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
 use Group;
 use InvalidArgumentException;
@@ -505,8 +506,7 @@ TWIG;
 
         // Handler users, groups and suppliers ids.
         foreach ($to_handle as $itemtype => $data_key) {
-            /** @var class-string<\CommonDBTM> $itemtype */
-
+            /** @var class-string<CommonDBTM> $itemtype */
             // Iterate on ids
             $ids = $default_value_config[$data_key] ?? [];
             foreach ($ids as $i => $item_id) {
@@ -553,8 +553,7 @@ TWIG;
 
         // Handler users, groups and suppliers ids.
         foreach ($to_handle as $itemtype => $data_key) {
-            /** @var class-string<\CommonDBTM> $itemtype */
-
+            /** @var class-string<CommonDBTM> $itemtype */
             // Iterate on names
             $names = $default_value_data[$data_key] ?? [];
             foreach ($names as $i => $name) {

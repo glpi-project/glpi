@@ -37,14 +37,14 @@ namespace tests\units\Glpi\Form\AccessControl\ControlType;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\ControlType\DirectAccess;
-use Glpi\Form\AccessControl\FormAccessParameters;
-use Glpi\Form\Form;
-use Glpi\Tests\FormBuilder;
-use Glpi\Tests\FormTesterTrait;
 use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
 use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeObserver;
 use Glpi\Session\SessionInfo;
+use Glpi\Tests\FormBuilder;
+use Glpi\Tests\FormTesterTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class DirectAccessTest extends \DBTestCase

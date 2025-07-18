@@ -40,6 +40,8 @@ use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Message;
 use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
+use Psr\SimpleCache\CacheInterface;
 use Session;
 use Toolbox;
 
@@ -89,7 +91,7 @@ class Plugins
      * @param array $options array of options for guzzle lib
      * @param string $method GET/POST, etc
      *
-     * @return \Psr\Http\Message\ResponseInterface|false
+     * @return ResponseInterface|false
      */
     private function request(
         string $endpoint = '',
@@ -194,7 +196,7 @@ class Plugins
         string $string_filter = "",
         string $sort = 'sort-alpha-asc'
     ) {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
+        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $cache_key = self::getCacheKey('marketplace_all_plugins');
@@ -400,7 +402,7 @@ class Plugins
      */
     public function getPluginsForTag(string $tag = "", bool $force_refresh = false): array
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
+        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $cache_key = self::getCacheKey("marketplace_tag_$tag");

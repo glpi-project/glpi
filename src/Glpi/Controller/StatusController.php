@@ -34,15 +34,16 @@
 
 namespace Glpi\Controller;
 
-use Glpi\Http\Firewall;
-use Session;
 use Glpi\Api\HL\Router;
 use Glpi\Error\ErrorHandler;
+use Glpi\Http\Firewall;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Security\Attribute\SecurityStrategy;
+use Session;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use Throwable;
 
 final class StatusController extends AbstractController
 {
@@ -61,7 +62,7 @@ final class StatusController extends AbstractController
 
         try {
             $response = Router::getInstance()->handleRequest($request);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             ErrorHandler::logCaughtException($e);
             $response = new JSONResponse(null, 500);
         }

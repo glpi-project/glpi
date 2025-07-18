@@ -32,8 +32,10 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\Form\Category;
+use Glpi\Marketplace\Controller;
+use Glpi\Socket;
 use Glpi\SocketModel;
 
 /**
@@ -224,7 +226,7 @@ $CFG_GLPI['linkuser_tech_types']    = $CFG_GLPI['assignable_types'];
 $CFG_GLPI['linkgroup_tech_types']   = $CFG_GLPI['assignable_types'];
 
 $CFG_GLPI['location_types']               = [Budget::class, CartridgeItem::class, ConsumableItem::class,
-    Computer::class, Monitor::class, Glpi\Socket::class,
+    Computer::class, Monitor::class, Socket::class,
     NetworkEquipment::class, Peripheral::class, Phone::class,
     Printer::class, Software::class, SoftwareLicense::class,
     Ticket::class, User::class, Certificate::class, Item_DeviceSimcard::class,
@@ -350,7 +352,7 @@ $CFG_GLPI['notificationtemplates_types']  = [CartridgeItem::class, Change::class
     ObjectLock::class, PlanningRecall::class, Problem::class,
     Project::class, ProjectTask::class, Reservation::class,
     SoftwareLicense::class, Ticket::class, User::class,
-    SavedSearch_Alert::class, Certificate::class, Glpi\Marketplace\Controller::class,
+    SavedSearch_Alert::class, Certificate::class, Controller::class,
     Domain::class, KnowbaseItem::class,
 ];
 
@@ -560,7 +562,7 @@ $CFG_GLPI['javascript'] = [
             'SolutionTemplate'       => ['tinymce'],
             'TaskTemplate'           => ['tinymce'],
             'ITILValidationTemplate' => ['tinymce'],
-            \Glpi\Form\Category::class     => ['tinymce'],
+            Category::class     => ['tinymce'],
         ],
         'notification' => [
             'NotificationTemplate' => ['tinymce'],

@@ -85,7 +85,7 @@ class Item_Process extends CommonDBChild
 
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $itemtype = $item->getType();

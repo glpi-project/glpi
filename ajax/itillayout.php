@@ -32,6 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
+use Safe\Exceptions\JsonException;
 
 use function Safe\json_encode;
 
@@ -42,7 +43,7 @@ $raw_itillayout  = $_POST['itil_layout'];
 
 try {
     $json_itillayout = json_encode($raw_itillayout);
-} catch (\Safe\Exceptions\JsonException $e) {
+} catch (JsonException $e) {
     return;
 }
 

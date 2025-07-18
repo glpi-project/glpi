@@ -37,11 +37,14 @@ namespace Glpi\Inventory\Asset;
 
 use AutoUpdateSystem;
 use CommonDBTM;
+use DBmysql;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
-use RuleDictionnaryPrinterCollection;
 use Printer as GPrinter;
+use RuleDictionnaryPrinterCollection;
 use RuleImportAssetCollection;
+use RuleMatchedLog;
+use RuntimeException;
 
 use function Safe\preg_match;
 use function Safe\preg_replace;
@@ -96,7 +99,7 @@ class Printer extends InventoryAsset
 
     public function handle()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $rule = new RuleImportAssetCollection();
@@ -114,12 +117,12 @@ class Printer extends InventoryAsset
         }
 
         if (!\is_a($lclass, CommonDBTM::class, true)) {
-            throw new \RuntimeException('Unable to find linked item object name for ' . $this->item->getType());
+            throw new RuntimeException('Unable to find linked item object name for ' . $this->item->getType());
         }
 
         foreach ($this->data as $key => $val) {
             $input = [
-                'itemtype'     => \Printer::class,
+                'itemtype'     => GPrinter::class,
                 'name'         => $val->name,
                 'serial'       => $val->serial ?? '',
                 'is_dynamic'   => 1,
@@ -127,7 +130,7 @@ class Printer extends InventoryAsset
             $data = $rule->processAllRules($input, [], ['class' => $this, 'return' => true]);
             if (isset($data['found_inventories'])) {
                 $items_id = null;
-                $itemtype = \Printer::class;
+                $itemtype = GPrinter::class;
                 if ($data['found_inventories'][0] == 0) {
                     // add printer
                     $val->entities_id = $entities_id;
@@ -139,7 +142,7 @@ class Printer extends InventoryAsset
                 }
 
                 $printers[] = $items_id;
-                $rulesmatched = new \RuleMatchedLog();
+                $rulesmatched = new RuleMatchedLog();
                 $agents_id = $this->agent->fields['id'];
                 if (empty($agents_id)) {
                     $agents_id = 0;
@@ -173,7 +176,7 @@ class Printer extends InventoryAsset
                 ],
             ],
             'WHERE'     => [
-                'itemtype_peripheral'           => \Printer::class,
+                'itemtype_peripheral'           => GPrinter::class,
                 'itemtype_asset'                => $this->item::class,
                 'items_id_asset'                => $this->item->fields['id'],
                 'entities_id'                   => $entities_id,
@@ -210,7 +213,7 @@ class Printer extends InventoryAsset
                 'entities_id'  => $entities_id,
                 'itemtype_asset' => $this->item::class,
                 'items_id_asset' => $this->item->fields['id'],
-                'itemtype_peripheral' => \Printer::class,
+                'itemtype_peripheral' => GPrinter::class,
                 'items_id_peripheral' => $printers_id,
                 'is_dynamic'   => 1,
             ];
@@ -227,6 +230,6 @@ class Printer extends InventoryAsset
 
     public function getItemtype(): string
     {
-        return \Printer::class;
+        return GPrinter::class;
     }
 }

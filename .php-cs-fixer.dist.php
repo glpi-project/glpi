@@ -53,6 +53,7 @@ return (new PhpCsFixer\Config())
     ->setRules([
         '@PER-CS2.0' => true,
         '@PHP84Migration' => true,
+        'ordered_imports' => ['imports_order' => ['class', 'const', 'function']],
         'no_unused_imports' => true,
         'heredoc_indentation' => false, // This rule is mandatory due to a bug in `xgettext`, see https://savannah.gnu.org/bugs/?func=detailitem&item_id=62158
     ])

@@ -32,11 +32,13 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Features\AssignableItem;
+use Glpi\Features\Clonable;
+use Glpi\Features\Inventoriable;
 use Glpi\Socket;
 
 /**
@@ -44,10 +46,10 @@ use Glpi\Socket;
  **/
 class Printer extends CommonDBTM
 {
-    use Glpi\Features\Clonable;
-    use Glpi\Features\Inventoriable;
+    use Clonable;
+    use Inventoriable;
     use Glpi\Features\State;
-    use Glpi\Features\AssignableItem {
+    use AssignableItem {
         prepareInputForAdd as prepareInputForAddAssignableItem;
         prepareInputForUpdate as prepareInputForUpdateAssignableItem;
     }
@@ -164,7 +166,7 @@ class Printer extends CommonDBTM
      **/
     public function canUnrecurs()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $this->fields['id'];
@@ -282,7 +284,7 @@ class Printer extends CommonDBTM
 
     public function cleanDBonPurge()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $DB->update(
@@ -333,7 +335,7 @@ class Printer extends CommonDBTM
      **/
     public function getLinkedItems()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -772,7 +774,7 @@ class Printer extends CommonDBTM
      **/
     public function addOrRestoreFromTrash($name, $manufacturer, $entity, $comment = '')
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         //Look for the software by his name in GLPI for a specific entity
@@ -818,7 +820,7 @@ class Printer extends CommonDBTM
      **/
     public function addPrinter($name, $manufacturer, $entity, $comment = '')
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $manufacturer_id = 0;

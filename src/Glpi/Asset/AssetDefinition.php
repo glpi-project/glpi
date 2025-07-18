@@ -34,7 +34,11 @@
 
 namespace Glpi\Asset;
 
+use AutoUpdateSystem;
 use CommonGLPI;
+use Computer;
+use DBmysql;
+use DisplayPreference;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Capacity\CapacityInterface;
 use Glpi\Asset\CustomFieldType\DropdownType;
@@ -44,6 +48,7 @@ use Glpi\CustomObject\AbstractDefinition;
 use Glpi\Features\AssetImage;
 use Group;
 use Location;
+use LogicException;
 use Manufacturer;
 use Profile;
 use Session;
@@ -53,7 +58,7 @@ use function Safe\json_decode;
 use function Safe\json_encode;
 
 /**
- * @extends AbstractDefinition<\Glpi\Asset\Asset>
+ * @extends AbstractDefinition<Asset>
  */
 final class AssetDefinition extends AbstractDefinition
 {
@@ -239,7 +244,7 @@ final class AssetDefinition extends AbstractDefinition
         $custom_field->fields['name'] = $field_key;
         $custom_field->fields['label'] = $all_fields[$field_key]['text'];
         $custom_field->fields['type'] = $all_fields[$field_key]['type'];
-        $custom_field->fields['itemtype'] = \Computer::class; // Doesn't matter what it is as long as it's not empty
+        $custom_field->fields['itemtype'] = Computer::class; // Doesn't matter what it is as long as it's not empty
         $custom_field->fields['field_options'] = $field_options;
 
         $options_allowlist = ['required', 'readonly', 'full_width', 'hidden'];
@@ -362,7 +367,7 @@ TWIG, $twig_params);
             3, // Location
             19, // Last Update
         ];
-        $pref = new \DisplayPreference();
+        $pref = new DisplayPreference();
         foreach ($prefs as $field) {
             $pref->add([
                 'itemtype' => $this->getAssetClassName(),
@@ -465,7 +470,7 @@ TWIG, $twig_params);
      *
      * @param bool $with_namespace
      * @return string
-     * @phpstan-return class-string<\Glpi\Asset\Asset>
+     * @phpstan-return class-string<Asset>
      */
     public function getAssetClassName(bool $with_namespace = true): string
     {
@@ -477,7 +482,7 @@ TWIG, $twig_params);
      *
      * @param bool $with_namespace
      * @return string
-     * @phpstan-return class-string<\Glpi\Asset\AssetModel>
+     * @phpstan-return class-string<AssetModel>
      */
     public function getAssetModelClassName(bool $with_namespace = true): string
     {
@@ -489,7 +494,7 @@ TWIG, $twig_params);
         $classname = $this->getAssetModelClassName();
 
         if (!\is_a($classname, AssetModel::class, true)) {
-            throw new \LogicException();
+            throw new LogicException();
         }
 
         return new $classname();
@@ -500,7 +505,7 @@ TWIG, $twig_params);
      *
      * @param bool $with_namespace
      * @return string
-     * @phpstan-return class-string<\Glpi\Asset\AssetType>
+     * @phpstan-return class-string<AssetType>
      */
     public function getAssetTypeClassName(bool $with_namespace = true): string
     {
@@ -512,7 +517,7 @@ TWIG, $twig_params);
         $classname = $this->getAssetTypeClassName();
 
         if (!\is_a($classname, AssetType::class, true)) {
-            throw new \LogicException();
+            throw new LogicException();
         }
 
         return new $classname();
@@ -523,7 +528,7 @@ TWIG, $twig_params);
      *
      * @param bool $with_namespace
      * @return string
-     * @phpstan-return class-string<\Glpi\Asset\RuleDictionaryModel>
+     * @phpstan-return class-string<RuleDictionaryModel>
      */
     public function getAssetModelDictionaryClassName(bool $with_namespace = true): string
     {
@@ -539,7 +544,7 @@ TWIG, $twig_params);
      *
      * @param bool $with_namespace
      * @return string
-     * @phpstan-return class-string<\Glpi\Asset\RuleDictionaryModelCollection>
+     * @phpstan-return class-string<RuleDictionaryModelCollection>
      */
     public function getAssetModelDictionaryCollectionClassName(bool $with_namespace = true): string
     {
@@ -555,7 +560,7 @@ TWIG, $twig_params);
      *
      * @param bool $with_namespace
      * @return string
-     * @phpstan-return class-string<\Glpi\Asset\RuleDictionaryType>
+     * @phpstan-return class-string<RuleDictionaryType>
      */
     public function getAssetTypeDictionaryClassName(bool $with_namespace = true): string
     {
@@ -571,7 +576,7 @@ TWIG, $twig_params);
      *
      * @param bool $with_namespace
      * @return string
-     * @phpstan-return class-string<\Glpi\Asset\RuleDictionaryTypeCollection>
+     * @phpstan-return class-string<RuleDictionaryTypeCollection>
      */
     public function getAssetTypeDictionaryCollectionClassName(bool $with_namespace = true): string
     {
@@ -626,7 +631,7 @@ TWIG, $twig_params);
     /**
      * Return the decoded value of the `capacities` field.
      *
-     * @return \Glpi\Asset\Capacity[]
+     * @return Capacity[]
      */
     private function getDecodedCapacitiesField(): array
     {
@@ -636,7 +641,7 @@ TWIG, $twig_params);
     /**
      * Decoded the given value of the `capacities` field.
      *
-     * @return \Glpi\Asset\Capacity[]
+     * @return Capacity[]
      */
     private function decodeCapacities(string $encoded): array
     {
@@ -739,7 +744,7 @@ TWIG, $twig_params);
                 'type' => TextType::class,
             ],
             'autoupdatesystems_id' => [
-                'text' => \AutoUpdateSystem::getTypeName(1),
+                'text' => AutoUpdateSystem::getTypeName(1),
                 'type' => DropdownType::class,
             ],
         ];
@@ -847,7 +852,7 @@ TWIG, $twig_params);
      */
     public function getCustomFieldDefinitions(): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if ($this->custom_field_definitions === null) {
@@ -886,7 +891,7 @@ TWIG, $twig_params);
 
         $twig_params = [
             'enabled_profiles' => $enabled_profiles,
-            'label' => sprintf(__('Profiles that can associate %s with tickets, problems or changes'), $this->getTranslatedName(\Session::getPluralNumber())),
+            'label' => sprintf(__('Profiles that can associate %s with tickets, problems or changes'), $this->getTranslatedName(Session::getPluralNumber())),
         ];
         // language=Twig
         return TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -899,7 +904,7 @@ TWIG, $twig_params);
 
     protected function syncProfilesRights(): void
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         parent::syncProfilesRights();

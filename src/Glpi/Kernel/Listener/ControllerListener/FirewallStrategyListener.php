@@ -37,6 +37,7 @@ namespace Glpi\Kernel\Listener\ControllerListener;
 use Glpi\Http\Firewall;
 use Glpi\Http\SessionManager;
 use Glpi\Security\Attribute\SecurityStrategy;
+use RuntimeException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -66,7 +67,7 @@ final readonly class FirewallStrategyListener implements EventSubscriberInterfac
         $attributes = $event->getAttributes(SecurityStrategy::class);
         $number_of_attributes = \count($attributes);
         if ($number_of_attributes > 1) {
-            throw new \RuntimeException(\sprintf(
+            throw new RuntimeException(\sprintf(
                 'You can apply only one security strategy per HTTP request. You actually used the "%s" attribute %d times.',
                 SecurityStrategy::class,
                 $number_of_attributes,

@@ -36,6 +36,7 @@
 namespace Glpi\System\Requirement;
 
 use Safe\Exceptions\FilesystemException;
+use Toolbox;
 
 use function Safe\realpath;
 
@@ -118,7 +119,7 @@ class DirectoryWriteAccess extends AbstractRequirement
     protected function check()
     {
 
-        $result = \Toolbox::testWriteAccessToDirectory($this->path);
+        $result = Toolbox::testWriteAccessToDirectory($this->path);
 
         $this->validated = $result === 0;
 

@@ -35,6 +35,7 @@
 
 namespace Glpi\Api\HL;
 
+use Auth;
 use DropdownTranslation;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Controller\AdministrationController;
@@ -67,15 +68,21 @@ use Glpi\Api\HL\Middleware\SecurityResponseMiddleware;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
-use Glpi\Plugin\Hooks;
 use Glpi\OAuth\Server;
+use Glpi\Plugin\Hooks;
 use GuzzleHttp\Psr7\Utils;
 use League\OAuth2\Server\Exception\OAuthServerException;
+use Psr\SimpleCache\CacheInterface;
+use ReflectionClass;
+use RuntimeException;
 use Session;
+use Throwable;
+use Toolbox;
+use User;
 
 use function Safe\class_implements;
-use function Safe\ob_start;
 use function Safe\ob_end_clean;
+use function Safe\ob_start;
 use function Safe\preg_match;
 use function Safe\session_destroy;
 use function Safe\session_id;
@@ -246,7 +253,7 @@ EOT;
 
             self::$instance->registerRequestMiddleware(new IPRestrictionRequestMiddleware());
             self::$instance->registerRequestMiddleware(new OAuthRequestMiddleware());
-            self::$instance->registerRequestMiddleware(new CRUDRequestMiddleware(), 0, static fn(RoutePath $route_path) => \Toolbox::hasTrait($route_path->getControllerInstance(), CRUDControllerTrait::class));
+            self::$instance->registerRequestMiddleware(new CRUDRequestMiddleware(), 0, static fn(RoutePath $route_path) => Toolbox::hasTrait($route_path->getControllerInstance(), CRUDControllerTrait::class));
             self::$instance->registerRequestMiddleware(new DebugRequestMiddleware());
             self::$instance->registerRequestMiddleware(new RSQLRequestMiddleware());
 
@@ -385,7 +392,7 @@ EOT;
      */
     private function cacheRoutes(array $routes): void
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
+        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $hints = [];
@@ -400,14 +407,14 @@ EOT;
      */
     private function getRoutesFromCache(): array
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
+        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $routes = [];
         $hints = $GLPI_CACHE->get('hlapi_routes') ?? [];
         if (empty($hints)) {
             foreach ($this->controllers as $controller) {
-                $rc = new \ReflectionClass($controller);
+                $rc = new ReflectionClass($controller);
                 $methods = $rc->getMethods();
 
                 foreach ($methods as $method) {
@@ -610,9 +617,9 @@ EOT;
                         $request->setParameter((string) $key, $value);
                     }
                 } else {
-                    throw new \RuntimeException();
+                    throw new RuntimeException();
                 }
-            } catch (\Throwable) {
+            } catch (Throwable) {
                 $response = new JSONResponse(
                     AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, _x('api', 'Invalid JSON body')),
                     400
@@ -738,9 +745,9 @@ EOT;
     public function startTemporarySession(Request $request): void
     {
         $this->current_client = Server::validateAccessToken($request);
-        $auth = new \Auth();
+        $auth = new Auth();
         $auth->auth_succeded = true;
-        $auth->user = new \User();
+        $auth->user = new User();
         $auth->user->getFromDB($this->current_client['user_id']);
         Session::init($auth);
         if ($request->getHeaderLine('Accept-Language')) {

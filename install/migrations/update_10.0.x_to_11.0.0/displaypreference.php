@@ -41,7 +41,7 @@
  * The search options for the different levels of toner and drum (1 per color)
  * have been replaced by respective unique fields.
  */
-$displayPreference = new \DisplayPreference();
+$displayPreference = new DisplayPreference();
 $appliedPreferences = [];
 foreach (
     $displayPreference->find([
@@ -94,7 +94,7 @@ if (!$DB->fieldExists($table, 'interface')) {
     $migration->migrationOneTable($table);
 }
 
-$ADDTODISPLAYPREF_HELPDESK[\Ticket::class] = [
+$ADDTODISPLAYPREF_HELPDESK[Ticket::class] = [
     12, // Status
     19, // Last update
     15, // Opening date

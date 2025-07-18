@@ -35,6 +35,7 @@
 namespace Glpi\Form\Migration;
 
 use DBmysql;
+use DBmysqlIterator;
 use Entity;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\DBAL\QueryExpression;
@@ -55,8 +56,8 @@ use Glpi\Form\Condition\LogicOperator;
 use Glpi\Form\Condition\ValidationStrategy;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\Condition\VisibilityStrategy;
-use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Destination\AbstractCommonITILFormDestination;
+use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\ITILActorField;
 use Glpi\Form\Destination\FormDestination;
@@ -84,6 +85,8 @@ use Glpi\Form\Section;
 use Glpi\Message\MessageType;
 use Glpi\Migration\AbstractPluginMigration;
 use LogicException;
+use Override;
+use Throwable;
 
 use function Safe\json_decode;
 
@@ -105,6 +108,18 @@ class FormMigration extends AbstractPluginMigration
         parent::__construct($db);
 
         $this->formAccessControlManager = $formAccessControlManager;
+    }
+
+    #[Override]
+    protected function getHasBeenExecutedConfigurationKey(): string
+    {
+        return 'glpi_11_form_migration';
+    }
+
+    #[Override]
+    protected function getMainPluginTables(): array
+    {
+        return ['glpi_plugin_formcreator_forms'];
     }
 
     /**
@@ -573,6 +588,14 @@ class FormMigration extends AbstractPluginMigration
             $fieldtype = $raw_question['fieldtype'];
             $type_class = $this->getTypesConvertMap()[$fieldtype] ?? null;
 
+            if ($type_class === null) {
+                $this->result->addMessage(
+                    MessageType::Error,
+                    "Unable to import question '{$raw_question['name']}' with unknown type '$fieldtype'"
+                );
+                continue;
+            }
+
             $default_value = null;
             $extra_data = null;
             if (is_a($type_class, FormQuestionDataConverterInterface::class, true)) {
@@ -612,7 +635,7 @@ class FormMigration extends AbstractPluginMigration
                     Question::class,
                     $question->getID()
                 );
-            } catch (\Throwable $th) {
+            } catch (Throwable $th) {
                 /** @var ?Section $section */
                 $section = Section::getById($section_id) ?: null;
                 $item = $section?->getItem() ?: null;
@@ -976,13 +999,13 @@ class FormMigration extends AbstractPluginMigration
     /**
      * Process migration of form destinations for a given destination type and target table
      *
-     * @param \DBmysqlIterator $raw_targets The raw targets to process
+     * @param DBmysqlIterator $raw_targets The raw targets to process
      * @param class-string<AbstractCommonITILFormDestination> $destinationClass The destination class
      * @param string $targetTable The target table name
      * @throws LogicException
      */
     private function processMigrationOfDestination(
-        \DBmysqlIterator $raw_targets,
+        DBmysqlIterator $raw_targets,
         string $destinationClass,
         string $targetTable
     ): void {
@@ -1015,7 +1038,7 @@ class FormMigration extends AbstractPluginMigration
                             $form,
                             $raw_target
                         )->jsonSerialize();
-                    } catch (\Throwable $th) {
+                    } catch (Throwable $th) {
                         $this->result->addMessage(
                             MessageType::Error,
                             sprintf(
@@ -1140,7 +1163,7 @@ class FormMigration extends AbstractPluginMigration
                         $destination->getItem(),
                         $actors
                     )->jsonSerialize();
-                } catch (\Throwable $th) {
+                } catch (Throwable $th) {
                     $this->result->addMessage(
                         MessageType::Error,
                         sprintf(

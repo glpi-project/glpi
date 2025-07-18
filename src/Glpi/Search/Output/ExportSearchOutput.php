@@ -35,8 +35,11 @@
 
 namespace Glpi\Search\Output;
 
+use CommonITILObject;
+use Entity;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\SearchOption;
+use Plugin;
 
 use function Safe\strtotime;
 
@@ -67,7 +70,7 @@ abstract class ExportSearchOutput extends AbstractSearchOutput
 
         // Plugin can override core definition for its type
         if ($plug = isPluginItemType($itemtype)) {
-            $out = \Plugin::doOneHook(
+            $out = Plugin::doOneHook(
                 $plug['plugin'],
                 Hooks::AUTO_DISPLAY_CONFIG_ITEM,
                 $itemtype,
@@ -97,7 +100,7 @@ abstract class ExportSearchOutput extends AbstractSearchOutput
                 $solve_date = $data[$NAME][0]['solvedate'];
 
                 $is_late = !empty($value)
-                    && $status != \CommonITILObject::WAITING
+                    && $status != CommonITILObject::WAITING
                     && (
                         $solve_date > $value
                         || ($solve_date == null && $value < $_SESSION['glpi_currenttime'])
@@ -124,7 +127,7 @@ abstract class ExportSearchOutput extends AbstractSearchOutput
                 }
 
                 $is_late = !empty($value)
-                    && $status != \CommonITILObject::WAITING
+                    && $status != CommonITILObject::WAITING
                     && (
                         $tia_date > $value
                         || ($tia_date == null && $value < $_SESSION['glpi_currenttime'])
@@ -140,7 +143,7 @@ abstract class ExportSearchOutput extends AbstractSearchOutput
                     && !empty($data[$NAME][0]['name'])
                 ) {
                     $out = "";
-                    if ($before = \Entity::getUsedConfig('send_certificates_alert_before_delay', $_SESSION['glpiactive_entity'])) {
+                    if ($before = Entity::getUsedConfig('send_certificates_alert_before_delay', $_SESSION['glpiactive_entity'])) {
                         $before = date('Y-m-d', strtotime($_SESSION['glpi_currenttime'] . " + $before days"));
                         if ($data[$NAME][0]['name'] < $_SESSION['glpi_currenttime']) {
                             $out = " class=\"shadow-none\" style=\"color: white; background-color: #d63939\" ";

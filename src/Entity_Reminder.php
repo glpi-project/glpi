@@ -56,7 +56,7 @@ class Entity_Reminder extends CommonDBRelation
      **/
     public static function getEntities($reminder)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ent   = [];

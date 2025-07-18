@@ -32,8 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\Socket;
 
 /**
@@ -1752,9 +1752,9 @@ $polymorphic_types_mapping = [
     Consumable::class              => $CFG_GLPI['consumables_types'],
     Contract_Item::class           => $CFG_GLPI['contract_types'],
     DatabaseInstance::class        => $CFG_GLPI['databaseinstance_types'],
-    Document_Item::class           => \Document::getItemtypesThatCanHave(),
+    Document_Item::class           => Document::getItemtypesThatCanHave(),
     Domain_Item::class             => $CFG_GLPI['domain_types'],
-    Infocom::class                 => \Infocom::getItemtypesThatCanHave(),
+    Infocom::class                 => Infocom::getItemtypesThatCanHave(),
     Item_Cluster::class            => $CFG_GLPI['cluster_types'],
     Item_Disk::class               => $CFG_GLPI['disk_types'],
     Item_Enclosure::class          => $CFG_GLPI['rackable_types'],
@@ -1782,10 +1782,10 @@ foreach (Item_Devices::getDeviceTypes() as $itemdevice_itemtype) {
     $polymorphic_types_mapping[$itemdevice_itemtype] = $source_itemtypes;
     $specifically_managed_types[] = $itemdevice_itemtype; // Item_Devices is handled manually to take care of `keep_devices` option
 }
-$polymorphic_types_mapping[\VObject::class] = [];
+$polymorphic_types_mapping[VObject::class] = [];
 foreach ($CFG_GLPI['planning_types'] as $planning_itemtype) {
-    if (is_a($planning_itemtype, \Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface::class, true)) {
-        $polymorphic_types_mapping[\VObject::class][] = $planning_itemtype;
+    if (is_a($planning_itemtype, CalDAVCompatibleItemInterface::class, true)) {
+        $polymorphic_types_mapping[VObject::class][] = $planning_itemtype;
     }
 }
 
@@ -1795,13 +1795,13 @@ foreach ($polymorphic_types_mapping as $target_itemtype => $source_itemtypes) {
         if (
             in_array($target_itemtype, $specifically_managed_types)
             || (
-                is_a($target_itemtype, \CommonDBChild::class, true)
+                is_a($target_itemtype, CommonDBChild::class, true)
                 && $target_itemtype::$itemtype === 'itemtype'
                 && $target_itemtype::$items_id === 'items_id'
                 && $target_itemtype::$mustBeAttached === true
             )
             || (
-                is_a($target_itemtype, \CommonDBRelation::class, true)
+                is_a($target_itemtype, CommonDBRelation::class, true)
                 && (
                     (
                         $target_itemtype::$itemtype_1 === 'itemtype'

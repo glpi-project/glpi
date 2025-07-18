@@ -32,9 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
+use Psr\SimpleCache\CacheInterface;
 
 /**
  * CommonTreeDropdown Class
@@ -178,7 +178,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
 
     public function pre_deleteItem()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // Not set in case of massive delete : use parent
@@ -210,7 +210,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
 
     public function prepareInputForUpdate($input)
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
+        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         if (isset($input[$this->getForeignKeyField()])) {
@@ -248,8 +248,8 @@ abstract class CommonTreeDropdown extends CommonDropdown
     public function regenerateTreeUnderID($ID, $updateName, $changeParent)
     {
         /**
-         * @var \DBmysql $DB
-         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+         * @var DBmysql $DB
+         * @var CacheInterface $GLPI_CACHE
          */
         global $DB, $GLPI_CACHE;
 
@@ -325,8 +325,8 @@ abstract class CommonTreeDropdown extends CommonDropdown
     protected function cleanParentsSons($id = null, $cache = true)
     {
         /**
-         * @var \DBmysql $DB
-         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+         * @var DBmysql $DB
+         * @var CacheInterface $GLPI_CACHE
          */
         global $DB, $GLPI_CACHE;
 
@@ -363,7 +363,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
      */
     protected function addSonInParents()
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
+        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         //add sons cache when needed
@@ -525,7 +525,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
      */
     public function showChildren(): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ID            = $this->getID();
@@ -912,7 +912,7 @@ TWIG, $twig_params);
 
     public function findID(array &$input)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (isset($input['completename'])) {

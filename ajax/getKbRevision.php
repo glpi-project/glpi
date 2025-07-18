@@ -47,7 +47,7 @@ Html::header_nocache();
 Session::checkCentralAccess();
 
 if (!isset($_POST['revid'])) {
-    throw new \RuntimeException('Required argument missing!');
+    throw new RuntimeException('Required argument missing!');
 }
 
 $revid = $_POST['revid'];
@@ -55,7 +55,7 @@ $revid = $_POST['revid'];
 $revision = new KnowbaseItem_Revision();
 $revision->getFromDB($revid);
 
-$item = new \KnowbaseItem();
+$item = new KnowbaseItem();
 if (
     !$item->getFromDB($revision->fields['knowbaseitems_id'])
     || !$item->can($revision->fields['knowbaseitems_id'], READ)

@@ -38,6 +38,7 @@ namespace Glpi\Features;
 use Agent;
 use Computer;
 use DatabaseInstance;
+use DBmysql;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
 use Glpi\Plugin\Hooks;
@@ -108,7 +109,7 @@ trait Inventoriable
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -250,7 +251,7 @@ JAVASCRIPT;
 
     public function getInventoryAgent(): ?Agent
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $agent = $this->getMostRecentAgent([
@@ -323,7 +324,7 @@ JAVASCRIPT;
      */
     private function getMostRecentAgent(array $conditions): ?Agent
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

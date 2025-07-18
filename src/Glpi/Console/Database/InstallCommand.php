@@ -40,14 +40,19 @@ use DBConnection;
 use DBmysql;
 use Glpi\Cache\CacheManager;
 use Glpi\Console\Command\ConfigurationCommandInterface;
+use Glpi\Console\Exception\EarlyExitException;
 use Glpi\Console\Traits\TelemetryActivationTrait;
 use Glpi\Progress\ConsoleProgressIndicator;
 use Glpi\System\Requirement\DbConfiguration;
 use GLPIKey;
+use mysqli;
+use Symfony\Component\Console\Exception\RuntimeException;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Throwable;
 use Toolbox;
 
 class InstallCommand extends AbstractConfigureCommand implements ConfigurationCommandInterface
@@ -131,7 +136,7 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             && $this->isInputContainingConfigValues($input, $output)
             && !$input->getOption('reconfigure')
         ) {
-            /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
+            /** @var QuestionHelper $question_helper */
             $question_helper = $this->getHelper('question');
             $reconfigure = $question_helper->ask(
                 $input,
@@ -174,7 +179,7 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             $this->configureDatabase($input, $output, false);
 
             // Ensure global $DB is updated (used by GLPIKey)
-            /** @var \DBmysql $DB */
+            /** @var DBmysql $DB */
             global $DB;
             $DB = $this->db;
 
@@ -186,7 +191,7 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             $db_pass     = $input->getOption('db-password');
         } else {
             // Ask to confirm installation based on existing configuration.
-            /** @var \DBmysql $DB */
+            /** @var DBmysql $DB */
             global $DB;
 
             // $DB->dbhost can be array when using round robin feature
@@ -226,7 +231,7 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
         }
 
         mysqli_report(MYSQLI_REPORT_OFF);
-        $mysqli = new \mysqli();
+        $mysqli = new mysqli();
         if ($this->db->dbssl) {
             // set ssl config
             $mysqli->ssl_set(
@@ -268,7 +273,7 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             foreach ($config_requirement->getValidationMessages() as $validation_message) {
                 $msg .= "\n" . '<error> - ' . $validation_message . '</error>';
             }
-            throw new \Glpi\Console\Exception\EarlyExitException($msg, self::ERROR_INCOMPATIBLE_DB_CONFIG);
+            throw new EarlyExitException($msg, self::ERROR_INCOMPATIBLE_DB_CONFIG);
         }
 
         DBConnection::setConnectionCharset($mysqli, true);
@@ -300,7 +305,7 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
              AND table_name LIKE 'glpi\_%'"
         );
         if (!$tables_result) {
-            throw new \Symfony\Component\Console\Exception\RuntimeException('Unable to check GLPI tables existence.');
+            throw new RuntimeException('Unable to check GLPI tables existence.');
         }
         if ($tables_result->fetch_array()[0] > 0 && !$force) {
             $output->writeln(
@@ -319,7 +324,7 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             $this->db->connect(); // Reconnect DB to ensure it uses update configuration (see `self::configureDatabase()`)
 
             Toolbox::createSchema($default_language, $this->db, $progress_indicator);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $progress_indicator->fail();
 
             $message = sprintf(

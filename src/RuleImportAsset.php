@@ -33,10 +33,13 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Asset\Capacity\IsInventoriableCapacity;
+use Glpi\Inventory\Conf;
+use Glpi\Inventory\MainAsset\GenericNetworkAsset;
+use Glpi\Inventory\MainAsset\GenericPrinterAsset;
+use Glpi\Inventory\MainAsset\MainAsset;
 use Glpi\Plugin\Hooks;
 
 class RuleImportAsset extends Rule
@@ -437,7 +440,7 @@ class RuleImportAsset extends Rule
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          * @var array $PLUGIN_HOOKS
          */
         global $CFG_GLPI, $DB, $PLUGIN_HOOKS;
@@ -798,7 +801,7 @@ class RuleImportAsset extends Rule
 
                 case 'serial':
                     $serial = $input['serial'];
-                    $conf = new Glpi\Inventory\Conf();
+                    $conf = new Conf();
 
                     if (
                         isset($input['itemtype'])
@@ -961,7 +964,7 @@ class RuleImportAsset extends Rule
                     }
 
                     $back_class = Unmanaged::class;
-                    if (is_a($class, \Glpi\Inventory\MainAsset\MainAsset::class)) {
+                    if (is_a($class, MainAsset::class)) {
                         $back_class = $class->getItemtype();
                     }
                     if ($class && !isset($params['return'])) {
@@ -1009,12 +1012,12 @@ class RuleImportAsset extends Rule
                         }
 
                         $back_class = Unmanaged::class;
-                        if (is_a($class, \Glpi\Inventory\MainAsset\MainAsset::class)) {
+                        if (is_a($class, MainAsset::class)) {
                             $back_class = $class->getItemtype();
                         }
 
                         if ($back_class === Unmanaged::class) {
-                            $conf = new \Glpi\Inventory\Conf();
+                            $conf = new Conf();
                             if ($conf->import_unmanaged == 0) {
                                 return $output;
                             }
@@ -1229,13 +1232,13 @@ TWIG, $twig_params);
                 $asset_classname = $definition->getAssetClassName();
                 $main_asset = $definition->getCapacityConfiguration(IsInventoriableCapacity::class)->getValue('inventory_mainasset');
 
-                $origin_rule_itemtype = \Computer::class;
+                $origin_rule_itemtype = Computer::class;
                 switch ($main_asset) {
-                    case \Glpi\Inventory\MainAsset\GenericNetworkAsset::class:
-                        $origin_rule_itemtype = \NetworkEquipment::class;
+                    case GenericNetworkAsset::class:
+                        $origin_rule_itemtype = NetworkEquipment::class;
                         break;
-                    case \Glpi\Inventory\MainAsset\GenericPrinterAsset::class:
-                        $origin_rule_itemtype = \Printer::class;
+                    case GenericPrinterAsset::class:
+                        $origin_rule_itemtype = Printer::class;
                         break;
                 }
                 $this->addGenericAssetRules($rules, $asset_classname, $origin_rule_itemtype);

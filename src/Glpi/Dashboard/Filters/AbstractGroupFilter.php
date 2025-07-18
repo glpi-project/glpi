@@ -35,11 +35,14 @@
 namespace Glpi\Dashboard\Filters;
 
 use Change;
+use DBmysql;
 use Glpi\Features\AssignableItem;
 use Group;
 use Group_Item;
 use Problem;
 use Ticket;
+use Toolbox;
+use UnexpectedValueException;
 
 abstract class AbstractGroupFilter extends AbstractFilter
 {
@@ -64,17 +67,17 @@ abstract class AbstractGroupFilter extends AbstractFilter
 
     public static function canBeApplied(string $table): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
-        return \Toolbox::hasTrait(getItemtypeForTable($table), AssignableItem::class)
+        return Toolbox::hasTrait(getItemtypeForTable($table), AssignableItem::class)
             || $DB->fieldExists($table, 'groups_id')
             || in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()], true);
     }
 
     public static function getCriteria(string $table, $value): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = [];
@@ -96,7 +99,7 @@ abstract class AbstractGroupFilter extends AbstractFilter
                     Ticket::getTable() => new Ticket(),
                     Change::getTable() => new Change(),
                     Problem::getTable() => new Problem(),
-                    default => throw new \UnexpectedValueException(),
+                    default => throw new UnexpectedValueException(),
                 };
                 $grouplink = $main_item->grouplinkclass;
                 $gl_table  = $grouplink::getTable();
@@ -140,7 +143,7 @@ abstract class AbstractGroupFilter extends AbstractFilter
 
     public static function getSearchCriteria(string $table, $value): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = [];

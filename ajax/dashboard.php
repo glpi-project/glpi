@@ -32,8 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Dashboard\Dashboard;
 use Glpi\Dashboard\Grid;
+use Glpi\Debug\Profiler;
 use Glpi\Error\ErrorHandler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 
@@ -64,7 +65,7 @@ if (
     Session::checkLoginUser();
 }
 
-$dashboard = new Glpi\Dashboard\Dashboard($_REQUEST['dashboard'] ?? "");
+$dashboard = new Dashboard($_REQUEST['dashboard'] ?? "");
 
 switch ($_POST['action'] ?? null) {
     case 'save_new_dashboard':
@@ -144,9 +145,9 @@ switch ($_GET['action'] ?? null) {
         return;
 }
 
-\Glpi\Debug\Profiler::getInstance()->start('Grid::construct');
+Profiler::getInstance()->start('Grid::construct');
 $grid = new Grid($_REQUEST['dashboard'] ?? "");
-\Glpi\Debug\Profiler::getInstance()->stop('Grid::construct');
+Profiler::getInstance()->stop('Grid::construct');
 
 header("Content-Type: text/html; charset=UTF-8");
 switch ($_REQUEST['action']) {
@@ -190,12 +191,12 @@ switch ($_REQUEST['action']) {
         }
 
         Session::writeClose();
-        \Glpi\Debug\Profiler::getInstance()->start('Get card HTML');
+        Profiler::getInstance()->start('Get card HTML');
         if ($embed) {
             $grid->initEmbedSession($_REQUEST);
         }
         echo $grid->getCardHtml($_REQUEST['card_id'], $_REQUEST);
-        \Glpi\Debug\Profiler::getInstance()->stop('Get card HTML');
+        Profiler::getInstance()->stop('Get card HTML');
         break;
 
     case 'get_cards':
@@ -208,16 +209,16 @@ switch ($_REQUEST['action']) {
         $cards = $request_data['cards'];
         unset($request_data['cards']);
         $result = [];
-        \Glpi\Debug\Profiler::getInstance()->start('Get cards HTML');
+        Profiler::getInstance()->start('Get cards HTML');
         foreach ($cards as $card) {
             try {
                 $result[$card['card_id']] = $grid->getCardHtml($card['card_id'], array_merge($request_data, $card));
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 // Send exception to logger without actually exiting.
                 ErrorHandler::logCaughtException($e);
             }
         }
-        \Glpi\Debug\Profiler::getInstance()->stop('Get cards HTML');
+        Profiler::getInstance()->stop('Get cards HTML');
         echo json_encode($result);
         break;
 

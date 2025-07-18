@@ -171,10 +171,20 @@ class MassiveAction
      **/
     public function __construct(array $POST, array $GET, $stage, ?int $items_id = null)
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $this->from_single_item = $GET['_from_single_item'] ?? false;
+        if (isset($GET['_single_item'])) {
+            $item = getItemForItemtype($GET['_single_item']['itemtype']);
+            if ($item->getFromDB($GET['_single_item']['id'])) {
+                $this->from_single_item = true;
+                $this->check_item = $item;
+            }
+        } elseif (($POST['_from_single_item'] ?? false) && isset($POST['item'])) {
+            $itemtype = array_keys($POST['item'])[0];
+            $item = getItemForItemtype($itemtype);
+            if ($item->getFromDB(array_keys($POST['item'][$itemtype])[0])) {
+                $this->from_single_item = true;
+                $this->check_item = $item;
+            }
+        }
 
         if ($POST !== []) {
             if (!isset($POST['is_deleted'])) {
@@ -236,7 +246,7 @@ class MassiveAction
                             }
                         }
                         if (empty($POST['actions']) && $items_id === null) {
-                            throw new \Exception(__('No action available'));
+                            throw new Exception(__('No action available'));
                         }
                         // Initial items is used to define $_SESSION['glpimassiveactionselected']
                         $POST['initial_items'] = $POST['items'];
@@ -245,16 +255,16 @@ class MassiveAction
 
                     case 'specialize':
                         if (!isset($POST['action'])) {
-                            throw new \Exception(__('Implementation error!'));
+                            throw new Exception(__('Implementation error!'));
                         }
                         if ($POST['action'] == -1) {
                             // Case when no action is choosen
-                            throw new \RuntimeException();
+                            throw new RuntimeException();
                         }
                         if (isset($POST['actions'])) {
                             // First, get the name of current action !
                             if (!isset($POST['actions'][$POST['action']])) {
-                                throw new \Exception(__('Implementation error!'));
+                                throw new Exception(__('Implementation error!'));
                             }
                             $POST['action_name'] = $POST['actions'][$POST['action']];
                             $remove_from_post[]  = 'actions';
@@ -360,21 +370,21 @@ class MassiveAction
                 }
             }
             if ($this->nb_items == 0 && !isAPI()) {
-                throw new \Exception(__('No selected items'));
+                throw new Exception(__('No selected items'));
             }
         } else {
             if (
                 ($stage != 'process')
                 || (!isset($_SESSION['current_massive_action'][$GET['identifier']]))
             ) {
-                throw new \Exception(__('Implementation error!'));
+                throw new Exception(__('Implementation error!'));
             }
             $identifier = $GET['identifier'];
             foreach ($_SESSION['current_massive_action'][$identifier] as $attribute => $value) {
                 $this->$attribute = $value;
             }
             if ($this->identifier != $identifier) {
-                throw new \Exception(__('Invalid process'));
+                throw new Exception(__('Invalid process'));
             }
             unset($_SESSION['current_massive_action'][$identifier]);
         }
@@ -481,11 +491,11 @@ class MassiveAction
 
         if ($this->check_item === null && isset($POST['check_itemtype'])) {
             if (!($this->check_item = getItemForItemtype($POST['check_itemtype']))) {
-                throw new \RuntimeException();
+                throw new RuntimeException();
             }
             if (isset($POST['check_items_id'])) {
                 if (!$this->check_item->getFromDB($POST['check_items_id'])) {
-                    throw new \RuntimeException();
+                    throw new RuntimeException();
                 } else {
                     $this->check_item->getEmpty();
                 }
@@ -824,7 +834,7 @@ class MassiveAction
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
         /**
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $DB;
 
@@ -1013,7 +1023,7 @@ class MassiveAction
                 }
 
                 if (!isset($ma->POST['common_options'])) {
-                    throw new \RuntimeException('Implementation error!');
+                    throw new RuntimeException('Implementation error!');
                 }
 
                 if ($ma->POST['common_options'] == 'false') {
@@ -1046,7 +1056,7 @@ class MassiveAction
 
                     $itemtype_search_options = SearchOption::getOptionsForItemtype($so_itemtype);
                     if (!isset($itemtype_search_options[$so_index])) {
-                        throw new \RuntimeException();
+                        throw new RuntimeException();
                     }
 
                     $item   = $so_item;
@@ -1055,7 +1065,7 @@ class MassiveAction
                 }
 
                 if ($item === null) {
-                    throw new \RuntimeException();
+                    throw new RuntimeException();
                 }
 
                 $plugdisplay = false;
@@ -1503,7 +1513,7 @@ class MassiveAction
                                         }
                                         // Case 2: The field is not a foreign key, but the target class supports connexity (relations)
                                         // Use getConnexityItem() to dynamically resolve the related object based on the main itemtype and id (items_id)
-                                    } elseif ($item2 instanceof \CommonDBConnexity) {
+                                    } elseif ($item2 instanceof CommonDBConnexity) {
                                         $related_item = $item2->getConnexityItem($item->getType(), $key);
                                     }
 

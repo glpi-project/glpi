@@ -31,17 +31,16 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  * @var array $ADDTODISPLAYPREF
  */
-
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
+use Glpi\Inventory\Conf;
 
-$migration->addConfig(\Glpi\Inventory\Conf::getDefaults(), 'inventory');
+$migration->addConfig(Conf::getDefaults(), 'inventory');
 
 $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
@@ -438,14 +437,14 @@ if (!$DB->tableExists('glpi_networkporttypes') || countElementsInTable(NetworkPo
         if (false === $res) {
             $msg = "Error binding params in table " . NetworkPortType::getTable() . "\n";
             $msg .= print_r($row, true);
-            throw new \RuntimeException($msg);
+            throw new RuntimeException($msg);
         }
         $res = $stmt->execute();
         if (false === $res) {
             $msg = $stmt->error;
             $msg .= "\nError execution statement in table " . NetworkPortType::getTable() . "\n";
             $msg .= print_r($row, true);
-            throw new \RuntimeException($msg);
+            throw new RuntimeException($msg);
         }
     }
 }
@@ -846,14 +845,14 @@ if (countElementsInTable(Blacklist::getTable()) === 4) {
             if (false === $res) {
                 $msg = "Error binding params in table " . Blacklist::getTable() . "\n";
                 $msg .= "type: $type, value: $value";
-                throw new \RuntimeException($msg);
+                throw new RuntimeException($msg);
             }
             $res = $stmt->execute();
             if (false === $res) {
                 $msg = $stmt->error;
                 $msg .= "\nError execution statement in table " . Blacklist::getTable() . "\n";
                 $msg .= "type: $type, value: $value";
-                throw new \RuntimeException($msg);
+                throw new RuntimeException($msg);
             }
         }
     }

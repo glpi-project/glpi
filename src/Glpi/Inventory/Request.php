@@ -35,6 +35,7 @@
 
 namespace Glpi\Inventory;
 
+use Exception;
 use Glpi\Agent\Communication\AbstractRequest;
 use Glpi\Agent\Communication\Headers\Common;
 use Glpi\Plugin\Hooks;
@@ -372,7 +373,7 @@ class Request extends AbstractRequest
                 $this->addError('Rejected by a plugin: No reason specified', 400);
                 return;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->addError('Rejected by a plugin: ' . $e->getMessage(), 400);
             return;
         }

@@ -32,7 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Kernel\Kernel;
 use Glpi\Search\SearchOption;
 
 if (PHP_SAPI != 'cli') {
@@ -42,7 +42,7 @@ if (PHP_SAPI != 'cli') {
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-$kernel = new \Glpi\Kernel\Kernel();
+$kernel = new Kernel();
 $kernel->boot();
 
 if (isset($_SERVER['argv'])) {

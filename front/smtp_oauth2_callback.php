@@ -36,6 +36,7 @@
 require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Mail\SMTP\OauthConfig;
+use Psr\Log\LoggerInterface;
 
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
@@ -118,8 +119,8 @@ if (
                     ]
                 );
             }
-        } catch (\Throwable $e) {
-            /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+        } catch (Throwable $e) {
+            /** @var LoggerInterface $PHPLOGGER */
             global $PHPLOGGER;
             $PHPLOGGER->error(
                 sprintf('Error during authorization code fetching: %s', $e->getMessage()),

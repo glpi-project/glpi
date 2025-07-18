@@ -44,7 +44,11 @@ use Glpi\CalDAV\Plugin\Browser;
 use Glpi\CalDAV\Plugin\CalDAV;
 use Glpi\Error\ErrorHandler;
 use Sabre\DAV;
-use Sabre\DAVACL;
+use Sabre\DAV\Auth\Plugin;
+use Sabre\DAV\Exception;
+use Sabre\DAV\SimpleCollection;
+use Sabre\DAVACL\PrincipalCollection;
+use Throwable;
 
 class Server extends DAV\Server
 {
@@ -59,14 +63,14 @@ class Server extends DAV\Server
 
         // Directory tree
         $tree = [
-            new DAV\SimpleCollection(
+            new SimpleCollection(
                 Principal::PRINCIPALS_ROOT,
                 [
-                    new DAVACL\PrincipalCollection($principalBackend, Principal::PREFIX_GROUPS),
-                    new DAVACL\PrincipalCollection($principalBackend, Principal::PREFIX_USERS),
+                    new PrincipalCollection($principalBackend, Principal::PREFIX_GROUPS),
+                    new PrincipalCollection($principalBackend, Principal::PREFIX_USERS),
                 ]
             ),
-            new DAV\SimpleCollection(
+            new SimpleCollection(
                 Calendar::CALENDAR_ROOT,
                 [
                     new CalendarRoot($principalBackend, $calendarBackend, Principal::PREFIX_GROUPS),
@@ -77,7 +81,7 @@ class Server extends DAV\Server
 
         parent::__construct($tree);
 
-        $this->addPlugin(new DAV\Auth\Plugin($authBackend));
+        $this->addPlugin(new Plugin($authBackend));
         $this->addPlugin(new Acl());
         $this->addPlugin(new CalDAV());
 
@@ -87,11 +91,11 @@ class Server extends DAV\Server
 
     /**
      *
-     * @param \Throwable $exception
+     * @param Throwable $exception
      */
-    public function logException(\Throwable $exception)
+    public function logException(Throwable $exception)
     {
-        if ($exception instanceof \Sabre\DAV\Exception && $exception->getHTTPCode() < 500) {
+        if ($exception instanceof Exception && $exception->getHTTPCode() < 500) {
             // Ignore server exceptions that does not corresponds to a server error
             return;
         }

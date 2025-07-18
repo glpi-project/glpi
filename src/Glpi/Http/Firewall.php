@@ -36,6 +36,7 @@ namespace Glpi\Http;
 
 use Config;
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use LogicException;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -160,7 +161,7 @@ final class Firewall
                 // nothing to do
                 break;
             default:
-                throw new \LogicException(sprintf('Invalid firewall strategy `%s`.', $strategy));
+                throw new LogicException(sprintf('Invalid firewall strategy `%s`.', $strategy));
         }
     }
 

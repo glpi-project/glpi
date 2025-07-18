@@ -31,11 +31,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \Migration $migration
+ * @var Migration $migration
  */
-
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 $migration->addField('glpi_networknames', 'ipnetworks_id', "int {$default_key_sign} NOT NULL DEFAULT '0'", [

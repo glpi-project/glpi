@@ -35,6 +35,8 @@
 
 namespace Glpi\Inventory\Asset;
 
+use Item_DeviceFirmware;
+
 class Firmware extends Device
 {
     public function prepare(): array
@@ -59,6 +61,6 @@ class Firmware extends Device
 
     public function getItemtype(): string
     {
-        return \Item_DeviceFirmware::class;
+        return Item_DeviceFirmware::class;
     }
 }

@@ -37,8 +37,8 @@ namespace Glpi\Toolbox;
 
 use Safe\Exceptions\FilesystemException;
 
-use function Safe\fopen;
 use function Safe\fclose;
+use function Safe\fopen;
 use function Safe\parse_url;
 use function Safe\preg_match;
 use function Safe\preg_replace;

@@ -36,6 +36,7 @@
 namespace Glpi\Form;
 
 use Glpi\Form\QuestionType\QuestionTypeInterface;
+use InvalidArgumentException;
 use JsonSerializable;
 
 final readonly class Answer implements JsonSerializable
@@ -63,7 +64,7 @@ final readonly class Answer implements JsonSerializable
                 $data['raw_answer'],
             )
         ) {
-            throw new \InvalidArgumentException('Invalid JSON data');
+            throw new InvalidArgumentException('Invalid JSON data');
         }
 
         $question = new Question();

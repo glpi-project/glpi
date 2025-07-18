@@ -36,6 +36,7 @@
 namespace Glpi\System\Diagnostic;
 
 use DBmysql;
+use Exception;
 
 /**
  * @since 10.0.0
@@ -117,7 +118,7 @@ abstract class AbstractDatabaseChecker
     {
         if (!array_key_exists($table_name, $this->columns)) {
             if (($columns_res = $this->db->doQuery('SHOW COLUMNS FROM ' . $this->db->quoteName($table_name))) === false) {
-                throw new \Exception(sprintf('Unable to get table "%s" columns', $table_name));
+                throw new Exception(sprintf('Unable to get table "%s" columns', $table_name));
             }
 
             $this->columns[$table_name] = $columns_res->fetch_all(MYSQLI_ASSOC);
@@ -136,7 +137,7 @@ abstract class AbstractDatabaseChecker
     {
         if (!array_key_exists($table_name, $this->indexes)) {
             if (($keys_res = $this->db->doQuery('SHOW INDEX FROM ' . $this->db->quoteName($table_name))) === false) {
-                throw new \Exception(sprintf('Unable to get table "%s" index', $table_name));
+                throw new Exception(sprintf('Unable to get table "%s" index', $table_name));
             }
 
             $index = [];

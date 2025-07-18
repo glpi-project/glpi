@@ -35,10 +35,12 @@
 
 namespace Glpi\Api\HL\Doc;
 
+use ArrayAccess;
+
 /**
- * @implements \ArrayAccess<string, null|string|bool|Schema|SchemaReference>
+ * @implements ArrayAccess<string, null|string|bool|Schema|SchemaReference>
  */
-class Response implements \ArrayAccess
+class Response implements ArrayAccess
 {
     public function __construct(
         private string $description,

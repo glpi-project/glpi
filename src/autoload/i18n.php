@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Laminas\I18n\Translator\TranslatorInterface;
+
 /**
  * @var int $DEFAULT_PLURAL_NUMBER
  */
@@ -51,7 +53,7 @@ $DEFAULT_PLURAL_NUMBER = 2;
  */
 function __($str, $domain = 'glpi')
 {
-    /** @var \Laminas\I18n\Translator\TranslatorInterface $TRANSLATE */
+    /** @var TranslatorInterface $TRANSLATE */
     global $TRANSLATE;
 
     $trans = null;
@@ -64,7 +66,7 @@ function __($str, $domain = 'glpi')
                 // Wrong call when plural defined
                 $trans = $trans[0];
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Error may happen when overrided translation files does not use same plural rules as GLPI.
             // Silently fail to not flood error log.
         }
@@ -121,7 +123,7 @@ function _sx($ctx, $str, $domain = 'glpi')
  */
 function _n($sing, $plural, $nb, $domain = 'glpi')
 {
-    /** @var \Laminas\I18n\Translator\TranslatorInterface $TRANSLATE */
+    /** @var TranslatorInterface $TRANSLATE */
     global $TRANSLATE;
 
     $trans = null;
@@ -129,7 +131,7 @@ function _n($sing, $plural, $nb, $domain = 'glpi')
     if ($TRANSLATE !== null) {
         try {
             $trans = $TRANSLATE->translatePlural($sing, $plural, $nb, $domain);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Error may happen when overrided translation files does not use same plural rules as GLPI.
             // Silently fail to not flood error log.
         }

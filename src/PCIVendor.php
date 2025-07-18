@@ -32,10 +32,10 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Features\CacheableListInterface;
 use Glpi\Inventory\FilesToJSON;
 use Psr\SimpleCache\CacheInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 
 use function Safe\file_get_contents;
 use function Safe\json_decode;
@@ -121,7 +121,7 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
      */
     private function getDbList(): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $list = [];
@@ -146,7 +146,7 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
      * Clean cache
      *
      * @return void
-     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function invalidateListCache(): void
     {

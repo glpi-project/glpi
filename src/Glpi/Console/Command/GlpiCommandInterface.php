@@ -35,6 +35,8 @@
 
 namespace Glpi\Console\Command;
 
+use Glpi\System\Requirement\RequirementInterface;
+
 interface GlpiCommandInterface
 {
     /**
@@ -47,7 +49,7 @@ interface GlpiCommandInterface
     /**
      * Defines whether or not mandatory requirements must be checked before running command.
      *
-     * @return \Glpi\System\Requirement\RequirementInterface[]
+     * @return RequirementInterface[]
      */
     public function getSpecificMandatoryRequirements(): array;
 

@@ -32,8 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\Asset;
 use Glpi\Dashboard\Widget;
 use Safe\DateTime;
 
@@ -80,7 +80,7 @@ class PrinterLog extends CommonDBChild
 
         $array_ret = [];
 
-        /** @var Printer|\Glpi\Asset\Asset $item */
+        /** @var Printer|Asset $item */
         if (in_array($item::class, $CFG_GLPI['printer_types'])) {
             $cnt = countElementsInTable([static::getTable()], [static::$items_id => $item->getField('id')]);
             $array_ret[] = self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $cnt, $item::getType());
@@ -102,7 +102,7 @@ class PrinterLog extends CommonDBChild
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        /** @var Printer|\Glpi\Asset\Asset $item */
+        /** @var Printer|Asset $item */
         if (in_array($item::class, $CFG_GLPI['printer_types']) && $item->getID() > 0) {
             $printerlog = new self();
             $printerlog->showMetrics($item);
@@ -114,7 +114,7 @@ class PrinterLog extends CommonDBChild
     /**
      * Get metrics
      *
-     * @param array|Printer|\Glpi\Asset\Asset $printers      Printer instance
+     * @param array|Printer|Asset $printers Printer instance
      * @param array         $user_filters User filters
      * @param string        $interval     Date interval string (e.g. 'P1Y' for 1 year)
      * @param DateTime|null $start_date   Start date for the metrics range
@@ -124,14 +124,14 @@ class PrinterLog extends CommonDBChild
      * @return array An array of printer metrics data
      */
     final public static function getMetrics(
-        array|Printer|\Glpi\Asset\Asset $printers,
+        array|Printer|Asset $printers,
         array $user_filters = [],
         string $interval = 'P1Y',
         ?\DateTime $start_date = null,
         \DateTime $end_date = new DateTime(),
         string $format = 'dynamic'
     ): array {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if ($printers && !is_array($printers)) {
@@ -220,9 +220,9 @@ class PrinterLog extends CommonDBChild
     /**
      * Display form for agent
      *
-     * @param Printer|\Glpi\Asset\Asset $printer Printer instance
+     * @param Printer|Asset $printer Printer instance
      */
-    public function showMetrics(Printer|\Glpi\Asset\Asset $printer)
+    public function showMetrics(Printer|Asset $printer)
     {
         $printers = array_map(
             fn($id) => Printer::getById($id),

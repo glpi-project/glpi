@@ -37,6 +37,7 @@
 namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
+use Item_DeviceMemory;
 
 use function Safe\preg_match;
 
@@ -115,6 +116,6 @@ class Memory extends Device
 
     public function getItemtype(): string
     {
-        return \Item_DeviceMemory::class;
+        return Item_DeviceMemory::class;
     }
 }

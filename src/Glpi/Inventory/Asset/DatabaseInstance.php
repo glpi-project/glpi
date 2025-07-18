@@ -35,7 +35,9 @@
 
 namespace Glpi\Inventory\Asset;
 
+use Database;
 use DatabaseInstance as GDatabaseInstance;
+use DBmysql;
 use Glpi\Inventory\Conf;
 use RuleImportAssetCollection;
 use RuleMatchedLog;
@@ -76,7 +78,7 @@ class DatabaseInstance extends InventoryAsset
      */
     protected function getExisting(): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $db_existing = [];
@@ -106,7 +108,7 @@ class DatabaseInstance extends InventoryAsset
         $rule = new RuleImportAssetCollection();
         $value = $this->data;
         $instance = new GDatabaseInstance();
-        $odatabase = new \Database();
+        $odatabase = new Database();
 
         $db_instances = $this->getExisting();
 
@@ -232,6 +234,6 @@ class DatabaseInstance extends InventoryAsset
 
     public function getItemtype(): string
     {
-        return \DatabaseInstance::class;
+        return GDatabaseInstance::class;
     }
 }

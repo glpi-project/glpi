@@ -36,11 +36,12 @@ namespace Glpi\Controller;
 
 use Glpi\DependencyInjection\PublicService;
 use Glpi\Http\HeaderlessStreamedResponse;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-use function Safe\ob_start;
 use function Safe\ob_get_clean;
+use function Safe\ob_start;
 
 final class LegacyFileLoadController implements PublicService
 {
@@ -55,7 +56,7 @@ final class LegacyFileLoadController implements PublicService
         $target_file = $request->attributes->getString(self::REQUEST_FILE_KEY);
 
         if (!$target_file) {
-            throw new \RuntimeException('Cannot load legacy controller without specifying a file to load.');
+            throw new RuntimeException('Cannot load legacy controller without specifying a file to load.');
         }
 
         ob_start();
@@ -121,7 +122,7 @@ final class LegacyFileLoadController implements PublicService
     private function getRequest(): Request
     {
         if ($this->request === null) {
-            throw new \RuntimeException(\sprintf(
+            throw new RuntimeException(\sprintf(
                 'Could not find Request in "%s" controller. Did you forget to call "%s"?',
                 self::class,
                 '__invoke',

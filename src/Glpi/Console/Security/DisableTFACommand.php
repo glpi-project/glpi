@@ -36,10 +36,12 @@
 namespace Glpi\Console\Security;
 
 use Glpi\Console\AbstractCommand;
+use Glpi\Security\TOTPManager;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use User;
 
 class DisableTFACommand extends AbstractCommand
 {
@@ -54,12 +56,12 @@ class DisableTFACommand extends AbstractCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $username = $input->getArgument('login');
-        $user = new \User();
+        $user = new User();
         if (!$user->getFromDBbyName($username)) {
             $output->writeln("<error>" . sprintf(__("User %s not found"), $username) . "</error>");
             return 1;
         }
-        $totp_manager = new \Glpi\Security\TOTPManager();
+        $totp_manager = new TOTPManager();
         if (!$totp_manager->is2FAEnabled($user->getID())) {
             $output->writeln("<error>" . __("2FA is not enabled for this user") . "</error>");
             return 0;

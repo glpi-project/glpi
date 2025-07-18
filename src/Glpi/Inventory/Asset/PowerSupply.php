@@ -36,6 +36,7 @@
 namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
+use Item_DevicePowerSupply;
 
 class PowerSupply extends Device
 {
@@ -65,6 +66,6 @@ class PowerSupply extends Device
 
     public function getItemtype(): string
     {
-        return \Item_DevicePowerSupply::class;
+        return Item_DevicePowerSupply::class;
     }
 }

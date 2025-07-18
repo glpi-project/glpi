@@ -38,6 +38,7 @@ namespace Glpi\Console\Database;
 use DBConnection;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
+use Glpi\Console\Exception\EarlyExitException;
 use Glpi\System\Requirement\DbTimezones;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -83,7 +84,7 @@ class EnableTimezonesCommand extends AbstractCommand implements ConfigurationCom
             foreach ($timezones_requirement->getValidationMessages() as $validation_message) {
                 $message .= PHP_EOL . ' - <error>' . $validation_message . '</error>';
             }
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 $message,
                 self::ERROR_MISSING_PREREQUISITES
             );
@@ -93,14 +94,14 @@ class EnableTimezonesCommand extends AbstractCommand implements ConfigurationCom
             $message = sprintf(__('%1$s columns are using the deprecated datetime storage field type.'), $datetime_count)
             . ' '
             . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:timestamps');
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . $message . '</error>',
                 self::ERROR_TIMESTAMP_FIELDS_REQUIRED
             );
         }
 
         if (!DBConnection::updateConfigProperty(DBConnection::PROPERTY_USE_TIMEZONES, true)) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . __('Unable to update DB configuration file.') . '</error>',
                 self::ERROR_UNABLE_TO_UPDATE_CONFIG
             );

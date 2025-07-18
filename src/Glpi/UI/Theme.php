@@ -35,12 +35,13 @@
 
 namespace Glpi\UI;
 
+use JsonSerializable;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class that represents a theme/palette.
  */
-final class Theme implements \JsonSerializable
+final class Theme implements JsonSerializable
 {
     private string $key;
     private string $name;

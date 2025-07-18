@@ -37,6 +37,7 @@
 namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
+use Item_DeviceBattery;
 
 class Battery extends Device
 {
@@ -80,6 +81,6 @@ class Battery extends Device
 
     public function getItemtype(): string
     {
-        return \Item_DeviceBattery::class;
+        return Item_DeviceBattery::class;
     }
 }

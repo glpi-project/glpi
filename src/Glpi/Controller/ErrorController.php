@@ -48,10 +48,11 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Throwable;
 
 class ErrorController extends AbstractController
 {
-    public function __invoke(Request $request, ?\Throwable $exception = null): Response
+    public function __invoke(Request $request, ?Throwable $exception = null): Response
     {
         if ($exception === null) {
             return new Response('', 500);

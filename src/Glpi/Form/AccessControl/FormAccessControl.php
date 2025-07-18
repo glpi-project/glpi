@@ -37,14 +37,15 @@ namespace Glpi\Form\AccessControl;
 
 use CommonDBChild;
 use CommonGLPI;
-use Glpi\Form\Export\Context\DatabaseMapper;
-use Glpi\Form\Export\Serializer\DynamicExportData;
-use InvalidArgumentException;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportData;
 use Glpi\Form\Form;
+use InvalidArgumentException;
 use Override;
+use Psr\Log\LoggerInterface;
 use ReflectionClass;
 
 use function Safe\json_decode;
@@ -206,7 +207,7 @@ final class FormAccessControl extends CommonDBChild
                 $strategy = $this->createStrategy($strategy_class);
                 $input['_config'] = $strategy->getConfig();
             } catch (InvalidArgumentException $e) {
-                /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+                /** @var LoggerInterface $PHPLOGGER */
                 global $PHPLOGGER;
                 $PHPLOGGER->error(
                     "Invalid access control strategy: $strategy_class",

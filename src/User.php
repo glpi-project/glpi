@@ -32,7 +32,6 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Dashboard\Dashboard;
 use Glpi\Dashboard\Filter;
@@ -40,11 +39,16 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Exception\ForgetPasswordException;
+use Glpi\Exception\PasswordTooWeakException;
+use Glpi\Features\Clonable;
+use Glpi\Features\TreeBrowse;
 use Glpi\Plugin\Hooks;
-use Sabre\VObject;
+use Glpi\Security\TOTPManager;
+use LDAP\Connection;
+use Sabre\VObject\Component\VCard;
+use Safe\DateTime;
 use Safe\Exceptions\FilesystemException;
 use Symfony\Component\HttpFoundation\Request;
-use Safe\DateTime;
 
 use function Safe\fclose;
 use function Safe\fopen;
@@ -62,10 +66,10 @@ use function Safe\unlink;
 
 class User extends CommonDBTM
 {
-    use Glpi\Features\Clonable {
-        Glpi\Features\Clonable::computeCloneName as baseComputeCloneName;
+    use Clonable {
+        Clonable::computeCloneName as baseComputeCloneName;
     }
-    use Glpi\Features\TreeBrowse;
+    use TreeBrowse;
 
     // From CommonDBTM
     public $dohistory         = true;
@@ -448,7 +452,7 @@ class User extends CommonDBTM
 
     public function pre_deleteItem()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $entities = $this->getEntities();
@@ -485,7 +489,7 @@ class User extends CommonDBTM
     public function cleanDBonPurge()
     {
 
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // ObjectLock does not extends CommonDBConnexity
@@ -666,7 +670,7 @@ class User extends CommonDBTM
      */
     public static function getUsersIdByEmails(string $email, array $condition = []): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $query = [
@@ -838,7 +842,7 @@ class User extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $input = $this->cleanInput($input);
@@ -1027,7 +1031,7 @@ class User extends CommonDBTM
             $email = $this->getDefaultEmail();
             try {
                 $this->forgetPassword($email, true);
-            } catch (\Glpi\Exception\ForgetPasswordException $e) {
+            } catch (ForgetPasswordException $e) {
                 Session::addMessageAfterRedirect(htmlescape($e->getMessage()), false, ERROR);
             }
         }
@@ -1366,7 +1370,7 @@ class User extends CommonDBTM
             $email = $this->getDefaultEmail();
             try {
                 $this->forgetPassword($email, false);
-            } catch (\Glpi\Exception\ForgetPasswordException $e) {
+            } catch (ForgetPasswordException $e) {
                 Session::addMessageAfterRedirect(htmlescape($e->getMessage()), false, ERROR);
             }
         } elseif (in_array('password', $this->updates)) {
@@ -1586,7 +1590,7 @@ class User extends CommonDBTM
      */
     public function syncLdapGroups()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // input["_groups"] not set when update from user.form or preference
@@ -1821,7 +1825,7 @@ class User extends CommonDBTM
      */
     public function syncDynamicEmails()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $userUpdated = false;
@@ -1958,7 +1962,7 @@ class User extends CommonDBTM
      * Function that tries to load the user membership from LDAP
      * by searching in the attributes of the User.
      *
-     * @param \LDAP\Connection $ldap_connection LDAP connection
+     * @param Connection $ldap_connection LDAP connection
      * @param array    $ldap_method     LDAP method
      * @param string   $userdn          Basedn of the user
      * @param string   $login           User login
@@ -1967,7 +1971,7 @@ class User extends CommonDBTM
      */
     private function getFromLDAPGroupVirtual($ldap_connection, array $ldap_method, $userdn, $login): void
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // Search in DB the ldap_field we need to search for in LDAP
@@ -2074,7 +2078,7 @@ class User extends CommonDBTM
      * Function that tries to load the user membership from LDAP
      * by searching in the attributes of the Groups.
      *
-     * @param \LDAP\Connection $ldap_connection    LDAP connection
+     * @param Connection $ldap_connection LDAP connection
      * @param array    $ldap_method        LDAP method
      * @param string   $userdn             Basedn of the user
      * @param string   $login              User login
@@ -2083,7 +2087,7 @@ class User extends CommonDBTM
      */
     private function getFromLDAPGroupDiscret($ldap_connection, array $ldap_method, $userdn, $login)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // No group_member_field : unable to get group
@@ -2131,7 +2135,7 @@ class User extends CommonDBTM
     /**
      * Function that tries to load the user information from LDAP.
      *
-     * @param \LDAP\Connection $ldap_connection LDAP connection
+     * @param Connection $ldap_connection LDAP connection
      * @param array    $ldap_method     LDAP method
      * @param string   $userdn          Basedn of the user
      * @param string   $login           User Login
@@ -2143,7 +2147,7 @@ class User extends CommonDBTM
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -2152,7 +2156,7 @@ class User extends CommonDBTM
             return false;
         }
 
-        if ($ldap_connection instanceof \LDAP\Connection) {
+        if ($ldap_connection instanceof Connection) {
             //Set all the search fields
             $this->fields['password'] = "";
 
@@ -2402,7 +2406,7 @@ class User extends CommonDBTM
     /**
      * Get all groups a user belongs to.
      *
-     * @param \LDAP\Connection $ds                 ldap connection
+     * @param Connection $ds ldap connection
      * @param string   $ldap_base_dn       Basedn used
      * @param string   $user_dn            Basedn of the user
      * @param string   $group_condition    group search condition
@@ -2483,7 +2487,7 @@ class User extends CommonDBTM
      */
     public function getFromIMAP(array $mail_method, $name)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // we prevent some delay..
@@ -2543,7 +2547,7 @@ class User extends CommonDBTM
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -2652,7 +2656,7 @@ class User extends CommonDBTM
      */
     public function blankPassword()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (!empty($this->fields["name"])) {
@@ -2760,7 +2764,7 @@ HTML;
     public function showForm($ID, array $options = [])
     {
         /**
-         * @var \DBmysql $DB */
+         * @var DBmysql $DB */
         global $DB;
 
         // Affiche un formulaire User
@@ -2849,7 +2853,7 @@ HTML;
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -2907,7 +2911,7 @@ HTML;
 
     public function pre_updateInDB()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (($key = array_search('name', $this->updates)) !== false) {
@@ -3150,7 +3154,7 @@ HTML;
 
             case 'disable_2fa':
                 $can_update_auth = Session::haveRight(self::$rightname, self::UPDATEAUTHENT);
-                $totp = new \Glpi\Security\TOTPManager();
+                $totp = new TOTPManager();
                 foreach ($ids as $id) {
                     if (!$can_update_auth || !$item->can($id, UPDATE)) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
@@ -3689,7 +3693,7 @@ HTML;
      */
     public static function getDelegateGroupsForUser($entities_id = '')
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -3777,7 +3781,7 @@ HTML;
         $inactive_deleted = false,
         $with_no_right = 0
     ) {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
 
@@ -4492,7 +4496,7 @@ HTML;
      */
     public static function changeAuthMethod(array $IDs = [], $authtype = 1, $server = 0)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (!Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
@@ -4564,7 +4568,7 @@ HTML;
             $title->getFromDB($this->fields['usertitles_id']);
         }
         // create vcard
-        $vcard = new VObject\Component\VCard([
+        $vcard = new VCard([
             'N'     => $name,
             'EMAIL' => $this->getDefaultEmail(),
             'NOTE'  => $this->fields["comment"],
@@ -4609,7 +4613,7 @@ HTML;
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -4787,7 +4791,7 @@ HTML;
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -5009,7 +5013,7 @@ HTML;
      */
     public static function getIdByField($field, $value)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -5153,7 +5157,7 @@ HTML;
         // Check new password validity, throws exception on failure
         $password_errors = [];
         if (!$this->validatePassword($input["password"], $password_errors)) {
-            $expection = new \Glpi\Exception\PasswordTooWeakException();
+            $expection = new PasswordTooWeakException();
             foreach ($password_errors as $error) {
                 $expection->addMessage($error);
             }
@@ -5167,7 +5171,7 @@ HTML;
 
         // Clear password reset token data.
         // Use a direct DB query to bypass rights checks.
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $DB->update(
             'glpi_users',
@@ -5199,9 +5203,9 @@ HTML;
             if ($this->updateForgottenPassword($input)) {
                 Session::addMessageAfterRedirect(__s('Reset password successful.'));
             }
-        } catch (\Glpi\Exception\ForgetPasswordException $e) {
+        } catch (ForgetPasswordException $e) {
             Session::addMessageAfterRedirect(htmlescape($e->getMessage()), false, ERROR);
-        } catch (\Glpi\Exception\PasswordTooWeakException $e) {
+        } catch (PasswordTooWeakException $e) {
             // Force display on error
             foreach ($e->getMessages() as $message) {
                 Session::addMessageAfteRredirect(htmlescape($message), false, ERROR);
@@ -5225,7 +5229,7 @@ HTML;
     {
         try {
             $this->forgetPassword($email);
-        } catch (\Glpi\Exception\ForgetPasswordException $e) {
+        } catch (ForgetPasswordException $e) {
             Session::addMessageAfterRedirect(htmlescape($e->getMessage()), false, ERROR);
             return;
         }
@@ -5247,7 +5251,7 @@ HTML;
     {
         try {
             $this->forgetPassword($email, true);
-        } catch (\Glpi\Exception\ForgetPasswordException $e) {
+        } catch (ForgetPasswordException $e) {
             Session::addMessageAfterRedirect(htmlescape($e->getMessage()), false, ERROR);
             return;
         }
@@ -5331,7 +5335,7 @@ HTML;
 
         // Store password reset token and date.
         // Use a direct DB query to bypass rights checks.
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $DB->update(
             'glpi_users',
@@ -5474,7 +5478,7 @@ HTML;
      */
     public static function getUniqueToken($field = 'personal_token')
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ok = false;
@@ -5577,7 +5581,7 @@ HTML;
      */
     public static function checkDefaultPasswords()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $passwords = ['glpi'      => 'glpi',
@@ -5846,7 +5850,7 @@ HTML;
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -6091,7 +6095,7 @@ HTML;
 
     public static function getFriendlyNameSearchCriteria(string $filter): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $table     = self::getTable();
@@ -6124,7 +6128,7 @@ HTML;
 
     public static function getFriendlyNameFields(string $alias = "name")
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $config = Config::getConfigurationValues('core');
@@ -6449,7 +6453,7 @@ HTML;
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -6501,7 +6505,7 @@ HTML;
      */
     private static function createUserFromMail(string $email): ?User
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -6541,7 +6545,7 @@ HTML;
      */
     public static function getNameForLog(int $ID): string
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -6621,7 +6625,7 @@ HTML;
      */
     final public function isSubstituteOf(int $users_id_delegator, bool $use_date_range = true): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if ($this->isNewItem()) {

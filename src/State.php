@@ -95,7 +95,7 @@ class State extends CommonTreeDropdown
      */
     final public static function getBehaviours(string $lib = "", bool $is_inheritable = false): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $elements = ["0" => __('Keep status')];
@@ -140,7 +140,7 @@ class State extends CommonTreeDropdown
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -760,7 +760,7 @@ class State extends CommonTreeDropdown
      */
     public function isUnique($input)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $unicity_fields = ['states_id', 'name'];

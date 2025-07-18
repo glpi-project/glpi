@@ -35,13 +35,15 @@
 
 namespace Glpi\Console\Migration;
 
+use DateTimeZone;
 use DBConnection;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
+use Glpi\Console\Exception\EarlyExitException;
 use Glpi\System\Requirement\DbTimezones;
+use Safe\DateTime;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Safe\DateTime;
 
 use function Safe\preg_match;
 
@@ -151,13 +153,13 @@ class TimestampsCommand extends AbstractCommand implements ConfigurationCommandI
                             $default = $column['COLUMN_DEFAULT'];
                         } elseif ($column['COLUMN_DEFAULT'] < '1970-01-01 00:00:01') {
                             // Prevent default value to be out of range (lower to min possible value)
-                            $defaultDate = new DateTime('1970-01-01 00:00:01', new \DateTimeZone('UTC'));
-                            $defaultDate->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+                            $defaultDate = new DateTime('1970-01-01 00:00:01', new DateTimeZone('UTC'));
+                            $defaultDate->setTimezone(new DateTimeZone(date_default_timezone_get()));
                             $default = $this->db->quoteValue($defaultDate->format("Y-m-d H:i:s"));
                         } elseif ($column['COLUMN_DEFAULT'] > '2038-01-19 03:14:07') {
                             // Prevent default value to be out of range (greater to max possible value)
-                            $defaultDate = new DateTime('2038-01-19 03:14:07', new \DateTimeZone('UTC'));
-                            $defaultDate->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+                            $defaultDate = new DateTime('2038-01-19 03:14:07', new DateTimeZone('UTC'));
+                            $defaultDate->setTimezone(new DateTimeZone(date_default_timezone_get()));
                             $default = $this->db->quoteValue($defaultDate->format("Y-m-d H:i:s"));
                         } else {
                             $default = $this->db->quoteValue($column['COLUMN_DEFAULT']);
@@ -221,14 +223,14 @@ class TimestampsCommand extends AbstractCommand implements ConfigurationCommandI
         }
 
         if (!DBConnection::updateConfigProperties($properties_to_update)) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . __('Unable to update DB configuration file.') . '</error>',
                 self::ERROR_UNABLE_TO_UPDATE_CONFIG
             );
         }
 
         if ($errors) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . __('Errors occurred during migration.') . '</error>',
                 self::ERROR_TABLE_MIGRATION_FAILED
             );

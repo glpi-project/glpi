@@ -553,7 +553,7 @@ class QueuedNotification extends CommonDBTM
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -657,7 +657,7 @@ class QueuedNotification extends CommonDBTM
      **/
     public static function cronQueuedNotificationClean($task = null)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $vol = 0;
@@ -692,7 +692,7 @@ class QueuedNotification extends CommonDBTM
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 

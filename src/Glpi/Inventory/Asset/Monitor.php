@@ -36,10 +36,13 @@
 
 namespace Glpi\Inventory\Asset;
 
+use Computer;
+use DBmysql;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
 use Monitor as GMonitor;
 use RuleImportAssetCollection;
+use RuleMatchedLog;
 
 class Monitor extends InventoryAsset
 {
@@ -99,7 +102,7 @@ class Monitor extends InventoryAsset
      */
     protected function getExisting(): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $db_existing = [];
@@ -147,7 +150,7 @@ class Monitor extends InventoryAsset
 
         foreach ($this->data as $key => $val) {
             $input = [
-                'itemtype'          => \Monitor::class,
+                'itemtype'          => GMonitor::class,
                 'name'              => $val->name,
                 'serial'            => $val->serial ?? '',
                 'entities_id'       => $entities_id,
@@ -171,7 +174,7 @@ class Monitor extends InventoryAsset
                 }
 
                 $monitors[] = $items_id;
-                $rulesmatched = new \RuleMatchedLog();
+                $rulesmatched = new RuleMatchedLog();
                 $agents_id = $this->agent->fields['id'];
                 if (empty($agents_id)) {
                     $agents_id = 0;
@@ -195,7 +198,7 @@ class Monitor extends InventoryAsset
                 $input = [
                     'itemtype_asset' => $this->item::class,
                     'items_id_asset' => $this->item->fields['id'],
-                    'itemtype_peripheral' => \Monitor::class,
+                    'itemtype_peripheral' => GMonitor::class,
                     'items_id_peripheral' => $monitors_id,
                     'is_dynamic'   => 1,
                 ];
@@ -220,9 +223,9 @@ class Monitor extends InventoryAsset
 
             foreach ($monitors as $key => $monitors_id) {
                 $input = [
-                    'itemtype_asset' => \Computer::class,
+                    'itemtype_asset' => Computer::class,
                     'items_id_asset' => $this->item->fields['id'],
-                    'itemtype_peripheral' => \Monitor::class,
+                    'itemtype_peripheral' => GMonitor::class,
                     'items_id_peripheral' => $monitors_id,
                     'is_dynamic'   => 1,
                 ];

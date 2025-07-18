@@ -37,13 +37,20 @@ namespace Glpi\Api\HL\Controller;
 
 use Calendar;
 use Change;
+use ChangeTask;
 use ChangeTemplate;
 use ChangeValidation;
+use CommonDBChild;
 use CommonDBTM;
 use CommonITILActor;
 use CommonITILObject;
+use CommonITILTask;
+use CommonITILValidation;
+use Document_Item;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\Doc\Parameter;
+use Glpi\Api\HL\Doc\Schema;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
@@ -53,11 +60,24 @@ use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Glpi\Team\Team;
 use Group;
+use InvalidArgumentException;
+use ITILCategory;
+use ITILFollowup;
+use ITILSolution;
+use Location;
+use Planning;
 use PlanningEventCategory;
+use PlanningExternalEvent;
 use PlanningExternalEventTemplate;
 use Problem;
+use ProblemTask;
+use RecurrentChange;
+use RequestType;
 use Session;
+use TaskCategory;
 use Ticket;
+use TicketRecurrent;
+use TicketTask;
 use TicketTemplate;
 use TicketValidation;
 use User;
@@ -73,8 +93,8 @@ use function Safe\json_decode;
         [
             'name' => 'itemtype',
             'description' => 'Ticket, Change or Problem',
-            'location' => Doc\Parameter::LOCATION_PATH,
-            'schema' => ['type' => Doc\Schema::TYPE_STRING],
+            'location' => Parameter::LOCATION_PATH,
+            'schema' => ['type' => Schema::TYPE_STRING],
         ],
     ]
 )]
@@ -89,52 +109,52 @@ final class ITILController extends AbstractController
         $schemas['ITILCategory'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => 'ITILCategory',
-            'type' => Doc\Schema::TYPE_OBJECT,
+            'type' => Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'type' => Schema::TYPE_INTEGER,
+                    'format' => Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'completename' => ['type' => Doc\Schema::TYPE_STRING],
-                'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'entity' => self::getDropdownTypeSchema(class: \Entity::class, full_schema: 'Entity'),
-                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'parent' => self::getDropdownTypeSchema(class: \ITILCategory::class, full_schema: 'ITILCategory'),
-                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'name' => ['type' => Schema::TYPE_STRING],
+                'completename' => ['type' => Schema::TYPE_STRING],
+                'comment' => ['type' => Schema::TYPE_STRING],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Schema::TYPE_BOOLEAN],
+                'parent' => self::getDropdownTypeSchema(class: ITILCategory::class, full_schema: 'ITILCategory'),
+                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
         $common_itiltemplate_properties = [
             'id' => [
-                'type' => Doc\Schema::TYPE_INTEGER,
-                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                'type' => Schema::TYPE_INTEGER,
+                'format' => Schema::FORMAT_INTEGER_INT64,
                 'x-readonly' => true,
             ],
-            'name' => ['type' => Doc\Schema::TYPE_STRING],
-            'completename' => ['type' => Doc\Schema::TYPE_STRING],
-            'comment' => ['type' => Doc\Schema::TYPE_STRING],
-            'entity' => self::getDropdownTypeSchema(class: \Entity::class, full_schema: 'Entity'),
-            'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+            'name' => ['type' => Schema::TYPE_STRING],
+            'completename' => ['type' => Schema::TYPE_STRING],
+            'comment' => ['type' => Schema::TYPE_STRING],
+            'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+            'is_recursive' => ['type' => Schema::TYPE_BOOLEAN],
         ];
         $schemas['TicketTemplate'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => 'TicketTemplate',
-            'type' => Doc\Schema::TYPE_OBJECT,
+            'type' => Schema::TYPE_OBJECT,
             'properties' => $common_itiltemplate_properties,
         ];
         $schemas['ChangeTemplate'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => 'ChangeTemplate',
-            'type' => Doc\Schema::TYPE_OBJECT,
+            'type' => Schema::TYPE_OBJECT,
             'properties' => $common_itiltemplate_properties,
         ];
         $schemas['ProblemTemplate'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => 'ProblemTemplate',
-            'type' => Doc\Schema::TYPE_OBJECT,
+            'type' => Schema::TYPE_OBJECT,
             'properties' => $common_itiltemplate_properties,
         ];
 
@@ -148,56 +168,56 @@ final class ITILController extends AbstractController
             EOT;
 
         $base_schema = [
-            'type' => Doc\Schema::TYPE_OBJECT,
+            'type' => Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'type' => Schema::TYPE_INTEGER,
+                    'format' => Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'content' => ['type' => Doc\Schema::TYPE_STRING],
-                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'category' => self::getDropdownTypeSchema(class: \ITILCategory::class, full_schema: 'ITILCategory'),
-                'location' => self::getDropdownTypeSchema(class: \Location::class, full_schema: 'Location'),
+                'name' => ['type' => Schema::TYPE_STRING],
+                'content' => ['type' => Schema::TYPE_STRING],
+                'is_deleted' => ['type' => Schema::TYPE_BOOLEAN],
+                'category' => self::getDropdownTypeSchema(class: ITILCategory::class, full_schema: 'ITILCategory'),
+                'location' => self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location'),
                 'urgency' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'type' => Schema::TYPE_INTEGER,
                     'enum' => [1, 2, 3, 4, 5],
                     'description' => $uip_description,
                 ],
                 'impact' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'type' => Schema::TYPE_INTEGER,
                     'enum' => [1, 2, 3, 4, 5],
                     'description' => $uip_description,
                 ],
                 'priority' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'type' => Schema::TYPE_INTEGER,
                     'enum' => [1, 2, 3, 4, 5],
                     'description' => $uip_description,
                 ],
                 'actiontime' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'type' => Schema::TYPE_INTEGER,
                     'x-readonly' => true,
                 ],
-                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'date' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
         $schemas['TeamMember'] = [
             'x-version-introduced' => '2.0',
-            'type' => Doc\Schema::TYPE_OBJECT,
+            'type' => Schema::TYPE_OBJECT,
             'description' => 'The valid types and roles depend on the type of the item they are being added to',
             'properties' => [
                 'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'type' => Schema::TYPE_INTEGER,
+                    'format' => Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'type' => ['type' => Doc\Schema::TYPE_STRING],
-                'role' => ['type' => Doc\Schema::TYPE_STRING],
+                'name' => ['type' => Schema::TYPE_STRING],
+                'type' => ['type' => Schema::TYPE_STRING],
+                'role' => ['type' => Schema::TYPE_STRING],
             ],
         ];
 
@@ -312,8 +332,8 @@ final class ITILController extends AbstractController
                         if (
                             Session::haveRightsOr(
                                 'ticketvalidation',
-                                [\TicketValidation::VALIDATEINCIDENT,
-                                    \TicketValidation::VALIDATEREQUEST,
+                                [TicketValidation::VALIDATEINCIDENT,
+                                    TicketValidation::VALIDATEREQUEST,
                                 ]
                             )
                         ) {
@@ -340,7 +360,7 @@ final class ITILController extends AbstractController
 
             if ($itil_type === Ticket::class) {
                 $schemas[$itil_type]['properties']['type'] = [
-                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'type' => Schema::TYPE_INTEGER,
                     'enum' => [Ticket::INCIDENT_TYPE, Ticket::DEMAND_TYPE],
                     'description' => <<<EOT
                         The type of the ticket.
@@ -350,9 +370,9 @@ final class ITILController extends AbstractController
                 ];
                 $schemas[$itil_type]['properties']['external_id'] = [
                     'x-field' => 'externalid',
-                    'type' => Doc\Schema::TYPE_STRING,
+                    'type' => Schema::TYPE_STRING,
                 ];
-                $schemas[$itil_type]['properties']['request_type'] = self::getDropdownTypeSchema(class: \RequestType::class, full_schema: 'RequestType');
+                $schemas[$itil_type]['properties']['request_type'] = self::getDropdownTypeSchema(class: RequestType::class, full_schema: 'RequestType');
             }
             $schemas[$itil_type]['x-itemtype'] = $itil_type;
             $status_description = '';
@@ -360,17 +380,17 @@ final class ITILController extends AbstractController
                 $status_description .= "- $status: $status_name\n";
             }
             $schemas[$itil_type]['properties']['status'] = [
-                'type' => Doc\Schema::TYPE_OBJECT,
+                'type' => Schema::TYPE_OBJECT,
                 'properties' => [
                     'id' => [
                         'x-field' => 'status',
-                        'type' => Doc\Schema::TYPE_INTEGER,
-                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'type' => Schema::TYPE_INTEGER,
+                        'format' => Schema::FORMAT_INTEGER_INT64,
                         'enum' => array_keys($itil_type::getAllStatusArray()),
                         'description' => $status_description,
                     ],
                     'name' => [
-                        'type' => Doc\Schema::TYPE_STRING,
+                        'type' => Schema::TYPE_STRING,
                         'x-mapped-from' => 'status.id',
                         // The x-mapper property indicates this property is calculated.
                         // The mapper callable gets the value of the x-mapped-from field (id in this case) and returns the name.
@@ -380,10 +400,10 @@ final class ITILController extends AbstractController
             ];
             $schemas[$itil_type]['properties']['entity'] = self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity');
             // Add completename field
-            $schemas[$itil_type]['properties']['entity']['properties']['completename'] = ['type' => Doc\Schema::TYPE_STRING];
+            $schemas[$itil_type]['properties']['entity']['properties']['completename'] = ['type' => Schema::TYPE_STRING];
 
             $schemas[$itil_type]['properties']['team'] = [
-                'type' => Doc\Schema::TYPE_ARRAY,
+                'type' => Schema::TYPE_ARRAY,
                 'items' => [
                     'x-mapped-from' => 'id',
                     'x-mapper' => function ($v) use ($itil_type) {
@@ -393,7 +413,7 @@ final class ITILController extends AbstractController
                         }
                         return [];
                     },
-                    'type' => Doc\Schema::TYPE_OBJECT,
+                    'type' => Schema::TYPE_OBJECT,
                     'properties' => $schemas['TeamMember']['properties'],
                     'x-full-schema' => 'TeamMember',
                 ],
@@ -401,15 +421,15 @@ final class ITILController extends AbstractController
         }
 
         $base_task_schema = [
-            'type' => Doc\Schema::TYPE_OBJECT,
+            'type' => Schema::TYPE_OBJECT,
             'x-rights-conditions' => [ // Object-level extra permissions
                 'read' => static function () {
-                    if (!\Session::haveRight(\CommonITILTask::$rightname, \CommonITILTask::SEEPRIVATE)) {
+                    if (!Session::haveRight(CommonITILTask::$rightname, CommonITILTask::SEEPRIVATE)) {
                         return [
                             'WHERE' => [
                                 'OR' => [
                                     'is_private' => 0,
-                                    'users_id' => \Session::getLoginUserID(),
+                                    'users_id' => Session::getLoginUserID(),
                                 ],
                             ],
                         ];
@@ -419,20 +439,20 @@ final class ITILController extends AbstractController
             ],
             'properties' => [
                 'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'type' => Schema::TYPE_INTEGER,
+                    'format' => Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'content' => ['type' => Doc\Schema::TYPE_STRING],
-                'is_private' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'content' => ['type' => Schema::TYPE_STRING],
+                'is_private' => ['type' => Schema::TYPE_BOOLEAN],
                 'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
-                'duration' => ['type' => Doc\Schema::TYPE_INTEGER, 'x-field' => 'actiontime'],
+                'duration' => ['type' => Schema::TYPE_INTEGER, 'x-field' => 'actiontime'],
                 'state' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'type' => Schema::TYPE_INTEGER,
                     'enum' => [
-                        \Planning::INFO,
-                        \Planning::TODO,
-                        \Planning::DONE,
+                        Planning::INFO,
+                        Planning::TODO,
+                        Planning::DONE,
                     ],
                     'description' => <<<EOT
                         The state of the task.
@@ -441,82 +461,82 @@ final class ITILController extends AbstractController
                         - 3: Done
                         EOT,
                 ],
-                'category' => self::getDropdownTypeSchema(class: \TaskCategory::class, full_schema: 'TaskCategory'),
+                'category' => self::getDropdownTypeSchema(class: TaskCategory::class, full_schema: 'TaskCategory'),
             ],
         ];
 
         $schemas['TicketTask'] = $base_task_schema;
         $schemas['TicketTask']['x-version-introduced'] = '2.0';
-        $schemas['TicketTask']['x-itemtype'] = \TicketTask::class;
-        $schemas['TicketTask']['properties'][Ticket::getForeignKeyField()] = ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64];
+        $schemas['TicketTask']['x-itemtype'] = TicketTask::class;
+        $schemas['TicketTask']['properties'][Ticket::getForeignKeyField()] = ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT64];
 
         $schemas['ChangeTask'] = $base_task_schema;
         $schemas['ChangeTask']['x-version-introduced'] = '2.0';
-        $schemas['ChangeTask']['x-itemtype'] = \ChangeTask::class;
-        $schemas['ChangeTask']['properties'][Change::getForeignKeyField()] = ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64];
+        $schemas['ChangeTask']['x-itemtype'] = ChangeTask::class;
+        $schemas['ChangeTask']['properties'][Change::getForeignKeyField()] = ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT64];
 
         $schemas['ProblemTask'] = $base_task_schema;
         $schemas['ProblemTask']['x-version-introduced'] = '2.0';
-        $schemas['ProblemTask']['x-itemtype'] = \ProblemTask::class;
-        $schemas['ProblemTask']['properties'][Problem::getForeignKeyField()] = ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64];
+        $schemas['ProblemTask']['x-itemtype'] = ProblemTask::class;
+        $schemas['ProblemTask']['properties'][Problem::getForeignKeyField()] = ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT64];
 
         $schemas['TaskCategory'] = [
             'x-version-introduced' => '2.0',
-            'x-itemtype' => \TaskCategory::class,
-            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => TaskCategory::class,
+            'type' => Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'type' => Schema::TYPE_INTEGER,
+                    'format' => Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'name' => ['type' => Schema::TYPE_STRING],
+                'is_active' => ['type' => Schema::TYPE_BOOLEAN],
             ],
         ];
 
         $schemas['RequestType'] = [
             'x-version-introduced' => '2.0',
-            'x-itemtype' => \RequestType::class,
-            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => RequestType::class,
+            'type' => Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'type' => Schema::TYPE_INTEGER,
+                    'format' => Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'is_helpdesk_default' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_followup_default' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_mail_default' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_mailfollowup_default' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'name' => ['type' => Schema::TYPE_STRING],
+                'comment' => ['type' => Schema::TYPE_STRING],
+                'is_helpdesk_default' => ['type' => Schema::TYPE_BOOLEAN],
+                'is_followup_default' => ['type' => Schema::TYPE_BOOLEAN],
+                'is_mail_default' => ['type' => Schema::TYPE_BOOLEAN],
+                'is_mailfollowup_default' => ['type' => Schema::TYPE_BOOLEAN],
+                'is_active' => ['type' => Schema::TYPE_BOOLEAN],
                 'is_visible_ticket' => [
-                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'type' => Schema::TYPE_BOOLEAN,
                     'x-field' => 'is_ticketheader',
                 ],
                 'is_visible_followup' => [
-                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'type' => Schema::TYPE_BOOLEAN,
                     'x-field' => 'is_itilfollowup',
                 ],
-                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
         $schemas['Followup'] = [
             'x-version-introduced' => '2.0',
-            'x-itemtype' => \ITILFollowup::class,
-            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => ITILFollowup::class,
+            'type' => Schema::TYPE_OBJECT,
             'x-rights-conditions' => [ // Object-level extra permissions
                 'read' => static function () {
-                    if (!\Session::haveRight(\ITILFollowup::$rightname, \ITILFollowup::SEEPRIVATE)) {
+                    if (!Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE)) {
                         return [
                             'WHERE' => [
                                 'OR' => [
                                     'is_private' => 0,
-                                    'users_id' => \Session::getLoginUserID(),
+                                    'users_id' => Session::getLoginUserID(),
                                 ],
                             ],
                         ];
@@ -526,68 +546,68 @@ final class ITILController extends AbstractController
             ],
             'properties' => [
                 'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'type' => Schema::TYPE_INTEGER,
+                    'format' => Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'itemtype' => ['type' => Doc\Schema::TYPE_STRING,],
-                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
-                'content' => ['type' => Doc\Schema::TYPE_STRING],
-                'is_private' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'request_type' => self::getDropdownTypeSchema(\RequestType::class, full_schema: 'RequestType'),
-                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'itemtype' => ['type' => Schema::TYPE_STRING,],
+                'items_id' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT64],
+                'content' => ['type' => Schema::TYPE_STRING],
+                'is_private' => ['type' => Schema::TYPE_BOOLEAN],
+                'request_type' => self::getDropdownTypeSchema(RequestType::class, full_schema: 'RequestType'),
+                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
         $schemas['Solution'] = [
             'x-version-introduced' => '2.0',
-            'type' => Doc\Schema::TYPE_OBJECT,
-            'x-itemtype' => \ITILSolution::class,
+            'type' => Schema::TYPE_OBJECT,
+            'x-itemtype' => ITILSolution::class,
             'properties' => [
                 'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'type' => Schema::TYPE_INTEGER,
+                    'format' => Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
-                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
-                'content' => ['type' => Doc\Schema::TYPE_STRING],
+                'itemtype' => ['type' => Schema::TYPE_STRING],
+                'items_id' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT64],
+                'content' => ['type' => Schema::TYPE_STRING],
             ],
         ];
 
         $base_validation_schema = [
-            'type' => Doc\Schema::TYPE_OBJECT,
+            'type' => Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'type' => Schema::TYPE_INTEGER,
+                    'format' => Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
                 'requester' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
                 'approver' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_validate', full_schema: 'User'),
                 'requested_approver_type' => [
-                    'type' => Doc\Schema::TYPE_STRING,
+                    'type' => Schema::TYPE_STRING,
                     'x-field' => 'itemtype_target',
                     'enum' => [User::getType(), Group::getType()],
                 ],
                 'requested_approver_id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'type' => Schema::TYPE_INTEGER,
                     'x-field' => 'items_id_target',
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'format' => Schema::FORMAT_INTEGER_INT64,
                 ],
-                'submission_comment' => ['type' => Doc\Schema::TYPE_STRING, 'x-field' => 'comment_submission'],
+                'submission_comment' => ['type' => Schema::TYPE_STRING, 'x-field' => 'comment_submission'],
                 'approval_comment' => [
-                    'type' => Doc\Schema::TYPE_STRING,
+                    'type' => Schema::TYPE_STRING,
                     'x-field' => 'comment_validation',
                 ],
                 'status' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'type' => Schema::TYPE_INTEGER,
                     'enum' => [
-                        \CommonITILValidation::NONE,
-                        \CommonITILValidation::WAITING,
-                        \CommonITILValidation::ACCEPTED,
-                        \CommonITILValidation::REFUSED,
+                        CommonITILValidation::NONE,
+                        CommonITILValidation::WAITING,
+                        CommonITILValidation::ACCEPTED,
+                        CommonITILValidation::REFUSED,
                     ],
                     'description' => <<<EOT
                         The status of the validation.
@@ -597,8 +617,8 @@ final class ITILController extends AbstractController
                         - 3: Refused
                         EOT,
                 ],
-                'submission_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'approval_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-field' => 'validation_date'],
+                'submission_date' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'approval_date' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME, 'x-field' => 'validation_date'],
             ],
         ];
 
@@ -615,7 +635,7 @@ final class ITILController extends AbstractController
                 )
             ),
         ];
-        $schemas['TicketValidation']['properties'][Ticket::getForeignKeyField()] = ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64];
+        $schemas['TicketValidation']['properties'][Ticket::getForeignKeyField()] = ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT64];
 
         $schemas['ChangeValidation'] = $base_validation_schema;
         $schemas['ChangeValidation']['x-version-introduced'] = '2.0';
@@ -630,78 +650,78 @@ final class ITILController extends AbstractController
                 )
             ),
         ];
-        $schemas['ChangeValidation']['properties'][Change::getForeignKeyField()] = ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64];
+        $schemas['ChangeValidation']['properties'][Change::getForeignKeyField()] = ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT64];
 
         $schemas['RecurringTicket'] = [
             'x-version-introduced' => '2.0',
-            'x-itemtype' => \TicketRecurrent::class,
-            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => TicketRecurrent::class,
+            'type' => Schema::TYPE_OBJECT,
             'description' => 'Recurring ticket',
             'properties' => [
                 'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'type' => Schema::TYPE_INTEGER,
+                    'format' => Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'name' => ['type' => Schema::TYPE_STRING],
+                'comment' => ['type' => Schema::TYPE_STRING],
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
-                'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_active' => ['type' => Schema::TYPE_BOOLEAN],
                 'template' => self::getDropdownTypeSchema(class: TicketTemplate::class, full_schema: 'TicketTemplate'),
                 'date_begin' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'type' => Schema::TYPE_STRING,
+                    'format' => Schema::FORMAT_STRING_DATE_TIME,
                     'x-field' => 'begin_date',
                 ],
                 'date_end' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'type' => Schema::TYPE_STRING,
+                    'format' => Schema::FORMAT_STRING_DATE_TIME,
                     'x-field' => 'end_date',
                 ],
-                'periodicity' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
-                'create_before' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
+                'periodicity' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT32],
+                'create_before' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT32],
                 'date_next_creation' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'type' => Schema::TYPE_STRING,
+                    'format' => Schema::FORMAT_STRING_DATE_TIME,
                     'x-field' => 'next_creation_date',
                 ],
                 'calendar' => self::getDropdownTypeSchema(class: Calendar::class, full_schema: 'Calendar'),
-                'ticket_per_item' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'ticket_per_item' => ['type' => Schema::TYPE_BOOLEAN],
             ],
         ];
 
         $schemas['RecurringChange'] = [
             'x-version-introduced' => '2.0',
-            'x-itemtype' => \RecurrentChange::class,
-            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => RecurrentChange::class,
+            'type' => Schema::TYPE_OBJECT,
             'description' => 'Recurring change',
             'properties' => [
                 'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'type' => Schema::TYPE_INTEGER,
+                    'format' => Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'name' => ['type' => Schema::TYPE_STRING],
+                'comment' => ['type' => Schema::TYPE_STRING],
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
-                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_recursive' => ['type' => Schema::TYPE_BOOLEAN],
+                'is_active' => ['type' => Schema::TYPE_BOOLEAN],
                 'template' => self::getDropdownTypeSchema(class: ChangeTemplate::class, full_schema: 'ChangeTemplate'),
                 'date_begin' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'type' => Schema::TYPE_STRING,
+                    'format' => Schema::FORMAT_STRING_DATE_TIME,
                     'x-field' => 'begin_date',
                 ],
                 'date_end' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'type' => Schema::TYPE_STRING,
+                    'format' => Schema::FORMAT_STRING_DATE_TIME,
                     'x-field' => 'end_date',
                 ],
-                'periodicity' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
-                'create_before' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
+                'periodicity' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT32],
+                'create_before' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT32],
                 'date_next_creation' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'type' => Schema::TYPE_STRING,
+                    'format' => Schema::FORMAT_STRING_DATE_TIME,
                     'x-field' => 'next_creation_date',
                 ],
                 'calendar' => self::getDropdownTypeSchema(class: Calendar::class, full_schema: 'Calendar'),
@@ -710,25 +730,25 @@ final class ITILController extends AbstractController
 
         $schemas['ExternalEventTemplate'] = [
             'x-version-introduced' => '2.0',
-            'x-itemtype' => \PlanningExternalEventTemplate::class,
-            'type' => Doc\Schema::TYPE_OBJECT,
-            'description' => \PlanningExternalEventTemplate::getTypeName(1),
+            'x-itemtype' => PlanningExternalEventTemplate::class,
+            'type' => Schema::TYPE_OBJECT,
+            'description' => PlanningExternalEventTemplate::getTypeName(1),
             'properties' => [
                 'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'type' => Schema::TYPE_INTEGER,
+                    'format' => Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'text' => ['type' => Doc\Schema::TYPE_STRING],
-                'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'duration' => ['type' => Doc\Schema::TYPE_INTEGER],
-                'before_time' => ['type' => Doc\Schema::TYPE_INTEGER],
-                'rrule' => ['type' => Doc\Schema::TYPE_STRING],
+                'name' => ['type' => Schema::TYPE_STRING],
+                'text' => ['type' => Schema::TYPE_STRING],
+                'comment' => ['type' => Schema::TYPE_STRING],
+                'duration' => ['type' => Schema::TYPE_INTEGER],
+                'before_time' => ['type' => Schema::TYPE_INTEGER],
+                'rrule' => ['type' => Schema::TYPE_STRING],
                 'category' => self::getDropdownTypeSchema(class: PlanningEventCategory::class, full_schema: 'EventCategory'),
                 'state' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'enum' => [\Planning::INFO, \Planning::TODO, \Planning::DONE],
+                    'type' => Schema::TYPE_INTEGER,
+                    'enum' => [Planning::INFO, Planning::TODO, Planning::DONE],
                     'description' => <<<EOT
                         The state of the event.
                         - 1: Information
@@ -736,70 +756,70 @@ final class ITILController extends AbstractController
                         - 3: Done
                         EOT,
                 ],
-                'is_background' => ['x-field' => 'background', 'type' => Doc\Schema::TYPE_BOOLEAN],
-                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'is_background' => ['x-field' => 'background', 'type' => Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
         $schemas['EventCategory'] = [
             'x-version-introduced' => '2.0',
-            'x-itemtype' => \PlanningEventCategory::class,
-            'type' => Doc\Schema::TYPE_OBJECT,
-            'description' => \PlanningEventCategory::getTypeName(1),
+            'x-itemtype' => PlanningEventCategory::class,
+            'type' => Schema::TYPE_OBJECT,
+            'description' => PlanningEventCategory::getTypeName(1),
             'properties' => [
                 'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'type' => Schema::TYPE_INTEGER,
+                    'format' => Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'color' => ['type' => Doc\Schema::TYPE_STRING],
-                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'name' => ['type' => Schema::TYPE_STRING],
+                'comment' => ['type' => Schema::TYPE_STRING],
+                'color' => ['type' => Schema::TYPE_STRING],
+                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
         $schemas['ExternalEvent'] = [
             'x-version-introduced' => '2.0',
-            'x-itemtype' => \PlanningExternalEvent::class,
-            'type' => Doc\Schema::TYPE_OBJECT,
-            'description' => \PlanningExternalEvent::getTypeName(1),
+            'x-itemtype' => PlanningExternalEvent::class,
+            'type' => Schema::TYPE_OBJECT,
+            'description' => PlanningExternalEvent::getTypeName(1),
             'properties' => [
                 'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'type' => Schema::TYPE_INTEGER,
+                    'format' => Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'uuid' => ['type' => Doc\Schema::TYPE_STRING, 'pattern' => Doc\Schema::PATTERN_UUIDV4],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'text' => ['type' => Doc\Schema::TYPE_STRING],
+                'uuid' => ['type' => Schema::TYPE_STRING, 'pattern' => Schema::PATTERN_UUIDV4],
+                'name' => ['type' => Schema::TYPE_STRING],
+                'text' => ['type' => Schema::TYPE_STRING],
                 'template' => self::getDropdownTypeSchema(class: PlanningExternalEventTemplate::class, full_schema: 'ExternalEventTemplate'),
                 'category' => self::getDropdownTypeSchema(class: PlanningEventCategory::class, full_schema: 'EventCategory'),
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
-                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_recursive' => ['type' => Schema::TYPE_BOOLEAN],
                 'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
                 'group' => self::getDropdownTypeSchema(class: Group::class, full_schema: 'Group'),
-                'date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
                 'date_begin' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'type' => Schema::TYPE_STRING,
+                    'format' => Schema::FORMAT_STRING_DATE_TIME,
                     'x-field' => 'begin',
                 ],
                 'date_end' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'type' => Schema::TYPE_STRING,
+                    'format' => Schema::FORMAT_STRING_DATE_TIME,
                     'x-field' => 'end',
                 ],
-                'rrule' => ['type' => Doc\Schema::TYPE_STRING],
-                'state' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'rrule' => ['type' => Schema::TYPE_STRING],
+                'state' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT64],
                 'is_background' => [
-                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'type' => Schema::TYPE_BOOLEAN,
                     'x-field' => 'background',
                 ],
-                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
@@ -807,17 +827,17 @@ final class ITILController extends AbstractController
     }
 
     /**
-     * @param class-string<\CommonDBTM> $subtype
+     * @param class-string<CommonDBTM> $subtype
      * @return string
      */
     public static function getFriendlyNameForSubtype(string $subtype): string
     {
         return match (true) {
-            is_subclass_of($subtype, \CommonITILTask::class) => 'Task',
-            $subtype === \ITILFollowup::class => 'Followup',
-            $subtype === \Document_Item::class => 'Document',
-            $subtype === \ITILSolution::class => 'Solution',
-            is_subclass_of($subtype, \CommonITILValidation::class) => 'Validation',
+            is_subclass_of($subtype, CommonITILTask::class) => 'Task',
+            $subtype === ITILFollowup::class => 'Followup',
+            $subtype === Document_Item::class => 'Document',
+            $subtype === ITILSolution::class => 'Solution',
+            is_subclass_of($subtype, CommonITILValidation::class) => 'Validation',
             default => $subtype,
         };
     }
@@ -865,8 +885,8 @@ final class ITILController extends AbstractController
             [
                 'name' => 'id',
                 'description' => 'The ID of the Ticket, Change, or Problem',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'location' => Parameter::LOCATION_PATH,
+                'schema' => ['type' => Schema::TYPE_INTEGER],
             ],
         ],
         responses: [
@@ -886,7 +906,7 @@ final class ITILController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
+                'location' => Parameter::LOCATION_BODY,
                 'schema' => '{itemtype}',
             ],
         ]
@@ -905,12 +925,12 @@ final class ITILController extends AbstractController
             [
                 'name' => 'id',
                 'description' => 'The ID of the Ticket, Change, or Problem',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'location' => Parameter::LOCATION_PATH,
+                'schema' => ['type' => Schema::TYPE_INTEGER],
             ],
             [
                 'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
+                'location' => Parameter::LOCATION_BODY,
                 'schema' => '{itemtype}',
             ],
         ]
@@ -929,8 +949,8 @@ final class ITILController extends AbstractController
             [
                 'name' => 'id',
                 'description' => 'The ID of the Ticket, Change, or Problem',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'location' => Parameter::LOCATION_PATH,
+                'schema' => ['type' => Schema::TYPE_INTEGER],
             ],
         ]
     )]
@@ -1002,7 +1022,7 @@ final class ITILController extends AbstractController
             if (!$schema_itemtype::canView()) {
                 continue;
             }
-            if (array_key_exists('is_private', $schema['properties']) && !\Session::haveRight($schema_itemtype::$rightname, $schema_itemtype::SEEPRIVATE)) {
+            if (array_key_exists('is_private', $schema['properties']) && !Session::haveRight($schema_itemtype::$rightname, $schema_itemtype::SEEPRIVATE)) {
                 $filters .= ';is_private==0';
             }
 
@@ -1035,8 +1055,8 @@ final class ITILController extends AbstractController
             [
                 'name' => 'id',
                 'description' => 'The ID of the Ticket, Change, or Problem',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'location' => Parameter::LOCATION_PATH,
+                'schema' => ['type' => Schema::TYPE_INTEGER],
             ],
         ]
     )]
@@ -1058,8 +1078,8 @@ final class ITILController extends AbstractController
             [
                 'name' => 'id',
                 'description' => 'The ID of the Ticket, Change, or Problem',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'location' => Parameter::LOCATION_PATH,
+                'schema' => ['type' => Schema::TYPE_INTEGER],
             ],
         ],
         responses: [
@@ -1088,8 +1108,8 @@ final class ITILController extends AbstractController
             [
                 'name' => 'id',
                 'description' => 'The ID of the Ticket, Change, or Problem',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'location' => Parameter::LOCATION_PATH,
+                'schema' => ['type' => Schema::TYPE_INTEGER],
             ],
         ],
         responses: [
@@ -1119,8 +1139,8 @@ final class ITILController extends AbstractController
             [
                 'name' => 'id',
                 'description' => 'The ID of the Ticket or Change',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'location' => Parameter::LOCATION_PATH,
+                'schema' => ['type' => Schema::TYPE_INTEGER],
             ],
         ],
         responses: [
@@ -1173,7 +1193,7 @@ final class ITILController extends AbstractController
      */
     private function getSubitemLinkFields(CommonITILObject $parent_item, string $subitem_type): array
     {
-        if (is_subclass_of($subitem_type, \CommonDBChild::class)) {
+        if (is_subclass_of($subitem_type, CommonDBChild::class)) {
             return [
                 $subitem_type::$itemtype => $parent_item::getType(),
                 $subitem_type::$items_id => (int) $parent_item->fields['id'],
@@ -1196,8 +1216,8 @@ final class ITILController extends AbstractController
             [
                 'name' => 'id',
                 'description' => 'The ID of the Ticket, Change, or Problem',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'location' => Parameter::LOCATION_PATH,
+                'schema' => ['type' => Schema::TYPE_INTEGER],
             ],
         ],
         responses: [
@@ -1223,8 +1243,8 @@ final class ITILController extends AbstractController
             [
                 'name' => 'id',
                 'description' => 'The ID of the Ticket, Change, or Problem',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'location' => Parameter::LOCATION_PATH,
+                'schema' => ['type' => Schema::TYPE_INTEGER],
             ],
         ],
         responses: [
@@ -1252,8 +1272,8 @@ final class ITILController extends AbstractController
             [
                 'name' => 'id',
                 'description' => 'The ID of the Ticket or Change',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'location' => Parameter::LOCATION_PATH,
+                'schema' => ['type' => Schema::TYPE_INTEGER],
             ],
         ],
         responses: [
@@ -1280,12 +1300,12 @@ final class ITILController extends AbstractController
             [
                 'name' => 'id',
                 'description' => 'The ID of the Ticket, Change, or Problem',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'location' => Parameter::LOCATION_PATH,
+                'schema' => ['type' => Schema::TYPE_INTEGER],
             ],
             [
                 'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
+                'location' => Parameter::LOCATION_BODY,
                 'schema' => '{subitem_type}',
             ],
         ],
@@ -1317,12 +1337,12 @@ final class ITILController extends AbstractController
             [
                 'name' => 'id',
                 'description' => 'The ID of the Ticket, Change, or Problem',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'location' => Parameter::LOCATION_PATH,
+                'schema' => ['type' => Schema::TYPE_INTEGER],
             ],
             [
                 'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
+                'location' => Parameter::LOCATION_BODY,
                 'schema' => '{itemtype}Task',
             ],
         ],
@@ -1355,12 +1375,12 @@ final class ITILController extends AbstractController
             [
                 'name' => 'id',
                 'description' => 'The ID of the Ticket or Change',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'location' => Parameter::LOCATION_PATH,
+                'schema' => ['type' => Schema::TYPE_INTEGER],
             ],
             [
                 'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
+                'location' => Parameter::LOCATION_BODY,
                 'schema' => '{itemtype}Task',
             ],
         ],
@@ -1394,12 +1414,12 @@ final class ITILController extends AbstractController
             [
                 'name' => 'id',
                 'description' => 'The ID of the Ticket, Change, or Problem',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'location' => Parameter::LOCATION_PATH,
+                'schema' => ['type' => Schema::TYPE_INTEGER],
             ],
             [
                 'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
+                'location' => Parameter::LOCATION_BODY,
                 'schema' => '{subitem_type}',
             ],
         ]
@@ -1431,12 +1451,12 @@ final class ITILController extends AbstractController
             [
                 'name' => 'id',
                 'description' => 'The ID of the Ticket, Change, or Problem',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'location' => Parameter::LOCATION_PATH,
+                'schema' => ['type' => Schema::TYPE_INTEGER],
             ],
             [
                 'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
+                'location' => Parameter::LOCATION_BODY,
                 'schema' => '{itemtype}Task',
             ],
         ]
@@ -1468,12 +1488,12 @@ final class ITILController extends AbstractController
             [
                 'name' => 'id',
                 'description' => 'The ID of the Ticket or Change',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'location' => Parameter::LOCATION_PATH,
+                'schema' => ['type' => Schema::TYPE_INTEGER],
             ],
             [
                 'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
+                'location' => Parameter::LOCATION_BODY,
                 'schema' => '{itemtype}Validation',
             ],
         ]
@@ -1505,8 +1525,8 @@ final class ITILController extends AbstractController
             [
                 'name' => 'id',
                 'description' => 'The ID of the Ticket, Change, or Problem',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'location' => Parameter::LOCATION_PATH,
+                'schema' => ['type' => Schema::TYPE_INTEGER],
             ],
         ]
     )]
@@ -1530,8 +1550,8 @@ final class ITILController extends AbstractController
             [
                 'name' => 'id',
                 'description' => 'The ID of the Ticket, Change, or Problem',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'location' => Parameter::LOCATION_PATH,
+                'schema' => ['type' => Schema::TYPE_INTEGER],
             ],
         ]
     )]
@@ -1555,8 +1575,8 @@ final class ITILController extends AbstractController
             [
                 'name' => 'id',
                 'description' => 'The ID of the Ticket or Change',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'location' => Parameter::LOCATION_PATH,
+                'schema' => ['type' => Schema::TYPE_INTEGER],
             ],
         ]
     )]
@@ -1592,7 +1612,7 @@ final class ITILController extends AbstractController
             // Replace role with non-localized textual representation
             try {
                 $member['role'] = self::getRoleName($member['role']);
-            } catch (\InvalidArgumentException) {
+            } catch (InvalidArgumentException) {
                 // Leave invalid role as-is
             }
         }
@@ -1606,7 +1626,7 @@ final class ITILController extends AbstractController
      * invalid role.
      * @param string|int $role The numeric or textual representation of the role
      * @return int The valid numeric role
-     * @throws \InvalidArgumentException If the textual or numeric role is not valid
+     * @throws InvalidArgumentException If the textual or numeric role is not valid
      */
     private static function getRoleID(string|int $role): int
     {
@@ -1614,7 +1634,7 @@ final class ITILController extends AbstractController
             Team::ROLE_REQUESTER, "requester" => Team::ROLE_REQUESTER,
             Team::ROLE_ASSIGNED, "assigned" => Team::ROLE_ASSIGNED,
             Team::ROLE_OBSERVER, "observer", "watcher" => Team::ROLE_OBSERVER,
-            default => throw new \InvalidArgumentException("Invalid role: $role"),
+            default => throw new InvalidArgumentException("Invalid role: $role"),
         };
     }
 
@@ -1625,7 +1645,7 @@ final class ITILController extends AbstractController
      * invalid role.
      * @param string|int $role The numeric or textual representation of the role
      * @return string The valid role in textual form
-     * @throws \InvalidArgumentException If the textual or numeric role is not valid
+     * @throws InvalidArgumentException If the textual or numeric role is not valid
      */
     private static function getRoleName(string|int $role): string
     {
@@ -1633,7 +1653,7 @@ final class ITILController extends AbstractController
             Team::ROLE_REQUESTER, "requester" => "requester",
             Team::ROLE_ASSIGNED, "assigned" => "assigned",
             Team::ROLE_OBSERVER, "observer", "watcher" => "observer",
-            default => throw new \InvalidArgumentException("Invalid role: $role"),
+            default => throw new InvalidArgumentException("Invalid role: $role"),
         };
     }
 
@@ -1667,8 +1687,8 @@ final class ITILController extends AbstractController
             [
                 'name' => 'role',
                 'description' => 'The role',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_STRING],
+                'location' => Parameter::LOCATION_PATH,
+                'schema' => ['type' => Schema::TYPE_STRING],
             ],
         ],
         responses: [
@@ -1702,17 +1722,17 @@ final class ITILController extends AbstractController
             [
                 'name' => 'type',
                 'description' => 'The type of team member. The applicable types of members will depend on the role.',
-                'location' => Doc\Parameter::LOCATION_BODY,
+                'location' => Parameter::LOCATION_BODY,
             ],
             [
                 'name' => 'id',
                 'description' => 'The ID of the team member',
-                'location' => Doc\Parameter::LOCATION_BODY,
+                'location' => Parameter::LOCATION_BODY,
             ],
             [
                 'name' => 'role',
                 'description' => 'The role of the team member',
-                'location' => Doc\Parameter::LOCATION_BODY,
+                'location' => Parameter::LOCATION_BODY,
             ],
         ]
     )]
@@ -1743,17 +1763,17 @@ final class ITILController extends AbstractController
             [
                 'name' => 'type',
                 'description' => 'The type of team member. The applicable types of members will depend on the role.',
-                'location' => Doc\Parameter::LOCATION_BODY,
+                'location' => Parameter::LOCATION_BODY,
             ],
             [
                 'name' => 'id',
                 'description' => 'The ID of the team member',
-                'location' => Doc\Parameter::LOCATION_BODY,
+                'location' => Parameter::LOCATION_BODY,
             ],
             [
                 'name' => 'role',
                 'description' => 'The role of the team member',
-                'location' => Doc\Parameter::LOCATION_BODY,
+                'location' => Parameter::LOCATION_BODY,
             ],
         ]
     )]
@@ -1812,7 +1832,7 @@ final class ITILController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
+                'location' => Parameter::LOCATION_BODY,
                 'schema' => 'RecurringTicket',
             ],
         ]
@@ -1831,7 +1851,7 @@ final class ITILController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
+                'location' => Parameter::LOCATION_BODY,
                 'schema' => 'RecurringTicket',
             ],
         ]
@@ -1889,7 +1909,7 @@ final class ITILController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
+                'location' => Parameter::LOCATION_BODY,
                 'schema' => 'RecurringChange',
             ],
         ]
@@ -1908,7 +1928,7 @@ final class ITILController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
+                'location' => Parameter::LOCATION_BODY,
                 'schema' => 'RecurringChange',
             ],
         ]
@@ -1966,7 +1986,7 @@ final class ITILController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
+                'location' => Parameter::LOCATION_BODY,
                 'schema' => 'ExternalEvent',
             ],
         ]
@@ -1985,7 +2005,7 @@ final class ITILController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
+                'location' => Parameter::LOCATION_BODY,
                 'schema' => 'ExternalEvent',
             ],
         ]

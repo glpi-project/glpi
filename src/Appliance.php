@@ -32,17 +32,17 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssetImage;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\Clonable;
 
 /**
  * Appliances Class
  **/
 class Appliance extends CommonDBTM
 {
-    use Glpi\Features\Clonable;
+    use Clonable;
     use Glpi\Features\State;
     use AssetImage;
     use AssignableItem {

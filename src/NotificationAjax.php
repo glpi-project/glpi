@@ -124,7 +124,7 @@ class NotificationAjax implements NotificationInterface
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -178,7 +178,7 @@ class NotificationAjax implements NotificationInterface
      */
     public static function raisedNotification($id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $now = date('Y-m-d H:i:s');

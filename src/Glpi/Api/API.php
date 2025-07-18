@@ -48,6 +48,7 @@ use CommonDevice;
 use CommonITILObject;
 use Config;
 use Contract;
+use DBmysql;
 use Document;
 use Dropdown;
 use Glpi\Api\Deprecated\DeprecatedInterface;
@@ -55,6 +56,9 @@ use Glpi\Api\HL\Router;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+use Glpi\Exception\ForgetPasswordException;
+use Glpi\Exception\PasswordTooWeakException;
 use Glpi\Search\Provider\SQLProvider;
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\MarkdownRenderer;
@@ -62,12 +66,13 @@ use Html;
 use Infocom;
 use Item_Devices;
 use Log;
+use LogicException;
 use MassiveAction;
 use NetworkEquipment;
 use NetworkPort;
 use Notepad;
 use Problem;
-use Glpi\DBAL\QueryFunction;
+use RuntimeException;
 use SavedSearch;
 use Search;
 use Session;
@@ -77,13 +82,13 @@ use Ticket;
 use Toolbox;
 use User;
 
-use function Safe\json_encode;
 use function Safe\file_get_contents;
+use function Safe\json_encode;
 use function Safe\ob_get_clean;
 use function Safe\ob_start;
 use function Safe\preg_match;
-use function Safe\session_id;
 use function Safe\session_destroy;
+use function Safe\session_id;
 use function Safe\session_write_close;
 
 abstract class API
@@ -600,7 +605,7 @@ abstract class API
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -1098,7 +1103,7 @@ abstract class API
      */
     protected function getItems($itemtype, $params = [], &$totalcount = 0)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $itemtype = $this->handleDepreciation($itemtype);
@@ -1897,7 +1902,7 @@ abstract class API
                     try {
                         $new_id = $item->add($object);
                         $message = $this->getGlpiLastMessage();
-                    } catch (\RuntimeException $e) {
+                    } catch (RuntimeException $e) {
                         $new_id = false;
                         $message = $e->getMessage();
                     }
@@ -2039,7 +2044,7 @@ abstract class API
                             $object = $this->inputObjectToArray($object);
                             $update_return = $item->update($object);
                             $message = $this->getGlpiLastMessage();
-                        } catch (\RuntimeException $e) {
+                        } catch (RuntimeException $e) {
                             $update_return = false;
                             $message = $e->getMessage();
                         }
@@ -2171,7 +2176,7 @@ abstract class API
                                 $params['history']
                             );
                             $message = $this->getGlpiLastMessage();
-                        } catch (\RuntimeException $e) {
+                        } catch (RuntimeException $e) {
                             $message = $e->getMessage();
                             $delete_return = false;
                         }
@@ -2235,7 +2240,7 @@ abstract class API
         if (!isset($params['password_forget_token'])) {
             try {
                 $user->forgetPassword($params['email']);
-            } catch (\Glpi\Exception\ForgetPasswordException $e) {
+            } catch (ForgetPasswordException $e) {
                 $this->returnError($e->getMessage());
             }
             return [
@@ -2250,9 +2255,9 @@ abstract class API
             ];
             try {
                 $user->updateForgottenPassword($input);
-            } catch (\Glpi\Exception\ForgetPasswordException $e) {
+            } catch (ForgetPasswordException $e) {
                 $this->returnError($e->getMessage());
-            } catch (\Glpi\Exception\PasswordTooWeakException $e) {
+            } catch (PasswordTooWeakException $e) {
                 implode('\n', $e->getMessages());
                 $this->returnError(implode('\n', $e->getMessages()));
             }
@@ -2937,7 +2942,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
         int $id,
         string $itemtype
     ): array {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $_networkports = [];
@@ -3167,7 +3172,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
             $class = "Glpi\Api\Deprecated\\$itemtype";
 
             if (!is_a($class, DeprecatedInterface::class, true)) {
-                throw new \LogicException();
+                throw new LogicException();
             }
 
             $this->deprecated_item = new $class();

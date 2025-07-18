@@ -35,8 +35,8 @@
 namespace tests\units;
 
 use DbTestCase;
-use RuleMatchedLog as GlobalRuleMatchedLog;
 use Printer;
+use RuleMatchedLog as GlobalRuleMatchedLog;
 
 /* Test for inc/rule.class.php */
 

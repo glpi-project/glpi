@@ -32,19 +32,19 @@
  *
  * ---------------------------------------------------------------------
  */
-
-use Glpi\DBAL\QueryExpression;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Features\AssetImage;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\Clonable;
 
 /**
  * SoftwareLicense Class
  **/
 class SoftwareLicense extends CommonTreeDropdown
 {
-    use Glpi\Features\Clonable;
+    use Clonable;
     use Glpi\Features\State;
     use AssetImage;
     use AssignableItem {
@@ -750,7 +750,7 @@ class SoftwareLicense extends CommonTreeDropdown
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -875,7 +875,7 @@ class SoftwareLicense extends CommonTreeDropdown
      */
     public static function countForVersion($softwareversions_id, $entity = '')
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -898,7 +898,7 @@ class SoftwareLicense extends CommonTreeDropdown
      **/
     public static function countForSoftware($softwares_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -977,7 +977,7 @@ class SoftwareLicense extends CommonTreeDropdown
      **/
     public static function showForSoftware(Software $software)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $softwares_id  = $software->getField('id');

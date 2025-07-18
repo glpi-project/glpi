@@ -32,10 +32,13 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Application\Environment;
+use Glpi\Event;
+use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
 use Glpi\Inventory\Conf;
+use Glpi\Inventory\Inventory;
+use Glpi\Marketplace\Controller;
 use Glpi\RichText\UserMention;
 use Glpi\Socket;
 
@@ -375,6 +378,8 @@ $empty_data_builder = new class {
             'glpinetwork_registration_key' => null,
             'impact_assets_list' => '[]',
             'timezone' => null,
+            'glpi_11_form_migration' => 0,
+            'glpi_11_assets_migration' => 0,
         ];
 
         $tables['glpi_configs'] = [];
@@ -386,7 +391,7 @@ $empty_data_builder = new class {
             ];
         }
 
-        foreach (\Glpi\Inventory\Conf::getDefaults() as $name => $value) {
+        foreach (Conf::getDefaults() as $name => $value) {
             $tables['glpi_configs'][] = [
                 'context' => 'inventory',
                 'name' => $name,
@@ -805,7 +810,7 @@ $empty_data_builder = new class {
                 'hourmax' => 24,
             ], [
                 'id' => 37,
-                'itemtype' => \Glpi\Marketplace\Controller::class,
+                'itemtype' => Controller::class,
                 'name' => 'checkAllUpdates',
                 'frequency' => DAY_TIMESTAMP,
                 'param' => null,
@@ -841,7 +846,7 @@ $empty_data_builder = new class {
                 'hourmax' => 24,
             ], [
                 'id' => 40,
-                'itemtype' => \Glpi\Inventory\Inventory::class,
+                'itemtype' => Inventory::class,
                 'name' => 'cleantemp',
                 'frequency' => DAY_TIMESTAMP,
                 'param' => null,
@@ -853,7 +858,7 @@ $empty_data_builder = new class {
                 'hourmax' => 6,
             ], [
                 'id' => 41,
-                'itemtype' => \Glpi\Inventory\Inventory::class,
+                'itemtype' => Inventory::class,
                 'name' => 'cleanorphans',
                 'frequency' => DAY_TIMESTAMP,
                 'param' => null,
@@ -937,7 +942,7 @@ $empty_data_builder = new class {
                 'hourmax' => 6,
             ], [
                 'id' => 48,
-                'itemtype' => \Glpi\Form\Form::class,
+                'itemtype' => Form::class,
                 'name' => 'purgedraftforms',
                 'frequency' => DAY_TIMESTAMP,
                 'param' => 7,
@@ -1998,27 +2003,27 @@ $empty_data_builder = new class {
                 'num' => '8',
                 'rank' => '7',
             ], [
-                'itemtype' => \Glpi\Event::class,
+                'itemtype' => Event::class,
                 'num' => '155',
                 'rank' => '1',
             ], [
-                'itemtype' => \Glpi\Event::class,
+                'itemtype' => Event::class,
                 'num' => '156',
                 'rank' => '2',
             ], [
-                'itemtype' => \Glpi\Event::class,
+                'itemtype' => Event::class,
                 'num' => '157',
                 'rank' => '3',
             ], [
-                'itemtype' => \Glpi\Event::class,
+                'itemtype' => Event::class,
                 'num' => '158',
                 'rank' => '4',
             ], [
-                'itemtype' => \Glpi\Event::class,
+                'itemtype' => Event::class,
                 'num' => '159',
                 'rank' => '5',
             ], [
-                'itemtype' => \Glpi\Event::class,
+                'itemtype' => Event::class,
                 'num' => '160',
                 'rank' => '6',
             ],
@@ -2030,8 +2035,8 @@ $empty_data_builder = new class {
             $tables['glpi_displaypreferences'][$index]['interface'] = 'central';
         }
 
-        $ADDTODISPLAYPREF[\Glpi\Form\Form::class] = [1, 80, 86, 3, 4];
-        $ADDTODISPLAYPREF[\Glpi\Form\AnswersSet::class] = [1, 3, 4];
+        $ADDTODISPLAYPREF[Form::class] = [1, 80, 86, 3, 4];
+        $ADDTODISPLAYPREF[AnswersSet::class] = [1, 3, 4];
         $ADDTODISPLAYPREF['Cluster'] = [31, 19];
         $ADDTODISPLAYPREF['Domain'] = [3, 4, 2, 6, 7];
         $ADDTODISPLAYPREF['DomainRecord'] = [2, 3];
@@ -2050,7 +2055,7 @@ $empty_data_builder = new class {
         $ADDTODISPLAYPREF[Webhook::class] = [3, 4, 5];
         $ADDTODISPLAYPREF[QueuedWebhook::class] = [80, 2, 22, 20, 21, 7, 30, 16];
         $ADDTODISPLAYPREF[Consumable::class] = [2, 8, 3, 4, 5, 6, 7];
-        $ADDTODISPLAYPREF_HELPDESK[\Ticket::class] = [
+        $ADDTODISPLAYPREF_HELPDESK[Ticket::class] = [
             12, // Status
             19, // Last update
             15, // Opening date
@@ -3145,7 +3150,7 @@ $empty_data_builder = new class {
             ], [
                 'id' => 71,
                 'name' => 'Check plugin updates',
-                'itemtype' => \Glpi\Marketplace\Controller::class,
+                'itemtype' => Controller::class,
                 'event' => 'checkpluginsupdate',
                 'is_recursive' => 1,
                 'is_active' => 1,
@@ -4709,7 +4714,7 @@ $empty_data_builder = new class {
             ], [
                 'id' => '28',
                 'name' => 'Plugin updates',
-                'itemtype' => \Glpi\Marketplace\Controller::class,
+                'itemtype' => Controller::class,
             ], [
                 'id' => '29',
                 'name' => 'Password Initialization',

@@ -35,6 +35,7 @@
 
 namespace Glpi\OAuth;
 
+use DBmysql;
 use Glpi\DBAL\QueryFunction;
 use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
 use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
@@ -50,7 +51,7 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface
 
     public function persistNewAuthCode(AuthCodeEntityInterface $authCodeEntity): void
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $DB->insert('glpi_oauth_auth_codes', [
@@ -64,7 +65,7 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface
 
     public function revokeAuthCode($codeId): void
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $DB->delete('glpi_oauth_auth_codes', ['identifier' => $codeId]);
@@ -72,7 +73,7 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface
 
     public function isAuthCodeRevoked($codeId): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

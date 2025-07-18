@@ -73,7 +73,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         $class = preg_replace('/Satisfaction$/', '', static::class);
 
         if (!is_a($class, CommonITILObject::class, true)) {
-            throw new \LogicException();
+            throw new LogicException();
         }
 
         return new $class();
@@ -350,7 +350,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
 
     public static function rawSearchOptionsToAdd()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $base_id = static::getSearchOptionIDOffset();

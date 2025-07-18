@@ -32,23 +32,26 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
  * Based on cacti plugin system
  */
-
+use Composer\Autoload\ClassLoader;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\Dashboard\Grid;
+use Glpi\Debug\Profiler;
+use Glpi\Event;
 use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\VersionParser;
-use Glpi\Event;
+use Laminas\I18n\Translator\Translator;
+use Psr\Log\LoggerInterface;
+use Psr\SimpleCache\CacheInterface;
 
-use function Safe\ob_start;
-use function Safe\ob_end_clean;
 use function Safe\ini_get;
+use function Safe\ob_end_clean;
+use function Safe\ob_start;
 use function Safe\preg_grep;
 use function Safe\preg_match;
 use function Safe\scandir;
@@ -303,11 +306,11 @@ class Plugin extends CommonDBTM
      */
     public function bootPlugins(): void
     {
-        /** @var \DBmysql|null $DB */
+        /** @var DBmysql|null $DB */
         global $DB;
 
         if ($this->isPluginsExecutionSuspended()) {
-            throw new \RuntimeException('Booting plugins is forbidden when plugins execution is suspended.');
+            throw new RuntimeException('Booting plugins is forbidden when plugins execution is suspended.');
         }
 
         self::$booted_plugins = [];
@@ -337,9 +340,9 @@ class Plugin extends CommonDBTM
                 if (function_exists($boot_function)) {
                     try {
                         $boot_function();
-                    } catch (\Throwable $e) {
+                    } catch (Throwable $e) {
                         // Log error
-                        /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+                        /** @var LoggerInterface $PHPLOGGER */
                         global $PHPLOGGER;
                         $PHPLOGGER->error(
                             sprintf('An error occurred during the `%s` plugin boot: %s', $plugin_key, $e->getMessage()),
@@ -365,7 +368,7 @@ class Plugin extends CommonDBTM
     private function registerPluginAutoloader(string $plugin_key, string $plugin_directory): void
     {
         if ($this->isPluginsExecutionSuspended()) {
-            throw new \RuntimeException('Registering plugin autoloader is forbidden when plugins execution is suspended.');
+            throw new RuntimeException('Registering plugin autoloader is forbidden when plugins execution is suspended.');
         }
 
         if (in_array($plugin_key, self::$autoloaded_plugins)) {
@@ -374,7 +377,7 @@ class Plugin extends CommonDBTM
 
         $psr4_dir = $plugin_directory . '/src/';
         if (is_dir($psr4_dir)) {
-            $psr4_autoloader = new \Composer\Autoload\ClassLoader();
+            $psr4_autoloader = new ClassLoader();
             $psr4_autoloader->addPsr4(NS_PLUG . ucfirst($plugin_key) . '\\', $psr4_dir);
             $psr4_autoloader->register();
 
@@ -388,15 +391,15 @@ class Plugin extends CommonDBTM
     public function init()
     {
         if ($this->isPluginsExecutionSuspended()) {
-            throw new \RuntimeException('Initializing plugins is forbidden when plugins execution is suspended.');
+            throw new RuntimeException('Initializing plugins is forbidden when plugins execution is suspended.');
         }
 
         self::$plugins_initialized = false;
 
         foreach (self::$booted_plugins as $plugin_key) {
-            \Glpi\Debug\Profiler::getInstance()->start("{$plugin_key}:init", \Glpi\Debug\Profiler::CATEGORY_PLUGINS);
+            Profiler::getInstance()->start("{$plugin_key}:init", Profiler::CATEGORY_PLUGINS);
             Plugin::load($plugin_key);
-            \Glpi\Debug\Profiler::getInstance()->stop("{$plugin_key}:init");
+            Profiler::getInstance()->stop("{$plugin_key}:init");
         }
         // For plugins which require action after all plugin init
         Plugin::doHook(Hooks::POST_INIT);
@@ -417,7 +420,7 @@ class Plugin extends CommonDBTM
     public static function load($plugin_key, $withhook = false)
     {
         if ((new Plugin())->isPluginsExecutionSuspended()) {
-            throw new \RuntimeException('Loading plugin files is forbidden when plugins execution is suspended.');
+            throw new RuntimeException('Loading plugin files is forbidden when plugins execution is suspended.');
         }
 
         $loaded = false;
@@ -443,8 +446,8 @@ class Plugin extends CommonDBTM
                     if (function_exists($init_function)) {
                         try {
                             $init_function();
-                        } catch (\Throwable $e) {
-                            /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+                        } catch (Throwable $e) {
+                            /** @var LoggerInterface $PHPLOGGER */
                             global $PHPLOGGER;
                             $PHPLOGGER->error(
                                 sprintf(
@@ -517,12 +520,12 @@ class Plugin extends CommonDBTM
     {
         /**
          * @var array $CFG_GLPI
-         * @var \Laminas\I18n\Translator\Translator $TRANSLATE
+         * @var Translator $TRANSLATE
          */
         global $CFG_GLPI, $TRANSLATE;
 
         if ((new Plugin())->isPluginsExecutionSuspended()) {
-            throw new \RuntimeException('Loading plugin locales is forbidden when plugins execution is suspended.');
+            throw new RuntimeException('Loading plugin locales is forbidden when plugins execution is suspended.');
         }
 
         $trytoload = 'en_GB';
@@ -620,7 +623,7 @@ class Plugin extends CommonDBTM
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -731,11 +734,11 @@ class Plugin extends CommonDBTM
      */
     public function checkPluginState($plugin_key, bool $check_for_replacement = false)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if ($this->isPluginsExecutionSuspended()) {
-            throw new \RuntimeException('Checking a plugin state is forbidden when plugins execution is suspended.');
+            throw new RuntimeException('Checking a plugin state is forbidden when plugins execution is suspended.');
         }
 
         $plugin = new self();
@@ -1022,7 +1025,7 @@ class Plugin extends CommonDBTM
      */
     public function getList(array $fields = [], array $order = ['name', 'directory'])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $query = [
@@ -1050,7 +1053,7 @@ class Plugin extends CommonDBTM
     public function uninstall($ID)
     {
         if ($this->isPluginsExecutionSuspended()) {
-            throw new \RuntimeException('Executing a plugin maintenance method is forbidden when plugins execution is suspended.');
+            throw new RuntimeException('Executing a plugin maintenance method is forbidden when plugins execution is suspended.');
         }
 
         $message = '';
@@ -1120,11 +1123,11 @@ class Plugin extends CommonDBTM
      **/
     public function install($ID, array $params = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if ($this->isPluginsExecutionSuspended()) {
-            throw new \RuntimeException('Executing a plugin maintenance method is forbidden when plugins execution is suspended.');
+            throw new RuntimeException('Executing a plugin maintenance method is forbidden when plugins execution is suspended.');
         }
 
         $message = '';
@@ -1212,7 +1215,7 @@ class Plugin extends CommonDBTM
         global $PLUGIN_HOOKS;
 
         if ($this->isPluginsExecutionSuspended()) {
-            throw new \RuntimeException('Executing a plugin maintenance method is forbidden when plugins execution is suspended.');
+            throw new RuntimeException('Executing a plugin maintenance method is forbidden when plugins execution is suspended.');
         }
 
         if ($this->getFromDB($ID)) {
@@ -1345,7 +1348,7 @@ class Plugin extends CommonDBTM
     public function unactivate($ID)
     {
         if ($this->isPluginsExecutionSuspended()) {
-            throw new \RuntimeException('Executing a plugin maintenance method is forbidden when plugins execution is suspended.');
+            throw new RuntimeException('Executing a plugin maintenance method is forbidden when plugins execution is suspended.');
         }
 
         if ($this->getFromDB($ID)) {
@@ -1403,7 +1406,7 @@ class Plugin extends CommonDBTM
     public function clean($ID)
     {
         if ($this->isPluginsExecutionSuspended()) {
-            throw new \RuntimeException('Executing a plugin maintenance method is forbidden when plugins execution is suspended.');
+            throw new RuntimeException('Executing a plugin maintenance method is forbidden when plugins execution is suspended.');
         }
 
         if ($this->getFromDB($ID)) {
@@ -1694,12 +1697,12 @@ class Plugin extends CommonDBTM
                     }
 
                     if (isset($tab[$itemtype])) {
-                        \Glpi\Debug\Profiler::getInstance()->start("{$plugin_key}:{$name}", \Glpi\Debug\Profiler::CATEGORY_PLUGINS);
+                        Profiler::getInstance()->start("{$plugin_key}:{$name}", Profiler::CATEGORY_PLUGINS);
                         self::includeHook($plugin_key);
                         if (is_callable($tab[$itemtype])) {
                             call_user_func($tab[$itemtype], $data);
                         }
-                        \Glpi\Debug\Profiler::getInstance()->stop("{$plugin_key}:{$name}");
+                        Profiler::getInstance()->stop("{$plugin_key}:{$name}");
                     }
                 }
             }
@@ -1710,12 +1713,12 @@ class Plugin extends CommonDBTM
                         continue;
                     }
 
-                    \Glpi\Debug\Profiler::getInstance()->start("{$plugin_key}:{$name}", \Glpi\Debug\Profiler::CATEGORY_PLUGINS);
+                    Profiler::getInstance()->start("{$plugin_key}:{$name}", Profiler::CATEGORY_PLUGINS);
                     self::includeHook($plugin_key);
                     if (is_callable($function)) {
                         call_user_func($function, $data);
                     }
-                    \Glpi\Debug\Profiler::getInstance()->stop("{$plugin_key}:{$name}");
+                    Profiler::getInstance()->stop("{$plugin_key}:{$name}");
                 }
             }
         }
@@ -1935,7 +1938,7 @@ class Plugin extends CommonDBTM
     private function loadPluginSetupFile(string $plugin_key): bool
     {
         if ($this->isPluginsExecutionSuspended()) {
-            throw new \RuntimeException('Fetching plugin information from its setup file is forbidden when plugins execution is suspended.');
+            throw new RuntimeException('Fetching plugin information from its setup file is forbidden when plugins execution is suspended.');
         }
 
         if (preg_match(self::PLUGIN_KEY_PATTERN, $plugin_key) !== 1) {
@@ -2023,7 +2026,7 @@ class Plugin extends CommonDBTM
     public static function includeHook(string $plugin_key = "")
     {
         if ((new Plugin())->isPluginsExecutionSuspended()) {
-            throw new \RuntimeException('Including plugin hook files is forbidden when plugins execution is suspended.');
+            throw new RuntimeException('Including plugin hook files is forbidden when plugins execution is suspended.');
         }
 
         foreach (GLPI_PLUGINS_DIRECTORIES as $base_dir) {
@@ -2061,7 +2064,7 @@ class Plugin extends CommonDBTM
                 $tmp = $function($itemtype);
                 foreach ($tmp as $opt) {
                     if (!isset($opt['id'])) {
-                        throw new \Exception($itemtype . ': invalid search option! ' . print_r($opt, true));
+                        throw new Exception($itemtype . ': invalid search option! ' . print_r($opt, true));
                     }
                     $optid = $opt['id'];
                     unset($opt['id']);
@@ -2161,7 +2164,7 @@ class Plugin extends CommonDBTM
                     $name
                 );
             default:
-                throw new \RuntimeException("messageMissing type $type is unknown!");
+                throw new RuntimeException("messageMissing type $type is unknown!");
         }
     }
 
@@ -2223,7 +2226,7 @@ class Plugin extends CommonDBTM
     public function checkGlpiVersion($infos)
     {
         if (!isset($infos['min']) && !isset($infos['max'])) {
-            throw new \LogicException('Either "min" or "max" is required for GLPI requirements!');
+            throw new LogicException('Either "min" or "max" is required for GLPI requirements!');
         }
 
         $glpiVersion = $this->getGlpiVersion();
@@ -2270,7 +2273,7 @@ class Plugin extends CommonDBTM
         } elseif (isset($infos['max'])) {
             $compat = !(version_compare($this->getPhpVersion(), $infos['max'], 'ge'));
         } else {
-            throw new \LogicException('Either "min" or "max" is required for PHP requirements!');
+            throw new LogicException('Either "min" or "max" is required for PHP requirements!');
         }
 
         if (!$compat) {
@@ -3135,7 +3138,7 @@ TWIG;
     {
         /**
          * @var array $CFG_GLPI
-         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+         * @var CacheInterface $GLPI_CACHE
          */
         global $CFG_GLPI, $GLPI_CACHE;
 

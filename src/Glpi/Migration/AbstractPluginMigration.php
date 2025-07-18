@@ -36,15 +36,19 @@ namespace Glpi\Migration;
 
 use CommonDBConnexity;
 use CommonDBTM;
+use Config;
 use DBmysql;
-use Glpi\Progress\AbstractProgressIndicator;
 use Glpi\Message\MessageType;
+use Glpi\Progress\AbstractProgressIndicator;
 use Glpi\RichText\RichText;
+use InvalidArgumentException;
 use Psr\Log\LoggerAwareTrait;
+use RuntimeException;
+use Throwable;
 
 use function Safe\json_decode;
-use function Safe\strtotime;
 use function Safe\preg_replace;
+use function Safe\strtotime;
 
 abstract class AbstractPluginMigration
 {
@@ -68,13 +72,43 @@ abstract class AbstractPluginMigration
     /**
      * Mapping between plugin items and GLPI core items.
      *
-     * @var array<class-string<\CommonDBTM>, array<int, array{itemtype: class-string<\CommonDBTM>, items_id: int}>>
+     * @var array<class-string<CommonDBTM>, array<int, array{itemtype: class-string<CommonDBTM>, items_id: int}>>
      */
     private array $target_items_mapping = [];
 
     public function __construct(DBmysql $db)
     {
         $this->db = $db;
+    }
+
+    abstract protected function getHasBeenExecutedConfigurationKey(): string;
+
+    /**
+     * Used to know if there is some potential data to migrate.
+     * Not all tables need to be listed, just the ones that indicate that data
+     * exist for this plugin.
+     */
+    abstract protected function getMainPluginTables(): array;
+
+    final public function hasBeenExecuted(): bool
+    {
+        /**
+         * @var array $CFG_GLPI
+         */
+        global $CFG_GLPI;
+
+        return (bool) ($CFG_GLPI[$this->getHasBeenExecutedConfigurationKey()] ?? false);
+    }
+
+    final public function hasPluginData(): bool
+    {
+        foreach ($this->getMainPluginTables() as $table) {
+            if ($this->db->tableExists($table) && countElementsInTable($table)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -97,8 +131,11 @@ abstract class AbstractPluginMigration
 
         $fully_processed = false;
         try {
+            $need_rollback_on_throw = false;
+
             if ($this->validatePrerequisites()) {
                 $this->db->beginTransaction();
+                $need_rollback_on_throw = true;
 
                 $fully_processed = $this->processMigration();
 
@@ -110,7 +147,7 @@ abstract class AbstractPluginMigration
             } else {
                 $this->result->addMessage(MessageType::Error, __('Migration cannot be done.'));
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->result->addMessage(
                 MessageType::Error,
                 $e instanceof MigrationException ? $e->getLocalizedMessage() : __('An unexpected error occurred')
@@ -118,13 +155,15 @@ abstract class AbstractPluginMigration
 
             $this->logger?->error($e->getMessage(), context: ['exception' => $e]);
 
-            if ($this->db->inTransaction()) {
+            if ($need_rollback_on_throw) {
                 $this->db->rollBack();
             }
         }
 
         $this->result->setFullyProcessed($fully_processed);
-
+        Config::setConfigurationValues('core', [
+            $this->getHasBeenExecutedConfigurationKey() => 1,
+        ]);
         return $this->result;
     }
 
@@ -225,7 +264,7 @@ abstract class AbstractPluginMigration
     ): CommonDBTM {
         $item = \getItemForItemtype($itemtype);
         if ($item === false) {
-            throw new \RuntimeException(sprintf('Invalid itemtype `%s`.', $itemtype));
+            throw new RuntimeException(sprintf('Invalid itemtype `%s`.', $itemtype));
         }
 
         if ($reconciliation_criteria !== null && $item->getFromDBByCrit($reconciliation_criteria)) {
@@ -353,7 +392,7 @@ abstract class AbstractPluginMigration
     /**
      * Copy the items found using the given criteria, after application of the given replacements.
      *
-     * @param class-string<\CommonDBTM> $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      * @param array<mixed, mixed> $where
      * @param array<int, array{field: string, from: mixed, to: mixed}> $replacements
      * @param bool $disable_unicity_check
@@ -361,7 +400,7 @@ abstract class AbstractPluginMigration
     final protected function copyItems(string $itemtype, array $where, array $replacements, bool $disable_unicity_check = false): void
     {
         if (!\is_a($itemtype, CommonDBTM::class, true)) {
-            throw new \InvalidArgumentException(sprintf('`%s` is not a valid `%s` class.', $itemtype, CommonDBTM::class));
+            throw new InvalidArgumentException(sprintf('`%s` is not a valid `%s` class.', $itemtype, CommonDBTM::class));
         }
 
         $options = [];
@@ -418,9 +457,9 @@ abstract class AbstractPluginMigration
     /**
      * Copy the polymorphic relations related to the given source item and attach them to the given target item.
      *
-     * @param class-string<\CommonDBTM> $source_itemtype
+     * @param class-string<CommonDBTM> $source_itemtype
      * @param int $source_items_id
-     * @param class-string<\CommonDBTM> $target_itemtype
+     * @param class-string<CommonDBTM> $target_itemtype
      * @param int $target_items_id
      */
     final protected function copyPolymorphicConnexityItems(
@@ -494,9 +533,9 @@ abstract class AbstractPluginMigration
     /**
      * Map the target item with the given source item.
      *
-     * @param class-string<\CommonDBTM> $source_itemtype
+     * @param class-string<CommonDBTM> $source_itemtype
      * @param int                       $source_items_id
-     * @param class-string<\CommonDBTM> $target_itemtype
+     * @param class-string<CommonDBTM> $target_itemtype
      * @param int                       $target_items_id
      *
      * @return void
@@ -520,7 +559,7 @@ abstract class AbstractPluginMigration
     /**
      * Return the GLPI core item specs corresponding to the given plugin item.
      *
-     * @return array{itemtype: class-string<\CommonDBTM>, items_id: int}|null
+     * @return array{itemtype: class-string<CommonDBTM>, items_id: int}|null
      */
     final public function getMappedItemTarget(string $source_itemtype, int $source_items_id): ?array
     {
@@ -537,7 +576,7 @@ abstract class AbstractPluginMigration
     /**
      * Return the GLPI core items specs corresponding to the given plugin itemtype.
      *
-     * @return array<int, array{itemtype: class-string<\CommonDBTM>, items_id: int}>
+     * @return array<int, array{itemtype: class-string<CommonDBTM>, items_id: int}>
      */
     final public function getMappedItemsForItemtype(string $source_itemtype): array
     {

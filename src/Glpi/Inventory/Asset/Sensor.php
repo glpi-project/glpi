@@ -35,6 +35,8 @@
 
 namespace Glpi\Inventory\Asset;
 
+use Item_DeviceSensor;
+
 class Sensor extends Device
 {
     public function prepare(): array
@@ -61,6 +63,6 @@ class Sensor extends Device
 
     public function getItemtype(): string
     {
-        return \Item_DeviceSensor::class;
+        return Item_DeviceSensor::class;
     }
 }

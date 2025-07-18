@@ -40,15 +40,17 @@ use Glpi\Debug\Profiler;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\Toolbox\MarkdownRenderer;
+use Html;
+use Line;
 use Mexitek\PHPColors\Color;
 use Plugin;
-use Symfony\Component\DomCrawler\Crawler;
 use Search;
+use Symfony\Component\DomCrawler\Crawler;
 use Toolbox;
 
-use function Safe\ob_start;
-use function Safe\ob_get_clean;
 use function Safe\json_encode;
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
 
 /**
  * Widget class
@@ -133,7 +135,7 @@ class Widget
                 'height'     => 3,
             ],
             'line' => [
-                'label'      => \Line::getTypeName(1),
+                'label'      => Line::getTypeName(1),
                 'function'   => 'Glpi\\Dashboard\\Widget::simpleLine',
                 'image'      => $CFG_GLPI['root_doc'] . '/pics/charts/line.png',
                 'haspalette' => false,
@@ -1829,7 +1831,7 @@ HTML;
          });
       });
 JAVASCRIPT;
-        $js = \Html::scriptBlock($js);
+        $js = Html::scriptBlock($js);
 
         return $html . $js;
     }

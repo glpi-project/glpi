@@ -35,8 +35,8 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryParam;
-use Glpi\Search\SearchOption;
 use Glpi\RichText\RichText;
+use Glpi\Search\SearchOption;
 
 use function Safe\preg_match;
 
@@ -226,7 +226,7 @@ class Log extends CommonDBTM
      **/
     public static function history($items_id, $itemtype, $changes, $itemtype_link = '', $linked_action = '0')
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $date_mod = $_SESSION["glpi_currenttime"];
@@ -920,7 +920,7 @@ class Log extends CommonDBTM
      **/
     public static function getDistinctUserNamesValuesInItemLog(CommonDBTM $item)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $itemtype = $item->getType();
@@ -962,7 +962,7 @@ class Log extends CommonDBTM
      **/
     public static function getDistinctAffectedFieldValuesInItemLog(CommonDBTM $item)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $itemtype = $item->getType();
@@ -1137,7 +1137,7 @@ class Log extends CommonDBTM
      **/
     public static function getDistinctLinkedActionValuesInItemLog(CommonDBTM $item)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $itemtype = $item->getType();
@@ -1425,7 +1425,7 @@ class Log extends CommonDBTM
 
     public static function handleQueue(): void
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $queue = static::$queue;

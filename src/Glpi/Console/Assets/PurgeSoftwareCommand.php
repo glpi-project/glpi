@@ -34,8 +34,8 @@
 
 namespace Glpi\Console\Assets;
 
-use PurgeSoftwareTask;
 use Glpi\Console\AbstractCommand;
+use PurgeSoftwareTask;
 use Software;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputInterface;
@@ -83,7 +83,7 @@ class PurgeSoftwareCommand extends AbstractCommand
     {
         $max = $input->getOption('max');
         if (!is_numeric($max)) {
-            throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 __('Option --max must be an integer.')
             );
         }

@@ -86,7 +86,7 @@ class SoftwareLicense_User extends CommonDBRelation
 
     public static function countForLicense(int $softwarelicenses_id): int
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

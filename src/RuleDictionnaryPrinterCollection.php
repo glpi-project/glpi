@@ -64,7 +64,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
 
     public function countTotalItemsForRulesReplay(array $params = []): int
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         return $DB->request($this->getIteratorCriteriaForRulesReplay())->count();
@@ -72,7 +72,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
 
     public function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (isCommandLine()) {
@@ -190,7 +190,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
      **/
     public function replayDictionnaryOnPrintersByID(array $IDs, $res_rule = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $new_printers  = [];

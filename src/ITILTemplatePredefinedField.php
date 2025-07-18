@@ -102,7 +102,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
 
     public function post_purgeItem()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         parent::post_purgeItem();
@@ -172,7 +172,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
      **/
     public function getPredefinedFields($ID, $withtypeandcategory = false)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -228,7 +228,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
                 $itemstable = 'glpi_items_tickets';
                 break;
             default:
-                throw new \RuntimeException('Unknown ITIL type ' . $itil_class);
+                throw new RuntimeException('Unknown ITIL type ' . $itil_class);
         }
 
         $fields = [

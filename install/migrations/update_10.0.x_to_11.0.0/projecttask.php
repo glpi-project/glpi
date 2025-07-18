@@ -31,11 +31,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \Migration $migration
+ * @var Migration $migration
  */
-
 $table = ProjectTask::getTable();
 $migration->addField($table, "is_deleted", "tinyint NOT NULL DEFAULT '0'", [
     'after' => 'projecttasks_id',

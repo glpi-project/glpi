@@ -31,7 +31,7 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Application\ResourcesChecker;
 use Glpi\Kernel\Kernel;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -45,7 +45,7 @@ if (version_compare(PHP_VERSION, '8.2.0', '<') || version_compare(PHP_VERSION, '
 // It must be done here as this check must be done even when the Kernel
 // cannot be instanciated due to missing dependencies.
 require_once dirname(__DIR__) . '/src/Glpi/Application/ResourcesChecker.php';
-(new \Glpi\Application\ResourcesChecker(dirname(__DIR__)))->checkResources();
+(new ResourcesChecker(dirname(__DIR__)))->checkResources();
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 

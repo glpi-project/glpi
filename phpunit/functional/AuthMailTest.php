@@ -34,8 +34,8 @@
 
 namespace tests\units;
 
-use AuthMail;
 use AuthLDAP;
+use AuthMail;
 use DbTestCase;
 use Glpi\PHPUnit\Tests\Glpi\Auth\HelpersTrait;
 

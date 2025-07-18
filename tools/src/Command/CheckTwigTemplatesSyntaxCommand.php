@@ -43,6 +43,7 @@ use RegexIterator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Twig\Error\Error;
 
 class CheckTwigTemplatesSyntaxCommand extends Command
 {
@@ -85,7 +86,7 @@ class CheckTwigTemplatesSyntaxCommand extends Command
             try {
                 $token_stream = $environment->tokenize($source);
                 $environment->parse($token_stream);
-            } catch (\Twig\Error\Error $e) {
+            } catch (Error $e) {
                 $error_messages[] = sprintf(
                     '"%s" in template "%s" at line %s',
                     $e->getRawMessage(),

@@ -32,8 +32,11 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\Features\AssignableItem;
+use Glpi\Features\Clonable;
+use Glpi\Features\DCBreadcrumb;
+use Glpi\Features\Inventoriable;
 use Glpi\Socket;
 
 /**
@@ -41,11 +44,11 @@ use Glpi\Socket;
  **/
 class Peripheral extends CommonDBTM
 {
-    use Glpi\Features\DCBreadcrumb;
-    use Glpi\Features\Clonable;
-    use Glpi\Features\Inventoriable;
+    use DCBreadcrumb;
+    use Clonable;
+    use Inventoriable;
     use Glpi\Features\State;
-    use Glpi\Features\AssignableItem {
+    use AssignableItem {
         prepareInputForAdd as prepareInputForAddAssignableItem;
     }
 
@@ -167,7 +170,7 @@ class Peripheral extends CommonDBTM
      **/
     public function getLinkedItems()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\QuestionType;
 
+use Exception;
 use Glpi\Form\Question;
 use Group;
 use Override;
@@ -97,12 +98,12 @@ final class QuestionTypeAssignee extends AbstractQuestionTypeActors
                         $question->getForm()->getEntityID()
                     )
                 ) {
-                    throw new \Exception('Invalid actor: must be able to be assigned');
+                    throw new Exception('Invalid actor: must be able to be assigned');
                 }
             } elseif ($actor['itemtype'] === Group::class) {
                 // Check if the group can be assigned
                 if (Group::getById($actor['items_id'])->fields['is_assign'] !== 1) {
-                    throw new \Exception('Invalid actor: must be able to be assigned');
+                    throw new Exception('Invalid actor: must be able to be assigned');
                 }
             }
         }

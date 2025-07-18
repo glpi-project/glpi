@@ -31,11 +31,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \Migration $migration
+ * @var Migration $migration
  */
-
 $rich_text_fields = [
     'glpi_itilfollowuptemplates'          => 'content',
     'glpi_planningexternaleventtemplates' => 'text',

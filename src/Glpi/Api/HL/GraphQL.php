@@ -35,10 +35,13 @@
 
 namespace Glpi\Api\HL;
 
+use CommonDBTM;
 use Glpi\Http\Request;
 use GraphQL\Error\Error;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Utils\BuildSchema;
+use Psr\Log\LoggerInterface;
+use Throwable;
 
 use function Safe\json_decode;
 
@@ -95,8 +98,8 @@ final class GraphQL
                     return $source[$info->fieldName] ?? null;
                 }
             );
-        } catch (\Throwable $e) {
-            /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+        } catch (Throwable $e) {
+            /** @var LoggerInterface $PHPLOGGER */
             global $PHPLOGGER;
             $PHPLOGGER->error(
                 "Error processing GraphQL request: {$e->getMessage()}",
@@ -112,7 +115,7 @@ final class GraphQL
     {
         $is_schema_array = array_key_exists('items', $schema) && !array_key_exists('properties', $schema);
         $itemtype = self::getSchemaItemtype($schema, $api_version);
-        if (is_subclass_of($itemtype, \CommonDBTM::class) && !$itemtype::canView()) {
+        if (is_subclass_of($itemtype, CommonDBTM::class) && !$itemtype::canView()) {
             // Cannot view this itemtype so we shouldn't expand it further
             return $schema;
         }
@@ -201,7 +204,7 @@ final class GraphQL
      *    <li>Is this a primary key?</li>
      *    <li>Is this referenced by an `x-mapped-from` property?</li>
      * </ul>
-     * @param class-string<\CommonDBTM>|null $itemtype The itemtype of the object that contains the property. Used to determine the index field name.
+     * @param class-string<CommonDBTM>|null $itemtype The itemtype of the object that contains the property. Used to determine the index field name.
      * @param string $property The key of the property to remove or hide.
      * @param array $schema_properties The schema properties of the object that contains the property.
      * @param array $other_requested The other properties that were requested.

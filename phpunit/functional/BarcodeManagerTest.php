@@ -34,10 +34,10 @@
 
 namespace tests\units;
 
-use DbTestCase;
 use BarcodeManager;
-use Software;
 use Computer;
+use DbTestCase;
+use Software;
 
 class BarcodeManagerTest extends DbTestCase
 {

@@ -659,7 +659,7 @@ abstract class ITILTemplate extends CommonDropdown
      **/
     public function mergeTemplateFields($target_id, $source_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // Tables linked to ticket template
@@ -717,7 +717,7 @@ abstract class ITILTemplate extends CommonDropdown
      */
     public function mergeTemplateITILCategories($target_id, $source_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $to_merge = [];

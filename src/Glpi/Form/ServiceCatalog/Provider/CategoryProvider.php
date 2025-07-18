@@ -41,7 +41,7 @@ use Glpi\FuzzyMatcher\FuzzyMatcher;
 use Glpi\FuzzyMatcher\PartialMatchStrategy;
 use Override;
 
-/** @implements CompositeProviderInterface<\Glpi\Form\Category> */
+/** @implements CompositeProviderInterface<Category> */
 final class CategoryProvider implements CompositeProviderInterface
 {
     private FuzzyMatcher $matcher;

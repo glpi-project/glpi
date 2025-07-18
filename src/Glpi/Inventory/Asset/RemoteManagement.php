@@ -35,8 +35,10 @@
 
 namespace Glpi\Inventory\Asset;
 
+use DBmysql;
 use Glpi\Inventory\Conf;
 use Item_RemoteManagement;
+use RuntimeException;
 
 class RemoteManagement extends InventoryAsset
 {
@@ -46,7 +48,7 @@ class RemoteManagement extends InventoryAsset
         global $CFG_GLPI;
 
         if (!in_array($this->item->getType(), $CFG_GLPI['remote_management_types'])) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'Remote Management are handled for following types only: ' .
                 implode(', ', $CFG_GLPI['remote_management_types'])
             );
@@ -77,7 +79,7 @@ class RemoteManagement extends InventoryAsset
      */
     protected function getExisting(): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $db_existing = [];
@@ -148,6 +150,6 @@ class RemoteManagement extends InventoryAsset
 
     public function getItemtype(): string
     {
-        return \Item_RemoteManagement::class;
+        return Item_RemoteManagement::class;
     }
 }

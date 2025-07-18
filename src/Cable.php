@@ -32,8 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\AssignableItem;
+use Glpi\Features\Clonable;
 use Glpi\Socket;
 use Glpi\SocketModel;
 
@@ -42,8 +43,8 @@ use Glpi\SocketModel;
  */
 class Cable extends CommonDBTM
 {
-    use Glpi\Features\AssignableItem;
-    use Glpi\Features\Clonable;
+    use AssignableItem;
+    use Clonable;
     use Glpi\Features\State;
 
     // From CommonDBTM

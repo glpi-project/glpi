@@ -82,7 +82,7 @@ class Group_User extends CommonDBRelation
      **/
     public static function getUserGroups($users_id, $condition = []): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -124,7 +124,7 @@ class Group_User extends CommonDBRelation
      **/
     public static function getGroupUsers($groups_id, $condition = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -285,7 +285,7 @@ class Group_User extends CommonDBRelation
         $tree = 0,
         bool $check_entities = true
     ) {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // Entity restriction for this group, according to user allowed entities
@@ -768,7 +768,7 @@ class Group_User extends CommonDBRelation
 
     public function post_addItem()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         parent::post_addItem();
@@ -794,10 +794,8 @@ class Group_User extends CommonDBRelation
             ]
         );
         $stmt = $DB->prepare($query);
-        $in_transaction = $DB->inTransaction();
-        if (!$in_transaction) {
-            $DB->beginTransaction();
-        }
+        $DB->beginTransaction();
+
         foreach ($users as $user) {
             $users_id  = $user['id'];
             $plannings = importArrayFromDB($user['plannings']);
@@ -821,9 +819,7 @@ class Group_User extends CommonDBRelation
             $DB->executeStatement($stmt);
         }
 
-        if (!$in_transaction) {
-            $DB->commit();
-        }
+        $DB->commit();
         $stmt->close();
 
         // Group cache must be invalidated when a user is added to a group
@@ -832,7 +828,7 @@ class Group_User extends CommonDBRelation
 
     public function post_purgeItem()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         parent::post_purgeItem();
@@ -881,10 +877,7 @@ class Group_User extends CommonDBRelation
             ]
         );
         $stmt = $DB->prepare($query);
-        $in_transaction = $DB->inTransaction();
-        if (!$in_transaction) {
-            $DB->beginTransaction();
-        }
+        $DB->beginTransaction();
         foreach ($users as $user) {
             $users_id  = $user['id'];
             $plannings = importArrayFromDB($user['plannings']);
@@ -903,9 +896,7 @@ class Group_User extends CommonDBRelation
             $DB->executeStatement($stmt);
         }
 
-        if (!$in_transaction) {
-            $DB->commit();
-        }
+        $DB->commit();
         $stmt->close();
 
         // Group cache must be invalidated when a user is remove from a group

@@ -38,11 +38,13 @@ namespace Glpi\Asset;
 use CommonDBRelation;
 use CommonDBTM;
 use CommonGLPI;
+use DBmysql;
 use Dropdown;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
 use Html;
+use LogicException;
 use MassiveAction;
 use Override;
 use Session;
@@ -603,7 +605,7 @@ TWIG, $twig_params);
      **/
     public static function unglobalizeItem(CommonDBTM $item): void
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -612,7 +614,7 @@ TWIG, $twig_params);
             !\in_array($item::class, $CFG_GLPI['directconnect_types'], true)
             || !$item->isField('is_global')
         ) {
-            throw new \LogicException(\sprintf('Item of class "%s" does not support being unglobalized', $item::class));
+            throw new LogicException(\sprintf('Item of class "%s" does not support being unglobalized', $item::class));
         }
 
         // Update item to unit management :
@@ -755,7 +757,7 @@ TWIG, $twig_params);
 
     public static function canUnrecursSpecif(CommonDBTM $item, $entities)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (in_array($item::class, self::getPeripheralHostItemtypes(), true)) {
@@ -914,7 +916,7 @@ TWIG, $twig_params);
     /**
      * Returns itemtypes of assets that can have peripherals.
      *
-     * @return class-string<\CommonDBTM>[]
+     * @return class-string<CommonDBTM>[]
      */
     public static function getPeripheralHostItemtypes(): array
     {
@@ -986,7 +988,7 @@ TWIG, $twig_params);
      */
     private static function getPeripheralAssets(CommonDBTM $asset, string $itemtype): iterable
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $peripheral = getItemForItemtype($itemtype);
@@ -1025,7 +1027,7 @@ TWIG, $twig_params);
      */
     private static function getItemConnectionsForItemtype(CommonDBTM $peripheral, string $itemtype): iterable
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $item = getItemForItemtype($itemtype);

@@ -61,7 +61,7 @@ return RectorConfig::configure()
         cacheDirectory: sys_get_temp_dir() . '/rector'
     )
     ->withParallel(timeoutSeconds: 300)
-    // FIXME apply it in another PR, it generates a huge diff ->withImportNames()
+    ->withImportNames()
     ->withRules([
         CodeQuality\Assign\CombinedAssignRector::class,
         CodeQuality\BooleanAnd\RemoveUselessIsObjectCheckRector::class,

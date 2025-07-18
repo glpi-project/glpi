@@ -35,12 +35,31 @@
 
 namespace Glpi\Search;
 
+use AllAssets;
+use Appliance;
+use ArrayAccess;
 use Change;
 use CommonDBTM;
+use CommonTreeDropdown;
+use Contract;
+use Document;
+use Domain;
+use Entity;
 use Glpi\Socket;
+use Group;
+use Infocom;
+use Link;
+use Location;
+use ManualLink;
+use Manufacturer;
+use NetworkPort;
+use Plugin;
 use Problem;
+use Reservation;
+use ReservationItem;
 use Session;
 use Ticket;
+use User;
 
 /**
  * Object representing a search option.
@@ -49,7 +68,7 @@ use Ticket;
  *
  * @internal Not for use outside {@link Search} class and the "Glpi\Search" namespace.
  */
-final class SearchOption implements \ArrayAccess
+final class SearchOption implements ArrayAccess
 {
     /**
      * Internal search option array
@@ -122,7 +141,7 @@ final class SearchOption implements \ArrayAccess
     /**
      * Get the SEARCH_OPTION array
      *
-     * @param class-string<\CommonDBTM>  $itemtype     Item type
+     * @param class-string<CommonDBTM> $itemtype Item type
      * @param boolean $withplugins  Get search options from plugins (true by default)
      *
      * @return array The reference to the array of search options for the given item type
@@ -175,10 +194,10 @@ final class SearchOption implements \ArrayAccess
                 $search[$itemtype][31]['field']         = 'completename';
                 $search[$itemtype][31]['name']          = __('Status');
 
-                $fn_append_options(\NetworkPort::getSearchOptionsToAdd('networkport_types'));
+                $fn_append_options(NetworkPort::getSearchOptionsToAdd('networkport_types'));
                 break;
 
-            case \AllAssets::getType():
+            case AllAssets::getType():
                 $search[$itemtype]['common']            = __('Characteristics');
 
                 $search[$itemtype][1]['table']          = 'asset_types';
@@ -196,7 +215,7 @@ final class SearchOption implements \ArrayAccess
                 $search[$itemtype][31]['field']         = 'completename';
                 $search[$itemtype][31]['name']          = __('Status');
 
-                $fn_append_options(\Location::getSearchOptionsToAdd());
+                $fn_append_options(Location::getSearchOptionsToAdd());
 
                 $search[$itemtype][5]['table']          = 'asset_types';
                 $search[$itemtype][5]['field']          = 'serial';
@@ -213,7 +232,7 @@ final class SearchOption implements \ArrayAccess
 
                 $search[$itemtype][70]['table']         = 'glpi_users';
                 $search[$itemtype][70]['field']         = 'name';
-                $search[$itemtype][70]['name']          = \User::getTypeName(1);
+                $search[$itemtype][70]['name']          = User::getTypeName(1);
 
                 $search[$itemtype][7]['table']          = 'asset_types';
                 $search[$itemtype][7]['field']          = 'contact';
@@ -227,7 +246,7 @@ final class SearchOption implements \ArrayAccess
 
                 $search[$itemtype][71]['table']         = 'glpi_groups';
                 $search[$itemtype][71]['field']         = 'completename';
-                $search[$itemtype][71]['name']          = \Group::getTypeName(1);
+                $search[$itemtype][71]['name']          = Group::getTypeName(1);
 
                 $search[$itemtype][19]['table']         = 'asset_types';
                 $search[$itemtype][19]['field']         = 'date_mod';
@@ -237,7 +256,7 @@ final class SearchOption implements \ArrayAccess
 
                 $search[$itemtype][23]['table']         = 'glpi_manufacturers';
                 $search[$itemtype][23]['field']         = 'name';
-                $search[$itemtype][23]['name']          = \Manufacturer::getTypeName(1);
+                $search[$itemtype][23]['name']          = Manufacturer::getTypeName(1);
 
                 $search[$itemtype][24]['table']         = 'glpi_users';
                 $search[$itemtype][24]['field']         = 'name';
@@ -254,7 +273,7 @@ final class SearchOption implements \ArrayAccess
 
                 $search[$itemtype][80]['table']         = 'glpi_entities';
                 $search[$itemtype][80]['field']         = 'completename';
-                $search[$itemtype][80]['name']          = \Entity::getTypeName(1);
+                $search[$itemtype][80]['name']          = Entity::getTypeName(1);
                 break;
 
             default:
@@ -277,56 +296,56 @@ final class SearchOption implements \ArrayAccess
 
         if (
             in_array($itemtype, $CFG_GLPI["networkport_types"])
-            || ($itemtype == \AllAssets::getType())
+            || ($itemtype == AllAssets::getType())
         ) {
-            $fn_append_options(\NetworkPort::getSearchOptionsToAdd($itemtype));
+            $fn_append_options(NetworkPort::getSearchOptionsToAdd($itemtype));
         }
 
         if (
             in_array($itemtype, $CFG_GLPI["contract_types"])
-            || ($itemtype == \AllAssets::getType())
+            || ($itemtype == AllAssets::getType())
         ) {
-            $fn_append_options(\Contract::getSearchOptionsToAdd());
+            $fn_append_options(Contract::getSearchOptionsToAdd());
         }
 
         if (
-            \Document::canApplyOn($itemtype)
-            || ($itemtype == \AllAssets::getType())
+            Document::canApplyOn($itemtype)
+            || ($itemtype == AllAssets::getType())
         ) {
-            $fn_append_options(\Document::getSearchOptionsToAdd());
+            $fn_append_options(Document::getSearchOptionsToAdd());
         }
 
         if (
-            \Infocom::canApplyOn($itemtype)
-            || ($itemtype == \AllAssets::getType())
+            Infocom::canApplyOn($itemtype)
+            || ($itemtype == AllAssets::getType())
         ) {
-            $fn_append_options(\Infocom::getSearchOptionsToAdd($itemtype));
+            $fn_append_options(Infocom::getSearchOptionsToAdd($itemtype));
         }
 
         if (
             in_array($itemtype, $CFG_GLPI["domain_types"])
-            || ($itemtype == \AllAssets::getType())
+            || ($itemtype == AllAssets::getType())
         ) {
-            $fn_append_options(\Domain::getSearchOptionsToAdd($itemtype));
+            $fn_append_options(Domain::getSearchOptionsToAdd($itemtype));
         }
 
         if (
             in_array($itemtype, $CFG_GLPI["appliance_types"])
-            || ($itemtype == \AllAssets::getType())
+            || ($itemtype == AllAssets::getType())
         ) {
-            $fn_append_options(\Appliance::getSearchOptionsToAdd($itemtype));
+            $fn_append_options(Appliance::getSearchOptionsToAdd($itemtype));
         }
 
         if (in_array($itemtype, $CFG_GLPI["link_types"])) {
-            $search[$itemtype]['link'] = \Link::getTypeName(Session::getPluralNumber());
-            $fn_append_options(\Link::getSearchOptionsToAdd($itemtype));
-            $search[$itemtype]['manuallink'] = \ManualLink::getTypeName(Session::getPluralNumber());
-            $fn_append_options(\ManualLink::getSearchOptionsToAdd($itemtype));
+            $search[$itemtype]['link'] = Link::getTypeName(Session::getPluralNumber());
+            $fn_append_options(Link::getSearchOptionsToAdd($itemtype));
+            $search[$itemtype]['manuallink'] = ManualLink::getTypeName(Session::getPluralNumber());
+            $fn_append_options(ManualLink::getSearchOptionsToAdd($itemtype));
         }
 
         if (in_array($itemtype, $CFG_GLPI['reservation_types'], true)) {
-            $search[$itemtype]['reservationitem'] = \Reservation::getTypeName(Session::getPluralNumber());
-            $fn_append_options(\ReservationItem::getSearchOptionsToAdd($itemtype));
+            $search[$itemtype]['reservationitem'] = Reservation::getTypeName(Session::getPluralNumber());
+            $fn_append_options(ReservationItem::getSearchOptionsToAdd($itemtype));
         }
 
         if (in_array($itemtype, $CFG_GLPI['socket_types'], true)) {
@@ -336,8 +355,8 @@ final class SearchOption implements \ArrayAccess
 
         if ($withplugins) {
             // Search options added by plugins
-            $plugsearch = \Plugin::getAddSearchOptions($itemtype);
-            $plugsearch += \Plugin::getAddSearchOptionsNew($itemtype);
+            $plugsearch = Plugin::getAddSearchOptions($itemtype);
+            $plugsearch += Plugin::getAddSearchOptionsNew($itemtype);
             if (count($plugsearch)) {
                 $search[$itemtype] += ['plugins' => ['name' => _n('Plugin', 'Plugins', Session::getPluralNumber())]];
                 $fn_append_options($plugsearch);
@@ -385,25 +404,25 @@ final class SearchOption implements \ArrayAccess
     /**
      * Is the search item related to infocoms
      *
-     * @param class-string<\CommonDBTM>  $itemtype  Item type
+     * @param class-string<CommonDBTM> $itemtype Item type
      * @param integer $searchID  ID of the element in $SEARCHOPTION
      *
      * @return boolean
      **/
     public static function isInfocomOption($itemtype, $searchID): bool
     {
-        if (!\Infocom::canApplyOn($itemtype)) {
+        if (!Infocom::canApplyOn($itemtype)) {
             return false;
         }
 
-        $infocom_options = \Infocom::rawSearchOptionsToAdd($itemtype);
+        $infocom_options = Infocom::rawSearchOptionsToAdd($itemtype);
         $found_infocoms  = array_filter($infocom_options, static fn($option) => isset($option['id']) && $searchID == $option['id']);
 
         return (count($found_infocoms) > 0);
     }
 
     /**
-     * @param class-string<\CommonDBTM>  $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      * @param integer $field_num
      **/
     public static function getActionsFor($itemtype, $field_num)
@@ -570,7 +589,7 @@ final class SearchOption implements \ArrayAccess
                     // Specific case of TreeDropdown : add under
                     $itemtype_linked = $searchopt[$field_num]['itemtype'] ?? getItemTypeForTable($searchopt[$field_num]['table']);
                     if ($itemtype_linked !== null && $itemlinked = getItemForItemtype($itemtype_linked)) {
-                        if ($itemlinked instanceof \CommonTreeDropdown) {
+                        if ($itemlinked instanceof CommonTreeDropdown) {
                             $actions['under']    = __('under');
                             $actions['notunder'] = __('not under');
                         }
@@ -585,9 +604,9 @@ final class SearchOption implements \ArrayAccess
      *
      * Get an option number in the SEARCH_OPTION array
      *
-     * @param class-string<\CommonDBTM> $itemtype  Item type the search option belongs to
+     * @param class-string<CommonDBTM> $itemtype Item type the search option belongs to
      * @param string $field     Name of the field
-     * @param class-string<\CommonDBTM>|null $meta_itemtype  If specified, the itemtype that provides the search option. This affects the table used to match the search option.
+     * @param class-string<CommonDBTM>|null $meta_itemtype If specified, the itemtype that provides the search option. This affects the table used to match the search option.
      *
      * @return integer
      **/
@@ -612,7 +631,7 @@ final class SearchOption implements \ArrayAccess
     /**
      * Clean search options depending on the user active profile
      *
-     * @param class-string<\CommonDBTM>  $itemtype     Item type to manage
+     * @param class-string<CommonDBTM> $itemtype Item type to manage
      * @param integer $action       Action which is used to manipulate searchoption
      *                               (default READ)
      * @param boolean $withplugins  Get plugins options (true by default)
@@ -629,9 +648,9 @@ final class SearchOption implements \ArrayAccess
 
         if (
             !Session::haveRight('infocom', $action)
-            && \Infocom::canApplyOn($itemtype)
+            && Infocom::canApplyOn($itemtype)
         ) {
-            $itemstodel = \Infocom::getSearchOptionsToAdd($itemtype);
+            $itemstodel = Infocom::getSearchOptionsToAdd($itemtype);
             $todel      = array_merge($todel, array_keys($itemstodel));
         }
 
@@ -639,15 +658,15 @@ final class SearchOption implements \ArrayAccess
             !Session::haveRight('contract', $action)
             && in_array($itemtype, $CFG_GLPI["contract_types"])
         ) {
-            $itemstodel = \Contract::getSearchOptionsToAdd();
+            $itemstodel = Contract::getSearchOptionsToAdd();
             $todel      = array_merge($todel, array_keys($itemstodel));
         }
 
         if (
             !Session::haveRight('document', $action)
-            && \Document::canApplyOn($itemtype)
+            && Document::canApplyOn($itemtype)
         ) {
-            $itemstodel = \Document::getSearchOptionsToAdd();
+            $itemstodel = Document::getSearchOptionsToAdd();
             $todel      = array_merge($todel, array_keys($itemstodel));
         }
 
@@ -655,14 +674,14 @@ final class SearchOption implements \ArrayAccess
         if (
             ($itemtype == 'Ticket')
             && ($action == UPDATE)
-            && !Session::haveRight('ticket', \Ticket::CHANGEPRIORITY)
+            && !Session::haveRight('ticket', Ticket::CHANGEPRIORITY)
         ) {
             $todel[] = 3;
         }
 
         if ($itemtype == 'Computer') {
             if (!Session::haveRight('networking', $action)) {
-                $itemstodel = \NetworkPort::getSearchOptionsToAdd($itemtype);
+                $itemstodel = NetworkPort::getSearchOptionsToAdd($itemtype);
                 $todel      = array_merge($todel, array_keys($itemstodel));
             }
         }
@@ -695,12 +714,12 @@ final class SearchOption implements \ArrayAccess
         $item   = null;
         $entity_check = true;
 
-        if ($itemtype !== \AllAssets::getType()) {
+        if ($itemtype !== AllAssets::getType()) {
             $item = getItemForItemtype($itemtype);
             $entity_check = $item->isEntityAssign();
         }
 
-        if ($itemtype !== \AllAssets::getType()) {
+        if ($itemtype !== AllAssets::getType()) {
             // Add the related search option for the 'name' OR 'id' field. If none is found, add the search option 1 (how it was handled before).
             // Since not all itemtypes have ID set to 1, it used to add other, heavier search options like content in the case of Followups.
             $options = array_filter(self::getOptionsForItemtype($itemtype, false), static fn($o) => is_numeric($o), ARRAY_FILTER_USE_KEY);
@@ -721,7 +740,7 @@ final class SearchOption implements \ArrayAccess
         }
 
         if (isset($params['as_map']) && (int) $params['as_map'] === 1) {
-            if ($itemtype !== \AllAssets::getType()) {
+            if ($itemtype !== AllAssets::getType()) {
                 // Add location name when map mode
                 $loc_opt = self::getOptionNumber($itemtype, 'completename', 'Location');
                 if ($loc_opt > 0) {
@@ -740,7 +759,7 @@ final class SearchOption implements \ArrayAccess
                 || ($item && $item->maybeRecursive())
                 || isset($_SESSION['glpiactiveentities']) && (count($_SESSION["glpiactiveentities"]) > 1))
         ) {
-            if ($itemtype !== \AllAssets::getType()) {
+            if ($itemtype !== AllAssets::getType()) {
                 $entity_opt = self::getOptionNumber($itemtype, 'completename', 'Entity');
                 if ($entity_opt > 0) {
                     $toview[] = $entity_opt;

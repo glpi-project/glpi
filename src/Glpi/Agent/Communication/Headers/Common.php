@@ -37,6 +37,7 @@ namespace Glpi\Agent\Communication\Headers;
 
 use ReflectionClass;
 use ReflectionProperty;
+use RuntimeException;
 
 class Common
 {
@@ -172,7 +173,7 @@ class Common
             if (!empty($this->$propname)) {
                 $headers[$headername] = $this->$propname;
             } elseif (in_array($propname, $this->getRequireds()) && $legacy === false) {
-                throw new \RuntimeException(
+                throw new RuntimeException(
                     sprintf(
                         '%1$s HTTP header is mandatory!',
                         $headername

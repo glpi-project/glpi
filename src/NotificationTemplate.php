@@ -32,8 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\Clonable;
 use Glpi\RichText\RichText;
 
 use function Safe\preg_match;
@@ -45,7 +45,7 @@ use function Safe\preg_replace;
  **/
 class NotificationTemplate extends CommonDBTM
 {
-    use Glpi\Features\Clonable;
+    use Clonable;
 
     // From CommonDBTM
     public $dohistory = true;
@@ -556,7 +556,7 @@ class NotificationTemplate extends CommonDBTM
      **/
     public function getByLanguage($language)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

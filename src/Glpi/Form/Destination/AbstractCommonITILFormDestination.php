@@ -35,6 +35,7 @@
 namespace Glpi\Form\Destination;
 
 use CommonITILObject;
+use Exception;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\CommonITILField\AssigneeField;
@@ -43,12 +44,12 @@ use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\EntityField;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryField;
 use Glpi\Form\Destination\CommonITILField\ITILFollowupField;
-use Glpi\Form\Destination\CommonITILField\LocationField;
-use Glpi\Form\Destination\CommonITILField\RequestSourceField;
-use Glpi\Form\Destination\CommonITILField\TemplateField;
 use Glpi\Form\Destination\CommonITILField\ITILTaskField;
+use Glpi\Form\Destination\CommonITILField\LocationField;
 use Glpi\Form\Destination\CommonITILField\ObserverField;
 use Glpi\Form\Destination\CommonITILField\RequesterField;
+use Glpi\Form\Destination\CommonITILField\RequestSourceField;
+use Glpi\Form\Destination\CommonITILField\TemplateField;
 use Glpi\Form\Destination\CommonITILField\TitleField;
 use Glpi\Form\Destination\CommonITILField\UrgencyField;
 use Glpi\Form\Destination\CommonITILField\ValidationField;
@@ -178,7 +179,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
         // results depending on the current user rights
         $id = Session::callAsSystem(fn() => $itil_object->add($input));
         if (!$id) {
-            throw new \Exception(
+            throw new Exception(
                 "Failed to create $typename: " . json_encode($input)
             );
         }
@@ -193,7 +194,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
             'items_id'                         => $form->getID(),
         ];
         if (!$link->add($input)) {
-            throw new \Exception(
+            throw new Exception(
                 "Failed to create item link for $typename: " . json_encode($input)
             );
         }
@@ -204,7 +205,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
     /**
      * Get the sorted configurable fields for this destination type.
      *
-     * @return \Glpi\Form\Destination\AbstractConfigField[]
+     * @return AbstractConfigField[]
      */
     final public function getConfigurableFields(): array
     {
@@ -246,7 +247,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
     /**
      * List the configurable fields for this destination type.
      *
-     * @return \Glpi\Form\Destination\AbstractConfigField[]
+     * @return AbstractConfigField[]
      */
     protected function defineConfigurableFields(): array
     {
@@ -275,7 +276,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
      * Get a configurable field by its key.
      *
      * @param string $key
-     * @return \Glpi\Form\Destination\AbstractConfigField|null
+     * @return AbstractConfigField|null
      */
     public function getConfigurableFieldByKey(string $key): ?AbstractConfigField
     {
@@ -345,7 +346,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
     {
         $itemtype = $this->getTarget();
 
-        /** @var \CommonITILObject $itil */
+        /** @var CommonITILObject $itil */
         $itil = new $itemtype();
         $template = $itil->getITILTemplateToUse(
             entities_id: $input['entities_id'],

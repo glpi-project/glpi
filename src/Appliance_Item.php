@@ -32,13 +32,13 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
+use Glpi\Features\Clonable;
 
 class Appliance_Item extends CommonDBRelation
 {
-    use Glpi\Features\Clonable;
+    use Clonable;
 
     public static $itemtype_1 = 'Appliance';
     public static $items_id_1 = 'appliances_id';
@@ -109,7 +109,7 @@ class Appliance_Item extends CommonDBRelation
      **/
     public static function showItems(Appliance $appliance)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $appliance->fields['id'];

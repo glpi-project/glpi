@@ -32,13 +32,13 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
+use Glpi\Features\Clonable;
 
-use function Safe\ob_start;
 use function Safe\ob_get_clean;
+use function Safe\ob_start;
 
 //!  Consumable Class
 /**
@@ -48,7 +48,7 @@ use function Safe\ob_get_clean;
  **/
 class Consumable extends CommonDBChild
 {
-    use Glpi\Features\Clonable;
+    use Clonable;
 
     // From CommonDBTM
     protected static $forward_entity_to = ['Infocom'];
@@ -131,7 +131,7 @@ class Consumable extends CommonDBChild
      */
     public function backToStock(array $input, $history = true)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->update(
@@ -171,7 +171,7 @@ class Consumable extends CommonDBChild
      **/
     public function out($ID, $itemtype = '', $items_id = 0)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (
@@ -316,7 +316,7 @@ class Consumable extends CommonDBChild
      **/
     public static function getTotalNumber($tID)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -336,7 +336,7 @@ class Consumable extends CommonDBChild
      **/
     public static function getOldNumber($tID)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -359,7 +359,7 @@ class Consumable extends CommonDBChild
      **/
     public static function getUnusedNumber($tID)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -382,7 +382,7 @@ class Consumable extends CommonDBChild
      */
     public static function getStockTarget(int $tID): int
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $it = $DB->request([
@@ -406,7 +406,7 @@ class Consumable extends CommonDBChild
      */
     public static function getAlarmThreshold(int $tID): int
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $it = $DB->request([
@@ -470,7 +470,7 @@ class Consumable extends CommonDBChild
      **/
     public static function isNew($cID)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -493,7 +493,7 @@ class Consumable extends CommonDBChild
      **/
     public static function isOld($cID)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -582,7 +582,7 @@ class Consumable extends CommonDBChild
 
     public static function showForUser(User $user)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $itemtype = $user::class;
@@ -687,7 +687,7 @@ class Consumable extends CommonDBChild
      **/
     public static function showSummary()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (!self::canView()) {

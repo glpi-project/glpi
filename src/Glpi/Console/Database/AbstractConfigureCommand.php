@@ -39,17 +39,19 @@ use Config;
 use DBConnection;
 use DBmysql;
 use Glpi\Console\AbstractCommand;
+use Glpi\Console\Exception\EarlyExitException;
 use Glpi\System\Requirement\DbTimezones;
 use mysqli;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
-use function Safe\ob_start;
 use function Safe\ob_get_clean;
+use function Safe\ob_start;
 
 abstract class AbstractConfigureCommand extends AbstractCommand
 {
@@ -162,7 +164,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
 
         foreach ($questions as $name => $question) {
             if (null === $input->getOption($name)) {
-                /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
+                /** @var QuestionHelper $question_helper */
                 $question_helper = $this->getHelper('question');
                 $value = $question_helper->ask($input, $output, $question);
                 $input->setOption($name, $value);
@@ -205,7 +207,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
 
         if (file_exists(GLPI_CONFIG_DIR . '/config_db.php') && !$reconfigure) {
             // Prevent overriding of existing DB
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . __('Database configuration already exists. Use --reconfigure option to override existing configuration.') . '</error>',
                 self::ERROR_DB_CONFIG_ALREADY_SET
             );
@@ -237,7 +239,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
                 $mysqli->connect_errno,
                 $mysqli->connect_error
             );
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . $message . '</error>',
                 self::ERROR_DB_CONNECTION_FAILED
             );
@@ -250,7 +252,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
         $checkdb = Config::displayCheckDbEngine(false, $db_version_data[0]);
         $message = ob_get_clean();
         if ($checkdb > 0) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . $message . '</error>',
                 self::ERROR_DB_ENGINE_UNSUPPORTED
             );
@@ -307,7 +309,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
                 __('Cannot write configuration file "%s".'),
                 GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . 'config_db.php'
             );
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . $message . '</error>',
                 self::ERROR_DB_CONFIG_FILE_NOT_SAVED
             );
@@ -379,20 +381,20 @@ abstract class AbstractConfigureCommand extends AbstractCommand
         $db_pass = $input->getOption('db-password');
 
         if (empty($db_name)) {
-            throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 __('Database name defined by --db-name option cannot be empty.')
             );
         }
 
         if (empty($db_user)) {
-            throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 __('Database user defined by --db-user option cannot be empty.')
             );
         }
 
         if (null === $db_pass) {
             // Will be null if option used without value and without interaction
-            throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 __('--db-password option value cannot be null.')
             );
         }

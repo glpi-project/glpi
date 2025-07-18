@@ -147,7 +147,7 @@ class NotificationTargetProject extends NotificationTarget
      **/
     public function addTeamUsers()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -178,7 +178,7 @@ class NotificationTargetProject extends NotificationTarget
      **/
     public function addTeamGroups($manager)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -205,7 +205,7 @@ class NotificationTargetProject extends NotificationTarget
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -240,7 +240,7 @@ class NotificationTargetProject extends NotificationTarget
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -270,7 +270,7 @@ class NotificationTargetProject extends NotificationTarget
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 

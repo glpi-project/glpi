@@ -33,11 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Marketplace\Controller;
+use Glpi\Marketplace\View;
+
 require_once(__DIR__ . '/_check_webserver_config.php');
 
 Session::checkRight("config", UPDATE);
 
-if (!Glpi\Marketplace\Controller::isWebAllowed()) {
+if (!Controller::isWebAllowed()) {
     // Redirect to classic plugins page
     Html::redirect(Plugin::getSearchURL());
 }
@@ -48,7 +51,7 @@ $plugin->checkStates(true);
 
 Html::header(__('Marketplace'), '', "config", "plugin", "marketplace");
 
-$market_view = new \Glpi\Marketplace\View();
+$market_view = new View();
 $market_view->display();
 
 Html::footer();

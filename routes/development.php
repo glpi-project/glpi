@@ -44,7 +44,7 @@ use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 return static function (RoutingConfigurator $routes, Kernel $kernel) {
     $env = Environment::get();
     if (!$env->shouldEnableExtraDevAndDebugTools()) {
-        throw new \RuntimeException(\sprintf(
+        throw new RuntimeException(\sprintf(
             'File "%s" must not be loaded in an environment different than "%s". (current environment: "%s")',
             __FILE__,
             Environment::DEVELOPMENT->value,

@@ -210,7 +210,7 @@ TWIG, $twig_params);
      **/
     public static function dropdownForOneSoftware($options = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $p['softwares_id']          = 0;
@@ -278,7 +278,7 @@ TWIG, $twig_params);
      **/
     public static function showForSoftware(Software $soft)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $softwares_id = $soft->getField('id');

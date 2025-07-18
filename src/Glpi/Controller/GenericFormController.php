@@ -35,12 +35,13 @@
 namespace Glpi\Controller;
 
 use CommonDBTM;
-use Html;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Http\RedirectResponse;
+use Html;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -130,7 +131,7 @@ class GenericFormController extends AbstractController
             'delete', 'restore' => $object->can($id, DELETE, $post_data),
             'purge' => $object->can($id, PURGE, $post_data),
             'update', 'unglobalize' => $object->can($id, UPDATE, $post_data),
-            default => throw new \RuntimeException(\sprintf("Unsupported object action \"%s\".", $form_action)),
+            default => throw new RuntimeException(\sprintf("Unsupported object action \"%s\".", $form_action)),
         };
 
         if (!$can_do_action) {
@@ -145,7 +146,7 @@ class GenericFormController extends AbstractController
             'purge' => $object->delete($post_data, true),
             'update' => $object->update($post_data),
             'unglobalize' => $object->unglobalize(),
-            default => throw new \RuntimeException(\sprintf("Unsupported object action \"%s\".", $form_action)),
+            default => throw new RuntimeException(\sprintf("Unsupported object action \"%s\".", $form_action)),
         };
 
         if ($action_result) {

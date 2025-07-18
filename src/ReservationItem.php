@@ -381,7 +381,7 @@ TWIG, $twig_params);
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -709,7 +709,7 @@ TWIG, $twig_params);
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -941,7 +941,7 @@ TWIG, $twig_params);
      */
     public static function getAvailableItems(string $itemtype): DBmysqlIterator
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $reservation_table = self::getTable();
@@ -965,7 +965,7 @@ TWIG, $twig_params);
      */
     public static function countAvailableItems(string $itemtype): int
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = self::getAvailableItemsCriteria($itemtype);

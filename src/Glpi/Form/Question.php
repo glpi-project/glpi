@@ -48,6 +48,7 @@ use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\QuestionType\TranslationAwareQuestionType;
 use Glpi\ItemTranslation\Context\TranslationHandler;
+use InvalidArgumentException;
 use JsonException;
 use Log;
 use Override;
@@ -348,7 +349,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
                 $is_extra_data_valid = $question_type->validateExtraDataInput($extra_data);
 
                 if (!$is_extra_data_valid) {
-                    throw new \InvalidArgumentException("Invalid extra data for question");
+                    throw new InvalidArgumentException("Invalid extra data for question");
                 }
 
                 // Prepare extra data

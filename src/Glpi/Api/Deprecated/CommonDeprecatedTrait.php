@@ -35,10 +35,11 @@
 
 namespace Glpi\Api\Deprecated;
 
+use ReflectionClass;
+
 /**
  * @since 9.5
  */
-
 trait CommonDeprecatedTrait
 {
     abstract public function getType(): string;
@@ -50,7 +51,7 @@ trait CommonDeprecatedTrait
      */
     private function getDeprecatedClass(): string
     {
-        return (new \ReflectionClass(static::class))->getShortName();
+        return (new ReflectionClass(static::class))->getShortName();
     }
 
     /**

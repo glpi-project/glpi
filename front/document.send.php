@@ -35,11 +35,11 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-use Glpi\Inventory\Conf;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\HttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Inventory\Conf;
 
 use function Safe\sha1_file;
 

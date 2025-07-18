@@ -37,6 +37,7 @@ namespace Glpi\Asset\Capacity;
 use CommonGLPI;
 use Database;
 use DatabaseInstance;
+use DBmysql;
 use Glpi\Asset\CapacityConfig;
 use Override;
 use Session;
@@ -91,7 +92,7 @@ class HasDatabaseInstanceCapacity extends AbstractCapacity
 
     public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $this->unregisterFromTypeConfig('databaseinstance_types', $classname);

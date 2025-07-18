@@ -58,7 +58,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
      **/
     public function getAdditionalFields()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $fields = parent::getAdditionalFields();
@@ -131,7 +131,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
 
     public function rawSearchOptions()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $options = parent::rawSearchOptions();
         $table   = $this->getTable();
@@ -442,7 +442,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
                 );
                 break;
             default:
-                throw new \RuntimeException("Unknown {$field['type']}");
+                throw new RuntimeException("Unknown {$field['type']}");
         }
     }
 

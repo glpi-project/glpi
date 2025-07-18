@@ -41,6 +41,7 @@ use Glpi\Form\Export\Serializer\FormSerializer;
 use Glpi\Form\Form;
 use Glpi\Http\RedirectResponse;
 use Session;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -97,7 +98,7 @@ final class Step2PreviewController extends AbstractController
             return $request->request->get('json');
         }
 
-        /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
+        /** @var UploadedFile $file */
         $file = $request->files->get('import_file');
 
         return $file->getContent();

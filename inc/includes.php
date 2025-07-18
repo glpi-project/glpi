@@ -45,7 +45,7 @@ if (isset($AJAX_INCLUDE)) {
 /** @var string|null $SECURITY_STRATEGY */
 global $SECURITY_STRATEGY;
 if (isset($SECURITY_STRATEGY)) {
-    throw new \RuntimeException('The global `$SECURITY_STRATEGY` variable has no effect anymore.');
+    throw new RuntimeException('The global `$SECURITY_STRATEGY` variable has no effect anymore.');
 }
 
 /**

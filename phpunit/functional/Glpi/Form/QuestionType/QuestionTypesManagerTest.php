@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Form\QuestionType;
 
 use DbTestCase;
 use Glpi\Form\QuestionType\QuestionTypeAssignee;
+use Glpi\Form\QuestionType\QuestionTypeCategory;
 use Glpi\Form\QuestionType\QuestionTypeCategoryInterface;
 use Glpi\Form\QuestionType\QuestionTypeCheckbox;
 use Glpi\Form\QuestionType\QuestionTypeDateTime;
@@ -43,7 +44,6 @@ use Glpi\Form\QuestionType\QuestionTypeDropdown;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeFile;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
-use Glpi\Form\QuestionType\QuestionTypeCategory;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use Glpi\Form\QuestionType\QuestionTypeLongText;

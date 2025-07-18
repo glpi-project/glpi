@@ -46,8 +46,8 @@ use Plugin;
 use Toolbox;
 
 use function Safe\json_encode;
-use function Safe\ob_start;
 use function Safe\ob_end_clean;
+use function Safe\ob_start;
 use function Safe\parse_url;
 
 class View extends CommonGLPI

@@ -33,13 +33,13 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Error\ErrorHandler;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Inventory;
 use Glpi\Plugin\Hooks;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Response;
 use Safe\DateTime;
 
@@ -567,7 +567,7 @@ class Agent extends CommonDBTM
      */
     public function guessAddresses(): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $addresses = [];
@@ -724,7 +724,7 @@ class Agent extends CommonDBTM
                 $response = $httpClient->request('GET', $endpoint, []);
                 self::$found_address = $address;
                 break;
-            } catch (\Throwable $exception) {
+            } catch (Throwable $exception) {
                 // many addresses will be incorrect
             }
         }
@@ -748,11 +748,11 @@ class Agent extends CommonDBTM
         try {
             $response = $this->requestAgent('status');
             return $this->handleAgentResponse($response, self::ACTION_STATUS);
-        } catch (\GuzzleHttp\Exception\ClientException $e) {
+        } catch (ClientException $e) {
             ErrorHandler::logCaughtException($e);
             // not authorized
             return ['answer' => __('Not allowed')];
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // no response
             return ['answer' => __('Unknown')];
         }
@@ -769,11 +769,11 @@ class Agent extends CommonDBTM
         try {
             $this->requestAgent('now');
             return $this->handleAgentResponse(new Response(), self::ACTION_INVENTORY);
-        } catch (\GuzzleHttp\Exception\ClientException $e) {
+        } catch (ClientException $e) {
             ErrorHandler::logCaughtException($e);
             // not authorized
             return ['answer' => __('Not allowed')];
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // no response
             return ['answer' => __('Unknown')];
         }
@@ -805,7 +805,7 @@ class Agent extends CommonDBTM
                 );
                 break;
             default:
-                throw new \RuntimeException(sprintf('Unknown request type %s', $request));
+                throw new RuntimeException(sprintf('Unknown request type %s', $request));
         }
 
         return $data;
@@ -829,12 +829,12 @@ class Agent extends CommonDBTM
     public static function cronCleanoldagents($task = null)
     {
         /**
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          * @var array $PLUGIN_HOOKS
          */
         global $DB, $PLUGIN_HOOKS;
 
-        $config = \Config::getConfigurationValues('inventory');
+        $config = Config::getConfigurationValues('inventory');
 
         $retention_time = $config['stale_agents_delay'] ?? 0;
         if ($retention_time <= 0) {

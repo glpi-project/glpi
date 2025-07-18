@@ -39,7 +39,7 @@ use Glpi\Exception\Http\BadRequestHttpException;
 
 Session::checkCentralAccess();
 
-$iapp = new \Appliance_Item();
+$iapp = new Appliance_Item();
 $app = new Appliance();
 
 if (isset($_POST['update'])) {

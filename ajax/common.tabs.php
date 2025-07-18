@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Debug\Profiler;
+
 /**
  * @var array $CFG_GLPI
  */
@@ -105,6 +107,6 @@ if (isset($options['locked'])) {
     ObjectLock::setReadOnlyProfile();
 }
 
-\Glpi\Debug\Profiler::getInstance()->start('CommonGLPI::displayStandardTab');
+Profiler::getInstance()->start('CommonGLPI::displayStandardTab');
 CommonGLPI::displayStandardTab($item, $_GET['_glpi_tab'], (int) $_GET["withtemplate"], $options);
-\Glpi\Debug\Profiler::getInstance()->stop('CommonGLPI::displayStandardTab');
+Profiler::getInstance()->stop('CommonGLPI::displayStandardTab');

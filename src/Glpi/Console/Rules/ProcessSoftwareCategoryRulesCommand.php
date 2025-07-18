@@ -36,6 +36,8 @@
 namespace Glpi\Console\Rules;
 
 use Glpi\Console\AbstractCommand;
+use RuleSoftwareCategoryCollection;
+use Software;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -65,7 +67,7 @@ class ProcessSoftwareCategoryRulesCommand extends AbstractCommand
             'SELECT' => [
                 'id',
             ],
-            'FROM'   => \Software::getTable(),
+            'FROM'   => Software::getTable(),
         ];
         if (!$input->getOption('all')) {
             $query['WHERE'] = [
@@ -94,7 +96,7 @@ class ProcessSoftwareCategoryRulesCommand extends AbstractCommand
                 OutputInterface::VERBOSITY_VERY_VERBOSE
             );
 
-            $software = new \Software();
+            $software = new Software();
 
             if (!$software->getFromDB($data['id'])) {
                 $this->writelnOutputWithProgressBar(
@@ -105,7 +107,7 @@ class ProcessSoftwareCategoryRulesCommand extends AbstractCommand
                 continue;
             }
 
-            $rule_collection = new \RuleSoftwareCategoryCollection();
+            $rule_collection = new RuleSoftwareCategoryCollection();
             $input = $rule_collection->processAllRules(
                 [],
                 $software->fields,

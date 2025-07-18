@@ -40,6 +40,7 @@ use Glpi\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
 /**
@@ -81,7 +82,7 @@ class GenericAjaxCrudController extends AbstractController
             $this->check((int) $input['id'], READ, $input);
 
             return $this->handleAction($input);
-        } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+        } catch (HttpException $e) {
             return $this->errorReponse($e->getStatusCode(), $e->getMessage());
         }
     }
@@ -313,17 +314,17 @@ class GenericAjaxCrudController extends AbstractController
      *
      * @return void
      *
-     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+     * @throws HttpException
      */
     final protected function check(int $id, int $right, array $input): void
     {
         if (!$this->item->checkIfExistOrNew($id)) {
-            throw new \Symfony\Component\HttpKernel\Exception\HttpException(
+            throw new HttpException(
                 404,
                 __("Item not found")
             );
         } elseif (!$this->item->can($id, $right, $input)) {
-            throw new \Symfony\Component\HttpKernel\Exception\HttpException(
+            throw new HttpException(
                 403,
                 __("You don't have permission to perform this action.")
             );

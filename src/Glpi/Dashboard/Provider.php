@@ -37,31 +37,33 @@ namespace Glpi\Dashboard;
 
 use CommonDBTM;
 use CommonDBVisible;
+use CommonDevice;
 use CommonITILActor;
 use CommonITILObject;
 use CommonITILValidation;
 use CommonTreeDropdown;
-use CommonDevice;
 use Config;
 use DBConnection;
-use Glpi\Debug\Profiler;
-use Glpi\Search\Input\QueryBuilder;
-use Glpi\Search\SearchOption;
+use DBmysql;
 use Glpi\Dashboard\Filters\{
     DatesFilter,
     GroupTechFilter,
     UserTechFilter,
 };
-use Group;
-use Group_Ticket;
-use Profile_User;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Debug\Profiler;
+use Glpi\Search\Input\QueryBuilder;
+use Glpi\Search\SearchOption;
+use Group;
+use Group_Ticket;
+use Profile_User;
 use Session;
 use Stat;
 use Ticket;
 use Ticket_User;
+use TicketValidation;
 use Toolbox;
 use User;
 
@@ -353,7 +355,7 @@ class Provider
                 ];
 
                 if ($params['validation_check_user']) {
-                    $where[] = \TicketValidation::getTargetCriteriaForUser(Session::getLoginUserID());
+                    $where[] = TicketValidation::getTargetCriteriaForUser(Session::getLoginUserID());
                 }
 
                 $query_criteria = array_merge_recursive($query_criteria, [
@@ -465,7 +467,7 @@ class Provider
 
     public static function nbTicketsByAgreementStatusAndTechnician(array $params = []): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $DBread = DBConnection::getReadConnection();

@@ -33,16 +33,20 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\AssignableItem;
+use Glpi\Features\Clonable;
+use Glpi\Features\DCBreadcrumb;
+
 /**
  * PDU Class
  **/
 class PDU extends CommonDBTM
 {
-    use Glpi\Features\AssignableItem {
+    use AssignableItem {
         prepareInputForAdd as prepareInputForAddAssignableItem;
     }
-    use Glpi\Features\DCBreadcrumb;
-    use Glpi\Features\Clonable;
+    use DCBreadcrumb;
+    use Clonable;
     use Glpi\Features\State;
 
     // From CommonDBTM

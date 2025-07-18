@@ -35,13 +35,18 @@
 
 namespace Glpi\Dashboard;
 
+use CommonDBTM;
+use DBmysql;
 use Glpi\Debug\Profiler;
+use Psr\SimpleCache\CacheInterface;
 use Ramsey\Uuid\Uuid;
+use RuntimeException;
 use Session;
+use Toolbox;
 
 use function Safe\json_decode;
 
-class Dashboard extends \CommonDBTM
+class Dashboard extends CommonDBTM
 {
     protected $id      = 0;
     protected $key     = "";
@@ -114,7 +119,7 @@ class Dashboard extends \CommonDBTM
 
     public function getFromDB($ID)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -130,7 +135,7 @@ class Dashboard extends \CommonDBTM
             $this->post_getFromDB();
             return true;
         } elseif (count($iterator) > 1) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf(
                     '`%1$s::getFromDB()` expects to get one result, %2$s found in query "%3$s".',
                     static::class,
@@ -240,7 +245,7 @@ class Dashboard extends \CommonDBTM
         $this->fields['name']   = $title;
         $this->fields['context'] = $context;
         $this->fields['users_id'] = Session::getLoginUserID();
-        $this->key    = \Toolbox::slugify($title);
+        $this->key    = Toolbox::slugify($title);
         $this->items  = $items;
         $this->rights = $rights;
 
@@ -260,8 +265,8 @@ class Dashboard extends \CommonDBTM
     public function save(bool $skip_child = false)
     {
         /**
-         * @var \DBmysql $DB
-         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+         * @var DBmysql $DB
+         * @var CacheInterface $GLPI_CACHE
          */
         global $DB, $GLPI_CACHE;
 
@@ -409,7 +414,7 @@ class Dashboard extends \CommonDBTM
 
         $this->fields['name'] = sprintf(__('Copy of %s'), $this->fields['name']);
         $this->fields['users_id'] = Session::getLoginUserID();
-        $this->key = \Toolbox::slugify($this->fields['name']) . '-' . Uuid::uuid4()->toString();
+        $this->key = Toolbox::slugify($this->fields['name']) . '-' . Uuid::uuid4()->toString();
 
         // replace gridstack_id (with uuid V4) in the copy, to avoid cache issue
         $this->items = array_map(function (array $item) {
@@ -441,7 +446,7 @@ class Dashboard extends \CommonDBTM
      */
     public static function getAll(bool $force = false, bool $check_rights = true, ?string $context = 'core'): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if ($force || count(self::$all_dashboards) == 0) {
@@ -578,7 +583,7 @@ class Dashboard extends \CommonDBTM
     public static function importFromJson($import = null)
     {
         if (!is_array($import)) {
-            if (!\Toolbox::isJSON($import)) {
+            if (!Toolbox::isJSON($import)) {
                 return false;
             }
             $import = json_decode($import, true);

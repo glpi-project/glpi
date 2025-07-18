@@ -36,6 +36,7 @@
 namespace Glpi\ContentTemplates\Parameters;
 
 use CommonDBTM;
+use Glpi\ContentTemplates\Parameters\ParametersTypes\ParameterTypeInterface;
 
 /**
  * Twig content templates parameters definition interface.
@@ -71,7 +72,7 @@ interface TemplatesParametersInterface
      * To be defined in each subclasses, define all available parameters for one or more itemtypes.
      * These parameters information are meant to be used for autocompletion on the client side.
      *
-     * @return \Glpi\ContentTemplates\Parameters\ParametersTypes\ParameterTypeInterface[]
+     * @return ParameterTypeInterface[]
      */
     public function getAvailableParameters(): array;
 }

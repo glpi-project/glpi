@@ -32,11 +32,12 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Event;
+use Glpi\Features\Clonable;
+use Glpi\Features\TreeBrowse;
 use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
 use Glpi\RichText\RichText;
@@ -51,8 +52,8 @@ use function Safe\preg_replace_callback;
  **/
 class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, ServiceCatalogLeafInterface
 {
-    use Glpi\Features\Clonable;
-    use Glpi\Features\TreeBrowse;
+    use Clonable;
+    use TreeBrowse;
 
     public static $browse_default = true;
 
@@ -859,7 +860,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      */
     public function updateCounter()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // update counter view
@@ -885,7 +886,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -1040,7 +1041,7 @@ TWIG, $twig_params);
      **/
     public static function getListRequest(array $params, $type = 'search')
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $params = array_replace([
@@ -1679,7 +1680,7 @@ TWIG, $twig_params);
      **/
     public static function showRecentPopular(string $type = "", bool $display = true)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $faq = !Session::haveRight(self::$rightname, READ);
@@ -2138,7 +2139,7 @@ TWIG, $twig_params);
      */
     public static function getForCategory($category_id, $kbi = null)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if ($kbi === null) {

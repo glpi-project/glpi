@@ -40,6 +40,7 @@ use Glpi\DependencyInjection\PublicService;
 use Glpi\Kernel\KernelListenerTrait;
 use Glpi\Kernel\ListenersPriority;
 use Plugin;
+use RuntimeException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -129,11 +130,11 @@ final readonly class PluginsRouterListener implements EventSubscriberInterface
         }
 
         if (!$class || !\is_string($class)) {
-            throw new \RuntimeException('Wrongly formed controller array');
+            throw new RuntimeException('Wrongly formed controller array');
         }
 
         if (!$this->plugin_container->has($class)) {
-            throw new \RuntimeException(\sprintf(
+            throw new RuntimeException(\sprintf(
                 'Expected controller class `%s` to be a public service, but did not find it in the service container.'
                     . ' You should either implement the `%s` interface, or extend the `%s` abstract class.',
                 $class,

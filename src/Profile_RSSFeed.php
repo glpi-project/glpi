@@ -56,7 +56,7 @@ class Profile_RSSFeed extends CommonDBRelation
      **/
     public static function getProfiles($rssfeeds_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $prof  = [];

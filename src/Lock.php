@@ -41,8 +41,8 @@ use Glpi\DBAL\QueryUnion;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\SearchOption;
 
-use function Safe\ob_start;
 use function Safe\ob_get_clean;
+use function Safe\ob_start;
 
 /**
  * This class manages locks
@@ -79,7 +79,7 @@ class Lock extends CommonGLPI
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -1369,7 +1369,7 @@ TWIG);
         CommonDBTM $baseitem,
         array $ids
     ) {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         switch ($ma->getAction()) {

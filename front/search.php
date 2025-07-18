@@ -35,6 +35,7 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 
 /** @var array $CFG_GLPI */
@@ -79,7 +80,7 @@ if (isset($_GET["globalsearch"])) {
     }
 
     // language=Twig
-    echo \Glpi\Application\View\TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+    echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
         <div class="search-container w-100 disable-overflow-y" counter="0">
             <div class="ajax-container search-display-data">
                 <div class="card card-sm mt-0 search-card">

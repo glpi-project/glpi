@@ -34,6 +34,8 @@
 
 namespace Glpi\Form\Export\Serializer;
 
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
+
 final class DynamicExportData
 {
     /** @var DynamicExportDataField[] */
@@ -53,7 +55,7 @@ final class DynamicExportData
         return $this->fields[$field_id]->getData();
     }
 
-    /** @return \Glpi\Form\Export\Specification\DataRequirementSpecification[] */
+    /** @return DataRequirementSpecification[] */
     public function getRequirements(): array
     {
         $requirements = [];

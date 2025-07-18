@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\QuestionType;
 
+use Exception;
 use Glpi\Form\Question;
 use Group;
 use Override;
@@ -81,7 +82,7 @@ final class QuestionTypeObserver extends AbstractQuestionTypeActors
             if ($actor['itemtype'] === Group::class) {
                 // Check if the group can be assigned
                 if (Group::getById($actor['items_id'])->fields['is_watcher'] !== 1) {
-                    throw new \Exception('Invalid actor: must be an observer');
+                    throw new Exception('Invalid actor: must be an observer');
                 }
             }
         }

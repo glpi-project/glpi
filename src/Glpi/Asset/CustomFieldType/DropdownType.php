@@ -35,10 +35,11 @@
 namespace Glpi\Asset\CustomFieldType;
 
 use CommonDBTM;
+use DBmysql;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CustomFieldOption\BooleanOption;
-use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 
 class DropdownType extends AbstractType
 {
@@ -120,7 +121,7 @@ TWIG, $twig_params);
 
     public function getSearchOption(): ?array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         /** @var class-string<CommonDBTM> $itemtype */

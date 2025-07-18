@@ -35,8 +35,8 @@
 
 namespace Glpi\Console\Marketplace;
 
-use GLPINetwork;
 use Glpi\Marketplace\Controller;
+use GLPINetwork;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;

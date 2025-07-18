@@ -34,8 +34,8 @@
 
 namespace tests\units\Glpi\Kernel\Listener\RequestListener;
 
-use Glpi\Controller\GenericListController;
 use Glpi\Controller\DropdownFormController;
+use Glpi\Controller\GenericListController;
 use Glpi\Kernel\Listener\RequestListener\LegacyItemtypeRouteListener;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;

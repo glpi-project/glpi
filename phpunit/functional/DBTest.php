@@ -655,20 +655,20 @@ SQL,
         }
     }
 
-    public function testSavepoints()
+    public function testRollbackSavepoints()
     {
         global $DB;
 
         $DB->beginTransaction();
 
         $computer = new \Computer();
-        $DB->setSavepoint('save0', false);
+        $DB->beginTransaction();
         $computers_id_0 = $computer->add([
             'name'        => 'computer0',
             'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id_0);
-        $DB->setSavepoint('save1', false);
+        $DB->beginTransaction();
         $computers_id_1 = $computer->add([
             'name'        => 'computer1',
             'entities_id' => 0,
@@ -676,14 +676,125 @@ SQL,
         $this->assertGreaterThan(0, $computers_id_1);
         $this->assertTrue($computer->getFromDB($computers_id_1));
 
-        $DB->rollBack('save1');
+        // Inner transaction is rollbacked, the 'computer1' created inside it is
+        // deleted.
+        $DB->rollBack();
         $this->assertFalse($computer->getFromDB($computers_id_1));
         $this->assertTrue($computer->getFromDB($computers_id_0));
 
-        $DB->rollBack('save0');
+        // Outer transaction is rollbacked, the 'computer0' created inside it is
+        // deleted.
+        $DB->rollBack();
         $this->assertFalse($computer->getFromDB($computers_id_1));
         $this->assertFalse($computer->getFromDB($computers_id_0));
 
+        // Final manual rollback as this class do not extends DBTestCase
+        $DB->rollBack();
+    }
+
+    public function testCommitSavepoints()
+    {
+        global $DB;
+
+        $DB->beginTransaction();
+
+        $computer = new \Computer();
+        $DB->beginTransaction();
+        $computers_id_0 = $computer->add([
+            'name'        => 'computer0',
+            'entities_id' => 0,
+        ]);
+        $this->assertGreaterThan(0, $computers_id_0);
+        $DB->beginTransaction();
+        $computers_id_1 = $computer->add([
+            'name'        => 'computer1',
+            'entities_id' => 0,
+        ]);
+        $this->assertGreaterThan(0, $computers_id_1);
+        $this->assertTrue($computer->getFromDB($computers_id_1));
+
+        // Inner transaction is commited, no data change from previous state.
+        $DB->commit();
+        $this->assertTrue($computer->getFromDB($computers_id_1));
+        $this->assertTrue($computer->getFromDB($computers_id_0));
+
+        // Outer transaction is commited, no data change from previous state.
+        $DB->commit();
+        $this->assertTrue($computer->getFromDB($computers_id_1));
+        $this->assertTrue($computer->getFromDB($computers_id_0));
+
+        // Final manual rollback as this class do not extends DBTestCase
+        $DB->rollBack();
+    }
+
+    public function testRollbackThenCommitSavepoints()
+    {
+        global $DB;
+
+        $DB->beginTransaction();
+
+        $computer = new \Computer();
+        $DB->beginTransaction();
+        $computers_id_0 = $computer->add([
+            'name'        => 'computer0',
+            'entities_id' => 0,
+        ]);
+        $this->assertGreaterThan(0, $computers_id_0);
+        $DB->beginTransaction();
+        $computers_id_1 = $computer->add([
+            'name'        => 'computer1',
+            'entities_id' => 0,
+        ]);
+        $this->assertGreaterThan(0, $computers_id_1);
+        $this->assertTrue($computer->getFromDB($computers_id_1));
+
+        // Inner transaction is commited, the 'computer1' created inside it is
+        // deleted.
+        $DB->rollBack();
+        $this->assertFalse($computer->getFromDB($computers_id_1));
+        $this->assertTrue($computer->getFromDB($computers_id_0));
+
+        // Outer transaction is commited, no data change from previous state.
+        $DB->commit();
+        $this->assertFalse($computer->getFromDB($computers_id_1));
+        $this->assertTrue($computer->getFromDB($computers_id_0));
+
+        // Final manual rollback as this class do not extends DBTestCase
+        $DB->rollBack();
+    }
+
+    public function testCommitThenRollbackSavepoints()
+    {
+        global $DB;
+
+        $DB->beginTransaction();
+
+        $computer = new \Computer();
+        $DB->beginTransaction();
+        $computers_id_0 = $computer->add([
+            'name'        => 'computer0',
+            'entities_id' => 0,
+        ]);
+        $this->assertGreaterThan(0, $computers_id_0);
+        $DB->beginTransaction();
+        $computers_id_1 = $computer->add([
+            'name'        => 'computer1',
+            'entities_id' => 0,
+        ]);
+        $this->assertGreaterThan(0, $computers_id_1);
+        $this->assertTrue($computer->getFromDB($computers_id_1));
+
+        // Inner transaction is commited, both computer still exists
+        $DB->commit();
+        $this->assertTrue($computer->getFromDB($computers_id_1));
+        $this->assertTrue($computer->getFromDB($computers_id_0));
+
+        // Outer transaction is rollbacked, both computers are removed.
+        $DB->rollBack();
+        $this->assertFalse($computer->getFromDB($computers_id_1));
+        $this->assertFalse($computer->getFromDB($computers_id_0));
+
+        // Final manual rollback as this class do not extends DBTestCase
         $DB->rollBack();
     }
 

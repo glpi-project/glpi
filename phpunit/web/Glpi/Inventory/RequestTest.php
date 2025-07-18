@@ -34,12 +34,12 @@
 
 namespace tests\units\Glpi\Inventory;
 
+use Config;
+use GLPIKey;
 use GuzzleHttp;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
-use Config;
-use GLPIKey;
 
 class RequestTest extends TestCase
 {

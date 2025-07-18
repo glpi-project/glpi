@@ -36,16 +36,25 @@
 
 namespace Glpi\Inventory\MainAsset;
 
+use Agent;
 use Auth;
 use AutoUpdateSystem;
 use Blacklist;
 use CommonDBTM;
+use DBmysql;
+use Domain;
+use Domain_Item;
+use DomainRelation;
 use Dropdown;
+use Entity;
+use Exception;
+use Glpi\Inventory\Asset\Controller;
 use Glpi\Inventory\Asset\Firmware;
 use Glpi\Inventory\Asset\InventoryAsset;
 use Glpi\Inventory\Asset\InventoryNetworkPort;
-use Glpi\Inventory\MainAsset\Printer as MainAssetPrinter;
+use Glpi\Inventory\Asset\NetworkCard;
 use Glpi\Inventory\Conf;
+use Glpi\Inventory\MainAsset\Printer as MainAssetPrinter;
 use Glpi\Inventory\Request;
 use NetworkEquipment;
 use Printer;
@@ -71,7 +80,7 @@ abstract class MainAsset extends InventoryAsset
         'hardware'     => null,
         'bios'         => null,
         'users'        => null,
-        \Glpi\Inventory\Asset\NetworkCard::class => null,
+        NetworkCard::class => null,
     ];
     /** @var mixed */
     protected $raw_data;
@@ -79,7 +88,7 @@ abstract class MainAsset extends InventoryAsset
     protected $hardware;
     /** @var ?integer */
     protected $states_id_default;
-    /** @var \stdClass */
+    /** @var stdClass */
     private $current_data;
     /** @var array */
     protected $assets = [];
@@ -132,7 +141,7 @@ abstract class MainAsset extends InventoryAsset
                 $this->setPartial();
             }
 
-            $val = new \stdClass();
+            $val = new stdClass();
 
             //set update system
             $val->autoupdatesystems_id = $entry->content->autoupdatesystems_id ?? AutoUpdateSystem::NATIVE_INVENTORY;
@@ -249,7 +258,7 @@ abstract class MainAsset extends InventoryAsset
      */
     protected function prepareForUsers($val)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (property_exists($val, 'users_id')) {
@@ -410,11 +419,11 @@ abstract class MainAsset extends InventoryAsset
     /**
      * Prepare input rules input, for both Entities rules and Import ones
      *
-     * @param \stdClass $val Current data values
+     * @param stdClass $val Current data values
      *
      * @return array
      */
-    public function prepareAllRulesInput(\stdClass $val): array
+    public function prepareAllRulesInput(stdClass $val): array
     {
         $input = ['_auto' => 1];
 
@@ -452,9 +461,9 @@ abstract class MainAsset extends InventoryAsset
             $input['name'] = '';
         }
 
-        if (isset($this->extra_data[\Glpi\Inventory\Asset\NetworkCard::class])) {
+        if (isset($this->extra_data[NetworkCard::class])) {
             $blacklist = new Blacklist();
-            foreach ($this->extra_data[\Glpi\Inventory\Asset\NetworkCard::class] as $networkcard) {
+            foreach ($this->extra_data[NetworkCard::class] as $networkcard) {
                 $netports = $networkcard->getNetworkPorts();
                 $this->ports += $netports;
                 foreach ($netports as $network) {
@@ -519,12 +528,12 @@ abstract class MainAsset extends InventoryAsset
     /**
      * Prepare input for Entities rules
      *
-     * @param \stdClass $val   Current data values
+     * @param stdClass $val Current data values
      * @param array     $input Input processed or all rules
      *
      * @return array
      */
-    public function prepareEntitiesRulesInput(\stdClass $val, array $input): array
+    public function prepareEntitiesRulesInput(stdClass $val, array $input): array
     {
         if (property_exists($val, 'domains_id') && (!empty($val->domains_id))) {
             $input['domain'] = $val->domains_id;
@@ -656,7 +665,7 @@ abstract class MainAsset extends InventoryAsset
         }
         $refused_input['autoupdatesystems_id'] = $input['autoupdatesystems_id'];
 
-        $refused = new \RefusedEquipment();
+        $refused = new RefusedEquipment();
         $refused->add($refused_input);
         $this->refused[] = $refused;
     }
@@ -680,7 +689,7 @@ abstract class MainAsset extends InventoryAsset
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -743,7 +752,7 @@ abstract class MainAsset extends InventoryAsset
             unset($input['firmware']);
             $items_id = $this->item->add($input);
             if ($items_id === false) {
-                throw new \Exception('Unable to create item.');
+                throw new Exception('Unable to create item.');
             }
             $this->setNew();
 
@@ -787,7 +796,7 @@ abstract class MainAsset extends InventoryAsset
 
         //handle domains
         if (property_exists($val, 'domains_id')) {
-            $domain = new \Domain();
+            $domain = new Domain();
             $matching_domains = $DB->request([
                 'FROM' => $domain->getTable(),
                 'WHERE' => [
@@ -809,7 +818,7 @@ abstract class MainAsset extends InventoryAsset
                 );
             }
 
-            $ditem = new \Domain_Item();
+            $ditem = new Domain_Item();
 
             $criteria = [
                 'domains_id' => $domain->getID(),
@@ -817,7 +826,7 @@ abstract class MainAsset extends InventoryAsset
                 'items_id' => $items_id,
             ];
             if (!$ditem->getFromDBByCrit($criteria)) {
-                $ditem->add($criteria + ['domainrelations_id' => \DomainRelation::BELONGS, 'is_dynamic' => 1], [], false);
+                $ditem->add($criteria + ['domainrelations_id' => DomainRelation::BELONGS, 'is_dynamic' => 1], [], false);
             }
 
             //cleanup old dynamic relations
@@ -825,7 +834,7 @@ abstract class MainAsset extends InventoryAsset
                 [
                     'itemtype' => $itemtype,
                     'items_id' => $items_id,
-                    'domainrelations_id' => \DomainRelation::BELONGS,
+                    'domainrelations_id' => DomainRelation::BELONGS,
                     'is_dynamic' => 1,
                     ['NOT' => ['domains_id' => $domain->getID()]],
                 ],
@@ -837,7 +846,7 @@ abstract class MainAsset extends InventoryAsset
 
         if ($entities_id != $this->item->fields['entities_id']) {
             //asset entity has changed in rules; do transfer
-            $doTransfer = \Entity::getUsedConfig('transfers_strategy', $this->item->fields['entities_id'], 'transfers_id', 0);
+            $doTransfer = Entity::getUsedConfig('transfers_strategy', $this->item->fields['entities_id'], 'transfers_id', 0);
             $transfer = new Transfer();
             if ($doTransfer > 0 && $transfer->getFromDB($doTransfer)) {
                 $item_to_transfer = [$this->itemtype => [$items_id => $items_id]];
@@ -862,7 +871,7 @@ abstract class MainAsset extends InventoryAsset
         }
 
         //check for any old agent to remove
-        $agent = new \Agent();
+        $agent = new Agent();
         $agent->deleteByCriteria([
             'itemtype' => $this->item->getType(),
             'items_id' => $items_id,
@@ -918,13 +927,13 @@ abstract class MainAsset extends InventoryAsset
         }
 
         if (method_exists($this, 'isWirelessController') && $this->isWirelessController()) {
-            if (property_exists($val, 'firmware') && $val->firmware instanceof \stdClass) {
+            if (property_exists($val, 'firmware') && $val->firmware instanceof stdClass) {
                 $fw = new Firmware($this->item, [$val->firmware]);
                 if ($fw->checkConf($this->conf)) {
                     $fw->setAgent($this->getAgent());
                     $fw->prepare();
                     $fw->handleLinks();
-                    $this->assets[\Glpi\Inventory\Asset\Firmware::class] = [$fw];
+                    $this->assets[Firmware::class] = [$fw];
                     unset($val->firmware);
                 }
             }
@@ -983,7 +992,7 @@ abstract class MainAsset extends InventoryAsset
     /**
      * Get modified hardware
      *
-     * @return \stdClass
+     * @return stdClass
      */
     public function getHardware()
     {
@@ -1025,9 +1034,9 @@ abstract class MainAsset extends InventoryAsset
 
         //ensure controllers are done last, some components will
         //ask to ignore their associated controller
-        if (isset($assets_list[\Glpi\Inventory\Asset\Controller::class])) {
-            $controllers = $assets_list[\Glpi\Inventory\Asset\Controller::class];
-            unset($assets_list[\Glpi\Inventory\Asset\Controller::class]);
+        if (isset($assets_list[Controller::class])) {
+            $controllers = $assets_list[Controller::class];
+            unset($assets_list[Controller::class]);
         }
 
         foreach ($assets_list as $assets) {

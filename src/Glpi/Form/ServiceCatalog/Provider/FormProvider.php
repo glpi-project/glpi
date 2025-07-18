@@ -42,7 +42,7 @@ use Glpi\FuzzyMatcher\FuzzyMatcher;
 use Glpi\FuzzyMatcher\PartialMatchStrategy;
 use Override;
 
-/** @implements LeafProviderInterface<\Glpi\Form\Form> */
+/** @implements LeafProviderInterface<Form> */
 final class FormProvider implements LeafProviderInterface
 {
     private FormAccessControlManager $access_manager;

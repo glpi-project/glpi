@@ -31,11 +31,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \Migration $migration
+ * @var Migration $migration
  */
-
 $migration->addField('glpi_impactrelations', 'name', "string", [
     'after'  => 'id',
     'value' => '',

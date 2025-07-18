@@ -94,7 +94,7 @@ class RuleDefineItemtype extends Rule
      */
     public static function addMoreCriteria($criterion = '')
     {
-        return \RuleImportAsset::addMoreCriteria($criterion);
+        return RuleImportAsset::addMoreCriteria($criterion);
     }
 
     public function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern)

@@ -32,24 +32,25 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
+use Glpi\Features\ParentStatus;
+use Glpi\Features\TreeBrowse;
 use Safe\Exceptions\FilesystemException;
 use Symfony\Component\HttpFoundation\Response;
 
 use function Safe\copy;
-use function Safe\finfo_open;
 use function Safe\filesize;
+use function Safe\finfo_open;
 use function Safe\getimagesize;
 use function Safe\mkdir;
 use function Safe\opendir;
 use function Safe\preg_match;
 use function Safe\rename;
-use function Safe\sha1_file;
 use function Safe\session_destroy;
 use function Safe\session_id;
+use function Safe\sha1_file;
 use function Safe\unlink;
 
 /**
@@ -57,8 +58,8 @@ use function Safe\unlink;
  **/
 class Document extends CommonDBTM
 {
-    use Glpi\Features\TreeBrowse;
-    use Glpi\Features\ParentStatus;
+    use TreeBrowse;
+    use ParentStatus;
 
     // From CommonDBTM
     public $dohistory                   = true;
@@ -420,7 +421,7 @@ class Document extends CommonDBTM
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -431,7 +432,7 @@ class Document extends CommonDBTM
             $linked_item = null;
             $link_params = $linked_item;
         } elseif ($linked_item !== null && !($linked_item instanceof CommonDBTM)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         } elseif ($linked_item !== null) {
             $link_params = sprintf('&itemtype=%s&items_id=%s', $linked_item::class, $linked_item->getID());
         }
@@ -507,7 +508,7 @@ class Document extends CommonDBTM
     public function getFromDBbyContent($entity, $path)
     {
 
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (empty($path)) {
@@ -615,7 +616,7 @@ class Document extends CommonDBTM
      */
     private static function loadAPISessionIfExist(): void
     {
-        $session_token = \Toolbox::getHeader('Session-Token');
+        $session_token = Toolbox::getHeader('Session-Token');
 
         // No api token found
         if ($session_token === null) {
@@ -641,7 +642,7 @@ class Document extends CommonDBTM
      */
     private function canViewFileFromReminder()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (!Session::getLoginUserID()) {
@@ -687,7 +688,7 @@ class Document extends CommonDBTM
 
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -746,7 +747,7 @@ class Document extends CommonDBTM
     private function canViewFileFromItilObject($itemtype, $items_id)
     {
 
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (!Session::getLoginUserID()) {
@@ -789,7 +790,7 @@ class Document extends CommonDBTM
      */
     private function canViewFileFromItem($itemtype, $items_id): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (!is_a($itemtype, CommonDBTM::class, true)) {
@@ -1347,7 +1348,7 @@ class Document extends CommonDBTM
      **/
     public static function isValidDoc($filename)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $splitter = explode(".", $filename);
@@ -1407,7 +1408,7 @@ class Document extends CommonDBTM
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -1678,7 +1679,7 @@ class Document extends CommonDBTM
      **/
     public static function cronCleanOrphans(CronTask $task): int
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $dtable = static::getTable();

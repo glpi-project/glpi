@@ -38,16 +38,18 @@ namespace Glpi\Console\Build;
 use Html;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use RuntimeException;
 use Safe\Exceptions\FilesystemException;
+use SplFileInfo;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Toolbox;
 
-use function Safe\mkdir;
-use function Safe\ini_set;
 use function Safe\file_put_contents;
+use function Safe\ini_set;
+use function Safe\mkdir;
 use function Safe\preg_match;
 use function Safe\preg_replace;
 use function Safe\realpath;
@@ -92,7 +94,7 @@ class CompileScssCommand extends Command
             try {
                 @mkdir($compile_directory);
             } catch (FilesystemException $e) {
-                throw new \RuntimeException(
+                throw new RuntimeException(
                     sprintf(
                         'Destination directory "%s" cannot be accessed.',
                         $compile_directory
@@ -123,7 +125,7 @@ class CompileScssCommand extends Command
                 new RecursiveDirectoryIterator($root_path . '/css'),
                 RecursiveIteratorIterator::SELF_FIRST
             );
-            /** @var \SplFileInfo $file */
+            /** @var SplFileInfo $file */
             foreach ($css_dir_iterator as $file) {
                 if (
                     !$file->isReadable() || !$file->isFile() || $file->getExtension() !== 'scss'

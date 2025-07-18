@@ -34,6 +34,7 @@
 
 namespace Glpi\Kernel\Listener\PostBootListener;
 
+use DBmysql;
 use Glpi\Application\Environment;
 use Glpi\Debug\Profiler;
 use Glpi\DependencyInjection\PluginContainer;
@@ -82,7 +83,7 @@ final readonly class InitializePlugins implements EventSubscriberInterface
 
     private function setupTesterPlugin(): void
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $DB->updateOrInsert(table: Plugin::getTable(), params: [
             'directory' => 'tester',

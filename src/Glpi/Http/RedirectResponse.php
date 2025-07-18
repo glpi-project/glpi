@@ -34,6 +34,7 @@
 
 namespace Glpi\Http;
 
+use InvalidArgumentException;
 use Override;
 
 class RedirectResponse extends \Symfony\Component\HttpFoundation\RedirectResponse
@@ -42,7 +43,7 @@ class RedirectResponse extends \Symfony\Component\HttpFoundation\RedirectRespons
     public function setTargetUrl(string $url): static
     {
         if ('' === $url) {
-            throw new \InvalidArgumentException('Cannot redirect to an empty URL.');
+            throw new InvalidArgumentException('Cannot redirect to an empty URL.');
         }
 
         $this->targetUrl = $url;

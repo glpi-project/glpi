@@ -47,12 +47,13 @@ use Safe\Exceptions\FilesystemException;
 use Session;
 use Symfony\Component\HttpFoundation\Response;
 use Toolbox;
+use wapmorgan\UnifiedArchive\Exceptions\ArchiveExtractionException;
 use wapmorgan\UnifiedArchive\Formats;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 
 use function Safe\ini_set;
-use function Safe\ob_start;
 use function Safe\ob_end_clean;
+use function Safe\ob_start;
 use function Safe\parse_url;
 use function Safe\realpath;
 use function Safe\session_write_close;
@@ -233,7 +234,7 @@ class Controller extends CommonGLPI
             try {
                 // copy files
                 $archive->extract(GLPI_MARKETPLACE_DIR) !== false;
-            } catch (\wapmorgan\UnifiedArchive\Exceptions\ArchiveExtractionException $e) {
+            } catch (ArchiveExtractionException $e) {
                 $error = true;
             }
         }

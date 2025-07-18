@@ -40,28 +40,33 @@ use Change_Item;
 use CommonDBTM;
 use CommonGLPI;
 use CronTask;
+use DBmysql;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
 use Glpi\Form\AccessControl\FormAccessControl;
+use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\Condition\CommentData;
+use Glpi\Form\Condition\ConditionableVisibilityInterface;
+use Glpi\Form\Condition\ConditionableVisibilityTrait;
 use Glpi\Form\Condition\FormData;
+use Glpi\Form\Condition\QuestionData;
+use Glpi\Form\Condition\SectionData;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
-use Glpi\Form\ServiceCatalog\ServiceCatalog;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\Form\AccessControl\FormAccessControlManager;
-use Glpi\Form\Condition\ConditionableVisibilityInterface;
-use Glpi\Form\Condition\ConditionableVisibilityTrait;
 use Glpi\Form\QuestionType\QuestionTypesManager;
+use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
 use Glpi\Helpdesk\Tile\FormTile;
-use Glpi\UI\IllustrationManager;
-use Glpi\ItemTranslation\Context\TranslationHandler;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
+use Glpi\ItemTranslation\Context\TranslationHandler;
+use Glpi\UI\IllustrationManager;
 use Html;
+use InvalidArgumentException;
 use Item_Problem;
 use Item_Ticket;
 use Log;
@@ -71,6 +76,7 @@ use Ramsey\Uuid\Uuid;
 use ReflectionClass;
 use RuntimeException;
 use Session;
+use Throwable;
 use Ticket;
 
 use function Safe\json_decode;
@@ -349,33 +355,25 @@ final class Form extends CommonDBTM implements
     #[Override]
     public function post_updateItem($history = true)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
-        // Tests will already be running inside a transaction, we can't create
-        // a new one in this case
-        if ($DB->inTransaction()) {
+        $DB->beginTransaction();
+        try {
             // Update questions and sections
             $this->updateExtraFormData();
-        } else {
-            $DB->beginTransaction();
+            $DB->commit();
+        } catch (Throwable $e) {
+            // Delete the "Item sucessfully updated" message if it exist
+            Session::deleteMessageAfterRedirect(
+                $this->formatSessionMessageAfterAction(__('Item successfully updated'))
+            );
 
-            try {
-                // Update questions and sections
-                $this->updateExtraFormData();
-                $DB->commit();
-            } catch (\Throwable $e) {
-                // Delete the "Item sucessfully updated" message if it exist
-                Session::deleteMessageAfterRedirect(
-                    $this->formatSessionMessageAfterAction(__('Item successfully updated'))
-                );
+            // Do not keep half updated data
+            $DB->rollback();
 
-                // Do not keep half updated data
-                $DB->rollback();
-
-                // Propagate exception to ensure the server return an error code
-                throw $e;
-            }
+            // Propagate exception to ensure the server return an error code
+            throw $e;
         }
     }
 
@@ -639,7 +637,7 @@ final class Form extends CommonDBTM implements
     {
         foreach ($types as $type) {
             if (!$this->isValidQuestionType($type)) {
-                throw new \InvalidArgumentException("Invalid question type: $type");
+                throw new InvalidArgumentException("Invalid question type: $type");
             }
         }
 
@@ -663,19 +661,19 @@ final class Form extends CommonDBTM implements
         return $this->getQuestionsByTypes([$type]);
     }
 
-    /** @return \Glpi\Form\Condition\SectionData[] */
+    /** @return SectionData[] */
     public function getSectionsStateForConditionEditor(): array
     {
         return FormData::createFromForm($this)->getSectionsData();
     }
 
-    /** @return \Glpi\Form\Condition\QuestionData[] */
+    /** @return QuestionData[] */
     public function getQuestionsStateForConditionEditor(): array
     {
         return FormData::createFromForm($this)->getQuestionsData();
     }
 
-    /** @return \Glpi\Form\Condition\CommentData[] */
+    /** @return CommentData[] */
     public function getCommentsStateForConditionEditor(): array
     {
         return FormData::createFromForm($this)->getCommentsData();
@@ -815,7 +813,7 @@ final class Form extends CommonDBTM implements
                 $section = new Section();
                 $success = $section->delete($row);
                 if (!$success) {
-                    throw new \RuntimeException("Failed to delete section");
+                    throw new RuntimeException("Failed to delete section");
                 }
             }
         }
@@ -933,7 +931,7 @@ final class Form extends CommonDBTM implements
                 $question = new Question();
                 $success = $question->delete($row);
                 if (!$success) {
-                    throw new \RuntimeException("Failed to delete question");
+                    throw new RuntimeException("Failed to delete question");
                 }
             }
         }
@@ -1051,7 +1049,7 @@ final class Form extends CommonDBTM implements
                 $comment = new Comment();
                 $success = $comment->delete($row);
                 if (!$success) {
-                    throw new \RuntimeException("Failed to delete comment");
+                    throw new RuntimeException("Failed to delete comment");
                 }
             }
         }

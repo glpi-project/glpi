@@ -32,6 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
+use Glpi\Features\Clonable;
 
 use function Safe\preg_match;
 use function Safe\strtotime;
@@ -43,7 +44,7 @@ use function Safe\strtotime;
  */
 abstract class CommonITILRecurrent extends CommonDropdown
 {
-    use Glpi\Features\Clonable;
+    use Clonable;
 
     /**
      * @var bool From CommonDBTM
@@ -584,17 +585,17 @@ abstract class CommonITILRecurrent extends CommonDropdown
 
         $concrete_class = static::getConcreteClass();
         if (!is_a($concrete_class, CommonITILObject::class, true)) {
-            throw new \LogicException();
+            throw new LogicException();
         }
 
         $template_class = static::getTemplateClass();
         if (!is_a($template_class, ITILTemplate::class, true)) {
-            throw new \LogicException();
+            throw new LogicException();
         }
 
         $fields_class = static::getPredefinedFieldsClass();
         if (!is_a($fields_class, ITILTemplatePredefinedField::class, true)) {
-            throw new \LogicException();
+            throw new LogicException();
         }
 
         $tmpl_fk = $template_class::getForeignKeyField();
@@ -705,7 +706,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
      */
     public function getRelatedElements(): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $items = [];
         if (($item_class = static::getItemLinkClass()) !== null) {

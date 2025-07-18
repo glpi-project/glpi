@@ -33,4 +33,4 @@
  * ---------------------------------------------------------------------
  */
 
-class HTMLTableUnknownHeaders extends \Exception {}
+class HTMLTableUnknownHeaders extends Exception {}

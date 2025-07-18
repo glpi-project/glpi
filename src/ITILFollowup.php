@@ -32,17 +32,17 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Features\ParentStatus;
 
 /**
  * @since 9.4.0
  */
 class ITILFollowup extends CommonDBChild
 {
-    use Glpi\Features\ParentStatus;
+    use ParentStatus;
     use ITILSubItemRights;
 
     // From CommonDBTM
@@ -730,7 +730,7 @@ class ITILFollowup extends CommonDBChild
 
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $tab = [];
@@ -1044,7 +1044,7 @@ class ITILFollowup extends CommonDBChild
 
         // An ITILFollowup parent can only by a CommonItilObject
         if (!is_a($itemtype, "CommonITILObject", true)) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 "'$itemtype' is not a CommonITILObject"
             );
         }
@@ -1114,7 +1114,7 @@ class ITILFollowup extends CommonDBChild
      */
     public function isFromSupportAgent()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // Get parent item

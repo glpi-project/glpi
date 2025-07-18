@@ -35,6 +35,7 @@
 
 namespace Glpi\Console\System;
 
+use DBmysql;
 use Glpi\Console\AbstractCommand;
 use Glpi\System\Requirement\DatabaseTablesEngine;
 use Glpi\System\RequirementsManager;
@@ -58,7 +59,7 @@ class CheckRequirementsCommand extends AbstractCommand
     {
 
         $requirements_manager = new RequirementsManager();
-        $optional_db = $this->db instanceof \DBmysql && $this->db->connected ? $this->db : null;
+        $optional_db = $this->db instanceof DBmysql && $this->db->connected ? $this->db : null;
         $core_requirements = $requirements_manager->getCoreRequirementList($optional_db);
 
         if ($optional_db) {

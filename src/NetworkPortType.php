@@ -32,8 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Inventory\FilesToJSON;
+use Psr\SimpleCache\CacheInterface;
 
 use function Safe\file_get_contents;
 use function Safe\json_decode;
@@ -158,8 +158,8 @@ class NetworkPortType extends CommonDropdown
     public static function getInstantiationType($type)
     {
         /**
-         * @var \DBmysql $DB
-         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+         * @var DBmysql $DB
+         * @var CacheInterface $GLPI_CACHE
          */
         global $DB, $GLPI_CACHE;
 
@@ -214,7 +214,7 @@ class NetworkPortType extends CommonDropdown
 
     protected function invalidateCache()
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
+        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
         $GLPI_CACHE->delete('glpi_inventory_ports_types');
     }

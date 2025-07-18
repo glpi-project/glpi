@@ -39,8 +39,11 @@ use CommonITILObject;
 use Glpi\Error\ErrorHandler;
 use Glpi\RichText\RichText;
 use Twig\Environment;
+use Twig\Error\Error;
+use Twig\Error\SyntaxError;
 use Twig\Extension\SandboxExtension;
 use Twig\Loader\ArrayLoader;
+use Twig\Sandbox\SecurityError;
 use Twig\Sandbox\SecurityPolicy;
 use Twig\Source;
 
@@ -114,7 +117,7 @@ class TemplateManager
                     $parameters->getDefaultNodeName() => $parameters->getValues($itil_item),
                 ]
             );
-        } catch (\Twig\Error\Error $e) {
+        } catch (Error $e) {
             ErrorHandler::logCaughtException($e);
             ErrorHandler::displayCaughtExceptionMessage($e);
             return null;
@@ -141,12 +144,12 @@ class TemplateManager
             // Security policies are not valided with the previous step so we
             // need to actually try to render the template to validate them
             $twig->render('template', []);
-        } catch (\Twig\Sandbox\SecurityError $e) {
+        } catch (SecurityError $e) {
             // Security policy error: the template use a forbidden tag/function/...
             $err_msg = sprintf(__("Invalid twig template (%s)"), $e->getMessage());
 
             return false;
-        } catch (\Twig\Error\SyntaxError $e) {
+        } catch (SyntaxError $e) {
             // Syntax error, note that we do not show the exception message in the
             // error sent to the users as it not really helpful and is more likely
             // to confuse them that to help them fix the issue

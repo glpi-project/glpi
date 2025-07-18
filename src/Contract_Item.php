@@ -391,7 +391,7 @@ TWIG, $twig_params);
     public static function showForContract(Contract $contract, $withtemplate = 0)
     {
         /**
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          * @var array    $CFG_GLPI
          */
         global $DB, $CFG_GLPI;

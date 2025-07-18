@@ -36,6 +36,7 @@
 namespace Glpi\System\Log;
 
 use CommonGLPI;
+use RuntimeException;
 use Toolbox;
 
 use function Safe\file_get_contents;
@@ -43,8 +44,8 @@ use function Safe\file_put_contents;
 use function Safe\filemtime;
 use function Safe\filesize;
 use function Safe\preg_match;
-use function Safe\preg_split;
 use function Safe\preg_replace_callback;
+use function Safe\preg_split;
 use function Safe\readfile;
 use function Safe\scandir;
 
@@ -67,7 +68,7 @@ final class LogParser extends CommonGLPI
     public function __construct(string $directory = GLPI_LOG_DIR)
     {
         if (!is_dir($directory)) {
-            throw new \RuntimeException(sprintf('Invalid directory "%s".', $directory));
+            throw new RuntimeException(sprintf('Invalid directory "%s".', $directory));
         }
 
         $this->directory = $directory;

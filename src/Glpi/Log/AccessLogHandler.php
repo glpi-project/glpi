@@ -35,6 +35,7 @@
 namespace Glpi\Log;
 
 use Monolog\LogRecord;
+use Override;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AccessLogHandler extends AbstractLogHandler
@@ -46,7 +47,7 @@ class AccessLogHandler extends AbstractLogHandler
         $this->setFormatter(new AccessLogLineFormatter());
     }
 
-    #[\Override()]
+    #[Override()]
     public function isHandling(LogRecord $record): bool
     {
         if (

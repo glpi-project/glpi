@@ -38,6 +38,7 @@ use CommonTreeDropdown;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\CustomObject\AbstractDefinition;
 use Glpi\CustomObject\CustomObjectTrait;
+use RuntimeException;
 
 abstract class Dropdown extends CommonTreeDropdown
 {
@@ -61,7 +62,7 @@ abstract class Dropdown extends CommonTreeDropdown
     {
         $definition = DropdownDefinitionManager::getInstance()->getDefinition(static::$definition_system_name);
         if (!($definition instanceof DropdownDefinition)) {
-            throw new \RuntimeException('Dropdown definition is expected to be defined in concrete class.');
+            throw new RuntimeException('Dropdown definition is expected to be defined in concrete class.');
         }
 
         return $definition;

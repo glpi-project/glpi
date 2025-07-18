@@ -126,7 +126,7 @@ class NotificationTemplateTranslation extends CommonDBChild
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -297,7 +297,7 @@ TWIG, $twig_params);
     public static function getAllUsedLanguages($language_id)
     {
         /**
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $DB;
 

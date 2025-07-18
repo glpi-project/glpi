@@ -32,14 +32,14 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\DBAL\QueryExpression;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\Clonable;
 
 /// Class Domain
 class Domain extends CommonDBTM
 {
-    use Glpi\Features\Clonable;
+    use Clonable;
     use AssignableItem {
         prepareInputForAdd as prepareInputForAddAssignableItem;
         prepareInputForUpdate as prepareInputForUpdateAssignableItem;
@@ -86,7 +86,7 @@ class Domain extends CommonDBTM
 
     public function cleanDBonPurge()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ditem = new Domain_Item();
@@ -381,7 +381,7 @@ class Domain extends CommonDBTM
      * */
     public static function dropdownDomains($options = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $p = [
@@ -623,7 +623,7 @@ class Domain extends CommonDBTM
      */
     public static function expiredDomainsCriteria($entities_id): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $delay = Entity::getUsedConfig('send_domains_alert_expired_delay', $entities_id);
@@ -648,7 +648,7 @@ class Domain extends CommonDBTM
      */
     public static function closeExpiriesDomainsCriteria($entities_id): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $delay = Entity::getUsedConfig('send_domains_alert_close_expiries_delay', $entities_id);
@@ -676,7 +676,7 @@ class Domain extends CommonDBTM
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -824,7 +824,7 @@ class Domain extends CommonDBTM
 
     public static function getUsed(array $used, $domaintype)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

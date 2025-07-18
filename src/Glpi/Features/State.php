@@ -36,6 +36,7 @@
 namespace Glpi\Features;
 
 use DropdownVisibility;
+use LogicException;
 
 trait State
 {
@@ -50,7 +51,7 @@ trait State
         global $CFG_GLPI;
 
         if (!in_array(static::class, $CFG_GLPI['state_types'])) {
-            throw new \LogicException(
+            throw new LogicException(
                 sprintf(
                     'Class %s must be present in $CFG_GLPI[\'state_types\']',
                     static::class

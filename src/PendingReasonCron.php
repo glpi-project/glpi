@@ -64,7 +64,7 @@ class PendingReasonCron extends CommonDBTM
      */
     public static function cronPendingreason_autobump_autosolve(CronTask $task)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $config = Config::getConfigurationValues('core', ['system_user']);
@@ -163,7 +163,7 @@ class PendingReasonCron extends CommonDBTM
                 $task->addVolume(1);
 
                 // Send notification
-                \NotificationEvent::raiseEvent('auto_reminder', $item);
+                NotificationEvent::raiseEvent('auto_reminder', $item);
             } elseif ($resolve && $now > $resolve) {
                 // Load solution template
                 $solution_template = SolutionTemplate::getById($pending_reason->fields['solutiontemplates_id']);

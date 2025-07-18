@@ -35,6 +35,8 @@
 
 namespace Glpi\Toolbox;
 
+use DOMDocument;
+use DOMXPath;
 use Glpi\RichText\RichText;
 
 use function Safe\preg_replace;
@@ -52,14 +54,14 @@ class DataExport
     {
         if (RichText::isRichTextHtmlContent($value)) {
             libxml_use_internal_errors(true); // Silent errors
-            $document = new \DOMDocument();
+            $document = new DOMDocument();
             $document->loadHTML(
                 '<?xml encoding="utf-8" ?><div>' . $value . '</div>',
                 LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
             );
 
             // Remove invisible contents (tooltips for instance)
-            $xpath = new \DOMXPath($document);
+            $xpath = new DOMXPath($document);
             $invisible_elements = $xpath->query('//div[contains(@class, "invisible")]');
             foreach ($invisible_elements as $element) {
                 $element->parentNode->removeChild($element);

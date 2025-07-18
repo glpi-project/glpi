@@ -35,6 +35,7 @@
 namespace Glpi\Asset\CustomFieldType;
 
 use Glpi\Application\View\TemplateRenderer;
+use InvalidArgumentException;
 
 use function Safe\preg_match;
 use function Safe\strtotime;
@@ -67,7 +68,7 @@ TWIG, $twig_params);
             return null;
         }
         if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
-            throw new \InvalidArgumentException('The value must be in the format YYYY-MM-DD');
+            throw new InvalidArgumentException('The value must be in the format YYYY-MM-DD');
         }
         return gmdate('Y-m-d', strtotime($value));
     }

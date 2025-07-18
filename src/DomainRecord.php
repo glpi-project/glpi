@@ -398,7 +398,7 @@ class DomainRecord extends CommonDBChild
      **/
     public static function showForDomain(Domain $domain)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $instID = $domain->fields['id'];

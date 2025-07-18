@@ -35,10 +35,9 @@
 use Glpi\DBAL\QueryExpression;
 
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-
 // Fix invalid zero dates
 // Prior to GLPI 10.0, SQL_MODE was set to empty (and NO_ZERO_DATE was removed), so MySQL allowed 0000-00-00 dates.
 // These invalid dates blocks ALTER TABLE queries that are made when this flag is active.

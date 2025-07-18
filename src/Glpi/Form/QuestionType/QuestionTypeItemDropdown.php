@@ -39,6 +39,7 @@ use DbUtils;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Question;
+use InvalidArgumentException;
 use ITILCategory;
 use Override;
 use Session;
@@ -280,7 +281,7 @@ final class QuestionTypeItemDropdown extends QuestionTypeItem
                         'incident' => 'is_incident',
                         'problem'  => 'is_problem',
                         'change'   => 'is_change',
-                        default    => throw new \InvalidArgumentException(
+                        default    => throw new InvalidArgumentException(
                             sprintf('Unknown category filter: %s', $category)
                         ),
                     };

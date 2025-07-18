@@ -39,6 +39,7 @@ use DBmysql;
 use Glpi\Cache\CacheManager;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
+use Glpi\Console\Exception\EarlyExitException;
 use Glpi\Console\Traits\TelemetryActivationTrait;
 use Glpi\Progress\ConsoleProgressIndicator;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
@@ -53,6 +54,7 @@ use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Throwable;
 use Update;
 
 use function Safe\preg_match;
@@ -237,7 +239,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
                 $output->writeln('<error>' . __('Update failed.') . '</error>', OutputInterface::VERBOSITY_QUIET);
                 return self::ERROR_UPDATE_FAILED;
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $progress_indicator->fail();
 
             $message = sprintf(
@@ -322,7 +324,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
                     . ' '
                     . sprintf(__('Run the "%1$s" command to view found differences.'), 'php bin/console database:check_schema_integrity');
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $error = sprintf(__('Database integrity check failed with error (%s).'), $e->getMessage());
         }
 
@@ -333,7 +335,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
                 $this->output->writeln('<error>' . $error . '</error>', OutputInterface::VERBOSITY_QUIET);
             } else {
                 // On non-interactive mode, exit with error.
-                throw new \Glpi\Console\Exception\EarlyExitException(
+                throw new EarlyExitException(
                     '<error>' . $error . '</error>',
                     self::ERROR_DATABASE_INTEGRITY_CHECK_FAILED
                 );

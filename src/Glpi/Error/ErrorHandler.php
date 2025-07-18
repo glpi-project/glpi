@@ -35,12 +35,15 @@
 namespace Glpi\Error;
 
 use Glpi\Application\Environment;
-use Glpi\Error\ErrorDisplayHandler\ConsoleErrorDisplayHandler;
 use Glpi\Error\ErrorDisplayHandler\CliDisplayHandler;
+use Glpi\Error\ErrorDisplayHandler\ConsoleErrorDisplayHandler;
+use Glpi\Error\ErrorDisplayHandler\ErrorDisplayHandler;
 use Glpi\Error\ErrorDisplayHandler\HtmlErrorDisplayHandler;
+use Override;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\ErrorHandler\ErrorHandler as BaseErrorHandler;
+use Throwable;
 
 use function Safe\ini_set;
 
@@ -106,7 +109,7 @@ final class ErrorHandler extends BaseErrorHandler
     }
 
     /**
-     * @return array<\Glpi\Error\ErrorDisplayHandler\ErrorDisplayHandler>
+     * @return array<ErrorDisplayHandler>
      */
     private static function getOutputHandlers(): array
     {
@@ -137,7 +140,7 @@ final class ErrorHandler extends BaseErrorHandler
         }
     }
 
-    #[\Override()]
+    #[Override()]
     public function handleError(int $type, string $message, string $file, int $line): bool
     {
         if (0 === (error_reporting() & $type)) {
@@ -181,8 +184,8 @@ final class ErrorHandler extends BaseErrorHandler
         return true;
     }
 
-    #[\Override()]
-    public function handleException(\Throwable $exception): void
+    #[Override()]
+    public function handleException(Throwable $exception): void
     {
         // /!\ Once the kernel is booted, the `\Symfony\Component\HttpKernel\EventListener\ErrorListener`
         // will handle the exceptions via the `kernel.exception` event.
@@ -197,7 +200,7 @@ final class ErrorHandler extends BaseErrorHandler
      *
      * @FIXME Can be done directly in the caller class if the `logger` service is set by the DI system.
      */
-    public static function logCaughtException(\Throwable $exception): void
+    public static function logCaughtException(Throwable $exception): void
     {
         $message = \sprintf(
             'Caught %s: %s',
@@ -218,7 +221,7 @@ final class ErrorHandler extends BaseErrorHandler
      *        a custom message should then be displayed, to indicate to the end user what happens or what he can
      *        do to fix this error.
      */
-    public static function displayCaughtExceptionMessage(\Throwable $exception): void
+    public static function displayCaughtExceptionMessage(Throwable $exception): void
     {
         self::displayErrorMessage(
             \sprintf('Caught %s', $exception::class),

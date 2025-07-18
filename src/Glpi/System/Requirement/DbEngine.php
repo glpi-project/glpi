@@ -35,6 +35,8 @@
 
 namespace Glpi\System\Requirement;
 
+use DBmysql;
+
 use function Safe\preg_match;
 use function Safe\preg_replace;
 
@@ -46,11 +48,11 @@ class DbEngine extends AbstractRequirement
     /**
      * DB instance.
      *
-     * @var \DBmysql
+     * @var DBmysql
      */
     private $db;
 
-    public function __construct(\DBmysql $db)
+    public function __construct(DBmysql $db)
     {
         parent::__construct(
             __('DB engine version')

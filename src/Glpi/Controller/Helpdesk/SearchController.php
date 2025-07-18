@@ -34,6 +34,7 @@
 
 namespace Glpi\Controller\Helpdesk;
 
+use DBmysql;
 use Glpi\Controller\AbstractController;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\ServiceCatalog\ItemRequest;
@@ -41,10 +42,10 @@ use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
 use KnowbaseItem;
+use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Session;
 
 final class SearchController extends AbstractController
 {
@@ -63,7 +64,7 @@ final class SearchController extends AbstractController
     )]
     public function __invoke(Request $request): Response
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // Read parameters

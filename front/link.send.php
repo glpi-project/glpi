@@ -37,7 +37,7 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-/** @var \DBmysql $DB */
+/** @var DBmysql $DB */
 global $DB;
 
 Session::checkRight("link", READ);

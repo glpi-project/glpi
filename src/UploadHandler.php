@@ -44,9 +44,8 @@
 use Safe\Exceptions\FilesystemException;
 use Safe\Exceptions\ImageException;
 
-use function Safe\ob_flush;
-use function Safe\error_log;
 use function Safe\copy;
+use function Safe\error_log;
 use function Safe\fclose;
 use function Safe\file_put_contents;
 use function Safe\filemtime;
@@ -64,6 +63,7 @@ use function Safe\imagesavealpha;
 use function Safe\ini_get;
 use function Safe\json_encode;
 use function Safe\mkdir;
+use function Safe\ob_flush;
 use function Safe\parse_url;
 use function Safe\preg_match;
 use function Safe\preg_replace;
@@ -356,7 +356,7 @@ class UploadHandler
     protected function get_file_object($file_name)
     {
         if ($this->is_valid_file_object($file_name)) {
-            $file = new \stdClass();
+            $file = new stdClass();
             $file->name = $file_name;
             $file->size = $this->get_file_size(
                 $this->get_upload_path($file_name)
@@ -1010,7 +1010,7 @@ class UploadHandler
     {
         try {
             return $this->gd_create_scaled_image($file_name, $version, $options);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             error_log($e->getMessage());
             return false;
         }
@@ -1085,7 +1085,7 @@ class UploadHandler
         $index = null,
         $content_range = null
     ) {
-        $file = new \stdClass();
+        $file = new stdClass();
         $file->name = $this->get_file_name(
             $uploaded_file,
             $name,

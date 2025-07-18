@@ -39,11 +39,12 @@ use CommonDBTM;
 use CommonDropdown;
 use CommonITILObject;
 use CommonTreeDropdown;
+use DBmysql;
 use DropdownTranslation;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
 use Html;
 use ITILCategory;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\DBAL\QueryExpression;
 use Search;
 
 use function Safe\json_encode;
@@ -191,7 +192,7 @@ JAVASCRIPT;
      */
     public static function getTreeCategoryList(string $itemtype, array $params): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $cat_item = static::getCategoryItem($itemtype);
@@ -368,7 +369,7 @@ JAVASCRIPT;
     /**
      * Return category item for given itemtype.
      *
-     * @param class-string<\CommonDBTM> $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      */
     public static function getCategoryItem(string $itemtype): ?CommonDBTM
     {

@@ -35,6 +35,7 @@
 namespace Glpi\Asset;
 
 use Change_Item;
+use CommonDBTM;
 use CommonGLPI;
 use DirectoryIterator;
 use Dropdown;
@@ -47,6 +48,7 @@ use Item_Problem;
 use Item_Ticket;
 use ReflectionClass;
 use Session;
+use SplFileObject;
 
 use function Safe\preg_match;
 use function Safe\preg_replace;
@@ -69,7 +71,7 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
 
     /**
      * Dropdown itemtypes allowed for custom field definitions.
-     * @var array<string, array<class-string<\CommonDBTM>, string>>
+     * @var array<string, array<class-string<CommonDBTM>, string>>
      * @see self::getAllowedDropdownItemtypes()
      */
     private ?array $allowed_dropdown_itemtypes = null;
@@ -87,7 +89,7 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
         // Automatically build core capacities list.
         // Would be better to do it with a DI auto-discovery feature, but it is not possible yet.
         $directory_iterator = new DirectoryIterator(__DIR__ . '/Capacity');
-        /** @var \SplFileObject $file */
+        /** @var SplFileObject $file */
         foreach ($directory_iterator as $file) {
             $classname = $file->getExtension() === 'php'
                 ? 'Glpi\\Asset\\Capacity\\' . $file->getBasename('.php')
@@ -106,7 +108,7 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
 
         if ($this->custom_field_types === null) {
             $this->custom_field_types = [];
-            /** @var \SplFileObject $file */
+            /** @var SplFileObject $file */
             foreach ($directory_iterator as $file) {
                 // Compute class name with the expected namespace
                 $classname = $file->getExtension() === 'php'
@@ -343,7 +345,7 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
     /**
      * Returns the dropdown itemtypes allowed for custom field definitions.
      * @param bool $flatten If true, returns a flat array of itemtypes rather than separated by category.
-     * @return array<string, array<class-string<\CommonDBTM>, string>>
+     * @return array<string, array<class-string<CommonDBTM>, string>>
      */
     public function getAllowedDropdownItemtypes($flatten = false): array
     {

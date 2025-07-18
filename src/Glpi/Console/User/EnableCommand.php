@@ -36,6 +36,7 @@ namespace Glpi\Console\User;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use User;
 
 class EnableCommand extends AbstractUserCommand
 {
@@ -50,7 +51,7 @@ class EnableCommand extends AbstractUserCommand
     protected function execute(InputInterface $input, OutputInterface $output): ?int
     {
         $username = $input->getArgument('username');
-        $user = new \User();
+        $user = new User();
         if ($user->getFromDBbyName($username)) {
             $user->update([
                 'id' => $user->getID(),

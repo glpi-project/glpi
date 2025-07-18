@@ -32,11 +32,12 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Debug\Profiler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Plugin\Hooks;
+use Glpi\Search\CriteriaFilter;
 use Glpi\Search\FilterableInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -298,7 +299,7 @@ class CommonGLPI implements CommonGLPIInterface
         $this->addImpactTab($ong, $options);
 
         if ($this instanceof FilterableInterface) {
-            $this->addStandardTab(Glpi\Search\CriteriaFilter::class, $ong, $options);
+            $this->addStandardTab(CriteriaFilter::class, $ong, $options);
         }
 
         return $ong;
@@ -601,7 +602,7 @@ class CommonGLPI implements CommonGLPIInterface
     public static function getHeaderParameters(): array
     {
         return [
-            static::getTypeName(\Session::getPluralNumber()),
+            static::getTypeName(Session::getPluralNumber()),
             '',
             ...static::getSectorizedDetails(),
         ];
@@ -678,9 +679,9 @@ class CommonGLPI implements CommonGLPIInterface
                     $options['tabnum'] = $tabnum;
                     $options['itemtype'] = $itemtype;
                     Plugin::doHook(Hooks::PRE_SHOW_TAB, [ 'item' => $item, 'options' => &$options]);
-                    \Glpi\Debug\Profiler::getInstance()->start(get_class($obj) . '::displayTabContentForItem');
+                    Profiler::getInstance()->start(get_class($obj) . '::displayTabContentForItem');
                     $ret = $obj->displayTabContentForItem($item, $tabnum, $withtemplate);
-                    \Glpi\Debug\Profiler::getInstance()->stop(get_class($obj) . '::displayTabContentForItem');
+                    Profiler::getInstance()->stop(get_class($obj) . '::displayTabContentForItem');
 
                     Plugin::doHook(Hooks::POST_SHOW_TAB, ['item' => $item, 'options' => $options]);
                     return $ret;
@@ -1287,7 +1288,7 @@ class CommonGLPI implements CommonGLPIInterface
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 

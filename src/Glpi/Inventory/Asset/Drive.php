@@ -37,6 +37,7 @@
 namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
+use Item_DeviceDrive;
 
 use function Safe\preg_match;
 
@@ -147,6 +148,6 @@ class Drive extends Device
 
     public function getItemtype(): string
     {
-        return \Item_DeviceDrive::class;
+        return Item_DeviceDrive::class;
     }
 }

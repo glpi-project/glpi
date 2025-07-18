@@ -38,6 +38,7 @@ namespace Glpi\Console\Cache;
 use Glpi\Cache\CacheManager;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
+use Glpi\Console\Exception\EarlyExitException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -87,7 +88,7 @@ class SetNamespacePrefixCommand extends AbstractCommand implements Configuration
         $success = $this->cache_manager->setNamespacePrefix($prefix);
 
         if (!$success) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . __('Unable to write cache configuration file.') . '</error>',
                 self::ERROR_UNABLE_TO_WRITE_CONFIG
             );

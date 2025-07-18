@@ -374,7 +374,7 @@ class Item_Rack extends CommonDBRelation
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -450,7 +450,7 @@ JAVASCRIPT;
      */
     public static function showStats(Rack $rack)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $items = $DB->request([
@@ -535,7 +535,7 @@ JAVASCRIPT;
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 

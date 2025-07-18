@@ -45,7 +45,7 @@ class IsReservableCapacity extends AbstractCapacity
 {
     public function getLabel(): string
     {
-        return \Reservation::getTypeName(Session::getPluralNumber());
+        return Reservation::getTypeName(Session::getPluralNumber());
     }
 
     public function getIcon(): string

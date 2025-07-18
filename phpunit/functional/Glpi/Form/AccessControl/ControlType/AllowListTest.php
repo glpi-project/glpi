@@ -38,12 +38,12 @@ use AbstractRightsDropdown;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\ControlType\AllowList;
+use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Form;
+use Glpi\Session\SessionInfo;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
-use Glpi\Form\AccessControl\ControlType\AllowListConfig;
-use Glpi\Session\SessionInfo;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class AllowListTest extends \DbTestCase

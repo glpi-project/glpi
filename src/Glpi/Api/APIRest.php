@@ -40,7 +40,10 @@
 namespace Glpi\Api;
 
 use AllAssets;
+use CommonDBTM;
+use Document;
 use GLPIUploadHandler;
+use ReflectionClass;
 use Safe\Exceptions\JsonException;
 use stdClass;
 use Toolbox;
@@ -284,7 +287,7 @@ class APIRest extends API
                 default:
                 case "GET": // retrieve item(s)
                     if (
-                        $itemtype === \Document::class
+                        $itemtype === Document::class
                         && $id > 0
                         && (
                             ($_SERVER['HTTP_ACCEPT'] ?? null) === 'application/octet-stream'
@@ -292,7 +295,7 @@ class APIRest extends API
                         )
                     ) {
                         // Raw document download
-                        $document = new \Document();
+                        $document = new Document();
                         if (!$document->getFromDB($id)) {
                             $this->messageNotfoundError();
                         }
@@ -399,7 +402,7 @@ class APIRest extends API
      *                            (default true)
      * @param boolean $all_assets if we can have allasset virtual type (default false)
      *
-     * @return false|class-string<\CommonDBTM>
+     * @return false|class-string<CommonDBTM>
      */
     private function getItemtype($index = 0, $recursive = true, $all_assets = false)
     {
@@ -432,7 +435,7 @@ class APIRest extends API
                 }
 
                 // Get case sensitive itemtype name
-                $itemtype = (new \ReflectionClass($itemtype))->getName();
+                $itemtype = (new ReflectionClass($itemtype))->getName();
                 if ($deprecated) {
                     // Remove deprecated namespace
                     $itemtype = str_replace("Glpi\Api\Deprecated\\", "", $itemtype);

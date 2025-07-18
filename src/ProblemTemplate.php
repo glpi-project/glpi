@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\Clonable;
+
 /**
  * Problem template class
  *
@@ -40,7 +42,7 @@
  **/
 class ProblemTemplate extends ITILTemplate
 {
-    use Glpi\Features\Clonable;
+    use Clonable;
 
     #[Override]
     public static function getPredefinedFields(): ITILTemplatePredefinedField

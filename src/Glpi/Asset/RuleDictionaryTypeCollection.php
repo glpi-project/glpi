@@ -35,6 +35,7 @@
 namespace Glpi\Asset;
 
 use RuleDictionnaryDropdownCollection;
+use RuntimeException;
 
 abstract class RuleDictionaryTypeCollection extends RuleDictionnaryDropdownCollection
 {
@@ -56,7 +57,7 @@ abstract class RuleDictionaryTypeCollection extends RuleDictionnaryDropdownColle
     {
         $definition = AssetDefinitionManager::getInstance()->getDefinition(static::$definition_system_name);
         if (!($definition instanceof AssetDefinition)) {
-            throw new \RuntimeException('Asset definition is expected to be defined in concrete class.');
+            throw new RuntimeException('Asset definition is expected to be defined in concrete class.');
         }
 
         return $definition;

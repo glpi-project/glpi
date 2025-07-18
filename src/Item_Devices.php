@@ -32,9 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Features\State;
 
 /**
  * @since 0.84
@@ -47,7 +47,7 @@ use Glpi\Exception\Http\NotFoundHttpException;
  **/
 class Item_Devices extends CommonDBRelation
 {
-    use Glpi\Features\State;
+    use State;
 
     public static $itemtype_1            = 'itemtype';
     public static $items_id_1            = 'items_id';
@@ -551,7 +551,7 @@ class Item_Devices extends CommonDBRelation
      **/
     public static function getItemsAssociatedTo($itemtype, $items_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $res = [];
@@ -885,7 +885,7 @@ class Item_Devices extends CommonDBRelation
         ?HTMLTableSuperHeader $delete_column,
         $dynamic_column
     ) {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $is_device = ($item instanceof CommonDevice);
@@ -1391,7 +1391,7 @@ class Item_Devices extends CommonDBRelation
      **/
     public static function cleanItemDeviceDBOnItemDelete($itemtype, $items_id, $unaffect)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         foreach (self::getItemAffinities($itemtype) as $link_type) {

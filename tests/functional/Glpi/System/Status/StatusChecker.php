@@ -37,10 +37,13 @@ namespace tests\units\Glpi\System\Status;
 use AuthLDAP;
 use AuthMail;
 use CronTask;
-use DbTestCase;
 use Glpi\System\Status\StatusChecker as GlpiStatusChecker;
+use GlpiTestCase;
 
-class StatusChecker extends DbTestCase
+// Must not extends DBTestCase as call to GlpiStatusChecker::getDBStatus
+// will instanciate a new database connection which will autocommit the transaction
+// started by DBTestCase before each tests
+class StatusChecker extends GlpiTestCase
 {
     public function testStatusFormat()
     {
@@ -105,7 +108,7 @@ class StatusChecker extends DbTestCase
         // Future checks won't re-run that check then, so the DB changes aren't lost.
         GlpiStatusChecker::getDBStatus();
 
-        // Manually start a transaction since this is a new connection
+        // Manually start a transaction since this test case extends GlpiTestCase, not DBTestCase
         $DB->beginTransaction();
 
         // Add a bunch of bad service items
@@ -165,7 +168,8 @@ class StatusChecker extends DbTestCase
         $this->string($status['crontasks']['status'])->isEqualTo(GlpiStatusChecker::STATUS_PROBLEM);
         $this->array($status['crontasks']['stuck'])->size->isEqualTo(2);
 
-        // afterTestMethod will rollback the DB changes for us
+        // Manually rollback data since this test case extends GlpiTestCase, not DBTestCase
+        $DB->rollBack();
     }
 
     protected function getCalculatedGlobalStatusProvider()

@@ -79,7 +79,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
     {
 
         if (
-            $this->getMode() == \Notification_NotificationTemplate::MODE_MAIL
+            $this->getMode() == Notification_NotificationTemplate::MODE_MAIL
             && MailCollector::countActiveCollectors()
             && $this->allowResponse()
         ) {
@@ -98,7 +98,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
     {
 
         if (
-            $this->getMode() == \Notification_NotificationTemplate::MODE_MAIL
+            $this->getMode() == Notification_NotificationTemplate::MODE_MAIL
             && MailCollector::countActiveCollectors()
             && $this->allowResponse()
         ) {

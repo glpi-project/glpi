@@ -32,9 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Inventory\Request;
 
 use function Safe\file_get_contents;
 
@@ -143,7 +143,7 @@ class RuleImportAssetCollection extends RuleCollection
 
         $refused = new RefusedEquipment();
         if ($refused->getFromDB($refused_id) && ($inventory_file = $refused->getInventoryFileName()) !== null) {
-            $inventory_request = new \Glpi\Inventory\Request();
+            $inventory_request = new Request();
             $contents = file_get_contents($inventory_file);
             $inventory_request
                 ->testRules()

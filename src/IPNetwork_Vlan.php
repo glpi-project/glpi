@@ -94,7 +94,7 @@ class IPNetwork_Vlan extends CommonDBRelation
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -213,7 +213,7 @@ class IPNetwork_Vlan extends CommonDBRelation
      **/
     public static function getVlansForIPNetwork($portID)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $vlans = [];

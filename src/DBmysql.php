@@ -32,18 +32,18 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
+use Glpi\Debug\Profile;
 use Glpi\System\Requirement\DbTimezones;
 use Safe\DateTime;
 
-use function Safe\ini_get;
 use function Safe\filesize;
 use function Safe\fopen;
 use function Safe\fread;
+use function Safe\ini_get;
 use function Safe\preg_match;
 use function Safe\preg_replace;
 use function Safe\preg_split;
@@ -81,7 +81,6 @@ class DBmysql
 
     // Slave management
     public $slave              = false;
-    private $in_transaction;
 
     /**
      * Defines if connection must use SSL.
@@ -204,6 +203,8 @@ class DBmysql
      * @see self::listFields()
      */
     private $field_cache = [];
+
+    private int $transaction_level = 0;
 
     /**
      * Constructor / Connect to the MySQL Database
@@ -349,7 +350,7 @@ class DBmysql
      */
     public function query($query)
     {
-        throw new \Exception('Executing direct queries is not allowed!');
+        throw new Exception('Executing direct queries is not allowed!');
     }
 
     /**
@@ -375,7 +376,7 @@ class DBmysql
 
         $res = $this->dbh->query($query);
         if (!$res) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf(
                     'MySQL query error: %s (%d) in SQL query "%s".',
                     $this->dbh->error,
@@ -414,7 +415,7 @@ class DBmysql
         }
 
         if (isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
-            \Glpi\Debug\Profile::getCurrent()->addSQLQueryData(
+            Profile::getCurrent()->addSQLQueryData(
                 $debug_data['query'],
                 $debug_data['time'],
                 $debug_data['rows'],
@@ -444,7 +445,7 @@ class DBmysql
      */
     public function queryOrDie($query, $message = '')
     {
-        throw new \Exception('Executing direct queries is not allowed!');
+        throw new Exception('Executing direct queries is not allowed!');
     }
 
     /**
@@ -475,7 +476,7 @@ class DBmysql
     {
         $res = $this->dbh->prepare($query);
         if (!$res) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf(
                     'MySQL prepare error: %s (%d) in SQL query "%s".',
                     $this->dbh->error,
@@ -1216,7 +1217,7 @@ class DBmysql
         //handle aliases
         $names = preg_split('/\s+AS\s+/i', $name);
         if (count($names) > 2) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'Invalid field name ' . $name
             );
         }
@@ -1363,7 +1364,7 @@ class DBmysql
             $known_clauses = ['WHERE', 'ORDER', 'LIMIT', 'START'];
             foreach (array_keys($clauses) as $key) {
                 if (!in_array($key, $known_clauses)) {
-                    throw new \RuntimeException(
+                    throw new RuntimeException(
                         str_replace(
                             '%clause',
                             $key,
@@ -1375,10 +1376,10 @@ class DBmysql
         }
 
         if (!count($clauses['WHERE'])) {
-            throw new \RuntimeException('Cannot run an UPDATE query without WHERE clause!');
+            throw new RuntimeException('Cannot run an UPDATE query without WHERE clause!');
         }
         if (!count($params)) {
-            throw new \RuntimeException('Cannot run an UPDATE query without parameters!');
+            throw new RuntimeException('Cannot run an UPDATE query without parameters!');
         }
 
         $query  = "UPDATE " . self::quoteName($table);
@@ -1508,7 +1509,7 @@ class DBmysql
     {
 
         if (!count($where)) {
-            throw new \RuntimeException('Cannot run an DELETE query without WHERE clause!');
+            throw new RuntimeException('Cannot run an DELETE query without WHERE clause!');
         }
 
         $query  = "DELETE " . self::quoteName($table) . " FROM " . self::quoteName($table);
@@ -1659,7 +1660,7 @@ class DBmysql
             'FIELD',
         ];
         if (!in_array($type, $known_types)) {
-            throw new \InvalidArgumentException('Unknown type to drop: ' . $type);
+            throw new InvalidArgumentException('Unknown type to drop: ' . $type);
         }
 
         $name = $this::quoteName($name);
@@ -1703,81 +1704,112 @@ class DBmysql
         ];
     }
 
-    /**
-     * Starts a transaction
-     *
-     * @return boolean
-     */
-    public function beginTransaction()
+    private function isInTransaction(): bool
     {
-        if ($this->in_transaction === true) {
-            trigger_error('A database transaction has already been started!', E_USER_WARNING);
-        }
-        $this->in_transaction = true;
-        return $this->dbh->begin_transaction();
+        return $this->transaction_level > 0;
     }
 
-    public function setSavepoint(string $name, $force = false)
+    private function isInNestedTransaction(): bool
     {
-        if (!$this->in_transaction && $force) {
-            $this->beginTransaction();
-        }
-        if ($this->in_transaction) {
-            $this->dbh->savepoint($name);
+        return $this->transaction_level > 1;
+    }
+
+    private function formatSavePointName(int $level): string
+    {
+        // If we use a save point it means this is at least the second
+        // transaction, for example:
+        // 0 -> no transaction
+        // 1 -> start transaction
+        // 2 -> set save point
+        // We want the name of the first savepoint to be "savepoint_0", thus
+        // we need to remove 2 from the current transaction level.
+        $level -= 2;
+        return "savepoint_" . $level;
+    }
+
+    /**
+     * Use instead of `formatSavePointName` when running raw queries.
+     * This is needed because there are no methods in the mysqli object to
+     * rollback a savepoint so a raw query is needed.
+     */
+    private function formatAndQuoteSavePointName(int $level): string
+    {
+        return static::quoteName($this->formatSavePointName($level));
+    }
+
+    /**
+     * Starts a transaction
+     */
+    public function beginTransaction(): void
+    {
+        if (!$this->isInTransaction()) {
+            // No transaction underway, simply start a fresh one.
+            $success = $this->dbh->begin_transaction();
         } else {
-            // Not already in transaction or failed to start one now
-            trigger_error('Unable to set DB savepoint because no transaction was started', E_USER_WARNING);
+            // A transaction is already underway, create a new savepoint.
+            $savepoint = $this->formatSavePointName(
+                $this->transaction_level + 1
+            );
+            $success = $this->dbh->savepoint($savepoint);
+        }
+
+        if ($success) {
+            $this->transaction_level++;
+        } else {
+            throw new RuntimeException("Failed to start transaction.");
         }
     }
 
     /**
      * Commits a transaction
-     *
-     * @return boolean
      */
-    public function commit()
+    public function commit(): void
     {
-        $this->in_transaction = false;
-        return $this->dbh->commit();
-    }
+        if (!$this->isInTransaction()) {
+            throw new RuntimeException("Not in a transaction.");
+        }
 
-    /**
-     * Rollbacks a transaction completely or to a specified savepoint
-     *
-     * @return boolean
-     */
-    public function rollBack($savepoint = null)
-    {
-        if (!$savepoint) {
-            $this->in_transaction = false;
-            return $this->dbh->rollback();
+        if (!$this->isInNestedTransaction()) {
+            // A simple transaction is underway, commit its data.
+            $success = $this->dbh->commit();
         } else {
-            return $this->rollbackTo($savepoint);
+            // A nested transaction is already underway, release the current savepoint.
+            $savepoint = $this->formatSavePointName($this->transaction_level);
+            $success = $this->dbh->release_savepoint($savepoint);
+        }
+
+        if ($success) {
+            $this->transaction_level--;
+        } else {
+            throw new RuntimeException("Failed to commit transaction.");
         }
     }
 
     /**
-     * Rollbacks a transaction to a specified savepoint
-     *
-     * @param string $name
-     *
-     * @return boolean
+     * Rollbacks a transaction completely or to a specified savepoint
      */
-    protected function rollbackTo($name)
+    public function rollBack(): void
     {
-        // No proper rollback to savepoint support in mysqli extension?
-        $result = $this->doQuery('ROLLBACK TO ' . self::quoteName($name));
-        return $result !== false;
-    }
+        if (!$this->isInTransaction()) {
+            throw new RuntimeException("Not in a transaction.");
+        }
 
-    /**
-     * Are we in a transaction?
-     *
-     * @return boolean
-     */
-    public function inTransaction()
-    {
-        return $this->in_transaction;
+        if (!$this->isInNestedTransaction()) {
+            // A simple transaction is underway, roll it back.
+            $success = $this->dbh->rollback();
+        } else {
+            // A nested transaction is already underway, roolback to current savepoint.
+            $savepoint = $this->formatAndQuoteSavePointName(
+                $this->transaction_level
+            );
+            $success = $this->doQuery("ROLLBACK TO $savepoint");
+        }
+
+        if ($success) {
+            $this->transaction_level--;
+        } else {
+            throw new RuntimeException("Failed to rollback transaction.");
+        }
     }
 
     /**
@@ -1813,7 +1845,7 @@ class DBmysql
 
         $list = []; //default $tz is empty
 
-        $from_php = \DateTimeZone::listIdentifiers();
+        $from_php = DateTimeZone::listIdentifiers();
         $now = new DateTime();
 
         $iterator = $this->request([
@@ -1823,7 +1855,7 @@ class DBmysql
         ]);
 
         foreach ($iterator as $from_mysql) {
-            $now->setTimezone(new \DateTimeZone($from_mysql['Name']));
+            $now->setTimezone(new DateTimeZone($from_mysql['Name']));
             $list[$from_mysql['Name']] = $from_mysql['Name'] . $now->format(" (T P)");
         }
 
@@ -2012,7 +2044,7 @@ class DBmysql
     public function executeStatement(mysqli_stmt $stmt): void
     {
         if (!$stmt->execute()) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf(
                     'MySQL statement error: %s (%d) in SQL query "%s".',
                     $stmt->error,

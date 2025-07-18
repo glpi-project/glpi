@@ -33,16 +33,16 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\Inventoriable;
 
 /**
  * Not managed devices from inventory
  */
 class Unmanaged extends CommonDBTM
 {
-    use Glpi\Features\Inventoriable;
+    use Inventoriable;
     use Glpi\Features\State;
     use AssignableItem;
 
@@ -342,7 +342,7 @@ class Unmanaged extends CommonDBTM
      */
     public function convert(int $items_id, ?string $itemtype = null): int
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $this->getFromDB($items_id);

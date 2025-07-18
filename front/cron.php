@@ -32,13 +32,14 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Application\ResourcesChecker;
+use Glpi\Kernel\Kernel;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 use function Safe\ob_end_clean;
 
 /**
- * @var \DBmysql|null $DB
+ * @var DBmysql|null $DB
  * @var array $CFG_GLPI
  */
 global $DB, $CFG_GLPI;
@@ -61,11 +62,11 @@ if (PHP_SAPI === 'cli') {
     // It must be done here as this check must be done even when the Kernel
     // cannot be instanciated due to missing dependencies.
     require_once dirname(__DIR__) . '/src/Glpi/Application/ResourcesChecker.php';
-    (new \Glpi\Application\ResourcesChecker(dirname(__DIR__)))->checkResources();
+    (new ResourcesChecker(dirname(__DIR__)))->checkResources();
 
     require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-    $kernel = new \Glpi\Kernel\Kernel();
+    $kernel = new Kernel();
     $kernel->boot();
 
     // Handle the `--debug` argument

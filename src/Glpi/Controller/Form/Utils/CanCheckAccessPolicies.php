@@ -34,11 +34,11 @@
 
 namespace Glpi\Controller\Form\Utils;
 
-use Session;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Form;
+use Session;
 use Symfony\Component\HttpFoundation\Request;
 
 trait CanCheckAccessPolicies

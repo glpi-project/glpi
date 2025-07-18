@@ -36,8 +36,8 @@
 // Migration may have been missed if user installed 10.x version before 9.5.7 release date.
 foreach (['operatingsystems_id', 'operatingsystemversions_id', 'operatingsystemservicepacks_id'] as $item_os_fkey) {
     /**
-     * @var \DBmysql $DB
-     * @var \Migration $migration
+     * @var DBmysql $DB
+     * @var Migration $migration
      */
     $migration->addPostQuery(
         $DB->buildUpdate(

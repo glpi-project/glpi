@@ -37,6 +37,7 @@ namespace Glpi\Kernel\Listener\RequestListener;
 use Config;
 use DBmysql;
 use Glpi\Controller\InstallController;
+use Glpi\Exception\Http\HttpException;
 use Glpi\Kernel\KernelListenerTrait;
 use Glpi\Kernel\ListenersPriority;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -87,7 +88,7 @@ final class CheckDatabaseStatusListener implements EventSubscriberInterface
             return;
         }
 
-        /** @var \DBmysql|null $DB */
+        /** @var DBmysql|null $DB */
         global $DB;
 
         if (!($DB instanceof DBmysql)) {
@@ -98,7 +99,7 @@ final class CheckDatabaseStatusListener implements EventSubscriberInterface
         }
 
         if (!$DB->connected) {
-            $exception = new \Glpi\Exception\Http\HttpException(500);
+            $exception = new HttpException(500);
             $exception->setMessageToDisplay(
                 __('The connection to the SQL server could not be established. Please check your configuration.')
             );
@@ -108,7 +109,7 @@ final class CheckDatabaseStatusListener implements EventSubscriberInterface
         }
 
         if (!Config::isLegacyConfigurationLoaded()) {
-            $exception = new \Glpi\Exception\Http\HttpException(500);
+            $exception = new HttpException(500);
             $exception->setMessageToDisplay(
                 __('Unable to load the GLPI configuration from the database.')
             );

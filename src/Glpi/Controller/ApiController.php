@@ -34,18 +34,18 @@
 
 namespace Glpi\Controller;
 
+use Glpi\Api\APIRest;
 use Glpi\Api\HL\Controller\AbstractController as ApiAbstractController;
 use Glpi\Api\HL\Router;
 use Glpi\Error\ErrorHandler;
-use Glpi\Http\Firewall;
 use Glpi\Http\HeaderlessStreamedResponse;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
-use Glpi\Security\Attribute\DisableCsrfChecks;
-use Glpi\Security\Attribute\SecurityStrategy;
+use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use Throwable;
 
 use function Safe\file_get_contents;
 use function Safe\preg_match;
@@ -60,8 +60,6 @@ final class ApiController extends AbstractController
             'request_parameters' => '.*',
         ]
     )]
-    #[DisableCsrfChecks()]
-    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function __invoke(SymfonyRequest $request): SymfonyResponse
     {
         $_SERVER['PATH_INFO'] = $request->get('request_parameters');
@@ -75,7 +73,7 @@ final class ApiController extends AbstractController
         if (preg_match('/^\/v1(\/|$)/', $relative_uri)) {
             // @phpstan-ignore-next-line method.deprecatedClass (refactoring is planned later)
             return new HeaderlessStreamedResponse(function () {
-                $api = new \Glpi\Api\APIRest();
+                $api = new APIRest();
                 $api->call();
             });
         }
@@ -99,7 +97,7 @@ final class ApiController extends AbstractController
 
         try {
             $response = $router->handleRequest($request);
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             $response = new JSONResponse(
                 ApiAbstractController::getErrorResponseBody(
                     ApiAbstractController::ERROR_INVALID_PARAMETER,
@@ -107,7 +105,7 @@ final class ApiController extends AbstractController
                 ),
                 400
             );
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             ErrorHandler::logCaughtException($e);
             $response = new JSONResponse(null, 500);
         }

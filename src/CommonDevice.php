@@ -193,7 +193,7 @@ abstract class CommonDevice extends CommonDropdown
 
     public function canUnrecurs()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $this->fields['id'];
@@ -465,7 +465,7 @@ abstract class CommonDevice extends CommonDropdown
      **/
     public function import(array $input)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $with_history = $input['with_history'] ?? true;

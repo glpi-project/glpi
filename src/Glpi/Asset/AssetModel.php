@@ -34,11 +34,14 @@
 
 namespace Glpi\Asset;
 
+use CommonDCModelDropdown;
 use CommonDropdown;
+use DBmysql;
 use Glpi\Asset\Capacity\IsRackableCapacity;
+use RuntimeException;
 use Toolbox;
 
-abstract class AssetModel extends \CommonDCModelDropdown
+abstract class AssetModel extends CommonDCModelDropdown
 {
     /**
      * Asset definition system name.
@@ -58,7 +61,7 @@ abstract class AssetModel extends \CommonDCModelDropdown
     {
         $definition = AssetDefinitionManager::getInstance()->getDefinition(static::$definition_system_name);
         if (!($definition instanceof AssetDefinition)) {
-            throw new \RuntimeException('Asset definition is expected to be defined in concrete class.');
+            throw new RuntimeException('Asset definition is expected to be defined in concrete class.');
         }
 
         return $definition;
@@ -166,14 +169,14 @@ abstract class AssetModel extends \CommonDCModelDropdown
             array_key_exists($definition_fkey, $input)
             && (int) $input[$definition_fkey] !== $definition_id
         ) {
-            throw new \RuntimeException('Definition does not match the current concrete class.');
+            throw new RuntimeException('Definition does not match the current concrete class.');
         }
 
         if (
             !$this->isNewItem()
             && (int) $this->fields[$definition_fkey] !== $definition_id
         ) {
-            throw new \RuntimeException('Definition cannot be changed.');
+            throw new RuntimeException('Definition cannot be changed.');
         }
 
         $input[$definition_fkey] = $definition_id;
@@ -254,7 +257,7 @@ abstract class AssetModel extends \CommonDCModelDropdown
 
     public function getAdditionalFields()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $fields = CommonDropdown::getAdditionalFields();

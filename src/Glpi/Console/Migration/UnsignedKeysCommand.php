@@ -38,6 +38,7 @@ namespace Glpi\Console\Migration;
 use DBConnection;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
+use Glpi\Console\Exception\EarlyExitException;
 use Plugin;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -236,7 +237,7 @@ class UnsignedKeysCommand extends AbstractCommand implements ConfigurationComman
         }
 
         if (!DBConnection::updateConfigProperty(DBConnection::PROPERTY_ALLOW_SIGNED_KEYS, false)) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . __('Unable to update DB configuration file.') . '</error>',
                 self::ERROR_UNABLE_TO_UPDATE_CONFIG
             );
@@ -259,7 +260,7 @@ class UnsignedKeysCommand extends AbstractCommand implements ConfigurationComman
                 $message .= "\n";
                 $message .= '<comment>' . __('You should try to update these plugins to their latest version and run the command again.') . '</comment>';
             }
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 $message,
                 self::ERROR_COLUMN_MIGRATION_FAILED
             );

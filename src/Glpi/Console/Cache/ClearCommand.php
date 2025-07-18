@@ -37,6 +37,7 @@ namespace Glpi\Console\Cache;
 
 use Glpi\Cache\CacheManager;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -87,7 +88,7 @@ class ClearCommand extends Command
         } else {
             foreach ($contexts as $context) {
                 if (!in_array($context, $cache_manager->getKnownContexts())) {
-                    throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
+                    throw new InvalidArgumentException(
                         sprintf(__('Invalid cache context: "%s".'), $context)
                     );
                 }

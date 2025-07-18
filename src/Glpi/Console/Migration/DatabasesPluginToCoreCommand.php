@@ -35,12 +35,12 @@
 
 namespace Glpi\Console\Migration;
 
+use Change_Item;
+use Contract_Item;
 use Database;
 use DatabaseInstance;
 use DatabaseInstanceCategory;
 use DatabaseInstanceType;
-use Change_Item;
-use Contract_Item;
 use Document_Item;
 use Item_Problem;
 use Item_Project;

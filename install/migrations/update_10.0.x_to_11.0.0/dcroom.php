@@ -31,12 +31,10 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-
 if (!$DB->fieldExists("glpi_dcrooms", "vis_cell_width")) {
     $migration->addField(
         "glpi_dcrooms",

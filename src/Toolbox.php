@@ -32,7 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Api\Deprecated\DeprecatedInterface;
 use Glpi\Console\Application;
 use Glpi\DBAL\QueryParam;
 use Glpi\Error\ErrorUtils;
@@ -41,26 +41,33 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Helpdesk\DefaultDataManager;
 use Glpi\Mail\Protocol\ProtocolInterface;
+use Glpi\Message\MessageType;
+use Glpi\OAuth\Server;
 use Glpi\Plugin\Hooks;
 use Glpi\Progress\AbstractProgressIndicator;
-use Glpi\Message\MessageType;
 use Glpi\Rules\RulesManager;
 use Glpi\Toolbox\URL;
 use Glpi\Toolbox\VersionParser;
 use GuzzleHttp\Client;
+use Laminas\Mail\Protocol\Imap;
+use Laminas\Mail\Protocol\Pop3;
 use Laminas\Mail\Storage\AbstractStorage;
 use Mexitek\PHPColors\Color;
+use Monolog\Logger;
 use Psr\Log\LogLevel;
 use Safe\Exceptions\ErrorfuncException;
 use Safe\Exceptions\FilesystemException;
 use Safe\Exceptions\ImageException;
+use Safe\Exceptions\JsonException;
 use Safe\Exceptions\PcreException;
+use Safe\Exceptions\UrlException;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 use function Safe\base64_decode;
-use function Safe\class_uses;
 use function Safe\chmod;
+use function Safe\class_uses;
 use function Safe\copy;
 use function Safe\curl_exec;
 use function Safe\curl_getinfo;
@@ -79,9 +86,9 @@ use function Safe\gzuncompress;
 use function Safe\imagealphablending;
 use function Safe\imagecopyresampled;
 use function Safe\imagecreatefrombmp;
-use function Safe\imagecreatefrompng;
 use function Safe\imagecreatefromgif;
 use function Safe\imagecreatefromjpeg;
+use function Safe\imagecreatefrompng;
 use function Safe\imagecreatefromwebp;
 use function Safe\imagecreatetruecolor;
 use function Safe\imagejpeg;
@@ -320,7 +327,7 @@ class Toolbox
      **/
     private static function log($level = LogLevel::WARNING, $args = null)
     {
-        /** @var \Monolog\Logger $PHPLOGGER */
+        /** @var Logger $PHPLOGGER */
         global $PHPLOGGER;
 
         static $tps = 0;
@@ -369,7 +376,7 @@ class Toolbox
         try {
             $msg = self::cleanPaths($msg);
             $PHPLOGGER->log($level, $msg, $extra);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             //something went wrong
             // make sure logging does not cause fatal
             // and error still logged (without glpi root path removed)
@@ -508,7 +515,7 @@ class Toolbox
             return $ok;
         }
 
-        /** @var \Glpi\Console\Application $application */
+        /** @var Application $application */
         global $application;
         if ($application instanceof Application) {
             $application->getOutput()->writeln('<comment>' . $text . '</comment>', OutputInterface::VERBOSITY_VERY_VERBOSE);
@@ -560,7 +567,7 @@ class Toolbox
      * @param string|null $mime             mime type
      * @param boolean     $expires_headers  whether to add expires headers to maximize cacheability
      *
-     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+     * @throws HttpException
      */
     public static function getFileAsResponse(
         string $path,
@@ -646,7 +653,7 @@ class Toolbox
         try {
             $content = file_get_contents($path);
         } catch (FilesystemException $e) {
-            throw new \Symfony\Component\HttpKernel\Exception\HttpException(500, $e->getMessage(), $e);
+            throw new HttpException(500, $e->getMessage(), $e);
         }
 
         return new Response(
@@ -691,7 +698,7 @@ class Toolbox
     {
         Toolbox::deprecated();
 
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $value = ((array) $value === $value)
@@ -1338,7 +1345,7 @@ class Toolbox
         // add proxy string if configured in glpi
         if (!empty($CFG_GLPI["proxy_name"])) {
             $proxy_creds      = !empty($CFG_GLPI["proxy_user"])
-                ? $CFG_GLPI["proxy_user"] . ":" . (new \GLPIKey())->decrypt($CFG_GLPI["proxy_passwd"]) . "@"
+                ? $CFG_GLPI["proxy_user"] . ":" . (new GLPIKey())->decrypt($CFG_GLPI["proxy_passwd"]) . "@"
                 : "";
             $proxy_string     = "http://{$proxy_creds}" . $CFG_GLPI['proxy_name'] . ":" . $CFG_GLPI['proxy_port'];
             $options['proxy'] = $proxy_string;
@@ -1572,7 +1579,7 @@ class Toolbox
             if (array_key_exists('path', $parsed_url) && $parsed_url['path'][0] === '/') {
                 return URL::isGLPIRelativeUrl($where) ? $CFG_GLPI["root_doc"] . $where : null;
             }
-        } catch (\Safe\Exceptions\UrlException $e) {
+        } catch (UrlException $e) {
             //empty catch
         }
 
@@ -1885,13 +1892,13 @@ class Toolbox
             'imap' => [
                 //TRANS: IMAP mail server protocol
                 'label'    => __('IMAP'),
-                'protocol' => \Laminas\Mail\Protocol\Imap::class,
+                'protocol' => Imap::class,
                 'storage'  => \Laminas\Mail\Storage\Imap::class,
             ],
             'pop'  => [
                 //TRANS: POP3 mail server protocol
                 'label'    => __('POP'),
-                'protocol' => \Laminas\Mail\Protocol\Pop3::class,
+                'protocol' => Pop3::class,
                 'storage'  => \Laminas\Mail\Storage\Pop3::class,
             ],
         ];
@@ -1943,7 +1950,7 @@ class Toolbox
      * @param string    $protocol_type
      * @param bool      $allow_plugins_protocols    Whether plugins protocol must be allowed.
      *
-     * @return null|\Glpi\Mail\Protocol\ProtocolInterface|\Laminas\Mail\Protocol\Imap|\Laminas\Mail\Protocol\Pop3
+     * @return null|ProtocolInterface|Imap|Pop3
      */
     public static function getMailServerProtocolInstance(string $protocol_type, bool $allow_plugins_protocols = true)
     {
@@ -1955,8 +1962,8 @@ class Toolbox
             } elseif (
                 class_exists($protocol)
                 && (is_a($protocol, ProtocolInterface::class, true)
-                 || is_a($protocol, \Laminas\Mail\Protocol\Imap::class, true)
-                 || is_a($protocol, \Laminas\Mail\Protocol\Pop3::class, true))
+                 || is_a($protocol, Imap::class, true)
+                 || is_a($protocol, Pop3::class, true))
             ) {
                 return new $protocol();
             } else {
@@ -2192,14 +2199,14 @@ class Toolbox
                 if (false === $res) {
                     $msg = "Error binding params in table $table\n";
                     $msg .= print_r($row, true);
-                    throw new \RuntimeException($msg);
+                    throw new RuntimeException($msg);
                 }
                 $res = $stmt->execute();
                 if (false === $res) {
                     $msg = $stmt->error;
                     $msg .= "\nError execution statement in table $table\n";
                     $msg .= print_r($row, true);
-                    throw new \RuntimeException($msg);
+                    throw new RuntimeException($msg);
                 }
 
                 $progress_indicator?->advance();
@@ -2220,7 +2227,7 @@ class Toolbox
 
         $progress_indicator?->setProgressBarMessage(__('Generating security keys…'));
         // Make sure keys are generated automatically so OAuth will work when/if they choose to use it
-        \Glpi\OAuth\Server::generateKeys();
+        Server::generateKeys();
         $progress_indicator?->advance($generate_keys_weight);
         $progress_indicator?->addMessage(MessageType::Success, __('Security keys generated.'));
 
@@ -2691,7 +2698,7 @@ class Toolbox
         try {
             json_decode($json);
             return true;
-        } catch (\Safe\Exceptions\JsonException $e) {
+        } catch (JsonException $e) {
             return false;
         }
     }
@@ -2736,7 +2743,7 @@ class Toolbox
                 ];
                 break;
             default:
-                throw new \RuntimeException("Unknown type $type to get date formats.");
+                throw new RuntimeException("Unknown type $type to get date formats.");
         }
         return $formats;
     }
@@ -3166,7 +3173,7 @@ HTML;
      */
     public static function isAPIDeprecated(string $class): bool
     {
-        $deprecated = \Glpi\Api\Deprecated\DeprecatedInterface::class;
+        $deprecated = DeprecatedInterface::class;
 
         // Insert namespace if missing
         if (!str_contains($class, "Glpi\Api\Deprecated")) {

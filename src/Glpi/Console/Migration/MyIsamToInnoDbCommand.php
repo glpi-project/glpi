@@ -37,6 +37,7 @@ namespace Glpi\Console\Migration;
 
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
+use Glpi\Console\Exception\EarlyExitException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -114,7 +115,7 @@ class MyIsamToInnoDbCommand extends AbstractCommand implements ConfigurationComm
         }
 
         if ($errors) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . __('Errors occurred during migration.') . '</error>',
                 self::ERROR_TABLE_MIGRATION_FAILED
             );

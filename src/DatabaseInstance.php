@@ -32,14 +32,15 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\Clonable;
+use Glpi\Features\Inventoriable;
 
 class DatabaseInstance extends CommonDBTM
 {
-    use Glpi\Features\Clonable;
-    use Glpi\Features\Inventoriable;
+    use Clonable;
+    use Inventoriable;
     use Glpi\Features\State;
     use AssignableItem {
         prepareInputForAdd as prepareInputForAddAssignableItem;
@@ -108,7 +109,7 @@ class DatabaseInstance extends CommonDBTM
 
     public function getDatabases(): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $dbs = [];
 
@@ -431,7 +432,7 @@ class DatabaseInstance extends CommonDBTM
 
     public static function showInstances(CommonDBTM $item, $withtemplate)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $instances = $DB->request([

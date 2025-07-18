@@ -36,12 +36,21 @@
 namespace Glpi\Security;
 
 use DateInterval;
+use DBmysql;
+use Entity;
+use Exception;
 use Glpi\Application\View\TemplateRenderer;
+use GLPIKey;
+use Group_User;
+use JsonException;
+use Profile_User;
+use Psr\Log\LoggerInterface;
 use RobThree\Auth\Algorithm;
 use RobThree\Auth\Providers\Qr\BaconQrCodeProvider;
 use RobThree\Auth\TwoFactorAuth;
 use RobThree\Auth\TwoFactorAuthException;
 use Safe\DateTimeImmutable;
+use SodiumException;
 
 use function Safe\json_encode;
 
@@ -142,10 +151,10 @@ final class TOTPManager
      */
     public function setSecretForUser(int $users_id, string $secret, ?string $algorithm = null): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
-        $encrypted_secret = (new \GLPIKey())->encrypt($secret);
+        $encrypted_secret = (new GLPIKey())->encrypt($secret);
         return $DB->update('glpi_users', [
             '2fa'   => json_encode([
                 'algorithm' => 'totp',
@@ -167,7 +176,7 @@ final class TOTPManager
      */
     public function disable2FAForUser(int $users_id): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         return $DB->update('glpi_users', [
@@ -181,11 +190,11 @@ final class TOTPManager
      * Get the 2FA configuration for a user
      * @param int $users_id ID of the user
      * @return array|null The configuration, or null if 2FA is not enabled for the user
-     * @throws \JsonException
+     * @throws JsonException
      */
     private function get2FAConfigForUser(int $users_id): ?array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $it = $DB->request([
@@ -209,11 +218,11 @@ final class TOTPManager
             if (!isset($config['secret'])) {
                 return null;
             } else {
-                $config['secret'] = (new \GLPIKey())->decrypt($config['secret']);
+                $config['secret'] = (new GLPIKey())->decrypt($config['secret']);
                 return $config;
             }
-        } catch (\SodiumException $e) {
-            /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+        } catch (SodiumException $e) {
+            /** @var LoggerInterface $PHPLOGGER */
             global $PHPLOGGER;
             $PHPLOGGER->error(
                 "Unreadable TOTP secret for user ID {$users_id}: " . $e->getMessage(),
@@ -228,7 +237,7 @@ final class TOTPManager
      * Check if 2FA is enabled for a user
      * @param int $users_id ID of the user
      * @return bool True if 2FA is enabled, false otherwise
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function is2FAEnabled(int $users_id): bool
     {
@@ -242,7 +251,7 @@ final class TOTPManager
      * @param string $code The code to verify
      * @param int $users_id ID of the user
      * @return bool True if the code is valid, false otherwise
-     * @throws \JsonException
+     * @throws JsonException
      * @throws TwoFactorAuthException
      */
     public function verifyCodeForUser(string $code, int $users_id): bool
@@ -275,7 +284,7 @@ final class TOTPManager
 
     public function isBackupCodesAvailable(int $users_id): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $tfa = $DB->request([
@@ -300,11 +309,11 @@ final class TOTPManager
      * Any previously generated codes are invalidated.
      * @param int $users_id ID of the user
      * @return array The new backup codes
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function regenerateBackupCodes(int $users_id): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $random_codes = [];
@@ -346,11 +355,11 @@ final class TOTPManager
      * @param int $users_id User ID
      * @param bool $consume_code If true, the backup code will be consumed and will not be usable again
      * @return bool True if the code is valid, false otherwise
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function verifyBackupCodeForUser(string $code, int $users_id, bool $consume_code = true): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $tfa = $DB->request([
@@ -389,13 +398,13 @@ final class TOTPManager
      * @param int $users_id ID of the user
      * @return int One of the ENFORCEMENT_* constants
      * @phpstan-return self::ENFORCEMENT_*
-     * @throws \Exception
+     * @throws Exception
      */
     public function get2FAEnforcement(int $users_id): int
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -419,14 +428,14 @@ final class TOTPManager
             // Check entity configuration
             $entities = PermissionManager::getInstance()->getAllEntities($users_id);
             foreach ($entities as $entity) {
-                if ((int) \Entity::getUsedConfig('2fa_enforcement_strategy', $entity, '', 0) === 1) {
+                if ((int) Entity::getUsedConfig('2fa_enforcement_strategy', $entity, '', 0) === 1) {
                     $enforced = true;
                     break;
                 }
             }
             if (!$enforced) {
                 // Check profile configuration
-                $profiles = \Profile_User::getUserProfiles($users_id);
+                $profiles = Profile_User::getUserProfiles($users_id);
                 if (!empty($profiles)) {
                     $enforced = $DB->request([
                         'SELECT' => ['2fa_enforced'],
@@ -440,7 +449,7 @@ final class TOTPManager
             }
             if (!$enforced) {
                 // Check group configuration
-                $groups = \Group_User::getUserGroups($users_id);
+                $groups = Group_User::getUserGroups($users_id);
                 $enforced = count(array_filter($groups, static fn($group) => $group['2fa_enforced'])) > 0;
             }
         }
@@ -454,7 +463,7 @@ final class TOTPManager
 
     /**
      * @return int Number of days left in the grace period
-     * @throws \Exception
+     * @throws Exception
      */
     public function getGracePeriodDaysLeft(): int
     {
@@ -466,7 +475,7 @@ final class TOTPManager
 
         if ($grace_days > 0 && $grace_start_date !== null) {
             $grace_start_date = new DateTimeImmutable($grace_start_date);
-            $grace_end_date = $grace_start_date->add(new \DateInterval("P{$grace_days}D"));
+            $grace_end_date = $grace_start_date->add(new DateInterval("P{$grace_days}D"));
             $now = new DateTimeImmutable();
             if ($now < $grace_end_date) {
                 return $now->diff($grace_end_date)->days;
@@ -493,7 +502,7 @@ final class TOTPManager
      * @param bool $force_setup Force the setup form to be shown even if 2FA is already enabled
      * @param bool $regenerate_backup_codes Regenerate backup codes immediately when showing the status form
      * @return void
-     * @throws \JsonException
+     * @throws JsonException
      * @throws TwoFactorAuthException
      */
     public function showTOTPConfigForm(int $users_id, bool $force_setup = false, bool $regenerate_backup_codes = false): void

@@ -35,6 +35,8 @@
 namespace Glpi\Progress;
 
 use Glpi\Message\MessageType;
+use LogicException;
+use RuntimeException;
 
 use function Safe\fclose;
 use function Safe\fflush;
@@ -143,7 +145,7 @@ class ProgressStorage
         $progress = \unserialize($file_contents);
 
         if (!$progress instanceof StoredProgressIndicator) {
-            throw new \RuntimeException(\sprintf('Invalid data stored for key `%s`.', $storage_key));
+            throw new RuntimeException(\sprintf('Invalid data stored for key `%s`.', $storage_key));
         }
 
         return $progress;
@@ -154,7 +156,7 @@ class ProgressStorage
         $storage_key = $progress_indicator->getStorageKey();
 
         if (!$this->canAccessProgressIndicator($storage_key)) {
-            throw new \LogicException();
+            throw new LogicException();
         }
 
         $path = $this->getStorageFilePath($storage_key);

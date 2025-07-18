@@ -32,10 +32,10 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Event;
 use Glpi\Helpdesk\DefaultDataManager;
 use Glpi\Message\MessageType;
+use Glpi\OAuth\Server;
 use Glpi\Progress\AbstractProgressIndicator;
 use Glpi\Rules\RulesManager;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
@@ -153,7 +153,7 @@ class Update
      */
     final public function isUpdatedSchemaConsistent(): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $checker = new DatabaseSchemaIntegrityChecker($DB, false, true, true, true, true, true);
@@ -180,7 +180,7 @@ class Update
     ): bool {
         if ($current_version === null) {
             if ($this->version === null) {
-                throw new \RuntimeException('Cannot process updates without any version specified!');
+                throw new RuntimeException('Cannot process updates without any version specified!');
             }
             $current_version = $this->version;
         }
@@ -257,7 +257,7 @@ class Update
 
             try {
                 $migration_specs['function']();
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $progress_indicator?->addMessage(
                     MessageType::Error,
                     sprintf(
@@ -402,7 +402,7 @@ class Update
         }
 
         //generate keys, if needed
-        \Glpi\OAuth\Server::generateKeys();
+        Server::generateKeys();
 
         $progress_indicator?->advance($generate_keys_weight);
         $progress_indicator?->addMessage(MessageType::Success, __('Security keys generated.'));
@@ -444,7 +444,7 @@ class Update
      */
     public function setMigration(Migration $migration_instance)
     {
-        /** @var \Migration $migration */
+        /** @var Migration $migration */
         global $migration; // Migration scripts are using global `$migration`
         $migration = $migration_instance;
 

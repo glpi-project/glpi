@@ -33,7 +33,7 @@
  */
 
 
-class ValidationStep extends \CommonDropdown
+class ValidationStep extends CommonDropdown
 {
     /**
      * @param int $nb

@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
@@ -48,7 +50,7 @@ if (isset($_POST['itemtype'], $_POST['field']) && is_a($_POST['itemtype'], Commo
 $field_type = $matching_field['type'] ?? null;
 
 // language=twig
-echo \Glpi\Application\View\TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
     {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
     {% if field_type == 'tinymce' %}
         {{ inputs.textarea('value', '', {

@@ -36,6 +36,7 @@
 require_once(__DIR__ . '/../_check_webserver_config.php');
 
 use Glpi\Form\AccessControl\FormAccessControl;
+use Psr\Log\LoggerInterface;
 
 use function Safe\json_encode;
 
@@ -67,9 +68,9 @@ try {
         // Unknown request
         throw new InvalidArgumentException("Unknown action");
     }
-} catch (\Throwable $e) {
+} catch (Throwable $e) {
     // Log error
-    /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+    /** @var LoggerInterface $PHPLOGGER */
     global $PHPLOGGER;
     $PHPLOGGER->error(
         $e->getMessage() . ": " . json_encode($_POST),

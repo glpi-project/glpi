@@ -36,15 +36,22 @@
 
 namespace Glpi\Inventory\Asset;
 
+use DBmysql;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\FilesToJSON;
 use NetworkPort as GlobalNetworkPort;
+use NetworkPort_NetworkPort;
+use NetworkPort_Vlan;
 use NetworkPortAggregate;
 use NetworkPortType;
+use Psr\SimpleCache\CacheInterface;
 use RuleImportAssetCollection;
+use RuleMatchedLog;
+use stdClass;
 use Unmanaged;
+use Vlan;
 
 use function Safe\file_get_contents;
 use function Safe\json_decode;
@@ -162,13 +169,13 @@ class NetworkPort extends InventoryAsset
     /**
      * Prepare network ports connections
      *
-     * @param \stdClass $port Port instance
+     * @param stdClass $port Port instance
      *
      * @return array
      */
-    private function prepareConnections(\stdClass $port)
+    private function prepareConnections(stdClass $port)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $results = [];
@@ -204,13 +211,13 @@ class NetworkPort extends InventoryAsset
                     if ($field && $val) {
                         $criteria = [
                             'SELECT'    => ['n1.logical_number', 'n1.mac'],
-                            'FROM'      => \NetworkPort::getTable() . ' AS n1',
+                            'FROM'      => GlobalNetworkPort::getTable() . ' AS n1',
                             'WHERE'     => [
                                 'n1.' . $field => $val,
                                 'n2.mac'       => $connection->sysmac,
                             ],
                         ];
-                        $criteria['LEFT JOIN'][\NetworkPort::getTable() . ' AS n2'][] =
+                        $criteria['LEFT JOIN'][GlobalNetworkPort::getTable() . ' AS n2'][] =
                             new QueryExpression("`n1`.`items_id`=`n2`.`items_id` AND `n1`.`itemtype`=`n2`.`itemtype`");
 
                         $iterator = $DB->request($criteria);
@@ -273,7 +280,7 @@ class NetworkPort extends InventoryAsset
         return $results;
     }
 
-    private function handleLLDPConnection(\stdClass $port, int $netports_id)
+    private function handleLLDPConnection(stdClass $port, int $netports_id)
     {
         if (!property_exists($port, 'logical_number') || !isset($this->connections[$port->logical_number])) {
             return;
@@ -320,7 +327,7 @@ class NetworkPort extends InventoryAsset
             if (count($connection_ports) == 1) { // single NetworkPort
                 $connections_id = current($connection_ports);
             } else { // multiple NetworkPorts
-                $networkPort = new \NetworkPort();
+                $networkPort = new GlobalNetworkPort();
                 foreach (array_keys($connection_ports) as $k) {
                     $networkPort->getFromDB($k);
                     if ($networkPort->fields['logical_number'] > 0) {
@@ -337,14 +344,14 @@ class NetworkPort extends InventoryAsset
         unset($this->current_connection);
     }
 
-    private function handleMacConnection(\stdClass $port, int $netports_id)
+    private function handleMacConnection(stdClass $port, int $netports_id)
     {
         if (!property_exists($port, 'logical_number') || !isset($this->connections[$port->logical_number])) {
             return;
         }
 
         $this->current_port = $port;
-        $netport = new \NetworkPort();
+        $netport = new GlobalNetworkPort();
         $netport->getFromDB($netports_id);
 
         $macs = $this->connections[$port->logical_number] ?? [];
@@ -386,7 +393,7 @@ class NetworkPort extends InventoryAsset
             $item_ids = [];
             $real_port_ids = [];
             foreach (array_keys($found_macs) as $k) {
-                $networkPort = new \NetworkPort();
+                $networkPort = new GlobalNetworkPort();
                 $networkPort->getFromDB($k);
 
                 $items_ids[$networkPort->fields['items_id']] = null;
@@ -413,17 +420,17 @@ class NetworkPort extends InventoryAsset
         }
     }
 
-    private function handleVlans(\stdClass $port, int $netports_id)
+    private function handleVlans(stdClass $port, int $netports_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (!property_exists($port, 'logical_number')) {
             return;
         }
 
-        $vlan = new \Vlan();
-        $pvlan = new \NetworkPort_Vlan();
+        $vlan = new Vlan();
+        $pvlan = new NetworkPort_Vlan();
         $vtable = $vlan->getTable();
         $pvtable = $pvlan->getTable();
         $data = $this->vlans[$port->logical_number] ?? [];
@@ -478,7 +485,7 @@ class NetworkPort extends InventoryAsset
 
         $db_vlans = [];
         $vlans_iterator = $DB->request([
-            'FROM'   => \Vlan::getTable(),
+            'FROM'   => Vlan::getTable(),
         ]);
         foreach ($vlans_iterator as $row) {
             $db_vlans[$row['name'] . '|' . $row['tag']] = $row['id'];
@@ -542,7 +549,7 @@ class NetworkPort extends InventoryAsset
         }
     }
 
-    private function handleMetrics(\stdClass $port, int $netports_id)
+    private function handleMetrics(stdClass $port, int $netports_id)
     {
         $input = (array) $port;
         //only update networkport metric if needed
@@ -558,7 +565,7 @@ class NetworkPort extends InventoryAsset
         }
     }
 
-    private function prepareAggregations(\stdClass $port, int $netports_id)
+    private function prepareAggregations(stdClass $port, int $netports_id)
     {
         if (!property_exists($port, 'logical_number')) {
             return;
@@ -588,7 +595,7 @@ class NetworkPort extends InventoryAsset
 
     private function handleAggregations()
     {
-        $netport_aggregate = new \NetworkPortAggregate();
+        $netport_aggregate = new NetworkPortAggregate();
 
         foreach ($this->aggregates as $data) {
             $aggregates = $data['aggregates'];
@@ -610,7 +617,7 @@ class NetworkPort extends InventoryAsset
         }
     }
 
-    private function handleConnections(\stdClass $port, int $netports_id)
+    private function handleConnections(stdClass $port, int $netports_id)
     {
         if ($this->isLLDP($port)) {
             $this->handleLLDPConnection($port, $netports_id);
@@ -627,17 +634,17 @@ class NetworkPort extends InventoryAsset
         $this->handlePorts();
     }
 
-    protected function portUpdated(\stdClass $port, int $netports_id)
+    protected function portUpdated(stdClass $port, int $netports_id)
     {
         $this->portChanged($port, $netports_id);
     }
 
-    protected function portCreated(\stdClass $port, int $netports_id)
+    protected function portCreated(stdClass $port, int $netports_id)
     {
         $this->portChanged($port, $netports_id);
     }
 
-    protected function portChanged(\stdClass $port, int $netports_id)
+    protected function portChanged(stdClass $port, int $netports_id)
     {
         $this->handleConnections($port, $netports_id);
         $this->handleVlans($port, $netports_id);
@@ -658,9 +665,9 @@ class NetworkPort extends InventoryAsset
         if (!is_array($ports_id)) {
             $ports_id = [$ports_id]; // Handle compatibility with previous signature.
         }
-        $netport = new \NetworkPort();
+        $netport = new GlobalNetworkPort();
         if (empty($itemtype)) {
-            $itemtype = \Unmanaged::class;
+            $itemtype = Unmanaged::class;
         }
         $port = $this->current_connection ?? $this->current_port;
         $item = getItemForItemtype($itemtype);
@@ -686,7 +693,7 @@ class NetworkPort extends InventoryAsset
             $items_id = $item->add($input);
         }
 
-        $rulesmatched = new \RuleMatchedLog();
+        $rulesmatched = new RuleMatchedLog();
         $agents_id = $this->agent->fields['id'];
         if (empty($agents_id)) {
             $agents_id = 0;
@@ -760,7 +767,7 @@ class NetworkPort extends InventoryAsset
      */
     public function getNameForMac($mac)
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
+        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $exploded = explode(':', $mac);
@@ -783,7 +790,7 @@ class NetworkPort extends InventoryAsset
     /**
      * Check if port connections are LLDP
      *
-     * @param \stdClass $port Port
+     * @param stdClass $port Port
      *
      * @return boolean
      */
@@ -870,8 +877,8 @@ class NetworkPort extends InventoryAsset
     {
         $hubs_id = 0;
 
-        $link = new \NetworkPort_NetworkPort();
-        $netport = new \NetworkPort();
+        $link = new NetworkPort_NetworkPort();
+        $netport = new GlobalNetworkPort();
 
         $id = $link->getOppositeContact($netports_id);
         $netport->getFromDB($id);
@@ -949,7 +956,7 @@ class NetworkPort extends InventoryAsset
             return false;
         }
 
-        $wire = new \NetworkPort_NetworkPort();
+        $wire = new NetworkPort_NetworkPort();
         $current_port_1_opposite = $wire->getOppositeContact($netports_id_1);
 
         if ($current_port_1_opposite !== false && $current_port_1_opposite == $netports_id_2) {
@@ -972,6 +979,6 @@ class NetworkPort extends InventoryAsset
 
     public function getItemtype(): string
     {
-        return \NetworkPort::class;
+        return GlobalNetworkPort::class;
     }
 }

@@ -60,7 +60,7 @@ if (
             if ($_POST['value'] == 0) {
                 $link = $CFG_GLPI['root_doc'] . "/front/user.php";
             } else {
-                $user = new \User();
+                $user = new User();
                 if (is_array($_POST["value"])) {
                     foreach ($_POST["value"] as $users_id) {
                         if ($user->getFromDB($users_id) && $user->canView()) {
@@ -91,7 +91,7 @@ if (
 
         case Group::getType():
             if ($_POST['value'] != 0) {
-                $group = new \Group();
+                $group = new Group();
                 if (!is_array($_POST["value"]) && $group->getFromDB($_POST['value']) && $group->canView()) {
                     $group_params = [
                         'id' => $group->getID(),
@@ -110,7 +110,7 @@ if (
                 'comment' => "",
             ];
             if ($_POST['value'] != 0) {
-                $supplier = new \Supplier();
+                $supplier = new Supplier();
                 if (!is_array($_POST["value"]) && $supplier->getFromDB($_POST['value']) && $supplier->canView()) {
                     $supplier_params = [
                         'id' => $supplier->getID(),

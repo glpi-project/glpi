@@ -31,11 +31,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \DBmysql $DB
+ * @var DBmysql $DB
  */
-
 // Replace old rule criteria itilcategories_id_cn
 $DB->update(
     'glpi_rulecriterias',

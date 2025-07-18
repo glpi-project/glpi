@@ -41,10 +41,10 @@ use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
-use InvalidArgumentException;
+use Glpi\Form\Migration\TagConversionTrait;
 use Glpi\Form\Tag\FormTagProvider;
 use Glpi\Form\Tag\FormTagsManager;
-use Glpi\Form\Migration\TagConversionTrait;
+use InvalidArgumentException;
 use Override;
 
 final class TitleField extends AbstractConfigField implements DestinationFieldConverterInterface

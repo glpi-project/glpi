@@ -31,9 +31,7 @@
  *
  * ---------------------------------------------------------------------
  */
-
 /**
- * @var \Migration $migration
+ * @var Migration $migration
  */
-
 $migration->addRight(SLM::$rightname, SLM::RIGHT_ASSIGN, ['ticket' => UPDATE]);

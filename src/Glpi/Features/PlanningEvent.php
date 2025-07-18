@@ -38,6 +38,7 @@ namespace Glpi\Features;
 use CommonITILTask;
 use DateInterval;
 use DateTimeZone;
+use DBmysql;
 use Dropdown;
 use Entity;
 use ExtraVisibilityCriteria;
@@ -49,14 +50,15 @@ use Html;
 use Planning;
 use PlanningEventCategory;
 use PlanningRecall;
+use Ramsey\Uuid\Uuid;
 use Reminder;
 use RRule\RRule;
 use RRule\RSet;
+use Safe\DateTime;
 use Safe\Exceptions\JsonException;
 use Session;
 use Toolbox;
 use User;
-use Safe\DateTime;
 
 use function Safe\json_decode;
 use function Safe\json_encode;
@@ -118,7 +120,7 @@ trait PlanningEvent
 
     public function prepareInputForAdd($input)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $input = $this->prepareGuestsInput($input);
@@ -134,7 +136,7 @@ trait PlanningEvent
         Toolbox::manageBeginAndEndPlanDates($input['plan']);
 
         if (!isset($input['uuid'])) {
-            $input['uuid'] = \Ramsey\Uuid\Uuid::uuid4();
+            $input['uuid'] = Uuid::uuid4();
         }
 
         $input["name"] = trim($input["name"]);
@@ -403,7 +405,7 @@ trait PlanningEvent
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 

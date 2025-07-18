@@ -32,14 +32,16 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Features\ParentStatus;
+use Glpi\Features\PlanningEvent;
 use Glpi\RichText\RichText;
+use Ramsey\Uuid\Uuid;
 use Sabre\VObject\Component\VCalendar;
 use Safe\DateTime;
 
@@ -48,8 +50,8 @@ use function Safe\strtotime;
 /// TODO extends it from CommonDBChild
 abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItemInterface
 {
-    use Glpi\Features\ParentStatus;
-    use Glpi\Features\PlanningEvent;
+    use ParentStatus;
+    use PlanningEvent;
     use VobjectConverterTrait;
     use ITILSubItemRights;
 
@@ -68,7 +70,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         $class = static::getItilObjectItemType();
 
         if (!is_a($class, CommonITILObject::class, true)) {
-            throw new \LogicException();
+            throw new LogicException();
         }
 
         return new $class();
@@ -702,7 +704,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         }
 
         if (!isset($input['uuid'])) {
-            $input['uuid'] = \Ramsey\Uuid\Uuid::uuid4();
+            $input['uuid'] = Uuid::uuid4();
         }
 
         Toolbox::manageBeginAndEndPlanDates($input['plan']);
@@ -864,7 +866,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             $input['tickets_id'] = $ticket_id;
             $input['sourceitems_id'] = $this->fields['tickets_id'];
             unset($input['id']);
-            $input['uuid'] = \Ramsey\Uuid\Uuid::uuid4();
+            $input['uuid'] = Uuid::uuid4();
 
             $task = new static();
             $task->add($input);
@@ -1006,7 +1008,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      **/
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $task = new static();
@@ -1303,7 +1305,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -1714,7 +1716,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      */
     public static function getTaskList($status, $showgrouptickets, $start = null, $limit = null)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $prep_req = ['SELECT' => self::getTable() . '.id', 'FROM' => self::getTable()];
@@ -1931,7 +1933,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      */
     public static function showVeryShort($ID, $itemtype)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $job  = getItemForItemtype($itemtype);
@@ -1950,7 +1952,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 $item_link->getFromDB($job->fields['changes_id']);
                 $tab_name = "ChangeTask";
             } else {
-                throw new \RuntimeException(sprintf('Unexpected `%s` itemtype.', $itemtype));
+                throw new RuntimeException(sprintf('Unexpected `%s` itemtype.', $itemtype));
             }
 
             $bgcolor = $_SESSION["glpipriority_" . $item_link->fields["priority"]];
@@ -2006,12 +2008,12 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      *
      * @param array $criteria
      *
-     * @return false|\Sabre\VObject\Component\VCalendar[]
+     * @return false|VCalendar[]
      */
     private static function getItemsAsVCalendars(array $criteria)
     {
 
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $item = new static();
@@ -2079,7 +2081,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         $vcalendar = $this->getVCalendarForItem($this, $target_component);
 
         $parent_fields = $parent_item->fields;
-        $utc_tz = new \DateTimeZone('UTC');
+        $utc_tz = new DateTimeZone('UTC');
 
         $vcomp = $vcalendar->getBaseComponent();
         $vcomp->SUMMARY           = $parent_fields['name'];
@@ -2096,7 +2098,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         $vtodo = $vcalendar->getBaseComponent();
 
         if (null !== $vtodo->RRULE) {
-            throw new \UnexpectedValueException('RRULE not yet implemented for ITIL tasks');
+            throw new UnexpectedValueException('RRULE not yet implemented for ITIL tasks');
         }
 
         $input = $this->getCommonInputFromVcomponent($vtodo, $this->isNewItem());
@@ -2137,7 +2139,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         $parent_fkey = $parent_item->getForeignKeyField();
         $planned = $this->find([
             $parent_fkey => $this->fields[$parent_fkey],
-            'state' => \Planning::TODO,
+            'state' => Planning::TODO,
             'NOT' => ['begin' => null],
         ]);
         return count($planned);

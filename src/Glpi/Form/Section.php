@@ -39,10 +39,11 @@ use CommonDBChild;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionableVisibilityInterface;
 use Glpi\Form\Condition\ConditionableVisibilityTrait;
-use Glpi\ItemTranslation\Context\TranslationHandler;
-use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Glpi\Form\Condition\ConditionHandler\VisibilityConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
+use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
+use Glpi\ItemTranslation\Context\TranslationHandler;
+use LogicException;
 use Override;
 use Ramsey\Uuid\Uuid;
 
@@ -143,7 +144,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
     {
         $form = $this->getItem();
         if (!$form instanceof Form) {
-            throw new \LogicException('Section must be attached to a form');
+            throw new LogicException('Section must be attached to a form');
         }
 
         $handlers = [];

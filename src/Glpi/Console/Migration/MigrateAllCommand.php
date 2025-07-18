@@ -37,9 +37,9 @@ namespace Glpi\Console\Migration;
 
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\ArrayInput;
 
 class MigrateAllCommand extends AbstractCommand implements ConfigurationCommandInterface
 {

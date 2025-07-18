@@ -34,7 +34,7 @@
 
 namespace Glpi\Kernel\Listener\ControllerListener;
 
-use Glpi\Security\Attribute\DisableCsrfChecks;
+use Glpi\Http\SessionManager;
 use Session;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,6 +43,10 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 final readonly class CheckCsrfListener implements EventSubscriberInterface
 {
+    public function __construct(
+        private SessionManager $session_manager
+    ) {}
+
     public static function getSubscribedEvents(): array
     {
         return [KernelEvents::CONTROLLER => 'onKernelController'];
@@ -50,15 +54,13 @@ final readonly class CheckCsrfListener implements EventSubscriberInterface
 
     public function onKernelController(ControllerEvent $event): void
     {
-        if (!$event->isMainRequest()) {
-            // Do not check CSRF on sub-requests.
+        if ($this->session_manager->isResourceStateless($event->getRequest())) {
+            // Stateless resources are not subject to CSRF protection.
             return;
         }
 
-        /** @var DisableCsrfChecks[] $attributes */
-        $attributes = $event->getAttributes(DisableCsrfChecks::class);
-        if (\count($attributes) > 0) {
-            // CSRF checks are explicitely disabled for this controller.
+        if (!$event->isMainRequest()) {
+            // Do not check CSRF on sub-requests.
             return;
         }
 

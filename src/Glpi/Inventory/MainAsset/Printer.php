@@ -43,6 +43,7 @@ use PrinterLog;
 use PrinterModel;
 use PrinterType;
 use RuleDictionnaryPrinterCollection;
+use stdClass;
 
 use function Safe\preg_match;
 use function Safe\preg_replace;
@@ -72,7 +73,7 @@ class Printer extends NetworkEquipment
     {
         parent::prepare();
 
-        if (!property_exists($this->raw_data->content ?? new \stdClass(), 'network_device')) {
+        if (!property_exists($this->raw_data->content ?? new stdClass(), 'network_device')) {
             $autoupdatesystems_id = $this->data[0]->autoupdatesystems_id;
             $this->data = [];
             foreach ($this->raw_data as $val) {
@@ -192,9 +193,9 @@ class Printer extends NetworkEquipment
     /**
      * Get printer counters
      *
-     * @return \stdClass
+     * @return stdClass
      */
-    public function getCounters(): \stdClass
+    public function getCounters(): stdClass
     {
         return $this->counters;
     }

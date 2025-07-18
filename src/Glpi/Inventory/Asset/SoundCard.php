@@ -36,6 +36,7 @@
 namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
+use Item_DeviceSoundCard;
 
 class SoundCard extends Device
 {
@@ -67,6 +68,6 @@ class SoundCard extends Device
 
     public function getItemtype(): string
     {
-        return \Item_DeviceSoundCard::class;
+        return Item_DeviceSoundCard::class;
     }
 }

@@ -32,9 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Toolbox\VersionParser;
+use Psr\SimpleCache\CacheInterface;
 
 use function Safe\json_decode;
 use function Safe\preg_replace;
@@ -139,7 +139,7 @@ class GLPINetwork extends CommonGLPI
      */
     public static function getRegistrationInformations(bool $force_refresh = false)
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
+        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $registration_key = self::getRegistrationKey();
@@ -181,7 +181,7 @@ class GLPINetwork extends CommonGLPI
         $valid_json = false;
         $registration_data = null;
         if ($error_message === null) {
-            if (\Toolbox::isJSON($registration_response)) {
+            if (Toolbox::isJSON($registration_response)) {
                 $valid_json = true;
                 $registration_data = json_decode($registration_response, true);
             }
@@ -216,7 +216,7 @@ class GLPINetwork extends CommonGLPI
         $informations['owner']              = $registration_data['owner'];
         $informations['subscription']       = $registration_data['subscription'];
 
-        $GLPI_CACHE->set($cache_key, $informations, new \DateInterval('P1D')); // Cache for one day
+        $GLPI_CACHE->set($cache_key, $informations, new DateInterval('P1D')); // Cache for one day
 
         return $informations;
     }
@@ -270,13 +270,13 @@ class GLPINetwork extends CommonGLPI
     public static function isServicesAvailable(&$curl_error = null): bool
     {
         $error_msg = null;
-        $content = \Toolbox::callCurl(GLPI_NETWORK_REGISTRATION_API_URL, [], $error_msg, $curl_error);
+        $content = Toolbox::callCurl(GLPI_NETWORK_REGISTRATION_API_URL, [], $error_msg, $curl_error);
         return $content !== '';
     }
 
     public static function getOffers(bool $force_refresh = false): array
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
+        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $lang = preg_replace('/^([a-z]+)_.+$/', '$1', $_SESSION["glpilanguage"]);
@@ -287,7 +287,7 @@ class GLPINetwork extends CommonGLPI
         }
 
         $error_message = null;
-        $response = \Toolbox::callCurl(
+        $response = Toolbox::callCurl(
             rtrim(GLPI_NETWORK_REGISTRATION_API_URL, '/') . '/offers',
             [
                 CURLOPT_HTTPHEADER => [
@@ -301,7 +301,7 @@ class GLPINetwork extends CommonGLPI
         $valid_json = false;
         $offers = null;
         if ($error_message === null) {
-            if (\Toolbox::isJSON($response)) {
+            if (Toolbox::isJSON($response)) {
                 $valid_json = true;
                 $offers = json_decode($response);
             }

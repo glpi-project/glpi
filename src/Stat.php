@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Plugin\Hooks;
@@ -41,11 +42,10 @@ use Glpi\Search\Output\HTMLSearchOutput;
 use Glpi\Search\Output\Pdf;
 use Glpi\Search\SearchEngine;
 use Glpi\Stat\StatData;
-use Glpi\Application\View\TemplateRenderer;
 use Symfony\Component\HttpFoundation\Request;
 
-use function Safe\strtotime;
 use function Safe\mktime;
+use function Safe\strtotime;
 
 /**
  *  Stat class
@@ -76,7 +76,7 @@ class Stat extends CommonGLPI
      */
     public static function getItems($itemtype, $date1, $date2, $type, $parent = 0)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (!$item = getItemForItemtype($itemtype)) {
@@ -953,7 +953,7 @@ class Stat extends CommonGLPI
     ) {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
-        $DB = \DBConnection::getReadConnection();
+        $DB = DBConnection::getReadConnection();
 
         if (!$item = getItemForItemtype($itemtype)) {
             return;

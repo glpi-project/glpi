@@ -32,7 +32,6 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\I18nCache;
 use Glpi\Controller\InventoryController;
@@ -41,17 +40,20 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\SessionExpiredException;
 use Glpi\Plugin\Hooks;
 use Glpi\Session\SessionInfo;
+use Laminas\I18n\Translator\Translator;
+use Laminas\I18n\Translator\TranslatorInterface;
+use Safe\Exceptions\InfoException;
 use Safe\Exceptions\SessionException;
 use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\ini_get;
 use function Safe\preg_match;
 use function Safe\scandir;
-use function Safe\session_unset;
-use function Safe\session_regenerate_id;
 use function Safe\session_id;
+use function Safe\session_regenerate_id;
 use function Safe\session_save_path;
 use function Safe\session_start;
+use function Safe\session_unset;
 use function Safe\session_write_close;
 use function Safe\strtotime;
 
@@ -632,7 +634,7 @@ class Session
      **/
     public static function initEntityProfiles($userID)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $_SESSION['glpiprofiles'] = [];
@@ -715,7 +717,7 @@ class Session
      **/
     public static function loadGroups()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $_SESSION["glpigroups"] = [];
@@ -809,7 +811,7 @@ class Session
     {
         /**
          * @var array $CFG_GLPI
-         * @var \Laminas\I18n\Translator\TranslatorInterface $TRANSLATE
+         * @var TranslatorInterface $TRANSLATE
          */
         global $CFG_GLPI, $TRANSLATE;
 
@@ -844,7 +846,7 @@ class Session
 
         // Redefine Translator caching logic to be able to drop laminas/laminas-cache dependency.
         $i18n_cache = !defined('TU_USER') ? new I18nCache((new CacheManager())->getTranslationsCacheInstance()) : null;
-        $TRANSLATE = new class ($i18n_cache) extends Laminas\I18n\Translator\Translator { // @phpstan-ignore class.extendsFinalByPhpDoc
+        $TRANSLATE = new class ($i18n_cache) extends Translator { // @phpstan-ignore class.extendsFinalByPhpDoc
             public function __construct(?I18nCache $cache)
             {
                 $this->cache = $cache; // @phpstan-ignore assign.propertyType (laminas...)
@@ -856,7 +858,7 @@ class Session
         if (class_exists('Locale')) {
             // Locale class may be missing if intl extension is not installed.
             // In this case, we may still want to be able to load translations (for instance for requirements checks).
-            \Locale::setDefault($trytoload);
+            Locale::setDefault($trytoload);
         } else {
             trigger_error('Missing required intl PHP extension', E_USER_WARNING);
         }
@@ -1023,7 +1025,7 @@ class Session
      **/
     public static function checkValidSessionId()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (
@@ -1403,7 +1405,7 @@ class Session
      **/
     public static function haveRight($module, $right)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (self::isRightChecksDisabled() || Session::isInventory() || Session::isCron()) {
@@ -1912,7 +1914,7 @@ class Session
      */
     public static function canImpersonate($user_id, ?string &$message = null)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $is_super_admin = self::haveRight(Config::$rightname, UPDATE);
@@ -2311,7 +2313,7 @@ class Session
     {
         try {
             $session_handler = ini_get('session.save_handler');
-        } catch (\Safe\Exceptions\InfoException $e) {
+        } catch (InfoException $e) {
             $session_handler = false;
         }
         return $session_handler !== false

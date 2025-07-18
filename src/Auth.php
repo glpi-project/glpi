@@ -190,7 +190,7 @@ class Auth extends CommonGLPI
      */
     public function userExists($options = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -255,7 +255,7 @@ class Auth extends CommonGLPI
 
             $protocol = Toolbox::getMailServerProtocolInstance($config['type'], false);
             if ($protocol === null) {
-                throw new \RuntimeException(sprintf(__('Unsupported mail server type:%s.'), $config['type']));
+                throw new RuntimeException(sprintf(__('Unsupported mail server type:%s.'), $config['type']));
             }
             if ($config['validate-cert'] === false) {
                 $protocol->setNoValidateCert(true);
@@ -267,7 +267,7 @@ class Auth extends CommonGLPI
             );
 
             return $protocol->login($login, $pass);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->addToError($e->getMessage());
             return false;
         }
@@ -319,7 +319,7 @@ class Auth extends CommonGLPI
                     'condition'         => $ldap_method['condition'],
                     'user_dn'           => $this->user_dn,
                 ]);
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 ErrorHandler::logCaughtException($e);
                 $info = false;
             }
@@ -440,7 +440,7 @@ class Auth extends CommonGLPI
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -889,7 +889,7 @@ class Auth extends CommonGLPI
                                         'value'  => $login_name,
                                     ],
                                 ]);
-                            } catch (\RuntimeException $e) {
+                            } catch (RuntimeException $e) {
                                 ErrorHandler::logCaughtException($e);
                                 $user_dn = false;
                             }
@@ -1034,7 +1034,7 @@ class Auth extends CommonGLPI
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -1221,7 +1221,7 @@ class Auth extends CommonGLPI
      */
     public static function dropdown($options = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $p = [
@@ -1706,7 +1706,7 @@ class Auth extends CommonGLPI
      */
     public static function getLoginAuthMethods()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $elements = [

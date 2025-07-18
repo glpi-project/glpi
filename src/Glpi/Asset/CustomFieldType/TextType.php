@@ -36,6 +36,7 @@ namespace Glpi\Asset\CustomFieldType;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CustomFieldOption\BooleanOption;
+use InvalidArgumentException;
 
 class TextType extends AbstractType
 {
@@ -80,7 +81,7 @@ TWIG, $twig_params);
             return null;
         }
         if (!is_string($value)) {
-            throw new \InvalidArgumentException('The value must be a string');
+            throw new InvalidArgumentException('The value must be a string');
         }
         return $value;
     }

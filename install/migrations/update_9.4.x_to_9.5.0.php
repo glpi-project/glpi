@@ -31,7 +31,8 @@
  *
  * ---------------------------------------------------------------------
  */
-
+use Glpi\Dashboard\Dashboard;
+use Glpi\Dashboard\Item;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Safe\Exceptions\UrlException;
@@ -49,8 +50,8 @@ function update94xto950()
 {
     /**
      * @var array $CFG_GLPI
-     * @var \DBmysql $DB
-     * @var \Migration $migration
+     * @var DBmysql $DB
+     * @var Migration $migration
      */
     global $CFG_GLPI, $DB, $migration;
 
@@ -1000,7 +1001,7 @@ function update94xto950()
     $dashboards = Config::getConfigurationValues('core', ['dashboards']);
     if (count($dashboards)) {
         $dashboards = $dashboards['dashboards'];
-        \Glpi\Dashboard\Dashboard::importFromJson($dashboards);
+        Dashboard::importFromJson($dashboards);
         $migration->removeConfig(['dashboards']);
     }
 
@@ -1035,7 +1036,7 @@ function update94xto950()
 
     // default dashboards
     if (countElementsInTable("glpi_dashboards_dashboards") === 0) {
-        $dashboard_obj   = new \Glpi\Dashboard\Dashboard();
+        $dashboard_obj   = new Dashboard();
         $dashboards_data = include_once __DIR__ . "/update_9.4.x_to_9.5.0/dashboards.php";
         foreach ($dashboards_data as $default_dashboard) {
             $items = $default_dashboard['_items'];
@@ -1046,7 +1047,7 @@ function update94xto950()
 
             // add items to this new dashboard
             $query = $DB->buildInsert(
-                \Glpi\Dashboard\Item::getTable(),
+                Item::getTable(),
                 [
                     'dashboards_dashboards_id' => new QueryParam(),
                     'gridstack_id'             => new QueryParam(),

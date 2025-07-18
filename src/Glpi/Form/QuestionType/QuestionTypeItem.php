@@ -42,12 +42,12 @@ use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionHandler\ItemAsTextConditionHandler;
+use Glpi\Form\Condition\ConditionHandler\ItemConditionHandler;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
-use Glpi\Form\Condition\ConditionHandler\ItemConditionHandler;
-use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
 use InvalidArgumentException;
 use Line;
@@ -351,7 +351,7 @@ class QuestionTypeItem extends AbstractQuestionType implements FormQuestionDataC
         $default_value_data = $default_value_config->jsonSerialize();
 
         // Load linked item
-        /** @var class-string<\CommonDBTM> $itemtype */
+        /** @var class-string<CommonDBTM> $itemtype */
         $itemtype = $extra_data_config->getItemtype();
         $item = $itemtype::getById(
             $default_value_config->getItemsId()

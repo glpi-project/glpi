@@ -35,6 +35,8 @@
 
 namespace Glpi\System\Diagnostic;
 
+use CommonTreeDropdown;
+
 /**
  * @since 10.0.0
  */
@@ -54,7 +56,7 @@ class DatabaseSchemaConsistencyChecker extends AbstractDatabaseChecker
         $columns = $this->getColumnsNames($table_name);
         $itemtype = getItemTypeForTable($table_name);
 
-        if (is_subclass_of($itemtype, \CommonTreeDropdown::class)) {
+        if (is_subclass_of($itemtype, CommonTreeDropdown::class)) {
             foreach (['level', 'ancestors_cache', 'sons_cache'] as $expected_col) {
                 if (!in_array($expected_col, $columns)) {
                     $missing_columns[] = $expected_col;

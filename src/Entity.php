@@ -32,14 +32,16 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Debug\Profiler;
 use Glpi\Event;
+use Glpi\Features\Clonable;
 use Glpi\Helpdesk\Tile\LinkableToTilesInterface;
 use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\UI\IllustrationManager;
+use Psr\SimpleCache\CacheInterface;
 use Ramsey\Uuid\Uuid;
 
 use function Safe\preg_match;
@@ -50,7 +52,7 @@ use function Safe\realpath;
  */
 class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
 {
-    use Glpi\Features\Clonable;
+    use Clonable;
     use MapGeolocation;
 
     public $must_be_replace             = true;
@@ -197,7 +199,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
 
     public function pre_updateInDB()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (($key = array_search('name', $this->updates, true)) !== false) {
@@ -226,7 +228,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
 
     public function pre_deleteItem()
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
+        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         // Security do not delete root entity
@@ -353,7 +355,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
      **/
     public function prepareInputForAdd($input)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $input['name'] = isset($input['name']) ? trim($input['name']) : '';
         if (empty($input["name"])) {
@@ -547,7 +549,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
      */
     private function handleConfigStrategyFields(array $input): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         foreach ($input as $field => $value) {
@@ -763,7 +765,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
 
     public function post_updateItem($history = true)
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
+        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         parent::post_updateItem($history);
@@ -1648,7 +1650,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
      **/
     public static function getEntitiesToNotify($field)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $entities = [];
@@ -2003,7 +2005,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
      **/
     private static function getEntityIDByField($field, $value)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -2155,8 +2157,8 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
     public static function getUsedConfig($fieldref, $entities_id, $fieldval = '', $default_value = -2)
     {
         /**
-         * @var \DBmysql $DB
-         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+         * @var DBmysql $DB
+         * @var CacheInterface $GLPI_CACHE
          */
         global $DB, $GLPI_CACHE;
 
@@ -2890,7 +2892,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
                 $this->showMap();
                 break;
             default:
-                throw new \RuntimeException("Unknown {$field['type']}");
+                throw new RuntimeException("Unknown {$field['type']}");
         }
     }
 
@@ -3100,7 +3102,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
 
     private static function getEntityTree(int $entities_id_root): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $sons = getSonsOf('glpi_entities', $entities_id_root);
@@ -3126,7 +3128,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             ];
         }
 
-        \Glpi\Debug\Profiler::getInstance()->start('constructTreeFromList');
+        Profiler::getInstance()->start('constructTreeFromList');
         $fn_construct_tree_from_list = static function (array $list, int $root) use (&$fn_construct_tree_from_list): array {
             $tree = [];
             if (array_key_exists($root, $list)) {
@@ -3141,7 +3143,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         };
 
         $constructed = $fn_construct_tree_from_list($grouped, $entities_id_root);
-        \Glpi\Debug\Profiler::getInstance()->stop('constructTreeFromList');
+        Profiler::getInstance()->stop('constructTreeFromList');
         return [
             $entities_id_root => [
                 'name' => Dropdown::getDropdownName('glpi_entities', $entities_id_root),
@@ -3157,7 +3159,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
 
         $ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);
 
-        \Glpi\Debug\Profiler::getInstance()->start('Generate entity tree');
+        Profiler::getInstance()->start('Generate entity tree');
         $entitiestree = [];
         foreach ($_SESSION['glpiactiveprofile']['entities'] as $default_entity) {
             $default_entity_id = $default_entity['id'];
@@ -3196,7 +3198,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
 
             $entitiestree = array_merge($entitiestree, $entitytree);
         }
-        \Glpi\Debug\Profiler::getInstance()->stop('Generate entity tree');
+        Profiler::getInstance()->stop('Generate entity tree');
 
         /* scans the tree to select the active entity */
         $select_tree = static function (&$entities) use (&$select_tree, $ancestors) {

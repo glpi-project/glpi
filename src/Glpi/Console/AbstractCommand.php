@@ -37,6 +37,7 @@ namespace Glpi\Console;
 
 use DBmysql;
 use Glpi\Console\Command\GlpiCommandInterface;
+use Glpi\Console\Exception\EarlyExitException;
 use Glpi\System\RequirementsManager;
 use Override;
 use Symfony\Component\Console\Command\Command;
@@ -111,11 +112,11 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
     protected function initDbConnection()
     {
 
-        /** @var \DBmysql|null $DB */
+        /** @var DBmysql|null $DB */
         global $DB;
 
         if ($this->requires_db && (!($DB instanceof DBmysql) || !$DB->connected)) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . __('Unable to connect to database.') . '</error>',
                 Application::ERROR_DB_UNAVAILABLE
             );
@@ -265,7 +266,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
         }
 
         if ($abort) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<comment>' . __('Aborted.') . '</comment>',
                 0 // Success code
             );

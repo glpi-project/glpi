@@ -36,6 +36,7 @@
 
 namespace Glpi\Inventory\Asset;
 
+use DBmysql;
 use Glpi\Inventory\Conf;
 use Item_Environment;
 
@@ -53,7 +54,7 @@ final class Environment extends InventoryAsset
 
     protected function getExisting(): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $db_existing = [];
@@ -80,7 +81,7 @@ final class Environment extends InventoryAsset
 
     public function handle()
     {
-        $itemEnv = new \Item_Environment();
+        $itemEnv = new Item_Environment();
         $db_itemEnvs = $this->getExisting();
 
         $value = $this->data;

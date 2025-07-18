@@ -39,18 +39,23 @@ use Ajax;
 use CommonDBTM;
 use CommonGLPI;
 use CronTask;
+use DBmysql;
+use DbUtils;
 use Document;
+use Dropdown;
+use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\System\Log\LogViewer;
 use Html;
 use Infocom;
 use ITILSolution;
+use RuntimeException;
 use Session;
 use Toolbox;
 
-use function Safe\ob_start;
 use function Safe\ob_get_clean;
+use function Safe\ob_start;
 
 /**
  * Event Class
@@ -80,7 +85,7 @@ class Event extends CommonDBTM
 
     public function add(array $input, $options = [], $history = true)
     {
-        throw new \RuntimeException(
+        throw new RuntimeException(
             \sprintf(
                 'Events must be added by calling the `%s::log()` method.',
                 static::class,
@@ -90,12 +95,12 @@ class Event extends CommonDBTM
 
     public function update(array $input, $history = true, $options = [])
     {
-        throw new \RuntimeException('Events cannot be updated.');
+        throw new RuntimeException('Events cannot be updated.');
     }
 
     public function delete(array $input, $force = false, $history = true)
     {
-        throw new \RuntimeException('Events cannot be deleted.');
+        throw new RuntimeException('Events cannot be deleted.');
     }
 
     /**
@@ -114,7 +119,7 @@ class Event extends CommonDBTM
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -160,7 +165,7 @@ class Event extends CommonDBTM
      **/
     public static function cleanOld($day)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $secs = $day * DAY_TIMESTAMP;
@@ -228,7 +233,7 @@ class Event extends CommonDBTM
         global $CFG_GLPI;
 
         // If ID less than or equal to 0 (or Entity with ID less than 0 since Root Entity is 0)
-        if ($items_id < 0 || ($type !== \Entity::class && $items_id == 0)) {
+        if ($items_id < 0 || ($type !== Entity::class && $items_id == 0)) {
             echo "&nbsp;";//$item;
         } else {
             switch ($type) {
@@ -258,7 +263,7 @@ class Event extends CommonDBTM
 
                 default:
                     $url  = '';
-                    if (!is_a($type, \CommonDBTM::class, true)) {
+                    if (!is_a($type, CommonDBTM::class, true)) {
                         $type = getSingular($type);
                     }
                     if ($item = getItemForItemtype($type)) {
@@ -286,7 +291,7 @@ class Event extends CommonDBTM
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -366,7 +371,7 @@ class Event extends CommonDBTM
             if (isset($logItemtype[$type])) {
                 $itemtype = $logItemtype[$type];
             } else {
-                if (!is_a($type, \CommonDBTM::class, true)) {
+                if (!is_a($type, CommonDBTM::class, true)) {
                     $type = getSingular($type);
                 }
                 if ($item = getItemForItemtype($type)) {
@@ -511,7 +516,7 @@ class Event extends CommonDBTM
      */
     private static function getUsedItemtypes(): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // These values are not itemtypes
@@ -536,7 +541,7 @@ class Event extends CommonDBTM
             if (empty($value)) {
                 $value = 0;
             }
-            return \Dropdown::showFromArray($name, self::logArray()[1], [
+            return Dropdown::showFromArray($name, self::logArray()[1], [
                 'value' => $value,
                 'display' => false,
                 'display_emptychoice' => true,
@@ -546,7 +551,7 @@ class Event extends CommonDBTM
             if (empty($value)) {
                 $value = 0;
             }
-            return \Dropdown::showFromArray($name, self::getTypeValuesForDropdown(), [
+            return Dropdown::showFromArray($name, self::getTypeValuesForDropdown(), [
                 'value' => $value,
                 'display' => false,
                 'display_emptychoice' => true,
@@ -618,7 +623,7 @@ class Event extends CommonDBTM
             return $mapping[$type];
         }
 
-        $dbu = new \DbUtils();
+        $dbu = new DbUtils();
 
         // In many cases, `type` corresponds to a lowercase itemtype (e.g. `change`).
         $fallback_type = $dbu->fixItemtypeCase($type);

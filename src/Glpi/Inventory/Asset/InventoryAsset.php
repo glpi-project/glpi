@@ -40,6 +40,7 @@ use Agent;
 use Blacklist;
 use CommonDBTM;
 use CommonDropdown;
+use Computer;
 use Dropdown;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
@@ -48,6 +49,7 @@ use Glpi\Inventory\Request;
 use Lockedfield;
 use Manufacturer;
 use OperatingSystemKernelVersion;
+use stdClass;
 
 use function Safe\preg_match;
 use function Safe\preg_replace;
@@ -62,7 +64,7 @@ abstract class InventoryAsset
     protected $itemtype;
     /** @var array */
     protected $extra_data = [];
-    /** @var \Agent */
+    /** @var Agent */
     protected Agent $agent;
     /** @var integer */
     protected $entities_id = 0;
@@ -231,7 +233,7 @@ abstract class InventoryAsset
             }
 
             foreach ($value as $key => &$val) {
-                if ($val instanceof \stdClass || is_array($val)) {
+                if ($val instanceof stdClass || is_array($val)) {
                     continue;
                 }
 
@@ -448,7 +450,7 @@ abstract class InventoryAsset
             $relation = new Asset_PeripheralAsset();
             $relation->deleteByCriteria(
                 [
-                    'itemtype_asset' => \Computer::getType(),
+                    'itemtype_asset' => Computer::getType(),
                     'itemtype_peripheral' => $input['itemtype_peripheral'],
                     'items_id_peripheral' => $input['items_id_peripheral'],
                 ],
@@ -473,7 +475,7 @@ abstract class InventoryAsset
         return $this->is_new;
     }
 
-    protected function handleInput(\stdClass $value, ?CommonDBTM $item = null): array
+    protected function handleInput(stdClass $value, ?CommonDBTM $item = null): array
     {
         $input = ['_auto' => 1];
         if (property_exists($value, '_inventory_users')) {
@@ -483,7 +485,7 @@ abstract class InventoryAsset
         $locks = [];
 
         if ($item !== null) {
-            $lockeds = new \Lockedfield();
+            $lockeds = new Lockedfield();
             $locks = $lockeds->getLockedNames($item->getType(), $item->isNewItem() ? 0 : $item->fields['id']);
         }
 

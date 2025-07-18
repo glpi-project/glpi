@@ -36,11 +36,12 @@ namespace Glpi\Dropdown;
 
 use CommonDropdown;
 use CommonGLPI;
+use DisplayPreference;
 use Glpi\CustomObject\AbstractDefinition;
 use Session;
 
 /**
- * @extends AbstractDefinition<\Glpi\Dropdown\Dropdown>
+ * @extends AbstractDefinition<Dropdown>
  */
 final class DropdownDefinition extends AbstractDefinition
 {
@@ -79,7 +80,7 @@ final class DropdownDefinition extends AbstractDefinition
      *
      * @param bool $with_namespace
      * @return string
-     * @phpstan-return class-string<\Glpi\Dropdown\Dropdown>
+     * @phpstan-return class-string<Dropdown>
      */
     public function getDropdownClassName(bool $with_namespace = true): string
     {
@@ -167,7 +168,7 @@ final class DropdownDefinition extends AbstractDefinition
         $prefs = [
             14, // Name
         ];
-        $pref = new \DisplayPreference();
+        $pref = new DisplayPreference();
         foreach ($prefs as $field) {
             $pref->add([
                 'itemtype' => $this->getDropdownClassName(),

@@ -32,12 +32,12 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Features\AssetImage;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\Clonable;
 
 //!  ConsumableItem Class
 /**
@@ -47,7 +47,7 @@ use Glpi\Features\AssignableItem;
  */
 class ConsumableItem extends CommonDBTM
 {
-    use Glpi\Features\Clonable;
+    use Clonable;
 
     use AssetImage;
     use AssignableItem {
@@ -155,7 +155,7 @@ class ConsumableItem extends CommonDBTM
 
     public function rawSearchOptions()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $tab = parent::rawSearchOptions();
@@ -333,7 +333,7 @@ class ConsumableItem extends CommonDBTM
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 

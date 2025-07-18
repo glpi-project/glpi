@@ -59,6 +59,13 @@ class DbTestCase extends \GLPITestCase
     {
         global $DB;
         $DB->rollback();
+
+        // All transactions should be closed when a test is complete.
+        // If a transaction remains active, it mean there is a code somewhere
+        // that started it but forgot to commit/rollback.
+        $in_transaction = $this->callPrivateMethod($DB, 'isInTransaction');
+        $this->assertFalse($in_transaction);
+
         parent::tearDown();
     }
 

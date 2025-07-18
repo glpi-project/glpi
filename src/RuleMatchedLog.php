@@ -145,7 +145,7 @@ class RuleMatchedLog extends CommonDBTM
      */
     public function cleanOlddata($items_id, $itemtype)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -174,7 +174,7 @@ class RuleMatchedLog extends CommonDBTM
     private static function showForItem(CommonDBTM $item): void
     {
         /**
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          * @var array $CFG_GLPI
          */
         global $DB, $CFG_GLPI;

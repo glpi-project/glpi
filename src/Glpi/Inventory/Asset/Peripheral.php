@@ -36,11 +36,14 @@
 
 namespace Glpi\Inventory\Asset;
 
+use Computer;
+use DBmysql;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
 use Peripheral as GPeripheral;
 use RuleImportAssetCollection;
 use RuleMatchedLog;
+use USBVendor;
 
 class Peripheral extends InventoryAsset
 {
@@ -53,7 +56,7 @@ class Peripheral extends InventoryAsset
         ];
 
         $existing = [];
-        $usbvendor = new \USBVendor();
+        $usbvendor = new USBVendor();
 
         foreach ($this->data as $k => &$val) {
             if (property_exists($val, 'name')) {
@@ -138,7 +141,7 @@ class Peripheral extends InventoryAsset
 
     public function handle()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $rule = new RuleImportAssetCollection();
@@ -208,8 +211,8 @@ class Peripheral extends InventoryAsset
                 ],
             ],
             'WHERE'     => [
-                'itemtype_peripheral' => \Peripheral::class,
-                'itemtype_asset' => \Computer::class,
+                'itemtype_peripheral' => GPeripheral::class,
+                'itemtype_asset' => Computer::class,
                 'items_id_asset' => $this->item->fields['id'],
                 'entities_id' => $this->entities_id,
                 'glpi_peripherals.is_global' => 0,
@@ -246,9 +249,9 @@ class Peripheral extends InventoryAsset
         if (count($peripherals)) {
             foreach ($peripherals as $peripherals_id) {
                 $input = [
-                    'itemtype_asset' => \Computer::class,
+                    'itemtype_asset' => Computer::class,
                     'items_id_asset' => $this->item->fields['id'],
-                    'itemtype_peripheral' => \Peripheral::class,
+                    'itemtype_peripheral' => GPeripheral::class,
                     'items_id_peripheral' => $peripherals_id,
                     'is_dynamic'      => 1,
                 ];
@@ -267,6 +270,6 @@ class Peripheral extends InventoryAsset
     public function getItemtype(): string
     {
         //FIXME: check if this is correct - should be the same as Monitor::getItemtype()
-        return \Peripheral::class;
+        return GPeripheral::class;
     }
 }

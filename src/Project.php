@@ -32,13 +32,16 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
+use Glpi\Features\Clonable;
+use Glpi\Features\Kanban;
+use Glpi\Features\Teamwork;
 use Glpi\Plugin\Hooks;
+use Glpi\RichText\RichText;
 use Glpi\Team\Team;
 
 /**
@@ -48,9 +51,9 @@ use Glpi\Team\Team;
  **/
 class Project extends CommonDBTM implements ExtraVisibilityCriteria
 {
-    use Glpi\Features\Kanban;
-    use Glpi\Features\Clonable;
-    use Glpi\Features\Teamwork;
+    use Kanban;
+    use Clonable;
+    use Teamwork;
 
     // From CommonDBTM
     public $dohistory                   = true;
@@ -494,7 +497,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
     public function rawSearchOptions()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $tab = [];
@@ -1164,7 +1167,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
      */
     public static function getDatatableEntries(array $data): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $item = new static();
@@ -1308,7 +1311,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
      **/
     public function showChildren()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ID   = $this->getID();
@@ -1500,7 +1503,7 @@ TWIG, $twig_params);
 
     public static function getAllForKanban($active = true, $current_id = -1)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $items = [
@@ -1569,7 +1572,7 @@ TWIG, $twig_params);
         $result = [];
 
         if ($column_field === null || $column_field === 'projectstates_id') {
-            /** @var \DBmysql $DB */
+            /** @var DBmysql $DB */
             global $DB;
 
             $restrict = [];
@@ -1627,7 +1630,7 @@ TWIG, $twig_params);
     public static function getDataToDisplayOnKanban($ID, $criteria = [])
     {
         /**
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $DB;
 
@@ -1919,7 +1922,7 @@ TWIG, $twig_params);
                 }
             }
             if (isset($card['_metadata']['content']) && is_string($card['_metadata']['content'])) {
-                $card['_metadata']['content'] = Glpi\RichText\RichText::getTextFromHtml(content: $card['_metadata']['content'], preserve_line_breaks: true);
+                $card['_metadata']['content'] = RichText::getTextFromHtml(content: $card['_metadata']['content'], preserve_line_breaks: true);
             } else {
                 $card['_metadata']['content'] = '';
             }
@@ -2227,7 +2230,7 @@ TWIG, $twig_params);
         array $groups_id,
         bool $search_in_team = true
     ): array {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (count($groups_id) === 0) {
@@ -2289,7 +2292,7 @@ TWIG, $twig_params);
         bool $search_in_groups = true,
         bool $search_in_team = true
     ): array {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (count($users_id) === 0) {
@@ -2503,7 +2506,7 @@ TWIG, $twig_params);
      */
     public static function recalculatePercentDone($ID)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $project = new self();

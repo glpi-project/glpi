@@ -36,14 +36,14 @@ namespace Glpi\Controller;
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\HttpException;
-use Glpi\Http\Firewall;
 use Glpi\Http\RedirectResponse;
 use Glpi\Inventory\Conf;
-use Glpi\Security\Attribute\DisableCsrfChecks;
-use Glpi\Security\Attribute\SecurityStrategy;
+use RefusedEquipment;
+use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Throwable;
 
 use function Safe\file_get_contents;
 
@@ -51,8 +51,6 @@ final class InventoryController extends AbstractController
 {
     public static bool $is_running = false;
 
-    #[DisableCsrfChecks()]
-    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     #[Route("/Inventory", name: "glpi_inventory", methods: ['GET', 'POST'])]
     #[Route("/front/inventory.php", name: "glpi_inventory_legacy", methods: ['GET', 'POST'])]
     public function index(Request $request): Response
@@ -90,7 +88,7 @@ final class InventoryController extends AbstractController
             if ($handle) {
                 $inventory_request->handleRequest($contents);
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             //empty
             $inventory_request->addError($e->getMessage());
         } finally {
@@ -120,10 +118,10 @@ final class InventoryController extends AbstractController
         $inventory_request = new \Glpi\Inventory\Request();
         $refused_id = (int) $request->get('id');
 
-        $refused = new \RefusedEquipment();
+        $refused = new RefusedEquipment();
 
         try {
-            \Session::checkRight("config", READ);
+            Session::checkRight("config", READ);
             if ($refused->getFromDB($refused_id) && ($inventory_file = $refused->getInventoryFileName()) !== null) {
                 $contents = file_get_contents($inventory_file);
             } else {
@@ -133,7 +131,7 @@ final class InventoryController extends AbstractController
                 );
             }
             $inventory_request->handleRequest($contents);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             //empty
             $inventory_request->addError($e->getMessage());
         }

@@ -236,7 +236,7 @@ class RuleRight extends Rule
     public function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false)
     {
         if ($criteria['field'] === 'type') {
-            \Auth::dropdown([
+            Auth::dropdown([
                 'name'  => $name,
                 'value' => $value,
             ]);
@@ -336,7 +336,7 @@ class RuleRight extends Rule
 
     public function displayAdditionalRuleAction(array $action, $value = '')
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         switch ($action['type']) {

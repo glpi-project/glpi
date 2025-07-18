@@ -37,7 +37,7 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 Session::checkCentralAccess();
 
-$pra  = new \PDU_Rack();
+$pra  = new PDU_Rack();
 $rack = new Rack();
 
 if (isset($_POST['update'])) {

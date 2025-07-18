@@ -34,11 +34,11 @@
 
 namespace tests\units;
 
-use DateTime;
 use DateInterval;
+use DateTime;
+use Glpi\DBAL\QuerySubQuery;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Profile_User;
-use Glpi\DBAL\QuerySubQuery;
 use Psr\Log\LogLevel;
 use User;
 

@@ -32,10 +32,10 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Features\Clonable;
 
 use function Safe\strtotime;
 
@@ -44,7 +44,7 @@ use function Safe\strtotime;
  */
 class Contract extends CommonDBTM
 {
-    use Glpi\Features\Clonable;
+    use Clonable;
     use Glpi\Features\State;
 
     // From CommonDBTM
@@ -855,7 +855,7 @@ class Contract extends CommonDBTM
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -1039,7 +1039,7 @@ class Contract extends CommonDBTM
      **/
     public function getSuppliersNames()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -1079,7 +1079,7 @@ class Contract extends CommonDBTM
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -1397,7 +1397,7 @@ class Contract extends CommonDBTM
      **/
     public static function dropdown($options = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         //$name,$entity_restrict=-1,$alreadyused=array(),$nochecklimit=false
@@ -1651,7 +1651,7 @@ class Contract extends CommonDBTM
 
     public static function getNotExpiredCriteria()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         return [
             'OR' => [

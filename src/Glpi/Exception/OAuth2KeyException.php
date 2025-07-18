@@ -34,4 +34,6 @@
 
 namespace Glpi\Exception;
 
-class OAuth2KeyException extends \Exception {}
+use Exception;
+
+class OAuth2KeyException extends Exception {}

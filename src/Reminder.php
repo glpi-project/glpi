@@ -32,12 +32,13 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
 use Glpi\Features\Clonable;
+use Glpi\Features\PlanningEvent;
 use Glpi\RichText\RichText;
+use Ramsey\Uuid\Uuid;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VTodo;
 
@@ -50,7 +51,7 @@ class Reminder extends CommonDBVisible implements
     CalDAVCompatibleItemInterface,
     ExtraVisibilityCriteria
 {
-    use Glpi\Features\PlanningEvent {
+    use PlanningEvent {
         post_getEmpty as trait_post_getEmpty;
     }
     use VobjectConverterTrait;
@@ -154,7 +155,7 @@ class Reminder extends CommonDBVisible implements
     public function prepareInputForClone($input)
     {
         // regenerate uuid
-        $input['uuid'] = \Ramsey\Uuid\Uuid::uuid4();
+        $input['uuid'] = Uuid::uuid4();
         return $input;
     }
 
@@ -191,7 +192,7 @@ class Reminder extends CommonDBVisible implements
         unset($criteria['LEFT JOIN']);
         $criteria['FROM'] = self::getTable();
 
-        $it = new \DBmysqlIterator(null);
+        $it = new DBmysqlIterator(null);
         $it->buildQuery($criteria);
         $sql = $it->getSql();
         $sql = preg_replace('/.*WHERE /', '', $sql);
@@ -692,7 +693,7 @@ class Reminder extends CommonDBVisible implements
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -869,11 +870,11 @@ class Reminder extends CommonDBVisible implements
      *
      * @param array $query
      *
-     * @return \Sabre\VObject\Component\VCalendar[]
+     * @return VCalendar[]
      */
     private static function getItemsAsVCalendars(array $query)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $reminder_iterator = $DB->request($query);
@@ -918,7 +919,7 @@ class Reminder extends CommonDBVisible implements
 
         if ($vcomp instanceof VTodo && !array_key_exists('state', $input)) {
             // Force default state to TODO or reminder will be considered as VEVENT
-            $input['state'] = \Planning::TODO;
+            $input['state'] = Planning::TODO;
         }
 
         return $input;
