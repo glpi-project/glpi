@@ -187,7 +187,7 @@
                                     </button>
                                 </div>
                                 <section id="item-properties" class="accordion-collapse collapse show" aria-labelledby="heading-item-properties" data-bs-parent="#glpi-form-properties-accordion">
-                                    <div class="accordion-body d-flex flex-column" data-fix-dropdown-flex>
+                                    <div class="accordion-body d-flex flex-column">
                                         <script>
                                             function renderLayoutTemplateResult(data) {
                                                 const icons = {{ enum('Glpi\\Form\\RenderLayout').cases|map((case) => {(case.value): case.getIcon()})|reduce((carry, item) => carry|merge(item), {})|json_encode|raw }};
