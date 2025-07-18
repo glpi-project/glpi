@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Asset\AssetDefinition;
 use Glpi\DBAL\QueryExpression;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -203,6 +204,17 @@ class ProfileTest extends DbTestCase
         $profile = new \Profile();
         $this->assertTrue($profile->getFromDB(3));
 
+        $this->assertTrue($profile->update([
+            'id' => $profile->fields['id'],
+            '_asset_test01' => [
+                READ . "_0" => 1,
+                UPDATE . "_0" => 1,
+                CREATE . "_0" => 1,
+                DELETE . "_0" => 1,
+            ],
+        ]));
+        $profile->getFromDB($profile->fields['id']);
+
         // Clone it
         $cloned_profile = new \Profile();
         $clone_profiles_id = $profile->clone([
@@ -248,6 +260,11 @@ class ProfileTest extends DbTestCase
         foreach ($rights[3] as $right => $value) {
             $this->assertEquals($value, $rights[$clone_profiles_id][$right]);
         }
+
+        $definition = getItemByTypeName(AssetDefinition::class, 'Test01');
+        $definition_rights = importArrayFromDB($definition->fields['profiles']);
+        $this->assertEquals(15, $definition_rights[$profile->fields['id']]);
+        $this->assertEquals(15, $definition_rights[$clone_profiles_id]);
     }
 
     /**
