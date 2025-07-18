@@ -111,7 +111,7 @@ abstract class ExportSearchOutput extends AbstractSearchOutput
                 }
                 break;
             case "glpi_tickets.time_to_own":
-            case "glpi_tickets.internal_time_to_own":
+            case "glpi_tickets.internal_time_to_own": // @todoseb affichage secondaire
                 if (in_array($ID, [158, 186])) {
                     break; // Skip "TTO + progress" search options
                 }
