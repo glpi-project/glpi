@@ -97,7 +97,7 @@ abstract class AbstractPluginMigration
          */
         global $CFG_GLPI;
 
-        return (bool) $CFG_GLPI[$this->getHasBeenExecutedConfigurationKey()];
+        return (bool) ($CFG_GLPI[$this->getHasBeenExecutedConfigurationKey()] ?? false);
     }
 
     final public function hasPluginData(): bool
