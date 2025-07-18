@@ -235,7 +235,6 @@ CREATE TABLE `glpi_savedsearches` (
   `type` int NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
   `users_id` int unsigned NOT NULL DEFAULT '0',
-  `is_private` tinyint NOT NULL DEFAULT '1',
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `query` text,
@@ -249,7 +248,6 @@ CREATE TABLE `glpi_savedsearches` (
   KEY `itemtype` (`itemtype`),
   KEY `entities_id` (`entities_id`),
   KEY `users_id` (`users_id`),
-  KEY `is_private` (`is_private`),
   KEY `is_recursive` (`is_recursive`),
   KEY `last_execution_time` (`last_execution_time`),
   KEY `last_execution_date` (`last_execution_date`),
@@ -290,6 +288,18 @@ CREATE TABLE `glpi_savedsearches_alerts` (
   KEY `is_active` (`is_active`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+### Dump table glpi_savedsearches_usertargets
+
+DROP TABLE IF EXISTS `glpi_savedsearches_usertargets`;
+CREATE TABLE `glpi_savedsearches_usertargets` (
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `users_id` int unsigned NOT NULL DEFAULT '0',
+    `savedsearches_id` int unsigned NOT NULL DEFAULT '0',
+    PRIMARY KEY (`id`),
+    KEY `savedsearches_id` (`savedsearches_id`),
+    KEY `users_id` (`users_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -2910,6 +2920,20 @@ CREATE TABLE `glpi_entities_rssfeeds` (
   KEY `is_recursive` (`is_recursive`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+### Dump table glpi_entities_savedsearches
+
+DROP TABLE IF EXISTS `glpi_entities_savedsearches`;
+CREATE TABLE `glpi_entities_savedsearches` (
+    `id`           int unsigned NOT NULL AUTO_INCREMENT,
+    `savedsearches_id`  int unsigned NOT NULL DEFAULT '0',
+    `entities_id`  int unsigned NOT NULL DEFAULT '0',
+    `is_recursive` tinyint NOT NULL DEFAULT '0',
+    PRIMARY KEY (`id`),
+    KEY            `savedsearches_id` (`savedsearches_id`),
+    KEY            `entities_id` (`entities_id`),
+    KEY            `is_recursive` (`is_recursive`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 
 ### Dump table glpi_events
 
@@ -3134,6 +3158,22 @@ CREATE TABLE `glpi_groups_rssfeeds` (
   KEY `is_recursive` (`is_recursive`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+### Dump table glpi_groups_savedsearches
+
+DROP TABLE IF EXISTS `glpi_groups_savedsearches`;
+CREATE TABLE `glpi_groups_savedsearches` (
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `savedsearches_id` int unsigned NOT NULL DEFAULT '0',
+    `groups_id` int unsigned NOT NULL DEFAULT '0',
+    `entities_id` int unsigned DEFAULT NULL,
+    `is_recursive` tinyint NOT NULL DEFAULT '0',
+    `no_entity_restriction` tinyint NOT NULL DEFAULT '0',
+    PRIMARY KEY (`id`),
+    KEY `savedsearches_id` (`savedsearches_id`),
+    KEY `groups_id` (`groups_id`),
+    KEY `entities_id` (`entities_id`),
+    KEY `is_recursive` (`is_recursive`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_groups_tickets
 
