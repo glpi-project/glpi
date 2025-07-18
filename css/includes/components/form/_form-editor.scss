@@ -401,11 +401,11 @@ input.value-selector {
 }
 
 .visibility-dropdown-card, .validation-dropdown-card {
-    min-width: 700px;
+    max-width: 700px;
     width: fit-content;
 
     // Add scrolling as a last ressort, will not happen most of the time
-    overflow: scroll;
+    overflow: auto;
 }
 
 [data-glpi-form-editor-block] {
