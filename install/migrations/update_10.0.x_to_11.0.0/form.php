@@ -36,7 +36,6 @@ use Glpi\Form\Destination\CommonITILField\ValidationField;
 use Glpi\Form\Destination\CommonITILField\ValidationFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ValidationFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ValidationFieldStrategyConfig;
-use Glpi\Form\Destination\FormDestination;
 
 /**
  * @var DBmysql $DB
