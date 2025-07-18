@@ -474,7 +474,7 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
                 new ValidationFieldStrategyConfig(
                     strategy: ValidationFieldStrategy::SPECIFIC_ACTORS,
                     specific_actors: [
-                        'User' => [getItemByTypeName(User::class, 'glpi', true)]
+                        'User' => [getItemByTypeName(User::class, 'glpi', true)],
                     ]
                 ),
             ]),
