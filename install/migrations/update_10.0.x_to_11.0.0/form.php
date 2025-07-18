@@ -37,6 +37,9 @@ use Glpi\Form\Destination\CommonITILField\ValidationFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ValidationFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ValidationFieldStrategyConfig;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+
 /**
  * @var DBmysql $DB
  * @var Migration $migration
