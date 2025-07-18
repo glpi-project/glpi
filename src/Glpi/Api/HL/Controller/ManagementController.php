@@ -70,8 +70,6 @@ use User;
 #[Route(path: '/Management', tags: ['Management'])]
 final class ManagementController extends AbstractController
 {
-    use CRUDControllerTrait;
-
     /**
      * @param bool $schema_names_only If true, only the schema names are returned.
      * @return array<class-string<CommonDBTM>, array>
@@ -149,6 +147,17 @@ final class ManagementController extends AbstractController
         $schemas = [];
 
         $management_types = self::getManagementTypes(false);
+        $fn_get_assignable_restriction = static function (string $itemtype) {
+            if (method_exists($itemtype, 'getAssignableVisiblityCriteria')) {
+                $criteria = $itemtype::getAssignableVisiblityCriteria('_');
+                if (count($criteria) === 1 && isset($criteria[0]) && is_numeric((string) $criteria[0])) {
+                    // Return true for QueryExpression('1') and false for QueryExpression('0') to support fast pass/fail
+                    return (bool) $criteria[0];
+                }
+                return ['WHERE' => $criteria];
+            }
+            return true;
+        };
 
         foreach ($management_types as $m_class => $m_data) {
             if (!\is_a($m_class, CommonDBTM::class, true)) {
@@ -169,6 +178,12 @@ final class ManagementController extends AbstractController
                     'name' => ['type' => Doc\Schema::TYPE_STRING],
                 ],
             ];
+
+            if (method_exists($m_class, 'getAssignableVisiblityCriteria')) {
+                $schemas[$m_name]['x-rights-conditions'] = [
+                    'read' => static fn() => $fn_get_assignable_restriction($m_class),
+                ];
+            }
 
             // Need instance since some fields are not static even if they aren't related to instances
             $item = new $m_class();

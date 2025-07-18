@@ -40,6 +40,7 @@ use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RoutePath;
 use Glpi\Api\HL\Router;
+use Glpi\Features\AssignableItemInterface;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 
@@ -487,6 +488,7 @@ final class HLAPIHelper
     }
 
     /**
+     * Automatically tests CRUD endpoints for a specific itemtype to check that responses are correct when the user lacks permissions.
      * @param string $endpoint The base endpoint to test
      * @param class-string<CommonDBTM> $itemtype The itemtype related to this endpoint
      * @param int $items_id A specific, existing itm ID to test with
@@ -549,19 +551,19 @@ final class HLAPIHelper
         $this->call(new Request('GET', $endpoint), function ($call) {
             /** @var HLAPICallAsserter $call */
             $call->response->isAccessDenied();
-        });
-        // No READ = No GET. Access denied on specific items currently returns 404 for security/obsurity reasons
+        }, false);
+        // No READ = No GET
         $this->call(new Request('GET', $endpoint . '/' . $items_id), function ($call) {
             /** @var HLAPICallAsserter $call */
-            $call->response->isNotFoundError();
-        });
+            $call->response->isNotOK();
+        }, false);
 
         $deny_create();
         // No CREATE = Access denied
         $this->call(new Request('POST', $endpoint), function ($call) {
             /** @var HLAPICallAsserter $call */
             $call->response->isAccessDenied();
-        });
+        }, false);
 
         $deny_update();
         $update_request = new Request('PATCH', $endpoint . '/' . $items_id);
@@ -571,7 +573,7 @@ final class HLAPIHelper
         $this->call($update_request, function ($call) {
             /** @var HLAPICallAsserter $call */
             $call->response->isAccessDenied();
-        });
+        }, false);
 
         if ($item->maybeDeleted()) {
             $deny_delete();
@@ -579,7 +581,7 @@ final class HLAPIHelper
             $this->call(new Request('DELETE', $endpoint . '/' . $items_id), function ($call) {
                 /** @var HLAPICallAsserter $call */
                 $call->response->isAccessDenied();
-            });
+            }, false);
 
             $deny_restore();
             // No RESTORE = Access denied
@@ -589,7 +591,7 @@ final class HLAPIHelper
                 /** @var HLAPICallAsserter $call */
                 $call->response
                     ->isAccessDenied();
-            });
+            }, false);
         }
 
         $deny_purge();
@@ -599,7 +601,7 @@ final class HLAPIHelper
         $this->call($purge_request, function ($call) {
             /** @var HLAPICallAsserter $call */
             $call->response->isAccessDenied();
-        });
+        }, false);
 
         return $this;
     }
@@ -773,6 +775,113 @@ final class HLAPIHelper
 
         return $this;
     }
+
+    /**
+     * @param string $endpoint
+     * @param class-string<AssignableItemInterface> $itemtype
+     * @return void
+     */
+    public function autoTestAssignableItemRights(string $endpoint, string $itemtype)
+    {
+        $this->test->loginWeb();
+        $this->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+        $_SESSION['glpigroups'] = [99];
+
+        $create_request = new Request('POST', $endpoint);
+        $create_request->setParameter('name', 'autoTestAssignableItem' . random_int(0, 10000));
+        $create_request->setParameter('entity', getItemByTypeName('Entity', '_test_root_entity', true));
+        $new_location = null;
+        $new_items_id = null;
+        $this->call($create_request, function ($call) use (&$new_location, &$new_items_id) {
+            $call->response
+                ->isOK()
+                ->headers(function ($headers) use (&$new_location) {
+                    $new_location = $headers['Location'];
+                })
+                ->jsonContent(function ($content) use (&$new_items_id) {
+                    $new_items_id = $content['id'];
+                });
+        }, false);
+
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_OWNED;
+        $this->call(new Request('GET', $new_location), function ($call) {
+            $call->response->isNotFoundError();
+        }, false);
+
+        // Test READ_OWNED when set as the User
+        $DB->update(
+            $itemtype::getTable(),
+            ['users_id' => $_SESSION['glpiID']],
+            ['id' => $new_items_id]
+        );
+        $this->call(new Request('GET', $new_location), function ($call) {
+            $call->response->isOK();
+        }, false);
+        // Test READ_OWNED when User is set, but not to the current user
+        $DB->update(
+            $itemtype::getTable(),
+            ['users_id' => $_SESSION['glpiID'] + 1],
+            ['id' => $new_items_id]
+        );
+        $this->call(new Request('GET', $new_location), function ($call) {
+            $call->response->isNotFoundError();
+        }, false);
+        // Test READ_OWNED when the Group is set to one of the current user's groups
+        $DB->insert('glpi_groups_items', [
+            'itemtype' => $itemtype,
+            'items_id' => $new_items_id,
+            'groups_id' => 99,
+            'type' => Group_Item::GROUP_TYPE_NORMAL,
+        ]);
+        $this->call(new Request('GET', $new_location), function ($call) {
+            $call->response->isOK();
+        }, false);
+
+        $DB->delete(
+            'glpi_groups_items',
+            [
+                'itemtype' => $itemtype,
+                'items_id' => $new_items_id,
+                'groups_id' => 99,
+            ]
+        );
+        $DB->update(
+            $itemtype::getTable(),
+            ['users_id_tech' => $_SESSION['glpiID']],
+            ['id' => $new_items_id]
+        );
+        // Test READ_OWNED when the User is set as a technician instead of regular user
+        $this->call(new Request('GET', $new_location), function ($call) {
+            $call->response->isNotFoundError();
+        }, false);
+        // Test READ_ASSIGNED when the User is set as a technician
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
+        $this->call(new Request('GET', $new_location), function ($call) {
+            $call->response->isOK();
+        }, false);
+        // Test READ_ASSIGNED when a Technician user is set, but not to the current user
+        $DB->update(
+            $itemtype::getTable(),
+            ['users_id_tech' => $_SESSION['glpiID'] + 1],
+            ['id' => $new_items_id]
+        );
+        $this->call(new Request('GET', $new_location), function ($call) {
+            $call->response->isNotFoundError();
+        }, false);
+        // Test READ_ASSIGNED when the technician Group is set to one of the current user's groups
+        $DB->insert('glpi_groups_items', [
+            'itemtype' => $itemtype,
+            'items_id' => $new_items_id,
+            'groups_id' => 99,
+            'type' => Group_Item::GROUP_TYPE_TECH,
+        ]);
+        $this->call(new Request('GET', $new_location), function ($call) {
+            $call->response->isOK();
+        }, false);
+    }
 }
 
 // @codingStandardsIgnoreStart
@@ -833,6 +942,11 @@ final class HLAPIRequestAsserter
     public function getUri(): string
     {
         return $this->request->getUri();
+    }
+
+    public function getMethod(): string
+    {
+        return $this->request->getMethod();
     }
 
     public function headers(callable $fn): self
@@ -901,7 +1015,8 @@ final class HLAPIResponseAsserter
 
     public function isOK(): HLAPIResponseAsserter
     {
-        $fail_msg = 'Status code for call to ' . $this->call_asserter->originalRequest->getUri() . ' is not 2xx';
+        $original_request = $this->call_asserter->originalRequest;
+        $fail_msg = 'Status code for call to ' . $original_request->getMethod() . ' ' . $original_request->getUri() . ' is not 2xx';
         $status_code = $this->response->getStatusCode();
         if ($status_code < 200 || $status_code >= 300) {
             $response_content = json_decode((string) $this->response->getBody(), true);
@@ -915,10 +1030,12 @@ final class HLAPIResponseAsserter
 
     public function isUnauthorizedError(): HLAPIResponseAsserter
     {
+        $original_request = $this->call_asserter->originalRequest;
+        $method = $original_request->getMethod();
         $uri = $this->call_asserter->originalRequest->getUri();
         // Status is 401
         $this->call_asserter->test
-            ->assertEquals(401, $this->response->getStatusCode(), 'Status code for call to ' . $uri . ' is not 401');
+            ->assertEquals(401, $this->response->getStatusCode(), 'Status code for call to ' . $method . ' ' . $uri . ' is not 401');
         $decoded_content = json_decode((string) $this->response->getBody(), true);
         $this->call_asserter->test->assertCount(3, array_intersect(['title', 'detail', 'status'], array_keys($decoded_content)), 'Response from ' . $uri . ' is not a valid error response');
         $this->call_asserter->test->assertEquals('ERROR_UNAUTHENTICATED', $decoded_content['status'], 'Status property in response from ' . $uri . ' is not ERROR_UNAUTHENTICATED');
@@ -928,9 +1045,10 @@ final class HLAPIResponseAsserter
     public function isAccessDenied(): HLAPIResponseAsserter
     {
         $uri = $this->call_asserter->originalRequest->getUri();
+        $method = $this->call_asserter->originalRequest->getMethod();
         // Status is 403
         $this->call_asserter->test
-            ->assertEquals(403, $this->response->getStatusCode(), 'Status code for call to ' . $uri . ' is not 403');
+            ->assertEquals(403, $this->response->getStatusCode(), 'Status code for call to ' . $method . ' ' . $uri . ' is not 403');
         $decoded_content = json_decode((string) $this->response->getBody(), true);
         $this->call_asserter->test->assertCount(3, array_intersect(['title', 'detail', 'status'], array_keys($decoded_content)), 'Response from ' . $uri . ' is not a valid error response');
         $this->call_asserter->test->assertEquals('ERROR_RIGHT_MISSING', $decoded_content['status'], 'Status property in response from ' . $uri . ' is not ERROR_RIGHT_MISSING');
@@ -940,12 +1058,27 @@ final class HLAPIResponseAsserter
     public function isNotFoundError(): HLAPIResponseAsserter
     {
         $uri = $this->call_asserter->originalRequest->getUri();
+        $method = $this->call_asserter->originalRequest->getMethod();
         // Status is 404
         $this->call_asserter->test
-            ->assertEquals(404, $this->response->getStatusCode(), 'Status code for call to ' . $uri . ' is not 404');
+            ->assertEquals(404, $this->response->getStatusCode(), 'Status code for call to ' . $method . ' ' . $uri . ' is not 404');
         $decoded_content = json_decode((string) $this->response->getBody(), true);
         $this->call_asserter->test->assertCount(3, array_intersect(['title', 'detail', 'status'], array_keys($decoded_content)), 'Response from ' . $uri . ' is not a valid error response');
         $this->call_asserter->test->assertEquals('ERROR_ITEM_NOT_FOUND', $decoded_content['status'], 'Status property in response from ' . $uri . ' is not ERROR_ITEM_NOT_FOUND');
+        return $this;
+    }
+
+    public function isNotOK(): HLAPIResponseAsserter
+    {
+        $uri = $this->call_asserter->originalRequest->getUri();
+        $method = $this->call_asserter->originalRequest->getMethod();
+        $fail_msg = 'Status code for call to ' . $method . ' ' . $uri . ' is not a non-OK status';
+        $status_code = $this->response->getStatusCode();
+        if ($status_code < 300) {
+            $response_content = json_decode((string) $this->response->getBody(), true);
+            $fail_msg .= " ($status_code):\n" . var_export($response_content, true);
+            $this->call_asserter->test->assertGreaterThanOrEqual(300, $status_code, $fail_msg);
+        }
         return $this;
     }
 
