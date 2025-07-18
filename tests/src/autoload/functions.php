@@ -670,6 +670,13 @@ function loadDataset()
                 'users_id_recipient' => TU_USER,
                 'entities_id'    => '_test_root_entity',
             ],
+        ], 'Project' => [
+            [
+                'name'           => '_project01',
+                'content'        => 'Content for project _project01',
+                'users_id'       => TU_USER,
+                'entities_id'    => '_test_root_entity',
+            ],
         ],
         'OAuthClient' => [
             [

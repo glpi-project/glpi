@@ -386,12 +386,11 @@ final class ProjectController extends AbstractController
     )]
     public function searchLinkedTasks(Request $request): Response
     {
-        $params = $request->getParameters();
-        if (!isset($params['filter'])) {
-            $params['filter'] = [];
-        }
-        $params['filter']['project'] = $request->getAttributes()['project_id'];
-        return ResourceAccessor::searchBySchema($this->getKnownSchema('ProjectTask', $this->getAPIVersion($request)), $params);
+
+        $filter = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filter .= ';project.id==' . $request->getAttributes()['project_id'];
+        $request->setParameter('filter', $filter);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('ProjectTask', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/{project_id}/Task', methods: ['POST'])]
