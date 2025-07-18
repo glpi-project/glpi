@@ -580,3 +580,29 @@ Cypress.Commands.add('closeAccordionItem', (container_label, item_label) => {
 Cypress.Commands.add('updateTestUserSettings', (settings) => {
     return cy.updateWithAPI('User', 7, settings);
 });
+
+Cypress.Commands.add('getRowCells', {prevSubject: true}, (subject) => {
+    cy.wrap(subject).closest('table').find('thead th').then($headers => {
+        if ($headers.length === 0) {
+            return undefined;
+        }
+        const headers = [];
+        $headers.each((i, th) => headers.push(Cypress.$(th).text().trim()));
+
+        // map row cells to an object where keys are headers texts
+        if (subject.prop('tagName').toLowerCase() !== 'tr') {
+            throw new Error('getRowCells can only be called on a <tr> element');
+        }
+        return cy.wrap(subject).findAllByRole('cell').then($cells => {
+            if (headers !== undefined && $cells.length !== headers.length) {
+                throw new Error(`Number of cells (${ $cells.length }) does not match number of headers (${ headers.length })`);
+            }
+            const result = {};
+            $cells.each((i, cell) => {
+                const key = headers !== undefined ? headers[i] : i;
+                result[key] = cell;
+            });
+            return result;
+        });
+    });
+});
