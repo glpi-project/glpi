@@ -292,6 +292,11 @@ final class ResourceAccessor
      */
     public static function getOneBySchema(array $schema, array $request_attrs, array $request_params, string $field = 'id'): Response
     {
+        $itemtype = $schema['x-itemtype'] ?? null;
+        // No item-level checks done here. They are handled when generating the SQL using the x-rights-condtions schema property
+        if (($itemtype !== null) && !$itemtype::canView()) {
+            return AbstractController::getAccessDeniedErrorResponse();
+        }
         // Shortcut implementation using the search functionality with an injected RSQL filter and returning the first result.
         // This shouldn't have much if any unneeded overhead as the filter would be mapped to a SQL condition.
         $request_params['filter'] = $field . '==' . $request_attrs[$field];

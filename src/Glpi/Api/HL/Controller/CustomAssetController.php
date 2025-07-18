@@ -91,11 +91,11 @@ final class CustomAssetController extends AbstractController
                 'x-itemtype' => $asset_class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'x-rights-conditions' => [
-                    'read' => static fn() => [
-                        'WHERE' => [
-                            '_.assets_assetdefinitions_id' => $definition->getID(),
-                        ],
-                    ],
+                    'read' => static function () use ($asset_class, $definition) {
+                        $criteria = ['WHERE' => $asset_class::getAssignableVisiblityCriteria('_')];
+                        $criteria['WHERE']['_.assets_assetdefinitions_id'] = $definition->getID();
+                        return $criteria;
+                    },
                 ],
                 'properties' => [
                     'id' => [

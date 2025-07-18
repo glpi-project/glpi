@@ -106,4 +106,18 @@ class CustomAssetControllerTest extends HLAPITestCase
             'custom_fields' => ['teststring' => 'Test String A'],
         ]);
     }
+
+    public function testCRUDNoRights()
+    {
+        $this->api->autoTestCRUDNoRights(
+            endpoint: '/Assets/Custom/Test01',
+            itemtype: 'Glpi\\CustomAsset\\Test01Asset',
+            items_id: getItemByTypeName('Glpi\\CustomAsset\\Test01Asset', 'TestA', true)
+        );
+    }
+
+    public function testAssignableRights()
+    {
+        $this->api->autoTestAssignableItemRights('/Assets/Custom/Test01', 'Glpi\\CustomAsset\\Test01Asset');
+    }
 }
