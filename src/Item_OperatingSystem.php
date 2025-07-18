@@ -222,7 +222,6 @@ class Item_OperatingSystem extends CommonDBRelation
         echo "<div class='spaced'>";
         if (
             $canedit
-            && $number
             && ($withtemplate < 2)
         ) {
             Html::openMassiveActionsForm('mass' . self::class . $params['rand']);
@@ -240,7 +239,6 @@ class Item_OperatingSystem extends CommonDBRelation
         $header_end    = '';
         if (
             $canedit
-            && $number
             && ($withtemplate < 2)
         ) {
             $header_top    .= "<th width='11'>" . Html::getCheckAllAsCheckbox('mass' . self::class . $params['rand']);
@@ -259,40 +257,38 @@ class Item_OperatingSystem extends CommonDBRelation
         $header_end .= "</tr>";
         echo $header_begin . $header_top . $header_end;
 
-        if ($number) {
-            foreach ($os as $data) {
-                $linkname = $data['name'];
-                if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
-                    $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["assocID"]);
-                }
-                $link = Toolbox::getItemTypeFormURL(self::getType());
-                $name = "<a href=\"" . htmlescape($link) . "?id=" . (int) $data["assocID"] . "\">" . htmlescape($linkname) . "</a>";
-
-                echo "<tr class='tab_bg_1'>";
-                if (
-                    $canedit
-                    && ($withtemplate < 2)
-                ) {
-                    echo "<td width='10'>";
-                    Html::showMassiveActionCheckBox(self::class, $data["assocID"]);
-                    echo "</td>";
-                }
-                $version = htmlescape($data['version']);
-                $architecture = htmlescape($data['architecture']);
-                $servicepack = htmlescape($data['servicepack']);
-                echo "<td class='center'>{$name}</td>";
-                echo "<td class='center'>{$version}</td>";
-                echo "<td class='center'>{$architecture}</td>";
-                echo "<td class='center'>{$servicepack}</td>";
-
-                echo "</tr>";
-                $i++;
+        foreach ($os as $data) {
+            $linkname = $data['name'];
+            if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
+                $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["assocID"]);
             }
-            echo $header_begin . $header_bottom . $header_end;
+            $link = Toolbox::getItemTypeFormURL(self::getType());
+            $name = "<a href=\"" . htmlescape($link) . "?id=" . (int) $data["assocID"] . "\">" . htmlescape($linkname) . "</a>";
+
+            echo "<tr class='tab_bg_1'>";
+            if (
+                $canedit
+                && ($withtemplate < 2)
+            ) {
+                echo "<td width='10'>";
+                Html::showMassiveActionCheckBox(self::class, $data["assocID"]);
+                echo "</td>";
+            }
+            $version = htmlescape($data['version']);
+            $architecture = htmlescape($data['architecture']);
+            $servicepack = htmlescape($data['servicepack']);
+            echo "<td class='center'>{$name}</td>";
+            echo "<td class='center'>{$version}</td>";
+            echo "<td class='center'>{$architecture}</td>";
+            echo "<td class='center'>{$servicepack}</td>";
+
+            echo "</tr>";
+            $i++;
         }
+        echo $header_begin . $header_bottom . $header_end;
 
         echo "</table>";
-        if ($canedit && $number && ($withtemplate < 2)) {
+        if ($canedit && ($withtemplate < 2)) {
             $massiveactionparams['ontop'] = false;
             Html::showMassiveActions($massiveactionparams);
             Html::closeForm();

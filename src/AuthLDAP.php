@@ -1868,7 +1868,7 @@ TWIG, $twig_params);
                     }
                 }
             }
-        } while (($cookie !== null) && ($cookie != ''));
+        } while ($cookie != '');
 
         return true;
     }
@@ -2034,11 +2034,11 @@ TWIG, $twig_params);
                     // Only manage deleted user if ALL (because of entity visibility in delegated mode)
 
                     if ($user['auths_id'] === $options['authldaps_id']) {
-                        if (!$userfound && (int) $user['is_deleted_ldap'] === 0) {
+                        if ((int) $user['is_deleted_ldap'] === 0) {
                             // If user is marked as coming from LDAP, but is not present in it anymore
                             User::manageDeletedUserInLdap($user['id']);
                             $results[self::USER_DELETED_LDAP]++;
-                        } elseif ($userfound && (int) $user['is_deleted_ldap'] === 1) {
+                        } elseif ((int) $user['is_deleted_ldap'] === 1) {
                             // User is marked as coming from LDAP, but was previously deleted
                             User::manageRestoredUserInLdap($user['id']);
                             $results[self::USER_RESTORED_LDAP]++;
@@ -2559,7 +2559,7 @@ TWIG, $twig_params);
                     }
                 }
             }
-        } while (($cookie !== null) && ($cookie != ''));
+        } while ($cookie != '');
 
         return $groups;
     }
@@ -4083,8 +4083,13 @@ TWIG, $twig_params);
      */
     public static function isLdapPageSizeAvailable($config_ldap, $check_config_value = true)
     {
-        return (extension_loaded('ldap') && (!$check_config_value
-         || ($check_config_value && $config_ldap->fields['can_support_pagesize'])));
+        return (
+            extension_loaded('ldap')
+            && (
+                !$check_config_value
+                || $config_ldap->fields['can_support_pagesize']
+            )
+        );
     }
 
     /**

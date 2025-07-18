@@ -586,7 +586,7 @@ class APIRest extends API
 
         // retrieve HTTP headers
         $headers = getallheaders();
-        if (false !== $headers && count($headers) > 0) {
+        if (count($headers) > 0) {
             $fixedHeaders = [];
             foreach ($headers as $key => $value) {
                 $fixedHeaders[ucwords(strtolower($key), '-')] = $value;

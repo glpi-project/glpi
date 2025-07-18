@@ -70,7 +70,8 @@ trait DCBreadcrumb
         if ($item->getFromDB($items_id)) {
             $types = $CFG_GLPI['rackable_types'];
 
-            if ($item instanceof PDU) {
+            // TODO: avoid instanceof in traits
+            if ($item instanceof PDU) { // @phpstan-ignore instanceof.alwaysTrue, instanceof.alwaysFalse
                 $pdu_rack = new PDU_Rack();
                 $rack = new Rack();
                 if (

@@ -878,7 +878,6 @@ class Problem extends CommonITILObject
                 'criteria' => [],
                 'reset'    => 'reset',
             ];
-            $forcetab         = '';
             if ($showgroupproblems) {
                 switch ($status) {
                     case "waiting":
@@ -1050,9 +1049,6 @@ class Problem extends CommonITILObject
 
                         $link = "<a id='problem" . $problem->fields["id"] . $rand . "' href='" .
                             Problem::getFormURLWithID($problem->fields["id"]);
-                        if ($forcetab != '') {
-                            $link .= "&amp;forcetab=" . $forcetab;
-                        }
                         $link .= "'>";
                         $link .= "<span class='b'>" . $problem->fields["name"] . "</span></a>";
                         $link = sprintf(

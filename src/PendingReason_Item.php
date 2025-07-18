@@ -540,7 +540,7 @@ class PendingReason_Item extends CommonDBRelation
         } else {
             // Not pending yet; did it change ?
             if (
-                $timeline_item->input['pending'] ?? 0
+                ($timeline_item->input['pending'] ?? 0)
                 && isset($timeline_item->input['pendingreasons_id'])
                 && $timeline_item->input['pendingreasons_id'] > 0
             ) {

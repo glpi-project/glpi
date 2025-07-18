@@ -57,10 +57,7 @@ trait ParentStatus
             $parent_pending_reason = PendingReason_Item::getForItem($this->input['_job']);
             if (
                 !$parent_pending_reason
-                || (
-                    $parent_pending_reason
-                    && !$parent_pending_reason->fields['pendingreasons_id']
-                )
+                || !$parent_pending_reason->fields['pendingreasons_id']
             ) {
                 PendingReason_Item::createForItem($parentitem, [
                     'pendingreasons_id'           => $input['pendingreasons_id'] ?? 0,

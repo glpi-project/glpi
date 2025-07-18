@@ -473,7 +473,6 @@ TWIG, $twig_params);
             !($item instanceof DomainRelation)
             && $canedit
             && $withtemplate < 2
-            && Session::haveRight('domain', READ)
         ) {
             // Restrict entity for knowbase
             $entities = "";

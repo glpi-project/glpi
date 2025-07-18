@@ -2004,8 +2004,6 @@ TWIG, $twig_params);
             ) {
                 // item exists and is not in bin
 
-                $abort = false;
-
                 // if event has rrule property, check if we need to create a clone instance
                 if (
                     isset($item->fields['rrule'])
@@ -2024,91 +2022,89 @@ TWIG, $twig_params);
                     }
                 }
 
-                if (!$abort) {
-                    $update = [
-                        'id'   => $params['items_id'],
-                        'plan' => [
-                            'begin' => $params['start'],
-                            'end'   => $params['end'],
-                        ],
-                    ];
+                $update = [
+                    'id'   => $params['items_id'],
+                    'plan' => [
+                        'begin' => $params['start'],
+                        'end'   => $params['end'],
+                    ],
+                ];
 
-                    if (isset($item->fields['users_id_tech'])) {
-                        $update['users_id_tech'] = $item->fields['users_id_tech'];
-                    }
-
-                    // manage moving event between resource (actors)
-                    if (!empty($params['new_actor_itemtype']) && !empty($params['new_actor_items_id'])) {
-                        $new_actor_itemtype = strtolower($params['new_actor_itemtype']);
-
-                        // reminders don't have group assignement for planning
-                        if (
-                            !($new_actor_itemtype === 'group'
-                            && $item instanceof Reminder)
-                        ) {
-                            switch ($new_actor_itemtype) {
-                                case "group":
-                                    $update['groups_id_tech'] = $params['new_actor_items_id'];
-                                    if (strtolower($params['old_actor_itemtype']) === "user") {
-                                        $update['users_id_tech']  = 0;
-                                    }
-                                    break;
-
-                                case "user":
-                                    if (isset($item->fields['users_id_tech'])) {
-                                        $update['users_id_tech']  = $params['new_actor_items_id'];
-                                        if (strtolower($params['old_actor_itemtype']) === "group") {
-                                            $update['groups_id_tech']  = 0;
-                                        }
-                                    } else {
-                                        $update['users_id'] = $params['new_actor_items_id'];
-                                    }
-                                    break;
-                            }
-                        }
-
-                        // special case for project tasks
-                        // which have a link tables for their relation with groups/users
-                        if ($item instanceof ProjectTask) {
-                            // get actor for finding relation with item
-                            $actor = getItemForItemtype($params['old_actor_itemtype']);
-                            $actor->getFromDB((int) $params['old_actor_items_id']);
-
-                            // get current relation
-                            $team_old = new ProjectTaskTeam();
-                            $team_old->getFromDBForItems($item, $actor);
-
-                            // if new relation already exists, delete old relation
-                            $actor_new = getItemForItemtype($params['new_actor_itemtype']);
-                            $actor_new->getFromDB((int) $params['new_actor_items_id']);
-                            $team_new  = new ProjectTaskTeam();
-                            if ($team_new->getFromDBForItems($item, $actor_new)) {
-                                $team_old->delete([
-                                    'id' => $team_old->fields['id'],
-                                ]);
-                            } else {
-                                // else update relation
-                                $team_old->update([
-                                    'id'       => $team_old->fields['id'],
-                                    'itemtype' => $params['new_actor_itemtype'],
-                                    'items_id' => $params['new_actor_items_id'],
-                                ]);
-                            }
-                        }
-                    }
-
-                    if (is_subclass_of($item, "CommonITILTask")) {
-                        $parentitemtype = $item::getItilObjectItemType();
-                        if (!$update["_job"] = getItemForItemtype($parentitemtype)) {
-                            return false;
-                        }
-
-                        $fkfield = $update["_job"]::getForeignKeyField();
-                        $update[$fkfield] = $item->fields[$fkfield];
-                    }
-
-                    return $item->update($update);
+                if (isset($item->fields['users_id_tech'])) {
+                    $update['users_id_tech'] = $item->fields['users_id_tech'];
                 }
+
+                // manage moving event between resource (actors)
+                if (!empty($params['new_actor_itemtype']) && !empty($params['new_actor_items_id'])) {
+                    $new_actor_itemtype = strtolower($params['new_actor_itemtype']);
+
+                    // reminders don't have group assignement for planning
+                    if (
+                        !($new_actor_itemtype === 'group'
+                        && $item instanceof Reminder)
+                    ) {
+                        switch ($new_actor_itemtype) {
+                            case "group":
+                                $update['groups_id_tech'] = $params['new_actor_items_id'];
+                                if (strtolower($params['old_actor_itemtype']) === "user") {
+                                    $update['users_id_tech']  = 0;
+                                }
+                                break;
+
+                            case "user":
+                                if (isset($item->fields['users_id_tech'])) {
+                                    $update['users_id_tech']  = $params['new_actor_items_id'];
+                                    if (strtolower($params['old_actor_itemtype']) === "group") {
+                                        $update['groups_id_tech']  = 0;
+                                    }
+                                } else {
+                                    $update['users_id'] = $params['new_actor_items_id'];
+                                }
+                                break;
+                        }
+                    }
+
+                    // special case for project tasks
+                    // which have a link tables for their relation with groups/users
+                    if ($item instanceof ProjectTask) {
+                        // get actor for finding relation with item
+                        $actor = getItemForItemtype($params['old_actor_itemtype']);
+                        $actor->getFromDB((int) $params['old_actor_items_id']);
+
+                        // get current relation
+                        $team_old = new ProjectTaskTeam();
+                        $team_old->getFromDBForItems($item, $actor);
+
+                        // if new relation already exists, delete old relation
+                        $actor_new = getItemForItemtype($params['new_actor_itemtype']);
+                        $actor_new->getFromDB((int) $params['new_actor_items_id']);
+                        $team_new  = new ProjectTaskTeam();
+                        if ($team_new->getFromDBForItems($item, $actor_new)) {
+                            $team_old->delete([
+                                'id' => $team_old->fields['id'],
+                            ]);
+                        } else {
+                            // else update relation
+                            $team_old->update([
+                                'id'       => $team_old->fields['id'],
+                                'itemtype' => $params['new_actor_itemtype'],
+                                'items_id' => $params['new_actor_items_id'],
+                            ]);
+                        }
+                    }
+                }
+
+                if (is_subclass_of($item, "CommonITILTask")) {
+                    $parentitemtype = $item::getItilObjectItemType();
+                    if (!$update["_job"] = getItemForItemtype($parentitemtype)) {
+                        return false;
+                    }
+
+                    $fkfield = $update["_job"]::getForeignKeyField();
+                    $update[$fkfield] = $item->fields[$fkfield];
+                }
+
+                return $item->update($update);
             }
         }
 

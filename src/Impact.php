@@ -388,7 +388,7 @@ JS);
             echo '</a>';
         }
         if ($can_update && $impact_context) {
-            echo '<i id="impact-list-settings" class="ti ti-cog impact-pointer impact-list-tools" title="' . __s('Settings') . '"></i>';
+            echo '<i id="impact-list-settings" class="ti ti-filter-cog impact-pointer impact-list-tools" title="' . __s('Settings') . '"></i>';
         }
         echo '</div>';
 
@@ -500,7 +500,7 @@ TWIG, $twig_params);
             $("#impact-list-settings").click(function() {
                glpi_html_dialog({
                   title: ' . json_encode(__("Settings")) . ',
-                  body: ' . ($setting_dialog || '{}') . ',
+                  body: ' . $setting_dialog . ',
                });
             });
 

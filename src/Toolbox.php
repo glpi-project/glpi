@@ -1788,7 +1788,7 @@ class Toolbox
                     $tab['port'] = 995;
                 }
             }
-            if ($tab['type'] = 'imap') {
+            if ($tab['type'] == 'imap') {
                 if ($tab['ssl']) {
                     $tab['port'] = 993;
                 } else {
@@ -2498,9 +2498,11 @@ class Toolbox
                         } elseif ($item instanceof CommonDBTM) {
                             $linked_object = $item;
                         }
-                        $object_url_param = null !== $linked_object
-                        ? sprintf('&itemtype=%s&items_id=%s', $linked_object->getType(), $linked_object->fields['id'])
-                        : "";
+                        $object_url_param = sprintf(
+                            '&itemtype=%s&items_id=%s',
+                            $linked_object->getType(),
+                            $linked_object->fields['id']
+                        );
                         $img = "<img alt='" . $image['tag'] . "' src='" . $base_path .
                           "/front/document.send.php?docid=" . $id . $object_url_param . "'/>";
 
@@ -2515,17 +2517,18 @@ class Toolbox
                         $regex = '/<img[^>]+' . preg_quote($image['tag'], '/') . '[^<]+>/im';
                         preg_match_all($regex, $content_text, $matches);
                         foreach ($matches[0] as $match_img) {
-                            //retrieve dimensions
                             $width = $height = null;
+
                             $attributes = [];
                             preg_match_all('/(width|height)="([^"]*)"/i', $match_img, $attributes);
                             if (isset($attributes[1][0])) {
-                                ${$attributes[1][0]} = $attributes[2][0];
+                                $width = $attributes[2][0];
                             }
                             if (isset($attributes[1][1])) {
-                                ${$attributes[1][1]} = $attributes[2][1];
+                                $height = $attributes[2][1];
                             }
 
+                            // retrieve dimensions
                             if ($width == null || $height == null) {
                                 $path = GLPI_DOC_DIR . "/" . $image['filepath'];
                                 $img_infos  = getimagesize($path);

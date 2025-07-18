@@ -567,15 +567,12 @@ class Ticket extends CommonITILObject
         }
 
         // for all, if no modification in ticket return true
-        if ($can_requester = $this->canRequesterUpdateItem()) {
+        if ($this->canRequesterUpdateItem()) {
             return true;
         }
 
         // for self-service only, if modification in ticket, we can't update the ticket
-        if (
-            Session::getCurrentInterface() == "helpdesk"
-            && !$can_requester
-        ) {
+        if (Session::getCurrentInterface() == "helpdesk") {
             return false;
         }
 
@@ -1650,6 +1647,7 @@ class Ticket extends CommonITILObject
         if (
             isset($this->input["_followup"])
             && is_array($this->input["_followup"])
+            && isset($this->input["_followup"]['content'])
             && (strlen($this->input["_followup"]['content']) > 0)
         ) {
             $fup  = new ITILFollowup();
@@ -1662,12 +1660,7 @@ class Ticket extends CommonITILObject
                 'itemtype' => 'Ticket',
             ];
 
-            if (
-                isset($this->input["_followup"]['content'])
-                && (strlen($this->input["_followup"]['content']) > 0)
-            ) {
-                $toadd["content"] = $this->input["_followup"]['content'];
-            }
+            $toadd["content"] = $this->input["_followup"]['content'];
 
             if (isset($this->input["_followup"]['is_private'])) {
                 $toadd["is_private"] = $this->input["_followup"]['is_private'];

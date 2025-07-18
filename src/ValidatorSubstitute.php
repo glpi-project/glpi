@@ -208,7 +208,7 @@ final class ValidatorSubstitute extends CommonDBTM
                 $success = $validator_substitute->deleteByCriteria([
                     'users_id' => $user->fields['id'],
                     'users_id_substitute' => $substitutes_to_delete,
-                ]) && $success;
+                ]);
             }
 
             // Add the new substitutes which are not in the old substitutes list

@@ -183,14 +183,10 @@ class NetworkPortInstantiation extends CommonDBChild
 
         foreach ($iterator as $element) {
             if ($netport->getFromDB($element['id'])) {
-                if ($netport instanceof CommonDBChild) {
-                    $macItemWithItems[] = array_merge(
-                        array_reverse($netport->recursivelyGetItems()),
-                        [clone $netport]
-                    );
-                } else {
-                    $macItemWithItems[] = [clone $netport];
-                }
+                $macItemWithItems[] = array_merge(
+                    array_reverse($netport->recursivelyGetItems()),
+                    [clone $netport]
+                );
             }
         }
 
