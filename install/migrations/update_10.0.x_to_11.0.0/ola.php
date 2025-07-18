@@ -104,7 +104,6 @@ function create_items_olas_table(Migration $migration): void
         `start_time`    timestamp NULL DEFAULT NULL,
         `due_time`      timestamp NULL DEFAULT NULL,
         `end_time`      timestamp NULL DEFAULT NULL,
-        -- `status` int NOT NULL,
         `waiting_time` int NOT NULL DEFAULT 0,
         `is_late`      tinyint NOT NULL DEFAULT 0,
         PRIMARY KEY (`id`) 
