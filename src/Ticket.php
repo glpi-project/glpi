@@ -6425,6 +6425,10 @@ JAVASCRIPT;
         if (!isset($this->input['_la_update'])) {
             return;
         }
+        // input['_olas_id'] must be an array if defined
+        if (isset($this->input['_olas_id']) && !is_array($this->input['_olas_id'])) {
+            throw new InvalidArgumentException('Input "_olas_id" must be an array.');
+        }
 
         $request_olas_ids = $this->input['_olas_id'] ?? [];
         $current_olas_ids = array_column($this->getOlasData(), 'olas_id');
