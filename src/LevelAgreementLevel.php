@@ -411,7 +411,7 @@ abstract class LevelAgreementLevel extends RuleTicket
     {
         /** @var class-string<LevelAgreement> $parent_class */
         $parent_class = static::$parentclass;
-        $canedit = $this->can($parent_class::$rightname, UPDATE);
+        $canedit = $this->can($ID, UPDATE);
         if (isset($options['la'])) {
             $la = $options['la'];
         } else {

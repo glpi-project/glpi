@@ -2971,7 +2971,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Check right on an item
      *
-     * @param int|string $ID    ID of the item (-1 if new item)
+     * @param int $ID    ID of the item (-1 if new item)
      * @param int $right Right to check : r / w / recursive / READ / UPDATE / DELETE
      * @param ?array   $input array of input data (used for adding item) (default NULL)
      *
@@ -2982,9 +2982,6 @@ class CommonDBTM extends CommonGLPI
         if (Session::isInventory()) {
             return true;
         }
-
-        // Clean ID :
-        $ID = (int) Toolbox::cleanInteger($ID);
 
         // Create process
         if (static::isNewID($ID)) {
