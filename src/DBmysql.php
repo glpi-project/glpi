@@ -494,7 +494,7 @@ class DBmysql
      *
      * @param mysqli_result $result MySQL result handler
      * @param int           $i      Row offset to give
-     * @param string        $field  Field to give
+     * @param string|int    $field  Field to give
      *
      * @return mixed Value of the Row $i and the Field $field of the Mysql $result
      */

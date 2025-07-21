@@ -2616,7 +2616,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
                                 // TRANS %s is the name of the state
                                 return sprintf(
                                     __('Fill when shifting to state %s'),
-                                    Dropdown::getDropdownName(table: 'glpi_states', id: $sid, default: __('None'))
+                                    Dropdown::getDropdownName(table: 'glpi_states', id: (int) $sid, default: __('None'))
                                 );
                             }
                         }

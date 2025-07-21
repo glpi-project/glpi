@@ -395,7 +395,7 @@ class RuleRight extends Rule
             $this->checkGlobal(UPDATE);
         }
 
-        $canedit = $this->canEdit(static::$rightname);
+        $canedit = $this->canEdit($ID);
 
         $add_buttons = [];
         if (!$new_item && $canedit) {

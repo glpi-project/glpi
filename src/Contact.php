@@ -241,7 +241,7 @@ HTML;
 
         if (isset($this->fields["id"]) && ($this->fields["id"] > 0)) {
             return formatUserName(
-                '',
+                0,
                 '',
                 ($this->fields["name"] ?? ''),
                 ($this->fields["firstname"] ?? '')

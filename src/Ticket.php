@@ -1855,7 +1855,7 @@ class Ticket extends CommonITILObject
      *
      * @param string $itemtype     Item type
      * @param integer $items_id    ID of the Item
-     * @param string $type         Type of the tickets (incident or request)
+     * @param int $type         Type of the tickets (incident or request)
      *
      * @return DBmysqlIterator
      */

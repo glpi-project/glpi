@@ -533,7 +533,7 @@ class ReportController extends AbstractController
                 continue;
             }
 
-            $fn_get_stats = (static fn($stat, $field, $items_id) => Stat::constructEntryValues($itemtype, $stat, $date_start, $date_end, $field, $items_id, 0));
+            $fn_get_stats = (static fn($stat, $field, $items_id) => Stat::constructEntryValues($itemtype, $stat, $date_start, $date_end, $field, $items_id, ''));
 
             $result = [];
             if (isset($item['itemtype'])) {

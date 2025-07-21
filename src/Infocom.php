@@ -987,12 +987,11 @@ class Infocom extends CommonDBChild
     /**
      * Show infocom link to display modal
      *
-     * @param integer $itemtype item type
+     * @param string $itemtype item type
      * @param integer $device_id item ID
      * @param boolean $display  display or not the link (default true)
      *
      * @return void|string
-     * @phpstan-return $display ? void : string
      **/
     public static function showDisplayLink($itemtype, $device_id, bool $display = true)
     {

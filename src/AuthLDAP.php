@@ -1263,12 +1263,12 @@ TWIG, ['authldaps_id' => $ID]);
             return '';
         }
 
-        $year    = substr($ldapstamp, 0, 4);
-        $month   = substr($ldapstamp, 4, 2);
-        $day     = substr($ldapstamp, 6, 2);
-        $hour    = substr($ldapstamp, 8, 2);
-        $minute  = substr($ldapstamp, 10, 2);
-        $seconds = substr($ldapstamp, 12, 2);
+        $year    = (int) substr($ldapstamp, 0, 4);
+        $month   = (int) substr($ldapstamp, 4, 2);
+        $day     = (int) substr($ldapstamp, 6, 2);
+        $hour    = (int) substr($ldapstamp, 8, 2);
+        $minute  = (int) substr($ldapstamp, 10, 2);
+        $seconds = (int) substr($ldapstamp, 12, 2);
         $stamp   = gmmktime($hour, $minute, $seconds, $month, $day, $year);
         $stamp  += $CFG_GLPI["time_offset"] - $ldap_time_offset;
 
@@ -2247,7 +2247,7 @@ TWIG, $twig_params);
      * @param integer $auths_id      ID of the server to use
      * @param string  $filter        ldap filter to use
      * @param string  $filter2       second ldap filter to use if needed
-     * @param string  $entity        entity to search
+     * @param int     $entity        entity to search
      * @param boolean $limitexceeded is limit exceeded
      *
      * @return array of the groups

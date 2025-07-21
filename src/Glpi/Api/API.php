@@ -185,7 +185,7 @@ abstract class API
 
         // check if api is enabled
         if (!$CFG_GLPI['enable_api']) {
-            $this->returnError(__("API disabled"), "", "", false);
+            $this->returnError(__("API disabled"), docmessage: false);
         }
 
         // retrieve ip of client
@@ -216,11 +216,10 @@ abstract class API
         $found_clients = $apiclient->find(['is_active' => 1] + $where_ip);
         if (count($found_clients) <= 0) {
             $this->returnError(
-                __("There isn't an active API client matching your IP address in the configuration") .
-                            " (" . $this->iptxt . ")",
-                "",
-                "ERROR_NOT_ALLOWED_IP",
-                false
+                __("There isn't an active API client matching your IP address in the configuration")
+                . " (" . $this->iptxt . ")",
+                statuscode: "ERROR_NOT_ALLOWED_IP",
+                docmessage: false
             );
         }
         $app_tokens = array_column($found_clients, 'app_token');

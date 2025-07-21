@@ -954,9 +954,9 @@ trait PlanningEvent
             foreach ($rrule['exceptions'] as $exception) {
                 $exdate = new DateTime($exception);
                 $exdate->setTime(
-                    $dtstart_datetime->format('G'),
-                    $dtstart_datetime->format('i'),
-                    $dtstart_datetime->format('s')
+                    (int) $dtstart_datetime->format('G'),
+                    (int) $dtstart_datetime->format('i'),
+                    (int) $dtstart_datetime->format('s')
                 );
                 $rset->addExDate($exdate->format('Y-m-d\TH:i:s\Z'));
             }

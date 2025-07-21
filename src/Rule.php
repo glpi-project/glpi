@@ -891,7 +891,7 @@ class Rule extends CommonDBTM
             $this->checkGlobal(UPDATE);
         }
 
-        $canedit = $this->canEdit(static::$rightname);
+        $canedit = $this->canEdit($ID);
         $rand = mt_rand();
 
         $plugin = isPluginItemType(static::class);
@@ -1379,7 +1379,7 @@ JS
     /**
      * Get a criteria description by his ID
      *
-     * @param integer $ID the criteria's ID
+     * @param int|string $ID the criteria's ID
      *
      * @return array the criteria array
      **/
@@ -2569,9 +2569,9 @@ JS
      *
      * @param integer $ID     the given action
      * @param string  $type   the type of action
-     * @param string  $value  the value
+     * @param int|string $value  the value
      *
-     * @return string
+     * @return string|int
      **/
     public function getActionValue($ID, $type, $value)
     {
@@ -2676,13 +2676,13 @@ JS
             $crit = $this->getCriteria($ID);
             if (isset($crit['type'])) {
                 return match ($crit['type']) {
-                    'dropdown' => Dropdown::getDropdownName($crit["table"], $value, translate: false),
+                    'dropdown' => Dropdown::getDropdownName($crit["table"], (int) $value, translate: false),
                     'dropdown_assign', 'dropdown_users' => getUserName($value),
-                    'yesonly', 'yesno' => Dropdown::getYesNo($value),
-                    'dropdown_impact' => CommonITILObject::getImpactName($value),
-                    'dropdown_urgency' => CommonITILObject::getUrgencyName($value),
-                    'dropdown_priority' => CommonITILObject::getPriorityName($value),
-                    'dropdown_validation_status' => CommonITILValidation::getStatus($value),
+                    'yesonly', 'yesno' => Dropdown::getYesNo((int) $value),
+                    'dropdown_impact' => CommonITILObject::getImpactName((int) $value),
+                    'dropdown_urgency' => CommonITILObject::getUrgencyName((int) $value),
+                    'dropdown_priority' => CommonITILObject::getPriorityName((int) $value),
+                    'dropdown_validation_status' => CommonITILValidation::getStatus((int) $value),
                     default => $value,
                 };
             }
@@ -3048,9 +3048,9 @@ JS
     /**
      * Add more actions specific to this type of rule
      *
-     * @param string $value
+     * @param int|string $value
      *
-     * @return string
+     * @return int|string
      **/
     public function displayAdditionRuleActionValue($value)
     {

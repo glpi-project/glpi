@@ -1291,7 +1291,7 @@ final class DbUtils
      * @since 0.84
      *
      * @param string $table table name
-     * @param string $IDf   The ID of the father
+     * @param int    $IDf   The ID of the father
      *
      * @return array of IDs of the sons and the ancestors
      */

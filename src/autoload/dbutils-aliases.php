@@ -373,8 +373,8 @@ function getSonsOf($table, $IDf)
  *
  * @since 0.84
  *
- * @param $table  string   table name
- * @param $IDf    integer  The ID of the father
+ * @param string $table    table name
+ * @param int    $IDf      The ID of the father
  *
  * @return array of IDs of the sons and the ancestors
  **/

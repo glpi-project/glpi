@@ -39,7 +39,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 Session::checkRight("config", READ);
 
-Html::header(__('External authentication sources'), '', "config", "auth", -1);
+Html::header(__('External authentication sources'), '', "config", "auth");
 
 echo TemplateRenderer::getInstance()->render(
     'pages/setup/authentication.html.twig',

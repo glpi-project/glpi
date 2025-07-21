@@ -4193,7 +4193,7 @@ final class SQLProvider implements SearchProviderInterface
                     $searchopt[$val]["table"],
                     $searchopt[$val]["linkfield"],
                     false,
-                    0,
+                    '',
                     $searchopt[$val]["joinparams"],
                     $searchopt[$val]["field"]
                 );
@@ -4213,7 +4213,7 @@ final class SQLProvider implements SearchProviderInterface
                             $searchopt[$key]["table"],
                             $searchopt[$key]["linkfield"],
                             false,
-                            0,
+                            '',
                             $searchopt[$key]["joinparams"],
                             $searchopt[$key]["field"]
                         );
@@ -4961,6 +4961,7 @@ final class SQLProvider implements SearchProviderInterface
                 } else {
                     foreach ($data['sql']['count'] as $sqlcount) {
                         $result_num = $DBread->doQuery($sqlcount);
+                        dump($sqlcount);
                         $data['data']['totalcount'] += $DBread->result($result_num, 0, 0);
                     }
                 }
@@ -6655,7 +6656,7 @@ final class SQLProvider implements SearchProviderInterface
                 case 'progressbar':
                     if (!isset($progressbar_data)) {
                         $bar_color = 'green';
-                        $percent   = ltrim(($data[$ID][0]['name'] ?? ""), 0);
+                        $percent   = ltrim(($data[$ID][0]['name'] ?? ""), "0");
                         $progressbar_data = [
                             'percent'      => $percent,
                             'percent_text' => $percent,

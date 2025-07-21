@@ -204,7 +204,7 @@ abstract class AbstractRightsDropdown
 
             return $item::getTypeName(1) . " - " . Dropdown::getDropdownName(
                 $item->getTable(),
-                $items_id
+                (int) $items_id
             );
         }, $values);
     }

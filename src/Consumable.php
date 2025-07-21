@@ -1008,7 +1008,7 @@ class Consumable extends CommonDBChild
                 return " ";
 
             case '7': // Infocom shortcut
-                $id = $values['id'];
+                $id = (int) $values['id'];
                 ob_start();
                 Infocom::showDisplayLink(self::class, $id);
                 return ob_get_clean();
