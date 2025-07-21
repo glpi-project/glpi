@@ -472,7 +472,7 @@ describe(`Helpdesk home page configuration - entities specific`, () => {
     });
 
     it('can configure custom titles', () => {
-        cy.findByRole('heading', {name: "Custom titles"}).should('be.visible');
+        cy.findByRole('heading', {name: "General"}).should('be.visible');
 
         // Default state, inheritance should be selected
         cy.getDropdownByLabelText("Main title").should(
@@ -680,7 +680,7 @@ function saveIllustrationSettings() {
 }
 
 function saveTitleSettings() {
-    cy.findByRole('button', {name: "Save custom titles settings"}).click();
+    cy.findByRole('button', {name: "Save general settings"}).click();
     cy.findByRole('alert').findByRole('button', {name: "Close"}).click();
 }
 

@@ -2849,6 +2849,8 @@ CREATE TABLE `glpi_entities` (
   `custom_helpdesk_home_scene_left` varchar(255) NOT NULL DEFAULT '-2',
   `custom_helpdesk_home_scene_right` varchar(255) NOT NULL DEFAULT '-2',
   `custom_helpdesk_home_title` varchar(255) NOT NULL DEFAULT '-2',
+  `enable_helpdesk_home_search_bar` tinyint NOT NULL DEFAULT '-2',
+  `enable_helpdesk_service_catalog` tinyint NOT NULL DEFAULT '-2',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`entities_id`,`name`),
   KEY `name` (`name`),

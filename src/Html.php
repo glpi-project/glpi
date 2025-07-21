@@ -1485,7 +1485,22 @@ TWIG,
             ],
         ];
 
-        if (Session::haveRight("ticket", CREATE)) {
+        $session_info = Session::getCurrentSessionInfo();
+        if ($session_info === null) {
+            // Unlogged users should not have any other menu entries.
+            return $menu;
+        }
+
+        $entity = Entity::getById($session_info->getCurrentEntityId());
+        if (!$entity) {
+            // Safety check, will never happen but help with static analysis.
+            throw new RuntimeException("Cant load current entity");
+        }
+
+        if (
+            Session::haveRight("ticket", CREATE)
+            && $entity->isServiceCatalogEnabled()
+        ) {
             $menu['create_ticket'] = [
                 'default' => ServiceCatalog::getSearchURL(false),
                 'title'   => __('Create a ticket'),
