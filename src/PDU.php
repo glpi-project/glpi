@@ -34,13 +34,14 @@
  */
 
 use Glpi\Features\AssignableItem;
+use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
 use Glpi\Features\DCBreadcrumb;
 
 /**
  * PDU Class
  **/
-class PDU extends CommonDBTM
+class PDU extends CommonDBTM implements AssignableItemInterface
 {
     use AssignableItem {
         prepareInputForAdd as prepareInputForAddAssignableItem;

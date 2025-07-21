@@ -38,6 +38,7 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\Event;
 use Glpi\Features\Clonable;
 use Glpi\Features\TreeBrowse;
+use Glpi\Features\TreeBrowseInterface;
 use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
 use Glpi\RichText\RichText;
@@ -50,7 +51,7 @@ use function Safe\preg_replace_callback;
 /**
  * KnowbaseItem Class
  **/
-class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, ServiceCatalogLeafInterface
+class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, ServiceCatalogLeafInterface, TreeBrowseInterface
 {
     use Clonable;
     use TreeBrowse;

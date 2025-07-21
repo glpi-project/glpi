@@ -41,6 +41,7 @@ use Glpi\DBAL\QueryUnion;
 use Glpi\Event;
 use Glpi\Features\Clonable;
 use Glpi\Features\Kanban;
+use Glpi\Features\KanbanInterface;
 use Glpi\Features\Teamwork;
 use Glpi\Features\Timeline;
 use Glpi\Form\AnswersSet;
@@ -65,7 +66,7 @@ use function Safe\strtotime;
  * @property-read array $groups
  * @property-read array $suppliers
  **/
-abstract class CommonITILObject extends CommonDBTM
+abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
 {
     use Clonable;
     use Timeline;

@@ -37,7 +37,7 @@
  * Only an HTMLTableMain can create an HTMLTableSuperHeader.
  * @since 0.84
  **/
-class HTMLTableSuperHeader extends HTMLTableHeader
+class HTMLTableSuperHeader extends HTMLTableHeader implements HTMLCompositeTableInterface
 {
     /// The headers of each column
     private $headerSets = [];
@@ -91,7 +91,8 @@ class HTMLTableSuperHeader extends HTMLTableHeader
         $subheader_name = '';
     }
 
-    public function getCompositeName()
+    #[Override]
+    public function getCompositeName(): string
     {
         return $this->getName() . ':';
     }

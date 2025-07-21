@@ -103,6 +103,9 @@ class XHProf
 
     public function stop()
     {
+        if (!class_exists("XHProfRuns_Default")) {
+            throw new RuntimeException("pecl/xhprof is not installed");
+        }
 
         if (self::$run) {
             $data = xhprof_disable();

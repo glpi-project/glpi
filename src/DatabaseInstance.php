@@ -34,10 +34,11 @@
  */
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
 use Glpi\Features\Inventoriable;
 
-class DatabaseInstance extends CommonDBTM
+class DatabaseInstance extends CommonDBTM implements AssignableItemInterface
 {
     use Clonable;
     use Inventoriable;

@@ -35,6 +35,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
 use Glpi\Features\Inventoriable;
 use Glpi\Socket;
@@ -42,7 +43,7 @@ use Glpi\Socket;
 /**
  * Phone Class
  **/
-class Phone extends CommonDBTM
+class Phone extends CommonDBTM implements AssignableItemInterface
 {
     use Clonable;
     use Inventoriable;

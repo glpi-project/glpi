@@ -43,6 +43,7 @@ use Group;
 use Planning;
 use PlanningExternalEvent;
 use Ramsey\Uuid\Uuid;
+use RuntimeException;
 use Sabre\CalDAV\Backend\AbstractBackend;
 use Sabre\CalDAV\Xml\Property\SupportedCalendarComponentSet;
 use Sabre\DAV\Exception;
@@ -270,7 +271,7 @@ class Calendar extends AbstractBackend
             throw new Forbidden();
         }
 
-        if (!$item->delete(['id' => $item->fields['id']], 1)) {
+        if (!$item->delete(['id' => $item->fields['id']], true)) {
             throw new Exception('Error during object deletion');
         }
     }
@@ -308,18 +309,20 @@ class Calendar extends AbstractBackend
      *
      * @param string                             $calendarId    Calendar identifier
      * @param string                             $calendarData  Seialized VCalendar object
-     * @param CalDAVCompatibleItemInterface|null $item          Item on which input will be stored
+     * @param (CalDAVCompatibleItemInterface&CommonDBTM)|null $item          Item on which input will be stored
      *
      * @return boolean
      */
-    private function storeCalendarObject($calendarId, $calendarData, ?CalDAVCompatibleItemInterface $item = null)
+    private function storeCalendarObject($calendarId, $calendarData, (CalDAVCompatibleItemInterface&CommonDBTM)|null $item = null)
     {
 
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        /* @var \Sabre\VObject\Component\VCalendar $vcalendar */
         $vcalendar = Reader::read($calendarData);
+        if (!$vcalendar instanceof VCalendar) {
+            throw new RuntimeException("Document is not a calendar");
+        }
         $vcomponent = $vcalendar->getBaseComponent();
 
         if (!in_array($vcomponent->name, $CFG_GLPI['caldav_supported_components'])) {

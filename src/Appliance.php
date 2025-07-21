@@ -35,12 +35,13 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssetImage;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
 
 /**
  * Appliances Class
  **/
-class Appliance extends CommonDBTM
+class Appliance extends CommonDBTM implements AssignableItemInterface
 {
     use Clonable;
     use Glpi\Features\State;

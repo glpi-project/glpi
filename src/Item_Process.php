@@ -54,6 +54,10 @@ class Item_Process extends CommonDBChild
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            throw new RuntimeException("Only CommonDBTM items are supported");
+        }
+
         if ($item::canView()) {
             $nb = countElementsInTable(
                 self::getTable(),

@@ -77,6 +77,10 @@ class ItemVirtualMachine extends CommonDBChild
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
+        if (!$item instanceof CommonDBTM) {
+            throw new RuntimeException("Only CommonDBTM items are supported");
+        }
+
         if (
             !$withtemplate
             && in_array($item::getType(), $CFG_GLPI['itemvirtualmachines_types'])

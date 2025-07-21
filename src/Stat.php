@@ -223,7 +223,13 @@ class Stat extends CommonGLPI
                 break;
 
             case "type":
-                $types = $item::getTypes();
+                // TODO: would be better to use an interface + instanceof here.
+                if (!method_exists($item, "getTypes")) {
+                    throw new RuntimeException("Given item doesn't support getTypes() operation");
+                }
+
+                // Note: phpstan seems to think that method_exist = non static method, which is not true.
+                $types = $item::getTypes(); // @phpstan-ignore method.staticCall
                 foreach ($types as $id => $v) {
                     $tmp['id']   = $id;
                     $tmp['link'] = $v;

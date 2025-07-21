@@ -52,4 +52,19 @@ interface SearchInputInterface
      * @return void
      **/
     public static function showGenericSearch(string $itemtype, array $params);
+
+    public static function cleanParams(array $params): array;
+
+    /**
+     * Completion of the URL $_GET values with the $_SESSION values or define default values
+     *
+     * @param class-string<\CommonDBTM> $itemtype Item type to manage
+     * @param array   $params          Params to parse
+     * @param boolean $usesession      Use data saved in the session (true by default)
+     * @param boolean $forcebookmark   Force trying to load parameters from default bookmark:
+     *                                  used for global search (false by default)
+     *
+     * @return array parsed params
+     **/
+    public static function manageParams($itemtype, $params = [], $usesession = true, $forcebookmark = false): array;
 }

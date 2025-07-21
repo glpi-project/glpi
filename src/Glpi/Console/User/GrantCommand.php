@@ -38,6 +38,8 @@ use DBmysql;
 use Entity;
 use Profile;
 use Profile_User;
+use RuntimeException;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -121,6 +123,10 @@ class GrantCommand extends AbstractUserCommand
         }
 
         $helper = $this->getHelper('question');
+        if (!$helper instanceof QuestionHelper) {
+            throw new RuntimeException("Failed to get QuestionHelper");
+        }
+
         $question = new ChoiceQuestion(Profile::getTypeName(1), $profiles);
         return $helper->ask($input, $output, $question);
     }

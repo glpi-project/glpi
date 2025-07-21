@@ -896,18 +896,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILRecurrentCron.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Sabre\\\\VObject\\\\Document\\:\\:getBaseComponent\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILTask.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Sabre\\\\VObject\\\\Node\\:\\:add\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILTask.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#4 \\$is_recursive of function getEntitiesRestrictCriteria expects \'auto\'\\|bool, 1 given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -1844,24 +1832,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'label\' does not exist on string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'schema_name\' does not exist on string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'version_introduced\' does not exist on string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'\\{itemtype\\}\'\\}\\} given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
@@ -2138,94 +2108,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Asset/AssetDefinitionManager.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @param references unknown parameter\\: \\$source_itemtype$#',
-	'identifier' => 'parameter.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/Capacity/AbstractCapacity.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @param references unknown parameter\\: \\$classname$#',
-	'identifier' => 'parameter.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/Capacity/CapacityInterface.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of static method NetworkPort\\:\\:rawSearchOptionsToAdd\\(\\) expects null, class\\-string\\<Glpi\\\\Asset\\\\Asset\\> given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Asset/Capacity/HasNetworkPortCapacity.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:\\$fields\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 5,
-	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:add\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:can\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:delete\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:getFromDB\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:getType\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:isField\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:isNewItem\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:update\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Sabre\\\\VObject\\\\Document\\:\\:getBaseComponent\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$vcalendar of method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:getInputFromVCalendar\\(\\) expects Sabre\\\\VObject\\\\Component\\\\VCalendar, Sabre\\\\VObject\\\\Document given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:getFromDB\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Principal.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$group_id of method Glpi\\\\CalDAV\\\\Backend\\\\Principal\\:\\:canViewGroupObjects\\(\\) expects int, string\\|null given\\.$#',
@@ -2234,34 +2120,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Principal.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:getFromDB\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/CalDAV/Plugin/Acl.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$group_id of method Glpi\\\\CalDAV\\\\Plugin\\\\Acl\\:\\:canViewGroupObjects\\(\\) expects int, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/CalDAV/Plugin/Acl.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:getFromDB\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/CalDAV/Plugin/Browser.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:getFromDB\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/CalDAV/Plugin/CalDAV.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Helper\\\\HelperInterface\\:\\:ask\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/AbstractCommand.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function property_exists\\(\\) with \\$this\\(Glpi\\\\Console\\\\AbstractCommand\\) and \'db\' will always evaluate to true\\.$#',
@@ -2300,18 +2162,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Helper\\\\HelperInterface\\:\\:ask\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Helper\\\\HelperInterface\\:\\:ask\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Match expression does not handle remaining value\\: mixed$#',
 	'identifier' => 'match.unhandled',
 	'count' => 1,
@@ -2340,24 +2190,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Migration/Utf8mb4Command.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Helper\\\\HelperInterface\\:\\:ask\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Security/DisableTFACommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Helper\\\\HelperInterface\\:\\:ask\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Console/User/AbstractUserCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Helper\\\\HelperInterface\\:\\:ask\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/User/GrantCommand.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
@@ -2424,12 +2256,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Dashboard/Grid.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined static method CommonDBVisible\\:\\:getVisibilityCriteria\\(\\)\\.$#',
-	'identifier' => 'staticMethod.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#4 \\$month of function Safe\\\\mktime expects int\\|null, string given\\.$#',
@@ -2588,12 +2414,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Output/Ods.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to static method getAssignableVisiblityCriteria\\(\\) on an unknown class Glpi\\\\Features\\\\AssignableItem\\.$#',
-	'identifier' => 'class.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
 	'identifier' => 'nullCoalesce.expr',
 	'count' => 1,
@@ -2602,18 +2422,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Offset 2 on array\\{string, string, string\\} in isset\\(\\) always exists and is not nullable\\.$#',
 	'identifier' => 'isset.offset',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var for variable \\$itemtype has invalid type Glpi\\\\Features\\\\AssignableItem\\.$#',
-	'identifier' => 'varTag.trait',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type Glpi\\\\Features\\\\AssignableItem is not subtype of native type string\\.$#',
-	'identifier' => 'varTag.nativeType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
@@ -2628,36 +2436,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined static method CommonGLPI\\:\\:showBrowseView\\(\\)\\.$#',
-	'identifier' => 'staticMethod.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/SearchEngine.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined static method Glpi\\\\Search\\\\Input\\\\SearchInputInterface\\:\\:cleanParams\\(\\)\\.$#',
-	'identifier' => 'staticMethod.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/SearchEngine.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined static method Glpi\\\\Search\\\\Input\\\\SearchInputInterface\\:\\:manageParams\\(\\)\\.$#',
-	'identifier' => 'staticMethod.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/SearchEngine.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined static method Glpi\\\\Search\\\\Provider\\\\SearchProviderInterface\\:\\:constructData\\(\\)\\.$#',
-	'identifier' => 'staticMethod.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/SearchEngine.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined static method Glpi\\\\Search\\\\Provider\\\\SearchProviderInterface\\:\\:constructSQL\\(\\)\\.$#',
-	'identifier' => 'staticMethod.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/SearchEngine.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type Glpi\\\\Search\\\\Input\\\\SearchInputInterface is not subtype of native type string\\.$#',
@@ -2700,12 +2478,6 @@ $ignoreErrors[] = [
 	'identifier' => 'property.onlyWritten',
 	'count' => 1,
 	'path' => __DIR__ . '/src/HTMLTableGroup.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method HTMLTableHeader\\:\\:getCompositeName\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/HTMLTableRow.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$row of class HTMLTableCell constructor expects HTMLTableHeader, \\$this\\(HTMLTableRow\\) given\\.$#',
@@ -2828,22 +2600,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Infocom.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ItemAntivirus.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$asset of static method ItemAntivirus\\:\\:showForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/ItemAntivirus.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ItemVirtualMachine.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$asset of static method ItemVirtualMachine\\:\\:showForAsset\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
@@ -2912,34 +2672,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_Enclosure.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Environment.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$item of static method Item_Environment\\:\\:showForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Item_Environment.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to method forceGlobalState\\(\\) on an unknown class Glpi\\\\Features\\\\Kanban\\.$#',
-	'identifier' => 'class.notFound',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Item_Kanban.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to method getFromDB\\(\\) on an unknown class Glpi\\\\Features\\\\Kanban\\.$#',
-	'identifier' => 'class.notFound',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Item_Kanban.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var for variable \\$item has invalid type Glpi\\\\Features\\\\Kanban\\.$#',
-	'identifier' => 'varTag.trait',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Item_Kanban.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$item of static method CommonDBRelation\\:\\:countForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
@@ -2970,12 +2706,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Item_OperatingSystem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Process.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$item of static method Item_Process\\:\\:showForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
@@ -3104,24 +2834,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Log.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Access to an undefined property Laminas\\\\Mail\\\\Storage\\\\Message\\:\\:\\$date\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/MailCollector.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Laminas\\\\Mail\\\\Storage\\\\AbstractStorage\\:\\:getFolders\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/MailCollector.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Laminas\\\\Mail\\\\Storage\\\\AbstractStorage\\:\\:moveMessage\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/MailCollector.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method getAddressList\\(\\) on array\\|ArrayIterator\\|Laminas\\\\Mail\\\\Header\\\\HeaderInterface\\|string\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 2,
@@ -3236,12 +2948,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NetworkName.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to an undefined method CommonGLPI\\:\\:isDynamic\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkPort.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type CommonDBTM is not subtype of native type class\\-string\\.$#',
 	'identifier' => 'varTag.nativeType',
 	'count' => 1,
@@ -3338,12 +3044,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/ObjectLock.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @param references unknown parameter\\: \\$type$#',
-	'identifier' => 'parameter.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/OlaLevel_Ticket.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(PDU\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
@@ -3434,40 +3134,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Phone.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'itemtype\' does not exist on class\\-string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Planning.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'planning_type\' does not exist on class\\-string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Planning.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type class\\-string is not subtype of native type array\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Planning.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$timestamp of function date expects int\\|null, float given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Planning.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Sabre\\\\VObject\\\\Document\\:\\:getBaseComponent\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/PlanningExternalEvent.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Sabre\\\\VObject\\\\Node\\:\\:add\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/PlanningExternalEvent.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Offset \'plan\' on non\\-empty\\-array in isset\\(\\) always exists and is not nullable\\.$#',
@@ -3475,7 +3145,6 @@ $ignoreErrors[] = [
 	'count' => 2,
 	'path' => __DIR__ . '/src/PlanningExternalEvent.php',
 ];
-
 $ignoreErrors[] = [
 	'message' => '#^Offset \'plan\' on non\\-empty\\-array in isset\\(\\) always exists and is not nullable\\.$#',
 	'identifier' => 'isset.offset',
@@ -3531,28 +3200,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Profile.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Sabre\\\\VObject\\\\Document\\:\\:getBaseComponent\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ProjectTask.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Sabre\\\\VObject\\\\Node\\:\\:add\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ProjectTask.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#4 \\$is_recursive of function getEntitiesRestrictCriteria expects \'auto\'\\|bool, 1 given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/ProjectTask.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method CommonDBTM\\:\\:setVolume\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/QueuedNotification.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$array of function usort contains unresolvable type\\.$#',
@@ -3565,18 +3216,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RSSFeed.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Sabre\\\\VObject\\\\Document\\:\\:getBaseComponent\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Reminder.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Sabre\\\\VObject\\\\Node\\:\\:add\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Reminder.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Offset \'plan\' on non\\-empty\\-array in isset\\(\\) always exists and is not nullable\\.$#',
@@ -3747,12 +3386,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Software.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'_system_category\' does not exist on array\\{name\\: string, manufacturers_id\\: int, entities_id\\: int, is_recursive\\: 0\\|1, is_helpdesk_visible\\: mixed\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Software.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$criteria of method DBmysql\\:\\:request\\(\\) expects array\\|Glpi\\\\DBAL\\\\QueryUnion, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -3793,12 +3426,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/SoftwareLicense.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined static method CommonGLPI\\:\\:getTypes\\(\\)\\.$#',
-	'identifier' => 'staticMethod.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Stat.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$display \\? void \\: string\\)\\: Unexpected token "\\$display", expected type at offset 301 on line 10$#',
@@ -3945,12 +3572,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/UploadHandler.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Access to an undefined property CommonGLPI\\:\\:\\$fields\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/User.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type array is not subtype of native type array\\{\\}\\|array\\{list\\<string\\>, list\\<string\\>\\}\\.$#',
 	'identifier' => 'varTag.nativeType',
 	'count' => 1,
@@ -3975,18 +3596,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/User.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Access to an undefined property CommonGLPI\\:\\:\\$fields\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Webhook.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method CommonGLPI\\:\\:getSentQueriesSearchParams\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Webhook.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$items_id of function getAncestorsOf expects array\\|string, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -3997,12 +3606,6 @@ $ignoreErrors[] = [
 	'identifier' => 'varTag.differentVariable',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Webhook.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to method save_run\\(\\) on an unknown class XHProfRuns_Default\\.$#',
-	'identifier' => 'class.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/XHProf.php',
 ];
 
 return ['parameters' => ['ignoreErrors' => $ignoreErrors]];

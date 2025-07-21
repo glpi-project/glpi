@@ -1436,7 +1436,7 @@ class NetworkPort extends CommonDBChild
 
         // add purge action if main item is not dynamic
         // NetworkPort delete / purge are handled a different way on dynamic asset (lock)
-        if (!$checkitem->isDynamic()) {
+        if ($checkitem instanceof CommonDBTM && !$checkitem->isDynamic()) {
             $actions['NetworkPort' . MassiveAction::CLASS_ACTION_SEPARATOR . 'purge']    = __s('Delete permanently');
         }
 

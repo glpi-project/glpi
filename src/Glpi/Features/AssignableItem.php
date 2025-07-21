@@ -184,7 +184,7 @@ trait AssignableItem
         return $input;
     }
 
-    public function prepareInputForAdd($input): array|false
+    public function prepareInputForAdd($input)
     {
         if ($input === false) {
             return false;
@@ -196,7 +196,7 @@ trait AssignableItem
         return $this->prepareGroupFields($input);
     }
 
-    public function prepareInputForUpdate($input): array|false
+    public function prepareInputForUpdate($input)
     {
         if ($input === false) {
             return false;
