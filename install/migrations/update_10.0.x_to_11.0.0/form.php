@@ -395,6 +395,17 @@ if (!$DB->fieldExists('glpi_forms_questions', 'validation_conditions')) {
     );
 }
 
+if (!$DB->fieldExists('glpi_forms_forms', 'render_layout')) {
+    $migration->addField(
+        'glpi_forms_forms',
+        'render_layout',
+        "varchar(30) NOT NULL DEFAULT ''",
+        [
+            'after' => 'is_pinned',
+        ]
+    );
+}
+
 // Change the type of the 'answers' field in glpi_forms_answerssets
 $migration->changeField(
     'glpi_forms_answerssets',
