@@ -55,7 +55,6 @@ class DropdownController extends AbstractController
             'itemtype'  => $itemtype,
             'fieldname' => $fieldName,
             'selected_value' => $selectedValue,
-            // @todoseb fix rendering - options est écrasé dans le template
             'options' => [
                 'full_width' => true,
                 'no_label' => true,
