@@ -1429,6 +1429,8 @@ class Plugin extends CommonDBTM
     /**
      * Is a plugin activated ?
      *
+     * @phpstan-impure
+     *
      * @param string $directory  Plugin directory
      *
      * @return boolean
@@ -1502,6 +1504,8 @@ class Plugin extends CommonDBTM
 
     /**
      * Is a plugin installed ?
+     *
+     * @phpstan-impure
      *
      * @param string $directory  Plugin directory
      *
@@ -2185,7 +2189,7 @@ class Plugin extends CommonDBTM
             if (isset($infos['requirements']['glpi'])) {
                 $glpi = $infos['requirements']['glpi'];
                 if (isset($glpi['min']) || isset($glpi['max'])) {
-                    $ret = $ret && $this->checkGlpiVersion($infos['requirements']['glpi']);
+                    $ret = $this->checkGlpiVersion($infos['requirements']['glpi']);
                 }
                 if (isset($glpi['params'])) {
                     $ret = $ret && $this->checkGlpiParameters($glpi['params']);
@@ -2759,9 +2763,8 @@ class Plugin extends CommonDBTM
                         }
                     } else {
                         $missing = '';
-                        if (!function_exists("plugin_" . $directory . "_install")) {
-                            $missing .= "plugin_" . $directory . "_install";
-                        }
+                        $missing .= "plugin_" . $directory . "_install";
+
                         //TRANS: %s is the list of missing functions
                         $output .= sprintf(
                             __('%1$s: %2$s'),

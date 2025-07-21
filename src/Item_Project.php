@@ -208,8 +208,7 @@ class Item_Project extends CommonDBRelation
         }
         if ($totalnb > 0) {
             echo "<tr class='tab_bg_2'>";
-            echo "<td class='center' colspan='2'>" .
-               (($totalnb > 0) ? sprintf(__s('%1$s = %2$s'), __('Total'), $totalnb) : "&nbsp;");
+            echo "<td class='center' colspan='2'>" . sprintf(__s('%1$s = %2$s'), __('Total'), $totalnb);
             echo "</td><td colspan='4'>&nbsp;</td></tr> ";
         }
         echo "</table>";

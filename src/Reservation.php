@@ -753,7 +753,7 @@ JAVASCRIPT;
                              / $CFG_GLPI['time_step'] / MINUTE_TIMESTAMP)
                        * $CFG_GLPI['time_step'] * MINUTE_TIMESTAMP;
 
-        if ($default_delay === 0) {
+        if ((int) $default_delay === 0) {
             $options['duration'] = 0;
         }
 

@@ -49,7 +49,7 @@ final class ProfilerSection
 
     private int $start;
 
-    private int $end;
+    private ?int $end = null;
 
     /**
      * @var array{start: int, end?: int}[] Array of start and end times of paises which will be removed from the final duration.

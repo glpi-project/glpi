@@ -269,6 +269,9 @@ class Computer extends CommonDBTM
                 }
             }
 
+            $alternate_username_updated = isset($changes['contact']) || isset($changes['contact_num']);
+            $user_or_group_updated = isset($changes['groups_id']) || isset($changes['users_id']);
+
             //fields that are not present for devices
             unset($changes['groups_id']);
             unset($changes['users_id']);
@@ -307,13 +310,13 @@ class Computer extends CommonDBTM
             }
 
             if ($update_done) {
-                if (isset($changes['contact']) || isset($changes['contact_num'])) {
+                if ($alternate_username_updated) {
                     Session::addMessageAfterRedirect(
                         __s('Alternate username updated. The connected items have been updated using this alternate username.'),
                         true
                     );
                 }
-                if (isset($changes['groups_id']) || isset($changes['users_id'])) {
+                if ($user_or_group_updated) {
                     Session::addMessageAfterRedirect(
                         __s('User or group updated. The connected items have been moved in the same values.'),
                         true

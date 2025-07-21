@@ -1910,8 +1910,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         }
 
         // Notification right applied
-        $canedit = Session::haveRight(Config::$rightname, UPDATE)
-         && Session::haveAccessToEntity($ID);
+        $canedit = Session::haveAccessToEntity($ID);
         $enable_css_options = [];
         if (($ID > 0) ? 1 : 0) {
             $enable_css_options[self::CONFIG_PARENT] = __('Inherits configuration from the parent entity');

@@ -2191,7 +2191,7 @@ HTML;
                 $hour = floor(($i % DAY_TIMESTAMP) / HOUR_TIMESTAMP);
             }
             $minute     = floor(($i % HOUR_TIMESTAMP) / MINUTE_TIMESTAMP);
-            if ($minute === '0') {
+            if ((int) $minute === 0) {
                 $minute = '00';
             }
             if ($day > 0) {

@@ -1394,34 +1394,30 @@ JS;
             return false;
         }
 
-        if (!$item) {
-            echo "<div class='spaced'>" . __('Requested item not found') . "</div>";
-        } else {
-            $dev_ID   = $item->getField('id');
-            $ic       = new self();
+        $dev_ID   = $item->getField('id');
+        $ic       = new self();
 
-            if (in_array($item->getType(), self::getExcludedTypes())) {
-                echo "<div class='firstbloc center'>" .
-                  __('For this type of item, the financial and administrative information are only a model for the items which you should add.') .
-                 "</div>";
-            }
-
-            $ic->getFromDBforDevice($item->getType(), $dev_ID);
-            $can_input = [
-                'itemtype'    => $item->getType(),
-                'items_id'    => $dev_ID,
-                'entities_id' => $item->getEntityID(),
-            ];
-            TemplateRenderer::getInstance()->display('components/infocom.html.twig', [
-                'item'              => $item,
-                'infocom'           => $ic,
-                'withtemplate'      => $withtemplate,
-                'can_create'        => $ic->can(-1, CREATE, $can_input),
-                'can_edit'          => ($ic->canEdit($ic->fields['id']) && ($withtemplate != 2)),
-                'can_global_update' => Session::haveRight(self::$rightname, UPDATE),
-                'can_global_purge'  => Session::haveRight(self::$rightname, PURGE),
-            ]);
+        if (in_array($item->getType(), self::getExcludedTypes())) {
+            echo "<div class='firstbloc center'>" .
+                __('For this type of item, the financial and administrative information are only a model for the items which you should add.') .
+                "</div>";
         }
+
+        $ic->getFromDBforDevice($item->getType(), $dev_ID);
+        $can_input = [
+            'itemtype'    => $item->getType(),
+            'items_id'    => $dev_ID,
+            'entities_id' => $item->getEntityID(),
+        ];
+        TemplateRenderer::getInstance()->display('components/infocom.html.twig', [
+            'item'              => $item,
+            'infocom'           => $ic,
+            'withtemplate'      => $withtemplate,
+            'can_create'        => $ic->can(-1, CREATE, $can_input),
+            'can_edit'          => ($ic->canEdit($ic->fields['id']) && ($withtemplate != 2)),
+            'can_global_update' => Session::haveRight(self::$rightname, UPDATE),
+            'can_global_purge'  => Session::haveRight(self::$rightname, PURGE),
+        ]);
     }
 
     /**
