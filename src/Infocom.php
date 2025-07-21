@@ -987,7 +987,7 @@ class Infocom extends CommonDBChild
     /**
      * Show infocom link to display modal
      *
-     * @param string $itemtype item type
+     * @param class-string<CommonDBTM> $itemtype item type
      * @param integer $device_id item ID
      * @param boolean $display  display or not the link (default true)
      *
