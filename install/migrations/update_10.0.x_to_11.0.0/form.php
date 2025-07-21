@@ -443,6 +443,13 @@ if ($DB->tableExists('glpi_forms_destinations_formdestinations')) {
     $iterator = $DB->request(['FROM' => 'glpi_forms_destinations_formdestinations']);
     foreach ($iterator as $data) {
         $config = json_decode($data['config'] ?? '[]', true) ?? [];
+
+        // If 'strategies' key is not set, skip this entry
+        // We probably already migrated it
+        if (!isset($config[ValidationField::getKey()]['strategies'])) {
+            continue;
+        }
+
         $strategies = $config[ValidationField::getKey()]['strategies'] ?? [];
         $specific_actors = $config[ValidationField::getKey()]['specific_actors'] ?? [];
         $specific_question_ids = $config[ValidationField::getKey()]['specific_question_ids'] ?? [];
