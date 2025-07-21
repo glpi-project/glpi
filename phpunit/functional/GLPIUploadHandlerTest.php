@@ -103,7 +103,10 @@ class GLPIUploadHandlerTest extends DbTestCase
         $reflection = new ReflectionClass($instance);
 
         $options_property = $reflection->getProperty('options');
-        $options_property->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            // Usage of `ReflectionProperty::setAccessible()` is usefull only for PHP < 8.1.
+            $options_property->setAccessible(true);
+        }
         $options_property->setValue(
             $instance,
             [

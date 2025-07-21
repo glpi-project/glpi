@@ -238,7 +238,10 @@ class DashboardTest extends DbTestCase
     {
         $reflector = new \ReflectionClass("Glpi\Dashboard\Dashboard");
         $property  = $reflector->getProperty($propertyName);
-        $property->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            // Usage of `ReflectionProperty::setAccessible()` is usefull only for PHP < 8.1.
+            $property->setAccessible(true);
+        }
 
         return $property->getValue($this->dashboard);
     }

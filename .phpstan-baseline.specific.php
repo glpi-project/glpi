@@ -775,6 +775,14 @@ $ignoreErrors[] = [
 
 // Reported in PHP 7.4
 $ignoreErrors[] = [
+	'message' => '#^Comparison operation "\\<" between 80499 and 80000 is always false\\.$#',
+	'identifier' => 'smaller.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+
+// Reported in PHP 7.4
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$x_size of function imagecreatetruecolor expects int\\<1, max\\>, \\(float\\|int\\<min, 0\\>\\) given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,

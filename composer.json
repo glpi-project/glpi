@@ -153,6 +153,7 @@
             "patch -f -p1 -d vendor/guzzlehttp/guzzle/ < tools/patches/guzzlehttp-guzzle-restrict-http-methods.patch || true",
             "patch -f -p1 -d vendor/atoum/atoum/ < tools/patches/atoum-atoum-4.1.0...4.2.0.patch || true",
             "patch -f -p1 -d vendor/atoum/atoum/ < tools/patches/atoum-atoum-php8.4-compat.patch || true",
+            "patch -f -p1 -d vendor/atoum/atoum/ < tools/patches/atoum-atoum-php8.5-compat.patch || true",
             "patch -f -p1 -d vendor/atoum/stubs/ < tools/patches/atoum-stubs-php8.4-compat.patch || true",
             "patch -f -p1 -d vendor/firebase/php-jwt/ < tools/patches/firebase-php-jwt-php8.4-compat.patch || true",
             "patch -f -p1 -d vendor/friendsoftwig/twigcs/ < tools/patches/friendsoftwig-twigcs-php8.4-compat.patch || true",
@@ -163,7 +164,8 @@
             "patch -f -p1 -d vendor/michelf/php-markdown/ < tools/patches/michelf-php-markdown-php8-compat.patch || true",
             "patch -f -p1 -d vendor/psr/http-factory/ < tools/patches/psr-http-factory-php8.4-compat.patch || true",
             "patch -f -p1 -d vendor/scssphp/scssphp/ < tools/patches/scssphp-scssphp-php8.4-compat.patch || true",
-            "patch -f -p1 -d vendor/wapmorgan/unified-archive/ < tools/patches/wapmorgan-unified-archive-php-8.4-compat.patch || true"
+            "patch -f -p1 -d vendor/wapmorgan/unified-archive/ < tools/patches/wapmorgan-unified-archive-php-8.4-compat.patch || true",
+            "patch -f -p1 -d vendor/wapmorgan/unified-archive/ < tools/patches/wapmorgan-unified-archive-php-8.5-compat.patch || true"
         ]
     },
     "repositories": {

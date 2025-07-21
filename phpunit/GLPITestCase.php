@@ -129,7 +129,10 @@ class GLPITestCase extends TestCase
     protected function callPrivateMethod($instance, string $methodName, ...$args)
     {
         $method = new \ReflectionMethod($instance, $methodName);
-        $method->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            // Usage of `ReflectionMethod::setAccessible()` is usefull only for PHP < 8.1.
+            $method->setAccessible(true);
+        }
 
         return $method->invoke($instance, ...$args);
     }
