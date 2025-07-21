@@ -266,7 +266,7 @@
                     {% set search_bar_options = {
                         1: __("Enabled"),
                         0: __("Disabled"),
-                        (constant("Entity::CONFIG_PARENT")): __("Inherited from parent entity (%1$s)")|format(search_bar_options_config ? "Enabled" : "Disabled"),
+                        (constant("Entity::CONFIG_PARENT")): __("Inherited from parent entity (%1$s)")|format(search_bar_options_config ? __("Enabled") : __("Disabled")),
                     } %}
                 {% endif %}
 
@@ -297,7 +297,7 @@
                     {% set service_catalog_options = {
                         1: __("Enabled"),
                         0: __("Disabled"),
-                        (constant("Entity::CONFIG_PARENT")): __("Inherited from parent entity (%1$s)")|format(service_catalog_config ? "Enabled" : "Disabled"),
+                        (constant("Entity::CONFIG_PARENT")): __("Inherited from parent entity (%1$s)")|format(service_catalog_config ? __("Enabled") : __("Disabled")),
                     } %}
                 {% endif %}
 
