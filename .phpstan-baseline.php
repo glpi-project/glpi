@@ -764,18 +764,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Certificate_Item.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Access to an undefined property CommonGLPI\\:\\:\\$fields\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Change.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Change.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type CommonDBTM is not subtype of native type Group\\.$#',
 	'identifier' => 'varTag.nativeType',
 	'count' => 1,

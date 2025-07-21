@@ -36,16 +36,16 @@ describe('Tabs', () => {
         cy.changeProfile('Super-Admin');
     });
     it('can use the "forcetab" URL parameter to land on a specific tab', () => {
-        cy.visit("/front/user.form.php?id=2&forcetab=Change_Item$1");
-        cy.findByRole('tab', { name: 'Changes' })
+        cy.visit("/front/user.form.php?id=2&forcetab=Change$1");
+        cy.findByRole('tab', { name: 'Created changes' })
             .should('have.attr', 'aria-selected', 'true');
-        cy.findByRole('tab', { name: 'Problems' })
+        cy.findByRole('tab', { name: 'Created problems' })
             .should('not.have.attr', 'aria-selected', 'true');
 
-        cy.visit("/front/user.form.php?id=2&forcetab=Item_Problem$1");
-        cy.findByRole('tab', { name: 'Problems' })
+        cy.visit("/front/user.form.php?id=2&forcetab=Problem$1");
+        cy.findByRole('tab', { name: 'Created problems' })
             .should('have.attr', 'aria-selected', 'true');
-        cy.findByRole('tab', { name: 'Changes' })
+        cy.findByRole('tab', { name: 'Created changes' })
             .should('not.have.attr', 'aria-selected', 'true');
     });
 });

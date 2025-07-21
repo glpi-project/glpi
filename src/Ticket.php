@@ -824,9 +824,11 @@ class Ticket extends CommonITILObject
                 }
                 break;
 
+            case User::class:
             case Group::class:
             case SLA::class:
             case OLA::class:
+                return self::showListForItem($item, $withtemplate);
             default:
                 Toolbox::deprecated("You should register the `Item_Ticket` tab instead of the `Ticket` tab");
                 return Item_Ticket::displayTabContentForItem($item, $tabnum, $withtemplate);
@@ -4859,28 +4861,19 @@ JAVASCRIPT;
             'metacriteria' => [],
         ];
 
-        switch (get_class($item)) {
-            case SLA::class:
-                $criteria['ORDERBY'] = 'glpi_tickets.time_to_resolve DESC';
-                break;
-
-            case OLA::class:
-                $criteria['ORDERBY'] = 'glpi_tickets.internal_time_to_resolve DESC';
-                break;
-
-            case Group::class:
-                // Mini search engine
-                /** @var Group $item */
-                if ($item->haveChildren()) {
-                    $tree = (int) Session::getSavedOption(self::class, 'tree', 0);
-                    TemplateRenderer::getInstance()->display('components/form/item_itilobject_group.html.twig', [
-                        'tree' => $tree,
-                    ]);
-                } else {
-                    $tree = 0;
-                }
-                break;
+        if ($item instanceof Group) {
+            // Mini search engine
+            /** @var Group $item */
+            if ($item->haveChildren()) {
+                $tree = (int) Session::getSavedOption(self::class, 'tree', 0);
+                TemplateRenderer::getInstance()->display('components/form/item_itilobject_group.html.twig', [
+                    'tree' => $tree,
+                ]);
+            } else {
+                $tree = 0;
+            }
         }
+
         Item_Ticket::showListForItem($item, $withtemplate, $options);
     }
 

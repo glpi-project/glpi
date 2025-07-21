@@ -420,9 +420,9 @@ class User extends CommonDBTM
         $this->addStandardTab(Config::class, $ong, $options);
         $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab(Consumable::class, $ong, $options);
-        $this->addStandardTab(Item_Ticket::class, $ong, $options);
-        $this->addStandardTab(Item_Problem::class, $ong, $options);
-        $this->addStandardTab(Change_Item::class, $ong, $options);
+        $this->addStandardTab(Ticket::class, $ong, $options);
+        $this->addStandardTab(Problem::class, $ong, $options);
+        $this->addStandardTab(Change::class, $ong, $options);
         $this->addStandardTab(Document_Item::class, $ong, $options);
         $this->addStandardTab(Reservation::class, $ong, $options);
         $this->addStandardTab(Auth::class, $ong, $options);
