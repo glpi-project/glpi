@@ -903,7 +903,7 @@ describe ('Form editor', () => {
             cy.get('@form_id').visitFormTab('Form');
 
             // Validate default render layout
-            cy.getDropdownByLabelText('Render layout').hasDropdownValue('Step by step');
+            cy.getDropdownByLabelText('Render layout').hasDropdownValue('Section by section');
 
             // Go to preview
             cy.findByRole('link', { 'name': "Preview" })
