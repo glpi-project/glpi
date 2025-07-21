@@ -38,6 +38,7 @@ namespace Glpi\Toolbox;
 use DOMDocument;
 use DOMXPath;
 use Glpi\RichText\RichText;
+use Search;
 
 use function Safe\preg_replace;
 
@@ -89,6 +90,9 @@ class DataExport
             $value = preg_replace('/^' . $spacing_chars_pattern . '/u', '', $value);
             $value = preg_replace('/' . $spacing_chars_pattern . '$/u', '', $value);
         }
+
+        $value = preg_replace('/' . Search::LBBR . '/', "\n", $value);
+        $value = preg_replace('/' . Search::LBHR . '/', "\n\n---\n\n", $value);
 
         return $value;
     }
