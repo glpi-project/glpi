@@ -718,13 +718,9 @@ class Ticket extends CommonITILObject
 
                     case OLA::class:
                         $nb = countElementsInTable(
-                            'glpi_tickets',
+                            Item_Ola::getTable(),
                             [
-                                'OR'  => [
-                                    'olas_id_tto'  => $item->getID(),
-                                    'olas_id_ttr'  => $item->getID(),
-                                ],
-                                'is_deleted' => 0,
+                                'olas_id'  => $item->getID(),
                             ]
                         );
                         break;
