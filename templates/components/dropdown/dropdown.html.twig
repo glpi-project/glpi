@@ -32,4 +32,6 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-{{ fields.dropdownField(itemtype, fieldname, selected_value = 0, label = '', options = {}) }}
+{% set options = options|default({}) %}
+
+{{ fields.dropdownField(itemtype, fieldname, selected_value = 0, label = '', options = options) }}

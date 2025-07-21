@@ -84,7 +84,6 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
             {% set display_associatedsla_field = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('slas_id_tto') %}
             {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('slas_id_tto') %}
 
-{#            {% set _fieldname = 'time_to_own' %}#}
             <td class="right pe-2 align-middle border-0">{{ __('TTO') }}</td>
             <td class="d-flex ms-n2 border-0 py-0">
 
@@ -379,17 +378,15 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
                         </span>
                     </span>
                 {% endif %}
-
-                {# inserer le groupe assigné ici #}
             </span>
 
             {# remove button - la association #}
-        {% if options.can_assign %}
-            <i class="ti ti-trash ms-1" role="button"
-               onclick="delete_date_{{ options.rand }}(event)"
-               title="{{ _x('button', 'Delete permanently') }}"
-               data-bs-toggle="tooltip" data-bs-placement="top"></i>
-        {% endif %}
+            {% if options.can_assign %}
+                <i class="ti ti-trash ms-1" role="button"
+                   onclick="delete_date_{{ options.rand }}(event)"
+                   title="{{ _x('button', 'Delete permanently') }}"
+                   data-bs-toggle="tooltip" data-bs-placement="top"></i>
+            {% endif %}
 
             {# javascript for remove button #}
             <script type="text/javascript">
@@ -524,6 +521,8 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
                             'fieldname': '_olas_id[]',
                         },
                         (html) => {
+                            let container = $('<div class="my-1"></div>');
+                            html = container.append(html);
                             $('#{{ dropdown_placeholder_dom_id }}').append(html);
                         }
                     );
