@@ -2660,8 +2660,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method NotificationTemplate\\:\\:getTemplateByLanguage\\(\\) should return int\\|false but returns non\\-falsy\\-string\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Negated boolean expression is always true\\.$#',
+	'identifier' => 'booleanNot.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NotificationTemplate.php',
 ];
