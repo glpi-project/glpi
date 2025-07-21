@@ -92,12 +92,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/ajax/transfers.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$force of method CommonDBTM\\:\\:deleteFromDB\\(\\) expects bool, int given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/unlockobject.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to Html\\:\\:ajaxFooter\\(\\) on a separate line has no effect\\.$#',
 	'identifier' => 'staticMethod.resultUnused',
 	'count' => 1,

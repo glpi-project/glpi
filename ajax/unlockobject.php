@@ -54,22 +54,21 @@ $ret = 0;
 if (isset($_POST['unlock']) && isset($_POST["id"])) {
     // then we may have something to unlock
     $ol = new ObjectLock();
-    if (!$ol->can($_POST["id"], PURGE)) {
-        Response::sendError(400, 'Not allowed');
+    if ($ol->getFromDB($_POST["id"])) {
+        $can_unlock = $ol->fields['users_id'] === Session::getLoginUserID()
+            || Session::haveRight($ol->fields['itemtype']::$rightname, UNLOCK);
+        if ($can_unlock && $ol->deleteFromDB(true)) {
+            Log::history(
+                $ol->fields['items_id'],
+                $ol->fields['itemtype'],
+                [0, '', ''],
+                0,
+                Log::HISTORY_UNLOCK_ITEM
+            );
+            $ret = 1;
+        }
     }
-    if (
-        $ol->getFromDB($_POST["id"])
-        && $ol->deleteFromDB(1)
-    ) {
-        Log::history(
-            $ol->fields['items_id'],
-            $ol->fields['itemtype'],
-            [0, '', ''],
-            0,
-            Log::HISTORY_UNLOCK_ITEM
-        );
-        $ret = 1;
-    }
+    Response::sendError(400, 'Not allowed');
 } elseif (
     isset($_POST['requestunlock'])
            && isset($_POST["id"])
