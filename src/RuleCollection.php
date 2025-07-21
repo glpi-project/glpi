@@ -1089,7 +1089,8 @@ JAVASCRIPT;
                     if ($action['field'][0] == "_") {
                         $field = substr($action['field'], 1);
                     }
-                    $table = getTableNameForForeignKeyField($field);
+                    $available_actions = $rule->getActions();
+                    $table = $available_actions[$action['field']]['table'];
 
                     $action['value'] = Dropdown::getDropdownName(
                         $table,
