@@ -39,7 +39,7 @@
         "laminas/laminas-mime": "^2.9",
         "laminas/laminas-servicemanager": "~3.10.0",
         "league/csv": "^9.7",
-        "league/oauth2-client": "^2.6",
+        "league/oauth2-client": "^2.8",
         "league/oauth2-google": "^4.0",
         "mexitek/phpcolors": "^1.0",
         "michelf/php-markdown": "^1.9",
