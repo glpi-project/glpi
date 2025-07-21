@@ -42,7 +42,7 @@ enum RenderLayout: string
     public function getLabel(): string
     {
         return match ($this) {
-            self::STEP_BY_STEP => __('Step by step'),
+            self::STEP_BY_STEP => __('Section by section'),
             self::SINGLE_PAGE  => __('Single page'),
         };
     }
