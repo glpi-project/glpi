@@ -459,7 +459,7 @@ if ($DB->tableExists('glpi_forms_destinations_formdestinations')) {
         $strategy_configs = [];
         foreach ($strategies as $strategy) {
             // Convert strategy to enum value safely
-            $strategy_value = match($strategy) {
+            $strategy_value = match ($strategy) {
                 'no_validation'    => 'no_validation',
                 'specific_values'  => 'specific_values',
                 'specific_actors'  => 'specific_actors',
@@ -478,7 +478,7 @@ if ($DB->tableExists('glpi_forms_destinations_formdestinations')) {
 
         // Build the hardcoded structure that would be produced by ValidationFieldConfig::jsonSerialize()
         $config[$validation_field_key] = [
-            'strategy_configs' => $strategy_configs
+            'strategy_configs' => $strategy_configs,
         ];
 
         // Update the config field
