@@ -40,7 +40,7 @@
 <div class="py-2 px-3">
     <h2 class="d-flex">
         <i class="{{ icon }} me-2"></i>
-        {{ __("Items to create") }}
+        {{ _n("Item to create", "Items to create", get_plural_number()) }}
     </h2>
 
     {% for warning in warnings %}

@@ -4961,7 +4961,6 @@ final class SQLProvider implements SearchProviderInterface
                 } else {
                     foreach ($data['sql']['count'] as $sqlcount) {
                         $result_num = $DBread->doQuery($sqlcount);
-                        dump($sqlcount);
                         $data['data']['totalcount'] += $DBread->result($result_num, 0, 0);
                     }
                 }
