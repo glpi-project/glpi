@@ -48,7 +48,7 @@ final class Google extends \League\OAuth2\Client\Provider\Google implements Prov
     public function getAuthorizationUrl(array $options = [])
     {
         $options = [
-            'prompt' => 'login', // ensure user will have to specify the account to use
+            'prompt' => 'consent select_account', // ensure user will have to specify the account to use
             'scope'  => $this->getScopes(),
         ];
 
