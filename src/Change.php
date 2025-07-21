@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\ContentTemplates\Parameters\ChangeParameters;
 use Glpi\ContentTemplates\Parameters\CommonITILObjectParameters;
+use Glpi\DBAL\QueryExpression;
 use Glpi\RichText\RichText;
 
 /**
@@ -230,7 +231,7 @@ class Change extends CommonITILObject
     {
 
         if (static::canView()) {
-            switch ($item->getType()) {
+            switch ($item::class) {
                 case self::class:
                     $ong = [];
                     if ($item->canUpdate()) {
@@ -245,6 +246,36 @@ class Change extends CommonITILObject
                     }
 
                     return $ong;
+
+                case User::class:
+                    $nb = 0;
+                    if ($_SESSION['glpishow_count_on_tabs']) {
+                        $nb = countElementsInTable(
+                            ['glpi_changes', 'glpi_changes_users'],
+                            [
+                                'glpi_changes_users.changes_id'  => new QueryExpression(DBmysql::quoteName('glpi_changes.id')),
+                                'glpi_changes_users.users_id'    => $item->getID(),
+                                'glpi_changes_users.type'        => CommonITILActor::REQUESTER,
+                                'glpi_changes.is_deleted'        => 0,
+                            ] + getEntitiesRestrictCriteria(self::getTable())
+                        );
+                    }
+                    return self::createTabEntry(__('Created changes'), $nb, $item::getType());
+
+                case Group::class:
+                    $nb = 0;
+                    if ($_SESSION['glpishow_count_on_tabs']) {
+                        $nb = countElementsInTable(
+                            ['glpi_changes', 'glpi_changes_groups'],
+                            [
+                                'glpi_changes_groups.changes_id' => new QueryExpression(DBmysql::quoteName('glpi_changes.id')),
+                                'glpi_changes_groups.groups_id'  => $item->getID(),
+                                'glpi_changes_groups.type'       => CommonITILActor::REQUESTER,
+                                'glpi_changes.is_deleted'        => 0,
+                            ] + getEntitiesRestrictCriteria(self::getTable())
+                        );
+                    }
+                    return self::createTabEntry(__('Created changes'), $nb, $item::getType());
             }
         }
         return '';
@@ -265,6 +296,10 @@ class Change extends CommonITILObject
                         break;
                 }
                 break;
+
+            case User::class:
+            case Group::class:
+                return self::showListForItem($item, $withtemplate);
         }
         return true;
     }

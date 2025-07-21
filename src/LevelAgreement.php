@@ -112,7 +112,7 @@ abstract class LevelAgreement extends CommonDBChild
         $this->addDefaultFormTab($ong);
         $this->addStandardTab(static::$levelclass, $ong, $options);
         $this->addStandardTab(Rule::class, $ong, $options);
-        $this->addStandardTab(Item_Ticket::class, $ong, $options);
+        $this->addStandardTab(Ticket::class, $ong, $options);
 
         return $ong;
     }

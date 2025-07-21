@@ -213,10 +213,10 @@ class Group extends CommonTreeDropdown
             isset($this->fields['is_requester'])
             && $this->fields['is_requester']
         ) {
-            $this->addStandardTab(Item_Ticket::class, $ong, $options);
+            $this->addStandardTab(Ticket::class, $ong, $options);
         }
-        $this->addStandardTab(Item_Problem::class, $ong, $options);
-        $this->addStandardTab(Change_Item::class, $ong, $options);
+        $this->addStandardTab(Problem::class, $ong, $options);
+        $this->addStandardTab(Change::class, $ong, $options);
         $this->addStandardTab(Notepad::class, $ong, $options);
         $this->addStandardTab(Log::class, $ong, $options);
         return $ong;
