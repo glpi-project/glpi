@@ -1379,7 +1379,7 @@ JS
     /**
      * Get a criteria description by his ID
      *
-     * @param int|string $ID the criteria's ID
+     * @param string $ID the criteria's ID
      *
      * @return array the criteria array
      **/
@@ -1392,7 +1392,7 @@ JS
     /**
      * Get action description by its ID
      *
-     * @param integer $ID the action's ID
+     * @param string $ID the action's ID
      *
      * @return array the action array
      **/
@@ -1405,7 +1405,7 @@ JS
     /**
      * Get a criteria description by his ID
      *
-     * @param integer $ID the criteria's ID
+     * @param string $ID the criteria's ID
      *
      * @return string the criteria's description
      **/
@@ -1418,7 +1418,7 @@ JS
     /**
      * Get action description by his ID
      *
-     * @param integer $ID the action's ID
+     * @param string $ID the action's ID
      *
      * @return string the action's description
      **/
@@ -2266,7 +2266,7 @@ JS
     /**
      * Return a value associated with a pattern associated to a criteria to display it
      *
-     * @param integer  $ID        the given criteria
+     * @param string  $ID        the given criteria
      * @param integer  $condition condition used
      * @param ?string  $pattern   the pattern
      *
@@ -2377,7 +2377,7 @@ JS
     /**
      * Used to get specific criteria patterns
      *
-     * @param integer $ID        the given criteria
+     * @param string  $ID        the given criteria
      * @param integer $condition condition used
      * @param string  $pattern   the pattern
      *
@@ -2392,7 +2392,7 @@ JS
      * Display item used to select a pattern for a criteria
      *
      * @param string  $name      criteria name
-     * @param integer $ID        the given criteria
+     * @param string  $ID        the given criteria
      * @param integer $condition condition used
      * @param string  $value     the pattern (default '')
      * @param boolean $test      Is to test rule ? (false by default)
@@ -2567,7 +2567,7 @@ JS
     /**
      * Return a "display" value associated with a pattern associated to a criteria
      *
-     * @param integer $ID     the given action
+     * @param string $ID     the given action
      * @param string  $type   the type of action
      * @param int|string $value  the value
      *
@@ -2659,7 +2659,7 @@ JS
     /**
      * Return a value associated with a pattern associated to a criteria to display it
      *
-     * @param integer $ID        the given criteria
+     * @param string $ID        the given criteria
      * @param integer $condition condition used
      * @param string  $value     the pattern
      *
