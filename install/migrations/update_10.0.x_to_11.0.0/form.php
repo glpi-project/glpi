@@ -443,31 +443,43 @@ if ($DB->tableExists('glpi_forms_destinations_formdestinations')) {
     $iterator = $DB->request(['FROM' => 'glpi_forms_destinations_formdestinations']);
     foreach ($iterator as $data) {
         $config = json_decode($data['config'] ?? '[]', true) ?? [];
+        $validation_field_key = 'glpi-form-destination-commonitilfield-validationfield';
 
         // If 'strategies' key is not set, skip this entry
         // We probably already migrated it
-        if (!isset($config[ValidationField::getKey()]['strategies'])) {
+        if (!isset($config[$validation_field_key]['strategies'])) {
             continue;
         }
 
-        $strategies = $config[ValidationField::getKey()]['strategies'] ?? [];
-        $specific_actors = $config[ValidationField::getKey()]['specific_actors'] ?? [];
-        $specific_question_ids = $config[ValidationField::getKey()]['specific_question_ids'] ?? [];
-        $specific_validationtemplates_ids = $config[ValidationField::getKey()]['specific_validationtemplates_ids'] ?? [];
+        $strategies                       = $config[$validation_field_key]['strategies'] ?? [];
+        $specific_actors                  = $config[$validation_field_key]['specific_actors'] ?? [];
+        $specific_question_ids            = $config[$validation_field_key]['specific_question_ids'] ?? [];
+        $specific_validationtemplates_ids = $config[$validation_field_key]['specific_validationtemplates_ids'] ?? [];
 
-        $validation_configs = [];
+        $strategy_configs = [];
         foreach ($strategies as $strategy) {
-            $validation_configs[] = new ValidationFieldStrategyConfig(
-                strategy: ValidationFieldStrategy::tryFrom($strategy) ?? ValidationFieldStrategy::NO_VALIDATION,
-                specific_validationtemplate_ids: $specific_validationtemplates_ids,
-                specific_question_ids: $specific_question_ids,
-                specific_actors: $specific_actors,
-            );
+            // Convert strategy to enum value safely
+            $strategy_value = match($strategy) {
+                'no_validation'    => 'no_validation',
+                'specific_values'  => 'specific_values',
+                'specific_actors'  => 'specific_actors',
+                'specific_answers' => 'specific_answers',
+                default            => 'no_validation' // Default to no validation for unknown strategies
+            };
+
+            $strategy_configs[] = [
+                'strategy'                        => $strategy_value,
+                'specific_validationtemplate_ids' => $specific_validationtemplates_ids,
+                'specific_question_ids'           => $specific_question_ids,
+                'specific_actors'                 => $specific_actors,
+                'specific_validationstep_id'      => 0,
+            ];
         }
 
-        $config[ValidationField::getKey()] = (new ValidationFieldConfig(
-            strategy_configs: $validation_configs
-        ))->jsonSerialize();
+        // Build the hardcoded structure that would be produced by ValidationFieldConfig::jsonSerialize()
+        $config[$validation_field_key] = [
+            'strategy_configs' => $strategy_configs
+        ];
 
         // Update the config field
         $DB->update(
