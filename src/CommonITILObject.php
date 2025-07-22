@@ -1864,6 +1864,15 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
             }
         }
 
+        // split _olas_id into _olas_id_tto and _olas_id_ttr to validate which type of SLA is used
+        // @todoseb faire test
+        $_ola = new OLA();
+        $_ids_tto = array_column($_ola->find(['type' => SLM::TTO]), 'id');
+        $_ids_ttr = array_column($_ola->find(['type' => SLM::TTR]), 'id');
+
+        $input['_olas_id_tto'] = array_intersect($input['_olas_id'] ?? [], $_ids_tto, );
+        $input['_olas_id_ttr'] = array_intersect($input['_olas_id'] ?? [], $_ids_ttr);
+
         $tt = $this->getITILTemplateToUse(0, $type, $categid, $entid);
 
         if (count($tt->mandatory)) {

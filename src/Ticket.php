@@ -985,9 +985,6 @@ class Ticket extends CommonITILObject
             }
         }
 
-        // Mandatory fields must be handled here for tickets. @see CommonITILObject::prepareInputForUpdate()
-        // html form _olas_id field is an array, when empty it's not passed in request, so it's set here to be handled in handleTemplateFields()
-        $input['_olas_id'] = array_key_exists('_olas_id', $input) ? $input['_olas_id'] : [];
         $input = $this->handleTemplateFields($input);
         if ($input === false) {
             return false;

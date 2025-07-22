@@ -213,7 +213,16 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
         <th class="visually-hidden"></th>
         <th class="border-0 fs-4">
             <div class="d-flex justify-content-between">
-                <div class="">{{ __('OLA') }}</div>
+                <div class="">
+                    {% set ola_tto_is_mandatory = field_options.fields_template.isMandatoryField('_olas_id_tto') %}
+                    {% set ola_ttr_is_mandatory = field_options.fields_template.isMandatoryField('_olas_id_ttr') %}
+                    {% set required =  ola_tto_is_mandatory or ola_ttr_is_mandatory%}
+                    {% set helper_text %}
+                        {% if ola_tto_is_mandatory %} {{ __('OLA') ~ ' ' ~ __('TTO') ~ ' ' ~ __('is mandatory') }} <br>{% endif %}
+                        {% if ola_ttr_is_mandatory %} {{ __('OLA') ~ ' ' ~ __('TTR') ~ ' ' ~ __('is mandatory') }} {% endif %}
+                    {% endset %}
+                    {{ fields.label(__('OLA'), '_olas_id[]', {'required': required, 'helper' : helper_text|trim}) }}
+                </div>
                 <div>{{ _self.OlaAddButton('ola_dropdown_placeholder', field_options) }}</div>
             </div>
         </th>
