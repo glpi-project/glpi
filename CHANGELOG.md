@@ -246,6 +246,7 @@ The present file will list all changes made to the project; according to the
 - `server` parameter of `User::changeAuthMethod()` now defaults to '0' instead of '-1' which was an invalid value when using unsigned integers.
 - `checkitem` parameter of `CommonDBTM::getMassiveActionsForItemtype()` is now the actual item being acted on when in single item mode.
   To identify the difference between the generic item instance given for multi-item mode, use the `isNewItem()` method.
+- TinyMCE library is now loaded automatically on every page.
 
 #### Deprecated
 - Usage of the `/marketplace` path for plugins URLs. All plugins URLs should now start with `/plugins`.

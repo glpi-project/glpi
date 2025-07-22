@@ -1067,6 +1067,8 @@ TWIG,
 
         $tpl_vars['css_files'][] = ['path' => 'lib/base.css'];
 
+        Html::requireJs('tinymce');
+
         if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax']) {
             Html::requireJs('notifications_ajax');
         }
@@ -1158,10 +1160,6 @@ TWIG,
 
             if (in_array('masonry', $jslibs)) {
                 Html::requireJs('masonry');
-            }
-
-            if (in_array('tinymce', $jslibs)) {
-                Html::requireJs('tinymce');
             }
 
             if (in_array('clipboard', $jslibs)) {
@@ -3509,9 +3507,6 @@ JS;
          * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
-
-        // load tinymce lib
-        Html::requireJs('tinymce');
 
         $language = $_SESSION['glpilanguage'];
         if (!file_exists(GLPI_ROOT . "/public/lib/tinymce-i18n/langs6/$language.js")) {
