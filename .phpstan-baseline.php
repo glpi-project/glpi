@@ -2462,12 +2462,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/AnswersHandler/AnswersHandler.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\$specific_actors of class Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ValidationFieldConfig constructor expects array\\<int\\>, array\\<string\\> given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/ValidationField.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$callback of function array_filter expects \\(callable\\(int\\|string\\)\\: bool\\)\\|null, Closure\\(mixed\\)\\: \\(0\\|1\\) given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -3475,7 +3469,6 @@ $ignoreErrors[] = [
 	'count' => 2,
 	'path' => __DIR__ . '/src/PlanningExternalEvent.php',
 ];
-
 $ignoreErrors[] = [
 	'message' => '#^Offset \'plan\' on non\\-empty\\-array in isset\\(\\) always exists and is not nullable\\.$#',
 	'identifier' => 'isset.offset',

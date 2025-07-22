@@ -9031,8 +9031,9 @@ abstract class CommonITILObject extends CommonDBTM
                     }
                     foreach ($validation_target['items_id_target'] as $items_id_target) {
                         $validations_to_send[] = [
-                            'itemtype_target' => $validation_target['itemtype_target'],
-                            'items_id_target' => $items_id_target,
+                            'itemtype_target'    => $validation_target['itemtype_target'],
+                            'items_id_target'    => $items_id_target,
+                            'validationsteps_id' => $validation_target['validationsteps_id'] ?? null,
                         ];
                     }
                 }
@@ -9073,13 +9074,16 @@ abstract class CommonITILObject extends CommonDBTM
                         ) {
                             continue;
                         }
+
+                        $values['itemtype_target']     = $validation_to_send['itemtype_target'];
+                        $values['items_id_target']     = $validation_to_send['items_id_target'];
+                        $values['_validationsteps_id'] = $validation_to_send['validationsteps_id'] ?? null;
+
                         // add validation step
-                        if (isset($input['_validationsteps_id'])) {
+                        if (isset($input['_validationsteps_id']) && $values['_validationsteps_id'] === null) {
                             $values['_validationsteps_id'] = $input['_validationsteps_id'];
                         }
 
-                        $values['itemtype_target'] = $validation_to_send['itemtype_target'];
-                        $values['items_id_target'] = $validation_to_send['items_id_target'];
                         if ($validation->add($values)) {
                             $add_done = true;
                         }

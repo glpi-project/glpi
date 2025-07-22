@@ -43,10 +43,14 @@ export class GlpiFormFieldDestinationMultipleConfig {
     /** @type {jQuery<HTMLElement>} */
     #add_button;
 
-    constructor(container) {
+    /** @type {Set<string>} */
+    #reusable_strategies;
+
+    constructor(container, reusable_strategies = new Set()) {
         this.#container = container;
         this.#template = container.find('[data-glpi-itildestination-field-config-template]');
         this.#add_button = container.find('[data-glpi-itildestination-add-field-config]');
+        this.#reusable_strategies = reusable_strategies instanceof Set ? reusable_strategies : new Set(reusable_strategies);
 
         // Register events
         this.#container.find('[data-glpi-itildestination-remove-field-config]')
@@ -64,15 +68,37 @@ export class GlpiFormFieldDestinationMultipleConfig {
     }
 
     /**
+     * Check if a strategy can be reused
+     * @param {string} strategy
+     * @returns {boolean}
+     */
+    isStrategyReusable(strategy) {
+        return this.#reusable_strategies.has(strategy);
+    }
+
+    /**
      * Add a field config
      */
     #addFieldConfig() {
         const selected_strategies = [];
         this.#container.find('[data-glpi-itildestination-field-config]').each((index, field) => {
-            selected_strategies.push($(field).find('select').first().find('option').filter(':selected').val());
+            const strategy = $(field).find('select').first().find('option').filter(':selected').val();
+            // Only add to selected_strategies if it's not reusable
+            if (!this.isStrategyReusable(strategy)) {
+                selected_strategies.push(strategy);
+            }
         });
 
         const new_config_field = $(this.#template.html()).insertBefore(this.#add_button);
+
+        // Replace __INDEX__ placeholders with actual index
+        const current_index = this.#container.find('[data-glpi-itildestination-field-config]').length - 1;
+        new_config_field.find('[name*="__INDEX__"]').each((index, element) => {
+            const name = $(element).attr('name');
+            if (name) {
+                $(element).attr('name', name.replace(/__INDEX__/g, current_index));
+            }
+        });
 
         new_config_field.find('[data-glpi-itildestination-remove-field-config]')
             .on('click', (e) => this.#removeFieldConfig(e.target.closest('[data-glpi-itildestination-field-config]')));
@@ -85,7 +111,9 @@ export class GlpiFormFieldDestinationMultipleConfig {
 
         new_config_field.find('select').first().on('change', (e) => this.#handleStrategyChange(e));
 
-        this.#initDropdowns(new_config_field);
+        // Dropdowns initialization must be done after the field is added to the DOM and the script tags are executed
+        // to ensure that the select2_configs are available.
+        setTimeout(() => this.#initDropdowns(new_config_field));
         this.#handleAddButtonVisibility();
     }
 
@@ -128,6 +156,12 @@ export class GlpiFormFieldDestinationMultipleConfig {
     }
 
     #handleAddButtonVisibility() {
+        if (this.#reusable_strategies.size > 0) {
+            // If there are reusable strategies, we don't limit the number of field configs
+            this.#add_button.removeClass('d-none');
+            return;
+        }
+
         const count_options = this.#container.find('[data-glpi-itildestination-field-config]')
             .find('select').first().find('option').length;
         const count_field_configs = this.#container.find('[data-glpi-itildestination-field-config]').length;
@@ -142,13 +176,18 @@ export class GlpiFormFieldDestinationMultipleConfig {
     #handleStrategyChange(event = null) {
         const selected_strategies = [];
         this.#container.find('[data-glpi-itildestination-field-config]').each((index, field) => {
-            selected_strategies.push($(field).find('select').first().find('option').filter(':selected').val());
+            const strategy = $(field).find('select').first().find('option').filter(':selected').val();
+            // Only add to selected_strategies if it's not reusable
+            if (!this.isStrategyReusable(strategy)) {
+                selected_strategies.push(strategy);
+            }
         });
 
         this.#container.find('select').find('option').each((index, option) => {
+            const optionValue = $(option).val();
             $(option).prop(
                 'disabled',
-                !option.selected && $(option).val() != 0 && selected_strategies.includes($(option).val())
+                !option.selected && optionValue != 0 && selected_strategies.includes(optionValue)
             );
         });
 
