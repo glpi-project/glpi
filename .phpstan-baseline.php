@@ -5336,12 +5336,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NotificationEvent.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$tid of method NotificationTemplate\\:\\:getDataToSend\\(\\) expects string, int\\<min, \\-1\\>\\|int\\<1, max\\> given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationEventAbstract.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to preg_quote\\(\\) is missing delimiter / to be effective\\.$#',
 	'identifier' => 'argument.invalidPregQuote',
 	'count' => 1,
@@ -5378,12 +5372,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always true\\.$#',
-	'identifier' => 'booleanNot.alwaysTrue',
-  'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTemplate.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$array of function implode expects array\\<string\\>, array\\<array\\|string\\> given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 3,
@@ -5394,12 +5382,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NotificationTargetSavedSearch_Alert.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method NotificationTemplate\\:\\:getTemplateByLanguage\\(\\) should return int\\|false but returns non\\-falsy\\-string\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTemplate.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$items_id of static method CommonDBConnexity\\:\\:getItemsAssociatedTo\\(\\) expects string, int given\\.$#',
