@@ -89,11 +89,13 @@ if (isset($_POST["update"])) {
     Html::redirect($CFG_GLPI["root_doc"] . "/front/reservation.php?reservationitems_id=" .
                   "$reservationitems_id&mois_courant=$begin_month&annee_courante=$begin_year");
 } elseif (isset($_POST["add"])) {
-    Session::checkRight('reservation', CREATE);
+    Session::checkRightsOr('reservation', [CREATE, ReservationItem::RESERVEANITEM]);
     Reservation::handleAddForm($_POST);
     Html::back();
 } elseif (isset($_GET["id"])) {
-    $rr->check($_GET['id'], READ);
+    if (!empty($_GET["id"])) {
+        $rr->check($_GET['id'], READ);
+    }
     if (!isset($_GET['begin'])) {
         $_GET['begin'] = date('Y-m-d H:00:00');
     }
