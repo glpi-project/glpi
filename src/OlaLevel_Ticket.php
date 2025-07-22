@@ -95,8 +95,8 @@ class OlaLevel_Ticket extends CommonDBTM
     /**
      * Delete entries for a ticket
      *
-     * @param integer $tickets_id Ticket ID
-     * @param SLM::TTR|SLM::TTO $type Type of OLA
+     * @param int               $tickets_id Ticket ID
+     * @param SLM::TTR|SLM::TTO $olaType    Type of OLA
      *
      * @since 9.1 2 parameters mandatory
      *

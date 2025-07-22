@@ -37,12 +37,13 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Features\AssetImage;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
 
 /**
  * SoftwareLicense Class
  **/
-class SoftwareLicense extends CommonTreeDropdown
+class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterface
 {
     use Clonable;
     use Glpi\Features\State;

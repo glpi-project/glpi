@@ -43,8 +43,10 @@ use Laminas\Mail\Storage;
 use Laminas\Mail\Storage\AbstractStorage;
 use Laminas\Mail\Storage\Exception\InvalidArgumentException;
 use Laminas\Mail\Storage\Folder;
+use Laminas\Mail\Storage\Folder\FolderInterface;
 use Laminas\Mail\Storage\Message;
 use Laminas\Mail\Storage\Part;
+use Laminas\Mail\Storage\Writable\WritableInterface;
 use LitEmoji\LitEmoji;
 use Psr\Log\LoggerInterface;
 use Safe\Exceptions\IconvException;
@@ -297,6 +299,9 @@ class MailCollector extends CommonDBTM
         try {
             $this->connect();
             $connected = true;
+            if (!$this->storage instanceof FolderInterface) {
+                throw new RuntimeException("This mailbox do not support listing folders");
+            }
             foreach ($this->storage->getFolders() as $folder) {
                 $folders[] = $this->extractFolderData($folder);
             }
@@ -1363,7 +1368,7 @@ class MailCollector extends CommonDBTM
 
         $reply_to_addr = $this->getEmailFromHeader($message, 'reply-to');
 
-        $date         = date("Y-m-d H:i:s", strtotime($message->date));
+        $date         = date("Y-m-d H:i:s", strtotime($message->getHeader('date', 'string')));
         $mail_details = [];
 
         // Construct to and cc arrays
@@ -1738,6 +1743,10 @@ class MailCollector extends CommonDBTM
         if (!empty($folder) && isset($this->fields[$folder]) && !empty($this->fields[$folder])) {
             $name = mb_convert_encoding($this->fields[$folder], "UTF7-IMAP", "UTF-8");
             try {
+                if (!$this->storage instanceof WritableInterface) {
+                    throw new RuntimeException("This mailbox do not support moving messages");
+                }
+
                 $this->storage->moveMessage($this->storage->getNumberByUniqueId($uid), $name);
                 return true;
             } catch (Throwable $e) {

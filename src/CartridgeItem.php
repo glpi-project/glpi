@@ -36,6 +36,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Features\AssetImage;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
 
 /**
@@ -43,7 +44,7 @@ use Glpi\Features\Clonable;
  * This class is used to manage the various types of cartridges.
  * @see Cartridge
  **/
-class CartridgeItem extends CommonDBTM
+class CartridgeItem extends CommonDBTM implements AssignableItemInterface
 {
     use AssetImage;
     use AssignableItem {

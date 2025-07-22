@@ -34,6 +34,7 @@
  */
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
 use Glpi\Socket;
 use Glpi\SocketModel;
@@ -41,7 +42,7 @@ use Glpi\SocketModel;
 /**
  * Class Cable
  */
-class Cable extends CommonDBTM
+class Cable extends CommonDBTM implements AssignableItemInterface
 {
     use AssignableItem;
     use Clonable;

@@ -264,7 +264,7 @@ abstract class AbstractCapacity implements CapacityInterface
     /**
      * Delete display preferences for given search options.
      *
-     * @param string $source_itemtype
+     * @param string $itemtype
      * @param array $search_options
      * @return void
      */

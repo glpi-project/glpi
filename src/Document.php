@@ -37,6 +37,7 @@ use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
 use Glpi\Features\ParentStatus;
 use Glpi\Features\TreeBrowse;
+use Glpi\Features\TreeBrowseInterface;
 use Safe\Exceptions\FilesystemException;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -56,7 +57,7 @@ use function Safe\unlink;
 /**
  * Document class
  **/
-class Document extends CommonDBTM
+class Document extends CommonDBTM implements TreeBrowseInterface
 {
     use TreeBrowse;
     use ParentStatus;

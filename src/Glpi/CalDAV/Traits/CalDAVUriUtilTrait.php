@@ -194,7 +194,7 @@ trait CalDAVUriUtilTrait
      *
      * @param string  $uid
      *
-     * @return CalDAVCompatibleItemInterface|null
+     * @return (CalDAVCompatibleItemInterface&CommonDBTM)|null
      */
     protected function getCalendarItemForUid($uid)
     {
@@ -254,11 +254,15 @@ trait CalDAVUriUtilTrait
         }
 
         $item_specs = $items_iterator->current();
-        if (!is_a($item_specs['itemtype'], CalDAVCompatibleItemInterface::class, true)) {
+
+        if (!$item = getItemForItemtype($item_specs['itemtype'])) {
             return null;
         }
 
-        if (!$item = getItemForItemtype($item_specs['itemtype'])) {
+        if (
+            !$item instanceof CalDAVCompatibleItemInterface
+            || !$item instanceof CommonDBTM
+        ) {
             return null;
         }
 
@@ -274,7 +278,7 @@ trait CalDAVUriUtilTrait
      *
      * @param string  $path
      *
-     * @return CalDAVCompatibleItemInterface|null
+     * @return (CalDAVCompatibleItemInterface&CommonDBTM)|null
      */
     protected function getCalendarItemForPath($path)
     {

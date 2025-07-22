@@ -37,6 +37,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Features\AssetImage;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
 
 //!  ConsumableItem Class
@@ -45,7 +46,7 @@ use Glpi\Features\Clonable;
  * @see Consumable
  * @author Julien Dombre
  */
-class ConsumableItem extends CommonDBTM
+class ConsumableItem extends CommonDBTM implements AssignableItemInterface
 {
     use Clonable;
 

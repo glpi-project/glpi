@@ -34,13 +34,14 @@
  */
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
 use Glpi\Features\DCBreadcrumb;
 
 /**
  * Enclosure Class
  **/
-class Enclosure extends CommonDBTM
+class Enclosure extends CommonDBTM implements AssignableItemInterface
 {
     use DCBreadcrumb;
     use Clonable;

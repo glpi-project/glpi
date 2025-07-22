@@ -34,6 +34,7 @@
  */
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
 use Glpi\Features\DCBreadcrumb;
 use Glpi\Features\Inventoriable;
@@ -42,7 +43,7 @@ use Glpi\Socket;
 /**
  * Peripheral Class
  **/
-class Peripheral extends CommonDBTM
+class Peripheral extends CommonDBTM implements AssignableItemInterface
 {
     use DCBreadcrumb;
     use Clonable;

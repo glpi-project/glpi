@@ -69,8 +69,7 @@ class SetCommand extends AbstractCommand
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         if (null === $input->getArgument('value')) {
-            /** @var QuestionHelper $question_helper */
-            $question_helper = $this->getHelper('question');
+            $question_helper = new QuestionHelper();
             $question = new Question(__('Configuration value:'), '');
             $question->setHidden(true); // Hide prompt as configuration value may be sensitive
             $value = $question_helper->ask($input, $output, $question);

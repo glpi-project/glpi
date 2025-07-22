@@ -34,10 +34,11 @@
  */
 use Glpi\DBAL\QueryExpression;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
 
 /// Class Domain
-class Domain extends CommonDBTM
+class Domain extends CommonDBTM implements AssignableItemInterface
 {
     use Clonable;
     use AssignableItem {

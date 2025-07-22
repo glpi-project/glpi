@@ -99,7 +99,11 @@ class HTMLTableRow extends HTMLTableEntity
             throw new Exception('Unavailable header!');
         }
 
-        $header_name = $header->getCompositeName();
+        if ($header instanceof HTMLCompositeTableInterface) {
+            $header_name = $header->getCompositeName();
+        } else {
+            $header_name = $header->getName();
+        }
         if (!isset($this->cells[$header_name])) {
             $this->cells[$header_name] = [];
         }

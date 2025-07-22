@@ -83,7 +83,6 @@ interface CapacityInterface
     /**
      * Get the specific rights related to the capacity.
      *
-     * @param string $classname
      * @return int[]
      */
     public function getSpecificRights(): array;

@@ -42,6 +42,7 @@ use Glpi\Exception\ForgetPasswordException;
 use Glpi\Exception\PasswordTooWeakException;
 use Glpi\Features\Clonable;
 use Glpi\Features\TreeBrowse;
+use Glpi\Features\TreeBrowseInterface;
 use Glpi\Plugin\Hooks;
 use Glpi\Security\TOTPManager;
 use LDAP\Connection;
@@ -64,7 +65,7 @@ use function Safe\sha1_file;
 use function Safe\strtotime;
 use function Safe\unlink;
 
-class User extends CommonDBTM
+class User extends CommonDBTM implements TreeBrowseInterface
 {
     use Clonable {
         Clonable::computeCloneName as baseComputeCloneName;
@@ -351,7 +352,7 @@ class User extends CommonDBTM
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
-        switch ($item->getType()) {
+        switch ($item::class) {
             case self::class:
                 $ong    = [];
                 $ong[1] = self::createTabEntry(__('Used items'), 0, $item::getType(), 'ti ti-package');
@@ -365,7 +366,7 @@ class User extends CommonDBTM
                 }
                 return $ong;
 
-            case 'Preference':
+            case Preference::class:
                 return self::createTabEntry(__('Main'));
         }
         return '';

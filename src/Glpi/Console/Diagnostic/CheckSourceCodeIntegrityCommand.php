@@ -40,6 +40,7 @@ use Glpi\Console\AbstractCommand;
 use Glpi\System\Diagnostic\SourceCodeIntegrityChecker;
 use Glpi\Toolbox\VersionParser;
 use Symfony\Component\Console\Formatter\OutputFormatter;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -162,7 +163,7 @@ class CheckSourceCodeIntegrityCommand extends AbstractCommand
     {
         // If --allow-download missing, ask if it is OK
         if ($input->getOption('diff') && !$input->getOption('allow-download')) {
-            $helper = $this->getHelper('question');
+            $helper = new QuestionHelper();
             $question = new ConfirmationQuestion(
                 __('Generating the source code diff could require downloading the GLPI release archive. Do you want to allow this operation?'),
                 false

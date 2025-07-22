@@ -42,6 +42,7 @@ use Glpi\Asset\CustomFieldType\TextType;
 use Glpi\CustomObject\AbstractDefinition;
 use Glpi\CustomObject\CustomObjectTrait;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
 use Glpi\Features\Inventoriable;
 use Group;
@@ -59,7 +60,7 @@ use User;
 use function Safe\json_decode;
 use function Safe\json_encode;
 
-abstract class Asset extends CommonDBTM
+abstract class Asset extends CommonDBTM implements AssignableItemInterface
 {
     use CustomObjectTrait;
 

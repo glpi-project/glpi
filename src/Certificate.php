@@ -35,6 +35,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
 
 use function Safe\strtotime;
@@ -43,7 +44,7 @@ use function Safe\strtotime;
  * Class to declare a certificate
  * @since 9.2
  */
-class Certificate extends CommonDBTM
+class Certificate extends CommonDBTM implements AssignableItemInterface
 {
     use Clonable;
     use Glpi\Features\State;

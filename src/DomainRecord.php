@@ -35,8 +35,9 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\AssignableItemInterface;
 
-class DomainRecord extends CommonDBChild
+class DomainRecord extends CommonDBChild implements AssignableItemInterface
 {
     use AssignableItem {
         canUpdate as canUpdateAssignableItem;

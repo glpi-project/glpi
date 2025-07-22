@@ -763,6 +763,10 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        if (!$item instanceof self) {
+            throw new RuntimeException("This tab is only available for Webhooks items");
+        }
+
         $headers_count = count($item->fields['custom_headers']);
         if ($headers_count > 0) {
             // If there are custom headers, we will include the static ones in the count.

@@ -39,6 +39,7 @@ use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Features\Clonable;
 use Glpi\Features\Kanban;
+use Glpi\Features\KanbanInterface;
 use Glpi\Features\Teamwork;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
@@ -49,7 +50,7 @@ use Glpi\Team\Team;
  *
  * @since 0.85
  **/
-class Project extends CommonDBTM implements ExtraVisibilityCriteria
+class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInterface
 {
     use Kanban;
     use Clonable;

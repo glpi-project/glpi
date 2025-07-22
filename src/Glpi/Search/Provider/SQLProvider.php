@@ -62,7 +62,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Debug\Profiler;
-use Glpi\Features\AssignableItem;
+use Glpi\Features\AssignableItemInterface;
 use Glpi\Form\Form;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
@@ -81,6 +81,7 @@ use KnowbaseItem_User;
 use Link;
 use Notification;
 use OLA;
+use Override;
 use PlanningExternalEvent;
 use Plugin;
 use Problem;
@@ -1089,9 +1090,9 @@ final class SQLProvider implements SearchProviderInterface
                 break;
         }
 
-        if (Toolbox::hasTrait($itemtype, AssignableItem::class)) {
-            /** @var AssignableItem $itemtype */
-            $visibility_criteria = $itemtype::getAssignableVisiblityCriteria();
+        $item = getItemForItemtype($itemtype);
+        if ($item instanceof AssignableItemInterface) {
+            $visibility_criteria = $item::getAssignableVisiblityCriteria();
             if (count($visibility_criteria)) {
                 $criteria[] = $visibility_criteria;
             }
@@ -4118,18 +4119,7 @@ final class SQLProvider implements SearchProviderInterface
         return $orderby_criteria;
     }
 
-    /**
-     * Construct SQL request depending on search parameters
-     *
-     * Add to data array a field sql containing an array of requests :
-     *      search : request to get items limited to wanted ones
-     *      count : to count all items based on search criterias
-     *                    may be an array a request : need to add counts
-     *                    maybe empty : use search one to count
-     *
-     * @param array $data Array of search data prepared to generate SQL
-     * @return false|void
-     */
+    #[Override]
     public static function constructSQL(array &$data)
     {
         /**
@@ -4909,18 +4899,7 @@ final class SQLProvider implements SearchProviderInterface
         }
     }
 
-    /**
-     * Retrieve data from DB : construct data array containing columns definitions and rows data
-     *
-     * add to data array a field data containing :
-     *      cols : columns definition
-     *      rows : rows data
-     *
-     * @param array   $data      array of search data prepared to get data
-     * @param boolean $onlycount If we just want to count results
-     *
-     * @return void|false
-     **/
+    #[Override]
     public static function constructData(array &$data, $onlycount = false)
     {
         if (!isset($data['sql']) || !isset($data['sql']['search'])) {

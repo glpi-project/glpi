@@ -655,7 +655,7 @@ class QueuedNotification extends CommonDBTM
      * @return integer either 0 or 1
      * @used-by CronTask
      **/
-    public static function cronQueuedNotificationClean($task = null)
+    public static function cronQueuedNotificationClean(?CronTask $task = null)
     {
         /** @var DBmysql $DB */
         global $DB;
@@ -683,12 +683,12 @@ class QueuedNotification extends CommonDBTM
     /**
      * Cron action on queued notification: clean stale ajax notification queue
      *
-     * @param CommonDBTM $task for log (default NULL)
+     * @param CronTask $task for log (default NULL)
      *
      * @return integer either 0 or 1
      * @used-by CronTask
      **/
-    public static function cronQueuedNotificationCleanStaleAjax($task = null)
+    public static function cronQueuedNotificationCleanStaleAjax(?CronTask $task = null)
     {
         /**
          * @var array $CFG_GLPI

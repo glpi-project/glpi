@@ -35,12 +35,14 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssetImage;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
 use Glpi\Features\TreeBrowse;
+use Glpi\Features\TreeBrowseInterface;
 
 /** Software Class
  **/
-class Software extends CommonDBTM
+class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItemInterface
 {
     use Clonable;
     use TreeBrowse;
@@ -785,7 +787,7 @@ class Software extends CommonDBTM
             $input["softwarecategories_id"] = $result["softwarecategories_id"];
         } elseif (isset($result["_import_category"])) {
             $softCat = new SoftwareCategory();
-            $input["softwarecategories_id"] = $softCat->importExternal($input["_system_category"]);
+            $input["softwarecategories_id"] = $softCat->importExternal($result["_system_category"]);
         } else {
             $input["softwarecategories_id"] = 0;
         }

@@ -1866,7 +1866,6 @@ TWIG, $twig_params);
                     $_SESSION['glpi_plannings']['filters']['NotPlanned']['display']
                     && method_exists($params['planning_type'], 'populateNotPlanned')
                 ) {
-                    /** @var class-string $params['planning_type'] */
                     $not_planned = array_merge($not_planned, $params['planning_type']::populateNotPlanned($params));
                 }
             }
@@ -2163,7 +2162,6 @@ TWIG, $twig_params);
             && $val['itemtype'] !== 'NotPlanned'
             && method_exists($val['itemtype'], "displayPlanningItem")
         ) {
-            /** @var class-string $val['itemtype'] */
             $html .= $val['itemtype']::displayPlanningItem($val, $who, $type, $complete);
         }
 

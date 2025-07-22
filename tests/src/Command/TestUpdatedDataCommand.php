@@ -38,6 +38,7 @@ use DBmysql;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -99,8 +100,7 @@ class TestUpdatedDataCommand extends Command
     {
 
         if (null === $input->getOption('pass')) {
-            /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
-            $question_helper = $this->getHelper('question');
+            $question_helper = new QuestionHelper();
             $value = $question_helper->ask($input, $output, new Question('Database password:', ''));
             $input->setOption('pass', $value);
         }

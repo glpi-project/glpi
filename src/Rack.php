@@ -34,12 +34,13 @@
  */
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\DCBreadcrumb;
 
 /**
  * Rack Class
  **/
-class Rack extends CommonDBTM
+class Rack extends CommonDBTM implements AssignableItemInterface
 {
     use DCBreadcrumb;
     use Glpi\Features\State;

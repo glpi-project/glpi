@@ -35,12 +35,13 @@
  */
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Inventoriable;
 
 /**
  * Not managed devices from inventory
  */
-class Unmanaged extends CommonDBTM
+class Unmanaged extends CommonDBTM implements AssignableItemInterface
 {
     use Inventoriable;
     use Glpi\Features\State;
