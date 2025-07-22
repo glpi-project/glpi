@@ -867,7 +867,7 @@ final class Search
                     continue;
                 }
                 $join_prop = array_filter($join_prop, static fn($v) => !empty($v));
-                if (empty($join_prop)) {
+                if ($join_prop === []) {
                     ArrayPathAccessor::setElementByArrayPath($record, $path, null);
                 }
             }
