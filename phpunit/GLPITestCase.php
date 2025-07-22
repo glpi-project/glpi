@@ -513,16 +513,23 @@ class GLPITestCase extends TestCase
     /**
      * Set $_SESSION['glpi_currenttime'] with current day + $time param and return the related DateTime
      *
-     * @param string $time expected format is H:i:s
+     * @param string $time expected format is "H:i:s" or "Y-m-d H:i:s"
      * @param string|null $day expected format is Y-m-d, current day by default
      */
     protected function setCurrentTime(string $time, ?string $day = null): \DateTime
     {
+        $time_regexp = '([01]?[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])';
+        $day_regexp = '\d{4}-\d{2}-\d{2}';
+
+        if (preg_match("/^$day_regexp $time_regexp\$/", $time)) {
+            [$day, $time] = explode(' ', $time, 2);
+        }
+
         // assert time format is H:i:s
-        assert(1 === preg_match('/^([01]?[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/', $time));
+        assert(1 === preg_match('/^' . $time_regexp . '$/', $time));
 
         // assert day format is Y-m-d
-        assert(is_null($day) || 1 === preg_match('/^\d{4}-\d{2}-\d{2}$/', $day));
+        assert(is_null($day) || 1 === preg_match('/^' . $day_regexp . '$/', $day));
         $day ??= \Session::getCurrentDate();
 
         // set session time

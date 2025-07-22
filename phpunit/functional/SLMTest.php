@@ -38,13 +38,13 @@ use DbTestCase;
 use Glpi\PHPUnit\Tests\Glpi\ITILTrait;
 use Glpi\PHPUnit\Tests\Glpi\SLMTrait;
 use MassiveAction;
-use OlaLevel;
 use OlaLevel_Ticket;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rule;
 use RuleBuilder;
 use RuleTicket;
 use SlaLevel_Ticket;
+use SLM;
 use Ticket;
 
 class SLMTest extends DbTestCase
