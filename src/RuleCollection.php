@@ -1008,7 +1008,7 @@ JAVASCRIPT;
      *
      * @return void send attachment to browser
      **/
-    public static function exportRulesToXML($items = [])
+    public static function exportRulesToXML($items = [], $display = true)
     {
 
         if (!count($items)) {
@@ -1089,8 +1089,14 @@ JAVASCRIPT;
                     if ($action['field'][0] == "_") {
                         $field = substr($action['field'], 1);
                     }
+
+                    $table = getTableNameForForeignKeyField($field);
                     $available_actions = $rule->getActions();
-                    $table = $available_actions[$action['field']]['table'];
+                    if (isset($available_actions[$field]['table'])
+                        && !empty($available_actions[$field]['table'])
+                    ) {
+                        $table = $available_actions[$field]['table'];
+                    }
 
                     $action['value'] = Dropdown::getDropdownName(
                         $table,
@@ -1113,10 +1119,14 @@ JAVASCRIPT;
         //convert SimpleXMLElement to xml string
         $xml = $xmlE->asXML();
 
-        //send attachment to browser
-        header('Content-type: application/xml');
-        header('Content-Disposition: attachment; filename="rules.xml"');
-        echo $xml;
+        if ($display) {
+            //send attachment to browser
+            header('Content-type: application/xml');
+            header('Content-Disposition: attachment; filename="rules.xml"');
+            echo $xml;
+        } else {
+            return $xml;
+        }
 
         //exit;
     }

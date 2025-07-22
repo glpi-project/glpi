@@ -211,7 +211,7 @@ abstract class LevelAgreementLevel extends RuleTicket
         // Only append actors
         $actions['_users_id_requester']['force_actions']  = ['append'];
         $actions['_groups_id_requester']['force_actions'] = ['append'];
-        $actions['_users_id_assign']['force_actions']     = ['append'];
+        //$actions['_users_id_assign']['force_actions']     = ['append'];
         $actions['_groups_id_assign']['force_actions']    = ['append'];
         $actions['_suppliers_id_assign']['force_actions'] = ['append'];
         $actions['_users_id_observer']['force_actions']   = ['append'];

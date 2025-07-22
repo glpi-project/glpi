@@ -78,4 +78,310 @@ class RuleRightCollectionTest extends DbTestCase
             $this->assertEquals($value, $result[$key]);
         }
     }
+
+    public static function testExportXMLProvider()
+    {
+        yield [
+            'rule_data' => [
+                'criteria' => [
+                    'field' => 'type', 'condition' => \Rule::PATTERN_IS, 'value' => '1',
+                ],
+            ],
+            'itemtype_data' => null,
+        ];
+
+        yield [
+            'rule_data' => [
+                'criteria' => [
+                    'field' => 'mail_server', 'condition' => \Rule::PATTERN_IS,
+                ],
+            ],
+            'itemtype_data' => [
+                'itemtype' => \AuthMail::class,
+                'input' => [
+                    'connect_string' => '{mail.example.com}',
+                    'name' => 'Test Mail Auth',
+                ],
+            ],
+        ];
+
+        yield [
+            'rule_data' => [
+                'criteria' => [
+                    'field' => 'ldap_server', 'condition' => \Rule::PATTERN_IS,
+                ],
+            ],
+            'itemtype_data' => [
+                'itemtype' => \AuthLDAP::class,
+                'input' => [
+                    'name' => 'Test LDAP Auth',
+                ],
+            ],
+        ];
+
+        yield [
+            'rule_data' => [
+                'criteria' => [
+                    'field' => 'mail_email', 'condition' => \Rule::PATTERN_IS, 'value' => 'mail.example.com',
+                ],
+            ],
+            'itemtype_data' => null,
+        ];
+
+        yield [
+            'rule_data' => [
+                'criteria' => [
+                    'field' => 'login', 'condition' => \Rule::PATTERN_IS, 'value' => 'login',
+                ],
+            ],
+            'itemtype_data' => null,
+        ];
+
+        yield [
+            'rule_data' => [
+                'criteria' => [
+                    'field' => 'groups', 'condition' => \Rule::PATTERN_IS
+                ],
+            ],
+            'itemtype_data' => [
+                'itemtype' => \Group::class,
+                'input' => [
+                    'name' => 'Test Group',
+                ],
+            ],
+        ];
+
+        yield [
+            'rule_data' => [
+                'action' => [
+                    'field' => 'entities_id', 'action_type' => 'assign',
+                ],
+            ],
+            'itemtype_data' => [
+                'itemtype' => \Entity::class,
+                'input' => [
+                    'name' => 'Test Entity',
+                    'entities_id' => 0,
+                ],
+            ],
+        ];
+
+        yield [
+            'rule_data' => [
+                'action' => [
+                    'field' => '_affect_entity_by_dn', 'action_type' => 'regex_result', 'value' => 'entity',
+                ],
+            ],
+            'itemtype_data' => null,
+        ];
+
+        yield [
+            'rule_data' => [
+                'action' => [
+                    'field' => '_affect_entity_by_tag', 'action_type' => 'regex_result', 'value' => 'entity',
+                ],
+            ],
+            'itemtype_data' => null,
+        ];
+
+        yield [
+            'rule_data' => [
+                'action' => [
+                    'field' => '_affect_entity_by_domain', 'action_type' => 'regex_result', 'value' => 'entity',
+                ],
+            ],
+            'itemtype_data' => null,
+        ];
+
+        yield [
+            'rule_data' => [
+                'action' => [
+                    'field' => '_affect_entity_by_completename', 'action_type' => 'regex_result', 'value' => 'entity',
+                ],
+            ],
+            'itemtype_data' => null,
+        ];
+
+        yield [
+            'rule_data' => [
+                'action' => [
+                    'field' => 'profiles_id', 'action_type' => 'assign',
+                ],
+            ],
+            'itemtype_data' => [
+                'itemtype' => \Profile::class,
+                'input' => [
+                    'name' => 'Test Profile',
+                ],
+            ],
+        ];
+
+        yield [
+            'rule_data' => [
+                'action' => [
+                    'field' => 'is_recursive', 'action_type' => 'assign', 'value' => '1',
+                ],
+            ],
+            'itemtype_data' => null,
+        ];
+
+        yield [
+            'rule_data' => [
+                'action' => [
+                    'field' => 'is_active', 'action_type' => 'assign', 'value' => '1',
+                ],
+            ],
+            'itemtype_data' => null,
+        ];
+
+        yield [
+            'rule_data' => [
+                'action' => [
+                    'field' => '_entities_id_default', 'action_type' => 'assign',
+                ],
+            ],
+            'itemtype_data' => [
+                'itemtype' => \Entity::class,
+                'input' => [
+                    'name' => 'Test Entity',
+                    'entities_id' => 0,
+                ],
+            ],
+        ];
+
+        yield [
+            'rule_data' => [
+                'action' => [
+                    'field' => 'specific_groups_id', 'action_type' => 'assign',
+                ],
+            ],
+            'itemtype_data' => [
+                'itemtype' => \Group::class,
+                'input' => [
+                    'name' => 'Test Group',
+                ],
+            ],
+        ];
+
+        yield [
+            'rule_data' => [
+                'action' => [
+                    'field' => 'groups_id', 'action_type' => 'assign',
+                ],
+            ],
+            'itemtype_data' => [
+                'itemtype' => \Group::class,
+                'input' => [
+                    'name' => 'Test Group',
+                ],
+            ],
+        ];
+
+        yield [
+            'rule_data' => [
+                'action' => [
+                    'field' => '_profiles_id_default', 'action_type' => 'assign',
+                ],
+            ],
+            'itemtype_data' => [
+                'itemtype' => \Profile::class,
+                'input' => [
+                    'name' => 'Test Profile',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider testExportXMLProvider
+     */
+    public function testExportXML(array $rule_data, ?array $itemtype_data)
+    {
+        $this->login();
+
+        $collection = new \RuleRightCollection();
+
+        $rule = $this->createItem(
+                \Rule::class,
+                [
+                    'entities_id' => 0,
+                    'sub_type' => \RuleRight::class,
+                    'name' => 'Test Rule Right',
+                    'is_active' => 1,
+                    'is_recursive' => 1,
+                    'match' => 'AND',
+                    'condition' => 0,
+                ]
+            );
+
+        $itemtype = null;
+
+        if (is_array($itemtype_data)) {
+            $itemtype = $this->createItem(
+                $itemtype_data['itemtype'],
+                $itemtype_data['input']
+            );
+        }
+
+        if (isset($rule_data['criteria'])) {
+            $this->createItem(
+                \RuleCriteria::class,
+                [
+                    'rules_id' => $rule->getID(),
+                    'criteria' => $rule_data['criteria']['field'],
+                    'condition' => $rule_data['criteria']['condition'],
+                    'pattern' => $itemtype ? $itemtype->getID() : $rule_data['criteria']['value'],
+                ]
+            );
+        }
+
+        if (isset($rule_data['action'])) {
+            $this->createItem(
+                \RuleAction::class,
+                [
+                    'rules_id' => $rule->getID(),
+                    'action_type' => $rule_data['action']['action_type'],
+                    'field' => $rule_data['action']['field'],
+                    'value' => $itemtype ? $itemtype->getID() : $rule_data['action']['value'],
+                ]
+            );
+        }
+
+        $xml = $collection->exportRulesToXML([$rule->getID()], false);
+
+        $xmlE = new \SimpleXMLElement('<rules/>');
+        $xmlERule = $xmlE->addChild('rule');
+        $xmlERule->entities_id = 'Root entity';
+        $xmlERule->sub_type = \RuleRight::class;
+        $xmlERule->ranking = $rule->fields['ranking'];
+        $xmlERule->name = 'Test Rule Right';
+        $xmlERule->description = '';
+        $xmlERule->match = 'AND';
+        $xmlERule->is_active = '1';
+        $xmlERule->comment = '';
+        $xmlERule->is_recursive = '1';
+        $xmlERule->uuid = $rule->fields['uuid'];
+        $xmlERule->condition = 0;
+        $xmlERule->date_creation = $rule->fields['date_creation'];
+        if (isset($rule_data['criteria'])) {
+            $xmlERuleCriteria = $xmlERule->addChild('rulecriteria');
+            $xmlERuleCriteria->criteria = $rule_data['criteria']['field'];
+            $xmlERuleCriteria->condition = $rule_data['criteria']['condition'];
+            $xmlERuleCriteria->pattern = $itemtype ? $itemtype->getID() : $rule_data['criteria']['value'];
+        }
+        if (isset($rule_data['action'])) {
+            $xmlERuleCriteria = $xmlERule->addChild('ruleaction');
+            $xmlERuleCriteria->action_type = $rule_data['action']['action_type'];
+            $xmlERuleCriteria->field = $rule_data['action']['field'];
+            if (str_contains($rule_data['action']['field'], 'entities_id')) {
+                $xmlERuleCriteria->value = preg_replace('/>/', '&#62;', $itemtype->fields['completename']);
+            } else {
+                $xmlERuleCriteria->value = $itemtype ? $itemtype->fields['name'] : $rule_data['action']['value'];
+            }
+        }
+
+        $expected = $xmlE->asXML();
+
+        $this->assertEquals($xml, $expected);
+    }
 }
