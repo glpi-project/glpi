@@ -58,9 +58,7 @@ use function Safe\preg_replace;
  */
 trait TreeBrowse
 {
-    /**
-     * Show the browse view
-     */
+    /** @see TreeBrowseInterface::showBrowseView() */
     public static function showBrowseView(string $itemtype, array $params, $update = false)
     {
         /** @var array $CFG_GLPI */
@@ -182,14 +180,7 @@ JAVASCRIPT;
         echo Html::scriptBlock($JS);
     }
 
-    /**
-     * Get list of document categories in fancytree format.
-     *
-     * @param class-string<CommonDBTM> $itemtype
-     * @param array $params
-     *
-     * @return array
-     */
+    /** @see TreeBrowseInterface::getTreeCategoryList() */
     public static function getTreeCategoryList(string $itemtype, array $params): array
     {
         /** @var DBmysql $DB */
@@ -366,11 +357,7 @@ JAVASCRIPT;
         return $newtree;
     }
 
-    /**
-     * Return category item for given itemtype.
-     *
-     * @param class-string<CommonDBTM> $itemtype
-     */
+    /** @see TreeBrowseInterface::getCategoryItem() */
     public static function getCategoryItem(string $itemtype): ?CommonDBTM
     {
         if (\is_a($itemtype, CommonITILObject::class, true)) {
