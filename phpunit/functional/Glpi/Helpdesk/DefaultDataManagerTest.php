@@ -351,7 +351,7 @@ final class DefaultDataManagerTest extends DbTestCase
 
     public function testsTilesAreAddedAfterInstallation(): void
     {
-        $this->assertEquals(5, countElementsInTable(Item_Tile::getTable()));
+        $this->assertEquals(6, countElementsInTable(Item_Tile::getTable()));
 
         // Default tiles must be attached to the root entity
         $profile_tiles = (new Item_Tile())->find([]);
