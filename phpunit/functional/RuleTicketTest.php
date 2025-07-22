@@ -1522,15 +1522,6 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->assertEqualsCanonicalizing($olas_ids, [$ola_tto->getID()]);
     }
 
-    /**
-     * @see \tests\units\OLATest::testOlaAssociationCanBeDoneWhenNoGroupIsAssociatedToOla
-     * @return void
-     */
-    public function testAssignAnOlaWichHasNoGroup(): void
-    {
-        $this->markTestIncomplete('implement me');
-    }
-
     public function testAssignOlaOnUpdatePreserveOlas(): void
     {
         $this->login();
