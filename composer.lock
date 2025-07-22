@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "36688e94948f9ab969941e7aea958650",
+    "content-hash": "ce1d50d6d4aeab3100cc775568419962",
     "packages": [
         {
             "name": "apereo/phpcas",
@@ -730,16 +730,16 @@
         },
         {
             "name": "elvanto/litemoji",
-            "version": "5.1.0",
+            "version": "5.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/elvanto/litemoji.git",
-                "reference": "42a3e73f5b17ef93980c484e3630b0eb1ed0a9cf"
+                "reference": "859dbcaa31ac5eb99c0811a981ba9d9ca3dab1c1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/elvanto/litemoji/zipball/42a3e73f5b17ef93980c484e3630b0eb1ed0a9cf",
-                "reference": "42a3e73f5b17ef93980c484e3630b0eb1ed0a9cf",
+                "url": "https://api.github.com/repos/elvanto/litemoji/zipball/859dbcaa31ac5eb99c0811a981ba9d9ca3dab1c1",
+                "reference": "859dbcaa31ac5eb99c0811a981ba9d9ca3dab1c1",
                 "shasum": ""
             },
             "require": {
@@ -747,7 +747,7 @@
                 "php": ">=7.4"
             },
             "require-dev": {
-                "milesj/emojibase": "15.3.*",
+                "milesj/emojibase": "^16.0.3",
                 "phpunit/phpunit": "^9.0"
             },
             "type": "library",
@@ -767,9 +767,9 @@
             ],
             "support": {
                 "issues": "https://github.com/elvanto/litemoji/issues",
-                "source": "https://github.com/elvanto/litemoji/tree/5.1.0"
+                "source": "https://github.com/elvanto/litemoji/tree/5.2.0"
             },
-            "time": "2024-09-11T21:55:58+00:00"
+            "time": "2025-07-15T04:24:11+00:00"
         },
         {
             "name": "firebase/php-jwt",

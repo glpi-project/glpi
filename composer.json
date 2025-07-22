@@ -35,7 +35,7 @@
         "bacon/bacon-qr-code": "^3.0",
         "donatj/phpuseragentparser": "^1.10",
         "egulias/email-validator": "^4.0",
-        "elvanto/litemoji": "^5.1",
+        "elvanto/litemoji": "^5.2",
         "gettext/languages": "^2.12",
         "glpi-project/inventory_format": "^1.2",
         "guzzlehttp/guzzle": "^7.9",
