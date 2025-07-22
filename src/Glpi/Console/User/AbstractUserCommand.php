@@ -35,7 +35,6 @@
 namespace Glpi\Console\User;
 
 use Glpi\Console\AbstractCommand;
-use RuntimeException;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

@@ -40,7 +40,6 @@ use DBmysql;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Exception\EarlyExitException;
 use ITILFollowup;
-use RuntimeException;
 use Safe\Exceptions\FilesystemException;
 use Search;
 use Session;

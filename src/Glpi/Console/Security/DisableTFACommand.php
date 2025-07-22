@@ -37,7 +37,6 @@ namespace Glpi\Console\Security;
 
 use Glpi\Console\AbstractCommand;
 use Glpi\Security\TOTPManager;
-use RuntimeException;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
