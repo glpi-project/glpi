@@ -37,7 +37,33 @@
 use function Safe\strtotime;
 
 /**
- * @phpstan-type ItemOlaData array{olas_id: int, items_olas_id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, end_time: string, is_late: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|LevelAgreementLevel, group_name: string}
+ * @phpstan-type ItemOlaData array{
+ *     items_olas_id: int,
+ *     name: string,
+ *     entities_id: int,
+ *     is_recursive: bool,
+ *     type: int,
+ *     comment: string,
+ *     number_time: int,
+ *     use_ticket_calendar: bool,
+ *     calendars_id: int,
+ *     date_mod: string,
+ *     definition_time: string,
+ *     end_of_working_day: string,
+ *     date_creation: string,
+ *     slms_id: int,
+ *     olas_id: int,
+ *     ola_type: SLM::TTR|SLM::TTO,
+ *     start_time: string,
+ *     due_time: string,
+ *     end_time: string,
+ *     waiting_time: string,
+ *     is_late: string,
+ *     class: string,
+ *     item: Ticket,
+ *     nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket,
+ *     level: false|LevelAgreementLevel,
+ *     group_name: string}
  */
 class Item_Ola extends CommonDBRelation
 {
