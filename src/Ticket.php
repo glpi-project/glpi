@@ -491,7 +491,7 @@ class Ticket extends CommonITILObject
      *
      * @param string  $laType (SLA | OLA)
      * @param integer $la_id the sla/ola id
-     * @param integer $subtype (SLM::TTR | SLM::TTO)
+     * @param SLM::TTR|SLM::TTO $subtype (SLM::TTR | SLM::TTO) TODO: use a real type (enum)
      * @param bool    $delete_date (default false)
      *
      * @return bool
@@ -535,11 +535,7 @@ class Ticket extends CommonITILObject
         $input[$prefix . '_waiting_duration'] = 0;
         $input['id'] = $la_id;
 
-        // Note: Ignore the following phpstan error:
-        // > Parameter #2 $olaType|slaType of method OlaLevel_Ticket::deleteForTicket() expects 0|1, int given
-        // This seems like a false positive because we have an early return in the switch just above if $subtype is
-        // not 0 or 1.
-        $level_ticket->deleteForTicket($la_id, $subtype); // @phpstan-ignore argument.type
+        $level_ticket->deleteForTicket($la_id, $subtype);
 
         return $this->update($input);
     }
