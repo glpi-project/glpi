@@ -38,6 +38,7 @@ use Calendar;
 use CronTask;
 use DateInterval;
 use Group;
+use Item_Ola;
 use OLA;
 use SLA;
 use SlaLevel_Ticket;
@@ -64,7 +65,7 @@ trait SLMTrait
     {
         assert(in_array($ola_type, array_keys(OLA::getTypes())));
         $slm ??= $this->createSLM();
-        $group ??= getItemByTypeName(\Group::class, '_test_group_1');
+        $group ??= getItemByTypeName(Group::class, '_test_group_1');
 
         [$amount, $unit] = match ($ola_type) {
             SLM::TTO => self::OLA_TTO_DELAY,
@@ -138,12 +139,45 @@ trait SLMTrait
 
     private function runSlaCron(): void
     {
-        SlaLevel_Ticket::cronSlaTicket(getItemByTypeName(\CronTask::class, 'slaticket'));
+        SlaLevel_Ticket::cronSlaTicket(getItemByTypeName(CronTask::class, 'slaticket'));
     }
 
     private function runOlaCron(): void
     {
-        \Item_Ola::cronOlaTicket(getItemByTypeName(\CronTask::class, 'slaticket'));
+        Item_Ola::cronOlaTicket(getItemByTypeName(CronTask::class, 'slaticket'));
+    }
+
+    /**
+     * beware that DateInterval expects self::xxx to be ['minutes, etc ... doc à compléter) @todoseb
+     *
+     * @return DateInterval
+     */
+    private function getDefaultOlaTtoDelayInterval(): DateInterval
+    {
+        [$amount, $unit] = self::OLA_TTO_DELAY;
+
+        return new DateInterval(sprintf('PT%d%s', $amount, strtoupper(substr($unit, 0, 1))));
+    }
+
+    private function getDefaultOlaTtrDelayInterval(): DateInterval
+    {
+        [$amount, $unit] = self::OLA_TTR_DELAY;
+
+        return new DateInterval(sprintf('P%d%s', $amount, strtoupper(substr($unit, 0, 1))));
+    }
+
+    private function getDefaultSlaTtoDelayInterval(): DateInterval
+    {
+        [$amount, $unit] = self::SLA_TTO_DELAY;
+
+        return new DateInterval(sprintf('PT%d%s', $amount, strtoupper(substr($unit, 0, 1))));
+    }
+
+    private function getDefaultSlaTtrDelayInterval(): DateInterval
+    {
+        [$amount, $unit] = self::SLA_TTR_DELAY;
+
+        return new DateInterval(sprintf('P%d%s', $amount, strtoupper(substr($unit, 0, 1))));
     }
 
     private function runSlaCron(): void
