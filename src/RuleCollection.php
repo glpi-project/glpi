@@ -1006,7 +1006,7 @@ JAVASCRIPT;
      *
      * @since 0.85
      *
-     * @return void send attachment to browser
+     * @return void|string|bool send attachment to browser
      **/
     public static function exportRulesToXML($items = [], $display = true)
     {
