@@ -363,7 +363,7 @@ class QueryFunction
     public static function substring(string|QueryExpression $expression, int $start, int $length, ?string $alias = null): QueryExpression
     {
         return self::getExpression('SUBSTRING', [
-            $expression, new QueryExpression($start), new QueryExpression($length),
+            $expression, new QueryExpression((string) $start), new QueryExpression((string) $length),
         ], $alias);
     }
 

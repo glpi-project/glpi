@@ -46,7 +46,7 @@ final readonly class Tag
 
     public function __construct(
         string $label,
-        string $value,
+        string|int $value,
         TagProviderInterface $provider,
     ) {
         $this->label = $label;

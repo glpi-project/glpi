@@ -324,7 +324,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Retrieve an item from the database and update $this->fields
      *
-     * @param integer $ID ID of the item to get (matched against the index field of the table, not necessarily the ID)
+     * @param int|string $ID ID of the item to get (matched against the index field of the table, not necessarily the ID)
      *
      * @return boolean true if succeed to find a single item matching $ID else false (no items or more than one item)
      * @see self::getIndexName()
@@ -2971,7 +2971,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Check right on an item
      *
-     * @param integer $ID    ID of the item (-1 if new item)
+     * @param int $ID    ID of the item (-1 if new item)
      * @param int $right Right to check : r / w / recursive / READ / UPDATE / DELETE
      * @param ?array   $input array of input data (used for adding item) (default NULL)
      *
@@ -2982,9 +2982,6 @@ class CommonDBTM extends CommonGLPI
         if (Session::isInventory()) {
             return true;
         }
-
-        // Clean ID :
-        $ID = Toolbox::cleanInteger($ID);
 
         // Create process
         if (static::isNewID($ID)) {

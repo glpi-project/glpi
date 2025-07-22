@@ -172,7 +172,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      * @since 9.5
      *
      * @param string  $itemtype          Itemtype for which we want data
-     * @param string  $items_id          the name of the item we want the resulting items to be associated to
+     * @param int     $items_id          the id of the item we want the resulting items to be associated to
      *
      * @return array the items associated to the given one (empty if none was found)
      **/
@@ -196,7 +196,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      * @since 9.5
      *
      * @param string  $itemtype          the type of the item we want the resulting items to be associated to
-     * @param string  $items_id          the name of the item we want the resulting items to be associated to
+     * @param int     $items_id          the id of the item we want the resulting items to be associated to
      *
      * @return DBmysqlIterator the items associated to the given one (empty if none was found)
      */

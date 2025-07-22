@@ -1078,7 +1078,7 @@ abstract class CommonITILObject extends CommonDBTM
             case 'update':
                 switch ($field) {
                     case 'status':
-                        if (!static::isAllowedStatus($this->fields['status'], $value)) {
+                        if (!static::isAllowedStatus($this->fields['status'], (int) $value)) {
                             return false;
                         }
                         break;
@@ -9535,14 +9535,8 @@ abstract class CommonITILObject extends CommonDBTM
 
     /**
      * Check if input contains a valid actor for given itemtype / actortype.
-     *
-     * @param array $input
-     * @param string $itemtype
-     * @param string $actortype
-     *
-     * @return bool
      */
-    private function hasValidActorInInput(array $input, string $itemtype, string $actortype): bool
+    private function hasValidActorInInput(array $input, string $itemtype, int $actortype): bool
     {
         $input_id_key = sprintf(
             '_%s_%s',

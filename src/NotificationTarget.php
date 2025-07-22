@@ -549,7 +549,7 @@ class NotificationTarget extends CommonDBChild
         if (count($actives)) {
             foreach ($actives as $val) {
                 [$type, $items_id] = explode("_", $val);
-                if ($target->getFromDBForTarget($input['notifications_id'], $type, $items_id)) {
+                if ($target->getFromDBForTarget($input['notifications_id'], $type, (int) $items_id)) {
                     $target->delete(['id' => $target->getID()]);
                 }
             }

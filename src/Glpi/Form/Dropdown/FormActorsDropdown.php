@@ -109,7 +109,7 @@ final class FormActorsDropdown extends AbstractRightsDropdown
         return array_map(function ($value) {
             $data     = explode("-", $value);
             $item     = getItemForForeignKeyField($data[0]);
-            $items_id = $data[1];
+            $items_id = (int) $data[1];
 
             return Dropdown::getDropdownName(
                 $item->getTable(),

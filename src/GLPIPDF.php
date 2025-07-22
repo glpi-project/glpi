@@ -88,7 +88,7 @@ class GLPIPDF extends TCPDF
 
         if ($title !== null) {
             $this->SetTitle($title);
-            $this->SetHeaderData('', '', $title, '');
+            $this->SetHeaderData('', 0, $title, '');
         }
 
         $this->SetCreator('GLPI');

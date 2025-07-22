@@ -427,12 +427,12 @@ class Stat extends CommonGLPI
      * @param string $date2
      * @param integer $start
      * @param array $value
-     * @param string $value2 (default '')
+     * @param int|string $value2
      * @return void
      *
      * @since 0.85 (before show with same parameters)
      **/
-    public static function showTable($itemtype, $type, $date1, $date2, $start, array $value, $value2 = "")
+    public static function showTable($itemtype, $type, $date1, $date2, $start, array $value, $value2 = '')
     {
         $numrows = count($value);
         // Set display type for export if define

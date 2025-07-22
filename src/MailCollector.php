@@ -495,7 +495,7 @@ class MailCollector extends CommonDBTM
                     if (isset($rejected[$head['message_id']])) {
                         if ($action == 1) {
                             $tkt = $collector->buildTicket(
-                                $uid,
+                                (string) $uid,
                                 $message,
                                 [
                                     'mailgates_id' => $mailcollector_id,
@@ -525,7 +525,7 @@ class MailCollector extends CommonDBTM
                             $folder = self::REFUSED_FOLDER;
                         }
                         //Delete email
-                        if ($collector->deleteMails($uid, $folder)) {
+                        if ($collector->deleteMails((string) $uid, $folder)) {
                             $rejectedmail = new NotImportedEmail();
                             $rejectedmail->delete(['id' => $rejected[$head['message_id']]['id']]);
                         }

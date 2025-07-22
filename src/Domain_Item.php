@@ -571,7 +571,7 @@ TWIG, $twig_params);
             $entry_groups = [];
             foreach ($groups as $group) {
                 if (!isset($group_names[$group])) {
-                    $group_names[$group] = Dropdown::getDropdownName(table: "glpi_groups", id: $group, default: '');
+                    $group_names[$group] = Dropdown::getDropdownName(table: "glpi_groups", id: (int) $group, default: '');
                 }
                 $entry_groups[] = $group_names[$group];
             }

@@ -234,10 +234,10 @@ abstract class CommonITILRecurrent extends CommonDropdown
         switch ($field) {
             case 'periodicity':
                 if (preg_match('/([0-9]+)MONTH/', $values[$field], $matches)) {
-                    return sprintf(_n('%d month', '%d months', $matches[1]), $matches[1]);
+                    return sprintf(_n('%d month', '%d months', (int) $matches[1]), (int) $matches[1]);
                 }
                 if (preg_match('/([0-9]+)YEAR/', $values[$field], $matches)) {
-                    return sprintf(_n('%d year', '%d years', $matches[1]), $matches[1]);
+                    return sprintf(_n('%d year', '%d years', (int) $matches[1]), (int) $matches[1]);
                 }
                 return Html::timestampToString($values[$field], false);
         }

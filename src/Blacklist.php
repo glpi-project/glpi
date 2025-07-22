@@ -284,7 +284,7 @@ class Blacklist extends CommonDropdown
     /**
      * Get blacklisted items for a specific type
      *
-     * @param string $type type to get (see constants)
+     * @param int $type type to get (see constants)
      *
      * @return array Array of blacklisted items
      **/

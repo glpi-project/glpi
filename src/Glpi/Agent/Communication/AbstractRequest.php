@@ -569,7 +569,7 @@ abstract class AbstractRequest
         }
 
         if ($this->compression !== null) {
-            switch (strtolower($this->compression)) {
+            switch (strtolower((string) $this->compression)) {
                 case self::COMPRESS_ZLIB:
                     return 'application/x-compress-zlib';
                 case self::COMPRESS_GZIP:

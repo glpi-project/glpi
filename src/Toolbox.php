@@ -1619,7 +1619,7 @@ class Toolbox
                             // Tasks or Followups
                             $forcetab = str_replace(['TicketFollowup$1', 'TicketTask$1', 'ITILFollowup$1'], 'Ticket$1', $forcetab);
 
-                            return Ticket::getFormURLWithID($data[1]) . "&$forcetab";
+                            return Ticket::getFormURLWithID((int) $data[1]) . "&$forcetab";
                         }
 
                         if ($item = getItemForItemtype($data[0])) {
@@ -1635,7 +1635,7 @@ class Toolbox
                         return $CFG_GLPI["root_doc"] . "/front/preference.php?$forcetab";
 
                     case "reservation":
-                        return Reservation::getFormURLWithID($data[1]) . "&$forcetab";
+                        return Reservation::getFormURLWithID((int) $data[1]) . "&$forcetab";
                 }
 
                 break;

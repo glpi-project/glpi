@@ -866,7 +866,7 @@ TWIG, $twig_params);
         }
 
         // My group items
-        if (Session::haveRight("show_group_hardware", "1")) {
+        if (Session::haveRight("show_group_hardware", READ)) {
             $devices = self::getMyGroupsDevices($userID, $entity_restrict, $already_add);
             foreach ($devices as $itemtype => $items) {
                 foreach ($items as $data) {
