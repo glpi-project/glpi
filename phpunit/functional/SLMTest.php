@@ -34,17 +34,31 @@
 
 namespace tests\units;
 
+use Calendar;
+use CalendarSegment;
+use CommonITILActor;
+use CommonITILObject;
 use DbTestCase;
+use Exception;
 use Glpi\PHPUnit\Tests\Glpi\ITILTrait;
 use Glpi\PHPUnit\Tests\Glpi\SLMTrait;
+use Item_Ola;
 use MassiveAction;
+use OLA;
+use OlaLevel;
 use OlaLevel_Ticket;
+use OlaLevelAction;
+use OlaLevelCriteria;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rule;
+use RuleAction;
 use RuleBuilder;
 use RuleCommonITILObject;
+use RuleCriteria;
 use RuleTicket;
+use Session;
 use SLA;
+use SlaLevel;
 use SlaLevel_Ticket;
 use SLM;
 use Ticket;
