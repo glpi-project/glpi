@@ -1,0 +1,53 @@
+Content-Type: multipart/mixed;
+	boundary="------------------------6c0999136ea956fa"
+From: <tech@glpi-project.org>
+Date: Fri, 11 Jul 2025 12:16:45 +0000
+To: <unittests@glpi-project.org>
+CC:
+MessageId: <UNIQUEUUID@tech@glpi-project.org>
+Subject: Message with multiple message IDs
+Return-Path: tech@glpi-project.org
+Message-ID: <UNIQUEID@AS1PR01MB9084.eurprd01.prod.exchangelabs.com>
+MIME-Version: 1.0
+
+--------------------------6c0999136ea956fa
+Content-Disposition: inline
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+=3D=3D IDENTIFICATION =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=0A=
+System name: UPS-VALENCIENNES1=0A=
+ =0A=
+-- Communication module ------------------------------------=0A=
+Product: Gigabit Network Card 3=0A=
+Vendor: Eaton=0A=
+C/N: Gigabit Network Card 3=0A=
+P/N: managers/1=0A=
+S/N: G337P47343=0A=
+FW version: 1.0.3=0A=
+HW version: 0=0A=
+Host address (eth0): https://mysite.local=0A=
+MAC address (eth0): 00:20:85:d0:ad:ca=0A=
+ =0A=
+-- Monitored device ----------------------------------------=0A=
+Product: 1000i RT 2U=0A=
+Vendor: EATON=0A=
+P/N: 9PX1000iRT2U=0A=
+CTO: 9PX1000iRT2U=0A=
+S/N: GA10R05029=0A=
+FW version: 01.24.6755=0A=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A=
+ =0A=
+=3D TEST EMAIL =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=0A=
+Date (UTC) - Severity - Code - Description=0A=
+2025-07-11T12:15:52+0000 - Info - 00C00F00 - Test email=0A=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A=
+
+--------------------------6c0999136ea956fa--

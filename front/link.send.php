@@ -55,6 +55,9 @@ if (isset($_GET["lID"])) {
         $link = $current['link'];
 
         if ($item = getItemForItemtype($_GET["itemtype"])) {
+            if (!$item->can($_GET['id'], READ)) {
+                throw new \RuntimeException('Not allowed');
+            }
             if ($item->getFromDB($_GET["id"])) {
                 $content_filename = Link::generateLinkContents($link, $item, false);
                 $content_data     = Link::generateLinkContents($file, $item, false);

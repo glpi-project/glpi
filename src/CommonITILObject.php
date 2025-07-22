@@ -514,7 +514,11 @@ abstract class CommonITILObject extends CommonDBTM
         // load existing actors (from existing itilobject)
         if (isset($this->users[$actortype])) {
             foreach ($this->users[$actortype] as $user) {
-                $name = getUserName($user['users_id']);
+                $name = getUserName(
+                    $user['users_id'],
+                    0,
+                    in_array($actortype, [CommonITILActor::REQUESTER, CommonITILActor::OBSERVER])
+                );
                 $fn_add_actor('User', $user['users_id'], [
                     'id'                => $user['id'],
                     'text'              => $name,
@@ -9337,7 +9341,7 @@ abstract class CommonITILObject extends CommonDBTM
             $card = [
                 'id'              => "{$itemtype}-{$item['id']}",
                 'title'           => '<span class="pointer">' . $item['name'] . '</span>',
-                'title_tooltip'   => Html::resume_text(RichText::getTextFromHtml($item['content'], false, true), 100),
+                'title_tooltip'   => Html::resume_text(RichText::getTextFromHtml($item['content'], false, true, true), 100),
                 'is_deleted'      => $item['is_deleted'] ?? false,
             ];
 

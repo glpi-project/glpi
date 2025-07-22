@@ -594,8 +594,7 @@ trait PlanningEvent
                         'ajaxurl'          => $CFG_GLPI["root_doc"] . "/ajax/planning.php" .
                                         "?action=edit_event_form" .
                                         "&itemtype=$itemtype" .
-                                        "&id=" . $data['id'] .
-                                        "&url=$url",
+                                        "&id=" . $data['id'],
                         'editable'         => $event_obj->canUpdateItem(),
                         'url'              => $url,
                         'begin'            => !$is_rrule && (strcmp($begin, $data["begin"]) > 0)

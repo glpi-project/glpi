@@ -1538,8 +1538,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                     $interv[$key]["ajaxurl"] = $CFG_GLPI["root_doc"] . "/ajax/planning.php" .
                                           "?action=edit_event_form" .
                                           "&itemtype=ProjectTask" .
-                                          "&id=" . $data['id'] .
-                                          "&url=" . $interv[$key]["url"];
+                                          "&id=" . $data['id'];
 
                     $interv[$key][$task->getForeignKeyField()] = $data["id"];
                     $interv[$key]["id"]                        = $data["id"];

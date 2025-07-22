@@ -189,9 +189,6 @@ class Item_Ticket extends CommonItilObject_Item
      **/
     public static function itemAddForm(Ticket $ticket, $options = [])
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         $params = [
             'id'  => (isset($ticket->fields['id']) && $ticket->fields['id'] != '') ? $ticket->fields['id'] : 0,
             'entities_id'  => (isset($ticket->fields['entities_id']) && is_numeric($ticket->fields['entities_id']) ? $ticket->fields['entities_id'] : Session::getActiveEntity()),
@@ -210,7 +207,7 @@ class Item_Ticket extends CommonItilObject_Item
         }
 
         if (!$ticket->can($params['id'], READ)) {
-            return false;
+            return;
         }
 
         $ticket_is_closed = in_array($ticket->fields['status'], $ticket->getClosedStatusArray());

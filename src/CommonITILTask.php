@@ -1310,8 +1310,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                                              "&itemtype=" . $itemtype .
                                              "&parentitemtype=" . $parentitemtype .
                                              "&parentid=" . $item->fields[$parentitem->getForeignKeyField()] .
-                                             "&id=" . $data['id'] .
-                                             "&url=" . $interv[$key]["url"];
+                                             "&id=" . $data['id'];
 
                         $interv[$key][$item->getForeignKeyField()] = $data["id"];
                         $interv[$key]["id"]                        = $data["id"];

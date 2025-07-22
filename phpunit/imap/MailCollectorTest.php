@@ -792,6 +792,7 @@ class MailCollectorTest extends DbTestCase
                     'Ticket with observer',
                     'Re: [GLPI #0038927] Update - Issues with new Windows 10 machine',
                     'A message without to header',
+                    'Message with multiple message IDs',
                 ],
             ],
             // Mails having "normal" user as requester

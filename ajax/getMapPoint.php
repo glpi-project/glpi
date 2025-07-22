@@ -65,7 +65,15 @@ if (!isset($_POST['itemtype']) || !isset($_POST['items_id']) || (int) $_POST['it
 
     if (!count($result)) {
         /** @var CommonDBTM $item */
-        $item = new $itemtype();
+        $item = getItemForItemtype($itemtype);
+        if (!$item->can($items_id, READ)) {
+            $result = [
+                'success'   => false,
+                'message'   => __('Not allowed'),
+            ];
+            echo json_encode($result);
+            return;
+        }
         $item->getFromDB($items_id);
         if (!empty($item->fields['latitude']) && !empty($item->fields['longitude'])) {
             $result = [
