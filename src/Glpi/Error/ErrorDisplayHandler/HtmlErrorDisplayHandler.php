@@ -49,7 +49,7 @@ final class HtmlErrorDisplayHandler implements ErrorDisplayHandler
 
     public function canOutput(): bool
     {
-        if (!self::$currentRequest) {
+        if (\isCommandLine()) {
             return false;
         }
 
@@ -63,7 +63,11 @@ final class HtmlErrorDisplayHandler implements ErrorDisplayHandler
             return false;
         }
 
-        return self::$currentRequest->getPreferredFormat() === 'html';
+        // Need to fallback to `Request::createFromGlobals()` for errors that appears before the
+        // `onRequest` event.
+        $request = self::$currentRequest ?? Request::createFromGlobals();
+
+        return $request->getPreferredFormat() === 'html';
     }
 
     public function displayErrorMessage(string $error_label, string $message, string $log_level): void
