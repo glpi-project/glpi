@@ -35,6 +35,8 @@
 
 namespace Glpi\Search\Input;
 
+use CommonDBTM;
+
 /**
  *
  * @internal Not for use outside {@link Search} class and the "Glpi\Search" namespace.
@@ -58,7 +60,7 @@ interface SearchInputInterface
     /**
      * Completion of the URL $_GET values with the $_SESSION values or define default values
      *
-     * @param class-string<\CommonDBTM> $itemtype Item type to manage
+     * @param class-string<CommonDBTM> $itemtype Item type to manage
      * @param array   $params          Params to parse
      * @param boolean $usesession      Use data saved in the session (true by default)
      * @param boolean $forcebookmark   Force trying to load parameters from default bookmark:
