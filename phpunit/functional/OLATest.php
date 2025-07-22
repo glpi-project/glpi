@@ -86,6 +86,7 @@ use Ticket;
  *              - ola waiting time is not incremented while the ticket is WAITING @see self::testOlaTTOWaitingTimeIsNotIncrementedWhileTicketStatusIsWaiting()
  *
  *          - ola can be associated by rule and form at the same time @see self::testOlaCanBeAssociatedByRulesAndByForm()
+ *          - due_time is not updated on ticket date update @see self::testOlaTtoDueTimeIsNotUpdatedOnTicketDateUpdate()
  *
  *      - TTR (Time To Resolve)
  *          - ola ttr is associated with a ticket then 'start_time' is set to ticket 'date' & 'due_time' is calculated, however the group (or a user in the group) is not assigned to the ticket yet
@@ -112,7 +113,7 @@ use Ticket;
  *                 - end_time is not defined & due_time is passed - @see self::testOlaTtrIsLateWhenDueTimeIsPassed()
  *                 - ticket status is not WAITING (1): @see self::testOlaTtrIsNotLateWhenTicketStatusIsNotWating()
  *
- *
+ *          - due_time is not updated on ticket date update @see self::testOlaTtrDueTimeIsNotUpdatedOnTicketDateUpdate()
  *          - when completion is done, the associated group is removed from ticket assignees : not implemented, seems not relevant atm
  */
 
@@ -708,6 +709,51 @@ class OLATest extends DbTestCase
         $fetched_ola_ids = array_map(fn($ola_data) => $ola_data['olas_id'], $ticket->getOlasData());
         $this->assertEqualsCanonicalizing([$ola_by_form->getID(), $ola_by_rule->getID()], $fetched_ola_ids);
 
+    }
+
+    public function testOlaTtoDueTimeIsNotUpdatedOnTicketDateUpdate(): void
+    {
+        $this->login();
+        $now = $this->setCurrentTime('2025-06-25 13:00:01');
+        // arrange
+        $ola = $this->createOLA(ola_type: SLM::TTO)['ola'];
+        $ticket = $this->createTicket(['_olas_id' => [$ola->getID()], '_la_update' => true]);
+        // assert due time is set correctly
+        $initial_expected_due_time = (clone $now)->add($this->getDefaultOlaTtoDelayInterval());
+        $initial_expected_due_time_str = $initial_expected_due_time->format('Y-m-d H:i:s');
+        $fetched_due_time = $ticket->getOlasTTOData()[0]['due_time'] ?? throw new RuntimeException('Ola not found for test');
+        assert($initial_expected_due_time_str === $fetched_due_time, 'OLA TTO Due time should be set to the current date + TTO delay interval.');
+
+        // act - update ticket date
+        $new_date = '2025-06-22 10:00:00';
+        $ticket = $this->updateItem($ticket::class, $ticket->getID(), ['date' => $new_date]);
+
+        // assert - check if the due time is unchanged despite the ticket date change
+        $fetched_due_time = $ticket->getOlasTTOData()[0]['due_time'] ?? throw new RuntimeException('Ola not found for test');
+        $this->assertEquals($initial_expected_due_time_str, $fetched_due_time, 'OLA TTO due time is not updated when ticket date is changed.');
+    }
+
+    public function testOlaTtrDueTimeIsNotUpdatedOnTicketDateUpdate(): void
+    {
+        $this->login();
+        $now = $this->setCurrentTime('2025-07-21 13:02:01');
+        // arrange
+        $ola = $this->createOLA(ola_type: SLM::TTR)['ola'];
+        $ticket = $this->createTicket(['_olas_id' => [$ola->getID()], '_la_update' => true]);
+
+        // assert due time is set correctly
+        $initial_expected_due_time = (clone $now)->add($this->getDefaultOlaTtrDelayInterval());
+        $initial_expected_due_time_str = $initial_expected_due_time->format('Y-m-d H:i:s');
+        $fetched_due_time = $ticket->getOlasTTRData()[0]['due_time'] ?? throw new RuntimeException('Ola not found for test');
+        assert($initial_expected_due_time_str === $fetched_due_time, 'OLA TTR Due time should be set to the current date + TTR delay interval.');
+
+        // act - update ticket date
+        $new_date = '2025-06-22 10:00:02';
+        $ticket = $this->updateItem($ticket::class, $ticket->getID(), ['date' => $new_date]);
+
+        // assert - check if the due time is unchanged despite the ticket date change
+        $fetched_due_time = $ticket->getOlasTTRData()[0]['due_time'] ?? throw new RuntimeException('Ola not found for test');
+        $this->assertEquals($initial_expected_due_time_str, $fetched_due_time, 'OLA TTR due time is updated when ticket date is changed.');
     }
 
     public function testInitialOlaTtrValuesOnCreation(): void
