@@ -2204,6 +2204,86 @@ class SLMTest extends DbTestCase
         );
     }
 
+    public function testSlaTtoDueTimeIsNotUpdatedOnTicketDateUpdate(): void
+    {
+        $this->login();
+        $now = $this->setCurrentTime('2025-06-25 13:00:01');
+        // arrange
+        $sla = $this->createSLA(sla_type: SLM::TTO)['sla'];
+        $ticket = $this->createTicket(['slas_id_tto' => $sla->getID()]);
+        // assert due time is set correctly
+        $initial_expected_due_time = (clone $now)->add($this->getDefaultSlaTtoDelayInterval());
+        $initial_expected_due_time_str = $initial_expected_due_time->format('Y-m-d H:i:s');
+        assert($initial_expected_due_time_str === $ticket->fields['time_to_own'], 'SLA TTO Due time should be set to the current date + TTO delay interval.');
+
+        // act - update ticket date
+        $new_date = '2025-06-22 10:00:00';
+        $ticket = $this->updateItem($ticket::class, $ticket->getID(), ['date' => $new_date]);
+
+        // assert - check if the due time is unchanged despite the ticket date change
+        $this->assertEquals($initial_expected_due_time_str, $ticket->fields['time_to_own'], 'SLA TTO due time is not updated when ticket date is changed.');
+    }
+
+    public function testSlaTtrDueTimeIsNotUpdatedOnTicketDateUpdate(): void
+    {
+        $this->login();
+        $now = $this->setCurrentTime('2025-07-21 13:02:01');
+        // arrange
+        $sla = $this->createSLA(sla_type: SLM::TTR)['sla'];
+        $ticket = $this->createTicket(['slas_id_ttr' => $sla->getID()]);
+        // assert due time is set correctly
+        $initial_expected_due_time = (clone $now)->add($this->getDefaultSlaTtrDelayInterval());
+        $initial_expected_due_time_str = $initial_expected_due_time->format('Y-m-d H:i:s');
+        assert($initial_expected_due_time_str === $ticket->fields['time_to_resolve'], 'SLA TTR Due time should be set to the current date + TTR delay interval.');
+
+        // act - update ticket date
+        $new_date = '2025-06-22 10:00:02';
+        $ticket = $this->updateItem($ticket::class, $ticket->getID(), ['date' => $new_date]);
+
+        // assert - check if the due time is unchanged despite the ticket date change
+        $this->assertEquals($initial_expected_due_time_str, $ticket->fields['time_to_resolve'], 'SLA TTR due time is updated when ticket date is changed.');
+    }
+
+    public function testOlaTtoDueTimeIsNotUpdatedOnTicketDateUpdate(): void
+    {
+        $this->login();
+        $now = $this->setCurrentTime('2025-06-25 13:00:01');
+        // arrange
+        $ola = $this->createOLA(ola_type: SLM::TTO)['ola'];
+        $ticket = $this->createTicket(['olas_id_tto' => $ola->getID()]);
+        // assert due time is set correctly
+        $initial_expected_due_time = (clone $now)->add($this->getDefaultOlaTtoDelayInterval());
+        $initial_expected_due_time_str = $initial_expected_due_time->format('Y-m-d H:i:s');
+        assert($initial_expected_due_time_str === $ticket->fields['internal_time_to_own'], 'OLA TTO Due time should be set to the current date + TTO delay interval.');
+
+        // act - update ticket date
+        $new_date = '2025-06-22 10:00:00';
+        $ticket = $this->updateItem($ticket::class, $ticket->getID(), ['date' => $new_date]);
+
+        // assert - check if the due time is unchanged despite the ticket date change
+        $this->assertEquals($initial_expected_due_time_str, $ticket->fields['internal_time_to_own'], 'OLA TTO due time is not updated when ticket date is changed.');
+    }
+
+    public function testOlaTtrDueTimeIsNotUpdatedOnTicketDateUpdate(): void
+    {
+        $this->login();
+        $now = $this->setCurrentTime('2025-07-21 13:02:01');
+        // arrange
+        $ola = $this->createOLA(ola_type: SLM::TTR)['ola'];
+        $ticket = $this->createTicket(['olas_id_ttr' => $ola->getID()]);
+        // assert due time is set correctly
+        $initial_expected_due_time = (clone $now)->add($this->getDefaultOlaTtrDelayInterval());
+        $initial_expected_due_time_str = $initial_expected_due_time->format('Y-m-d H:i:s');
+        assert($initial_expected_due_time_str === $ticket->fields['internal_time_to_resolve'], 'OLA TTR Due time should be set to the current date + TTR delay interval.');
+
+        // act - update ticket date
+        $new_date = '2025-06-22 10:00:02';
+        $ticket = $this->updateItem($ticket::class, $ticket->getID(), ['date' => $new_date]);
+
+        // assert - check if the due time is unchanged despite the ticket date change
+        $this->assertEquals($initial_expected_due_time_str, $ticket->fields['internal_time_to_resolve'], 'OLA TTR due time is updated when ticket date is changed.');
+    }
+
     public function testCannotExportSLALevel()
     {
         $this->login();
