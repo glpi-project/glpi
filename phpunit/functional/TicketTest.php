@@ -41,6 +41,7 @@ use CronTask;
 use DbTestCase;
 use Entity;
 use Glpi\PHPUnit\Tests\Glpi\ITILTrait;
+use Glpi\PHPUnit\Tests\Glpi\SLMTrait;
 use Glpi\PHPUnit\Tests\Glpi\ValidationStepTrait;
 use Glpi\Search\SearchOption;
 use Glpi\Team\Team;
@@ -55,6 +56,7 @@ use ProfileRight;
 use Psr\Log\LogLevel;
 use Search;
 use Session;
+use SLM;
 use Supplier;
 use Supplier_Ticket;
 use Symfony\Component\DomCrawler\Crawler;
@@ -69,6 +71,7 @@ class TicketTest extends DbTestCase
 {
     use ValidationStepTrait;
     use ITILTrait;
+    use SLMTrait;
 
     public static function addActorsProvider(): iterable
     {
@@ -3533,6 +3536,26 @@ class TicketTest extends DbTestCase
                 $this->assertEquals($_SESSION['glpi_currenttime'], $ticket->fields['takeintoaccountdate']);
             }
         }
+    }
+
+    public function testGetSlasData(): void
+    {
+        $this->login();
+        // arrange - create a ticket with TTO SLA
+        ['sla' => $sla_tto] = $this->createSla(sla_type: SLM::TTO);
+        ['sla' => $sla_ttr] = $this->createSla(sla_type: SLM::TTR);
+        $ticket = $this->createTicket(['slas_id_tto' => $sla_tto->getID()]);
+
+        // act + assert
+        $slas_data = $ticket->getSlasData();
+        $this->assertCount(1, $slas_data);
+        $this->assertEquals($sla_tto->getID(), $slas_data[0]['id']);
+
+        // arrange - add TTR SLA to the ticket
+        $ticket = $this->updateItem($ticket::class, $ticket->getID(), [            'slas_id_ttr' => $sla_ttr->getID(),        ]);
+        $slas_data = $ticket->getSlasData();
+        $this->assertCount(2, $slas_data);
+        $this->assertEqualsCanonicalizing([$sla_ttr->getID(), $sla_tto->getID()], array_column($slas_data, 'id'));
     }
 
     /**
