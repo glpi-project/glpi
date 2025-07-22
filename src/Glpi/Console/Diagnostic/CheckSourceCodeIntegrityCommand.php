@@ -164,10 +164,7 @@ class CheckSourceCodeIntegrityCommand extends AbstractCommand
     {
         // If --allow-download missing, ask if it is OK
         if ($input->getOption('diff') && !$input->getOption('allow-download')) {
-            $helper = $this->getHelper('question');
-            if (!$helper instanceof QuestionHelper) {
-                throw new RuntimeException("Failed to get QuestionHelper");
-            }
+            $helper = new QuestionHelper();
             $question = new ConfirmationQuestion(
                 __('Generating the source code diff could require downloading the GLPI release archive. Do you want to allow this operation?'),
                 false

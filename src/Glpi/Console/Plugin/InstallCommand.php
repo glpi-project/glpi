@@ -100,8 +100,7 @@ class InstallCommand extends AbstractPluginCommand
         parent::interact($input, $output);
 
         if (null === $input->getOption('username')) {
-            /** @var QuestionHelper $question_helper */
-            $question_helper = $this->getHelper('question');
+            $question_helper = new QuestionHelper();
             $value = $question_helper->ask(
                 $input,
                 $output,

@@ -252,10 +252,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
     {
         $abort = false;
         if (!$this->input->getOption('no-interaction')) {
-            $question_helper = $this->getHelper('question');
-            if (!$question_helper instanceof QuestionHelper) {
-                throw new RuntimeException("Failed to get QuestionHelper");
-            }
+            $question_helper = new QuestionHelper();
             $run = $question_helper->ask(
                 $this->input,
                 $this->output,

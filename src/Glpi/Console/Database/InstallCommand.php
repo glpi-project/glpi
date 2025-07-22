@@ -136,8 +136,7 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             && $this->isInputContainingConfigValues($input, $output)
             && !$input->getOption('reconfigure')
         ) {
-            /** @var QuestionHelper $question_helper */
-            $question_helper = $this->getHelper('question');
+            $question_helper = new QuestionHelper();
             $reconfigure = $question_helper->ask(
                 $input,
                 $output,

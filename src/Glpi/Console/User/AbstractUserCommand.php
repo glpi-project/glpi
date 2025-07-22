@@ -58,11 +58,7 @@ abstract class AbstractUserCommand extends AbstractCommand
         }
 
         // Ask for password and then confirm it
-        $helper = $this->getHelper('question');
-        if (!$helper instanceof QuestionHelper) {
-            throw new RuntimeException("Failed to get QuestionHelper");
-        }
-
+        $helper = new QuestionHelper();
         $question = new Question(__('Enter password'));
         $question->setHidden(true);
         $question->setHiddenFallback(false);

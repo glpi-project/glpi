@@ -71,10 +71,7 @@ class DisableTFACommand extends AbstractCommand
         if ($totp_manager->get2FAEnforcement($user->getID())) {
             $output->writeln("<info>" . __("2FA is enforced for this user. They will be required to set it up again the next time they log in.") . "</info>");
         }
-        $helper = $this->getHelper('question');
-        if (!$helper instanceof QuestionHelper) {
-            throw new RuntimeException("Failed to get QuestionHelper");
-        }
+        $helper = new QuestionHelper();
         $question = new ConfirmationQuestion(__('Are you sure you want to disable 2FA for this user?'), false);
         if (!$helper->ask($input, $output, $question)) {
             return 0;

@@ -142,10 +142,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
         $fix = $input->getOption('fix');
 
         if ($fix === null && !$this->input->getOption('no-interaction')) {
-            $question_helper = $this->getHelper('question');
-            if (!$question_helper instanceof QuestionHelper) {
-                throw new RuntimeException("Failed to get QuestionHelper");
-            }
+            $question_helper = new QuestionHelper();
             $fix = $question_helper->ask(
                 $input,
                 $output,

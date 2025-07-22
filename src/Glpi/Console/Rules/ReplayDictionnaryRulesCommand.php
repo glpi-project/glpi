@@ -77,8 +77,7 @@ class ReplayDictionnaryRulesCommand extends AbstractCommand
 
         if (empty($input->getOption('dictionnary'))) {
             // Ask for dictionary argument is empty
-            /** @var QuestionHelper $question_helper */
-            $question_helper = $this->getHelper('question');
+            $question_helper = new QuestionHelper();
             $question = new ChoiceQuestion(
                 __('Which dictionary do you want to replay?'),
                 $this->getDictionnaryTypes()

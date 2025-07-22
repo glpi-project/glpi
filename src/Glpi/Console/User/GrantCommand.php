@@ -122,11 +122,7 @@ class GrantCommand extends AbstractUserCommand
             $profiles[$row['id']] = $row['name'];
         }
 
-        $helper = $this->getHelper('question');
-        if (!$helper instanceof QuestionHelper) {
-            throw new RuntimeException("Failed to get QuestionHelper");
-        }
-
+        $helper = new QuestionHelper();
         $question = new ChoiceQuestion(Profile::getTypeName(1), $profiles);
         return $helper->ask($input, $output, $question);
     }

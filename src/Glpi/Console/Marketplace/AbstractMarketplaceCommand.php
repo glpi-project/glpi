@@ -87,8 +87,7 @@ abstract class AbstractMarketplaceCommand extends AbstractCommand
             $choices = $this->getPluginChoiceChoices();
 
             if ($choices !== []) {
-                /** @var QuestionHelper $question_helper */
-                $question_helper = $this->getHelper('question');
+                $question_helper = new QuestionHelper();
                 $question = new ChoiceQuestion(
                     $this->getPluginChoiceQuestion(),
                     $choices
