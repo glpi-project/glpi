@@ -228,8 +228,7 @@ class Stat extends CommonGLPI
                     throw new RuntimeException("Given item doesn't support getTypes() operation");
                 }
 
-                // Note: phpstan seems to think that method_exist = non static method, which is not true.
-                $types = $item::getTypes(); // @phpstan-ignore method.staticCall
+                $types = $item::getTypes(); // @phpstan-ignore method.staticCall (phpstan seems to think that method_exist = non static method, which is not true)
                 foreach ($types as $id => $v) {
                     $tmp['id']   = $id;
                     $tmp['link'] = $v;
