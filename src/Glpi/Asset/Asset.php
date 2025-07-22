@@ -293,7 +293,16 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface
             'datatype'           => 'dropdown',
         ];
 
-        // TODO 65 for template
+        $search_options[] = [
+            'id'                 => '65',
+            'table'              => $this->getTable(),
+            'field'              => 'template_name',
+            'name'               => __('Template name'),
+            'datatype'           => 'text',
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'nodisplay'          => true,
+        ];
 
         $search_options[] = [
             'id'                 => '80',
