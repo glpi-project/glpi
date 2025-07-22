@@ -1236,7 +1236,7 @@ class GLPIDashboard {
                 dashboard: this.current_name,
             },
             success: function(response) {
-                filters = JSON.parse(response);
+                filters = response;
             }
         });
 

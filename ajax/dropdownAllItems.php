@@ -118,14 +118,15 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
             $params['entity_restrict'] = $_POST['entity_restrict'];
         }
 
-        $name = htmlescape($_POST["name"]);
+        $id = 'showItemSpecificity_' . $_POST['name'] . $rand;
+
         Ajax::updateItemOnSelectEvent(
             $field_id,
-            "showItemSpecificity_" . $name . "$rand",
+            $id,
             $_POST['showItemSpecificity'],
             $params
         );
 
-        echo "<br><span id='showItemSpecificity_" . $name . "$rand'>&nbsp;</span>";
+        echo "<br><span id='" . htmlescape($id) . "'>&nbsp;</span>";
     }
 }

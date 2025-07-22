@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Twig\Runtime\EscaperRuntime;
+
 use function Safe\preg_match;
 
 /**
@@ -99,4 +101,16 @@ function isPluginItemType($classname)
 function htmlescape(mixed $str): string
 {
     return htmlspecialchars((string) $str);
+}
+
+/**
+ * Escape a string to make it safe to be printed in a JS string variable.
+ *
+ * @param mixed $str
+ * @return string
+ */
+function jsescape(mixed $str): string
+{
+    // Rely on the Twig escaper
+    return (new EscaperRuntime())->escape((string) $str, 'js');
 }
