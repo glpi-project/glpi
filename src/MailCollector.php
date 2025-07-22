@@ -495,7 +495,7 @@ class MailCollector extends CommonDBTM
                     if (isset($rejected[$head['message_id']])) {
                         if ($action == 1) {
                             $tkt = $collector->buildTicket(
-                               (string) $uid,
+                                (string) $uid,
                                 $message,
                                 [
                                     'mailgates_id' => $mailcollector_id,
