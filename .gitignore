@@ -48,3 +48,14 @@ phpstan.neon
 *.phar
 .env
 /resources/.illustrations_translations.php
+
+# Playwright
+ctrf/
+/tests/playwright/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/tests/playwright/.env.local
+!/tests/playwright/.env
+/tests/playwright/glpi_config/*
+/tests/playwright/glpi_files/*
