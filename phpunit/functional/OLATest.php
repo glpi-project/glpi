@@ -496,7 +496,7 @@ class OLATest extends DbTestCase
 
         // due_time is set and equal to start_time + OLA_TTO_DELAY
         $due_time_datetime = clone $ticket_date;
-        $due_time_datetime->add($this->getDefaultTtoDelayInterval());
+        $due_time_datetime->add($this->getDefaultOlaTtoDelayInterval());
         $this->assertEquals($ola_data['due_time'], $due_time_datetime->format('Y-m-d H:i:s'), 'Due time should be start_time + OLA_TTO_DELAY.');
 
         // end_time is not set
@@ -531,7 +531,7 @@ class OLATest extends DbTestCase
 
         // due_time is set and equal to start_time + OLA_TTO_DELAY
         $due_time_datetime = clone $ola_association_datetime;
-        $due_time_datetime->add($this->getDefaultTtoDelayInterval());
+        $due_time_datetime->add($this->getDefaultOlaTtoDelayInterval());
         $this->assertEquals($ola_data['due_time'], $due_time_datetime->format('Y-m-d H:i:s'), 'Due time should be start_time + OLA_TTO_DELAY.');
 
         // end_time is not set
@@ -727,7 +727,7 @@ class OLATest extends DbTestCase
 
         // due_time is set and equal to start_time + OLA_TTO_DELAY
         $due_time_datetime = clone $start_time_datetime;
-        $due_time_datetime->add($this->getDefaultTtrDelayInterval());
+        $due_time_datetime->add($this->getDefaultOlaTtrDelayInterval());
         $this->assertEquals($ola_data['due_time'], $due_time_datetime->format('Y-m-d H:i:s'), 'Due time should be start_time + OLA_TTR_DELAY.');
 
         // end_time is not set
@@ -757,7 +757,7 @@ class OLATest extends DbTestCase
 
         // due_time is set and equal to start_time + OLA_TTO_DELAY
         $due_time_datetime = clone $ola_association_datetime;
-        $due_time_datetime->add($this->getDefaultTtrDelayInterval());
+        $due_time_datetime->add($this->getDefaultOlaTtrDelayInterval());
         $this->assertEquals($ola_data['due_time'], $due_time_datetime->format('Y-m-d H:i:s'), 'Due time should be start_time + OLA_TTR_DELAY.');
 
         // end_time is not set
@@ -838,7 +838,7 @@ class OLATest extends DbTestCase
 
         // act : complete ola after due time - wait for ola to be late + assign the ola group to the ticket
         $later = clone($now);
-        $later->add($this->getDefaultTtoDelayInterval());
+        $later->add($this->getDefaultOlaTtoDelayInterval());
         $later->add(new \DateInterval('PT1H')); // add 1 hour to ensure end time is after due time
         $this->setCurrentTime($later->format('Y-m-d H:i:s'));
         $this->updateItem($ticket::class, $ticket->getID(), ['_groups_id_assign' => $ola->fields['groups_id']]);
@@ -865,7 +865,7 @@ class OLATest extends DbTestCase
 
         // act : wait for ola to be late
         $later = clone($now);
-        $later->add($this->getDefaultTtoDelayInterval());
+        $later->add($this->getDefaultOlaTtoDelayInterval());
         $later->add(new \DateInterval('PT1H')); // add 1 hour to ensure end time is after due time
         $this->setCurrentTime($later->format('Y-m-d H:i:s'));
         $this->runOlaCron();
@@ -891,7 +891,7 @@ class OLATest extends DbTestCase
         $this->updateItem($ticket::class, $ticket->getID(), ['status' => CommonITILObject::WAITING]);
 
         $later = clone($now);
-        $later->add($this->getDefaultTtoDelayInterval());
+        $later->add($this->getDefaultOlaTtoDelayInterval());
         $later->add(new \DateInterval('PT1H')); // add 1 hour to ensure end time is after due time
         $this->setCurrentTime($later->format('Y-m-d H:i:s'));
         $this->runOlaCron();
@@ -915,7 +915,7 @@ class OLATest extends DbTestCase
 
         // act : complete ola after due time - wait for ola to be late + assign the ola group to the ticket
         $later = clone($now);
-        $later->add($this->getDefaultTtrDelayInterval());
+        $later->add($this->getDefaultOlaTtrDelayInterval());
         $later->add(new \DateInterval('PT1H')); // add 1 hour to ensure end time is after due time
         $this->setCurrentTime($later->format('Y-m-d H:i:s'));
         $this->updateItem($ticket::class, $ticket->getID(), ['_groups_id_assign' => $ola->fields['groups_id']]);
@@ -939,7 +939,7 @@ class OLATest extends DbTestCase
 
         // act : wait for ola to be late
         $later = clone($now);
-        $later->add($this->getDefaultTtrDelayInterval());
+        $later->add($this->getDefaultOlaTtrDelayInterval());
         $later->add(new \DateInterval('PT1H')); // add 1 hour to ensure end time is after due time
         $this->setCurrentTime($later->format('Y-m-d H:i:s'));
         $this->runOlaCron();
@@ -965,7 +965,7 @@ class OLATest extends DbTestCase
         $this->updateItem($ticket::class, $ticket->getID(), ['status' => CommonITILObject::WAITING]);
 
         $later = clone($now);
-        $later->add($this->getDefaultTtrDelayInterval());
+        $later->add($this->getDefaultOlaTtrDelayInterval());
         $later->add(new \DateInterval('PT1H')); // add 1 hour to ensure end time is after due time
         $this->setCurrentTime($later->format('Y-m-d H:i:s'));
         $this->runOlaCron();
@@ -974,19 +974,5 @@ class OLATest extends DbTestCase
         $ola_data = $ticket->getOlasData()[0];
         $this->assertEquals(0, $ola_data['is_late'], 'OLA should not be late when ticket is WAITING (even if due time is passed and end time is not set)');
 
-    }
-
-    private function getDefaultTtoDelayInterval(): \DateInterval
-    {
-        [$amount, $unit] = self::OLA_TTO_DELAY;
-
-        return new \DateInterval(sprintf('PT%d%s', $amount, strtoupper(substr($unit, 0, 1))));
-    }
-
-    private function getDefaultTtrDelayInterval(): \DateInterval
-    {
-        [$amount, $unit] = self::OLA_TTR_DELAY;
-
-        return new \DateInterval(sprintf('P%d%s', $amount, strtoupper(substr($unit, 0, 1))));
     }
 }
