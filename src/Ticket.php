@@ -6320,11 +6320,17 @@ JAVASCRIPT;
         return (new Item_Ola())->getDataFromOlasIdsForTicket($this, $this->fields['_olas_id'] ?? []);
     }
 
+    /**
+     * @return array<ItemOlaData>
+     */
     public function getOlasTTOData(): array
     {
         return array_values(array_filter($this->getOlasData(), fn(array $ola) => $ola['type'] === SLM::TTO));
     }
 
+    /**
+     * @return array<ItemOlaData>
+     */
     public function getOlasTTRData(): array
     {
         return array_values(array_filter($this->getOlasData(), fn(array $ola) => $ola['type'] === SLM::TTR));
