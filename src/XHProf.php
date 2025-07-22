@@ -103,17 +103,16 @@ class XHProf
 
     public function stop()
     {
-        if (!class_exists("XHProfRuns_Default")) {
-            throw new RuntimeException("pecl/xhprof is not installed");
-        }
-
         if (self::$run) {
-            $data = xhprof_disable();
-
             $incl = (defined('XHPROF_PATH') ? XHPROF_PATH : self::XHPROF_PATH);
-            include_once $incl . '/utils/xhprof_lib.php';
-            include_once $incl . '/utils/xhprof_runs.php';
+            require_once $incl . '/utils/xhprof_lib.php';
+            require_once $incl . '/utils/xhprof_runs.php';
 
+            if (!class_exists("XHProfRuns_Default")) {
+                throw new RuntimeException("pecl/xhprof is not installed");
+            }
+
+            $data = xhprof_disable();
             $runs = new XHProfRuns_Default();
             $id   = $runs->save_run($data, 'glpi');
 
