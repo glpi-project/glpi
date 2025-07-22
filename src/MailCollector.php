@@ -38,6 +38,7 @@ use Laminas\Mail\Address;
 use Laminas\Mail\Header\AbstractAddressList;
 use Laminas\Mail\Header\ContentDisposition;
 use Laminas\Mail\Header\ContentType;
+use Laminas\Mail\Header\MessageId;
 use Laminas\Mail\Storage;
 use Laminas\Mail\Storage\AbstractStorage;
 use Laminas\Mail\Storage\Exception\InvalidArgumentException;
@@ -1393,9 +1394,10 @@ class MailCollector extends CommonDBTM
             $subject = '';
         }
 
-        $message_id = $message->getHeaders()->has('message-id')
-            ? $message->getHeader('message-id')->getFieldValue()
-            : 'MISSING_ID_' . sha1($message->getHeaders()->toString());
+        $message_id = $this->getMessageIdFromHeaders($message);
+        if ($message_id === null) {
+            $message_id = 'MISSING_ID_' . sha1($message->getHeaders()->toString());
+        }
 
         $mail_details = [
             'from'       => Toolbox::strtolower($sender_email),
@@ -2079,16 +2081,43 @@ TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_l
     }
 
     /**
+     * Retrieve the message ID from headers.
+     * If multiple matching headers are found, the first one parsed as a {@link MessageId} is returned.
+     * @param Message $message
+     * @return string|null
+     */
+    private function getMessageIdFromHeaders(Message $message): ?string
+    {
+        $message_id = null;
+        if ($message->getHeaders()->has('message-id')) {
+            $message_id_headers = $message->getHeaders()->get('message-id');
+            if ($message_id_headers instanceof ArrayIterator) {
+                // In cases of multiple headers, we will try taking the first MessageId.
+                // Some systems may send a non-standard MessageId header which becomes a GenericHeader along with Message-ID which becomes MessageId
+                foreach ($message_id_headers as $mid_header) {
+                    if ($mid_header instanceof MessageId) {
+                        $message_id = $mid_header->getFieldValue();
+                        break;
+                    }
+                }
+            } else {
+                $message_id = $message_id_headers->getFieldValue();
+            }
+        }
+        return $message_id;
+    }
+
+    /**
      * Check if message was sent by current instance of GLPI and corresponds to a notification related to an ITIL object.
      */
     private function isItilNotificationFromSelf(Message $message): bool
     {
-        if (!$message->getHeaders()->has('message-id')) {
+        $message_id = $this->getMessageIdFromHeaders($message);
+        if ($message_id === null) {
             // Messages sent by GLPI now have always a message-id header.
             return false;
         }
 
-        $message_id = $message->getHeader('message-id')->getFieldValue();
         $matches = $this->extractValuesFromRefHeader($message_id);
 
         if ($matches === null) {

@@ -812,6 +812,7 @@ class MailCollectorTest extends DbTestCase
                     'A message without to header',
                     'Ticket with multiple to',
                     'Re: [GLPI #0000001] Ticket from another GLPI',
+                    'Message with multiple message IDs',
                 ],
             ],
             // Mails having "normal" user as requester

@@ -912,6 +912,9 @@ var GLPIImpact = {
                 if (!node.isParent() && positions[node.data('id')] !== undefined) {
                     x = parseFloat(positions[node.data('id')].x);
                     y = parseFloat(positions[node.data('id')].y);
+                } else if (!node.isParent()) {
+                    // Add node to no_positions list if it doesn't have a saved position
+                    GLPIImpact.no_positions.push(node);
                 }
 
                 return {
@@ -2109,10 +2112,12 @@ var GLPIImpact = {
         var eles = this.cy.add(toAdd);
 
         var options;
+        var savedPositions = null;
         if (params.positions === undefined) {
             options = this.getDagreLayout();
         } else {
-            options = this.getPresetLayout(JSON.parse(params.positions));
+            savedPositions = JSON.parse(params.positions);
+            options = this.getPresetLayout(savedPositions);
         }
 
         // Place the layout anywhere to compute it's bounding box
@@ -2120,29 +2125,75 @@ var GLPIImpact = {
         layout.run();
         this.generateMissingPositions();
 
-        // First, position the graph on the clicked areaa
-        var newGraphBoundingBox = eles.boundingBox();
-        var center = {
-            x: (newGraphBoundingBox.x1 + newGraphBoundingBox.x2) / 2,
-            y: (newGraphBoundingBox.y1 + newGraphBoundingBox.y2) / 2,
-        };
+        // Check if any of the new nodes have saved positions
+        var hasNodesWithSavedPositions = false;
+        if (savedPositions) {
+            eles.nodes().forEach(function(node) {
+                if (!node.isParent() && savedPositions[node.data('id')] !== undefined) {
+                    hasNodesWithSavedPositions = true;
+                }
+            });
+        }
 
-        var centerToClickVector = [
-            startNode.x - center.x,
-            startNode.y - center.y,
-        ];
+        // Only apply positioning logic if we don't have saved positions for the new nodes
+        if (!hasNodesWithSavedPositions) {
+            // First, position the graph on the clicked area
+            var newGraphBoundingBox = eles.boundingBox();
+            var center = {
+                x: (newGraphBoundingBox.x1 + newGraphBoundingBox.x2) / 2,
+                y: (newGraphBoundingBox.y1 + newGraphBoundingBox.y2) / 2,
+            };
 
-        // Apply vector to each node
-        eles.nodes().forEach(function(node) {
-            if (!node.isParent()) {
-                node.position({
-                    x: node.position().x + centerToClickVector[0],
-                    y: node.position().y + centerToClickVector[1],
-                });
-            }
-        });
+            var centerToClickVector = [
+                startNode.x - center.x,
+                startNode.y - center.y,
+            ];
 
-        newGraphBoundingBox = eles.boundingBox();
+            // Apply vector to each node
+            eles.nodes().forEach(function(node) {
+                if (!node.isParent()) {
+                    node.position({
+                        x: node.position().x + centerToClickVector[0],
+                        y: node.position().y + centerToClickVector[1],
+                    });
+                }
+            });
+
+            newGraphBoundingBox = eles.boundingBox();
+        } else {
+            // If we have saved positions, just finish and don't apply collision detection
+            this.cy.animate({
+                center: {
+                    eles : GLPIImpact.cy.filter(""),
+                },
+            });
+
+            this.cy.getElementById(startNode.id).data("highlight", 1);
+
+            // Set undo/redo data
+            var undoData = {
+                edges: eles.edges().map(function(edge){ return edge.data(); }),
+                compounds: [],
+                nodes: [],
+            };
+            eles.nodes().forEach(function(node) {
+                if (node.isParent()) {
+                    undoData.compounds.push({
+                        compoundData    : _.clone(node.data()),
+                        compoundChildren: node.children().map(function(n) {
+                            return n.data('id');
+                        }),
+                    });
+                } else {
+                    undoData.nodes.push({
+                        nodeData    : _.clone(node.data()),
+                        nodePosition: _.clone(node.position()),
+                    });
+                }
+            });
+            this.addToUndo(this.ACTION_ADD_GRAPH, undoData);
+            return;
+        }
 
         // If the two bouding box overlap
         if (!(mainBoundingBox.x1 > newGraphBoundingBox.x2
