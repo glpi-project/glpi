@@ -140,7 +140,7 @@ class RuleRightCollectionTest extends DbTestCase
         yield [
             'rule_data' => [
                 'criteria' => [
-                    'field' => 'groups', 'condition' => \Rule::PATTERN_IS
+                    'field' => 'groups', 'condition' => \Rule::PATTERN_IS,
                 ],
             ],
             'itemtype_data' => [
@@ -302,17 +302,17 @@ class RuleRightCollectionTest extends DbTestCase
         $collection = new \RuleRightCollection();
 
         $rule = $this->createItem(
-                \Rule::class,
-                [
-                    'entities_id' => 0,
-                    'sub_type' => \RuleRight::class,
-                    'name' => 'Test Rule Right',
-                    'is_active' => 1,
-                    'is_recursive' => 1,
-                    'match' => 'AND',
-                    'condition' => 0,
-                ]
-            );
+            \Rule::class,
+            [
+                'entities_id' => 0,
+                'sub_type' => \RuleRight::class,
+                'name' => 'Test Rule Right',
+                'is_active' => 1,
+                'is_recursive' => 1,
+                'match' => 'AND',
+                'condition' => 0,
+            ]
+        );
 
         $itemtype = null;
 
