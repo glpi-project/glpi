@@ -687,7 +687,7 @@ class Reminder extends CommonDBVisible implements
      * @param boolean $display if false return html
      *
      * @return string|void
-     * @phpstan-return $display ? void : string
+     * @phpstan-return ($display is true ? void : string)
      **/
     public static function showListForCentral(bool $personal = true, bool $display = true)
     {

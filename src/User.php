@@ -5746,15 +5746,14 @@ HTML;
 
         $ret =  [];
         foreach ($map as $v) {
-            /** @var array $reg */
             if (preg_match_all('/%{(.*)}/U', $v, $reg)) {
                 // e.g. "%{country} > %{city} > %{site}"
-                foreach ($reg [1] as $f) {
-                    $ret [] = $f;
+                foreach ($reg[1] as $f) {
+                    $ret[] = $f;
                 }
             } else {
                 // single field name
-                $ret [] = $v;
+                $ret[] = $v;
             }
         }
         return $ret;

@@ -197,7 +197,7 @@ class ObjectLock extends CommonDBTM
      * @param string $itemtype
      * @param integer $items_id
      *
-     * @return bool|ObjectLock: returns ObjectLock if locked, else false
+     * @return false|ObjectLock returns ObjectLock if locked, else false
      **/
     public static function isLocked($itemtype, $items_id)
     {
@@ -393,7 +393,7 @@ TWIG;
      * @param  string $itemtype
      * @param  string $interface
      *
-     * @return array: empty array if itemtype is not lockable; else returns UNLOCK right
+     * @return array empty array if itemtype is not lockable; else returns UNLOCK right
      **/
     public static function getRightsToAdd($itemtype, $interface = 'central')
     {

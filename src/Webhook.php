@@ -234,11 +234,10 @@ class Webhook extends CommonDBTM implements FilterableInterface
                     ]
                 );
             case 'event':
-                /**
-                 * @var array $list_itemtype
-                 * @phpstan-var array<class-string<CommonDBTM>, string> $list_itemtype
-                 */
                 $recursive_search = static function ($list_itemtype) use (&$recursive_search) {
+                    /**
+                     * @var array<class-string<CommonDBTM>, string> $list_itemtype
+                     */
                     $events = [];
                     foreach ($list_itemtype as $itemtype => $itemtype_label) {
                         if (is_array($itemtype_label)) {

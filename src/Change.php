@@ -896,19 +896,18 @@ class Change extends CommonITILObject
     {
         $restrict = [];
 
-        switch (get_class($item)) {
-            case User::class:
+        switch (true) {
+            case $item instanceof User:
                 $restrict['glpi_changes_users.users_id'] = $item->getID();
                 $restrict['glpi_changes_users.type'] = CommonITILActor::REQUESTER;
                 break;
 
-            case Supplier::class:
+            case $item instanceof Supplier:
                 $restrict['glpi_changes_suppliers.suppliers_id'] = $item->getID();
                 $restrict['glpi_changes_suppliers.type'] = CommonITILActor::ASSIGN;
                 break;
 
-            case Group::class:
-                /** @var Group $item */
+            case $item instanceof Group:
                 if ($item->haveChildren()) {
                     $tree = Session::getSavedOption(self::class, 'tree', 0);
                 } else {
@@ -916,7 +915,6 @@ class Change extends CommonITILObject
                 }
                 $restrict['glpi_changes_groups.groups_id'] = ($tree ? getSonsOf('glpi_groups', $item->getID()) : $item->getID());
                 $restrict['glpi_changes_groups.type'] = CommonITILActor::REQUESTER;
-                /** @var CommonDBTM $item */
                 break;
 
             default:

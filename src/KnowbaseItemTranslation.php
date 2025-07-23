@@ -162,7 +162,7 @@ TWIG, $twig_params);
      *
      * @param KnowbaseItem $item
      *
-     * @return true;
+     * @return true
      **/
     public static function showTranslations(KnowbaseItem $item)
     {

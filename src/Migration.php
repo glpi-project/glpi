@@ -424,7 +424,7 @@ class Migration
      * @param string $table   Table name
      * @param string $field   Field name
      * @param string $type    Field type, @see Migration::fieldFormat()
-     * @param array{update?: string, condition?: string, value?: string, nodefault?: bool, comment?: string, first?: string, after?: string, null?: bool} $options
+     * @param array{update?: string|int, condition?: string, value?: string|int|null, nodefault?: bool, comment?: string, first?: string, after?: string, null?: bool} $options
      *                         - update    : value to set after field creation (update query)
      *                         - condition : sql condition to apply for update query
      *                         - value     : default_value new field's default value, if a specific default value needs to be used

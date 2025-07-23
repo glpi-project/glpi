@@ -48,7 +48,6 @@ use Item_Problem;
 use Item_Ticket;
 use ReflectionClass;
 use Session;
-use SplFileObject;
 
 use function Safe\preg_match;
 use function Safe\preg_replace;
@@ -89,7 +88,7 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
         // Automatically build core capacities list.
         // Would be better to do it with a DI auto-discovery feature, but it is not possible yet.
         $directory_iterator = new DirectoryIterator(__DIR__ . '/Capacity');
-        /** @var SplFileObject $file */
+        /** @var DirectoryIterator $file */
         foreach ($directory_iterator as $file) {
             $classname = $file->getExtension() === 'php'
                 ? 'Glpi\\Asset\\Capacity\\' . $file->getBasename('.php')
@@ -108,7 +107,7 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
 
         if ($this->custom_field_types === null) {
             $this->custom_field_types = [];
-            /** @var SplFileObject $file */
+            /** @var DirectoryIterator $file */
             foreach ($directory_iterator as $file) {
                 // Compute class name with the expected namespace
                 $classname = $file->getExtension() === 'php'

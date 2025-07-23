@@ -70,9 +70,10 @@ class OlaLevel extends LevelAgreementLevel
         $olt->deleteByCriteria([$this->rules_id_field => $this->fields['id']]);
     }
 
-    public function showForParent(OLA $ola)
+    #[Override]
+    public function showForParent(LevelAgreement $la)
     {
-        $this->showForLA($ola);
+        $this->showForLA($la);
     }
 
     public function getActions()

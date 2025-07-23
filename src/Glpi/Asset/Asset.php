@@ -126,9 +126,7 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface
 
         $search_options = array_merge($search_options, Location::rawSearchOptionsToAdd());
 
-        /** @var AssetModel $asset_model_class */
         $asset_model_class = static::getDefinition()->getAssetModelClassName();
-        /** @var AssetType $asset_type_class */
         $asset_type_class = static::getDefinition()->getAssetTypeClassName();
 
         $search_options[] = [

@@ -47,6 +47,7 @@ use Glpi\Toolbox\ArrayNormalizer;
 
 /**
  * Profile class
+ * @phpstan-type RightDefinition array{rights: array{}, label: string, field: string, scope: string}
  **/
 class Profile extends CommonDBTM implements LinkableToTilesInterface
 {
@@ -795,8 +796,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      * @param string $interface The interface name
      * @phpstan-param 'all'|'central'|'helpdesk' $interface
      * @return array
-     * @phpstan-type RightDefinition = array{rights: array{}, label: string, field: string, scope: string}
-     * @phpstan-return $interface == 'all' ? array<string, array<string, array<string, RightDefinition[]>>> : ($form == 'all' ? array<string, array<string, RightDefinition[]>> : ($group == 'all' ? array<string, RightDefinition[]> : RightDefinition[]))
+     * @phpstan-return ($interface is 'all' ? array<string, array<string, array<string, RightDefinition[]>>> : ($form is 'all' ? array<string, array<string, RightDefinition[]>> : ($group is 'all' ? array<string, RightDefinition[]> : RightDefinition[])))
      * @internal BC not guaranteed. Only public so it can be used in tests to ensure search options are made for all rights.
      */
     public static function getRightsForForm(string $interface = 'all', string $form = 'all', string $group = 'all'): array

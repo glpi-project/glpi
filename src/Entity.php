@@ -2420,7 +2420,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
      * @param integer|null $val if not set, ask for all values, else for 1 value (default NULL)
      *
      * @return string|array
-     * @phpstan-return $val === null ? array<int|string, string> : string
+     * @phpstan-return ($val is null ? array<int|string, string> : string)
      **/
     public static function getAutoAssignMode(?int $val = null): string|array
     {

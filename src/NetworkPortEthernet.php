@@ -172,7 +172,7 @@ TWIG, $twig_params);
      * @param string|null $val  if not set, ask for all values, else for 1 value (default NULL)
      *
      * @return array|string
-     * @phpstan-return $val !== null ? string : array
+     * @phpstan-return ($val is null ? array : string)
      **/
     public static function getPortTypeName($val = null)
     {
@@ -239,7 +239,7 @@ TWIG, $twig_params);
      * @param integer|null $val  if not set, ask for all values, else for 1 value (default NULL)
      *
      * @return array|string
-     * @phpstan-return $val !== null ? string : array
+     * @phpstan-return ($val is null ? array : false|integer|string)
      **/
     public static function getPortSpeed($val = null)
     {

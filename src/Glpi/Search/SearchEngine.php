@@ -374,7 +374,6 @@ final class SearchEngine
             $p['start'] = 0;
         }
 
-        /** @var SearchInputInterface $search_input_class */
         $search_input_class = self::getSearchInputClass($p);
         $p = $search_input_class::cleanParams($p);
 
@@ -604,7 +603,6 @@ final class SearchEngine
             $_SESSION['glpisearch'][$itemtype]['criteria'] = $params['criteria'];
         }
 
-        /** @var SearchInputInterface $search_input_class */
         $search_input_class = self::getSearchInputClass($params);
         $params = array_merge($params, $search_input_class::manageParams($itemtype, $_GET));
 

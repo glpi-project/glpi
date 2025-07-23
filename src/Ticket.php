@@ -6266,13 +6266,13 @@ JAVASCRIPT;
     {
         $restrict = [];
 
-        switch (get_class($item)) {
-            case User::class:
+        switch (true) {
+            case $item instanceof User:
                 $restrict['glpi_tickets_users.users_id'] = $item->getID();
                 $restrict['glpi_tickets_users.type'] = CommonITILActor::REQUESTER;
                 break;
 
-            case SLA::class:
+            case $item instanceof SLA:
                 $restrict[] = [
                     'OR' => [
                         'slas_id_tto'  => $item->getID(),
@@ -6281,7 +6281,7 @@ JAVASCRIPT;
                 ];
                 break;
 
-            case OLA::class:
+            case $item instanceof OLA:
                 $restrict[] = [
                     'OR' => [
                         'olas_id_tto'  => $item->getID(),
@@ -6290,13 +6290,12 @@ JAVASCRIPT;
                 ];
                 break;
 
-            case Supplier::class:
+            case $item instanceof Supplier:
                 $restrict['glpi_suppliers_tickets.suppliers_id'] = $item->getID();
                 $restrict['glpi_suppliers_tickets.type'] = CommonITILActor::ASSIGN;
                 break;
 
-            case Group::class:
-                /** @var Group $item */
+            case $item instanceof Group:
                 if ($item->haveChildren()) {
                     $tree = Session::getSavedOption(self::class, 'tree', 0);
                 } else {
@@ -6304,7 +6303,6 @@ JAVASCRIPT;
                 }
                 $restrict['glpi_groups_tickets.groups_id'] = ($tree ? getSonsOf('glpi_groups', $item->getID()) : $item->getID());
                 $restrict['glpi_groups_tickets.type'] = CommonITILActor::REQUESTER;
-                /** @var CommonDBTM $item */
                 break;
 
             default:
@@ -6347,31 +6345,30 @@ JAVASCRIPT;
             'reset'    => 'reset',
         ];
 
-        switch (get_class($item)) {
-            case User::class:
+        switch (true) {
+            case $item instanceof User:
                 $options['criteria'][0]['field']      = 4; // status
                 $options['criteria'][0]['searchtype'] = 'equals';
                 $options['criteria'][0]['value']      = $item->getID();
                 $options['criteria'][0]['link']       = 'AND';
                 break;
 
-            case SLA::class:
-            case OLA::class:
+            case $item instanceof SLA:
+            case $item instanceof OLA:
                 $options['criteria'][0]['field']      = 30;
                 $options['criteria'][0]['searchtype'] = 'equals';
                 $options['criteria'][0]['value']      = $item->getID();
                 $options['criteria'][0]['link']       = 'AND';
                 break;
 
-            case Supplier::class:
+            case $item instanceof Supplier:
                 $options['criteria'][0]['field']      = 6;
                 $options['criteria'][0]['searchtype'] = 'equals';
                 $options['criteria'][0]['value']      = $item->getID();
                 $options['criteria'][0]['link']       = 'AND';
                 break;
 
-            case Group::class:
-                /** @var Group $item */
+            case $item instanceof Group:
                 if ($item->haveChildren()) {
                     $tree = Session::getSavedOption(self::class, 'tree', 0);
                 } else {
@@ -6381,7 +6378,6 @@ JAVASCRIPT;
                 $options['criteria'][0]['searchtype'] = ($tree ? 'under' : 'equals');
                 $options['criteria'][0]['value']      = $item->getID();
                 $options['criteria'][0]['link']       = 'AND';
-                /** @var CommonDBTM $item */
                 break;
 
             default:

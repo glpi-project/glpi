@@ -38,13 +38,14 @@ use Glpi\Features\AssignableItem;
 use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
 use Glpi\Features\DCBreadcrumb;
+use Glpi\Features\DCBreadcrumbInterface;
 use Glpi\Features\Inventoriable;
 use Glpi\Socket;
 
 /**
  * Network equipment Class
  **/
-class NetworkEquipment extends CommonDBTM implements AssignableItemInterface
+class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInterface
 {
     use DCBreadcrumb;
     use Clonable;

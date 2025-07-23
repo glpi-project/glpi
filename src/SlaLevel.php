@@ -64,9 +64,10 @@ class SlaLevel extends LevelAgreementLevel
         $slt->deleteByCriteria([$this->rules_id_field => $this->fields['id']]);
     }
 
-    public function showForParent(SLA $sla)
+    #[Override]
+    public function showForParent(LevelAgreement $la)
     {
-        $this->showForLA($sla);
+        $this->showForLA($la);
     }
 
     public function getForbiddenStandardMassiveAction()

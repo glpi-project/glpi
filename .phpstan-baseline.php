@@ -92,124 +92,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/install/install.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 0\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_0.90.0_to_0.90.1.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 0\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/install/migrations/update_0.90.x_to_9.1.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 1, after\\: \'is_assign\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_0.90.x_to_9.1.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 1\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 4,
-	'path' => __DIR__ . '/install/migrations/update_0.90.x_to_9.1.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 1, after\\: \'is_visible_cable\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_10.0.10_to_10.0.11/states.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$expression of class Glpi\\\\DBAL\\\\QueryExpression constructor expects string, true given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/install/migrations/update_10.0.16_to_10.0.17/tree_dropdowns.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 0, after\\: \'is_dynamic\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_10.0.3_to_10.0.4/inventory.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: null\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_10.0.7_to_10.0.8/queuednotification.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: null\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_10.0.8_to_10.0.9/queuednotification.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{after\\: \'agent_base_url\', value\\: \\-2, update\\: \'0\', condition\\: \'WHERE `id` \\= 0\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/approval_reminder.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{after\\: \'inquest_URL_change\', value\\: 5\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/changesatisfactions.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{after\\: \'inquest_config…\', value\\: 0\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/changesatisfactions.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{after\\: \'inquest_default…\', value\\: 0\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/changesatisfactions.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{after\\: \'inquest_duration\', value\\: 0\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/changesatisfactions.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{after\\: \'inquest_max_rate…\', value\\: 3\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/changesatisfactions.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{after\\: \'inquest_rate_change\', value\\: \\-10, update\\: \'0\', condition\\: \'WHERE `id` \\= 0\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/changesatisfactions.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{after\\: \'max_closedate_change\', value\\: \\-2, update\\: \'1\', condition\\: \'WHERE `id` \\= 0\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/changesatisfactions.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 1\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/commonitilobject_commonitilobject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{after\\: \'vis_cell_width\', update\\: 39, value\\: 40\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/dcroom.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{after\\: \'vis_rows\', value\\: 40\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/dcroom.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$rights of method Migration\\:\\:addRight\\(\\) expects int, array\\<int, int\\> given\\.$#',
@@ -218,100 +104,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/impersonate_right.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{update\\: 1, after\\: \'entities_id\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/knowbaseitem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 0\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/mailcollectors.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 1\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/mailcollectors.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 0\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/notepads.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 0\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/pendingreason.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{null\\: false, value\\: null\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/profiles.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 0\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/recursive_groups.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 1\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 4,
-	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/solutiontypes.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 1\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/state_is_helpdesk_visible.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of method Migration\\:\\:addCrontask\\(\\) expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/install/migrations/update_9.1.x_to_9.2.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: \\-2, after\\: \'send_licenses_alert…\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.1.x_to_9.2.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: \\-2, after\\: \'use_certificates…\', update\\: \'0\', condition\\: \'WHERE `id` \\= 0\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.1.x_to_9.2.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 1\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.1.x_to_9.2.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 1, after\\: \'is_visible…\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.2.x_to_9.3.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 1, after\\: \'is_visible_enclosure\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.3.1_to_9.3.2.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 1, after\\: \'is_visible_rack\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.3.1_to_9.3.2.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$crit of method DBmysqlIterator\\:\\:analyseCrit\\(\\) expects array\\<string\\>, array\\<string, array\\<string, string\\>\\> given\\.$#',
@@ -326,238 +122,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{after\\: \'autoclose_delay\', value\\: \\-2\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{after\\: \'changetemplates_id\', value\\: 0\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{after\\: \'entities_id\', value\\: 1\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{after\\: \'is_dynamic\', value\\: 0\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{after\\: \'send_domains_alert…\', value\\: \\-2\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{after\\: \'suppliers_as_private\', value\\: \\-2, update\\: \'0\', condition\\: \'WHERE `id` \\= 0\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{after\\: \'tickettemplates_id…\', value\\: 0\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{after\\: \'use_domains_alert\', value\\: \\-2\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{after\\: \'use_reservations…\', value\\: \\-2\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: \\-2, after\\: \'changetemplates_id\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: \\-2, after\\: \'tickettemplates_id\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: \\-2, update\\: \'0\', condition\\: \'WHERE `id` \\= 0\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: \\-2, update\\: 0, condition\\: \'WHERE `id` \\= 0\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 0, after\\: \'changetemplates_id\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 0, after\\: \'is_template\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 0, after\\: \'lines_id\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 0, after\\: \'tickettemplates_id\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 0, after\\: \'users_id\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 0\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 1, after\\: \'is_visible_cluster\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 1, after\\: \'is_visible_pdu\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 1, after\\: \'is_visible_rack\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 1\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{after\\: \'otherserial\', value\\: 1\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.5.1_to_9.5.2.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 0\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.5.1_to_9.5.2.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 1, after\\: \'is_visible_contract\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.5.1_to_9.5.2.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 1, after\\: \'is_visible_appliance\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.5.x_to_10.0.0/cable.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 1, after\\: \'is_visible_appliance\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.5.x_to_10.0.0/databases.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{after\\: \'anonymize_support…\', value\\: \\-2, update\\: \'1\', condition\\: \'WHERE `id` \\= 0\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.5.x_to_10.0.0/entity.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{after\\: \'send_certificates…\', value\\: \\-2, update\\: \'0\', condition\\: \'WHERE `id` \\= 0\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.5.x_to_10.0.0/entity.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{after\\: \'name\', value\\: 10\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.5.x_to_10.0.0/ldaps.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{after\\: \'tls_keyfile\', value\\: 1\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.5.x_to_10.0.0/ldaps.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{after\\: \'use_bind\', value\\: 10\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.5.x_to_10.0.0/ldaps.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of method Migration\\:\\:addCrontask\\(\\) expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/install/migrations/update_9.5.x_to_10.0.0/native_inventory.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: \\-2, update\\: \'0\', condition\\: \'WHERE `id` \\= 0\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.5.x_to_10.0.0/native_inventory.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{update\\: 0\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.5.x_to_10.0.0/schema_fixes.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 0, after\\: \'alarm_threshold\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/install/migrations/update_9.5.x_to_10.0.0/stock_thresholds.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{after\\: \'anonymize_support…\', value\\: \\-2, update\\: \'0\', condition\\: \'WHERE `id` \\= 0\'\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.5.x_to_10.0.0/ticket_contract.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$options of method Migration\\:\\:addField\\(\\) expects array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\}, array\\{value\\: 0\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.5.x_to_10.0.0/tickettask.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#4 \\$checkitem of static method KnowbaseItem_Item\\:\\:getMassiveActionsForItemtype\\(\\) expects CommonDBTM\\|null, CommonGLPI\\|null given\\.$#',
@@ -704,12 +272,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Certificate_Item.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type CommonDBTM is not subtype of native type Group\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Change.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter &\\$item by\\-ref type of method CommonDBConnexity\\:\\:canConnexityItem\\(\\) expects CommonDBTM\\|null, CommonDBTM\\|false given\\.$#',
 	'identifier' => 'parameterByRef.type',
 	'count' => 1,
@@ -726,12 +288,6 @@ $ignoreErrors[] = [
 	'identifier' => 'deadCode.unreachable',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDBRelation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type class\\-string is not subtype of native type static\\(CommonDBTM\\)\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#3 \\$message_type of static method Session\\:\\:addMessageAfterRedirect\\(\\) expects int, bool given\\.$#',
@@ -812,12 +368,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject_CommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type CommonITILRecurrent is not subtype of native type RecurrentChange\\|TicketRecurrent\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILRecurrentCron.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#4 \\$is_recursive of function getEntitiesRestrictCriteria expects \'auto\'\\|bool, 1 given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -858,12 +408,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Computer.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$expanded_info \\? array\\<string, \\{name\\: string, dark\\: boolean\\}\\> \\: array\\<string, string\\>\\)\\: Unexpected token "\\$expanded_info", expected type at offset 154 on line 6$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Config.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$options of method CommonDropdown\\:\\:showForm\\(\\) expects array, int given\\.$#',
@@ -1016,12 +560,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DropdownTranslation.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$val \\=\\=\\= null \\? array\\<int\\|string, string\\> \\: string\\)\\: Unexpected token "\\$val", expected type at offset 275 on line 9$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Entity.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$items_id of function getAncestorsOf expects array\\|string, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -1082,12 +620,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/API.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type array is not subtype of native type array\\<int\\|string, array\\<mixed\\>\\|string\\>\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/APIRest.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$user_id of method Glpi\\\\Api\\\\API\\:\\:userPicture\\(\\) expects bool\\|int, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -1106,418 +638,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/APIRest.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'Entity\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'Group\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'Profile\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'User\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', type\\: \'object\', schema\\: \'Entity\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', type\\: \'object\', schema\\: \'Group\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', type\\: \'object\', schema\\: \'Profile\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', type\\: \'object\', schema\\: \'User\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'EmailAddress\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'EmailAddress\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'Entity\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'Entity\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'Group\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'Group\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'Profile\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'Profile\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'User\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 5,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'User\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\$full_schema of static method Glpi\\\\Api\\\\HL\\\\Controller\\\\AbstractController\\:\\:getDropdownTypeSchema\\(\\) expects string\\|null, array\\<string, array\\<string, array\\>\\|string\\>\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'Cable\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'Cartridge\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'CartridgeItem\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'Consumable\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'ConsumableItem\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'Enclosure\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'PDU\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'PassiveDCEquipment\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'Rack\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'RackItem\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'Socket\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'Software\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'SoftwareVersion\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'\\{itemtype\\}\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'Cable\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'Cable\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'Cartridge\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'CartridgeItem\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'CartridgeItem\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'CommonAsset\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'Consumable\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'ConsumableItem\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'ConsumableItem\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'Enclosure\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'Enclosure\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'Infocom\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'PDU\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'PDU\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'PassiveDCEquipment\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'PassiveDCEquipment\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'Rack\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'RackItem\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'Rack\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'Socket\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'Socket\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'Software\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'SoftwareVersion\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'SoftwareVersion\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'Software\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'\\{itemtype\\}\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'\\{itemtype\\}\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'\\{component_type\\}\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ComponentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'\\{component_type\\}\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ComponentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'\\{component_type\\}Item\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ComponentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var has invalid value \\(\\{name\\: string, default\\: mixed\\}\\[\\] \\$allowed_keys_mapping\\)\\: Unexpected token "\\{", expected type at offset 9 on line 1$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/CoreController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'EntityTransferRecor…\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/CoreController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{200\\: array\\{description\\: \'API information\', schema\\: \'APIInformation\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/CoreController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{description\\: \'The session…\', schema\\: \'Session\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/CoreController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'CustomAsset_…\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 6,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/CustomAssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'CustomAsset_…\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 6,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/CustomAssetController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\ITILController\\:\\:getSubitemLinkFields\\(\\) is unused\\.$#',
@@ -1530,210 +654,6 @@ $ignoreErrors[] = [
 	'identifier' => 'method.unused',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'ExternalEvent\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'RecurringChange\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'RecurringTicket\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'\\{itemtype\\}\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'id\', description\\: \'The ID of the…\', location\\: \'path\', schema\\: array\\{type\\: \'integer\'\\}\\}, array\\{name\\: \'_\', location\\: \'body\', schema\\: \'\\{itemtype\\}\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'id\', description\\: \'The ID of the…\', location\\: \'path\', schema\\: array\\{type\\: \'integer\'\\}\\}, array\\{name\\: \'_\', location\\: \'body\', schema\\: \'\\{itemtype\\}Task\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'id\', description\\: \'The ID of the…\', location\\: \'path\', schema\\: array\\{type\\: \'integer\'\\}\\}, array\\{name\\: \'_\', location\\: \'body\', schema\\: \'\\{itemtype\\}Validation\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'id\', description\\: \'The ID of the…\', location\\: \'path\', schema\\: array\\{type\\: \'integer\'\\}\\}, array\\{name\\: \'_\', location\\: \'body\', schema\\: \'\\{subitem_type\\}\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{description\\: \'The team member\', schema\\: \'TeamMember\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{description\\: \'The team members\', schema\\: \'TeamMember\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'ExternalEvent\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'ExternalEvent\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'RecurringChange\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'RecurringChange\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'RecurringTicket\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'RecurringTicket\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'\\{itemtype\\}\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'\\{itemtype\\}Task\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'\\{itemtype\\}Task\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'\\{itemtype\\}Validation\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'\\{itemtype\\}\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'\\{itemtype…\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'\\{subitem_type\\}\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'\\{subitem_type\\}\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'\\{itemtype\\}\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'Document\', media_type\\: \'application/octet…\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'\\{itemtype\\}\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'\\{itemtype\\}\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'Project\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ProjectController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'ProjectTask\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ProjectController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'Project\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ProjectController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'ProjectTask\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ProjectController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'ProjectTask\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ProjectController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'Project\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ProjectController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$errors of static method Glpi\\\\Api\\\\HL\\\\Controller\\\\AbstractController\\:\\:getInvalidParametersErrorResponse\\(\\) expects array\\{missing\\?\\: array\\<string\\>, invalid\\?\\: array\\<array\\{name\\: string, reason\\?\\: string\\}\\>\\}, array\\{invalid\\: array\\{name\\: \'field\'\\}\\} given\\.$#',
@@ -1752,114 +672,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 3,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ReportController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'AssetCharacteristic…\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ReportController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'AssetStats\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ReportController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'GlobalStats\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ReportController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'ITILStats\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ReportController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{array\\{schema\\: \'StatReport\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ReportController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'Rule\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/RuleController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'RuleAction\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/RuleController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'RuleCriteria\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/RuleController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{200\\: array\\{description\\: \'List of rule action…\', schema\\: \'RuleActionField\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/RuleController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{200\\: array\\{description\\: \'List of rule action…\', schema\\: \'RuleActionType\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/RuleController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{200\\: array\\{description\\: \'List of rules\', schema\\: \'Rule\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/RuleController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{200\\: array\\{description\\: \'List of rule…\', schema\\: \'RuleCriteriaConditi…\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/RuleController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{200\\: array\\{description\\: \'List of rule…\', schema\\: \'RuleCriteriaCriteri…\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/RuleController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{200\\: array\\{description\\: \'The rule action\', schema\\: \'RuleAction\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/RuleController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{200\\: array\\{description\\: \'The rule actions\', schema\\: \'RuleAction\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/RuleController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{200\\: array\\{description\\: \'The rule criteria\', schema\\: \'RuleCriteria\\[\\]\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/RuleController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{200\\: array\\{description\\: \'The rule criterion\', schema\\: \'RuleCriteria\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/RuleController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$responses of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{methods\\?\\: array\\<string\\>, description\\?\\: string, headers\\?\\: array, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string\\}, examples\\?\\: array, media_type\\?\\: string\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Response\\>, array\\{200\\: array\\{description\\: \'The rule\', schema\\: \'Rule\'\\}\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/RuleController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Expression "\\$action\\(\\$input\\)" on a separate line does not do anything\\.$#',
@@ -1922,24 +734,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Application/View/Extension/I18nExtension.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type Glpi\\\\Asset\\\\AssetModel is not subtype of native type string\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/Asset.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type Glpi\\\\Asset\\\\AssetType is not subtype of native type string\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/Asset.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type SplFileObject is not subtype of native type DirectoryIterator\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Asset/AssetDefinitionManager.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of static method NetworkPort\\:\\:rawSearchOptionsToAdd\\(\\) expects null, class\\-string\\<Glpi\\\\Asset\\\\Asset\\> given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -1956,12 +750,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/CalDAV/Plugin/Acl.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type SplFileInfo is not subtype of native type DirectoryIterator\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/CommandLoader.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$value of static method DBConnection\\:\\:updateConfigProperty\\(\\) expects string, true given\\.$#',
@@ -2240,12 +1028,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type Glpi\\\\Search\\\\Input\\\\SearchInputInterface is not subtype of native type string\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Search/SearchEngine.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#3 \\$entity_restrict of static method User\\:\\:getSqlSearchResult\\(\\) expects int, array given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -2300,18 +1082,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$display \\? void \\: string\\)\\: Unexpected token "\\$display", expected type at offset 656 on line 13$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$display is true \\? true \\: string\\)\\: Unexpected token "\\$display", expected type at offset 219 on line 9$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$string of function str_pad expects string, float\\|int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 3,
@@ -2358,12 +1128,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/IPNetwork_Vlan.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type CommonITILObject is not subtype of native type string\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/ITILTemplate.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$tt of static method ITILTemplateField\\:\\:showForITILTemplate\\(\\) expects ITILTemplate, CommonGLPI given\\.$#',
@@ -2546,12 +1310,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/KnowbaseItem.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @return has invalid value \\(true;\\)\\: Unexpected token ";", expected TOKEN_HORIZONTAL_WS at offset 126 on line 6$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItemTranslation.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#3 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, KnowbaseItem_Revision given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -2592,24 +1350,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/LevelAgreement.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type OlaLevel\\|SlaLevel is not subtype of native type static\\(LevelAgreementLevel\\)\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/LevelAgreementLevel.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$ola\\|sla of method OlaLevel\\:\\:showForParent\\(\\) expects OLA\\|SLA, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/LevelAgreementLevel.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(array\\<int, \\{name\\: string, type\\: string\\}\\>\\)\\: Unexpected token "\\{", expected type at offset 119 on line 5$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Link.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$item of static method Link\\:\\:showAllLinksForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
@@ -2696,12 +1436,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NetworkName.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type CommonDBTM is not subtype of native type class\\-string\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkPort.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$item of static method NetworkPort\\:\\:countForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -2714,28 +1448,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NetworkPort.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$itemtype of function getItemForItemtype expects class\\-string\\<mixed\\>, CommonDBTM given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkPort.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$rand of static method Html\\:\\:getCheckAllAsCheckbox\\(\\) expects int\\|null, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$val \\!\\=\\= null \\? string \\: array\\)\\: Unexpected token "\\$val", expected type at offset 218 on line 7$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkPortEthernet.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$val \\!\\=\\= null \\? string \\: array\\)\\: Unexpected token "\\$val", expected type at offset 220 on line 7$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkPortEthernet.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$item of static method Notepad\\:\\:countForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
@@ -2772,18 +1488,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NotificationTemplate.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @return has invalid value \\(array\\: empty array if itemtype is not lockable; else returns UNLOCK right\\)\\: Unexpected token "\\:", expected TOKEN_HORIZONTAL_WS at offset 96 on line 5$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ObjectLock.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @return has invalid value \\(bool\\|ObjectLock\\: returns ObjectLock if locked, else false\\)\\: Unexpected token "\\:", expected TOKEN_HORIZONTAL_WS at offset 104 on line 5$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ObjectLock.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$value of function count expects array\\|Countable, Iterator given\\.$#',
@@ -2864,18 +1568,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Printer.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type CommonDBTM is not subtype of native type Group\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Problem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$interface \\=\\= \'all\' \\? array\\<string, array\\<string, array\\<string, RightDefinition\\[\\]\\>\\>\\> \\: \\(\\$form \\=\\= \'all\' \\? array\\<string, array\\<string, RightDefinition\\[\\]\\>\\> \\: \\(\\$group \\=\\= \'all\' \\? array\\<string, RightDefinition\\[\\]\\> \\: RightDefinition\\[\\]\\)\\)\\)\\: Unexpected token "\\$interface", expected type at offset 517 on line 12$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Profile.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#4 \\$is_recursive of function getEntitiesRestrictCriteria expects \'auto\'\\|bool, 1 given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -2900,12 +1592,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Reminder.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$display \\? void \\: string\\)\\: Unexpected token "\\$display", expected type at offset 219 on line 8$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Reminder.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call static method getSystemSQLCriteria\\(\\) on \\(int\\|string\\)\\.$#',
 	'identifier' => 'staticMethod.nonObject',
 	'count' => 1,
@@ -2915,24 +1601,6 @@ $ignoreErrors[] = [
 	'message' => '#^Cannot call static method getTypeName\\(\\) on \\(int\\|string\\)\\.$#',
 	'identifier' => 'staticMethod.nonObject',
 	'count' => 5,
-	'path' => __DIR__ . '/src/Report.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Match expression does not handle remaining value\\: string$#',
-	'identifier' => 'match.unhandled',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Report.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @param for parameter \\$by_itemtype contains unresolvable type\\.$#',
-	'identifier' => 'parameter.unresolvableType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Report.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @return has invalid value \\(array\\<class\\-string\\<CommonDBTM\\>, array\\<int, array\\>\\)\\: Unexpected token "\\*/", expected \'\\>\' at offset 74 on line 3$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
 	'path' => __DIR__ . '/src/Report.php',
 ];
 $ignoreErrors[] = [
@@ -2988,18 +1656,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Rule.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type CommonITILObject is not subtype of native type string\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 2,
-	'path' => __DIR__ . '/src/RuleCommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type CommonITILObject is not subtype of native type string\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleCommonITILObjectCollection.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Callable passed to call_user_func\\(\\) invoked with 1 parameter, 0 required\\.$#',
@@ -3080,24 +1736,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/SoftwareLicense.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$display \\? void \\: string\\)\\: Unexpected token "\\$display", expected type at offset 301 on line 10$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Stat.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$display \\? void \\: string\\)\\: Unexpected token "\\$display", expected type at offset 621 on line 16$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Stat.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$display \\? void \\: string\\)\\: Unexpected token "\\$display", expected type at offset 622 on line 16$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Stat.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of static method Stat\\:\\:constructEntryValues\\(\\) expects class\\-string\\<CommonITILObject\\>, class\\-string\\<CommonGLPI\\> given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 6,
@@ -3138,12 +1776,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Stat.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type CommonDBTM is not subtype of native type Group\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Ticket.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#4 \\$checkitem of static method KnowbaseItem_Item\\:\\:getMassiveActionsForItemtype\\(\\) expects CommonDBTM\\|null, CommonGLPI\\|null given\\.$#',
@@ -3218,12 +1850,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/UploadHandler.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type array is not subtype of native type array\\{\\}\\|array\\{list\\<string\\>, list\\<string\\>\\}\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/User.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$user of static method AuthLDAP\\:\\:forceOneUserSynchronization\\(\\) expects User, CommonDBTM given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -3244,12 +1870,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$items_id of function getAncestorsOf expects array\\|string, int given\\.$#',
 	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Webhook.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Variable \\$list_itemtype in PHPDoc tag @var does not match assigned variable \\$recursive_search\\.$#',
-	'identifier' => 'varTag.differentVariable',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Webhook.php',
 ];
