@@ -1832,7 +1832,7 @@ final class DbUtils
     {
         $username = $this->getUserName($id);
 
-        if (!is_int($id) || $id <= 0 || !User::canView()) {
+        if ($id <= 0 || !User::canView()) {
             return htmlescape($username);
         }
 

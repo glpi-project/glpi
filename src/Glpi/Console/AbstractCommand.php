@@ -212,7 +212,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
             return;
         }
 
-        $db = property_exists($this, 'db') ? $this->db : null;
+        $db = $this->db;
 
         $requirements_manager = new RequirementsManager();
         $core_requirements = $requirements_manager->getCoreRequirementList(

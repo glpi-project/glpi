@@ -169,7 +169,8 @@ trait AssignableItem
         return $rights;
     }
 
-    protected function prepareGroupFields(array $input)
+    /** @see AssignableItemInterface::prepareGroupFields() */
+    public function prepareGroupFields(array $input)
     {
         $fields = ['groups_id', 'groups_id_tech'];
         foreach ($fields as $field) {
@@ -210,10 +211,8 @@ trait AssignableItem
         return $this->prepareGroupFields($input);
     }
 
-    /**
-     * Update the values in the 'glpi_groups_items' link table as needed based on the groups set in the 'groups_id' and 'groups_id_tech' fields.
-     */
-    private function updateGroupFields()
+    /** @see AssignableItemInterface::updateGroupFields() */
+    public function updateGroupFields()
     {
         /** @var DBmysql $DB */
         global $DB;
