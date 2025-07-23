@@ -184,7 +184,7 @@ class Ajax
         $domid  = Html::sanitizeDomId($domid);
 
         $html = '
-            <div id="' . htmlescape($param['title']) . '" class="modal fade" tabindex="-1" role="dialog">
+            <div id="' . htmlescape($domid) . '" class="modal fade" tabindex="-1" role="dialog">
                 <div class="modal-dialog ' . htmlescape($param['dialog_class']) . '">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -205,46 +205,45 @@ class Ajax
 
         $js = '
             $(function() {
-                myModalEl' . $rand . ' = $(#"' . $domid . '");
+                myModalEl' . $rand . ' = document.getElementById("' . $domid . '");
                 myModal' . $rand . '   = new bootstrap.Modal(myModalEl' . $rand . ');
 
                 // move modal to body
                 $(myModalEl' . $rand . ').appendTo($("body"));
 
-                myModal' . $rand . '.addEventListener("show.bs.modal", function () {
+                myModalEl' . $rand . '.addEventListener("show.bs.modal", function () {
                     $("#iframe' . $domid . '").attr("src", "' . jsescape($url) . '").removeClass("hidden");
                 });
         ';
         if ($param['reloadonclose']) {
             $js .= '
-                myModal' . $rand . '.addEventListener("hide.bs.modal", function () {
+                myModalEl' . $rand . '.addEventListener("hide.bs.modal", function () {
                     window.location.reload()
                 });
             ';
         }
         if ($param['autoopen']) {
             $js .= '
-                myModal{$rand}.show();
+                myModal' . $rand . '.show();
             ';
         }
         $js .= '
-                $("#iframe' . $domid . '").onload = function() {
+                document.getElementById("iframe' . $domid . '").onload = function() {
                     var h = ' . ((int) $param['height']) . ';
                     var w = ' . ((int) $param['width']) . ';
-                    var w = {$width};
 
                     $("#iframe' . $domid . '").height(h);
 
                     if (w >= 700) {
-                        $(#"' . $domid . ' .modal-dialog").addClass("modal-xl");
+                        $("#' . $domid . ' .modal-dialog").addClass("modal-xl");
                     } else if (w >= 500) {
-                        $(#"' . $domid . ' .modal-dialog").addClass("modal-lg");
+                        $("#' . $domid . ' .modal-dialog").addClass("modal-lg");
                     } else if (w <= 300) {
-                        $(#"' . $domid . ' .modal-dialog").addClass("modal-sm");
+                        $("#' . $domid . ' .modal-dialog").addClass("modal-sm");
                     }
 
                     // reajust height to content
-                    myModal{$rand}.handleUpdate()
+                    myModal' . $rand . '.handleUpdate()
                 };
             });
         ';
