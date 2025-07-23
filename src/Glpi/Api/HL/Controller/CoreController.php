@@ -135,10 +135,10 @@ final class CoreController extends AbstractController
     #[Doc\Route(
         description: 'API Homepage. Displays the available API versions and a list of available routes. When logged in, more routes are displayed.',
         responses: [
-            '200' => [
-                'description' => 'API information',
-                'schema' => 'APIInformation',
-            ],
+            new Doc\Response(
+                schema: new Doc\SchemaReference('APIInformation'),
+                description: 'API information',
+            ),
         ]
     )]
     public function index(Request $request): Response
@@ -153,9 +153,7 @@ final class CoreController extends AbstractController
 
     #[Route(path: '/doc', methods: ['GET'], security_level: Route::SECURITY_NONE, middlewares: [CookieAuthMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Displays the API documentation as a Swagger UI HTML page.',
-    )]
+    #[Doc\Route(description: 'Displays the API documentation as a Swagger UI HTML page.')]
     public function showDocumentation(Request $request): Response
     {
         /** @var array $CFG_GLPI */
@@ -203,9 +201,7 @@ HTML;
 
     #[Route(path: '/doc.json', methods: ['GET'], security_level: Route::SECURITY_NONE, middlewares: [CookieAuthMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get the OpenAPI JSON schema.',
-    )]
+    #[Doc\Route(description: 'Get the OpenAPI JSON schema.')]
     public function getOpenAPISchema(Request $request): Response
     {
         $generator = new OpenAPIGenerator(Router::getInstance(), $this->getAPIVersion($request));
@@ -215,9 +211,7 @@ HTML;
 
     #[Route(path: '/getting-started', methods: ['GET'], security_level: Route::SECURITY_NONE, middlewares: [CookieAuthMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Displays the general API documentation to get started.',
-    )]
+    #[Doc\Route(description: 'Displays the general API documentation to get started.')]
     public function showGettingStarted(Request $request): Response
     {
         $documentation_file = GLPI_ROOT . '/resources/api_doc.MD';
@@ -277,12 +271,16 @@ HTML;
         description: 'A fallback for when no other endpoint matches the request. A 404 error will be shown.',
         methods: ['GET', 'POST', 'PATCH', 'PUT', "DELETE"],
         responses: [
-            '200' => [
-                'description' => 'Never returned',
-            ],
-            '404' => [
-                'description' => 'No route found for the requested path',
-            ],
+            new Doc\Response(
+                schema: null,
+                description: 'Never returned',
+                status_code: 200,
+            ),
+            new Doc\Response(
+                schema: null,
+                description: 'No route found for the requested path',
+                status_code: 404,
+            ),
         ]
     )]
     public function defaultRoute(Request $request): Response
@@ -323,10 +321,10 @@ HTML;
     #[Doc\Route(
         description: 'Get information about the session',
         responses: [
-            [
-                'description'   => 'The session information',
-                'schema'        => 'Session',
-            ],
+            new Doc\Response(
+                schema: new Doc\SchemaReference('Session'),
+                description: 'The session information'
+            ),
         ]
     )]
     public function getSession(Request $request): Response
@@ -397,9 +395,7 @@ HTML;
 
     #[Route(path: '/authorize', methods: ['GET', 'POST'], security_level: Route::SECURITY_NONE, tags: ['Session'], middlewares: [CookieAuthMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Authorize the API client using the authorization code grant type.',
-    )]
+    #[Doc\Route(description: 'Authorize the API client using the authorization code grant type.')]
     public function authorize(Request $request): Response
     {
         /** @var array $CFG_GLPI */
@@ -453,9 +449,7 @@ HTML;
 
     #[Route(path: '/token', methods: ['POST'], security_level: Route::SECURITY_NONE, tags: ['Session'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get an OAuth 2.0 token'
-    )]
+    #[Doc\Route(description: 'Get an OAuth 2.0 token')]
     public function token(Request $request): Response
     {
         try {
@@ -480,9 +474,7 @@ HTML;
 
     #[Route(path: '/status', methods: ['GET'], tags: ['Status'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a list of all GLPI system status checker services.',
-    )]
+    #[Doc\Route(description: 'Get a list of all GLPI system status checker services.')]
     public function status(Request $request): Response
     {
         $services = array_keys(StatusChecker::getServices());
@@ -504,20 +496,20 @@ HTML;
     #[Doc\Route(
         description: 'Get the the status of all GLPI system status checker services',
         responses: [
-            [
-                'schema'        => [
-                    'type' => Doc\Schema::TYPE_ARRAY,
-                    'items' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'properties' => [
-                            'status' => [
-                                'type' => Doc\Schema::TYPE_STRING,
-                                'enum' => [StatusChecker::STATUS_OK, StatusChecker::STATUS_WARNING, StatusChecker::STATUS_PROBLEM, StatusChecker::STATUS_NO_DATA],
-                            ],
+            new Doc\Response(
+                schema: new Doc\Schema(
+                    type: Doc\Schema::TYPE_ARRAY,
+                    items: new Doc\Schema(
+                        type: Doc\Schema::TYPE_OBJECT,
+                        properties: [
+                            'status' => new Doc\Schema(
+                                type: Doc\Schema::TYPE_STRING,
+                                enum: [StatusChecker::STATUS_OK, StatusChecker::STATUS_WARNING, StatusChecker::STATUS_PROBLEM, StatusChecker::STATUS_NO_DATA],
+                            ),
                         ],
-                    ],
-                ],
-            ],
+                    )
+                )
+            ),
         ]
     )]
     public function statusAllServices(Request $request): Response
@@ -534,17 +526,17 @@ HTML;
     #[Doc\Route(
         description: 'Get the status of a GLPI system status checker service. Use "all" as the service to get the full system status.',
         responses: [
-            [
-                'schema'        => [
-                    'type' => Doc\Schema::TYPE_OBJECT,
-                    'properties' => [
-                        'status' => [
-                            'type' => Doc\Schema::TYPE_STRING,
-                            'enum' => [StatusChecker::STATUS_OK, StatusChecker::STATUS_WARNING, StatusChecker::STATUS_PROBLEM, StatusChecker::STATUS_NO_DATA],
-                        ],
+            new Doc\Response(
+                schema: new Doc\Schema(
+                    type: Doc\Schema::TYPE_OBJECT,
+                    properties: [
+                        'status' => new Doc\Schema(
+                            type: Doc\Schema::TYPE_STRING,
+                            enum: [StatusChecker::STATUS_OK, StatusChecker::STATUS_WARNING, StatusChecker::STATUS_PROBLEM, StatusChecker::STATUS_NO_DATA]
+                        ),
                     ],
-                ],
-            ],
+                )
+            ),
         ]
     )]
     public function statusByService(Request $request): Response
@@ -562,11 +554,11 @@ HTML;
     #[Doc\Route(
         description: 'Transfer one or more items to another entity',
         parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'EntityTransferRecord[]',
-            ],
+            new Doc\Parameter(
+                name: '_',
+                schema: new Doc\SchemaReference('EntityTransferRecord[]'),
+                location: Doc\Parameter::LOCATION_BODY,
+            ),
         ]
     )]
     public function transferEntity(Request $request): Response

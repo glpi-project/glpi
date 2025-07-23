@@ -88,12 +88,16 @@ use function Safe\json_decode;
 ], tags: ['Assistance'])]
 #[Doc\Route(
     parameters: [
-        [
-            'name' => 'itemtype',
-            'description' => 'Ticket, Change or Problem',
-            'location' => Doc\Parameter::LOCATION_PATH,
-            'schema' => ['type' => Doc\Schema::TYPE_STRING],
-        ],
+        new Doc\Parameter(
+            name: 'itemtype',
+            schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, enum: ['Ticket', 'Change', 'Problem']),
+            location: Doc\Parameter::LOCATION_PATH,
+        ),
+        new Doc\Parameter(
+            name: 'id',
+            schema: new Doc\Schema(type: Doc\Schema::TYPE_INTEGER),
+            location: Doc\Parameter::LOCATION_PATH,
+        ),
     ]
 )]
 final class ITILController extends AbstractController
@@ -862,12 +866,9 @@ final class ITILController extends AbstractController
 
     #[Route(path: '/{itemtype}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'List or search Tickets, Changes or Problems',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
-        responses: [
-            ['schema' => '{itemtype}[]'],
-        ]
+    #[Doc\SearchRoute(
+        schema_name: '{itemtype}',
+        description: 'List or search Tickets, Changes or Problems'
     )]
     public function search(Request $request): Response
     {
@@ -877,19 +878,9 @@ final class ITILController extends AbstractController
 
     #[Route(path: '/{itemtype}/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a Ticket, Change or Problem by ID',
-        parameters: [
-            [
-                'name' => 'id',
-                'description' => 'The ID of the Ticket, Change, or Problem',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
-            ],
-        ],
-        responses: [
-            ['schema' => '{itemtype}'],
-        ]
+    #[Doc\GetRoute(
+        schema_name: '{itemtype}',
+        description: 'Get an existing Ticket, Change or Problem'
     )]
     public function getItem(Request $request): Response
     {
@@ -899,15 +890,9 @@ final class ITILController extends AbstractController
 
     #[Route(path: '/{itemtype}', methods: ['POST'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Create a new Ticket, Change or Problem',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => '{itemtype}',
-            ],
-        ]
+    #[Doc\CreateRoute(
+        schema_name: '{itemtype}',
+        description: 'Create a new new Ticket, Change or Problem'
     )]
     public function createItem(Request $request): Response
     {
@@ -917,21 +902,9 @@ final class ITILController extends AbstractController
 
     #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update a Ticket, Change or Problem by ID',
-        parameters: [
-            [
-                'name' => 'id',
-                'description' => 'The ID of the Ticket, Change, or Problem',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
-            ],
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => '{itemtype}',
-            ],
-        ]
+    #[Doc\UpdateRoute(
+        schema_name: '{itemtype}',
+        description: 'Update an existing Ticket, Change or Problem'
     )]
     public function updateItem(Request $request): Response
     {
@@ -941,16 +914,9 @@ final class ITILController extends AbstractController
 
     #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Delete a Ticket, Change or Problem by ID',
-        parameters: [
-            [
-                'name' => 'id',
-                'description' => 'The ID of the Ticket, Change, or Problem',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
-            ],
-        ]
+    #[Doc\DeleteRoute(
+        schema_name: '{itemtype}',
+        description: 'Delete a Ticket, Change or Problem'
     )]
     public function deleteItem(Request $request): Response
     {
@@ -1048,18 +1014,11 @@ final class ITILController extends AbstractController
     #[Route(path: '/{itemtype}/{id}/Timeline', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
-        description: 'Get all timeline items for a Ticket, Change or Problem by ID',
-        parameters: [
-            [
-                'name' => 'id',
-                'description' => 'The ID of the Ticket, Change, or Problem',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
-            ],
-        ]
+        description: 'Get all timeline items for a Ticket, Change or Problem'
     )]
     public function getTimeline(Request $request): Response
     {
+        //TODO Route documentation needs a response schema
         /** @var CommonITILObject $item */
         $item = $request->getParameter('_item');
         $timeline = $this->getITILTimelineItems($item, $request);
@@ -1071,17 +1030,9 @@ final class ITILController extends AbstractController
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
-        description: 'Get all timeline items of a specific type for a Ticket, Change or Problem by ID',
-        parameters: [
-            [
-                'name' => 'id',
-                'description' => 'The ID of the Ticket, Change, or Problem',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
-            ],
-        ],
+        description: 'Get all timeline items of a specific type for a Ticket, Change or Problem',
         responses: [
-            ['schema' => '{subitem_type}[]'],
+            new Doc\Response(schema: new Doc\SchemaReference('{subitem_type}[]')),
         ]
     )]
     public function getTimelineItems(Request $request): Response
@@ -1101,17 +1052,9 @@ final class ITILController extends AbstractController
     #[Route(path: '/{itemtype}/{id}/Timeline/Task', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
-        description: 'Get all tasks for a Ticket, Change or Problem by ID',
-        parameters: [
-            [
-                'name' => 'id',
-                'description' => 'The ID of the Ticket, Change, or Problem',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
-            ],
-        ],
+        description: 'Get all tasks for a Ticket, Change or Problem',
         responses: [
-            ['schema' => '{itemtype}Task[]'],
+            new Doc\Response(schema: new Doc\SchemaReference('{itemtype}Task[]')),
         ]
     )]
     public function getTimelineTasks(Request $request): Response
@@ -1132,17 +1075,9 @@ final class ITILController extends AbstractController
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
-        description: 'Get all validations for a Ticket or Change by ID',
-        parameters: [
-            [
-                'name' => 'id',
-                'description' => 'The ID of the Ticket or Change',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
-            ],
-        ],
+        description: 'Get all validations for a Ticket or Change',
         responses: [
-            ['schema' => '{itemtype}Validation[]'],
+            new Doc\Response(schema: new Doc\SchemaReference('{itemtype}Validation[]')),
         ]
     )]
     public function getTimelineValidations(Request $request): Response
@@ -1208,19 +1143,9 @@ final class ITILController extends AbstractController
         'subitem_id' => '\d+',
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a specific timeline item by type and ID for a Ticket, Change or Problem by ID',
-        parameters: [
-            [
-                'name' => 'id',
-                'description' => 'The ID of the Ticket, Change, or Problem',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
-            ],
-        ],
-        responses: [
-            ['schema' => '{subitem_type}'],
-        ]
+    #[Doc\GetRoute(
+        schema_name: '{subitem_type}',
+        description: 'Get an existing specific timeline item by type and ID for a Ticket, Change or Problem'
     )]
     public function getTimelineItem(Request $request): Response
     {
@@ -1235,19 +1160,9 @@ final class ITILController extends AbstractController
         'subitem_id' => '\d+',
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a task for a Ticket, Change or Problem by ID',
-        parameters: [
-            [
-                'name' => 'id',
-                'description' => 'The ID of the Ticket, Change, or Problem',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
-            ],
-        ],
-        responses: [
-            ['schema' => '{itemtype}Task'],
-        ]
+    #[Doc\GetRoute(
+        schema_name: '{itemtype}Task',
+        description: 'Get an existing task for a Ticket, Change or Problem'
     )]
     public function getTimelineTask(Request $request): Response
     {
@@ -1264,19 +1179,9 @@ final class ITILController extends AbstractController
         'subitem_id' => '\d+',
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a validation for a Ticket or Change by ID',
-        parameters: [
-            [
-                'name' => 'id',
-                'description' => 'The ID of the Ticket or Change',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
-            ],
-        ],
-        responses: [
-            ['schema' => '{itemtype}Validation'],
-        ]
+    #[Doc\GetRoute(
+        schema_name: '{itemtype}Validation',
+        description: 'Get an existing validation for a Ticket or Change'
     )]
     public function getTimelineValidation(Request $request): Response
     {
@@ -1292,21 +1197,9 @@ final class ITILController extends AbstractController
         'subitem_type' => 'Followup|Document|Solution',
     ])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Create a timeline item for a Ticket, Change or Problem by ID',
-        parameters: [
-            [
-                'name' => 'id',
-                'description' => 'The ID of the Ticket, Change, or Problem',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
-            ],
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => '{subitem_type}',
-            ],
-        ],
+    #[Doc\CreateRoute(
+        schema_name: '{subitem_type}',
+        description: 'Create a new timeline item for a Ticket, Change or Problem'
     )]
     public function createTimelineItem(Request $request): Response
     {
@@ -1329,21 +1222,9 @@ final class ITILController extends AbstractController
 
     #[Route(path: '/{itemtype}/{id}/Timeline/Task', methods: ['POST'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Create a task for a Ticket, Change or Problem by ID',
-        parameters: [
-            [
-                'name' => 'id',
-                'description' => 'The ID of the Ticket, Change, or Problem',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
-            ],
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => '{itemtype}Task',
-            ],
-        ],
+    #[Doc\CreateRoute(
+        schema_name: '{itemtype}Task',
+        description: 'Create a new task for a Ticket, Change or Problem'
     )]
     public function createTimelineTask(Request $request): Response
     {
@@ -1367,21 +1248,9 @@ final class ITILController extends AbstractController
         'itemtype' => 'Ticket|Change',
     ])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Create a validation for a Ticket or Change by ID',
-        parameters: [
-            [
-                'name' => 'id',
-                'description' => 'The ID of the Ticket or Change',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
-            ],
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => '{itemtype}Task',
-            ],
-        ],
+    #[Doc\CreateRoute(
+        schema_name: '{itemtype}Validation',
+        description: 'Create a new validation for a Ticket or Change',
     )]
     public function createTimelineValidation(Request $request): Response
     {
@@ -1406,21 +1275,9 @@ final class ITILController extends AbstractController
         'subitem_id' => '\d+',
     ])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update a timeline item by ID for a Ticket, Change or Problem by ID',
-        parameters: [
-            [
-                'name' => 'id',
-                'description' => 'The ID of the Ticket, Change, or Problem',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
-            ],
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => '{subitem_type}',
-            ],
-        ]
+    #[Doc\UpdateRoute(
+        schema_name: '{subitem_type}',
+        description: 'Update an existing timeline item by ID for a Ticket, Change or Problem'
     )]
     public function updateTimelineItem(Request $request): Response
     {
@@ -1443,21 +1300,9 @@ final class ITILController extends AbstractController
         'subitem_id' => '\d+',
     ])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update a task for a Ticket, Change or Problem by ID',
-        parameters: [
-            [
-                'name' => 'id',
-                'description' => 'The ID of the Ticket, Change, or Problem',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
-            ],
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => '{itemtype}Task',
-            ],
-        ]
+    #[Doc\UpdateRoute(
+        schema_name: '{itemtype}Task',
+        description: 'Update an existing task for a Ticket, Change or Problem'
     )]
     public function updateTimelineTask(Request $request): Response
     {
@@ -1480,21 +1325,9 @@ final class ITILController extends AbstractController
         'subitem_id' => '\d+',
     ])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update a validation for a Ticket or Change',
-        parameters: [
-            [
-                'name' => 'id',
-                'description' => 'The ID of the Ticket or Change',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
-            ],
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => '{itemtype}Validation',
-            ],
-        ]
+    #[Doc\UpdateRoute(
+        schema_name: '{itemtype}Validation',
+        description: 'Update an existing validation for a Ticket or Change'
     )]
     public function updateTimelineValidation(Request $request): Response
     {
@@ -1518,15 +1351,7 @@ final class ITILController extends AbstractController
     ])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
-        description: 'Delete a timeline item by ID for a Ticket, Change or Problem by ID',
-        parameters: [
-            [
-                'name' => 'id',
-                'description' => 'The ID of the Ticket, Change, or Problem',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
-            ],
-        ]
+        description: 'Delete a timeline item by ID for a Ticket, Change or Problem'
     )]
     public function deleteTimelineItem(Request $request): Response
     {
@@ -1543,15 +1368,7 @@ final class ITILController extends AbstractController
     ])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
-        description: 'Delete a task for a Ticket, Change or Problem by ID',
-        parameters: [
-            [
-                'name' => 'id',
-                'description' => 'The ID of the Ticket, Change, or Problem',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
-            ],
-        ]
+        description: 'Delete a task for a Ticket, Change or Problem'
     )]
     public function deleteTimelineTask(Request $request): Response
     {
@@ -1568,15 +1385,7 @@ final class ITILController extends AbstractController
     ])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
-        description: 'Delete a validation for a Ticket or Change by ID',
-        parameters: [
-            [
-                'name' => 'id',
-                'description' => 'The ID of the Ticket or Change',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
-            ],
-        ]
+        description: 'Delete a validation for a Ticket or Change',
     )]
     public function deleteTimelineValidation(Request $request): Response
     {
@@ -1658,12 +1467,9 @@ final class ITILController extends AbstractController
     #[Route(path: '/{itemtype}/{id}/TeamMember', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
-        description: 'Get the team members for a specific Ticket, Change or Problem by ID',
+        description: 'Get the team members for a specific Ticket, Change or Problem',
         responses: [
-            [
-                'description' => 'The team members',
-                'schema' => 'TeamMember[]',
-            ],
+            new Doc\Response(schema: new Doc\SchemaReference('TeamMember[]')),
         ]
     )]
     public function getTeamMembers(Request $request): Response
@@ -1680,20 +1486,20 @@ final class ITILController extends AbstractController
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
-        description: 'Get the team members by role for specific Ticket, Change, Problem by ID',
+        description: 'Get the team members by role for specific Ticket, Change, Problem',
         parameters: [
-            [
-                'name' => 'role',
-                'description' => 'The role',
-                'location' => Doc\Parameter::LOCATION_PATH,
-                'schema' => ['type' => Doc\Schema::TYPE_STRING],
-            ],
+            new Doc\Parameter(
+                name: 'role',
+                schema: new Doc\Schema(
+                    type: Doc\Schema::TYPE_STRING,
+                    enum: ['requester', 'assigned', 'observer']
+                ),
+                description: 'The role of the team member',
+                location: Doc\Parameter::LOCATION_BODY
+            ),
         ],
         responses: [
-            [
-                'description' => 'The team member',
-                'schema' => 'TeamMember[]',
-            ],
+            new Doc\Response(schema: new Doc\SchemaReference('TeamMember[]')),
         ]
     )]
     public function getTeamMembersByRole(Request $request): Response
@@ -1717,21 +1523,30 @@ final class ITILController extends AbstractController
     #[Doc\Route(
         description: 'Add a team member to a specific Ticket, Change or Problem',
         parameters: [
-            [
-                'name' => 'type',
-                'description' => 'The type of team member. The applicable types of members will depend on the role.',
-                'location' => Doc\Parameter::LOCATION_BODY,
-            ],
-            [
-                'name' => 'id',
-                'description' => 'The ID of the team member',
-                'location' => Doc\Parameter::LOCATION_BODY,
-            ],
-            [
-                'name' => 'role',
-                'description' => 'The role of the team member',
-                'location' => Doc\Parameter::LOCATION_BODY,
-            ],
+            new Doc\Parameter(
+                name: 'type',
+                schema: new Doc\Schema(
+                    type: Doc\Schema::TYPE_STRING,
+                    enum: ['User', 'Group', 'Supplier']
+                ),
+                description: 'The type of team member. The applicable types of members will depend on the role.',
+                location: Doc\Parameter::LOCATION_BODY
+            ),
+            new Doc\Parameter(
+                name: 'id',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_INTEGER),
+                description: 'The ID of the team member',
+                location: Doc\Parameter::LOCATION_BODY
+            ),
+            new Doc\Parameter(
+                name: 'role',
+                schema: new Doc\Schema(
+                    type: Doc\Schema::TYPE_STRING,
+                    enum: ['requester', 'assigned', 'observer']
+                ),
+                description: 'The role of the team member',
+                location: Doc\Parameter::LOCATION_BODY
+            ),
         ]
     )]
     public function addTeamMember(Request $request): Response
@@ -1758,21 +1573,30 @@ final class ITILController extends AbstractController
     #[Doc\Route(
         description: 'Remove a team member from a specific Ticket, Change or Problem',
         parameters: [
-            [
-                'name' => 'type',
-                'description' => 'The type of team member. The applicable types of members will depend on the role.',
-                'location' => Doc\Parameter::LOCATION_BODY,
-            ],
-            [
-                'name' => 'id',
-                'description' => 'The ID of the team member',
-                'location' => Doc\Parameter::LOCATION_BODY,
-            ],
-            [
-                'name' => 'role',
-                'description' => 'The role of the team member',
-                'location' => Doc\Parameter::LOCATION_BODY,
-            ],
+            new Doc\Parameter(
+                name: 'type',
+                schema: new Doc\Schema(
+                    type: Doc\Schema::TYPE_STRING,
+                    enum: ['User', 'Group', 'Supplier']
+                ),
+                description: 'The type of team member. The applicable types of members will depend on the role.',
+                location: Doc\Parameter::LOCATION_BODY
+            ),
+            new Doc\Parameter(
+                name: 'id',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_INTEGER),
+                description: 'The ID of the team member',
+                location: Doc\Parameter::LOCATION_BODY
+            ),
+            new Doc\Parameter(
+                name: 'role',
+                schema: new Doc\Schema(
+                    type: Doc\Schema::TYPE_STRING,
+                    enum: ['requester', 'assigned', 'observer']
+                ),
+                description: 'The role of the team member',
+                location: Doc\Parameter::LOCATION_BODY
+            ),
         ]
     )]
     public function removeTeamMember(Request $request): Response
@@ -1796,28 +1620,15 @@ final class ITILController extends AbstractController
 
     #[Route(path: '/RecurringTicket', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'List or search recurring tickets',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
-        responses: [
-            ['schema' => 'RecurringTicket[]'],
-        ]
-    )]
+    #[Doc\SearchRoute(schema_name: 'RecurringTicket')]
     public function searchRecurringTickets(Request $request): Response
     {
         return ResourceAccessor::searchBySchema($this->getKnownSchema('RecurringTicket', $this->getAPIVersion($request)), $request->getParameters());
     }
 
-    #[Route(path: '/RecurringTicket/{id}', methods: ['GET'], requirements: [
-        'id' => '\d+',
-    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/RecurringTicket/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a recurring ticket by ID',
-        responses: [
-            ['schema' => 'RecurringTicket'],
-        ]
-    )]
+    #[Doc\GetRoute(schema_name: 'RecurringTicket')]
     public function getRecurringTicket(Request $request): Response
     {
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('RecurringTicket', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
@@ -1825,47 +1636,23 @@ final class ITILController extends AbstractController
 
     #[Route(path: '/RecurringTicket', methods: ['POST'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Create a recurring ticket',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'RecurringTicket',
-            ],
-        ]
-    )]
+    #[Doc\CreateRoute(schema_name: 'RecurringTicket')]
     public function createRecurringTicket(Request $request): Response
     {
         return ResourceAccessor::createBySchema($this->getKnownSchema('RecurringTicket', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getRecurringTicket']);
     }
 
-    #[Route(path: '/RecurringTicket/{id}', methods: ['PATCH'], requirements: [
-        'id' => '\d+',
-    ])]
+    #[Route(path: '/RecurringTicket/{id}', methods: ['PATCH'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update a recurring ticket by ID',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'RecurringTicket',
-            ],
-        ]
-    )]
+    #[Doc\UpdateRoute(schema_name: 'RecurringTicket')]
     public function updateRecurringTicket(Request $request): Response
     {
         return ResourceAccessor::updateBySchema($this->getKnownSchema('RecurringTicket', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/RecurringTicket/{id}', methods: ['DELETE'], requirements: [
-        'id' => '\d+',
-    ])]
+    #[Route(path: '/RecurringTicket/{id}', methods: ['DELETE'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Delete a recurring ticket by ID',
-    )]
+    #[Doc\DeleteRoute(schema_name: 'RecurringTicket')]
     public function deleteRecurringTicket(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('RecurringTicket', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
@@ -1873,28 +1660,15 @@ final class ITILController extends AbstractController
 
     #[Route(path: '/RecurringChange', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'List or search recurring changes',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
-        responses: [
-            ['schema' => 'RecurringChange[]'],
-        ]
-    )]
+    #[Doc\SearchRoute(schema_name: 'RecurringChange')]
     public function searchRecurringChanges(Request $request): Response
     {
         return ResourceAccessor::searchBySchema($this->getKnownSchema('RecurringChange', $this->getAPIVersion($request)), $request->getParameters());
     }
 
-    #[Route(path: '/RecurringChange/{id}', methods: ['GET'], requirements: [
-        'id' => '\d+',
-    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/RecurringChange/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a recurring change by ID',
-        responses: [
-            ['schema' => 'RecurringChange'],
-        ]
-    )]
+    #[Doc\GetRoute(schema_name: 'RecurringChange')]
     public function getRecurringChange(Request $request): Response
     {
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('RecurringChange', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
@@ -1902,47 +1676,23 @@ final class ITILController extends AbstractController
 
     #[Route(path: '/RecurringChange', methods: ['POST'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Create a recurring change',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'RecurringChange',
-            ],
-        ]
-    )]
+    #[Doc\CreateRoute(schema_name: 'RecurringChange')]
     public function createRecurringChange(Request $request): Response
     {
         return ResourceAccessor::createBySchema($this->getKnownSchema('RecurringChange', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getRecurringChange']);
     }
 
-    #[Route(path: '/RecurringChange/{id}', methods: ['PATCH'], requirements: [
-        'id' => '\d+',
-    ])]
+    #[Route(path: '/RecurringChange/{id}', methods: ['PATCH'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update a recurring change by ID',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'RecurringChange',
-            ],
-        ]
-    )]
+    #[Doc\UpdateRoute(schema_name: 'RecurringChange')]
     public function updateRecurringChange(Request $request): Response
     {
         return ResourceAccessor::updateBySchema($this->getKnownSchema('RecurringChange', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/RecurringChange/{id}', methods: ['DELETE'], requirements: [
-        'id' => '\d+',
-    ])]
+    #[Route(path: '/RecurringChange/{id}', methods: ['DELETE'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Delete a recurring change by ID',
-    )]
+    #[Doc\DeleteRoute(schema_name: 'RecurringChange')]
     public function deleteRecurringChange(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('RecurringChange', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
@@ -1950,13 +1700,7 @@ final class ITILController extends AbstractController
 
     #[Route(path: '/ExternalEvent', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'List or search external events',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
-        responses: [
-            ['schema' => 'ExternalEvent[]'],
-        ]
-    )]
+    #[Doc\SearchRoute(schema_name: 'ExternalEvent')]
     public function searchExternalEvent(Request $request): Response
     {
         return ResourceAccessor::searchBySchema($this->getKnownSchema('ExternalEvent', $this->getAPIVersion($request)), $request->getParameters());
@@ -1966,12 +1710,7 @@ final class ITILController extends AbstractController
         'id' => '\d+',
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get an external event by ID',
-        responses: [
-            ['schema' => 'ExternalEvent'],
-        ]
-    )]
+    #[Doc\GetRoute(schema_name: 'ExternalEvent')]
     public function getExternalEvent(Request $request): Response
     {
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('ExternalEvent', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
@@ -1979,16 +1718,7 @@ final class ITILController extends AbstractController
 
     #[Route(path: '/ExternalEvent', methods: ['POST'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Create an external event',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'ExternalEvent',
-            ],
-        ]
-    )]
+    #[Doc\CreateRoute(schema_name: 'ExternalEvent')]
     public function createExternalEvent(Request $request): Response
     {
         return ResourceAccessor::createBySchema($this->getKnownSchema('ExternalEvent', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getExternalEvent']);
@@ -1998,16 +1728,7 @@ final class ITILController extends AbstractController
         'id' => '\d+',
     ])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update an external event by ID',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'ExternalEvent',
-            ],
-        ]
-    )]
+    #[Doc\UpdateRoute(schema_name: 'ExternalEvent')]
     public function updateExternalEvent(Request $request): Response
     {
         return ResourceAccessor::updateBySchema($this->getKnownSchema('ExternalEvent', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
@@ -2017,9 +1738,7 @@ final class ITILController extends AbstractController
         'id' => '\d+',
     ])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Delete an external event by ID',
-    )]
+    #[Doc\DeleteRoute(schema_name: 'ExternalEvent')]
     public function deleteExternalEvent(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('ExternalEvent', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());

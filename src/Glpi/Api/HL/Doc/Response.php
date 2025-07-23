@@ -43,9 +43,9 @@ use ArrayAccess;
 class Response implements ArrayAccess
 {
     public function __construct(
-        private string $description,
-        private array $headers,
-        private Schema|SchemaReference $schema,
+        private Schema|SchemaReference|null $schema,
+        private string $description = '',
+        private array $headers = [],
         private array $examples = [],
         private string $media_type = 'application/json',
         private int $status_code = 200,
@@ -68,9 +68,9 @@ class Response implements ArrayAccess
     }
 
     /**
-     * @return Schema|SchemaReference
+     * @return Schema|SchemaReference|null
      */
-    public function getSchema(): Schema|SchemaReference
+    public function getSchema(): Schema|SchemaReference|null
     {
         return $this->schema;
     }

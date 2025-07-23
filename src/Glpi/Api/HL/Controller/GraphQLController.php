@@ -49,9 +49,7 @@ final class GraphQLController extends AbstractController
 {
     #[Route(path: '/', methods: ['POST'], security_level: Route::SECURITY_AUTHENTICATED)]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'GraphQL API',
-    )]
+    #[Doc\Route(description: 'GraphQL API')]
     public function index(Request $request): Response
     {
         return new JSONResponse(GraphQL::processRequest($request));
@@ -59,9 +57,7 @@ final class GraphQLController extends AbstractController
 
     #[Route(path: '/Schema', methods: ['GET'], security_level: Route::SECURITY_AUTHENTICATED)]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'GraphQL API Schema',
-    )]
+    #[Doc\Route(description: 'GraphQL API Schema')]
     public function getSchema(Request $request): Response
     {
         $graphql_generator = new GraphQLGenerator($this->getAPIVersion($request));

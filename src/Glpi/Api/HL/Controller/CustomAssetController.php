@@ -58,18 +58,18 @@ use User;
 #[Route(path: '/Assets/Custom', priority: 1, tags: ['Custom Assets'])]
 #[Doc\Route(
     parameters: [
-        [
-            'name' => 'itemtype',
-            'description' => 'Asset type',
-            'location' => Doc\Parameter::LOCATION_PATH,
-            'schema' => ['type' => Doc\Schema::TYPE_STRING],
-        ],
-        [
-            'name' => 'id',
-            'description' => 'The ID of the Asset',
-            'location' => Doc\Parameter::LOCATION_PATH,
-            'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
-        ],
+        new Doc\Parameter(
+            name: 'itemtype',
+            schema: new Doc\Schema(Doc\Schema::TYPE_STRING),
+            description: 'Asset type',
+            location: Doc\Parameter::LOCATION_PATH,
+        ),
+        new Doc\Parameter(
+            name: 'id',
+            schema: new Doc\Schema(Doc\Schema::TYPE_INTEGER),
+            description: 'The ID of the Asset',
+            location: Doc\Parameter::LOCATION_PATH,
+        ),
     ]
 )]
 final class CustomAssetController extends AbstractController
@@ -292,22 +292,18 @@ final class CustomAssetController extends AbstractController
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get all available custom asset types',
-        methods: ['GET'],
         responses: [
-            '200' => [
-                'description' => 'List of custom asset types',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_ARRAY,
-                    'items' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'properties' => [
-                            'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
-                            'name' => ['type' => Doc\Schema::TYPE_STRING],
-                            'href' => ['type' => Doc\Schema::TYPE_STRING],
-                        ],
-                    ],
-                ],
-            ],
+            new Doc\Response(new Doc\Schema(
+                type: Doc\Schema::TYPE_ARRAY,
+                items: new Doc\Schema(
+                    type: Doc\Schema::TYPE_OBJECT,
+                    properties: [
+                        'itemtype' => new Doc\Schema(Doc\Schema::TYPE_STRING),
+                        'name' => new Doc\Schema(Doc\Schema::TYPE_STRING),
+                        'href' => new Doc\Schema(Doc\Schema::TYPE_STRING),
+                    ]
+                )
+            )),
         ]
     )]
     public function index(Request $request): Response
@@ -325,15 +321,10 @@ final class CustomAssetController extends AbstractController
     }
 
     #[RouteVersion(introduced: '2.0')]
-    #[Route(path: '/{itemtype}', methods: ['GET'], requirements: [
-        'itemtype' => [self::class, 'getCustomAssetTypes'],
-    ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'List or search custom assets of a specific type',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
-        responses: [
-            ['schema' => 'CustomAsset_{itemtype}[]'],
-        ]
+    #[Route(path: '/{itemtype}', methods: ['GET'], requirements: ['itemtype' => [self::class, 'getCustomAssetTypes']], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\SearchRoute(
+        schema_name: 'CustomAsset_{itemtype}',
+        description: 'List or search custom assets of a specific type'
     )]
     public function search(Request $request): Response
     {
@@ -345,12 +336,10 @@ final class CustomAssetController extends AbstractController
     #[Route(path: '/{itemtype}/{id}', methods: ['GET'], requirements: [
         'itemtype' => [self::class, 'getCustomAssetTypes'],
         'id' => '\d+',
-    ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'Get a custom asset of a specific type by ID',
-        responses: [
-            ['schema' => 'CustomAsset_{itemtype}'],
-        ]
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\GetRoute(
+        schema_name: 'CustomAsset_{itemtype}',
+        description: 'Get an existing custom asset of a specific type'
     )]
     public function getItem(Request $request): Response
     {
@@ -359,18 +348,10 @@ final class CustomAssetController extends AbstractController
     }
 
     #[RouteVersion(introduced: '2.0')]
-    #[Route(path: '/{itemtype}', methods: ['POST'], requirements: [
-        'itemtype' => [self::class, 'getCustomAssetTypes'],
-    ], tags: ['Assets'])]
-    #[Doc\Route(
-        description: 'Create a custom asset of a specific type',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'CustomAsset_{itemtype}',
-            ],
-        ]
+    #[Route(path: '/{itemtype}', methods: ['POST'], requirements: ['itemtype' => [self::class, 'getCustomAssetTypes']])]
+    #[Doc\CreateRoute(
+        schema_name: 'CustomAsset_{itemtype}',
+        description: 'Create a new custom asset of a specific type'
     )]
     public function createItem(Request $request): Response
     {
@@ -382,16 +363,10 @@ final class CustomAssetController extends AbstractController
     #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'], requirements: [
         'itemtype' => [self::class, 'getCustomAssetTypes'],
         'id' => '\d+',
-    ], tags: ['Assets'])]
-    #[Doc\Route(
-        description: 'Update a custom asset of a specific type by ID',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'CustomAsset_{itemtype}',
-            ],
-        ]
+    ])]
+    #[Doc\UpdateRoute(
+        schema_name: 'CustomAsset_{itemtype}',
+        description: 'Update an existing custom asset of a specific type'
     )]
     public function updateItem(Request $request): Response
     {
@@ -403,9 +378,10 @@ final class CustomAssetController extends AbstractController
     #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'], requirements: [
         'itemtype' => [self::class, 'getCustomAssetTypes'],
         'id' => '\d+',
-    ], tags: ['Assets'])]
-    #[Doc\Route(
-        description: 'Delete a custom asset of a specific type by ID',
+    ])]
+    #[Doc\DeleteRoute(
+        schema_name: 'CustomAsset_{itemtype}',
+        description: 'Delete a custom asset of a specific type'
     )]
     public function deleteItem(Request $request): Response
     {
@@ -415,14 +391,11 @@ final class CustomAssetController extends AbstractController
 
     #[RouteVersion(introduced: '2.0')]
     #[Route(path: '/{itemtype}Model', methods: ['GET'], requirements: [
-        'itemtype' => [self::class, 'getCustomAssetTypes'],
-    ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'List or search custom asset models of a specific type',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
-        responses: [
-            ['schema' => 'CustomAsset_{itemtype}Model[]'],
-        ]
+        'itemtype' => [self::class, 'getCustomAssetTypes']], middlewares: [ResultFormatterMiddleware::class])
+    ]
+    #[Doc\SearchRoute(
+        schema_name: 'CustomAsset_{itemtype}Model',
+        description: 'List or search custom asset models of a specific type'
     )]
     public function searchModels(Request $request): Response
     {
@@ -434,12 +407,10 @@ final class CustomAssetController extends AbstractController
     #[Route(path: '/{itemtype}Model/{id}', methods: ['GET'], requirements: [
         'itemtype' => [self::class, 'getCustomAssetTypes'],
         'id' => '\d+',
-    ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'Get a custom asset model of a specific type by ID',
-        responses: [
-            ['schema' => 'CustomAsset_{itemtype}Model'],
-        ]
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\GetRoute(
+        schema_name: 'CustomAsset_{itemtype}Model',
+        description: 'Get an existing custom asset model of a specific type'
     )]
     public function getItemModel(Request $request): Response
     {
@@ -450,16 +421,10 @@ final class CustomAssetController extends AbstractController
     #[RouteVersion(introduced: '2.0')]
     #[Route(path: '/{itemtype}Model', methods: ['POST'], requirements: [
         'itemtype' => [self::class, 'getCustomAssetTypes'],
-    ], tags: ['Assets'])]
-    #[Doc\Route(
-        description: 'Create a custom asset model of a specific type',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'CustomAsset_{itemtype}Model',
-            ],
-        ]
+    ])]
+    #[Doc\CreateRoute(
+        schema_name: 'CustomAsset_{itemtype}Model',
+        description: 'Create a new custom asset model of a specific type'
     )]
     public function createItemModel(Request $request): Response
     {
@@ -471,16 +436,10 @@ final class CustomAssetController extends AbstractController
     #[Route(path: '/{itemtype}Model/{id}', methods: ['PATCH'], requirements: [
         'itemtype' => [self::class, 'getCustomAssetTypes'],
         'id' => '\d+',
-    ], tags: ['Assets'])]
-    #[Doc\Route(
-        description: 'Update a custom asset model of a specific type by ID',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'CustomAsset_{itemtype}Model',
-            ],
-        ]
+    ])]
+    #[Doc\UpdateRoute(
+        schema_name: 'CustomAsset_{itemtype}Model',
+        description: 'Update an existing custom asset model of a specific type'
     )]
     public function updateItemModel(Request $request): Response
     {
@@ -492,9 +451,10 @@ final class CustomAssetController extends AbstractController
     #[Route(path: '/{itemtype}Model/{id}', methods: ['DELETE'], requirements: [
         'itemtype' => [self::class, 'getCustomAssetTypes'],
         'id' => '\d+',
-    ], tags: ['Assets'])]
-    #[Doc\Route(
-        description: 'Delete a custom asset model of a specific type by ID',
+    ])]
+    #[Doc\DeleteRoute(
+        schema_name: 'CustomAsset_{itemtype}Model',
+        description: 'Delete a custom asset model of a specific type'
     )]
     public function deleteItemModel(Request $request): Response
     {
@@ -505,13 +465,10 @@ final class CustomAssetController extends AbstractController
     #[RouteVersion(introduced: '2.0')]
     #[Route(path: '/{itemtype}Type', methods: ['GET'], requirements: [
         'itemtype' => [self::class, 'getCustomAssetTypes'],
-    ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'List or search custom asset models of a specific type',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
-        responses: [
-            ['schema' => 'CustomAsset_{itemtype}Type[]'],
-        ]
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\SearchRoute(
+        schema_name: 'CustomAsset_{itemtype}Type',
+        description: 'List or search custom asset models of a specific type'
     )]
     public function searchTypes(Request $request): Response
     {
@@ -523,12 +480,10 @@ final class CustomAssetController extends AbstractController
     #[Route(path: '/{itemtype}Type/{id}', methods: ['GET'], requirements: [
         'itemtype' => [self::class, 'getCustomAssetTypes'],
         'id' => '\d+',
-    ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'Get a custom asset type of a specific type by ID',
-        responses: [
-            ['schema' => 'CustomAsset_{itemtype}Type'],
-        ]
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\GetRoute(
+        schema_name: 'CustomAsset_{itemtype}Type',
+        description: 'Get an existing custom asset type of a specific type'
     )]
     public function getItemType(Request $request): Response
     {
@@ -537,18 +492,10 @@ final class CustomAssetController extends AbstractController
     }
 
     #[RouteVersion(introduced: '2.0')]
-    #[Route(path: '/{itemtype}Type', methods: ['POST'], requirements: [
-        'itemtype' => [self::class, 'getCustomAssetTypes'],
-    ], tags: ['Assets'])]
-    #[Doc\Route(
-        description: 'Create a custom asset type of a specific type',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'CustomAsset_{itemtype}Type',
-            ],
-        ]
+    #[Route(path: '/{itemtype}Type', methods: ['POST'], requirements: ['itemtype' => [self::class, 'getCustomAssetTypes']])]
+    #[Doc\CreateRoute(
+        schema_name: 'CustomAsset_{itemtype}Type',
+        description: 'Create a new custom asset type of a specific type'
     )]
     public function createItemType(Request $request): Response
     {
@@ -560,16 +507,10 @@ final class CustomAssetController extends AbstractController
     #[Route(path: '/{itemtype}Type/{id}', methods: ['PATCH'], requirements: [
         'itemtype' => [self::class, 'getCustomAssetTypes'],
         'id' => '\d+',
-    ], tags: ['Assets'])]
-    #[Doc\Route(
-        description: 'Update a custom asset type of a specific type by ID',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'CustomAsset_{itemtype}Type',
-            ],
-        ]
+    ])]
+    #[Doc\UpdateRoute(
+        schema_name: 'CustomAsset_{itemtype}Type',
+        description: 'Update an existing custom asset type of a specific type'
     )]
     public function updateItemType(Request $request): Response
     {
@@ -581,9 +522,10 @@ final class CustomAssetController extends AbstractController
     #[Route(path: '/{itemtype}Type/{id}', methods: ['DELETE'], requirements: [
         'itemtype' => [self::class, 'getCustomAssetTypes'],
         'id' => '\d+',
-    ], tags: ['Assets'])]
-    #[Doc\Route(
-        description: 'Delete a custom asset type of a specific type by ID',
+    ])]
+    #[Doc\DeleteRoute(
+        schema_name: 'CustomAsset_{itemtype}Type',
+        description: 'Delete a custom asset type of a specific type'
     )]
     public function deleteItemType(Request $request): Response
     {

@@ -117,18 +117,18 @@ use User;
 
 #[Doc\Route(
     parameters: [
-        [
-            'name' => 'asset_itemtype',
-            'description' => 'Asset type',
-            'location' => Doc\Parameter::LOCATION_PATH,
-            'schema' => ['type' => Doc\Schema::TYPE_STRING],
-        ],
-        [
-            'name' => 'asset_id',
-            'description' => 'The ID of the Asset',
-            'location' => Doc\Parameter::LOCATION_PATH,
-            'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
-        ],
+        new Doc\Parameter(
+            name: 'asset_itemtype',
+            schema: new Doc\Schema(Doc\Schema::TYPE_STRING),
+            description: 'Asset type',
+            location: Doc\Parameter::LOCATION_PATH,
+        ),
+        new Doc\Parameter(
+            name: 'asset_id',
+            schema: new Doc\Schema(Doc\Schema::TYPE_INTEGER),
+            description: 'The ID of the Asset',
+            location: Doc\Parameter::LOCATION_PATH,
+        ),
     ]
 )]
 class ComponentController extends AbstractController
@@ -726,20 +726,17 @@ class ComponentController extends AbstractController
         description: 'Get all available component types',
         methods: ['GET'],
         responses: [
-            '200' => [
-                'description' => 'List of component types',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_ARRAY,
-                    'items' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'properties' => [
-                            'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
-                            'name' => ['type' => Doc\Schema::TYPE_STRING],
-                            'href' => ['type' => Doc\Schema::TYPE_STRING],
-                        ],
-                    ],
-                ],
-            ],
+            new Doc\Response(new Doc\Schema(
+                type: Doc\Schema::TYPE_ARRAY,
+                items: new Doc\Schema(
+                    type: Doc\Schema::TYPE_OBJECT,
+                    properties: [
+                        'itemtype' => new Doc\Schema(Doc\Schema::TYPE_STRING),
+                        'name' => new Doc\Schema(Doc\Schema::TYPE_STRING),
+                        'href' => new Doc\Schema(Doc\Schema::TYPE_STRING),
+                    ]
+                )
+            )),
         ]
     )]
     public function index(Request $request): Response
@@ -763,12 +760,9 @@ class ComponentController extends AbstractController
         'component_type' => [self::class, 'getComponentTypes'],
     ], tags: ['Components'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get the component definitions of the specified type',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
-        responses: [
-            ['schema' => '{component_type}'],
-        ]
+    #[Doc\SearchRoute(
+        schema_name: '{component_type}',
+        description: 'List or search for the component definitions of the specified type'
     )]
     public function listComponentTypes(Request $request): Response
     {
@@ -781,11 +775,9 @@ class ComponentController extends AbstractController
         'id' => '\d+',
     ], tags: ['Components'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a specific component definition',
-        responses: [
-            ['schema' => '{component_type}'],
-        ]
+    #[Doc\GetRoute(
+        schema_name: '{component_type}',
+        description: 'Get an existing component definition of the specified type',
     )]
     public function getComponentType(Request $request): Response
     {
@@ -797,15 +789,9 @@ class ComponentController extends AbstractController
         'component_type' => [self::class, 'getComponentTypes'],
     ], tags: ['Components'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Create a component definition of the specified type',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => '{component_type}',
-            ],
-        ]
+    #[Doc\CreateRoute(
+        schema_name: '{component_type}',
+        description: 'Create a new component definition of the specified type'
     )]
     public function createComponentType(Request $request): Response
     {
@@ -820,12 +806,9 @@ class ComponentController extends AbstractController
         'id' => '\d+',
     ], tags: ['Components'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get the components of a specific component definition',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
-        responses: [
-            ['schema' => '{component_type}'],
-        ]
+    #[Doc\SearchRoute(
+        schema_name: '{component_type}Item',
+        description: 'List or search for the components of a specific component definition'
     )]
     public function getComponentsOfType(Request $request): Response
     {
@@ -856,15 +839,9 @@ class ComponentController extends AbstractController
         'id' => '\d+',
     ], tags: ['Components'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update a component definition of the specified type',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => '{component_type}',
-            ],
-        ]
+    #[Doc\UpdateRoute(
+        schema_name: '{component_type}',
+        description: 'Update an existing component definition of the specified type'
     )]
     public function updateComponentType(Request $request): Response
     {
@@ -877,7 +854,8 @@ class ComponentController extends AbstractController
         'id' => '\d+',
     ], tags: ['Components'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
+    #[Doc\DeleteRoute(
+        schema_name: '{component_type}',
         description: 'Delete a component definition of the specified type',
     )]
     public function deleteComponentType(Request $request): Response
@@ -891,11 +869,9 @@ class ComponentController extends AbstractController
         'id' => '\d+',
     ], tags: ['Components'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a specific component',
-        responses: [
-            ['schema' => '{component_type}Item'],
-        ]
+    #[Doc\GetRoute(
+        schema_name: '{component_type}Item',
+        description: 'Get a specific component'
     )]
     public function getComponent(Request $request): Response
     {
@@ -911,12 +887,9 @@ class ComponentController extends AbstractController
         'id' => '\d+',
     ], tags: ['Assets', 'Components'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get all components for an asset',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
-        responses: [
-            ['schema' => '{component_type}Item'],
-        ]
+    #[Doc\SearchRoute(
+        schema_name: '{component_type}Item',
+        description: 'List or search all components for an asset'
     )]
     public function getAssetComponentsByType(Request $request): Response
     {
