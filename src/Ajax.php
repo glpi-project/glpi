@@ -604,55 +604,6 @@ JS;
 
 
     /**
-     * Javascript code for update an item when a Input text item changed
-     *
-     * @param string|array $toobserve    id of the Input text to observe
-     * @param string       $toupdate     id of the item to update
-     * @param string       $url          Url to get datas to update the item
-     * @param array        $parameters   of parameters to send to ajax URL
-     * @param integer      $minsize      minimum size of data to update content (default -1)
-     * @param integer      $buffertime   minimum time to wait before reload (default -1)
-     * @param array        $forceloadfor of content which must force update content
-     * @param boolean      $display      display or get string (default true)
-     *
-     * @return void|string (see $display)
-     */
-    public static function updateItemOnInputTextEvent(
-        $toobserve,
-        $toupdate,
-        $url,
-        $parameters = [],
-        $minsize = -1,
-        $buffertime = -1,
-        $forceloadfor = [],
-        $display = true
-    ) {
-
-        if (count($forceloadfor) == 0) {
-            $forceloadfor = ['*'];
-        }
-        // Need to define min size for text search
-        if ($minsize < 0) {
-            $minsize = 0;
-        }
-        if ($buffertime < 0) {
-            $buffertime = 0;
-        }
-        return self::updateItemOnEvent(
-            $toobserve,
-            $toupdate,
-            $url,
-            $parameters,
-            ["dblclick", "keyup"],
-            $minsize,
-            $buffertime,
-            $forceloadfor,
-            $display
-        );
-    }
-
-
-    /**
      * Javascript code for update an item when another item changed (Javascript code only)
      *
      * @param string|array $toobserve    id (or array of id) of the select to observe
@@ -678,6 +629,9 @@ JS;
         $forceloadfor = [],
         $display = true
     ) {
+        if ($buffertime !== -1) {
+            trigger_error('$buffertime parameter has no effect anymore.', E_USER_WARNING);
+        }
 
         if (is_array($toobserve)) {
             $zones = $toobserve;
@@ -686,26 +640,17 @@ JS;
         }
         $output = '';
         foreach ($zones as $zone) {
-            if (preg_match('/[^\w\[\]]+/', $zone) === 1) {
-                throw new InvalidArgumentException('Zone name is expected to contain only alphanumeric or [] chars.');
-            }
-
             foreach ($events as $event) {
                 if (preg_match('/[^\w]+/', $event) === 1) {
                     throw new InvalidArgumentException('Event name is expected to contain only alphanumeric chars.');
                 }
 
-                $event   = $event;
                 $zone_id = Html::cleanId($zone);
 
-                if ($buffertime > 0) {
-                    $output .= "var last$zone$event = 0;";
-                }
-
-                $output .= "$('#$zone').on('$event', function(event) {";
+                $output .= "$('#$zone_id').on('$event', function(event) {";
                 $condition = '';
                 if ($minsize >= 0) {
-                    $condition = "$('#$zone').val().length >= " . ((int) $minsize);
+                    $condition = "$('#$zone_id').val().length >= " . ((int) $minsize);
                 }
                 if (count($forceloadfor)) {
                     foreach ($forceloadfor as $value) {
