@@ -52,7 +52,7 @@ class Route
      * @param string $description
      * @param string[] $methods
      * @param array<Parameter|array{name: string, description?: string, location?: string, schema?: string|array{type?: string, format?: string, enum?: array}, example?: string, required?: bool}> $parameters
-     * @param array<Response|array{methods?: array<string>, description?: string, headers?: string|array, schema?: string|array{type?: string, format?: string}, examples?: array, media_type?: string}> $responses
+     * @param array<Response|array{methods?: array<string>, description?: string, headers?: array, schema?: string|array{type?: string, format?: string}, examples?: array, media_type?: string}> $responses
      */
     public function __construct(string $description = '', array $methods = [], array $parameters = [], array $responses = [])
     {
