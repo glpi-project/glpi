@@ -6165,7 +6165,7 @@ final class SQLProvider implements SearchProviderInterface
                                 if (is_a($data[$ID][$k]['itemtype_target'], CommonDBTM::class, true) && ($approver = $data[$ID][$k]['itemtype_target']::getById((int) $data[$ID][$k]['items_id_target'])) !== null) {
                                     $user = $approver->getLink();
                                 }
-                                $content = "<span class='badge bg-secondary-subtle mb-1'><i class='" . $data[$ID][$k]['itemtype_target']::getIcon() . "'></i> " . $user ?? null . "<br><span style=\"background-color:" . $bgcolor . ";\" class='badge text-dark fs-5 fw-normal mt-1'>" . $status . "</span></span>";
+                                $content = "<span class='badge bg-secondary-subtle mb-1'><i class='" . $data[$ID][$k]['itemtype_target']::getIcon() . "'></i> " . $user . "<br><span style=\"background-color:" . $bgcolor . ";\" class='badge text-dark fs-5 fw-normal mt-1'>" . $status . "</span></span>";
                             }
                             $out    .= (empty($out) ? '' : Search::LBBR) . $content;
                         }

@@ -7449,7 +7449,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
             'rand'   => mt_rand(),
             'item'   => $this,
         ]);
-        $legacy_actions .= ob_get_clean() ?? '';
+        $legacy_actions .= ob_get_clean();
 
         return $legacy_actions;
     }
