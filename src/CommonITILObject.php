@@ -764,6 +764,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
 
         if ($this->isNewItem()) {
             if (isset($tt->predefined) && count($tt->predefined)) {
+                // apply predefined fields
                 foreach ($tt->predefined as $predeffield => $predefvalue) {
                     if (isset($options[$predeffield]) && isset($default_values[$predeffield])) {
                         // Is always default value : not set
@@ -788,6 +789,16 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
                             || ($problems_id != null
                                 && $options[$predeffield] == $problem->fields[$predeffield])
                         ) {
+                            // predefined fields _olas_id_tto, _olas_id_ttr should be merged in _olas_id
+                            if (in_array($predeffield, ['_olas_id_tto', '_olas_id_ttr'])) {
+                                $to_merge = is_array($predefvalue) ? $predefvalue : [$predefvalue];
+                                $options['_olas_id'] = array_merge($options['_olas_id'] ?? [], $to_merge);
+                                $predefined_fields['_olas_id'] = array_merge($predefined_fields['_olas_id'] ?? [], $to_merge);
+                                $this->fields['_olas_id']      = array_merge($this->fields['_olas_id'] ?? [], $to_merge);
+
+                                continue;
+                            }
+
                             $options[$predeffield]           = $predefvalue;
                             $predefined_fields[$predeffield] = $predefvalue;
                             $this->fields[$predeffield]      = $predefvalue;
@@ -1787,7 +1798,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
             // Closed tickets
             || in_array($this->fields['status'], static::getClosedStatusArray()))
         ) {
-            $allowed_fields                    = ['id'];
+            $allowed_fields                    = ['id', '_olas_id_ttr', '_olas_id_tto'];
             $check_allowed_fields_for_template = true;
 
             if (in_array($this->fields['status'], static::getClosedStatusArray())) {
@@ -1864,14 +1875,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
             }
         }
 
-        // split _olas_id into _olas_id_tto and _olas_id_ttr to validate which type of SLA is used
-        // @todoseb faire test
-        $_ola = new OLA();
-        $_ids_tto = array_column($_ola->find(['type' => SLM::TTO]), 'id');
-        $_ids_ttr = array_column($_ola->find(['type' => SLM::TTR]), 'id');
-
-        $input['_olas_id_tto'] = array_intersect($input['_olas_id'] ?? [], $_ids_tto, );
-        $input['_olas_id_ttr'] = array_intersect($input['_olas_id'] ?? [], $_ids_ttr);
+        [SLM::TTO => $input['_olas_id_tto'], SLM::TTR => $input['_olas_id_ttr']] = OLA::splitIdsByType($input['_olas_id'] ?? []);
 
         $tt = $this->getITILTemplateToUse(0, $type, $categid, $entid);
 
@@ -2850,6 +2854,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
         }
 
         $input = $this->computeDefaultValuesForAdd($input);
+
+        // split OLA ids by type to allow mandatory check
+        [SLM::TTO => $input['_olas_id_tto'], SLM::TTR => $input['_olas_id_ttr']] = OLA::splitIdsByType($input['_olas_id'] ?? []);
 
         // Do not check mandatory on auto import (mailgates)
         $key = static::getTemplateFormFieldName();

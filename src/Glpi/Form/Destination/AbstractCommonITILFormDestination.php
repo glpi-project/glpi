@@ -369,9 +369,14 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
         $predefined_fields = $itemtype->getTemplateClass()::getPredefinedFields();
         $fields = $predefined_fields->getPredefinedFields($template->fields['id']);
         foreach ($fields as $field => $value) {
+            $field = in_array($field, ['_olas_id_tto','_olas_id_ttr']) ? '_olas_id' : $field;
             $input[$field] = $value;
         }
-        $input['_la_update'] = true; // This is required to update the SLM field in the ticket
+
+        // If the template has a predefined OLA, we set the _la_update flag to update them
+        if (isset($input['_olas_id'])) {
+            $input['_la_update'] = true;
+        }
 
         return $input;
     }
