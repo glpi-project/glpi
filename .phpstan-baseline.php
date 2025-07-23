@@ -1070,7 +1070,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/GLPIPDF.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$parent of method Glpi\\\\Agent\\\\Communication\\\\AbstractRequest\\:\\:addNode\\(\\) expects DOMElement, DOMNode given\\.$#',
+	'message' => '#^Parameter \\#1 \\$parent of method Glpi\\\\Agent\\\\Communication\\\\AbstractRequest\\:\\:addNode\\(\\) expects DOMElement, \\(DOMNode\\|false\\) given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
