@@ -126,7 +126,7 @@ if (
                         Dropdown::showYesNo('_itil_' . $_POST["actortype"] . '[use_notification]', $_POST["use_notif"]);
                         echo '<br>';
                         printf(
-                            __('%1$s: %2$s'),
+                            __s('%1$s: %2$s'),
                             _sn('Email', 'Emails', 1),
                             "<input type='text' size='25' name='_itil_" . htmlescape($_POST["actortype"]) .
                             "[alternative_email]'>"
@@ -225,7 +225,7 @@ if (
                         Dropdown::showYesNo('_itil_' . $_POST["actortype"] . '[use_notification]', $_POST['use_notif']);
                         echo '<br>';
                         printf(
-                            __('%1$s: %2$s'),
+                            __s('%1$s: %2$s'),
                             _sn('Email', 'Emails', 1),
                             "<input type='text' size='25' name='_itil_" . htmlescape($_POST["actortype"]) .
                             "[alternative_email]'>"
