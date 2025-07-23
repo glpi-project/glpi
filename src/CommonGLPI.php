@@ -951,7 +951,7 @@ class CommonGLPI implements CommonGLPIInterface
                 }
                 $tabs[$key] = ['title'  => $val,
                     'url'    => $tab_path,
-                    'params' => Toolbox::append_params(['_glpi_tab' => $key] + $tab_params, '&amp;'),
+                    'params' => Toolbox::append_params(['_glpi_tab' => $key] + $tab_params, '&'),
                 ];
             }
 
@@ -963,7 +963,7 @@ class CommonGLPI implements CommonGLPIInterface
             ) {
                 $tabs[-1] = ['title'  => static::createTabEntry(__('All'), 0, null, 'ti ti-layout-list'),
                     'url'    => $tab_path,
-                    'params' => Toolbox::append_params(['_glpi_tab' => '-1'] + $tab_params, '&amp;'),
+                    'params' => Toolbox::append_params(['_glpi_tab' => '-1'] + $tab_params, '&'),
                 ];
             }
 

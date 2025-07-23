@@ -359,6 +359,7 @@ The present file will list all changes made to the project; according to the
 - Handling of encoded/escaped value in `autoName()`.
 - `closeDBConnections`
 - `regenerateTreeCompleteName()`
+- `Ajax::updateItemOnInputTextEvent()`
 - `Appliance::getMassiveActionsForItemtype()`
 - `AuthLDAP::ldapChooseDirectory()`
 - `AuthLDAP::displayLdapFilter()`

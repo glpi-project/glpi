@@ -63,6 +63,9 @@ class Ajax
      */
     public static function createModalWindow($name, $url, $options = [])
     {
+        if (preg_match('/[^\w]+/', $name) === 1) {
+            throw new InvalidArgumentException('Modal name is expected to be a valid javascript variable identifier.');
+        }
 
         $param = [
             'width'           => 800,
@@ -96,13 +99,13 @@ class Ajax
         $out .= "var {$name};\n";
         $out .= "$(function() {\n";
         if (!empty($param['container'])) {
-            $out .= "   var el = $('#" . Html::cleanId($param['container']) . "');\n";
+            $out .= "   var el = $('#" . jsescape(Html::cleanId($param['container'])) . "');\n";
             $out .= "   el.addClass('modal');\n";
         } else {
             $out .= "   var el = $('<div class=\"modal\"></div>');";
             $out .= "   $('body').append(el);\n";
         }
-        $out .= "   el.html(" . json_encode($html) . ");\n";
+        $out .= "   el.html('" . jsescape($html) . "');\n";
         $out .= "   {$name} = new bootstrap.Modal(el.get(0), {show: false});\n";
         $out .= "   el.on(\n";
         $out .= "      'show.bs.modal',\n";
@@ -117,7 +120,7 @@ class Ajax
         if (!empty($param['js_modal_fields'])) {
             $out .= $param['js_modal_fields'] . "\n";
         }
-        $out .= "         el.find('.modal-body').load('$url', fields);\n";
+        $out .= "         el.find('.modal-body').load('" . jsescape($url) . "', fields);\n";
         $out .= "      }\n";
         $out .= "   );\n";
         $out .= "});\n";
@@ -179,73 +182,71 @@ class Ajax
         $rand = mt_rand();
 
         $domid  = Html::sanitizeDomId($domid);
-        $title  = htmlescape($param['title']);
-        $class  = htmlescape($param['dialog_class']);
-        $height = (int) $param['height'];
-        $width  = (int) $param['width'];
 
-        $html = <<<HTML
-         <div id="$domid" class="modal fade" tabindex="-1" role="dialog">
-            <div class="modal-dialog {$class}">
-               <div class="modal-content">
-                  <div class="modal-header">
-                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                     <h3>{$title}</h3>
-                  </div>
-                  <div class="modal-body">
-                     <iframe id='iframe$domid' class="iframe hidden"
-                        width="100%" height="400" frameborder="0">
-                     </iframe>
-                  </div>
-               </div>
+        $html = '
+            <div id="' . htmlescape($domid) . '" class="modal fade" tabindex="-1" role="dialog">
+                <div class="modal-dialog ' . htmlescape($param['dialog_class']) . '">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            <h3>' . htmlescape($param['title']) . '</h3>
+                        </div>
+                        <div class="modal-body">
+                            <iframe id="iframe' . htmlescape($domid) . '" class="iframe hidden"
+                                width="100%" height="400" frameborder="0">
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
             </div>
-         </div>
-HTML;
+        ';
 
-        $reloadonclose = $param['reloadonclose'] ? "true" : "false";
-        $autoopen      = $param['autoopen'] ? "true" : "false";
-        $url           = json_encode($url);
-        $js = <<<JAVASCRIPT
-      $(function() {
-         myModalEl{$rand} = document.getElementById('{$domid}');
-         myModal{$rand}   = new bootstrap.Modal(myModalEl{$rand});
+        $domid = jsescape($domid);
 
-         // move modal to body
-         $(myModalEl{$rand}).appendTo($("body"));
+        $js = '
+            $(function() {
+                myModalEl' . $rand . ' = document.getElementById("' . $domid . '");
+                myModal' . $rand . '   = new bootstrap.Modal(myModalEl' . $rand . ');
 
-         myModalEl{$rand}.addEventListener('show.bs.modal', function () {
-            $('#iframe{$domid}').attr('src', {$url}).removeClass('hidden');
-         });
-         myModalEl{$rand}.addEventListener('hide.bs.modal', function () {
-            if ({$reloadonclose}) {
-               window.location.reload()
-            }
-         });
+                // move modal to body
+                $(myModalEl' . $rand . ').appendTo($("body"));
 
-         if ({$autoopen}) {
-            myModal{$rand}.show();
-         }
+                myModalEl' . $rand . '.addEventListener("show.bs.modal", function () {
+                    $("#iframe' . $domid . '").attr("src", "' . jsescape($url) . '").removeClass("hidden");
+                });
+        ';
+        if ($param['reloadonclose']) {
+            $js .= '
+                myModalEl' . $rand . '.addEventListener("hide.bs.modal", function () {
+                    window.location.reload()
+                });
+            ';
+        }
+        if ($param['autoopen']) {
+            $js .= '
+                myModal' . $rand . '.show();
+            ';
+        }
+        $js .= '
+                document.getElementById("iframe' . $domid . '").onload = function() {
+                    var h = ' . ((int) $param['height']) . ';
+                    var w = ' . ((int) $param['width']) . ';
 
-         document.getElementById('iframe$domid').onload = function() {
-            var h = {$height};
-            var w = {$width};
+                    $("#iframe' . $domid . '").height(h);
 
-            $('#iframe{$domid}')
-               .height(h);
+                    if (w >= 700) {
+                        $("#' . $domid . ' .modal-dialog").addClass("modal-xl");
+                    } else if (w >= 500) {
+                        $("#' . $domid . ' .modal-dialog").addClass("modal-lg");
+                    } else if (w <= 300) {
+                        $("#' . $domid . ' .modal-dialog").addClass("modal-sm");
+                    }
 
-            if (w >= 700) {
-               $('#{$domid} .modal-dialog').addClass('modal-xl');
-            } else if (w >= 500) {
-               $('#{$domid} .modal-dialog').addClass('modal-lg');
-            } else if (w <= 300) {
-               $('#{$domid} .modal-dialog').addClass('modal-sm');
-            }
-
-            // reajust height to content
-            myModal{$rand}.handleUpdate()
-         };
-      });
-JAVASCRIPT;
+                    // reajust height to content
+                    myModal' . $rand . '.handleUpdate()
+                };
+            });
+        ';
 
         $out = Html::scriptBlock($js) . trim($html);
 
@@ -330,7 +331,7 @@ JAVASCRIPT;
             }
 
             echo "<div class='d-flex card-tabs $flex_container $orientation'>";
-            echo "<ul class='nav nav-tabs $flex_tab' id='$tabdiv_id' $nav_width role='tablist'>";
+            echo "<ul class='nav nav-tabs $flex_tab' id='" . htmlescape($tabdiv_id) . "' $nav_width role='tablist'>";
             $html_tabs = "";
             $html_sele = "";
             $i = 0;
@@ -365,45 +366,47 @@ JAVASCRIPT;
                 $direct_link_url .= "forcetab=$tab_key";
 
                 if ($tab_key !== -1) {
-                    $html_tabs .= <<<HTML
+                    $html_tabs .= "
                         <li class='nav-item $navitemml'>
                             <a
                                 class='nav-link justify-content-between $navlinkp $display_class'
                                 data-bs-toggle='tab'
-                                title='{$title_clean}'
-                                data-glpi-ajax-content='{$tab_content_url}'
-                                href='{$direct_link_url}'
-                                data-bs-target='#{$target}'
+                                title='" . htmlescape($title_clean) . "'
+                                data-glpi-ajax-content='" . htmlescape($tab_content_url) . "'
+                                href='" . htmlescape($direct_link_url) . "'
+                                data-bs-target='#" . htmlescape($target) . "'
                             >{$title}</a>
                         </li>
-HTML;
-                    $html_sele .= "<option value='$i' {$selected}>{$val['title']}</option>";
+                    ";
+                    $html_sele .= "<option value='$i' {$selected}>{$title}</option>";
                 } else {
                     // All tabs
                     $html_tabs .= <<<HTML
                         <li class='nav-item $navitemml'>
                             <a class='nav-link justify-content-between $navlinkp $display_class' data-bs-toggle='tab'
-                                title='{$title_clean}' href='#' data-show-all-tabs="true">{$title}</a>
+                                title='" . htmlescape($title_clean) . "' href='#' data-show-all-tabs="true">{$title}</a>
                         </li>
 HTML;
-                    $html_sele .= "<option value='$i' {$selected}>{$val['title']}</option>";
+                    $html_sele .= "<option value='$i' {$selected}>{$title}</option>";
                 }
                 $i++;
             }
             echo $html_tabs;
             echo "</ul>";
-            echo "<select class='form-select border-2 rounded-0 rounded-top d-md-none mb-2' id='$tabdiv_id-select'>$html_sele</select>";
+            echo "<select class='form-select border-2 rounded-0 rounded-top d-md-none mb-2' id='" . htmlescape($tabdiv_id) . "-select'>$html_sele</select>";
 
             echo "<div class='tab-content p-2 flex-grow-1 card $border' style='min-height: 150px'>";
             foreach ($tabs as $val) {
                 $id = str_replace('\\', '_', $val['id']);
-                echo "<div data-glpi-tab-content class='tab-pane fade' role='tabpanel' id='{$id}'></div>";
+                echo "<div data-glpi-tab-content class='tab-pane fade' role='tabpanel' id='" . htmlescape($id) . "'></div>";
             }
             echo  "</div>"; // .tab-content
             echo "</div>"; // .container-fluid
 
-            $json_type = json_encode($type);
+            $type = jsescape($type);
+            $ID = jsescape($ID);
             $withtemplate = (int) ($_GET['withtemplate'] ?? 0);
+            $tabdiv_id = jsescape($tabdiv_id);
             $js = <<<JS
          var url_hash = window.location.hash;
          var loadTabContents = function (tablink, force_reload = false, update_session_tab = true) {
@@ -420,7 +423,7 @@ HTML;
                 $.get(
                   '{$CFG_GLPI['root_doc']}/ajax/updatecurrenttab.php',
                   {
-                     itemtype: $json_type,
+                     itemtype: '$type',
                      id: '$ID',
                      tab_key: href_url_params.get('_glpi_tab'),
                      withtemplate: $withtemplate
@@ -542,9 +545,8 @@ JS;
         $display = true
     ) {
 
-        $output  = "<script type='text/javascript'>";
-        $output .= "$(function() {";
-        $output .= self::updateItemOnEventJsCode(
+        $js = "$(function() {";
+        $js .= self::updateItemOnEventJsCode(
             $toobserve,
             $toupdate,
             $url,
@@ -555,7 +557,10 @@ JS;
             $forceloadfor,
             false
         );
-        $output .=  "});</script>";
+        $js .=  "});";
+
+        $output = Html::scriptBlock($js);
+
         if ($display) {
             echo $output;
         } else {
@@ -598,55 +603,6 @@ JS;
 
 
     /**
-     * Javascript code for update an item when a Input text item changed
-     *
-     * @param string|array $toobserve    id of the Input text to observe
-     * @param string       $toupdate     id of the item to update
-     * @param string       $url          Url to get datas to update the item
-     * @param array        $parameters   of parameters to send to ajax URL
-     * @param integer      $minsize      minimum size of data to update content (default -1)
-     * @param integer      $buffertime   minimum time to wait before reload (default -1)
-     * @param array        $forceloadfor of content which must force update content
-     * @param boolean      $display      display or get string (default true)
-     *
-     * @return void|string (see $display)
-     */
-    public static function updateItemOnInputTextEvent(
-        $toobserve,
-        $toupdate,
-        $url,
-        $parameters = [],
-        $minsize = -1,
-        $buffertime = -1,
-        $forceloadfor = [],
-        $display = true
-    ) {
-
-        if (count($forceloadfor) == 0) {
-            $forceloadfor = ['*'];
-        }
-        // Need to define min size for text search
-        if ($minsize < 0) {
-            $minsize = 0;
-        }
-        if ($buffertime < 0) {
-            $buffertime = 0;
-        }
-        return self::updateItemOnEvent(
-            $toobserve,
-            $toupdate,
-            $url,
-            $parameters,
-            ["dblclick", "keyup"],
-            $minsize,
-            $buffertime,
-            $forceloadfor,
-            $display
-        );
-    }
-
-
-    /**
      * Javascript code for update an item when another item changed (Javascript code only)
      *
      * @param string|array $toobserve    id (or array of id) of the select to observe
@@ -672,6 +628,9 @@ JS;
         $forceloadfor = [],
         $display = true
     ) {
+        if ($buffertime !== -1) {
+            trigger_error('$buffertime parameter has no effect anymore.', E_USER_WARNING);
+        }
 
         if (is_array($toobserve)) {
             $zones = $toobserve;
@@ -681,24 +640,23 @@ JS;
         $output = '';
         foreach ($zones as $zone) {
             foreach ($events as $event) {
-                $event   = htmlescape($event);
-                $zone_id = htmlescape(Html::cleanId($zone));
-
-                if ($buffertime > 0) {
-                    $output .= "var last$zone$event = 0;";
+                if (preg_match('/[^\w]+/', $event) === 1) {
+                    throw new InvalidArgumentException('Event name is expected to contain only alphanumeric chars.');
                 }
+
+                $zone_id = Html::cleanId($zone);
 
                 $output .= "$('#$zone_id').on('$event', function(event) {";
                 $condition = '';
                 if ($minsize >= 0) {
-                    $condition = "$('#$zone_id').val().length >= $minsize ";
+                    $condition = "$('#$zone_id').val().length >= " . ((int) $minsize);
                 }
                 if (count($forceloadfor)) {
                     foreach ($forceloadfor as $value) {
                         if (!empty($condition)) {
                             $condition .= " || ";
                         }
-                        $condition .= "$('#$zone_id').val() == '$value'";
+                        $condition .= "$('#$zone_id').val() == '" . jsescape($value) . "'";
                     }
                 }
                 if (!empty($condition)) {
@@ -815,7 +773,7 @@ JS;
         $display = true
     ) {
 
-        $out = sprintf('$("#%s").load("%s"', htmlescape($toupdate), htmlescape($url));
+        $out = sprintf('$("#%s").load("%s"', jsescape($toupdate), jsescape($url));
         if (count($parameters)) {
             $out .= ",{";
             $first = true;
@@ -834,9 +792,9 @@ JS;
                 $out .= $key . ":";
                 $regs = [];
                 if (is_string($val) && preg_match('/^__VALUE(\d+)__$/', $val, $regs)) {
-                    $out .= sprintf('$("#%s").val()', htmlescape(Html::cleanId($toobserve[$regs[1]])));
+                    $out .= sprintf('$("#%s").val()', jsescape(Html::cleanId($toobserve[$regs[1]])));
                 } elseif (is_string($val) && $val === "__VALUE__") {
-                    $out .= sprintf('$("#%s").val()', htmlescape(Html::cleanId($toobserve)));
+                    $out .= sprintf('$("#%s").val()', jsescape(Html::cleanId($toobserve)));
                 } else {
                     $out .=  json_encode($val);
                 }
@@ -866,10 +824,12 @@ JS;
     public static function updateItem($toupdate, $url, $parameters = [], $toobserve = "", $display = true)
     {
 
-        $output  = "<script type='text/javascript'>";
-        $output .= "$(function() {";
-        $output .= self::updateItemJsCode($toupdate, $url, $parameters, $toobserve, false);
-        $output .= "});</script>";
+        $js = "$(function() {";
+        $js .= self::updateItemJsCode($toupdate, $url, $parameters, $toobserve, false);
+        $js .= "});";
+
+        $output = Html::scriptBlock($js);
+
         if ($display) {
             echo $output;
         } else {

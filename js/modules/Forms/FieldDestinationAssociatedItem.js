@@ -167,15 +167,16 @@ export class GlpiFormFieldDestinationAssociatedItem {
         field.find('script').each((index, script) => {
             // Replace the old itemtype select id by the new one
             script.text = script.text.replace(
-                new RegExp(`dropdown_${itemtype_name.replace(/[[\]]/g, '_')}[0-9]+`, 'g'),
-                itemtype_select_id
+                /\$\(['"]#dropdown_[^)]+['"]\)/g,
+                `$("#${itemtype_select_id}")`
             );
 
             // Replace the old id by the new one
             script.text = script.text.replace(
-                new RegExp(`show_${items_id_name.replace(/[[\]]/g, '_')}[0-9]+`, 'g'),
-                `show_${items_id_name.replace(/[[\]]/g, '_')}${id}`
+                /\$\(['"]#show_[^)]+['"]\)/g,
+                `$("#show_${items_id_name.replace(/[[\]]/g, '_')}${id}")`
             );
+
             script.text = script.text.replace(/rand:[0-9]+/g, `rand:'${id}'`);
 
             // Execute the script

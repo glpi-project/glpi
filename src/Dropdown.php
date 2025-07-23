@@ -1828,12 +1828,12 @@ HTML;
             }
         }
 
-        $select = self::showItemType($params['itemtypes'], [
+        $out = self::showItemType($params['itemtypes'], [
             'checkright'          => $params['checkright'],
             'name'                => $params['itemtype_name'],
             'emptylabel'          => $params['emptylabel'],
             'display_emptychoice' => $params['display_emptychoice'],
-            'display'             => $params['display'],
+            'display'             => false,
             'rand'                => $params['rand'],
             'track_changes'       => $params['itemtype_track_changes'],
             'init'                => $params['init'],
@@ -1874,20 +1874,15 @@ HTML;
         $field_id = Html::cleanId("dropdown_" . $params['itemtype_name'] . $params['rand']);
         $show_id  = Html::cleanId("show_" . $params['items_id_name'] . $params['rand']);
 
-        $ajax = Ajax::updateItemOnSelectEvent(
+        $out .= Ajax::updateItemOnSelectEvent(
             $field_id,
             $show_id,
             $params['ajax_page'],
             $p_ajax,
-            $params['display']
+            false
         );
 
-        $out = "";
-        if (!$params['display']) {
-            $out .= $select . $ajax;
-        }
-
-        $out .= "<br><span id='$show_id'></span>\n";
+        $out .= "<br><span id='" . htmlescape($show_id) . "'></span>";
 
         // We check $options as the caller will set $options['default_itemtype'] only if it needs a
         // default itemtype and the default value can be '' thus empty won't be valid !
