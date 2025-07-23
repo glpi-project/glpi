@@ -196,7 +196,7 @@ class Computer extends CommonDBTM implements AssignableItemInterface
         $this->post_updateItemAssignableItem($history);
 
         $changes = [];
-        $update_count = count($this->updates ?? []);
+        $update_count = count($this->updates);
         $input = $this->fields;
         for ($i = 0; $i < $update_count; $i++) {
             // Update contact of attached items

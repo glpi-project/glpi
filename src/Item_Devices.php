@@ -1499,7 +1499,7 @@ class Item_Devices extends CommonDBRelation
 
             $specificities['datatype'] =  $attributs['datatype'];
             $specificities['label'] = $attributs['long name'];
-            $specificities['protected'] = (isset($attributs['protected']) && $attributs['protected']) ?? false;
+            $specificities['protected'] = isset($attributs['protected']) && $attributs['protected'];
 
             if (isset($attributs['tooltip']) && strlen($attributs['tooltip']) > 0) {
                 $tooltip = $attributs['tooltip'];

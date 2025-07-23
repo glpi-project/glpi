@@ -47,9 +47,8 @@ class NotificationEventMailing extends NotificationEventAbstract
 {
     /**
      * Mailer service.
-     * @var GLPIMailer
      */
-    private static $mailer = null;
+    private static ?GLPIMailer $mailer = null;
 
     public static function getTargetFieldName()
     {

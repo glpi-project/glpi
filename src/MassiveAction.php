@@ -118,9 +118,8 @@ class MassiveAction
 
     /**
      * Items remaining in current process.
-     * @var array
      */
-    private $remainings = null;
+    private ?array $remainings = null;
 
     /**
      * Fields to remove after reload.

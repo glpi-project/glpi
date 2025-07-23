@@ -288,7 +288,7 @@ class GLPIMailer
                 $value = $this->email->getTextBody() ?? '';
                 break;
             case 'MessageID':
-                $value = $this->email->getHeaders()->get('Message-Id')->getBodyAsString() ?? '';
+                $value = $this->email->getHeaders()->get('Message-Id')->getBodyAsString();
                 break;
             case 'From':
                 $value = $this->email->getHeaders()->get('From')->getAddresses()[0]->getAddress() ?? '';
@@ -297,10 +297,10 @@ class GLPIMailer
                 $value = $this->email->getHeaders()->get('From')->getAddresses()[0]->getName() ?? '';
                 break;
             case 'Sender':
-                $value = $this->email->getHeaders()->get('Sender')->getBodyAsString() ?? '';
+                $value = $this->email->getHeaders()->get('Sender')->getBodyAsString();
                 break;
             case 'MessageDate':
-                $value = $this->email->getHeaders()->get('Date')->getBodyAsString() ?? '';
+                $value = $this->email->getHeaders()->get('Date')->getBodyAsString();
                 break;
             case 'ErrorInfo':
                 $value = $this->error ?? '';
