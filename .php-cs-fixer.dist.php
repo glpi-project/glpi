@@ -48,6 +48,7 @@ $finder = (new PhpCsFixer\Finder())
 ;
 
 return (new PhpCsFixer\Config())
+    ->setUnsupportedPhpVersionAllowed(true) // allow upcoming PHP versions
     ->setParallelConfig(PhpCsFixer\Runner\Parallel\ParallelConfigFactory::detect())
     ->setCacheFile(sys_get_temp_dir() . '/php-cs-fixer.glpi.cache')
     ->setRules([

@@ -37,8 +37,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 // Check PHP version not to have trouble
 // Need to be the very fist step before any include
-if (version_compare(PHP_VERSION, '8.2.0', '<') || version_compare(PHP_VERSION, '8.4.999', '>')) {
-    exit('PHP version must be between 8.2 and 8.4.');
+if (version_compare(PHP_VERSION, '8.2.0', '<') || version_compare(PHP_VERSION, '8.5.999', '>')) {
+    exit('PHP version must be between 8.2 and 8.5.');
 }
 
 // Check the resources state before trying to instanciate the Kernel.
