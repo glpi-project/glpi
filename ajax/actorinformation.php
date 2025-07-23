@@ -129,6 +129,6 @@ if ($only_number) {
         '&nbsp;<a href="%s" title="%s">(%s)</a>',
         htmlescape($url),
         __s('Processing'),
-        sprintf(__s('%1$s: %2$s'), __('Processing'), $nb)
+        sprintf(__s('%1$s: %2$s'), __s('Processing'), $nb)
     );
 }
