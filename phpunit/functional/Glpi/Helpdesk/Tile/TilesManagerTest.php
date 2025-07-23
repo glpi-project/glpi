@@ -50,6 +50,8 @@ use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use InvalidArgumentException;
 use Profile;
+use Session;
+use User;
 
 final class TilesManagerTest extends DbTestCase
 {
@@ -441,7 +443,7 @@ final class TilesManagerTest extends DbTestCase
         $tiles = $manager->getVisibleTilesForSession($session);
 
         // Assert: the default tiles from the root entity should be found
-        $this->assertCount(3, $tiles);
+        $this->assertCount(4, $tiles);
     }
 
     public function testTilesFromSubEntityAreFoundWhenCurrentProfileHasNoConfig(): void
@@ -641,5 +643,18 @@ final class TilesManagerTest extends DbTestCase
 
         // Assert: tile should be deleted after deletion
         $this->assertEquals($before_tiles_items - 1, $after_tiles_items);
+    }
+
+    public function testDefaultTiles(): void
+    {
+        // Act: get the tiles as a self service user
+        $this->login("post-only");
+        $manager = $this->getManager();
+        $tiles = $manager->getVisibleTilesForSession(
+            Session::getCurrentSessionInfo()
+        );
+
+        // Assert: there should be 6 tiles
+        $this->assertCount(6, $tiles);
     }
 }

@@ -89,7 +89,7 @@ final class DefaultDataManager
     public function initializeData(): void
     {
         $incident_form = $this->createIncidentForm();
-        $this->createRequestForm();
+        $request_form = $this->createRequestForm();
 
         $root_entity = Entity::getById(0);
 
@@ -104,11 +104,22 @@ final class DefaultDataManager
             'forms_forms_id' => $incident_form->getID(),
         ]);
 
+        $this->tiles_manager->addTile($root_entity, FormTile::class, [
+            'forms_forms_id' => $request_form->getID(),
+        ]);
+
         $this->tiles_manager->addTile($root_entity, GlpiPageTile::class, [
-            'title'        => __("Request a service"),
-            'description'  => __("Ask for a service to be provided by our team."),
-            'illustration' => "request-service",
+            'title'        => __("Create a ticket"),
+            'description'  => __("Go to our service catalog and pick a form to create a new ticket."),
+            'illustration' => "request-support",
             'page'         => GlpiPageTile::PAGE_SERVICE_CATALOG,
+        ]);
+
+        $this->tiles_manager->addTile($root_entity, GlpiPageTile::class, [
+            'title'        => __("See your tickets"),
+            'description'  => __("View all the tickets that you have created."),
+            'illustration' => "helpdesk",
+            'page'         => GlpiPageTile::PAGE_ALL_TICKETS,
         ]);
 
         $this->tiles_manager->addTile($root_entity, GlpiPageTile::class, [
@@ -116,13 +127,6 @@ final class DefaultDataManager
             'description'  => __("Pick an available asset and reserve it for a given date."),
             'illustration' => "reservation",
             'page'         => GlpiPageTile::PAGE_RESERVATION,
-        ]);
-
-        $this->tiles_manager->addTile($root_entity, GlpiPageTile::class, [
-            'title'        => __("View approval requests"),
-            'description'  => __("View all tickets waiting for your approval."),
-            'illustration' => "approve-requests",
-            'page'         => GlpiPageTile::PAGE_APPROVAL,
         ]);
     }
 
@@ -192,7 +196,7 @@ final class DefaultDataManager
         return $form;
     }
 
-    private function createRequestForm(): void
+    private function createRequestForm(): Form
     {
         $form = $this->createForm(
             name: __('Request a service'),
@@ -248,6 +252,8 @@ final class DefaultDataManager
 
         // Add ticket destination
         $this->setDefaultDestinationConfig($form, $config);
+
+        return $form;
     }
 
     private function createForm(
