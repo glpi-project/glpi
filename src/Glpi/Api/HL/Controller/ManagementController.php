@@ -462,20 +462,17 @@ final class ManagementController extends AbstractController
         description: 'Get all available management types',
         methods: ['GET'],
         responses: [
-            '200' => [
-                'description' => 'List of management types',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_ARRAY,
-                    'items' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'properties' => [
-                            'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
-                            'name' => ['type' => Doc\Schema::TYPE_STRING],
-                            'href' => ['type' => Doc\Schema::TYPE_STRING],
-                        ],
-                    ],
-                ],
-            ],
+            new Doc\Response(new Doc\Schema(
+                type: Doc\Schema::TYPE_ARRAY,
+                items: new Doc\Schema(
+                    type: Doc\Schema::TYPE_OBJECT,
+                    properties: [
+                        'itemtype' => new Doc\Schema(Doc\Schema::TYPE_STRING),
+                        'name' => new Doc\Schema(Doc\Schema::TYPE_STRING),
+                        'href' => new Doc\Schema(Doc\Schema::TYPE_STRING),
+                    ]
+                )
+            )),
         ]
     )]
     public function index(Request $request): Response
@@ -496,12 +493,9 @@ final class ManagementController extends AbstractController
         'itemtype' => [self::class, 'getManagementTypes'],
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'List or search management items',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
-        responses: [
-            ['schema' => '{itemtype}[]'],
-        ]
+    #[Doc\SearchRoute(
+        schema_name: '{itemtype}',
+        description: 'List or search management items'
     )]
     public function searchItems(Request $request): Response
     {
@@ -514,11 +508,9 @@ final class ManagementController extends AbstractController
         'id' => '\d+',
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a management item by ID',
-        responses: [
-            ['schema' => '{itemtype}'],
-        ]
+    #[Doc\GetRoute(
+        schema_name: '{itemtype}',
+        description: 'Get an existing management item'
     )]
     public function getItem(Request $request): Response
     {
@@ -529,19 +521,13 @@ final class ManagementController extends AbstractController
     #[Route(path: '/Document/{id}/Download', methods: ['GET'], requirements: ['id' => '\d+'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
-        description: 'Download a document by ID',
+        description: 'Download a document',
         parameters: [
-            [
-                'name' => 'HTTP_IF_NONE_MATCH',
-                'location' => Doc\Parameter::LOCATION_HEADER,
-            ],
-            [
-                'name' => 'HTTP_IF_MODIFIED_SINCE',
-                'location' => Doc\Parameter::LOCATION_HEADER,
-            ],
+            new Doc\Parameter(name: 'HTTP_IF_NONE_MATCH', schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING), location: Doc\Parameter::LOCATION_HEADER),
+            new Doc\Parameter(name: 'HTTP_IF_MODIFIED_SINCE', schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING), location: Doc\Parameter::LOCATION_HEADER),
         ],
         responses: [
-            ['schema' => 'Document', 'media_type' => 'application/octet-stream'],
+            new Doc\Response(schema: new Doc\SchemaReference('Document'), media_type: 'application/octet-stream'),
         ]
     )]
     public function downloadDocument(Request $request): Response
@@ -561,13 +547,10 @@ final class ManagementController extends AbstractController
         'itemtype' => [self::class, 'getManagementTypes'],
     ])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(description: 'Create a new management item', parameters: [
-        [
-            'name' => '_',
-            'location' => Doc\Parameter::LOCATION_BODY,
-            'schema' => '{itemtype}',
-        ],
-    ])]
+    #[Doc\CreateRoute(
+        schema_name: '{itemtype}',
+        description: 'Create a new management item'
+    )]
     public function createItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
@@ -579,18 +562,9 @@ final class ManagementController extends AbstractController
         'id' => '\d+',
     ])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update a management item by ID',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => '{itemtype}',
-            ],
-        ],
-        responses: [
-            ['schema' => '{itemtype}'],
-        ]
+    #[Doc\UpdateRoute(
+        schema_name: '{itemtype}',
+        description: 'Update an existing management item'
     )]
     public function updateItem(Request $request): Response
     {
@@ -603,7 +577,10 @@ final class ManagementController extends AbstractController
         'id' => '\d+',
     ])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(description: 'Delete a management item by ID')]
+    #[Doc\DeleteRoute(
+        schema_name: '{itemtype}',
+        description: 'Delete a management item'
+    )]
     public function deleteItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');

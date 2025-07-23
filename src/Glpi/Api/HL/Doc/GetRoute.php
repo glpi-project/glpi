@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -37,50 +36,16 @@ namespace Glpi\Api\HL\Doc;
 
 use Attribute;
 
-#[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
-class Route
+#[Attribute(Attribute::TARGET_METHOD)]
+class GetRoute extends Route
 {
-    /**
-     * @param string $description
-     * @param string[] $methods
-     * @param Parameter[] $parameters
-     * @param Response[] $responses
-     */
-    public function __construct(
-        protected string $description = '',
-        protected array $methods = [],
-        protected array $parameters = [],
-        protected array $responses = []
-    ) {}
-
-    public function getDescription(): string
+    public function __construct(string $schema_name, ?string $description = null)
     {
-        return $this->description;
-    }
-
-    /**
-     * Array of methods that this documentation applies to.
-     * If empty, it will be applied to every method defined in the Route itself.
-     * @return string[]
-     */
-    public function getMethods(): array
-    {
-        return $this->methods;
-    }
-
-    /**
-     * @return Parameter[]
-     */
-    public function getParameters(): array
-    {
-        return $this->parameters;
-    }
-
-    /**
-     * @return Response[]
-     */
-    public function getResponses(): array
-    {
-        return $this->responses;
+        parent::__construct(
+            description: $description ?? 'Get an existing ' . $schema_name,
+            responses: [
+                new Response(schema: new SchemaReference($schema_name)),
+            ]
+        );
     }
 }

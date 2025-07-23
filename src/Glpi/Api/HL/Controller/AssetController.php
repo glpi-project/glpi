@@ -93,18 +93,18 @@ use function Safe\json_encode;
 #[Route(path: '/Assets', priority: 1, tags: ['Assets'])]
 #[Doc\Route(
     parameters: [
-        [
-            'name' => 'itemtype',
-            'description' => 'Asset type',
-            'location' => Doc\Parameter::LOCATION_PATH,
-            'schema' => ['type' => Doc\Schema::TYPE_STRING],
-        ],
-        [
-            'name' => 'id',
-            'description' => 'The ID of the Asset',
-            'location' => Doc\Parameter::LOCATION_PATH,
-            'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
-        ],
+        new Doc\Parameter(
+            name: 'itemtype',
+            schema: new Doc\Schema(Doc\Schema::TYPE_STRING),
+            description: 'Asset type',
+            location: Doc\Parameter::LOCATION_PATH,
+        ),
+        new Doc\Parameter(
+            name: 'id',
+            schema: new Doc\Schema(Doc\Schema::TYPE_INTEGER),
+            description: 'The ID of the Asset',
+            location: Doc\Parameter::LOCATION_PATH,
+        ),
     ]
 )]
 final class AssetController extends AbstractController
@@ -1449,26 +1449,22 @@ final class AssetController extends AbstractController
         return $schema_names_only ? array_column($rack_types, 'schema_name') : $rack_types;
     }
 
-    #[Route(path: '/', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get all available asset types',
-        methods: ['GET'],
         responses: [
-            '200' => [
-                'description' => 'List of asset types',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_ARRAY,
-                    'items' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'properties' => [
-                            'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
-                            'name' => ['type' => Doc\Schema::TYPE_STRING],
-                            'href' => ['type' => Doc\Schema::TYPE_STRING],
-                        ],
-                    ],
-                ],
-            ],
+            new Doc\Response(new Doc\Schema(
+                type: Doc\Schema::TYPE_ARRAY,
+                items: new Doc\Schema(
+                    type: Doc\Schema::TYPE_OBJECT,
+                    properties: [
+                        'itemtype' => new Doc\Schema(Doc\Schema::TYPE_STRING),
+                        'name' => new Doc\Schema(Doc\Schema::TYPE_STRING),
+                        'href' => new Doc\Schema(Doc\Schema::TYPE_STRING),
+                    ]
+                )
+            )),
         ]
     )]
     public function index(Request $request): Response
@@ -1494,14 +1490,11 @@ final class AssetController extends AbstractController
         return $union_schema;
     }
 
-    #[Route(path: '/Global', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/Global', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'List or search assets of all types',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
-        responses: [
-            ['schema' => 'CommonAsset[]'],
-        ]
+    #[Doc\SearchRoute(
+        schema_name: 'CommonAsset',
+        description: 'List or search assets of all types'
     )]
     public function searchAll(Request $request): Response
     {
@@ -1510,14 +1503,11 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/{itemtype}', methods: ['GET'], requirements: [
         'itemtype' => [self::class, 'getAssetTypes'],
-    ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'List or search assets of a specific type',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
-        responses: [
-            ['schema' => '{itemtype}[]'],
-        ]
+    #[Doc\SearchRoute(
+        schema_name: '{itemtype}',
+        description: 'List or search assets of a specific type'
     )]
     public function search(Request $request): Response
     {
@@ -1528,13 +1518,11 @@ final class AssetController extends AbstractController
     #[Route(path: '/{itemtype}/{id}', methods: ['GET'], requirements: [
         'itemtype' => [self::class, 'getAssetTypes'],
         'id' => '\d+',
-    ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get an asset of a specific type by ID',
-        responses: [
-            ['schema' => '{itemtype}'],
-        ]
+    #[Doc\GetRoute(
+        schema_name: '{itemtype}',
+        description: 'Get an existing asset of a specific type'
     )]
     public function getItem(Request $request): Response
     {
@@ -1545,13 +1533,11 @@ final class AssetController extends AbstractController
     #[Route(path: '/{itemtype}/{id}/Infocom', methods: ['GET'], requirements: [
         'itemtype' => [self::class, 'getAssetTypes'],
         'id' => '\d+',
-    ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get the financial and administration information for a specific asset',
-        responses: [
-            ['schema' => 'Infocom'],
-        ]
+    #[Doc\GetRoute(
+        schema_name: 'Infocom',
+        description: 'Get the financial and administration information for a specific asset'
     )]
     public function getItemInfocom(Request $request): Response
     {
@@ -1578,17 +1564,11 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/{itemtype}', methods: ['POST'], requirements: [
         'itemtype' => [self::class, 'getAssetTypes'],
-    ], tags: ['Assets'])]
+    ])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Create an asset of a specific type',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => '{itemtype}',
-            ],
-        ]
+    #[Doc\CreateRoute(
+        schema_name: '{itemtype}',
+        description: 'Create an asset of a specific type'
     )]
     public function createItem(Request $request): Response
     {
@@ -1599,17 +1579,11 @@ final class AssetController extends AbstractController
     #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'], requirements: [
         'itemtype' => [self::class, 'getAssetTypes'],
         'id' => '\d+',
-    ], tags: ['Assets'])]
+    ])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update an asset of a specific type by ID',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => '{itemtype}',
-            ],
-        ]
+    #[Doc\UpdateRoute(
+        schema_name: '{itemtype}',
+        description: 'Update an existing asset of a specific type'
     )]
     public function updateItem(Request $request): Response
     {
@@ -1620,10 +1594,11 @@ final class AssetController extends AbstractController
     #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'], requirements: [
         'itemtype' => [self::class, 'getAssetTypes'],
         'id' => '\d+',
-    ], tags: ['Assets'])]
+    ])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Delete an asset of a specific type by ID',
+    #[Doc\DeleteRoute(
+        schema_name: '{itemtype}',
+        description: 'Delete an asset of a specific type',
     )]
     public function deleteItem(Request $request): Response
     {
@@ -1631,14 +1606,11 @@ final class AssetController extends AbstractController
         return ResourceAccessor::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Cartridge', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/Cartridge', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'List or search cartridge models',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
-        responses: [
-            ['schema' => 'CartridgeItem[]'],
-        ]
+    #[Doc\SearchRoute(
+        schema_name: 'CartridgeItem',
+        description: 'List or search cartridge models'
     )]
     public function searchCartridgeItems(Request $request): Response
     {
@@ -1647,30 +1619,22 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/Cartridge/{id}', methods: ['GET'], requirements: [
         'id' => '\d+',
-    ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a cartridge model by ID',
-        responses: [
-            ['schema' => 'CartridgeItem'],
-        ]
+    #[Doc\GetRoute(
+        schema_name: 'CartridgeItem',
+        description: 'Get an existing cartridge model'
     )]
     public function getCartridgeItem(Request $request): Response
     {
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('CartridgeItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Cartridge', methods: ['POST'], tags: ['Assets'])]
+    #[Route(path: '/Cartridge', methods: ['POST'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Create a cartridge model',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'CartridgeItem',
-            ],
-        ]
+    #[Doc\CreateRoute(
+        schema_name: 'CartridgeItem',
+        description: 'Create a new cartridge model'
     )]
     public function createCartridgeItems(Request $request): Response
     {
@@ -1679,17 +1643,11 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/Cartridge/{id}', methods: ['PATCH'], requirements: [
         'id' => '\d+',
-    ], tags: ['Assets'])]
+    ])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update a cartridge model by ID',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'CartridgeItem',
-            ],
-        ]
+    #[Doc\UpdateRoute(
+        schema_name: 'CartridgeItem',
+        description: 'Update an existing cartridge model'
     )]
     public function updateCartridgeItems(Request $request): Response
     {
@@ -1698,10 +1656,11 @@ final class AssetController extends AbstractController
 
     #[Route(path: '/Cartridge/{id}', methods: ['DELETE'], requirements: [
         'id' => '\d+',
-    ], tags: ['Assets'])]
+    ])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Delete a cartridge model by ID',
+    #[Doc\DeleteRoute(
+        schema_name: 'CartridgeItem',
+        description: 'Delete a cartridge model',
     )]
     public function deleteCartridgeItems(Request $request): Response
     {
@@ -1711,33 +1670,19 @@ final class AssetController extends AbstractController
     #[Route(path: '/Cartridge/{cartridgeitems_id}/{id}', methods: ['GET'], requirements: [
         'cartridgeitems_id' => '\d+',
         'id' => '\d+',
-    ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a cartridge by ID',
-        responses: [
-            ['schema' => 'Cartridge'],
-        ]
-    )]
+    #[Doc\GetRoute(schema_name: 'Cartridge')]
     public function getCartridge(Request $request): Response
     {
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('Cartridge', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Cartridge/{cartridgeitems_id}', methods: ['POST'], tags: ['Assets'], requirements: [
+    #[Route(path: '/Cartridge/{cartridgeitems_id}', methods: ['POST'], requirements: [
         'cartridgeitems_id' => '\d+',
     ])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Create a cartridge',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'Cartridge',
-            ],
-        ]
-    )]
+    #[Doc\CreateRoute(schema_name: 'Cartridge')]
     public function createCartridges(Request $request): Response
     {
         return ResourceAccessor::createBySchema($this->getKnownSchema('Cartridge', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getCartridge']);
@@ -1746,18 +1691,9 @@ final class AssetController extends AbstractController
     #[Route(path: '/Cartridge/{cartridgeitems_id}/{id}', methods: ['PATCH'], requirements: [
         'cartridgeitems_id' => '\d+',
         'id' => '\d+',
-    ], tags: ['Assets'])]
+    ])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update a cartridge by ID',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'Cartridge',
-            ],
-        ]
-    )]
+    #[Doc\UpdateRoute(schema_name: 'Cartridge')]
     public function updateCartridges(Request $request): Response
     {
         return ResourceAccessor::updateBySchema($this->getKnownSchema('Cartridge', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
@@ -1766,87 +1702,63 @@ final class AssetController extends AbstractController
     #[Route(path: '/Cartridge/{cartridgeitems_id}/{id}', methods: ['DELETE'], requirements: [
         'cartridgeitems_id' => '\d+',
         'id' => '\d+',
-    ], tags: ['Assets'])]
+    ])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Delete a cartridge by ID',
-    )]
+    #[Doc\DeleteRoute(schema_name: 'Cartridge')]
     public function deleteCartridges(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('Cartridge', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Consumable', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/Consumable', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'List or search consumables models',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
-        responses: [
-            ['schema' => 'ConsumableItem[]'],
-        ]
+    #[Doc\SearchRoute(
+        schema_name: 'ConsumableItem',
+        description: 'List or search consumables models'
     )]
     public function searchConsumableItems(Request $request): Response
     {
         return ResourceAccessor::searchBySchema($this->getKnownSchema('ConsumableItem', $this->getAPIVersion($request)), $request->getParameters());
     }
 
-    #[Route(path: '/Consumable/{id}', methods: ['GET'], requirements: [
-        'id' => '\d+',
-    ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/Consumable/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a consumable model by ID',
-        responses: [
-            ['schema' => 'ConsumableItem'],
-        ]
+    #[Doc\GetRoute(
+        schema_name: 'ConsumableItem',
+        description: 'Get an existing consumable model'
     )]
     public function getConsumableItem(Request $request): Response
     {
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('ConsumableItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Consumable', methods: ['POST'], tags: ['Assets'])]
+    #[Route(path: '/Consumable', methods: ['POST'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Create a consumable model',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'ConsumableItem',
-            ],
-        ]
+    #[Doc\CreateRoute(
+        schema_name: 'ConsumableItem',
+        description: 'Create a new consumable model'
     )]
     public function createConsumableItems(Request $request): Response
     {
         return ResourceAccessor::createBySchema($this->getKnownSchema('ConsumableItem', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getConsumableItem']);
     }
 
-    #[Route(path: '/Consumable/{id}', methods: ['PATCH'], requirements: [
-        'id' => '\d+',
-    ], tags: ['Assets'])]
+    #[Route(path: '/Consumable/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update a consumable model by ID',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'ConsumableItem',
-            ],
-        ]
+    #[Doc\UpdateRoute(
+        schema_name: 'ConsumableItem',
+        description: 'Update an existing consumable model'
     )]
     public function updateConsumableItems(Request $request): Response
     {
         return ResourceAccessor::updateBySchema($this->getKnownSchema('ConsumableItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Consumable/{id}', methods: ['DELETE'], requirements: [
-        'id' => '\d+',
-    ], tags: ['Assets'])]
+    #[Route(path: '/Consumable/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Delete a consumable model by ID',
+    #[Doc\DeleteRoute(
+        schema_name: 'ConsumableItem',
+        description: 'Delete a consumable model',
     )]
     public function deleteConsumableItems(Request $request): Response
     {
@@ -1856,33 +1768,17 @@ final class AssetController extends AbstractController
     #[Route(path: '/Consumable/{consumableitems_id}/{id}', methods: ['GET'], requirements: [
         'consumableitems_id' => '\d+',
         'id' => '\d+',
-    ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a consumable by ID',
-        responses: [
-            ['schema' => 'Consumable'],
-        ]
-    )]
+    #[Doc\GetRoute(schema_name: 'Consumable')]
     public function getConsumable(Request $request): Response
     {
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('Consumable', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Consumable/{consumableitems_id}', methods: ['POST'], requirements: [
-        'consumableitems_id' => '\d+',
-    ], tags: ['Assets'])]
+    #[Route(path: '/Consumable/{consumableitems_id}', methods: ['POST'], requirements: ['consumableitems_id' => '\d+'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Create a consumable',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'Consumable',
-            ],
-        ]
-    )]
+    #[Doc\CreateRoute(schema_name: 'Consumable')]
     public function createConsumables(Request $request): Response
     {
         return ResourceAccessor::createBySchema($this->getKnownSchema('Consumable', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getConsumable']);
@@ -1891,18 +1787,9 @@ final class AssetController extends AbstractController
     #[Route(path: '/Consumable/{consumableitems_id}/{id}', methods: ['PATCH'], requirements: [
         'consumableitems_id' => '\d+',
         'id' => '\d+',
-    ], tags: ['Assets'])]
+    ])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update a consumable by ID',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'Consumable',
-            ],
-        ]
-    )]
+    #[Doc\UpdateRoute(schema_name: 'Consumable')]
     public function updateConsumable(Request $request): Response
     {
         return ResourceAccessor::updateBySchema($this->getKnownSchema('Consumable', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
@@ -1911,179 +1798,99 @@ final class AssetController extends AbstractController
     #[Route(path: '/Consumable/{consumableitems_id}/{id}', methods: ['DELETE'], requirements: [
         'consumableitems_id' => '\d+',
         'id' => '\d+',
-    ], tags: ['Assets'])]
+    ])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Delete a consumable by ID',
-    )]
+    #[Doc\DeleteRoute(schema_name: 'Consumable')]
     public function deleteConsumable(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('Consumable', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Software', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/Software', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'List or search software',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
-        responses: [
-            ['schema' => 'Software[]'],
-        ]
-    )]
+    #[Doc\SearchRoute(schema_name: 'Software')]
     public function searchSoftware(Request $request): Response
     {
         return ResourceAccessor::searchBySchema($this->getKnownSchema('Software', $this->getAPIVersion($request)), $request->getParameters());
     }
 
-    #[Route(path: '/Software/{id}', methods: ['GET'], requirements: [
-        'id' => '\d+',
-    ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/Software/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a software by ID',
-        responses: [
-            ['schema' => 'Software'],
-        ]
-    )]
+    #[Doc\GetRoute(schema_name: 'Software')]
     public function getSoftware(Request $request): Response
     {
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('Software', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Software', methods: ['POST'], tags: ['Assets'])]
+    #[Route(path: '/Software', methods: ['POST'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Create a software',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'Software',
-            ],
-        ]
-    )]
+    #[Doc\CreateRoute(schema_name: 'Software')]
     public function createSoftware(Request $request): Response
     {
         return ResourceAccessor::createBySchema($this->getKnownSchema('Software', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getSoftware']);
     }
 
-    #[Route(path: '/Software/{id}', methods: ['PATCH'], requirements: [
-        'id' => '\d+',
-    ], tags: ['Assets'])]
+    #[Route(path: '/Software/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update a software by ID',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'Software',
-            ],
-        ]
-    )]
+    #[Doc\UpdateRoute(schema_name: 'Software')]
     public function updateSoftware(Request $request): Response
     {
         return ResourceAccessor::updateBySchema($this->getKnownSchema('Software', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Software/{id}', methods: ['DELETE'], requirements: [
-        'id' => '\d+',
-    ], tags: ['Assets'])]
+    #[Route(path: '/Software/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Delete a software by ID',
-    )]
+    #[Doc\DeleteRoute(schema_name: 'Software')]
     public function deleteSoftware(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('Software', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Rack', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/Rack', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'List or search racks',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
-        responses: [
-            ['schema' => 'Rack[]'],
-        ]
-    )]
+    #[Doc\SearchRoute(schema_name: 'Rack')]
     public function searchRack(Request $request): Response
     {
         return ResourceAccessor::searchBySchema($this->getKnownSchema('Rack', $this->getAPIVersion($request)), $request->getParameters());
     }
 
-    #[Route(path: '/Rack/{id}', methods: ['GET'], requirements: [
-        'id' => '\d+',
-    ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/Rack/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a rack by ID',
-        responses: [
-            ['schema' => 'Rack'],
-        ]
-    )]
+    #[Doc\GetRoute(schema_name: 'Rack')]
     public function getRack(Request $request): Response
     {
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('Rack', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Rack', methods: ['POST'], tags: ['Assets'])]
+    #[Route(path: '/Rack', methods: ['POST'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Create a rack',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'Rack',
-            ],
-        ]
-    )]
+    #[Doc\CreateRoute(schema_name: 'Rack')]
     public function createRack(Request $request): Response
     {
         return ResourceAccessor::createBySchema($this->getKnownSchema('Rack', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getRack']);
     }
 
-    #[Route(path: '/Rack/{id}', methods: ['PATCH'], requirements: [
-        'id' => '\d+',
-    ], tags: ['Assets'])]
+    #[Route(path: '/Rack/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update a rack by ID',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'Rack',
-            ],
-        ]
-    )]
+    #[Doc\UpdateRoute(schema_name: 'Rack')]
     public function updateRack(Request $request): Response
     {
         return ResourceAccessor::updateBySchema($this->getKnownSchema('Rack', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Rack/{id}', methods: ['DELETE'], requirements: [
-        'id' => '\d+',
-    ], tags: ['Assets'])]
+    #[Route(path: '/Rack/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Delete a rack by ID',
-    )]
+    #[Doc\DeleteRoute(schema_name: 'Rack')]
     public function deleteRack(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('Rack', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Rack/{rack_id}/Item', methods: ['GET'], requirements: [
-        'rack_id' => '\d+',
-    ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/Rack/{rack_id}/Item', methods: ['GET'], requirements: ['rack_id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get items in a rack',
-        responses: [
-            ['schema' => 'RackItem[]'],
-        ]
+    #[Doc\SearchRoute(
+        schema_name: 'RackItem',
+        description: 'List or search for items in a rack'
     )]
     public function getRackItems(Request $request): Response
     {
@@ -2096,13 +1903,11 @@ final class AssetController extends AbstractController
     #[Route(path: '/Rack/{rack_id}/Item/{id}', methods: ['GET'], requirements: [
         'rack_id' => '\d+',
         'id' => '\d+',
-    ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a rack item',
-        responses: [
-            ['schema' => 'RackItem[]'],
-        ]
+    #[Doc\GetRoute(
+        schema_name: 'RackItem',
+        description: 'Get an existing rack item'
     )]
     public function getRackItem(Request $request): Response
     {
@@ -2115,36 +1920,22 @@ final class AssetController extends AbstractController
     #[Route(path: '/Rack/{rack_id}/Item/{id}', methods: ['PATCH'], requirements: [
         'rack_id' => '\d+',
         'id' => '\d+',
-    ], tags: ['Assets'])]
+    ])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update a rack item',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'Rack',
-            ],
-        ]
+    #[Doc\UpdateRoute(
+        schema_name: 'RackItem',
+        description: 'Update an existing rack item'
     )]
     public function updateRackItem(Request $request): Response
     {
         return ResourceAccessor::updateBySchema($this->getKnownSchema('RackItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Rack/{rack_id}/Item', methods: ['POST'], requirements: [
-        'rack_id' => '\d+',
-    ], tags: ['Assets'])]
+    #[Route(path: '/Rack/{rack_id}/Item', methods: ['POST'], requirements: ['rack_id' => '\d+'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Add an item to a rack',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'RackItem',
-            ],
-        ]
+    #[Doc\CreateRoute(
+        schema_name: 'RackItem',
+        description: 'Add an item to a rack'
     )]
     public function createRackItem(Request $request): Response
     {
@@ -2170,9 +1961,10 @@ final class AssetController extends AbstractController
     #[Route(path: '/Rack/{rack_id}/Item/{id}', methods: ['DELETE'], requirements: [
         'rack_id' => '\d+',
         'id' => '\d+',
-    ], tags: ['Assets'])]
+    ])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
+    #[Doc\DeleteRoute(
+        schema_name: 'RackItem',
         description: 'Remove an item from a rack'
     )]
     public function deleteRackItem(Request $request): Response
@@ -2180,401 +1972,226 @@ final class AssetController extends AbstractController
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('RackItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Enclosure', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/Enclosure', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'List or search enclosure',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
-        responses: [
-            ['schema' => 'Enclosure[]'],
-        ]
-    )]
+    #[Doc\SearchRoute(schema_name: 'Enclosure')]
     public function searchEnclosure(Request $request): Response
     {
         return ResourceAccessor::searchBySchema($this->getKnownSchema('Enclosure', $this->getAPIVersion($request)), $request->getParameters());
     }
 
-    #[Route(path: '/Enclosure/{id}', methods: ['GET'], requirements: [
-        'id' => '\d+',
-    ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/Enclosure/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a enclosure by ID',
-        responses: [
-            ['schema' => 'Enclosure'],
-        ]
-    )]
+    #[Doc\GetRoute(schema_name: 'Enclosure')]
     public function getEnclosure(Request $request): Response
     {
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('Enclosure', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Enclosure', methods: ['POST'], tags: ['Assets'])]
+    #[Route(path: '/Enclosure', methods: ['POST'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Create a enclosure',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'Enclosure',
-            ],
-        ]
-    )]
+    #[Doc\CreateRoute(schema_name: 'Enclosure')]
     public function createEnclosure(Request $request): Response
     {
         return ResourceAccessor::createBySchema($this->getKnownSchema('Enclosure', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getEnclosure']);
     }
 
-    #[Route(path: '/Enclosure/{id}', methods: ['PATCH'], requirements: [
-        'id' => '\d+',
-    ], tags: ['Assets'])]
+    #[Route(path: '/Enclosure/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update a enclosure by ID',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'Enclosure',
-            ],
-        ]
-    )]
+    #[Doc\UpdateRoute(schema_name: 'Enclosure')]
     public function updateEnclosure(Request $request): Response
     {
         return ResourceAccessor::updateBySchema($this->getKnownSchema('Enclosure', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Enclosure/{id}', methods: ['DELETE'], requirements: [
-        'id' => '\d+',
-    ], tags: ['Assets'])]
+    #[Route(path: '/Enclosure/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Delete a enclosure by ID',
-    )]
+    #[Doc\DeleteRoute(schema_name: 'Enclosure')]
     public function deleteEnclosure(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('Enclosure', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/PDU', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/PDU', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'List or search PDUs',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
-        responses: [
-            ['schema' => 'PDU[]'],
-        ]
-    )]
+    #[Doc\SearchRoute(schema_name: 'PDU')]
     public function searchPDU(Request $request): Response
     {
         return ResourceAccessor::searchBySchema($this->getKnownSchema('PDU', $this->getAPIVersion($request)), $request->getParameters());
     }
 
-    #[Route(path: '/PDU/{id}', methods: ['GET'], requirements: [
-        'id' => '\d+',
-    ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/PDU/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a PDU by ID',
-        responses: [
-            ['schema' => 'PDU'],
-        ]
-    )]
+    #[Doc\GetRoute(schema_name: 'PDU')]
     public function getPDU(Request $request): Response
     {
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('PDU', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/PDU', methods: ['POST'], tags: ['Assets'])]
+    #[Route(path: '/PDU', methods: ['POST'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Create a PDU',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'PDU',
-            ],
-        ]
-    )]
+    #[Doc\CreateRoute(schema_name: 'PDU')]
     public function createPDU(Request $request): Response
     {
         return ResourceAccessor::createBySchema($this->getKnownSchema('PDU', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getPDU']);
     }
 
-    #[Route(path: '/PDU/{id}', methods: ['PATCH'], requirements: [
-        'id' => '\d+',
-    ], tags: ['Assets'])]
+    #[Route(path: '/PDU/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update a PDU by ID',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'PDU',
-            ],
-        ]
-    )]
+    #[Doc\UpdateRoute(schema_name: 'PDU')]
     public function updatePDU(Request $request): Response
     {
         return ResourceAccessor::updateBySchema($this->getKnownSchema('PDU', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/PDU/{id}', methods: ['DELETE'], requirements: [
-        'id' => '\d+',
-    ], tags: ['Assets'])]
+    #[Route(path: '/PDU/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Delete a PDU by ID',
-    )]
+    #[Doc\DeleteRoute(schema_name: 'PDU')]
     public function deletePDU(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('PDU', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/PassiveDCEquipment', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/PassiveDCEquipment', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'List or search passive DC equipment',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
-        responses: [
-            ['schema' => 'PassiveDCEquipment[]'],
-        ]
+    #[Doc\SearchRoute(
+        schema_name: 'PassiveDCEquipment',
+        description: 'List or search passive DC equipment'
     )]
     public function searchPassiveDCEquipment(Request $request): Response
     {
         return ResourceAccessor::searchBySchema($this->getKnownSchema('PassiveDCEquipment', $this->getAPIVersion($request)), $request->getParameters());
     }
 
-    #[Route(path: '/PassiveDCEquipment/{id}', methods: ['GET'], requirements: [
-        'id' => '\d+',
-    ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/PassiveDCEquipment/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a passive DC equipment by ID',
-        responses: [
-            ['schema' => 'PassiveDCEquipment'],
-        ]
+    #[Doc\GetRoute(
+        schema_name: 'PassiveDCEquipment',
+        description: 'Get an existing passive DC equipment'
     )]
     public function getPassiveDCEquipment(Request $request): Response
     {
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('PassiveDCEquipment', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/PassiveDCEquipment', methods: ['POST'], tags: ['Assets'])]
+    #[Route(path: '/PassiveDCEquipment', methods: ['POST'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Create a passive DC equipment',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'PassiveDCEquipment',
-            ],
-        ]
+    #[Doc\CreateRoute(
+        schema_name: 'PassiveDCEquipment',
+        description: 'Create a new passive DC equipment'
     )]
     public function createPassiveDCEquipment(Request $request): Response
     {
         return ResourceAccessor::createBySchema($this->getKnownSchema('PassiveDCEquipment', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getPassiveDCEquipment']);
     }
 
-    #[Route(path: '/PassiveDCEquipment/{id}', methods: ['PATCH'], requirements: [
-        'id' => '\d+',
-    ], tags: ['Assets'])]
+    #[Route(path: '/PassiveDCEquipment/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update a passive DC equipment by ID',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'PassiveDCEquipment',
-            ],
-        ]
+    #[Doc\UpdateRoute(
+        schema_name: 'PassiveDCEquipment',
+        description: 'Update an existing passive DC equipment'
     )]
     public function updatePassiveDCEquipment(Request $request): Response
     {
         return ResourceAccessor::updateBySchema($this->getKnownSchema('PassiveDCEquipment', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/PassiveDCEquipment/{id}', methods: ['DELETE'], requirements: [
-        'id' => '\d+',
-    ], tags: ['Assets'])]
+    #[Route(path: '/PassiveDCEquipment/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Delete a passive DC equipment by ID',
+    #[Doc\DeleteRoute(
+        schema_name: 'PassiveDCEquipment',
+        description: 'Delete a passive DC equipment',
     )]
     public function deletePassiveDCEquipment(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('PassiveDCEquipment', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Cable', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/Cable', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'List or search cables',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
-        responses: [
-            ['schema' => 'Cable[]'],
-        ]
-    )]
+    #[Doc\SearchRoute(schema_name: 'Cable')]
     public function searchCables(Request $request): Response
     {
         return ResourceAccessor::searchBySchema($this->getKnownSchema('Cable', $this->getAPIVersion($request)), $request->getParameters());
     }
 
-    #[Route(path: '/Cable/{id}', methods: ['GET'], requirements: [
-        'id' => '\d+',
-    ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/Cable/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a cable by ID',
-        responses: [
-            ['schema' => 'Cable'],
-        ]
-    )]
+    #[Doc\GetRoute(schema_name: 'Cable')]
     public function getCable(Request $request): Response
     {
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('Cable', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Cable', methods: ['POST'], tags: ['Assets'])]
+    #[Route(path: '/Cable', methods: ['POST'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Create a cable',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'Cable',
-            ],
-        ]
-    )]
+    #[Doc\CreateRoute(schema_name: 'Cable')]
     public function createCable(Request $request): Response
     {
         return ResourceAccessor::createBySchema($this->getKnownSchema('Cable', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getCable']);
     }
 
-    #[Route(path: '/Cable/{id}', methods: ['PATCH'], requirements: [
-        'id' => '\d+',
-    ], tags: ['Assets'])]
+    #[Route(path: '/Cable/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update a cable by ID',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'Cable',
-            ],
-        ]
-    )]
+    #[Doc\UpdateRoute('Cable')]
     public function updateCable(Request $request): Response
     {
         return ResourceAccessor::updateBySchema($this->getKnownSchema('Cable', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Cable/{id}', methods: ['DELETE'], requirements: [
-        'id' => '\d+',
-    ], tags: ['Assets'])]
+    #[Route(path: '/Cable/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Delete a cable by ID',
-    )]
+    #[Doc\DeleteRoute('Cable')]
     public function deleteCable(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('Cable', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Socket', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/Socket', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'List or search sockets',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
-        responses: [
-            ['schema' => 'Socket[]'],
-        ]
-    )]
+    #[Doc\SearchRoute(schema_name: 'Socket')]
     public function searchSockets(Request $request): Response
     {
         return ResourceAccessor::searchBySchema($this->getKnownSchema('Socket', $this->getAPIVersion($request)), $request->getParameters());
     }
 
-    #[Route(path: '/Socket/{id}', methods: ['GET'], requirements: [
-        'id' => '\d+',
-    ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/Socket/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a socket by ID',
-        responses: [
-            ['schema' => 'Socket'],
-        ]
-    )]
+    #[Doc\GetRoute(schema_name: 'Socket')]
     public function getSocket(Request $request): Response
     {
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('Socket', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Socket', methods: ['POST'], tags: ['Assets'])]
+    #[Route(path: '/Socket', methods: ['POST'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Create a socket',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'Socket',
-            ],
-        ]
-    )]
+    #[Doc\CreateRoute(schema_name: 'Socket')]
     public function createSocket(Request $request): Response
     {
         return ResourceAccessor::createBySchema($this->getKnownSchema('Socket', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getSocket']);
     }
 
-    #[Route(path: '/Socket/{id}', methods: ['PATCH'], requirements: [
-        'id' => '\d+',
-    ], tags: ['Assets'])]
+    #[Route(path: '/Socket/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update a socket by ID',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'Socket',
-            ],
-        ]
-    )]
+    #[Doc\UpdateRoute(schema_name: 'Socket')]
     public function updateSocket(Request $request): Response
     {
         return ResourceAccessor::updateBySchema($this->getKnownSchema('Socket', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Socket/{id}', methods: ['DELETE'], requirements: [
-        'id' => '\d+',
-    ], tags: ['Assets'])]
+    #[Route(path: '/Socket/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Delete a socket by ID',
-    )]
+    #[Doc\DeleteRoute(schema_name: 'Socket')]
     public function deleteSocket(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('Socket', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Software/{software_id}/Version', methods: ['GET'], requirements: [
-        'software_id' => '\d+',
-    ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/Software/{software_id}/Version', methods: ['GET'], requirements: ['software_id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'List or search software versions',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
-        responses: [
-            ['schema' => 'SoftwareVersion[]'],
-        ]
+    #[Doc\SearchRoute(
+        schema_name: 'SoftwareVersion',
+        description: 'List or search software versions'
     )]
     public function searchSoftwareVersions(Request $request): Response
     {
@@ -2587,13 +2204,11 @@ final class AssetController extends AbstractController
     #[Route(path: '/Software/{software_id}/Version/{id}', methods: ['GET'], requirements: [
         'software_id' => '\d+',
         'id' => '\d+',
-    ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a software version by ID',
-        responses: [
-            ['schema' => 'SoftwareVersion'],
-        ]
+    #[Doc\GetRoute(
+        schema_name: 'SoftwareVersion',
+        description: 'Get an existing software version'
     )]
     public function getSoftwareVersion(Request $request): Response
     {
@@ -2603,19 +2218,11 @@ final class AssetController extends AbstractController
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('SoftwareVersion', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Software/{software_id}/Version', methods: ['POST'], requirements: [
-        'software_id' => '\d+',
-    ], tags: ['Assets'])]
+    #[Route(path: '/Software/{software_id}/Version', methods: ['POST'], requirements: ['software_id' => '\d+'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Create a software version',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'SoftwareVersion',
-            ],
-        ]
+    #[Doc\CreateRoute(
+        schema_name: 'SoftwareVersion',
+        description: 'Create a new software version'
     )]
     public function createSoftwareVersion(Request $request): Response
     {
@@ -2632,17 +2239,11 @@ final class AssetController extends AbstractController
     #[Route(path: '/Software/{software_id}/Version/{id}', methods: ['PATCH'], requirements: [
         'software_id' => '\d+',
         'id' => '\d+',
-    ], tags: ['Assets'])]
+    ])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update a software version by ID',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'SoftwareVersion',
-            ],
-        ]
+    #[Doc\UpdateRoute(
+        schema_name: 'SoftwareVersion',
+        description: 'Update an existing software version'
     )]
     public function updateSoftwareVersion(Request $request): Response
     {
@@ -2652,10 +2253,11 @@ final class AssetController extends AbstractController
     #[Route(path: '/Software/{software_id}/Version/{id}', methods: ['DELETE'], requirements: [
         'software_id' => '\d+',
         'id' => '\d+',
-    ], tags: ['Assets'])]
+    ])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Delete a software version by ID',
+    #[Doc\DeleteRoute(
+        schema_name: 'SoftwareVersion',
+        description: 'Delete a software version',
     )]
     public function deleteSoftwareVersion(Request $request): Response
     {

@@ -79,7 +79,8 @@ class Schema implements ArrayAccess
         /** @var array|null $enum */
         private ?array $enum = null,
         private ?string $pattern = null,
-        private mixed $default = null
+        private mixed $default = null,
+        private array $extra_data = []
     ) {
         if ($this->format === null) {
             $this->format = self::getDefaultFormatForType($this->type);
@@ -176,6 +177,7 @@ class Schema implements ArrayAccess
         if ($this->default !== null) {
             $r['default'] = $this->default;
         }
+        //TODO Check if we can append extra_data here
         return $r;
     }
 

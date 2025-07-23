@@ -339,9 +339,7 @@ class ReportController extends AbstractController
     #[Doc\Route(
         description: 'List available assistance statistics',
         responses: [
-            [
-                'schema' => 'StatReport[]',
-            ],
+            new Doc\Response(schema: new Doc\SchemaReference('StatReport[]')),
         ]
     )]
     public function listStatisticReports(Request $request): Response
@@ -406,31 +404,23 @@ class ReportController extends AbstractController
     #[Doc\Route(
         description: 'Get global assistance statistics',
         parameters: [
-            [
-                'name' => 'date_start',
-                'description' => 'The start date of the statistics',
-                'location' => 'query',
-                'example' => '2024-01-30',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
-                ],
-            ],
-            [
-                'name' => 'date_end',
-                'description' => 'The end date of the statistics',
-                'location' => 'query',
-                'example' => '2024-01-30',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
-                ],
-            ],
+            new Doc\Parameter(
+                name: 'date_start',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, format: Doc\Schema::FORMAT_STRING_DATE),
+                description: 'The start date of the statistics',
+                location: Doc\Parameter::LOCATION_QUERY,
+                example: '2024-01-30'
+            ),
+            new Doc\Parameter(
+                name: 'date_end',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, format: Doc\Schema::FORMAT_STRING_DATE),
+                description: 'The end date of the statistics',
+                location: Doc\Parameter::LOCATION_QUERY,
+                example: '2024-01-30'
+            ),
         ],
         responses: [
-            [
-                'schema' => 'GlobalStats',
-            ],
+            new Doc\Response(schema: new Doc\SchemaReference('GlobalStats')),
         ]
     )]
     public function getITILGlobalStats(Request $request): Response
@@ -471,40 +461,30 @@ class ReportController extends AbstractController
     #[Doc\Route(
         description: 'Get assistance statistics',
         parameters: [
-            [
-                'name' => 'date_start',
-                'description' => 'The start date of the statistics',
-                'location' => 'query',
-                'example' => '2024-01-30',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
-                ],
-            ],
-            [
-                'name' => 'date_end',
-                'description' => 'The end date of the statistics',
-                'location' => 'query',
-                'example' => '2024-01-30',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
-                ],
-            ],
-            [
-                'name' => 'field',
-                'description' => 'The field to group the statistics by',
-                'location' => 'query',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                ],
-                'required' => true,
-            ],
+            new Doc\Parameter(
+                name: 'date_start',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, format: Doc\Schema::FORMAT_STRING_DATE),
+                description: 'The start date of the statistics',
+                location: Doc\Parameter::LOCATION_QUERY,
+                example: '2024-01-30'
+            ),
+            new Doc\Parameter(
+                name: 'date_end',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, format: Doc\Schema::FORMAT_STRING_DATE),
+                description: 'The end date of the statistics',
+                location: Doc\Parameter::LOCATION_QUERY,
+                example: '2024-01-30'
+            ),
+            new Doc\Parameter(
+                name: 'field',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING),
+                description: 'The field to group the statistics by',
+                location: Doc\Parameter::LOCATION_QUERY,
+                required: true,
+            ),
         ],
         responses: [
-            [
-                'schema' => 'ITILStats[]',
-            ],
+            new Doc\Response(schema: new Doc\SchemaReference('ITILStats[]')),
         ]
     )]
     public function getITILStats(Request $request): Response
@@ -590,44 +570,41 @@ class ReportController extends AbstractController
     #[Doc\Route(
         description: 'Export assistance statistics',
         parameters: [
-            [
-                'name' => 'date_start',
-                'description' => 'The start date of the statistics',
-                'location' => 'query',
-                'example' => '2024-01-30',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
-                ],
-            ],
-            [
-                'name' => 'date_end',
-                'description' => 'The end date of the statistics',
-                'location' => 'query',
-                'example' => '2024-01-30',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
-                ],
-            ],
-            [
-                'name' => 'field',
-                'description' => 'The field to group the statistics by',
-                'location' => 'query',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                ],
-                'required' => true,
-            ],
-            [
-                'name' => 'Accept',
-                'description' => 'The format to export the statistics to',
-                'location' => 'header',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'enum' => ['text/csv', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/pdf'],
-                ],
-            ],
+            new Doc\Parameter(
+                name: 'date_start',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, format: Doc\Schema::FORMAT_STRING_DATE),
+                description: 'The start date of the statistics',
+                location: Doc\Parameter::LOCATION_QUERY,
+                example: '2024-01-30'
+            ),
+            new Doc\Parameter(
+                name: 'date_end',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, format: Doc\Schema::FORMAT_STRING_DATE),
+                description: 'The end date of the statistics',
+                location: Doc\Parameter::LOCATION_QUERY,
+                example: '2024-01-30'
+            ),
+            new Doc\Parameter(
+                name: 'field',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING),
+                description: 'The field to group the statistics by',
+                location: Doc\Parameter::LOCATION_QUERY,
+                required: true,
+            ),
+            new Doc\Parameter(
+                name: 'Accept',
+                schema: new Doc\Schema(
+                    type: Doc\Schema::TYPE_STRING,
+                    enum: [
+                        'text/csv',
+                        'application/vnd.oasis.opendocument.spreadsheet',
+                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        'application/pdf',
+                    ]
+                ),
+                description: 'The format to export the statistics to',
+                location: Doc\Parameter::LOCATION_HEADER,
+            ),
         ]
     )]
     public function exportITILStats(Request $request): Response
@@ -684,31 +661,23 @@ class ReportController extends AbstractController
     #[Doc\Route(
         description: 'Get assistance statistics by asset',
         parameters: [
-            [
-                'name' => 'date_start',
-                'description' => 'The start date of the statistics',
-                'location' => 'query',
-                'example' => '2024-01-30',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
-                ],
-            ],
-            [
-                'name' => 'date_end',
-                'description' => 'The end date of the statistics',
-                'location' => 'query',
-                'example' => '2024-01-30',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
-                ],
-            ],
+            new Doc\Parameter(
+                name: 'date_start',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, format: Doc\Schema::FORMAT_STRING_DATE),
+                description: 'The start date of the statistics',
+                location: Doc\Parameter::LOCATION_QUERY,
+                example: '2024-01-30'
+            ),
+            new Doc\Parameter(
+                name: 'date_end',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, format: Doc\Schema::FORMAT_STRING_DATE),
+                description: 'The end date of the statistics',
+                location: Doc\Parameter::LOCATION_QUERY,
+                example: '2024-01-30'
+            ),
         ],
         responses: [
-            [
-                'schema' => 'AssetStats[]',
-            ],
+            new Doc\Response(schema: new Doc\SchemaReference('AssetStats[]')),
         ]
     )]
     public function getAssetStats(Request $request): Response
@@ -750,35 +719,34 @@ class ReportController extends AbstractController
     #[Doc\Route(
         description: 'Export assistance statistics by asset',
         parameters: [
-            [
-                'name' => 'date_start',
-                'description' => 'The start date of the statistics',
-                'location' => 'query',
-                'example' => '2024-01-30',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
-                ],
-            ],
-            [
-                'name' => 'date_end',
-                'description' => 'The end date of the statistics',
-                'location' => 'query',
-                'example' => '2024-01-30',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
-                ],
-            ],
-            [
-                'name' => 'Accept',
-                'description' => 'The format to export the statistics to',
-                'location' => 'header',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'enum' => ['text/csv', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/pdf'],
-                ],
-            ],
+            new Doc\Parameter(
+                name: 'date_start',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, format: Doc\Schema::FORMAT_STRING_DATE),
+                description: 'The start date of the statistics',
+                location: Doc\Parameter::LOCATION_QUERY,
+                example: '2024-01-30'
+            ),
+            new Doc\Parameter(
+                name: 'date_end',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, format: Doc\Schema::FORMAT_STRING_DATE),
+                description: 'The end date of the statistics',
+                location: Doc\Parameter::LOCATION_QUERY,
+                example: '2024-01-30'
+            ),
+            new Doc\Parameter(
+                name: 'Accept',
+                schema: new Doc\Schema(
+                    type: Doc\Schema::TYPE_STRING,
+                    enum: [
+                        'text/csv',
+                        'application/vnd.oasis.opendocument.spreadsheet',
+                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        'application/pdf',
+                    ]
+                ),
+                description: 'The format to export the statistics to',
+                location: Doc\Parameter::LOCATION_HEADER,
+            ),
         ]
     )]
     public function exportAssetStats(Request $request): Response
@@ -834,40 +802,30 @@ class ReportController extends AbstractController
     #[Doc\Route(
         description: 'Get assistance statistics by asset characteristics',
         parameters: [
-            [
-                'name' => 'date_start',
-                'description' => 'The start date of the statistics',
-                'location' => 'query',
-                'example' => '2024-01-30',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
-                ],
-            ],
-            [
-                'name' => 'date_end',
-                'description' => 'The end date of the statistics',
-                'location' => 'query',
-                'example' => '2024-01-30',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
-                ],
-            ],
-            [
-                'name' => 'field',
-                'description' => 'The characteristic field to group the statistics by',
-                'location' => 'query',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                ],
-                'required' => true,
-            ],
+            new Doc\Parameter(
+                name: 'date_start',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, format: Doc\Schema::FORMAT_STRING_DATE),
+                description: 'The start date of the statistics',
+                location: Doc\Parameter::LOCATION_QUERY,
+                example: '2024-01-30'
+            ),
+            new Doc\Parameter(
+                name: 'date_end',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, format: Doc\Schema::FORMAT_STRING_DATE),
+                description: 'The end date of the statistics',
+                location: Doc\Parameter::LOCATION_QUERY,
+                example: '2024-01-30'
+            ),
+            new Doc\Parameter(
+                name: 'field',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING),
+                description: 'The characteristic field to group the statistics by',
+                location: Doc\Parameter::LOCATION_QUERY,
+                required: true,
+            ),
         ],
         responses: [
-            [
-                'schema' => 'AssetCharacteristicsStats[]',
-            ],
+            new Doc\Response(schema: new Doc\SchemaReference('AssetCharacteristicsStats[]')),
         ]
     )]
     public function getAssetCharacteristicsStats(Request $request): Response
@@ -964,44 +922,41 @@ class ReportController extends AbstractController
     #[Doc\Route(
         description: 'Export assistance statistics by asset characteristics',
         parameters: [
-            [
-                'name' => 'date_start',
-                'description' => 'The start date of the statistics',
-                'location' => 'query',
-                'example' => '2024-01-30',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
-                ],
-            ],
-            [
-                'name' => 'date_end',
-                'description' => 'The end date of the statistics',
-                'location' => 'query',
-                'example' => '2024-01-30',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
-                ],
-            ],
-            [
-                'name' => 'field',
-                'description' => 'The field to group the statistics by',
-                'location' => 'query',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                ],
-                'required' => true,
-            ],
-            [
-                'name' => 'Accept',
-                'description' => 'The format to export the statistics to',
-                'location' => 'header',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'enum' => ['text/csv', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/pdf'],
-                ],
-            ],
+            new Doc\Parameter(
+                name: 'date_start',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, format: Doc\Schema::FORMAT_STRING_DATE),
+                description: 'The start date of the statistics',
+                location: Doc\Parameter::LOCATION_QUERY,
+                example: '2024-01-30'
+            ),
+            new Doc\Parameter(
+                name: 'date_end',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, format: Doc\Schema::FORMAT_STRING_DATE),
+                description: 'The end date of the statistics',
+                location: Doc\Parameter::LOCATION_QUERY,
+                example: '2024-01-30'
+            ),
+            new Doc\Parameter(
+                name: 'field',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING),
+                description: 'The field to group the statistics by',
+                location: Doc\Parameter::LOCATION_QUERY,
+                required: true,
+            ),
+            new Doc\Parameter(
+                name: 'Accept',
+                schema: new Doc\Schema(
+                    type: Doc\Schema::TYPE_STRING,
+                    enum: [
+                        'text/csv',
+                        'application/vnd.oasis.opendocument.spreadsheet',
+                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        'application/pdf',
+                    ]
+                ),
+                description: 'The format to export the statistics to',
+                location: Doc\Parameter::LOCATION_HEADER,
+            ),
         ]
     )]
     public function exportAssetCharacteristicsStats(Request $request): Response
