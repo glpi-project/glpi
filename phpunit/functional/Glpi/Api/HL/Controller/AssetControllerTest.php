@@ -34,13 +34,10 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
-use Glpi\Api\HL\Controller\AssetController;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Asset\Asset;
-use Glpi\Features\AssignableItem;
 use Glpi\Features\AssignableItemInterface;
 use Glpi\Http\Request;
-use Group_Item;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Unmanaged;
 
