@@ -1628,7 +1628,7 @@ class SLMTest extends DbTestCase
         $this->createItem(\SlaLevelAction::class, ['action_type' => 'assign', 'field' => 'priority', 'value' => 5, 'slalevels_id' => $level_2->getID()]);
 
         // --- 10:00 - create ticket and affect slalevels_id_ttr
-        $this->setCurrentTime('10:00:00', '2025-05-26');
+        $this->setCurrentTime('2025-05-26 10:00:00');
         $this->runSlaCron(); // no changes will be triggered
         $ticket = $this->createTicket([
             'status' => \CommonITILObject::INCOMING,
@@ -1647,7 +1647,7 @@ class SLMTest extends DbTestCase
         $this->assertTrue((new \SlaLevel_Ticket())->getFromDBByCrit(['tickets_id' => $ticket->getID(), 'slalevels_id' => $level_1->getID()]));
 
         // --- 11:01 ticket : level 1 is reached
-        $this->setCurrentTime('11:01:00', '2025-05-26');
+        $this->setCurrentTime('2025-05-26 11:01:00');
         $this->runSlaCron();
         $this->assertEquals($level_1->getID(), $ticket->fields['slalevels_id_ttr']);
         // next level to be processed is level_2
@@ -1657,7 +1657,7 @@ class SLMTest extends DbTestCase
         $this->assertEquals(4, $ticket->fields['priority']); // level_1 action is applied
 
         // --- 11:31 ticket : level 2 is reached
-        $this->setCurrentTime('11:31:00', '2025-05-26');
+        $this->setCurrentTime('2025-05-26 11:31:00');
         $this->runSlaCron();
         // next assertion is commented out because I have no explanation why it does not change to the current level_2
         // maybe this is field value is useless and should be removed
@@ -1709,7 +1709,7 @@ class SLMTest extends DbTestCase
         $this->createItem(\SlaLevelAction::class, ['action_type' => 'assign', 'field' => 'priority', 'value' => 5, 'slalevels_id' => $level_2->getID()]);
 
         // --- 10:00 - create ticket and affect slalevels_id_tto
-        $this->setCurrentTime('10:00:00', '2025-05-26');
+        $this->setCurrentTime('2025-05-26 10:00:00');
         $this->runSlaCron(); // no changes will be triggered
         $ticket = $this->createTicket([
             'status' => \CommonITILObject::INCOMING,
@@ -1725,7 +1725,7 @@ class SLMTest extends DbTestCase
         $this->assertTrue((new \SlaLevel_Ticket())->getFromDBByCrit(['tickets_id' => $ticket->getID(), 'slalevels_id' => $level_1->getID()]));
 
         // --- 11:01 ticket : level 1 is reached
-        $this->setCurrentTime('11:01:00', '2025-05-26');
+        $this->setCurrentTime('2025-05-26 11:01:00');
         $this->runSlaCron();
         // next level to be processed is level_2
         $this->assertTrue((new \SlaLevel_Ticket())->getFromDBByCrit(['tickets_id' => $ticket->getID(), 'slalevels_id' => $level_2->getID()]));
@@ -1734,7 +1734,7 @@ class SLMTest extends DbTestCase
         $this->assertEquals(4, $ticket->fields['priority']); // level_1 action is applied
 
         // --- 11:31 ticket : level 2 is reached
-        $this->setCurrentTime('11:31:00', '2025-05-26');
+        $this->setCurrentTime('2025-05-26 11:31:00');
         $this->runSlaCron();
         // no next level to be processed
         $this->assertFalse((new \SlaLevel_Ticket())->getFromDBByCrit(['tickets_id' => $ticket->getID()]));
@@ -1781,7 +1781,7 @@ class SLMTest extends DbTestCase
         $this->createItem(\OlaLevelAction::class, ['action_type' => 'assign', 'field' => 'priority', 'value' => 5, 'olalevels_id' => $level_2->getID()]);
 
         // --- 10:00 - create ticket and affect olalevels_id_ttr
-        $this->setCurrentTime('10:00:00', '2025-05-26');
+        $this->setCurrentTime('2025-05-26 10:00:00');
         $this->runOlaCron(); // no changes will be triggered
         $ticket = $this->createTicket([
             'status' => \CommonITILObject::INCOMING,
@@ -1799,7 +1799,7 @@ class SLMTest extends DbTestCase
         $this->assertTrue((new \OlaLevel_Ticket())->getFromDBByCrit(['tickets_id' => $ticket->getID(), 'olalevels_id' => $level_1->getID()]));
 
         // --- 11:01 ticket : level 1 is reached
-        $this->setCurrentTime('11:01:00', '2025-05-26');
+        $this->setCurrentTime('2025-05-26 11:01:00');
         $this->runOlaCron();
         $this->assertEquals($level_1->getID(), $ticket->fields['olalevels_id_ttr']); // not a relevant change, this won't change for the rest, kind of a bug ?
         // next level to be processed is level_2
@@ -1809,7 +1809,7 @@ class SLMTest extends DbTestCase
         $this->assertEquals(4, $ticket->fields['priority']); // level_1 action is applied
 
         // --- 11:31 ticket : level 2 is reached
-        $this->setCurrentTime('11:31:00', '2025-05-26');
+        $this->setCurrentTime('2025-05-26 11:31:00');
         $this->runOlaCron();
         // $this->assertEquals($level_2->getID(), $ticket->fields['olalevels_id_ttr']) // as noted above, this field does not change
         // no next level to be processed
@@ -1857,7 +1857,7 @@ class SLMTest extends DbTestCase
         $this->createItem(\OlaLevelAction::class, ['action_type' => 'assign', 'field' => 'priority', 'value' => 5, 'olalevels_id' => $level_2->getID()]);
 
         // --- 10:00 - create ticket and affect olalevels_id_tto
-        $this->setCurrentTime('10:00:00', '2025-05-26');
+        $this->setCurrentTime('2025-05-26 10:00:00');
         $this->runOlaCron(); // no changes will be triggered
         $ticket = $this->createTicket([
             'status' => \CommonITILObject::INCOMING,
@@ -1874,7 +1874,7 @@ class SLMTest extends DbTestCase
         $this->assertTrue((new \OlaLevel_Ticket())->getFromDBByCrit(['tickets_id' => $ticket->getID(), 'olalevels_id' => $level_1->getID()]));
 
         // --- 11:01 ticket : level 1 is reached
-        $this->setCurrentTime('11:01:00', '2025-05-26');
+        $this->setCurrentTime('2025-05-26 11:01:00');
         $this->runOlaCron();
         // next level to be processed is level_2
         $this->assertTrue((new \OlaLevel_Ticket())->getFromDBByCrit(['tickets_id' => $ticket->getID(), 'olalevels_id' => $level_2->getID()]));
@@ -1883,7 +1883,7 @@ class SLMTest extends DbTestCase
         $this->assertEquals(4, $ticket->fields['priority']); // level_1 action is applied
 
         // --- 11:31 ticket : level 2 is reached
-        $this->setCurrentTime('11:31:00', '2025-05-26');
+        $this->setCurrentTime('2025-05-26 11:31:00');
         $this->runOlaCron();
         // $this->assertEquals($level_2->getID(), $ticket->fields['olalevels_id_tto']) // as noted above, this field does not change
         // no next level to be processed
@@ -1924,7 +1924,7 @@ class SLMTest extends DbTestCase
         }
 
         // on update, the OLA begin date is set to the current time
-        $now = $this->setCurrentTime('09:00:00', '2022-05-26');
+        $now = $this->setCurrentTime('2022-05-26 09:00:00');
         $provided_date = '2022-05-01 10:00:00';
         foreach ([\SLM::TTR, \SLM::TTO] as $type) {
             ['ola' => $ola] = $this->createOLA(ola_type: $type);
@@ -2212,7 +2212,7 @@ class SLMTest extends DbTestCase
         $sla = $this->createSLA(sla_type: SLM::TTO)['sla'];
         $ticket = $this->createTicket(['slas_id_tto' => $sla->getID()]);
         // assert due time is set correctly
-        $initial_expected_due_time = (clone $now)->add($this->getDefaultSlaTtoDelayInterval());
+        $initial_expected_due_time = $now->add($this->getDefaultSlaTtoDelayInterval());
         $initial_expected_due_time_str = $initial_expected_due_time->format('Y-m-d H:i:s');
         assert($initial_expected_due_time_str === $ticket->fields['time_to_own'], 'SLA TTO Due time should be set to the current date + TTO delay interval.');
 
@@ -2232,7 +2232,7 @@ class SLMTest extends DbTestCase
         $sla = $this->createSLA(sla_type: SLM::TTR)['sla'];
         $ticket = $this->createTicket(['slas_id_ttr' => $sla->getID()]);
         // assert due time is set correctly
-        $initial_expected_due_time = (clone $now)->add($this->getDefaultSlaTtrDelayInterval());
+        $initial_expected_due_time = $now->add($this->getDefaultSlaTtrDelayInterval());
         $initial_expected_due_time_str = $initial_expected_due_time->format('Y-m-d H:i:s');
         assert($initial_expected_due_time_str === $ticket->fields['time_to_resolve'], 'SLA TTR Due time should be set to the current date + TTR delay interval.');
 
@@ -2252,7 +2252,7 @@ class SLMTest extends DbTestCase
         $ola = $this->createOLA(ola_type: SLM::TTO)['ola'];
         $ticket = $this->createTicket(['olas_id_tto' => $ola->getID()]);
         // assert due time is set correctly
-        $initial_expected_due_time = (clone $now)->add($this->getDefaultOlaTtoDelayInterval());
+        $initial_expected_due_time = $now->add($this->getDefaultOlaTtoDelayInterval());
         $initial_expected_due_time_str = $initial_expected_due_time->format('Y-m-d H:i:s');
         assert($initial_expected_due_time_str === $ticket->fields['internal_time_to_own'], 'OLA TTO Due time should be set to the current date + TTO delay interval.');
 
@@ -2272,7 +2272,7 @@ class SLMTest extends DbTestCase
         $ola = $this->createOLA(ola_type: SLM::TTR)['ola'];
         $ticket = $this->createTicket(['olas_id_ttr' => $ola->getID()]);
         // assert due time is set correctly
-        $initial_expected_due_time = (clone $now)->add($this->getDefaultOlaTtrDelayInterval());
+        $initial_expected_due_time = $now->add($this->getDefaultOlaTtrDelayInterval());
         $initial_expected_due_time_str = $initial_expected_due_time->format('Y-m-d H:i:s');
         assert($initial_expected_due_time_str === $ticket->fields['internal_time_to_resolve'], 'OLA TTR Due time should be set to the current date + TTR delay interval.');
 
