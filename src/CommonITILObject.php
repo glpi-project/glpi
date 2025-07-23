@@ -714,6 +714,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
                 'priority',
                 'time_to_resolve',
                 'entities_id',
+                '_olas_id',
             ];
             foreach ($fields as $field) {
                 if (!isset($options['_saved'][$field])) {
@@ -763,6 +764,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
 
         if ($this->isNewItem()) {
             if (isset($tt->predefined) && count($tt->predefined)) {
+                // apply predefined fields
                 foreach ($tt->predefined as $predeffield => $predefvalue) {
                     if (isset($options[$predeffield]) && isset($default_values[$predeffield])) {
                         // Is always default value : not set
@@ -787,6 +789,16 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
                             || ($problems_id != null
                                 && $options[$predeffield] == $problem->fields[$predeffield])
                         ) {
+                            // predefined fields _olas_id_tto, _olas_id_ttr should be merged in _olas_id
+                            if (in_array($predeffield, ['_olas_id_tto', '_olas_id_ttr'])) {
+                                $to_merge = is_array($predefvalue) ? $predefvalue : [$predefvalue];
+                                $options['_olas_id'] = array_merge($options['_olas_id'] ?? [], $to_merge);
+                                $predefined_fields['_olas_id'] = array_merge($predefined_fields['_olas_id'] ?? [], $to_merge);
+                                $this->fields['_olas_id']      = array_merge($this->fields['_olas_id'] ?? [], $to_merge);
+
+                                continue;
+                            }
+
                             $options[$predeffield]           = $predefvalue;
                             $predefined_fields[$predeffield] = $predefvalue;
                             $this->fields[$predeffield]      = $predefvalue;
@@ -1284,9 +1296,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
 
 
     /**
-     * get groups linked to a object
+     * Get linked groups
      *
-     * @param integer $type type to search (see constants)
+     * @param integer $type e.g.CommonITILActor::REQUESTER, etc
      *
      * @return array
      **/
@@ -1786,7 +1798,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
             // Closed tickets
             || in_array($this->fields['status'], static::getClosedStatusArray()))
         ) {
-            $allowed_fields                    = ['id'];
+            $allowed_fields                    = ['id', '_olas_id_ttr', '_olas_id_tto'];
             $check_allowed_fields_for_template = true;
 
             if (in_array($this->fields['status'], static::getClosedStatusArray())) {
@@ -1862,6 +1874,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
                 return false;
             }
         }
+
+        [SLM::TTO => $input['_olas_id_tto'], SLM::TTR => $input['_olas_id_ttr']] = OLA::splitIdsByType($input['_olas_id'] ?? []);
 
         $tt = $this->getITILTemplateToUse(0, $type, $categid, $entid);
 
@@ -2381,6 +2395,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
             unset($this->oldvalues['date']);
         }
 
+        // do not update closedate fields if not changed
         if (
             (($key = array_search('closedate', $this->updates)) !== false)
             && isset($this->oldvalues['closedate'])
@@ -2390,6 +2405,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
             unset($this->oldvalues['closedate']);
         }
 
+        // do not update time_to_resolve if date is not changed
         if (
             (($key = array_search('time_to_resolve', $this->updates)) !== false)
             && isset($this->oldvalues['time_to_resolve'])
@@ -2399,6 +2415,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
             unset($this->oldvalues['time_to_resolve']);
         }
 
+        // do not update solvedate if date is not changed
         if (
             (($key = array_search('solvedate', $this->updates)) !== false)
             && isset($this->oldvalues['solvedate'])
@@ -2408,6 +2425,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
             unset($this->oldvalues['solvedate']);
         }
 
+        // status update
         if (isset($this->input["status"])) {
             // status changed to solved
             if (
@@ -2446,13 +2464,13 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
 
         // check dates
 
-        // check time_to_resolve (SLA)
+        // unset date and time_to_resolve time_to_resolve is before 'date' time.
         if (
             (in_array("date", $this->updates) || in_array("time_to_resolve", $this->updates))
             && !is_null($this->fields["time_to_resolve"])
         ) { // Date set
             if ($this->fields["time_to_resolve"] < $this->fields["date"]) {
-                Session::addMessageAfterRedirect(__s('Invalid dates. Update cancelled.'), false, ERROR);
+                Session::addMessageAfterRedirect(__s("Invalid dates, computed ttr is before 'date'. Update cancelled."), false, ERROR);
 
                 if (($key = array_search('date', $this->updates)) !== false) {
                     unset($this->updates[$key]);
@@ -2465,32 +2483,13 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
             }
         }
 
-        // check internal_time_to_resolve (OLA)
-        if (
-            (in_array("date", $this->updates) || in_array("internal_time_to_resolve", $this->updates))
-            && !is_null($this->fields["internal_time_to_resolve"])
-        ) { // Date set
-            if ($this->fields["internal_time_to_resolve"] < $this->fields["date"]) {
-                Session::addMessageAfterRedirect(__s('Invalid dates. Update cancelled.'), false, ERROR);
-
-                if (($key = array_search('date', $this->updates)) !== false) {
-                    unset($this->updates[$key]);
-                    unset($this->oldvalues['date']);
-                }
-                if (($key = array_search('internal_time_to_resolve', $this->updates)) !== false) {
-                    unset($this->updates[$key]);
-                    unset($this->oldvalues['internal_time_to_resolve']);
-                }
-            }
-        }
-
-        // Status close: check dates
+        // Unset closedate if before solvedate
+        // unset 'date' and unset 'closedate' if closedate is before 'date'
         if (
             in_array($this->fields["status"], static::getClosedStatusArray())
             && (in_array("date", $this->updates) || in_array("closedate", $this->updates))
         ) {
-            // Invalid dates : no change
-            // closedate must be > solvedate
+            // Unset closedate if before solvedate
             if ($this->fields["closedate"] < $this->fields["solvedate"]) {
                 Session::addMessageAfterRedirect(__s('Invalid dates. Update cancelled.'), false, ERROR);
 
@@ -2500,7 +2499,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
                 }
             }
 
-            // closedate must be > create date
+            // unset 'date' and unset 'closedate' if closedate is before 'date'
             if ($this->fields["closedate"] < $this->fields["date"]) {
                 Session::addMessageAfterRedirect(__s('Invalid dates. Update cancelled.'), false, ERROR);
                 if (($key = array_search('date', $this->updates)) !== false) {
@@ -2514,6 +2513,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
             }
         }
 
+        // unset 'status' if unchanged
         if (
             (($key = array_search('status', $this->updates)) !== false)
             && $this->oldvalues['status'] == $this->fields['status']
@@ -2522,7 +2522,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
             unset($this->oldvalues['status']);
         }
 
-        // Status solved: check dates
+        // unset solvedate and date if solvedate is before 'date' time.
         if (
             in_array($this->fields["status"], static::getSolvedStatusArray())
             && (in_array("date", $this->updates) || in_array("solvedate", $this->updates))
@@ -2543,7 +2543,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
             }
         }
 
-        // Manage come back to waiting state
+        // OLA / SLA tto/ttr computations
+        // if
+        // - begin_waiting_date is set
+        // - and status is updated
+        // - and previous status was 'waiting'
+        // - and
+        //      - status is switching from any 'solved' status to any 'closed' status
+        //      - or status is switching from any 'closed' status to any 'not solved' status
         if (
             !is_null($this->fields['begin_waiting_date'])
             && ($key = array_search('status', $this->updates)) !== false
@@ -2564,7 +2571,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
             // Compute ticket waiting time use calendar if exists
             $calendar     = new Calendar();
             $calendars_id = $this->getCalendar();
-            $delay_time   = 0;
 
             // Compute ticket waiting time use calendar if exists
             // Using calendar
@@ -2582,8 +2588,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
             }
 
             // SLA case: compute sla_ttr duration
+            // associated sla
             if (isset($this->fields['slas_id_ttr']) && ($this->fields['slas_id_ttr'] > 0)) {
                 $sla = new SLA();
+                // Compute begin_waiting_date
                 if ($sla->getFromDB($this->fields['slas_id_ttr'])) {
                     $sla->setTicketCalendar($calendars_id);
                     $delay_time_sla  = $sla->getActiveTimeBetween(
@@ -2601,8 +2609,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
                     $this->fields["sla_waiting_duration"]
                 );
                 // Add current level to do
-                $sla->addLevelToDo($this);
-            } else {
+                if ($this instanceof Ticket) {
+                    $sla->addLevelToDo($this);
+                }
+            } else { // sla set by date
                 // Using calendar
                 if (
                     ($calendars_id > 0)
@@ -2629,65 +2639,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
                 }
             }
 
-            // OLA case: compute ola_ttr duration
-            if (isset($this->fields['olas_id_ttr']) && ($this->fields['olas_id_ttr'] > 0)) {
-                $ola = new OLA();
-                if ($ola->getFromDB($this->fields['olas_id_ttr'])) {
-                    $ola->setTicketCalendar($calendars_id);
-                    $delay_time_ola  = $ola->getActiveTimeBetween(
-                        $this->fields['begin_waiting_date'],
-                        $_SESSION["glpi_currenttime"]
-                    );
-                    $this->updates[]                      = "ola_waiting_duration";
-                    $this->fields["ola_waiting_duration"] += $delay_time_ola;
-                }
-
-                // Compute new internal_time_to_resolve
-                $this->updates[]                          = "internal_time_to_resolve";
-                $this->fields['internal_time_to_resolve'] = $ola->computeDate(
-                    $this->fields['ola_ttr_begin_date'],
-                    $this->fields["ola_waiting_duration"]
-                );
-                // Add current level to do
-                $ola->addLevelToDo($this, $this->fields["olalevels_id_ttr"]);
-            } elseif (array_key_exists("internal_time_to_resolve", $this->fields)) {
-                // Change doesn't have internal_time_to_resolve
-                // Using calendar
-                if (
-                    ($calendars_id > 0)
-                    && $calendar->getFromDB($calendars_id)
-                    && $calendar->hasAWorkingDay()
-                ) {
-                    if ((int) $this->fields['internal_time_to_resolve'] > 0) {
-                        // compute new internal_time_to_resolve using calendar
-                        $this->updates[]                          = "internal_time_to_resolve";
-                        $this->fields['internal_time_to_resolve'] = $calendar->computeEndDate(
-                            $this->fields['internal_time_to_resolve'],
-                            $delay_time
-                        );
-                    }
-                } else { // Not calendar defined
-                    if ((int) $this->fields['internal_time_to_resolve'] > 0) {
-                        // compute new internal_time_to_resolve: no calendar so add computed delay_time
-                        $this->updates[]                          = "internal_time_to_resolve";
-                        $this->fields['internal_time_to_resolve'] = date(
-                            'Y-m-d H:i:s',
-                            $delay_time +
-                            strtotime($this->fields['internal_time_to_resolve'])
-                        );
-                    }
-                }
-            }
-
-            $this->updates[]                   = "waiting_duration";
-            $this->fields["waiting_duration"] += $delay_time;
-
-            // Reset begin_waiting_date
-            $this->updates[]                    = "begin_waiting_date";
-            $this->fields["begin_waiting_date"] = 'NULL';
+            // --- OLA case is handled in Ticket::recomputeOlas
         }
 
         // Set begin waiting date if needed
+        // handle levels
         if (
             (($key = array_search('status', $this->updates)) !== false)
             && (($this->fields['status'] == self::WAITING)
@@ -2697,11 +2653,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
             $this->fields["begin_waiting_date"] = $_SESSION["glpi_currenttime"];
 
             // Specific for tickets
-            if (isset($this->fields['slas_id_ttr']) && ($this->fields['slas_id_ttr'] > 0)) {
+            if ($this instanceof Ticket && isset($this->fields['slas_id_ttr']) && ($this->fields['slas_id_ttr'] > 0)) {
                 SLA::deleteLevelsToDo($this);
             }
 
-            if (isset($this->fields['olas_id_ttr']) && ($this->fields['olas_id_ttr'] > 0)) {
+            if ($this instanceof Ticket) {
                 OLA::deleteLevelsToDo($this);
             }
         }
@@ -2899,6 +2855,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
 
         $input = $this->computeDefaultValuesForAdd($input);
 
+        // split OLA ids by type to allow mandatory check
+        [SLM::TTO => $input['_olas_id_tto'], SLM::TTR => $input['_olas_id_ttr']] = OLA::splitIdsByType($input['_olas_id'] ?? []);
+
         // Do not check mandatory on auto import (mailgates)
         $key = static::getTemplateFormFieldName();
         if (!isset($input['_auto_import'])) {
@@ -2967,20 +2926,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
 
                             if (static::getType() === Ticket::getType()) {
                                 // For time_to_resolve and time_to_own : check also slas
-                                // For internal_time_to_resolve and internal_time_to_own : check also olas
                                 foreach ([SLM::TTR, SLM::TTO] as $slmType) {
                                     [$dateField, $slaField] = SLA::getFieldNames($slmType);
                                     if (
                                         ($key == $dateField)
                                         && isset($input[$slaField]) && ($input[$slaField] > 0)
-                                        && isset($mandatory_missing[$dateField])
-                                    ) {
-                                        unset($mandatory_missing[$dateField]);
-                                    }
-                                    [$dateField, $olaField] = OLA::getFieldNames($slmType);
-                                    if (
-                                        ($key == $dateField)
-                                        && isset($input[$olaField]) && ($input[$olaField] > 0)
                                         && isset($mandatory_missing[$dateField])
                                     ) {
                                         unset($mandatory_missing[$dateField]);
@@ -5033,7 +4983,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
     }
 
     /**
-     * @param string $type
+     * Generate an 'if' QueryExpression condition to match ticket with exceeded OLA/SLA TTO/TTR
+     *
+     * internal_time_to_own & internal_time_to_resolve fields are removed from ticket but can still be used here.
+     *
+     * @param string $type ticket field to match ('time_to_own', 'internal_time_to_own', 'time_to_resolve', 'internal_time_to_resolve')
      * @param string $table
      * @return QueryExpression|void
      */
@@ -5043,7 +4997,25 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
         global $DB;
 
         switch ($type) {
+            // OLA TTO/TTR uses the same logic, we rely on item_ola datas
             case 'internal_time_to_own':
+                $ola_type_to_filter = SLM::TTO;
+                // no break
+            case 'internal_time_to_resolve':
+                $ola_type_to_filter ??= SLM::TTR;
+
+                // QueryFunction::max is used to match a late ola amongst associated OLAs
+                return QueryFunction::max(
+                    QueryFunction::if(
+                        condition: [
+                            "{$table}.ola_type" => $ola_type_to_filter,
+                            // + ticket status is not WAITING // @todoseb à implementer ?
+                            "$table.is_late" => 1,
+                        ],
+                        true_expression: new QueryExpression('1'),
+                        false_expression: new QueryExpression('0')
+                    )
+                );
             case 'time_to_own':
                 return QueryFunction::if(
                     condition: [
@@ -8307,7 +8279,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
     /**
      * Get template field name
      *
-     * @param string $type Type, if any
+     * @param string|true $type Type, if any
      *
      * @return string
      */
@@ -11115,6 +11087,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
         if ($condition === RuleCommonITILObject::ONUPDATE) {
             $rules_params['entities_id'] = $entid;
             $changes = [];
+            if (isset($input['entities_id'])) {
+                $changes[] = 'entities_id';
+            }
             foreach ($rule->getCriterias() as $key => $val) {
                 if (array_key_exists($key, $input)) {
                     if (

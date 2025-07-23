@@ -35,12 +35,22 @@
 namespace tests\units;
 
 use DbTestCase;
+use Entity;
+use Glpi\PHPUnit\Tests\Glpi\SLMTrait;
+use Group;
+use InvalidArgumentException;
 use NotificationTarget;
+use NotificationTargetTicket;
+use PHPUnit\Framework\Attributes\TestWith;
+use Session;
+use SLM;
+use Ticket;
 
 /* Test for inc/notificationtargetticket.class.php */
 
 class NotificationTargetTicketTest extends DbTestCase
 {
+    use SLMTrait;
     public function testgetDataForObject()
     {
         global $CFG_GLPI;
@@ -203,6 +213,66 @@ class NotificationTargetTicketTest extends DbTestCase
         $_SESSION["glpilanguage"] = \Session::loadLanguage('en_GB');
     }
 
+    #[TestWith(['ola_tto'])]
+    #[TestWith(['ola_ttr'])]
+    public function testGetDataForObjectOLA($notification_field): void
+    {
+        $ola_type = match ($notification_field) {
+            'ola_tto' => SLM::TTO,
+            'ola_ttr' => SLM::TTR,
+            default => throw new InvalidArgumentException("Invalid OLA type: $notification_field"),
+        };
+
+        $this->login();
+        // arrange
+        $ticket = getItemByTypeName('Ticket', '_ticket01');
+        $notification_target_ticket = new NotificationTargetTicket(getItemByTypeName('Entity', '_test_root_entity', true), 'new', $ticket);
+        // act
+        $notification_target_ticket->getTags();
+
+        // assert definition is as expected
+        $tag = "ticket.{$notification_field}.name";
+        $expected = [
+            'tag'             => $tag,
+            'value'           => true,
+            'label'           => 'OLA name',
+            'events'          => 0,
+            'foreach'         => false,
+            'lang'            => true,
+            'allowed_values'  => [],
+        ];
+
+        $this->assertSame($expected, $notification_target_ticket->tag_descriptions['tag']["##$tag##"]);
+        $this->assertSame($expected, $notification_target_ticket->tag_descriptions['lang']["##lang.$tag##"]);
+
+        // assert values are as expected - new format
+        $name = $this->getUniqueString();
+        $comment = $this->getUniqueString();
+        $group_name = '_test_group_1';
+        $group = getItemByTypeName(Group::class, $group_name);
+
+        ['ola' => $ola] = $this->createOLA([
+            'name' => $name,
+            'comment' => $comment,
+        ], $ola_type, $group);
+        $now = Session::getCurrentTime();
+
+        $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [$ola->getID()]]);
+        $computed_values = $notification_target_ticket->getDataForObject($ticket, ['additionnaloption' => ['usertype' => NotificationTarget::GLPI_USER]]);
+        $this->assertEquals($name, $computed_values[$notification_field][0]["##ticket.{$notification_field}.name##"]);
+        $this->assertEquals($comment, $computed_values[$notification_field][0]["##ticket.{$notification_field}.comment##"]);
+        $this->assertEquals($now, $computed_values[$notification_field][0]["##ticket.{$notification_field}.start_time##"]);
+        $this->assertEquals(null, $computed_values[$notification_field][0]["##ticket.{$notification_field}.end_time##"]);
+        $this->assertEquals(0, $computed_values[$notification_field][0]["##ticket.{$notification_field}.waiting_time##"]);
+        // due_time : just check it's not empty, business logic is tested in OLA test
+        // if this test gets hard to maintain, we could do the same for previous assertions.
+        $this->assertNotEmpty($computed_values[$notification_field][0]["##ticket.{$notification_field}.due_time##"]);
+
+        // assert old format - backward compatibility
+        $this->assertEquals($name, $computed_values["##ticket.{$notification_field}##"]);
+        // @todo add multiples OLA for better coverage
+
+    }
 
     public function testTimelineTag()
     {

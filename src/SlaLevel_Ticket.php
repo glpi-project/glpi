@@ -37,6 +37,10 @@
  * Table to store slalevels to be processed.
  * `date` field contains the date when the level has to processed
  */
+/**
+ * Table to store slalevels to be processed.
+ * `date` field contains the date when the level has to processed
+ */
 class SlaLevel_Ticket extends CommonDBTM
 {
     public static function getTypeName($nb = 0)
