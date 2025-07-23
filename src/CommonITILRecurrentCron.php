@@ -68,7 +68,10 @@ class CommonITILRecurrentCron extends CommonDBTM
 
         $total = 0;
 
-        // Concrete classes for which recurrent items can be created
+        /**
+         * Concrete classes for which recurrent items can be created
+         * @var array<class-string<CommonITILRecurrent>>
+         */
         $targets = [
             TicketRecurrent::class,
             RecurrentChange::class,
@@ -88,8 +91,7 @@ class CommonITILRecurrentCron extends CommonDBTM
             ]);
 
             foreach ($iterator as $data) {
-                /** @var CommonITILRecurrent $item */
-                $item = new $itemtype();
+                $item = getItemForItemtype($itemtype);
                 $item->fields = $data;
                 // get items
                 $related_items = $item->getRelatedElements();

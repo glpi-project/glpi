@@ -1020,7 +1020,7 @@ TWIG,
      * @param bool   $display display the header (default true)
      *
      * @return string|void Generated HTML if `display` param is false, void otherwise.
-     * @phpstan-return $display ? void : string
+     * @phpstan-return ($display is true ? void : string)
      */
     public static function includeHeader(
         $title = '',
@@ -4333,7 +4333,7 @@ JAVASCRIPT
      * @since 0.83.
      *
      * @return string|true
-     * @phpstan-return $display is true ? true : string
+     * @phpstan-return ($display is true ? true : string)
      **/
     public static function closeForm($display = true)
     {

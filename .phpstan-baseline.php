@@ -704,12 +704,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Certificate_Item.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type CommonDBTM is not subtype of native type Group\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Change.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter &\\$item by\\-ref type of method CommonDBConnexity\\:\\:canConnexityItem\\(\\) expects CommonDBTM\\|null, CommonDBTM\\|false given\\.$#',
 	'identifier' => 'parameterByRef.type',
 	'count' => 1,
@@ -726,12 +720,6 @@ $ignoreErrors[] = [
 	'identifier' => 'deadCode.unreachable',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDBRelation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type class\\-string is not subtype of native type static\\(CommonDBTM\\)\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#3 \\$message_type of static method Session\\:\\:addMessageAfterRedirect\\(\\) expects int, bool given\\.$#',
@@ -812,12 +800,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject_CommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type CommonITILRecurrent is not subtype of native type RecurrentChange\\|TicketRecurrent\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILRecurrentCron.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#4 \\$is_recursive of function getEntitiesRestrictCriteria expects \'auto\'\\|bool, 1 given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -858,12 +840,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Computer.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$expanded_info \\? array\\<string, \\{name\\: string, dark\\: boolean\\}\\> \\: array\\<string, string\\>\\)\\: Unexpected token "\\$expanded_info", expected type at offset 154 on line 6$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Config.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$options of method CommonDropdown\\:\\:showForm\\(\\) expects array, int given\\.$#',
@@ -1016,12 +992,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DropdownTranslation.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$val \\=\\=\\= null \\? array\\<int\\|string, string\\> \\: string\\)\\: Unexpected token "\\$val", expected type at offset 275 on line 9$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Entity.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$items_id of function getAncestorsOf expects array\\|string, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -1080,12 +1050,6 @@ $ignoreErrors[] = [
 	'identifier' => 'glpi.forbidHttpResponseCode',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/API.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type array is not subtype of native type array\\<int\\|string, array\\<mixed\\>\\|string\\>\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/APIRest.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$user_id of method Glpi\\\\Api\\\\API\\:\\:userPicture\\(\\) expects bool\\|int, string given\\.$#',
@@ -1482,12 +1446,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ComponentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var has invalid value \\(\\{name\\: string, default\\: mixed\\}\\[\\] \\$allowed_keys_mapping\\)\\: Unexpected token "\\{", expected type at offset 9 on line 1$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/CoreController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'EntityTransferRecor…\'\\}\\} given\\.$#',
@@ -1922,24 +1880,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Application/View/Extension/I18nExtension.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type Glpi\\\\Asset\\\\AssetModel is not subtype of native type string\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/Asset.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type Glpi\\\\Asset\\\\AssetType is not subtype of native type string\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/Asset.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type SplFileObject is not subtype of native type DirectoryIterator\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Asset/AssetDefinitionManager.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of static method NetworkPort\\:\\:rawSearchOptionsToAdd\\(\\) expects null, class\\-string\\<Glpi\\\\Asset\\\\Asset\\> given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -1956,12 +1896,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/CalDAV/Plugin/Acl.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type SplFileInfo is not subtype of native type DirectoryIterator\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/CommandLoader.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$value of static method DBConnection\\:\\:updateConfigProperty\\(\\) expects string, true given\\.$#',
@@ -2240,12 +2174,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type Glpi\\\\Search\\\\Input\\\\SearchInputInterface is not subtype of native type string\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Search/SearchEngine.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#3 \\$entity_restrict of static method User\\:\\:getSqlSearchResult\\(\\) expects int, array given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -2300,18 +2228,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$display \\? void \\: string\\)\\: Unexpected token "\\$display", expected type at offset 656 on line 13$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$display is true \\? true \\: string\\)\\: Unexpected token "\\$display", expected type at offset 219 on line 9$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$string of function str_pad expects string, float\\|int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 3,
@@ -2358,12 +2274,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/IPNetwork_Vlan.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type CommonITILObject is not subtype of native type string\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/ITILTemplate.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$tt of static method ITILTemplateField\\:\\:showForITILTemplate\\(\\) expects ITILTemplate, CommonGLPI given\\.$#',
@@ -2546,12 +2456,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/KnowbaseItem.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @return has invalid value \\(true;\\)\\: Unexpected token ";", expected TOKEN_HORIZONTAL_WS at offset 126 on line 6$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItemTranslation.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#3 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, KnowbaseItem_Revision given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -2592,24 +2496,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/LevelAgreement.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type OlaLevel\\|SlaLevel is not subtype of native type static\\(LevelAgreementLevel\\)\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/LevelAgreementLevel.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$ola\\|sla of method OlaLevel\\:\\:showForParent\\(\\) expects OLA\\|SLA, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/LevelAgreementLevel.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(array\\<int, \\{name\\: string, type\\: string\\}\\>\\)\\: Unexpected token "\\{", expected type at offset 119 on line 5$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Link.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$item of static method Link\\:\\:showAllLinksForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
@@ -2696,12 +2582,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NetworkName.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type CommonDBTM is not subtype of native type class\\-string\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkPort.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$item of static method NetworkPort\\:\\:countForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -2714,28 +2594,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NetworkPort.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$itemtype of function getItemForItemtype expects class\\-string\\<mixed\\>, CommonDBTM given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkPort.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$rand of static method Html\\:\\:getCheckAllAsCheckbox\\(\\) expects int\\|null, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$val \\!\\=\\= null \\? string \\: array\\)\\: Unexpected token "\\$val", expected type at offset 218 on line 7$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkPortEthernet.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$val \\!\\=\\= null \\? string \\: array\\)\\: Unexpected token "\\$val", expected type at offset 220 on line 7$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkPortEthernet.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$item of static method Notepad\\:\\:countForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
@@ -2772,18 +2634,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NotificationTemplate.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @return has invalid value \\(array\\: empty array if itemtype is not lockable; else returns UNLOCK right\\)\\: Unexpected token "\\:", expected TOKEN_HORIZONTAL_WS at offset 96 on line 5$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ObjectLock.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @return has invalid value \\(bool\\|ObjectLock\\: returns ObjectLock if locked, else false\\)\\: Unexpected token "\\:", expected TOKEN_HORIZONTAL_WS at offset 104 on line 5$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ObjectLock.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$value of function count expects array\\|Countable, Iterator given\\.$#',
@@ -2864,18 +2714,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Printer.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type CommonDBTM is not subtype of native type Group\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Problem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$interface \\=\\= \'all\' \\? array\\<string, array\\<string, array\\<string, RightDefinition\\[\\]\\>\\>\\> \\: \\(\\$form \\=\\= \'all\' \\? array\\<string, array\\<string, RightDefinition\\[\\]\\>\\> \\: \\(\\$group \\=\\= \'all\' \\? array\\<string, RightDefinition\\[\\]\\> \\: RightDefinition\\[\\]\\)\\)\\)\\: Unexpected token "\\$interface", expected type at offset 517 on line 12$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Profile.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#4 \\$is_recursive of function getEntitiesRestrictCriteria expects \'auto\'\\|bool, 1 given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -2900,12 +2738,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Reminder.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$display \\? void \\: string\\)\\: Unexpected token "\\$display", expected type at offset 219 on line 8$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Reminder.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call static method getSystemSQLCriteria\\(\\) on \\(int\\|string\\)\\.$#',
 	'identifier' => 'staticMethod.nonObject',
 	'count' => 1,
@@ -2915,24 +2747,6 @@ $ignoreErrors[] = [
 	'message' => '#^Cannot call static method getTypeName\\(\\) on \\(int\\|string\\)\\.$#',
 	'identifier' => 'staticMethod.nonObject',
 	'count' => 5,
-	'path' => __DIR__ . '/src/Report.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Match expression does not handle remaining value\\: string$#',
-	'identifier' => 'match.unhandled',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Report.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @param for parameter \\$by_itemtype contains unresolvable type\\.$#',
-	'identifier' => 'parameter.unresolvableType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Report.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @return has invalid value \\(array\\<class\\-string\\<CommonDBTM\\>, array\\<int, array\\>\\)\\: Unexpected token "\\*/", expected \'\\>\' at offset 74 on line 3$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
 	'path' => __DIR__ . '/src/Report.php',
 ];
 $ignoreErrors[] = [
@@ -2988,18 +2802,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Rule.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type CommonITILObject is not subtype of native type string\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 2,
-	'path' => __DIR__ . '/src/RuleCommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type CommonITILObject is not subtype of native type string\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleCommonITILObjectCollection.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Callable passed to call_user_func\\(\\) invoked with 1 parameter, 0 required\\.$#',
@@ -3080,24 +2882,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/SoftwareLicense.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$display \\? void \\: string\\)\\: Unexpected token "\\$display", expected type at offset 301 on line 10$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Stat.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$display \\? void \\: string\\)\\: Unexpected token "\\$display", expected type at offset 621 on line 16$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Stat.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$display \\? void \\: string\\)\\: Unexpected token "\\$display", expected type at offset 622 on line 16$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Stat.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of static method Stat\\:\\:constructEntryValues\\(\\) expects class\\-string\\<CommonITILObject\\>, class\\-string\\<CommonGLPI\\> given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 6,
@@ -3138,12 +2922,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Stat.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type CommonDBTM is not subtype of native type Group\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Ticket.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#4 \\$checkitem of static method KnowbaseItem_Item\\:\\:getMassiveActionsForItemtype\\(\\) expects CommonDBTM\\|null, CommonGLPI\\|null given\\.$#',
@@ -3218,12 +2996,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/UploadHandler.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type array is not subtype of native type array\\{\\}\\|array\\{list\\<string\\>, list\\<string\\>\\}\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/User.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$user of static method AuthLDAP\\:\\:forceOneUserSynchronization\\(\\) expects User, CommonDBTM given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -3244,12 +3016,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$items_id of function getAncestorsOf expects array\\|string, int given\\.$#',
 	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Webhook.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Variable \\$list_itemtype in PHPDoc tag @var does not match assigned variable \\$recursive_search\\.$#',
-	'identifier' => 'varTag.differentVariable',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Webhook.php',
 ];

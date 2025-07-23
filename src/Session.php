@@ -59,6 +59,7 @@ use function Safe\strtotime;
 
 /**
  * Session Class
+ * @phpstan-import-type RightDefinition from Profile
  **/
 class Session
 {

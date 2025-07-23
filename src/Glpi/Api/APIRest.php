@@ -571,7 +571,6 @@ class APIRest extends API
             }
         } elseif (str_contains($content_type, "application/x-www-form-urlencoded")) {
             parse_str($body, $postvars);
-            /** @var array $postvars */
             foreach ($postvars as $field => $value) {
                 // $parameters['input'] needs to be an object when process API Request
                 if ($field === 'input') {

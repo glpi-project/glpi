@@ -1541,7 +1541,7 @@ class Config extends CommonDBTM
      *
      * @param bool $expanded_info Get expanded info for each palette
      * @return array
-     * @phpstan-return $expanded_info ? array<string, {name: string, dark: boolean}> : array<string, string>
+     * @phpstan-return ($expanded_info is true ? array<string, array{name: string, dark: boolean}> : array<string, string>)
      */
     public function getPalettes(bool $expanded_info = false)
     {

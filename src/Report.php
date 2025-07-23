@@ -289,9 +289,6 @@ TWIG, $twig_params);
         return $result;
     }
 
-    /**
-     * @return array<class-string<CommonDBTM>, array<int, array>
-     */
     private static function getAssetTypeCounts(): array
     {
         /**
@@ -670,7 +667,7 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
     }
 
     /**
-     * @param class-string<'Location'|'NetworkEquioment'|'Glpi\Socket'> $by_itemtype
+     * @param class-string<Location|NetworkEquipment|Socket> $by_itemtype
      * @param int $by_items_id
      * @return array
      * @phpstan-return ReportData
@@ -681,15 +678,17 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
         global $DB;
 
         $title = sprintf(match ($by_itemtype) {
-            Location::class => __('Network report by location: %s'),
+            Location::class         => __('Network report by location: %s'),
             NetworkEquipment::class => __('Network report by hardware: %s'),
-            Socket::class => __('Network report by outlet: %s'),
+            Socket::class           => __('Network report by outlet: %s'),
+            default                 => throw new InvalidArgumentException(),
         }, Dropdown::getDropdownName($by_itemtype::getTable(), $by_items_id));
 
         $criteria = match ($by_itemtype) {
-            Location::class => self::getNetworkLocationCriteria($by_items_id),
+            Location::class         => self::getNetworkLocationCriteria($by_items_id),
             NetworkEquipment::class => self::getNetworkEquipmentCriteria($by_items_id),
-            Socket::class => self::getNetworkSocketCriteria($by_items_id),
+            Socket::class           => self::getNetworkSocketCriteria($by_items_id),
+            default                 => throw new InvalidArgumentException(),
         };
 
         $report = [

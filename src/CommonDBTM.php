@@ -43,6 +43,7 @@ use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Features\AssignableItem;
 use Glpi\Features\CacheableListInterface;
 use Glpi\Features\Clonable;
+use Glpi\Features\DCBreadcrumbInterface;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
@@ -4781,8 +4782,7 @@ class CommonDBTM extends CommonGLPI
         switch ($field) {
             case '_virtual_datacenter_position':
                 $static = new static();
-                if (method_exists($static, 'renderDcBreadcrumb')) {
-                    /** @var class-string $static */
+                if ($static instanceof DCBreadcrumbInterface) {
                     return $static::renderDcBreadcrumb($values['id']);
                 }
         }

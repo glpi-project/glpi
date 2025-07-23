@@ -196,7 +196,6 @@ abstract class ITILTemplate extends CommonDropdown
 
     public function displaySpecificTypeField($ID, $field = [], array $options = [])
     {
-        /** @var CommonITILObject $itil_itemtype */
         $itil_itemtype = static::getITILObjectClass();
         switch ($field['name']) {
             case 'allowed_statuses':
@@ -881,7 +880,6 @@ abstract class ITILTemplate extends CommonDropdown
 
     public function post_getEmpty()
     {
-        /** @var CommonITILObject $itil_itemtype */
         $itil_itemtype = static::getITILObjectClass();
 
         $this->fields['allowed_statuses'] = array_keys($itil_itemtype::getAllStatusArray());
@@ -894,7 +892,6 @@ abstract class ITILTemplate extends CommonDropdown
      */
     public static function countAffectedItems(int $templates_id): int
     {
-        /** @var CommonITILObject $itil_itemtype */
         $itil_itemtype = static::getITILObjectClass();
 
         $dbu = new DbUtils();
@@ -930,7 +927,7 @@ abstract class ITILTemplate extends CommonDropdown
 
     /**
      * Get the ITILObject class related to the current ITILTemplate class
-     * @return string
+     * @return class-string<CommonITILObject>
      */
     public static function getITILObjectClass(): string
     {

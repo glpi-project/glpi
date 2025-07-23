@@ -1794,10 +1794,9 @@ class NetworkPort extends CommonDBChild
         }
 
         $itemtype = $this->fields['itemtype'];
-        /** @var CommonDBTM $itemtype */
         $equipment = getItemForItemtype($itemtype);
 
-        if ($equipment->getFromDB($this->fields['items_id'])) {
+        if ($equipment && $equipment->getFromDB($this->fields['items_id'])) {
             return sprintf(
                 '<i class="%1$s"></i> %2$s > <i class="%3$s"></i> %4$s',
                 $equipment::getIcon(),

@@ -1937,7 +1937,7 @@ class Stat extends CommonGLPI
      * @param string|null $csv_link Link to download the dataset as csv
      *
      * @return string|void
-     * @phpstan-return $display ? void : string
+     * @phpstan-return ($display is true ? void : string)
      */
     public function displayLineGraph(
         $title,
@@ -2111,7 +2111,7 @@ TWIG, $twig_params);
      * @param string|null $csv_link Link to download the dataset as csv
      *
      * @return string|void
-     * @phpstan-return $display ? void : string
+     * @phpstan-return ($display is true ? void : string)
      */
     public function displayPieGraph(
         $title,
@@ -2241,7 +2241,7 @@ TWIG, $twig_params);
      * @param boolean $display  Whether to display directly; defauts to true
      *
      * @return void|string
-     * @phpstan-return $display ? void : string
+     * @phpstan-return ($display is true ? void : string)
      */
     public function displaySearchForm($itemtype, $date1, $date2, $display = true)
     {

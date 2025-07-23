@@ -161,7 +161,7 @@ class Link extends CommonDBTM
      * Return tags completion for the monaco editor.
      *
      * @return array
-     * @phpstan-return array<int, {name: string, type: string}>
+     * @phpstan-return array<int, array{name: string, type: string}>
      */
     private function getTagCompletions(): array
     {

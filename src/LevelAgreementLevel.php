@@ -67,6 +67,8 @@ abstract class LevelAgreementLevel extends RuleTicket
         // Override in order not to use glpi_rules table.
     }
 
+    abstract function showForParent(LevelAgreement $la);
+
     /**
      * @since 0.85
      **/
@@ -386,8 +388,7 @@ abstract class LevelAgreementLevel extends RuleTicket
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item::class === static::$parentclass) {
-            /** @var OlaLevel|SlaLevel $level */
+        if ($item instanceof LevelAgreement) {
             $level = new static();
             $level->showForParent($item);
         }
