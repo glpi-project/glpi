@@ -333,9 +333,7 @@ class Toolbox
         static $tps = 0;
 
         $extra = [];
-        if (method_exists('Session', 'getLoginUserID')) {
-            $extra['user'] = Session::getLoginUserID() . '@' . php_uname('n');
-        }
+        $extra['user'] = Session::getLoginUserID() . '@' . php_uname('n');
         if ($tps && function_exists('memory_get_usage')) {
             $extra['mem_usage'] = number_format(microtime(true) - $tps, 3) . '", ' .
                       number_format(memory_get_usage() / 1024 / 1024, 2) . 'Mio)';
@@ -495,9 +493,7 @@ class Toolbox
         $text = self::cleanPaths($text);
 
         $user = '';
-        if (method_exists('Session', 'getLoginUserID')) {
-            $user = " [" . Session::getLoginUserID() . '@' . php_uname('n') . "]";
-        }
+        $user = " [" . Session::getLoginUserID() . '@' . php_uname('n') . "]";
 
         $ok = true;
         if (

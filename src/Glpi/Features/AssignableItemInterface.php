@@ -54,6 +54,8 @@ interface AssignableItemInterface
      */
     public function getRights($interface = 'central');
 
+    public function prepareGroupFields(array $input);
+
     public function prepareInputForAdd($input);
 
     public function prepareInputForUpdate($input);
@@ -65,4 +67,9 @@ interface AssignableItemInterface
     public function getEmpty();
 
     public function post_getFromDB();
+
+    /**
+     * Update the values in the 'glpi_groups_items' link table as needed based on the groups set in the 'groups_id' and 'groups_id_tech' fields.
+     */
+    public function updateGroupFields();
 }
