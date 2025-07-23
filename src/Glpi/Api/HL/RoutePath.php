@@ -311,10 +311,17 @@ final class RoutePath
     public function getRouteDocs(): array
     {
         $this->hydrate();
-        $controller_doc_attrs = $this->controller->getAttributes(Doc\Route::class);
+        $controller_doc_attrs = array_filter(
+            $this->controller->getAttributes(),
+            static fn($attr) => is_a($attr->getName(), Doc\Route::class, true)
+        );
         /** @var Doc\Route $controller_doc_attr */
         $controller_doc_attr = count($controller_doc_attrs) ? reset($controller_doc_attrs)->newInstance() : null;
-        $doc_attrs = $this->getMethod()->getAttributes(Doc\Route::class);
+        $t = $this->getMethod()->getAttributes();
+        $doc_attrs = array_filter(
+            $this->getMethod()->getAttributes(),
+            static fn($attr) => is_a($attr->getName(), Doc\Route::class, true)
+        );
         $docs = [];
 
         foreach ($doc_attrs as $doc_attr) {
