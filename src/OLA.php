@@ -44,6 +44,26 @@ class OLA extends LevelAgreement
     protected static $levelticketclass = 'OlaLevel_Ticket';
     protected static $forward_entity_to = ['OlaLevel'];
 
+    /**
+     * @param array<int> $_olas_id
+     * @return array{0: array<int>, 1: array<int>}
+     */
+    public static function splitIdsByType(array $_olas_id): array
+    {
+        if ($_olas_id === []) {
+            return [SLM::TTR => [],SLM::TTO =>  []];
+        }
+        // @todoseb faire test
+        $_ola = new static();
+        $all_ids_ttr = array_column($_ola->find(['type' => SLM::TTR]), 'id');
+        $all_ids_tto = array_column($_ola->find(['type' => SLM::TTO]), 'id');
+
+        $input[SLM::TTR] = array_intersect($_olas_id, $all_ids_ttr);
+        $input[SLM::TTO] = array_intersect($_olas_id, $all_ids_tto);
+
+        return $input;
+    }
+
     public function prepareInputForAdd($input)
     {
         $groups_id = (int) ($input['groups_id'] ?? 0);

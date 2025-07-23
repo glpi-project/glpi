@@ -3434,6 +3434,8 @@ JAVASCRIPT;
             'slas_id_tto'               => 0,
             'slas_id_ttr'               => 0,
             '_olas_id'                  => [],
+            '_olas_id_ttr'              => [], // needed to handle field in Ticket::setPredefinedFields(), no other uses
+            '_olas_id_tto'              => [], // needed to handle field in Ticket::setPredefinedFields(), no other uses
             '_add_validation'           => 0,
             '_validation_targets'       => [],
             'type'                      => $type,
