@@ -8899,7 +8899,7 @@ HTML,
     public function testDateFieldsInitialValues(): void
     {
         // test 1 : date & date_creation field is not set : current time is used
-        $now = $this->setCurrentTime('2023-11-27 02:11:44');
+        $now = $this->setCurrentTime('2025-07-23 02:11:44');
         $ticket = $this->createTicket();
 
         $this->assertEquals($now->format('Y-m-d H:i:s'), $ticket->fields['date']);
