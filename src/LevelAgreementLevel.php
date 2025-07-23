@@ -67,7 +67,7 @@ abstract class LevelAgreementLevel extends RuleTicket
         // Override in order not to use glpi_rules table.
     }
 
-    abstract function showForParent(LevelAgreement $la);
+    abstract public function showForParent(LevelAgreement $la);
 
     /**
      * @since 0.85

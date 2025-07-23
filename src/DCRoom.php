@@ -34,8 +34,8 @@
  */
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\DCBreadcrumb;
-
 use Glpi\Features\DCBreadcrumbInterface;
+
 use function Safe\preg_match;
 
 /**
