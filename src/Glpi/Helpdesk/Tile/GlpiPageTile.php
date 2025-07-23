@@ -39,6 +39,9 @@ use Glpi\Session\SessionInfo;
 use Glpi\UI\IllustrationManager;
 use Html;
 use Override;
+use ReservationItem;
+use Session;
+use Ticket;
 use TicketValidation;
 
 final class GlpiPageTile extends CommonDBTM implements TileInterface
@@ -49,6 +52,7 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface
     public const PAGE_FAQ = 'faq';
     public const PAGE_RESERVATION = 'reservation';
     public const PAGE_APPROVAL = 'approval';
+    public const PAGE_ALL_TICKETS = 'tickets';
 
     #[Override]
     public function getLabel(): string
@@ -75,6 +79,7 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface
             self::PAGE_FAQ             => __("FAQ"),
             self::PAGE_RESERVATION     => _n("Reservation", "Reservations", 1),
             self::PAGE_APPROVAL        => _n('Approval', 'Approvals', 1),
+            self::PAGE_ALL_TICKETS     => Ticket::getTicketTypeName(Session::getPluralNumber()),
         ];
     }
 
@@ -105,6 +110,7 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface
             self::PAGE_RESERVATION     => '/front/reservationitem.php',
             // TODO: apply correct search filter
             self::PAGE_APPROVAL        => '/front/ticket.php',
+            self::PAGE_ALL_TICKETS     => '/front/ticket.php?is_deleted=0&criteria[0][link]=AND&criteria[0][field]=12&criteria[0][searchtype]=equals&criteria[0][value]=all',
             default                    => '/Helpdesk',
         };
 
@@ -117,11 +123,15 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface
         return match ($this->fields['page']) {
             self::PAGE_SERVICE_CATALOG => true,
             self::PAGE_FAQ             => true,
-            self::PAGE_RESERVATION     => $session_info->hasRight('reservation', READ),
+            self::PAGE_RESERVATION     => $session_info->hasRight(
+                'reservation',
+                ReservationItem::RESERVEANITEM
+            ),
             self::PAGE_APPROVAL        => $session_info->hasAnyRights('ticketvalidation', [
                 TicketValidation::VALIDATEINCIDENT,
                 TicketValidation::VALIDATEREQUEST,
             ]),
+            self::PAGE_ALL_TICKETS     => $session_info->hasRight('ticket', READ),
             default                    => false,
         };
     }

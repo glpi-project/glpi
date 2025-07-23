@@ -175,8 +175,7 @@ trait Clonable
      */
     public function prepareInputForClone($input)
     {
-        if (method_exists($this, 'prepareGroupFields')) {
-            // Toolbox::hasTrait doesn't work to tell PHPStan this method exists even when using generics and assert-if-true
+        if ($this instanceof AssignableItemInterface) {
             $input = $this->prepareGroupFields($input);
         }
         return $input;
@@ -392,8 +391,7 @@ trait Clonable
      */
     public function post_clone($source, $history)
     {
-        if (method_exists($this, 'updateGroupFields')) {
-            // Toolbox::hasTrait doesn't work to tell PHPStan this method exists even when using generics and assert-if-true
+        if ($this instanceof AssignableItemInterface) {
             $this->updateGroupFields();
         }
     }

@@ -118,9 +118,8 @@ class MassiveAction
 
     /**
      * Items remaining in current process.
-     * @var array
      */
-    private $remainings = null;
+    private ?array $remainings = null;
 
     /**
      * Fields to remove after reload.
@@ -943,7 +942,7 @@ class MassiveAction
                         $common_options  = false;
                         $choose_itemtype = false;
                     }
-                    $choose_field = is_countable($options) ? (count($options) >= 1) : false;
+                    $choose_field = count($options) >= 1;
 
                     // Beware: "class='tab_cadre_fixe'" induce side effects ...
                     echo "<table width='100%'><tr>";
@@ -971,7 +970,7 @@ class MassiveAction
 
                     echo "</tr><tr>";
                     // Remove empty option groups
-                    $options = array_filter($options, static fn($v) => !is_array($v) || count($v) > 0);
+                    $options = array_filter($options, static fn($v) => !is_array($v) || count($v) > 0); // @phpstan-ignore function.alreadyNarrowedType (phpstan thinks there are no empty options groups but it is probably safer to keep this check in case the code evolve and it become possible)
                     if ($choose_field) {
                         echo "<td>";
                         $field_rand = Dropdown::showFromArray(

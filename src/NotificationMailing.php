@@ -201,6 +201,12 @@ class NotificationMailing implements NotificationInterface
                     $options['subject'] . "\n"
                 )
             );
+
+            $itemtype = (string) $queue->fields['itemtype'];
+            $event    = (string) $queue->fields['event'];
+            if (NotificationTarget::shouldNotificationBeSentImmediately($itemtype, $event)) {
+                NotificationEventMailing::send([$queue->fields]);
+            }
         }
 
         return true;

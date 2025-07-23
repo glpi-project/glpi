@@ -128,6 +128,17 @@ abstract class AbstractConfigField implements DestinationFieldInterface
         return false;
     }
 
+    /**
+     * Returns an array of reusable strategies that can be used multiple times in the same field configuration.
+     * This is useful for fields that can have multiple instances of the same strategy.
+     *
+     * @return array<string> Strategie enum values that can be reused.
+     */
+    public function getReusableStrategies(): array
+    {
+        return [];
+    }
+
     public function exportDynamicConfig(
         array $config,
         AbstractCommonITILFormDestination $destination,

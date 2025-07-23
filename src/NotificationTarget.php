@@ -549,7 +549,7 @@ class NotificationTarget extends CommonDBChild
         if (count($actives)) {
             foreach ($actives as $val) {
                 [$type, $items_id] = explode("_", $val);
-                if ($target->getFromDBForTarget($input['notifications_id'], $type, $items_id)) {
+                if ($target->getFromDBForTarget($input['notifications_id'], $type, (int) $items_id)) {
                     $target->delete(['id' => $target->getID()]);
                 }
             }
@@ -961,6 +961,34 @@ class NotificationTarget extends CommonDBChild
     public function getEvents()
     {
         return [];
+    }
+
+    /**
+     * Return list of notification events for which the notifications should be sent immediately.
+     *
+     * @return array
+     */
+    public function getEventsToSendImmediately(): array
+    {
+        return [];
+    }
+
+    /**
+     * Indicates whether the notification should be sent immediately.
+     *
+     * @param class-string<CommonDBTM> $itemtype
+     */
+    public static function shouldNotificationBeSentImmediately(string $itemtype, string $event): bool
+    {
+        $target_class = NotificationTarget::getInstanceClass($itemtype);
+
+        if (!is_a($target_class, NotificationTarget::class, true)) {
+            return false;
+        }
+
+        $target = new $target_class();
+
+        return in_array($event, $target->getEventsToSendImmediately(), true);
     }
 
     /**

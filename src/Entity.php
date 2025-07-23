@@ -174,7 +174,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'suppliers_as_private', 'autopurge_delay', 'anonymize_support_agents', 'display_users_initials',
             'contracts_strategy_default', 'contracts_id_default', 'show_tickets_properties_on_helpdesk',
             'custom_helpdesk_home_scene_left', 'custom_helpdesk_home_scene_right',
-            'custom_helpdesk_home_title',
+            'custom_helpdesk_home_title', 'enable_helpdesk_home_search_bar', 'enable_helpdesk_service_catalog',
         ],
         // Configuration
         'config' => ['enable_custom_css', 'custom_css_code'],
@@ -1910,8 +1910,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         }
 
         // Notification right applied
-        $canedit = Session::haveRight(Config::$rightname, UPDATE)
-         && Session::haveAccessToEntity($ID);
+        $canedit = Session::haveAccessToEntity($ID);
         $enable_css_options = [];
         if (($ID > 0) ? 1 : 0) {
             $enable_css_options[self::CONFIG_PARENT] = __('Inherits configuration from the parent entity');
@@ -2421,7 +2420,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
      * @param integer|null $val if not set, ask for all values, else for 1 value (default NULL)
      *
      * @return string|array
-     * @phpstan-return $val === null ? array<int|string, string> : string
+     * @phpstan-return ($val is null ? array<int|string, string> : string)
      **/
     public static function getAutoAssignMode(?int $val = null): string|array
     {
@@ -2617,7 +2616,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
                                 // TRANS %s is the name of the state
                                 return sprintf(
                                     __('Fill when shifting to state %s'),
-                                    Dropdown::getDropdownName(table: 'glpi_states', id: $sid, default: __('None'))
+                                    Dropdown::getDropdownName(table: 'glpi_states', id: (int) $sid, default: __('None'))
                                 );
                             }
                         }
@@ -3324,6 +3323,36 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             // Custom value
             return $value;
         }
+    }
+
+    public function isHelpdeskSearchBarEnabled(): bool
+    {
+        $value = $this->fields['enable_helpdesk_home_search_bar'] ?? '';
+
+        // Load from parent if needed
+        if ($value == self::CONFIG_PARENT) {
+            $value = self::getUsedConfig(
+                'enable_helpdesk_home_search_bar',
+                $this->fields['entities_id']
+            );
+        }
+
+        return $value === 1;
+    }
+
+    public function isServiceCatalogEnabled(): bool
+    {
+        $value = $this->fields['enable_helpdesk_service_catalog'] ?? '';
+
+        // Load from parent if needed
+        if ($value == self::CONFIG_PARENT) {
+            $value = self::getUsedConfig(
+                'enable_helpdesk_service_catalog',
+                $this->fields['entities_id']
+            );
+        }
+
+        return $value === 1;
     }
 
     public function getDefaultHelpdeskHomeTitle(): string

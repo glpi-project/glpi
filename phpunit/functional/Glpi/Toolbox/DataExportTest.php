@@ -132,6 +132,16 @@ HTML,
             'value'           => 'Some value' . "\xE5\x8A\xA0",
             'expected_result' => 'Some value' . "\xE5\x8A\xA0",
         ];
+
+        // LBBR/LBHR values
+        yield [
+            'value'           => 'first#LBBR#second#LBBR#third',
+            'expected_result' => 'first' . "\n" . 'second' . "\n" . 'third',
+        ];
+        yield [
+            'value'           => 'first#LBHR#second#LBHR#third',
+            'expected_result' => 'first' . "\n\n---\n\n" . 'second' . "\n\n---\n\n" . 'third',
+        ];
     }
 
     #[DataProvider('normalizeValueForTextExportProvider')]

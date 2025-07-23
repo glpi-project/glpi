@@ -183,14 +183,10 @@ class NetworkPortInstantiation extends CommonDBChild
 
         foreach ($iterator as $element) {
             if ($netport->getFromDB($element['id'])) {
-                if ($netport instanceof CommonDBChild) {
-                    $macItemWithItems[] = array_merge(
-                        array_reverse($netport->recursivelyGetItems()),
-                        [clone $netport]
-                    );
-                } else {
-                    $macItemWithItems[] = [clone $netport];
-                }
+                $macItemWithItems[] = array_merge(
+                    array_reverse($netport->recursivelyGetItems()),
+                    [clone $netport]
+                );
             }
         }
 
@@ -314,6 +310,7 @@ class NetworkPortInstantiation extends CommonDBChild
                 foreach ($iterator as $available_device) {
                     $linkid               = $available_device['link_id'];
                     $device_names[$linkid] = $available_device['name'];
+                    $device_attributes[$linkid] = [];
                     if (isset($available_device['mac'])) {
                         $device_names[$linkid] = sprintf(
                             __('%1$s - %2$s'),

@@ -575,7 +575,6 @@ class CronTask extends CommonDBTM
         if ($error_count >= $threshold) {
             // No alert has been sent within last day, so we can send one without bothering administrator
             NotificationEvent::raiseEvent('alert', $this, ['items' => [$this->fields['id'] => $this->fields]]);
-            QueuedNotification::forceSendFor(self::class, $this->fields['id']);
 
             // Delete existing outdated alerts
             $alert = new Alert();
@@ -1858,7 +1857,6 @@ TWIG, ['msg' => __('Last run list')]);
             if (NotificationEvent::raiseEvent("alert", $task, ['items' => $crontasks])) {
                 $task->addVolume(1);
             }
-            QueuedNotification::forceSendFor(self::class, $task->fields['id']);
         }
 
         return 1;

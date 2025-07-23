@@ -42,6 +42,7 @@ use Glpi\Exception\ForgetPasswordException;
 use Glpi\Exception\PasswordTooWeakException;
 use Glpi\Features\Clonable;
 use Glpi\Features\TreeBrowse;
+use Glpi\Features\TreeBrowseInterface;
 use Glpi\Plugin\Hooks;
 use Glpi\Security\TOTPManager;
 use LDAP\Connection;
@@ -64,7 +65,7 @@ use function Safe\sha1_file;
 use function Safe\strtotime;
 use function Safe\unlink;
 
-class User extends CommonDBTM
+class User extends CommonDBTM implements TreeBrowseInterface
 {
     use Clonable {
         Clonable::computeCloneName as baseComputeCloneName;
@@ -351,7 +352,7 @@ class User extends CommonDBTM
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
-        switch ($item->getType()) {
+        switch ($item::class) {
             case self::class:
                 $ong    = [];
                 $ong[1] = self::createTabEntry(__('Used items'), 0, $item::getType(), 'ti ti-package');
@@ -365,7 +366,7 @@ class User extends CommonDBTM
                 }
                 return $ong;
 
-            case 'Preference':
+            case Preference::class:
                 return self::createTabEntry(__('Main'));
         }
         return '';
@@ -420,9 +421,9 @@ class User extends CommonDBTM
         $this->addStandardTab(Config::class, $ong, $options);
         $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab(Consumable::class, $ong, $options);
-        $this->addStandardTab(Item_Ticket::class, $ong, $options);
-        $this->addStandardTab(Item_Problem::class, $ong, $options);
-        $this->addStandardTab(Change_Item::class, $ong, $options);
+        $this->addStandardTab(Ticket::class, $ong, $options);
+        $this->addStandardTab(Problem::class, $ong, $options);
+        $this->addStandardTab(Change::class, $ong, $options);
         $this->addStandardTab(Document_Item::class, $ong, $options);
         $this->addStandardTab(Reservation::class, $ong, $options);
         $this->addStandardTab(Auth::class, $ong, $options);
@@ -5360,7 +5361,6 @@ HTML;
         NotificationEvent::raiseEvent($event, $this, [
             'entities_id' => $entities_id,
         ]);
-        QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
 
         return true;
     }
@@ -5493,7 +5493,9 @@ HTML;
             if ($row['cpt'] == 0) {
                 return $key;
             }
-        } while (!$ok);
+        } while (!$ok); // @phpstan-ignore booleanNot.alwaysTrue
+        // Note: this condition is always true but there is a return statement
+        // above that will be executed when a unique token is generated.
     }
 
 
@@ -5744,15 +5746,14 @@ HTML;
 
         $ret =  [];
         foreach ($map as $v) {
-            /** @var array $reg */
             if (preg_match_all('/%{(.*)}/U', $v, $reg)) {
                 // e.g. "%{country} > %{city} > %{site}"
-                foreach ($reg [1] as $f) {
-                    $ret [] = $f;
+                foreach ($reg[1] as $f) {
+                    $ret[] = $f;
                 }
             } else {
                 // single field name
-                $ret [] = $v;
+                $ret[] = $v;
             }
         }
         return $ret;

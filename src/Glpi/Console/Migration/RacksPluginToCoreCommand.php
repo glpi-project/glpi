@@ -529,8 +529,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
                     $model_label .= ' (' . $othermodel['comment'] . ')';
                 }
 
-                /** @var QuestionHelper $question_helper */
-                $question_helper = $this->getHelper('question');
+                $question_helper = new QuestionHelper();
                 $answer = $question_helper->ask(
                     $this->input,
                     $this->output,

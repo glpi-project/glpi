@@ -66,12 +66,14 @@ parameters:
         - GLPI_WEBHOOK_CRA_MANDATORY
         - TU_USER
     ignoreErrors:
-        - '~Instantiated class XHProfRuns_Default not found~'
         -
             message: '~LDAP\\Connection~'
             reportUnmatched: false
         -
             message: '~/(xhprof_runs\.php|xhprof_lib\.php|downstream\.php|local_define\.php|config_db\.php|config_db_slave\.php)" is not a file or it does not exist.~'
+            reportUnmatched: false
+        -
+            identifier: 'missingType.iterableValue'
             reportUnmatched: false
 
 # Copy and uncomment this content into a "phpstan.neon" file to add your own config values

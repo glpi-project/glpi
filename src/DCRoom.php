@@ -34,13 +34,14 @@
  */
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\DCBreadcrumb;
+use Glpi\Features\DCBreadcrumbInterface;
 
 use function Safe\preg_match;
 
 /**
  * DCRoom Class
  **/
-class DCRoom extends CommonDBTM
+class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
 {
     use DCBreadcrumb;
 

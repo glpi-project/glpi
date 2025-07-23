@@ -90,6 +90,7 @@ use Glpi\Form\Destination\CommonITILField\UrgencyFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ValidationField;
 use Glpi\Form\Destination\CommonITILField\ValidationFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ValidationFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\ValidationFieldStrategyConfig;
 use Glpi\Form\Destination\FormDestinationChange;
 use Glpi\Form\Destination\FormDestinationProblem;
 use Glpi\Form\Destination\FormDestinationTicket;
@@ -164,9 +165,11 @@ final class TargetsMigrationTest extends DbTestCase
                         RequestSourceField::getKey()   => new RequestSourceFieldConfig(
                             strategy: RequestSourceFieldStrategy::FROM_TEMPLATE
                         ),
-                        ValidationField::getKey()      => new ValidationFieldConfig(
-                            strategies: [ValidationFieldStrategy::NO_VALIDATION]
-                        ),
+                        ValidationField::getKey()      => new ValidationFieldConfig([
+                            new ValidationFieldStrategyConfig(
+                                strategy: ValidationFieldStrategy::NO_VALIDATION
+                            ),
+                        ]),
                         ITILTaskField::getKey()        => new ITILTaskFieldConfig(
                             strategy: ITILTaskFieldStrategy::NO_TASK
                         ),
@@ -231,9 +234,11 @@ final class TargetsMigrationTest extends DbTestCase
                         RequestSourceField::getKey()   => new RequestSourceFieldConfig(
                             strategy: RequestSourceFieldStrategy::FROM_TEMPLATE
                         ),
-                        ValidationField::getKey()      => new ValidationFieldConfig(
-                            strategies: [ValidationFieldStrategy::NO_VALIDATION]
-                        ),
+                        ValidationField::getKey()      => new ValidationFieldConfig([
+                            new ValidationFieldStrategyConfig(
+                                strategy: ValidationFieldStrategy::NO_VALIDATION
+                            ),
+                        ]),
                         ITILTaskField::getKey()        => new ITILTaskFieldConfig(
                             strategy: ITILTaskFieldStrategy::NO_TASK
                         ),
@@ -279,9 +284,11 @@ final class TargetsMigrationTest extends DbTestCase
                         RequestSourceField::getKey()   => new RequestSourceFieldConfig(
                             strategy: RequestSourceFieldStrategy::FROM_TEMPLATE
                         ),
-                        ValidationField::getKey()      => new ValidationFieldConfig(
-                            strategies: [ValidationFieldStrategy::NO_VALIDATION]
-                        ),
+                        ValidationField::getKey()      => new ValidationFieldConfig([
+                            new ValidationFieldStrategyConfig(
+                                strategy: ValidationFieldStrategy::NO_VALIDATION
+                            ),
+                        ]),
                         ITILTaskField::getKey()        => new ITILTaskFieldConfig(
                             strategy: ITILTaskFieldStrategy::NO_TASK
                         ),

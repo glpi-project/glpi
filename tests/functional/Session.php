@@ -732,18 +732,12 @@ class Session extends \DbTestCase
             $profiles_id = getItemByTypeName('Profile', $profile_name, true);
             $this->integer($profiles_id)->isGreaterThan(0);
             $profile->getFromDB($profiles_id);
-            $new_input = $profile->fields;
-            unset($new_input['id']);
-            foreach (['helpdesk_item_type', 'managed_domainrecordtypes', 'ticket_status', 'problem_status', 'change_status'] as $json_field) {
-                $new_input[$json_field] = \importArrayFromDB($new_input[$json_field]);
-            }
-            $new_input['name'] .= '-Impersonate';
-            $new_profiles_id = $profile->add($new_input);
-
-            // Copy all rights from original profile to the new one, adding user impersonate right
-            $rights = \ProfileRight::getProfileRights($profiles_id, ['user']);
-            $rights['user'] = (int) $rights['user'] | \User::IMPERSONATE;
-            \ProfileRight::updateProfileRights($new_profiles_id, $rights);
+            $old_user_rights = \ProfileRight::getProfileRights($profiles_id, ['user'])['user'];
+            $new_profiles_id = $profile->clone(['name' => $profile_name . '-Impersonate']);
+            $DB->update('glpi_profilerights', ['rights' => $old_user_rights | \User::IMPERSONATE], [
+                'profiles_id' => $new_profiles_id,
+                'name' => 'user',
+            ]);
         }
 
         $assign_profile = function (int $users_id, int $profiles_id) use ($root_entity) {

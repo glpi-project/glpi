@@ -34,7 +34,11 @@
 
 namespace tests\units;
 
+use CronTask;
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Ticket;
+use User;
 
 /* Test for inc/notificationmailing.class.php .class.php */
 
@@ -115,6 +119,78 @@ class NotificationMailingTest extends DbTestCase
             ],
             $row
         );
+    }
+
+    public static function sendImmediatelyProvider()
+    {
+        yield [
+            'itemtype' => CronTask::class,
+            'event'    => 'alert',
+            'expected' => true,
+        ];
+
+        yield [
+            'itemtype' => User::class,
+            'event'    => 'passwordexpires',
+            'expected' => true,
+        ];
+
+        yield [
+            'itemtype' => User::class,
+            'event'    => 'passwordforget',
+            'expected' => true,
+        ];
+
+        yield [
+            'itemtype' => User::class,
+            'event'    => 'passwordinit',
+            'expected' => true,
+        ];
+
+        yield [
+            'itemtype' => Ticket::class,
+            'event'    => 'new',
+            'expected' => false,
+        ];
+
+        yield [
+            'itemtype' => Ticket::class,
+            'event'    => 'add_followup',
+            'expected' => false,
+        ];
+    }
+
+    #[DataProvider('sendImmediatelyProvider')]
+    public function testSendImmediately(string $itemtype, string $event, bool $expected)
+    {
+        $this->login();
+
+        $mail = new \NotificationMailing();
+        $this->assertTrue($mail->sendNotification([
+            '_itemtype'                   => $itemtype,
+            '_items_id'                   => \rand(1, 100),
+            '_notificationtemplates_id'   => 0,
+            '_entities_id'                => $this->getTestRootEntity(true),
+            'fromname'                    => 'TEST',
+            'subject'                     => 'Test notification',
+            'content_text'                => "Hello, this is a test notification.",
+            'to'                          => 'test@localhost',
+            'from'                        => 'glpi@tests',
+            'toname'                      => '',
+            'event'                       => $event,
+        ]));
+
+        if ($expected) {
+            // Emails cannot be sent in the testing env
+            $this->hasSessionMessageThatContains('Error in sending the email', ERROR);
+        }
+
+        // the email should only be in the queue because we cannot send email in tests
+        // to identify that it was attempted to be sent immediately, we check the sent_try field
+        $queued = getAllDataFromTable('glpi_queuednotifications');
+        $this->assertCount(1, $queued);
+        $queued = reset($queued);
+        $this->assertEquals($expected ? 1 : 0, $queued['sent_try']);
     }
 
 

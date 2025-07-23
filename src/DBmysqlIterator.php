@@ -241,7 +241,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
             $this->sql .= ") AS $count";
             $first = false;
         }
-        if (!$count || $count && is_array($field)) {
+        if (!$count || is_array($field)) {
             if ($distinct && !$count) {
                 $this->sql .= 'DISTINCT ';
             }

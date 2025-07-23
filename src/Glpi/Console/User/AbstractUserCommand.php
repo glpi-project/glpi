@@ -35,6 +35,7 @@
 namespace Glpi\Console\User;
 
 use Glpi\Console\AbstractCommand;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -56,7 +57,7 @@ abstract class AbstractUserCommand extends AbstractCommand
         }
 
         // Ask for password and then confirm it
-        $helper = $this->getHelper('question');
+        $helper = new QuestionHelper();
         $question = new Question(__('Enter password'));
         $question->setHidden(true);
         $question->setHiddenFallback(false);

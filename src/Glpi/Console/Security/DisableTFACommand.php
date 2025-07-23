@@ -37,6 +37,7 @@ namespace Glpi\Console\Security;
 
 use Glpi\Console\AbstractCommand;
 use Glpi\Security\TOTPManager;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -69,7 +70,7 @@ class DisableTFACommand extends AbstractCommand
         if ($totp_manager->get2FAEnforcement($user->getID())) {
             $output->writeln("<info>" . __("2FA is enforced for this user. They will be required to set it up again the next time they log in.") . "</info>");
         }
-        $helper = $this->getHelper('question');
+        $helper = new QuestionHelper();
         $question = new ConfirmationQuestion(__('Are you sure you want to disable 2FA for this user?'), false);
         if (!$helper->ask($input, $output, $question)) {
             return 0;

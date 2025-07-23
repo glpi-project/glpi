@@ -43,6 +43,7 @@ use Override;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
@@ -211,7 +212,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
             return;
         }
 
-        $db = property_exists($this, 'db') ? $this->db : null;
+        $db = $this->db;
 
         $requirements_manager = new RequirementsManager();
         $core_requirements = $requirements_manager->getCoreRequirementList(
@@ -251,7 +252,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
     {
         $abort = false;
         if (!$this->input->getOption('no-interaction')) {
-            $question_helper = $this->getHelper('question');
+            $question_helper = new QuestionHelper();
             $run = $question_helper->ask(
                 $this->input,
                 $this->output,

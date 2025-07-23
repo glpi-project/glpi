@@ -441,7 +441,9 @@ trait PlanningEvent
             $_SESSION["glpiactiveprofile"][static::$rightname] = READ;
         }
         $visibility_criteria = [];
-        if ($event_obj instanceof ExtraVisibilityCriteria) {
+        // TODO: avoid instanceof in a trait, bad practice.
+        // PHPstan doesn't like it but we can't fix it now.
+        if ($event_obj instanceof ExtraVisibilityCriteria) { // @phpstan-ignore instanceof.alwaysTrue
             $visibility_criteria = $event_obj::getVisibilityCriteria(true);
         }
         $nreadpub  = [];
@@ -952,9 +954,9 @@ trait PlanningEvent
             foreach ($rrule['exceptions'] as $exception) {
                 $exdate = new DateTime($exception);
                 $exdate->setTime(
-                    $dtstart_datetime->format('G'),
-                    $dtstart_datetime->format('i'),
-                    $dtstart_datetime->format('s')
+                    (int) $dtstart_datetime->format('G'),
+                    (int) $dtstart_datetime->format('i'),
+                    (int) $dtstart_datetime->format('s')
                 );
                 $rset->addExDate($exdate->format('Y-m-d\TH:i:s\Z'));
             }

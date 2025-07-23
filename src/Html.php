@@ -1020,7 +1020,7 @@ TWIG,
      * @param bool   $display display the header (default true)
      *
      * @return string|void Generated HTML if `display` param is false, void otherwise.
-     * @phpstan-return $display ? void : string
+     * @phpstan-return ($display is true ? void : string)
      */
     public static function includeHeader(
         $title = '',
@@ -1066,6 +1066,8 @@ TWIG,
         ];
 
         $tpl_vars['css_files'][] = ['path' => 'lib/base.css'];
+
+        Html::requireJs('tinymce');
 
         if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax']) {
             Html::requireJs('notifications_ajax');
@@ -1158,10 +1160,6 @@ TWIG,
 
             if (in_array('masonry', $jslibs)) {
                 Html::requireJs('masonry');
-            }
-
-            if (in_array('tinymce', $jslibs)) {
-                Html::requireJs('tinymce');
             }
 
             if (in_array('clipboard', $jslibs)) {
@@ -1485,7 +1483,22 @@ TWIG,
             ],
         ];
 
-        if (Session::haveRight("ticket", CREATE)) {
+        $session_info = Session::getCurrentSessionInfo();
+        if ($session_info === null) {
+            // Unlogged users should not have any other menu entries.
+            return $menu;
+        }
+
+        $entity = Entity::getById($session_info->getCurrentEntityId());
+        if (!$entity) {
+            // Safety check, will never happen but help with static analysis.
+            throw new RuntimeException("Cant load current entity");
+        }
+
+        if (
+            Session::haveRight("ticket", CREATE)
+            && $entity->isServiceCatalogEnabled()
+        ) {
             $menu['create_ticket'] = [
                 'default' => ServiceCatalog::getSearchURL(false),
                 'title'   => __('Create a ticket'),
@@ -3495,9 +3508,6 @@ JS;
          */
         global $CFG_GLPI, $DB;
 
-        // load tinymce lib
-        Html::requireJs('tinymce');
-
         $language = $_SESSION['glpilanguage'];
         if (!file_exists(GLPI_ROOT . "/public/lib/tinymce-i18n/langs6/$language.js")) {
             $language = $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2];
@@ -4323,7 +4333,7 @@ JAVASCRIPT
      * @since 0.83.
      *
      * @return string|true
-     * @phpstan-return $display is true ? true : string
+     * @phpstan-return ($display is true ? true : string)
      **/
     public static function closeForm($display = true)
     {

@@ -415,7 +415,6 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                         $urgency = ($output['urgency'] ?? 3);
                         $impact  = ($output['impact'] ?? 3);
                         // Apply priority_matrix from config
-                        /** @var CommonITILObject $itemtype */
                         $itemtype = static::getItemtype();
                         $output['priority'] = $itemtype::computePriority($urgency, $impact);
                         break;
@@ -647,7 +646,6 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
     public function preProcessPreviewResults($output)
     {
         $output = parent::preProcessPreviewResults($output);
-        /** @var CommonITILObject $itemtype */
         $itemtype = static::getItemtype();
         return $itemtype::showPreviewAssignAction($output);
     }

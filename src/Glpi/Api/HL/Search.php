@@ -383,6 +383,7 @@ final class Search
             $itemtype = $this->context->getSchemaItemtype(); //should not that use self::getItemFromSchema()?
             /** @var CommonDBTM $item */
             $item = getItemForItemtype($itemtype);
+            $entity_restrict = [];
             if ($item instanceof ExtraVisibilityCriteria) {
                 $main_table = $item::getTable();
                 $visibility_restrict = $item::getVisibilityCriteria();
@@ -410,8 +411,9 @@ final class Search
                     }
                     $criteria[$join_type] = array_merge($criteria[$join_type], $visibility_restrict[$join_type]);
                 }
-            } elseif ($item->isEntityAssign()) {
-                $entity_restrict = getEntitiesRestrictCriteria('_');
+            }
+            if ($item->isEntityAssign()) {
+                $entity_restrict[] = getEntitiesRestrictCriteria('_');
             }
             if ($item instanceof Entity) {
                 $entity_restrict = [
@@ -440,9 +442,7 @@ final class Search
             }
         } else {
             //TODO What if some subtypes are entity assign and some are not?
-            $entity_restrict = [
-                getEntitiesRestrictCriteria('_'),
-            ];
+            $entity_restrict = [getEntitiesRestrictCriteria('_'),];
         }
         if (!empty($entity_restrict) && $entity_restrict !== [0 => []]) {
             $criteria['WHERE'][] = ['AND' => $entity_restrict];
@@ -867,7 +867,7 @@ final class Search
                     continue;
                 }
                 $join_prop = array_filter($join_prop, static fn($v) => !empty($v));
-                if (empty($join_prop)) {
+                if ($join_prop === []) {
                     ArrayPathAccessor::setElementByArrayPath($record, $path, null);
                 }
             }

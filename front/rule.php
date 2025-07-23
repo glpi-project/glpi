@@ -38,7 +38,7 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 Session::checkCentralAccess();
 
-Html::header(Rule::getTypeName(Session::getPluralNumber()), '', "admin", "rule", -1);
+Html::header(Rule::getTypeName(Session::getPluralNumber()), '', "admin", "rule");
 
 RuleCollection::showCollectionsList();
 

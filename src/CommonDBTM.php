@@ -43,6 +43,7 @@ use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Features\AssignableItem;
 use Glpi\Features\CacheableListInterface;
 use Glpi\Features\Clonable;
+use Glpi\Features\DCBreadcrumbInterface;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
@@ -324,7 +325,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Retrieve an item from the database and update $this->fields
      *
-     * @param integer $ID ID of the item to get (matched against the index field of the table, not necessarily the ID)
+     * @param int|string $ID ID of the item to get (matched against the index field of the table, not necessarily the ID)
      *
      * @return boolean true if succeed to find a single item matching $ID else false (no items or more than one item)
      * @see self::getIndexName()
@@ -2971,7 +2972,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Check right on an item
      *
-     * @param integer $ID    ID of the item (-1 if new item)
+     * @param int $ID    ID of the item (-1 if new item)
      * @param int $right Right to check : r / w / recursive / READ / UPDATE / DELETE
      * @param ?array   $input array of input data (used for adding item) (default NULL)
      *
@@ -2982,9 +2983,6 @@ class CommonDBTM extends CommonGLPI
         if (Session::isInventory()) {
             return true;
         }
-
-        // Clean ID :
-        $ID = Toolbox::cleanInteger($ID);
 
         // Create process
         if (static::isNewID($ID)) {
@@ -4784,8 +4782,7 @@ class CommonDBTM extends CommonGLPI
         switch ($field) {
             case '_virtual_datacenter_position':
                 $static = new static();
-                if (method_exists($static, 'renderDcBreadcrumb')) {
-                    /** @var class-string $static */
+                if ($static instanceof DCBreadcrumbInterface) {
                     return $static::renderDcBreadcrumb($values['id']);
                 }
         }
@@ -4974,7 +4971,7 @@ class CommonDBTM extends CommonGLPI
                             if (!$user->getFromDB($value)) {
                                 return '';
                             }
-                            if ($param['comments']) {
+                            if ($options['comments']) {
                                 return $user->getLink() . '&nbsp;' . Html::showToolTip(
                                     $user->getInfoCard(),
                                     ['display' => false]
@@ -4983,7 +4980,7 @@ class CommonDBTM extends CommonGLPI
                             return getUserName($value);
                         }
                         $name = Dropdown::getDropdownName($searchoptions['table'], $value);
-                        if ($param['comments']) {
+                        if ($options['comments']) {
                             $comments = Dropdown::getDropdownComments($searchoptions['table'], (int) $value);
                             return htmlescape($name) . '&nbsp;' . Html::showToolTip(
                                 $comments,

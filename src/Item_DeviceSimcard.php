@@ -34,12 +34,13 @@
  */
 
 use Glpi\Features\AssignableItem;
+use Glpi\Features\AssignableItemInterface;
 
 /**
  * Relation between item and devices
  * @since 9.2
  **/
-class Item_DeviceSimcard extends Item_Devices
+class Item_DeviceSimcard extends Item_Devices implements AssignableItemInterface
 {
     use AssignableItem;
 

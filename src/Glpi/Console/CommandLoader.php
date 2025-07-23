@@ -325,8 +325,8 @@ class CommandLoader implements CommandLoaderInterface
         }
 
         $tools_files = new DirectoryIterator($basedir);
-        /** @var SplFileInfo $file */
         foreach ($tools_files as $file) {
+            /** @var DirectoryIterator $file */
             if (!$file->isReadable() || !$file->isFile()) {
                 continue;
             }

@@ -46,6 +46,7 @@ use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\URL;
 use Html;
+use Override;
 use Plugin;
 use RuntimeException;
 use SavedSearch;
@@ -280,7 +281,7 @@ final class QueryBuilder implements SearchInputInterface
             case "lessthan":
             case "under":
             case "notunder":
-                if (!$display && isset($searchopt['field'])) {
+                if (isset($searchopt['field'])) {
                     // Specific cases
                     switch ($searchopt['table'] . "." . $searchopt['field']) {
                         // Add mygroups choice to searchopt
@@ -329,7 +330,7 @@ final class QueryBuilder implements SearchInputInterface
                     }
 
                     // Standard datatype usage
-                    if (!$display && isset($searchopt['datatype'])) {
+                    if (isset($searchopt['datatype'])) {
                         switch ($searchopt['datatype']) {
                             case "date":
                             case "date_delay":
@@ -649,17 +650,7 @@ final class QueryBuilder implements SearchInputInterface
         ]);
     }
 
-    /**
-     * Completion of the URL $_GET values with the $_SESSION values or define default values
-     *
-     * @param class-string<CommonDBTM> $itemtype Item type to manage
-     * @param array   $params          Params to parse
-     * @param boolean $usesession      Use data saved in the session (true by default)
-     * @param boolean $forcebookmark   Force trying to load parameters from default bookmark:
-     *                                  used for global search (false by default)
-     *
-     * @return array parsed params
-     **/
+    #[Override]
     public static function manageParams($itemtype, $params = [], $usesession = true, $forcebookmark = false): array
     {
         /** @var array $CFG_GLPI */
@@ -846,6 +837,7 @@ final class QueryBuilder implements SearchInputInterface
         return self::cleanParams($params);
     }
 
+    #[Override]
     public static function cleanParams(array $params): array
     {
         $int_params = [

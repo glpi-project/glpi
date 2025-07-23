@@ -1263,12 +1263,12 @@ TWIG, ['authldaps_id' => $ID]);
             return '';
         }
 
-        $year    = substr($ldapstamp, 0, 4);
-        $month   = substr($ldapstamp, 4, 2);
-        $day     = substr($ldapstamp, 6, 2);
-        $hour    = substr($ldapstamp, 8, 2);
-        $minute  = substr($ldapstamp, 10, 2);
-        $seconds = substr($ldapstamp, 12, 2);
+        $year    = (int) substr($ldapstamp, 0, 4);
+        $month   = (int) substr($ldapstamp, 4, 2);
+        $day     = (int) substr($ldapstamp, 6, 2);
+        $hour    = (int) substr($ldapstamp, 8, 2);
+        $minute  = (int) substr($ldapstamp, 10, 2);
+        $seconds = (int) substr($ldapstamp, 12, 2);
         $stamp   = gmmktime($hour, $minute, $seconds, $month, $day, $year);
         $stamp  += $CFG_GLPI["time_offset"] - $ldap_time_offset;
 
@@ -1868,7 +1868,7 @@ TWIG, $twig_params);
                     }
                 }
             }
-        } while (($cookie !== null) && ($cookie != ''));
+        } while ($cookie != '');
 
         return true;
     }
@@ -2034,11 +2034,11 @@ TWIG, $twig_params);
                     // Only manage deleted user if ALL (because of entity visibility in delegated mode)
 
                     if ($user['auths_id'] === $options['authldaps_id']) {
-                        if (!$userfound && (int) $user['is_deleted_ldap'] === 0) {
+                        if ((int) $user['is_deleted_ldap'] === 0) {
                             // If user is marked as coming from LDAP, but is not present in it anymore
                             User::manageDeletedUserInLdap($user['id']);
                             $results[self::USER_DELETED_LDAP]++;
-                        } elseif ($userfound && (int) $user['is_deleted_ldap'] === 1) {
+                        } elseif ((int) $user['is_deleted_ldap'] === 1) {
                             // User is marked as coming from LDAP, but was previously deleted
                             User::manageRestoredUserInLdap($user['id']);
                             $results[self::USER_RESTORED_LDAP]++;
@@ -2247,7 +2247,7 @@ TWIG, $twig_params);
      * @param integer $auths_id      ID of the server to use
      * @param string  $filter        ldap filter to use
      * @param string  $filter2       second ldap filter to use if needed
-     * @param string  $entity        entity to search
+     * @param int     $entity        entity to search
      * @param boolean $limitexceeded is limit exceeded
      *
      * @return array of the groups
@@ -2559,7 +2559,7 @@ TWIG, $twig_params);
                     }
                 }
             }
-        } while (($cookie !== null) && ($cookie != ''));
+        } while ($cookie != '');
 
         return $groups;
     }
@@ -4083,8 +4083,13 @@ TWIG, $twig_params);
      */
     public static function isLdapPageSizeAvailable($config_ldap, $check_config_value = true)
     {
-        return (extension_loaded('ldap') && (!$check_config_value
-         || ($check_config_value && $config_ldap->fields['can_support_pagesize'])));
+        return (
+            extension_loaded('ldap')
+            && (
+                !$check_config_value
+                || $config_ldap->fields['can_support_pagesize']
+            )
+        );
     }
 
     /**

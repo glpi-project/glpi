@@ -223,7 +223,12 @@ class Stat extends CommonGLPI
                 break;
 
             case "type":
-                $types = $item::getTypes();
+                // TODO: would be better to use an interface + instanceof here.
+                if (!method_exists($item, "getTypes")) {
+                    throw new RuntimeException("Given item doesn't support getTypes() operation");
+                }
+
+                $types = $item::getTypes(); // @phpstan-ignore method.staticCall (phpstan seems to think that method_exist = non static method, which is not true)
                 foreach ($types as $id => $v) {
                     $tmp['id']   = $id;
                     $tmp['link'] = $v;
@@ -427,12 +432,12 @@ class Stat extends CommonGLPI
      * @param string $date2
      * @param integer $start
      * @param array $value
-     * @param string $value2 (default '')
+     * @param int|string $value2
      * @return void
      *
      * @since 0.85 (before show with same parameters)
      **/
-    public static function showTable($itemtype, $type, $date1, $date2, $start, array $value, $value2 = "")
+    public static function showTable($itemtype, $type, $date1, $date2, $start, array $value, $value2 = '')
     {
         $numrows = count($value);
         // Set display type for export if define
@@ -1932,7 +1937,7 @@ class Stat extends CommonGLPI
      * @param string|null $csv_link Link to download the dataset as csv
      *
      * @return string|void
-     * @phpstan-return $display ? void : string
+     * @phpstan-return ($display is true ? void : string)
      */
     public function displayLineGraph(
         $title,
@@ -2106,7 +2111,7 @@ TWIG, $twig_params);
      * @param string|null $csv_link Link to download the dataset as csv
      *
      * @return string|void
-     * @phpstan-return $display ? void : string
+     * @phpstan-return ($display is true ? void : string)
      */
     public function displayPieGraph(
         $title,
@@ -2236,7 +2241,7 @@ TWIG, $twig_params);
      * @param boolean $display  Whether to display directly; defauts to true
      *
      * @return void|string
-     * @phpstan-return $display ? void : string
+     * @phpstan-return ($display is true ? void : string)
      */
     public function displaySearchForm($itemtype, $date1, $date2, $display = true)
     {

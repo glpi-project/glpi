@@ -487,7 +487,7 @@ final class DbUtils
                 );
                 /** @var SplFileInfo $file */
                 foreach ($files_iterator as $file) {
-                    if (!$file->isReadable() || !$file->isFile() || '.php' === !$file->getExtension()) {
+                    if (!$file->isReadable() || !$file->isFile() || $file->getExtension() !== 'php') {
                         continue;
                     }
                     $relative_path = str_replace($srcdir . DIRECTORY_SEPARATOR, '', $file->getPathname());
@@ -1291,7 +1291,7 @@ final class DbUtils
      * @since 0.84
      *
      * @param string $table table name
-     * @param string $IDf   The ID of the father
+     * @param int    $IDf   The ID of the father
      *
      * @return array of IDs of the sons and the ancestors
      */
@@ -1832,7 +1832,7 @@ final class DbUtils
     {
         $username = $this->getUserName($id);
 
-        if (!is_int($id) || $id <= 0 || !User::canView()) {
+        if ($id <= 0 || !User::canView()) {
             return htmlescape($username);
         }
 

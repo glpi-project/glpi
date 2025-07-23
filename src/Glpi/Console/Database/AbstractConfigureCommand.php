@@ -164,8 +164,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
 
         foreach ($questions as $name => $question) {
             if (null === $input->getOption($name)) {
-                /** @var QuestionHelper $question_helper */
-                $question_helper = $this->getHelper('question');
+                $question_helper = new QuestionHelper();
                 $value = $question_helper->ask($input, $output, $question);
                 $input->setOption($name, $value);
             }

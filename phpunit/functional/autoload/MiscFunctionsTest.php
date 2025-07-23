@@ -86,4 +86,54 @@ class MiscFunctionsTest extends DbTestCase
             LogLevel::WARNING
         );
     }
+    public static function jsescapeProvider(): iterable
+    {
+        yield [
+            'input'  => 'simple quote (\')',
+            'output' => 'simple\u0020quote\u0020\u0028\u0027\u0029',
+        ];
+        yield [
+            'input'  => 'double quote (")',
+            'output' => 'double\u0020quote\u0020\u0028\u0022\u0029',
+        ];
+        yield [
+            'input'  => 'backslash \\',
+            'output' => 'backslash\u0020\\\\',
+        ];
+        yield [
+            'input'  => null,
+            'output' => '',
+        ];
+        yield [
+            'input'  => true,
+            'output' => '1',
+        ];
+        yield [
+            'input'  => false,
+            'output' => '',
+        ];
+        yield [
+            'input'  => 1,
+            'output' => '1',
+        ];
+        yield [
+            'input'  => 0,
+            'output' => '0',
+        ];
+    }
+
+    #[DataProvider('jsescapeProvider')]
+    public function testJsescape(mixed $input, string $output): void
+    {
+        $this->assertEquals($output, \jsescape($input));
+    }
+
+    public function testJsescapeWithUnexpectedType(): void
+    {
+        $this->assertEquals('Array', \jsescape(['an', 'array']));
+        $this->hasPhpLogRecordThatContains(
+            'Array to string conversion',
+            LogLevel::WARNING
+        );
+    }
 }

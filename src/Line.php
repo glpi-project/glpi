@@ -35,13 +35,14 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\AssignableItemInterface;
 
 /**
  * @since 9.2
  */
 
 
-class Line extends CommonDBTM
+class Line extends CommonDBTM implements AssignableItemInterface
 {
     use Glpi\Features\State;
     use AssignableItem;

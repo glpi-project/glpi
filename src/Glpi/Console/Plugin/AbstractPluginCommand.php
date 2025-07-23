@@ -96,8 +96,7 @@ abstract class AbstractPluginCommand extends AbstractCommand
                     $choices
                 );
 
-                /** @var QuestionHelper $question_helper */
-                $question_helper = $this->getHelper('question');
+                $question_helper = new QuestionHelper();
                 $question = new ChoiceQuestion(
                     $this->getDirectoryChoiceQuestion(),
                     $choices

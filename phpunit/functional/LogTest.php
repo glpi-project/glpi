@@ -858,7 +858,7 @@ class LogTest extends DbTestCase
             [
                 'Update an item: Access control',
                 'Add an item: Access control (Allow direct access ($id))',
-                'Add an item: Items to create (Ticket ($id))',
+                'Add an item: Item to create (Ticket ($id))',
                 'Add the item',
             ],
             $this->getChangesForItem($form),

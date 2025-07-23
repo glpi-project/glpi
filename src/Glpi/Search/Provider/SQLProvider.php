@@ -62,7 +62,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Debug\Profiler;
-use Glpi\Features\AssignableItem;
+use Glpi\Features\AssignableItemInterface;
 use Glpi\Form\Form;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
@@ -81,6 +81,7 @@ use KnowbaseItem_User;
 use Link;
 use Notification;
 use OLA;
+use Override;
 use PlanningExternalEvent;
 use Plugin;
 use Problem;
@@ -1089,9 +1090,9 @@ final class SQLProvider implements SearchProviderInterface
                 break;
         }
 
-        if (Toolbox::hasTrait($itemtype, AssignableItem::class)) {
-            /** @var AssignableItem $itemtype */
-            $visibility_criteria = $itemtype::getAssignableVisiblityCriteria();
+        $item = getItemForItemtype($itemtype);
+        if ($item instanceof AssignableItemInterface) {
+            $visibility_criteria = $item::getAssignableVisiblityCriteria();
             if (count($visibility_criteria)) {
                 $criteria[] = $visibility_criteria;
             }
@@ -4118,18 +4119,7 @@ final class SQLProvider implements SearchProviderInterface
         return $orderby_criteria;
     }
 
-    /**
-     * Construct SQL request depending on search parameters
-     *
-     * Add to data array a field sql containing an array of requests :
-     *      search : request to get items limited to wanted ones
-     *      count : to count all items based on search criterias
-     *                    may be an array a request : need to add counts
-     *                    maybe empty : use search one to count
-     *
-     * @param array $data Array of search data prepared to generate SQL
-     * @return false|void
-     */
+    #[Override]
     public static function constructSQL(array &$data)
     {
         /**
@@ -4193,7 +4183,7 @@ final class SQLProvider implements SearchProviderInterface
                     $searchopt[$val]["table"],
                     $searchopt[$val]["linkfield"],
                     false,
-                    0,
+                    '',
                     $searchopt[$val]["joinparams"],
                     $searchopt[$val]["field"]
                 );
@@ -4213,7 +4203,7 @@ final class SQLProvider implements SearchProviderInterface
                             $searchopt[$key]["table"],
                             $searchopt[$key]["linkfield"],
                             false,
-                            0,
+                            '',
                             $searchopt[$key]["joinparams"],
                             $searchopt[$key]["field"]
                         );
@@ -4350,10 +4340,8 @@ final class SQLProvider implements SearchProviderInterface
 
             if (!empty($COMMONWHERE)) {
                 $LINK = " AND ";
-                if ($first) {
-                    $LINK  = " WHERE ";
-                    $first = false;
-                }
+                $LINK  = " WHERE ";
+                $first = false;
                 $query_num .= $LINK . $COMMONWHERE;
             }
             // Union Search :
@@ -4383,12 +4371,12 @@ final class SQLProvider implements SearchProviderInterface
                             $query_num .= " AND `$ctable`.`id` IS NOT NULL ";
 
                             // Add deleted if item have it
-                            if ($citem && $citem->maybeDeleted()) {
+                            if ($citem->maybeDeleted()) {
                                 $query_num .= " AND `$ctable`.`is_deleted` = 0 ";
                             }
 
                             // Remove template items
-                            if ($citem && $citem->maybeTemplate()) {
+                            if ($citem->maybeTemplate()) {
                                 $query_num .= " AND `$ctable`.`is_template` = 0 ";
                             }
                         } else {// Ref table case
@@ -4490,12 +4478,12 @@ final class SQLProvider implements SearchProviderInterface
                         $tmpquery .= " AND `$ctable`.`id` IS NOT NULL ";
 
                         // Add deleted if item have it
-                        if ($citem && $citem->maybeDeleted()) {
+                        if ($citem->maybeDeleted()) {
                             $tmpquery .= " AND `$ctable`.`is_deleted` = 0 ";
                         }
 
                         // Remove template items
-                        if ($citem && $citem->maybeTemplate()) {
+                        if ($citem->maybeTemplate()) {
                             $tmpquery .= " AND `$ctable`.`is_template` = 0 ";
                         }
 
@@ -4911,18 +4899,7 @@ final class SQLProvider implements SearchProviderInterface
         }
     }
 
-    /**
-     * Retrieve data from DB : construct data array containing columns definitions and rows data
-     *
-     * add to data array a field data containing :
-     *      cols : columns definition
-     *      rows : rows data
-     *
-     * @param array   $data      array of search data prepared to get data
-     * @param boolean $onlycount If we just want to count results
-     *
-     * @return void|false
-     **/
+    #[Override]
     public static function constructData(array &$data, $onlycount = false)
     {
         if (!isset($data['sql']) || !isset($data['sql']['search'])) {
@@ -5078,15 +5055,13 @@ final class SQLProvider implements SearchProviderInterface
                 if (key($searchopt) !== null) {
                     //search optgroup (non array option)
                     while (
-                        key($searchopt) !== null
-                        && is_numeric(key($searchopt))
+                        is_numeric(key($searchopt))
                         && is_array(current($searchopt))
                     ) {
                         prev($searchopt);
                     }
                     if (
-                        key($searchopt) !== null
-                        && key($searchopt) !== "common"
+                        key($searchopt) !== "common"
                         && !isset($data['data']['cols'][$num]['groupname'])
                     ) {
                         $data['data']['cols'][$num]['groupname'] = current($searchopt);
@@ -6190,7 +6165,7 @@ final class SQLProvider implements SearchProviderInterface
                                 if (is_a($data[$ID][$k]['itemtype_target'], CommonDBTM::class, true) && ($approver = $data[$ID][$k]['itemtype_target']::getById((int) $data[$ID][$k]['items_id_target'])) !== null) {
                                     $user = $approver->getLink();
                                 }
-                                $content = "<span class='badge bg-secondary-subtle mb-1'><i class='" . $data[$ID][$k]['itemtype_target']::getIcon() . "'></i> " . $user ?? null . "<br><span style=\"background-color:" . $bgcolor . ";\" class='badge text-dark fs-5 fw-normal mt-1'>" . $status . "</span></span>";
+                                $content = "<span class='badge bg-secondary-subtle mb-1'><i class='" . $data[$ID][$k]['itemtype_target']::getIcon() . "'></i> " . $user . "<br><span style=\"background-color:" . $bgcolor . ";\" class='badge text-dark fs-5 fw-normal mt-1'>" . $status . "</span></span>";
                             }
                             $out    .= (empty($out) ? '' : Search::LBBR) . $content;
                         }
@@ -6659,7 +6634,7 @@ final class SQLProvider implements SearchProviderInterface
                 case 'progressbar':
                     if (!isset($progressbar_data)) {
                         $bar_color = 'green';
-                        $percent   = ltrim(($data[$ID][0]['name'] ?? ""), 0);
+                        $percent   = ltrim(($data[$ID][0]['name'] ?? ""), "0");
                         $progressbar_data = [
                             'percent'      => $percent,
                             'percent_text' => $percent,
@@ -6669,21 +6644,19 @@ final class SQLProvider implements SearchProviderInterface
                     }
 
                     $out = "";
-                    if ($progressbar_data['percent'] !== null) {
-                        $out = <<<HTML
-                  <span class='text-nowrap'>
-                     {$progressbar_data['text']}
-                  </span>
-                  <div class="progress" style="height: 16px">
-                     <div class="progress-bar progress-bar-striped" role="progressbar"
-                          style="width: {$progressbar_data['percent']}%; background-color: {$progressbar_data['color']};"
-                          aria-valuenow="{$progressbar_data['percent']}"
-                          aria-valuemin="0" aria-valuemax="100">
-                        {$progressbar_data['percent_text']}%
-                     </div>
-                  </div>
+                    $out = <<<HTML
+                <span class='text-nowrap'>
+                    {$progressbar_data['text']}
+                </span>
+                <div class="progress" style="height: 16px">
+                    <div class="progress-bar progress-bar-striped" role="progressbar"
+                        style="width: {$progressbar_data['percent']}%; background-color: {$progressbar_data['color']};"
+                        aria-valuenow="{$progressbar_data['percent']}"
+                        aria-valuemin="0" aria-valuemax="100">
+                    {$progressbar_data['percent_text']}%
+                    </div>
+                </div>
 HTML;
-                    }
 
                     return $out;
             }

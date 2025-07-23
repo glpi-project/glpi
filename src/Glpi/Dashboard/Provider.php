@@ -36,7 +36,6 @@
 namespace Glpi\Dashboard;
 
 use CommonDBTM;
-use CommonDBVisible;
 use CommonDevice;
 use CommonITILActor;
 use CommonITILObject;
@@ -45,6 +44,7 @@ use CommonTreeDropdown;
 use Config;
 use DBConnection;
 use DBmysql;
+use ExtraVisibilityCriteria;
 use Glpi\Dashboard\Filters\{
     DatesFilter,
     GroupTechFilter,
@@ -945,7 +945,7 @@ class Provider
                 'FROM'   => $i_table,
             ],
             self::getFiltersCriteria($i_table, $params['apply_filters']),
-            $item instanceof CommonDBVisible ? $item::getVisibilityCriteria() : []
+            $item instanceof ExtraVisibilityCriteria ? $item::getVisibilityCriteria() : []
         );
         Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
 

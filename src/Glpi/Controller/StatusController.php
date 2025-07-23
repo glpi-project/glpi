@@ -58,7 +58,7 @@ final class StatusController extends AbstractController
         $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
 
         // Redirect handling to the High-Level API (we may eventually remove this script)
-        $request = new Request('GET', '/Status/All', getallheaders() ?? []);
+        $request = new Request('GET', '/Status/All', getallheaders());
 
         try {
             $response = Router::getInstance()->handleRequest($request);

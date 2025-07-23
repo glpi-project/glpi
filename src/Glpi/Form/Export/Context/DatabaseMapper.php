@@ -62,7 +62,7 @@ final class DatabaseMapper
         $this->entities_restrictions = $entities_restrictions;
     }
 
-    public function addMappedItem(string $itemtype, string $name, int $id): void
+    public function addMappedItem(string $itemtype, string|int $key, int $id): void
     {
         if (!$this->isValidItemtype($itemtype)) {
             return;
@@ -72,19 +72,19 @@ final class DatabaseMapper
             $this->values[$itemtype] = [];
         }
 
-        $this->values[$itemtype][$name] = $id;
+        $this->values[$itemtype][$key] = $id;
     }
 
-    public function getItemId(string $itemtype, string $name): int
+    public function getItemId(string $itemtype, string|int $key): int
     {
-        if (!$this->contextExist($itemtype, $name)) {
+        if (!$this->contextExist($itemtype, $key)) {
             // Can't recover from this point, it is the serializer
             // responsability to validate that all requirements are found in the
             // context before attempting to import the forms.
-            throw new LogicException("Unknown item: {$itemtype}::{$name}");
+            throw new LogicException("Unknown item: {$itemtype}::{$key}");
         }
 
-        return $this->values[$itemtype][$name];
+        return $this->values[$itemtype][$key];
     }
 
     /** @param DataRequirementSpecification[] $data_requirements */

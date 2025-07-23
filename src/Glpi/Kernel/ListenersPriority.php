@@ -38,6 +38,7 @@ use Glpi\Kernel\Listener\PostBootListener\BootPlugins;
 use Glpi\Kernel\Listener\PostBootListener\CheckPluginsStates;
 use Glpi\Kernel\Listener\PostBootListener\CustomObjectsAutoloaderRegistration;
 use Glpi\Kernel\Listener\PostBootListener\CustomObjectsBoot;
+use Glpi\Kernel\Listener\PostBootListener\FlushBootErrors;
 use Glpi\Kernel\Listener\PostBootListener\InitializeCache;
 use Glpi\Kernel\Listener\PostBootListener\InitializeDbConnection;
 use Glpi\Kernel\Listener\PostBootListener\InitializePlugins;
@@ -68,6 +69,10 @@ final class ListenersPriority
         CheckPluginsStates::class =>                  150,
         BootPlugins::class =>                         140,
         SessionStart::class =>                        130,
+
+        // Need to be after `SessionStart` to prevent headers to be sent before the session start.
+        FlushBootErrors::class =>                     125,
+
         LoadLanguage::class =>                        120,
         InitializePlugins::class =>                   110,
         CustomObjectsBoot::class =>                   100,

@@ -90,7 +90,8 @@ final class Lexer
         $in_filter = false;
         $in_value = false;
         $fn_validate_pos = static function () use ($pos, $length) {
-            if ($pos < 0 || $pos >= $length) {
+            // Note: phpstan doesn't like this, it should probably be a dedicated method.
+            if ($pos < 0 || $pos >= $length) { // @phpstan-ignore smaller.alwaysFalse
                 // This case will probably never happen. An issue should be caught before now with a more specific error message.
                 throw new RSQLException(
                     message: 'RSQL parser reached an invalid position while parsing the query string.',

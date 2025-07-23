@@ -43,6 +43,7 @@ use ITILFollowup;
 use Safe\Exceptions\FilesystemException;
 use Search;
 use Session;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -140,7 +141,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
         $fix = $input->getOption('fix');
 
         if ($fix === null && !$this->input->getOption('no-interaction')) {
-            $question_helper = $this->getHelper('question');
+            $question_helper = new QuestionHelper();
             $fix = $question_helper->ask(
                 $input,
                 $output,

@@ -1235,7 +1235,7 @@ class NetworkPort extends CommonDBChild
                                     $option["table"],
                                     $option["linkfield"],
                                     false,
-                                    0,
+                                    '',
                                     $option["joinparams"],
                                     $option["field"]
                                 );
@@ -1436,7 +1436,7 @@ class NetworkPort extends CommonDBChild
 
         // add purge action if main item is not dynamic
         // NetworkPort delete / purge are handled a different way on dynamic asset (lock)
-        if (!$checkitem->isDynamic()) {
+        if ($checkitem instanceof CommonDBTM && !$checkitem->isDynamic()) {
             $actions['NetworkPort' . MassiveAction::CLASS_ACTION_SEPARATOR . 'purge']    = __s('Delete permanently');
         }
 
@@ -1794,10 +1794,9 @@ class NetworkPort extends CommonDBChild
         }
 
         $itemtype = $this->fields['itemtype'];
-        /** @var CommonDBTM $itemtype */
         $equipment = getItemForItemtype($itemtype);
 
-        if ($equipment->getFromDB($this->fields['items_id'])) {
+        if ($equipment && $equipment->getFromDB($this->fields['items_id'])) {
             return sprintf(
                 '<i class="%1$s"></i> %2$s > <i class="%3$s"></i> %4$s',
                 $equipment::getIcon(),

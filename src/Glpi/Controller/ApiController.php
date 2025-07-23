@@ -87,9 +87,9 @@ final class ApiController extends AbstractController
         }
         $version = Router::normalizeAPIVersion($version);
 
-        $body = file_get_contents('php://input') ?? null;
+        $body = file_get_contents('php://input');
 
-        $headers = getallheaders() ?? [];
+        $headers = getallheaders();
         $headers['GLPI-API-Version'] = $version;
         $request = new Request($method, $relative_uri, $headers, $body);
 

@@ -49,9 +49,8 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
     ) {
         /**
          * @var array $CFG_GLPI
-         * @var DBmysql $DB
          */
-        global $CFG_GLPI, $DB;
+        global $CFG_GLPI;
         if ($CFG_GLPI['notifications_' . $options['mode']]) {
             $entity = $notificationtarget->getEntity();
             if (isset($options['processed'])) {
@@ -74,9 +73,6 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                 'notify_me'          => $notify_me,
             ]);
 
-            // get original timezone
-            $orig_tz = $DB->guessTimezone();
-
             //Foreach notification targets
             foreach ($targets as $target) {
                 //Get all users affected by this notification
@@ -92,20 +88,6 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                         if (!isset($processed[$users_infos['language']][$key])) {
                             //If ther user's language is the same as the template's one
                             $options['item'] = $item;
-
-                            // set timezone from user
-                            // as we work on a copy of the item object, no reload is required after
-                            if (
-                                isset($users_infos['additionnaloption']['timezone'])
-                                && $options['item'] instanceof CommonDBTM // item may be a `CommonGLPI`
-                            ) {
-                                /** @var CommonDBTM $item */
-                                $DB->setTimezone($users_infos['additionnaloption']['timezone']);
-                                // reload object for get timezone correct dates
-                                $options['item']->getFromDB($item->fields['id']);
-
-                                $DB->setTimezone($orig_tz);
-                            }
 
                             if (
                                 $tid = $template->getTemplateByLanguage(

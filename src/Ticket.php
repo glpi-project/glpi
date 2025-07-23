@@ -491,7 +491,7 @@ class Ticket extends CommonITILObject
      *
      * @param string  $laType (SLA | OLA)
      * @param integer $la_id the sla/ola id
-     * @param integer $subtype (SLM::TTR | SLM::TTO)
+     * @param SLM::TTR|SLM::TTO $subtype (SLM::TTR | SLM::TTO) TODO: use a real type (enum)
      * @param bool    $delete_date (default false)
      *
      * @return bool
@@ -534,6 +534,7 @@ class Ticket extends CommonITILObject
 
         $input[$prefix . '_waiting_duration'] = 0;
         $input['id'] = $la_id;
+
         $level_ticket->deleteForTicket($la_id, $subtype);
 
         return $this->update($input);
@@ -567,15 +568,12 @@ class Ticket extends CommonITILObject
         }
 
         // for all, if no modification in ticket return true
-        if ($can_requester = $this->canRequesterUpdateItem()) {
+        if ($this->canRequesterUpdateItem()) {
             return true;
         }
 
         // for self-service only, if modification in ticket, we can't update the ticket
-        if (
-            Session::getCurrentInterface() == "helpdesk"
-            && !$can_requester
-        ) {
+        if (Session::getCurrentInterface() == "helpdesk") {
             return false;
         }
 
@@ -827,9 +825,11 @@ class Ticket extends CommonITILObject
                 }
                 break;
 
+            case User::class:
             case Group::class:
             case SLA::class:
             case OLA::class:
+                return self::showListForItem($item, $withtemplate);
             default:
                 Toolbox::deprecated("You should register the `Item_Ticket` tab instead of the `Ticket` tab");
                 return Item_Ticket::displayTabContentForItem($item, $tabnum, $withtemplate);
@@ -1650,6 +1650,7 @@ class Ticket extends CommonITILObject
         if (
             isset($this->input["_followup"])
             && is_array($this->input["_followup"])
+            && isset($this->input["_followup"]['content'])
             && (strlen($this->input["_followup"]['content']) > 0)
         ) {
             $fup  = new ITILFollowup();
@@ -1662,12 +1663,7 @@ class Ticket extends CommonITILObject
                 'itemtype' => 'Ticket',
             ];
 
-            if (
-                isset($this->input["_followup"]['content'])
-                && (strlen($this->input["_followup"]['content']) > 0)
-            ) {
-                $toadd["content"] = $this->input["_followup"]['content'];
-            }
+            $toadd["content"] = $this->input["_followup"]['content'];
 
             if (isset($this->input["_followup"]['is_private'])) {
                 $toadd["is_private"] = $this->input["_followup"]['is_private'];
@@ -1862,7 +1858,7 @@ class Ticket extends CommonITILObject
      *
      * @param string $itemtype     Item type
      * @param integer $items_id    ID of the Item
-     * @param string $type         Type of the tickets (incident or request)
+     * @param int $type         Type of the tickets (incident or request)
      *
      * @return DBmysqlIterator
      */
@@ -4866,28 +4862,19 @@ JAVASCRIPT;
             'metacriteria' => [],
         ];
 
-        switch (get_class($item)) {
-            case SLA::class:
-                $criteria['ORDERBY'] = 'glpi_tickets.time_to_resolve DESC';
-                break;
-
-            case OLA::class:
-                $criteria['ORDERBY'] = 'glpi_tickets.internal_time_to_resolve DESC';
-                break;
-
-            case Group::class:
-                // Mini search engine
-                /** @var Group $item */
-                if ($item->haveChildren()) {
-                    $tree = (int) Session::getSavedOption(self::class, 'tree', 0);
-                    TemplateRenderer::getInstance()->display('components/form/item_itilobject_group.html.twig', [
-                        'tree' => $tree,
-                    ]);
-                } else {
-                    $tree = 0;
-                }
-                break;
+        if ($item instanceof Group) {
+            // Mini search engine
+            /** @var Group $item */
+            if ($item->haveChildren()) {
+                $tree = (int) Session::getSavedOption(self::class, 'tree', 0);
+                TemplateRenderer::getInstance()->display('components/form/item_itilobject_group.html.twig', [
+                    'tree' => $tree,
+                ]);
+            } else {
+                $tree = 0;
+            }
         }
+
         Item_Ticket::showListForItem($item, $withtemplate, $options);
     }
 
@@ -6279,13 +6266,13 @@ JAVASCRIPT;
     {
         $restrict = [];
 
-        switch (get_class($item)) {
-            case User::class:
+        switch (true) {
+            case $item instanceof User:
                 $restrict['glpi_tickets_users.users_id'] = $item->getID();
                 $restrict['glpi_tickets_users.type'] = CommonITILActor::REQUESTER;
                 break;
 
-            case SLA::class:
+            case $item instanceof SLA:
                 $restrict[] = [
                     'OR' => [
                         'slas_id_tto'  => $item->getID(),
@@ -6294,7 +6281,7 @@ JAVASCRIPT;
                 ];
                 break;
 
-            case OLA::class:
+            case $item instanceof OLA:
                 $restrict[] = [
                     'OR' => [
                         'olas_id_tto'  => $item->getID(),
@@ -6303,13 +6290,12 @@ JAVASCRIPT;
                 ];
                 break;
 
-            case Supplier::class:
+            case $item instanceof Supplier:
                 $restrict['glpi_suppliers_tickets.suppliers_id'] = $item->getID();
                 $restrict['glpi_suppliers_tickets.type'] = CommonITILActor::ASSIGN;
                 break;
 
-            case Group::class:
-                /** @var Group $item */
+            case $item instanceof Group:
                 if ($item->haveChildren()) {
                     $tree = Session::getSavedOption(self::class, 'tree', 0);
                 } else {
@@ -6317,7 +6303,6 @@ JAVASCRIPT;
                 }
                 $restrict['glpi_groups_tickets.groups_id'] = ($tree ? getSonsOf('glpi_groups', $item->getID()) : $item->getID());
                 $restrict['glpi_groups_tickets.type'] = CommonITILActor::REQUESTER;
-                /** @var CommonDBTM $item */
                 break;
 
             default:
@@ -6360,31 +6345,30 @@ JAVASCRIPT;
             'reset'    => 'reset',
         ];
 
-        switch (get_class($item)) {
-            case User::class:
+        switch (true) {
+            case $item instanceof User:
                 $options['criteria'][0]['field']      = 4; // status
                 $options['criteria'][0]['searchtype'] = 'equals';
                 $options['criteria'][0]['value']      = $item->getID();
                 $options['criteria'][0]['link']       = 'AND';
                 break;
 
-            case SLA::class:
-            case OLA::class:
+            case $item instanceof SLA:
+            case $item instanceof OLA:
                 $options['criteria'][0]['field']      = 30;
                 $options['criteria'][0]['searchtype'] = 'equals';
                 $options['criteria'][0]['value']      = $item->getID();
                 $options['criteria'][0]['link']       = 'AND';
                 break;
 
-            case Supplier::class:
+            case $item instanceof Supplier:
                 $options['criteria'][0]['field']      = 6;
                 $options['criteria'][0]['searchtype'] = 'equals';
                 $options['criteria'][0]['value']      = $item->getID();
                 $options['criteria'][0]['link']       = 'AND';
                 break;
 
-            case Group::class:
-                /** @var Group $item */
+            case $item instanceof Group:
                 if ($item->haveChildren()) {
                     $tree = Session::getSavedOption(self::class, 'tree', 0);
                 } else {
@@ -6394,7 +6378,6 @@ JAVASCRIPT;
                 $options['criteria'][0]['searchtype'] = ($tree ? 'under' : 'equals');
                 $options['criteria'][0]['value']      = $item->getID();
                 $options['criteria'][0]['link']       = 'AND';
-                /** @var CommonDBTM $item */
                 break;
 
             default:

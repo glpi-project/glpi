@@ -500,7 +500,8 @@ class PendingReason_Item extends CommonDBRelation
         if (self::getForItem($timeline_item)) {
             // Event was already marked as pending
 
-            if ($timeline_item->input['pending'] ?? 0) {
+            $is_pending = $timeline_item->input['pending'] ?? 0;
+            if ($is_pending) {
                 // Still pending, check for update
                 $pending_updates = [];
                 if (isset($timeline_item->input['pendingreasons_id'])) {
@@ -524,7 +525,7 @@ class PendingReason_Item extends CommonDBRelation
                         self::updateForItem($timeline_item->input['_job'], $pending_updates);
                     }
                 }
-            } elseif (!$timeline_item->input['pending'] ?? 1) {
+            } elseif (!$is_pending) {
                 // Change status of parent if needed
                 if ($timeline_item->input["_job"]->fields['status'] == CommonITILObject::WAITING) {
                     // get previous stored status for parent
@@ -540,7 +541,7 @@ class PendingReason_Item extends CommonDBRelation
         } else {
             // Not pending yet; did it change ?
             if (
-                $timeline_item->input['pending'] ?? 0
+                ($timeline_item->input['pending'] ?? 0)
                 && isset($timeline_item->input['pendingreasons_id'])
                 && $timeline_item->input['pendingreasons_id'] > 0
             ) {

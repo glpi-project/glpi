@@ -76,7 +76,7 @@ final class ManagementController extends AbstractController
 
     /**
      * @param bool $schema_names_only If true, only the schema names are returned.
-     * @return array<class-string<CommonDBTM>, string>
+     * @return array<class-string<CommonDBTM>, array>
      */
     public static function getManagementTypes(bool $schema_names_only = true): array
     {

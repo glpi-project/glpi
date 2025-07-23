@@ -82,8 +82,8 @@ if (
                 echo Html::scriptBlock(
                     sprintf(
                         '$("#%s").attr("href", "%s");',
-                        htmlescape($_POST['withlink']),
-                        htmlescape($link)
+                        jsescape($_POST['withlink']),
+                        jsescape($link)
                     )
                 );
             }
@@ -159,8 +159,8 @@ if (
                     echo Html::scriptBlock(
                         sprintf(
                             '$("#%s").attr("href", "%s");',
-                            htmlescape($_POST['withlink']),
-                            htmlescape($_POST['itemtype']::getFormURLWithID($_POST["value"]))
+                            jsescape($_POST['withlink']),
+                            jsescape($_POST['itemtype']::getFormURLWithID($_POST["value"]))
                         )
                     );
                 }
@@ -176,8 +176,8 @@ if (
                         echo Html::scriptBlock(
                             sprintf(
                                 '$("#%s").html("href", "&nbsp;<a class=\'ti ti-crosshairs\' href=\'%s\'></a>");',
-                                htmlescape($_POST['with_dc_position']),
-                                htmlescape($rack->getLinkURL())
+                                jsescape($_POST['with_dc_position']),
+                                jsescape(htmlescape($rack->getLinkURL()))
                             )
                         );
                     } else {
@@ -185,7 +185,7 @@ if (
                         echo Html::scriptBlock(
                             sprintf(
                                 '$("#%s").empty();',
-                                htmlescape($_POST['with_dc_position'])
+                                jsescape($_POST['with_dc_position'])
                             )
                         );
                     }

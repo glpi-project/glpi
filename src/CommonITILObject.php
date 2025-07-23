@@ -41,6 +41,7 @@ use Glpi\DBAL\QueryUnion;
 use Glpi\Event;
 use Glpi\Features\Clonable;
 use Glpi\Features\Kanban;
+use Glpi\Features\KanbanInterface;
 use Glpi\Features\Teamwork;
 use Glpi\Features\Timeline;
 use Glpi\Form\AnswersSet;
@@ -65,7 +66,7 @@ use function Safe\strtotime;
  * @property-read array $groups
  * @property-read array $suppliers
  **/
-abstract class CommonITILObject extends CommonDBTM
+abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
 {
     use Clonable;
     use Timeline;
@@ -511,7 +512,10 @@ abstract class CommonITILObject extends CommonDBTM
         // load existing actors (from existing itilobject)
         if (isset($this->users[$actortype])) {
             foreach ($this->users[$actortype] as $user) {
-                $name = getUserName($user['users_id']);
+                $name = getUserName(
+                    $user['users_id'],
+                    disable_anon: in_array($actortype, [CommonITILActor::REQUESTER, CommonITILActor::OBSERVER])
+                );
                 $fn_add_actor(User::class, $user['users_id'], [
                     'id'                => $user['id'],
                     'text'              => $name,
@@ -1078,7 +1082,7 @@ abstract class CommonITILObject extends CommonDBTM
             case 'update':
                 switch ($field) {
                     case 'status':
-                        if (!static::isAllowedStatus($this->fields['status'], $value)) {
+                        if (!static::isAllowedStatus($this->fields['status'], (int) $value)) {
                             return false;
                         }
                         break;
@@ -7445,7 +7449,7 @@ abstract class CommonITILObject extends CommonDBTM
             'rand'   => mt_rand(),
             'item'   => $this,
         ]);
-        $legacy_actions .= ob_get_clean() ?? '';
+        $legacy_actions .= ob_get_clean();
 
         return $legacy_actions;
     }
@@ -8217,7 +8221,7 @@ abstract class CommonITILObject extends CommonDBTM
             if ($categ->getFromDB($itilcategories_id)) {
                 $field = $this->getTemplateFieldName($type);
 
-                if (!empty($categ->fields[$field]) && $categ->fields[$field]) {
+                if ($categ->fields[$field]) {
                     // without type and categ
                     if ($tt->getFromDBWithData($categ->fields[$field], false)) {
                         $template_loaded = true;
@@ -8232,7 +8236,7 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         //Get template from profile
-        if (!$template_loaded && $type) {
+        if ($type) {
             $field = $this->getTemplateFieldName($type);
             $field = str_replace(['_incident', '_demand'], ['', ''], $field);
             // load default profile one if not already loaded
@@ -9028,8 +9032,9 @@ abstract class CommonITILObject extends CommonDBTM
                     }
                     foreach ($validation_target['items_id_target'] as $items_id_target) {
                         $validations_to_send[] = [
-                            'itemtype_target' => $validation_target['itemtype_target'],
-                            'items_id_target' => $items_id_target,
+                            'itemtype_target'    => $validation_target['itemtype_target'],
+                            'items_id_target'    => $items_id_target,
+                            'validationsteps_id' => $validation_target['validationsteps_id'] ?? null,
                         ];
                     }
                 }
@@ -9070,13 +9075,16 @@ abstract class CommonITILObject extends CommonDBTM
                         ) {
                             continue;
                         }
+
+                        $values['itemtype_target']     = $validation_to_send['itemtype_target'];
+                        $values['items_id_target']     = $validation_to_send['items_id_target'];
+                        $values['_validationsteps_id'] = $validation_to_send['validationsteps_id'] ?? null;
+
                         // add validation step
-                        if (isset($input['_validationsteps_id'])) {
+                        if (isset($input['_validationsteps_id']) && $values['_validationsteps_id'] === null) {
                             $values['_validationsteps_id'] = $input['_validationsteps_id'];
                         }
 
-                        $values['itemtype_target'] = $validation_to_send['itemtype_target'];
-                        $values['items_id_target'] = $validation_to_send['items_id_target'];
                         if ($validation->add($values)) {
                             $add_done = true;
                         }
@@ -9535,14 +9543,8 @@ abstract class CommonITILObject extends CommonDBTM
 
     /**
      * Check if input contains a valid actor for given itemtype / actortype.
-     *
-     * @param array $input
-     * @param string $itemtype
-     * @param string $actortype
-     *
-     * @return bool
      */
-    private function hasValidActorInInput(array $input, string $itemtype, string $actortype): bool
+    private function hasValidActorInInput(array $input, string $itemtype, int $actortype): bool
     {
         $input_id_key = sprintf(
             '_%s_%s',

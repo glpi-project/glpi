@@ -44,6 +44,7 @@ use Glpi\RichText\RichText;
 use InvalidArgumentException;
 use Planning;
 use RRule\RRule;
+use RuntimeException;
 use Sabre\VObject\Component;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VEvent;
@@ -94,6 +95,10 @@ trait VobjectConverterTrait
         $vcomp     = null;
         if ($vobject->getFromDBByCrit($vobject_crit) && !empty($vobject->fields['data'])) {
             $vcalendar = Reader::read($vobject->fields['data']);
+            if (!$vcalendar instanceof VCalendar) {
+                throw new RuntimeException("Document is not a calendar");
+            }
+
             $vcomp = $vcalendar->getBaseComponent();
             if (VCalendar::$componentMap[$component_type] !== get_class($vcomp)) {
                 // Remove existing base component if it has changed.
@@ -167,7 +172,7 @@ trait VobjectConverterTrait
                 if (array_key_exists('until', $rrule_specs) && empty($rrule_specs['until'])) {
                     unset($rrule_specs['until']);
                 }
-                if (array_key_exists('exceptions', $rrule_specs)) {
+                if (array_key_exists('exceptions', $rrule_specs) && $vcomp instanceof Component) {
                     foreach ($rrule_specs['exceptions'] as $exdate) {
                         $vcomp->add('EXDATE', (new SafeDateTime($exdate))->setTimeZone($utc_tz));
                     }

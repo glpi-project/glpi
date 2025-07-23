@@ -333,7 +333,7 @@ HTML;
     )]
     public function getSession(Request $request): Response
     {
-        /** @var {name: string, default: mixed}[] $allowed_keys_mapping */
+        /** @var array{name: string, default: mixed}[] $allowed_keys_mapping */
         $allowed_keys_mapping = [
             'glpi_currenttime' => [
                 'name' => 'current_time',

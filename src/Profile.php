@@ -47,6 +47,7 @@ use Glpi\Toolbox\ArrayNormalizer;
 
 /**
  * Profile class
+ * @phpstan-type RightDefinition array{rights: array{}, label: string, field: string, scope: string}
  **/
 class Profile extends CommonDBTM implements LinkableToTilesInterface
 {
@@ -275,7 +276,20 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         global $DB;
 
         ProfileRight::fillProfileRights($this->fields['id']);
-        $this->profileRight = null;
+        if (count($this->profileRight) > 0) {
+            // Delegate custom assets specific rights handling to `AssetDefinitionManager`.
+            $definitions = AssetDefinitionManager::getInstance()->getDefinitions();
+            foreach ($definitions as $definition) {
+                $asset_rightname = $definition->getCustomObjectRightname();
+                if (array_key_exists($asset_rightname, $this->profileRight)) {
+                    $definition->setProfileRights($this->getID(), $this->profileRight[$asset_rightname]);
+                    unset($this->profileRight[$asset_rightname]);
+                }
+            }
+
+            ProfileRight::updateProfileRights($this->getID(), $this->profileRight);
+            $this->profileRight = [];
+        }
 
         if (isset($this->fields['is_default']) && ((int) $this->fields["is_default"] === 1)) {
             $DB->update(
@@ -782,8 +796,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      * @param string $interface The interface name
      * @phpstan-param 'all'|'central'|'helpdesk' $interface
      * @return array
-     * @phpstan-type RightDefinition = array{rights: array{}, label: string, field: string, scope: string}
-     * @phpstan-return $interface == 'all' ? array<string, array<string, array<string, RightDefinition[]>>> : ($form == 'all' ? array<string, array<string, RightDefinition[]>> : ($group == 'all' ? array<string, RightDefinition[]> : RightDefinition[]))
+     * @phpstan-return ($interface is 'all' ? array<string, array<string, array<string, RightDefinition[]>>> : ($form is 'all' ? array<string, array<string, RightDefinition[]>> : ($group is 'all' ? array<string, RightDefinition[]> : RightDefinition[])))
      * @internal BC not guaranteed. Only public so it can be used in tests to ensure search options are made for all rights.
      */
     public static function getRightsForForm(string $interface = 'all', string $form = 'all', string $group = 'all'): array

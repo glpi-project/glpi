@@ -242,11 +242,17 @@ abstract class ITILTemplateField extends CommonDBChild
                 'extra_form_html' => $extra_form_html,
                 'rand' => $rand,
                 'show_submit' => !is_subclass_of(static::class, ITILTemplatePredefinedField::class),
+                'task_order_label' => is_subclass_of(static::class, ITILTemplatePredefinedField::class)
+                    ? __('Predefined task templates will be added according to their creation order')
+                    : null,
             ];
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 {% import 'components/form/fields_macros.html.twig' as fields %}
                 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
                 <div>
+                    {% if task_order_label is not null %}
+                        <div class="alert alert-info">{{ task_order_label }}</div>
+                    {% endif %}
                     <form name="itiltemplatehidden_form{{ rand }}" method="post" action="{{ form_url }}" data-submit-once>
                         {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
                         {{ inputs.hidden(items_id_field, id) }}

@@ -42,6 +42,7 @@ use Glpi\Asset\CustomFieldType\TextType;
 use Glpi\CustomObject\AbstractDefinition;
 use Glpi\CustomObject\CustomObjectTrait;
 use Glpi\Features\AssignableItem;
+use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
 use Glpi\Features\Inventoriable;
 use Group;
@@ -59,7 +60,7 @@ use User;
 use function Safe\json_decode;
 use function Safe\json_encode;
 
-abstract class Asset extends CommonDBTM
+abstract class Asset extends CommonDBTM implements AssignableItemInterface
 {
     use CustomObjectTrait;
 
@@ -125,9 +126,7 @@ abstract class Asset extends CommonDBTM
 
         $search_options = array_merge($search_options, Location::rawSearchOptionsToAdd());
 
-        /** @var AssetModel $asset_model_class */
         $asset_model_class = static::getDefinition()->getAssetModelClassName();
-        /** @var AssetType $asset_type_class */
         $asset_type_class = static::getDefinition()->getAssetTypeClassName();
 
         $search_options[] = [
@@ -292,7 +291,16 @@ abstract class Asset extends CommonDBTM
             'datatype'           => 'dropdown',
         ];
 
-        // TODO 65 for template
+        $search_options[] = [
+            'id'                 => '65',
+            'table'              => $this->getTable(),
+            'field'              => 'template_name',
+            'name'               => __('Template name'),
+            'datatype'           => 'text',
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'nodisplay'          => true,
+        ];
 
         $search_options[] = [
             'id'                 => '80',

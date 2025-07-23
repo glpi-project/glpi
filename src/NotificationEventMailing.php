@@ -47,9 +47,8 @@ class NotificationEventMailing extends NotificationEventAbstract
 {
     /**
      * Mailer service.
-     * @var GLPIMailer
      */
-    private static $mailer = null;
+    private static ?GLPIMailer $mailer = null;
 
     public static function getTargetFieldName()
     {
@@ -396,9 +395,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                     }
 
                     $mail->text($current->fields['body_text']);
-                    if ($is_html) {
-                        $mail->html($current->fields['body_html']);
-                    }
+                    $mail->html($current->fields['body_html']);
                 }
 
                 self::attachDocuments($mail, $documents_to_attach);

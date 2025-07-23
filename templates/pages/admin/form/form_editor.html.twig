@@ -68,99 +68,172 @@
     {# Need more elements (questions, sections) before finalizing the design #}
     <div data-glpi-form-editor class="form-editor row flex-reverse">
 
-        <div class="designer col-12 px-4 py-3">
-            <div class="row">
-                <div
-                    class="d-flex"
-                    data-glpi-form-editor-form
-                    data-glpi-form-editor-active-form
-                >
-                    <div class="col-12 col-xxl-7">
-                        <section
-                            data-glpi-form-editor-form-details
-                            data-glpi-form-editor-on-click="set-active"
-                            aria-label="{{ __("Form details") }}"
-                        >
-                            {# Card containing the main form data: title, header and status #}
-                            <div class="card form-details">
-                                <div
-                                    class="card-status-start bg-primary"
-                                    data-glpi-form-editor-active-form-status-indicator
-                                ></div>
-                                <div class="card-body">
+        <div class="designer col-12">
+            <div class="row h-full">
+                <div class="d-flex">
+                    <div
+                        class="flex-grow-1 d-flex px-4 py-3 me-6"
+                        data-glpi-form-editor-form
+                        data-glpi-form-editor-active-form
+                    >
+                        <div class="flex-grow-1">
+                            <section
+                                data-glpi-form-editor-form-details
+                                data-glpi-form-editor-on-click="set-active"
+                                aria-label="{{ __("Form details") }}"
+                            >
+                                {# Card containing the main form data: title, header and status #}
+                                <div class="card form-details">
+                                    <div
+                                        class="card-status-start bg-primary"
+                                        data-glpi-form-editor-active-form-status-indicator
+                                    ></div>
+                                    <div class="card-body">
 
-                                    {# Header #}
-                                    <div class="d-flex">
-                                        {# Form's name #}
-                                        <input
-                                            title="{{ __("Form name") }}"
-                                            type="text"
-                                            class="form-control content-editable-h1"
-                                            name="name"
-                                            value="{{ item.fields.name }}"
-                                            data-glpi-form-editor-form-details-name
-                                        >
-
-                                        {# Form's status #}
-                                        <label class="form-check form-switch ms-3" style="margin-top: 2px">
-                                            <input type="hidden" value="0" name="is_active">
+                                        {# Header #}
+                                        <div class="d-flex">
+                                            {# Form's name #}
                                             <input
-                                                class="form-check-input"
-                                                name="is_active"
-                                                type="checkbox"
-                                                value="1"
-                                                {% if item.fields.is_active %} checked {% endif %}
+                                                title="{{ __("Form name") }}"
+                                                type="text"
+                                                class="form-control content-editable-h1"
+                                                name="name"
+                                                value="{{ item.fields.name }}"
+                                                data-glpi-form-editor-form-details-name
                                             >
-                                            <span class="form-check-label">{{ __("Active") }}</span>
-                                        </label>
-                                    </div>
 
-                                    {# Form's hader #}
-                                    <div class="content-editable-tinymce" data-glpi-form-editor-header-description>
-                                        {{ fields.textareaField(
-                                            'header',
-                                            item.fields.header,
-                                            __('Header'),
-                                            base_field_options|merge({
-                                                'enable_richtext': true,
-                                                'add_body_classes': ['content-editable-tinymce-editor', 'text-muted'],
-                                                'editor_height': "0",
-                                                'rows' : 1,
-                                                'toolbar_location': 'bottom',
-                                                'mb': 'mb-0',
-                                                'aria_label': __("Form description"),
-                                                'placeholder': __("Add a description to your form..."),
-                                            })
-                                        ) }}
+                                            {# Form's status #}
+                                            <label class="form-check form-switch ms-3" style="margin-top: 2px">
+                                                <input type="hidden" value="0" name="is_active">
+                                                <input
+                                                    class="form-check-input"
+                                                    name="is_active"
+                                                    type="checkbox"
+                                                    value="1"
+                                                    {% if item.fields.is_active %} checked {% endif %}
+                                                >
+                                                <span class="form-check-label">{{ __("Active") }}</span>
+                                            </label>
+                                        </div>
+
+                                        {# Form's hader #}
+                                        <div class="content-editable-tinymce" data-glpi-form-editor-header-description>
+                                            {{ fields.textareaField(
+                                                'header',
+                                                item.fields.header,
+                                                __('Header'),
+                                                base_field_options|merge({
+                                                    'enable_richtext': true,
+                                                    'add_body_classes': ['content-editable-tinymce-editor', 'text-muted'],
+                                                    'editor_height': "0",
+                                                    'rows' : 1,
+                                                    'toolbar_location': 'bottom',
+                                                    'mb': 'mb-0',
+                                                    'aria_label': __("Form description"),
+                                                    'placeholder': __("Add a description to your form..."),
+                                                })
+                                            ) }}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </section>
+                            </section>
 
-                        {# Display all questions here #}
-                        <div data-glpi-form-editor-blocks>
-                            {% set number_of_sections = item.getSections()|length %}
-                            {% for section in item.getSections() %}
-                                {{ include('pages/admin/form/form_section.html.twig', {
-                                    'form'                  : item,
-                                    'section'               : section,
-                                    'question_types_manager': question_types_manager,
-                                    'section_index'         : loop.index,
-                                    'can_update'            : item.canUpdate(),
-                                    'show_section_form'     : number_of_sections > 1,
-                                    'number_of_sections'    : number_of_sections,
-                                }, with_context = false) }}
-                            {% endfor %}
+                            {# Display all questions here #}
+                            <div data-glpi-form-editor-blocks>
+                                {% set number_of_sections = item.getSections()|length %}
+                                {% for section in item.getSections() %}
+                                    {{ include('pages/admin/form/form_section.html.twig', {
+                                        'form'                  : item,
+                                        'section'               : section,
+                                        'question_types_manager': question_types_manager,
+                                        'section_index'         : loop.index,
+                                        'can_update'            : item.canUpdate(),
+                                        'show_section_form'     : number_of_sections > 1,
+                                        'number_of_sections'    : number_of_sections,
+                                    }, with_context = false) }}
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3" data-glpi-form-editor-form-extra-details>
+                            {{ include('pages/admin/form/form_toolbar.html.twig', {
+                                'can_update'     : item.canUpdate(),
+                                'form'           : item,
+                                'vertical_layout': true,
+                            }, with_context = false) }}
                         </div>
                     </div>
 
-                    <div class="mb-3" data-glpi-form-editor-form-extra-details>
-                        {{ include('pages/admin/form/form_toolbar.html.twig', {
-                            'can_update'     : item.canUpdate(),
-                            'form'           : item,
-                            'vertical_layout': true,
-                        }, with_context = false) }}
-                    </div>
+                    <section class="col-12 col-lg-4 mt-0 p-0 rounded-0 card-footer border-start border-top-0 ms-auto">
+                        <section
+                            id="glpi-form-properties-accordion"
+                            class="accordion open accordion-flush h-full"
+                            aria-label="Form properties accordion"
+                        >
+                            <section class="accordion-item">
+                                <div class="accordion-header" id="heading-item-properties">
+                                    <button
+                                        class="accordion-button"
+                                        type="button"
+                                        {# Disable collapse while we only have one item #}
+                                        {# data-bs-toggle="collapse"
+                                        data-bs-target="#item-properties"
+                                        aria-expanded="true"
+                                        aria-controls="item-properties" #}
+                                        aria-label="Properties"
+                                    >
+                                        <i class="ti ti-alert-circle item-icon"></i>
+                                        <span class="item-title">Form properties</span>
+                                    </button>
+                                </div>
+                                <section id="item-properties" class="accordion-collapse collapse show" aria-labelledby="heading-item-properties" data-bs-parent="#glpi-form-properties-accordion">
+                                    <div class="accordion-body d-flex flex-column">
+                                        <script>
+                                            function renderLayoutTemplateResult(data) {
+                                                const icons = {{ enum('Glpi\\Form\\RenderLayout').cases|map((case) => {(case.value): case.getIcon()})|reduce((carry, item) => carry|merge(item), {})|json_encode|raw }};
+
+                                                return $(`<span class="w-full d-flex align-items-center gap-2" title="${data.text}""><i class="${icons[data.id]}"></i>${data.text}</span>`);
+                                            }
+
+                                            function renderLayoutTemplateSelection(data) {
+                                                return renderLayoutTemplateResult(data).addClass('flex-row-reverse');
+                                            }
+                                        </script>
+
+                                        {{ fields.dropdownArrayField(
+                                            'render_layout',
+                                            item.fields.render_layout,
+                                            enum('Glpi\\Form\\RenderLayout').cases|map((case) => {(case.value): case.getLabel()})|reduce((carry, item) => carry|merge(item), {}),
+                                            __('Render layout'),
+                                            {
+                                                'is_horizontal' : false,
+                                                'full_width'    : true,
+                                                'templateSelection': 'renderLayoutTemplateSelection',
+                                                'templateResult': 'renderLayoutTemplateResult',
+                                                'add_field_attribs': {
+                                                    'data-fix-dropdown-flex': '',
+                                                },
+                                            }
+                                        ) }}
+
+                                        {% set visibility_dropdown_field = include('pages/admin/form/submit_button_conditional_visibility_dropdown.html.twig', {
+                                                'item'      : item,
+                                            }, with_context = false) %}
+
+                                        {{ fields.field(
+                                            '',
+                                            visibility_dropdown_field,
+                                            __('Conditional visibility for submit button'),
+                                            {
+                                                'is_horizontal' : false,
+                                                'full_width'    : true,
+                                            }
+                                        ) }}
+                                    </div>
+                                </section>
+                            </section>
+                        </section>
+                    </section>
                 </div>
             </div>
         </div>
@@ -208,11 +281,6 @@
                 <span class="d-none d-xl-block">{{ __("Save and preview") }}</span>
             </button>
         </div>
-
-        {# Visibility dropdown #}
-        {{ include('pages/admin/form/submit_button_conditional_visibility_dropdown.html.twig', {
-            'item'      : item,
-        }, with_context = false) }}
 
         {# Move to trashbin form action #}
         {% if item.canDelete() %}

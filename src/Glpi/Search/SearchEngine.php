@@ -37,7 +37,6 @@ namespace Glpi\Search;
 
 use AllAssets;
 use CommonDBTM;
-use CommonGLPI;
 use CommonITILObject;
 use CommonITILTask;
 use CommonITILValidation;
@@ -48,7 +47,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Debug\Profiler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Features\TreeBrowse;
+use Glpi\Features\TreeBrowseInterface;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\Input\QueryBuilder;
 use Glpi\Search\Input\SearchInputInterface;
@@ -375,7 +374,6 @@ final class SearchEngine
             $p['start'] = 0;
         }
 
-        /** @var SearchInputInterface $search_input_class */
         $search_input_class = self::getSearchInputClass($p);
         $p = $search_input_class::cleanParams($p);
 
@@ -587,7 +585,7 @@ final class SearchEngine
      * The parameters are handled as follows:
      * - The $_GET or $get array is passed to the search input class to be parsed and have some default values set.
      * - The returned parameters are then merged with the $params array. Anything set in both arrays will be overwritten by the result of {@link SearchInputInterface::manageParams()}.
-     * @param class-string<CommonGLPI> $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      * @param array $params Array of options:
      *                       - (bool) init_session_data - default: false
      * @return void
@@ -605,7 +603,6 @@ final class SearchEngine
             $_SESSION['glpisearch'][$itemtype]['criteria'] = $params['criteria'];
         }
 
-        /** @var SearchInputInterface $search_input_class */
         $search_input_class = self::getSearchInputClass($params);
         $params = array_merge($params, $search_input_class::manageParams($itemtype, $_GET));
 
@@ -625,8 +622,9 @@ final class SearchEngine
         }
 
         $params = $output::prepareInputParams($itemtype, $params);
-        if ((int) $params['browse'] === 1 && Toolbox::hasTrait($itemtype, TreeBrowse::class)) {
-            $itemtype::showBrowseView($itemtype, $params);
+        $item = getItemForItemtype($itemtype);
+        if ((int) $params['browse'] === 1 && $item instanceof TreeBrowseInterface) {
+            $item::showBrowseView($itemtype, $params);
         } else {
             self::showOutput($itemtype, $params);
         }

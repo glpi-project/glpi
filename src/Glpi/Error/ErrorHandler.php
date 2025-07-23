@@ -88,6 +88,16 @@ final class ErrorHandler extends BaseErrorHandler
         LogLevel::DEBUG     => 7,
     ];
 
+    /**
+     * Indicates whether the error messages should be buffered instead of being displayed immediately.
+     */
+    private static bool $is_buffer_active = true;
+
+    /**
+     * @var list<array{error_label: string, message: string, log_level: string}>
+     */
+    private static array $buffered_messages = [];
+
     private static LoggerInterface $currentLogger;
 
     public function __construct(LoggerInterface $logger)
@@ -106,6 +116,19 @@ final class ErrorHandler extends BaseErrorHandler
 
         $this->configureErrorReporting();
         $this->disableNativeErrorDisplaying();
+    }
+
+    /**
+     * Disable the message buffer and flush the messages present in the buffer.
+     */
+    public static function disableBufferAndFlushMessages(): void
+    {
+        self::$is_buffer_active = false;
+
+        foreach (self::$buffered_messages as $key => $message_specs) {
+            self::displayErrorMessage($message_specs['error_label'], $message_specs['message'], $message_specs['log_level']);
+            unset(self::$buffered_messages[$key]);
+        }
     }
 
     /**
@@ -132,6 +155,15 @@ final class ErrorHandler extends BaseErrorHandler
      */
     public static function displayErrorMessage(string $error_label, string $message, string $log_level): void
     {
+        if (self::$is_buffer_active) {
+            self::$buffered_messages[] = [
+                'error_label' => $error_label,
+                'message'     => $message,
+                'log_level'   => $log_level,
+            ];
+            return;
+        }
+
         foreach (self::getOutputHandlers() as $handler) {
             if ($handler->canOutput()) {
                 $handler->displayErrorMessage($error_label, $message, $log_level);

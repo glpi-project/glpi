@@ -60,10 +60,15 @@
         </div>
     {% endif %}
 
-    {{ fields.textareaField('glpinetwork_registration_key', registration_key, __('Registration key'), {
-        full_width: true,
-        rows: 10
-    }) }}
+    {{ fields.passwordField(
+        'glpinetwork_registration_key',
+        registration_key,
+        __('Registration key'),
+        {
+            full_width: true,
+            'is_disclosable': true,
+        }
+    ) }}
 
     {% if registration_key is not empty %}
         {% if informations['validation_message'] is not empty %}

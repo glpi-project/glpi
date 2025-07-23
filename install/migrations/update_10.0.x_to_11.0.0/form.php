@@ -32,6 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\json_decode;
+use function Safe\json_encode;
 
 /**
  * @var DBmysql $DB
@@ -315,6 +317,24 @@ foreach ($fields as $field) {
     }
 }
 
+$fields = ['enable_helpdesk_home_search_bar', 'enable_helpdesk_service_catalog'];
+foreach ($fields as $field) {
+    if (!$DB->fieldExists("glpi_entities", $field)) {
+        $migration->addField(
+            'glpi_entities',
+            $field,
+            "tinyint NOT NULL DEFAULT -2"
+        );
+        $migration->addPostQuery(
+            $DB->buildUpdate(
+                'glpi_entities',
+                [$field => 1],
+                ['id' => 0]
+            )
+        );
+    }
+}
+
 if (!$DB->fieldExists('glpi_forms_forms', 'uuid')) {
     $migration->addField(
         'glpi_forms_forms',
@@ -377,6 +397,17 @@ if (!$DB->fieldExists('glpi_forms_questions', 'validation_conditions')) {
     );
 }
 
+if (!$DB->fieldExists('glpi_forms_forms', 'render_layout')) {
+    $migration->addField(
+        'glpi_forms_forms',
+        'render_layout',
+        "varchar(30) NOT NULL DEFAULT ''",
+        [
+            'after' => 'is_pinned',
+        ]
+    );
+}
+
 // Change the type of the 'answers' field in glpi_forms_answerssets
 $migration->changeField(
     'glpi_forms_answerssets',
@@ -401,3 +432,55 @@ $migration->addCrontask(
     DAY_TIMESTAMP,
     param: 7
 );
+
+// Data format for ValidationField has changed
+if ($DB->tableExists('glpi_forms_destinations_formdestinations')) {
+    $iterator = $DB->request(['FROM' => 'glpi_forms_destinations_formdestinations']);
+    foreach ($iterator as $data) {
+        $config = json_decode($data['config'] ?? '[]', true) ?? [];
+        $validation_field_key = 'glpi-form-destination-commonitilfield-validationfield';
+
+        // If 'strategies' key is not set, skip this entry
+        // We probably already migrated it
+        if (!isset($config[$validation_field_key]['strategies'])) {
+            continue;
+        }
+
+        $strategies                       = $config[$validation_field_key]['strategies'] ?? [];
+        $specific_actors                  = $config[$validation_field_key]['specific_actors'] ?? [];
+        $specific_question_ids            = $config[$validation_field_key]['specific_question_ids'] ?? [];
+        $specific_validationtemplates_ids = $config[$validation_field_key]['specific_validationtemplates_ids'] ?? [];
+
+        $strategy_configs = [];
+        foreach ($strategies as $strategy) {
+            // Convert strategy to enum value safely
+            $strategy_value = match ($strategy) {
+                'no_validation'    => 'no_validation',
+                'specific_values'  => 'specific_values',
+                'specific_actors'  => 'specific_actors',
+                'specific_answers' => 'specific_answers',
+                default            => 'no_validation' // Default to no validation for unknown strategies
+            };
+
+            $strategy_configs[] = [
+                'strategy'                        => $strategy_value,
+                'specific_validationtemplate_ids' => $specific_validationtemplates_ids,
+                'specific_question_ids'           => $specific_question_ids,
+                'specific_actors'                 => $specific_actors,
+                'specific_validationstep_id'      => 0,
+            ];
+        }
+
+        // Build the hardcoded structure that would be produced by ValidationFieldConfig::jsonSerialize()
+        $config[$validation_field_key] = [
+            'strategy_configs' => $strategy_configs,
+        ];
+
+        // Update the config field
+        $DB->update(
+            'glpi_forms_destinations_formdestinations',
+            ['config' => json_encode($config)],
+            ['id' => $data['id']]
+        );
+    }
+}

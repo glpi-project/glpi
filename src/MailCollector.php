@@ -38,12 +38,15 @@ use Laminas\Mail\Address;
 use Laminas\Mail\Header\AbstractAddressList;
 use Laminas\Mail\Header\ContentDisposition;
 use Laminas\Mail\Header\ContentType;
+use Laminas\Mail\Header\MessageId;
 use Laminas\Mail\Storage;
 use Laminas\Mail\Storage\AbstractStorage;
 use Laminas\Mail\Storage\Exception\InvalidArgumentException;
 use Laminas\Mail\Storage\Folder;
+use Laminas\Mail\Storage\Folder\FolderInterface;
 use Laminas\Mail\Storage\Message;
 use Laminas\Mail\Storage\Part;
+use Laminas\Mail\Storage\Writable\WritableInterface;
 use LitEmoji\LitEmoji;
 use Psr\Log\LoggerInterface;
 use Safe\Exceptions\IconvException;
@@ -296,6 +299,9 @@ class MailCollector extends CommonDBTM
         try {
             $this->connect();
             $connected = true;
+            if (!$this->storage instanceof FolderInterface) {
+                throw new RuntimeException("This mailbox do not support listing folders");
+            }
             foreach ($this->storage->getFolders() as $folder) {
                 $folders[] = $this->extractFolderData($folder);
             }
@@ -495,7 +501,7 @@ class MailCollector extends CommonDBTM
                     if (isset($rejected[$head['message_id']])) {
                         if ($action == 1) {
                             $tkt = $collector->buildTicket(
-                                $uid,
+                                (string) $uid,
                                 $message,
                                 [
                                     'mailgates_id' => $mailcollector_id,
@@ -525,7 +531,7 @@ class MailCollector extends CommonDBTM
                             $folder = self::REFUSED_FOLDER;
                         }
                         //Delete email
-                        if ($collector->deleteMails($uid, $folder)) {
+                        if ($collector->deleteMails((string) $uid, $folder)) {
                             $rejectedmail = new NotImportedEmail();
                             $rejectedmail->delete(['id' => $rejected[$head['message_id']]['id']]);
                         }
@@ -1362,7 +1368,7 @@ class MailCollector extends CommonDBTM
 
         $reply_to_addr = $this->getEmailFromHeader($message, 'reply-to');
 
-        $date         = date("Y-m-d H:i:s", strtotime($message->date));
+        $date         = date("Y-m-d H:i:s", strtotime($message->getHeader('date', 'string')));
         $mail_details = [];
 
         // Construct to and cc arrays
@@ -1393,9 +1399,10 @@ class MailCollector extends CommonDBTM
             $subject = '';
         }
 
-        $message_id = $message->getHeaders()->has('message-id')
-            ? $message->getHeader('message-id')->getFieldValue()
-            : 'MISSING_ID_' . sha1($message->getHeaders()->toString());
+        $message_id = $this->getMessageIdFromHeaders($message);
+        if ($message_id === null) {
+            $message_id = 'MISSING_ID_' . sha1($message->getHeaders()->toString());
+        }
 
         $mail_details = [
             'from'       => Toolbox::strtolower($sender_email),
@@ -1736,6 +1743,10 @@ class MailCollector extends CommonDBTM
         if (!empty($folder) && isset($this->fields[$folder]) && !empty($this->fields[$folder])) {
             $name = mb_convert_encoding($this->fields[$folder], "UTF7-IMAP", "UTF-8");
             try {
+                if (!$this->storage instanceof WritableInterface) {
+                    throw new RuntimeException("This mailbox do not support moving messages");
+                }
+
                 $this->storage->moveMessage($this->storage->getNumberByUniqueId($uid), $name);
                 return true;
             } catch (Throwable $e) {
@@ -2079,16 +2090,43 @@ TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_l
     }
 
     /**
+     * Retrieve the message ID from headers.
+     * If multiple matching headers are found, the first one parsed as a {@link MessageId} is returned.
+     * @param Message $message
+     * @return string|null
+     */
+    private function getMessageIdFromHeaders(Message $message): ?string
+    {
+        $message_id = null;
+        if ($message->getHeaders()->has('message-id')) {
+            $message_id_headers = $message->getHeaders()->get('message-id');
+            if ($message_id_headers instanceof ArrayIterator) {
+                // In cases of multiple headers, we will try taking the first MessageId.
+                // Some systems may send a non-standard MessageId header which becomes a GenericHeader along with Message-ID which becomes MessageId
+                foreach ($message_id_headers as $mid_header) {
+                    if ($mid_header instanceof MessageId) {
+                        $message_id = $mid_header->getFieldValue();
+                        break;
+                    }
+                }
+            } else {
+                $message_id = $message_id_headers->getFieldValue();
+            }
+        }
+        return $message_id;
+    }
+
+    /**
      * Check if message was sent by current instance of GLPI and corresponds to a notification related to an ITIL object.
      */
     private function isItilNotificationFromSelf(Message $message): bool
     {
-        if (!$message->getHeaders()->has('message-id')) {
+        $message_id = $this->getMessageIdFromHeaders($message);
+        if ($message_id === null) {
             // Messages sent by GLPI now have always a message-id header.
             return false;
         }
 
-        $message_id = $message->getHeader('message-id')->getFieldValue();
         $matches = $this->extractValuesFromRefHeader($message_id);
 
         if ($matches === null) {

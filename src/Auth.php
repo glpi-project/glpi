@@ -977,7 +977,12 @@ class Auth extends CommonGLPI
                                 $login_password,
                                 $this->user->fields["auths_id"]
                             );
-                            if ($this->user_ldap_error === false && !$this->auth_succeded && !$this->user_found) {
+                            // PHPstan thinks $this->auth_succeded is always true because it is checking in a previous
+                            // condition.
+                            // It seems dangerous to remove it because $this is passed to AuthLDAP::tryLdapAuth right
+                            // before this code, which mean the auth_succeded property could be modified.
+                            // Keep this phpstan-ignore instruction until this code is improved to avoid risky behavior like this.
+                            if ($this->user_ldap_error === false && !$this->auth_succeded && !$this->user_found) { // @phpstan-ignore booleanNot.alwaysTrue
                                 $search_params = [
                                     'name'     => $login_name,
                                     'authtype' => static::LDAP,
@@ -1151,7 +1156,7 @@ class Auth extends CommonGLPI
         // Log Event (if possible)
         if (!$DB->isSlave()) {
             // GET THE IP OF THE CLIENT
-            $ip = getenv("HTTP_X_FORWARDED_FOR") ?? getenv("REMOTE_ADDR");
+            $ip = getenv("HTTP_X_FORWARDED_FOR") ?: getenv("REMOTE_ADDR");
 
             if ($this->auth_succeded) {
                 //TRANS: %1$s is the login of the user and %2$s its IP address

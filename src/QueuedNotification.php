@@ -655,7 +655,7 @@ class QueuedNotification extends CommonDBTM
      * @return integer either 0 or 1
      * @used-by CronTask
      **/
-    public static function cronQueuedNotificationClean($task = null)
+    public static function cronQueuedNotificationClean(?CronTask $task = null)
     {
         /** @var DBmysql $DB */
         global $DB;
@@ -683,12 +683,12 @@ class QueuedNotification extends CommonDBTM
     /**
      * Cron action on queued notification: clean stale ajax notification queue
      *
-     * @param CommonDBTM $task for log (default NULL)
+     * @param CronTask $task for log (default NULL)
      *
      * @return integer either 0 or 1
      * @used-by CronTask
      **/
-    public static function cronQueuedNotificationCleanStaleAjax($task = null)
+    public static function cronQueuedNotificationCleanStaleAjax(?CronTask $task = null)
     {
         /**
          * @var array $CFG_GLPI
@@ -720,32 +720,6 @@ class QueuedNotification extends CommonDBTM
 
         $task->setVolume($vol);
         return ($vol > 0 ? 1 : 0);
-    }
-
-    /**
-     * Force sending all mails in queue for a specific item
-     *
-     * @param string  $itemtype item type
-     * @param integer $items_id id of the item
-     *
-     * @return void
-     **/
-    public static function forceSendFor($itemtype, $items_id)
-    {
-        if (!empty($itemtype) && !empty($items_id)) {
-            $pendings = self::getPendings(
-                limit: 1,
-                extra_where: [
-                    'itemtype'  => $itemtype,
-                    'items_id'  => $items_id,
-                ]
-            );
-
-            foreach ($pendings as $mode => $data) {
-                $eventclass = Notification_NotificationTemplate::getModeClass($mode, 'event');
-                $eventclass::send($data);
-            }
-        }
     }
 
     /**

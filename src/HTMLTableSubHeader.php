@@ -36,7 +36,7 @@
 /**
  * @since 0.84
  **/
-class HTMLTableSubHeader extends HTMLTableHeader
+class HTMLTableSubHeader extends HTMLTableHeader implements HTMLCompositeTableInterface
 {
     // The headers of each column
     private $header;
@@ -71,7 +71,8 @@ class HTMLTableSubHeader extends HTMLTableHeader
         $subheader_name = $this->getName();
     }
 
-    public function getCompositeName()
+    #[Override]
+    public function getCompositeName(): string
     {
         return $this->header->getCompositeName() . $this->getName();
     }

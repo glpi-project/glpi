@@ -234,11 +234,10 @@ class Webhook extends CommonDBTM implements FilterableInterface
                     ]
                 );
             case 'event':
-                /**
-                 * @var array $list_itemtype
-                 * @phpstan-var array<class-string<CommonDBTM>, string> $list_itemtype
-                 */
                 $recursive_search = static function ($list_itemtype) use (&$recursive_search) {
+                    /**
+                     * @var array<class-string<CommonDBTM>, string> $list_itemtype
+                     */
                     $events = [];
                     foreach ($list_itemtype as $itemtype => $itemtype_label) {
                         if (is_array($itemtype_label)) {
@@ -763,6 +762,10 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        if (!$item instanceof self) {
+            throw new RuntimeException("This tab is only available for Webhooks items");
+        }
+
         $headers_count = count($item->fields['custom_headers']);
         if ($headers_count > 0) {
             // If there are custom headers, we will include the static ones in the count.
@@ -1052,7 +1055,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
                 'query' => ['crc_token' => self::getSignature($body, $secret)],
             ]);
 
-            if ($response->getStatusCode() == 200 && $response->getBody()) {
+            if ($response->getStatusCode() == 200) {
                 $response_challenge = $response->getBody()->getContents();
                 //check response
                 if ($response_challenge == hash_hmac('sha256', self::getSignature($body, $secret), $secret)) {

@@ -80,7 +80,6 @@ if (
                         'use_notification' => $_POST["use_notif"],
                     ];
                     // Fix rand value
-                    $options['rand'] = $rand;
                     if ($withemail) {
                         $options['toupdate'] = [
                             'value_fieldname' => 'value',
@@ -108,8 +107,7 @@ if (
                     $options['toupdate'] = $toupdate;
                 }
 
-                $rand = User::dropdown($options);
-
+                User::dropdown($options);
 
                 // Display active tickets for a tech
                 // Need to update information on dropdown changes
@@ -125,10 +123,10 @@ if (
                     echo "<br><span id='notif_user_$rand'>";
                     if ($withemail) {
                         echo __s('Email followup') . '&nbsp;';
-                        $rand = Dropdown::showYesNo('_itil_' . $_POST["actortype"] . '[use_notification]', $_POST["use_notif"]);
+                        Dropdown::showYesNo('_itil_' . $_POST["actortype"] . '[use_notification]', $_POST["use_notif"]);
                         echo '<br>';
                         printf(
-                            __('%1$s: %2$s'),
+                            __s('%1$s: %2$s'),
                             _sn('Email', 'Emails', 1),
                             "<input type='text' size='25' name='_itil_" . htmlescape($_POST["actortype"]) .
                             "[alternative_email]'>"
@@ -165,7 +163,7 @@ if (
                     ];
                 }
 
-                $rand = Group::dropdown($param);
+                Group::dropdown($param);
 
                 if (
                     ($_POST["itemtype"] == Ticket::class)
@@ -192,8 +190,6 @@ if (
                         'typefield'   => "supplier",
                         'use_notification' => $_POST["use_notif"],
                     ];
-                    // Fix rand value
-                    $options['rand']     = $rand;
                     if ($withemail) {
                         $options['toupdate'] = [
                             'value_fieldname' => 'value',
@@ -214,7 +210,8 @@ if (
                     $options['toupdate'] = $toupdate;
                 }
 
-                $rand = Supplier::dropdown($options);
+                Supplier::dropdown($options);
+
                 // Display active tickets for a supplier
                 // Need to update information on dropdown changes
                 if ($_POST["itemtype"] == 'Ticket') {
@@ -225,10 +222,10 @@ if (
                     echo "<br><span id='notif_supplier_$rand'>";
                     if ($withemail) {
                         echo __s('Email followup') . '&nbsp;';
-                        $rand = Dropdown::showYesNo('_itil_' . $_POST["actortype"] . '[use_notification]', $_POST['use_notif']);
+                        Dropdown::showYesNo('_itil_' . $_POST["actortype"] . '[use_notification]', $_POST['use_notif']);
                         echo '<br>';
                         printf(
-                            __('%1$s: %2$s'),
+                            __s('%1$s: %2$s'),
                             _sn('Email', 'Emails', 1),
                             "<input type='text' size='25' name='_itil_" . htmlescape($_POST["actortype"]) .
                             "[alternative_email]'>"

@@ -69,14 +69,17 @@ $dashboard = new Dashboard($_REQUEST['dashboard'] ?? "");
 
 switch ($_POST['action'] ?? null) {
     case 'save_new_dashboard':
+        header("Content-Type: application/json; charset=UTF-8");
+
         if (!Session::haveRight('dashboard', CREATE)) {
             throw new AccessDeniedHttpException();
         }
 
-        echo $dashboard->saveNew(
+        $key = $dashboard->saveNew(
             $_POST['title']   ?? "",
             $_POST['context'] ?? ""
         );
+        echo json_encode($key);
         return;
 
     case 'save_items':
@@ -106,11 +109,14 @@ switch ($_POST['action'] ?? null) {
         return;
 
     case 'delete_dashboard':
+        header("Content-Type: application/json; charset=UTF-8");
+
         if (!$dashboard->canDeleteCurrent()) {
             throw new AccessDeniedHttpException();
         }
 
-        echo $dashboard->delete(['key' => $_POST['dashboard']]);
+        $success = $dashboard->delete(['key' => $_POST['dashboard']]);
+        echo json_encode($success);
         return;
 
     case 'set_last_dashboard':
@@ -119,6 +125,8 @@ switch ($_POST['action'] ?? null) {
         return;
 
     case 'clone_dashboard':
+        header("Content-Type: application/json; charset=UTF-8");
+
         if (!Session::haveRight('dashboard', CREATE) || !$dashboard->canViewCurrent()) {
             throw new AccessDeniedHttpException();
         }
@@ -137,11 +145,13 @@ switch ($_POST['action'] ?? null) {
 
 switch ($_GET['action'] ?? null) {
     case 'get_filter_data':
+        header("Content-Type: application/json; charset=UTF-8");
+
         if (!$dashboard->canViewCurrent()) {
             throw new AccessDeniedHttpException();
         }
 
-        echo $dashboard->getFilter();
+        echo $dashboard->getFilter(); // `Dashboard::getFilter()` already returns a JSON encoded string.
         return;
 }
 
@@ -200,12 +210,13 @@ switch ($_REQUEST['action']) {
         break;
 
     case 'get_cards':
+        header("Content-Type: application/json; charset=UTF-8");
+
         if (!$dashboard->canViewCurrent() && !$embed) {
             throw new AccessDeniedHttpException();
         }
 
         Session::writeClose();
-        header("Content-Type: application/json; charset=UTF-8");
         $cards = $request_data['cards'];
         unset($request_data['cards']);
         $result = [];

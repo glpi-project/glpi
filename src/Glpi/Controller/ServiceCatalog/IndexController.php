@@ -34,7 +34,9 @@
 
 namespace Glpi\Controller\ServiceCatalog;
 
+use Entity;
 use Glpi\Controller\AbstractController;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\ServiceCatalog\ItemRequest;
 use Glpi\Form\ServiceCatalog\ServiceCatalog;
@@ -42,6 +44,7 @@ use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
 use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyEnum;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
+use RuntimeException;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -67,10 +70,24 @@ final class IndexController extends AbstractController
     )]
     public function __invoke(Request $request): Response
     {
+        $session = Session::getCurrentSessionInfo();
         $parameters = new FormAccessParameters(
             session_info: Session::getCurrentSessionInfo(),
             url_parameters: $request->query->all()
         );
+
+        // Make sure service catalog is enabled
+        if ($session === null) {
+            throw new AccessDeniedHttpException();
+        }
+        $entity = Entity::getById($session->getCurrentEntityId());
+        if (!$entity) {
+            // Safety check, will never happen but help with static analysis.
+            throw new RuntimeException("Cant load current entity");
+        }
+        if (!$entity->isServiceCatalogEnabled()) {
+            throw new AccessDeniedHttpException();
+        }
 
         $item_request = new ItemRequest(
             access_parameters: $parameters,

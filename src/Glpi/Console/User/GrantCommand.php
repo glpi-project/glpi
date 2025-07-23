@@ -38,6 +38,7 @@ use DBmysql;
 use Entity;
 use Profile;
 use Profile_User;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -120,7 +121,7 @@ class GrantCommand extends AbstractUserCommand
             $profiles[$row['id']] = $row['name'];
         }
 
-        $helper = $this->getHelper('question');
+        $helper = new QuestionHelper();
         $question = new ChoiceQuestion(Profile::getTypeName(1), $profiles);
         return $helper->ask($input, $output, $question);
     }
