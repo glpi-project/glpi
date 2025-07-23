@@ -1745,7 +1745,7 @@ class SLMTest extends DbTestCase
         // OLA change are recomputed from the current date so we need to set
         // glpi_currenttime to get predictable results
         $calendar = getItemByTypeName('Calendar', 'Default', true);
-        $this->setCurrentTime('13:00:00', '2034-08-16');
+        $this->setCurrentTime('2034-08-16 13:00:00');
 
         // Create test SLM
         $slm = $this->createItem(\SLM::class, [
@@ -2296,7 +2296,7 @@ class SLMTest extends DbTestCase
         }
 
         // -- act : associate both OLA TTO to a ticket
-        $this->setCurrentTime('10:00:00', '2025-05-26');
+        $this->setCurrentTime('2025-05-26 10:00:00');
         $ticket = $this->createTicket([
             '_la_update' => true,
             '_olas_id' => [$ola_1->getID(), $ola_2->getID()],
@@ -2311,7 +2311,7 @@ class SLMTest extends DbTestCase
 
         // go 70 minutes forward, so esaclation level is reached
         // @todoseb tester avant le delai pour voir l'état - doit être cohérent avec comportement précédent (ou pas, à voir)
-        $this->setCurrentTime('11:10:00', '2025-05-26');
+        $this->setCurrentTime('2025-05-26 11:10:00');
 
         // -- assert : levels should be in olalevels_tickets
         $levels_todo = (new OlaLevel_Ticket())->find(['tickets_id' => $ticket->getID()]);
@@ -2341,7 +2341,7 @@ class SLMTest extends DbTestCase
 
         // OLA change are recomputed from the current date so we need to set
         // glpi_currenttime to get predictable results
-        $this->setCurrentTime('13:00:00', '2034-08-16');
+        $this->setCurrentTime('2034-08-16 13:00:00');
 
         // Create a calendar with working hours from 8 a.m. to 7 p.m. Monday to Friday
         $calendar = $this->createItem(\Calendar::class, ['name' => __FUNCTION__ . ' 1']);
@@ -2449,7 +2449,7 @@ class SLMTest extends DbTestCase
         $this->updateItem(Ticket::class, $ticket->getID(), [
             'status' => Ticket::WAITING,
         ]);
-        $this->setCurrentTime('13:10:00', '2034-08-16');
+        $this->setCurrentTime('2034-08-16 13:10:00');
         $this->updateItem(Ticket::class, $ticket->getID(), [
             'status' => Ticket::INCOMING,
         ]);
@@ -2599,8 +2599,7 @@ class SLMTest extends DbTestCase
         $sla = $this->createSLA(sla_type: SLM::TTO)['sla'];
         $ticket = $this->createTicket(['slas_id_tto' => $sla->getID()]);
         // assert due time is set correctly
-        $initial_expected_due_time = $now->add($this->getDefaultSlaTtoDelayInterval());
-        $initial_expected_due_time_str = $initial_expected_due_time->format('Y-m-d H:i:s');
+        $initial_expected_due_time_str = $now->add($this->getDefaultSlaTtoDelayInterval())->format('Y-m-d H:i:s');
         assert($initial_expected_due_time_str === $ticket->fields['time_to_own'], 'SLA TTO Due time should be set to the current date + TTO delay interval.');
 
         // act - update ticket date
@@ -2619,8 +2618,7 @@ class SLMTest extends DbTestCase
         $sla = $this->createSLA(sla_type: SLM::TTR)['sla'];
         $ticket = $this->createTicket(['slas_id_ttr' => $sla->getID()]);
         // assert due time is set correctly
-        $initial_expected_due_time = $now->add($this->getDefaultSlaTtrDelayInterval());
-        $initial_expected_due_time_str = $initial_expected_due_time->format('Y-m-d H:i:s');
+        $initial_expected_due_time_str = $now->add($this->getDefaultSlaTtrDelayInterval())->format('Y-m-d H:i:s');
         assert($initial_expected_due_time_str === $ticket->fields['time_to_resolve'], 'SLA TTR Due time should be set to the current date + TTR delay interval.');
 
         // act - update ticket date
