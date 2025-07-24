@@ -45,6 +45,7 @@ use Glpi\Console\Traits\TelemetryActivationTrait;
 use Glpi\Progress\ConsoleProgressIndicator;
 use Glpi\System\Requirement\DbConfiguration;
 use GLPIKey;
+use LogicException;
 use mysqli;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\QuestionHelper;
@@ -159,7 +160,7 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!$output instanceof ConsoleOutputInterface) {
-            throw new \LogicException('This command accepts only an instance of "ConsoleOutputInterface".');
+            throw new LogicException('This command accepts only an instance of "ConsoleOutputInterface".');
         }
 
         $default_language = $input->getOption('default-language');

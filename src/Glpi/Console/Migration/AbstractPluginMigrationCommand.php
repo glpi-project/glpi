@@ -39,6 +39,7 @@ use Glpi\Console\AbstractCommand;
 use Glpi\Console\Traits\PluginMigrationTrait;
 use Glpi\Migration\AbstractPluginMigration;
 use Glpi\Progress\ConsoleProgressIndicator;
+use LogicException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -80,7 +81,7 @@ abstract class AbstractPluginMigrationCommand extends AbstractCommand
         global $PHPLOGGER;
 
         if (!$output instanceof ConsoleOutputInterface) {
-            throw new \LogicException('This command accepts only an instance of "ConsoleOutputInterface".');
+            throw new LogicException('This command accepts only an instance of "ConsoleOutputInterface".');
         }
 
         $migration = $this->getMigration();

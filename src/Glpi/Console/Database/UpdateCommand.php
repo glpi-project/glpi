@@ -47,6 +47,7 @@ use Glpi\System\Requirement\DatabaseTablesEngine;
 use Glpi\Toolbox\DatabaseSchema;
 use Glpi\Toolbox\VersionParser;
 use GLPIKey;
+use LogicException;
 use Migration;
 use Override;
 use Session;
@@ -154,7 +155,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!$output instanceof ConsoleOutputInterface) {
-            throw new \LogicException('This command accepts only an instance of "ConsoleOutputInterface".');
+            throw new LogicException('This command accepts only an instance of "ConsoleOutputInterface".');
         }
 
         $allow_unstable = $input->getOption('allow-unstable');
