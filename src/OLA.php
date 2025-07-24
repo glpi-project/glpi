@@ -53,7 +53,6 @@ class OLA extends LevelAgreement
         if ($_olas_id === []) {
             return [SLM::TTR => [],SLM::TTO =>  []];
         }
-        // @todoseb faire test
         $_ola = new static();
         $all_ids_ttr = array_column($_ola->find(['type' => SLM::TTR]), 'id');
         $all_ids_tto = array_column($_ola->find(['type' => SLM::TTO]), 'id');
@@ -252,7 +251,8 @@ class OLA extends LevelAgreement
             $ticket->isDeleted() ||
             $ticket->fields['status'] == CommonITILObject::CLOSED ||
             $ticket->fields['status'] == CommonITILObject::SOLVED ||
-            ($olaType == SLM::TTO && $ticket->fields['takeintoaccount_delay_stat'] > 0)
+//            (!is_null($this->fields['end_time'])) // td ne plus s'appuyer sur takeintoaccount_delay_stat, s'appuyer sur end_time
+            ($olaType == SLM::TTO && $ticket->fields['takeintoaccount_delay_stat'] > 0) // @todo ne plus s'appuyer sur takeintoaccount_delay_stat, s'appuyer sur end_time
         ) {
             return false;
         }
