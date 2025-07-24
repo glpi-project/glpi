@@ -38,9 +38,13 @@ namespace Glpi\Inventory\MainAsset;
 
 use Blacklist;
 use RuleDefineItemtypeCollection;
+use stdClass;
 
 class Itemtype extends MainAsset
 {
+    /**
+     * @param stdClass $data
+     */
     public function __construct($data)
     {
         $namespaced = explode('\\', static::class);

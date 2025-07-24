@@ -50,6 +50,7 @@ use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Throwable;
@@ -157,6 +158,9 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if (!$output instanceof ConsoleOutputInterface) {
+            throw new \LogicException('This command accepts only an instance of "ConsoleOutputInterface".');
+        }
 
         $default_language = $input->getOption('default-language');
         $force            = $input->getOption('force');

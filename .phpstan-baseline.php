@@ -38,12 +38,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/smtp_oauth2_callback.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$expression of class Glpi\\\\DBAL\\\\QueryExpression constructor expects string, true given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_10.0.16_to_10.0.17/tree_dropdowns.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of method Migration\\:\\:addCrontask\\(\\) expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -584,28 +578,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$output of class Glpi\\\\Progress\\\\ConsoleProgressIndicator constructor expects Symfony\\\\Component\\\\Console\\\\Output\\\\ConsoleOutputInterface, Symfony\\\\Component\\\\Console\\\\Output\\\\OutputInterface given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$output of class Glpi\\\\Progress\\\\ConsoleProgressIndicator constructor expects Symfony\\\\Component\\\\Console\\\\Output\\\\ConsoleOutputInterface, Symfony\\\\Component\\\\Console\\\\Output\\\\OutputInterface given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Match expression does not handle remaining value\\: mixed$#',
 	'identifier' => 'match.unhandled',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$output of class Glpi\\\\Progress\\\\ConsoleProgressIndicator constructor expects Symfony\\\\Component\\\\Console\\\\Output\\\\ConsoleOutputInterface, Symfony\\\\Component\\\\Console\\\\Output\\\\OutputInterface given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/AbstractPluginMigrationCommand.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Console\\\\Migration\\\\RacksPluginToCoreCommand\\:\\:getImportErrorsVerbosity\\(\\) is unused\\.$#',
@@ -686,18 +662,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$loader of class Symfony\\\\Component\\\\DependencyInjection\\\\Loader\\\\Configurator\\\\ContainerConfigurator constructor expects Symfony\\\\Component\\\\DependencyInjection\\\\Loader\\\\PhpFileLoader, Symfony\\\\Component\\\\Config\\\\Loader\\\\LoaderInterface\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/DependencyInjection/PluginContainer.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$form of class Glpi\\\\Form\\\\Condition\\\\Engine constructor expects Glpi\\\\Form\\\\Form, CommonDBTM\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/AnswersHandler/AnswersHandler.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$callback of function array_filter expects \\(callable\\(int\\|string\\)\\: bool\\)\\|null, Closure\\(mixed\\)\\: \\(0\\|1\\) given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -764,12 +728,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Conf.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$data of class Glpi\\\\Inventory\\\\MainAsset\\\\Itemtype constructor expects array\\|null, stdClass given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Inventory.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$replace of function str_replace expects array\\<string\\>\\|string, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -794,12 +752,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Output/ExportSearchOutput.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$writer of class PhpOffice\\\\PhpSpreadsheet\\\\Writer\\\\Ods\\\\Mimetype constructor expects PhpOffice\\\\PhpSpreadsheet\\\\Writer\\\\Ods, PhpOffice\\\\PhpSpreadsheet\\\\Writer\\\\IWriter given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Output/Ods.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset 2 on array\\{string, string, string\\} in isset\\(\\) always exists and is not nullable\\.$#',
 	'identifier' => 'isset.offset',
 	'count' => 1,
@@ -812,18 +764,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Group_User.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$table of class HTMLTableSuperHeader constructor expects HTMLTableMain, \\$this\\(HTMLTableBase\\) given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/HTMLTableBase.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$father of class HTMLTableSuperHeader constructor expects HTMLTableSuperHeader\\|null, HTMLTableHeader\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/HTMLTableBase.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$replace of function str_replace expects array\\<string\\>\\|string, int\\<0, max\\> given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
@@ -834,12 +774,6 @@ $ignoreErrors[] = [
 	'identifier' => 'property.onlyWritten',
 	'count' => 1,
 	'path' => __DIR__ . '/src/HTMLTableGroup.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$row of class HTMLTableCell constructor expects HTMLTableHeader, \\$this\\(HTMLTableRow\\) given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/HTMLTableRow.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Property HTMLTableSuperHeader\\:\\:\\$headerSets is never read, only written\\.$#',

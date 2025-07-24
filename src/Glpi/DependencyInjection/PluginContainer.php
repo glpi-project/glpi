@@ -40,6 +40,7 @@ use Glpi\Routing\PluginRoutesLoader;
 use Plugin;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionObject;
+use RuntimeException;
 use Symfony\Component\Config\Builder\ConfigBuilderGenerator;
 use Symfony\Component\Config\Loader\DelegatingLoader;
 use Symfony\Component\Config\Loader\LoaderResolver;
@@ -56,6 +57,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Loader\Psr4DirectoryLoader;
 use Symfony\Component\Routing\Router;
 use UnitEnum;
+use function Sabre\Event\Loop\instance;
 
 class PluginContainer implements ContainerInterface
 {
@@ -196,8 +198,13 @@ class PluginContainer implements ContainerInterface
         $loader = new DelegatingLoader($resolver);
 
         $file = (new ReflectionObject($this->kernel))->getFileName();
-        /* @var PhpFileLoader $kernelLoader */
         $kernelLoader = $loader->getResolver()->resolve($file);
+
+        // Should never happen in theory but it helps with static analysis
+        if (!$kernelLoader instanceof PhpFileLoader) {
+            throw new RuntimeException();
+        }
+
         $instanceof = Closure::bind(fn&() => $this->instanceof, $kernelLoader, $kernelLoader)();
         $configurator = new ContainerConfigurator($container, $kernelLoader, $instanceof, $file, $file, $this->kernel->getEnvironment());
 
