@@ -303,7 +303,7 @@ class APIRest extends API
                             $this->messageRightError();
                         }
                         $document->getAsResponse()->send();
-                        exit();
+                        exit(); // @phpstan-ignore glpi.forbidExit (API response is streamed)
                     }
 
                     if ($id !== false) {
@@ -649,7 +649,7 @@ class APIRest extends API
             header("$key: $value");
         }
 
-        http_response_code($httpcode);
+        http_response_code($httpcode); // @phpstan-ignore glpi.forbidHttpResponseCode (API response is streamed)
         $this->header($this->debug);
 
         if ($response !== null) {
@@ -669,7 +669,7 @@ class APIRest extends API
         } else {
             echo $json;
         }
-        exit();
+        exit(); // @phpstan-ignore glpi.forbidExit (API response is streamed)
     }
 
 
@@ -688,6 +688,6 @@ class APIRest extends API
         } elseif ($this->format == "json") {
             echo file_get_contents(GLPI_ROOT . '/' . $file);
         }
-        exit();
+        exit(); // @phpstan-ignore glpi.forbidExit (API response is streamed)
     }
 }
