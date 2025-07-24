@@ -450,15 +450,15 @@ HTML;
         }
 
         $out = '';
-        $out .= "<div class='pswp-img{$p['rand']} {$p['gallery_item_class']}' itemscope itemtype='http://schema.org/ImageGallery'>";
+        $out .= "<div class='pswp-img" . htmlescape($p['rand']) . " " . htmlescape($p['gallery_item_class']) . "' itemscope itemtype='http://schema.org/ImageGallery'>";
         foreach ($imgs as $img) {
             if (!isset($img['thumbnail_src'])) {
                 $img['thumbnail_src'] = $img['src'];
             }
             $out .= "<figure itemprop='associatedMedia' itemscope itemtype='http://schema.org/ImageObject'>";
-            $out .= "<a href='{$img['src']}' itemprop='contentUrl' data-index='0'>";
-            $width_attr = isset($img['thumbnail_w']) ? "width='{$img['thumbnail_w']}'" : "";
-            $height_attr = isset($img['thumbnail_h']) ? "height='{$img['thumbnail_h']}'" : "";
+            $out .= "<a href='" . htmlescape($img['src']) . "' itemprop='contentUrl' data-index='0'>";
+            $width_attr = isset($img['thumbnail_w']) ? "width='" . ((int) $img['thumbnail_w']) . "'" : "";
+            $height_attr = isset($img['thumbnail_h']) ? "height='" . ((int) $img['thumbnail_h']) . "'" : "";
             $out .= "<img src='" . htmlescape($img['thumbnail_src']) . "' itemprop='thumbnail' loading='lazy' {$width_attr} {$height_attr}>";
             $out .= "</a>";
             $out .= "</figure>";

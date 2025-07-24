@@ -5109,7 +5109,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
      */
     public static function getStatusIcon($status)
     {
-        $class = static::getStatusClass($status);
+        $class = htmlescape(static::getStatusClass($status));
         $label = htmlescape(static::getStatus($status));
         return "<i class='$class me-1' title='$label' data-bs-toggle='tooltip'></i>";
     }
@@ -6484,7 +6484,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
      *
      * @param $id                 Integer  ID of the object
      * @param $options            array of options
-     *      output_type            : Default output type (see Search class / default Search::HTML_OUTPUT)
      *      row_num                : row num used for display
      *      type_for_massiveaction : itemtype for massive action
      *      id_for_massaction      : default 0 means no massive action
@@ -6498,7 +6497,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
 
         //Toolbox::deprecated('Use CommonITILObject::getDatatableEntries() instead');
         $p = [
-            'output_type'            => Search::HTML_OUTPUT,
             'row_num'                => 0,
             'type_for_massiveaction' => 0,
             'id_for_massiveaction'   => 0,
@@ -6536,95 +6534,87 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
             $check_col = '';
             if (
                 ($candelete || $canupdate)
-                && ($p['output_type'] == Search::HTML_OUTPUT)
                 && $p['id_for_massiveaction']
             ) {
                 $check_col = Html::getMassiveActionCheckBox($p['type_for_massiveaction'], $p['id_for_massiveaction']);
             }
-            echo Search::showItem($p['output_type'], $check_col, $item_num, $p['row_num'], $align);
+            echo Search::showItem(Search::HTML_OUTPUT, $check_col, $item_num, $p['row_num'], $align);
 
             // First column ID
-            echo Search::showItem($p['output_type'], $item->fields["id"], $item_num, $p['row_num'], $align);
+            echo Search::showItem(Search::HTML_OUTPUT, (string) $item->getID(), $item_num, $p['row_num'], $align);
 
             // Second column TITLE
-            $second_column = "<span class='b'>" . $item->getName() . "</span>&nbsp;";
-            if ($p['output_type'] == Search::HTML_OUTPUT && $item->canViewItem()) {
+            $second_column = "<span class='b'>" . htmlescape($item->getName()) . "</span>&nbsp;";
+            if ($item->canViewItem()) {
                 $second_column  = sprintf(
-                    __('%1$s (%2$s)'),
-                    "<a id='" . $item->getType() . $item->fields["id"] . "$rand' href=\"" . $item->getLinkURL() . "\">$second_column</a>",
+                    __s('%1$s (%2$s)'),
+                    "<a id='" . htmlescape($item::class . $item->getID() . $rand) . "' href=\"" . htmlescape($item->getLinkURL()) . "\">$second_column</a>",
                     sprintf(
-                        __('%1$s - %2$s'),
+                        __s('%1$s - %2$s'),
                         $item->numberOfFollowups($showprivate),
                         $item->numberOfTasks($showprivate)
                     )
                 );
                 $second_column = sprintf(
-                    __('%1$s %2$s'),
+                    __s('%1$s %2$s'),
                     $second_column,
                     Html::showToolTip(
                         RichText::getEnhancedHtml($item->fields['content']),
-                        ['display' => false,
-                            'applyto' => $item->getType() . $item->fields["id"] .
-                        $rand,
+                        [
+                            'display' => false,
+                            'applyto' => $item->getType() . $item->fields["id"] . $rand,
                         ]
                     )
                 );
             }
-            echo Search::showItem($p['output_type'], $second_column, $item_num, $p['row_num'], $align);
+            echo Search::showItem(Search::HTML_OUTPUT, $second_column, $item_num, $p['row_num'], $align);
 
             // third column
-            if ($p['output_type'] == Search::HTML_OUTPUT) {
-                $third_col = static::getStatusIcon($item->fields["status"]);
-            } else {
-                $third_col = static::getStatus($item->fields["status"]);
-            }
-            echo Search::showItem($p['output_type'], $third_col, $item_num, $p['row_num'], $align);
+            $third_col = static::getStatusIcon($item->fields["status"]);
+            echo Search::showItem(Search::HTML_OUTPUT, $third_col, $item_num, $p['row_num'], $align);
 
 
             // fourth column
             if ($item->fields['status'] == static::CLOSED) {
                 $fourth_col = sprintf(
                     __('Closed on %s'),
-                    ($p['output_type'] == Search::HTML_OUTPUT ? '<br>' : '') .
                     Html::convDateTime($item->fields['closedate'])
                 );
             } elseif ($item->fields['status'] == static::SOLVED) {
                 $fourth_col = sprintf(
                     __('Solved on %s'),
-                    ($p['output_type'] == Search::HTML_OUTPUT ? '<br>' : '') .
                     Html::convDateTime($item->fields['solvedate'])
                 );
             } elseif ($item->fields['begin_waiting_date']) {
                 $fourth_col = sprintf(
                     __('Put on hold on %s'),
-                    ($p['output_type'] == Search::HTML_OUTPUT ? '<br>' : '') .
                     Html::convDateTime($item->fields['begin_waiting_date'])
                 );
             } elseif ($item->fields['time_to_resolve']) {
                 $fourth_col = sprintf(
                     __('%1$s: %2$s'),
                     __('Time to resolve'),
-                    ($p['output_type'] == Search::HTML_OUTPUT ? '<br>' : '') .
                     Html::convDateTime($item->fields['time_to_resolve'])
                 );
             } else {
                 $fourth_col = sprintf(
                     __('Opened on %s'),
-                    ($p['output_type'] == Search::HTML_OUTPUT ? '<br>' : '') .
                     Html::convDateTime($item->fields['date'])
                 );
             }
-            echo Search::showItem($p['output_type'], $fourth_col, $item_num, $p['row_num'], $align . " width=130");
+            $fourth_col = htmlescape($fourth_col);
+
+            echo Search::showItem(Search::HTML_OUTPUT, $fourth_col, $item_num, $p['row_num'], $align . " width=130");
 
             // fifth column
-            $fifth_col = Html::convDateTime($item->fields["date_mod"]);
-            echo Search::showItem($p['output_type'], $fifth_col, $item_num, $p['row_num'], $align . " width=90");
+            $fifth_col = htmlescape(Html::convDateTime($item->fields["date_mod"]));
+            echo Search::showItem(Search::HTML_OUTPUT, $fifth_col, $item_num, $p['row_num'], $align . " width=90");
 
             // sixth column
             if (count($_SESSION["glpiactiveentities"]) > 1) {
-                $sixth_col = Dropdown::getDropdownName('glpi_entities', $item->fields['entities_id']);
+                $sixth_col = htmlescape(Dropdown::getDropdownName('glpi_entities', $item->fields['entities_id']));
                 echo Search::showItem(
-                    $p['output_type'],
+                    Search::HTML_OUTPUT,
                     $sixth_col,
                     $item_num,
                     $p['row_num'],
@@ -6634,8 +6624,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
 
             // seventh Column
             echo Search::showItem(
-                $p['output_type'],
-                "<span class='b'>" . static::getPriorityName($item->fields["priority"]) . "</span>",
+                Search::HTML_OUTPUT,
+                "<span class='b'>" . htmlescape(static::getPriorityName($item->fields["priority"])) . "</span>",
                 $item_num,
                 $p['row_num'],
                 "$align bgcolor='$bgcolor'"
@@ -6647,7 +6637,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
                 $user = new User();
                 if ($user->getFromDB($d["users_id"])) {
                     $eighth_col .= sprintf(
-                        __('%1$s %2$s'),
+                        __s('%1$s %2$s'),
                         "<span class='b'>" . htmlescape($user->getName()) . "</span>",
                         Html::showToolTip(
                             $user->getInfoCard(),
@@ -6662,11 +6652,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
             }
 
             foreach ($item->getGroups(CommonITILActor::REQUESTER) as $d) {
-                $eighth_col .= Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+                $eighth_col .= htmlescape(Dropdown::getDropdownName("glpi_groups", $d["groups_id"]));
                 $eighth_col .= "<br>";
             }
 
-            echo Search::showItem($p['output_type'], $eighth_col, $item_num, $p['row_num'], $align);
+            echo Search::showItem(Search::HTML_OUTPUT, $eighth_col, $item_num, $p['row_num'], $align);
 
             // ninth column
             $ninth_col = "";
@@ -6679,10 +6669,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
                         $item->getEntityID()
                     ))
                 ) {
-                    $ninth_col .= $anon_name;
+                    $ninth_col .= htmlescape($anon_name);
                 } elseif ($user->getFromDB($d["users_id"])) {
                     $ninth_col .= sprintf(
-                        __('%1$s %2$s'),
+                        __s('%1$s %2$s'),
                         "<span class='b'>" . htmlescape($user->getName()) . "</span>",
                         Html::showToolTip(
                             $user->getInfoCard(),
@@ -6701,18 +6691,18 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
                     Session::getCurrentInterface() == 'helpdesk'
                     && !empty($anon_name = Group::getAnonymizedName($item->getEntityID()))
                 ) {
-                    $ninth_col .= $anon_name;
+                    $ninth_col .= htmlescape($anon_name);
                 } else {
-                    $ninth_col .= Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+                    $ninth_col .= htmlescape(Dropdown::getDropdownName("glpi_groups", $d["groups_id"]));
                 }
                 $ninth_col .= "<br>";
             }
 
             foreach ($item->getSuppliers(CommonITILActor::ASSIGN) as $d) {
-                $ninth_col .= Dropdown::getDropdownName("glpi_suppliers", $d["suppliers_id"]);
+                $ninth_col .= htmlescape(Dropdown::getDropdownName("glpi_suppliers", $d["suppliers_id"]));
                 $ninth_col .= "<br>";
             }
-            echo Search::showItem($p['output_type'], $ninth_col, $item_num, $p['row_num'], $align);
+            echo Search::showItem(Search::HTML_OUTPUT, $ninth_col, $item_num, $p['row_num'], $align);
 
 
             if (!$p['ticket_stats']) {
@@ -6731,12 +6721,12 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
                                     if ($object->getFromDB($val["items_id"])) {
                                         $is_deleted = $object->isDeleted();
 
-                                        $tenth_col .= $object->getTypeName();
+                                        $tenth_col .= htmlescape($object->getTypeName());
                                         $tenth_col .= " - <span class='b'>";
                                         if ($item->canView()) {
                                             $tenth_col .= $object->getLink();
                                         } else {
-                                            $tenth_col .= $object->getNameID();
+                                            $tenth_col .= htmlescape($object->getNameID());
                                         }
                                         $tenth_col .= "</span><br>";
                                     }
@@ -6744,27 +6734,22 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
                             }
                         }
                     } else {
-                        $tenth_col = __('General');
+                        $tenth_col = __s('General');
                     }
 
-                    echo Search::showItem($p['output_type'], $tenth_col, $item_num, $p['row_num'], ($is_deleted ? " class='center deleted' " : $align));
+                    echo Search::showItem(Search::HTML_OUTPUT, $tenth_col, $item_num, $p['row_num'], ($is_deleted ? " class='center deleted' " : $align));
                 }
 
                 // Seventh column
                 echo Search::showItem(
-                    $p['output_type'],
-                    "<span class='b'>" .
-                                    Dropdown::getDropdownName(
-                                        'glpi_itilcategories',
-                                        $item->fields["itilcategories_id"]
-                                    ) .
-                                 "</span>",
+                    Search::HTML_OUTPUT,
+                    "<span class='b'>"
+                        . htmlescape(Dropdown::getDropdownName('glpi_itilcategories', $item->fields["itilcategories_id"]))
+                        . "</span>",
                     $item_num,
                     $p['row_num'],
                     $align
                 );
-
-                $planned_infos = '';
 
                 $plan          = $item->getTaskClassInstance();
                 $items         = [];
@@ -6777,79 +6762,69 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
                         ],
                     ]
                 );
+
+                $planned_info = [];
+
                 foreach ($result as $plan) {
                     if (isset($plan['begin']) && $plan['begin']) {
                         $items[$plan['id']] = $plan['id'];
-                        $planned_infos .= sprintf(
-                            __('From %s') .
-                                            ($p['output_type'] == Search::HTML_OUTPUT ? '<br>' : ''),
-                            Html::convDateTime($plan['begin'])
-                        );
-                        $planned_infos .= sprintf(
-                            __('To %s') .
-                                            ($p['output_type'] == Search::HTML_OUTPUT ? '<br>' : ''),
-                            Html::convDateTime($plan['end'])
-                        );
+
+                        $planned_info[] = htmlescape(sprintf(__('From %s'), Html::convDateTime($plan['begin'])));
+                        $planned_info[] = htmlescape(sprintf(__('To %s'), Html::convDateTime($plan['end'])));
                         if ($plan['users_id_tech']) {
-                            $planned_infos .= sprintf(
-                                __('By %s') .
-                                          ($p['output_type'] == Search::HTML_OUTPUT ? '<br>' : ''),
-                                getUserName($plan['users_id_tech'])
-                            );
+                            $planned_info[] = htmlescape(sprintf(__('By %s'), getUserName($plan['users_id_tech'])));
                         }
-                        $planned_infos .= "<br>";
                     }
                 }
 
-                $eleventh_column = count($items);
-                if ($eleventh_column) {
+                $eleventh_column = '';
+                if (count($items)) {
                     $eleventh_column = "<span class='pointer'
-                                 id='" . $item->getType() . $item->fields["id"] . "planning$rand'>" .
+                                 id='" . htmlescape($item::class . $item->fields["id"]) . "planning$rand'>" .
                                  $eleventh_column . '</span>';
                     $eleventh_column = sprintf(
                         __('%1$s %2$s'),
                         $eleventh_column,
                         Html::showToolTip(
-                            $planned_infos,
-                            ['display' => false,
-                                'applyto' => $item->getType() .
-                                                                              $item->fields["id"] .
-                            "planning" . $rand,
+                            implode('<br>', $planned_info),
+                            [
+                                'display' => false,
+                                'applyto' => $item->getType() . $item->fields["id"] . "planning" . $rand,
                             ]
                         )
                     );
                 }
 
                 echo Search::showItem(
-                    $p['output_type'],
+                    Search::HTML_OUTPUT,
                     $eleventh_column,
                     $item_num,
                     $p['row_num'],
                     $align_desc . " width='150'"
                 );
             } else {
-                echo Search::showItem($p['output_type'], $second_column, $item_num, $p['row_num'], $align_desc . " width='200'");
+                echo Search::showItem(Search::HTML_OUTPUT, $second_column, $item_num, $p['row_num'], $align_desc . " width='200'");
 
                 $takeintoaccountdelay_column = "";
                 // Show only for tickets taken into account
                 if ($item->fields['takeintoaccount_delay_stat'] > 0) {
-                    $takeintoaccountdelay_column = Html::timestampToString($item->fields['takeintoaccount_delay_stat']);
+                    $takeintoaccountdelay_column = htmlescape(Html::timestampToString($item->fields['takeintoaccount_delay_stat']));
                 }
-                echo Search::showItem($p['output_type'], $takeintoaccountdelay_column, $item_num, $p['row_num'], $align_desc . " width='150'");
+                echo Search::showItem(Search::HTML_OUTPUT, $takeintoaccountdelay_column, $item_num, $p['row_num'], $align_desc . " width='150'");
 
                 $solvedelay_column = "";
                 // Show only for solved tickets
                 if ($item->fields['solve_delay_stat'] > 0) {
-                    $solvedelay_column = Html::timestampToString($item->fields['solve_delay_stat']);
+                    $solvedelay_column = htmlescape(Html::timestampToString($item->fields['solve_delay_stat']));
                 }
-                echo Search::showItem($p['output_type'], $solvedelay_column, $item_num, $p['row_num'], $align_desc . " width='150'");
+                echo Search::showItem(Search::HTML_OUTPUT, $solvedelay_column, $item_num, $p['row_num'], $align_desc . " width='150'");
 
-                $waiting_duration_column = Html::timestampToString($item->fields['waiting_duration']);
-                echo Search::showItem($p['output_type'], $waiting_duration_column, $item_num, $p['row_num'], $align_desc . " width='150'");
+                $waiting_duration_column = htmlescape(Html::timestampToString($item->fields['waiting_duration']));
+                echo Search::showItem(Search::HTML_OUTPUT, $waiting_duration_column, $item_num, $p['row_num'], $align_desc . " width='150'");
             }
 
             // Finish Line
-            echo Search::showEndLine($p['output_type']);
+            echo Search::showEndLine(Search::HTML_OUTPUT);
         } else {
             echo "<tr class='tab_bg_2'>";
             echo "<td colspan='6' ><i>" . __s('No item in progress.') . "</i></td></tr>";
@@ -7172,7 +7147,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
                 }
                 $entry['category'] = $category_cache[$item->fields['itilcategories_id']];
 
-                $planned_infos = '';
+                $planned_info = '';
 
                 $plan          = $itemtype::getTaskClassInstance();
                 $items         = [];
@@ -7190,8 +7165,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
                 foreach ($result as $plan) {
                     if (isset($plan['begin']) && $plan['begin']) {
                         $items[$plan['id']] = $plan['id'];
-                        $planned_infos .= htmlescape(sprintf(__('From %s'), Html::convDateTime($plan['begin'])));
-                        $planned_infos .= htmlescape(sprintf(__('To %s'), Html::convDateTime($plan['end'])));
+                        $planned_info .= htmlescape(sprintf(__('From %s'), Html::convDateTime($plan['begin'])));
+                        $planned_info .= htmlescape(sprintf(__('To %s'), Html::convDateTime($plan['end'])));
                         if ($plan['users_id_tech']) {
                             $user = new User();
                             if (!isset($user_cache[$plan["users_id_tech"]]) && $user->getFromDB($plan["users_id_tech"])) {
@@ -7208,9 +7183,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
                                 );
                                 $user_cache[$plan['users_id']] = $user_value;
                             }
-                            $planned_infos .= htmlescape(sprintf(__s('By %s'), $user_cache[$plan['users_id_tech']]));
+                            $planned_info .= htmlescape(sprintf(__('By %s'), $user_cache[$plan['users_id_tech']]));
                         }
-                        $planned_infos .= "<br>";
+                        $planned_info .= "<br>";
                     }
                 }
 
@@ -7220,7 +7195,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
                         __('%1$s %2$s'),
                         $entry['planification'],
                         Html::showToolTip(
-                            $planned_infos,
+                            $planned_info,
                             [
                                 'display' => false,
                                 'applyto' => "{$itemtype}{$item->fields['id']}planning{$rand}",
