@@ -2180,12 +2180,12 @@ HTML;
         foreach (array_keys($values) as $i) {
             if ($params['inhours']) {
                 $day  = 0;
-                $hour = floor($i / HOUR_TIMESTAMP);
+                $hour = (int) floor($i / HOUR_TIMESTAMP);
             } else {
-                $day  = floor($i / DAY_TIMESTAMP);
-                $hour = floor(($i % DAY_TIMESTAMP) / HOUR_TIMESTAMP);
+                $day  = (int) floor($i / DAY_TIMESTAMP);
+                $hour = (int) floor(($i % DAY_TIMESTAMP) / HOUR_TIMESTAMP);
             }
-            $minute     = floor(($i % HOUR_TIMESTAMP) / MINUTE_TIMESTAMP);
+            $minute     = (int) floor(($i % HOUR_TIMESTAMP) / MINUTE_TIMESTAMP);
             if ((int) $minute === 0) {
                 $minute = '00';
             }

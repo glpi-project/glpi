@@ -2601,7 +2601,7 @@ TWIG, $twig_params);
                     'identifier_field'   => $id_field,
                     'user_field'         => $user_field,
                 ],
-                true,
+                self::ACTION_SYNCHRONIZE,
                 $user->fields["auths_id"],
                 $display
             );
@@ -2613,7 +2613,7 @@ TWIG, $twig_params);
      * Import a user from a specific ldap server
      *
      * @param array $params of parameters: method (IDENTIFIER_LOGIN or IDENTIFIER_EMAIL) + value
-     * @param int $action synchoronize (true) or import (false)
+     * @param int $action synchronize (self::ACTION_SYNCHRONIZE) or import (self::ACTION_IMPORT)
      * @param integer $ldap_server ID of the LDAP server to use
      * @param boolean $display display message information on redirect (false by default)
      *

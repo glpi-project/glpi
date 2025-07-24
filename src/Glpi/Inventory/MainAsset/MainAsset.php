@@ -682,7 +682,7 @@ abstract class MainAsset extends InventoryAsset
      *
      * @param integer       $items_id id of the item (0 if new)
      * @param string        $itemtype Item type
-     * @param integer       $rules_id Matched rule id, if any
+     * @param int|null      $rules_id Matched rule id, if any (else null)
      * @param integer|array $ports_id Matched port id, if any
      */
     public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])

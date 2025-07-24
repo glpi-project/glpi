@@ -323,7 +323,7 @@ class Html
             $sign = '- ';
             $time = abs($time);
         }
-        $time = floor($time);
+        $time = (int) floor($time);
 
         // Force display seconds if time is null
         if ($time < MINUTE_TIMESTAMP) {
@@ -420,7 +420,7 @@ class Html
         if ($time < 0) {
             $time = abs($time);
         }
-        $time = floor($time);
+        $time = (int) floor($time);
 
         $units = Toolbox::getTimestampTimeUnits($time);
 
@@ -4022,7 +4022,7 @@ JAVASCRIPT
      * @param string         $target                  page would be open when click on the option (last,previous etc)
      * @param string         $parameters              parameters would be passed on the URL.
      * @param integer|string $item_type_output        item type display - if >0 display export
-     * @param integer|string $item_type_output_param  item type parameter for export
+     * @param integer|array  $item_type_output_param  item type parameter for export
      * @param string         $additional_info         Additional information to display (default '')
      *
      * @return void
@@ -4112,7 +4112,7 @@ JAVASCRIPT
             echo "<form method='GET' action='" . $CFG_GLPI["root_doc"] . "/front/report.dynamic.php'>";
             echo Html::hidden('item_type', ['value' => $item_type_output]);
 
-            if ($item_type_output_param != 0) {
+            if (is_array($item_type_output_param)) {
                 echo Html::hidden(
                     'item_type_param',
                     ['value' => Toolbox::prepareArrayForInput($item_type_output_param)]

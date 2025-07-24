@@ -2092,12 +2092,11 @@ class Session
     /**
      * Return impersonator user id.
      *
-     * @return string|null
+     * @return int|null
      */
     public static function getImpersonatorId()
     {
-
-        return self::isImpersonateActive() ? $_SESSION['impersonator_id'] : null;
+        return self::isImpersonateActive() ? (int) $_SESSION['impersonator_id'] : null;
     }
 
     /**

@@ -356,8 +356,8 @@ class RuleCollection extends CommonDBTM
     /**
      * Replay Collection on DB
      *
-     * @param integer $offset  first row to work on (default 0)
-     * @param float   $maxtime max system time to stop working (default 0)
+     * @param int     $offset  first row to work on (default 0)
+     * @param int     $maxtime max system time to stop working (default 0)
      * @param array   $items   array containing items to replay. If empty -> all
      * @param array   $params  array additional parameters if needed
      *

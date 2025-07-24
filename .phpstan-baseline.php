@@ -38,34 +38,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/smtp_oauth2_callback.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#6 \\$item_type_output_param of static method Html\\:\\:printPager\\(\\) expects int\\|string, array\\<string, mixed\\> given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/stat.location.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#6 \\$item_type_output_param of static method Html\\:\\:printPager\\(\\) expects int\\|string, array\\<string, mixed\\> given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/stat.tracking.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#5 \\$port of class mysqli constructor expects int\\|null, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/install/install.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$expression of class Glpi\\\\DBAL\\\\QueryExpression constructor expects string, true given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/install/migrations/update_10.0.16_to_10.0.17/tree_dropdowns.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$rights of method Migration\\:\\:addRight\\(\\) expects int, array\\<int, int\\> given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/impersonate_right.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of method Migration\\:\\:addCrontask\\(\\) expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
@@ -134,12 +110,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/AuthLDAP.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$action of static method AuthLDAP\\:\\:ldapImportUserByServerId\\(\\) expects int, true given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/AuthLDAP.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$result of function Safe\\\\ldap_get_entries expects LDAP\\\\Result, array given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -174,12 +144,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Calendar_Holiday.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$nb of function _n expects int, float given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 4,
-	'path' => __DIR__ . '/src/Cartridge.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$item of static method CartridgeItem_PrinterModel\\:\\:showForCartridgeItem\\(\\) expects CartridgeItem, CommonGLPI given\\.$#',
@@ -236,18 +200,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDBRelation.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$message_type of static method Session\\:\\:addMessageAfterRedirect\\(\\) expects int, bool given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$length of function array_slice expects int\\|null, float given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDCModelDropdown.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function is_integer\\(\\) with string will always evaluate to false\\.$#',
 	'identifier' => 'function.impossibleType',
 	'count' => 1,
@@ -270,12 +222,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILCost.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$ID of method ITILSolution\\:\\:showForm\\(\\) expects int, null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$ticket of method LevelAgreement\\:\\:addLevelToDo\\(\\) expects Ticket, \\$this\\(CommonITILObject\\) given\\.$#',
@@ -404,18 +350,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DBConnection.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$value of method mysqli\\:\\:options\\(\\) expects int\\|string, true given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBmysql.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#5 \\$port of method mysqli\\:\\:real_connect\\(\\) expects int\\|null, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/DBmysql.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$array of function current expects array\\|object, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -488,12 +422,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Domain_Item.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$nb of function _n expects int, float given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Dropdown.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#7 \\$confirm of static method Html\\:\\:showSimpleForm\\(\\) expects string, array\\<int, string\\> given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -516,12 +444,6 @@ $ignoreErrors[] = [
 	'identifier' => 'method.notFound',
 	'count' => 4,
 	'path' => __DIR__ . '/src/GLPIMailer.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#5 \\$ln of method TCPDF\\:\\:Cell\\(\\) expects int, false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/GLPIPDF.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$parent of method Glpi\\\\Agent\\\\Communication\\\\AbstractRequest\\:\\:addNode\\(\\) expects DOMElement, \\(DOMNode\\|false\\) given\\.$#',
@@ -648,18 +570,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Asset/Capacity/HasNetworkPortCapacity.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$group_id of method Glpi\\\\CalDAV\\\\Backend\\\\Principal\\:\\:canViewGroupObjects\\(\\) expects int, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Principal.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$group_id of method Glpi\\\\CalDAV\\\\Plugin\\\\Acl\\:\\:canViewGroupObjects\\(\\) expects int, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/CalDAV/Plugin/Acl.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$value of static method DBConnection\\:\\:updateConfigProperty\\(\\) expects string, true given\\.$#',
@@ -812,18 +722,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Migration/FormMigration.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$id of static method CommonDBTM\\:\\:getById\\(\\) expects int\\|null, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/AbstractQuestionTypeActors.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$id of static method CommonDBTM\\:\\:getById\\(\\) expects int\\|null, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeUserDevice.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$composite of method Glpi\\\\Form\\\\ServiceCatalog\\\\ServiceCatalogManager\\:\\:hasChildren\\(\\) expects Glpi\\\\Form\\\\ServiceCatalog\\\\ServiceCatalogCompositeInterface\\|null, Glpi\\\\Form\\\\ServiceCatalog\\\\ServiceCatalogItemInterface given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -872,12 +770,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Inventory.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$rules_id of method Glpi\\\\Inventory\\\\MainAsset\\\\MainAsset\\:\\:rulepassed\\(\\) expects int, null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/MainAsset.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$replace of function str_replace expects array\\<string\\>\\|string, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -912,24 +804,6 @@ $ignoreErrors[] = [
 	'identifier' => 'isset.offset',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$time of static method SavedSearch\\:\\:updateExecutionTime\\(\\) expects int, true given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#7 \\$meta of static method Search\\:\\:addWhere\\(\\) expects int, bool given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$entity_restrict of static method User\\:\\:getSqlSearchResult\\(\\) expects int, array given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Group_User.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#4 \\$is_recursive of function getEntitiesRestrictCriteria expects \'auto\'\\|bool, 1 given\\.$#',
@@ -983,18 +857,6 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$string of function str_pad expects string, float\\|int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 3,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$time of static method Toolbox\\:\\:getTimestampTimeUnits\\(\\) expects int, float given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$value of static method Toolbox\\:\\:prepareArrayForInput\\(\\) expects array, int\\<min, \\-1\\>\\|int\\<1, max\\>\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
@@ -1056,12 +918,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Item_DeviceCamera_ImageResolution.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$rand of static method Html\\:\\:getCheckAllAsCheckbox\\(\\) expects int\\|null, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Devices.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#4 \\$delete_all_column of method Item_Devices\\:\\:getTableGroup\\(\\) expects HTMLTableSuperHeader\\|null, HTMLTableHeader\\|null given\\.$#',
@@ -1220,12 +1076,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Link.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$ID of static method User\\:\\:getNameForLog\\(\\) expects int, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Log.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$item of static method Log\\:\\:showForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -1310,12 +1160,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NetworkPort.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$rand of static method Html\\:\\:getCheckAllAsCheckbox\\(\\) expects int\\|null, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkPort.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$item of static method Notepad\\:\\:countForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -1346,24 +1190,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$length of function array_slice expects int\\|null, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTemplate.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$value of function count expects array\\|Countable, Iterator given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/PDU_Rack.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$side of static method PDU_Rack\\:\\:getForRackSide\\(\\) expects int, array\\<int, mixed\\> given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/PDU_Rack.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#4 \\$checkitem of static method Glpi\\\\Asset\\\\Asset_PeripheralAsset\\:\\:getMassiveActionsForItemtype\\(\\) expects CommonDBTM\\|null, CommonGLPI\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -1386,12 +1218,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Phone.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$timestamp of function date expects int\\|null, float given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Planning.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Offset \'plan\' on non\\-empty\\-array in isset\\(\\) always exists and is not nullable\\.$#',
@@ -1478,58 +1304,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/ReservationItem.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$value of static method CommonITILObject\\:\\:getImpactName\\(\\) expects int, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Rule.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$value of static method CommonITILObject\\:\\:getPriorityName\\(\\) expects int, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Rule.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$value of static method CommonITILObject\\:\\:getStatus\\(\\) expects int, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Rule.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$value of static method CommonITILObject\\:\\:getUrgencyName\\(\\) expects int, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Rule.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$value of static method CommonITILValidation\\:\\:getStatus\\(\\) expects int, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Rule.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$value of static method Ticket\\:\\:getTicketTypeName\\(\\) expects int, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Rule.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$id of static method Dropdown\\:\\:getDropdownName\\(\\) expects int, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Rule.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Callable passed to call_user_func\\(\\) invoked with 1 parameter, 0 required\\.$#',
 	'identifier' => 'arguments.count',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleCriteria.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$maxtime of method RuleDictionnaryDropdownCollection\\:\\:replayRulesOnExistingDBForModel\\(\\) expects int, float given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleDictionnaryDropdownCollection.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$items_id of function getAncestorsOf expects array\\|string, int given\\.$#',
@@ -1610,12 +1388,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Stat.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$value of static method CommonITILSatisfaction\\:\\:displaySatisfaction\\(\\) expects int, float given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Stat.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$value of static method Glpi\\\\Search\\\\Output\\\\AbstractSearchOutput\\:\\:showItem\\(\\) expects string\\|null, \\(float\\|int\\) given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -1646,18 +1418,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$max_steps of method Glpi\\\\Progress\\\\AbstractProgressIndicator\\:\\:setMaxSteps\\(\\) expects int, float given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$steps of method Glpi\\\\Progress\\\\AbstractProgressIndicator\\:\\:advance\\(\\) expects int, float given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#3 \\$subject of function Safe\\\\preg_replace expects array\\<string\\>\\|string, float given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -1674,18 +1434,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Transfer.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$max_steps of method Glpi\\\\Progress\\\\AbstractProgressIndicator\\:\\:setMaxSteps\\(\\) expects int, float given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Update.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$steps of method Glpi\\\\Progress\\\\AbstractProgressIndicator\\:\\:advance\\(\\) expects int, float given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 4,
-	'path' => __DIR__ . '/src/Update.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Property Update\\:\\:\\$dbversion is never read, only written\\.$#',

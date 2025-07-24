@@ -34,4 +34,4 @@
 /**
  * @var Migration $migration
  */
-$migration->addRight('user', [User::IMPERSONATE], ['config' => UPDATE]);
+$migration->addRight('user', User::IMPERSONATE, ['config' => UPDATE]);

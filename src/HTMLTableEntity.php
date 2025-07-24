@@ -155,6 +155,7 @@ abstract class HTMLTableEntity
         if (is_array($this->content)) {
             foreach ($this->content as $content) {
                 if (is_string($content)) {
+                    // TODO: __RAND__ is likely no longer used, investigate if this can be safely deleted.
                     // Manage __RAND__ to be computed on display
                     $content = str_replace('__RAND__', mt_rand(), $content);
                     echo $content;

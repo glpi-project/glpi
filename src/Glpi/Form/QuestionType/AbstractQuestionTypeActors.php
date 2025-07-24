@@ -154,7 +154,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
 
             $actor_parts = explode('-', $actor);
             $itemtype = getItemtypeForForeignKeyField($actor_parts[0]);
-            $item_id = $actor_parts[1];
+            $item_id = (int) $actor_parts[1];
 
             // Check if the itemtype is allowed
             if (!in_array($itemtype, $this->getAllowedActorTypes())) {

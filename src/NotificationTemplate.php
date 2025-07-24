@@ -391,7 +391,7 @@ class NotificationTemplate extends CommonDBTM
                             }
 
                             if (isset($out[2][$id]) && $out[2][$id]) {
-                                $foreachvalues = array_slice($foreachvalues, 0, $out[2][$id]);
+                                $foreachvalues = array_slice($foreachvalues, 0, (int) $out[2][$id]);
                             } else {
                                 $foreachvalues = array_slice($foreachvalues, 0, 1);
                             }

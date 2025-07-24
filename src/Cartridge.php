@@ -891,9 +891,9 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
             if ($nb_pages_printed === 0) {
                 $nb_pages_printed = 1;
             }
-            $time_stock = round($stock_time / $number / 60 / 60 / 24 / 30.5, 1);
+            $time_stock = (int) round($stock_time / $number / 60 / 60 / 24 / 30.5);
             $avg_stock = __('Average time in stock') . "\n" . $time_stock . " " . _n('month', 'months', $time_stock);
-            $time_use = round($use_time / $number / 60 / 60 / 24 / 30.5, 1);
+            $time_use = (int) round($use_time / $number / 60 / 60 / 24 / 30.5);
             $avg_use = __('Average time in use') . "\n" . $time_use . " " . _n('month', 'months', $time_use);
             $avg_pages = __('Average number of printed pages') . "\n" . round($pages_printed / max($nb_pages_printed, 1));
             $footers = [['', '', '', $avg_stock, '', $avg_use, $avg_pages]];
@@ -1194,9 +1194,9 @@ TWIG, ['printer_id' => $printer->getID()]);
             $columns['pages_printed'] = __('Printed pages');
 
             if ($number > 0) {
-                $time_stock = round($stock_time / $number / 60 / 60 / 24 / 30.5, 1);
+                $time_stock = (int) round($stock_time / $number / 60 / 60 / 24 / 30.5);
                 $avg_stock = __('Average time in stock') . "\n" . $time_stock . " " . _n('month', 'months', $time_stock);
-                $time_use = round($use_time / $number / 60 / 60 / 24 / 30.5, 1);
+                $time_use = (int) round($use_time / $number / 60 / 60 / 24 / 30.5);
                 $avg_use = __('Average time in use') . "\n" . $time_use . " " . _n('month', 'months', $time_use);
                 $avg_pages = __('Average number of printed pages') . "\n" . round($pages_printed / max($nb_pages_printed, 1));
                 $footers = [['', '', '', $avg_stock, $avg_use, '', '', $avg_pages]];

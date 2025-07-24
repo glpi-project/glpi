@@ -2266,9 +2266,9 @@ JS
     /**
      * Return a value associated with a pattern associated to a criteria to display it
      *
-     * @param string  $ID        the given criteria
-     * @param integer  $condition condition used
-     * @param ?string  $pattern   the pattern
+     * @param string           $ID        the given criteria
+     * @param integer          $condition condition used
+     * @param string|int|null  $pattern   the pattern
      *
      * @return ?string
      **/
@@ -2307,7 +2307,7 @@ JS
                         );
 
                     case "dropdown":
-                        $addentity = Dropdown::getDropdownName($crit["table"], $pattern);
+                        $addentity = Dropdown::getDropdownName($crit["table"], (int) $pattern);
                         if ($this->isEntityAssign()) {
                             $itemtype = getItemTypeForTable($crit["table"]);
                             $item     = getItemForItemtype($itemtype);
@@ -2345,26 +2345,26 @@ JS
                     case "dropdown_status":
                         if ($this instanceof RuleCommonITILObject) {
                             $itil = $this::getItemtype();
-                            return $itil::getStatus($pattern);
+                            return $itil::getStatus((int) $pattern);
                         } else {
-                            return Ticket::getStatus($pattern);
+                            return Ticket::getStatus((int) $pattern);
                         }
 
                         // no break
                     case "dropdown_priority":
-                        return CommonITILObject::getPriorityName($pattern);
+                        return CommonITILObject::getPriorityName((int) $pattern);
 
                     case "dropdown_urgency":
-                        return CommonITILObject::getUrgencyName($pattern);
+                        return CommonITILObject::getUrgencyName((int) $pattern);
 
                     case "dropdown_impact":
-                        return CommonITILObject::getImpactName($pattern);
+                        return CommonITILObject::getImpactName((int) $pattern);
 
                     case "dropdown_tickettype":
-                        return Ticket::getTicketTypeName($pattern);
+                        return Ticket::getTicketTypeName((int) $pattern);
 
                     case "dropdown_validation_status":
-                        return CommonITILValidation::getStatus($pattern);
+                        return CommonITILValidation::getStatus((int) $pattern);
                 }
             }
         }

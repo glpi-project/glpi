@@ -262,17 +262,17 @@ class DBmysql
             @$this->dbh->real_connect($host, $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault);
         } elseif (intval($hostport[1]) > 0) {
             // Host:port
-            @$this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, $hostport[1]);
+            @$this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, (int) $hostport[1]);
         } else {
             // :Socket
-            @$this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, ini_get('mysqli.default_port'), $hostport[1]);
+            @$this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, (int) ini_get('mysqli.default_port'), $hostport[1]);
         }
 
         if (!$this->dbh->connect_error) {
             $this->setConnectionCharset();
 
             // force mysqlnd to return int and float types correctly (not as strings)
-            $this->dbh->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, true);
+            $this->dbh->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, 1);
 
             $this->dbh->query("SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
 
@@ -355,6 +355,8 @@ class DBmysql
 
     /**
      * Execute a MySQL query
+     *
+     * @phpstan-impure Results will depend on database content.
      *
      * @param string $query Query to execute
      *

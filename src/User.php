@@ -3760,7 +3760,7 @@ HTML;
      *
      * @param boolean         $count            true if execute an count(*) (true by default)
      * @param string|string[] $right            limit user who have specific right (default 'all')
-     * @param integer         $entity_restrict  Restrict to a defined entity (default -1)
+     * @param integer|array   $entity_restrict  Restrict to a defined entity (default -1)
      * @param integer         $value            default value (default 0)
      * @param integer[]       $used             Already used items ID: not to display in dropdown
      * @param string          $search           pattern (default '')
@@ -3788,7 +3788,7 @@ HTML;
 
 
         // No entity define : use active ones
-        if ($entity_restrict < 0) {
+        if (!is_array($entity_restrict) && $entity_restrict < 0) {
             $entity_restrict = $_SESSION["glpiactiveentities"];
         }
 

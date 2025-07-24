@@ -232,12 +232,12 @@ class Update
         $migrations = $this->getMigrationsToDo($current_version, $force_latest);
 
         $number_of_steps = count($migrations);
-        $init_form_weight = round($number_of_steps * 0.1); // 10 % of the update process
-        $init_rules_weight = round($number_of_steps * 0.1); // 10 % of the update process
-        $structure_check_weight = round($number_of_steps * 0.02); // 2 % of the update process
+        $init_form_weight = (int) round($number_of_steps * 0.1); // 10 % of the update process
+        $init_rules_weight = (int) round($number_of_steps * 0.1); // 10 % of the update process
+        $structure_check_weight = (int) round($number_of_steps * 0.02); // 2 % of the update process
         $post_update_weight = 1;
         $cron_config_weight = 1;
-        $generate_keys_weight = round($number_of_steps * 0.02); // 2 % of the update process
+        $generate_keys_weight = (int) round($number_of_steps * 0.02); // 2 % of the update process
         $number_of_steps = count($migrations)
             + $init_form_weight
             + $init_rules_weight

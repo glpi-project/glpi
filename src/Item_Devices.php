@@ -662,7 +662,6 @@ class Item_Devices extends CommonDBRelation
                 'delete all',
                 Html::getCheckAllAsCheckbox(
                     "form_device_action$rand",
-                    '__RAND__'
                 )
             );
             $delete_all_column->setHTMLClass('center');

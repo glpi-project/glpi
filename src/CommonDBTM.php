@@ -4666,7 +4666,7 @@ class CommonDBTM extends CommonGLPI
                                     Session::addMessageAfterRedirect(
                                         $message_text,
                                         true,
-                                        $show_other_messages,
+                                        WARNING,
                                         $show_other_messages
                                     );
                                 }

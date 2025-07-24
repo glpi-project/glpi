@@ -780,7 +780,7 @@ class NetworkPort extends CommonDBChild
         //display table headers
         echo "<tr>";
         if ($canedit) {
-            echo "<td>" . Html::getCheckAllAsCheckbox('mass' . self::class . $rand, '__RAND__') . "</td>";
+            echo "<td>" . Html::getCheckAllAsCheckbox('mass' . self::class . $rand) . "</td>";
         }
         foreach ($dprefs as $dpref) {
             echo "<th>";
