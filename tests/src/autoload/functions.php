@@ -832,11 +832,11 @@ function loadDataset()
 /**
  * Test helper, search an item from its type and name
  * @template T of CommonDBTM
- * @param class-string<T>   $type
- * @param string            $name
- * @param bool              $onlyid
- * @phpstan-return ($onlyid is true ? int : T)
- *      Item of $type class, or its id
+ * @param class-string<T> $type
+ * @param string $name
+ * @param bool $onlyid
+ * @phpstan-return ($onlyid is true ? int : T) Item of $type class, or its id
+ * @return \CommonDBTM|int
  */
 function getItemByTypeName(string $type, string $name, bool $onlyid = false): CommonDBTM|int
 {

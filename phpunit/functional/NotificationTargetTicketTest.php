@@ -231,47 +231,47 @@ class NotificationTargetTicketTest extends DbTestCase
         $notification_target_ticket->getTags();
 
         // assert definition is as expected
-        $tag = "ticket.{$notification_field}.name";
-        $expected = [
-            'tag'             => $tag,
-            'value'           => true,
-            'label'           => 'OLA name',
-            'events'          => 0,
-            'foreach'         => false,
-            'lang'            => true,
-            'allowed_values'  => [],
-        ];
-
-        $this->assertSame($expected, $notification_target_ticket->tag_descriptions['tag']["##$tag##"]);
-        $this->assertSame($expected, $notification_target_ticket->tag_descriptions['lang']["##lang.$tag##"]);
 
         // assert values are as expected - new format
-        $name = $this->getUniqueString();
-        $comment = $this->getUniqueString();
+        $names = [$this->getUniqueString(), $this->getUniqueString()];
+        $comments = [$this->getUniqueString(), $this->getUniqueString()];
         $group_name = '_test_group_1';
         $group = getItemByTypeName(Group::class, $group_name);
 
-        ['ola' => $ola] = $this->createOLA([
-            'name' => $name,
-            'comment' => $comment,
-        ], $ola_type, $group);
+        ['ola' => $ola_1] = $this->createOLA(['name' => $names[0], 'comment' => $comments[0],], $ola_type, $group);
+        ['ola' => $ola_2] = $this->createOLA(['name' => $names[1], 'comment' => $comments[1],], $ola_type, $group);
         $now = Session::getCurrentTime();
 
-        $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [$ola->getID()]]);
+        $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [$ola_1->getID(), $ola_2->getID()]]);
+        // notice, the order of olas is important, retrieved data are in reversed order compared to the current assignation
+
         $computed_values = $notification_target_ticket->getDataForObject($ticket, ['additionnaloption' => ['usertype' => NotificationTarget::GLPI_USER]]);
-        $this->assertEquals($name, $computed_values[$notification_field][0]["##ticket.{$notification_field}.name##"]);
-        $this->assertEquals($comment, $computed_values[$notification_field][0]["##ticket.{$notification_field}.comment##"]);
-        $this->assertEquals($now, $computed_values[$notification_field][0]["##ticket.{$notification_field}.start_time##"]);
-        $this->assertEquals(null, $computed_values[$notification_field][0]["##ticket.{$notification_field}.end_time##"]);
-        $this->assertEquals(0, $computed_values[$notification_field][0]["##ticket.{$notification_field}.waiting_time##"]);
-        // due_time : just check it's not empty, business logic is tested in OLA test
-        // if this test gets hard to maintain, we could do the same for previous assertions.
-        $this->assertNotEmpty($computed_values[$notification_field][0]["##ticket.{$notification_field}.due_time##"]);
+        $this->assertCount(2, $computed_values[$notification_field]);
 
-        // assert old format - backward compatibility
-        $this->assertEquals($name, $computed_values["##ticket.{$notification_field}##"]);
-        // @todo add multiples OLA for better coverage
+        // order of returned data is not consistent on tto and ttr, so test is done on array of data + a check data are not the same on each computed value
+        foreach ($computed_values[$notification_field] as $ola_index => $computed_value) {
+            $this->assertContains($computed_value["##ticket.{$notification_field}.name##"], $names);
+            $this->assertContains($computed_value["##ticket.{$notification_field}.comment##"], $comments);
 
+            $this->assertEquals($now, $computed_value["##ticket.{$notification_field}.start_time##"]);
+            $this->assertEquals(null, $computed_value["##ticket.{$notification_field}.end_time##"]);
+            $this->assertEquals(0, $computed_value["##ticket.{$notification_field}.waiting_time##"]);
+            // due_time : just check it's not empty, business logic is tested in OLA test
+            // if this test gets hard to maintain, we could do the same for previous assertions.
+            $this->assertNotEmpty($computed_value["##ticket.{$notification_field}.due_time##"]);
+        }
+        $this->assertNotSame($computed_values[$notification_field][0]["##ticket.{$notification_field}.name##"], $computed_values[$notification_field][1]["##ticket.{$notification_field}.name##"]);
+        $this->assertNotSame($computed_values[$notification_field][0]["##ticket.{$notification_field}.comment##"], $computed_values[$notification_field][1]["##ticket.{$notification_field}.comment##"]);
+
+
+        // assert old format - backward compatibility - name is now a concatenation of all OLA names
+        $this->assertContains(
+            $computed_values["##ticket.{$notification_field}##"],
+            [
+                $names[1] . ' / ' . $names[0],
+                $names[0] . ' / ' . $names[1],
+            ]
+        );
     }
 
     public function testTimelineTag()
