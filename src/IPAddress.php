@@ -878,7 +878,7 @@ class IPAddress extends CommonDBChild
     /**
      * \brief add value to the address for iterator on addresses
      *
-     * @param integer[] $address   (in and out) the address to increment or decrement
+     * @param (integer|float)[] $address   (in and out) the address to increment or decrement
      * @param integer   $value     the value to add or remove. Must be betwwen -0xffffffff and +0xffffffff
      *
      * @return boolean true if the increment is valid

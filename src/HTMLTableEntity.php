@@ -156,7 +156,7 @@ abstract class HTMLTableEntity
             foreach ($this->content as $content) {
                 if (is_string($content)) {
                     // Manage __RAND__ to be computed on display
-                    $content = str_replace('__RAND__', mt_rand(), $content);
+                    $content = str_replace('__RAND__', (string) mt_rand(), $content);
                     echo $content;
                 } elseif (isset($content['function'])) {
                     $parameters = $content['parameters'] ?? [];
@@ -166,7 +166,7 @@ abstract class HTMLTableEntity
         } else {
             // Manage __RAND__ to be computed on display
             $content = $this->content ?? '';
-            $content = str_replace('__RAND__', mt_rand(), $content);
+            $content = str_replace('__RAND__', (string) mt_rand(), $content);
             echo $content;
         }
     }

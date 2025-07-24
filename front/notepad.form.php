@@ -47,7 +47,7 @@ $note = new Notepad();
 if (isset($_POST['add'])) {
     $note->check(-1, CREATE, $_POST);
 
-    $newID = $note->add($_POST, false);
+    $newID = $note->add($_POST);
     Event::log(
         $newID,
         "notepad",

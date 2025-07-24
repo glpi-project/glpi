@@ -342,7 +342,7 @@ function getTreeValueName($table, $ID, $wholename = "", $level = 0)
  * Get the ancestors of an item in a tree dropdown
  *
  * @param string       $table    Table name
- * @param array|string $items_id The IDs of the items
+ * @param array|int    $items_id The IDs of the items
  *
  * @return array of IDs of the ancestors
  **/
@@ -487,7 +487,7 @@ function formatUserLink(int $id, ?string $login, ?string $realname, ?string $fir
  *                      (default =0)
  *@param $disable_anon   bool  disable anonymization of username.
  *
- *@return string[]|string : username string (realname if not empty and name if realname is empty).
+ *@return ($link is 2 ? array : string) username string (realname if not empty and name if realname is empty).
  *
  * @since 11.0 `$link` parameter is deprecated.
  **/

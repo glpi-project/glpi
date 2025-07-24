@@ -306,7 +306,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
                         $params["manufacturers_id"] = $item->fields["manufacturers_id"];
                         $params["comment"]          = $item->fields["comment"];
                         $output = [];
-                        $output = $softcatrule->processAllRules(null, $output, $params);
+                        $output = $softcatrule->processAllRules([], $output, $params);
                         //Process rules
                         if (
                             isset($output['softwarecategories_id'])
@@ -779,7 +779,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
 
         // Process software's category rules
         $softcatrule = new RuleSoftwareCategoryCollection();
-        $result      = $softcatrule->processAllRules(null, null, $input);
+        $result      = $softcatrule->processAllRules([], [], $input);
 
         if (isset($result['_ignore_import'])) {
             $input["softwarecategories_id"] = 0;
@@ -903,7 +903,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
     {
         $res         = $this->restore(["id" => $ID]);
         $softcatrule = new RuleSoftwareCategoryCollection();
-        $result      = $softcatrule->processAllRules(null, null, $this->fields);
+        $result      = $softcatrule->processAllRules([], [], $this->fields);
 
         if (
             isset($result['softwarecategories_id'])
@@ -1026,12 +1026,13 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
                 $found = false;
 
                 foreach (
-                    $DB->request(
-                        "glpi_softwareversions",
-                        ["softwares_id" => $ID,
+                    $DB->request([
+                        'FROM' => "glpi_softwareversions",
+                        'WHERE' => [
+                            "softwares_id" => $ID,
                             "name"         => $from["name"],
-                        ]
-                    ) as $dest
+                        ],
+                    ]) as $dest
                 ) {
                     // Update version ID on License
                     $DB->update(
@@ -1135,7 +1136,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         // If category was not set by user (when manually adding a user)
         if ($is_dynamic || !isset($input["softwarecategories_id"]) || !$input["softwarecategories_id"]) {
             $softcatrule = new RuleSoftwareCategoryCollection();
-            $result      = $softcatrule->processAllRules(null, null, $input);
+            $result      = $softcatrule->processAllRules([], [], $input);
 
             if (!isset($result['_ignore_import'])) {
                 if (isset($result["softwarecategories_id"])) {

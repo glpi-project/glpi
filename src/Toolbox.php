@@ -3377,7 +3377,7 @@ HTML;
             return 0;
         }
 
-        return strlen(preg_replace('/\d*\./', '', floatval($value)));
+        return strlen(preg_replace('/\d*\./', '', (string) floatval($value)));
     }
 
     /**

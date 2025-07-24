@@ -323,12 +323,18 @@ class NetworkPort extends InventoryAsset
                 continue;
             }
 
+            // Note: phpstan doens't understand that $this->connection_ports is not empty here.
+            // To be fair, the code is very messy with $this being passed inside an array
+            // when calling `$rule->processAllRules`, which then end up modifying `connection_ports`.
+            // This forces us to ignore 3 "argument.type" errors below.
+            // TODO: rewrite this in a better way
+
             $connection_ports = current($this->connection_ports);
-            if (count($connection_ports) == 1) { // single NetworkPort
-                $connections_id = current($connection_ports);
+            if (count($connection_ports) == 1) { // single NetworkPort @phpstan-ignore argument.type
+                $connections_id = current($connection_ports); // @phpstan-ignore argument.type
             } else { // multiple NetworkPorts
                 $networkPort = new GlobalNetworkPort();
-                foreach (array_keys($connection_ports) as $k) {
+                foreach (array_keys($connection_ports) as $k) { // @phpstan-ignore argument.type
                     $networkPort->getFromDB($k);
                     if ($networkPort->fields['logical_number'] > 0) {
                         $connections_id = $k;

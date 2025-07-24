@@ -939,7 +939,7 @@ class Config extends CommonDBTM
     {
 
         $unicity = new FieldUnicity();
-        $unicity->showForm(1, -1);
+        $unicity->showForm(1);
     }
 
 

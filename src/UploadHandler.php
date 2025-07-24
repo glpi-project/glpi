@@ -682,7 +682,7 @@ class UploadHandler
         }
         // Use a timestamp for empty filenames:
         if (!$name) {
-            $name = str_replace('.', '-', microtime(true));
+            $name = str_replace('.', '-', (string) microtime(true));
         }
         return $name;
     }

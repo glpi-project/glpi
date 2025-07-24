@@ -669,7 +669,7 @@ JAVASCRIPT;
      * Return an iterator for all pdu used in a side of a rack
      * @param  Rack      $rack
      * @param  int|array $side Side to target, use an array for multiple sides
-     * @return Iterator
+     * @return DBmysqlIterator
      */
     public static function getForRackSide(Rack $rack, $side)
     {

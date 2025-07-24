@@ -1774,15 +1774,12 @@ final class DbUtils
      *                      (default =0)
      * @param $disable_anon   bool  disable anonymization of username.
      *
-     * @return string[]|string username string (realname if not empty and name if realname is empty).
+     * @return ($link is 2 ? array : string) username string (realname if not empty and name if realname is empty).
      *
      * @since 11.0 `$link` parameter is deprecated.
      */
     public function getUserName($ID, $link = 0, $disable_anon = false)
     {
-        /** @var DBmysql $DB */
-        global $DB;
-
         $username   = "";
         $user       = new User();
         $valid_user = false;
