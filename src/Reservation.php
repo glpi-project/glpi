@@ -483,6 +483,24 @@ class Reservation extends CommonDBChild
         return Session::haveAccessToEntity($item->getEntityID(), $item->isRecursive());
     }
 
+    /**
+     * Have I the right to "purge" the Object
+     *
+     * Allow users to purge their own reservations even without entity access
+     * @since 10.0.21
+     *
+     * @return boolean
+     **/
+    public function canPurgeItem()
+    {
+        // Original user always have right to purge their own reservation
+        if (isset($this->fields['users_id']) && $this->fields['users_id'] === Session::getLoginUserID()) {
+            return true;
+        }
+
+        // Otherwise use the standard entity check
+        return parent::canPurgeItem();
+    }
 
     public function post_purgeItem()
     {
