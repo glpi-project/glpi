@@ -301,7 +301,7 @@ class ProjectCost extends CommonDBChild
          */
         global $CFG_GLPI, $DB;
 
-        $ID = $project->fields['id'];
+        $ID = $project->getID();
 
         if (
             !$project->getFromDB($ID)
@@ -366,50 +366,55 @@ class ProjectCost extends CommonDBChild
             );
 
             foreach ($iterator as $data) {
-                echo "<tr class='tab_bg_2' " .
-                  ($canedit
-                     ? "style='cursor:pointer' onClick=\"viewEditCost" . $data['projects_id'] . "_" .
-                     $data['id'] . "_$rand();\"" : '') . ">";
-                $name = (empty($data['name']) ? sprintf(
-                    __('%1$s (%2$s)'),
-                    $data['name'],
-                    $data['id']
-                )
-                                         : $data['name']);
+                $cost_id = (int) $data['id'];
+                $project_id = (int) $data['projects_id'];
+
+                echo "<tr class='tab_bg_2' "
+                    . ($canedit ? "style='cursor:pointer' onClick=\"viewEditCost" . $project_id . "_" . $cost_id . "_$rand();\"" : '')
+                    . ">";
+
+                $name = empty($data['name'])
+                    ? sprintf(
+                        __('%1$s (%2$s)'),
+                        $data['name'],
+                        $cost_id
+                    )
+                    : $data['name'];
                 echo "<td>";
                 printf(
                     __s('%1$s %2$s'),
-                    $name,
+                    htmlescape($name),
                     Html::showToolTip($data['comment'], ['display' => false])
                 );
                 if ($canedit) {
-                    echo "<script type='text/javascript' >";
-                    echo "function viewEditCost" . $data['projects_id'] . "_" . $data["id"] . "_$rand() {\n";
-                    $params = ['type'         => self::class,
-                        'parenttype'   => 'Project',
-                        'projects_id' => $data["projects_id"],
-                        'id'           => $data["id"],
-                    ];
-                    Ajax::updateItemJsCode(
+                    $js = "function viewEditCost" . $project_id . "_" . $data["id"] . "_$rand() {";
+                    $js .= Ajax::updateItemJsCode(
                         "viewcost" . $ID . "_$rand",
                         $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
-                        $params
+                        [
+                            'type'        => self::class,
+                            'parenttype'  => 'Project',
+                            'projects_id' => $data["projects_id"],
+                            'id'          => $data["id"],
+                            'display'     => false,
+                        ]
                     );
-                    echo "};";
-                    echo "</script>";
+                    $js .=  "};";
+
+                    echo Html::scriptBlock($js);
                 }
                 echo "</td>";
-                echo "<td>" . Html::convDate($data['begin_date']) . "</td>";
-                echo "<td>" . Html::convDate($data['end_date']) . "</td>";
-                echo "<td>" . Dropdown::getDropdownName('glpi_budgets', $data['budgets_id']) . "</td>";
-                echo "<td class='numeric'>" . Html::formatNumber($data['cost']) . "</td>";
-                $total += $data['cost'];
+                echo "<td>" . htmlescape(Html::convDate($data['begin_date'])) . "</td>";
+                echo "<td>" . htmlescape(Html::convDate($data['end_date'])) . "</td>";
+                echo "<td>" . htmlescape(Dropdown::getDropdownName('glpi_budgets', $data['budgets_id'])) . "</td>";
+                echo "<td class='numeric'>" . htmlescape(Html::formatNumber($data['cost'])) . "</td>";
+                $total += (float) $data['cost'];
                 echo "</tr>";
-                Session::addToNavigateListItems(self::class, $data['id']);
+                Session::addToNavigateListItems(self::class, $cost_id);
             }
             echo "<tr class='b noHover'><td colspan='3'>&nbsp;</td>";
             echo "<td class='right'>" . __s('Total cost') . '</td>';
-            echo "<td class='numeric'>" . Html::formatNumber($total) . '</td></tr>';
+            echo "<td class='numeric'>" . htmlescape(Html::formatNumber($total)) . '</td></tr>';
         } else {
             echo "<tr><th colspan='5'>" . __s('No results found') . "</th></tr>";
         }
@@ -419,7 +424,7 @@ class ProjectCost extends CommonDBChild
         $ticketcost = TicketCost::showForObject($project);
         echo "</div>";
         echo "<div class='b'>";
-        printf(__s('%1$s: %2$s'), __('Total cost'), $total + $ticketcost);
+        printf(__s('%1$s: %2$s'), __s('Total cost'), $total + $ticketcost);
         echo "</div>";
 
         return true;

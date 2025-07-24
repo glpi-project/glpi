@@ -663,9 +663,10 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
             $entity_restrict,
             true
         );
-        $rand = Dropdown::show('Software', ['condition' => ['WHERE' => $where]]);
+        $rand = (int) Dropdown::show('Software', ['condition' => ['WHERE' => $where]]);
 
-        $paramsselsoft = ['softwares_id' => '__VALUE__',
+        $paramsselsoft = [
+            'softwares_id' => '__VALUE__',
             'myname'       => $myname,
         ];
 
@@ -676,7 +677,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
             $paramsselsoft
         );
 
-        echo "<span id='show_" . $myname . $rand . "'>&nbsp;</span>\n";
+        echo "<span id='show_" . htmlescape($myname . $rand) . "'>&nbsp;</span>\n";
 
         return $rand;
     }

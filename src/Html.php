@@ -2099,10 +2099,10 @@ TWIG,
         $out  = "<input title='" . __s('Check all as') . "' type='checkbox' class='form-check-input massive_action_checkbox'
                       title='" . __s('Check all as') . "'
                       name='_checkall_$rand' id='checkall_$rand'
-                      onclick= \"if ( checkAsCheckboxes(this, '$container_id', '.massive_action_checkbox')) {return true;}\">";
+                      onclick= \"if ( checkAsCheckboxes(this, '" . htmlescape(jsescape($container_id)) . "', '.massive_action_checkbox')) {return true;}\">";
 
         // permit to shift select checkboxes
-        $out .= Html::scriptBlock("\$(function() {\$('#$container_id input[type=\"checkbox\"]').shiftSelectable();});");
+        $out .= Html::scriptBlock("\$(function() {\$('#" . jsescape($container_id) . " input[type=\"checkbox\"]').shiftSelectable();});");
 
         return $out;
     }
@@ -2215,8 +2215,7 @@ TWIG,
 
         $out .= "<input type='checkbox' class='form-check-input " . htmlescape($params['class']) . "' title=\"" . htmlescape($params['title']) . "\" ";
         if (isset($params['onclick'])) {
-            $params['onclick'] = htmlescape($params['onclick']);
-            $out .= " onclick='{$params['onclick']}'";
+            $out .= " onclick='" . htmlescape($params['onclick']) . "'";
         }
 
         foreach (['id', 'name', 'title', 'value'] as $field) {
@@ -2227,7 +2226,7 @@ TWIG,
 
         $criterion = self::getCriterionForMassiveCheckboxes($params['criterion']);
         if (!empty($criterion)) {
-            $out .= " onClick='massiveUpdateCheckbox(" . json_encode($criterion) . ", this)'";
+            $out .= " onClick='massiveUpdateCheckbox(\"" . htmlescape(jsescape($criterion)) . "\", this)'";
         }
 
         if (!empty($params['massive_tags'])) {
@@ -2256,7 +2255,7 @@ TWIG,
         $out .= ">";
 
         if (!empty($criterion)) {
-            $out .= Html::scriptBlock("\$(function() {\$('$criterion').shiftSelectable();});");
+            $out .= Html::scriptBlock("\$(function() {\$('" . jsescape($criterion) . "').shiftSelectable();});");
         }
 
         return $out;
@@ -3409,9 +3408,7 @@ JS;
             $param['contentid'] = "content" . $param['applyto'];
         }
 
-        $contentid = htmlescape($param['contentid']);
-
-        $out .= "<div id='" . $contentid . "' class='tooltip-invisible'>$content</div>";
+        $out .= "<div id='" . htmlescape($param['contentid']) . "' class='tooltip-invisible'>$content</div>";
         if (!empty($param['popup'])) {
             $out .= Ajax::createIframeModalWindow(
                 'tooltippopup' . $rand,
@@ -3423,23 +3420,22 @@ JS;
             );
         }
 
-        $applyto   = htmlescape($param['applyto']);
 
         $js = "$(function(){";
-        $js .= "$('#$applyto').qtip({
+        $js .= "$('#" . jsescape($param['applyto']) . "').qtip({
          position: { viewport: $(window) },
          content: {";
         if (!is_null($param['url'])) {
             $js .= "
                 ajax: {
-                    url: " . json_encode($CFG_GLPI['root_doc'] . $param['url']) . ",
+                    url: '" . jsescape($CFG_GLPI['root_doc'] . $param['url']) . "',
                     type: 'GET',
                     data: {},
                 },
             ";
         }
 
-        $js .= "text: $('#$contentid')";
+        $js .= "text: $('#" . jsescape($param['contentid']) . "')";
         if (!$param['autoclose']) {
             $js .= ", title: {text: ' ',button: true}";
         }
@@ -5001,7 +4997,6 @@ HTML;
      **/
     public static function scriptBlock($script)
     {
-
         $script = "\n" . '//<![CDATA[' . "\n\n" . $script . "\n\n" . '//]]>' . "\n";
 
         return sprintf('<script type="text/javascript">%s</script>', $script);
@@ -5204,7 +5199,7 @@ HTML;
 
             if ($p['showtitle']) {
                 $display .= "<b>";
-                $display .= sprintf(__s('%1$s (%2$s)'), __s('File(s)'), Document::getMaxUploadSize());
+                $display .= htmlescape(sprintf(__('%1$s (%2$s)'), __('File(s)'), Document::getMaxUploadSize()));
                 $display .= DocumentType::showAvailableTypesLink([
                     'display' => false,
                     'rand'    => $p['rand'],
@@ -5224,7 +5219,7 @@ HTML;
             'editor_id'     => $p['editor_id'],
         ]);
 
-        $max_file_size  = $CFG_GLPI['document_max_size'] * 1024 * 1024;
+        $max_file_size  = ((int) $CFG_GLPI['document_max_size']) * 1024 * 1024;
         $max_chunk_size = round(Toolbox::getPhpUploadSizeLimit() * 0.9); // keep some place for extra data
 
         $required = "";
@@ -5268,10 +5263,10 @@ HTML;
          $('#fileupload{$rand_id}').fileupload({
             dataType: 'json',
             pasteZone: " . ($p['pasteZone'] !== false
-                           ? "$(" . json_encode("#" . $p['pasteZone']) . ")"
+                           ? "$('#" . jsescape($p['pasteZone']) . "')"
                            : "false") . ",
             dropZone:  " . ($p['dropZone'] !== false
-                           ? "$(" . json_encode("#" . $p['dropZone']) . ")"
+                           ? "$('#" . jsescape($p['dropZone']) . "')"
                            : "false") . ",
             acceptFileTypes: " . ($p['onlyimages']
                                     ? "/(\.|\/)(gif|jpe?g|png)$/i"
@@ -5293,8 +5288,8 @@ HTML;
                   data.files, // files as blob
                   data.result._uploader_{$name}, // response from '/ajax/fileupload.php'
                   \"{$name}\",
-                  $(" . json_encode("#" . $p['filecontainer']) . "),
-                  " . json_encode($p['editor_id']) . "
+                  $('#" . jsescape($p['filecontainer']) . "'),
+                  '" . jsescape($p['editor_id']) . "'
                );
                // enable submit button after upload
                $(this).closest('form').find(':submit').prop('disabled', false);
@@ -5327,8 +5322,8 @@ HTML;
                );
             },
             messages: {
-              acceptFileTypes: " . json_encode(__('Filetype not allowed')) . ",
-              maxFileSize: " . json_encode(__('File is too big')) . ",
+              acceptFileTypes: '" . jsescape(__('Filetype not allowed')) . "',
+              maxFileSize: '" . jsescape(__('File is too big')) . "',
             },
             $progressall_js
          });
