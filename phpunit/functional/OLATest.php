@@ -113,7 +113,6 @@ use User;
  *          - delay :
  *              - ttr due time is delayed if the ticket status is WAITING : @see self::testOlaTtrDueTimeIsDelayedWhileTicketStatusIsWaiting
  *              - ttr waiting time is incremented while the ticket status is WAITING : @see self::testOlaTTRWaitingTimeIsIncrementedWhileTicketStatusIsWaiting()
- *              + @todo tests avec autres groupes
  *
  *          - ticket is late if : (business logic extracted from CommonITILObject::generateSLAOLAComputation())*
  *              - tto : (note that takeintoaccountdate is replaced by end_time)
@@ -674,7 +673,7 @@ class OLATest extends DbTestCase
         $this->assertEquals(
             (new DateTime($initial_due_time))->format('Y-m-d H:i:s'),
             $new_due_time,
-            'Le temps d\'échéance (due time) devrait être retardé d\'une heure après passage du ticket de WAITING à un autre statut'
+            'Waiting time should not be incremented while ticket status is WAITING for an OLA TTO.'
         );
     }
 
@@ -1032,5 +1031,24 @@ class OLATest extends DbTestCase
         $ola_data = $ticket->getOlasData()[0];
         $this->assertEquals(0, $ola_data['is_late'], 'OLA should not be late when ticket is WAITING (even if due time is passed and end time is not set)');
 
+    }
+
+    public function testSplitIdsByType(): void
+    {
+        // arrange - create 3 TTO and 5 TTR OLA
+        $ola_tto_to_create = 3;
+        $ola_ttr_to_create = 5;
+        $created_olas_tto_ids = $created_olas_ttr_ids = [];
+        for ($i = 0; $i < $ola_tto_to_create; $i++) {
+            $created_olas_tto_ids[] = $this->createOLA(ola_type: SLM::TTO)['ola']->getID();
+        }
+        for ($i = 0; $i < $ola_ttr_to_create; $i++) {
+            $created_olas_ttr_ids[] = $this->createOLA(ola_type: SLM::TTR)['ola']->getID();
+        }
+
+        // assert
+        [SLM::TTO => $fetched_olas_tto_ids, SLM::TTR => $fetched_olas_ttr_ids] = OLA::splitIdsByType(array_merge($created_olas_tto_ids, $created_olas_ttr_ids));
+        $this->assertEqualsCanonicalizing($created_olas_ttr_ids, $fetched_olas_ttr_ids);
+        $this->assertEqualsCanonicalizing($created_olas_tto_ids, $fetched_olas_tto_ids);
     }
 }
