@@ -892,7 +892,7 @@ class ReportController extends AbstractController
         if (!$param_item) {
             return self::getInvalidParametersErrorResponse([
                 'invalid' => [
-                    'name' => 'field',
+                    ['name' => 'field'],
                 ],
             ]);
         }

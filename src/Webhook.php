@@ -1038,9 +1038,6 @@ class Webhook extends CommonDBTM implements FilterableInterface
      */
     public static function validateCRAChallenge(string $url, string $body, string $secret): array
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         $challenge_response = [];
         $options = [
             'base_uri'        => $url,

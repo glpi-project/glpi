@@ -526,7 +526,7 @@ class Dropdown
      * @param boolean $tooltip      (true by default) returns a tooltip, else returns only 'comment'
      * @param string  $default      default value returned when item not exists
      *
-     * @return string|array the value of the dropdown
+     * @return ($withcomment is true ? array|string : string) the value of the dropdown
      *      The returned `comment` will corresponds to a safe HTML string.
      *
      * @since 11.0.0 Usage of the `$withcomment` parameter is deprecated.

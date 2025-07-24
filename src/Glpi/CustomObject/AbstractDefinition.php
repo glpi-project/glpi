@@ -727,7 +727,7 @@ abstract class AbstractDefinition extends CommonDBTM
         $gettext_language = Language::getById($language);
 
         // compute the formula with the paramater count
-        $formula_to_compute = str_replace('n', $count, $gettext_language->formula);
+        $formula_to_compute = str_replace('n', (string) $count, $gettext_language->formula);
         $category_index_number = eval("return $formula_to_compute;");
 
         // retrieve the category index string (one, few, many, other) based on the index
