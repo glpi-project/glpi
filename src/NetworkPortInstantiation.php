@@ -702,7 +702,7 @@ TWIG, $twig_params);
         }
 
         echo "<input type='hidden' name='NetworkPortConnect_networkports_id_1'value='$ID'>";
-        $rand = Dropdown::showItemTypes('NetworkPortConnect_itemtype', $CFG_GLPI["networkport_types"]);
+        $rand = (int) Dropdown::showItemTypes('NetworkPortConnect_itemtype', $CFG_GLPI["networkport_types"]);
 
         $params = ['itemtype'           => '__VALUE__',
             'entity_restrict'    => Session::getMatchingActiveEntities($p['entity']),

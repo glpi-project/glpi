@@ -4961,9 +4961,9 @@ JAVASCRIPT;
             }
             echo "<td>";
 
-            $link = "<a id='ticket" . htmlescape($job->fields["id"] . $rand) . "' href='" . Ticket::getFormURLWithID($job->fields["id"]);
+            $link = "<a id='ticket" . htmlescape($job->fields["id"] . $rand) . "' href='" . htmlescape(Ticket::getFormURLWithID($job->fields["id"]));
             if ($forcetab != '') {
-                $link .= "&amp;forcetab=" . $forcetab;
+                $link .= "&amp;forcetab=" . htmlescape($forcetab);
             }
             $link   .= "'>";
             $link   .= "<span class='b'>" . htmlescape($job->getNameID()) . "</span></a>";

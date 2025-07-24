@@ -694,14 +694,14 @@ trait PlanningEvent
         $item_fk  = getForeignKeyFieldForItemType(static::getType());
 
         if ($val["users_id"] != Session::getLoginUserID()) {
-            $users_id = "<br>" . sprintf(__('%1$s: %2$s'), __('By'), getUserName($val["users_id"]));
+            $users_id = "<br>" . htmlescape(sprintf(__('%1$s: %2$s'), __('By'), getUserName($val["users_id"])));
             $img      = "rdv_public.png";
         }
 
-        $html .= "<img src='" . $CFG_GLPI["root_doc"] . "/pics/" . $img . "' alt='' title=\"" .
+        $html .= "<img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/" . htmlescape($img) . "' alt='' title=\"" .
              static::getTypeName(1) . "\">&nbsp;";
-        $html .= "<a id='reminder_" . $val[$item_fk] . $rand . "' href='" .
-             Reminder::getFormURLWithID($val[$item_fk]) . "'>";
+        $html .= "<a id='reminder_" . htmlescape($val[$item_fk] . $rand) . "' href='" .
+             htmlescape(Reminder::getFormURLWithID($val[$item_fk])) . "'>";
 
         $html .= $users_id;
         $html .= "</a>";
@@ -715,10 +715,10 @@ trait PlanningEvent
                     Session::getLoginUserID()
                 )
             ) {
-                $recall = "<br><span class='b'>" . sprintf(
+                $recall = "<br><span class='b'>" . htmlescape(sprintf(
                     __('Recall on %s'),
                     Html::convDateTime($pr->fields['when'])
-                ) .
+                )) .
                       "<span>";
             }
         }
@@ -727,12 +727,13 @@ trait PlanningEvent
         $content = $val["text"] . $recall;
 
         if ($complete) {
-            $html .= "<span>" . Planning::getState($val["state"]) . "</span><br>";
+            $html .= "<span>" . htmlescape(Planning::getState($val["state"])) . "</span><br>";
             $html .= "<div class='event-description rich_text_container'>" . $content . "</div>";
         } else {
             $html .= Html::showToolTip(
-                "<span class='b'>" . Planning::getState($val["state"]) . "</span><br>" . $content,
-                ['applyto' => "reminder_" . $val[$item_fk] . $rand,
+                "<span class='b'>" . htmlescape(Planning::getState($val["state"])) . "</span><br>" . $content,
+                [
+                    'applyto' => "reminder_" . $val[$item_fk] . $rand,
                     'display' => false,
                 ]
             );
