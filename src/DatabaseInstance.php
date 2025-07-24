@@ -421,6 +421,9 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
 
         switch ($item->getType()) {
             default:

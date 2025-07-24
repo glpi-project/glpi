@@ -93,7 +93,7 @@ class RuleMatchedLog extends CommonDBTM
 
         if ($item::class === Agent::class) {
             $array_ret[0] = self::createTabEntry(__('Import information'), 0, $item::class);
-        } else {
+        } elseif ($item instanceof CommonDBTM) {
             $continue = true;
 
             switch ($item::class) {
@@ -123,6 +123,8 @@ class RuleMatchedLog extends CommonDBTM
                 $cnt = self::countForItem($item);
                 $array_ret[1] = self::createTabEntry(__('Import information'), $cnt, $item::class);
             }
+        } else {
+            throw new LogicException("Item must be CommonDBTM");
         }
         return $array_ret;
     }

@@ -633,7 +633,17 @@ TWIG, $twig_params);
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
+
         if ($item::class === static::$itemtype_1) {
+            if (
+                !$item instanceof CommonItilObject_Item
+                && !$item instanceof TicketRecurrent
+            ) {
+                throw new LogicException("Item must be CommonItilObject_Item or TicketRecurrent");
+            }
             static::showForObject($item);
         } else {
             static::showListForItem($item, $withtemplate);

@@ -72,6 +72,9 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            return '';
+        }
 
         if (!$withtemplate && Printer::canView()) {
             $nb = 0;
