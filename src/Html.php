@@ -3292,7 +3292,9 @@ JS;
 
         // format dates
         foreach ($options['dates'] as &$data) {
-            $data['date'] = date("Y-m-d H:i:s", $data['timestamp']);
+            $data['date'] = $data['timestamp'] !== null
+                ? date("Y-m-d H:i:s", $data['timestamp'])
+                : null;
         }
 
         // get Html
