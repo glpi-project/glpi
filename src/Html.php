@@ -2092,7 +2092,7 @@ TWIG,
     {
         if ($rand === null) {
             $rand = mt_rand();
-        } else if ($rand !== "__RAND__") {
+        } elseif ($rand !== "__RAND__") {
             $rand = (int) $rand;
         }
 
