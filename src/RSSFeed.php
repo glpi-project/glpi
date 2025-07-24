@@ -824,8 +824,8 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
             || (!$personal && Session::haveRight('rssfeed_public', CREATE))
         ) {
             $output .= "<span class='float-end'>";
-            $output .= "<a href='" . RSSFeed::getFormURL() . "'>";
-            $output .= "<img src='" . $CFG_GLPI["root_doc"] . "/pics/plus.png' alt='" . __s('Add') . "' title=\"" .
+            $output .= "<a href='" . htmlescape(RSSFeed::getFormURL()) . "'>";
+            $output .= "<img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/plus.png' alt='" . __s('Add') . "' title=\"" .
                 __s('Add') . "\"></a></span>";
         }
 
@@ -836,13 +836,13 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
             usort($items, [SimplePie::class, 'sort_items']);
             foreach ($items as $item) {
                 $output .= "<tr class='tab_bg_1'><td>";
-                $output .= Html::convDateTime($item->get_date('Y-m-d H:i:s'));
+                $output .= htmlescape(Html::convDateTime($item->get_date('Y-m-d H:i:s')));
                 $output .= "</td><td>";
                 $feed_link = URL::sanitizeURL($item->feed->get_permalink());
                 if (empty($feed_link)) {
-                    $output .= $item->feed->get_title();
+                    $output .= htmlescape($item->feed->get_title());
                 } else {
-                    $output .= '<a target="_blank" href="' . htmlescape($feed_link) . '">' . $item->feed->get_title() . '</a>';
+                    $output .= '<a target="_blank" href="' . htmlescape($feed_link) . '">' . htmlescape($item->feed->get_title()) . '</a>';
                 }
 
                 $item_link = URL::sanitizeURL($item->get_permalink());
@@ -851,7 +851,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
                 if (!empty($item_link)) {
                     $output .= '<a target="_blank" href="' . htmlescape($item_link) . '">';
                 }
-                $output .= $item->get_title();
+                $output .= htmlescape($item->get_title());
                 if (!empty($item_link)) {
                     $output .= "</a>";
                 }
