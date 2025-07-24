@@ -323,7 +323,7 @@ class Html
             $sign = '- ';
             $time = abs($time);
         }
-        $time = (int) floor($time);
+        $time = floor($time);
 
         // Force display seconds if time is null
         if ($time < MINUTE_TIMESTAMP) {
@@ -420,7 +420,7 @@ class Html
         if ($time < 0) {
             $time = abs($time);
         }
-        $time = (int) floor($time);
+        $time = floor($time);
 
         $units = Toolbox::getTimestampTimeUnits($time);
 
