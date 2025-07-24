@@ -272,7 +272,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
                     array_reverse($cell[$hpos]) // If orientation is rear, reverse the array
                     : $cell[$hpos],
                 0,
-                ((int) ceil($depth)) * 4
+                (int) ceil($depth * 4)
             );
 
             // Check if any of the units is filled
