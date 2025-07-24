@@ -1321,7 +1321,7 @@ TWIG, $twig_params);
         } else {
             $ts = $CFG_GLPI['time_step'] * 60; // passage in minutes
             $time = time() + $ts - 60;
-            $time = floor($time / $ts) * $ts;
+            $time = ((int) floor($time / $ts)) * $ts;
             $begin = date("Y-m-d H:i", $time);
         }
 

@@ -230,7 +230,7 @@ TWIG;
             if (
                 preg_match('/^(?<itemtype>.+)_(?<id>\d+)$/', $device, $device_parts) !== 1
                 || !is_a($device_parts['itemtype'], CommonDBTM::class, true)
-                || $device_parts['itemtype']::getById($device_parts['id']) === false
+                || $device_parts['itemtype']::getById((int) $device_parts['id']) === false
             ) {
                 continue;
             }

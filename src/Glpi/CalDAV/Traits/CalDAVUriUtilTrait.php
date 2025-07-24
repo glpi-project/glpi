@@ -168,12 +168,12 @@ trait CalDAVUriUtilTrait
      *
      * @param string $uri
      *
-     * @return string|null
+     * @return int|null
      */
     protected function getGroupIdFromPrincipalUri($uri)
     {
         $uri_parts = split($uri);
-        return Group::class === $this->getPrincipalItemtypeFromUri($uri) ? $uri_parts[1] : null;
+        return Group::class === $this->getPrincipalItemtypeFromUri($uri) && is_numeric($uri_parts[1]) ? (int) $uri_parts[1] : null;
     }
 
     /**

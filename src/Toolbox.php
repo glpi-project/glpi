@@ -2157,9 +2157,9 @@ class Toolbox
         }
 
         // For post install steps
-        $init_form_weight = round($number_of_steps * 0.1); // 10 % of the install process
-        $init_rules_weight = round($number_of_steps * 0.1); // 10 % of the install process
-        $generate_keys_weight = round($number_of_steps * 0.02); // 2 % of the install process
+        $init_form_weight = (int) round($number_of_steps * 0.1); // 10 % of the install process
+        $init_rules_weight = (int) round($number_of_steps * 0.1); // 10 % of the install process
+        $generate_keys_weight = (int) round($number_of_steps * 0.02); // 2 % of the install process
         $default_lang_weight = 1;
         $cron_config_weight = 1;
         $number_of_steps += $init_form_weight + $init_rules_weight + $generate_keys_weight + $default_lang_weight;

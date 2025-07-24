@@ -77,7 +77,7 @@ if (isset($_POST["action"])) {
     $rulecollection->checkGlobal(UPDATE);
 
     // Current time
-    $start = microtime(true);
+    $start = (int) round(microtime(true));
 
     // Reload every X seconds to refresh the progress bar
     $max = $start + 5;

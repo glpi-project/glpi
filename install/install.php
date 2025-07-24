@@ -169,7 +169,7 @@ function step3($host, $user, $password, $update)
     if (count($hostport) < 2) {
         $link = new mysqli($hostport[0], $user, $password);
     } else {
-        $link = new mysqli($hostport[0], $user, $password, '', $hostport[1]);
+        $link = new mysqli($hostport[0], $user, $password, '', (int) $hostport[1]);
     }
 
     $engine_requirement = null;
@@ -280,7 +280,7 @@ function step4($databasename, $newdatabasename)
     if (count($hostport) < 2) {
         $link = new mysqli($hostport[0], $user, $password);
     } else {
-        $link = new mysqli($hostport[0], $user, $password, '', $hostport[1]);
+        $link = new mysqli($hostport[0], $user, $password, '', (int) $hostport[1]);
     }
 
     $db = new class ($link) extends DBmysql {

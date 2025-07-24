@@ -5320,7 +5320,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
     {
         $solution = new ITILSolution();
         $solution->showForm(
-            null,
+            0,
             [
                 'parent' => $item,
                 'entity' => $item->getEntityID(),
