@@ -36,6 +36,7 @@
 namespace Glpi\Search\Output;
 
 use PhpOffice\PhpSpreadsheet\Writer\Ods\Mimetype;
+use RuntimeException;
 
 final class Ods extends Spreadsheet
 {
@@ -47,6 +48,11 @@ final class Ods extends Spreadsheet
 
     public function getMime(): string
     {
+        // This can't happen but it helps with static analysis
+        if (!$this->writer instanceof \PhpOffice\PhpSpreadsheet\Writer\Ods) {
+            throw new RuntimeException();
+        }
+
         $mime = new Mimetype($this->writer);
         return $mime->write();
     }

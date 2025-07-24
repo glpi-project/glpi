@@ -47,12 +47,14 @@ use Glpi\System\Requirement\DatabaseTablesEngine;
 use Glpi\Toolbox\DatabaseSchema;
 use Glpi\Toolbox\VersionParser;
 use GLPIKey;
+use LogicException;
 use Migration;
 use Override;
 use Session;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
 use Update;
@@ -152,6 +154,9 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if (!$output instanceof ConsoleOutputInterface) {
+            throw new LogicException('This command accepts only an instance of "ConsoleOutputInterface".');
+        }
 
         $allow_unstable = $input->getOption('allow-unstable');
         $force          = $input->getOption('force');

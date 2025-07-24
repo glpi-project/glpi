@@ -1244,7 +1244,7 @@ class Toolbox
     /**
      * Split timestamp in time units
      *
-     * @param integer $time  timestamp
+     * @param integer|float $time  timestamp
      *
      * @return array
      **/

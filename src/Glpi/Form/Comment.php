@@ -207,12 +207,7 @@ final class Comment extends CommonDBChild implements
             throw new RuntimeException("Can't load parent section");
         }
 
-        $form = $section->getItem();
-        if (!($form instanceof Form)) {
-            throw new RuntimeException("Can't load parent form");
-        }
-
-        return $form;
+        return $section->getForm();
     }
 
     /**

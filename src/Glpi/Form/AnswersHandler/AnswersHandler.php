@@ -94,7 +94,7 @@ final class AnswersHandler
         Form|Section $questions_container,
         array $answers
     ): ValidationResult {
-        $form = ($questions_container instanceof Section) ? $questions_container->getItem() : $questions_container;
+        $form = ($questions_container instanceof Section) ? $questions_container->getForm() : $questions_container;
         $result = new ValidationResult();
         $engine = new Engine($form, new EngineInput($answers));
         $visibility = $engine->computeVisibility();

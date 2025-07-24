@@ -51,7 +51,7 @@ class HTMLTableCell extends HTMLTableEntity
     private $attributForTheRow = false;
 
     /**
-     * @param HTMLTableHeader $row
+     * @param HTMLTableRow    $row
      * @param HTMLTableHeader $header
      * @param string          $content  see HTMLTableEntity#__construct()
      * @param ?HTMLTableCell  $father   HTMLTableCell object (default NULL)

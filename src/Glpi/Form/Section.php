@@ -46,6 +46,7 @@ use Glpi\ItemTranslation\Context\TranslationHandler;
 use LogicException;
 use Override;
 use Ramsey\Uuid\Uuid;
+use RuntimeException;
 
 use function Safe\json_encode;
 
@@ -289,6 +290,21 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
         }
 
         return $this->comments;
+    }
+
+    /**
+     * Get the parent form of this section
+     *
+     * @return Form
+     */
+    public function getForm(): Form
+    {
+        $form = $this->getItem();
+        if (!($form instanceof Form)) {
+            throw new RuntimeException("Can't load parent form");
+        }
+
+        return $form;
     }
 
     /**
