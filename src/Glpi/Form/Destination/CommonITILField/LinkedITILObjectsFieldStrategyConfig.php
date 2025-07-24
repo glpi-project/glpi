@@ -34,6 +34,7 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
+use CommonITILObject;
 use Glpi\DBAL\JsonFieldInterface;
 use Override;
 
@@ -113,7 +114,7 @@ final class LinkedITILObjectsFieldStrategyConfig implements JsonFieldInterface
         return $this->specific_itilobject;
     }
 
-    /** @return class-string<\CommonITILObject>|null */
+    /** @return class-string<CommonITILObject>|null */
     public function getSpecificItilObjectItemtype(): ?string
     {
         return $this->specific_itilobject['itemtype'] ?? null;

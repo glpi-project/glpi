@@ -92,7 +92,7 @@ enum LinkedITILObjectsFieldStrategy: string
         array $specific_destination_ids,
         array $created_objects = []
     ): ?array {
-        if (empty($specific_destination_ids)) {
+        if ($specific_destination_ids === []) {
             return null;
         }
 
@@ -143,7 +143,7 @@ enum LinkedITILObjectsFieldStrategy: string
         array $specific_question_ids,
         AnswersSet $answers_set
     ): ?array {
-        if (empty($specific_question_ids)) {
+        if ($specific_question_ids === []) {
             return null;
         }
 
