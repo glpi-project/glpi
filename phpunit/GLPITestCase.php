@@ -511,29 +511,23 @@ class GLPITestCase extends TestCase
     }
 
     /**
-     * Set $_SESSION['glpi_currenttime'] with current day + $time param and return the related DateTime
+     * Set $_SESSION['glpi_currenttime'] and return the related DateTimeImmutable object.
      *
-     * @param string $time expected format is H:i:s
-     * @param string|null $day expected format is Y-m-d, current day by default
+     * @param string $datetime expected format is "Y-m-d H:i:s"
      */
-    protected function setCurrentTime(string $time, ?string $day = null): \DateTime
+    protected function setCurrentTime(string $datetime): DateTimeImmutable
     {
-        // assert time format is H:i:s
-        assert(1 === preg_match('/^([01]?[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/', $time));
+        $time_regexp = '([01]?[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])'; // H:i:s format - 23:59:59
+        $day_regexp = '\d{4}-\d{2}-\d{2}'; // Y-m-d format - 2026-31-12
 
-        // assert day format is Y-m-d
-        assert(is_null($day) || 1 === preg_match('/^\d{4}-\d{2}-\d{2}$/', $day));
-        $day ??= \Session::getCurrentDate();
+        if (!preg_match("/^$day_regexp $time_regexp\$/", $datetime)) {
+            throw new InvalidArgumentException('Unexpected datetime format : ' . $datetime . '. Expected format is "Y-m-d H:i:s"');
+        }
 
-        // set session time
-        $_SESSION['glpi_currenttime'] = date($day . ' ' . $time);
+        // set & return new current time
+        $_SESSION['glpi_currenttime'] = $datetime;
 
-        // create and return DateTime
-        $dt = new \DateTime();
-        $dt->setTime(...explode(':', $time));
-        $dt->setDate(...explode('-', $day));
-
-        return $dt;
+        return DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $_SESSION['glpi_currenttime']);
     }
 
     /**

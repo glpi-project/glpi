@@ -145,8 +145,7 @@ HTML,
     public function testTemplateDataIsAdaptedToTimezone(): void
     {
         $this->login();
-
-        $date = $this->setCurrentTime('10:00:00', '2025-07-22');
+        $this->setCurrentTime('2025-07-22 10:00:00');
 
         $entity_id = $this->getTestRootEntity(true);
         $user_id = getItemByTypeName(User::class, TU_USER, true);
