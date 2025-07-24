@@ -93,22 +93,21 @@ export class GlpiFormFieldDestinationMultipleConfig {
         });
 
 
-        // Get template HTML and extract scripts before inserting
+        // Get template HTML and process scripts in place
         const template_html = this.#template.html();
         const temp_container = $('<div>').html(template_html);
 
-        // Extract and store scripts
-        const scripts = [];
+        // Replace __INDEX__ placeholders with actual index
+        const current_index = this.#container.find('[data-glpi-itildestination-field-config]').length;
+
+        // Process scripts in place to replace __INDEX__ before inserting
         temp_container.find('script').each((index, script) => {
-            scripts.push(script.outerHTML);
-            $(script).remove();
+            script.innerHTML = script.innerHTML.replace(/__INDEX__/g, current_index);
         });
 
-        // Insert the HTML without scripts
+        // Insert the HTML with processed scripts
         const new_config_field = $(temp_container.html()).insertBefore(this.#add_button);
 
-        // Replace __INDEX__ placeholders with actual index
-        const current_index = this.#container.find('[data-glpi-itildestination-field-config]').length - 1;
         new_config_field.find('[name*="__INDEX__"]').each((index, element) => {
             const name = $(element).attr('name');
             if (name) {
@@ -122,12 +121,6 @@ export class GlpiFormFieldDestinationMultipleConfig {
             if (id) {
                 $(element).attr('id', id.replace(/__INDEX__/g, current_index));
             }
-        });
-
-        // Process and append scripts with replaced __INDEX__
-        scripts.forEach(script_html => {
-            const processed_script = script_html.replace(/__INDEX__/g, current_index);
-            new_config_field.append(processed_script);
         });
 
         new_config_field.find('[data-glpi-itildestination-remove-field-config]')
