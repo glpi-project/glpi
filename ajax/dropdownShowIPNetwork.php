@@ -52,8 +52,8 @@ if ($_POST['ipnetworks_id'] && $network->can($_POST['ipnetworks_id'], READ)) {
     $network->computeNetworkRange($start, $end);
 
     //TRANS: %1$s is address, %2$s is netmask
-    htmlescape(printf(__s('IP network: %1$s/%2$s') . "<br>", $address, $netmask));
-    htmlescape(printf(__s('First/last addresses: %1$s/%2$s'), $start->getTextual(), $end->getTextual()));
+    htmlescape(printf(__('IP network: %1$s/%2$s') . "<br>", $address, $netmask));
+    htmlescape(printf(__('First/last addresses: %1$s/%2$s'), $start->getTextual(), $end->getTextual()));
     if (!empty($gateway)) {
         echo "<br>";
         htmlescape(printf(__('Gateway: %s'), $gateway));
