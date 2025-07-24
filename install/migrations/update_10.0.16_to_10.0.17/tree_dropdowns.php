@@ -63,7 +63,7 @@ foreach ($tree_dropdown_tables as $table) {
                 'sons_cache' => null,
             ],
             [
-                new QueryExpression("1=1"),
+                new QueryExpression('true'),
             ]
         )
     );
