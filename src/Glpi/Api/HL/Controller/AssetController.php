@@ -83,6 +83,7 @@ use PrinterModel;
 use Rack;
 use RackModel;
 use RackType;
+use RuntimeException;
 use Software;
 use SoftwareCategory;
 use SoftwareVersion;
@@ -118,6 +119,18 @@ final class AssetController extends AbstractController
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $schemas = [];
+
+        $fn_get_assignable_restriction = static function (string $itemtype) {
+            if (method_exists($itemtype, 'getAssignableVisiblityCriteria')) {
+                $criteria = $itemtype::getAssignableVisiblityCriteria('_');
+                if (count($criteria) === 1 && isset($criteria[0]) && is_numeric((string) $criteria[0])) {
+                    // Return true for QueryExpression('1') and false for QueryExpression('0') to support fast pass/fail
+                    return (bool) $criteria[0];
+                }
+                return ['WHERE' => $criteria];
+            }
+            throw new RuntimeException("Itemtype $itemtype is not an AssignableItem");
+        };
 
         $schemas['_BaseAsset'] = [
             'type' => Schema::TYPE_OBJECT,
@@ -506,6 +519,9 @@ final class AssetController extends AbstractController
                         ],
                     ],
                 ];
+                $schemas[$schema_name]['x-rights-conditions'] = [
+                    'read' => static fn() => $fn_get_assignable_restriction($asset_type),
+                ];
             }
 
             if ($asset->isField('contact')) {
@@ -581,6 +597,7 @@ final class AssetController extends AbstractController
             'x-version-introduced' => '2.0',
             'x-itemtype' => CartridgeItem::class,
             'type' => Schema::TYPE_OBJECT,
+            'x-rights-conditions' => ['read' => static fn() => $fn_get_assignable_restriction(CartridgeItem::class)],
             'properties' => [
                 'id' => [
                     'type' => Schema::TYPE_INTEGER,
@@ -690,6 +707,7 @@ final class AssetController extends AbstractController
             'x-version-introduced' => '2.0',
             'x-itemtype' => ConsumableItem::class,
             'type' => Schema::TYPE_OBJECT,
+            'x-rights-conditions' => ['read' => static fn() => $fn_get_assignable_restriction(ConsumableItem::class)],
             'properties' => [
                 'id' => [
                     'type' => Schema::TYPE_INTEGER,
@@ -735,6 +753,7 @@ final class AssetController extends AbstractController
             'x-version-introduced' => '2.0',
             'x-itemtype' => Software::class,
             'type' => Schema::TYPE_OBJECT,
+            'x-rights-conditions' => ['read' => static fn() => $fn_get_assignable_restriction(Software::class)],
             'properties' => [
                 'id' => [
                     'type' => Schema::TYPE_INTEGER,
@@ -845,6 +864,7 @@ final class AssetController extends AbstractController
             'x-version-introduced' => '2.0',
             'x-itemtype' => Rack::class,
             'type' => Schema::TYPE_OBJECT,
+            'x-rights-conditions' => ['read' => static fn() => $fn_get_assignable_restriction(Rack::class)],
             'properties' => [
                 'id' => [
                     'type' => Schema::TYPE_INTEGER,
@@ -1004,6 +1024,7 @@ final class AssetController extends AbstractController
             'x-version-introduced' => '2.0',
             'x-itemtype' => Enclosure::class,
             'type' => Schema::TYPE_OBJECT,
+            'x-rights-conditions' => ['read' => static fn() => $fn_get_assignable_restriction(Enclosure::class)],
             'properties' => [
                 'id' => [
                     'type' => Schema::TYPE_INTEGER,
@@ -1092,6 +1113,7 @@ final class AssetController extends AbstractController
             'x-version-introduced' => '2.0',
             'x-itemtype' => PDU::class,
             'type' => Schema::TYPE_OBJECT,
+            'x-rights-conditions' => ['read' => static fn() => $fn_get_assignable_restriction(PDU::class)],
             'properties' => [
                 'id' => [
                     'type' => Schema::TYPE_INTEGER,
@@ -1179,6 +1201,7 @@ final class AssetController extends AbstractController
             'x-version-introduced' => '2.0',
             'x-itemtype' => PassiveDCEquipment::class,
             'type' => Schema::TYPE_OBJECT,
+            'x-rights-conditions' => ['read' => static fn() => $fn_get_assignable_restriction(PassiveDCEquipment::class)],
             'properties' => [
                 'id' => [
                     'type' => Schema::TYPE_INTEGER,
@@ -1266,6 +1289,7 @@ final class AssetController extends AbstractController
             'x-version-introduced' => '2.0',
             'x-itemtype' => Cable::class,
             'type' => Schema::TYPE_OBJECT,
+            'x-rights-conditions' => ['read' => static fn() => $fn_get_assignable_restriction(Cable::class)],
             'properties' => [
                 'id' => [
                     'type' => Schema::TYPE_INTEGER,

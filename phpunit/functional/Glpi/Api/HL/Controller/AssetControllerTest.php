@@ -34,9 +34,12 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
+use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Asset\Asset;
+use Glpi\Features\AssignableItemInterface;
 use Glpi\Http\Request;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Unmanaged;
 
 class AssetControllerTest extends \HLAPITestCase
 {
@@ -528,6 +531,70 @@ class AssetControllerTest extends \HLAPITestCase
                 ->isOK()
                 ->jsonContent(function ($content) {
                     $this->assertEquals('_test_child_1', $content['entity']['name']);
+                });
+        });
+    }
+
+    public function testCRUDNoRights()
+    {
+        $this->loginWeb();
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+
+        $this->api->call(new Request('GET', '/Assets'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertGreaterThanOrEqual(1, count($content));
+                    foreach ($content as $asset) {
+                        if ($asset['itemtype'] === Unmanaged::class) {
+                            // It is usually impossible to have CREATE permissions for Unmanaged
+                            $_SESSION['glpiactiveprofile'][Unmanaged::$rightname] = ALLSTANDARDRIGHT;
+                        }
+                        $create_request = new Request('POST', $asset['href']);
+                        $create_request->setParameter('name', 'testCRUDNoRights' . random_int(0, 10000));
+                        $create_request->setParameter('entity', getItemByTypeName('Entity', '_test_root_entity', true));
+                        $new_location = null;
+                        $new_items_id = null;
+                        $this->api->call($create_request, function ($call) use (&$new_location, &$new_items_id) {
+                            /** @var \HLAPICallAsserter $call */
+                            $call->response
+                                ->isOK()
+                                ->headers(function ($headers) use (&$new_location) {
+                                    $new_location = $headers['Location'];
+                                })
+                                ->jsonContent(function ($content) use (&$new_items_id) {
+                                    $new_items_id = $content['id'];
+                                });
+                        });
+                        $this->api->autoTestCRUDNoRights(
+                            endpoint: $asset['href'],
+                            itemtype: $asset['itemtype'],
+                            items_id: (int) $new_items_id
+                        );
+                    }
+                });
+        });
+    }
+
+    public function testAssignableRights()
+    {
+        $this->login();
+
+        $this->api->call(new Request('GET', '/Assets'), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertGreaterThanOrEqual(1, count($content));
+                    foreach ($content as $asset) {
+                        if (
+                            !is_subclass_of($asset['itemtype'], AssignableItemInterface::class)
+                            || $asset['itemtype'] === Unmanaged::class
+                        ) {
+                            continue;
+                        }
+                        $this->api->autoTestAssignableItemRights($asset['href'], $asset['itemtype']);
+                    }
                 });
         });
     }

@@ -162,7 +162,7 @@ class ProjectControllerTest extends \HLAPITestCase
 
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
-            $call->response->isNotFoundError();
+            $call->response->isAccessDenied();
         });
 
         $_SESSION['glpiactiveprofile'][Project::$rightname] = Project::READMY;
