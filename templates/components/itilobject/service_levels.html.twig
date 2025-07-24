@@ -216,7 +216,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
                 <div class="">
                     {% set ola_tto_is_mandatory = field_options.fields_template.isMandatoryField('_olas_id_tto') %}
                     {% set ola_ttr_is_mandatory = field_options.fields_template.isMandatoryField('_olas_id_ttr') %}
-                    {% set required =  ola_tto_is_mandatory or ola_ttr_is_mandatory%}
+                    {% set required = ola_tto_is_mandatory or ola_ttr_is_mandatory %}
                     {% set helper_text %}
                         {% if ola_tto_is_mandatory %} {{ __('OLA') ~ ' ' ~ __('TTO') ~ ' ' ~ __('is mandatory') }} <br>{% endif %}
                         {% if ola_ttr_is_mandatory %} {{ __('OLA') ~ ' ' ~ __('TTR') ~ ' ' ~ __('is mandatory') }} {% endif %}
