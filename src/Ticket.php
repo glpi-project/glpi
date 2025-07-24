@@ -45,7 +45,6 @@ use Glpi\Event;
 use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
 use Safe\DateTime;
-use Safe\Exceptions\DatetimeException;
 
 use function Safe\preg_match;
 use function Safe\preg_match_all;
@@ -5454,7 +5453,7 @@ JAVASCRIPT;
     public function showStatsDates()
     {
         $now                      = time();
-        $date_creation            = strtotime($this->fields['date'] ?? '');
+        $date_creation            = strtotime($this->fields['date']);
         // Tickets created before 10.0.4 do not have takeintoaccountdate field, use old and incorrect computation for those cases
         $date_takeintoaccount     = 0;
         if ($this->fields['takeintoaccountdate'] !== null) {
@@ -5462,16 +5461,26 @@ JAVASCRIPT;
         } elseif ($this->fields['takeintoaccount_delay_stat'] > 0) {
             $date_takeintoaccount = $date_creation + $this->fields['takeintoaccount_delay_stat'];
         }
-        $internal_time_to_own     = strtotime($this->fields['internal_time_to_own'] ?? '');
-        $time_to_own              = strtotime($this->fields['time_to_own'] ?? '');
-        $internal_time_to_resolve = strtotime($this->fields['internal_time_to_resolve'] ?? '');
-        $time_to_resolve          = strtotime($this->fields['time_to_resolve'] ?? '');
-        try {
-            $solvedate = strtotime($this->fields['solvedate'] ?? '');
-        } catch (DatetimeException $e) {
-            $solvedate = '';
-        }
-        $closedate                = strtotime($this->fields['closedate'] ?? '');
+
+        $internal_time_to_own     = !empty($this->fields['internal_time_to_own'])
+            ? strtotime($this->fields['internal_time_to_own'])
+            : null;
+        $time_to_own              = !empty($this->fields['time_to_own'])
+            ? strtotime($this->fields['time_to_own'])
+            : null;
+        $internal_time_to_resolve = !empty($this->fields['internal_time_to_resolve'])
+            ? strtotime($this->fields['internal_time_to_resolve'])
+            : null;
+        $time_to_resolve          = !empty($this->fields['time_to_resolve'])
+            ? strtotime($this->fields['time_to_resolve'])
+            : null;
+        $solvedate                = !empty($this->fields['solvedate'])
+            ? strtotime($this->fields['solvedate'])
+            : null;
+        $closedate                = !empty($this->fields['closedate'])
+            ? strtotime($this->fields['closedate'])
+            : null;
+
         $goal_takeintoaccount     = ($date_takeintoaccount > 0 ? $date_takeintoaccount : $now);
         $goal_solvedate           = ($solvedate > 0 ? $solvedate : $now);
 
