@@ -1631,7 +1631,7 @@ class Stat extends CommonGLPI
 
         // 1 an par defaut
         if (empty($date1)) {
-            $date1 = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d"), date("Y") - 1));
+            $date1 = date("Y-m-d", mktime(0, 0, 0, (int) date("m"), (int) date("d"), ((int) date("Y")) - 1));
         }
         $date1 .= " 00:00:00";
 

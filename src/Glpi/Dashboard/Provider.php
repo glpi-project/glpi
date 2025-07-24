@@ -1708,8 +1708,8 @@ class Provider
     public static function formatMonthyearDates(string $monthyear): array
     {
         $rawdate = explode('-', $monthyear);
-        $year    = $rawdate[0];
-        $month   = $rawdate[1];
+        $year    = (int) $rawdate[0];
+        $month   = (int) $rawdate[1];
         $monthtime = mktime(0, 0, 0, $month, 1, $year);
 
         $start_day = date("Y-m-d H:i:s", strtotime("first day of this month", $monthtime));
