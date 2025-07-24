@@ -57,7 +57,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Loader\Psr4DirectoryLoader;
 use Symfony\Component\Routing\Router;
 use UnitEnum;
-use function Sabre\Event\Loop\instance;
 
 class PluginContainer implements ContainerInterface
 {
