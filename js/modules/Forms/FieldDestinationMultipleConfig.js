@@ -191,15 +191,16 @@ export class GlpiFormFieldDestinationMultipleConfig {
 
                 // Replace the old itemtype select id by the new one
                 script.text = script.text.replace(
-                    new RegExp(`dropdown_${itemtype_select.attr('name').replace(/[[\]]/g, '_')}[0-9]+`, 'g'),
-                    itemtype_select.attr('id')
+                    /\$\(['"]#dropdown_[^)]+['"]\)/g,
+                    `$("#${itemtype_select.attr('id')}")`
                 );
 
                 // Replace the old id by the new one
                 script.text = script.text.replace(
-                    new RegExp(`${items_id_name}`, 'g'),
-                    `${items_id_name}${id}`
+                    /\$\(['"]#show_[^)]+['"]\)/g,
+                    `$("#${items_id_name}${id}")`
                 );
+
                 script.text = script.text.replace(/rand:[0-9]+/g, `rand:'${id}'`);
 
                 // Execute the script
