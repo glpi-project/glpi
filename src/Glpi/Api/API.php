@@ -251,7 +251,7 @@ abstract class API
                 header("Access-Control-Allow-Headers: " .
                    "origin, content-type, accept, session-token, authorization, app-token");
             }
-            exit(0);
+            exit(0); // @phpstan-ignore glpi.forbidExit (API response is streamed)
         }
     }
 
@@ -2520,7 +2520,7 @@ abstract class API
 TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
 
         Html::nullFooter();
-        exit();
+        exit(); // @phpstan-ignore glpi.forbidExit (API response is streamed)
     }
 
 
@@ -3149,9 +3149,9 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
             Toolbox::getFileAsResponse($file, $user->fields['picture'])->send();
         } else {
             // No content
-            http_response_code(204);
+            http_response_code(204); // @phpstan-ignore glpi.forbidHttpResponseCode (API response is streamed)
         }
-        exit();
+        exit(); // @phpstan-ignore glpi.forbidExit (API response is streamed)
     }
 
     /**

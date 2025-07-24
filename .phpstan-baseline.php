@@ -608,32 +608,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/API.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^You should not use the `exit` function\\. It prevents the execution of post\\-request/post\\-command routines\\.$#',
-	'identifier' => 'glpi.forbidExit',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/API.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^You should not use the `http_response_code` function to change the response code\\. Due to a PHP bug, it may not provide the expected result \\(see https\\://bugs\\.php\\.net/bug\\.php\\?id\\=81451\\)\\.$#',
-	'identifier' => 'glpi.forbidHttpResponseCode',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/API.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$user_id of method Glpi\\\\Api\\\\API\\:\\:userPicture\\(\\) expects bool\\|int, string given\\.$#',
 	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/APIRest.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^You should not use the `exit` function\\. It prevents the execution of post\\-request/post\\-command routines\\.$#',
-	'identifier' => 'glpi.forbidExit',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/APIRest.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^You should not use the `http_response_code` function to change the response code\\. Due to a PHP bug, it may not provide the expected result \\(see https\\://bugs\\.php\\.net/bug\\.php\\?id\\=81451\\)\\.$#',
-	'identifier' => 'glpi.forbidHttpResponseCode',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/APIRest.php',
 ];
