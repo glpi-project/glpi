@@ -59,8 +59,8 @@ if (
         echo Html::scriptBlock(
             sprintf(
                 '$("#%s").trigger("setValue", "%s");',
-                htmlescape($_REQUEST["priority"]),
-                htmlescape($priority)
+                jsescape($_REQUEST["priority"]),
+                jsescape($priority)
             )
         );
     } else {

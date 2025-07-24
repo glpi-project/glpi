@@ -56,14 +56,22 @@ if (isset($_POST['type'], $_POST['end'])) {
             echo "</td></tr></table>";
             echo "<table class='tab_glpi'>";
             echo "<tr class='center'><td>&nbsp;</td>";
-            $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            $days = [
+                'Monday'    => __('Monday'),
+                'Tuesday'   => __('Tuesday'),
+                'Wednesday' => __('Wednesday'),
+                'Thursday'  => __('Thursday'),
+                'Friday'    => __('Friday'),
+                'Saturday'  => __('Saturday'),
+                'Sunday'    => __('Sunday'),
+            ];
             foreach ($days as $day) {
-                echo "<th>" . __s($day) . "</th>";
+                echo "<th>" . htmlescape($day) . "</th>";
             }
             echo "</tr><tr class='center'><td>" . __s('By day') . '</td>';
 
-            foreach ($days as $day) {
-                echo "<td><input type='checkbox' name='periodicity[days][$day]'></td>";
+            foreach (array_keys($days) as $day_key) {
+                echo "<td><input type='checkbox' name='periodicity[days][" . htmlescape($day_key) . "]'></td>";
             }
             echo "</tr>";
             break;

@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
+
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -64,9 +66,9 @@ if (isset($_REQUEST['action'])) {
             if (!empty($input['mail_server'])) {
                 $input["host"] = Toolbox::constructMailServerConfig($input);
                 if (!isset($input['passwd'])) {
-                    throw new RuntimeException(
-                        __('Password is required to list mail folders.')
-                    );
+                    $exception = new AccessDeniedHttpException();
+                    $exception->setMessageToDisplay(__('Password is required to list mail folders.'));
+                    throw $exception;
                 }
             }
 

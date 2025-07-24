@@ -113,7 +113,7 @@ if (
         echo $item->getValueToSelect($search, $fieldname, $values, $options);
     }
 
-    echo "<input type='hidden' name='field' value='$fieldname'>";
+    echo "<input type='hidden' name='field' value='" . htmlescape($fieldname) . "'>";
     echo "</td>";
     if ($inline) {
         echo "<td><input type='submit' name='massiveaction' class='btn btn-primary' value='$submitname'></td>";

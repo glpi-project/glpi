@@ -66,7 +66,7 @@ if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
 
     $action_type = $_POST["action_type"] ?? '';
 
-    $randaction = RuleAction::dropdownActions(['subtype'     => $_POST["sub_type"],
+    $randaction = (int) RuleAction::dropdownActions(['subtype'     => $_POST["sub_type"],
         'name'        => "action_type",
         'field'       => $_POST["field"],
         'value'       => $action_type,

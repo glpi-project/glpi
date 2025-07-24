@@ -68,21 +68,20 @@ if (!isset($_POST['itemtype']) || !isset($_POST['items_id']) || (int) $_POST['it
         if (!$item->can($items_id, READ)) {
             $result = [
                 'success'   => false,
-                'message'   => __('Not allowed'),
+                'message'   => __s('Not allowed'),
             ];
         } else {
             $item->getFromDB($items_id);
             if (!empty($item->fields['latitude']) && !empty($item->fields['longitude'])) {
                 $result = [
-                    'name'   => $item->getName(),
-                    'lat'    => $item->fields['latitude'],
-                    'lng'    => $item->fields['longitude'],
+                    'lat'    => (float) $item->fields['latitude'],
+                    'lng'    => (float) $item->fields['longitude'],
                 ];
             } else {
                 $result = [
                     'success'   => false,
                     'message'   => "<h3>" . __("Location seems not geolocalized!") . "</h3>" .
-                               "<a href='" . $item->getLinkURL() . "'>" . __s("Consider filling latitude and longitude on this location.") . "</a>",
+                               "<a href='" . htmlescape($item->getLinkURL()) . "'>" . __s("Consider filling latitude and longitude on this location.") . "</a>",
                 ];
             }
         }
