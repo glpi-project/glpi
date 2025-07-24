@@ -187,9 +187,6 @@ class Reservation extends CommonDBChild
         if (empty($input['users_id'])) {
             $input['users_id'] = Session::getLoginUserID();
         }
-        if (!Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
-            return;
-        }
 
         Toolbox::manageBeginAndEndPlanDates($input['resa']);
         if (!isset($input['resa']["begin"]) || !isset($input['resa']["end"])) {
@@ -434,7 +431,7 @@ class Reservation extends CommonDBChild
      **/
     public static function canUpdate()
     {
-        return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
+        return (Session::haveRightsOr(self::$rightname, [UPDATE, ReservationItem::RESERVEANITEM]));
     }
 
 
@@ -444,6 +441,15 @@ class Reservation extends CommonDBChild
     public static function canDelete()
     {
         return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
+    }
+
+
+    /**
+     * @since 0.84
+     **/
+    public static function canPurge()
+    {
+        return (Session::haveRightsOr(self::$rightname, [PURGE, ReservationItem::RESERVEANITEM]));
     }
 
 
@@ -769,10 +775,6 @@ JAVASCRIPT;
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
-
-        if (!Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
-            return false;
-        }
 
         $resa = new self();
 

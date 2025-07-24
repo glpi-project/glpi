@@ -45,7 +45,7 @@ if (isset($_GET['ajax']) && $_GET['ajax']) {
 
 include('../inc/includes.php');
 
-Session::checkRight("reservation", ReservationItem::RESERVEANITEM);
+Session::checkRightsOr("reservation", [CREATE, UPDATE, DELETE, PURGE, ReservationItem::RESERVEANITEM]);
 
 $rr = new Reservation();
 
@@ -59,17 +59,7 @@ if (isset($_REQUEST['ajax'])) {
 }
 
 if (isset($_POST["update"])) {
-    if (!$rr->getFromDB($_POST["id"])) {
-        Html::displayErrorAndDie(__('Item not found'));
-    }
-
-    $can_update = Session::haveRight('reservation', UPDATE) ||
-        (Session::haveRight('reservation', ReservationItem::RESERVEANITEM) &&
-            $rr->fields['users_id'] == Session::getLoginUserID());
-
-    if (!$can_update) {
-        Html::displayRightError();
-    }
+    $rr->check($_POST["id"], UPDATE);
 
     Toolbox::manageBeginAndEndPlanDates($_POST['resa']);
     $_POST['_target'] = $_SERVER['PHP_SELF'];
@@ -79,17 +69,7 @@ if (isset($_POST["update"])) {
     $rr->update($_POST);
     Html::back();
 } elseif (isset($_POST["purge"])) {
-    if (!$rr->getFromDB($_POST["id"])) {
-        Html::displayErrorAndDie(__('Item not found'));
-    }
-
-    $can_purge = Session::haveRight('reservation', PURGE) ||
-        (Session::haveRight('reservation', ReservationItem::RESERVEANITEM) &&
-            $rr->fields['users_id'] == Session::getLoginUserID());
-
-    if (!$can_purge) {
-        Html::displayRightError();
-    }
+    $rr->check($_POST["id"], PURGE);
 
     $reservationitems_id = key($_POST["items"]);
     if ($rr->delete($_POST, 1)) {
@@ -111,18 +91,11 @@ if (isset($_POST["update"])) {
     Html::redirect($CFG_GLPI["root_doc"] . "/front/reservation.php?reservationitems_id=" .
         "$reservationitems_id&mois_courant=$begin_month&annee_courante=$begin_year");
 } elseif (isset($_POST["add"])) {
-    Session::checkRightsOr('reservation', [CREATE, ReservationItem::RESERVEANITEM]);
     Reservation::handleAddForm($_POST);
     Html::back();
 } elseif (isset($_GET["id"])) {
     if (!empty($_GET["id"])) {
-        if (!$rr->getFromDB($_GET["id"])) {
-            Html::displayErrorAndDie(__('Item not found'));
-        }
-
-        if (!Session::haveRightsOr('reservation', [READ, ReservationItem::RESERVEANITEM])) {
-            Html::displayRightError();
-        }
+        $rr->check($_GET["id"], READ);
     }
     if (!isset($_GET['begin'])) {
         $_GET['begin'] = date('Y-m-d H:00:00');
