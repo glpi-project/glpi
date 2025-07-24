@@ -95,10 +95,7 @@ class InterfaceType extends CommonDropdown
         if ($item->fields["interfacetypes_id"]) {
             $row->addCell(
                 $row->getHeaderByName($column_name),
-                Dropdown::getDropdownName(
-                    "glpi_interfacetypes",
-                    $item->fields["interfacetypes_id"]
-                )
+                htmlescape(Dropdown::getDropdownName("glpi_interfacetypes", $item->fields["interfacetypes_id"]))
             );
         }
     }

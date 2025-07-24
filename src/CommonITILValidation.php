@@ -1867,7 +1867,7 @@ HTML;
 
         if ($params['display']) {
             echo $out;
-            return $params['rand'];
+            return (int) $params['rand'];
         } else {
             return $out;
         }

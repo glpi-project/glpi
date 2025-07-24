@@ -614,7 +614,7 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
                 }
                 $content  = htmlescape($internetName);
                 if (Session::haveRight('internet', READ)) {
-                    $content  = '<a href="' . $address->getLinkURL() . '">'
+                    $content  = '<a href="' . htmlescape($address->getLinkURL()) . '">'
                         . htmlescape($internetName)
                         . '</a>';
                 }
@@ -629,7 +629,7 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
                         );
                         $dynamic_cell = $row->addCell(
                             $dyn_header,
-                            Dropdown::getYesNo($address->fields['is_dynamic']),
+                            htmlescape(Dropdown::getYesNo($address->fields['is_dynamic'])),
                             $name_cell
                         );
                         $father_for_children = $dynamic_cell;

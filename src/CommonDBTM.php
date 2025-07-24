@@ -4867,20 +4867,20 @@ class CommonDBTM extends CommonGLPI
                             return $searchoptions['toadd'][$value];
                         }
                         if ($options['html']) {
-                            return Dropdown::getValueWithUnit($value, $unit);
+                            return htmlescape(Dropdown::getValueWithUnit($value, $unit));
                         }
-                        return $value;
+                        return htmlescape($value);
 
                     case "decimal":
                         if ($options['html']) {
-                            return Dropdown::getValueWithUnit($value, $unit, $CFG_GLPI["decimal_number"]);
+                            return htmlescape(Dropdown::getValueWithUnit($value, $unit, $CFG_GLPI["decimal_number"]));
                         }
-                        return $value;
+                        return htmlescape($value);
 
                     case "string":
                     case "mac":
                     case "ip":
-                        return $value;
+                        return htmlescape($value);
 
                     case "text":
                         if (isset($searchoptions['htmltext']) && $searchoptions['htmltext']) {
@@ -4890,7 +4890,7 @@ class CommonDBTM extends CommonGLPI
                         return $options['html'] ? nl2br($value) : $value;
 
                     case "bool":
-                        return Dropdown::getYesNo($value);
+                        return htmlescape(Dropdown::getYesNo($value));
 
                     case "date":
                     case "date_delay":
@@ -4898,9 +4898,13 @@ class CommonDBTM extends CommonGLPI
                             $dates = Html::getGenericDateTimeSearchItems(['with_time'   => true,
                                 'with_future' => true,
                             ]);
-                            return $dates[$value];
+                            return htmlescape($dates[$value]);
                         }
-                        return empty($value) ? $value : Html::convDate(Html::computeGenericDateTimeSearch($value, true));
+                        return htmlescape(
+                            empty($value)
+                                ? $value
+                                : Html::convDate(Html::computeGenericDateTimeSearch($value, true))
+                        );
 
                     case "datetime":
                         if (isset($options['relative_dates']) && $options['relative_dates']) {
@@ -4909,7 +4913,11 @@ class CommonDBTM extends CommonGLPI
                             ]);
                             return $dates[$value];
                         }
-                        return empty($value) ? $value : Html::convDateTime(Html::computeGenericDateTimeSearch($value, false));
+                        return htmlescape(
+                            empty($value)
+                                ? $value
+                                : Html::convDateTime(Html::computeGenericDateTimeSearch($value, false))
+                        );
 
                     case "timestamp":
                         if (
@@ -4922,11 +4930,11 @@ class CommonDBTM extends CommonGLPI
                         if (isset($searchoptions['withseconds'])) {
                             $withseconds = $searchoptions['withseconds'];
                         }
-                        return Html::timestampToString($value, $withseconds);
+                        return htmlescape(Html::timestampToString($value, $withseconds));
 
                     case "email":
                         if ($options['html']) {
-                            return "<a href='mailto:$value'>$value</a>";
+                            return "<a href='mailto:" . htmlescape($value) . "'>" . htmlescape($value) . "</a>";
                         }
                         return $value;
 
@@ -4939,8 +4947,9 @@ class CommonDBTM extends CommonGLPI
                             if (Toolbox::strlen($link) > $CFG_GLPI["url_maxlength"]) {
                                 $link = Toolbox::substr($link, 0, $CFG_GLPI["url_maxlength"]) . "...";
                             }
-                            return "<a href=\"" . Toolbox::formatOutputWebLink($orig_link) . "\" target='_blank'>$link" .
-                            "</a>";
+                            return "<a href=\"" . htmlescape(Toolbox::formatOutputWebLink($orig_link)) . "\" target='_blank'>"
+                                . htmlescape($link)
+                                . "</a>";
                         }
                         return "&nbsp;";
 
@@ -4953,17 +4962,17 @@ class CommonDBTM extends CommonGLPI
                         // no break
                     case "dropdown":
                         if (isset($searchoptions['toadd']) && isset($searchoptions['toadd'][$value])) {
-                            return $searchoptions['toadd'][$value];
+                            return htmlescape($searchoptions['toadd'][$value]);
                         }
                         if (!is_numeric($value)) {
-                            return $value;
+                            return htmlescape($value);
                         }
 
                         if (
                             ($value == 0)
                             && isset($searchoptions['emptylabel'])
                         ) {
-                            return $searchoptions['emptylabel'];
+                            return htmlescape($searchoptions['emptylabel']);
                         }
 
                         $user = new User();
@@ -4977,7 +4986,7 @@ class CommonDBTM extends CommonGLPI
                                     ['display' => false]
                                 );
                             }
-                            return getUserName($value);
+                            return htmlescape(getUserName($value));
                         }
                         $name = Dropdown::getDropdownName($searchoptions['table'], $value);
                         if ($options['comments']) {
@@ -4991,7 +5000,7 @@ class CommonDBTM extends CommonGLPI
 
                     case "itemtypename":
                         if ($obj = getItemForItemtype($value)) {
-                            return $obj->getTypeName(1);
+                            return htmlescape($obj->getTypeName(1));
                         }
                         break;
 
@@ -4999,7 +5008,7 @@ class CommonDBTM extends CommonGLPI
                         if (isset($CFG_GLPI['languages'][$value])) {
                             return $CFG_GLPI['languages'][$value][0];
                         }
-                        return __('Default value');
+                        return __s('Default value');
                 }
             }
             // Get specific display if available

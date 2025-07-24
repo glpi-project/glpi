@@ -204,7 +204,7 @@ class DeviceCamera extends CommonDevice
         if ($this->fields["devicecameramodels_id"]) {
             $row->addCell(
                 $row->getHeaderByName('devicecamera_model'),
-                Dropdown::getDropdownName("glpi_devicecameramodels", $this->fields["devicecameramodels_id"]),
+                htmlescape(Dropdown::getDropdownName("glpi_devicecameramodels", $this->fields["devicecameramodels_id"])),
                 $father
             );
         }
@@ -212,7 +212,7 @@ class DeviceCamera extends CommonDevice
         if ($this->fields["lensfacing"]) {
             $row->addCell(
                 $row->getHeaderByName('lensfacing'),
-                $this->fields["lensfacing"],
+                htmlescape($this->fields["lensfacing"]),
                 $father
             );
         }
@@ -220,7 +220,7 @@ class DeviceCamera extends CommonDevice
         if ($this->fields["flashunit"]) {
             $row->addCell(
                 $row->getHeaderByName('flashunit'),
-                $this->fields["flashunit"],
+                htmlescape($this->fields["flashunit"]),
                 $father
             );
         }

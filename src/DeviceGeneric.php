@@ -112,7 +112,10 @@ class DeviceGeneric extends CommonDevice
                         "glpi_devicegenerictypes",
                         $this->fields["devicegenerictypes_id"]
                     );
-                    $row->addCell($row->getHeaderByName('devicegenerictypes_id'), $type_name);
+                    $row->addCell(
+                        $row->getHeaderByName('devicegenerictypes_id'),
+                        htmlescape($type_name)
+                    );
                 }
                 break;
         }

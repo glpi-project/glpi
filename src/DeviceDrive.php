@@ -148,7 +148,7 @@ class DeviceDrive extends CommonDevice
                 if ($this->fields["is_writer"]) {
                     $row->addCell(
                         $row->getHeaderByName('devicedrive_writer'),
-                        Dropdown::getYesNo($this->fields["is_writer"]),
+                        htmlescape(Dropdown::getYesNo($this->fields["is_writer"])),
                         $father
                     );
                 }
@@ -156,7 +156,7 @@ class DeviceDrive extends CommonDevice
                 if ($this->fields["speed"]) {
                     $row->addCell(
                         $row->getHeaderByName('devicedrive_speed'),
-                        $this->fields["speed"],
+                        htmlescape($this->fields["speed"]),
                         $father
                     );
                 }

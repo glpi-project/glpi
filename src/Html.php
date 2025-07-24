@@ -2497,9 +2497,9 @@ TWIG,
                 if (!empty($p['tag_to_send'])) {
                     $js_modal_fields  = "var items = $('";
                     if (!empty($p['container'])) {
-                        $js_modal_fields .= '#' . $p['container'] . ' ';
+                        $js_modal_fields .= '#' . jsescape($p['container']) . ' ';
                     }
-                    $js_modal_fields .= "[data-glpicore-ma-tags~=" . $p['tag_to_send'] . "]').each(function( index ) {
+                    $js_modal_fields .= "[data-glpicore-ma-tags~=" . jsescape($p['tag_to_send']) . "]').each(function( index ) {
                   fields[$(this).attr('name')] = $(this).val();
                   if (($(this).attr('type') == 'checkbox') && (!$(this).is(':checked'))) {
                      fields[$(this).attr('name')] = 0;
@@ -2525,7 +2525,7 @@ TWIG,
             }
             $out .= "<a role=\"button\" title='" . __s('Massive actions') . "'
                      data-bs-toggle='tooltip' data-bs-placement='" . ($p['ontop'] ? "bottom" : "top") . "'
-                     class='{$p['action_button_classes']}' ";
+                     class='" . htmlescape($p['action_button_classes']) . "' ";
             if (is_array($p['confirm']) || strlen($p['confirm'])) {
                 $out .= self::addConfirmationOnAction($p['confirm'], "modal_massiveaction_window$identifier.show();");
             } else {
@@ -2638,37 +2638,33 @@ TWIG,
          : "";
 
         $name = htmlescape($name);
-        $p['rand'] = (int) $p['rand'];
-        $p['size'] = (int) $p['size'];
-        $p['placeholder'] = htmlescape($p['placeholder']);
+        $rand = (int) $p['rand'];
+        $size = (int) $p['size'];
+        $placeholder = htmlescape($p['placeholder']);
 
         $output = <<<HTML
-      <div class="button-group flex-grow-1 flatpickr d-flex align-items-center" id="showdate{$p['rand']}">
-         <input type="text" name="{$name}" size="{$p['size']}"
-                {$required} {$disabled} data-input placeholder="{$p['placeholder']}" class="form-control rounded-start ps-2">
+      <div class="button-group flex-grow-1 flatpickr d-flex align-items-center" id="showdate{$rand}">
+         <input type="text" name="{$name}" size="{$size}"
+                {$required} {$disabled} data-input placeholder="{$placeholder}" class="form-control rounded-start ps-2">
          $calendar_btn
          $clear_btn
       </div>
 HTML;
 
-        $date_format = Toolbox::getDateFormat('js');
+        $date_format = jsescape(Toolbox::getDateFormat('js'));
 
-        $min_attr = !empty($p['min'])
-         ? "minDate: '{$p['min']}',"
-         : "";
-        $max_attr = !empty($p['max'])
-         ? "maxDate: '{$p['max']}',"
-         : "";
-        $multiple_attr = $p['multiple']
-         ? "mode: 'multiple',"
-         : "";
+        $min_attr = !empty($p['min']) ? sprintf("minDate: '%s',", jsescape($p['min'])) : "";
+        $max_attr = !empty($p['max']) ? sprintf("maxDate: '%s',", jsescape($p['max'])) : "";
+        $multiple_attr = $p['multiple'] ? "mode: 'multiple'," : "";
 
         $value = json_encode($p['value']);
 
         $locale = Locale::parseLocale($_SESSION['glpilanguage']);
+        $locale_language = jsescape($locale['language']);
+        $locale_region   = jsescape($locale['region']);
         $js = <<<JS
       $(function() {
-         $("#showdate{$p['rand']}").flatpickr({
+         $("#showdate{$rand}").flatpickr({
             defaultDate: {$value},
             altInput: true, // Show the user a readable date (as per altFormat), but return something totally different to the server.
             altFormat: '{$date_format}',
@@ -2676,7 +2672,7 @@ HTML;
             wrap: true, // permits to have controls in addition to input (like clear or open date buttons
             weekNumbers: true,
             time_24hr: true,
-            locale: getFlatPickerLocale("{$locale['language']}", "{$locale['region']}"),
+            locale: getFlatPickerLocale("{$locale_language}", "{$locale_region}"),
             {$min_attr}
             {$max_attr}
             {$multiple_attr}
@@ -2699,7 +2695,7 @@ JS;
 
         if ($p['display']) {
             echo $output;
-            return $p['rand'];
+            return (int) $p['rand'];
         }
         return $output;
     }
@@ -2731,11 +2727,11 @@ JS;
             }
         }
         $field_id = Html::cleanId("color_" . $name . $p['rand']);
-        $output   = "<input type='color' id='$field_id' name='$name' value='" . $p['value'] . "'>";
+        $output   = "<input type='color' id='" . htmlescape($field_id) . "' name='" . htmlescape($name) . "' value='" . htmlescape($p['value']) . "'>";
 
         if ($p['display']) {
             echo $output;
-            return $p['rand'];
+            return (int) $p['rand'];
         }
         return $output;
     }
@@ -2820,12 +2816,8 @@ JS;
             $p['value'] = $date_value . ' ' . $hour_value;
         }
 
-        $required = $p['required'] == true
-         ? " required='required'"
-         : "";
-        $disabled = !$p['canedit']
-         ? " disabled='disabled'"
-         : "";
+        $required = $p['required'] ? " required='required'" : "";
+        $disabled = !$p['canedit'] ? " disabled='disabled'" : "";
         $clear    = $p['maybeempty'] && $p['canedit']
          ? "<button type='button' class='btn btn-outline-secondary btn-sm' data-toggle title='" . __s('Clear') . "'>
                     <i class='ti ti-circle-x' data-clear></i>
@@ -2835,9 +2827,9 @@ JS;
         $name = htmlescape($name);
         $value = htmlescape($p['value']);
         $show_datepicker_label = __s('Show date picker');
-        $p['rand'] = (int) $p['rand'];
+        $rand = (int) $p['rand'];
         $output = <<<HTML
-         <div class="btn-group flex-grow-1 flatpickr" id="showdate{$p['rand']}">
+         <div class="btn-group flex-grow-1 flatpickr" id="showdate{$rand}">
             <input type="text" name="{$name}" value="{$value}"
                    {$required} {$disabled} data-input class="form-control rounded-start ps-2">
             <button type='button' class='btn btn-outline-secondary btn-sm' data-toggle title='{$show_datepicker_label}'>
@@ -2849,14 +2841,13 @@ HTML;
 
         $date_format = Toolbox::getDateFormat('js') . " H:i:S";
 
-        $min_attr = !empty($p['mindate'])
-         ? "minDate: '{$p['mindate']}',"
-         : "";
-        $max_attr = !empty($p['maxdate'])
-         ? "maxDate: '{$p['maxdate']}',"
-         : "";
+        $min_attr = !empty($p['mindate']) ? sprintf("minDate: '%s',", jsescape($p['mindate'])) : "";
+        $max_attr = !empty($p['maxdate']) ? sprintf("maxDate: '%s',", jsescape($p['maxdate'])) : "";
+        $timestep = (int) $p['timestep'];
 
         $locale = Locale::parseLocale($_SESSION['glpilanguage']);
+        $locale_language = jsescape($locale['language']);
+        $locale_region   = jsescape($locale['region']);
         $js = <<<JS
       $(function() {
          $("#showdate{$p['rand']}").flatpickr({
@@ -2868,8 +2859,8 @@ HTML;
             enableSeconds: true,
             weekNumbers: true,
             time_24hr: true,
-            locale: getFlatPickerLocale("{$locale['language']}", "{$locale['region']}"),
-            minuteIncrement: "{$p['timestep']}",
+            locale: getFlatPickerLocale("{$locale_language}", "{$locale_region}"),
+            minuteIncrement: $timestep,
             {$min_attr}
             {$max_attr}
             onChange: function(selectedDates, dateStr, instance) {
@@ -2889,7 +2880,7 @@ JS;
 
         if ($p['display']) {
             echo $output;
-            return $p['rand'];
+            return (int) $p['rand'];
         }
         return $output;
     }
@@ -2968,7 +2959,7 @@ JS;
 
         $output    .= "</td><td>";
         $contentid  = Html::cleanId("displaygenericdate$element$rand");
-        $output    .= "<span id='$contentid'></span>";
+        $output    .= "<span id='" . htmlescape($contentid) . "'></span>";
 
         $params     = ['value'         => '__VALUE__',
             'name'          => $element,
@@ -3903,9 +3894,9 @@ JAVASCRIPT
 
         // Back and fast backward button
         if (!$start == 0) {
-            $out .= "<th class='left'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=0$additional_params\");'>
+            $out .= "<th class='left'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=0" . htmlescape(jsescape($additional_params)) . "\");'>
                      <i class='ti ti-chevrons-left' title=\"" . __s('Start') . "\"></i></a></th>";
-            $out .= "<th class='left'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$back$additional_params\");'>
+            $out .= "<th class='left'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$back" . htmlescape(jsescape($additional_params)) . "\");'>
                      <i class='ti ti-chevron-left' title=\"" . __s('Previous') . "\"></i></a></th>";
         }
 
@@ -3925,9 +3916,9 @@ JAVASCRIPT
 
         // Forward and fast forward button
         if ($forward < $numrows) {
-            $out .= "<th class='right'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$forward$additional_params\");'>
+            $out .= "<th class='right'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$forward" . htmlescape(jsescape($additional_params)) . "\");'>
                      <i class='ti ti-chevron-right' title=\"" . __s('Next') . "\"></i></a></th>";
-            $out .= "<th class='right'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$end$additional_params\");'>
+            $out .= "<th class='right'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$end" . htmlescape(jsescape($additional_params)) . "\");'>
                      <i class='ti ti-chevrons-right' title=\"" . __s('End') . "\"></i></a></th>";
         }
 
@@ -4076,11 +4067,11 @@ JAVASCRIPT
         // Back and fast backward button
         if (!$start == 0) {
             echo "<th class='left'>";
-            echo "<a href='$fulltarget&amp;start=0' class='btn btn-sm btn-ghost-secondary me-2'
+            echo "<a href='" . htmlescape($fulltarget) . "&amp;start=0' class='btn btn-sm btn-ghost-secondary me-2'
                   title=\"" . __s('Start') . "\" data-bs-toggle='tooltip' data-bs-placement='top'>";
             echo "<i class='ti ti-chevrons-left'></i>";
             echo "</a>";
-            echo "<a href='$fulltarget&amp;start=$back' class='btn btn-sm btn-ghost-secondary me-2'
+            echo "<a href='" . htmlescape($fulltarget) . "&amp;start=$back' class='btn btn-sm btn-ghost-secondary me-2'
                   title=\"" . __s('Previous') . "\" data-bs-toggle='tooltip' data-bs-placement='top'>";
             echo "<i class='ti ti-chevron-left'></i>";
             echo "</a></th>";
@@ -4088,7 +4079,7 @@ JAVASCRIPT
 
         // Print the "where am I?"
         echo "<td width='31%' class='tab_bg_2'>";
-        self::printPagerForm("$fulltarget&amp;start=$start");
+        self::printPagerForm("$fulltarget&start=$start");
         echo "</td>";
 
         if (!empty($additional_info)) {
@@ -4141,11 +4132,11 @@ JAVASCRIPT
         // Forward and fast forward button
         if ($forward < $numrows) {
             echo "<th class='right'>";
-            echo "<a href='$fulltarget&amp;start=$forward' class='btn btn-sm btn-ghost-secondary'
+            echo "<a href='" . htmlescape($fulltarget) . "&amp;start=$forward' class='btn btn-sm btn-ghost-secondary'
                   title=\"" . __s('Next') . "\" data-bs-toggle='tooltip' data-bs-placement='top'>
                <i class='ti ti-chevron-right'></i>";
             echo "</a>";
-            echo "<a href='$fulltarget&amp;start=$end' class='btn btn-sm btn-ghost-secondary'
+            echo "<a href='" . htmlescape($fulltarget) . "&amp;start=$end' class='btn btn-sm btn-ghost-secondary'
                   title=\"" . __s('End') . "\" data-bs-toggle='tooltip' data-bs-placement='top'>";
             echo "<i class='ti ti-chevrons-right'></i>";
             echo "</a>";
@@ -4176,13 +4167,13 @@ JAVASCRIPT
 
         $out = '';
         if ($action) {
-            $out .= "<form method='POST' action=\"$action\">";
+            $out .= "<form method='POST' action=\"" . htmlescape($action) . "\">";
             $out .= "<span class='responsive_hidden'>" . __s('Display (number of items)') . "</span>&nbsp;";
             $out .= Dropdown::showListLimit("submit()", false);
         } else {
             $out .= "<form method='POST' action =''>\n";
             $out .= "<span class='responsive_hidden'>" . __s('Display (number of items)') . "</span>&nbsp;";
-            $out .= Dropdown::showListLimit("reloadTab(\"glpilist_limit=\"+this.value+\"$additional_params\")", false);
+            $out .= Dropdown::showListLimit("reloadTab(\"glpilist_limit=\"+this.value+\"" . jsescape($additional_params) . "\")", false);
         }
         $out .= Html::closeForm(false);
 
@@ -4266,12 +4257,12 @@ JAVASCRIPT
                 $link .= " class='pointer' ";
             }
         }
-        $action  = " submitGetLink('$action', " . htmlescape(json_encode($fields)) . ");";
+        $action  = " submitGetLink('" . jsescape($action) . "', " . json_encode($fields) . ");";
 
         if (is_array($confirm) || strlen($confirm)) {
             $link .= self::addConfirmationOnAction($confirm, $action);
         } else {
-            $link .= " onclick=\"$action\" ";
+            $link .= " onclick=\"" . htmlescape($action) . "\" ";
         }
 
         // Ensure $btlabel is properly escaped
@@ -5603,7 +5594,7 @@ HTML;
             'nb_cb_per_row'  => $nb_cb_per_row,
         ]);
 
-        return $param['rand'];
+        return (int) $param['rand'];
     }
 
 

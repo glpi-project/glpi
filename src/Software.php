@@ -663,7 +663,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
             $entity_restrict,
             true
         );
-        $rand = (int) Dropdown::show('Software', ['condition' => ['WHERE' => $where]]);
+        $rand = Dropdown::show('Software', ['condition' => ['WHERE' => $where]]);
 
         $paramsselsoft = [
             'softwares_id' => '__VALUE__',

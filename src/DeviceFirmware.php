@@ -279,23 +279,20 @@ class DeviceFirmware extends CommonDevice
             if ($this->fields["devicefirmwaretypes_id"]) {
                 $row->addCell(
                     $row->getHeaderByName('devicefirmware_type'),
-                    Dropdown::getDropdownName(
-                        "glpi_devicefirmwaretypes",
-                        $this->fields["devicefirmwaretypes_id"]
-                    ),
+                    htmlescape(Dropdown::getDropdownName("glpi_devicefirmwaretypes", $this->fields["devicefirmwaretypes_id"])),
                     $father
                 );
             }
             $row->addCell(
                 $row->getHeaderByName('version'),
-                $this->fields["version"],
+                htmlescape($this->fields["version"]),
                 $father
             );
 
             if ($this->fields["date"]) {
                 $row->addCell(
                     $row->getHeaderByName('date'),
-                    Html::convDate($this->fields["date"]),
+                    htmlescape(Html::convDate($this->fields["date"])),
                     $father
                 );
             }

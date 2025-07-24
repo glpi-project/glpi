@@ -2527,23 +2527,23 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             case 'display_users_initials':
             case '2fa_enforcement_strategy':
                 if ($values[$field] === self::CONFIG_PARENT) {
-                    return __('Inheritance of the parent entity');
+                    return __s('Inheritance of the parent entity');
                 }
-                return Dropdown::getYesNo($values[$field]);
+                return htmlescape(Dropdown::getYesNo($values[$field]));
 
             case 'use_reservations_alert':
                 return match ($values[$field]) {
-                    self::CONFIG_PARENT => __('Inheritance of the parent entity'),
-                    0 => __('Never'),
-                    default => sprintf(_n('%d hour', '%d hours', $values[$field]), $values[$field]),
+                    self::CONFIG_PARENT => __s('Inheritance of the parent entity'),
+                    0 => __s('Never'),
+                    default => htmlescape(sprintf(_n('%d hour', '%d hours', $values[$field]), $values[$field])),
                 };
 
             case 'default_cartridges_alarm_threshold':
             case 'default_consumables_alarm_threshold':
                 return match ($values[$field]) {
-                    self::CONFIG_PARENT => __('Inheritance of the parent entity'),
-                    0 => __('Never'),
-                    default => $values[$field],
+                    self::CONFIG_PARENT => __s('Inheritance of the parent entity'),
+                    0 => __s('Never'),
+                    default => htmlescape($values[$field]),
                 };
 
             case 'send_contracts_alert_before_delay':
@@ -2553,9 +2553,9 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             case 'send_domains_alert_close_expiries_delay':
             case 'send_domains_alert_expired_delay':
                 return match ($values[$field]) {
-                    self::CONFIG_PARENT => __('Inheritance of the parent entity'),
-                    0 => __('No'),
-                    default => sprintf(_n('%d day', '%d days', $values[$field]), $values[$field]),
+                    self::CONFIG_PARENT => __s('Inheritance of the parent entity'),
+                    0 => __s('No'),
+                    default => htmlescape(sprintf(_n('%d day', '%d days', $values[$field]), $values[$field])),
                 };
 
             case 'cartridges_alert_repeat':
@@ -2563,19 +2563,19 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             case 'approval_reminder_repeat_interval':
             case 'certificates_alert_repeat_interval':
                 return match ($values[$field]) {
-                    self::CONFIG_PARENT => __('Inheritance of the parent entity'),
-                    self::CONFIG_NEVER, 0 => __('Never'),
-                    DAY_TIMESTAMP => __('Each day'),
-                    WEEK_TIMESTAMP => __('Each week'),
-                    MONTH_TIMESTAMP => __('Each month'),
-                    default => $values[$field],
+                    self::CONFIG_PARENT => __s('Inheritance of the parent entity'),
+                    self::CONFIG_NEVER, 0 => __s('Never'),
+                    DAY_TIMESTAMP => __s('Each day'),
+                    WEEK_TIMESTAMP => __s('Each week'),
+                    MONTH_TIMESTAMP => __s('Each month'),
+                    default => htmlescape($values[$field]),
                 };
 
             case 'notclosed_delay':   // 0 means never
                 return match ($values[$field]) {
-                    self::CONFIG_PARENT => __('Inheritance of the parent entity'),
-                    0 => __('Never'),
-                    default => sprintf(_n('%d day', '%d days', $values[$field]), $values[$field]),
+                    self::CONFIG_PARENT => __s('Inheritance of the parent entity'),
+                    0 => __s('Never'),
+                    default => htmlescape(sprintf(_n('%d day', '%d days', $values[$field]), $values[$field])),
                 };
 
             case 'auto_assign_mode':
@@ -2583,9 +2583,9 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
 
             case 'tickettype':
                 if ($values[$field] === self::CONFIG_PARENT) {
-                    return __('Inheritance of the parent entity');
+                    return __s('Inheritance of the parent entity');
                 }
-                return Ticket::getTicketTypeName($values[$field]);
+                return htmlescape(Ticket::getTicketTypeName($values[$field]));
 
             case 'autofill_buy_date':
             case 'autofill_order_date':
@@ -2595,38 +2595,40 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             case 'autofill_decommission_date':
                 switch ($values[$field]) {
                     case self::CONFIG_PARENT:
-                        return __('Inheritance of the parent entity');
+                        return __s('Inheritance of the parent entity');
 
                     case Infocom::COPY_WARRANTY_DATE:
-                        return __('Copy the start date of warranty');
+                        return __s('Copy the start date of warranty');
 
                     case Infocom::COPY_BUY_DATE:
-                        return __('Copy the date of purchase');
+                        return __s('Copy the date of purchase');
 
                     case Infocom::COPY_ORDER_DATE:
-                        return __('Copy the order date');
+                        return __s('Copy the order date');
 
                     case Infocom::COPY_DELIVERY_DATE:
-                        return __('Copy the delivery date');
+                        return __s('Copy the delivery date');
 
                     default:
                         if (str_contains($values[$field], '_')) {
                             [$type, $sid] = explode('_', $values[$field], 2);
                             if ($type === Infocom::ON_STATUS_CHANGE) {
                                 // TRANS %s is the name of the state
-                                return sprintf(
-                                    __('Fill when shifting to state %s'),
-                                    Dropdown::getDropdownName(table: 'glpi_states', id: (int) $sid, default: __('None'))
+                                return htmlescape(
+                                    sprintf(
+                                        __('Fill when shifting to state %s'),
+                                        Dropdown::getDropdownName(table: 'glpi_states', id: (int) $sid, default: __('None'))
+                                    )
                                 );
                             }
                         }
                 }
-                return __('No autofill');
+                return __s('No autofill');
 
             case 'inquest_config':
             case 'inquest_config_change':
                 if ($values[$field] === self::CONFIG_PARENT) {
-                    return __('Inheritance of the parent entity');
+                    return __s('Inheritance of the parent entity');
                 }
                 $inherit = '';
                 $inquest_rate = self::getUsedConfig(
@@ -2636,74 +2638,74 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
                 );
                 $inherit .= '<br>';
                 if ($inquest_rate === 0) {
-                    $inherit .= __('Disabled');
+                    $inherit .= __s('Disabled');
                 } else {
-                    $inherit .= CommonITILSatisfaction::getTypeInquestName($values[$field]) . '<br>';
+                    $inherit .= htmlescape(CommonITILSatisfaction::getTypeInquestName($values[$field])) . '<br>';
                     $inqconf = self::getUsedConfig(
                         $field,
                         $options['entity']->fields['entities_id'],
                         str_replace('config', 'delay', $field)
                     );
 
-                    $inherit .= sprintf(_n('%d day', '%d days', $inqconf), $inqconf);
+                    $inherit .= sprintf(_sn('%d day', '%d days', $inqconf), $inqconf);
                     $inherit .= "<br>";
                     //TRANS: %d is the percentage. %% to display %
-                    $inherit .= sprintf(__('%d%%'), $inquest_rate);
+                    $inherit .= sprintf(__s('%d%%'), $inquest_rate);
 
                     if ($values[$field] === 2) {
                         $inherit .= "<br>";
-                        $inherit .= self::getUsedConfig(
+                        $inherit .= htmlescape(self::getUsedConfig(
                             $field,
                             $options['entity']->fields['entities_id'],
                             str_replace('config', 'URL', $field)
-                        );
+                        ));
                     }
                 }
                 return $inherit;
 
             case 'default_contract_alert':
-                return Contract::getAlertName($values[$field]);
+                return htmlescape(Contract::getAlertName($values[$field]));
 
             case 'default_infocom_alert':
-                return Infocom::getAlertName($values[$field]);
+                return htmlescape(Infocom::getAlertName($values[$field]));
 
             case 'entities_id_software':
                 $strategy = $values['entities_strategy_software'] ?? $values[$field];
                 return match ($strategy) {
-                    self::CONFIG_PARENT => __('Inheritance of the parent entity'),
-                    self::CONFIG_NEVER => __('No change of entity'),
-                    default => Dropdown::getDropdownName(table: 'glpi_entities', id: $values[$field], default: __('None')),
+                    self::CONFIG_PARENT => __s('Inheritance of the parent entity'),
+                    self::CONFIG_NEVER => __s('No change of entity'),
+                    default => htmlescape(Dropdown::getDropdownName(table: 'glpi_entities', id: $values[$field], default: __('None'))),
                 };
 
             case 'tickettemplates_id':
                 $strategy = $values['tickettemplates_strategy'] ?? $values[$field];
                 if ($strategy === self::CONFIG_PARENT) {
-                    return __('Inheritance of the parent entity');
+                    return __s('Inheritance of the parent entity');
                 }
-                return Dropdown::getDropdownName(table: TicketTemplate::getTable(), id: $values[$field], default: __('None'));
+                return htmlescape(Dropdown::getDropdownName(table: TicketTemplate::getTable(), id: $values[$field], default: __('None')));
 
             case 'calendars_id':
                 $strategy = $values['calendars_strategy'] ?? $values[$field];
                 return match ($strategy) {
-                    self::CONFIG_PARENT => __('Inheritance of the parent entity'),
-                    self::CONFIG_NEVER => __('24/7'),
-                    default => Dropdown::getDropdownName(table: 'glpi_calendars', id: $values[$field], default: __('None')),
+                    self::CONFIG_PARENT => __s('Inheritance of the parent entity'),
+                    self::CONFIG_NEVER => __s('24/7'),
+                    default => htmlescape(Dropdown::getDropdownName(table: 'glpi_calendars', id: $values[$field], default: __('None'))),
                 };
 
             case 'transfers_id':
                 $strategy = $values['transfers_strategy'] ?? $values[$field];
                 return match (true) {
-                    $strategy === self::CONFIG_PARENT => __('Inheritance of the parent entity'),
-                    $strategy === self::CONFIG_NEVER, $values[$field] === 0 => __('No automatic transfer'),
-                    default => Dropdown::getDropdownName(table: 'glpi_transfers', id: $values[$field], default: __('None')),
+                    $strategy === self::CONFIG_PARENT => __s('Inheritance of the parent entity'),
+                    $strategy === self::CONFIG_NEVER, $values[$field] === 0 => __s('No automatic transfer'),
+                    default => htmlescape(Dropdown::getDropdownName(table: 'glpi_transfers', id: $values[$field], default: __('None'))),
                 };
 
             case 'contracts_id_default':
                 $strategy = $values['contracts_strategy_default'] ?? $values[$field];
                 return match ($strategy) {
-                    self::CONFIG_PARENT => __('Inheritance of the parent entity'),
-                    self::CONFIG_AUTO => __('Contract in ticket entity'),
-                    default => Dropdown::getDropdownName(table: 'glpi_contracts', id: $values[$field], default: __('None')),
+                    self::CONFIG_PARENT => __s('Inheritance of the parent entity'),
+                    self::CONFIG_AUTO => __s('Contract in ticket entity'),
+                    default => htmlescape(Dropdown::getDropdownName(table: 'glpi_contracts', id: $values[$field], default: __('None'))),
                 };
 
             case 'is_contact_autoupdate':
@@ -2711,9 +2713,9 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             case 'is_group_autoupdate':
             case 'is_location_autoupdate':
                 return match (true) {
-                    $values[$field] === self::CONFIG_PARENT => __('Inheritance of the parent entity'),
-                    $values[$field] > 0 => __('Copy'),
-                    default => __('Do not copy'),
+                    $values[$field] === self::CONFIG_PARENT => __s('Inheritance of the parent entity'),
+                    $values[$field] > 0 => __s('Copy'),
+                    default => __s('Do not copy'),
                 };
 
             case 'is_contact_autoclean':
@@ -2721,34 +2723,34 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             case 'is_group_autoclean':
             case 'is_location_autoclean':
                 return match (true) {
-                    $values[$field] === self::CONFIG_PARENT => __('Inheritance of the parent entity'),
-                    $values[$field] > 0 => __('Clear'),
-                    default => __('Do not delete'),
+                    $values[$field] === self::CONFIG_PARENT => __s('Inheritance of the parent entity'),
+                    $values[$field] > 0 => __s('Clear'),
+                    default => __s('Do not delete'),
                 };
 
             case 'state_autoupdate_mode':
                 if ($values[$field] === self::CONFIG_PARENT) {
-                    return __('Inheritance of the parent entity');
+                    return __s('Inheritance of the parent entity');
                 }
                 $states = State::getBehaviours(__('Copy computer status'));
-                return $states[$values[$field]];
+                return htmlescape($states[$values[$field]]);
             case 'state_autoclean_mode':
                 if ($values[$field] === self::CONFIG_PARENT) {
-                    return __('Inheritance of the parent entity');
+                    return __s('Inheritance of the parent entity');
                 }
                 $states = State::getBehaviours(__('Clear status'));
-                return $states[$values[$field]];
+                return htmlescape($states[$values[$field]]);
             case 'anonymize_support_agents':
-                return self::getAnonymizeSupportAgentsValues()[$values[$field]] ?? $values[$field];
+                return htmlescape(self::getAnonymizeSupportAgentsValues()[$values[$field]] ?? $values[$field]);
             case 'autoclose_delay':
             case 'autopurge_delay':
                 return match ($values[$field]) {
-                    self::CONFIG_NEVER => __('Never'),
-                    0 => __('Immediately'),
-                    default => sprintf(_n('%d day', '%d days', $values[$field]), $values[$field]),
+                    self::CONFIG_NEVER => __s('Never'),
+                    0 => __s('Immediately'),
+                    default => sprintf(_sn('%d day', '%d days', $values[$field]), $values[$field]),
                 };
             default:
-                return $values[$field] ?? '';
+                return htmlescape($values[$field] ?? '');
         }
     }
 

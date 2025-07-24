@@ -208,23 +208,23 @@ class DeviceHardDrive extends CommonDevice
             case 'Computer':
                 Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
                 if ($this->fields["rpm"]) {
-                    $row->addCell($row->getHeaderByName('deviceharddriver_rpm'), $this->fields["rpm"]);
+                    $row->addCell(
+                        $row->getHeaderByName('deviceharddriver_rpm'),
+                        htmlescape($this->fields["rpm"])
+                    );
                 }
 
                 if ($this->fields["cache"]) {
                     $row->addCell(
                         $row->getHeaderByName('deviceharddriver_cache'),
-                        $this->fields["cache"]
+                        htmlescape($this->fields["cache"])
                     );
                 }
 
                 if ($this->fields["deviceharddrivetypes_id"]) {
                     $row->addCell(
                         $row->getHeaderByName('deviceharddriver_type'),
-                        Dropdown::getDropdownName(
-                            "glpi_deviceharddrivetypes",
-                            $this->fields["deviceharddrivetypes_id"]
-                        ),
+                        htmlescape(Dropdown::getDropdownName("glpi_deviceharddrivetypes", $this->fields["deviceharddrivetypes_id"])),
                         $father
                     );
                 }

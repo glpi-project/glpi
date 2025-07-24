@@ -1076,16 +1076,18 @@ class IPNetwork extends CommonImplicitTreeDropdown
                 }
 
                 //TRANS: %1$s is address, %2$s is netmask
-                $content = sprintf(
-                    __('%1$s / %2$s'),
-                    $address->getTextual(),
-                    $netmask->getTextual()
+                $content = htmlescape(
+                    sprintf(
+                        __('%1$s / %2$s'),
+                        $address->getTextual(),
+                        $netmask->getTextual()
+                    )
                 );
 
                 if ($network->fields['addressable'] == 1) {
                     $content = "<span class='b'>" . $content . "</span>";
                 }
-                $content = sprintf(__('%1$s - %2$s'), $content, $network->getLink());
+                $content = sprintf(__s('%1$s - %2$s'), $content, $network->getLink());
                 $row->addCell($header, $content, $father, $network);
             }
         }

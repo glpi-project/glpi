@@ -187,7 +187,7 @@ class DeviceGraphicCard extends CommonDevice
                 if (!empty($this->fields["chipset"])) {
                     $cell = $row->addCell(
                         $row->getHeaderByName('devicegraphiccard_chipset'),
-                        $this->fields["chipset"],
+                        htmlescape($this->fields["chipset"]),
                         $father
                     );
                 }

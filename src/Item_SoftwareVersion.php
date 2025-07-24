@@ -725,8 +725,8 @@ class Item_SoftwareVersion extends CommonDBRelation
             foreach ($columns as $key => $val) {
                 $header_end .= "<th" . ($sort == "`$key`" ? " class='order_$order'" : '') . ">";
                 $header_end .= $key !== 'lname'
-                    ? "<a href='javascript:reloadTab(\"sort=$key&amp;order=" . (($order == "ASC") ? "DESC" : "ASC") . "&amp;start=0\");'>$val</a>"
-                    : $val;
+                    ? "<a href='javascript:reloadTab(\"sort=$key&amp;order=" . (($order == "ASC") ? "DESC" : "ASC") . "&amp;start=0\");'>" . htmlescape($val) . "</a>"
+                    : htmlescape($val);
                 $header_end .= "</th>";
             }
 
@@ -753,7 +753,7 @@ class Item_SoftwareVersion extends CommonDBRelation
                     $itemname = sprintf(__('%1$s (%2$s)'), $itemname, $data['iID']);
                 }
 
-                echo "<td>{$data['item_type']}</td>";
+                echo "<td>" . htmlescape($data['item_type']) . "</td>";
 
                 $itemname = htmlescape($itemname);
                 if ($canshowitems[$data['item_type']]) {
@@ -796,16 +796,16 @@ class Item_SoftwareVersion extends CommonDBRelation
                             $serial = sprintf(__('%1$s (%2$s)'), $serial, $lic['type']);
                         }
 
-                        echo "<a href='" . SoftwareLicense::getFormURLWithID($lic['id']) . "'>" . $lic['name'];
-                        echo "</a> - " . $serial;
+                        echo "<a href='" . SoftwareLicense::getFormURLWithID($lic['id']) . "'>" . htmlescape($lic['name']);
+                        echo "</a> - " . htmlescape($serial);
 
                         echo "<br>";
                     }
                 }
                 echo "</td>";
 
-                echo "<td>" . Html::convDate($data['date_install']) . "</td>";
-                echo "</tr>\n";
+                echo "<td>" . htmlescape(Html::convDate($data['date_install'])) . "</td>";
+                echo "</tr>";
 
                 $iterator->next();
             } while ($data = $iterator->current());
@@ -1014,7 +1014,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             (empty($withtemplate) || ($withtemplate != 2))
             && $canedit
         ) {
-            echo "<form method='post' action='" . Item_SoftwareVersion::getFormURL() . "'>";
+            echo "<form method='post' action='" . htmlescape(Item_SoftwareVersion::getFormURL()) . "'>";
             echo "<div class='spaced'><table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_1'><td class='center'>";
             echo _sn('Software', 'Software', Session::getPluralNumber()) . "&nbsp;&nbsp;";
@@ -1208,14 +1208,14 @@ class Item_SoftwareVersion extends CommonDBRelation
                 Html::closeForm();
             }
         } else {
-            echo "<p class='center b'>" . __('No results found') . "</p>";
+            echo "<p class='center b'>" . __s('No results found') . "</p>";
         }
         echo "</div>";
         if (
             (empty($withtemplate) || ($withtemplate != 2))
             && $canedit
         ) {
-            echo "<form method='post' action='" . Item_SoftwareLicense::getFormURL() . "'>";
+            echo "<form method='post' action='" . htmlescape(Item_SoftwareLicense::getFormURL()) . "'>";
             echo "<div class='spaced'><table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_1'><th colspan='2'>" . htmlescape(SoftwareLicense::getTypeName(Session::getPluralNumber())) . "</th></tr>";
             echo "<tr class='tab_bg_1'>";
@@ -1382,13 +1382,12 @@ class Item_SoftwareVersion extends CommonDBRelation
                 echo "</td>";
             }
             echo "<td>";
-            echo "<a href='" . Software::getFormURLWithID($data['softwares_id']) . "'>";
-            echo($_SESSION["glpiis_ids_visible"] ? sprintf(
-                __('%1$s (%2$s)'),
-                $data["softname"],
-                $data['softwares_id']
-            )
-                                               : $data["softname"]);
+            echo "<a href='" . htmlescape(Software::getFormURLWithID($data['softwares_id'])) . "'>";
+            echo  htmlescape(
+                $_SESSION["glpiis_ids_visible"]
+                ? sprintf(__('%1$s (%2$s)'), $data["softname"], $data['softwares_id'])
+                : $data["softname"]
+            );
             echo "</a></td>";
             echo "<td>" . htmlescape($data["state"]) . "</td>";
 
@@ -1462,19 +1461,16 @@ class Item_SoftwareVersion extends CommonDBRelation
 
             echo "</td>";
 
-            echo "<td>" . Html::convDate($data['dateinstall']) . "</td>";
-            echo "<td>" . $data['arch'] . "</td>";
+            echo "<td>" . htmlescape(Html::convDate($data['dateinstall'])) . "</td>";
+            echo "<td>" . htmlescape($data['arch']) . "</td>";
 
             if (isset($data['is_dynamic'])) {
-                echo "<td>" . Dropdown::getYesNo($data['is_dynamic']) . "</td>";
+                echo "<td>" . htmlescape(Dropdown::getYesNo($data['is_dynamic'])) . "</td>";
             }
 
-            echo "<td>" . Dropdown::getDropdownName(
-                "glpi_softwarecategories",
-                $data['softwarecategories_id']
-            );
+            echo "<td>" . htmlescape(Dropdown::getDropdownName("glpi_softwarecategories", $data['softwarecategories_id']));
             echo "</td>";
-            echo "<td>" . Dropdown::getYesNo($data["softvalid"]) . "</td>";
+            echo "<td>" . htmlescape(Dropdown::getYesNo($data["softvalid"])) . "</td>";
             echo "<td></td>"; // empty td for filter column
             echo "</tr>\n";
         }

@@ -400,7 +400,7 @@ class NetworkAlias extends FQDNLabel
 
             echo "<table class='tab_cadre_fixe'><tr>";
 
-            echo "<th><a href='javascript:reloadTab(\"order=alias\");'>" . self::getTypeName(1) .
+            echo "<th><a href='javascript:reloadTab(\"order=alias\");'>" . htmlescape(self::getTypeName(1)) .
               "</a></th>"; // Alias
             echo "<th><a href='javascript:reloadTab(\"order=realname\");'>" . __s("Computer's name") .
               "</a></th>";
@@ -445,7 +445,7 @@ class NetworkAlias extends FQDNLabel
                     echo "<tr class='tab_bg_1'>";
                     echo "<td><a href='" . htmlescape($alias->getFormURLWithID($data['alias_id'])) . "'>" .
                           htmlescape($data['alias']) . "</a></td>";
-                    echo "<td><a href='" . $address->getLinkURL() . "'>" . htmlescape($address->getInternetName()) .
+                    echo "<td><a href='" . htmlescape($address->getLinkURL()) . "'>" . htmlescape($address->getInternetName()) .
                     "</a></td>";
                     echo "<td>" . htmlescape($data['comment']) . "</td>";
                     echo "</tr>";

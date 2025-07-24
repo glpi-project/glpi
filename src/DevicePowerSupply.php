@@ -132,7 +132,10 @@ class DevicePowerSupply extends CommonDevice
             case 'Computer':
                 Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
                 if ($this->fields["power"]) {
-                    $row->addCell($row->getHeaderByName('power'), $this->fields["power"]);
+                    $row->addCell(
+                        $row->getHeaderByName('power'),
+                        htmlescape($this->fields["power"])
+                    );
                 }
         }
         return null;

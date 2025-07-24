@@ -1335,7 +1335,7 @@ class IPAddress extends CommonDBChild
                 $name_header = $row->getGroup()->getHeaderByName('Item', 'NetworkName');
                 $entity_header = $row->getGroup()->getHeaderByName('Item', 'Entity');
 
-                $row->addCell($ip_header, $line['ip'], $father);
+                $row->addCell($ip_header, htmlescape($line['ip']), $father);
 
                 if (!empty($line['name_id'])) {
                     $networkname->getFromDB($line['name_id']);
@@ -1352,7 +1352,7 @@ class IPAddress extends CommonDBChild
                             $row->addCell($item_header, $item->getLink(), $father);
                         }
                     }
-                    $row->addCell($entity_header, $line['entity'], $father);
+                    $row->addCell($entity_header, htmlescape($line['entity']), $father);
                 } elseif ((!empty($line['addr_item_id'])) && (!empty($line['addr_item_type']))) {
                     $itemtype = $line['addr_item_type'];
                     $item     = getItemForItemtype($itemtype);
@@ -1363,11 +1363,11 @@ class IPAddress extends CommonDBChild
                         foreach ($items as $item_) {
                             $elements[] = $item_->getLink();
                         }
-                        $row->addCell($item_header, implode(' > ', $elements), $father);
+                        $row->addCell($item_header, implode(' &gt; ', $elements), $father);
                     } else {
                         $row->addCell($item_header, $item->getLink(), $father);
                     }
-                    $row->addCell($entity_header, $line['entity'], $father);
+                    $row->addCell($entity_header, htmlescape($line['entity']), $father);
                 }
             }
         } else {
@@ -1408,14 +1408,13 @@ class IPAddress extends CommonDBChild
                         $row = $row->createRow();
                     }
 
-                    $content   = $address->fields['name'];
-                    $this_cell = $row->addCell($header, $content, $father);
+                    $this_cell = $row->addCell($header, htmlescape($address->fields['name']), $father);
 
                     if (isset($options['display_isDynamic']) && ($options['display_isDynamic'])) {
                         $dyn_header = $row->getGroup()->getHeaderByName('Internet', self::class . '_dynamic');
                         $this_cell  = $row->addCell(
                             $dyn_header,
-                            Dropdown::getYesNo($address->fields['is_dynamic']),
+                            htmlescape(Dropdown::getYesNo($address->fields['is_dynamic'])),
                             $this_cell
                         );
                     }

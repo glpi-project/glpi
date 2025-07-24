@@ -411,22 +411,16 @@ abstract class CommonDevice extends CommonDropdown
             return $father;
         }
 
-        if (static::canView()) {
-            $content = $this->getLink([
-                'icon' => self::getIcon(),
-            ]);
-        } else {
-            $content = $this->getName([
-                'icon' => self::getIcon(),
-            ]);
-        }
+        $content = $this->getLink([
+            'icon' => self::getIcon(),
+        ]);
 
         if ($options['canedit']) {
             $field_name  = 'quantity_' . static::class . '_' . $this->getID();
             $content .= "&nbsp;<span class='ti ti-plus cursor-pointer' title='" . __s('Add') . "'
-                      onClick=\"$('#" . $field_name . "').show();\"
+                      onClick=\"$('#" . htmlescape(jsescape($field_name)) . "').show();\"
                       ><span class='sr-only'>" . __s('Add') . "</span></span>";
-            $content .= "<span id='$field_name' style='display:none'><br>";
+            $content .= "<span id='" . htmlescape($field_name) . "' style='display:none'><br>";
             $content .= __s('Add') . "&nbsp;";
 
             $content  = [$content,
