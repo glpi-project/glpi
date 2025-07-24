@@ -116,19 +116,19 @@ switch ($action) {
 
         $error = [];
         if (!$itemtype) {
-            $error[] = __('Please select an itemtype');
+            $error[] = __s('Please select an itemtype');
         }
 
         if (!$items_id) {
-            $error[] = __('Please select an item');
+            $error[] = __s('Please select an item');
         }
 
         if (!$event) {
-            $error[] = __('Please select an event');
+            $error[] = __s('Please select an event');
         }
 
         if (count($error) > 0) {
-            array_unshift($error, __("Result can't be loaded :"));
+            array_unshift($error, __s("Result can't be loaded :"));
             echo implode("<br>&nbsp; - ", $error);
         } else {
             $obj = getItemForItemtype($itemtype);

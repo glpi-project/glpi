@@ -66,7 +66,7 @@ if (
 
     $nb = count($data);
     $badge_helper = sprintf(
-        _n(
+        _sn(
             '%s ticket in progress or recently solved on this item.',
             '%s tickets in progress or recently solved on this item.',
             $nb
@@ -78,7 +78,7 @@ if (
     if ($nb) {
         $content = '';
         foreach ($data as $title) {
-            $content .= $title . '<br>';
+            $content .= htmlescape($title) . '<br>';
         }
         echo '&nbsp;';
         Html::showToolTip($content);

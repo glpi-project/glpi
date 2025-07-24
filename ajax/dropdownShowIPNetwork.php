@@ -52,10 +52,10 @@ if ($_POST['ipnetworks_id'] && $network->can($_POST['ipnetworks_id'], READ)) {
     $network->computeNetworkRange($start, $end);
 
     //TRANS: %1$s is address, %2$s is netmask
-    printf(__s('IP network: %1$s/%2$s') . "<br>", $address, $netmask);
-    printf(__s('First/last addresses: %1$s/%2$s'), $start->getTextual(), $end->getTextual());
+    htmlescape(printf(__('IP network: %1$s/%2$s') . "<br>", $address, $netmask));
+    htmlescape(printf(__('First/last addresses: %1$s/%2$s'), $start->getTextual(), $end->getTextual()));
     if (!empty($gateway)) {
         echo "<br>";
-        printf(__s('Gateway: %s') . "\n", $gateway);
+        htmlescape(printf(__('Gateway: %s'), $gateway));
     }
 }

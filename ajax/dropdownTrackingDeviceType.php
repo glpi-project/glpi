@@ -103,11 +103,11 @@ if ($isValidItemtype) {
 
     // Auto update summary of active or just solved tickets
     if (($_POST['source_itemtype'] ?? null) === Ticket::class) {
-        $myname = htmlescape($_POST["myname"]);
-        echo "<span id='item_ticket_selection_information{$myname}_$rand' class='ms-1 text-nowrap'></span>";
+        $myname = $_POST["myname"];
+        echo "<span id='item_ticket_selection_information" . htmlescape("{$myname}_{$rand}") . "' class='ms-1 text-nowrap'></span>";
         Ajax::updateItemOnSelectEvent(
             $field_id,
-            "item_ticket_selection_information{$myname}_$rand",
+            "item_ticket_selection_information{$myname}_{$rand}",
             $CFG_GLPI["root_doc"] . "/ajax/ticketiteminformation.php",
             [
                 'items_id' => '__VALUE__',
