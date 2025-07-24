@@ -95,36 +95,36 @@ class Ajax
             ]
         );
 
-        $out = "<script type='text/javascript'>\n";
-        $out .= "var {$name};\n";
-        $out .= "$(function() {\n";
+        $js = "var {$name};";
+        $js .= "$(function() {";
         if (!empty($param['container'])) {
-            $out .= "   var el = $('#" . jsescape(Html::cleanId($param['container'])) . "');\n";
-            $out .= "   el.addClass('modal');\n";
+            $js .= "   var el = $('#" . jsescape(Html::cleanId($param['container'])) . "');";
+            $js .= "   el.addClass('modal');";
         } else {
-            $out .= "   var el = $('<div class=\"modal\"></div>');";
-            $out .= "   $('body').append(el);\n";
+            $js .= "   var el = $('<div class=\"modal\"></div>');";
+            $js .= "   $('body').append(el);";
         }
-        $out .= "   el.html('" . jsescape($html) . "');\n";
-        $out .= "   {$name} = new bootstrap.Modal(el.get(0), {show: false});\n";
-        $out .= "   el.on(\n";
-        $out .= "      'show.bs.modal',\n";
-        $out .= "      function(evt) {\n";
-        $out .= "         var fields = ";
+        $js .= "   el.html('" . jsescape($html) . "');";
+        $js .= "   {$name} = new bootstrap.Modal(el.get(0), {show: false});";
+        $js .= "   el.on(";
+        $js .= "      'show.bs.modal',";
+        $js .= "      function(evt) {";
+        $js .= "         var fields = ";
         if (is_array($param['extraparams']) && count($param['extraparams'])) {
-            $out .= json_encode($param['extraparams'], JSON_FORCE_OBJECT);
+            $js .= json_encode($param['extraparams'], JSON_FORCE_OBJECT);
         } else {
-            $out .= '{}';
+            $js .= '{}';
         }
-        $out .= ";\n";
+        $js .= ";";
         if (!empty($param['js_modal_fields'])) {
-            $out .= $param['js_modal_fields'] . "\n";
+            $js .= $param['js_modal_fields'] . "";
         }
-        $out .= "         el.find('.modal-body').load('" . jsescape($url) . "', fields);\n";
-        $out .= "      }\n";
-        $out .= "   );\n";
-        $out .= "});\n";
-        $out .= "</script>\n";
+        $js .= "         el.find('.modal-body').load('" . jsescape($url) . "', fields);";
+        $js .= "      }";
+        $js .= "   );";
+        $js .= "});";
+
+        $out = Html::scriptBlock($js);
 
         if ($param['display']) {
             echo $out;
@@ -799,9 +799,9 @@ JS;
                     $out .=  json_encode($val);
                 }
             }
-            $out .= "}\n";
+            $out .= "}";
         }
-        $out .= ")\n";
+        $out .= ")";
         if ($display) {
             echo $out;
         } else {

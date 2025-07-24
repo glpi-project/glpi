@@ -1,0 +1,50 @@
+name: "Security scan"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  security-scan:
+    name: "Security scan"
+    runs-on: "ubuntu-latest"
+    env:
+      COMPOSE_FILE: ".github/actions/docker-compose-app.yml"
+      APPLICATION_ROOT: "${{ github.workspace }}"
+      PHP_IMAGE: "githubactions-php-apache:8.4"
+      UPDATE_FILES_ACL: true
+    steps:
+      - name: "Set env"
+        run: |
+          echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
+      - name: "Checkout"
+        uses: "actions/checkout@v4"
+      - name: "Restore dependencies cache"
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.APP_CONTAINER_HOME }}/.composer/cache/
+            ${{ env.APP_CONTAINER_HOME }}/.npm/_cacache/
+          key: "app_home_deps-${{ matrix.php-version }}-${{ hashFiles('composer.lock', 'package-lock.json') }}"
+          restore-keys: |
+            app_home_deps-${{ matrix.php-version }}-
+            app_home_deps-
+      - name: "Initialize containers"
+        run: |
+          .github/actions/init_containers-start.sh
+      - name: "Show versions"
+        run: |
+          .github/actions/init_show-versions.sh
+      - name: "Build dependencies / translations"
+        run: |
+          docker compose exec -T app .github/actions/init_build.sh
+      - name: "Psalm security scan"
+        run: |
+          docker compose exec -T app vendor/bin/psalm --long-progress --output-format=github

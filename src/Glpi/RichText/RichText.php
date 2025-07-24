@@ -58,6 +58,9 @@ final class RichText
      * @param boolean       $encode_output  Indicates whether the output should be encoded (encoding of HTML special chars)
      *
      * @return string
+     *
+     * @psalm-taint-escape html
+     * @psalm-taint-escape has_quotes
      */
     public static function getSafeHtml(?string $content, bool $encode_output = false): string
     {

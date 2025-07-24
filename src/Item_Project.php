@@ -94,7 +94,7 @@ class Item_Project extends CommonDBRelation
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $instID = $project->fields['id'];
+        $instID = $project->getID();
 
         if (!$project->can($instID, READ)) {
             return false;
@@ -178,7 +178,7 @@ class Item_Project extends CommonDBRelation
                         $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
                     }
                     $link     = $item::getFormURLWithID($data['id']);
-                    $namelink = "<a href=\"" . $link . "\">" . htmlescape($name) . "</a>";
+                    $namelink = "<a href=\"" . htmlescape($link) . "\">" . htmlescape($name) . "</a>";
 
                     echo "<tr class='tab_bg_1'>";
                     if ($canedit) {
@@ -187,13 +187,13 @@ class Item_Project extends CommonDBRelation
                         echo "</td>";
                     }
                     if ($prem) {
-                        $typename = htmlescape($item->getTypeName($nb));
+                        $typename = $item->getTypeName($nb);
                         echo "<td class='center top' rowspan='$nb'>" .
-                         (($nb > 1) ? sprintf(__('%1$s: %2$s'), $typename, $nb) : $typename) . "</td>";
+                         htmlescape(($nb > 1) ? sprintf(__('%1$s: %2$s'), $typename, $nb) : $typename) . "</td>";
                         $prem = false;
                     }
                     echo "<td class='center'>";
-                    echo Dropdown::getDropdownName("glpi_entities", $data['entity']) . "</td>";
+                    echo htmlescape(Dropdown::getDropdownName("glpi_entities", $data['entity'])) . "</td>";
                     echo "<td class='center" .
                         (isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'");
                     echo ">" . $namelink . "</td>";
@@ -208,7 +208,7 @@ class Item_Project extends CommonDBRelation
         }
         if ($totalnb > 0) {
             echo "<tr class='tab_bg_2'>";
-            echo "<td class='center' colspan='2'>" . sprintf(__s('%1$s = %2$s'), __('Total'), $totalnb);
+            echo "<td class='center' colspan='2'>" . htmlescape(sprintf(__('%1$s = %2$s'), __('Total'), $totalnb));
             echo "</td><td colspan='4'>&nbsp;</td></tr> ";
         }
         echo "</table>";

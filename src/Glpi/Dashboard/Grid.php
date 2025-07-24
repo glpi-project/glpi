@@ -959,13 +959,13 @@ HTML;
         // retrieve card
         $notfound_html = "<div class='empty-card card-warning '>
          <i class='ti ti-alert-triangle'></i>" .
-         __('empty card!') . "
+         __s('empty card!') . "
       </div>";
         $render_error_html = "<div class='empty-card card-error '>
          <i class='ti ti-alert-triangle'></i>" .
-         __('Error rendering card!') .
+         __s('Error rendering card!') .
             "</br>" .
-            $card_id .
+            \htmlescape($card_id) .
             "</div>";
 
         $start = microtime(true);
@@ -1062,11 +1062,7 @@ HTML;
         if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
             // Use the current PHP request duration as the execution time for a more accurate card loading time
             $execution_time = Profiler::getInstance()->getCurrentDuration('php_request');
-            $html .= <<<HTML
-         <span class='debug-card'>
-            {$execution_time}ms
-         </span>
-HTML;
+            $html .= '<span class="debug-card">' . \htmlescape($execution_time) . 'ms</span>';
         }
 
         return $html;

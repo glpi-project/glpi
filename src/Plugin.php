@@ -2244,11 +2244,11 @@ class Plugin extends CommonDBTM
         }
 
         if (!$compat) {
-            echo htmlescape(Plugin::messageIncompatible(
+            echo Plugin::messageIncompatible(
                 'core',
                 ($infos['min'] ?? null),
                 ($infos['max'] ?? null)
-            ));
+            );
         }
 
         return $compat;
@@ -2281,11 +2281,11 @@ class Plugin extends CommonDBTM
         }
 
         if (!$compat) {
-            echo htmlescape(Plugin::messageIncompatible(
+            echo Plugin::messageIncompatible(
                 'php',
                 ($infos['min'] ?? null),
                 ($infos['max'] ?? null)
-            ));
+            );
         }
 
         return $compat;
@@ -2305,9 +2305,12 @@ class Plugin extends CommonDBTM
     {
         $report = Config::checkExtensions($exts);
         if (count($report['missing'])) {
+            $messages = [];
             foreach (array_keys($report['missing']) as $ext) {
-                echo htmlescape(self::messageMissingRequirement('ext', $ext)) . '<br/>';
+                $messages[] = self::messageMissingRequirement('ext', $ext);
             }
+            echo implode(' ', $messages);
+
             return false;
         }
         return true;
@@ -2329,11 +2332,16 @@ class Plugin extends CommonDBTM
         global $CFG_GLPI;
 
         $compat = true;
+        $messages = [];
         foreach ($params as $param) {
             if (!isset($CFG_GLPI[$param]) || trim($CFG_GLPI[$param]) == '' || !$CFG_GLPI[$param]) {
-                echo htmlescape(self::messageMissingRequirement('glpiparam', $param)) . '<br/>';
+                $messages[] = self::messageMissingRequirement('glpiparam', $param);
                 $compat = false;
             }
+        }
+
+        if (!$compat) {
+            echo implode(' ', $messages);
         }
 
         return $compat;
@@ -2352,11 +2360,16 @@ class Plugin extends CommonDBTM
     public function checkPhpParameters($params)
     {
         $compat = true;
+        $messages = [];
         foreach ($params as $param) {
             if (!ini_get($param) || trim(ini_get($param)) == '') {
-                echo htmlescape(self::messageMissingRequirement('param', $param)) . '<br/>';
+                $messages[] = self::messageMissingRequirement('param', $param);
                 $compat = false;
             }
+        }
+
+        if (!$compat) {
+            echo implode(' ', $messages);
         }
 
         return $compat;
@@ -2375,11 +2388,16 @@ class Plugin extends CommonDBTM
     public function checkGlpiPlugins($plugins)
     {
         $compat = true;
+        $messages = [];
         foreach ($plugins as $plugin) {
             if (!$this->isActivated($plugin)) {
-                echo htmlescape(self::messageMissingRequirement('plugin', $plugin)) . '<br/>';
+                $messages[] = self::messageMissingRequirement('plugin', $plugin);
                 $compat = false;
             }
+        }
+
+        if (!$compat) {
+            echo implode(' ', $messages);
         }
 
         return $compat;

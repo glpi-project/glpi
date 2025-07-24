@@ -49,6 +49,12 @@ final class CliDisplayHandler implements ErrorDisplayHandler
 
     public function displayErrorMessage(string $error_label, string $message, string $log_level): void
     {
-        echo \sprintf('%s: %s', $error_label, $message) . PHP_EOL;
+        /**
+         * CLI context, no XSS possible.
+         * @psalm-taint-escape has_quotes
+         */
+        $output = \sprintf('%s: %s', $error_label, $message) . PHP_EOL;
+
+        echo $output;
     }
 }

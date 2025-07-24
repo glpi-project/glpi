@@ -1708,7 +1708,7 @@ TWIG, $twig_params);
                     $CFG_GLPI["root_doc"] . "/ajax/dropdownTrackingDeviceType.php",
                     $p
                 );
-                echo "<span id='" . Html::cleanId("results_" . htmlescape($myname) . "$rand") . "' class='d-flex align-items-center'>\n";
+                echo "<span id='" . htmlescape(Html::cleanId("results_" . $myname . "$rand")) . "' class='d-flex align-items-center'>\n";
 
                 // Display default value if itemtype is displayed
                 if (
@@ -1729,15 +1729,11 @@ TWIG, $twig_params);
                     } else {
                         $p['source_itemtype'] = static::$itemtype_1;
                         $p['itemtype'] = $itemtype;
-                        echo "<script type='text/javascript' >\n";
-                        echo "$(function() {";
-                        Ajax::updateItemJsCode(
-                            "results_" . htmlescape($myname) . "$rand",
-                            $CFG_GLPI["root_doc"] .
-                                      "/ajax/dropdownTrackingDeviceType.php",
+                        echo Ajax::updateItem(
+                            "results_" . $myname . "$rand",
+                            $CFG_GLPI["root_doc"] . "/ajax/dropdownTrackingDeviceType.php",
                             $p
                         );
-                        echo '});</script>';
                     }
                 }
                 echo "</span>\n";
