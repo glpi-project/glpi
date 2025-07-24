@@ -256,18 +256,19 @@
                             <i class="ti ti-x"></i>
                         </button>
                     </section>
+                {% else %}
+                    {{ field.renderConfigForm(
+                        form,
+                        destination,
+                        config_field,
+                        item.formatConfigInputName(field.getKey()),
+                        {
+                            'is_horizontal': false,
+                            'init': false,
+                        }|merge(extra_options),
+                    '__INDEX__'
+                    )|raw }}
                 {% endif %}
-                {{ field.renderConfigForm(
-                    form,
-                    destination,
-                    config_field,
-                    item.formatConfigInputName(field.getKey()),
-                    {
-                        'is_horizontal': false,
-                        'init': false,
-                    }|merge(extra_options),
-                '__INDEX__'
-                )|raw }}
             </template>
         {% endif %}
     </section>
