@@ -4440,7 +4440,7 @@ HTML;
 
         if ($p['display']) {
             echo $output;
-            return $p['rand'];
+            return (int) $p['rand'];
         }
         return $output;
     }

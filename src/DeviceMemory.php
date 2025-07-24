@@ -184,10 +184,7 @@ class DeviceMemory extends CommonDevice
                 if ($this->fields["devicememorytypes_id"]) {
                     $row->addCell(
                         $row->getHeaderByName('devicememory_type'),
-                        Dropdown::getDropdownName(
-                            "glpi_devicememorytypes",
-                            $this->fields["devicememorytypes_id"]
-                        ),
+                        htmlescape(Dropdown::getDropdownName("glpi_devicememorytypes", $this->fields["devicememorytypes_id"])),
                         $father
                     );
                 }
@@ -195,7 +192,7 @@ class DeviceMemory extends CommonDevice
                 if (!empty($this->fields["frequence"])) {
                     $row->addCell(
                         $row->getHeaderByName('devicememory_frequency'),
-                        $this->fields["frequence"],
+                        htmlescape($this->fields["frequence"]),
                         $father
                     );
                 }

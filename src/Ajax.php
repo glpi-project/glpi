@@ -644,7 +644,7 @@ JS;
                     throw new InvalidArgumentException('Event name is expected to contain only alphanumeric chars.');
                 }
 
-                $zone_id = Html::cleanId($zone);
+                $zone_id = jsescape(Html::cleanId($zone));
 
                 $output .= "$('#$zone_id').on('$event', function(event) {";
                 $condition = '';

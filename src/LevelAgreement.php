@@ -175,15 +175,14 @@ abstract class LevelAgreement extends CommonDBChild
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __s('SLM') . "</td>";
         echo "<td>";
-        echo $slm->getLink();
+        echo htmlescape($slm->getLink());
         echo "<input type='hidden' name='slms_id' value='" . intval($this->fields['slms_id']) . "'>";
         echo "</td></tr>";
 
         if ($ID > 0) {
             echo "<tr class='tab_bg_1'>";
             echo "<td>" . __s('Last update') . "</td>";
-            echo "<td>" . ($this->fields["date_mod"] ? Html::convDateTime($this->fields["date_mod"])
-                                                : __s('Never'));
+            echo "<td>" . htmlescape($this->fields["date_mod"] ? Html::convDateTime($this->fields["date_mod"]) : __('Never'));
             echo "</td></tr>";
         }
 
@@ -207,19 +206,24 @@ abstract class LevelAgreement extends CommonDBChild
                 'on_change' => 'appearhideendofworking()',
             ]
         );
-        echo "<script type='text/javascript' >";
-        echo "function appearhideendofworking() {";
-        echo "if ($('#dropdown_definition_time$rand option:selected').val() == 'day'
-                  || $('#dropdown_definition_time$rand option:selected').val() == 'month') {
-               $('#title_endworkingday').show();
-               $('#dropdown_endworkingday').show();
-            } else {
-               $('#title_endworkingday').hide();
-               $('#dropdown_endworkingday').hide();
-            }";
-        echo "}";
-        echo "appearhideendofworking();";
-        echo "</script>";
+
+        echo Html::scriptBlock(
+            <<<JAVASCRIPT
+            function appearhideendofworking() {
+                if (
+                    $('#dropdown_definition_time$rand option:selected').val() == 'day'
+                    || $('#dropdown_definition_time$rand option:selected').val() == 'month'
+                ) {
+                    $('#title_endworkingday').show();
+                    $('#dropdown_endworkingday').show();
+                } else {
+                    $('#title_endworkingday').hide();
+                    $('#dropdown_endworkingday').hide();
+                }
+            }
+            appearhideendofworking();
+JAVASCRIPT
+        );
 
         echo "</td></tr>";
 

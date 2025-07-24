@@ -273,7 +273,7 @@ class PendingReason extends CommonDropdown
             'show_warning' => $defaultPendingReason && $defaultPendingReason->getID() != $this->getID(),
             'tooltip' => $defaultPendingReason ? Html::showToolTip(
                 sprintf(
-                    __('If you set this as the default pending reason, the previous default pending reason (%s) will no longer be the default value.'),
+                    __s('If you set this as the default pending reason, the previous default pending reason (%s) will no longer be the default value.'),
                     '<a href="' . htmlescape(PendingReason::getFormURLWithID($defaultPendingReason->getID())) . '">' . htmlescape($defaultPendingReason->fields['name']) . '</a>'
                 ),
                 [

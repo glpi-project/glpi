@@ -194,7 +194,7 @@ class DeviceNetworkCard extends CommonDevice
                 if ($this->fields["bandwidth"]) {
                     $cell = $row->addCell(
                         $row->getHeaderByName('devicenetworkcard_bandwidth'),
-                        $this->fields["bandwidth"],
+                        htmlescape($this->fields["bandwidth"]),
                         $father
                     );
                 }

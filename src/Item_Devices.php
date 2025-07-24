@@ -648,10 +648,10 @@ class Item_Devices extends CommonDBRelation
         echo "<div class='spaced table-responsive'>";
         $rand = mt_rand();
         if ($canedit) {
-            echo "\n<form id='form_device_add$rand' name='form_device_add$rand'
-                  action='" . Toolbox::getItemTypeFormURL(self::class) . "' method='post'>\n";
-            echo "\t<input type='hidden' name='items_id' value='$ID'>\n";
-            echo "\t<input type='hidden' name='itemtype' value='" . htmlescape($item->getType()) . "'>\n";
+            echo "<form id='form_device_add$rand' name='form_device_add$rand'
+                  action='" . htmlescape(Toolbox::getItemTypeFormURL(self::class)) . "' method='post'>";
+            echo "<input type='hidden' name='items_id' value='$ID'>";
+            echo "<input type='hidden' name='itemtype' value='" . htmlescape($item->getType()) . "'>";
         }
 
         $table = new HTMLTableMain();
@@ -775,10 +775,10 @@ class Item_Devices extends CommonDBRelation
         }
 
         if ($canedit) {
-            echo "\n<form id='form_device_action$rand' name='form_device_action$rand'
-                  action='" . Toolbox::getItemTypeFormURL(self::class) . "' method='post'>\n";
-            echo "\t<input type='hidden' name='items_id' value='$ID'>\n";
-            echo "\t<input type='hidden' name='itemtype' value='" . htmlescape($item->getType()) . "'>\n";
+            echo "<form id='form_device_action$rand' name='form_device_action$rand'
+                  action='" . htmlescape(Toolbox::getItemTypeFormURL(self::class)) . "' method='post'>";
+            echo "<input type='hidden' name='items_id' value='$ID'>";
+            echo "<input type='hidden' name='itemtype' value='" . htmlescape($item->getType()) . "'>";
         }
 
         $table->display(['display_super_for_each_group' => false,
@@ -1031,7 +1031,7 @@ class Item_Devices extends CommonDBRelation
                 if ($is_device) {
                     $cell = $current_row->addCell(
                         $peer_column,
-                        ($peer ? $peer->getLink() : __('None')),
+                        ($peer ? $peer->getLink() : __s('None')),
                         null,
                         $peer
                     );
@@ -1050,7 +1050,7 @@ class Item_Devices extends CommonDBRelation
             }
             $spec_cell = $current_row->addCell(
                 $link_column,
-                "<a href='" . $this->getLinkURL() . "'>$mode</a>"
+                "<a href='" . htmlescape($this->getLinkURL()) . "'>$mode</a>"
             );
 
             foreach (static::getSpecificities() as $field => $attributs) {
@@ -1076,7 +1076,7 @@ class Item_Devices extends CommonDBRelation
                         switch ($attributs['datatype']) {
                             case 'dropdown':
                                 $dropdownType = getItemtypeForForeignKeyField($field);
-                                $content = Dropdown::getDropdownName($dropdownType::getTable(), $link[$field]);
+                                $content = htmlescape(Dropdown::getDropdownName($dropdownType::getTable(), $link[$field]));
                                 break;
 
                             case 'progressbar':
@@ -1094,7 +1094,7 @@ class Item_Devices extends CommonDBRelation
                                 break;
 
                             default:
-                                $content = $link[$field];
+                                $content = htmlescape($link[$field]);
                         }
                     }
                 }
@@ -1147,7 +1147,7 @@ class Item_Devices extends CommonDBRelation
             if ($item->isDynamic()) {
                 $previous_cell = $current_row->addCell(
                     $dynamics_column,
-                    Dropdown::getYesNo($link['is_dynamic']),
+                    htmlescape(Dropdown::getYesNo($link['is_dynamic'])),
                     $spec_cell
                 );
             } else {

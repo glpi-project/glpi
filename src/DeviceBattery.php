@@ -138,10 +138,7 @@ class DeviceBattery extends CommonDevice
         if ($this->fields["devicebatterytypes_id"]) {
             $row->addCell(
                 $row->getHeaderByName('devicebattery_type'),
-                Dropdown::getDropdownName(
-                    "glpi_devicebatterytypes",
-                    $this->fields["devicebatterytypes_id"]
-                ),
+                htmlescape(Dropdown::getDropdownName("glpi_devicebatterytypes", $this->fields["devicebatterytypes_id"])),
                 $father
             );
         }
@@ -149,7 +146,7 @@ class DeviceBattery extends CommonDevice
         if ($this->fields["voltage"]) {
             $row->addCell(
                 $row->getHeaderByName('voltage'),
-                $this->fields['voltage'],
+                htmlescape($this->fields['voltage']),
                 $father
             );
         }
@@ -157,7 +154,7 @@ class DeviceBattery extends CommonDevice
         if ($this->fields["capacity"]) {
             $row->addCell(
                 $row->getHeaderByName('capacity'),
-                $this->fields['capacity'],
+                htmlescape($this->fields['capacity']),
                 $father
             );
         }

@@ -47,6 +47,7 @@ use Glpi\SocketModel;
 use function Safe\json_encode;
 use function Safe\opendir;
 use function Safe\preg_match;
+use function Safe\preg_replace;
 
 class Dropdown
 {
@@ -234,7 +235,7 @@ class Dropdown
                 . '</span>';
             if ($params['display']) {
                 echo $output;
-                return $params['rand'];
+                return (int) $params['rand'];
             }
             return $output;
         }
@@ -492,7 +493,7 @@ class Dropdown
         $output .= Ajax::commonDropdownUpdateItem($params, false);
         if ($params['display']) {
             echo $output;
-            return $params['rand'];
+            return (int) $params['rand'];
         }
         return $output;
     }
@@ -1912,7 +1913,7 @@ HTML;
 
         if ($params['display']) {
             echo $out;
-            return $params['rand'];
+            return (int) $params['rand'];
         }
 
         return $out;
@@ -2005,7 +2006,7 @@ HTML;
 
         if ($p['display']) {
             echo $out;
-            return $p['rand'];
+            return (int) $p['rand'];
         }
         return $out;
     }
@@ -2309,7 +2310,7 @@ HTML;
 
         $other_select_option = $name . '_other_value';
         if ($param['other'] !== false) {
-            $param['on_change'] .= "displayOtherSelectOptions(this, \"$other_select_option\");";
+            $param['on_change'] .= "displayOtherSelectOptions(this, \"" . jsescape($other_select_option) . "\");";
 
             // If $param['other'] is a string, then we must highlight "other" option
             if (is_string($param['other'])) {
@@ -2340,14 +2341,14 @@ HTML;
             foreach ($param['values'] as $value) {
                 $output .= "<input type='hidden' name='" . htmlescape($field_name) . "' value='" . htmlescape($value) . "'>";
                 if (isset($elements[$value])) {
-                    $to_display[] = htmlescape($elements[$value]);
+                    $to_display[] = $elements[$value];
                 }
             }
             $output .= '<span class="form-control" readonly style="width: ' . htmlescape($param["width"]) . '"';
             if ($param['tooltip']) {
                 $output .= ' title="' . htmlescape($param['tooltip']) . '"';
             }
-            $output .= '>' . implode(', ', $to_display) . '</span>';
+            $output .= '>' . htmlescape(implode(', ', $to_display)) . '</span>';
         } else {
             if ($param['multiple']) {
                 // Fix for multiple select not sending any form data when no option is selected
@@ -2475,7 +2476,7 @@ HTML;
                 if (is_string($param['other'])) {
                     $output .= " selected";
                 }
-                $output .= ">" . __('Other...') . "</option>";
+                $output .= ">" . __s('Other...') . "</option>";
             }
 
             $output .= "</select>";
@@ -2504,23 +2505,23 @@ HTML;
 
         if ($param["multiple"]) {
             // Hack for All / None because select2 does not provide it
-            $select   = __('All');
-            $deselect = __('None');
+            $select   = __s('All');
+            $deselect = __s('None');
             $output  .= "<div class='invisible' id='selectallbuttons_" . htmlescape($field_id) . "'>";
             $output  .= "<div class='d-flex justify-content-around p-1'>";
             $output  .= "<a class='btn btn-sm' " .
-                      "onclick=\"selectAll('$field_id');$('#$field_id').select2('close');\">$select" .
+                      "onclick=\"selectAll('" . htmlescape(jsescape($field_id)) . "');$('#" . htmlescape(jsescape($field_id)) . "').select2('close');\">$select" .
                      "</a> ";
-            $output  .= "<a class='btn btn-sm' onclick=\"deselectAll('$field_id');\">$deselect" .
+            $output  .= "<a class='btn btn-sm' onclick=\"deselectAll('" . htmlescape(jsescape($field_id)) . "');\">$deselect" .
                      "</a>";
             $output  .= "</div></div>";
 
-            $multichecksappend_varname = "multichecksappend" . str_replace('-', '_', $field_id);
+            $multichecksappend_varname = "multichecksappend" . preg_replace('/[^\w]/', '_', $field_id);
             $js = "
                 var $multichecksappend_varname = false;
-                $('#$field_id').on('select2:open', function(e) {
+                $('#" . jsescape($field_id) . "').on('select2:open', function(e) {
                     if (!$multichecksappend_varname) {
-                        $('#select2-$field_id-results').parent().append($('#selectallbuttons_$field_id').html());
+                        $('#select2-" . jsescape($field_id) . "-results').parent().append($('#selectallbuttons_" . jsescape($field_id) . "').html());
                         $multichecksappend_varname = true;
                     }
                 });
@@ -2532,7 +2533,7 @@ HTML;
 
         if ($param['display']) {
             echo $output;
-            return $param['rand'];
+            return (int) $param['rand'];
         }
         return $output;
     }

@@ -133,7 +133,7 @@ class DeviceSoundCard extends CommonDevice
                 if ($this->fields["type"]) {
                     $cell = $row->addCell(
                         $row->getHeaderByName('devicesoundcard_type'),
-                        $this->fields["type"],
+                        htmlescape($this->fields["type"]),
                         $father
                     );
                 }

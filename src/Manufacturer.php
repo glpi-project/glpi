@@ -215,10 +215,7 @@ class Manufacturer extends CommonDropdown
         if (!empty($item->fields["manufacturers_id"])) {
             $row->addCell(
                 $row->getHeaderByName($column_name),
-                Dropdown::getDropdownName(
-                    "glpi_manufacturers",
-                    $item->fields["manufacturers_id"]
-                ),
+                htmlescape(Dropdown::getDropdownName("glpi_manufacturers", $item->fields["manufacturers_id"])),
                 $father
             );
         }

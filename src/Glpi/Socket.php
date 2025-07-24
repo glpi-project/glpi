@@ -944,7 +944,7 @@ class Socket extends CommonDBChild
 
         $row->addCell(
             $row->getHeaderByName($column_name),
-            Dropdown::getDropdownName("glpi_sockets", $item->fields["sockets_id"]),
+            htmlescape(Dropdown::getDropdownName("glpi_sockets", $item->fields["sockets_id"])),
             $father
         );
     }
