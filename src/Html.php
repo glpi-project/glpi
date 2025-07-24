@@ -3161,9 +3161,9 @@ JS;
             $hour   = 0;
             $minute = 0;
             $second = 0;
-            $month  = date("n", $specifictime);
+            $month  = (int) date("n", $specifictime);
             $day    = 1;
-            $year   = date("Y", $specifictime);
+            $year   = (int) date("Y", $specifictime);
 
             switch ($val) {
                 case "BEGINYEAR":
@@ -3192,9 +3192,9 @@ JS;
             $hour   = 0;
             $minute = 0;
             $second = 0;
-            $month  = date("n", strtotime($lastday));
-            $day    = date("j", strtotime($lastday));
-            $year   = date("Y", strtotime($lastday));
+            $month  = (int) date("n", strtotime($lastday));
+            $day    = (int) date("j", strtotime($lastday));
+            $year   = (int) date("Y", strtotime($lastday));
 
             return date($format_use, mktime($hour, $minute, $second, $month, $day, $year));
         }

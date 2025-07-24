@@ -64,7 +64,7 @@ foreach (['date1', 'date2'] as $key) {
     }
 }
 if (empty($_GET["date1"]) && empty($_GET["date2"])) {
-    $_GET["date1"] = date("Y-m-d", mktime(1, 0, 0, date("m"), date("d"), date("Y") - 1));
+    $_GET["date1"] = date("Y-m-d", mktime(1, 0, 0, (int) date("m"), (int) date("d"), ((int) date("Y")) - 1));
     $_GET["date2"] = date("Y-m-d");
 }
 

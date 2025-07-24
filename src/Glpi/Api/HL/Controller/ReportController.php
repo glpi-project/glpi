@@ -657,7 +657,7 @@ class ReportController extends AbstractController
             $field
         );
         if (empty($start) && empty($end)) {
-            $start = date("Y-m-d", mktime(1, 0, 0, date("m"), date("d"), date("Y") - 1));
+            $start = date("Y-m-d", mktime(1, 0, 0, (int) date("m"), (int) date("d"), ((int) date("Y")) - 1));
             $end = date("Y-m-d");
         }
 
@@ -807,7 +807,7 @@ class ReportController extends AbstractController
             'hardwares'
         );
         if (empty($start) && empty($end)) {
-            $start = date("Y-m-d", mktime(1, 0, 0, date("m"), date("d"), date("Y") - 1));
+            $start = date("Y-m-d", mktime(1, 0, 0, (int) date("m"), (int) date("d"), ((int) date("Y")) - 1));
             $end = date("Y-m-d");
         }
 
@@ -1031,7 +1031,7 @@ class ReportController extends AbstractController
             $field
         );
         if (empty($start) && empty($end)) {
-            $start = date("Y-m-d", mktime(1, 0, 0, date("m"), date("d"), date("Y") - 1));
+            $start = date("Y-m-d", mktime(1, 0, 0, (int) date("m"), (int) date("d"), ((int) date("Y")) - 1));
             $end = date("Y-m-d");
         }
 

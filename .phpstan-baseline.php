@@ -38,46 +38,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/smtp_oauth2_callback.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$month of function Safe\\\\mktime expects int\\|null, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/stat.item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#5 \\$day of function Safe\\\\mktime expects int\\|null, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/stat.item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$month of function Safe\\\\mktime expects int\\|null, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/stat.location.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#5 \\$day of function Safe\\\\mktime expects int\\|null, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/stat.location.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#6 \\$item_type_output_param of static method Html\\:\\:printPager\\(\\) expects int\\|string, array\\<string, mixed\\> given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/front/stat.location.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$month of function Safe\\\\mktime expects int\\|null, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/stat.tracking.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#5 \\$day of function Safe\\\\mktime expects int\\|null, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/stat.tracking.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#6 \\$item_type_output_param of static method Html\\:\\:printPager\\(\\) expects int\\|string, array\\<string, mixed\\> given\\.$#',
@@ -215,24 +179,6 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#3 \\$nb of function _n expects int, float given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 4,
-	'path' => __DIR__ . '/src/Cartridge.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$month of function Safe\\\\mktime expects int\\|null, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 8,
-	'path' => __DIR__ . '/src/Cartridge.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#5 \\$day of function Safe\\\\mktime expects int\\|null, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 8,
-	'path' => __DIR__ . '/src/Cartridge.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#6 \\$year of function Safe\\\\mktime expects int\\|null, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 8,
 	'path' => __DIR__ . '/src/Cartridge.php',
 ];
 $ignoreErrors[] = [
@@ -638,18 +584,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ReportController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$month of function Safe\\\\mktime expects int\\|null, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ReportController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#5 \\$day of function Safe\\\\mktime expects int\\|null, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ReportController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Expression "\\$action\\(\\$input\\)" on a separate line does not do anything\\.$#',
 	'identifier' => 'expr.resultUnused',
 	'count' => 2,
@@ -834,18 +768,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Dashboard/Grid.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$month of function Safe\\\\mktime expects int\\|null, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#6 \\$year of function Safe\\\\mktime expects int\\|null, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Static method Glpi\\\\Dashboard\\\\Provider\\:\\:getSearchOptionID\\(\\) is unused\\.$#',
@@ -1076,24 +998,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$month of function Safe\\\\mktime expects int\\|null, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#5 \\$day of function Safe\\\\mktime expects int\\|null, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#6 \\$year of function Safe\\\\mktime expects int\\|null, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$address of static method IPAddress\\:\\:addValueToAddress\\(\\) expects array\\<int\\>, array\\<int, float\\> given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
@@ -1121,24 +1025,6 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$item of static method Infocom\\:\\:showForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Infocom.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$month of function Safe\\\\mktime expects int\\|null, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Infocom.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#5 \\$day of function Safe\\\\mktime expects int\\|null, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Infocom.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#6 \\$year of function Safe\\\\mktime expects int\\|null, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
 	'path' => __DIR__ . '/src/Infocom.php',
 ];
 $ignoreErrors[] = [
@@ -1737,18 +1623,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#3 \\$itil_type of static method Stat\\:\\:getAssetsWithITIL\\(\\) expects class\\-string\\<CommonITILObject\\>, class\\-string\\<CommonDBTM\\> given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Stat.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$month of function Safe\\\\mktime expects int\\|null, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Stat.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#5 \\$day of function Safe\\\\mktime expects int\\|null, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Stat.php',

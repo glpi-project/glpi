@@ -846,15 +846,15 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
                 }
                 $tmp_dbeg       = explode("-", $data["date_in"]);
                 $tmp_dend       = explode("-", $data["date_use"]);
-                $stock_time_tmp = mktime(0, 0, 0, $tmp_dend[1], $tmp_dend[2], $tmp_dend[0])
-                             - mktime(0, 0, 0, $tmp_dbeg[1], $tmp_dbeg[2], $tmp_dbeg[0]);
+                $stock_time_tmp = mktime(0, 0, 0, (int) $tmp_dend[1], (int) $tmp_dend[2], (int) $tmp_dend[0])
+                             - mktime(0, 0, 0, (int) $tmp_dbeg[1], (int) $tmp_dbeg[2], (int) $tmp_dbeg[0]);
                 $stock_time    += $stock_time_tmp;
             }
             if ($show_old) {
                 $tmp_dbeg      = explode("-", $data["date_use"]);
                 $tmp_dend      = explode("-", $data["date_out"]);
-                $use_time_tmp  = mktime(0, 0, 0, $tmp_dend[1], $tmp_dend[2], $tmp_dend[0])
-                             - mktime(0, 0, 0, $tmp_dbeg[1], $tmp_dbeg[2], $tmp_dbeg[0]);
+                $use_time_tmp  = mktime(0, 0, 0, (int) $tmp_dend[1], (int) $tmp_dend[2], (int) $tmp_dend[0])
+                             - mktime(0, 0, 0, (int) $tmp_dbeg[1], (int) $tmp_dbeg[2], (int) $tmp_dbeg[0]);
                 $use_time     += $use_time_tmp;
             }
 
@@ -1148,14 +1148,14 @@ TWIG, ['printer_id' => $printer->getID()]);
             $tmp_dbeg       = explode("-", $data["date_in"]);
             $tmp_dend       = explode("-", $data["date_use"]);
 
-            $stock_time_tmp = mktime(0, 0, 0, $tmp_dend[1], $tmp_dend[2], $tmp_dend[0])
-                           - mktime(0, 0, 0, $tmp_dbeg[1], $tmp_dbeg[2], $tmp_dbeg[0]);
+            $stock_time_tmp = mktime(0, 0, 0, (int) $tmp_dend[1], (int) $tmp_dend[2], (int) $tmp_dend[0])
+                           - mktime(0, 0, 0, (int) $tmp_dbeg[1], (int) $tmp_dbeg[2], (int) $tmp_dbeg[0]);
             $stock_time    += $stock_time_tmp;
             if ($old) {
                 $tmp_dbeg      = explode("-", $data["date_use"]);
                 $tmp_dend      = explode("-", $data["date_out"]);
-                $use_time_tmp  = mktime(0, 0, 0, $tmp_dend[1], $tmp_dend[2], $tmp_dend[0])
-                              - mktime(0, 0, 0, $tmp_dbeg[1], $tmp_dbeg[2], $tmp_dbeg[0]);
+                $use_time_tmp  = mktime(0, 0, 0, (int) $tmp_dend[1], (int) $tmp_dend[2], (int) $tmp_dend[0])
+                              - mktime(0, 0, 0, (int) $tmp_dbeg[1], (int) $tmp_dbeg[2], (int) $tmp_dbeg[0]);
                 $use_time     += $use_time_tmp;
 
                 if ($pages < $data['pages']) {

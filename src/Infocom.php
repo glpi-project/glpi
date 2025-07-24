@@ -971,7 +971,7 @@ class Infocom extends CommonDBChild
             sscanf($date_achat, "%4s-%2s-%2s", $date_Y, $date_m, $date_d);
 
             $timestamp2 = mktime(0, 0, 0, $date_m, $date_d, $date_Y);
-            $timestamp  = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
+            $timestamp  = mktime(0, 0, 0, (int) date("m"), (int) date("d"), (int) date("Y"));
 
             $diff = floor(($timestamp - $timestamp2) / (MONTH_TIMESTAMP)); // Mois d'utilisation
 
@@ -1365,8 +1365,8 @@ JS;
         if (!array_search(date("Y"), $tab["annee"])) {
             $vnc = 0;
         } elseif (
-            mktime(0, 0, 0, $date_m2, $date_d2, date("Y"))
-                 - mktime(0, 0, 0, date("m"), date("d"), date("Y")) < 0
+            mktime(0, 0, 0, $date_m2, $date_d2, (int) date("Y"))
+                 - mktime(0, 0, 0, (int) date("m"), (int) date("d"), (int) date("Y")) < 0
         ) {
             // on a depasse la fin d'exercice de l'annee en cours
             //on prend la valeur residuelle de l'annee en cours
