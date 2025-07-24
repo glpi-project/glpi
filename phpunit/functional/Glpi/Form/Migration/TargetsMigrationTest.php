@@ -56,6 +56,9 @@ use Glpi\Form\Destination\CommonITILField\ITILFollowupFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ITILTaskField;
 use Glpi\Form\Destination\CommonITILField\ITILTaskFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILTaskFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\LinkedITILObjectsField;
+use Glpi\Form\Destination\CommonITILField\LinkedITILObjectsFieldConfig;
+use Glpi\Form\Destination\CommonITILField\LinkedITILObjectsFieldStrategyConfig;
 use Glpi\Form\Destination\CommonITILField\LocationField;
 use Glpi\Form\Destination\CommonITILField\LocationFieldConfig;
 use Glpi\Form\Destination\CommonITILField\LocationFieldStrategy;
@@ -204,6 +207,11 @@ final class TargetsMigrationTest extends DbTestCase
                         StatusField::getKey()         => new SimpleValueConfig(
                             StatusField::DEFAULT_STATUS
                         ),
+                        LinkedITILObjectsField::getKey() => new LinkedITILObjectsFieldConfig([
+                            new LinkedITILObjectsFieldStrategyConfig(
+                                strategy: null, // No specific strategy for linked ITIL objects
+                            ),
+                        ]),
                     ],
                 ],
                 [
@@ -254,6 +262,11 @@ final class TargetsMigrationTest extends DbTestCase
                         UrgencyField::getKey()        => new UrgencyFieldConfig(
                             strategy: UrgencyFieldStrategy::FROM_TEMPLATE
                         ),
+                        LinkedITILObjectsField::getKey() => new LinkedITILObjectsFieldConfig([
+                            new LinkedITILObjectsFieldStrategyConfig(
+                                strategy: null, // No specific strategy for linked ITIL objects
+                            ),
+                        ]),
                     ],
                 ],
                 [
@@ -304,6 +317,11 @@ final class TargetsMigrationTest extends DbTestCase
                         UrgencyField::getKey()        => new UrgencyFieldConfig(
                             strategy: UrgencyFieldStrategy::FROM_TEMPLATE
                         ),
+                        LinkedITILObjectsField::getKey() => new LinkedITILObjectsFieldConfig([
+                            new LinkedITILObjectsFieldStrategyConfig(
+                                strategy: null, // No specific strategy for linked ITIL objects
+                            ),
+                        ]),
                     ],
                 ],
             ],

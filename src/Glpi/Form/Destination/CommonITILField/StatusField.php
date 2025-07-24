@@ -39,6 +39,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
+use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Form;
 use InvalidArgumentException;
 use Override;
@@ -62,6 +63,7 @@ final class StatusField extends AbstractConfigField
     #[Override]
     public function renderConfigForm(
         Form $form,
+        FormDestination $destination,
         JsonFieldInterface $config,
         string $input_name,
         array $display_options

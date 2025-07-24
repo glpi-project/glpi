@@ -1,0 +1,157 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% for config in configs %}
+    <section class="mb-2" data-glpi-itildestination-field-config>
+        <div data-glpi-itildestination-field-config-content>
+            {% set index = loop.index0 %}
+            {% if is_for_template %}
+                {% set index = '__INDEX__' %}
+            {% endif %}
+
+            <div class="d-flex w-full" data-glpi-itildestination-field-linked-itilobjects-config>
+                {{ fields.dropdownArrayField(
+                    input_name ~ "[" ~ index ~ "][" ~ dropdown_linktypes.input_name_suffix ~ "]",
+                    config.getLinktype(),
+                    dropdown_linktypes.values,
+                    '',
+                    options|merge({
+                        field_class: '',
+                        no_label: true,
+                        aria_label: dropdown_linktypes.aria_label,
+                        mb: ''
+                    })
+                ) }}
+
+                {{ fields.dropdownArrayField(
+                    input_name ~ "[" ~ index ~ "][" ~ dropdown_strategies.input_name_suffix ~ "]",
+                    config.getStrategy() ? config.getStrategy().value : 0,
+                    dropdown_strategies.values,
+                    '',
+                    options|merge({
+                        field_class: '',
+                        no_label: true,
+                        display_emptychoice: true,
+                        aria_label: dropdown_strategies.aria_label,
+                        mb: '',
+                        add_data_attributes: {
+                            'glpi-itildestination-strategy-select': ''
+                        }
+                    })
+                ) }}
+            </div>
+
+            <div
+                class="d-none"
+                data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_VALUES }}"
+            >
+                {% set dropdown_items_input_name = input_name ~ "[" ~ index ~ "][" ~ specific_values_extra_field.input_name_suffix ~ "]" %}
+                {{ fields.dropdownItemsFromItemtypes(
+                    dropdown_items_input_name,
+                    '',
+                    options|merge({
+                        itemtype_name      : dropdown_items_input_name ~ '[itemtype]',
+                        items_id_name      : dropdown_items_input_name ~ '[items_id]',
+                        default_itemtype   : config.getSpecificItilObjectItemtype()|default(0),
+                        default_items_id   : config.getSpecificItilObjectItemsId()|default(0),
+                        field_class        : '',
+                        no_label           : true,
+                        display_emptychoice: true,
+                        aria_label         : specific_values_extra_field.itemtype_aria_label,
+                        mb                 : '',
+                        itemtypes          : specific_values_extra_field.itemtypes,
+                        width              : '100%',
+                        add_field_attribs  : {
+                            'data-glpi-items-from-itemtypes-dropdown': ''
+                        },
+                        'specific_tags_items_id_dropdown': {
+                            'aria-label': specific_values_extra_field.items_id_aria_label,
+                        }
+                    })
+                ) }}
+            </div>
+
+            <div
+                class="d-none"
+                data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_DESTINATIONS }}"
+            >
+                {{ fields.dropdownArrayField(
+                    input_name ~ "[" ~ index ~ "][" ~ specific_destinations_extra_field.input_name_suffix ~ "]",
+                    '',
+                    specific_destinations_extra_field.possible_values,
+                    "",
+                    options|merge({
+                        field_class: '',
+                        no_label: true,
+                        display_emptychoice: true,
+                        values: config.getSpecificDestinationIds(),
+                        multiple: true,
+                        aria_label: specific_destinations_extra_field.aria_label,
+                        mb: ''
+                    })
+                ) }}
+            </div>
+
+            <div
+                class="d-none"
+                data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_ANSWERS }}"
+            >
+                {{ fields.dropdownArrayField(
+                    input_name ~ "[" ~ index ~ "][" ~ specific_answer_extra_field.input_name_suffix ~ ']',
+                    '',
+                    specific_answer_extra_field.possible_values,
+                    "",
+                    options|merge({
+                        field_class: '',
+                        no_label: true,
+                        display_emptychoice: true,
+                        values: config.getSpecificQuestionIds(),
+                        multiple: true,
+                        aria_label: specific_answer_extra_field.aria_label,
+                        mb: ''
+                    })
+                ) }}
+            </div>
+        </div>
+        <button
+            type="button"
+            class="btn btn-icon btn-outline"
+            title="{{ __('Remove strategy') }}"
+            aria-label="{{ __('Remove strategy') }}"
+            data-glpi-itildestination-remove-field-config
+        >
+            <i class="ti ti-x"></i>
+        </button>
+    </section>
+{% endfor %}

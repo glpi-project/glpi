@@ -46,6 +46,9 @@ export class GlpiFormFieldDestinationMultipleConfig {
     /** @type {Set<string>} */
     #reusable_strategies;
 
+    /** @type {number} */
+    #last_used_dropdown_index = 0;
+
     constructor(container, reusable_strategies = new Set()) {
         this.#container = container;
         this.#template = container.find('[data-glpi-itildestination-field-config-template]');
@@ -57,11 +60,11 @@ export class GlpiFormFieldDestinationMultipleConfig {
             .on('click', (e) => this.#removeFieldConfig(e.target.closest('[data-glpi-itildestination-field-config]')));
         this.#add_button.on('click', () => this.#addFieldConfig());
         this.#container.find('[data-glpi-itildestination-field-config]')
-            .each((index, field) => $(field).find('select').first().on('change', (e) => this.#handleStrategyChange(e)));
+            .each((index, field) => this.#getStrategySelect(field).on('change', (e) => this.#handleStrategyChange(e)));
 
         // Trigger change event to initialize the display
         this.#container.find('[data-glpi-itildestination-field-config]').each((index, field) => {
-            $(field).find('select').first().trigger('change');
+            this.#getStrategySelect(field).trigger('change');
         });
 
         this.#handleAddButtonVisibility();
@@ -82,21 +85,41 @@ export class GlpiFormFieldDestinationMultipleConfig {
     #addFieldConfig() {
         const selected_strategies = [];
         this.#container.find('[data-glpi-itildestination-field-config]').each((index, field) => {
-            const strategy = $(field).find('select').first().find('option').filter(':selected').val();
+            const strategy = this.#getStrategySelect(field).find('option').filter(':selected').val();
             // Only add to selected_strategies if it's not reusable
             if (!this.isStrategyReusable(strategy)) {
                 selected_strategies.push(strategy);
             }
         });
 
-        const new_config_field = $(this.#template.html()).insertBefore(this.#add_button);
+
+        // Get template HTML and process scripts in place
+        const template_html = this.#template.html();
+        const temp_container = $('<div>').html(template_html);
 
         // Replace __INDEX__ placeholders with actual index
-        const current_index = this.#container.find('[data-glpi-itildestination-field-config]').length - 1;
+        const current_index = this.#container.find('[data-glpi-itildestination-field-config]').length;
+
+        // Process scripts in place to replace __INDEX__ before inserting
+        temp_container.find('script').each((index, script) => {
+            script.innerHTML = script.innerHTML.replace(/__INDEX__/g, current_index);
+        });
+
+        // Insert the HTML with processed scripts
+        const new_config_field = $(temp_container.html()).insertBefore(this.#add_button);
+
         new_config_field.find('[name*="__INDEX__"]').each((index, element) => {
             const name = $(element).attr('name');
             if (name) {
                 $(element).attr('name', name.replace(/__INDEX__/g, current_index));
+            }
+        });
+
+        // Replace __INDEX__ in id attributes, selects are handled separately
+        new_config_field.find('[id*="__INDEX__"]').each((index, element) => {
+            const id = $(element).attr('id');
+            if (id) {
+                $(element).attr('id', id.replace(/__INDEX__/g, current_index));
             }
         });
 
@@ -109,7 +132,7 @@ export class GlpiFormFieldDestinationMultipleConfig {
             }
         });
 
-        new_config_field.find('select').first().on('change', (e) => this.#handleStrategyChange(e));
+        this.#getStrategySelect(new_config_field).on('change', (e) => this.#handleStrategyChange(e));
 
         // Dropdowns initialization must be done after the field is added to the DOM and the script tags are executed
         // to ensure that the select2_configs are available.
@@ -153,6 +176,37 @@ export class GlpiFormFieldDestinationMultipleConfig {
                 }
             }
         });
+
+        field.find('[data-glpi-items-from-itemtypes-dropdown]').each((_index, dropdown) => {
+            const id = this.#last_used_dropdown_index++;
+            const itemtype_select = $(dropdown).find('select').first();
+
+            // Replace the old id by the new one
+            const items_id_select_container = $(dropdown).find(`span[id^="show_"]`);
+            const items_id_name = items_id_select_container.attr('id');
+            items_id_select_container.attr('id', `${items_id_name}${id}`);
+
+            // Replace all occurence of previous id by the new one in script tags
+            $(dropdown).find('script').each((index, script) => {
+
+                // Replace the old itemtype select id by the new one
+                script.text = script.text.replace(
+                    /\$\(['"]#dropdown_[^)]+['"]\)/g,
+                    `$("#${itemtype_select.attr('id')}")`
+                );
+
+                // Replace the old id by the new one
+                script.text = script.text.replace(
+                    /\$\(['"]#show_[^)]+['"]\)/g,
+                    `$("#${items_id_name}${id}")`
+                );
+
+                script.text = script.text.replace(/rand:[0-9]+/g, `rand:'${id}'`);
+
+                // Execute the script
+                $.globalEval(script.text);
+            });
+        });
     }
 
     #handleAddButtonVisibility() {
@@ -163,7 +217,7 @@ export class GlpiFormFieldDestinationMultipleConfig {
         }
 
         const count_options = this.#container.find('[data-glpi-itildestination-field-config]')
-            .find('select').first().find('option').length;
+            .find('select[data-glpi-itildestination-strategy-select]').first().find('option').length;
         const count_field_configs = this.#container.find('[data-glpi-itildestination-field-config]').length;
 
         this.#add_button.toggleClass('d-none', count_field_configs >= count_options);
@@ -176,14 +230,14 @@ export class GlpiFormFieldDestinationMultipleConfig {
     #handleStrategyChange(event = null) {
         const selected_strategies = [];
         this.#container.find('[data-glpi-itildestination-field-config]').each((index, field) => {
-            const strategy = $(field).find('select').first().find('option').filter(':selected').val();
+            const strategy = this.#getStrategySelect(field).find('option').filter(':selected').val();
             // Only add to selected_strategies if it's not reusable
             if (!this.isStrategyReusable(strategy)) {
                 selected_strategies.push(strategy);
             }
         });
 
-        this.#container.find('select').find('option').each((index, option) => {
+        this.#container.find('select[data-glpi-itildestination-strategy-select]').find('option').each((index, option) => {
             const optionValue = $(option).val();
             $(option).prop(
                 'disabled',
@@ -207,5 +261,14 @@ export class GlpiFormFieldDestinationMultipleConfig {
                     $(field).find(':input').prop('disabled', $(field).hasClass('d-none'));
                 });
         }
+    }
+
+    /**
+     * Get the strategy select element for a given field
+     * @param {jQuery<HTMLElement>} field
+     * @returns {jQuery<HTMLElement>}
+     */
+    #getStrategySelect(field) {
+        return $(field).find('select[data-glpi-itildestination-strategy-select]');
     }
 }

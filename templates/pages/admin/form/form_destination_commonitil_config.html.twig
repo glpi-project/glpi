@@ -35,7 +35,7 @@
 {# @var array config #}
 {# @var bool can_update #}
 
-{% macro field_config_section(item, field, form, config, show_label = true, extra_options = {}) %}
+{% macro field_config_section(item, destination, field, form, config, show_label = true, extra_options = {}) %}
     {% import 'components/form/fields_macros.html.twig' as fields %}
 
     {% set config_field = field.getConfig(form, config) %}
@@ -99,7 +99,7 @@
             {% if show_label %}
                 <label
                     class="form-label"
-                    for="{{ label_for }}"
+                    for="{{ label_for|default('') }}"
                 >
                     {{ field.getLabel() }}
                 </label>
@@ -138,10 +138,14 @@
                                     mb: '',
                                     rand: rand,
                                     aria_label: __('Select strategy...'),
+                                    add_data_attributes: {
+                                        'glpi-itildestination-strategy-select': ''
+                                    },
                                 }|merge(extra_options)
                             ) }}
                             {{ field.renderConfigForm(
                                 form,
+                                destination,
                                 config_field,
                                 item.formatConfigInputName(field.getKey()),
                                 {
@@ -154,7 +158,7 @@
                         {% if field.canHaveMultipleStrategies() %}
                             <button
                                 type="button"
-                                class="btn btn-outline"
+                                class="btn btn-icon btn-outline"
                                 title="{{ __('Remove strategy') }}"
                                 aria-label="{{ __('Remove strategy') }}"
                                 data-glpi-itildestination-remove-field-config
@@ -178,6 +182,7 @@
             {% else %}
                 {{ field.renderConfigForm(
                     form,
+                    destination,
                     config_field,
                     item.formatConfigInputName(field.getKey()),
                     {
@@ -185,55 +190,85 @@
                         'rand': rand,
                     }|merge(extra_options)
                 )|raw }}
+
+                {% if field.canHaveMultipleStrategies() %}
+                    <button
+                        type="button"
+                        class="btn btn-outline"
+                        aria-label="{{ __('Combine with another option') }}"
+                        data-glpi-itildestination-add-field-config
+                    >
+                        <i class="ti ti-plus me-2"></i>
+                        {{ __('Combine with another option') }}
+                    </button>
+                {% endif %}
             {% endif %}
         </section>
 
         {% if field.canHaveMultipleStrategies() %}
             <template data-glpi-itildestination-field-config-template>
-                <section
-                    class="mb-2"
-                    data-glpi-itildestination-field-config
-                >
-                    <div data-glpi-itildestination-field-config-content>
-                        {{ fields.dropdownArrayField(
-                            '%s[%s][]'|format(
-                                item.formatConfigInputName(field.getKey()),
-                                config_field.getStrategiesInputName()
-                            ),
-                            '',
-                            field.getStrategiesForDropdown(),
-                            '',
-                            {
-                                is_horizontal: false,
-                                field_class: '',
-                                no_label: true,
-                                mb: '',
-                                display_emptychoice: true,
-                                init: false,
-                                aria_label: __('Select strategy...'),
-                            }|merge(extra_options)
-                        ) }}
-                        {{ field.renderConfigForm(
-                            form,
-                            config_field,
-                            item.formatConfigInputName(field.getKey()),
-                            {
-                                'is_horizontal': false,
-                                'init': false,
-                            }|merge(extra_options),
-                            '__INDEX__'
-                        )|raw }}
-                    </div>
-                    <button
-                        type="button"
-                        class="btn btn-outline"
-                        title="{{ __('Remove strategy') }}"
-                        aria-label="{{ __('Remove strategy') }}"
-                        data-glpi-itildestination-remove-field-config
+                {% if config_field is instanceof('Glpi\\Form\\Destination\\ConfigFieldWithStrategiesInterface') %}
+                    <section
+                        class="mb-2"
+                        data-glpi-itildestination-field-config
                     >
-                        <i class="ti ti-x"></i>
-                    </button>
-                </section>
+                        <div data-glpi-itildestination-field-config-content>
+                            {{ fields.dropdownArrayField(
+                                '%s[%s][]'|format(
+                                    item.formatConfigInputName(field.getKey()),
+                                    config_field.getStrategiesInputName()
+                                ),
+                                '',
+                                field.getStrategiesForDropdown(),
+                                '',
+                                {
+                                    is_horizontal: false,
+                                    field_class: '',
+                                    no_label: true,
+                                    mb: '',
+                                    display_emptychoice: true,
+                                    init: false,
+                                    aria_label: __('Select strategy...'),
+                                    add_data_attributes: {
+                                        'glpi-itildestination-strategy-select': ''
+                                    },
+                                }|merge(extra_options)
+                            ) }}
+                            {{ field.renderConfigForm(
+                                form,
+                                destination,
+                                config_field,
+                                item.formatConfigInputName(field.getKey()),
+                                {
+                                    'is_horizontal': false,
+                                    'init': false,
+                                }|merge(extra_options),
+                            '__INDEX__'
+                            )|raw }}
+                        </div>
+                        <button
+                            type="button"
+                            class="btn btn-icon btn-outline"
+                            title="{{ __('Remove strategy') }}"
+                            aria-label="{{ __('Remove strategy') }}"
+                            data-glpi-itildestination-remove-field-config
+                        >
+                            <i class="ti ti-x"></i>
+                        </button>
+                    </section>
+                {% else %}
+                    {{ field.renderConfigForm(
+                        form,
+                        destination,
+                        config_field,
+                        item.formatConfigInputName(field.getKey()),
+                        {
+                            'is_horizontal': false,
+                            'init': false,
+                        }|merge(extra_options),
+                    '__INDEX__'
+                    )|raw }}
+                {% endif %}
             </template>
         {% endif %}
     </section>
@@ -258,11 +293,11 @@
                             <div class="read-only-content">
                                 <div class="card-title card-header mx-n3 mt-n3">
                                     {% set field = item.getConfigurableFieldByKey('glpi-form-destination-commonitilfield-titlefield') %}
-                                    {{ _self.field_config_section(item, field, form, config, false) }}
+                                    {{ _self.field_config_section(item, destination, field, form, config, false) }}
                                 </div>
                                 <div class="rich_text_container">
                                     {% set field = item.getConfigurableFieldByKey('glpi-form-destination-commonitilfield-contentfield') %}
-                                    {{ _self.field_config_section(item, field, form, config, false) }}
+                                    {{ _self.field_config_section(item, destination, field, form, config, false) }}
                                 </div>
                             </div>
                         </div>
@@ -277,7 +312,7 @@
                     <div class="mt-2 timeline-content left card">
                         <div class="card-body">
                             {% set field = item.getConfigurableFieldByKey('glpi-form-destination-commonitilfield-itilfollowupfield') %}
-                            {{ _self.field_config_section(item, field, form, config, false) }}
+                            {{ _self.field_config_section(item, destination, field, form, config, false) }}
                         </div>
                     </div>
                 </div>
@@ -290,7 +325,7 @@
                     <div class="mt-2 timeline-content left card">
                         <div class="card-body">
                             {% set field = item.getConfigurableFieldByKey('glpi-form-destination-commonitilfield-itiltaskfield') %}
-                            {{ _self.field_config_section(item, field, form, config, false) }}
+                            {{ _self.field_config_section(item, destination, field, form, config, false) }}
                         </div>
                     </div>
                 </div>
@@ -303,7 +338,7 @@
                     <div class="mt-2 timeline-content left card">
                         <div class="card-body">
                             {% set field = item.getConfigurableFieldByKey('glpi-form-destination-commonitilfield-validationfield') %}
-                            {{ _self.field_config_section(item, field, form, config, false) }}
+                            {{ _self.field_config_section(item, destination, field, form, config, false) }}
                         </div>
                     </div>
                 </div>
@@ -352,7 +387,7 @@
                         >
                             <div class="accordion-body d-flex flex-column space-y-3">
                                 {% for field in fields %}
-                                    {{ _self.field_config_section(item, field, form, config) }}
+                                    {{ _self.field_config_section(item, destination, field, form, config) }}
                                 {% endfor %}
                             </div>
                         </section>

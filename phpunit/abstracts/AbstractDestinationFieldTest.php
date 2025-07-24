@@ -129,7 +129,7 @@ abstract class AbstractDestinationFieldTest extends DbTestCase
 
         /** @var FormDestinationTicket $itil_destination */
         $itil_destination = $destination->getConcreteDestinationItem();
-        $a = $itil_destination->getConfigurableFieldByKey($field_key)
+        $itil_destination->getConfigurableFieldByKey($field_key)
         ->getConfig($form, $destination->getConfig())
         ->jsonSerialize();
         $this->assertEquals(

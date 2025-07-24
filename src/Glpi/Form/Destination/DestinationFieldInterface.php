@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\Destination;
 
+use CommonDBTM;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\CommonITILField\Category;
@@ -71,6 +72,7 @@ interface DestinationFieldInterface
      */
     public function renderConfigForm(
         Form $form,
+        FormDestination $destination,
         JsonFieldInterface $config,
         string $input_name,
         array $display_options
@@ -90,6 +92,21 @@ interface DestinationFieldInterface
         array $input,
         AnswersSet $answers_set
     ): array;
+
+    /**
+     * Process field after all destinations have been created
+     *
+     * @param JsonFieldInterface $config The field configuration
+     * @param AnswersSet $answers_set The answers from the form
+     * @param array<int, CommonDBTM[]> $created_objects Array mapping destination_id to created objects
+     * @return void
+     */
+    public function applyConfiguratedValueAfterDestinationCreation(
+        FormDestination $destination,
+        JsonFieldInterface $config,
+        AnswersSet $answers_set,
+        array $created_objects
+    ): void;
 
     /**
      * Check if this field support auto generated value.

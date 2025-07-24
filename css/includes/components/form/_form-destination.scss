@@ -146,6 +146,58 @@
             align-items: stretch;
             width: 1%; // Small hack to make the select2 dropdown only take the available space
 
+            [data-glpi-itildestination-field-linked-itilobjects-config] {
+                >div {
+                    &:first-child {
+                        width: 30%;
+
+                        .select2-selection {
+                            border-top-right-radius: 0 !important;
+                            border-bottom-right-radius: 0 !important;
+                        }
+                    }
+
+                    &:last-child {
+                        margin-left: calc(-1 * var(--tblr-border-width));
+                        width: calc(70% + 1 * var(--tblr-border-width));
+
+                        .select2-selection {
+                            border-top-left-radius: 0 !important;
+                            border-bottom-left-radius: 0 !important;
+                        }
+                    }
+                }
+
+                + [data-glpi-itildestination-field-config-display-condition="specific_values"] {
+                    > div {
+                        display: flex;
+
+                        &:has(> span > span.select2-container) {
+                            > span.select2-container  {
+                                width: 30% !important;
+
+                                .select2-selection {
+                                    border-top-right-radius: 0 !important;
+                                    border-bottom-right-radius: 0 !important;
+                                }
+                            }
+
+                            > br ~ span {
+                                margin-left: calc(-1 * var(--tblr-border-width));
+                                width: calc(70% + 1 * var(--tblr-border-width));
+                            }
+
+                            > span > span.select2-container {
+                                .select2-selection {
+                                    border-top-left-radius: 0 !important;
+                                    border-bottom-left-radius: 0 !important;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             &:has(div[data-glpi-itildestination-field-config-display-condition]:not(.d-none)) {
                 &:not(:has([data-glpi-associated-items-specific-values-extra-field]:not(.d-none))) {
                     >div {
