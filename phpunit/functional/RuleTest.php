@@ -1055,7 +1055,7 @@ class RuleTest extends DbTestCase
 
     /**
      * - create a ticket
-     * - create an update ticket rule with a criteria on the entity
+     * - create a rule on ticket update with a criteria on the entity
      * - check it's applied on the ticket
      */
     public function testEntityIsInChangedFieldsOnUpdate(): void
@@ -1078,8 +1078,31 @@ class RuleTest extends DbTestCase
 
         // assert
         $this->assertEquals($new_priority, $ticket->fields['priority']);
+    }
 
-        // @todo maybe write another test with non matching criteria
+    public function testEntityIsInChangedFieldsOnUpdateFailure(): void
+    {
+        $this->login();
+        $user_entity = \Session::getActiveEntity();
+        $another_entity = 77;
+        $new_priority = 4;
+        assert($another_entity !== $user_entity);
+
+        // arrange
+        $ticket = $this->createTicket();
+        $initial_priority = $ticket->fields['priority'];
+        assert($ticket->fields['priority'] !== $new_priority);
+
+        $builder = new \RuleBuilder('Change priority on update', \RuleTicket::class);
+        $builder->addCriteria('entities_id', \Rule::PATTERN_IS, $another_entity);
+        $builder->addAction('assign', 'priority', $new_priority);
+        $this->createRule($builder);
+
+        // act
+        $ticket = $this->updateItem($ticket::class, $ticket->getID(), ['name' => 'Updated ticket']);
+
+        // assert
+        $this->assertEquals($initial_priority, $ticket->fields['priority']);
     }
 }
 

@@ -51,7 +51,7 @@ use Ticket_Contract;
 require_once __DIR__ . '/../abstracts/RuleCommonITILObjectTest.php';
 
 /**
- * Test Plan / Spec (@todo to complete)
+ * Test Plan / Spec (@todo need to be completed)
  * Ola :
  *  - Actions
  *      - assign an ola :
@@ -1543,7 +1543,6 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->createRule($rule_builder_on_update);
 
         $ticket = $this->createTicket(['entities_id' => $entity->getID()]);
-        $ticket = $this->reloadItem($ticket); // @todoseb peut-être suprrimé probablement
 
         $olas_data = $ticket->getOlasData();
         assert(1 === count($olas_data));
