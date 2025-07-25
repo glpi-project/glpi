@@ -5381,24 +5381,29 @@ JAVASCRIPT;
      */
     public function showStatsDates()
     {
-        $now                      = time();
-        $date_creation            = strtotime($this->fields['date'] ?? '');
+        // function to get strtotime safely, do not use if string is supposed to always be defined
+        $safe_get_strtime = static function ($date_string): int|null {
+            try {
+                return strtotime((string) $date_string);
+            } catch (DatetimeException $e) {
+                return null;
+            }
+        };
+        $now                      = strtotime(Session::getCurrentTime()); // @todoseb règle phpstan pour interdire time()
+        $date_creation            = $safe_get_strtime($this->fields['date']);
         // Tickets created before 10.0.4 do not have takeintoaccountdate field, use old and incorrect computation for those cases
-        $date_takeintoaccount     = 0;
-        if ($this->fields['takeintoaccountdate'] !== null) {
-            $date_takeintoaccount = strtotime($this->fields['takeintoaccountdate']);
-        } elseif ($this->fields['takeintoaccount_delay_stat'] > 0) {
+        $date_takeintoaccount     = $safe_get_strtime($this->fields['takeintoaccountdate']);
+        if ($date_takeintoaccount === 0 && $this->fields['takeintoaccount_delay_stat'] > 0 && $date_creation > 0) {
             $date_takeintoaccount = $date_creation + $this->fields['takeintoaccount_delay_stat'];
         }
-        $time_to_own              = strtotime($this->fields['time_to_own'] ?? '');
+        $time_to_own              = $safe_get_strtime($this->fields['time_to_own']);
 
         $dates_olas = [];
         $ola = new OLA();
         foreach ($this->getOlasData() as $ola_data) {
             $ola->getFromDB($ola_data['olas_id']);
 
-            $due_time = $ola_data['due_time'] ?? '';
-            $due_time = strtotime($due_time);
+            $due_time = $safe_get_strtime($ola_data['due_time']);
             $key = $due_time . '_ola_' . $ola_data['olas_id'] . '_due_time';
             $label = __('OLA') . ' ' . OLA::getOneTypeName($ola_data['type']) . ' ' . $ola_data['name'] . ' ' . __('due time');
             $label .= "<a href=\"{$ola->getLinkURL()}\"><i class=\"ti ti-stopwatch slt\" title=\"{$ola->getName()}\"></i></a>";
@@ -5410,13 +5415,9 @@ JAVASCRIPT;
             ];
 
         }
-        $time_to_resolve          = strtotime($this->fields['time_to_resolve'] ?? '');
-        try {
-            $solvedate = strtotime($this->fields['solvedate'] ?? '');
-        } catch (DatetimeException $e) {
-            $solvedate = '';
-        }
-        $closedate                = strtotime($this->fields['closedate'] ?? '');
+        $time_to_resolve          = $safe_get_strtime($this->fields['time_to_resolve']);
+        $solvedate                = $safe_get_strtime($this->fields['solvedate']);
+        $closedate                = $safe_get_strtime($this->fields['closedate']);
         $goal_takeintoaccount     = ($date_takeintoaccount > 0 ? $date_takeintoaccount : $now);
         $goal_solvedate           = ($solvedate > 0 ? $solvedate : $now);
 
