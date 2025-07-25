@@ -33,31 +33,40 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Controller;
+
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
+use Html;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-require_once(__DIR__ . '/_check_webserver_config.php');
+class VisibilityController extends GenericFormController
+{
+    public function __invoke(Request $request): Response
+    {
+        if ($request->request->has('addvisibility')) {
+            return $this->addVisibility($request);
+        }
 
-if (Session::getCurrentInterface() == "helpdesk") {
-    Html::helpHeader(SavedSearch::getTypeName(Session::getPluralNumber()));
-} else {
-    Html::header(SavedSearch::getTypeName(Session::getPluralNumber()), '', 'tools', 'savedsearch');
-}
-
-$savedsearch = new SavedSearch();
-
-if (
-    isset($_GET['action']) && $_GET["action"] == "load"
-    && isset($_GET["id"]) && ($_GET["id"] > 0)
-) {
-    $savedsearch->getFromDB($_GET['id']);
-    if ($savedsearch->canViewItem()) {
-        $savedsearch->load($_GET["id"]);
-    } else {
-        $info = "User can not access the SavedSearch " . $_GET['id'];
-        throw new AccessDeniedHttpException($info);
+        return parent::__invoke($request);
     }
-    return;
-}
 
-Search::show('SavedSearch');
-Html::footer();
+    public function addVisibility(Request $request): RedirectResponse
+    {
+        $class = $request->attributes->get('class');
+        $item = getItemForItemtype($class);
+        $fk_field = getForeignKeyFieldForItemType($class);
+        if ($item instanceof \CommonDBVisible) {
+            if ($item->canEdit($request->request->get($fk_field))) {
+                $item->addVisibility($request->request->all());
+                return new RedirectResponse(Html::getBackUrl());
+            } else {
+                throw new AccessDeniedHttpException();
+            }
+        } else {
+            throw new BadRequestHttpException("Invalid class");
+        }
+    }
+}

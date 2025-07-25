@@ -34,12 +34,19 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Event;
 
 /**
  * Common DataBase visibility for items
  */
 abstract class CommonDBVisible extends CommonDBTM
 {
+    /**
+     * Types of target available for the itemtype
+     * @var string[]
+     */
+    public static $types = ['Entity', 'Group', 'Profile', 'User'];
+
     /**
      * Entities on which item is visible.
      * Keys are ID, values are DB fields values.
@@ -67,6 +74,58 @@ abstract class CommonDBVisible extends CommonDBTM
      * @var array
      */
     protected $users = [];
+
+    /**
+     * Class defining relation to $users
+     * @var string
+     */
+    protected $userClass;
+
+    /**
+     * Class defining relation to $profiles
+     * @var string
+     */
+    protected $profileClass;
+
+    /**
+     * Class defining relation to $groups
+     * @var string
+     */
+    protected $groupClass;
+
+    /**
+     * Class defining relation to entities
+     * @var string
+     */
+    protected $entityClass;
+
+    /**
+     * Service for visibility target log
+     * @var string
+     */
+    protected $service;
+
+    public function __construct()
+    {
+        // define default values
+        if (!$this->userClass) {
+            $this->userClass = $this->getType() . '_UserTarget';
+        }
+        if (!$this->groupClass) {
+            $this->groupClass = 'Group_' . $this->getType();
+        }
+        if (!$this->entityClass) {
+            $this->entityClass = 'Entity_' . $this->getType();
+        }
+        if (!$this->profileClass) {
+            $this->profileClass = 'Profile_' . $this->getType();
+        }
+        if (!$this->service) {
+            $this->service =  'tools';
+        }
+
+        parent::__construct();
+    }
 
     /**
      * Is the login user have access to item based on visibility configuration
@@ -162,6 +221,16 @@ abstract class CommonDBVisible extends CommonDBTM
               + count($this->profiles));
     }
 
+
+    /**
+     * Get right which will be used to determine which users can be targeted
+     * @return string
+     */
+    public function getVisibilityRight()
+    {
+        return strtolower($this::getType()) . '_public';
+    }
+
     /**
      * Show visibility configuration
      *
@@ -178,9 +247,10 @@ abstract class CommonDBVisible extends CommonDBTM
 
         if ($canedit) {
             TemplateRenderer::getInstance()->display('components/add_visibility_target.html.twig', [
-                'type' => static::class,
-                'rand' => $rand,
-                'id'   => $ID,
+                'type'  => static::class,
+                'types' => static::$types,
+                'rand'  => $rand,
+                'id'    => $ID,
                 'add_target_msg' => __('Add a target'),
                 'visiblity_dropdown_params' => $this->getShowVisibilityDropdownParams(),
             ]);
@@ -191,7 +261,7 @@ abstract class CommonDBVisible extends CommonDBTM
         foreach ($this->users as $val) {
             foreach ($val as $data) {
                 $entries[] = [
-                    'itemtype' => static::class . '_User',
+                    'itemtype' => $this instanceof SavedSearch ? SavedSearch_UserTarget::class : static::class . '_User',
                     'id' => $data['id'],
                     'type' => User::getTypeName(1),
                     'recipient' => htmlescape(getUserName($data['users_id'])),
@@ -337,10 +407,10 @@ abstract class CommonDBVisible extends CommonDBTM
      */
     protected function getShowVisibilityDropdownParams()
     {
-        $params = [
-            'type'          => '__VALUE__',
-            'right'         => strtolower($this::getType()) . '_public',
-        ];
+        $params = ['type' => '__VALUE__'];
+        if ($right = $this->getVisibilityRight()) {
+            $params['right'] = $right;
+        }
         if (isset($this->fields['entities_id'])) {
             $params['entity'] = $this->fields['entities_id'];
         }
@@ -348,5 +418,58 @@ abstract class CommonDBVisible extends CommonDBTM
             $params['is_recursive'] = $this->fields['is_recursive'];
         }
         return $params;
+    }
+
+    /**
+     * Add a visibility target to the item
+     * @param array $inputs key '_type' determine the type of target
+     * @return void
+     */
+    public function addVisibility(array $inputs)
+    {
+        $fkField = getForeignKeyFieldForItemType($this->getType());
+        $item = null;
+        switch ($inputs['_type']) {
+            case User::class:
+                $class = $this->getType() . '_UserTarget';
+                if (is_a($class, CommonDBRelation::class, true)) {
+                    $item = new $class();
+                }
+                break;
+            case Group::class:
+                $class = 'Group_' . $this->getType();
+                if (is_a($class, CommonDBRelation::class, true)) {
+                    $item = new $class();
+                }
+                break;
+            case Entity::class:
+                $class = 'Entity_' . $this->getType();
+                if (is_a($class, CommonDBRelation::class, true)) {
+                    $item = new $class();
+                }
+                break;
+            case Profile::class:
+                $class = 'Profile_' . $this->getType();
+                if (is_a($class, CommonDBRelation::class, true)) {
+                    $item = new $class();
+                }
+                break;
+        }
+        if (array_key_exists('entities_id', $inputs) && $inputs['entities_id'] == -1) {
+            // "No restriction" value selected
+            $inputs['entities_id'] = 'NULL';
+            $inputs['no_entity_restriction'] = 1;
+        }
+        if (!is_null($item)) {
+            $item->add($inputs);
+            Event::log(
+                $inputs[$fkField],
+                $this->getType(),
+                4,
+                $this->service,
+                //TRANS: %s is the user login
+                sprintf(__('%s adds a target'), $_SESSION["glpiname"])
+            );
+        }
     }
 }
