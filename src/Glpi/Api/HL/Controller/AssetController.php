@@ -432,22 +432,14 @@ final class AssetController extends AbstractController
 
             $type_class = $asset->getTypeClass();
             if ($type_class !== null) {
-                $expected_schema_name = $type_class;
-                $schemas[$schema_name]['properties']['type'] = self::getDropdownTypeSchema(
-                    class: $type_class,
-                    full_schema: $schemas[$expected_schema_name] ?? null
-                );
+                $schemas[$schema_name]['properties']['type'] = self::getDropdownTypeSchema(class: $type_class);
             }
             if ($asset->isField('manufacturers_id')) {
                 $schemas[$schema_name]['properties']['manufacturer'] = self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer');
             }
             $model_class = $asset->getModelClass();
             if ($model_class !== null) {
-                $expected_schema_name = $type_class;
-                $schemas[$schema_name]['properties']['model'] = self::getDropdownTypeSchema(
-                    class: $model_class,
-                    full_schema: $schemas[$expected_schema_name] ?? null
-                );
+                $schemas[$schema_name]['properties']['model'] = self::getDropdownTypeSchema(class: $model_class);
             }
 
             if (in_array($asset_type, $CFG_GLPI['assignable_types'], true)) {

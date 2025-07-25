@@ -1370,12 +1370,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\$full_schema of static method Glpi\\\\Api\\\\HL\\\\Controller\\\\AbstractController\\:\\:getDropdownTypeSchema\\(\\) expects string\\|null, array\\<string, array\\<string, array\\>\\|string\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\$parameters of attribute class Glpi\\\\Api\\\\HL\\\\Doc\\\\Route constructor expects array\\<array\\{name\\: string, description\\?\\: string, location\\?\\: string, schema\\?\\: array\\{type\\?\\: string, format\\?\\: string, enum\\?\\: array\\}, example\\?\\: string, required\\?\\: bool\\}\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\Parameter\\>, array\\{array\\{name\\: \'_\', location\\: \'body\', schema\\: \'Cable\'\\}\\} given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
