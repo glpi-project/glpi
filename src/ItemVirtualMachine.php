@@ -117,7 +117,9 @@ class ItemVirtualMachine extends CommonDBChild
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
         self::showForVirtualMachine($item);
         self::showForAsset($item);
         return true;

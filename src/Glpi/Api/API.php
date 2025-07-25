@@ -1498,8 +1498,8 @@ abstract class API
      *
      * It permits to identify a searchoption with an named index instead a numeric one
      *
-     * @param CommonDBTM $itemtype current itemtype called on ressource listSearchOption
-     * @param array      $option   current option to generate an unique id
+     * @param class-string<CommonDBTM> $itemtype current itemtype called on ressource listSearchOption
+     * @param array                    $option   current option to generate an unique id
      *
      * @return string the unique id
      */

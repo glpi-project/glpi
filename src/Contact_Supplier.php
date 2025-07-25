@@ -62,6 +62,10 @@ class Contact_Supplier extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            return '';
+        }
+
         if (!$withtemplate && Session::haveRight("contact_enterprise", READ)) {
             $nb = 0;
             switch ($item->getType()) {
@@ -84,12 +88,16 @@ class Contact_Supplier extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        switch ($item->getType()) {
-            case 'Supplier':
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
+
+        switch ($item::class) {
+            case Supplier::class:
                 self::showForSupplier($item);
                 break;
 
-            case 'Contact':
+            case Contact::class:
                 self::showForContact($item);
                 break;
         }

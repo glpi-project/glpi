@@ -73,6 +73,10 @@ class NetworkEquipmentModelStencil extends Stencil
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
+
         $stencil = Stencil::getStencilFromItem($item);
         if ($stencil != null) {
             $stencil->displayStencilEditor();

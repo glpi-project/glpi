@@ -201,6 +201,10 @@ class Contract_Item extends CommonDBRelation
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
+        if (!$item instanceof CommonDBTM) {
+            return '';
+        }
+
         // Can exists on template
         if (Contract::canView()) {
             $nb = 0;
@@ -225,6 +229,10 @@ class Contract_Item extends CommonDBRelation
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
+
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
 
         switch ($item::class) {
             case Contract::class:

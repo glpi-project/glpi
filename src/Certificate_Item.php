@@ -79,6 +79,9 @@ class Certificate_Item extends CommonDBRelation
      */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            return '';
+        }
 
         if (!$withtemplate) {
             if (
@@ -118,8 +121,11 @@ class Certificate_Item extends CommonDBRelation
         $tabnum = 1,
         $withtemplate = 0
     ) {
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
 
-        if ($item->getType() == 'Certificate') {
+        if ($item instanceof Certificate) {
             self::showForCertificate($item);
         } elseif (in_array($item->getType(), Certificate::getTypes(true))) {
             self::showForItem($item);

@@ -230,8 +230,8 @@ class Item_Project extends CommonDBRelation
 
         if (!$withtemplate) {
             $nb = 0;
-            switch ($item->getType()) {
-                case 'Project':
+            switch (true) {
+                case $item instanceof Project:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForMainItem($item);
                     }

@@ -54,6 +54,10 @@ class Item_OperatingSystem extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            return '';
+        }
+
         $nb = 0;
         switch ($item->getType()) {
             default:
@@ -66,7 +70,9 @@ class Item_OperatingSystem extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
         self::showForItem($item, $withtemplate);
         return true;
     }

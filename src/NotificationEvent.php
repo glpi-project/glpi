@@ -140,7 +140,11 @@ class NotificationEvent extends CommonDBTM
             foreach ($notifications as $data) {
                 // Check notification filter
                 $notification = Notification::getById($data['id']);
-                if (!$notification instanceof Notification || !$notification->itemMatchFilter($item)) {
+                if (
+                    !$notification instanceof Notification
+                    || !$item instanceof CommonDBTM
+                    || !$notification->itemMatchFilter($item)
+                ) {
                     continue;
                 }
 

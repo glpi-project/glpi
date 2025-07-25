@@ -49,6 +49,10 @@ class Item_Line extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            return '';
+        }
+
         $nb = 0;
         if ($item instanceof Line) {
             if ($_SESSION['glpishow_count_on_tabs']) {
@@ -65,6 +69,10 @@ class Item_Line extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
+
         if ($item instanceof Line) {
             self::showItemsForLine($item);
         } else {

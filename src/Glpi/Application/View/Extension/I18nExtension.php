@@ -36,6 +36,7 @@
 namespace Glpi\Application\View\Extension;
 
 use CommonDBTM;
+use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Glpi\ItemTranslation\ItemTranslation;
 use Locale;
 use Session;
@@ -65,8 +66,11 @@ class I18nExtension extends AbstractExtension
         return Locale::parseLocale($_SESSION['glpilanguage'] ?? 'en_GB');
     }
 
-    public function translateItemKey(CommonDBTM $item, string $key, int $count = 1): ?string
-    {
+    public function translateItemKey(
+        CommonDBTM&ProvideTranslationsInterface $item,
+        string $key,
+        int $count = 1
+    ): ?string {
         return ItemTranslation::translate($item, $key, $count);
     }
 }

@@ -117,7 +117,7 @@ class Notepad extends CommonDBChild
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
-        if (Session::haveRight($item::$rightname, READNOTE)) {
+        if (Session::haveRight($item::$rightname, READNOTE) && $item instanceof CommonDBTM) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::countForItem($item);
@@ -135,6 +135,10 @@ class Notepad extends CommonDBChild
      **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
+
         static::showForItem($item, $withtemplate);
         return true;
     }

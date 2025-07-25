@@ -4173,7 +4173,7 @@ class CommonDBTM extends CommonGLPI
      *
      * This should be overloaded in Class
      *
-     * @param CommonGLPI $checkitem link item to check right (default NULL)
+     * @param CommonDBTM $checkitem link item to check right (default NULL)
      *
      * @return array An array of massive actions where the keys are the internal identifier for the action and the values are the displayed value.
      *         Displayed values may contain HTML code, so text data must be sanitized before returning them from this method.

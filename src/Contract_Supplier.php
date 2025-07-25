@@ -56,6 +56,10 @@ class Contract_Supplier extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            return '';
+        }
+
         if (!$withtemplate) {
             $nb = 0;
             switch ($item::class) {
@@ -87,6 +91,10 @@ class Contract_Supplier extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
+
         switch ($item::class) {
             case Supplier::class:
                 self::showForSupplier($item);
