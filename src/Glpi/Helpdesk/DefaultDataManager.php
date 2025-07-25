@@ -118,7 +118,7 @@ final class DefaultDataManager
         $this->tiles_manager->addTile($root_entity, GlpiPageTile::class, [
             'title'        => __("See your tickets"),
             'description'  => __("View all the tickets that you have created."),
-            'illustration' => "helpdesk",
+            'illustration' => "tickets",
             'page'         => GlpiPageTile::PAGE_ALL_TICKETS,
         ]);
 
