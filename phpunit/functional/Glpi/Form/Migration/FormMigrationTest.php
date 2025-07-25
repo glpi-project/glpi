@@ -205,6 +205,21 @@ final class FormMigrationTest extends DbTestCase
                 'forms_categories_id' => fn() => getItemByTypeName(Category::class, 'My test form category', true),
             ],
         ];
+
+        yield 'Basic properties with inactive form' => [
+            [
+                'name'                => 'Test form migration for sections',
+                'entities_id'         => 0,
+                'is_recursive'        => 0,
+                'is_active'           => 0,
+                'is_deleted'          => 0,
+                'is_draft'            => 0,
+                'header'              => '',
+                'illustration'        => '',
+                'description'         => '',
+                'forms_categories_id' => 0,
+            ],
+        ];
     }
 
     #[DataProvider('provideFormMigrationBasicProperties')]

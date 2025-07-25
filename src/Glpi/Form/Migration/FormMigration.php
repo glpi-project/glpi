@@ -455,7 +455,7 @@ class FormMigration extends AbstractPluginMigration
                 'plugin_formcreator_categories_id',
                 'entities_id',
                 'is_recursive',
-                'is_visible AS is_active',
+                'is_active',
                 'is_deleted',
             ],
             'FROM'   => 'glpi_plugin_formcreator_forms',
