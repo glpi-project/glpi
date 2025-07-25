@@ -938,7 +938,7 @@ class Config extends CommonDBTM
     public function showFormFieldUnicity()
     {
         Toolbox::deprecated(
-            "This method will be removed in the next version",
+            message: "This method will be removed in the next version",
             version: "11.1.0"
         );
         $unicity = new FieldUnicity();
