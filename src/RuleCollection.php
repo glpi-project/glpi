@@ -1021,8 +1021,6 @@ JAVASCRIPT;
         header('Content-type: application/xml');
         header('Content-Disposition: attachment; filename="rules.xml"');
         echo $xml;
-
-        //exit;
     }
 
     /**
