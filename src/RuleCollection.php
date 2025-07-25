@@ -1028,8 +1028,6 @@ JAVASCRIPT;
      *
      * @param array $items array the input data to transform to xml
      *
-     * @since 0.85
-     *
      * @return string|bool send attachment to browser
      **/
     public static function getRulesXMLFile($items = [])
