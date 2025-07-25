@@ -301,6 +301,7 @@ class RuleRightCollectionTest extends DbTestCase
 
         $collection = new \RuleRightCollection();
 
+        //create a rule right
         $rule = $this->createItem(
             \Rule::class,
             [
@@ -316,6 +317,7 @@ class RuleRightCollectionTest extends DbTestCase
 
         $itemtype = null;
 
+        // If rule use itemtype data, create the itemtype
         if (is_array($itemtype_data)) {
             $itemtype = $this->createItem(
                 $itemtype_data['itemtype'],
@@ -323,6 +325,7 @@ class RuleRightCollectionTest extends DbTestCase
             );
         }
 
+        // If rule has criteria or action, create them
         if (isset($rule_data['criteria'])) {
             $this->createItem(
                 \RuleCriteria::class,
@@ -347,8 +350,10 @@ class RuleRightCollectionTest extends DbTestCase
             );
         }
 
-        $xml = $collection->exportRulesToXML([$rule->getID()], false);
+        // Export the rule to XML
+        $xml = $collection->getRulesXMLFile([$rule->getID()]);
 
+        // Create expected XML structure
         $xmlE = new \SimpleXMLElement('<rules/>');
         $xmlERule = $xmlE->addChild('rule');
         $xmlERule->entities_id = 'Root entity';
@@ -382,6 +387,7 @@ class RuleRightCollectionTest extends DbTestCase
 
         $expected = $xmlE->asXML();
 
+        // Compare the generated XML with the expected XML
         $this->assertEquals($xml, $expected);
     }
 }

@@ -1006,11 +1006,36 @@ JAVASCRIPT;
      *
      * @since 0.85
      *
-     * @return void|string|bool send attachment to browser
+     * @return void send attachment to browser
      **/
-    public static function exportRulesToXML($items = [], $display = true)
+    public static function exportRulesToXML($items = [])
     {
+        //get rules XML file
+        $xml = self::getRulesXMLFile($items);
 
+        if (!$xml) {
+            return false;
+        }
+
+        //send attachment to browser
+        header('Content-type: application/xml');
+        header('Content-Disposition: attachment; filename="rules.xml"');
+        echo $xml;
+
+        //exit;
+    }
+
+    /**
+     * Export rules in a xml format
+     *
+     * @param array $items array the input data to transform to xml
+     *
+     * @since 0.85
+     *
+     * @return string|bool send attachment to browser
+     **/
+    public static function getRulesXMLFile($items = [])
+    {
         if (!count($items)) {
             return false;
         }
@@ -1117,18 +1142,7 @@ JAVASCRIPT;
         }
 
         //convert SimpleXMLElement to xml string
-        $xml = $xmlE->asXML();
-
-        if ($display) {
-            //send attachment to browser
-            header('Content-type: application/xml');
-            header('Content-Disposition: attachment; filename="rules.xml"');
-            echo $xml;
-        } else {
-            return $xml;
-        }
-
-        //exit;
+        return $xmlE->asXML();
     }
 
 

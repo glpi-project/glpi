@@ -3170,6 +3170,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Rule.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method RuleCollection\\:\\:exportRulesToXML\\(\\) with return type void returns false but should not return anything\\.$#',
+	'identifier' => 'return.void',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RuleCollection.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Offset \'entity\' on array\\{entity\\: true, criterias\\?\\: non\\-empty\\-list\\<mixed\\>, actions\\?\\: non\\-empty\\-list\\<mixed\\>\\} in isset\\(\\) always exists and is not nullable\\.$#',
 	'identifier' => 'isset.offset',
 	'count' => 1,
