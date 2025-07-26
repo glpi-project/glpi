@@ -49,17 +49,17 @@ use Project;
 use ProjectTask;
 use Session;
 
-#[Route(path: '/Project', tags: ['Project'], requirements: [
+#[Route(path: '/Project', requirements: [
     'project_id' => '\d+',
-])]
+], tags: ['Project'])]
 #[Doc\Route(
     parameters: [
-        [
-            'name' => 'project_id',
-            'description' => 'Project ID',
-            'location' => Parameter::LOCATION_PATH,
-            'schema' => ['type' => Schema::TYPE_STRING],
-        ],
+        new Doc\Parameter(
+            name: 'project_id',
+            schema: new Schema(type: Schema::TYPE_STRING),
+            description: 'Project ID',
+            location: Parameter::LOCATION_PATH
+        ),
     ]
 )]
 final class ProjectController extends AbstractController
@@ -246,13 +246,7 @@ final class ProjectController extends AbstractController
 
     #[Route(path: '/', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'List or search projects',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
-        responses: [
-            ['schema' => 'Project[]'],
-        ]
-    )]
+    #[Doc\SearchRoute(schema_name: 'Project')]
     public function searchProjects(Request $request): Response
     {
         return ResourceAccessor::searchBySchema($this->getKnownSchema('Project', $this->getAPIVersion($request)), $request->getParameters());
@@ -260,12 +254,7 @@ final class ProjectController extends AbstractController
 
     #[Route(path: '/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a project by ID',
-        responses: [
-            ['schema' => 'Project'],
-        ]
-    )]
+    #[Doc\GetRoute(schema_name: 'Project')]
     public function getProject(Request $request): Response
     {
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('Project', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
@@ -273,13 +262,7 @@ final class ProjectController extends AbstractController
 
     #[Route(path: '/', methods: ['POST'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(description: 'Create a new project', parameters: [
-        [
-            'name' => '_',
-            'location' => Parameter::LOCATION_BODY,
-            'schema' => 'Project',
-        ],
-    ])]
+    #[Doc\CreateRoute(schema_name: 'Project')]
     public function createProject(Request $request): Response
     {
         return ResourceAccessor::createBySchema($this->getKnownSchema('Project', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getProject']);
@@ -287,19 +270,7 @@ final class ProjectController extends AbstractController
 
     #[Route(path: '/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update a project by ID',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
-                'schema' => 'Project',
-            ],
-        ],
-        responses: [
-            ['schema' => 'Project'],
-        ]
-    )]
+    #[Doc\UpdateRoute(schema_name: 'Project')]
     public function updateProject(Request $request): Response
     {
         return ResourceAccessor::updateBySchema($this->getKnownSchema('Project', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
@@ -307,7 +278,7 @@ final class ProjectController extends AbstractController
 
     #[Route(path: '/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(description: 'Delete a project by ID')]
+    #[Doc\DeleteRoute(schema_name: 'Project')]
     public function deleteProject(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('Project', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
@@ -315,12 +286,9 @@ final class ProjectController extends AbstractController
 
     #[Route(path: '/Task', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'List or search project tasks',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
-        responses: [
-            ['schema' => 'ProjectTask[]'],
-        ]
+    #[Doc\SearchRoute(
+        schema_name: 'ProjectTask',
+        description: 'List or search project tasks'
     )]
     public function searchTasks(Request $request): Response
     {
@@ -329,11 +297,9 @@ final class ProjectController extends AbstractController
 
     #[Route(path: '/Task/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a task by ID',
-        responses: [
-            ['schema' => 'ProjectTask'],
-        ]
+    #[Doc\GetRoute(
+        schema_name: 'ProjectTask',
+        description: 'Get a project task by ID'
     )]
     public function getTask(Request $request): Response
     {
@@ -342,13 +308,10 @@ final class ProjectController extends AbstractController
 
     #[Route(path: '/Task', methods: ['POST'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(description: 'Create a new task', parameters: [
-        [
-            'name' => '_',
-            'location' => Parameter::LOCATION_BODY,
-            'schema' => 'ProjectTask',
-        ],
-    ])]
+    #[Doc\CreateRoute(
+        schema_name: 'ProjectTask',
+        description: 'Create a new project task'
+    )]
     public function createTask(Request $request): Response
     {
         return ResourceAccessor::createBySchema($this->getKnownSchema('ProjectTask', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getTask']);
@@ -356,11 +319,9 @@ final class ProjectController extends AbstractController
 
     #[Route(path: '/Task/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update a task by ID',
-        responses: [
-            ['schema' => 'ProjectTask'],
-        ]
+    #[Doc\UpdateRoute(
+        schema_name: 'ProjectTask',
+        description: 'Update an existing project task'
     )]
     public function updateTask(Request $request): Response
     {
@@ -369,7 +330,10 @@ final class ProjectController extends AbstractController
 
     #[Route(path: '/Task/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(description: 'Delete a task by ID')]
+    #[Doc\DeleteRoute(
+        schema_name: 'ProjectTask',
+        description: 'Delete a project task'
+    )]
     public function deleteTask(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('ProjectTask', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
@@ -377,12 +341,9 @@ final class ProjectController extends AbstractController
 
     #[Route(path: '/{project_id}/Task', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'List or search project tasks',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
-        responses: [
-            ['schema' => 'ProjectTask[]'],
-        ]
+    #[Doc\SearchRoute(
+        schema_name: 'ProjectTask',
+        description: 'List or search project tasks'
     )]
     public function searchLinkedTasks(Request $request): Response
     {
@@ -395,13 +356,10 @@ final class ProjectController extends AbstractController
 
     #[Route(path: '/{project_id}/Task', methods: ['POST'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(description: 'Create a new task', parameters: [
-        [
-            'name' => '_',
-            'location' => Parameter::LOCATION_BODY,
-            'schema' => 'ProjectTask',
-        ],
-    ])]
+    #[Doc\CreateRoute(
+        schema_name: 'ProjectTask',
+        description: 'Create a new project task'
+    )]
     public function createLinkedTask(Request $request): Response
     {
         $params = $request->getParameters();

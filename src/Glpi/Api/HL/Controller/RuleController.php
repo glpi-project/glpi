@@ -54,24 +54,25 @@ use RuleCollection;
 use RuleCriteria;
 use Session;
 
-#[Route(path: '/Rule', tags: ['Rule'], requirements: [
+#[Route(path: '/Rule', requirements: [
     'collection' => [self::class, 'getRuleCollections'],
     'rule_id' => '\d+',
     'id' => '\d+',
-])]
+], tags: ['Rule'])]
 #[Doc\Route(
     parameters: [
-        [
-            'name' => 'collection',
-            'description' => 'Rule Collection',
-            'location' => Parameter::LOCATION_PATH,
-            'schema' => ['type' => Schema::TYPE_STRING],
-        ],
-        [
-            'name' => 'rule_id',
-            'description' => 'Rule Collection',
-            'location' => Parameter::LOCATION_PATH,
-        ],
+        new Doc\Parameter(
+            name: 'collection',
+            schema: new Schema(type: Schema::TYPE_STRING),
+            description: 'Rule Collection',
+            location: Parameter::LOCATION_PATH,
+        ),
+        new Doc\Parameter(
+            name: 'rule_id',
+            schema: new Schema(type: Schema::TYPE_INTEGER, format: Schema::FORMAT_INTEGER_INT64),
+            description: 'Rule ID',
+            location: Parameter::LOCATION_PATH,
+        ),
     ]
 )]
 final class RuleController extends AbstractController
@@ -333,25 +334,19 @@ final class RuleController extends AbstractController
     #[Doc\Route(
         description: 'List all rule collections',
         responses: [
-            '200' => [
-                'description' => 'List of rule collections',
-                'schema' => [
-                    'type' => 'array',
-                    'items' => [
-                        'type' => Schema::TYPE_OBJECT,
-                        'properties' => [
-                            'name' => [
-                                'type' => Schema::TYPE_STRING,
-                                'description' => 'Name of the rule collection',
-                            ],
-                            'rule_type' => [
-                                'type' => Schema::TYPE_STRING,
-                                'description' => 'Type of the rules in the collection',
-                            ],
-                        ],
-                    ],
-                ],
-            ],
+            new Doc\Response(
+                schema: new Schema(
+                    type: Schema::TYPE_ARRAY,
+                    items: new Schema(
+                        type: Schema::TYPE_OBJECT,
+                        properties: [
+                            'name' => new Schema(type: Schema::TYPE_STRING),
+                            'rule_type' => new Schema(type: Schema::TYPE_STRING),
+                        ]
+                    )
+                ),
+                description: 'List of rule collections'
+            ),
         ]
     )]
     public function getCollections(Request $request): Response
@@ -388,10 +383,7 @@ final class RuleController extends AbstractController
     #[Doc\Route(
         description: 'List accepted "condition" values for criteria for rules in a collection',
         responses: [
-            '200' => [
-                'description' => 'List of rule criteria conditions',
-                'schema' => 'RuleCriteriaCondition[]',
-            ],
+            new Doc\Response(schema: new Doc\SchemaReference('RuleCriteriaCondition[]')),
         ]
     )]
     public function getRuleCriteriaConditions(Request $request): Response
@@ -424,10 +416,7 @@ final class RuleController extends AbstractController
     #[Doc\Route(
         description: 'List accepted "criteria" values for criteria for rules in a collection',
         responses: [
-            '200' => [
-                'description' => 'List of rule criteria criteria/fields',
-                'schema' => 'RuleCriteriaCriteria[]',
-            ],
+            new Doc\Response(schema: new Doc\SchemaReference('RuleCriteriaCriteria[]')),
         ]
     )]
     public function getRuleCriteriaCriteria(Request $request): Response
@@ -452,10 +441,7 @@ final class RuleController extends AbstractController
     #[Doc\Route(
         description: 'List accepted "action_type" values for actions for rules in a collection',
         responses: [
-            '200' => [
-                'description' => 'List of rule action types',
-                'schema' => 'RuleActionType[]',
-            ],
+            new Doc\Response(schema: new Doc\SchemaReference('RuleActionType[]')),
         ]
     )]
     public function getRuleActionType(Request $request): Response
@@ -488,10 +474,7 @@ final class RuleController extends AbstractController
     #[Doc\Route(
         description: 'List accepted "field" values for actions for rules in a collection',
         responses: [
-            '200' => [
-                'description' => 'List of rule action fields',
-                'schema' => 'RuleActionField[]',
-            ],
+            new Doc\Response(schema: new Doc\SchemaReference('RuleActionField[]')),
         ]
     )]
     public function getRuleActionField(Request $request): Response
@@ -514,15 +497,9 @@ final class RuleController extends AbstractController
 
     #[Route(path: '/Collection/{collection}/Rule', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'List or search rules in a collection',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
-        responses: [
-            '200' => [
-                'description' => 'List of rules',
-                'schema' => 'Rule[]',
-            ],
-        ]
+    #[Doc\SearchRoute(
+        schema_name: 'Rule',
+        description: 'List or search rules in a collection'
     )]
     public function getRules(Request $request): Response
     {
@@ -539,15 +516,9 @@ final class RuleController extends AbstractController
 
     #[Route(path: '/Collection/{collection}/Rule/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a rule from a collection',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
-        responses: [
-            '200' => [
-                'description' => 'The rule',
-                'schema' => 'Rule',
-            ],
-        ]
+    #[Doc\GetRoute(
+        schema_name: 'Rule',
+        description: 'Get a rule from a collection'
     )]
     public function getRule(Request $request): Response
     {
@@ -567,10 +538,7 @@ final class RuleController extends AbstractController
     #[Doc\Route(
         description: 'Get criteria for a rule from a collection',
         responses: [
-            '200' => [
-                'description' => 'The rule criteria',
-                'schema' => 'RuleCriteria[]',
-            ],
+            new Doc\Response(schema: new Doc\SchemaReference('RuleCriteria[]')),
         ]
     )]
     public function getRuleCriteria(Request $request): Response
@@ -589,14 +557,9 @@ final class RuleController extends AbstractController
 
     #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Criteria/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a specific criterion for a rule from a collection',
-        responses: [
-            '200' => [
-                'description' => 'The rule criterion',
-                'schema' => 'RuleCriteria',
-            ],
-        ]
+    #[Doc\GetRoute(
+        schema_name: 'RuleCriteria',
+        description: 'Get a specific criterion for a rule from a collection'
     )]
     public function getRuleCriterion(Request $request): Response
     {
@@ -617,10 +580,7 @@ final class RuleController extends AbstractController
     #[Doc\Route(
         description: 'Get actions for a rule from a collection',
         responses: [
-            '200' => [
-                'description' => 'The rule actions',
-                'schema' => 'RuleAction[]',
-            ],
+            new Doc\Response(schema: new Doc\SchemaReference('RuleAction[]')),
         ]
     )]
     public function getRuleActions(Request $request): Response
@@ -639,14 +599,9 @@ final class RuleController extends AbstractController
 
     #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Action/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a specific action for a rule from a collection',
-        responses: [
-            '200' => [
-                'description' => 'The rule action',
-                'schema' => 'RuleAction',
-            ],
-        ]
+    #[Doc\GetRoute(
+        schema_name: 'RuleAction',
+        description: 'Get a specific action for a rule from a collection'
     )]
     public function getRuleAction(Request $request): Response
     {
@@ -664,15 +619,9 @@ final class RuleController extends AbstractController
 
     #[Route(path: '/Collection/{collection}/Rule', methods: ['POST'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Create a rule in a collection',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
-                'schema' => 'Rule',
-            ],
-        ]
+    #[Doc\CreateRoute(
+        schema_name: 'Rule',
+        description: 'Create a rule in a collection'
     )]
     public function createRule(Request $request): Response
     {
@@ -692,15 +641,9 @@ final class RuleController extends AbstractController
 
     #[Route(path: '/Collection/{collection}/Rule/{id}', methods: ['PATCH'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update a rule in a collection',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
-                'schema' => 'Rule',
-            ],
-        ]
+    #[Doc\UpdateRoute(
+        schema_name: 'Rule',
+        description: 'Update a rule in a collection'
     )]
     public function updateRule(Request $request): Response
     {
@@ -716,7 +659,8 @@ final class RuleController extends AbstractController
 
     #[Route(path: '/Collection/{collection}/Rule/{id}', methods: ['DELETE'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
+    #[Doc\DeleteRoute(
+        schema_name: 'Rule',
         description: 'Delete a rule in a collection'
     )]
     public function deleteRule(Request $request): Response
@@ -729,15 +673,9 @@ final class RuleController extends AbstractController
 
     #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Criteria', methods: ['POST'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Create a criterion for a rule in a collection',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
-                'schema' => 'RuleCriteria',
-            ],
-        ]
+    #[Doc\CreateRoute(
+        schema_name: 'RuleCriteria',
+        description: 'Create a criterion for a rule in a collection'
     )]
     public function createRuleCriteria(Request $request): Response
     {
@@ -758,15 +696,9 @@ final class RuleController extends AbstractController
 
     #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Criteria/{id}', methods: ['PATCH'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update a criterion for a rule in a collection',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
-                'schema' => 'RuleCriteria',
-            ],
-        ]
+    #[Doc\UpdateRoute(
+        schema_name: 'RuleCriteria',
+        description: 'Update a criterion for a rule in a collection'
     )]
     public function updateRuleCriteria(Request $request): Response
     {
@@ -787,15 +719,9 @@ final class RuleController extends AbstractController
 
     #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Criteria/{id}', methods: ['DELETE'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Delete a criterion for a rule in a collection',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
-                'schema' => 'RuleCriteria',
-            ],
-        ]
+    #[Doc\DeleteRoute(
+        schema_name: 'RuleCriteria',
+        description: 'Delete a criterion for a rule in a collection'
     )]
     public function deleteRuleCriteria(Request $request): Response
     {
@@ -811,15 +737,9 @@ final class RuleController extends AbstractController
 
     #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Action', methods: ['POST'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Create an action for a rule in a collection',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
-                'schema' => 'RuleAction',
-            ],
-        ]
+    #[Doc\CreateRoute(
+        schema_name: 'RuleAction',
+        description: 'Create an action for a rule in a collection'
     )]
     public function createRuleAction(Request $request): Response
     {
@@ -840,15 +760,9 @@ final class RuleController extends AbstractController
 
     #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Action/{id}', methods: ['PATCH'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update an action for a rule in a collection',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
-                'schema' => 'RuleAction',
-            ],
-        ]
+    #[Doc\UpdateRoute(
+        schema_name: 'RuleAction',
+        description: 'Update an action for a rule in a collection'
     )]
     public function updateRuleAction(Request $request): Response
     {
@@ -869,15 +783,9 @@ final class RuleController extends AbstractController
 
     #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Action/{id}', methods: ['DELETE'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Delete an action for a rule in a collection',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
-                'schema' => 'RuleAction',
-            ],
-        ]
+    #[Doc\DeleteRoute(
+        schema_name: 'RuleAction',
+        description: 'Delete an action for a rule in a collection'
     )]
     public function deleteRuleAction(Request $request): Response
     {

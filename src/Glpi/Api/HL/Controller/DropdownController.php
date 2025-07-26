@@ -49,18 +49,18 @@ use State;
 #[Route(path: '/Dropdowns', priority: 1, tags: ['Dropdowns'])]
 #[Doc\Route(
     parameters: [
-        [
-            'name' => 'itemtype',
-            'description' => 'Dropdown type',
-            'location' => Parameter::LOCATION_PATH,
-            'schema' => ['type' => Schema::TYPE_STRING],
-        ],
-        [
-            'name' => 'id',
-            'description' => 'The ID of the dropdown item',
-            'location' => Parameter::LOCATION_PATH,
-            'schema' => ['type' => Schema::TYPE_INTEGER],
-        ],
+        new Parameter(
+            name: 'itemtype',
+            schema: new Schema(Schema::TYPE_STRING),
+            description: 'Dropdown type',
+            location: Parameter::LOCATION_PATH,
+        ),
+        new Parameter(
+            name: 'id',
+            schema: new Schema(Schema::TYPE_INTEGER),
+            description: 'The ID of the dropdown item',
+            location: Parameter::LOCATION_PATH,
+        ),
     ]
 )]
 final class DropdownController extends AbstractController

@@ -40,7 +40,7 @@ use ArrayAccess;
 /**
  * @implements ArrayAccess<string, null|string|bool|Schema>
  */
-class Parameter implements ArrayAccess
+final readonly class Parameter implements ArrayAccess
 {
     public const LOCATION_QUERY = 'query';
     public const LOCATION_PATH = 'path';
@@ -50,9 +50,9 @@ class Parameter implements ArrayAccess
 
     public function __construct(
         private string $name,
-        private string $description,
-        private string $location,
         private Schema|SchemaReference $schema,
+        private string $description = '',
+        private string $location = self::LOCATION_QUERY,
         private ?string $example = null,
         private bool $required = false
     ) {}
