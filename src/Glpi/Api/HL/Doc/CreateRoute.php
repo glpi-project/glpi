@@ -48,7 +48,7 @@ class CreateRoute extends Route
                     name: '_',
                     schema: new SchemaReference($schema_name),
                     location: Parameter::LOCATION_BODY,
-                )
+                ),
             ]
         );
     }

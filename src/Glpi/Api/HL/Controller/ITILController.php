@@ -1471,7 +1471,7 @@ final class ITILController extends AbstractController
     #[Doc\Route(
         description: 'Get the team members for a specific Ticket, Change or Problem',
         responses: [
-            new Doc\Response(schema: new Doc\SchemaReference('TeamMember[]'))
+            new Doc\Response(schema: new Doc\SchemaReference('TeamMember[]')),
         ]
     )]
     public function getTeamMembers(Request $request): Response
@@ -1501,7 +1501,7 @@ final class ITILController extends AbstractController
             ),
         ],
         responses: [
-            new Doc\Response(schema: new Doc\SchemaReference('TeamMember[]'))
+            new Doc\Response(schema: new Doc\SchemaReference('TeamMember[]')),
         ]
     )]
     public function getTeamMembersByRole(Request $request): Response

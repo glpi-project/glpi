@@ -44,9 +44,7 @@ class GetRoute extends Route
         parent::__construct(
             description: $description ?? 'Get an existing ' . $schema_name,
             responses: [
-                new Response(
-                    schema: new SchemaReference($schema_name),
-                )
+                new Response(schema: new SchemaReference($schema_name)),
             ]
         );
     }

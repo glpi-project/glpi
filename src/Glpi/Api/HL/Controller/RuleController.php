@@ -441,7 +441,7 @@ final class RuleController extends AbstractController
     #[Doc\Route(
         description: 'List accepted "action_type" values for actions for rules in a collection',
         responses: [
-            new Doc\Response(schema: new Doc\SchemaReference('RuleActionType[]'))
+            new Doc\Response(schema: new Doc\SchemaReference('RuleActionType[]')),
         ]
     )]
     public function getRuleActionType(Request $request): Response
@@ -474,7 +474,7 @@ final class RuleController extends AbstractController
     #[Doc\Route(
         description: 'List accepted "field" values for actions for rules in a collection',
         responses: [
-            new Doc\Response(schema: new Doc\SchemaReference('RuleActionField[]'))
+            new Doc\Response(schema: new Doc\SchemaReference('RuleActionField[]')),
         ]
     )]
     public function getRuleActionField(Request $request): Response
@@ -538,7 +538,7 @@ final class RuleController extends AbstractController
     #[Doc\Route(
         description: 'Get criteria for a rule from a collection',
         responses: [
-            new Doc\Response(schema: new Doc\SchemaReference('RuleCriteria[]'))
+            new Doc\Response(schema: new Doc\SchemaReference('RuleCriteria[]')),
         ]
     )]
     public function getRuleCriteria(Request $request): Response
@@ -580,7 +580,7 @@ final class RuleController extends AbstractController
     #[Doc\Route(
         description: 'Get actions for a rule from a collection',
         responses: [
-            new Doc\Response(schema: new Doc\SchemaReference('RuleAction[]'))
+            new Doc\Response(schema: new Doc\SchemaReference('RuleAction[]')),
         ]
     )]
     public function getRuleActions(Request $request): Response

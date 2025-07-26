@@ -140,7 +140,7 @@ final class CoreController extends AbstractController
             new Doc\Response(
                 schema: new Doc\SchemaReference('APIInformation'),
                 description: 'API information',
-            )
+            ),
         ]
     )]
     public function index(Request $request): Response

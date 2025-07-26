@@ -340,7 +340,7 @@ class ReportController extends AbstractController
     #[Doc\Route(
         description: 'List available assistance statistics',
         responses: [
-            new Doc\Response(schema: new Doc\SchemaReference('StatReport[]'))
+            new Doc\Response(schema: new Doc\SchemaReference('StatReport[]')),
         ]
     )]
     public function listStatisticReports(Request $request): Response
@@ -421,7 +421,7 @@ class ReportController extends AbstractController
             ),
         ],
         responses: [
-            new Doc\Response(schema: new Doc\SchemaReference('GlobalStats'))
+            new Doc\Response(schema: new Doc\SchemaReference('GlobalStats')),
         ]
     )]
     public function getITILGlobalStats(Request $request): Response
@@ -485,7 +485,7 @@ class ReportController extends AbstractController
             ),
         ],
         responses: [
-            new Doc\Response(schema: new Doc\SchemaReference('ITILStats[]'))
+            new Doc\Response(schema: new Doc\SchemaReference('ITILStats[]')),
         ]
     )]
     public function getITILStats(Request $request): Response
@@ -678,7 +678,7 @@ class ReportController extends AbstractController
             ),
         ],
         responses: [
-            new Doc\Response(schema: new Doc\SchemaReference('AssetStats[]'))
+            new Doc\Response(schema: new Doc\SchemaReference('AssetStats[]')),
         ]
     )]
     public function getAssetStats(Request $request): Response
@@ -826,7 +826,7 @@ class ReportController extends AbstractController
             ),
         ],
         responses: [
-            new Doc\Response(schema: new Doc\SchemaReference('AssetCharacteristicsStats[]'))
+            new Doc\Response(schema: new Doc\SchemaReference('AssetCharacteristicsStats[]')),
         ]
     )]
     public function getAssetCharacteristicsStats(Request $request): Response

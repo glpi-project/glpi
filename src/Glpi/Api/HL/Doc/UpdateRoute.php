@@ -48,13 +48,13 @@ class UpdateRoute extends Route
                     name: '_',
                     schema: new SchemaReference($schema_name),
                     location: Parameter::LOCATION_BODY,
-                )
+                ),
             ],
             responses: [
                 new Response(
                     schema: new SchemaReference($schema_name),
                     description: 'The updated ' . $schema_name
-                )
+                ),
             ]
         );
     }

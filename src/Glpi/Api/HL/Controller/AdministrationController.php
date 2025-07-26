@@ -441,7 +441,7 @@ final class AdministrationController extends AbstractController
         parameters: [
             new Doc\Parameter(
                 name: 'email',
-                schema: new Schema(type: Schema::TYPE_STRING,),
+                schema: new Schema(type: Schema::TYPE_STRING),
                 description: 'The email address to add',
                 location: Parameter::LOCATION_BODY,
                 required: true,
