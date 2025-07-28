@@ -50,8 +50,6 @@ use Enclosure;
 use EnclosureModel;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
-use Glpi\Api\HL\Doc\Parameter;
-use Glpi\Api\HL\Doc\Schema;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
@@ -98,14 +96,14 @@ use function Safe\json_encode;
         [
             'name' => 'itemtype',
             'description' => 'Asset type',
-            'location' => Parameter::LOCATION_PATH,
-            'schema' => ['type' => Schema::TYPE_STRING],
+            'location' => Doc\Parameter::LOCATION_PATH,
+            'schema' => ['type' => Doc\Schema::TYPE_STRING],
         ],
         [
             'name' => 'id',
             'description' => 'The ID of the Asset',
-            'location' => Parameter::LOCATION_PATH,
-            'schema' => ['type' => Schema::TYPE_INTEGER],
+            'location' => Doc\Parameter::LOCATION_PATH,
+            'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
         ],
     ]
 )]
@@ -120,270 +118,270 @@ final class AssetController extends AbstractController
         $schemas = [];
 
         $schemas['_BaseAsset'] = [
-            'type' => Schema::TYPE_OBJECT,
+            'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT64,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Schema::TYPE_STRING],
-                'comment' => ['type' => Schema::TYPE_STRING],
-                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
         $schemas['PrinterModel'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => PrinterModel::class,
-            'type' => Schema::TYPE_OBJECT,
+            'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT64,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Schema::TYPE_STRING],
-                'comment' => ['type' => Schema::TYPE_STRING],
-                'product_number' => ['type' => Schema::TYPE_STRING],
-                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'product_number' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
         $schemas['SoftwareCategory'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => SoftwareCategory::class,
-            'type' => Schema::TYPE_OBJECT,
+            'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT64,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Schema::TYPE_STRING],
-                'completename' => ['type' => Schema::TYPE_STRING],
-                'comment' => ['type' => Schema::TYPE_STRING],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'completename' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'parent' => self::getDropdownTypeSchema(class: SoftwareCategory::class, full_schema: 'SoftwareCategory'),
-                'level' => ['type' => Schema::TYPE_INTEGER],
+                'level' => ['type' => Doc\Schema::TYPE_INTEGER],
             ],
         ];
 
         $schemas['OperatingSystem'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => OperatingSystem::class,
-            'type' => Schema::TYPE_OBJECT,
+            'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT64,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Schema::TYPE_STRING],
-                'comment' => ['type' => Schema::TYPE_STRING],
-                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
         $schemas['RackModel'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => RackModel::class,
-            'type' => Schema::TYPE_OBJECT,
+            'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT64,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Schema::TYPE_STRING],
-                'comment' => ['type' => Schema::TYPE_STRING],
-                'product_number' => ['type' => Schema::TYPE_STRING],
-                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'product_number' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
         $schemas['RackType'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => RackType::class,
-            'type' => Schema::TYPE_OBJECT,
+            'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT64,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Schema::TYPE_STRING],
-                'comment' => ['type' => Schema::TYPE_STRING],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
-                'is_recursive' => ['type' => Schema::TYPE_BOOLEAN],
-                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
         $schemas['PDUModel'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => PDUModel::class,
-            'type' => Schema::TYPE_OBJECT,
+            'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT64,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Schema::TYPE_STRING],
-                'comment' => ['type' => Schema::TYPE_STRING],
-                'product_number' => ['type' => Schema::TYPE_STRING],
-                'weight' => ['type' => Schema::TYPE_INTEGER],
-                'rack_units' => ['x-field' => 'required_units', 'type' => Schema::TYPE_INTEGER],
-                'depth' => ['type' => Schema::TYPE_NUMBER, 'format' => Schema::FORMAT_NUMBER_FLOAT],
-                'power_connections' => ['type' => Schema::TYPE_INTEGER],
-                'max_power' => ['type' => Schema::TYPE_INTEGER],
-                'is_half_rack' => ['type' => Schema::TYPE_BOOLEAN],
-                'is_rackable' => ['type' => Schema::TYPE_BOOLEAN],
-                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'product_number' => ['type' => Doc\Schema::TYPE_STRING],
+                'weight' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'rack_units' => ['x-field' => 'required_units', 'type' => Doc\Schema::TYPE_INTEGER],
+                'depth' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT],
+                'power_connections' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'max_power' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'is_half_rack' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_rackable' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
         $schemas['PDUType'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => PDUType::class,
-            'type' => Schema::TYPE_OBJECT,
+            'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT64,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Schema::TYPE_STRING],
-                'comment' => ['type' => Schema::TYPE_STRING],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
-                'is_recursive' => ['type' => Schema::TYPE_BOOLEAN],
-                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
         $schemas['PassiveDCEquipmentModel'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => PassiveDCEquipmentModel::class,
-            'type' => Schema::TYPE_OBJECT,
+            'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT64,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Schema::TYPE_STRING],
-                'comment' => ['type' => Schema::TYPE_STRING],
-                'product_number' => ['type' => Schema::TYPE_STRING],
-                'weight' => ['type' => Schema::TYPE_INTEGER],
-                'rack_units' => ['x-field' => 'required_units', 'type' => Schema::TYPE_INTEGER],
-                'depth' => ['type' => Schema::TYPE_NUMBER, 'format' => Schema::FORMAT_NUMBER_FLOAT],
-                'power_connections' => ['type' => Schema::TYPE_INTEGER],
-                'power_consumption' => ['type' => Schema::TYPE_INTEGER],
-                'max_power' => ['type' => Schema::TYPE_INTEGER],
-                'is_half_rack' => ['type' => Schema::TYPE_BOOLEAN],
-                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'product_number' => ['type' => Doc\Schema::TYPE_STRING],
+                'weight' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'rack_units' => ['x-field' => 'required_units', 'type' => Doc\Schema::TYPE_INTEGER],
+                'depth' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT],
+                'power_connections' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'power_consumption' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'max_power' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'is_half_rack' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
         $schemas['PassiveDCEquipmentType'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => PassiveDCEquipmentType::class,
-            'type' => Schema::TYPE_OBJECT,
+            'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT64,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Schema::TYPE_STRING],
-                'comment' => ['type' => Schema::TYPE_STRING],
-                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
         $schemas['SocketModel'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => SocketModel::class,
-            'type' => Schema::TYPE_OBJECT,
+            'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT64,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Schema::TYPE_STRING],
-                'comment' => ['type' => Schema::TYPE_STRING],
-                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
         $schemas['NetworkPort'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => NetworkPort::class,
-            'type' => Schema::TYPE_OBJECT,
+            'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT64,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Schema::TYPE_STRING],
-                'comment' => ['type' => Schema::TYPE_STRING],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
-                'is_recursive' => ['type' => Schema::TYPE_BOOLEAN],
-                'logical_number' => ['type' => Schema::TYPE_INTEGER],
-                'mac' => ['type' => Schema::TYPE_STRING],
-                'is_deleted' => ['type' => Schema::TYPE_BOOLEAN],
-                'is_dynamic' => ['type' => Schema::TYPE_BOOLEAN],
-                'if_mtu' => ['x-field' => 'ifmtu', 'type' => Schema::TYPE_INTEGER],
-                'if_speed' => ['x-field' => 'ifspeed', 'type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT64],
-                'if_internal_status' => ['x-field' => 'ifinternalstatus', 'type' => Schema::TYPE_STRING],
-                'if_connection_status' => ['x-field' => 'ifconnectionstatus', 'type' => Schema::TYPE_INTEGER],
-                'if_last_change' => ['x-field' => 'iflastchange', 'type' => Schema::TYPE_STRING],
-                'if_in_bytes' => ['x-field' => 'ifinbytes', 'type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT64],
-                'if_out_bytes' => ['x-field' => 'ifoutbytes', 'type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT64],
-                'if_in_errors' => ['x-field' => 'ifinerrors', 'type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT64],
-                'if_out_errors' => ['x-field' => 'ifouterrors', 'type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT64],
-                'if_status' => ['x-field' => 'ifstatus', 'type' => Schema::TYPE_STRING],
-                'if_description' => ['x-field' => 'ifdescr', 'type' => Schema::TYPE_STRING],
-                'if_alias' => ['x-field' => 'ifalias', 'type' => Schema::TYPE_STRING],
-                'port_duplex' => ['x-field' => 'portduplex', 'type' => Schema::TYPE_STRING],
-                'trunk' => ['type' => Schema::TYPE_INTEGER],
-                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'logical_number' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'mac' => ['type' => Doc\Schema::TYPE_STRING],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'if_mtu' => ['x-field' => 'ifmtu', 'type' => Doc\Schema::TYPE_INTEGER],
+                'if_speed' => ['x-field' => 'ifspeed', 'type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'if_internal_status' => ['x-field' => 'ifinternalstatus', 'type' => Doc\Schema::TYPE_STRING],
+                'if_connection_status' => ['x-field' => 'ifconnectionstatus', 'type' => Doc\Schema::TYPE_INTEGER],
+                'if_last_change' => ['x-field' => 'iflastchange', 'type' => Doc\Schema::TYPE_STRING],
+                'if_in_bytes' => ['x-field' => 'ifinbytes', 'type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'if_out_bytes' => ['x-field' => 'ifoutbytes', 'type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'if_in_errors' => ['x-field' => 'ifinerrors', 'type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'if_out_errors' => ['x-field' => 'ifouterrors', 'type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'if_status' => ['x-field' => 'ifstatus', 'type' => Doc\Schema::TYPE_STRING],
+                'if_description' => ['x-field' => 'ifdescr', 'type' => Doc\Schema::TYPE_STRING],
+                'if_alias' => ['x-field' => 'ifalias', 'type' => Doc\Schema::TYPE_STRING],
+                'port_duplex' => ['x-field' => 'portduplex', 'type' => Doc\Schema::TYPE_STRING],
+                'trunk' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
         $schemas['DCRoom'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => DCRoom::class,
-            'type' => Schema::TYPE_OBJECT,
+            'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT64,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Schema::TYPE_STRING],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
-                'is_recursive' => ['type' => Schema::TYPE_BOOLEAN],
-                'is_deleted' => ['type' => Schema::TYPE_BOOLEAN],
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'location' => self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location'),
                 'datacenter' => self::getDropdownTypeSchema(class: Datacenter::class, full_schema: 'DataCenter'),
-                'rows' => ['x-field' => 'vis_rows', 'type' => Schema::TYPE_INTEGER],
-                'cols' => ['x-field' => 'vis_cols', 'type' => Schema::TYPE_INTEGER],
-                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'rows' => ['x-field' => 'vis_rows', 'type' => Doc\Schema::TYPE_INTEGER],
+                'cols' => ['x-field' => 'vis_cols', 'type' => Doc\Schema::TYPE_INTEGER],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
@@ -413,8 +411,8 @@ final class AssetController extends AbstractController
             if ($asset->isEntityAssign()) {
                 $schemas[$schema_name]['properties']['entity'] = self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity');
                 // Add completename field
-                $schemas[$schema_name]['properties']['entity']['properties']['completename'] = ['type' => Schema::TYPE_STRING];
-                $schemas[$schema_name]['properties']['is_recursive'] = ['type' => Schema::TYPE_BOOLEAN];
+                $schemas[$schema_name]['properties']['entity']['properties']['completename'] = ['type' => Doc\Schema::TYPE_STRING];
+                $schemas[$schema_name]['properties']['is_recursive'] = ['type' => Doc\Schema::TYPE_BOOLEAN];
             }
 
             $type_class = $asset->getTypeClass();
@@ -449,9 +447,9 @@ final class AssetController extends AbstractController
                     full_schema: 'User'
                 );
                 $schemas[$schema_name]['properties']['group'] = [
-                    'type' => Schema::TYPE_ARRAY,
+                    'type' => Doc\Schema::TYPE_ARRAY,
                     'items' => [
-                        'type' => Schema::TYPE_OBJECT,
+                        'type' => Doc\Schema::TYPE_OBJECT,
                         'x-full-schema' => 'Group',
                         'x-join' => [
                             'table' => 'glpi_groups', // The table with the desired data
@@ -469,18 +467,18 @@ final class AssetController extends AbstractController
                         ],
                         'properties' => [
                             'id' => [
-                                'type' => Schema::TYPE_INTEGER,
-                                'format' => Schema::FORMAT_INTEGER_INT64,
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                                 'description' => 'ID',
                             ],
-                            'name' => ['type' => Schema::TYPE_STRING],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
                         ],
                     ],
                 ];
                 $schemas[$schema_name]['properties']['group_tech'] = [
-                    'type' => Schema::TYPE_ARRAY,
+                    'type' => Doc\Schema::TYPE_ARRAY,
                     'items' => [
-                        'type' => Schema::TYPE_OBJECT,
+                        'type' => Doc\Schema::TYPE_OBJECT,
                         'x-full-schema' => 'Group',
                         'x-join' => [
                             'table' => 'glpi_groups', // The table with the desired data
@@ -498,80 +496,80 @@ final class AssetController extends AbstractController
                         ],
                         'properties' => [
                             'id' => [
-                                'type' => Schema::TYPE_INTEGER,
-                                'format' => Schema::FORMAT_INTEGER_INT64,
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                                 'description' => 'ID',
                             ],
-                            'name' => ['type' => Schema::TYPE_STRING],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
                         ],
                     ],
                 ];
             }
 
             if ($asset->isField('contact')) {
-                $schemas[$schema_name]['properties']['contact'] = ['type' => Schema::TYPE_STRING];
+                $schemas[$schema_name]['properties']['contact'] = ['type' => Doc\Schema::TYPE_STRING];
             }
             if ($asset->isField('contact_num')) {
-                $schemas[$schema_name]['properties']['contact_num'] = ['type' => Schema::TYPE_STRING];
+                $schemas[$schema_name]['properties']['contact_num'] = ['type' => Doc\Schema::TYPE_STRING];
             }
             if ($asset->isField('serial')) {
-                $schemas[$schema_name]['properties']['serial'] = ['type' => Schema::TYPE_STRING];
+                $schemas[$schema_name]['properties']['serial'] = ['type' => Doc\Schema::TYPE_STRING];
             }
             if ($asset->isField('otherserial')) {
-                $schemas[$schema_name]['properties']['otherserial'] = ['type' => Schema::TYPE_STRING];
+                $schemas[$schema_name]['properties']['otherserial'] = ['type' => Doc\Schema::TYPE_STRING];
             }
             if ($asset->isField('networks_id')) {
                 $schemas[$schema_name]['properties']['network'] = self::getDropdownTypeSchema(Network::class);
             }
 
             if ($asset->isField('uuid')) {
-                $schemas[$schema_name]['properties']['uuid'] = ['type' => Schema::TYPE_STRING];
+                $schemas[$schema_name]['properties']['uuid'] = ['type' => Doc\Schema::TYPE_STRING];
             }
             if ($asset->isField('autoupdatesystems_id')) {
                 $schemas[$schema_name]['properties']['autoupdatesystem'] = self::getDropdownTypeSchema(AutoUpdateSystem::class);
             }
 
             if ($asset->maybeDeleted()) {
-                $schemas[$schema_name]['properties']['is_deleted'] = ['type' => Schema::TYPE_BOOLEAN];
+                $schemas[$schema_name]['properties']['is_deleted'] = ['type' => Doc\Schema::TYPE_BOOLEAN];
             }
         }
 
         $schemas['Cartridge'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => Cartridge::class,
-            'type' => Schema::TYPE_OBJECT,
+            'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT64,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
                 'entities_id' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                 'cartridgeitems_id' => self::getDropdownTypeSchema(class: CartridgeItem::class, full_schema: 'CartridgeItem'),
-                'pages' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT32],
+                'pages' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                 'date_in' => [
-                    'type' => Schema::TYPE_STRING,
-                    'format' => Schema::FORMAT_STRING_DATE_TIME,
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                     'x-readonly' => true,
                 ],
                 'date_use' => [
-                    'type' => Schema::TYPE_STRING,
-                    'format' => Schema::FORMAT_STRING_DATE_TIME,
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                     'x-readonly' => true,
                 ],
                 'date_out' => [
-                    'type' => Schema::TYPE_STRING,
-                    'format' => Schema::FORMAT_STRING_DATE_TIME,
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                     'x-readonly' => true,
                 ],
                 'date_creation' => [
-                    'type' => Schema::TYPE_STRING,
-                    'format' => Schema::FORMAT_STRING_DATE_TIME,
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                     'x-readonly' => true,
                 ],
                 'date_mod' => [
-                    'type' => Schema::TYPE_STRING,
-                    'format' => Schema::FORMAT_STRING_DATE_TIME,
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                     'x-readonly' => true,
                 ],
             ],
@@ -580,24 +578,24 @@ final class AssetController extends AbstractController
         $schemas['CartridgeItem'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => CartridgeItem::class,
-            'type' => Schema::TYPE_OBJECT,
+            'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT64,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Schema::TYPE_STRING],
-                'comment' => ['type' => Schema::TYPE_STRING],
-                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
                 'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
                 'printer_models' => [
-                    'type' => Schema::TYPE_ARRAY,
+                    'type' => Doc\Schema::TYPE_ARRAY,
                     'description' => 'List of printer models that can use this cartridge',
                     'items' => [
-                        'type' => Schema::TYPE_OBJECT,
+                        'type' => Doc\Schema::TYPE_OBJECT,
                         'x-full-schema' => 'PrinterModel',
                         'x-join' => [
                             'table' => PrinterModel::getTable(),
@@ -611,20 +609,20 @@ final class AssetController extends AbstractController
                         ],
                         'properties' => [
                             'id' => [
-                                'type' => Schema::TYPE_INTEGER,
-                                'format' => Schema::FORMAT_INTEGER_INT64,
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                                 'x-readonly' => true,
                             ],
-                            'name' => ['type' => Schema::TYPE_STRING],
-                            'comment' => ['type' => Schema::TYPE_STRING],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                            'comment' => ['type' => Doc\Schema::TYPE_STRING],
                         ],
                     ],
                 ],
                 'cartridges' => [
-                    'type' => Schema::TYPE_ARRAY,
+                    'type' => Doc\Schema::TYPE_ARRAY,
                     'description' => 'List of cartridges',
                     'items' => [
-                        'type' => Schema::TYPE_OBJECT,
+                        'type' => Doc\Schema::TYPE_OBJECT,
                         'x-full-schema' => 'Cartridge',
                         'x-join' => [
                             'table' => Cartridge::getTable(),
@@ -633,16 +631,16 @@ final class AssetController extends AbstractController
                         ],
                         'properties' => [
                             'id' => [
-                                'type' => Schema::TYPE_INTEGER,
-                                'format' => Schema::FORMAT_INTEGER_INT64,
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                                 'x-readonly' => true,
                             ],
-                            'pages' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT32],
-                            'date_in' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                            'date_use' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                            'date_out' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                            'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                            'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                            'pages' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
+                            'date_in' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                            'date_use' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                            'date_out' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                            'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                            'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                         ],
                     ],
                 ],
@@ -652,61 +650,61 @@ final class AssetController extends AbstractController
         $schemas['Consumable'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => Consumable::class,
-            'type' => Schema::TYPE_OBJECT,
+            'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT64,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
                 'entities_id' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                 'consumableitems_id' => self::getDropdownTypeSchema(class: ConsumableItem::class, full_schema: 'ConsumableItem'),
                 'date_in' => [
-                    'type' => Schema::TYPE_STRING,
-                    'format' => Schema::FORMAT_STRING_DATE_TIME,
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                     'x-readonly' => true,
                 ],
                 'date_out' => [
-                    'type' => Schema::TYPE_STRING,
-                    'format' => Schema::FORMAT_STRING_DATE_TIME,
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                     'x-readonly' => true,
                 ],
                 'date_creation' => [
-                    'type' => Schema::TYPE_STRING,
-                    'format' => Schema::FORMAT_STRING_DATE_TIME,
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                     'x-readonly' => true,
                 ],
                 'date_mod' => [
-                    'type' => Schema::TYPE_STRING,
-                    'format' => Schema::FORMAT_STRING_DATE_TIME,
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                     'x-readonly' => true,
                 ],
-                'itemtype' => ['type' => Schema::TYPE_STRING],
-                'items_id' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT64],
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
             ],
         ];
 
         $schemas['ConsumableItem'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => ConsumableItem::class,
-            'type' => Schema::TYPE_OBJECT,
+            'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT64,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Schema::TYPE_STRING],
-                'comment' => ['type' => Schema::TYPE_STRING],
-                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
                 'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
                 'consumables' => [
-                    'type' => Schema::TYPE_ARRAY,
+                    'type' => Doc\Schema::TYPE_ARRAY,
                     'description' => 'List of consumables',
                     'items' => [
-                        'type' => Schema::TYPE_OBJECT,
+                        'type' => Doc\Schema::TYPE_OBJECT,
                         'x-full-schema' => 'Consumable',
                         'x-join' => [
                             'table' => Consumable::getTable(),
@@ -715,16 +713,16 @@ final class AssetController extends AbstractController
                         ],
                         'properties' => [
                             'id' => [
-                                'type' => Schema::TYPE_INTEGER,
-                                'format' => Schema::FORMAT_INTEGER_INT64,
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                                 'x-readonly' => true,
                             ],
-                            'date_in' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                            'date_out' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                            'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                            'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                            'itemtype' => ['type' => Schema::TYPE_STRING],
-                            'items_id' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT64],
+                            'date_in' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                            'date_out' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                            'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                            'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                            'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
+                            'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
                         ],
                     ],
                 ],
@@ -734,27 +732,27 @@ final class AssetController extends AbstractController
         $schemas['Software'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => Software::class,
-            'type' => Schema::TYPE_OBJECT,
+            'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT64,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Schema::TYPE_STRING],
-                'comment' => ['type' => Schema::TYPE_STRING],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
-                'is_recursive' => ['type' => Schema::TYPE_BOOLEAN],
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'location' => self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location'),
                 'category' => self::getDropdownTypeSchema(class: SoftwareCategory::class, full_schema: 'SoftwareCategory'),
                 'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
                 'parent' => self::getDropdownTypeSchema(class: Software::class, full_schema: 'Software'),
-                'is_helpdesk_visible' => ['type' => Schema::TYPE_BOOLEAN],
+                'is_helpdesk_visible' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
                 'group' => [
-                    'type' => Schema::TYPE_ARRAY,
+                    'type' => Doc\Schema::TYPE_ARRAY,
                     'items' => [
-                        'type' => Schema::TYPE_OBJECT,
+                        'type' => Doc\Schema::TYPE_OBJECT,
                         'x-full-schema' => 'Group',
                         'x-join' => [
                             'table' => 'glpi_groups', // The table with the desired data
@@ -772,19 +770,19 @@ final class AssetController extends AbstractController
                         ],
                         'properties' => [
                             'id' => [
-                                'type' => Schema::TYPE_INTEGER,
-                                'format' => Schema::FORMAT_INTEGER_INT64,
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                                 'description' => 'ID',
                             ],
-                            'name' => ['type' => Schema::TYPE_STRING],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
                         ],
                     ],
                 ],
                 'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
                 'group_tech' => [
-                    'type' => Schema::TYPE_ARRAY,
+                    'type' => Doc\Schema::TYPE_ARRAY,
                     'items' => [
-                        'type' => Schema::TYPE_OBJECT,
+                        'type' => Doc\Schema::TYPE_OBJECT,
                         'x-full-schema' => 'Group',
                         'x-join' => [
                             'table' => 'glpi_groups', // The table with the desired data
@@ -802,71 +800,71 @@ final class AssetController extends AbstractController
                         ],
                         'properties' => [
                             'id' => [
-                                'type' => Schema::TYPE_INTEGER,
-                                'format' => Schema::FORMAT_INTEGER_INT64,
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                                 'description' => 'ID',
                             ],
-                            'name' => ['type' => Schema::TYPE_STRING],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
                         ],
                     ],
                 ],
-                'is_deleted' => ['type' => Schema::TYPE_BOOLEAN],
-                'is_update' => ['type' => Schema::TYPE_BOOLEAN],
-                'is_valid' => ['type' => Schema::TYPE_BOOLEAN],
-                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_update' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_valid' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
         $schemas['SoftwareVersion'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => SoftwareVersion::class,
-            'type' => Schema::TYPE_OBJECT,
+            'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT64,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Schema::TYPE_STRING],
-                'arch' => ['type' => Schema::TYPE_STRING],
-                'comment' => ['type' => Schema::TYPE_STRING],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'arch' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
-                'is_recursive' => ['type' => Schema::TYPE_BOOLEAN],
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'software' => self::getDropdownTypeSchema(class: Software::class, full_schema: 'Software'),
                 'state' => self::getDropdownTypeSchema(class: State::class, full_schema: 'State'),
                 'operating_system' => self::getDropdownTypeSchema(class: OperatingSystem::class, full_schema: 'OperatingSystem'),
-                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
         $schemas['Rack'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => Rack::class,
-            'type' => Schema::TYPE_OBJECT,
+            'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT64,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Schema::TYPE_STRING],
-                'comment' => ['type' => Schema::TYPE_STRING],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
-                'is_recursive' => ['type' => Schema::TYPE_BOOLEAN],
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'location' => self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location'),
-                'serial' => ['type' => Schema::TYPE_STRING],
-                'otherserial' => ['type' => Schema::TYPE_STRING],
+                'serial' => ['type' => Doc\Schema::TYPE_STRING],
+                'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
                 'model' => self::getDropdownTypeSchema(class: RackModel::class, full_schema: 'RackModel'),
                 'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
                 'type' => self::getDropdownTypeSchema(class: RackType::class, full_schema: 'RackType'),
                 'state' => self::getDropdownTypeSchema(class: State::class, full_schema: 'State'),
                 'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
                 'group' => [
-                    'type' => Schema::TYPE_ARRAY,
+                    'type' => Doc\Schema::TYPE_ARRAY,
                     'items' => [
-                        'type' => Schema::TYPE_OBJECT,
+                        'type' => Doc\Schema::TYPE_OBJECT,
                         'x-full-schema' => 'Group',
                         'x-join' => [
                             'table' => 'glpi_groups', // The table with the desired data
@@ -884,19 +882,19 @@ final class AssetController extends AbstractController
                         ],
                         'properties' => [
                             'id' => [
-                                'type' => Schema::TYPE_INTEGER,
-                                'format' => Schema::FORMAT_INTEGER_INT64,
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                                 'description' => 'ID',
                             ],
-                            'name' => ['type' => Schema::TYPE_STRING],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
                         ],
                     ],
                 ],
                 'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
                 'group_tech' => [
-                    'type' => Schema::TYPE_ARRAY,
+                    'type' => Doc\Schema::TYPE_ARRAY,
                     'items' => [
-                        'type' => Schema::TYPE_OBJECT,
+                        'type' => Doc\Schema::TYPE_OBJECT,
                         'x-full-schema' => 'Group',
                         'x-join' => [
                             'table' => 'glpi_groups', // The table with the desired data
@@ -914,35 +912,35 @@ final class AssetController extends AbstractController
                         ],
                         'properties' => [
                             'id' => [
-                                'type' => Schema::TYPE_INTEGER,
-                                'format' => Schema::FORMAT_INTEGER_INT64,
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                                 'description' => 'ID',
                             ],
-                            'name' => ['type' => Schema::TYPE_STRING],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
                         ],
                     ],
                 ],
-                'width' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT32],
-                'height' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT32],
-                'depth' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT32],
-                'number_units' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT32],
-                'is_deleted' => ['type' => Schema::TYPE_BOOLEAN],
+                'width' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
+                'height' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
+                'depth' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
+                'number_units' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'room' => self::getDropdownTypeSchema(class: DCRoom::class, full_schema: 'DCRoom'),
-                'room_orientation' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT32],
-                'position' => ['type' => Schema::TYPE_STRING],
-                'bgcolor' => ['type' => Schema::TYPE_STRING],
-                'max_power' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT32],
+                'room_orientation' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
+                'position' => ['type' => Doc\Schema::TYPE_STRING],
+                'bgcolor' => ['type' => Doc\Schema::TYPE_STRING],
+                'max_power' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                 'measured_power' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT32,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT32,
                     'x-field' => 'mesured_power', // Took liberty to fix typo in DB without having to mess with the DB itself or other code
                 ],
-                'max_weight' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT32],
+                'max_weight' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                 'items' => [
-                    'type' => Schema::TYPE_ARRAY,
+                    'type' => Doc\Schema::TYPE_ARRAY,
                     'description' => 'List of items in the rack',
                     'items' => [
-                        'type' => Schema::TYPE_OBJECT,
+                        'type' => Doc\Schema::TYPE_OBJECT,
                         'x-full-schema' => 'RackItem',
                         'x-join' => [
                             'table' => Item_Rack::getTable(),
@@ -952,37 +950,37 @@ final class AssetController extends AbstractController
                         ],
                         'properties' => [
                             'id' => [
-                                'type' => Schema::TYPE_INTEGER,
-                                'format' => Schema::FORMAT_INTEGER_INT64,
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                                 'x-readonly' => true,
                             ],
-                            'itemtype' => ['type' => Schema::TYPE_STRING],
-                            'items_id' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT64],
+                            'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
+                            'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
                         ],
                     ],
                 ],
-                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
         $schemas['RackItem'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => Item_Rack::class,
-            'type' => Schema::TYPE_OBJECT,
+            'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT64,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
                 'rack' => self::getDropdownTypeSchema(class: Rack::class, full_schema: 'Rack'),
-                'itemtype' => ['type' => Schema::TYPE_STRING],
-                'items_id' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT64],
-                'position' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT32],
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'position' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                 'orientation' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT32,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT32,
                     'enum' => [Rack::FRONT, Rack::REAR],
                     'description' => <<<EOT
                         Orientation of the item in the rack.
@@ -990,41 +988,41 @@ final class AssetController extends AbstractController
                         - 1: Rear
                         EOT,
                 ],
-                'bgcolor' => ['type' => Schema::TYPE_STRING],
+                'bgcolor' => ['type' => Doc\Schema::TYPE_STRING],
                 'position_horizontal' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT32,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT32,
                     'x-field' => 'hpos',
                 ],
-                'is_reserved' => ['type' => Schema::TYPE_BOOLEAN],
+                'is_reserved' => ['type' => Doc\Schema::TYPE_BOOLEAN],
             ],
         ];
 
         $schemas['Enclosure'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => Enclosure::class,
-            'type' => Schema::TYPE_OBJECT,
+            'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT64,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Schema::TYPE_STRING],
-                'comment' => ['type' => Schema::TYPE_STRING],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
-                'is_recursive' => ['type' => Schema::TYPE_BOOLEAN],
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'location' => self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location'),
-                'serial' => ['type' => Schema::TYPE_STRING],
-                'otherserial' => ['type' => Schema::TYPE_STRING],
+                'serial' => ['type' => Doc\Schema::TYPE_STRING],
+                'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
                 'model' => self::getDropdownTypeSchema(EnclosureModel::class),
                 'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
                 'state' => self::getDropdownTypeSchema(class: State::class, full_schema: 'State'),
                 'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
                 'group' => [
-                    'type' => Schema::TYPE_ARRAY,
+                    'type' => Doc\Schema::TYPE_ARRAY,
                     'items' => [
-                        'type' => Schema::TYPE_OBJECT,
+                        'type' => Doc\Schema::TYPE_OBJECT,
                         'x-full-schema' => 'Group',
                         'x-join' => [
                             'table' => 'glpi_groups', // The table with the desired data
@@ -1042,19 +1040,19 @@ final class AssetController extends AbstractController
                         ],
                         'properties' => [
                             'id' => [
-                                'type' => Schema::TYPE_INTEGER,
-                                'format' => Schema::FORMAT_INTEGER_INT64,
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                                 'description' => 'ID',
                             ],
-                            'name' => ['type' => Schema::TYPE_STRING],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
                         ],
                     ],
                 ],
                 'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
                 'group_tech' => [
-                    'type' => Schema::TYPE_ARRAY,
+                    'type' => Doc\Schema::TYPE_ARRAY,
                     'items' => [
-                        'type' => Schema::TYPE_OBJECT,
+                        'type' => Doc\Schema::TYPE_OBJECT,
                         'x-full-schema' => 'Group',
                         'x-join' => [
                             'table' => 'glpi_groups', // The table with the desired data
@@ -1072,48 +1070,48 @@ final class AssetController extends AbstractController
                         ],
                         'properties' => [
                             'id' => [
-                                'type' => Schema::TYPE_INTEGER,
-                                'format' => Schema::FORMAT_INTEGER_INT64,
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                                 'description' => 'ID',
                             ],
-                            'name' => ['type' => Schema::TYPE_STRING],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
                         ],
                     ],
                 ],
-                'is_deleted' => ['type' => Schema::TYPE_BOOLEAN],
-                'orientation' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT32],
-                'power_supplies' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT32],
-                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'orientation' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
+                'power_supplies' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
         $schemas['PDU'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => PDU::class,
-            'type' => Schema::TYPE_OBJECT,
+            'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT64,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Schema::TYPE_STRING],
-                'comment' => ['type' => Schema::TYPE_STRING],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
-                'is_recursive' => ['type' => Schema::TYPE_BOOLEAN],
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'location' => self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location'),
-                'serial' => ['type' => Schema::TYPE_STRING],
-                'otherserial' => ['type' => Schema::TYPE_STRING],
+                'serial' => ['type' => Doc\Schema::TYPE_STRING],
+                'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
                 'model' => self::getDropdownTypeSchema(class: PDUModel::class, full_schema: 'PDUModel'),
                 'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
                 'type' => self::getDropdownTypeSchema(class: PDUType::class, full_schema: 'PDUType'),
                 'state' => self::getDropdownTypeSchema(class: State::class, full_schema: 'State'),
                 'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
                 'group' => [
-                    'type' => Schema::TYPE_ARRAY,
+                    'type' => Doc\Schema::TYPE_ARRAY,
                     'items' => [
-                        'type' => Schema::TYPE_OBJECT,
+                        'type' => Doc\Schema::TYPE_OBJECT,
                         'x-full-schema' => 'Group',
                         'x-join' => [
                             'table' => 'glpi_groups', // The table with the desired data
@@ -1131,19 +1129,19 @@ final class AssetController extends AbstractController
                         ],
                         'properties' => [
                             'id' => [
-                                'type' => Schema::TYPE_INTEGER,
-                                'format' => Schema::FORMAT_INTEGER_INT64,
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                                 'description' => 'ID',
                             ],
-                            'name' => ['type' => Schema::TYPE_STRING],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
                         ],
                     ],
                 ],
                 'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
                 'group_tech' => [
-                    'type' => Schema::TYPE_ARRAY,
+                    'type' => Doc\Schema::TYPE_ARRAY,
                     'items' => [
-                        'type' => Schema::TYPE_OBJECT,
+                        'type' => Doc\Schema::TYPE_OBJECT,
                         'x-full-schema' => 'Group',
                         'x-join' => [
                             'table' => 'glpi_groups', // The table with the desired data
@@ -1161,46 +1159,46 @@ final class AssetController extends AbstractController
                         ],
                         'properties' => [
                             'id' => [
-                                'type' => Schema::TYPE_INTEGER,
-                                'format' => Schema::FORMAT_INTEGER_INT64,
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                                 'description' => 'ID',
                             ],
-                            'name' => ['type' => Schema::TYPE_STRING],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
                         ],
                     ],
                 ],
-                'is_deleted' => ['type' => Schema::TYPE_BOOLEAN],
-                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
         $schemas['PassiveDCEquipment'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => PassiveDCEquipment::class,
-            'type' => Schema::TYPE_OBJECT,
+            'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT64,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Schema::TYPE_STRING],
-                'comment' => ['type' => Schema::TYPE_STRING],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
-                'is_recursive' => ['type' => Schema::TYPE_BOOLEAN],
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'location' => self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location'),
-                'serial' => ['type' => Schema::TYPE_STRING],
-                'otherserial' => ['type' => Schema::TYPE_STRING],
+                'serial' => ['type' => Doc\Schema::TYPE_STRING],
+                'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
                 'model' => self::getDropdownTypeSchema(class: PassiveDCEquipmentModel::class, full_schema: 'PassiveDCEquipmentModel'),
                 'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
                 'type' => self::getDropdownTypeSchema(class: PassiveDCEquipmentType::class, full_schema: 'PassiveDCEquipmentType'),
                 'state' => self::getDropdownTypeSchema(class: State::class, full_schema: 'State'),
                 'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
                 'group' => [
-                    'type' => Schema::TYPE_ARRAY,
+                    'type' => Doc\Schema::TYPE_ARRAY,
                     'items' => [
-                        'type' => Schema::TYPE_OBJECT,
+                        'type' => Doc\Schema::TYPE_OBJECT,
                         'x-full-schema' => 'Group',
                         'x-join' => [
                             'table' => 'glpi_groups', // The table with the desired data
@@ -1218,19 +1216,19 @@ final class AssetController extends AbstractController
                         ],
                         'properties' => [
                             'id' => [
-                                'type' => Schema::TYPE_INTEGER,
-                                'format' => Schema::FORMAT_INTEGER_INT64,
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                                 'description' => 'ID',
                             ],
-                            'name' => ['type' => Schema::TYPE_STRING],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
                         ],
                     ],
                 ],
                 'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
                 'group_tech' => [
-                    'type' => Schema::TYPE_ARRAY,
+                    'type' => Doc\Schema::TYPE_ARRAY,
                     'items' => [
-                        'type' => Schema::TYPE_OBJECT,
+                        'type' => Doc\Schema::TYPE_OBJECT,
                         'x-full-schema' => 'Group',
                         'x-join' => [
                             'table' => 'glpi_groups', // The table with the desired data
@@ -1248,41 +1246,41 @@ final class AssetController extends AbstractController
                         ],
                         'properties' => [
                             'id' => [
-                                'type' => Schema::TYPE_INTEGER,
-                                'format' => Schema::FORMAT_INTEGER_INT64,
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                                 'description' => 'ID',
                             ],
-                            'name' => ['type' => Schema::TYPE_STRING],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
                         ],
                     ],
                 ],
-                'is_deleted' => ['type' => Schema::TYPE_BOOLEAN],
-                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
         $schemas['Cable'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => Cable::class,
-            'type' => Schema::TYPE_OBJECT,
+            'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT64,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Schema::TYPE_STRING],
-                'comment' => ['type' => Schema::TYPE_STRING],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
-                'is_recursive' => ['type' => Schema::TYPE_BOOLEAN],
-                'otherserial' => ['type' => Schema::TYPE_STRING],
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
                 'state' => self::getDropdownTypeSchema(class: State::class, full_schema: 'State'),
                 'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
                 'group' => [
-                    'type' => Schema::TYPE_ARRAY,
+                    'type' => Doc\Schema::TYPE_ARRAY,
                     'items' => [
-                        'type' => Schema::TYPE_OBJECT,
+                        'type' => Doc\Schema::TYPE_OBJECT,
                         'x-full-schema' => 'Group',
                         'x-join' => [
                             'table' => 'glpi_groups', // The table with the desired data
@@ -1300,19 +1298,19 @@ final class AssetController extends AbstractController
                         ],
                         'properties' => [
                             'id' => [
-                                'type' => Schema::TYPE_INTEGER,
-                                'format' => Schema::FORMAT_INTEGER_INT64,
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                                 'description' => 'ID',
                             ],
-                            'name' => ['type' => Schema::TYPE_STRING],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
                         ],
                     ],
                 ],
                 'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
                 'group_tech' => [
-                    'type' => Schema::TYPE_ARRAY,
+                    'type' => Doc\Schema::TYPE_ARRAY,
                     'items' => [
-                        'type' => Schema::TYPE_OBJECT,
+                        'type' => Doc\Schema::TYPE_OBJECT,
                         'x-full-schema' => 'Group',
                         'x-join' => [
                             'table' => 'glpi_groups', // The table with the desired data
@@ -1330,56 +1328,56 @@ final class AssetController extends AbstractController
                         ],
                         'properties' => [
                             'id' => [
-                                'type' => Schema::TYPE_INTEGER,
-                                'format' => Schema::FORMAT_INTEGER_INT64,
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                                 'description' => 'ID',
                             ],
-                            'name' => ['type' => Schema::TYPE_STRING],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
                         ],
                     ],
                 ],
-                'is_deleted' => ['type' => Schema::TYPE_BOOLEAN],
-                'itemtype_endpoint_a' => ['type' => Schema::TYPE_STRING],
-                'items_id_endpoint_a' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT64],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'itemtype_endpoint_a' => ['type' => Doc\Schema::TYPE_STRING],
+                'items_id_endpoint_a' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
                 'socketmodel_endpoint_a' => self::getDropdownTypeSchema(
                     class: SocketModel::class,
                     field: 'socketmodels_id_endpoint_a',
                     full_schema: 'SocketModel'
                 ),
-                'sockets_id_endpoint_a' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT64],
-                'itemtype_endpoint_b' => ['type' => Schema::TYPE_STRING],
-                'items_id_endpoint_b' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT64],
+                'sockets_id_endpoint_a' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'itemtype_endpoint_b' => ['type' => Doc\Schema::TYPE_STRING],
+                'items_id_endpoint_b' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
                 'socketmodel_endpoint_b' => self::getDropdownTypeSchema(
                     class: SocketModel::class,
                     field: 'socketmodels_id_endpoint_b',
                     full_schema: 'SocketModel'
                 ),
-                'sockets_id_endpoint_b' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT64],
-                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'sockets_id_endpoint_b' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
         $schemas['Socket'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => Socket::class,
-            'type' => Schema::TYPE_OBJECT,
+            'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT64,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => true,
                 ],
-                'name' => ['type' => Schema::TYPE_STRING],
-                'comment' => ['type' => Schema::TYPE_STRING],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'location' => self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location'),
                 'model' => self::getDropdownTypeSchema(class: SocketModel::class, full_schema: 'SocketModel'),
-                'wiring_side' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT32],
-                'itemtype' => ['type' => Schema::TYPE_STRING],
-                'items_id' => ['type' => Schema::TYPE_INTEGER, 'format' => Schema::FORMAT_INTEGER_INT64],
+                'wiring_side' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
                 'network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, full_schema: 'NetworkPort'),
-                'date_creation' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
@@ -1460,13 +1458,13 @@ final class AssetController extends AbstractController
             '200' => [
                 'description' => 'List of asset types',
                 'schema' => [
-                    'type' => Schema::TYPE_ARRAY,
+                    'type' => Doc\Schema::TYPE_ARRAY,
                     'items' => [
-                        'type' => Schema::TYPE_OBJECT,
+                        'type' => Doc\Schema::TYPE_OBJECT,
                         'properties' => [
-                            'itemtype' => ['type' => Schema::TYPE_STRING],
-                            'name' => ['type' => Schema::TYPE_STRING],
-                            'href' => ['type' => Schema::TYPE_STRING],
+                            'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                            'href' => ['type' => Doc\Schema::TYPE_STRING],
                         ],
                     ],
                 ],
@@ -1491,7 +1489,7 @@ final class AssetController extends AbstractController
     {
         $asset_types = self::getAssetTypes();
         $asset_schemas = array_filter($asset_schemas, static fn($key) => !str_starts_with($key, '_') && in_array($key, $asset_types, true), ARRAY_FILTER_USE_KEY);
-        $union_schema = Schema::getUnionSchema($asset_schemas);
+        $union_schema = Doc\Schema::getUnionSchema($asset_schemas);
         $union_schema['x-version-introduced'] = '2.0';
         return $union_schema;
     }
@@ -1587,7 +1585,7 @@ final class AssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => '{itemtype}',
             ],
         ]
@@ -1608,7 +1606,7 @@ final class AssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => '{itemtype}',
             ],
         ]
@@ -1669,7 +1667,7 @@ final class AssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'CartridgeItem',
             ],
         ]
@@ -1688,7 +1686,7 @@ final class AssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'CartridgeItem',
             ],
         ]
@@ -1735,7 +1733,7 @@ final class AssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Cartridge',
             ],
         ]
@@ -1755,7 +1753,7 @@ final class AssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Cartridge',
             ],
         ]
@@ -1814,7 +1812,7 @@ final class AssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'ConsumableItem',
             ],
         ]
@@ -1833,7 +1831,7 @@ final class AssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'ConsumableItem',
             ],
         ]
@@ -1880,7 +1878,7 @@ final class AssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Consumable',
             ],
         ]
@@ -1900,7 +1898,7 @@ final class AssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Consumable',
             ],
         ]
@@ -1959,7 +1957,7 @@ final class AssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Software',
             ],
         ]
@@ -1978,7 +1976,7 @@ final class AssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Software',
             ],
         ]
@@ -2036,7 +2034,7 @@ final class AssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Rack',
             ],
         ]
@@ -2055,7 +2053,7 @@ final class AssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Rack',
             ],
         ]
@@ -2124,7 +2122,7 @@ final class AssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Rack',
             ],
         ]
@@ -2143,7 +2141,7 @@ final class AssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'RackItem',
             ],
         ]
@@ -2218,7 +2216,7 @@ final class AssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Enclosure',
             ],
         ]
@@ -2237,7 +2235,7 @@ final class AssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Enclosure',
             ],
         ]
@@ -2295,7 +2293,7 @@ final class AssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'PDU',
             ],
         ]
@@ -2314,7 +2312,7 @@ final class AssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'PDU',
             ],
         ]
@@ -2372,7 +2370,7 @@ final class AssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'PassiveDCEquipment',
             ],
         ]
@@ -2391,7 +2389,7 @@ final class AssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'PassiveDCEquipment',
             ],
         ]
@@ -2449,7 +2447,7 @@ final class AssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Cable',
             ],
         ]
@@ -2468,7 +2466,7 @@ final class AssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Cable',
             ],
         ]
@@ -2526,7 +2524,7 @@ final class AssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Socket',
             ],
         ]
@@ -2545,7 +2543,7 @@ final class AssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Socket',
             ],
         ]
@@ -2614,7 +2612,7 @@ final class AssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'SoftwareVersion',
             ],
         ]
@@ -2641,7 +2639,7 @@ final class AssetController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'SoftwareVersion',
             ],
         ]

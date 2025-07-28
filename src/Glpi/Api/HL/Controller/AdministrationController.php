@@ -39,8 +39,6 @@ use CommonDBTM;
 use DBmysql;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
-use Glpi\Api\HL\Doc\Parameter;
-use Glpi\Api\HL\Doc\Schema;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
@@ -69,7 +67,7 @@ final class AdministrationController extends AbstractController
             'User' => [
                 'x-version-introduced' => '2.0',
                 'x-itemtype' => User::class,
-                'type' => Schema::TYPE_OBJECT,
+                'type' => Doc\Schema::TYPE_OBJECT,
                 'x-rights-conditions' => [ // Object-level extra permissions
                     'read' => static function () {
                         if (!Session::canViewAllEntities()) {
@@ -92,41 +90,41 @@ final class AdministrationController extends AbstractController
                 ],
                 'properties' => [
                     'id' => [
-                        'type' => Schema::TYPE_INTEGER,
-                        'format' => Schema::FORMAT_INTEGER_INT64,
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                         'description' => 'ID',
                         'x-readonly' => true,
                     ],
                     'username' => [
                         'x-field' => 'name',
-                        'type' => Schema::TYPE_STRING,
+                        'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Username',
                     ],
                     'realname' => [
-                        'type' => Schema::TYPE_STRING,
+                        'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Real name',
                     ],
                     'firstname' => [
-                        'type' => Schema::TYPE_STRING,
+                        'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'First name',
                     ],
                     'phone' => [
-                        'type' => Schema::TYPE_STRING,
+                        'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Phone number',
                     ],
                     'phone2' => [
-                        'type' => Schema::TYPE_STRING,
+                        'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Phone number 2',
                     ],
                     'mobile' => [
-                        'type' => Schema::TYPE_STRING,
+                        'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Mobile phone number',
                     ],
                     'emails' => [
-                        'type' => Schema::TYPE_ARRAY,
+                        'type' => Doc\Schema::TYPE_ARRAY,
                         'description' => 'Email addresses',
                         'items' => [
-                            'type' => Schema::TYPE_OBJECT,
+                            'type' => Doc\Schema::TYPE_OBJECT,
                             'x-full-schema' => 'EmailAddress',
                             'x-join' => [
                                 'table' => 'glpi_useremails',
@@ -136,51 +134,51 @@ final class AdministrationController extends AbstractController
                             ],
                             'properties' => [
                                 'id' => [
-                                    'type' => Schema::TYPE_INTEGER,
-                                    'format' => Schema::FORMAT_INTEGER_INT64,
+                                    'type' => Doc\Schema::TYPE_INTEGER,
+                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                                     'description' => 'ID',
                                 ],
                                 'email' => [
-                                    'type' => Schema::TYPE_STRING,
+                                    'type' => Doc\Schema::TYPE_STRING,
                                     'description' => 'Email address',
                                 ],
                                 'is_default' => [
-                                    'type' => Schema::TYPE_BOOLEAN,
+                                    'type' => Doc\Schema::TYPE_BOOLEAN,
                                     'description' => 'Is default',
                                 ],
                                 'is_dynamic' => [
-                                    'type' => Schema::TYPE_BOOLEAN,
+                                    'type' => Doc\Schema::TYPE_BOOLEAN,
                                     'description' => 'Is dynamic',
                                 ],
                             ],
                         ],
                     ],
                     'comment' => [
-                        'type' => Schema::TYPE_STRING,
+                        'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Comment',
                     ],
                     'is_active' => [
-                        'type' => Schema::TYPE_BOOLEAN,
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
                         'description' => 'Is active',
                     ],
                     'is_deleted' => [
-                        'type' => Schema::TYPE_BOOLEAN,
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
                         'description' => 'Is deleted',
                     ],
                     'password' => [
-                        'type' => Schema::TYPE_STRING,
-                        'format' => Schema::FORMAT_STRING_PASSWORD,
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_PASSWORD,
                         'description' => 'Password',
                         'x-writeonly' => true,
                     ],
                     'password2' => [
-                        'type' => Schema::TYPE_STRING,
-                        'format' => Schema::FORMAT_STRING_PASSWORD,
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_PASSWORD,
                         'description' => 'Password confirmation',
                         'x-writeonly' => true,
                     ],
                     'picture' => [
-                        'type' => Schema::TYPE_STRING,
+                        'type' => Doc\Schema::TYPE_STRING,
                         'x-mapped-from' => 'picture',
                         'x-mapper' => static function ($v) {
                             /** @var array $CFG_GLPI */
@@ -197,28 +195,28 @@ final class AdministrationController extends AbstractController
             'Group' => [
                 'x-version-introduced' => '2.0',
                 'x-itemtype' => Group::class,
-                'type' => Schema::TYPE_OBJECT,
+                'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
                     'id' => [
-                        'type' => Schema::TYPE_INTEGER,
-                        'format' => Schema::FORMAT_INTEGER_INT64,
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                         'description' => 'ID',
                         'x-readonly' => true,
                     ],
                     'name' => [
-                        'type' => Schema::TYPE_STRING,
+                        'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Name',
                     ],
                     'comment' => [
-                        'type' => Schema::TYPE_STRING,
+                        'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Comment',
                     ],
                     'completename' => [
-                        'type' => Schema::TYPE_STRING,
+                        'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Complete name',
                     ],
                     'parent' => [
-                        'type' => Schema::TYPE_OBJECT,
+                        'type' => Doc\Schema::TYPE_OBJECT,
                         'x-itemtype' => Group::class,
                         'x-full-schema' => 'Group',
                         'x-join' => [
@@ -229,18 +227,18 @@ final class AdministrationController extends AbstractController
                         'description' => 'Parent group',
                         'properties' => [
                             'id' => [
-                                'type' => Schema::TYPE_INTEGER,
-                                'format' => Schema::FORMAT_INTEGER_INT64,
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                                 'description' => 'ID',
                             ],
                             'name' => [
-                                'type' => Schema::TYPE_STRING,
+                                'type' => Doc\Schema::TYPE_STRING,
                                 'description' => 'Name',
                             ],
                         ],
                     ],
                     'level' => [
-                        'type' => Schema::TYPE_INTEGER,
+                        'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'Level',
                     ],
                     'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
@@ -249,28 +247,28 @@ final class AdministrationController extends AbstractController
             'Entity' => [
                 'x-version-introduced' => '2.0',
                 'x-itemtype' => Entity::class,
-                'type' => Schema::TYPE_OBJECT,
+                'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
                     'id' => [
-                        'type' => Schema::TYPE_INTEGER,
-                        'format' => Schema::FORMAT_INTEGER_INT64,
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                         'description' => 'ID',
                         'x-readonly' => true,
                     ],
                     'name' => [
-                        'type' => Schema::TYPE_STRING,
+                        'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Name',
                     ],
                     'comment' => [
-                        'type' => Schema::TYPE_STRING,
+                        'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Comment',
                     ],
                     'completename' => [
-                        'type' => Schema::TYPE_STRING,
+                        'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Complete name',
                     ],
                     'parent' => [
-                        'type' => Schema::TYPE_OBJECT,
+                        'type' => Doc\Schema::TYPE_OBJECT,
                         'x-itemtype' => Entity::class,
                         'x-full-schema' => 'Entity',
                         'x-join' => [
@@ -281,18 +279,18 @@ final class AdministrationController extends AbstractController
                         'description' => 'Parent entity',
                         'properties' => [
                             'id' => [
-                                'type' => Schema::TYPE_INTEGER,
-                                'format' => Schema::FORMAT_INTEGER_INT64,
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                                 'description' => 'ID',
                             ],
                             'name' => [
-                                'type' => Schema::TYPE_STRING,
+                                'type' => Doc\Schema::TYPE_STRING,
                                 'description' => 'Name',
                             ],
                         ],
                     ],
                     'level' => [
-                        'type' => Schema::TYPE_INTEGER,
+                        'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'Level',
                     ],
                 ],
@@ -300,20 +298,20 @@ final class AdministrationController extends AbstractController
             'Profile' => [
                 'x-version-introduced' => '2.0',
                 'x-itemtype' => Profile::class,
-                'type' => Schema::TYPE_OBJECT,
+                'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
                     'id' => [
-                        'type' => Schema::TYPE_INTEGER,
-                        'format' => Schema::FORMAT_INTEGER_INT64,
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                         'description' => 'ID',
                         'x-readonly' => true,
                     ],
                     'name' => [
-                        'type' => Schema::TYPE_STRING,
+                        'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Name',
                     ],
                     'comment' => [
-                        'type' => Schema::TYPE_STRING,
+                        'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Comment',
                     ],
                 ],
@@ -321,23 +319,23 @@ final class AdministrationController extends AbstractController
             'EmailAddress' => [
                 'x-version-introduced' => '2.0',
                 'x-itemtype' => UserEmail::class,
-                'type' => Schema::TYPE_OBJECT,
+                'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
                     'id' => [
-                        'type' => Schema::TYPE_INTEGER,
-                        'format' => Schema::FORMAT_INTEGER_INT64,
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                         'description' => 'ID',
                     ],
                     'email' => [
-                        'type' => Schema::TYPE_STRING,
+                        'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Email address',
                     ],
                     'is_default' => [
-                        'type' => Schema::TYPE_BOOLEAN,
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
                         'description' => 'Is default',
                     ],
                     'is_dynamic' => [
-                        'type' => Schema::TYPE_BOOLEAN,
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
                         'description' => 'Is dynamic',
                     ],
                 ],
@@ -469,14 +467,14 @@ final class AdministrationController extends AbstractController
                 'type' => 'string',
                 'description' => 'The email address to add',
                 'required' => true,
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
             ],
             [
                 'name' => 'is_default',
                 'type' => 'boolean',
                 'description' => 'Whether this email address should be the default one',
                 'required' => false,
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
             ],
         ],
     )]
@@ -600,7 +598,7 @@ final class AdministrationController extends AbstractController
     #[Doc\Route(description: 'Create a new user', parameters: [
         [
             'name' => '_',
-            'location' => Parameter::LOCATION_BODY,
+            'location' => Doc\Parameter::LOCATION_BODY,
             'schema' => 'User',
         ],
     ])]
@@ -682,8 +680,8 @@ final class AdministrationController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
-                'type' => Schema::TYPE_OBJECT,
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'type' => Doc\Schema::TYPE_OBJECT,
                 'schema' => 'User',
             ],
         ],
@@ -703,8 +701,8 @@ final class AdministrationController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
-                'type' => Schema::TYPE_OBJECT,
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'type' => Doc\Schema::TYPE_OBJECT,
                 'schema' => 'User',
             ],
         ],
@@ -739,7 +737,7 @@ final class AdministrationController extends AbstractController
         global $CFG_GLPI;
 
         // Create a union schema with all relevant item types
-        $schema = Schema::getUnionSchemaForItemtypes(
+        $schema = Doc\Schema::getUnionSchemaForItemtypes(
             itemtypes: array_filter($CFG_GLPI['assignable_types'], static function ($t) use ($is_managed) {
                 if (!\is_a($t, CommonDBTM::class, true)) {
                     return false; // Ignore invalid classes
@@ -831,7 +829,7 @@ final class AdministrationController extends AbstractController
     #[Doc\Route(description: 'Create a new group', parameters: [
         [
             'name' => '_',
-            'location' => Parameter::LOCATION_BODY,
+            'location' => Doc\Parameter::LOCATION_BODY,
             'schema' => 'Group',
         ],
     ])]
@@ -860,8 +858,8 @@ final class AdministrationController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
-                'type' => Schema::TYPE_OBJECT,
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'type' => Doc\Schema::TYPE_OBJECT,
                 'schema' => 'Group',
             ],
         ],
@@ -887,7 +885,7 @@ final class AdministrationController extends AbstractController
     #[Doc\Route(description: 'Create a new entity', parameters: [
         [
             'name' => '_',
-            'location' => Parameter::LOCATION_BODY,
+            'location' => Doc\Parameter::LOCATION_BODY,
             'schema' => 'Entity',
         ],
     ])]
@@ -916,8 +914,8 @@ final class AdministrationController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
-                'type' => Schema::TYPE_OBJECT,
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'type' => Doc\Schema::TYPE_OBJECT,
                 'schema' => 'Entity',
             ],
         ],
@@ -943,7 +941,7 @@ final class AdministrationController extends AbstractController
     #[Doc\Route(description: 'Create a new profile', parameters: [
         [
             'name' => '_',
-            'location' => Parameter::LOCATION_BODY,
+            'location' => Doc\Parameter::LOCATION_BODY,
             'schema' => 'Profile',
         ],
     ])]
@@ -972,8 +970,8 @@ final class AdministrationController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
-                'type' => Schema::TYPE_OBJECT,
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'type' => Doc\Schema::TYPE_OBJECT,
                 'schema' => 'Profile',
             ],
         ],

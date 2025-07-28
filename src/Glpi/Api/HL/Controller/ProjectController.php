@@ -37,8 +37,6 @@ namespace Glpi\Api\HL\Controller;
 
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
-use Glpi\Api\HL\Doc\Parameter;
-use Glpi\Api\HL\Doc\Schema;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
@@ -57,8 +55,8 @@ use Session;
         [
             'name' => 'project_id',
             'description' => 'Project ID',
-            'location' => Parameter::LOCATION_PATH,
-            'schema' => ['type' => Schema::TYPE_STRING],
+            'location' => Doc\Parameter::LOCATION_PATH,
+            'schema' => ['type' => Doc\Schema::TYPE_STRING],
         ],
     ]
 )]
@@ -70,7 +68,7 @@ final class ProjectController extends AbstractController
             'Project' => [
                 'x-version-introduced' => '2.0',
                 'x-itemtype' => Project::class,
-                'type' => Schema::TYPE_OBJECT,
+                'type' => Doc\Schema::TYPE_OBJECT,
                 'x-rights-conditions' => [ // Object-level extra permissions
                     'read' => static function () {
                         if (!Session::haveRight(Project::$rightname, Project::READALL)) {
@@ -112,16 +110,16 @@ final class ProjectController extends AbstractController
                 ],
                 'properties' => [
                     'id' => [
-                        'type' => Schema::TYPE_INTEGER,
-                        'format' => Schema::FORMAT_INTEGER_INT64,
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                         'x-readonly' => true,
                     ],
-                    'name' => ['type' => Schema::TYPE_STRING],
-                    'comment' => ['type' => Schema::TYPE_STRING],
-                    'content' => ['type' => Schema::TYPE_STRING],
-                    'code' => ['type' => Schema::TYPE_STRING],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'content' => ['type' => Doc\Schema::TYPE_STRING],
+                    'code' => ['type' => Doc\Schema::TYPE_STRING],
                     'priority' => [
-                        'type' => Schema::TYPE_INTEGER,
+                        'type' => Doc\Schema::TYPE_INTEGER,
                         'enum' => [1, 2, 3, 4, 5, 6],
                         'description' => <<<EOT
                             - 1: Very Low
@@ -134,9 +132,9 @@ final class ProjectController extends AbstractController
                     ],
                     'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                     'tasks' => [
-                        'type' => Schema::TYPE_ARRAY,
+                        'type' => Doc\Schema::TYPE_ARRAY,
                         'items' => [
-                            'type' => Schema::TYPE_OBJECT,
+                            'type' => Doc\Schema::TYPE_OBJECT,
                             'x-full-schema' => 'ProjectTask',
                             'x-join' => [
                                 'table' => 'glpi_projecttasks',
@@ -146,13 +144,13 @@ final class ProjectController extends AbstractController
                             ],
                             'properties' => [
                                 'id' => [
-                                    'type' => Schema::TYPE_INTEGER,
-                                    'format' => Schema::FORMAT_INTEGER_INT64,
+                                    'type' => Doc\Schema::TYPE_INTEGER,
+                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                                     'x-readonly' => true,
                                 ],
-                                'name' => ['type' => Schema::TYPE_STRING],
-                                'comment' => ['type' => Schema::TYPE_STRING],
-                                'content' => ['type' => Schema::TYPE_STRING],
+                                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                                'content' => ['type' => Doc\Schema::TYPE_STRING],
                             ],
                         ],
                     ],
@@ -161,7 +159,7 @@ final class ProjectController extends AbstractController
             'ProjectTask' => [
                 'x-version-introduced' => '2.0',
                 'x-itemtype' => ProjectTask::class,
-                'type' => Schema::TYPE_OBJECT,
+                'type' => Doc\Schema::TYPE_OBJECT,
                 'x-rights-conditions' => [ // Object-level extra permissions
                     'read' => static function () {
                         if (!Session::haveRight(Project::$rightname, Project::READALL)) {
@@ -230,13 +228,13 @@ final class ProjectController extends AbstractController
                 ],
                 'properties' => [
                     'id' => [
-                        'type' => Schema::TYPE_INTEGER,
-                        'format' => Schema::FORMAT_INTEGER_INT64,
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                         'x-readonly' => true,
                     ],
-                    'name' => ['type' => Schema::TYPE_STRING],
-                    'comment' => ['type' => Schema::TYPE_STRING],
-                    'content' => ['type' => Schema::TYPE_STRING],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'content' => ['type' => Doc\Schema::TYPE_STRING],
                     'project' => self::getDropdownTypeSchema(class: Project::class, full_schema: 'Project'),
                     'parent_task' => self::getDropdownTypeSchema(class: ProjectTask::class, full_schema: 'ProjectTask'),
                 ],
@@ -276,7 +274,7 @@ final class ProjectController extends AbstractController
     #[Doc\Route(description: 'Create a new project', parameters: [
         [
             'name' => '_',
-            'location' => Parameter::LOCATION_BODY,
+            'location' => Doc\Parameter::LOCATION_BODY,
             'schema' => 'Project',
         ],
     ])]
@@ -292,7 +290,7 @@ final class ProjectController extends AbstractController
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Project',
             ],
         ],
@@ -345,7 +343,7 @@ final class ProjectController extends AbstractController
     #[Doc\Route(description: 'Create a new task', parameters: [
         [
             'name' => '_',
-            'location' => Parameter::LOCATION_BODY,
+            'location' => Doc\Parameter::LOCATION_BODY,
             'schema' => 'ProjectTask',
         ],
     ])]
@@ -398,7 +396,7 @@ final class ProjectController extends AbstractController
     #[Doc\Route(description: 'Create a new task', parameters: [
         [
             'name' => '_',
-            'location' => Parameter::LOCATION_BODY,
+            'location' => Doc\Parameter::LOCATION_BODY,
             'schema' => 'ProjectTask',
         ],
     ])]

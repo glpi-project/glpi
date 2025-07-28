@@ -41,7 +41,7 @@ use DBmysql;
 use DBmysqlIterator;
 use Entity;
 use ExtraVisibilityCriteria;
-use Glpi\Api\HL\Doc\Schema;
+use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\RSQL\Lexer;
 use Glpi\Api\HL\RSQL\Parser;
 use Glpi\Api\HL\RSQL\RSQLException;
@@ -175,10 +175,10 @@ final class Search
         }
 
         // if prop is an array, set the params to the items
-        if (array_key_exists('type', $prop) && $prop['type'] === Schema::TYPE_ARRAY) {
+        if (array_key_exists('type', $prop) && $prop['type'] === Doc\Schema::TYPE_ARRAY) {
             $prop = $prop['items'];
         }
-        if (array_key_exists('type', $prop) && $prop['type'] !== Schema::TYPE_OBJECT) {
+        if (array_key_exists('type', $prop) && $prop['type'] !== Doc\Schema::TYPE_OBJECT) {
             if (isset($prop['x-mapper']) || isset($prop['x-mapped-property'])) {
                 // Do not select fields mapped after the results are retrieved
                 return null;
@@ -729,7 +729,7 @@ final class Search
                 $next_id = array_shift($ids_path);
                 // if current path points to an object, we don't need to add the ID to the path
                 $path_without_ids = implode('.', array_filter(explode('.', $current_path), static fn($p) => !is_numeric($p)));
-                if (!isset($this->context->getJoins()[$path_without_ids]['parent_type']) && $this->context->getJoins()[$path_without_ids]['parent_type'] === Schema::TYPE_OBJECT) {
+                if (!isset($this->context->getJoins()[$path_without_ids]['parent_type']) && $this->context->getJoins()[$path_without_ids]['parent_type'] === Doc\Schema::TYPE_OBJECT) {
                     if (!empty($next_id) && preg_match('/\.\d+/', $current_path)) {
                         $items = ArrayPathAccessor::getElementByArrayPath($hydrated_record, $current_path);
                         // Remove numeric id parts from the path to get the join name
@@ -799,7 +799,7 @@ final class Search
                     }
                     $matched_record = $fetched_records[$table][(int) $id] ?? null;
 
-                    if (isset($this->context->getJoins()[$join_name]['parent_type']) && $this->context->getJoins()[$join_name]['parent_type'] === Schema::TYPE_OBJECT) {
+                    if (isset($this->context->getJoins()[$join_name]['parent_type']) && $this->context->getJoins()[$join_name]['parent_type'] === Doc\Schema::TYPE_OBJECT) {
                         ArrayPathAccessor::setElementByArrayPath($hydrated_record, $join_prop_path, $matched_record);
                     } else {
                         if ($matched_record !== null) {
@@ -838,7 +838,7 @@ final class Search
     private function fixupAssembledRecord(array &$record): void
     {
         // Fix keys for array properties. Currently, the keys are probably the IDs of the joined records. They should be the index of the record in the array.
-        $array_joins = array_filter($this->context->getJoins(), static fn($v) => isset($v['parent_type']) && $v['parent_type'] === Schema::TYPE_ARRAY, ARRAY_FILTER_USE_BOTH);
+        $array_joins = array_filter($this->context->getJoins(), static fn($v) => isset($v['parent_type']) && $v['parent_type'] === Doc\Schema::TYPE_ARRAY, ARRAY_FILTER_USE_BOTH);
         foreach (array_keys($array_joins) as $name) {
             // Get all paths in the array that match the join name. Paths may or may not have number parts between the parts of the join name (separated by '.')
             $pattern = str_replace('.', '\.(?:\d+\.)?', $name);
@@ -856,7 +856,7 @@ final class Search
         }
 
         // Fix empty array values for objects by replacing them with null
-        $obj_joins = array_filter($this->context->getJoins(), fn($v, $k) => isset($v['parent_type']) && $v['parent_type'] === Schema::TYPE_OBJECT && !isset($this->context->getFlattenedProperties()[$k]), ARRAY_FILTER_USE_BOTH);
+        $obj_joins = array_filter($this->context->getJoins(), fn($v, $k) => isset($v['parent_type']) && $v['parent_type'] === Doc\Schema::TYPE_OBJECT && !isset($this->context->getFlattenedProperties()[$k]), ARRAY_FILTER_USE_BOTH);
         foreach (array_keys($obj_joins) as $name) {
             // Get all paths in the array that match the join name. Paths may or may not have number parts between the parts of the join name (separated by '.')
             $pattern = str_replace('.', '\.(?:\d+\.)?', $name);
@@ -1034,7 +1034,7 @@ final class Search
     public static function getSearchResultsBySchema(array $schema, array $request_params): array
     {
         // Schema must be an object type
-        if ($schema['type'] !== Schema::TYPE_OBJECT) {
+        if ($schema['type'] !== Doc\Schema::TYPE_OBJECT) {
             throw new RuntimeException('Schema must be an object type');
         }
         // Initialize a new search
@@ -1079,7 +1079,7 @@ final class Search
                 $data = array_merge($existing_data, $data);
                 ArrayPathAccessor::setElementByArrayPath($result, $path, $data);
             }
-            $result = Schema::fromArray($schema)->castProperties($result);
+            $result = Doc\Schema::fromArray($schema)->castProperties($result);
         }
         unset($result);
 

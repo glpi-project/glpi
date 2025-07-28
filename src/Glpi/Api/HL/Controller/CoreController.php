@@ -36,8 +36,6 @@
 namespace Glpi\Api\HL\Controller;
 
 use Glpi\Api\HL\Doc as Doc;
-use Glpi\Api\HL\Doc\Parameter;
-use Glpi\Api\HL\Doc\Schema;
 use Glpi\Api\HL\Middleware\CookieAuthMiddleware;
 use Glpi\Api\HL\OpenAPIGenerator;
 use Glpi\Api\HL\Route;
@@ -70,60 +68,60 @@ final class CoreController extends AbstractController
         return [
             'Session' => [
                 'x-version-introduced' => '2.0',
-                'type' => Schema::TYPE_OBJECT,
+                'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
-                    'current_time' => ['type' => Schema::TYPE_STRING, 'format' => Schema::FORMAT_STRING_DATE_TIME],
-                    'user_id' => ['type' => Schema::TYPE_INTEGER],
-                    'use_mode' => ['type' => Schema::TYPE_INTEGER],
-                    'friendly_name' => ['type' => Schema::TYPE_STRING],
-                    'name' => ['type' => Schema::TYPE_STRING],
-                    'real_name' => ['type' => Schema::TYPE_STRING],
-                    'first_name' => ['type' => Schema::TYPE_STRING],
-                    'default_entity' => ['type' => Schema::TYPE_INTEGER],
-                    'profiles' => ['type' => Schema::TYPE_ARRAY, 'items' => ['type' => Schema::TYPE_INTEGER]],
-                    'active_entities' => ['type' => Schema::TYPE_ARRAY, 'items' => ['type' => Schema::TYPE_INTEGER]],
+                    'current_time' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'user_id' => ['type' => Doc\Schema::TYPE_INTEGER],
+                    'use_mode' => ['type' => Doc\Schema::TYPE_INTEGER],
+                    'friendly_name' => ['type' => Doc\Schema::TYPE_STRING],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING],
+                    'real_name' => ['type' => Doc\Schema::TYPE_STRING],
+                    'first_name' => ['type' => Doc\Schema::TYPE_STRING],
+                    'default_entity' => ['type' => Doc\Schema::TYPE_INTEGER],
+                    'profiles' => ['type' => Doc\Schema::TYPE_ARRAY, 'items' => ['type' => Doc\Schema::TYPE_INTEGER]],
+                    'active_entities' => ['type' => Doc\Schema::TYPE_ARRAY, 'items' => ['type' => Doc\Schema::TYPE_INTEGER]],
                     'active_profile' => [
-                        'type' => Schema::TYPE_OBJECT,
+                        'type' => Doc\Schema::TYPE_OBJECT,
                         'properties' => [
-                            'id' => ['type' => Schema::TYPE_INTEGER],
-                            'name' => ['type' => Schema::TYPE_STRING],
-                            'interface' => ['type' => Schema::TYPE_STRING],
+                            'id' => ['type' => Doc\Schema::TYPE_INTEGER],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                            'interface' => ['type' => Doc\Schema::TYPE_STRING],
                         ],
                     ],
                     'active_entity' => [
-                        'type' => Schema::TYPE_OBJECT,
+                        'type' => Doc\Schema::TYPE_OBJECT,
                         'properties' => [
-                            'id' => ['type' => Schema::TYPE_INTEGER],
-                            'short_name' => ['type' => Schema::TYPE_STRING],
-                            'complete_name' => ['type' => Schema::TYPE_STRING],
-                            'recursive' => ['type' => Schema::TYPE_INTEGER],
+                            'id' => ['type' => Doc\Schema::TYPE_INTEGER],
+                            'short_name' => ['type' => Doc\Schema::TYPE_STRING],
+                            'complete_name' => ['type' => Doc\Schema::TYPE_STRING],
+                            'recursive' => ['type' => Doc\Schema::TYPE_INTEGER],
                         ],
                     ],
                 ],
             ],
             'EntityTransferRecord' => [
                 'x-version-introduced' => '2.0',
-                'type' => Schema::TYPE_OBJECT,
+                'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
-                    'itemtype' => ['type' => Schema::TYPE_STRING],
-                    'items_id' => ['type' => Schema::TYPE_INTEGER],
-                    'entity' => ['type' => Schema::TYPE_INTEGER],
-                    'options' => ['type' => Schema::TYPE_OBJECT],
+                    'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
+                    'items_id' => ['type' => Doc\Schema::TYPE_INTEGER],
+                    'entity' => ['type' => Doc\Schema::TYPE_INTEGER],
+                    'options' => ['type' => Doc\Schema::TYPE_OBJECT],
                 ],
             ],
             'APIInformation' => [
                 'x-version-introduced' => '2.0',
-                'type' => Schema::TYPE_OBJECT,
+                'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
-                    'message' => ['type' => Schema::TYPE_STRING],
+                    'message' => ['type' => Doc\Schema::TYPE_STRING],
                     'api_versions' => [
-                        'type' => Schema::TYPE_ARRAY,
+                        'type' => Doc\Schema::TYPE_ARRAY,
                         'items' => [
-                            'type' => Schema::TYPE_OBJECT,
+                            'type' => Doc\Schema::TYPE_OBJECT,
                             'properties' => [
-                                'api_version' => ['type' => Schema::TYPE_STRING],
-                                'version' => ['type' => Schema::TYPE_STRING],
-                                'endpoint' => ['type' => Schema::TYPE_STRING],
+                                'api_version' => ['type' => Doc\Schema::TYPE_STRING],
+                                'version' => ['type' => Doc\Schema::TYPE_STRING],
+                                'endpoint' => ['type' => Doc\Schema::TYPE_STRING],
                             ],
                         ],
                     ],
@@ -508,12 +506,12 @@ HTML;
         responses: [
             [
                 'schema'        => [
-                    'type' => Schema::TYPE_ARRAY,
+                    'type' => Doc\Schema::TYPE_ARRAY,
                     'items' => [
-                        'type' => Schema::TYPE_OBJECT,
+                        'type' => Doc\Schema::TYPE_OBJECT,
                         'properties' => [
                             'status' => [
-                                'type' => Schema::TYPE_STRING,
+                                'type' => Doc\Schema::TYPE_STRING,
                                 'enum' => [StatusChecker::STATUS_OK, StatusChecker::STATUS_WARNING, StatusChecker::STATUS_PROBLEM, StatusChecker::STATUS_NO_DATA],
                             ],
                         ],
@@ -538,10 +536,10 @@ HTML;
         responses: [
             [
                 'schema'        => [
-                    'type' => Schema::TYPE_OBJECT,
+                    'type' => Doc\Schema::TYPE_OBJECT,
                     'properties' => [
                         'status' => [
-                            'type' => Schema::TYPE_STRING,
+                            'type' => Doc\Schema::TYPE_STRING,
                             'enum' => [StatusChecker::STATUS_OK, StatusChecker::STATUS_WARNING, StatusChecker::STATUS_PROBLEM, StatusChecker::STATUS_NO_DATA],
                         ],
                     ],
@@ -566,7 +564,7 @@ HTML;
         parameters: [
             [
                 'name' => '_',
-                'location' => Parameter::LOCATION_BODY,
+                'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'EntityTransferRecord[]',
             ],
         ]

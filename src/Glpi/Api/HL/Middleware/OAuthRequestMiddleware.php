@@ -36,7 +36,7 @@
 namespace Glpi\Api\HL\Middleware;
 
 use Glpi\Api\HL\Controller\AbstractController;
-use Glpi\Api\HL\Doc\Route;
+use Glpi\Api\HL\Route;
 use Glpi\Api\HL\Router;
 
 /**
@@ -47,7 +47,7 @@ class OAuthRequestMiddleware extends AbstractMiddleware implements RequestMiddle
     public function process(MiddlewareInput $input, callable $next): void
     {
         $route_path = $input->route_path->getRoutePath();
-        if (isCommandLine() || $input->route_path->getRouteSecurityLevel() === \Glpi\Api\HL\Route::SECURITY_NONE) {
+        if (isCommandLine() || $input->route_path->getRouteSecurityLevel() === Route::SECURITY_NONE) {
             $next($input);
             return;
         }

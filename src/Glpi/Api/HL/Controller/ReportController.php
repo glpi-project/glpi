@@ -39,7 +39,6 @@ use CommonDevice;
 use Dropdown;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
-use Glpi\Api\HL\Doc\Schema;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
@@ -63,271 +62,271 @@ class ReportController extends AbstractController
         return [
             'StatReport' => [
                 'x-version-introduced' => '2.0',
-                'type' => Schema::TYPE_OBJECT,
+                'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
                     'assistance_type' => [
-                        'type' => Schema::TYPE_STRING,
+                        'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'The assistance type the stats are for such as "Ticket", "Change" or "Problem"',
                     ],
                     'report_type' => [
-                        'type' => Schema::TYPE_STRING,
+                        'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'The report type',
                     ],
                     'report_title' => [
-                        'type' => Schema::TYPE_STRING,
+                        'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'The report title',
                     ],
                     'report_group_fields' => [
-                        'type' => Schema::TYPE_ARRAY,
+                        'type' => Doc\Schema::TYPE_ARRAY,
                         'description' => 'The fields the report can be grouped by',
                         'items' => [
-                            'type' => Schema::TYPE_STRING,
+                            'type' => Doc\Schema::TYPE_STRING,
                         ],
                     ],
                 ],
             ],
             'GlobalStats' => [
                 'x-version-introduced' => '2.0',
-                'type' => Schema::TYPE_OBJECT,
+                'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
                     'sample_dates' => [
-                        'type' => Schema::TYPE_ARRAY,
+                        'type' => Doc\Schema::TYPE_ARRAY,
                         'description' => 'The dates the stats are for',
                         'items' => [
-                            'type' => Schema::TYPE_STRING,
-                            'format' => Schema::FORMAT_STRING_DATE,
+                            'type' => Doc\Schema::TYPE_STRING,
+                            'format' => Doc\Schema::FORMAT_STRING_DATE,
                         ],
                     ],
                     'number_open' => [
-                        'type' => Schema::TYPE_ARRAY,
+                        'type' => Doc\Schema::TYPE_ARRAY,
                         'description' => 'The number of assistance items opened during the period',
                         'items' => [
-                            'type' => Schema::TYPE_INTEGER,
+                            'type' => Doc\Schema::TYPE_INTEGER,
                         ],
                     ],
                     'number_solved' => [
-                        'type' => Schema::TYPE_ARRAY,
+                        'type' => Doc\Schema::TYPE_ARRAY,
                         'description' => 'The number of assistance items solved during the period',
                         'items' => [
-                            'type' => Schema::TYPE_INTEGER,
+                            'type' => Doc\Schema::TYPE_INTEGER,
                         ],
                     ],
                     'number_late' => [
-                        'type' => Schema::TYPE_ARRAY,
+                        'type' => Doc\Schema::TYPE_ARRAY,
                         'description' => 'The number of late assistance items during the period',
                         'items' => [
-                            'type' => Schema::TYPE_INTEGER,
+                            'type' => Doc\Schema::TYPE_INTEGER,
                         ],
                     ],
                     'number_closed' => [
-                        'type' => Schema::TYPE_ARRAY,
+                        'type' => Doc\Schema::TYPE_ARRAY,
                         'description' => 'The number of assistance items closed during the period',
                         'items' => [
-                            'type' => Schema::TYPE_INTEGER,
+                            'type' => Doc\Schema::TYPE_INTEGER,
                         ],
                     ],
                     'satisfaction_surveys_open' => [
-                        'type' => Schema::TYPE_ARRAY,
+                        'type' => Doc\Schema::TYPE_ARRAY,
                         'description' => 'The number of satisfaction surveys opened during the period',
                         'items' => [
-                            'type' => Schema::TYPE_INTEGER,
+                            'type' => Doc\Schema::TYPE_INTEGER,
                         ],
                     ],
                     'satisfaction_surveys_answered' => [
-                        'type' => Schema::TYPE_ARRAY,
+                        'type' => Doc\Schema::TYPE_ARRAY,
                         'description' => 'The number of satisfaction surveys answered during the period',
                         'items' => [
-                            'type' => Schema::TYPE_INTEGER,
+                            'type' => Doc\Schema::TYPE_INTEGER,
                         ],
                     ],
                     'satisfaction_surveys_avg_rating' => [
-                        'type' => Schema::TYPE_ARRAY,
+                        'type' => Doc\Schema::TYPE_ARRAY,
                         'description' => 'The average rating of the satisfaction surveys based on the answer date',
                         'items' => [
-                            'type' => Schema::TYPE_NUMBER,
-                            'format' => Schema::FORMAT_NUMBER_FLOAT,
+                            'type' => Doc\Schema::TYPE_NUMBER,
+                            'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
                         ],
                     ],
                     'time_solve_avg' => [
-                        'type' => Schema::TYPE_ARRAY,
+                        'type' => Doc\Schema::TYPE_ARRAY,
                         'description' => 'The average time it took to resolve the assistance items (in seconds)',
                         'items' => [
-                            'type' => Schema::TYPE_INTEGER,
+                            'type' => Doc\Schema::TYPE_INTEGER,
                         ],
                     ],
                     'time_close_avg' => [
-                        'type' => Schema::TYPE_ARRAY,
+                        'type' => Doc\Schema::TYPE_ARRAY,
                         'description' => 'The average time it took to close the assistance items (in seconds)',
                         'items' => [
-                            'type' => Schema::TYPE_INTEGER,
+                            'type' => Doc\Schema::TYPE_INTEGER,
                         ],
                     ],
                     'time_treatment_avg' => [
-                        'type' => Schema::TYPE_ARRAY,
+                        'type' => Doc\Schema::TYPE_ARRAY,
                         'description' => 'The average time it took to completely treat the assistance items (in seconds)',
                         'items' => [
-                            'type' => Schema::TYPE_INTEGER,
+                            'type' => Doc\Schema::TYPE_INTEGER,
                         ],
                     ],
                 ],
             ],
             'ITILStats' => [
                 'x-version-introduced' => '2.0',
-                'type' => Schema::TYPE_OBJECT,
+                'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
                     'item' => [
-                        'type' => Schema::TYPE_OBJECT,
+                        'type' => Doc\Schema::TYPE_OBJECT,
                         'description' => 'The item the stats are grouped by',
                         'properties' => [
                             'id' => [
-                                'type' => Schema::TYPE_INTEGER,
-                                'format' => Schema::FORMAT_INTEGER_INT64,
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                             ],
                             'name' => [
-                                'type' => Schema::TYPE_STRING,
+                                'type' => Doc\Schema::TYPE_STRING,
                             ],
                         ],
                     ],
                     'number_open' => [
-                        'type' => Schema::TYPE_INTEGER,
+                        'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The number of open assistance items',
                     ],
                     'number_solved' => [
-                        'type' => Schema::TYPE_INTEGER,
+                        'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The number of solved assistance items',
                     ],
                     'number_late' => [
-                        'type' => Schema::TYPE_INTEGER,
+                        'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The number of late assistance items',
                     ],
                     'number_closed' => [
-                        'type' => Schema::TYPE_INTEGER,
+                        'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The number of closed assistance items',
                     ],
                     'satisfaction_surveys_open' => [
-                        'type' => Schema::TYPE_INTEGER,
+                        'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The number of open satisfaction surveys',
                     ],
                     'satisfaction_surveys_answered' => [
-                        'type' => Schema::TYPE_INTEGER,
+                        'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The number of answered satisfaction surveys',
                     ],
                     'satisfaction_surveys_avg_rating' => [
-                        'type' => Schema::TYPE_NUMBER,
-                        'format' => Schema::FORMAT_NUMBER_FLOAT,
+                        'type' => Doc\Schema::TYPE_NUMBER,
+                        'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
                         'description' => 'The average rating of the satisfaction surveys',
                     ],
                     'time_take_into_account_avg' => [
-                        'type' => Schema::TYPE_INTEGER,
+                        'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The average time it took to take the assistance items into account (in seconds)',
                     ],
                     'time_solve_avg' => [
-                        'type' => Schema::TYPE_INTEGER,
+                        'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The average time it took to resolve the assistance items (in seconds)',
                     ],
                     'time_close_avg' => [
-                        'type' => Schema::TYPE_INTEGER,
+                        'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The average time it took to close the assistance items (in seconds)',
                     ],
                     'time_treatment_avg' => [
-                        'type' => Schema::TYPE_INTEGER,
+                        'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The average time it took to completely treat the assistance items (in seconds)',
                     ],
                     'time_treatment_total' => [
-                        'type' => Schema::TYPE_INTEGER,
+                        'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The total time it took to completely treat the assistance items (in seconds)',
                     ],
                 ],
             ],
             'AssetStats' => [
                 'x-version-introduced' => '2.0',
-                'type' => Schema::TYPE_OBJECT,
+                'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
                     'item' => [
-                        'type' => Schema::TYPE_OBJECT,
+                        'type' => Doc\Schema::TYPE_OBJECT,
                         'description' => 'The item the stats are grouped by',
                         'properties' => [
                             'itemtype' => [
-                                'type' => Schema::TYPE_STRING,
+                                'type' => Doc\Schema::TYPE_STRING,
                                 'description' => 'The itemtype of the item',
                             ],
                             'id' => [
-                                'type' => Schema::TYPE_INTEGER,
-                                'format' => Schema::FORMAT_INTEGER_INT64,
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                             ],
                             'name' => [
-                                'type' => Schema::TYPE_STRING,
+                                'type' => Doc\Schema::TYPE_STRING,
                             ],
                             'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity') + [
                                 'description' => 'The entity the item belongs to',
                             ],
                             'is_deleted' => [
-                                'type' => Schema::TYPE_BOOLEAN,
+                                'type' => Doc\Schema::TYPE_BOOLEAN,
                                 'description' => 'Whether the item is deleted or not',
                             ],
                         ],
                     ],
                     'number_open' => [
-                        'type' => Schema::TYPE_INTEGER,
+                        'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The number of open assistance items',
                     ],
                 ],
             ],
             'AssetCharacteristicsStats' => [
                 'x-version-introduced' => '2.0',
-                'type' => Schema::TYPE_OBJECT,
+                'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
                     'characteristic' => [
-                        'type' => Schema::TYPE_STRING,
+                        'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'The characteristic value',
                     ],
                     'number_open' => [
-                        'type' => Schema::TYPE_INTEGER,
+                        'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The number of open assistance items',
                     ],
                     'number_solved' => [
-                        'type' => Schema::TYPE_INTEGER,
+                        'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The number of solved assistance items',
                     ],
                     'number_late' => [
-                        'type' => Schema::TYPE_INTEGER,
+                        'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The number of late assistance items',
                     ],
                     'number_closed' => [
-                        'type' => Schema::TYPE_INTEGER,
+                        'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The number of closed assistance items',
                     ],
                     'satisfaction_surveys_open' => [
-                        'type' => Schema::TYPE_INTEGER,
+                        'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The number of open satisfaction surveys',
                     ],
                     'satisfaction_surveys_answered' => [
-                        'type' => Schema::TYPE_INTEGER,
+                        'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The number of answered satisfaction surveys',
                     ],
                     'satisfaction_surveys_avg_rating' => [
-                        'type' => Schema::TYPE_NUMBER,
-                        'format' => Schema::FORMAT_NUMBER_FLOAT,
+                        'type' => Doc\Schema::TYPE_NUMBER,
+                        'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
                         'description' => 'The average rating of the satisfaction surveys',
                     ],
                     'time_take_into_account_avg' => [
-                        'type' => Schema::TYPE_INTEGER,
+                        'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The average time it took to take the assistance items into account (in seconds)',
                     ],
                     'time_solve_avg' => [
-                        'type' => Schema::TYPE_INTEGER,
+                        'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The average time it took to resolve the assistance items (in seconds)',
                     ],
                     'time_close_avg' => [
-                        'type' => Schema::TYPE_INTEGER,
+                        'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The average time it took to close the assistance items (in seconds)',
                     ],
                     'time_treatment_avg' => [
-                        'type' => Schema::TYPE_INTEGER,
+                        'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The average time it took to completely treat the assistance items (in seconds)',
                     ],
                     'time_treatment_total' => [
-                        'type' => Schema::TYPE_INTEGER,
+                        'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The total time it took to completely treat the assistance items (in seconds)',
                     ],
                 ],
@@ -413,8 +412,8 @@ class ReportController extends AbstractController
                 'location' => 'query',
                 'example' => '2024-01-30',
                 'schema' => [
-                    'type' => Schema::TYPE_STRING,
-                    'format' => Schema::FORMAT_STRING_DATE,
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
                 ],
             ],
             [
@@ -423,8 +422,8 @@ class ReportController extends AbstractController
                 'location' => 'query',
                 'example' => '2024-01-30',
                 'schema' => [
-                    'type' => Schema::TYPE_STRING,
-                    'format' => Schema::FORMAT_STRING_DATE,
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
                 ],
             ],
         ],
@@ -478,8 +477,8 @@ class ReportController extends AbstractController
                 'location' => 'query',
                 'example' => '2024-01-30',
                 'schema' => [
-                    'type' => Schema::TYPE_STRING,
-                    'format' => Schema::FORMAT_STRING_DATE,
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
                 ],
             ],
             [
@@ -488,8 +487,8 @@ class ReportController extends AbstractController
                 'location' => 'query',
                 'example' => '2024-01-30',
                 'schema' => [
-                    'type' => Schema::TYPE_STRING,
-                    'format' => Schema::FORMAT_STRING_DATE,
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
                 ],
             ],
             [
@@ -497,7 +496,7 @@ class ReportController extends AbstractController
                 'description' => 'The field to group the statistics by',
                 'location' => 'query',
                 'schema' => [
-                    'type' => Schema::TYPE_STRING,
+                    'type' => Doc\Schema::TYPE_STRING,
                 ],
                 'required' => true,
             ],
@@ -597,8 +596,8 @@ class ReportController extends AbstractController
                 'location' => 'query',
                 'example' => '2024-01-30',
                 'schema' => [
-                    'type' => Schema::TYPE_STRING,
-                    'format' => Schema::FORMAT_STRING_DATE,
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
                 ],
             ],
             [
@@ -607,8 +606,8 @@ class ReportController extends AbstractController
                 'location' => 'query',
                 'example' => '2024-01-30',
                 'schema' => [
-                    'type' => Schema::TYPE_STRING,
-                    'format' => Schema::FORMAT_STRING_DATE,
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
                 ],
             ],
             [
@@ -616,7 +615,7 @@ class ReportController extends AbstractController
                 'description' => 'The field to group the statistics by',
                 'location' => 'query',
                 'schema' => [
-                    'type' => Schema::TYPE_STRING,
+                    'type' => Doc\Schema::TYPE_STRING,
                 ],
                 'required' => true,
             ],
@@ -625,7 +624,7 @@ class ReportController extends AbstractController
                 'description' => 'The format to export the statistics to',
                 'location' => 'header',
                 'schema' => [
-                    'type' => Schema::TYPE_STRING,
+                    'type' => Doc\Schema::TYPE_STRING,
                     'enum' => ['text/csv', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/pdf'],
                 ],
             ],
@@ -691,8 +690,8 @@ class ReportController extends AbstractController
                 'location' => 'query',
                 'example' => '2024-01-30',
                 'schema' => [
-                    'type' => Schema::TYPE_STRING,
-                    'format' => Schema::FORMAT_STRING_DATE,
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
                 ],
             ],
             [
@@ -701,8 +700,8 @@ class ReportController extends AbstractController
                 'location' => 'query',
                 'example' => '2024-01-30',
                 'schema' => [
-                    'type' => Schema::TYPE_STRING,
-                    'format' => Schema::FORMAT_STRING_DATE,
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
                 ],
             ],
         ],
@@ -757,8 +756,8 @@ class ReportController extends AbstractController
                 'location' => 'query',
                 'example' => '2024-01-30',
                 'schema' => [
-                    'type' => Schema::TYPE_STRING,
-                    'format' => Schema::FORMAT_STRING_DATE,
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
                 ],
             ],
             [
@@ -767,8 +766,8 @@ class ReportController extends AbstractController
                 'location' => 'query',
                 'example' => '2024-01-30',
                 'schema' => [
-                    'type' => Schema::TYPE_STRING,
-                    'format' => Schema::FORMAT_STRING_DATE,
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
                 ],
             ],
             [
@@ -776,7 +775,7 @@ class ReportController extends AbstractController
                 'description' => 'The format to export the statistics to',
                 'location' => 'header',
                 'schema' => [
-                    'type' => Schema::TYPE_STRING,
+                    'type' => Doc\Schema::TYPE_STRING,
                     'enum' => ['text/csv', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/pdf'],
                 ],
             ],
@@ -841,8 +840,8 @@ class ReportController extends AbstractController
                 'location' => 'query',
                 'example' => '2024-01-30',
                 'schema' => [
-                    'type' => Schema::TYPE_STRING,
-                    'format' => Schema::FORMAT_STRING_DATE,
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
                 ],
             ],
             [
@@ -851,8 +850,8 @@ class ReportController extends AbstractController
                 'location' => 'query',
                 'example' => '2024-01-30',
                 'schema' => [
-                    'type' => Schema::TYPE_STRING,
-                    'format' => Schema::FORMAT_STRING_DATE,
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
                 ],
             ],
             [
@@ -860,7 +859,7 @@ class ReportController extends AbstractController
                 'description' => 'The characteristic field to group the statistics by',
                 'location' => 'query',
                 'schema' => [
-                    'type' => Schema::TYPE_STRING,
+                    'type' => Doc\Schema::TYPE_STRING,
                 ],
                 'required' => true,
             ],
@@ -971,8 +970,8 @@ class ReportController extends AbstractController
                 'location' => 'query',
                 'example' => '2024-01-30',
                 'schema' => [
-                    'type' => Schema::TYPE_STRING,
-                    'format' => Schema::FORMAT_STRING_DATE,
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
                 ],
             ],
             [
@@ -981,8 +980,8 @@ class ReportController extends AbstractController
                 'location' => 'query',
                 'example' => '2024-01-30',
                 'schema' => [
-                    'type' => Schema::TYPE_STRING,
-                    'format' => Schema::FORMAT_STRING_DATE,
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
                 ],
             ],
             [
@@ -990,7 +989,7 @@ class ReportController extends AbstractController
                 'description' => 'The field to group the statistics by',
                 'location' => 'query',
                 'schema' => [
-                    'type' => Schema::TYPE_STRING,
+                    'type' => Doc\Schema::TYPE_STRING,
                 ],
                 'required' => true,
             ],
@@ -999,7 +998,7 @@ class ReportController extends AbstractController
                 'description' => 'The format to export the statistics to',
                 'location' => 'header',
                 'schema' => [
-                    'type' => Schema::TYPE_STRING,
+                    'type' => Doc\Schema::TYPE_STRING,
                     'enum' => ['text/csv', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/pdf'],
                 ],
             ],
