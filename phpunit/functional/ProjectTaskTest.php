@@ -59,7 +59,7 @@ class ProjectTaskTest extends DbTestCase
 
         $this->hasSessionMessages(ERROR, ['A linked project is mandatory']);
 
-        $project = new \Project();
+        $project = new Project();
         $pid = (int) $project->add([
             'name'   => 'Test project',
         ]);
@@ -215,7 +215,7 @@ class ProjectTaskTest extends DbTestCase
         $this->login();
         $project_task = new \ProjectTask();
 
-        $project = new \Project();
+        $project = new Project();
         $projects_id = $project->add([
             'name'      => 'Team test',
             'content'   => 'Team test',
@@ -839,7 +839,7 @@ class ProjectTaskTest extends DbTestCase
         $this->assertEmpty(\ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()]));
 
         // Create project
-        $project = $this->createItem(\Project::getType(), [
+        $project = $this->createItem(Project::getType(), [
             'name'         => 'project',
             'entities_id'  => $entity,
         ]);
@@ -896,7 +896,7 @@ class ProjectTaskTest extends DbTestCase
 
         // Templates should be excluded
         $project = $this->updateItem(
-            \Project::getType(),
+            Project::getType(),
             $project->getID(),
             ['is_template' => true]
         );
@@ -915,7 +915,7 @@ class ProjectTaskTest extends DbTestCase
         $this->assertEmpty(\ProjectTask::getActiveProjectTaskIDsForGroup([$group->getID()]));
 
         // Create project
-        $project = $this->createItem(\Project::getType(), [
+        $project = $this->createItem(Project::getType(), [
             'name'         => 'project',
             'entities_id'  => $entity,
             'groups_id'    => $group->getID(),
@@ -948,7 +948,7 @@ class ProjectTaskTest extends DbTestCase
 
         // Templates should be excluded
         $project = $this->updateItem(
-            \Project::getType(),
+            Project::getType(),
             $project->getID(),
             ['is_template' => true]
         );

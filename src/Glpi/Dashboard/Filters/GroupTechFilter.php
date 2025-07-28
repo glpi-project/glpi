@@ -51,7 +51,7 @@ class GroupTechFilter extends AbstractGroupFilter
 
     protected static function getGroupType(): int
     {
-        return Group_item::GROUP_TYPE_TECH;
+        return Group_Item::GROUP_TYPE_TECH;
     }
 
     protected static function getGroupFieldName(): string

@@ -34,6 +34,8 @@
 
 use Glpi\Tests\Log\TestHandler;
 use Monolog\Level;
+use Monolog\Logger;
+use Monolog\LogRecord;
 use Psr\Log\LogLevel;
 
 // Main GLPI test case. All tests should extends this class.
@@ -62,7 +64,7 @@ class GLPITestCase extends atoum
 
         // Init log handler
         global $PHPLOGGER;
-        /** @var \Monolog\Logger $PHPLOGGER */
+        /** @var Logger $PHPLOGGER */
         $this->log_handler = new TestHandler(LogLevel::DEBUG);
         $PHPLOGGER->setHandlers([$this->log_handler]);
     }
@@ -85,7 +87,7 @@ class GLPITestCase extends atoum
         if (!$this->has_failed) {
             $this->array($this->log_handler->getRecords());
             $clean_logs = array_map(
-                static function (\Monolog\LogRecord $entry): array {
+                static function (LogRecord $entry): array {
                     return [
                         'channel' => $entry->channel,
                         'level'   => $entry->level->name,
@@ -110,7 +112,7 @@ class GLPITestCase extends atoum
         // Delete contents of test files/_pictures
         $dir = GLPI_PICTURE_DIR;
         if (!str_contains($dir, '/tests/files/_pictures')) {
-            throw new \RuntimeException('Invalid picture dir: ' . $dir);
+            throw new RuntimeException('Invalid picture dir: ' . $dir);
         }
         // Delete nested folders and files in dir
         $fn_delete = function ($dir, $parent) use (&$fn_delete) {
@@ -142,7 +144,7 @@ class GLPITestCase extends atoum
      */
     protected function callPrivateMethod($instance, string $methodName, ...$args)
     {
-        $method = new \ReflectionMethod($instance, $methodName);
+        $method = new ReflectionMethod($instance, $methodName);
         $method->setAccessible(true);
 
         return $method->invoke($instance, ...$args);

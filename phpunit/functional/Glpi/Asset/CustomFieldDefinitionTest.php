@@ -35,7 +35,10 @@
 namespace tests\units\Glpi\Asset;
 
 use DbTestCase;
+use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Asset\Capacity;
+use Glpi\Asset\Capacity\HasHistoryCapacity;
+use Glpi\Asset\CustomFieldDefinition;
 use Glpi\Asset\CustomFieldType\BooleanType;
 use Glpi\Asset\CustomFieldType\DateTimeType;
 use Glpi\Asset\CustomFieldType\DateType;
@@ -58,12 +61,12 @@ class CustomFieldDefinitionTest extends DbTestCase
     {
         $asset_definition = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $asset_classname = $asset_definition->getAssetClassName();
 
-        $custom_field_definition = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
+        $custom_field_definition = $this->createItem(CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
             'system_name' => 'test_string',
             'label' => 'Test string',
@@ -71,7 +74,7 @@ class CustomFieldDefinitionTest extends DbTestCase
             'default_value' => 'default',
         ]);
 
-        $custom_field_definition_2 = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
+        $custom_field_definition_2 = $this->createItem(CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
             'system_name' => 'test_text',
             'label' => 'Test text',
@@ -113,7 +116,7 @@ class CustomFieldDefinitionTest extends DbTestCase
 
     public function testGetAllowedDropdownItemtypes()
     {
-        $allowed_itemtypes = \Glpi\Asset\AssetDefinitionManager::getInstance()->getAllowedDropdownItemtypes();
+        $allowed_itemtypes = AssetDefinitionManager::getInstance()->getAllowedDropdownItemtypes();
         $this->assertNotEmpty($allowed_itemtypes);
         foreach ($allowed_itemtypes as $group => $opts) {
             $this->assertNotEmpty($opts);
@@ -269,7 +272,7 @@ class CustomFieldDefinitionTest extends DbTestCase
     public function testValidateValue($field_params, $given_value, $expected_value, $is_valid)
     {
         $value = $given_value;
-        $custom_field = new \Glpi\Asset\CustomFieldDefinition();
+        $custom_field = new CustomFieldDefinition();
         $custom_field->fields = $field_params;
         if (!$is_valid) {
             $this->expectException(\InvalidArgumentException::class);
@@ -281,7 +284,7 @@ class CustomFieldDefinitionTest extends DbTestCase
 
     public function testGetEmpty()
     {
-        $custom_field = new \Glpi\Asset\CustomFieldDefinition();
+        $custom_field = new CustomFieldDefinition();
         $custom_field->getEmpty();
         $this->assertEmpty($custom_field->fields['field_options']);
     }
@@ -291,11 +294,11 @@ class CustomFieldDefinitionTest extends DbTestCase
         $opt_id_offset = 45000;
         $asset_definition = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
 
-        $custom_field_definition = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
+        $custom_field_definition = $this->createItem(CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
             'system_name' => 'test_string',
             'label' => 'Test string',
@@ -309,7 +312,7 @@ class CustomFieldDefinitionTest extends DbTestCase
         $this->assertEquals("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), 'default')", (string) $opt['computation']);
         $this->assertEquals('string', $opt['datatype']);
 
-        $custom_field_definition_2 = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
+        $custom_field_definition_2 = $this->createItem(CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
             'system_name' => 'test_text',
             'label' => 'Test text',
@@ -324,7 +327,7 @@ class CustomFieldDefinitionTest extends DbTestCase
         $this->assertEquals('text', $opt['datatype']);
         $this->assertArrayNotHasKey('htmltext', $opt);
 
-        $custom_field_definition_4 = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
+        $custom_field_definition_4 = $this->createItem(CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
             'system_name' => 'test_number',
             'label' => 'Test number',
@@ -338,7 +341,7 @@ class CustomFieldDefinitionTest extends DbTestCase
         $this->assertEquals("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), '420')", (string) $opt['computation']);
         $this->assertEquals('number', $opt['datatype']);
 
-        $custom_field_definition_5 = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
+        $custom_field_definition_5 = $this->createItem(CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
             'system_name' => 'test_date',
             'label' => 'Test date',
@@ -352,7 +355,7 @@ class CustomFieldDefinitionTest extends DbTestCase
         $this->assertEquals("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), '2021-01-01')", (string) $opt['computation']);
         $this->assertEquals('date', $opt['datatype']);
 
-        $custom_field_definition_6 = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
+        $custom_field_definition_6 = $this->createItem(CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
             'system_name' => 'test_datetime',
             'label' => 'Test datetime',
@@ -366,7 +369,7 @@ class CustomFieldDefinitionTest extends DbTestCase
         $this->assertEquals("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), '2021-01-01 03:25:15')", (string) $opt['computation']);
         $this->assertEquals('datetime', $opt['datatype']);
 
-        $custom_field_definition_7 = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
+        $custom_field_definition_7 = $this->createItem(CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
             'system_name' => 'test_dropdown',
             'label' => 'Test dropdown',
@@ -379,7 +382,7 @@ class CustomFieldDefinitionTest extends DbTestCase
         $this->assertEquals($opt_id_offset + $field_id, $opt['id']);
         $this->assertEquals('Test dropdown', $opt['name']);
 
-        $custom_field_definition_8 = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
+        $custom_field_definition_8 = $this->createItem(CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
             'system_name' => 'test_url',
             'label' => 'Test url',
@@ -393,7 +396,7 @@ class CustomFieldDefinitionTest extends DbTestCase
         $this->assertEquals("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), 'https://glpi-project.org')", (string) $opt['computation']);
         $this->assertEquals('string', $opt['datatype']);
 
-        $custom_field_definition_9 = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
+        $custom_field_definition_9 = $this->createItem(CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
             'system_name' => 'test_bool',
             'label' => 'Test bool',
@@ -412,7 +415,7 @@ class CustomFieldDefinitionTest extends DbTestCase
     {
         $asset_definition = $this->initAssetDefinition();
 
-        $field = new \Glpi\Asset\CustomFieldDefinition();
+        $field = new CustomFieldDefinition();
 
         $this->assertGreaterThan(0, $field->add([
             'assets_assetdefinitions_id' => $asset_definition->getID(),
@@ -448,7 +451,7 @@ class CustomFieldDefinitionTest extends DbTestCase
 
         $asset_definition = $this->initAssetDefinition();
 
-        $field = new \Glpi\Asset\CustomFieldDefinition();
+        $field = new CustomFieldDefinition();
 
         $fields_id = $field->add([
             'assets_assetdefinitions_id' => $asset_definition->getID(),
@@ -501,11 +504,11 @@ class CustomFieldDefinitionTest extends DbTestCase
     {
         $asset_definition = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
-        $field_1 = new \Glpi\Asset\CustomFieldDefinition();
-        $field_2 = new \Glpi\Asset\CustomFieldDefinition();
+        $field_1 = new CustomFieldDefinition();
+        $field_2 = new CustomFieldDefinition();
 
         $field_1->add([
             'assets_assetdefinitions_id' => $asset_definition->getID(),
@@ -554,7 +557,7 @@ class CustomFieldDefinitionTest extends DbTestCase
     public function testAddTranslationsOnCreate()
     {
         $asset_definition = $this->initAssetDefinition();
-        $field = new \Glpi\Asset\CustomFieldDefinition();
+        $field = new CustomFieldDefinition();
         $this->assertGreaterThan(0, $field->add([
             'assets_assetdefinitions_id' => $asset_definition->getID(),
             'system_name' => 'test',
@@ -571,7 +574,7 @@ class CustomFieldDefinitionTest extends DbTestCase
     public function testAddTranslationsOnUpdate()
     {
         $asset_definition = $this->initAssetDefinition();
-        $field = new \Glpi\Asset\CustomFieldDefinition();
+        $field = new CustomFieldDefinition();
         $this->assertGreaterThan(0, $field->add([
             'assets_assetdefinitions_id' => $asset_definition->getID(),
             'system_name' => 'test',
@@ -593,7 +596,7 @@ class CustomFieldDefinitionTest extends DbTestCase
         $asset_definition = $this->initAssetDefinition();
 
         $field = $this->createItem(
-            \Glpi\Asset\CustomFieldDefinition::class,
+            CustomFieldDefinition::class,
             [
                 'assets_assetdefinitions_id' => $asset_definition->getID(),
                 'system_name' => 'test',
@@ -614,7 +617,7 @@ class CustomFieldDefinitionTest extends DbTestCase
         $asset_definition = $this->initAssetDefinition();
 
         $field = $this->createItem(
-            \Glpi\Asset\CustomFieldDefinition::class,
+            CustomFieldDefinition::class,
             [
                 'assets_assetdefinitions_id' => $asset_definition->getID(),
                 'system_name' => 'test',

@@ -199,7 +199,7 @@ class Search
 
         $data = SearchEngine::getData($itemtype, $params);
         $data['as_map'] = true;
-        \Search::displayData($data);
+        Search::displayData($data);
     }
 
 

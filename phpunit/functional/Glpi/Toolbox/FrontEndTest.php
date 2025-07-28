@@ -34,6 +34,8 @@
 
 namespace tests\units\Glpi\Toolbox;
 
+use Glpi\Toolbox\FrontEnd;
+
 /**
  * Test class for src/Glpi/Toolbox/dataexport.class.php
  */
@@ -41,7 +43,7 @@ class FrontEndTest extends \GLPITestCase
 {
     public function testGetVersionCacheKey()
     {
-        $instance = new \Glpi\Toolbox\FrontEnd();
+        $instance = new FrontEnd();
 
         $this->assertNotEquals(GLPI_VERSION, $instance->getVersionCacheKey(GLPI_VERSION));
         $this->assertNotEquals(sha1(GLPI_VERSION), $instance->getVersionCacheKey(GLPI_VERSION)); // too predicatable

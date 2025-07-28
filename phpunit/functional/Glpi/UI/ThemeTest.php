@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\UI;
 
 use DbTestCase;
+use Glpi\UI\Theme;
 use Glpi\UI\ThemeManager;
 use org\bovigo\vfs\vfsStream;
 
@@ -46,7 +47,7 @@ class ThemeTest extends DbTestCase
         $this->assertGreaterThan(0, count($themes));
         // Each element should be a Theme object
         foreach ($themes as $theme) {
-            $this->assertInstanceOf(\Glpi\UI\Theme::class, $theme);
+            $this->assertInstanceOf(Theme::class, $theme);
         }
     }
 
@@ -81,7 +82,7 @@ SCSS,
         $this->assertGreaterThan(0, count($themes));
         // Each element should be a Theme object
         foreach ($themes as $theme) {
-            $this->assertInstanceOf(\Glpi\UI\Theme::class, $theme);
+            $this->assertInstanceOf(Theme::class, $theme);
         }
     }
 
@@ -89,14 +90,14 @@ SCSS,
     {
         $this->login();
         $theme = ThemeManager::getInstance()->getCurrentTheme();
-        $this->assertInstanceOf(\Glpi\UI\Theme::class, $theme);
+        $this->assertInstanceOf(Theme::class, $theme);
         $this->assertSame('auror', $theme->getKey());
     }
 
     public function testGetTheme(): void
     {
         $theme = ThemeManager::getInstance()->getTheme('auror');
-        $this->assertInstanceOf(\Glpi\UI\Theme::class, $theme);
+        $this->assertInstanceOf(Theme::class, $theme);
         $this->assertEquals('auror', $theme->getKey());
     }
 

@@ -37,12 +37,19 @@ namespace tests\units\Glpi\Asset\Capacity;
 use DbTestCase;
 use Entity;
 use Glpi\Asset\Capacity;
+use Glpi\Asset\Capacity\HasHistoryCapacity;
+use Glpi\Asset\Capacity\HasNotepadCapacity;
+use Glpi\Asset\Capacity\IsInventoriableCapacity;
+use Glpi\Asset\CapacityConfig;
+use Glpi\Inventory\MainAsset\GenericAsset;
+use Glpi\Inventory\MainAsset\GenericNetworkAsset;
+use Glpi\Inventory\MainAsset\GenericPrinterAsset;
 
 class IsInventoriableCapacityTest extends DbTestCase
 {
     protected function getTargetCapacity(): string
     {
-        return \Glpi\Asset\Capacity\IsInventoriableCapacity::class;
+        return IsInventoriableCapacity::class;
     }
 
     public function testCapacityActivation(): void
@@ -51,21 +58,21 @@ class IsInventoriableCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
+                new Capacity(name: IsInventoriableCapacity::class),
+                new Capacity(name: HasNotepadCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: IsInventoriableCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_3  = $definition_3->getAssetClassName();
@@ -101,18 +108,18 @@ class IsInventoriableCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: IsInventoriableCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
                 new Capacity(
-                    name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class,
-                    config: new \Glpi\Asset\CapacityConfig(['inventory_mainasset' => \Glpi\Inventory\MainAsset\GenericPrinterAsset::class])
+                    name: IsInventoriableCapacity::class,
+                    config: new CapacityConfig(['inventory_mainasset' => GenericPrinterAsset::class])
                 ),
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
@@ -254,9 +261,9 @@ class IsInventoriableCapacityTest extends DbTestCase
         $definition = $this->initAssetDefinition(
             capacities: [
                 new Capacity(
-                    name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class,
-                    config: new \Glpi\Asset\CapacityConfig([
-                        'inventory_mainasset' => \Glpi\Inventory\MainAsset\GenericAsset::class,
+                    name: IsInventoriableCapacity::class,
+                    config: new CapacityConfig([
+                        'inventory_mainasset' => GenericAsset::class,
                     ])
                 ),
             ]
@@ -281,9 +288,9 @@ class IsInventoriableCapacityTest extends DbTestCase
                 'id' => $definition->getID(),
                 'capacities' => [
                     [
-                        'name' => \Glpi\Asset\Capacity\IsInventoriableCapacity::class,
+                        'name' => IsInventoriableCapacity::class,
                         'config' => [
-                            'inventory_mainasset' => \Glpi\Inventory\MainAsset\GenericNetworkAsset::class,
+                            'inventory_mainasset' => GenericNetworkAsset::class,
                         ],
                     ],
                 ],
@@ -293,8 +300,8 @@ class IsInventoriableCapacityTest extends DbTestCase
 
         //make sure configuration has been updated in database
         $this->assertEquals(
-            \Glpi\Inventory\MainAsset\GenericNetworkAsset::class,
-            $definition->getCapacityConfiguration(\Glpi\Asset\Capacity\IsInventoriableCapacity::class)->getValue('inventory_mainasset')
+            GenericNetworkAsset::class,
+            $definition->getCapacityConfiguration(IsInventoriableCapacity::class)->getValue('inventory_mainasset')
         );
 
         //computer specific rule should no longer be present

@@ -84,7 +84,7 @@ class DatabaseInstanceTest extends DbTestCase
 
     public function testDelete()
     {
-        $instance = new \DatabaseInstance();
+        $instance = new DatabaseInstance();
 
         $instid = $instance->add([
             'name' => 'To be removed',
@@ -127,7 +127,7 @@ class DatabaseInstanceTest extends DbTestCase
             ]
         );
         $dbinstance = $this->createItem(
-            \DatabaseInstance::class,
+            DatabaseInstance::class,
             [
                 'name'     => 'test database',
                 'itemtype' => \Computer::class,
@@ -145,7 +145,7 @@ class DatabaseInstanceTest extends DbTestCase
             [
                 'deviceid'     => sprintf('device_%08x', rand()),
                 'agenttypes_id' => $agenttype_id,
-                'itemtype'     => \DatabaseInstance::class,
+                'itemtype'     => DatabaseInstance::class,
                 'items_id'     => $dbinstance->fields['id'],
                 'last_contact' => date('Y-m-d H:i:s', strtotime('yesterday')),
             ]
@@ -156,7 +156,7 @@ class DatabaseInstanceTest extends DbTestCase
             [
                 'deviceid'     => sprintf('device_%08x', rand()),
                 'agenttypes_id' => $agenttype_id,
-                'itemtype'     => \DatabaseInstance::class,
+                'itemtype'     => DatabaseInstance::class,
                 'items_id'     => $dbinstance->fields['id'],
                 'last_contact' => date('Y-m-d H:i:s', strtotime('last week')),
             ]

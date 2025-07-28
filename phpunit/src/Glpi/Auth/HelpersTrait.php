@@ -140,7 +140,7 @@ trait HelpersTrait
 
     private function checkOnlyOnSingleDefaultAuth(): void
     {
-        $countOfDefaultAuth = countElementsInTable(\AuthLDAP::getTable(), ['is_default' => 1]) + countElementsInTable(AuthMail::getTable(), ['is_default' => 1]);
+        $countOfDefaultAuth = countElementsInTable(AuthLDAP::getTable(), ['is_default' => 1]) + countElementsInTable(AuthMail::getTable(), ['is_default' => 1]);
         assert(
             $countOfDefaultAuth === 1,
             'There must be only one default Auth, ' . $countOfDefaultAuth . ' found.'

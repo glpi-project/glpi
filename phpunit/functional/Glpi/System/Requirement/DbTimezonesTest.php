@@ -34,6 +34,8 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
+use Glpi\System\Requirement\DbTimezones;
+
 class DbTimezonesTest extends \GLPITestCase
 {
     public function testCheckWithUnavailableMysqlDb()
@@ -56,7 +58,7 @@ class DbTimezonesTest extends \GLPITestCase
             }
         );
 
-        $instance = new \Glpi\System\Requirement\DbTimezones($db);
+        $instance = new DbTimezones($db);
         $this->assertFalse($instance->isValidated());
         $this->assertEquals(
             ['Access to timezone database (mysql) is not allowed.'],
@@ -86,7 +88,7 @@ class DbTimezonesTest extends \GLPITestCase
             }
         );
 
-        $instance = new \Glpi\System\Requirement\DbTimezones($db);
+        $instance = new DbTimezones($db);
         $this->assertFalse($instance->isValidated());
         $this->assertEquals(
             ['Access to timezone table (mysql.time_zone_name) is not allowed.'],
@@ -118,7 +120,7 @@ class DbTimezonesTest extends \GLPITestCase
             }
         );
 
-        $instance = new \Glpi\System\Requirement\DbTimezones($db);
+        $instance = new DbTimezones($db);
         $this->assertFalse($instance->isValidated());
         $this->assertEquals(
             ['Timezones seems not loaded, see https://glpi-install.readthedocs.io/en/latest/timezones.html.'],
@@ -150,7 +152,7 @@ class DbTimezonesTest extends \GLPITestCase
             }
         );
 
-        $instance = new \Glpi\System\Requirement\DbTimezones($db);
+        $instance = new DbTimezones($db);
         $this->assertTrue($instance->isValidated());
         $this->assertEquals(
             ['Timezones seems loaded in database.'],

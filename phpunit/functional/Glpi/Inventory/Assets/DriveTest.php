@@ -34,6 +34,9 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use Glpi\Inventory\Asset\Drive;
+use Glpi\Inventory\Conf;
+use Glpi\Inventory\Converter;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
@@ -93,14 +96,14 @@ class DriveTest extends AbstractInventoryAsset
     #[DataProvider('assetProvider')]
     public function testPrepare($xml, $expected)
     {
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\Drive($computer, $json->content->storages);
+        $asset = new Drive($computer, $json->content->storages);
         $asset->setExtraData((array) $json->content);
-        $this->assertTrue($asset->checkConf(new \Glpi\Inventory\Conf()));
+        $this->assertTrue($asset->checkConf(new Conf()));
         $result = $asset->prepare();
 
         if (!$asset->isDrive($json->content->storages[0])) {
@@ -131,14 +134,14 @@ class DriveTest extends AbstractInventoryAsset
         //convert data
         $expected = $this->assetProvider()[0];
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($expected['xml']);
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\Drive($computer, $json->content->storages);
+        $asset = new Drive($computer, $json->content->storages);
         $asset->setExtraData((array) $json->content);
-        $this->assertTrue($asset->checkConf(new \Glpi\Inventory\Conf()));
+        $this->assertTrue($asset->checkConf(new Conf()));
         $result = $asset->prepare();
         //is a harddrive
         $this->assertIsArray($result);

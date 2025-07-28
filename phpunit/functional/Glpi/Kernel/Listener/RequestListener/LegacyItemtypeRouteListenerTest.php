@@ -34,9 +34,17 @@
 
 namespace tests\units\Glpi\Kernel\Listener\RequestListener;
 
+use Glpi\Asset\AssetDefinition;
 use Glpi\Controller\DropdownFormController;
 use Glpi\Controller\GenericListController;
+use Glpi\Dropdown\DropdownDefinition;
+use Glpi\Event;
+use Glpi\Form\Form;
 use Glpi\Kernel\Listener\RequestListener\LegacyItemtypeRouteListener;
+use Glpi\Socket;
+use Glpi\SocketModel;
+use GlpiPlugin\Tester\MyPsr4Class;
+use GlpiPlugin\Tester\MyPsr4Dropdown;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
@@ -75,7 +83,7 @@ final class LegacyItemtypeRouteListenerTest extends TestCase
             '/front/applianceenvironment.php' => \ApplianceEnvironment::class,
             '/front/appliancetype.form.php' => \ApplianceType::class,
             '/front/appliancetype.php' => \ApplianceType::class,
-            '/front/asset/assetdefinition.php' => \Glpi\Asset\AssetDefinition::class,
+            '/front/asset/assetdefinition.php' => AssetDefinition::class,
             '/front/authldap.php' => \AuthLDAP::class,
             '/front/authmail.php' => \AuthMail::class,
             '/front/autoupdatesystem.form.php' => \AutoUpdateSystem::class,
@@ -144,20 +152,20 @@ final class LegacyItemtypeRouteListenerTest extends TestCase
             '/front/domainrelation.php' => \DomainRelation::class,
             '/front/domaintype.form.php' => \DomainType::class,
             '/front/domaintype.php' => \DomainType::class,
-            '/front/dropdown/dropdowndefinition.php' => \Glpi\Dropdown\DropdownDefinition::class,
+            '/front/dropdown/dropdowndefinition.php' => DropdownDefinition::class,
             '/front/enclosure.php' => \Enclosure::class,
             '/front/enclosuremodel.form.php' => \EnclosureModel::class,
             '/front/enclosuremodel.php' => \EnclosureModel::class,
             '/front/entity.form.php' => \Entity::class,
             '/front/entity.php' => \Entity::class,
-            '/front/event.php' => \Glpi\Event::class,
+            '/front/event.php' => Event::class,
             '/front/fieldblacklist.form.php' => \Fieldblacklist::class,
             '/front/fieldblacklist.php' => \Fieldblacklist::class,
             '/front/fieldunicity.form.php' => \FieldUnicity::class,
             '/front/fieldunicity.php' => \FieldUnicity::class,
             '/front/filesystem.form.php' => \Filesystem::class,
             '/front/filesystem.php' => \Filesystem::class,
-            '/front/form/form.php' => \Glpi\Form\Form::class,
+            '/front/form/form.php' => Form::class,
             '/front/fqdn.form.php' => \FQDN::class,
             '/front/fqdn.php' => \FQDN::class,
             '/front/group.php' => \Group::class,
@@ -302,9 +310,9 @@ final class LegacyItemtypeRouteListenerTest extends TestCase
             '/front/slalevel.php' => \SlaLevel::class,
             '/front/slm.php' => \SLM::class,
             '/front/snmpcredential.php' => \SNMPCredential::class,
-            '/front/socket.php' => \Glpi\Socket::class,
-            '/front/socketmodel.form.php' => \Glpi\SocketModel::class,
-            '/front/socketmodel.php' => \Glpi\SocketModel::class,
+            '/front/socket.php' => Socket::class,
+            '/front/socketmodel.form.php' => SocketModel::class,
+            '/front/socketmodel.php' => SocketModel::class,
             '/front/software.php' => \Software::class,
             '/front/softwarecategory.form.php' => \SoftwareCategory::class,
             '/front/softwarecategory.php' => \SoftwareCategory::class,
@@ -437,11 +445,11 @@ final class LegacyItemtypeRouteListenerTest extends TestCase
         ];
         yield [
             'path_info' => '/plugins/tester/front/mypsr4class.php',
-            'class'     => \GlpiPlugin\Tester\MyPsr4Class::class,
+            'class'     => MyPsr4Class::class,
         ];
         yield [
             'path_info' => '/plugins/tester/front/mypsr4dropdown.php',
-            'class'     => \GlpiPlugin\Tester\MyPsr4Dropdown::class,
+            'class'     => MyPsr4Dropdown::class,
         ];
         yield [
             'path_info' => '/plugins/tester/front/computer.php',

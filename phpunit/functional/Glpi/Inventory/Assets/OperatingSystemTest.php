@@ -34,6 +34,8 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use Glpi\Inventory\Conf;
+use Glpi\Inventory\Converter;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rule;
 use RuleDictionnaryOperatingSystem;
@@ -90,14 +92,14 @@ class OperatingSystemTest extends AbstractInventoryAsset
         $xml = $this->buildXml($nodes);
 
         $this->login();
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\OperatingSystem($computer, (array) $json->content->operatingsystem);
         $asset->setExtraData((array) $json->content);
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $asset->checkConf($conf)
         );
@@ -386,14 +388,14 @@ class OperatingSystemTest extends AbstractInventoryAsset
         $xml = $this->buildXml($nodes);
 
         $this->login();
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\OperatingSystem($computer, (array) $json->content->operatingsystem);
         $asset->setExtraData((array) $json->content);
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $asset->checkConf($conf)
         );
@@ -956,7 +958,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
         //convert data
         $expected = $this::assetProvider()[0];
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($this->buildXml($expected['nodes']));
         $json = json_decode($data);
 

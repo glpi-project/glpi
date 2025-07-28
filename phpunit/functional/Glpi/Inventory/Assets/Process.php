@@ -34,6 +34,9 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use Glpi\Asset\Capacity\IsInventoriableCapacity;
+use Glpi\Inventory\Conf;
+use Glpi\Inventory\Converter;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
@@ -100,13 +103,13 @@ class Process extends AbstractInventoryAsset
     public function testPrepare($xml, $expected)
     {
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue($conf->saveConf([
             'import_process' => 1,
         ]));
         $this->logout();
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
@@ -123,7 +126,7 @@ class Process extends AbstractInventoryAsset
     public function testHandle()
     {
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue($conf->saveConf([
             'import_process' => 1,
         ]));
@@ -141,7 +144,7 @@ class Process extends AbstractInventoryAsset
         //convert data
         $expected = $this->assetProvider()[0];
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($expected['xml']);
         $json = json_decode($data);
 
@@ -173,20 +176,20 @@ class Process extends AbstractInventoryAsset
             system_name: 'MyAsset' . $this->getUniqueString(),
             capacities: array_merge(
                 [
-                    \Glpi\Asset\Capacity\IsInventoriableCapacity::class,
+                    IsInventoriableCapacity::class,
                 ]
             )
         );
         $classname  = $definition->getAssetClassName();
 
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue($conf->saveConf([
             'import_process' => 1,
         ]));
         $this->logout();
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert(self::assetProvider()[0]['xml']);
         $json = json_decode($data);
         //we change itemtype to our asset

@@ -92,7 +92,7 @@ class ComputerTest extends DbTestCase
         $this->assertGreaterThan(0, (int) $link->add($in));
 
         // Change the computer
-        $entity = new \Entity();
+        $entity = new Entity();
         $entity->getFromDB(0);
         $this->assertTrue($entity->update([
             'id' => $entity->fields['id'],
@@ -296,7 +296,7 @@ class ComputerTest extends DbTestCase
 
         $computer = $this->getNewComputer();
 
-        $entity = new \Entity();
+        $entity = new Entity();
         $entity->getFromDB(0);
         $this->assertTrue($entity->update([
             'id' => $entity->fields['id'],

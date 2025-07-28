@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Dashboard;
 
 use DbTestCase;
+use Glpi\Dashboard\Widget;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/dashboard/widget.class.php */
@@ -43,7 +44,7 @@ class WidgetTest extends DbTestCase
 {
     public function testGetAllTypes()
     {
-        $types = \Glpi\Dashboard\Widget::getAllTypes();
+        $types = Widget::getAllTypes();
 
         $this->assertNotEmpty($types);
         foreach ($types as $specs) {
@@ -106,7 +107,7 @@ class WidgetTest extends DbTestCase
     ) {
         $this->assertEquals(
             $expected,
-            \Glpi\Dashboard\Widget::getGradientPalette($bg_color, $nb_series, $revert)
+            Widget::getGradientPalette($bg_color, $nb_series, $revert)
         );
     }
 }

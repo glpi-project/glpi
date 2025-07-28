@@ -34,6 +34,8 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use Glpi\Inventory\Asset\Antivirus;
+use Glpi\Inventory\Converter;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
@@ -106,12 +108,12 @@ class AntivirusTest extends AbstractInventoryAsset
     #[DataProvider('assetProvider')]
     public function testPrepare($xml, $expected)
     {
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\Antivirus($computer, $json->content->antivirus);
+        $asset = new Antivirus($computer, $json->content->antivirus);
         $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected), $result[0]);
@@ -120,7 +122,7 @@ class AntivirusTest extends AbstractInventoryAsset
     public function testWrongMainItem()
     {
         $mainitem = getItemByTypeName('Printer', '_test_printer_all');
-        $asset = new \Glpi\Inventory\Asset\Antivirus($mainitem);
+        $asset = new Antivirus($mainitem);
         $this->expectExceptionMessage('Antivirus are not handled for Printer');
         $asset->prepare();
     }
@@ -140,12 +142,12 @@ class AntivirusTest extends AbstractInventoryAsset
         //convert data
         $expected = $this::assetProvider()[0];
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($expected['xml']);
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\Antivirus($computer, $json->content->antivirus);
+        $asset = new Antivirus($computer, $json->content->antivirus);
         $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected['expected']), $result[0]);
@@ -187,11 +189,11 @@ class AntivirusTest extends AbstractInventoryAsset
         $json_expected->version = '4.5.12.0';
         $json_expected->antivirus_version = '4.5.12.0';
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
-        $asset = new \Glpi\Inventory\Asset\Antivirus($computer, $json->content->antivirus);
+        $asset = new Antivirus($computer, $json->content->antivirus);
         $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals($json_expected, $result[0]);

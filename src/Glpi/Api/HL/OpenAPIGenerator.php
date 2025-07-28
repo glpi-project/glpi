@@ -36,9 +36,7 @@
 namespace Glpi\Api\HL;
 
 use CommonGLPI;
-use Glpi\Api\HL\Doc\Parameter;
-use Glpi\Api\HL\Doc\Schema;
-use Glpi\Api\HL\Doc\SchemaReference;
+use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\OAuth\Server;
 use ReflectionClass;
@@ -477,7 +475,7 @@ EOT;
      * @return array
      * @phpstan-return SchemaArray
      */
-    private function getRouteParamSchema(Parameter $route_param): array
+    private function getRouteParamSchema(Doc\Parameter $route_param): array
     {
         return $route_param->getSchema()->toArray();
     }
@@ -493,7 +491,7 @@ EOT;
         if ($route_doc === null) {
             return null;
         }
-        $request_params = array_filter($route_doc->getParameters(), static fn(Parameter $param) => $param->getLocation() === Parameter::LOCATION_BODY);
+        $request_params = array_filter($route_doc->getParameters(), static fn(Doc\Parameter $param) => $param->getLocation() === Doc\Parameter::LOCATION_BODY);
         if (count($request_params) === 0) {
             return null;
         }
@@ -509,10 +507,10 @@ EOT;
         ];
 
         // If there is a parameter with the location of body and name of "_", it should be an object that represents the entire request body (or at least the base schema of it)
-        $request_body_param = array_filter($request_params, static fn(Parameter $param) => $param->getName() === '_');
+        $request_body_param = array_filter($request_params, static fn(Doc\Parameter $param) => $param->getName() === '_');
         if (count($request_body_param) > 0) {
             $request_body_param = array_values($request_body_param)[0];
-            if ($request_body_param->getSchema() instanceof SchemaReference) {
+            if ($request_body_param->getSchema() instanceof Doc\SchemaReference) {
                 $body_schema = $this->getComponentReference($request_body_param->getSchema()['ref'], $route_path->getController());
             } else {
                 $body_schema = $request_body_param->getSchema()->toArray();
@@ -543,7 +541,7 @@ EOT;
      * @return array
      * @phpstan-return PathParameterSchema
      */
-    private function getPathParameterSchema(Parameter $route_param): array
+    private function getPathParameterSchema(Doc\Parameter $route_param): array
     {
         $schema = $this->getRouteParamSchema($route_param);
         return [
@@ -709,8 +707,8 @@ EOT;
                 if (count($route_params) > 0) {
                     foreach ($route_params as $route_param) {
                         $location = $route_param->getLocation();
-                        if ($location !== Parameter::LOCATION_BODY) {
-                            if ($location !== Parameter::LOCATION_PATH || (array_key_exists($route_param->getName(), $requirements) && str_contains($route_path->getRoutePath(), '{' . $route_param->getName() . '}'))) {
+                        if ($location !== Doc\Parameter::LOCATION_BODY) {
+                            if ($location !== Doc\Parameter::LOCATION_PATH || (array_key_exists($route_param->getName(), $requirements) && str_contains($route_path->getRoutePath(), '{' . $route_param->getName() . '}'))) {
                                 $path_schema['parameters'][$route_param->getName()] = $this->getPathParameterSchema($route_param);
                             }
                         }
@@ -754,7 +752,7 @@ EOT;
                         'name' => $existing['name'] ?? $param['name'],
                         'description' => $existing['description'] ?? '',
                         'in' => $in,
-                        'required' => $in === Parameter::LOCATION_PATH ? true : ($existing['required'] ?? $param['required']),
+                        'required' => $in === Doc\Parameter::LOCATION_PATH ? true : ($existing['required'] ?? $param['required']),
                     ];
                     /** @var SchemaArray $combined_schema */
                     $combined_schema = $param['schema'];
@@ -770,20 +768,20 @@ EOT;
                     'name' => 'GLPI-Entity',
                     'in' => 'header',
                     'description' => 'The ID of the entity to use. If not specified, the default entity for the user is used.',
-                    'schema' => ['type' => Schema::TYPE_INTEGER],
+                    'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
                 ];
                 $path_schema['parameters']['GLPI-Profile'] = [
                     'name' => 'GLPI-Profile',
                     'in' => 'header',
                     'description' => 'The ID of the profile to use. If not specified, the default profile for the user is used.',
-                    'schema' => ['type' => Schema::TYPE_INTEGER],
+                    'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
                 ];
                 $path_schema['parameters']['GLPI-Entity-Recursive'] = [
                     'name' => 'GLPI-Entity-Recursive',
                     'in' => 'header',
                     'description' => '"true" if the entity access should include child entities. This is false by default.',
                     'schema' => [
-                        'type' => Schema::TYPE_STRING,
+                        'type' => Doc\Schema::TYPE_STRING,
                         'enum' => ['true', 'false'],
                     ],
                 ];
@@ -793,7 +791,7 @@ EOT;
                 'name' => 'Accept-Language',
                 'in' => 'header',
                 'description' => 'The language to use for the response. If not specified, the default language for the user is used.',
-                'schema' => ['type' => Schema::TYPE_STRING],
+                'schema' => ['type' => Doc\Schema::TYPE_STRING],
                 'examples' => [
                     'English_GB' => [
                         'value' => 'en_GB',

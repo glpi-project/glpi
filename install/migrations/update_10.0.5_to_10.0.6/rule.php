@@ -33,8 +33,8 @@
  */
 
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
 
 /** Rename 'name' criteria in dictionnaries */

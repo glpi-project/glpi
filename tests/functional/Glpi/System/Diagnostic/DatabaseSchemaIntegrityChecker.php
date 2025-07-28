@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\System\Diagnostic;
 
+use mock\mysqli_result;
 use org\bovigo\vfs\vfsStream;
 
 class DatabaseSchemaIntegrityChecker extends \GLPITestCase
@@ -1505,7 +1506,7 @@ DIFF,
             $expected_diff = $expected_differences[$table_name]['diff'] ?? '';
 
             $this->mockGenerator->orphanize('__construct');
-            $query_result = new \mock\mysqli_result();
+            $query_result = new mysqli_result();
             $this->calling($query_result)->fetch_assoc = ['Create Table' => $effective_sql];
             $this->calling($db)->doQuery = $query_result;
 
@@ -1570,7 +1571,7 @@ DIFF,
             $table_name = preg_replace('/SHOW CREATE TABLE `([^`]+)`/', '$1', $query);
             if (array_key_exists($table_name, $effective_tables)) {
                 $that->mockGenerator->orphanize('__construct');
-                $res = new \mock\mysqli_result();
+                $res = new mysqli_result();
                 $that->calling($res)->fetch_assoc = ['Create Table' => $effective_tables[$table_name]];
                 return $res;
             }
@@ -1670,7 +1671,7 @@ SQL,
                 }
                 if ($result !== null) {
                     $that->mockGenerator->orphanize('__construct');
-                    $res = new \mock\mysqli_result();
+                    $res = new mysqli_result();
                     $that->calling($res)->fetch_assoc = $result;
                     return $res;
                 }
@@ -1767,7 +1768,7 @@ SQL;
         $this->calling($db)->doQuery = function ($query) use ($that) {
             if (preg_match('/^SHOW CREATE TABLE/', $query) === 1) {
                 $that->mockGenerator->orphanize('__construct');
-                $res = new \mock\mysqli_result();
+                $res = new mysqli_result();
                 $that->calling($res)->fetch_assoc = [
                     'Create Table' => <<<SQL
 CREATE TABLE `glpi_impactcontexts` (
@@ -1831,7 +1832,7 @@ SQL,
         $this->calling($db)->doQuery = function ($query) use ($that) {
             if (preg_match('/^SHOW CREATE TABLE/', $query) === 1) {
                 $that->mockGenerator->orphanize('__construct');
-                $res = new \mock\mysqli_result();
+                $res = new mysqli_result();
                 $that->calling($res)->fetch_assoc = [
                     'Create Table' => <<<SQL
 CREATE TABLE `glpi_impactcontexts` (
@@ -1921,7 +1922,7 @@ SQL;
         $this->calling($db)->doQuery = function ($query) use ($that) {
             if (preg_match('/^SHOW CREATE TABLE/', $query) === 1) {
                 $that->mockGenerator->orphanize('__construct');
-                $res = new \mock\mysqli_result();
+                $res = new mysqli_result();
                 // Expected result for GLPI < 10.0.0
                 $that->calling($res)->fetch_assoc = [
                     'Create Table' => <<<SQL
@@ -2015,7 +2016,7 @@ SQL;
         $this->calling($db)->doQuery = function ($query) use ($that) {
             if (preg_match('/^SHOW CREATE TABLE/', $query) === 1) {
                 $that->mockGenerator->orphanize('__construct');
-                $res = new \mock\mysqli_result();
+                $res = new mysqli_result();
                 // Expected result for GLPI >= 10.0.0
                 $that->calling($res)->fetch_assoc = [
                     'Create Table' => <<<SQL

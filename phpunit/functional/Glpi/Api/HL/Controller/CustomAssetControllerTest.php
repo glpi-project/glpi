@@ -89,7 +89,7 @@ class CustomAssetControllerTest extends HLAPITestCase
         $request = new Request('GET', '/Assets/Custom/' . $schema);
         $request->setParameter('filter', $filters);
         $this->api->call($request, function ($call) use ($expected) {
-            /** @var \HLAPICallAsserter $call */
+            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($expected) {

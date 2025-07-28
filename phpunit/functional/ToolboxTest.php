@@ -508,7 +508,7 @@ class ToolboxTest extends DbTestCase
     {
         $data = [];
 
-        foreach ([\Computer::class, \Change::class, \Problem::class, \Ticket::class] as $itemtype) {
+        foreach ([\Computer::class, \Change::class, \Problem::class, Ticket::class] as $itemtype) {
             $item = new $itemtype();
             $item->fields['id'] = mt_rand(1, 50);
 
@@ -524,7 +524,7 @@ class ToolboxTest extends DbTestCase
             ];
 
             if ($item instanceof \CommonITILObject) {
-                $fup = new \ITILFollowup();
+                $fup = new ITILFollowup();
                 $fup->input['_job'] = $item;
                 $data[] = [
                     'item'         => $fup,
@@ -586,7 +586,7 @@ class ToolboxTest extends DbTestCase
      */
     public static function convertTagToImageBaseUrlProvider()
     {
-        $item = new \Ticket();
+        $item = new Ticket();
         $item->fields['id'] = mt_rand(1, 50);
 
         $img_url = '/front/document.send.php?docid={docid}'; //{docid} to replace by generated doc id
@@ -649,7 +649,7 @@ class ToolboxTest extends DbTestCase
         $img_tag_2 = uniqid('', true);
         $img_tag_3 = uniqid('', true);
 
-        $item = new \Ticket();
+        $item = new Ticket();
         $item->fields['id'] = mt_rand(1, 50);
 
         // Create multiple documents in DB
@@ -710,7 +710,7 @@ class ToolboxTest extends DbTestCase
 
         $img_tag = uniqid('', true);
 
-        $item = new \Ticket();
+        $item = new Ticket();
         $item->fields['id'] = mt_rand(1, 50);
 
         // Create multiple documents in DB
@@ -760,7 +760,7 @@ class ToolboxTest extends DbTestCase
 
         $img_tag = uniqid('', true);
 
-        $item = new \Ticket();
+        $item = new Ticket();
         $item->fields['id'] = mt_rand(1, 50);
 
         // Create multiple documents in DB
@@ -792,7 +792,7 @@ class ToolboxTest extends DbTestCase
         $img_1_tag = uniqid('', true);
         $img_2_tag = uniqid('', true);
 
-        $item = new \Ticket();
+        $item = new Ticket();
         $item->fields['id'] = mt_rand(1, 50);
 
         $document_1 = $this->createItem(
@@ -1153,12 +1153,12 @@ HTML;
             [\Computer::class, Clonable::class, true],
             [\Monitor::class, Clonable::class, true],
             [\CommonITILObject::class, Clonable::class, true],
-            [\Ticket::class, Clonable::class, true],
+            [Ticket::class, Clonable::class, true],
             [\Plugin::class, Clonable::class, false],
             [\Project::class, Kanban::class, true],
             [\Computer::class, Kanban::class, false],
             [\Computer::class, DCBreadcrumb::class, true],
-            [\Ticket::class, DCBreadcrumb::class, false],
+            [Ticket::class, DCBreadcrumb::class, false],
             [\CommonITILTask::class, PlanningEvent::class, true],
             [\Computer::class, PlanningEvent::class, false],
         ];

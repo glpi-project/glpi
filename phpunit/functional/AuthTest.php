@@ -67,12 +67,12 @@ class AuthTest extends DbTestCase
     #[DataProvider('loginProvider')]
     public function testIsValidLogin($login, $isvalid)
     {
-        $this->assertSame($isvalid, \Auth::isValidLogin($login));
+        $this->assertSame($isvalid, Auth::isValidLogin($login));
     }
 
     public function testGetLoginAuthMethods()
     {
-        $methods = \Auth::getLoginAuthMethods();
+        $methods = Auth::getLoginAuthMethods();
         $expected = [
             '_default'  => 'local',
             'local'     => 'GLPI internal database',
@@ -169,7 +169,7 @@ class AuthTest extends DbTestCase
         $cfg_backup = $CFG_GLPI;
         $CFG_GLPI['password_expiration_delay'] = $exp_delay;
         $CFG_GLPI['password_expiration_lock_delay'] = $lock_delay;
-        $auth = new \Auth();
+        $auth = new Auth();
         $is_logged = $auth->login($username, 'test', true);
         $CFG_GLPI = $cfg_backup;
 
@@ -190,7 +190,7 @@ class AuthTest extends DbTestCase
     #[DataProvider('validateLoginProvider')]
     public function testValidateLogin(string $login, string $password, bool $noauto, $login_auth, bool $expected)
     {
-        $auth = new \Auth();
+        $auth = new Auth();
         $this->assertSame($expected, $auth->validateLogin($login, $password, $noauto, $login_auth));
     }
 

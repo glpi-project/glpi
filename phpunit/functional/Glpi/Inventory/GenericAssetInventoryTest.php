@@ -34,6 +34,14 @@
 
 namespace tests\units\Glpi\Inventory;
 
+use Glpi\Asset\Asset;
+use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Asset\Capacity;
+use Glpi\Asset\Capacity\HasOperatingSystemCapacity;
+use Glpi\Asset\Capacity\HasVolumesCapacity;
+use Glpi\Asset\Capacity\IsInventoriableCapacity;
+use Glpi\Inventory\Request;
 use InventoryTestCase;
 
 class GenericAssetInventoryTest extends InventoryTestCase
@@ -41,11 +49,11 @@ class GenericAssetInventoryTest extends InventoryTestCase
     /**
      * Inventory a generic smartphone asset
      *
-     * @param \Glpi\Asset\Capacity[] $capacities Capacities to activate
+     * @param Capacity[] $capacities Capacities to activate
      *
-     * @return \Glpi\Asset\Asset
+     * @return Asset
      */
-    private function inventorySmartphone(array $capacities = []): \Glpi\Asset\Asset
+    private function inventorySmartphone(array $capacities = []): Asset
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -56,7 +64,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
             capacities: array_merge(
                 $capacities,
                 [
-                    new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class),
+                    new Capacity(name: IsInventoriableCapacity::class),
                 ]
             )
         );
@@ -110,7 +118,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
         $this->assertCount(1, $iterator);
         //$this->assertSame('Assert import (by serial + uuid)', $iterator->current()['name']);
         $this->assertSame($classname . ' import (by serial + uuid)', $iterator->current()['name']);
-        $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $iterator->current()['method']);
+        $this->assertSame(Request::INVENT_QUERY, $iterator->current()['method']);
 
         //get models, manufacturer, ...
         $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->current();
@@ -234,7 +242,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
     public function testImportSmartphoneWOS()
     {
         //create Smartphone generic asset
-        $asset = $this->inventorySmartphone([new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasOperatingSystemCapacity::class)]);
+        $asset = $this->inventorySmartphone([new Capacity(name: HasOperatingSystemCapacity::class)]);
 
         //operating system
         $ios = new \Item_OperatingSystem();
@@ -261,7 +269,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
     public function testImportSmartphoneWVolumes()
     {
         //create Smartphone generic asset
-        $asset = $this->inventorySmartphone([new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasVolumesCapacity::class)]);
+        $asset = $this->inventorySmartphone([new Capacity(name: HasVolumesCapacity::class)]);
         $classname = $asset::class;
         $assets_id = $asset->getID();
 
@@ -328,9 +336,9 @@ class GenericAssetInventoryTest extends InventoryTestCase
 
         //create Smartphone generic asset
         $capacities = [];
-        foreach (array_keys(\Glpi\Asset\AssetDefinitionManager::getInstance()->getAvailableCapacities()) as $available_capacity) {
-            if ($available_capacity !== \Glpi\Asset\Capacity\IsInventoriableCapacity::class) {
-                $capacities[] = new \Glpi\Asset\Capacity(name: $available_capacity);
+        foreach (array_keys(AssetDefinitionManager::getInstance()->getAvailableCapacities()) as $available_capacity) {
+            if ($available_capacity !== IsInventoriableCapacity::class) {
+                $capacities[] = new Capacity(name: $available_capacity);
             }
         }
         $asset = $this->inventorySmartphone($capacities);
@@ -755,9 +763,9 @@ class GenericAssetInventoryTest extends InventoryTestCase
      *
      * @param array<class-string> $capacities Capacities to activate
      *
-     * @return \Glpi\Asset\Asset
+     * @return Asset
      */
-    private function inventoryServer(array $capacities = []): \Glpi\Asset\Asset
+    private function inventoryServer(array $capacities = []): Asset
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -768,7 +776,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
             capacities: array_merge(
                 $capacities,
                 [
-                    new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class),
+                    new Capacity(name: IsInventoriableCapacity::class),
                 ]
             )
         );
@@ -903,7 +911,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
         $iterator = $DB->request($computer_criteria);
         $this->assertCount(1, $iterator);
         $this->assertSame($classname . ' import (by serial + uuid)', $iterator->current()['name']);
-        $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $iterator->current()['method']);
+        $this->assertSame(Request::INVENT_QUERY, $iterator->current()['method']);
 
         //operating system
         $ios = new \Item_OperatingSystem();
@@ -917,7 +925,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
 
         //connections
         $connections = getAllDataFromTable(
-            \Glpi\Asset\Asset_PeripheralAsset::getTable(),
+            Asset_PeripheralAsset::getTable(),
             [
                 'itemtype_asset'      => $classname,
                 'items_id_asset'      => $assets_id,
@@ -942,7 +950,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
 
         //check printer
         $connections = getAllDataFromTable(
-            \Glpi\Asset\Asset_PeripheralAsset::getTable(),
+            Asset_PeripheralAsset::getTable(),
             [
                 'itemtype_asset'      => $classname,
                 'items_id_asset'      => $assets_id,
@@ -967,7 +975,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
     public function testImportServerWOS()
     {
         //create Server generic asset
-        $asset = $this->inventoryServer([new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasOperatingSystemCapacity::class)]);
+        $asset = $this->inventoryServer([new Capacity(name: HasOperatingSystemCapacity::class)]);
 
         //operating system
         $ios = new \Item_OperatingSystem();
@@ -993,9 +1001,9 @@ class GenericAssetInventoryTest extends InventoryTestCase
 
         //create Server generic asset
         $capacities = [];
-        foreach (array_keys(\Glpi\Asset\AssetDefinitionManager::getInstance()->getAvailableCapacities()) as $available_capacity) {
-            if ($available_capacity !== \Glpi\Asset\Capacity\IsInventoriableCapacity::class) {
-                $capacities[] = new \Glpi\Asset\Capacity(name: $available_capacity);
+        foreach (array_keys(AssetDefinitionManager::getInstance()->getAvailableCapacities()) as $available_capacity) {
+            if ($available_capacity !== IsInventoriableCapacity::class) {
+                $capacities[] = new Capacity(name: $available_capacity);
             }
         }
         $asset = $this->inventoryServer($capacities);
@@ -1025,21 +1033,21 @@ class GenericAssetInventoryTest extends InventoryTestCase
         $iterator = $DB->request($monitor_criteria);
         $this->assertCount(1, $iterator);
         $this->assertSame('Monitor import (by serial)', $iterator->current()['name']);
-        $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $iterator->current()['method']);
+        $this->assertSame(Request::INVENT_QUERY, $iterator->current()['method']);
 
         $printer_criteria = $criteria;
         $printer_criteria['WHERE'] = ['itemtype' => \Printer::getType()];
         $iterator = $DB->request($printer_criteria);
         $this->assertCount(1, $iterator);
         $this->assertSame('Printer import (by serial)', $iterator->current()['name']);
-        $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $iterator->current()['method']);
+        $this->assertSame(Request::INVENT_QUERY, $iterator->current()['method']);
 
         $computer_criteria = $criteria;
         $computer_criteria['WHERE'] = ['itemtype' => $classname];
         $iterator = $DB->request($computer_criteria);
         $this->assertCount(1, $iterator);
         $this->assertSame($classname . ' import (by serial + uuid)', $iterator->current()['name']);
-        $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $iterator->current()['method']);
+        $this->assertSame(Request::INVENT_QUERY, $iterator->current()['method']);
 
         //operating system
         $ios = new \Item_OperatingSystem();
@@ -1076,7 +1084,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
 
         //connections
         $connections = getAllDataFromTable(
-            \Glpi\Asset\Asset_PeripheralAsset::getTable(),
+            Asset_PeripheralAsset::getTable(),
             [
                 'itemtype_asset'      => $classname,
                 'items_id_asset'      => $assets_id,
@@ -1787,7 +1795,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
 
         //check printer
         $connections = getAllDataFromTable(
-            \Glpi\Asset\Asset_PeripheralAsset::getTable(),
+            Asset_PeripheralAsset::getTable(),
             [
                 'itemtype_asset'      => $classname,
                 'items_id_asset'      => $assets_id,
@@ -2018,7 +2026,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
         //create Server generic asset
         $definition = $this->initAssetDefinition(
             system_name: 'Server' . $this->getUniqueString(),
-            capacities: [new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class)]
+            capacities: [new Capacity(name: IsInventoriableCapacity::class)]
         );
         $classname  = $definition->getAssetClassName();
 

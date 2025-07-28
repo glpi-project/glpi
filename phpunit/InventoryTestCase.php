@@ -32,7 +32,11 @@
  * ---------------------------------------------------------------------
  */
 
-class InventoryTestCase extends \DbTestCase
+use Glpi\Inventory\Conf;
+use Glpi\Inventory\Converter;
+use Glpi\Inventory\Inventory;
+
+class InventoryTestCase extends DbTestCase
 {
     protected const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
 
@@ -50,9 +54,9 @@ class InventoryTestCase extends \DbTestCase
     {
         parent::setUp();
 
-        $this->nblogs = countElementsInTable(\Log::getTable());
+        $this->nblogs = countElementsInTable(Log::getTable());
 
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $conf->saveConf([
             'enabled_inventory' => 1,
         ]);
@@ -69,18 +73,18 @@ class InventoryTestCase extends \DbTestCase
         parent::tearDown();
 
         if (str_starts_with($this->name(), 'testImport')) {
-            $nblogsnow = countElementsInTable(\Log::getTable());
+            $nblogsnow = countElementsInTable(Log::getTable());
             $logs = $DB->request([
-                'FROM' => \Log::getTable(),
+                'FROM' => Log::getTable(),
                 'LIMIT' => $nblogsnow,
                 'OFFSET' => $this->nblogs,
                 'WHERE' => [
                     'NOT' => [
                         'linked_action' => [
-                            \Log::HISTORY_ADD_DEVICE,
-                            \Log::HISTORY_ADD_RELATION,
-                            \Log::HISTORY_ADD_SUBITEM,
-                            \Log::HISTORY_CREATE_ITEM,
+                            Log::HISTORY_ADD_DEVICE,
+                            Log::HISTORY_ADD_RELATION,
+                            Log::HISTORY_ADD_SUBITEM,
+                            Log::HISTORY_CREATE_ITEM,
                         ],
                     ],
                 ],
@@ -93,18 +97,18 @@ class InventoryTestCase extends \DbTestCase
         }
 
         if (str_starts_with($this->name(), 'testUpdate')) {
-            $nblogsnow = countElementsInTable(\Log::getTable());
+            $nblogsnow = countElementsInTable(Log::getTable());
             $logs = $DB->request([
-                'FROM' => \Log::getTable(),
+                'FROM' => Log::getTable(),
                 'LIMIT' => $nblogsnow,
                 'OFFSET' => $this->nblogs,
             ]);
             $this->assertSame(0, count($logs));
         }
 
-        $files = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator(GLPI_INVENTORY_DIR, \RecursiveDirectoryIterator::SKIP_DOTS),
-            \RecursiveIteratorIterator::CHILD_FIRST
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator(GLPI_INVENTORY_DIR, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
         );
 
         foreach ($files as $fileinfo) {
@@ -123,16 +127,16 @@ class InventoryTestCase extends \DbTestCase
      * @param mixed   $source Source as JSON or XML
      * @param boolean $is_xml XML or JSON
      *
-     * @return \Glpi\Inventory\Inventory
+     * @return Inventory
      */
     protected function doInventory($source, bool $is_xml = false)
     {
         if ($is_xml === true) {
-            $converter = new \Glpi\Inventory\Converter();
+            $converter = new Converter();
             $source = json_decode($converter->convert($source));
         }
 
-        $inventory = new \Glpi\Inventory\Inventory($source);
+        $inventory = new Inventory($source);
 
         if ($inventory->inError()) {
             $this->dump($inventory->getErrors());

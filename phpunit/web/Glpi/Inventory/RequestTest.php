@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Inventory;
 
 use Config;
+use Glpi\Inventory\Conf;
 use GLPIKey;
 use GuzzleHttp;
 use GuzzleHttp\Exception\RequestException;
@@ -63,7 +64,7 @@ class RequestTest extends TestCase
      *
      * @return void
      */
-    private function checkXmlResponse(GuzzleHttp\Psr7\Response $res, $reply, $code)
+    private function checkXmlResponse(Response $res, $reply, $code)
     {
         $this->assertSame($code, $res->getStatusCode());
         $this->assertSame(
@@ -85,7 +86,7 @@ class RequestTest extends TestCase
      *
      * @return void
      */
-    private function checkJsonResponse(GuzzleHttp\Psr7\Response $res, $reply, $code)
+    private function checkJsonResponse(Response $res, $reply, $code)
     {
         $this->assertSame($code, $res->getStatusCode());
         $this->assertSame('application/json', $res->getHeader('content-type')[0]);
@@ -279,7 +280,7 @@ class RequestTest extends TestCase
         // enable inventory with basic auth
         Config::setConfigurationValues('inventory', [
             'enabled_inventory'   => true,
-            'auth_required'       => \Glpi\Inventory\Conf::BASIC_AUTH,
+            'auth_required'       => Conf::BASIC_AUTH,
             'basic_auth_login'    => $basic_auth_login,
             'basic_auth_password' => (new GLPIKey())->encrypt($basic_auth_password),
         ]);
@@ -341,7 +342,7 @@ class RequestTest extends TestCase
         // enable inventory with basic auth
         Config::setConfigurationValues('inventory', [
             'enabled_inventory'   => true,
-            'auth_required'       => \Glpi\Inventory\Conf::BASIC_AUTH,
+            'auth_required'       => Conf::BASIC_AUTH,
             'basic_auth_login'    => $basic_auth_login,
             'basic_auth_password' => (new GLPIKey())->encrypt($basic_auth_password),
         ]);
@@ -412,7 +413,7 @@ class RequestTest extends TestCase
         // enable inventory with basic auth
         Config::setConfigurationValues('inventory', [
             'enabled_inventory'   => true,
-            'auth_required'       => \Glpi\Inventory\Conf::BASIC_AUTH,
+            'auth_required'       => Conf::BASIC_AUTH,
             'basic_auth_login'    => $basic_auth_login,
             'basic_auth_password' => (new GLPIKey())->encrypt($basic_auth_password),
         ]);
@@ -476,7 +477,7 @@ class RequestTest extends TestCase
         // enable inventory with OAuth client credentials
         Config::setConfigurationValues('inventory', [
             'enabled_inventory' => true,
-            'auth_required' => \Glpi\Inventory\Conf::CLIENT_CREDENTIALS,
+            'auth_required' => Conf::CLIENT_CREDENTIALS,
         ]);
 
         // create an OAuth client
@@ -502,7 +503,7 @@ class RequestTest extends TestCase
         $auth_data = [
             'grant_type'    => 'client_credentials',
             'client_id'     => $client_data['identifier'],
-            'client_secret' => (new \GLPIKey())->decrypt($client_data['secret']),
+            'client_secret' => (new GLPIKey())->decrypt($client_data['secret']),
             'scope'         => 'inventory',
         ];
 
@@ -586,7 +587,7 @@ class RequestTest extends TestCase
         // Enable inventory with OAuth client credentials
         Config::setConfigurationValues('inventory', [
             'enabled_inventory' => true,
-            'auth_required' => \Glpi\Inventory\Conf::CLIENT_CREDENTIALS,
+            'auth_required' => Conf::CLIENT_CREDENTIALS,
         ]);
 
         // first call to inventory should be unauthorized and return 401

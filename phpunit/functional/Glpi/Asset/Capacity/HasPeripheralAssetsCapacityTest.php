@@ -37,8 +37,12 @@ namespace tests\units\Glpi\Asset\Capacity;
 use DbTestCase;
 use DisplayPreference;
 use Entity;
+use Glpi\Asset\Asset;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Asset\Capacity;
+use Glpi\Asset\Capacity\HasHistoryCapacity;
+use Glpi\Asset\Capacity\HasNotepadCapacity;
+use Glpi\Asset\Capacity\HasPeripheralAssetsCapacity;
 use Log;
 use Monitor;
 
@@ -52,21 +56,21 @@ class HasPeripheralAssetsCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
+                new Capacity(name: HasPeripheralAssetsCapacity::class),
+                new Capacity(name: HasNotepadCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasPeripheralAssetsCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_3  = $definition_3->getAssetClassName();
@@ -123,15 +127,15 @@ class HasPeripheralAssetsCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasPeripheralAssetsCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasPeripheralAssetsCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
@@ -220,12 +224,12 @@ class HasPeripheralAssetsCapacityTest extends DbTestCase
     public function testCloneAsset()
     {
         $definition = $this->initAssetDefinition(
-            capacities: [new Capacity(name: \Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class)]
+            capacities: [new Capacity(name: HasPeripheralAssetsCapacity::class)]
         );
         $class = $definition->getAssetClassName();
         $entity = $this->getTestRootEntity(true);
 
-        /** @var \Glpi\Asset\Asset $asset */
+        /** @var Asset $asset */
         $asset = $this->createItem(
             $class,
             [
@@ -263,7 +267,7 @@ class HasPeripheralAssetsCapacityTest extends DbTestCase
 
         foreach ($CFG_GLPI['directconnect_types'] as $peripheral_itemtype) {
             $definition = $this->initAssetDefinition(
-                capacities: [new Capacity(name: \Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class)]
+                capacities: [new Capacity(name: HasPeripheralAssetsCapacity::class)]
             );
             $class = $definition->getAssetClassName();
 
@@ -283,7 +287,7 @@ class HasPeripheralAssetsCapacityTest extends DbTestCase
                 ]
             );
 
-            $capacity = new \Glpi\Asset\Capacity\HasPeripheralAssetsCapacity();
+            $capacity = new HasPeripheralAssetsCapacity();
             $this->assertFalse($capacity->isUsed($class));
 
             $this->createItem(
@@ -306,11 +310,11 @@ class HasPeripheralAssetsCapacityTest extends DbTestCase
         $entity_id = $this->getTestRootEntity(true);
 
         $definition = $this->initAssetDefinition(
-            capacities: [new Capacity(name: \Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class)]
+            capacities: [new Capacity(name: HasPeripheralAssetsCapacity::class)]
         );
         $class = $definition->getAssetClassName();
 
-        $capacity = new \Glpi\Asset\Capacity\HasPeripheralAssetsCapacity();
+        $capacity = new HasPeripheralAssetsCapacity();
         $this->assertEquals(
             '0 peripheral assets attached to 0 assets',
             $capacity->getCapacityUsageDescription($class)

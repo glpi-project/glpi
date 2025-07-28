@@ -34,7 +34,7 @@
 
 // Generic test classe, to be extended for CommonDBTM Object
 
-class DbTestCase extends \GLPITestCase
+class DbTestCase extends GLPITestCase
 {
     public function beforeTestMethod($method)
     {
@@ -59,16 +59,16 @@ class DbTestCase extends \GLPITestCase
      * @param bool $noauto disable autologin (from CAS by example)
      * @param bool $expected bool result expected from login return
      *
-     * @return \Auth
+     * @return Auth
      */
     protected function login(
         string $user_name = TU_USER,
         string $user_pass = TU_PASS,
         bool $noauto = true,
         bool $expected = true
-    ): \Auth {
-        \Session::destroy();
-        \Session::start();
+    ): Auth {
+        Session::destroy();
+        Session::start();
 
         $auth = new Auth();
         $this->boolean($auth->login($user_name, $user_pass, $noauto))->isEqualTo($expected);
@@ -83,8 +83,8 @@ class DbTestCase extends \GLPITestCase
      */
     protected function logOut()
     {
-        \Session::destroy();
-        \Session::start();
+        Session::destroy();
+        Session::start();
     }
 
     /**

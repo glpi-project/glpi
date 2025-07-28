@@ -33,7 +33,7 @@
  */
 
 /**
- * @var \Migration $migration
+ * @var Migration $migration
  */
 
 /** Add UUIDs */

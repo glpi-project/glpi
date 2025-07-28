@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Form\AccessControl;
 
+use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Session\SessionInfo;
 use GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -42,7 +43,7 @@ class FormAccessParametersTest extends GLPITestCase
 {
     public function testGetSessionInfo(): void
     {
-        $form_access_parameters = new \Glpi\Form\AccessControl\FormAccessParameters(
+        $form_access_parameters = new FormAccessParameters(
             session_info: $this->getDummySessionInfo(),
             url_parameters: []
         );
@@ -55,7 +56,7 @@ class FormAccessParametersTest extends GLPITestCase
 
     public function testGetUrlParameters(): void
     {
-        $form_access_parameters = new \Glpi\Form\AccessControl\FormAccessParameters(
+        $form_access_parameters = new FormAccessParameters(
             session_info: $this->getDummySessionInfo(),
             url_parameters: ['token' => 'my_token']
         );
@@ -68,11 +69,11 @@ class FormAccessParametersTest extends GLPITestCase
 
     public static function isAuthenticatedProvider(): iterable
     {
-        $parameters_without_session = new \Glpi\Form\AccessControl\FormAccessParameters(
+        $parameters_without_session = new FormAccessParameters(
             session_info: null,
             url_parameters: []
         );
-        $parameters_with_session = new \Glpi\Form\AccessControl\FormAccessParameters(
+        $parameters_with_session = new FormAccessParameters(
             session_info: self::getDummySessionInfo(),
             url_parameters: []
         );
@@ -85,7 +86,7 @@ class FormAccessParametersTest extends GLPITestCase
 
     #[DataProvider('isAuthenticatedProvider')]
     public function testIsAuthenticated(
-        \Glpi\Form\AccessControl\FormAccessParameters $form_access_parameters,
+        FormAccessParameters $form_access_parameters,
         bool $expected
     ): void {
         $this->assertEquals(

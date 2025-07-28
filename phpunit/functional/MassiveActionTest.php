@@ -108,7 +108,7 @@ class MassiveActionTest extends DbTestCase
     {
         $this->login();
         $items_id = getItemByTypeName($itemtype, $items_id, true);
-        $mact = new \MassiveAction(
+        $mact = new MassiveAction(
             [
                 'item'            => [
                     $itemtype   => [
@@ -125,7 +125,7 @@ class MassiveActionTest extends DbTestCase
         $this->assertCount($allcount, $input['action_filter']);
         $this->assertCount($allcount, $input['actions']);
 
-        $mact = new \MassiveAction(
+        $mact = new MassiveAction(
             [
                 'item'   => [
                     $itemtype   => [
@@ -151,13 +151,13 @@ class MassiveActionTest extends DbTestCase
         array $input,
         int $ok,
         int $ko,
-        string $action_class = \MassiveAction::class
+        string $action_class = MassiveAction::class
     ) {
         $ma_ok = 0;
         $ma_ko = 0;
 
         // Create mock
-        $ma = $this->getMockBuilder(\MassiveAction::class)
+        $ma = $this->getMockBuilder(MassiveAction::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['getAction', 'addMessage', 'getInput', 'itemDone'])
             ->getMock();
@@ -175,7 +175,7 @@ class MassiveActionTest extends DbTestCase
                     $increment = 1;
                 }
 
-                if ($res == \MassiveAction::ACTION_OK) {
+                if ($res == MassiveAction::ACTION_OK) {
                     $ma_ok += $increment;
                 } else {
                     $ma_ko += $increment;

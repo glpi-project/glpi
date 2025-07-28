@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\DBAL\QueryExpression;
 
 class PurgeSoftwareCronTest extends DbTestCase
 {
@@ -48,7 +49,7 @@ class PurgeSoftwareCronTest extends DbTestCase
         $software_version = new \SoftwareVersion();
 
         // Clean the tables
-        $always_true = [ new \Glpi\DBAL\QueryExpression('1 = 1') ];
+        $always_true = [ new QueryExpression('1 = 1') ];
         $software->deleteByCriteria($always_true, 1);
         $software_version->deleteByCriteria($always_true, 1);
 

@@ -82,7 +82,7 @@ class ITILFollowupTest extends DbTestCase
         $this->login();
 
         $ticketId = $this->getNewITILObject('Ticket');
-        $fup      = new \ITILFollowup();
+        $fup      = new CoreITILFollowup();
         $tmp      = ['itemtype' => 'Ticket', 'items_id' => $ticketId];
         $this->assertTrue($fup->can(-1, \CREATE, $tmp));
 
@@ -97,7 +97,7 @@ class ITILFollowupTest extends DbTestCase
         $this->assertTrue($fup->canPurgeItem());
 
         $changeId = $this->getNewITILObject('Change');
-        $fup      = new \ITILFollowup();
+        $fup      = new CoreITILFollowup();
         $tmp      = ['itemtype' => 'Change', 'items_id' => $changeId];
         $this->assertTrue($fup->can(-1, \CREATE, $tmp));
 
@@ -112,7 +112,7 @@ class ITILFollowupTest extends DbTestCase
         $this->assertTrue($fup->canPurgeItem());
 
         $problemId = $this->getNewITILObject('Problem');
-        $fup      = new \ITILFollowup();
+        $fup      = new CoreITILFollowup();
         $tmp      = ['itemtype' => 'Problem', 'items_id' => $problemId];
         $this->assertTrue($fup->can(-1, \CREATE, $tmp));
 
@@ -132,7 +132,7 @@ class ITILFollowupTest extends DbTestCase
         $this->login();
 
         $ticketId = $this->getNewITILObject('Ticket');
-        $fup      = new \ITILFollowup();
+        $fup      = new CoreITILFollowup();
 
         $fup_id = $fup->add([
             'content'      => "my followup",
@@ -163,7 +163,7 @@ class ITILFollowupTest extends DbTestCase
         $this->assertFalse($fup->getFromDB($fup_id));
 
         $changeId = $this->getNewITILObject('Change');
-        $fup      = new \ITILFollowup();
+        $fup      = new CoreITILFollowup();
 
         $fup_id = $fup->add([
             'content'      => "my followup",
@@ -194,7 +194,7 @@ class ITILFollowupTest extends DbTestCase
         $this->assertFalse($fup->getFromDB($fup_id));
 
         $problemId = $this->getNewITILObject('Problem');
-        $fup      = new \ITILFollowup();
+        $fup      = new CoreITILFollowup();
 
         $fup_id = $fup->add([
             'content'      => "my followup",
@@ -232,7 +232,7 @@ class ITILFollowupTest extends DbTestCase
     {
         $this->login();
 
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $oldConf = [
             'glpiset_default_tech'      => $_SESSION['glpiset_default_tech'],
             'glpiset_default_requester' => $_SESSION['glpiset_default_requester'],
@@ -245,7 +245,7 @@ class ITILFollowupTest extends DbTestCase
         $ticketID = $this->getNewITILObject('Ticket');
         $this->assertGreaterThan(0, $ticketID);
 
-        $ITILFollowUp = new \ITILFollowup();
+        $ITILFollowUp = new CoreITILFollowup();
         $this->assertGreaterThan(
             0,
             $ITILFollowUp->add([
@@ -253,7 +253,7 @@ class ITILFollowupTest extends DbTestCase
                 'users_id'                        => \Session::getLoginUserID(),
                 'content'                         => "Functional test",
                 'items_id'                        => $ticketID,
-                'itemtype'                        => \Ticket::class,
+                'itemtype'                        => Ticket::class,
             ])
         );
 
@@ -265,7 +265,7 @@ class ITILFollowupTest extends DbTestCase
         $ticketID = $this->getNewITILObject('Ticket');
         $this->assertGreaterThan(0, $ticketID);
 
-        $ITILFollowUp = new \ITILFollowup();
+        $ITILFollowUp = new CoreITILFollowup();
         $this->assertGreaterThan(
             0,
             $ITILFollowUp->add([
@@ -274,7 +274,7 @@ class ITILFollowupTest extends DbTestCase
                 'content'                         => "Functional test",
                 '_do_not_compute_takeintoaccount' => true,
                 'items_id'                        => $ticketID,
-                'itemtype'                        => \Ticket::class,
+                'itemtype'                        => Ticket::class,
             ])
         );
 
@@ -408,7 +408,7 @@ class ITILFollowupTest extends DbTestCase
         $this->login(); // must be logged as Document_Item uses Session::getLoginUserID()
 
         // Test uploads for item creation
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $ticket->add([
             'name' => $this->getUniqueString(),
             'content' => 'test',
@@ -418,7 +418,7 @@ class ITILFollowupTest extends DbTestCase
         $base64Image = base64_encode(file_get_contents(FIXTURE_DIR . '/uploads/foo.png'));
         $user = getItemByTypeName('User', TU_USER, true);
         $filename = '5e5e92ffd9bd91.11111111image_paste22222222.png';
-        $instance = new \ITILFollowup();
+        $instance = new CoreITILFollowup();
         $input = [
             'users_id' => $user,
             'items_id' => $ticket->getID(),
@@ -478,7 +478,7 @@ HTML,
         $this->login(); // must be logged as Document_Item uses Session::getLoginUserID()
 
         // Test uploads for item creation
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $ticket->add([
             'name' => $this->getUniqueString(),
             'content' => 'test',
@@ -488,7 +488,7 @@ HTML,
         $user = getItemByTypeName('User', TU_USER, true);
         // Test uploads for item creation
         $filename = '5e5e92ffd9bd91.11111111' . 'foo.txt';
-        $instance = new \ITILFollowup();
+        $instance = new CoreITILFollowup();
         $input = [
             'users_id' => $user,
             'items_id' => $ticket->getID(),
@@ -552,7 +552,7 @@ HTML,
             'is_private'         => 1,
         ]);
         $this->assertGreaterThan(0, $templates_id);
-        $fup = new \ITILFollowup();
+        $fup = new CoreITILFollowup();
         $fups_id = $fup->add([
             '_itilfollowuptemplates_id' => $templates_id,
             'itemtype'                  => 'Ticket',

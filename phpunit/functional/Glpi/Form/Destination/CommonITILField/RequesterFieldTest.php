@@ -702,7 +702,7 @@ final class RequesterFieldTest extends AbstractActorFieldTest
         $answers = $answers_handler->saveAnswers(
             $form,
             $formatted_answers,
-            getItemByTypeName(\User::class, TU_USER, true)
+            getItemByTypeName(User::class, TU_USER, true)
         );
 
         // Get created ticket

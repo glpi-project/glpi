@@ -34,6 +34,13 @@
 
 namespace tests\units\Glpi\Inventory;
 
+use Glpi\Asset\Asset;
+use Glpi\Asset\Capacity;
+use Glpi\Asset\Capacity\HasNetworkPortCapacity;
+use Glpi\Asset\Capacity\IsInventoriableCapacity;
+use Glpi\Asset\CapacityConfig;
+use Glpi\Inventory\MainAsset\GenericPrinterAsset;
+use Glpi\Inventory\Request;
 use InventoryTestCase;
 
 class GenericPrinterAssetInventoryTest extends InventoryTestCase
@@ -41,11 +48,11 @@ class GenericPrinterAssetInventoryTest extends InventoryTestCase
     /**
      * Inventory a generic network equipment asset
      *
-     * @param \Glpi\Asset\Capacity[] $capacities Capacities to activate
+     * @param Capacity[] $capacities Capacities to activate
      *
-     * @return \Glpi\Asset\Asset
+     * @return Asset
      */
-    private function inventoryPrinter(array $capacities = []): \Glpi\Asset\Asset
+    private function inventoryPrinter(array $capacities = []): Asset
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -56,10 +63,10 @@ class GenericPrinterAssetInventoryTest extends InventoryTestCase
             capacities: array_merge(
                 $capacities,
                 [
-                    new \Glpi\Asset\Capacity(
-                        name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class,
-                        config: new \Glpi\Asset\CapacityConfig([
-                            'inventory_mainasset' => \Glpi\Inventory\MainAsset\GenericPrinterAsset::class,
+                    new Capacity(
+                        name: IsInventoriableCapacity::class,
+                        config: new CapacityConfig([
+                            'inventory_mainasset' => GenericPrinterAsset::class,
                         ])
                     ),
                 ]
@@ -180,7 +187,7 @@ class GenericPrinterAssetInventoryTest extends InventoryTestCase
         foreach ($iterator as $neteq) {
             $this->assertSame($classname . ' import (by serial)', $neteq['name']);
             $this->assertSame($printers_id, $neteq['items_id']);
-            $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $neteq['method']);
+            $this->assertSame(Request::INVENT_QUERY, $neteq['method']);
         }
 
         //check created asset
@@ -219,8 +226,8 @@ class GenericPrinterAssetInventoryTest extends InventoryTestCase
     {
         //create Printer generic asset
         $asset = $this->inventoryPrinter([
-            new \Glpi\Asset\Capacity(
-                name: \Glpi\Asset\Capacity\HasNetworkPortCapacity::class
+            new Capacity(
+                name: HasNetworkPortCapacity::class
             ),
         ]);
 
@@ -267,9 +274,9 @@ class GenericPrinterAssetInventoryTest extends InventoryTestCase
             capacities: array_merge(
                 [],
                 [
-                    new \Glpi\Asset\Capacity(
-                        name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class,
-                        config: new \Glpi\Asset\CapacityConfig(['inventory_mainasset' => \Glpi\Inventory\MainAsset\GenericPrinterAsset::class])
+                    new Capacity(
+                        name: IsInventoriableCapacity::class,
+                        config: new CapacityConfig(['inventory_mainasset' => GenericPrinterAsset::class])
                     ),
                 ]
             )

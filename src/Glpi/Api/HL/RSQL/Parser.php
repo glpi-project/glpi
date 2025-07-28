@@ -37,7 +37,7 @@ namespace Glpi\Api\HL\RSQL;
 
 use DBmysql;
 use DBmysqlIterator;
-use Glpi\Api\HL\Doc\Schema;
+use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Search;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
@@ -281,7 +281,7 @@ final class Parser
                     if (isset($flat_props[$buffer['property']])) {
                         $value = match ($flat_props[$buffer['property']]['type']) {
                             // Boolean values are stored as 0 or 1 in the database, but the user may try using "true" or "false" in the RSQL query
-                            Schema::TYPE_BOOLEAN => filter_var($value, FILTER_VALIDATE_BOOLEAN) ? 1 : 0,
+                            Doc\Schema::TYPE_BOOLEAN => filter_var($value, FILTER_VALIDATE_BOOLEAN) ? 1 : 0,
                             default => $value,
                         };
                     }

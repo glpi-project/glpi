@@ -37,7 +37,7 @@ namespace Glpi\Api\HL\Controller;
 
 use CommonDBTM;
 use Entity;
-use Glpi\Api\HL\Doc\Schema;
+use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\RoutePath;
 use Glpi\Api\HL\Router;
 use Glpi\Http\JSONResponse;
@@ -77,7 +77,7 @@ abstract class AbstractController
         'description' => 'RSQL query string',
         'location' => 'query',
         'schema' => [
-            'type' => Schema::TYPE_STRING,
+            'type' => Doc\Schema::TYPE_STRING,
         ],
     ];
 
@@ -86,8 +86,8 @@ abstract class AbstractController
         'description' => 'The first item to return',
         'location' => 'query',
         'schema' => [
-            'type' => Schema::TYPE_INTEGER,
-            'format' => Schema::FORMAT_INTEGER_INT64,
+            'type' => Doc\Schema::TYPE_INTEGER,
+            'format' => Doc\Schema::FORMAT_INTEGER_INT64,
             'minimum' => 0,
             'default' => 0,
         ],
@@ -98,8 +98,8 @@ abstract class AbstractController
         'description' => 'The maximum number of items to return',
         'location' => 'query',
         'schema' => [
-            'type' => Schema::TYPE_INTEGER,
-            'format' => Schema::FORMAT_INTEGER_INT64,
+            'type' => Doc\Schema::TYPE_INTEGER,
+            'format' => Doc\Schema::FORMAT_INTEGER_INT64,
             'minimum' => 0,
             'default' => 100,
         ],
@@ -111,7 +111,7 @@ abstract class AbstractController
                           If no direction is provided, asc is assumed. Multiple sorts can be provided by separating them with a comma.',
         'location' => 'query',
         'schema' => [
-            'type' => Schema::TYPE_STRING,
+            'type' => Doc\Schema::TYPE_STRING,
         ],
     ];
 
@@ -153,7 +153,7 @@ abstract class AbstractController
                 if (str_starts_with($schema_name, '_')) {
                     continue;
                 }
-                $schema = Schema::filterSchemaByAPIVersion($schema, $api_version);
+                $schema = Doc\Schema::filterSchemaByAPIVersion($schema, $api_version);
             }
         }
         // Remove any null schemas
@@ -185,7 +185,7 @@ abstract class AbstractController
             $field = $class::getForeignKeyField();
         }
         $schema = [
-            'type' => Schema::TYPE_OBJECT,
+            'type' => Doc\Schema::TYPE_OBJECT,
             'x-field' => $field,
             'x-itemtype' => $class,
             'x-join' => [
@@ -195,11 +195,11 @@ abstract class AbstractController
             ],
             'properties' => [
                 'id' => [
-                    'type' => Schema::TYPE_INTEGER,
-                    'format' => Schema::FORMAT_INTEGER_INT64,
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'x-readonly' => $class !== Entity::class,
                 ],
-                $name_field => ['type' => Schema::TYPE_STRING],
+                $name_field => ['type' => Doc\Schema::TYPE_STRING],
             ],
         ];
         if ($full_schema !== null) {

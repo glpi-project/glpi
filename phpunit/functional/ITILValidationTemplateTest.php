@@ -104,6 +104,6 @@ class ITILValidationTemplateTest extends AbstractITILChildTemplate
 
     protected function getInstance(): \AbstractITILChildTemplate
     {
-        return new \ITILValidationTemplate();
+        return new GlobalITILValidationTemplate();
     }
 }

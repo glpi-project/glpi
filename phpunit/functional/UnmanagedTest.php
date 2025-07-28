@@ -35,6 +35,8 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Inventory\Converter;
+use Glpi\Inventory\Inventory;
 
 /* Test for inc/unmanaged.class.php */
 
@@ -108,7 +110,7 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
         ]);
         $this->assertGreaterThan(0, $networkequipments_id);
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($net_xml_source));
         $entity = new \Entity();
         $entity->getFromDB(0);
@@ -116,7 +118,7 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
             "id" => $entity->fields['id'],
             "is_contact_autoupdate" => 0,
         ]));
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -159,7 +161,7 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $source = json_decode($converter->convert($comp_xml_source));
 
         $entity = new \Entity();
@@ -168,7 +170,7 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
             "id" => $entity->fields['id'],
             "is_contact_autoupdate" => 0,
         ]));
-        $inventory = new \Glpi\Inventory\Inventory($source);
+        $inventory = new Inventory($source);
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {

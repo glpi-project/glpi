@@ -34,8 +34,11 @@
 
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Dropdown\DropdownDefinitionManager;
+use Glpi\Search\SearchOption;
 use Glpi\Tests\Log\TestHandler;
 use Monolog\Level;
+use Monolog\Logger;
+use Monolog\LogRecord;
 use org\bovigo\vfs\vfsStreamWrapper;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
@@ -76,7 +79,7 @@ class GLPITestCase extends TestCase
 
         // Init log handler
         global $PHPLOGGER;
-        /** @var \Monolog\Logger $PHPLOGGER */
+        /** @var Logger $PHPLOGGER */
         $this->log_handler = new TestHandler(LogLevel::DEBUG);
         $PHPLOGGER->setHandlers([$this->log_handler]);
 
@@ -114,14 +117,14 @@ class GLPITestCase extends TestCase
         if (!$this->has_failed) {
             $this->assertIsArray($this->log_handler->getRecords());
             $clean_logs = array_map(
-                static function (\Monolog\LogRecord $entry): array {
+                static function (LogRecord $entry): array {
                     $clean_entry = [
                         'channel' => $entry->channel,
                         'level'   => $entry->level->name,
                         'message' => $entry->message,
                         'context' => [],
                     ];
-                    if (isset($entry->context['exception']) && $entry->context['exception'] instanceof \Throwable) {
+                    if (isset($entry->context['exception']) && $entry->context['exception'] instanceof Throwable) {
                         /* @var \Throwable $exception */
                         $exception = $entry->context['exception'];
                         $clean_entry['context']['exception'] = [
@@ -150,7 +153,7 @@ class GLPITestCase extends TestCase
         // Delete contents of test files/_pictures
         $dir = GLPI_PICTURE_DIR;
         if (!str_contains($dir, '/tests/files/_pictures')) {
-            throw new \RuntimeException('Invalid picture dir: ' . $dir);
+            throw new RuntimeException('Invalid picture dir: ' . $dir);
         }
         // Delete nested folders and files in dir
         $fn_delete = function ($dir, $parent) use (&$fn_delete) {
@@ -182,7 +185,7 @@ class GLPITestCase extends TestCase
      */
     protected function callPrivateMethod($instance, string $methodName, ...$args)
     {
-        $method = new \ReflectionMethod($instance, $methodName);
+        $method = new ReflectionMethod($instance, $methodName);
         $method->setAccessible(true);
 
         return $method->invoke($instance, ...$args);
@@ -218,7 +221,7 @@ class GLPITestCase extends TestCase
      */
     protected function setPrivateProperty($instance, string $propertyName, $value)
     {
-        $property = new \ReflectionProperty($instance, $propertyName);
+        $property = new ReflectionProperty($instance, $propertyName);
         $property->setAccessible(true);
         $property->setValue($instance, $value);
     }
@@ -434,10 +437,10 @@ class GLPITestCase extends TestCase
      */
     protected function getDbHandle(): mysqli
     {
-        /** @var \DBmysql $db */
+        /** @var DBmysql $db */
         global $DB;
 
-        $reflection = new ReflectionClass(\DBmysql::class);
+        $reflection = new ReflectionClass(DBmysql::class);
         $property = $reflection->getProperty("dbh");
         $property->setAccessible(true);
         return $property->getValue($DB);
@@ -486,7 +489,7 @@ class GLPITestCase extends TestCase
         // Statics values
         Log::$use_queue = false;
         CommonDBTM::clearSearchOptionCache();
-        \Glpi\Search\SearchOption::clearSearchOptionCache();
+        SearchOption::clearSearchOptionCache();
         Dropdown::resetItemtypesStaticCache();
 
         // Reboot assets definitions

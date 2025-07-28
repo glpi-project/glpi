@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\DBAL\QueryExpression;
 
 /* Test for inc/knowbaseitem_revision.class.php */
 
@@ -132,7 +133,7 @@ class KnowbaseItem_RevisionTest extends DbTestCase
         $this->assertEquals(4, $nb);
 
         $data = $DB->request([
-            'SELECT' => new \Glpi\DBAL\QueryExpression('MAX(id) AS id'),
+            'SELECT' => new QueryExpression('MAX(id) AS id'),
             'FROM'   => 'glpi_knowbaseitems_revisions',
         ])->current();
         $nrev_id = $data['id'];

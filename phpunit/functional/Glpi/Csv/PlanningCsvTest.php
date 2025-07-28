@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Csv;
 
 use CsvTestCase;
+use Glpi\Csv\PlanningCsv;
 
 /* Test for inc/planningcsv.class.php */
 
@@ -142,7 +143,7 @@ class PlanningCsvTest extends CsvTestCase
 
         return [
             [
-                'export' => new \Glpi\Csv\PlanningCsv(\Session::getLoginUserID(), 0),
+                'export' => new PlanningCsv(\Session::getLoginUserID(), 0),
                 'expected' => [
                     'cols'     => 6,
                     'rows'     => 3,
@@ -152,7 +153,7 @@ class PlanningCsvTest extends CsvTestCase
                 ],
             ],
             [
-                'export' => new \Glpi\Csv\PlanningCsv(\Session::getLoginUserID(), 0, 'Reminder'),
+                'export' => new PlanningCsv(\Session::getLoginUserID(), 0, 'Reminder'),
                 'expected' => [
                     'cols'     => 6,
                     'rows'     => 1,

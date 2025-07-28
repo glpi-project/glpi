@@ -138,7 +138,7 @@ class StatusChecker extends GlpiTestCase
             'name'         => 'stucktest1',
             'frequency'    => 60,
             'lastrun'      => date('Y-m-d 00:00:00', strtotime('-61 minute')),
-            'state'        => \CronTask::STATE_RUNNING,
+            'state'        => CronTask::STATE_RUNNING,
         ]);
         // A probably stuck crontask running for longer than the run interval.
         $crontask->add([
@@ -146,7 +146,7 @@ class StatusChecker extends GlpiTestCase
             'name'         => 'stucktest2',
             'frequency'    => 60,
             'lastrun'      => date('Y-m-d 00:00:00', strtotime('-5 minute')),
-            'state'        => \CronTask::STATE_RUNNING,
+            'state'        => CronTask::STATE_RUNNING,
         ]);
 
         $status = GlpiStatusChecker::getServiceStatus(null, true);

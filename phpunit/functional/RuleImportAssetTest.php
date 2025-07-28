@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\DBAL\QueryExpression;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/ruleimportcomputer.class.php */
@@ -101,7 +102,7 @@ class RuleImportAssetTest extends DbTestCase
             $DB->update(
                 'glpi_rules',
                 [
-                    'ranking' => new \Glpi\DBAL\QueryExpression($DB->quoteName('ranking') . ' + 2'),
+                    'ranking' => new QueryExpression($DB->quoteName('ranking') . ' + 2'),
                 ],
                 [
                     'ranking'   => ['>', $r['ranking']],

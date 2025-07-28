@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\DBAL\QueryExpression;
 
 class CleanSoftwareCronTest extends DbTestCase
 {
@@ -49,7 +50,7 @@ class CleanSoftwareCronTest extends DbTestCase
 
         // Delete all existing software and versions
         $always_true = [
-            new \Glpi\DBAL\QueryExpression('1 = 1'),
+            new QueryExpression('1 = 1'),
         ];
         $this->assertTrue($software->deleteByCriteria($always_true, 1));
         $this->assertTrue($software_version->deleteByCriteria($always_true, 1));

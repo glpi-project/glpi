@@ -48,22 +48,22 @@ class ConfigTest extends DbTestCase
 {
     public function testGetTypeName()
     {
-        $this->assertSame('Setup', \Config::getTypeName());
+        $this->assertSame('Setup', Config::getTypeName());
     }
 
     public function testAcls()
     {
         //check ACLs when not logged
-        $this->assertFalse(\Config::canView());
-        $this->assertFalse(\Config::canCreate());
+        $this->assertFalse(Config::canView());
+        $this->assertFalse(Config::canCreate());
 
-        $conf = new \Config();
+        $conf = new Config();
         $this->assertFalse($conf->canViewItem());
 
         //check ACLs from superadmin profile
         $this->login();
-        $this->assertTrue((bool) \Config::canView());
-        $this->assertFalse(\Config::canCreate());
+        $this->assertTrue((bool) Config::canView());
+        $this->assertFalse(Config::canCreate());
         $this->assertFalse($conf->canViewItem());
 
         $this->assertTrue($conf->getFromDB(1));
@@ -72,19 +72,19 @@ class ConfigTest extends DbTestCase
         //check ACLs from tech profile
         $auth = new \Auth();
         $this->assertTrue((bool) $auth->login('tech', 'tech', true));
-        $this->assertFalse((bool) \Config::canView());
-        $this->assertFalse(\Config::canCreate());
+        $this->assertFalse((bool) Config::canView());
+        $this->assertFalse(Config::canCreate());
         $this->assertTrue($conf->canViewItem());
     }
 
     public function testGetMenuContent()
     {
-        $this->assertFalse(\Config::getMenuContent());
+        $this->assertFalse(Config::getMenuContent());
 
         $this->login();
         $this->assertEquals(
             ['title', 'page', 'icon', 'options'],
-            array_keys(\Config::getMenuContent())
+            array_keys(Config::getMenuContent())
         );
     }
 
@@ -100,7 +100,7 @@ class ConfigTest extends DbTestCase
             'GLPINetwork$1' => "GLPI Network",
         ];
 
-        $instance = new \Config();
+        $instance = new Config();
         $tabs = array_map('strip_tags', $instance->defineTabs());
         $this->assertSame($expected, $tabs);
 
@@ -108,7 +108,7 @@ class ConfigTest extends DbTestCase
         $auth = new \Auth();
         $this->assertTrue((bool) $auth->login('tech', 'tech', true));
 
-        $instance = new \Config();
+        $instance = new Config();
         $tabs = array_map('strip_tags', $instance->defineTabs());
         $this->assertSame($expected, $tabs);
 
@@ -131,7 +131,7 @@ class ConfigTest extends DbTestCase
             'Log$1'         => "Historical",
         ];
 
-        $instance = new \Config();
+        $instance = new Config();
         $tabs = array_map('strip_tags', $instance->defineTabs());
         $this->assertSame($expected, $tabs);
     }
@@ -145,7 +145,7 @@ class ConfigTest extends DbTestCase
         ];
         $expected = $input;
 
-        \Config::unsetUndisclosedFields($input);
+        Config::unsetUndisclosedFields($input);
         $this->assertSame($expected, $input);
 
         $input = [
@@ -156,7 +156,7 @@ class ConfigTest extends DbTestCase
         $expected = $input;
         unset($expected['value']);
 
-        \Config::unsetUndisclosedFields($input);
+        Config::unsetUndisclosedFields($input);
         $this->assertSame($expected, $input);
 
         $input = [
@@ -167,14 +167,14 @@ class ConfigTest extends DbTestCase
         $expected = $input;
         unset($expected['value']);
 
-        \Config::unsetUndisclosedFields($input);
+        Config::unsetUndisclosedFields($input);
         $this->assertSame($expected, $input);
     }
 
 
     public function testCheckExtensions()
     {
-        $check = \Config::checkExtensions();
+        $check = Config::checkExtensions();
         $this->assertArrayHasKey('error', $check);
         $this->assertArrayHasKey('good', $check);
         $this->assertArrayHasKey('missing', $check);
@@ -196,7 +196,7 @@ class ConfigTest extends DbTestCase
                 'class'     => 'mysqli',
             ],
         ];
-        $report = \Config::checkExtensions($list);
+        $report = Config::checkExtensions($list);
         $this->assertSame($expected, $report);
 
         //check extension from method name
@@ -206,7 +206,7 @@ class ConfigTest extends DbTestCase
                 'function'  => 'mysqli_commit',
             ],
         ];
-        $report = \Config::checkExtensions($list);
+        $report = Config::checkExtensions($list);
         $this->assertSame($expected, $report);
 
         //check extension from its name
@@ -215,14 +215,14 @@ class ConfigTest extends DbTestCase
                 'required'  => true,
             ],
         ];
-        $report = \Config::checkExtensions($list);
+        $report = Config::checkExtensions($list);
         $this->assertSame($expected, $report);
 
         //required, missing extension
         $list['notantext'] = [
             'required'  => true,
         ];
-        $report = \Config::checkExtensions($list);
+        $report = Config::checkExtensions($list);
         $expected = [
             'error'     => 2,
             'good'      => [
@@ -238,7 +238,7 @@ class ConfigTest extends DbTestCase
         //not required, missing extension
         unset($list['notantext']);
         $list['totally_optionnal'] = ['required' => false];
-        $report = \Config::checkExtensions($list);
+        $report = Config::checkExtensions($list);
         $expected = [
             'error'     => 1,
             'good'      => [
@@ -254,12 +254,12 @@ class ConfigTest extends DbTestCase
 
     public function testGetConfigurationValues()
     {
-        $conf = \Config::getConfigurationValues('core');
+        $conf = Config::getConfigurationValues('core');
         $this->assertArrayHasKey('version', $conf);
         $this->assertArrayHasKey('dbversion', $conf);
         $this->assertGreaterThan(170, count($conf));
 
-        $conf = \Config::getConfigurationValues('core', ['version', 'dbversion']);
+        $conf = Config::getConfigurationValues('core', ['version', 'dbversion']);
         $this->assertEquals(
             [
                 'dbversion' => GLPI_SCHEMA_VERSION,
@@ -271,7 +271,7 @@ class ConfigTest extends DbTestCase
 
     public function testSetConfigurationValues()
     {
-        $conf = \Config::getConfigurationValues('core', ['version', 'notification_to_myself']);
+        $conf = Config::getConfigurationValues('core', ['version', 'notification_to_myself']);
         $this->assertEquals(
             [
                 'notification_to_myself'   => '1',
@@ -281,8 +281,8 @@ class ConfigTest extends DbTestCase
         );
 
         //update configuration value
-        \Config::setConfigurationValues('core', ['notification_to_myself' => 0]);
-        $conf = \Config::getConfigurationValues('core', ['version', 'notification_to_myself']);
+        Config::setConfigurationValues('core', ['notification_to_myself' => 0]);
+        $conf = Config::getConfigurationValues('core', ['version', 'notification_to_myself']);
         $this->assertEquals(
             [
                 'notification_to_myself'   => '0',
@@ -290,10 +290,10 @@ class ConfigTest extends DbTestCase
             ],
             $conf
         );
-        \Config::setConfigurationValues('core', ['notification_to_myself' => 1]); //reset
+        Config::setConfigurationValues('core', ['notification_to_myself' => 1]); //reset
 
         //check new configuration key does not exists
-        $conf = \Config::getConfigurationValues('core', ['version', 'new_configuration_key']);
+        $conf = Config::getConfigurationValues('core', ['version', 'new_configuration_key']);
         $this->assertEquals(
             [
                 'version' => GLPI_VERSION,
@@ -302,8 +302,8 @@ class ConfigTest extends DbTestCase
         );
 
         //add new configuration key
-        \Config::setConfigurationValues('core', ['new_configuration_key' => 'test']);
-        $conf = \Config::getConfigurationValues('core', ['version', 'new_configuration_key']);
+        Config::setConfigurationValues('core', ['new_configuration_key' => 'test']);
+        $conf = Config::getConfigurationValues('core', ['version', 'new_configuration_key']);
         $this->assertEquals(
             [
                 'new_configuration_key' => 'test',
@@ -313,8 +313,8 @@ class ConfigTest extends DbTestCase
         );
 
         //drop new configuration key
-        \Config::deleteConfigurationValues('core', ['new_configuration_key']);
-        $conf = \Config::getConfigurationValues('core', ['version', 'new_configuration_key']);
+        Config::deleteConfigurationValues('core', ['new_configuration_key']);
+        $conf = Config::getConfigurationValues('core', ['version', 'new_configuration_key']);
         $this->assertEquals(
             [
                 'version' => GLPI_VERSION,
@@ -325,7 +325,7 @@ class ConfigTest extends DbTestCase
 
     public function testGetRights()
     {
-        $conf = new \Config();
+        $conf = new Config();
         $this->assertSame(
             [
                 READ     => 'Read',
@@ -358,7 +358,7 @@ class ConfigTest extends DbTestCase
             'vintage'         => 'Vintage',
         ];
 
-        $instance = new \Config();
+        $instance = new Config();
         $this->assertSame($expected, $instance->getPalettes());
     }
 
@@ -421,7 +421,7 @@ class ConfigTest extends DbTestCase
             ->getMock();
         $DB->method('getVersion')->willReturn($raw);
 
-        $result = \Config::checkDbEngine();
+        $result = Config::checkDbEngine();
         $this->assertSame(
             [$version => $compat],
             $result
@@ -432,7 +432,7 @@ class ConfigTest extends DbTestCase
 
     public function testGetLanguage()
     {
-        $instance = new \Config();
+        $instance = new Config();
         $this->assertSame('fr_FR', $instance->getLanguage('fr'));
         $this->assertSame('fr_FR', $instance->getLanguage('fr_FR'));
         $this->assertSame('fr_FR', $instance->getLanguage('Français'));
@@ -481,7 +481,7 @@ class ConfigTest extends DbTestCase
         $item = new $itemtype();
         $item->fields = ['id' => 15];
 
-        \Config::setConfigurationValues('core', [$key => $item->fields['id']]);
+        Config::setConfigurationValues('core', [$key => $item->fields['id']]);
 
         if (is_a($itemtype, 'CommonDropdown', true)) {
             $this->assertTrue($item->isUsed());
@@ -490,8 +490,8 @@ class ConfigTest extends DbTestCase
         if (is_a($itemtype, 'CommonDropdown', true)) {
             $this->assertFalse($item->isUsed());
         }
-        $this->assertArrayHasKey($key, \Config::getConfigurationValues('core', [$key]));
-        $this->assertEquals(0, \Config::getConfigurationValues('core', [$key])[$key]);
+        $this->assertArrayHasKey($key, Config::getConfigurationValues('core', [$key]));
+        $this->assertEquals(0, Config::getConfigurationValues('core', [$key])[$key]);
 
         // Case 2: unused item is cleaned without effect
         $item = new $itemtype();
@@ -499,7 +499,7 @@ class ConfigTest extends DbTestCase
 
         $random_id = mt_rand(20, 100);
 
-        \Config::setConfigurationValues('core', [$key => $random_id]);
+        Config::setConfigurationValues('core', [$key => $random_id]);
 
         if (is_a($itemtype, 'CommonDropdown', true)) {
             $this->assertFalse($item->isUsed());
@@ -508,8 +508,8 @@ class ConfigTest extends DbTestCase
         if (is_a($itemtype, 'CommonDropdown', true)) {
             $this->assertFalse($item->isUsed());
         }
-        $this->assertArrayHasKey($key, \Config::getConfigurationValues('core', [$key]));
-        $this->assertEquals($random_id, \Config::getConfigurationValues('core', [$key])[$key]);
+        $this->assertArrayHasKey($key, Config::getConfigurationValues('core', [$key]));
+        $this->assertEquals($random_id, Config::getConfigurationValues('core', [$key])[$key]);
 
         // Case 3: used item is cleaned with replacement (CommonDropdown only)
         if (is_a($itemtype, 'CommonDropdown', true)) {
@@ -520,15 +520,15 @@ class ConfigTest extends DbTestCase
             $item->fields = ['id' => 15];
             $item->input = ['_replace_by' => $replacement_item->fields['id']];
 
-            \Config::setConfigurationValues('core', [$key => $item->fields['id']]);
+            Config::setConfigurationValues('core', [$key => $item->fields['id']]);
 
             $this->assertTrue($item->isUsed());
             $this->assertFalse($replacement_item->isUsed());
             $item->cleanRelationData();
             $this->assertFalse($item->isUsed());
             $this->assertTrue($replacement_item->isUsed());
-            $this->assertArrayHasKey($key, \Config::getConfigurationValues('core', [$key]));
-            $this->assertEquals($replacement_item->fields['id'], \Config::getConfigurationValues('core', [$key])[$key]);
+            $this->assertArrayHasKey($key, Config::getConfigurationValues('core', [$key]));
+            $this->assertEquals($replacement_item->fields['id'], Config::getConfigurationValues('core', [$key])[$key]);
         }
     }
 
@@ -537,7 +537,7 @@ class ConfigTest extends DbTestCase
         global $CFG_GLPI, $DB;
         $bkp_devices_in_menu = $CFG_GLPI['devices_in_menu'];
 
-        $conf = new \Config();
+        $conf = new Config();
         $this->assertSame(
             ['Item_DeviceSimcard'],
             $CFG_GLPI['devices_in_menu']
@@ -571,7 +571,7 @@ class ConfigTest extends DbTestCase
     {
         global $DB;
 
-        $conf = new \Config();
+        $conf = new Config();
         $crontask = new \CronTask();
 
         // create some non local users for the test
@@ -603,7 +603,7 @@ class ConfigTest extends DbTestCase
         //  - password expiration is not active
         //  - users from installation data have no value for password_last_update
         //  - crontask is not active
-        $values = \Config::getConfigurationValues('core');
+        $values = Config::getConfigurationValues('core');
         $this->assertArrayHasKey('password_expiration_delay', $values);
         $this->assertSame(-1, (int) $values['password_expiration_delay']);
         $this->assertEquals(
@@ -636,7 +636,7 @@ class ConfigTest extends DbTestCase
             ]
         );
         $_SESSION['glpi_currenttime'] = $current_time;
-        $values = \Config::getConfigurationValues('core');
+        $values = Config::getConfigurationValues('core');
         $this->assertArrayHasKey('password_expiration_delay', $values);
         $this->assertSame(30, (int) $values['password_expiration_delay']);
         $this->assertEquals(
@@ -668,7 +668,7 @@ class ConfigTest extends DbTestCase
             ]
         );
         $_SESSION['glpi_currenttime'] = $current_time;
-        $values = \Config::getConfigurationValues('core');
+        $values = Config::getConfigurationValues('core');
         $this->assertArrayHasKey('password_expiration_delay', $values);
         $this->assertSame(45, (int) $values['password_expiration_delay']);
         $this->assertEquals(
@@ -695,21 +695,21 @@ class ConfigTest extends DbTestCase
                 'name'             => 'unexisting_config',
                 'is_secured'       => false,
                 'old_value_prefix' => 'unexisting_config ',
-                'itemtype'         => \Config::class,
+                'itemtype'         => Config::class,
             ],
             [
                 'context'          => 'plugin:tester',
                 'name'             => 'check',
                 'is_secured'       => false,
                 'old_value_prefix' => 'check (plugin:tester) ',
-                'itemtype'         => \Config::class,
+                'itemtype'         => Config::class,
             ],
             [
                 'context'          => 'plugin:tester',
                 'name'             => 'passwd',
                 'is_secured'       => true,
                 'old_value_prefix' => 'passwd (plugin:tester) ',
-                'itemtype'         => \Config::class,
+                'itemtype'         => Config::class,
             ],
 
             // Specific cases for smtp settings
@@ -757,7 +757,7 @@ class ConfigTest extends DbTestCase
         };
 
         // History on first value
-        \Config::setConfigurationValues($context, [$name => 'first value']);
+        Config::setConfigurationValues($context, [$name => 'first value']);
         $expected_history = [
             $history_entry_fields + [
                 'old_value' => $old_value_prefix . ($is_secured ? '********' : ''),
@@ -770,7 +770,7 @@ class ConfigTest extends DbTestCase
         $this->assertEquals($expected_history, $found_history);
 
         // History on updated value
-        \Config::setConfigurationValues($context, [$name => 'new value']);
+        Config::setConfigurationValues($context, [$name => 'new value']);
         $expected_history[] = $history_entry_fields + [
             'old_value' => $old_value_prefix . ($is_secured ? '********' : 'first value'),
             'new_value' => $is_secured ? '********' : 'new value',
@@ -781,7 +781,7 @@ class ConfigTest extends DbTestCase
         $this->assertEquals($expected_history, $found_history);
 
         // History on config deletion
-        \Config::deleteConfigurationValues($context, [$name]);
+        Config::deleteConfigurationValues($context, [$name]);
         $expected_history[] = $history_entry_fields + [
             'old_value' => $old_value_prefix . ($is_secured ? '********' : 'new value'),
             'new_value' => $is_secured ? '********' : '',
@@ -839,7 +839,7 @@ class ConfigTest extends DbTestCase
     public function testConfigLogNotEmpty()
     {
         $itemtype = 'Config';
-        $config_id = \Config::getConfigIDForContext('core');
+        $config_id = Config::getConfigIDForContext('core');
         $this->assertGreaterThan(0, $config_id);
         $total_number = countElementsInTable("glpi_logs", ['items_id' => $config_id, 'itemtype' => $itemtype]);
         $this->assertGreaterThan(0, $total_number);
@@ -853,7 +853,7 @@ class ConfigTest extends DbTestCase
         $this->login();
 
         // Ensure the profile used for locks is valid.
-        $config = new \Config();
+        $config = new Config();
         $default_lock_profile = $CFG_GLPI['lock_lockprofile_id']; // 8
 
         // Invalid profile 1: simplified interface
@@ -890,7 +890,7 @@ class ConfigTest extends DbTestCase
 
         $this->login();
 
-        $config = new \Config();
+        $config = new Config();
         $default_font = $CFG_GLPI['pdffont'];
 
         // Invalid font

@@ -38,6 +38,9 @@ use DbTestCase;
 use DisplayPreference;
 use Entity;
 use Glpi\Asset\Capacity;
+use Glpi\Asset\Capacity\HasHistoryCapacity;
+use Glpi\Asset\Capacity\HasLinksCapacity;
+use Glpi\Asset\Capacity\HasNotepadCapacity;
 use Glpi\PHPUnit\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use Link;
 use Link_Itemtype;
@@ -50,32 +53,32 @@ class HasLinksCapacityTest extends DbTestCase
 
     protected function getTargetCapacity(): string
     {
-        return \Glpi\Asset\Capacity\HasLinksCapacity::class;
+        return HasLinksCapacity::class;
     }
 
     public function testCapacityActivation(): void
     {
         global $CFG_GLPI;
 
-        $root_entity_id = getItemByTypeName(\Entity::class, '_test_root_entity', true);
+        $root_entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasLinksCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
+                new Capacity(name: HasLinksCapacity::class),
+                new Capacity(name: HasNotepadCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasLinksCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasLinksCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_3  = $definition_3->getAssetClassName();
@@ -125,15 +128,15 @@ class HasLinksCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasLinksCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasLinksCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasLinksCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasLinksCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
@@ -154,7 +157,7 @@ class HasLinksCapacityTest extends DbTestCase
         );
 
         $manual_link = $this->createItem(
-            \ManualLink::class,
+            ManualLink::class,
             [
                 'name'     => 'manual link',
                 'itemtype' => $item_1::class,
@@ -163,7 +166,7 @@ class HasLinksCapacityTest extends DbTestCase
             ]
         );
         $manual_link_2 = $this->createItem(
-            \ManualLink::class,
+            ManualLink::class,
             [
                 'name'     => 'manual link',
                 'itemtype' => $item_2::class,
@@ -172,17 +175,17 @@ class HasLinksCapacityTest extends DbTestCase
             ]
         );
         $external_link = $this->createItem(
-            \Link::class,
+            Link::class,
             [
                 'name' => 'external link',
                 'link' => 'https://glpi-project.org',
             ]
         );
-        $link_itemtype = $this->createItem(\Link_Itemtype::class, [
+        $link_itemtype = $this->createItem(Link_Itemtype::class, [
             'links_id' => $external_link->getID(),
             'itemtype' => $item_1::class,
         ]);
-        $link_itemtype_2 = $this->createItem(\Link_Itemtype::class, [
+        $link_itemtype_2 = $this->createItem(Link_Itemtype::class, [
             'links_id' => $external_link->getID(),
             'itemtype' => $item_2::class,
         ]);
@@ -211,10 +214,10 @@ class HasLinksCapacityTest extends DbTestCase
         ];
 
         // Ensure relation, display preferences and logs exists, and class is registered to global config
-        $this->assertInstanceOf(\ManualLink::class, \ManualLink::getById($manual_link->getID()));
+        $this->assertInstanceOf(ManualLink::class, ManualLink::getById($manual_link->getID()));
         $this->assertInstanceOf(DisplayPreference::class, DisplayPreference::getById($displaypref_1->getID()));
         $this->assertEquals(2, countElementsInTable(Log::getTable(), $item_1_logs_criteria));
-        $this->assertInstanceOf(\Link_Itemtype::class, \Link_Itemtype::getById($link_itemtype->getID()));
+        $this->assertInstanceOf(Link_Itemtype::class, Link_Itemtype::getById($link_itemtype->getID()));
         $this->assertInstanceOf(DisplayPreference::class, DisplayPreference::getById($displaypref_2->getID()));
         $this->assertEquals(2, countElementsInTable(Log::getTable(), $item_2_logs_criteria));
         $this->assertContains($classname_1, $CFG_GLPI['link_types']);
@@ -222,14 +225,14 @@ class HasLinksCapacityTest extends DbTestCase
 
         // Disable capacity and check that relations have been cleaned, and class is unregistered from global config
         $this->assertTrue($definition_1->update(['id' => $definition_1->getID(), 'capacities' => []]));
-        $this->assertFalse(\ManualLink::getById($manual_link->getID()));
+        $this->assertFalse(ManualLink::getById($manual_link->getID()));
         $this->assertFalse(DisplayPreference::getById($displaypref_1->getID()));
         $this->assertEquals(0, countElementsInTable(Log::getTable(), $item_1_logs_criteria));
         $this->assertNotContains($classname_1, $CFG_GLPI['link_types']);
 
         // Ensure relations, logs and global registration are preserved for other definition
-        $this->assertInstanceOf(\ManualLink::class, \ManualLink::getById($manual_link_2->getID()));
-        $this->assertInstanceOf(\Link_Itemtype::class, \Link_Itemtype::getById($link_itemtype_2->getID()));
+        $this->assertInstanceOf(ManualLink::class, ManualLink::getById($manual_link_2->getID()));
+        $this->assertInstanceOf(Link_Itemtype::class, Link_Itemtype::getById($link_itemtype_2->getID()));
         $this->assertInstanceOf(DisplayPreference::class, DisplayPreference::getById($displaypref_2->getID()));
         $this->assertEquals(2, countElementsInTable(Log::getTable(), $item_2_logs_criteria));
         $this->assertContains($classname_2, $CFG_GLPI['link_types']);

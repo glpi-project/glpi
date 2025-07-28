@@ -267,7 +267,7 @@ class ITILControllerTest extends \HLAPITestCase
      */
     public function testBlockOverridingParentItem()
     {
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $this->assertGreaterThan(0, $tickets_id = $ticket->add([
             'name' => __FUNCTION__,
             'content' => 'test',
@@ -277,7 +277,7 @@ class ITILControllerTest extends \HLAPITestCase
         $fup = new \ITILFollowup();
         $task = new \TicketTask();
         $solution = new \ITILSolution();
-        $validation = new \TicketValidation();
+        $validation = new TicketValidation();
         $document = new \Document();
         $document_item = new \Document_Item();
 

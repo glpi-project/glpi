@@ -40,6 +40,7 @@ use DbTestCase;
 use Document;
 use Document_Item;
 use Entity;
+use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -127,26 +128,26 @@ class CommonDBTMTest extends DbTestCase
 
     public function testGetFromDBByRequest()
     {
-        $instance = new \Computer();
+        $instance = new Computer();
         $instance->getFromDbByRequest([
             'LEFT JOIN' => [
-                \Entity::getTable() => [
+                Entity::getTable() => [
                     'FKEY' => [
-                        \Entity::getTable() => 'id',
-                        \Computer::getTable() => \Entity::getForeignKeyField(),
+                        Entity::getTable() => 'id',
+                        Computer::getTable() => Entity::getForeignKeyField(),
                     ],
                 ],
             ],
             'WHERE' => ['AND' => [
                 'contact' => 'johndoe',
             ],
-                \Entity::getTable() . '.name' => '_test_root_entity',
+                Entity::getTable() . '.name' => '_test_root_entity',
             ],
         ]);
         // the instance must be populated
         $this->assertFalse($instance->isNewItem());
 
-        $instance = new \Computer();
+        $instance = new Computer();
 
         $this->expectExceptionMessage(
             '`Computer::getFromDBByRequest()` expects to get one result, 2 found in query "SELECT `glpi_computers`.* FROM `glpi_computers` WHERE `contact` = \'johndoe\'".'
@@ -160,21 +161,21 @@ class CommonDBTMTest extends DbTestCase
     {
         global $DB;
         $result = $DB->request([
-            'FROM'   => \Computer::getTable(),
+            'FROM'   => Computer::getTable(),
             'LIMIT'  => 1,
         ])->current();
 
         $this->assertArrayHasKey('name', $result);
         $this->assertArrayHasKey('uuid', $result);
 
-        $computer = new \Computer();
+        $computer = new Computer();
         $computer->getFromResultSet($result);
         $this->assertSame($result, $computer->fields);
     }
 
     public function testGetId()
     {
-        $comp = new \Computer();
+        $comp = new Computer();
 
         $this->assertSame(-1, $comp->getID());
 
@@ -184,7 +185,7 @@ class CommonDBTMTest extends DbTestCase
 
     public function testGetEmpty()
     {
-        $comp = new \Computer();
+        $comp = new Computer();
 
         $this->assertEmpty($comp->fields);
 
@@ -208,7 +209,7 @@ class CommonDBTMTest extends DbTestCase
             [\DBConnection::class, ''], // "static protected $notable = true;" case
             [\Item_Devices::class, ''], // "static protected $notable = true;" case
             [\Config::class, 'glpi_configs'],
-            [\Computer::class, 'glpi_computers'],
+            [Computer::class, 'glpi_computers'],
             [\User::class, 'glpi_users'],
         ];
     }
@@ -222,7 +223,7 @@ class CommonDBTMTest extends DbTestCase
     public function testGetTable($classname, $tablename)
     {
         $this->assertSame($tablename, $classname::getTable());
-        $this->assertSame($tablename, \CommonDBTM::getTable($classname));
+        $this->assertSame($tablename, CommonDBTM::getTable($classname));
     }
 
     /**
@@ -233,12 +234,12 @@ class CommonDBTMTest extends DbTestCase
     public function testGetTableField()
     {
         // Base case
-        $this->assertSame('glpi_computers.serial', \Computer::getTableField('serial'));
-        $this->assertSame('glpi_computers.serial', \CommonDBTM::getTableField('serial', \Computer::class));
+        $this->assertSame('glpi_computers.serial', Computer::getTableField('serial'));
+        $this->assertSame('glpi_computers.serial', CommonDBTM::getTableField('serial', Computer::class));
 
         // Wildcard case
         $this->assertSame('glpi_configs.*', \Config::getTableField('*'));
-        $this->assertSame('glpi_configs.*', \CommonDBTM::getTableField('*', \Config::class));
+        $this->assertSame('glpi_configs.*', CommonDBTM::getTableField('*', \Config::class));
     }
 
     /**
@@ -250,7 +251,7 @@ class CommonDBTMTest extends DbTestCase
     {
         // Exception if field argument is empty
         $this->expectExceptionMessage('Argument $field cannot be empty.');
-        \Computer::getTableField('');
+        Computer::getTableField('');
     }
 
     /**
@@ -271,7 +272,7 @@ class CommonDBTMTest extends DbTestCase
 
         //insert case
         $res = (int) $DB->updateOrInsert(
-            \Computer::getTable(),
+            Computer::getTable(),
             [
                 'name'   => 'serial-to-change',
                 'serial' => 'serial-one',
@@ -283,14 +284,14 @@ class CommonDBTMTest extends DbTestCase
         $this->assertGreaterThan(0, $res);
 
         $check = $DB->request([
-            'FROM'   => \Computer::getTable(),
+            'FROM'   => Computer::getTable(),
             'WHERE'  => ['name' => 'serial-to-change'],
         ])->current();
         $this->assertSame('serial-one', $check['serial']);
 
         //update case
         $res = $DB->updateOrInsert(
-            \Computer::getTable(),
+            Computer::getTable(),
             [
                 'name'   => 'serial-to-change',
                 'serial' => 'serial-changed',
@@ -302,7 +303,7 @@ class CommonDBTMTest extends DbTestCase
         $this->assertTrue($res);
 
         $check = $DB->request([
-            'FROM'   => \Computer::getTable(),
+            'FROM'   => Computer::getTable(),
             'WHERE'  => ['name' => 'serial-to-change'],
         ])->current();
         $this->assertSame('serial-changed', $check['serial']);
@@ -310,14 +311,14 @@ class CommonDBTMTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             (int) $DB->insert(
-                \Computer::getTable(),
+                Computer::getTable(),
                 ['name' => 'serial-to-change']
             )
         );
 
         //allow multiples
         $res = $DB->updateOrInsert(
-            \Computer::getTable(),
+            Computer::getTable(),
             [
                 'name'   => 'serial-to-change',
                 'serial' => 'serial-changed',
@@ -332,7 +333,7 @@ class CommonDBTMTest extends DbTestCase
         //multiple update case
         $this->expectExceptionObject(new \RuntimeException('Update would change too many rows!'));
         $DB->updateOrInsert(
-            \Computer::getTable(),
+            Computer::getTable(),
             [
                 'name'   => 'serial-to-change',
                 'serial' => 'serial-changed',
@@ -349,7 +350,7 @@ class CommonDBTMTest extends DbTestCase
 
         //insert case
         $res = (int) $DB->updateOrInsert(
-            \Computer::getTable(),
+            Computer::getTable(),
             [
                 'serial' => 'serial-one',
             ],
@@ -360,14 +361,14 @@ class CommonDBTMTest extends DbTestCase
         $this->assertGreaterThan(0, $res);
 
         $check = $DB->request([
-            'FROM'   => \Computer::getTable(),
+            'FROM'   => Computer::getTable(),
             'WHERE'  => ['name' => 'serial-to-change'],
         ])->current();
         $this->assertSame('serial-one', $check['serial']);
 
         //update case
         $res = $DB->updateOrInsert(
-            \Computer::getTable(),
+            Computer::getTable(),
             [
                 'serial' => 'serial-changed',
             ],
@@ -378,7 +379,7 @@ class CommonDBTMTest extends DbTestCase
         $this->assertTrue($res);
 
         $check = $DB->request([
-            'FROM'   => \Computer::getTable(),
+            'FROM'   => Computer::getTable(),
             'WHERE'  => ['name' => 'serial-to-change'],
         ])->current();
         $this->assertSame('serial-changed', $check['serial']);
@@ -386,14 +387,14 @@ class CommonDBTMTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             (int) $DB->insert(
-                \Computer::getTable(),
+                Computer::getTable(),
                 ['name' => 'serial-to-change']
             )
         );
 
         //allow multiples
         $res = $DB->updateOrInsert(
-            \Computer::getTable(),
+            Computer::getTable(),
             [
                 'serial' => 'serial-changed',
             ],
@@ -407,7 +408,7 @@ class CommonDBTMTest extends DbTestCase
         //multiple update case
         $this->expectExceptionObject(new \RuntimeException('Update would change too many rows!'));
         $DB->updateOrInsert(
-            \Computer::getTable(),
+            Computer::getTable(),
             [
                 'serial' => 'serial-changed',
             ],
@@ -784,7 +785,7 @@ class CommonDBTMTest extends DbTestCase
         $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
         $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
 
-        $entity = new \Entity();
+        $entity = new Entity();
         $ent3 = (int) $entity->add([
             'name'         => '_test_child_2_subchild_1',
             'entities_id'  => $ent2,
@@ -840,7 +841,7 @@ class CommonDBTMTest extends DbTestCase
 
     public function testAdd()
     {
-        $computer = new \Computer();
+        $computer = new Computer();
         $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
         $bkp_current = $_SESSION['glpi_currenttime'];
         $_SESSION['glpi_currenttime'] = '2000-01-01 00:00:00';
@@ -884,7 +885,7 @@ class CommonDBTMTest extends DbTestCase
 
     public function testUpdate()
     {
-        $computer = new \Computer();
+        $computer = new Computer();
         $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
         $bkp_current = $_SESSION['glpi_currenttime'];
         $_SESSION['glpi_currenttime'] = '2000-01-01 00:00:00';
@@ -931,7 +932,7 @@ class CommonDBTMTest extends DbTestCase
         // Simulate a call to `updateInDB()` that pass an invalid list of fields.
         // This is only possible if `pre_updateInDB()` modifies the entries of either `$this->updates` and `$this->fields`
         // and results in having an entry in `$this->updates` that does not corresponds to a valid key of `$this->fields`.
-        $computer = getItemByTypeName(\Computer::class, '_test_pc01');
+        $computer = getItemByTypeName(Computer::class, '_test_pc01');
         $this->assertFalse($computer->updateInDB(['_not_a_real_field']));
         $this->hasPhpLogRecordThatContains(
             'The `_not_a_real_field` field cannot be updated as its value is not defined.',
@@ -949,7 +950,7 @@ class CommonDBTMTest extends DbTestCase
         //login with default TZ
         $this->realLogin();
         //add a Computer with creation and update dates
-        $comp = new \Computer();
+        $comp = new Computer();
         $cid = $comp->add([
             'name'            => 'Computer with timezone',
             'date_creation'   => '2019-03-04 10:00:00',
@@ -1020,9 +1021,9 @@ class CommonDBTMTest extends DbTestCase
                 'linked_itemtype'   => \Contract::class,
             ],
             [
-                'relation_itemtype' => \Document_Item::getType(),
+                'relation_itemtype' => Document_Item::getType(),
                 'config_name'       => 'document_types',
-                'linked_itemtype'   => \Document::class,
+                'linked_itemtype'   => Document::class,
             ],
             [
                 'relation_itemtype' => \KnowbaseItem_Item::getType(),
@@ -1045,7 +1046,7 @@ class CommonDBTMTest extends DbTestCase
 
         $this->login(); // must be logged as Document_Item uses Session::getLoginUserID()
 
-        $computer = new \Computer();
+        $computer = new Computer();
         $relation_item = new $relation_itemtype();
 
         $linked_item_input = [];
@@ -1110,10 +1111,10 @@ class CommonDBTMTest extends DbTestCase
     {
         $this->login();
 
-        $entity_id     = getItemByTypeName(\Entity::class, '_test_root_entity', true);
-        $computer_1    = getItemByTypeName(\Computer::class, '_test_pc01');
+        $entity_id     = getItemByTypeName(Entity::class, '_test_root_entity', true);
+        $computer_1    = getItemByTypeName(Computer::class, '_test_pc01');
         $computer_id_1 = $computer_1->getID();
-        $computer_2    = getItemByTypeName(\Computer::class, '_test_pc02');
+        $computer_2    = getItemByTypeName(Computer::class, '_test_pc02');
         $computer_id_2 = $computer_2->getID();
         $phone         = getItemByTypeName(\Phone::class, '_test_phone_1');
         $phone_id      = $phone->getID();
@@ -1137,11 +1138,11 @@ class CommonDBTMTest extends DbTestCase
 
         $items = [
             [
-                'itemtype' => \Computer::class,
+                'itemtype' => Computer::class,
                 'items_id' => $computer_id_1,
             ],
             [
-                'itemtype' => \Computer::class,
+                'itemtype' => Computer::class,
                 'items_id' => $computer_id_2,
             ],
             [
@@ -1168,11 +1169,11 @@ class CommonDBTMTest extends DbTestCase
         );
         $this->assertSame(
             2,
-            countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => \Computer::class, 'items_id' => $computer_id_1])
+            countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => Computer::class, 'items_id' => $computer_id_1])
         );
         $this->assertEquals(
             2,
-            countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => \Computer::class, 'items_id' => $computer_id_2])
+            countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => Computer::class, 'items_id' => $computer_id_2])
         );
         $this->assertEquals(
             2,
@@ -1188,7 +1189,7 @@ class CommonDBTMTest extends DbTestCase
         ); // item devices were preserved but detached
         $this->assertEquals(
             0,
-            countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => \Computer::class, 'items_id' => $computer_id_1])
+            countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => Computer::class, 'items_id' => $computer_id_1])
         );
         $this->assertEquals(
             2,
@@ -1196,7 +1197,7 @@ class CommonDBTMTest extends DbTestCase
         );
         $this->assertEquals(
             2,
-            countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => \Computer::class, 'items_id' => $computer_id_2])
+            countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => Computer::class, 'items_id' => $computer_id_2])
         );
         $this->assertEquals(
             2,
@@ -1211,7 +1212,7 @@ class CommonDBTMTest extends DbTestCase
         ); // item devices were deleted
         $this->assertEquals(
             0,
-            countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => \Computer::class, 'items_id' => $computer_id_1])
+            countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => Computer::class, 'items_id' => $computer_id_1])
         );
         $this->assertEquals(
             2,
@@ -1219,7 +1220,7 @@ class CommonDBTMTest extends DbTestCase
         );
         $this->assertEquals(
             0,
-            countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => \Computer::class, 'items_id' => $computer_id_2])
+            countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => Computer::class, 'items_id' => $computer_id_2])
         );
         $this->assertEquals(
             2,
@@ -1284,7 +1285,7 @@ class CommonDBTMTest extends DbTestCase
     ) {
         $_SESSION['glpiactiveentities'] = $active_entities;
 
-        $res = \CommonDBTM::checkTemplateEntity($data, $parent_id, $parent_itemtype);
+        $res = CommonDBTM::checkTemplateEntity($data, $parent_id, $parent_itemtype);
         $this->assertEquals($expected, $res);
 
         // Reset session
@@ -1293,7 +1294,7 @@ class CommonDBTMTest extends DbTestCase
 
     public function testGetById()
     {
-        $itemtype = \Computer::class;
+        $itemtype = Computer::class;
 
         // test null ID
         $output = $itemtype::getById(null);
@@ -1342,7 +1343,7 @@ class CommonDBTMTest extends DbTestCase
             ])
         );
 
-        $computer = new \Computer();
+        $computer = new Computer();
         $this->assertGreaterThan(
             0,
             $computers_id1 = $computer->add([
@@ -1397,7 +1398,7 @@ class CommonDBTMTest extends DbTestCase
             ])
         );
         //create computer with name should be possible
-        $computer = new \Computer();
+        $computer = new Computer();
         $this->assertGreaterThan(
             0,
             $computers_id = $computer->add([
@@ -1410,7 +1411,7 @@ class CommonDBTMTest extends DbTestCase
         $this->hasNoSessionMessages([ERROR]);
 
         //create template with same name should be possible
-        $template = new \Computer();
+        $template = new Computer();
         $this->assertGreaterThan(
             0,
             $templates_id = $template->add([
@@ -1565,13 +1566,13 @@ class CommonDBTMTest extends DbTestCase
 
     public static function updatedInputProvider(): iterable
     {
-        $root_entity_id = getItemByTypeName(\Entity::class, '_test_root_entity', true);
+        $root_entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
 
         // make sure itemtype change is detected
         yield [
             'itemtype' => \Alert::class,
             'add_input' => [
-                'itemtype' => \Glpi\Event::class,
+                'itemtype' => Event::class,
                 'items_id' => 1,
             ],
             'update_input' => [
@@ -1587,11 +1588,11 @@ class CommonDBTMTest extends DbTestCase
         yield [
             'itemtype' => \Alert::class,
             'add_input' => [
-                'itemtype' => \Glpi\Event::class,
+                'itemtype' => Event::class,
                 'items_id' => 1,
             ],
             'update_input' => [
-                'itemtype' => \Glpi\Event::class,
+                'itemtype' => Event::class,
                 'items_id' => 1,
             ],
             'expected_updates' => [
@@ -1775,7 +1776,7 @@ class CommonDBTMTest extends DbTestCase
     public static function assignableItemsProvider(): iterable
     {
         return [
-            [\CartridgeItem::class], [\Computer::class], [\ConsumableItem::class], [\Monitor::class], [\NetworkEquipment::class],
+            [\CartridgeItem::class], [Computer::class], [\ConsumableItem::class], [\Monitor::class], [\NetworkEquipment::class],
             [\Peripheral::class], [\Phone::class], [\Printer::class], [\Software::class],
         ];
     }
@@ -1817,7 +1818,7 @@ class CommonDBTMTest extends DbTestCase
         \Session::loadGroups();
 
         // Create the item
-        /** @var \CommonDBTM $item */
+        /** @var CommonDBTM $item */
         $item = new $itemtype();
         $this->assertGreaterThan(
             0,
@@ -1914,7 +1915,7 @@ class CommonDBTMTest extends DbTestCase
         \Session::loadGroups();
 
         // Create the item
-        /** @var \CommonDBTM $item */
+        /** @var CommonDBTM $item */
         $item = new $itemtype();
         $this->assertGreaterThan(
             0,
@@ -2135,7 +2136,7 @@ class CommonDBTMTest extends DbTestCase
 
     public function testGetFormFields()
     {
-        $computer = new \Computer();
+        $computer = new Computer();
         $this->assertTrue(!array_diff(['name', 'serial', '_template_is_active'], $computer->getFormFields()));
     }
 
@@ -2191,7 +2192,7 @@ class CommonDBTMTest extends DbTestCase
         // Test presence of "Add transfer list" action
         foreach (static::getClasses() as $class) {
             if (
-                is_subclass_of($class, \CommonDBTM::class)
+                is_subclass_of($class, CommonDBTM::class)
                 && !is_subclass_of($class, \CommonDBConnexity::class)
                 && !is_a($class, \Rule::class, true)
                 && $DB->tableExists($class::getTable())

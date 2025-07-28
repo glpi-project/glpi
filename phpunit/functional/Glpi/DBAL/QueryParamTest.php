@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\DBAL;
 
 use DbTestCase;
+use Glpi\DBAL\QueryParam;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class QueryParamTest extends DbTestCase
@@ -54,13 +55,13 @@ class QueryParamTest extends DbTestCase
     #[DataProvider('dataParamsProvider')]
     public function testQueryParam($value, $expected)
     {
-        $qpa = new \Glpi\DBAL\QueryParam($value);
+        $qpa = new QueryParam($value);
         $this->assertSame($expected, $qpa->getValue());
     }
 
     public function testEmptyQueryParam()
     {
-        $qpa = new \Glpi\DBAL\QueryParam();
+        $qpa = new QueryParam();
         $this->assertSame('?', $qpa->getValue());
     }
 }

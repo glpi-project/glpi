@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Security;
 
+use Glpi\Security\TOTPManager;
 use RobThree\Auth\Algorithm;
 use RobThree\Auth\Providers\Qr\BaconQrCodeProvider;
 use RobThree\Auth\TwoFactorAuth;
@@ -42,7 +43,7 @@ class TOTPManagerTest extends \DbTestCase
 {
     public function testCreateSecret()
     {
-        $tfa = new \Glpi\Security\TOTPManager();
+        $tfa = new TOTPManager();
         $this->assertEquals(32, strlen($tfa->createSecret()));
     }
 
@@ -50,7 +51,7 @@ class TOTPManagerTest extends \DbTestCase
     {
         global $DB;
 
-        $tfa = new \Glpi\Security\TOTPManager();
+        $tfa = new TOTPManager();
         $users_id = getItemByTypeName('User', TU_USER, true);
 
         $tfa->setSecretForUser($users_id, 'G3QWAUUBIOM7GUU3EHC76WGMV5FIO3FB');
@@ -74,7 +75,7 @@ class TOTPManagerTest extends \DbTestCase
     {
         global $DB;
 
-        $tfa = new \Glpi\Security\TOTPManager();
+        $tfa = new TOTPManager();
         $users_id = getItemByTypeName('User', TU_USER, true);
 
         $tfa->setSecretForUser($users_id, 'G3QWAUUBIOM7GUU3EHC76WGMV5FIO3FB');
@@ -101,7 +102,7 @@ class TOTPManagerTest extends \DbTestCase
     {
         global $DB;
 
-        $tfa = new \Glpi\Security\TOTPManager();
+        $tfa = new TOTPManager();
         $users_id = getItemByTypeName('User', TU_USER, true);
 
         $DB->update('glpi_users', [
@@ -120,7 +121,7 @@ class TOTPManagerTest extends \DbTestCase
 
     public function testVerifyCode()
     {
-        $tfa = new \Glpi\Security\TOTPManager();
+        $tfa = new TOTPManager();
         $users_id = getItemByTypeName('User', TU_USER, true);
 
         $tfa->setSecretForUser($users_id, 'G3QWAUUBIOM7GUU3EHC76WGMV5FIO3FB');
@@ -140,7 +141,7 @@ class TOTPManagerTest extends \DbTestCase
 
     public function testRegenerateBackupCodes()
     {
-        $tfa = new \Glpi\Security\TOTPManager();
+        $tfa = new TOTPManager();
         $users_id = getItemByTypeName('User', TU_USER, true);
 
         $tfa->setSecretForUser($users_id, 'G3QWAUUBIOM7GUU3EHC76WGMV5FIO3FB');
@@ -153,7 +154,7 @@ class TOTPManagerTest extends \DbTestCase
 
     public function testVerifyBackupCodeForUser()
     {
-        $tfa = new \Glpi\Security\TOTPManager();
+        $tfa = new TOTPManager();
         $users_id = getItemByTypeName('User', TU_USER, true);
 
         $tfa->setSecretForUser($users_id, 'G3QWAUUBIOM7GUU3EHC76WGMV5FIO3FB');
@@ -172,7 +173,7 @@ class TOTPManagerTest extends \DbTestCase
     {
         global $CFG_GLPI, $DB;
 
-        $tfa = new \Glpi\Security\TOTPManager();
+        $tfa = new TOTPManager();
         $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
         $users_id = getItemByTypeName('User', TU_USER, true);
 
@@ -224,7 +225,7 @@ class TOTPManagerTest extends \DbTestCase
     {
         global $CFG_GLPI;
 
-        $tfa = new \Glpi\Security\TOTPManager();
+        $tfa = new TOTPManager();
 
         $CFG_GLPI['2fa_grace_date_start'] = date('Y-m-d H:i:s', strtotime('-1 day'));
         $CFG_GLPI['2fa_grace_days'] = 2;

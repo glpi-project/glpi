@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Api\HL;
 
+use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\Router;
 use Glpi\Api\HL\RouteVersion;
@@ -153,7 +154,7 @@ class TestRouter extends Router
 }
 
 // @codingStandardsIgnoreStart
-class TestController extends \Glpi\Api\HL\Controller\AbstractController
+class TestController extends AbstractController
 {
     // @codingStandardsIgnoreEnd
     /**

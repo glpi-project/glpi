@@ -85,7 +85,7 @@ class NetworkPortTest extends DbTestCase
         $this->login();
 
         $computer1 = getItemByTypeName('Computer', '_test_pc01');
-        $networkport = new \NetworkPort();
+        $networkport = new NetworkPort();
 
         // Be sure added
         $nb_log = (int) countElementsInTable('glpi_logs');
@@ -163,7 +163,7 @@ class NetworkPortTest extends DbTestCase
         $computer1 = getItemByTypeName('Computer', '_test_pc01');
 
         // Do some installations
-        $networkport = new \NetworkPort();
+        $networkport = new NetworkPort();
 
         // Be sure added
         $nb_log = (int) countElementsInTable('glpi_logs');
@@ -283,7 +283,7 @@ class NetworkPortTest extends DbTestCase
         $computer1 = getItemByTypeName('Computer', '_test_pc01');
 
         // Do some installations
-        $networkport = new \NetworkPort();
+        $networkport = new NetworkPort();
 
         // Be sure added
         $nb_log = (int) countElementsInTable('glpi_logs');
@@ -315,7 +315,7 @@ class NetworkPortTest extends DbTestCase
         $added = $networkport->clone();
         $this->assertGreaterThan(0, (int) $added);
 
-        $clonedNetworkport = new \NetworkPort();
+        $clonedNetworkport = new NetworkPort();
         $this->assertTrue($clonedNetworkport->getFromDB($added));
 
         $fields = $networkport->fields;
@@ -381,10 +381,10 @@ class NetworkPortTest extends DbTestCase
 
         // Check that there is no saveInput already
         if (isset($_SESSION['saveInput']) && is_array($_SESSION['saveInput'])) {
-            $this->assertArrayNotHasKey(\NetworkPort::class, $_SESSION['saveInput']);
+            $this->assertArrayNotHasKey(NetworkPort::class, $_SESSION['saveInput']);
         }
         $computer1 = getItemByTypeName('Computer', '_test_pc01');
-        $networkport = new \NetworkPort();
+        $networkport = new NetworkPort();
 
         // Be sure added
         $np_id = $networkport->add([
@@ -407,7 +407,7 @@ class NetworkPortTest extends DbTestCase
 
         // Check that there is no savedInput after update
         if (isset($_SESSION['saveInput']) && is_array($_SESSION['saveInput'])) {
-            $this->assertArrayNotHasKey(\NetworkPort::class, $_SESSION['saveInput']);
+            $this->assertArrayNotHasKey(NetworkPort::class, $_SESSION['saveInput']);
         }
     }
 
@@ -416,7 +416,7 @@ class NetworkPortTest extends DbTestCase
         $this->login();
 
         $computer1 = getItemByTypeName('Computer', '_test_pc01');
-        $netport = new \NetworkPort();
+        $netport = new NetworkPort();
 
         // Add a network port
         $np_id = $netport->add([
@@ -450,7 +450,7 @@ class NetworkPortTest extends DbTestCase
         // Check that all columns are displayed and correct values
         foreach (['showForItem', 'displayTabContentForItem'] as $method) {
             ob_start();
-            \NetworkPort::$method($computer1);
+            NetworkPort::$method($computer1);
             $result = ob_get_clean();
             foreach ($so_display as $column) {
                 $this->assertStringContainsString($column['name'], $result);

@@ -143,7 +143,7 @@ trait ValidationStepTrait
     /**
      * Update an existing ITIL_ValidationStep related to a Change with a new validation percent
      *
-     * @param \CommonITILValidation $validation
+     * @param CommonITILValidation $validation
      * @param int $validation_percent
      * @return void
      */

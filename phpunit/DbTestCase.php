@@ -40,7 +40,7 @@ use Glpi\Asset\Capacity;
 use Glpi\Asset\CapacityConfig;
 use Glpi\Dropdown\DropdownDefinition;
 
-class DbTestCase extends \GLPITestCase
+class DbTestCase extends GLPITestCase
 {
     /**
      * Indicates whether the custom assets autoloader is registered.
@@ -78,16 +78,16 @@ class DbTestCase extends \GLPITestCase
      * @param bool $noauto disable autologin (from CAS by example)
      * @param bool $expected bool result expected from login return
      *
-     * @return \Auth
+     * @return Auth
      */
     protected function realLogin(
         string $user_name = TU_USER,
         string $user_pass = TU_PASS,
         bool $noauto = true,
         bool $expected = true
-    ): \Auth {
-        \Session::destroy();
-        \Session::start();
+    ): Auth {
+        Session::destroy();
+        Session::start();
 
         $auth = new Auth();
         $this->assertEquals($expected, $auth->login($user_name, $user_pass, $noauto));
@@ -110,9 +110,9 @@ class DbTestCase extends \GLPITestCase
     protected function login(
         string $user_name = TU_USER,
         string $user_pass = "",
-    ): \Auth {
-        \Session::destroy();
-        \Session::start();
+    ): Auth {
+        Session::destroy();
+        Session::start();
 
         $auth = new Auth();
         $auth->user = getItemByTypeName(User::class, $user_name);
@@ -129,8 +129,8 @@ class DbTestCase extends \GLPITestCase
      */
     protected function logOut()
     {
-        \Session::destroy();
-        \Session::start();
+        Session::destroy();
+        Session::start();
     }
 
     /**
@@ -383,7 +383,7 @@ class DbTestCase extends \GLPITestCase
      */
     protected function addRule(string $type, string $name, array $criteria, array $action, ?int $ranking = null): int
     {
-        $builder = new \RuleBuilder($name, $type);
+        $builder = new RuleBuilder($name, $type);
         if ($ranking !== null) {
             $builder->setRanking($ranking);
         }
@@ -459,7 +459,7 @@ class DbTestCase extends \GLPITestCase
      * Initialize a definition.
      *
      * @param ?string $system_name
-     * @param \Glpi\Asset\Capacity[] $capacities
+     * @param Capacity[] $capacities
      * @param ?array $profiles
      *
      * @return AssetDefinition
@@ -544,7 +544,7 @@ class DbTestCase extends \GLPITestCase
 
     /**
      * Create a random text document.
-     * @return \Document
+     * @return Document
      */
     protected function createTxtDocument(): Document
     {

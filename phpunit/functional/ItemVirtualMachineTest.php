@@ -84,7 +84,7 @@ class ItemVirtualMachineTest extends DbTestCase
     {
         $this->login();
 
-        $obj = new \ItemVirtualMachine();
+        $obj = new ItemVirtualMachine();
         $uuid = 'c37f7ce8-af95-4676-b454-0959f2c5e162';
 
         // Add

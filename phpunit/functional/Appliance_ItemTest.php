@@ -83,7 +83,7 @@ class Appliance_ItemTest extends DbTestCase
 
     public function testGetForbiddenStandardMassiveAction()
     {
-        $aitem = new \Appliance_Item();
+        $aitem = new Appliance_Item();
         $this->assertSame(
             ['clone', 'update', 'CommonDBConnexity:unaffect', 'CommonDBConnexity:affect'],
             $aitem->getForbiddenStandardMassiveAction()
@@ -130,20 +130,20 @@ class Appliance_ItemTest extends DbTestCase
                     'itemtype'        => $itemtype,
                     'items_id'        => $items_id,
                 ];
-                $aitem = new \Appliance_Item();
+                $aitem = new Appliance_Item();
                 $this->assertGreaterThan(0, $aitem->add($input));
             }
         }
 
         $this->assertTrue($appliance->getFromDB($appliance_1));
         //not logged, no Appliances types
-        $this->assertSame(0, \Appliance_Item::countForMainItem($appliance));
+        $this->assertSame(0, Appliance_Item::countForMainItem($appliance));
 
         $this->login();
-        $this->assertSame(3, \Appliance_Item::countForMainItem($appliance));
+        $this->assertSame(3, Appliance_Item::countForMainItem($appliance));
 
         $this->assertTrue($appliance->getFromDB($appliance_2));
-        $this->assertSame(2, \Appliance_Item::countForMainItem($appliance));
+        $this->assertSame(2, Appliance_Item::countForMainItem($appliance));
 
         $this->assertTrue($appliance->getFromDB($appliance_1));
         $this->assertTrue($appliance->delete(['id' => $appliance_1], true));
@@ -152,7 +152,7 @@ class Appliance_ItemTest extends DbTestCase
         $this->assertTrue($appliance->delete(['id' => $appliance_2], true));
 
         $iterator = $DB->request([
-            'FROM'   => \Appliance_Item::getTable(),
+            'FROM'   => Appliance_Item::getTable(),
             'WHERE'  => ['appliances_id' => [$appliance_1, $appliance_2]],
         ]);
         $this->assertCount(0, $iterator);

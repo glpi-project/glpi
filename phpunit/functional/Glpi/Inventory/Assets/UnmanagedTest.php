@@ -34,6 +34,8 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use Glpi\Inventory\Conf;
+use Glpi\Inventory\Converter;
 use Lockedfield;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -93,7 +95,7 @@ class UnmanagedTest extends AbstractInventoryAsset
     #[DataProvider('assetProvider')]
     public function testPrepare($xml, $expected)
     {
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
         $this->assertEquals(json_decode($expected), $json);
@@ -207,7 +209,7 @@ class UnmanagedTest extends AbstractInventoryAsset
 
         //disable Unmanaged import
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $conf->saveConf([
                 'import_unmanaged' => 0,
@@ -221,7 +223,7 @@ class UnmanagedTest extends AbstractInventoryAsset
 
         //enable Unmanaged import
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $conf->saveConf([
                 'import_unmanaged' => 1,
@@ -268,7 +270,7 @@ class UnmanagedTest extends AbstractInventoryAsset
         ]));
 
         //get lockedfield field
-        $lock = new \Lockedfield();
+        $lock = new Lockedfield();
         $locks = $lock->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id'], "field" => "users_id"]);
         $this->assertCount(1, $locks);
 

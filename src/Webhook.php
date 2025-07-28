@@ -37,7 +37,7 @@ use Glpi\Api\HL\Controller\AssetController;
 use Glpi\Api\HL\Controller\CustomAssetController;
 use Glpi\Api\HL\Controller\ITILController;
 use Glpi\Api\HL\Controller\ManagementController;
-use Glpi\Api\HL\Doc\Schema;
+use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Router;
@@ -838,7 +838,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
     private function showCustomHeaders(): void
     {
         $schema = self::getAPISchemaBySupportedItemtype($this->fields['itemtype']);
-        $item_fields = Schema::flattenProperties($schema['properties'], 'item.');
+        $item_fields = Doc\Schema::flattenProperties($schema['properties'], 'item.');
         TemplateRenderer::getInstance()->display('pages/setup/webhook/webhook_headers.html.twig', [
             'item' => $this,
             'item_fields' => $item_fields,
@@ -878,7 +878,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
             $result = [];
             foreach ($schema_arr as $key => $value) {
                 $new_prefix_keys = array_merge($prefix_keys, [$key]);
-                if ($value['type'] === Schema::TYPE_OBJECT) {
+                if ($value['type'] === Doc\Schema::TYPE_OBJECT) {
                     $result = array_merge($result, $fn_append_properties($value['properties'], $new_prefix_keys));
                 } else {
                     // walk through the result array for each prefix key (creating if needed) and set the value to the twig tag
@@ -939,9 +939,9 @@ class Webhook extends CommonDBTM implements FilterableInterface
             return [];
         }
         $schema = self::getAPISchemaBySupportedItemtype($itemtype);
-        $props = Schema::flattenProperties($schema['properties'], 'item.');
+        $props = Doc\Schema::flattenProperties($schema['properties'], 'item.');
         $parent_schema = self::getParentItemSchema($itemtype);
-        $parent_props = $parent_schema !== [] ? Schema::flattenProperties($parent_schema['properties'], 'parent_item.') : [];
+        $parent_props = $parent_schema !== [] ? Doc\Schema::flattenProperties($parent_schema['properties'], 'parent_item.') : [];
 
         $response_schema = [
             [

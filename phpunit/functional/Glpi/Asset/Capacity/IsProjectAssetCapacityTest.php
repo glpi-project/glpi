@@ -38,6 +38,10 @@ use DbTestCase;
 use DisplayPreference;
 use Entity;
 use Glpi\Asset\Capacity;
+use Glpi\Asset\Capacity\HasDocumentsCapacity;
+use Glpi\Asset\Capacity\HasHistoryCapacity;
+use Glpi\Asset\Capacity\HasNotepadCapacity;
+use Glpi\Asset\Capacity\IsProjectAssetCapacity;
 use Glpi\PHPUnit\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use Item_Project;
 use Log;
@@ -49,7 +53,7 @@ class IsProjectAssetCapacityTest extends DbTestCase
 
     protected function getTargetCapacity(): string
     {
-        return \Glpi\Asset\Capacity\IsProjectAssetCapacity::class;
+        return IsProjectAssetCapacity::class;
     }
 
     public function testCapacityActivation(): void
@@ -60,21 +64,21 @@ class IsProjectAssetCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\IsProjectAssetCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
+                new Capacity(name: IsProjectAssetCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
+                new Capacity(name: HasNotepadCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasDocumentsCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\IsProjectAssetCapacity::class),
+                new Capacity(name: HasDocumentsCapacity::class),
+                new Capacity(name: IsProjectAssetCapacity::class),
             ]
         );
         $classname_3  = $definition_3->getAssetClassName();
@@ -120,15 +124,15 @@ class IsProjectAssetCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\IsProjectAssetCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
+                new Capacity(name: IsProjectAssetCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\IsProjectAssetCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
+                new Capacity(name: IsProjectAssetCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
@@ -213,7 +217,7 @@ class IsProjectAssetCapacityTest extends DbTestCase
         $this->assertContains($classname_2, $CFG_GLPI['project_asset_types']);
 
         // Disable capacity and check that relations have been cleaned, and class is unregistered from global config
-        $this->disableCapacity($definition_1, \Glpi\Asset\Capacity\IsProjectAssetCapacity::class);
+        $this->disableCapacity($definition_1, IsProjectAssetCapacity::class);
         $this->assertFalse(Item_Project::getById($project_item_1->getID()));
         $this->assertFalse(DisplayPreference::getById($displaypref_1->getID()));
         $this->assertEquals(1, countElementsInTable(Log::getTable(), $item_1_logs_criteria)); // creation
@@ -229,7 +233,7 @@ class IsProjectAssetCapacityTest extends DbTestCase
     public function testCloneAsset()
     {
         $definition = $this->initAssetDefinition(
-            capacities: [new Capacity(name: \Glpi\Asset\Capacity\IsProjectAssetCapacity::class)]
+            capacities: [new Capacity(name: IsProjectAssetCapacity::class)]
         );
         $class = $definition->getAssetClassName();
         $entity = $this->getTestRootEntity(true);

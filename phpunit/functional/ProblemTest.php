@@ -46,7 +46,7 @@ class ProblemTest extends DbTestCase
     {
         // add problem from a computer
         $computer   = getItemByTypeName('Computer', '_test_pc01');
-        $problem     = new \Problem();
+        $problem     = new Problem();
         $problems_id = $problem->add([
             'name'           => "test add from computer \'_test_pc01\'",
             'content'        => "test add from computer \'_test_pc01\'",
@@ -100,7 +100,7 @@ class ProblemTest extends DbTestCase
         ]);
         $this->assertFalse($itilCategory->isNewItem());
 
-        $problem = new \Problem();
+        $problem = new Problem();
         $problem->add([
             'name' => 'A problem to check if it is not automatically assigned user and group',
             'content' => 'foo',
@@ -127,7 +127,7 @@ class ProblemTest extends DbTestCase
             'auto_assign_mode' => \Entity::AUTO_ASSIGN_HARDWARE_CATEGORY,
         ]);
 
-        $problem = new \Problem();
+        $problem = new Problem();
         $problem->add([
             'name' => 'A problem to check if it is automatically assigned user and group (1)',
             'content' => 'foo',
@@ -156,7 +156,7 @@ class ProblemTest extends DbTestCase
             'auto_assign_mode' => \Entity::AUTO_ASSIGN_CATEGORY_HARDWARE,
         ]);
 
-        $problem = new \Problem();
+        $problem = new Problem();
         $problem->add([
             'name' => 'A problem to check if it is automatically assigned user and group (2)',
             'content' => 'foo',
@@ -182,7 +182,7 @@ class ProblemTest extends DbTestCase
 
     public function testGetTeamRoles(): void
     {
-        $roles = \Problem::getTeamRoles();
+        $roles = Problem::getTeamRoles();
         $this->assertContains(\CommonITILActor::ASSIGN, $roles);
         $this->assertContains(\CommonITILActor::OBSERVER, $roles);
         $this->assertContains(\CommonITILActor::REQUESTER, $roles);
@@ -190,9 +190,9 @@ class ProblemTest extends DbTestCase
 
     public function testGetTeamRoleName(): void
     {
-        $roles = \Problem::getTeamRoles();
+        $roles = Problem::getTeamRoles();
         foreach ($roles as $role) {
-            $this->assertNotEmpty(\Problem::getTeamRoleName($role));
+            $this->assertNotEmpty(Problem::getTeamRoleName($role));
         }
     }
 
@@ -204,7 +204,7 @@ class ProblemTest extends DbTestCase
         $last_task_date = '2017-01-01 00:00:00';
         $last_solution_date = '2018-01-01 00:00:00';
 
-        $problem = new \Problem();
+        $problem = new Problem();
         $problem_id = $problem->add(
             [
                 'name'        => 'ticket title',
@@ -409,7 +409,7 @@ class ProblemTest extends DbTestCase
 
         $this->login();
 
-        $problem = $this->createItem(\Problem::class, [
+        $problem = $this->createItem(Problem::class, [
             'name' => 'Problem Test',
             'content' => 'Problem content',
             '_actors' => [
@@ -422,7 +422,7 @@ class ProblemTest extends DbTestCase
             ],
         ]);
 
-        $input = ['itemtype' => \Problem::class, 'items_id' => $problem->getID()];
+        $input = ['itemtype' => Problem::class, 'items_id' => $problem->getID()];
         $doc = new \Document();
         $this->assertEquals($expected, $doc->can(-1, CREATE, $input));
     }
@@ -435,7 +435,7 @@ class ProblemTest extends DbTestCase
         $glpi_user = getItemByTypeName(\User::class, 'glpi');
 
         $problem = $this->createItem(
-            \Problem::class,
+            Problem::class,
             [
                 'name' => 'Problem',
                 'content' => 'Content of the problem',
@@ -476,26 +476,26 @@ class ProblemTest extends DbTestCase
         $this->createItem(
             \ITILSolution::class,
             [
-                'itemtype' => \Problem::class,
+                'itemtype' => Problem::class,
                 'items_id' => $problem->getID(),
                 'content' => 'Solution content',
             ]
         );
 
         $this->assertTrue($problem->getFromDB($problem->getID()));
-        $this->assertEquals(\Problem::SOLVED, $problem->fields['status']);
+        $this->assertEquals(Problem::SOLVED, $problem->fields['status']);
         $this->updateItem(
-            \Problem::class,
+            Problem::class,
             $problem->getID(),
             [
-                'status' => \Problem::OBSERVED,
+                'status' => Problem::OBSERVED,
             ]
         );
 
         $this->createItem(
             \ITILFollowup::class,
             [
-                'itemtype' => \Problem::class,
+                'itemtype' => Problem::class,
                 'items_id' => $problem->getID(),
                 'content' => 'Followup content',
                 'add_reopen' => 1,
@@ -506,37 +506,37 @@ class ProblemTest extends DbTestCase
         $solution = new \ITILSolution();
         $this->assertTrue(
             $solution->getFromDBByCrit([
-                'itemtype' => \Problem::class,
+                'itemtype' => Problem::class,
                 'items_id' => $problem->getID(),
                 'status' => \CommonITILValidation::REFUSED,
             ])
         );
         $this->assertTrue($problem->getFromDB($problem->getID()));
-        $this->assertEquals(\Problem::ASSIGNED, $problem->fields['status']);
+        $this->assertEquals(Problem::ASSIGNED, $problem->fields['status']);
 
         $this->createItem(
             \ITILSolution::class,
             [
-                'itemtype' => \Problem::class,
+                'itemtype' => Problem::class,
                 'items_id' => $problem->getID(),
                 'content' => 'Solution content',
             ]
         );
 
         $this->assertTrue($problem->getFromDB($problem->getID()));
-        $this->assertEquals(\Problem::SOLVED, $problem->fields['status']);
+        $this->assertEquals(Problem::SOLVED, $problem->fields['status']);
         $this->updateItem(
-            \Problem::class,
+            Problem::class,
             $problem->getID(),
             [
-                'status' => \Problem::OBSERVED,
+                'status' => Problem::OBSERVED,
             ]
         );
 
         $this->createItem(
             \ITILFollowup::class,
             [
-                'itemtype' => \Problem::class,
+                'itemtype' => Problem::class,
                 'items_id' => $problem->getID(),
                 'content' => 'Followup content',
                 'add_close' => 1,
@@ -547,13 +547,13 @@ class ProblemTest extends DbTestCase
         $solution = new \ITILSolution();
         $this->assertTrue(
             $solution->getFromDBByCrit([
-                'itemtype' => \Problem::class,
+                'itemtype' => Problem::class,
                 'items_id' => $problem->getID(),
                 'status' => \CommonITILValidation::ACCEPTED,
             ])
         );
 
         $this->assertTrue($problem->getFromDB($problem->getID()));
-        $this->assertEquals(\Problem::CLOSED, $problem->fields['status']);
+        $this->assertEquals(Problem::CLOSED, $problem->fields['status']);
     }
 }

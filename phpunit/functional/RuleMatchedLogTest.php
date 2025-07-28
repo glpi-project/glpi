@@ -35,6 +35,8 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Inventory\Converter;
+use Glpi\Inventory\Inventory;
 use Printer;
 use RuleMatchedLog as GlobalRuleMatchedLog;
 
@@ -93,11 +95,11 @@ class RuleMatchedLogTest extends DbTestCase
           <DEVICEID>bar</DEVICEID>
         </REQUEST>';
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
-        $inventory = new \Glpi\Inventory\Inventory($json);
+        $inventory = new Inventory($json);
         $date_add = $_SESSION['glpi_currenttime'];
 
         if ($inventory->inError()) {
@@ -148,7 +150,7 @@ class RuleMatchedLogTest extends DbTestCase
 
         $dataupdate = $converter->convert($xmlupdate);
         $jsonupdate = json_decode($dataupdate);
-        $inventoryupdate = new \Glpi\Inventory\Inventory($jsonupdate);
+        $inventoryupdate = new Inventory($jsonupdate);
         $date_update = $_SESSION['glpi_currenttime'];
         if ($inventoryupdate->inError()) {
             $this->dump($inventoryupdate->getErrors());

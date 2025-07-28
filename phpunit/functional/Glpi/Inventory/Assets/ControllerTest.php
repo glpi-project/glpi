@@ -34,6 +34,8 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use Glpi\Inventory\Asset\Controller;
+use Glpi\Inventory\Converter;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
@@ -96,12 +98,12 @@ class ControllerTest extends AbstractInventoryAsset
     #[DataProvider('assetProvider')]
     public function testPrepare($xml, $expected)
     {
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\Controller($computer, $json->content->controllers);
+        $asset = new Controller($computer, $json->content->controllers);
         $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected), $result[0]);
@@ -121,12 +123,12 @@ class ControllerTest extends AbstractInventoryAsset
         //convert data
         $expected = $this->assetProvider()[0];
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($expected['xml']);
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\Controller($computer, $json->content->controllers);
+        $asset = new Controller($computer, $json->content->controllers);
         $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected['expected']), $result[0]);

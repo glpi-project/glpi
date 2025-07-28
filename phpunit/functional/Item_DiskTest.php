@@ -84,7 +84,7 @@ class Item_DiskTest extends DbTestCase
     {
         $this->login();
 
-        $obj = new \Item_Disk();
+        $obj = new Item_Disk();
 
         // Add
         $computer = getItemByTypeName('Computer', '_test_pc01');
@@ -106,7 +106,7 @@ class Item_DiskTest extends DbTestCase
     {
         $this->login();
 
-        $obj = new \Item_Disk();
+        $obj = new Item_Disk();
 
         // Add
         $computer = getItemByTypeName('Computer', '_test_pc01');
@@ -135,7 +135,7 @@ class Item_DiskTest extends DbTestCase
     {
         $this->login();
 
-        $obj = new \Item_Disk();
+        $obj = new Item_Disk();
 
         // Add
         $computer = getItemByTypeName('Computer', '_test_pc01');

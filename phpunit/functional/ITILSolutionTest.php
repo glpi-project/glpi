@@ -455,7 +455,7 @@ HTML,
             $this->assertGreaterThan(0, $id);
 
             $this->assertTrue($ticket->getFromDB($ticket->fields['id']));
-            $this->assertEquals(\Ticket::SOLVED, $ticket->fields['status']);
+            $this->assertEquals(Ticket::SOLVED, $ticket->fields['status']);
         }
     }
 

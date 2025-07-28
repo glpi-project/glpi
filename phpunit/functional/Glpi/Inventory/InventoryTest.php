@@ -35,6 +35,10 @@
 namespace tests\units\Glpi\Inventory;
 
 use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\Inventory\Asset\Software;
+use Glpi\Inventory\Conf;
+use Glpi\Inventory\Inventory;
+use Glpi\Inventory\Request;
 use InventoryTestCase;
 use Item_OperatingSystem;
 use Lockedfield;
@@ -110,7 +114,7 @@ class InventoryTest extends InventoryTestCase
         $this->assertSame($expected, $computer->fields);
 
         //operating system
-        $ios = new \Item_OperatingSystem();
+        $ios = new Item_OperatingSystem();
         $iterator = $ios->getFromItem($computer);
         $record = $iterator->current();
 
@@ -1177,21 +1181,21 @@ class InventoryTest extends InventoryTestCase
         $iterator = $DB->request($monitor_criteria);
         $this->assertCount(1, $iterator);
         $this->assertSame('Monitor import (by serial)', $iterator->current()['name']);
-        $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $iterator->current()['method']);
+        $this->assertSame(Request::INVENT_QUERY, $iterator->current()['method']);
 
         $printer_criteria = $criteria;
         $printer_criteria['WHERE'] = ['itemtype' => \Printer::getType()];
         $iterator = $DB->request($printer_criteria);
         $this->assertCount(1, $iterator);
         $this->assertSame('Printer import (by serial)', $iterator->current()['name']);
-        $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $iterator->current()['method']);
+        $this->assertSame(Request::INVENT_QUERY, $iterator->current()['method']);
 
         $computer_criteria = $criteria;
         $computer_criteria['WHERE'] = ['itemtype' => \Computer::getType()];
         $iterator = $DB->request($computer_criteria);
         $this->assertCount(1, $iterator);
         $this->assertSame('Computer import (by serial + uuid)', $iterator->current()['name']);
-        $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $iterator->current()['method']);
+        $this->assertSame(Request::INVENT_QUERY, $iterator->current()['method']);
     }
 
     public function testUpdateComputer()
@@ -1248,7 +1252,7 @@ class InventoryTest extends InventoryTestCase
         $iterator = $DB->request($monitor_criteria);
         $this->assertCount(1, $iterator);
         $this->assertSame('Monitor import (by serial)', $iterator->current()['name']);
-        $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $iterator->current()['method']);
+        $this->assertSame(Request::INVENT_QUERY, $iterator->current()['method']);
 
         $computer_criteria = $mrules_criteria;
         $computer_criteria['WHERE'] = ['itemtype' => \Computer::getType()];
@@ -1256,7 +1260,7 @@ class InventoryTest extends InventoryTestCase
         $this->assertCount(1, $iterator);
         $this->assertSame('Computer import (by serial + uuid)', $iterator->current()['name']);
         $this->assertSame($agent['items_id'], $iterator->current()['items_id']);
-        $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $iterator->current()['method']);
+        $this->assertSame(Request::INVENT_QUERY, $iterator->current()['method']);
 
         //get computer models, manufacturer, ...
         $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->current();
@@ -1317,7 +1321,7 @@ class InventoryTest extends InventoryTestCase
         $this->assertSame($expected, $computer->fields);
 
         //operating system
-        $ios = new \Item_OperatingSystem();
+        $ios = new Item_OperatingSystem();
         $iterator = $ios->getFromItem($computer);
         $record = $iterator->current();
 
@@ -1547,7 +1551,7 @@ class InventoryTest extends InventoryTestCase
         $this->assertSame($expected, $computer->fields);
 
         //operating system
-        $ios = new \Item_OperatingSystem();
+        $ios = new Item_OperatingSystem();
         $iterator = $ios->getFromItem($computer);
         $record = $iterator->current();
 
@@ -1717,7 +1721,7 @@ class InventoryTest extends InventoryTestCase
         $this->assertSame($expected, $computer->fields);
 
         //operating system
-        $ios = new \Item_OperatingSystem();
+        $ios = new Item_OperatingSystem();
         $iterator = $ios->getFromItem($computer);
         $record = $iterator->current();
 
@@ -1889,7 +1893,7 @@ class InventoryTest extends InventoryTestCase
         $iterator = $DB->request($monitor_criteria);
         $this->assertCount(1, $iterator);
         $this->assertSame('Monitor update (by serial)', $iterator->current()['name']);
-        $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $iterator->current()['method']);
+        $this->assertSame(Request::INVENT_QUERY, $iterator->current()['method']);
 
         $computer_criteria = $mrules_criteria;
         $computer_criteria['WHERE'][] = ['itemtype' => \Computer::getType()];
@@ -1899,7 +1903,7 @@ class InventoryTest extends InventoryTestCase
         foreach ($iterator as $rmlog) {
             $this->assertSame('Computer update (by serial + uuid)', $rmlog['name']);
             $this->assertSame($agent['items_id'], $rmlog['items_id']);
-            $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $rmlog['method']);
+            $this->assertSame(Request::INVENT_QUERY, $rmlog['method']);
         }
     }
 
@@ -2239,7 +2243,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         foreach ($iterator as $neteq) {
             $this->assertSame('NetworkEquipment import (by serial)', $neteq['name']);
             $this->assertSame($equipments_id, $neteq['items_id']);
-            $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $neteq['method']);
+            $this->assertSame(Request::INVENT_QUERY, $neteq['method']);
         }
 
         $unmanaged_criteria = $mrules_criteria;
@@ -2248,7 +2252,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertCount(5, $iterator);
         foreach ($iterator as $unmanaged) {
             $this->assertSame('Global import (by ip+ifdescr)', $unmanaged['name']);
-            $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $unmanaged['method']);
+            $this->assertSame(Request::INVENT_QUERY, $unmanaged['method']);
         }
     }
 
@@ -2740,7 +2744,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertCount($expected_eq_count, $iterator);
         foreach ($iterator as $neteq) {
             $this->assertSame('NetworkEquipment import (by serial)', $neteq['name']);
-            $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $neteq['method']);
+            $this->assertSame(Request::INVENT_QUERY, $neteq['method']);
         }
 
         $unmanaged_criteria = $mrules_criteria;
@@ -2893,7 +2897,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertCount($expected_eq_count, $iterator);
         foreach ($iterator as $neteq) {
             $this->assertSame('NetworkEquipment import (by serial)', $neteq['name']);
-            $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $neteq['method']);
+            $this->assertSame(Request::INVENT_QUERY, $neteq['method']);
         }
     }
     public function testImportNetworkEquipmentMultiConnections()
@@ -3566,7 +3570,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         foreach ($iterator as $neteq) {
             $this->assertSame('NetworkEquipment import (by serial)', $neteq['name']);
             $this->assertSame($equipments_id, $neteq['items_id']);
-            $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $neteq['method']);
+            $this->assertSame(Request::INVENT_QUERY, $neteq['method']);
         }
 
         $unmanaged_criteria = $mrules_criteria;
@@ -3948,7 +3952,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertCount($expected_eq_count, $iterator);
         foreach ($iterator as $neteq) {
             $this->assertSame('NetworkEquipment import (by serial)', $neteq['name']);
-            $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $neteq['method']);
+            $this->assertSame(Request::INVENT_QUERY, $neteq['method']);
         }
 
         $unmanaged_criteria = $mrules_criteria;
@@ -3957,7 +3961,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertCount(count($unmanageds), $iterator);
         foreach ($iterator as $unmanaged) {
             $this->assertSame('Global import (by ip+ifdescr)', $unmanaged['name']);
-            $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $unmanaged['method']);
+            $this->assertSame(Request::INVENT_QUERY, $unmanaged['method']);
         }
     }
 
@@ -4475,7 +4479,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $refused = new \RefusedEquipment();
         $this->assertTrue($refused->getFromDB($result['id']));
 
-        $inventory_request = new \Glpi\Inventory\Request();
+        $inventory_request = new Request();
         $inventory_request->handleContentType('application/json');
         $contents = file_get_contents($refused->getInventoryFileName());
         $inventory_request->handleRequest($contents);
@@ -4525,14 +4529,14 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $iterator = $DB->request($monitor_criteria);
         $this->assertCount(1, $iterator);
         $this->assertSame('Monitor import (by serial)', $iterator->current()['name']);
-        $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $iterator->current()['method']);
+        $this->assertSame(Request::INVENT_QUERY, $iterator->current()['method']);
 
         $printer_criteria = $criteria;
         $printer_criteria['WHERE'] = ['itemtype' => \Printer::getType()];
         $iterator = $DB->request($printer_criteria);
         $this->assertCount(1, $iterator);
         $this->assertSame('Printer import (by serial)', $iterator->current()['name']);
-        $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $iterator->current()['method']);
+        $this->assertSame(Request::INVENT_QUERY, $iterator->current()['method']);
 
         $computer_criteria = $criteria;
         $computer_criteria['WHERE'] = ['itemtype' => \Computer::getType()];
@@ -4540,7 +4544,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertCount(1, $iterator);
         $this->assertSame('Computer import (by serial + uuid)', $iterator->current()['name']);
         $this->assertSame($gagent->fields['items_id'], $iterator->current()['items_id']);
-        $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $iterator->current()['method']);
+        $this->assertSame(Request::INVENT_QUERY, $iterator->current()['method']);
     }
 
     public function testImportRefusedFromEntitiesRules()
@@ -4648,7 +4652,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         $json_name = 'computer_1.json';
         $json_path = self::INV_FIXTURES . $json_name;
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $result = $conf->importFiles([$json_name => $json_path]);
 
         $this->assertIsArray($result[$json_name]);
@@ -4680,7 +4684,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         UnifiedArchive::create($json_paths, self::INVENTORY_ARCHIVE_PATH);
 
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $result = $conf->importFiles(['to_inventory.zip' => self::INVENTORY_ARCHIVE_PATH]);
 
         $this->assertCount(3, $result);
@@ -4737,7 +4741,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         //change config to import vms as computers
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue($conf->saveConf(['vm_as_computer' => 1]));
         $this->logout();
 
@@ -4865,7 +4869,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         //change config to import vms as computers
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue($conf->saveConf(['vm_as_computer' => 1]));
         $this->logout();
 
@@ -4876,7 +4880,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'criteria'  => 'itemtype',
                 'pattern'   => 'Computer',
             ], [
-                'condition' => \RuleImportAsset::PATTERN_IS,
+                'condition' => RuleImportAsset::PATTERN_IS,
                 'criteria'  => 'name',
                 'pattern'   => 'db',
             ],
@@ -4884,9 +4888,9 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $action = [
             'action_type' => 'assign',
             'field'       => '_ignore_import',
-            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_NO_IMPORT,
+            'value'       => RuleImportAsset::RULE_ACTION_LINK_OR_NO_IMPORT,
         ];
-        $rule = new \RuleImportAsset();
+        $rule = new RuleImportAsset();
         $collection = new \RuleImportAssetCollection();
         $rulecriteria = new \RuleCriteria();
 
@@ -4966,7 +4970,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'criteria'  => 'itemtype',
                 'pattern'   => 'DatabaseInstance',
             ], [
-                'condition' => \RuleImportAsset::PATTERN_EXISTS,
+                'condition' => RuleImportAsset::PATTERN_EXISTS,
                 'criteria'  => 'name',
                 'pattern'   => '1',
             ],
@@ -4974,9 +4978,9 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $action = [
             'action_type' => 'assign',
             'field'       => '_inventory',
-            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
+            'value'       => RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
         ];
-        $rule = new \RuleImportAsset();
+        $rule = new RuleImportAsset();
         $collection = new \RuleImportAssetCollection();
         $rulecriteria = new \RuleCriteria();
 
@@ -5019,11 +5023,11 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'criteria'  => 'itemtype',
                 'pattern'   => 'DatabaseInstance',
             ], [
-                'condition' => \RuleImportAsset::PATTERN_FIND,
+                'condition' => RuleImportAsset::PATTERN_FIND,
                 'criteria'  => 'name',
                 'pattern'   => '1',
             ], [
-                'condition' => \RuleImportAsset::PATTERN_EXISTS,
+                'condition' => RuleImportAsset::PATTERN_EXISTS,
                 'criteria' => 'name',
                 'pattern' => '1',
             ],
@@ -5031,9 +5035,9 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $action = [
             'action_type' => 'assign',
             'field'       => '_inventory',
-            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
+            'value'       => RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
         ];
-        $rule = new \RuleImportAsset();
+        $rule = new RuleImportAsset();
         $collection = new \RuleImportAssetCollection();
         $rulecriteria = new \RuleCriteria();
 
@@ -5358,7 +5362,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $iterator = $DB->request($criteria);
         $this->assertCount(1, $iterator);
         $this->assertSame('Phone import (by serial + uuid)', $iterator->current()['name']);
-        $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $iterator->current()['method']);
+        $this->assertSame(Request::INVENT_QUERY, $iterator->current()['method']);
 
         //get phone models, manufacturer, ...
         $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->current();
@@ -5423,7 +5427,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertSame($expected, $phone->fields);
 
         //operating system
-        $ios = new \Item_OperatingSystem();
+        $ios = new Item_OperatingSystem();
         $iterator = $ios->getFromItem($phone);
         $record = $iterator->current();
 
@@ -6401,7 +6405,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'states_id_default' => $inv_states_id,
                 'stale_agents_delay' => 1,
                 'stale_agents_action' => exportArrayToDB([
-                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_STATUS,
+                    Conf::STALE_AGENT_ACTION_STATUS,
                 ]),
                 'stale_agents_status' => $cleaned_states_id,
             ]
@@ -6435,7 +6439,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         //check states has been set
         $this->assertSame($inv_states_id, $computer->fields['states_id']);
 
-        $lockedfield = new \Lockedfield();
+        $lockedfield = new Lockedfield();
         $this->assertTrue($lockedfield->isHandled($computer));
         $this->assertSame([], $lockedfield->getLockedValues($computer->getType(), $computers_id));
 
@@ -8959,7 +8963,7 @@ JSON;
     {
         //change config to import vms as computers
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue($conf->saveConf(['vm_as_computer' => 1]));
         $this->logout();
 
@@ -8988,9 +8992,9 @@ JSON;
         $action = [
             'action_type' => 'assign',
             'field'       => '_ignore_import',
-            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_NO_IMPORT,
+            'value'       => RuleImportAsset::RULE_ACTION_LINK_OR_NO_IMPORT,
         ];
-        $rule = new \RuleImportAsset();
+        $rule = new RuleImportAsset();
         $collection = new \RuleImportAssetCollection();
         $rulecriteria = new \RuleCriteria();
 
@@ -9140,7 +9144,7 @@ JSON;
 
         // Change config to import VMs as computers
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue($conf->saveConf(['vm_as_computer' => 1]));
         $this->logout();
 
@@ -9200,9 +9204,9 @@ JSON;
         $action = [
             'action_type' => 'assign',
             'field'       => '_ignore_import',
-            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_NO_IMPORT,
+            'value'       => RuleImportAsset::RULE_ACTION_LINK_OR_NO_IMPORT,
         ];
-        $rule = new \RuleImportAsset();
+        $rule = new RuleImportAsset();
         $collection = new \RuleImportAssetCollection();
         $rulecriteria = new \RuleCriteria();
 
@@ -9312,7 +9316,7 @@ JSON;
                     $this->assertSame($entity_id, $asset->getEntity());
                     if (
                         $asset->maybeRecursive()
-                        && !($asset instanceof \Glpi\Inventory\Asset\Software)
+                        && !($asset instanceof Software)
                     ) {
                         $this->assertTrue($asset->isRecursive());
                     }
@@ -9416,7 +9420,7 @@ JSON;
         $computer = new \Computer();
 
         //initial import
-        $inventory = new \Glpi\Inventory\Inventory();
+        $inventory = new Inventory();
         $inventory->setData($json);
         $inventory->doInventory();
         $this->assertTrue($computer->getFromDBByCrit(['name' => 'pc_with_additional_prop']));
@@ -9455,7 +9459,7 @@ JSON;
             'name' => 'Link if possible, otherwise imports declined',
             'is_active' => 1,
             'entities_id' => 0,
-            'sub_type' => \RuleImportAsset::class,
+            'sub_type' => RuleImportAsset::class,
             'match' => \Rule::AND_MATCHING,
             'condition' => 0,
             'description' => '',
@@ -9480,7 +9484,7 @@ JSON;
                 'rules_id' => $rules_id,
                 'action_type' => 'assign',
                 'field' => '_inventory',
-                'value' => \RuleImportAsset::RULE_ACTION_LINK_OR_NO_IMPORT, //import denied
+                'value' => RuleImportAsset::RULE_ACTION_LINK_OR_NO_IMPORT, //import denied
             ])
         );
 

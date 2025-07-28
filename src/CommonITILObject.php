@@ -3167,7 +3167,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
     }
 
     /**
-     * @see Glpi\Features\Clonable::post_clone
+     * @see Clonable::post_clone
      */
     public function post_clone($source, $history)
     {

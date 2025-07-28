@@ -34,6 +34,9 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use Glpi\Inventory\Asset\VirtualMachine;
+use Glpi\Inventory\Conf;
+use Glpi\Inventory\Converter;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
@@ -109,14 +112,14 @@ class VirtualMachineTest extends AbstractInventoryAsset
     #[DataProvider('assetProvider')]
     public function testPrepare($xml, $expected)
     {
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\VirtualMachine($computer, $json->content->virtualmachines);
+        $asset = new VirtualMachine($computer, $json->content->virtualmachines);
         $asset->setExtraData((array) $json->content);
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $asset->checkConf($conf)
         );
@@ -138,14 +141,14 @@ class VirtualMachineTest extends AbstractInventoryAsset
         //convert data
         $expected = $this->assetProvider()[0];
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($expected['xml']);
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\VirtualMachine($computer, $json->content->virtualmachines);
+        $asset = new VirtualMachine($computer, $json->content->virtualmachines);
         $asset->setExtraData((array) $json->content);
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $asset->checkConf($conf)
         );
@@ -156,7 +159,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
         $agent->getEmpty();
         $asset->setAgent($agent);
 
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $asset->checkConf($conf)
         );
@@ -246,7 +249,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
 
         //change config to import vms as computers
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue($conf->saveConf(['vm_as_computer' => 1]));
         $this->logout();
 
@@ -456,7 +459,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
 
         //change config to import vms as computers
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue($conf->saveConf(['vm_as_computer' => 1]));
         $this->logout();
 
@@ -680,7 +683,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
 
         //change config to import vms as computers
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue($conf->saveConf(['vm_as_computer' => 1]));
         $this->logout();
 
@@ -822,7 +825,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
             'name' => 'Has been inventoried',
         ]);
 
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue($conf->saveConf(['vm_as_computer' => 1, 'states_id_default' => $inv_states_id]));
         $this->logout();
 

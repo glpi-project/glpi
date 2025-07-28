@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Search\Provider;
 
 use DbTestCase;
+use Glpi\Search\Provider\SQLProvider;
 
 class SQLProviderTest extends DbTestCase
 {
@@ -43,7 +44,7 @@ class SQLProviderTest extends DbTestCase
         global $DB;
 
         $already_linked = [];
-        $item_item_join = \Glpi\Search\Provider\SQLProvider::getLeftJoinCriteria(
+        $item_item_join = SQLProvider::getLeftJoinCriteria(
             'Ticket',
             'glpi_tickets',
             $already_linked,
@@ -60,7 +61,7 @@ class SQLProviderTest extends DbTestCase
             $it->analyseJoins($item_item_join)
         );
 
-        $item_item_revert_join = \Glpi\Search\Provider\SQLProvider::getLeftJoinCriteria(
+        $item_item_revert_join = SQLProvider::getLeftJoinCriteria(
             'Ticket_Ticket',
             'glpi_tickets_tickets',
             $already_linked,

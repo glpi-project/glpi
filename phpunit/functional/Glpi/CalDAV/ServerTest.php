@@ -35,6 +35,19 @@
 namespace tests\units\Glpi\CalDAV;
 
 use DbTestCase;
+use Glpi\CalDAV\Server;
+use Ramsey\Uuid\Uuid;
+use Sabre\DAV\Exception\NotAuthenticated;
+use Sabre\HTTP\Response;
+use Sabre\VObject\Component;
+use Sabre\VObject\Component\VEvent;
+use Sabre\VObject\Component\VJournal;
+use Sabre\VObject\Component\VTodo;
+use Sabre\VObject\Property\FlatText;
+use Sabre\VObject\Property\ICalendar\Recur;
+use Sabre\VObject\Property\IntegerValue;
+use Sabre\VObject\Property\Text;
+use Sabre\VObject\Reader;
 
 /* Test for inc/glpi/caldav/server.class.php */
 
@@ -397,7 +410,7 @@ class ServerTest extends DbTestCase
             $server = $this->getServerInstance('PROPFIND', $path);
             $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
 
-            $response = new \Sabre\HTTP\Response();
+            $response = new Response();
             $server->invokeMethod($server->httpRequest, $response, false);
 
             $this->validateResponseIsOk($response, 207, 'application/xml'); // 207 'Multi-Status'
@@ -533,7 +546,7 @@ class ServerTest extends DbTestCase
             $server = $this->getServerInstance('PROPFIND', $calendar_path);
             $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
 
-            $response = new \Sabre\HTTP\Response();
+            $response = new Response();
             $server->invokeMethod($server->httpRequest, $response, false);
 
             $this->validateResponseIsOk($response, 207, 'application/xml'); // 207 'Multi-Status'
@@ -669,7 +682,7 @@ class ServerTest extends DbTestCase
                 $server = $this->getServerInstance('PROPFIND', $path);
                 $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($username . ':' . $username));
 
-                $response = new \Sabre\HTTP\Response();
+                $response = new Response();
                 $server->invokeMethod($server->httpRequest, $response, false);
                 $this->validateResponseIsOk($response, 207, 'application/xml'); // 207 'Multi-Status'
 
@@ -858,7 +871,7 @@ class ServerTest extends DbTestCase
         $server = $this->getServerInstance('PROPFIND', $event_path);
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
 
-        $response = new \Sabre\HTTP\Response();
+        $response = new Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
         $this->validateResponseIsOk($response, 207, 'application/xml'); // 207 'Multi-Status'
@@ -880,14 +893,14 @@ class ServerTest extends DbTestCase
         $server = $this->getServerInstance('GET', $event_path);
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
 
-        $response = new \Sabre\HTTP\Response();
+        $response = new Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
         $this->validateResponseIsOk($response, 200, 'text/calendar'); // 200 'OK'
 
-        $vcalendar = \Sabre\VObject\Reader::read($response->getBodyAsString());
+        $vcalendar = Reader::read($response->getBodyAsString());
         $vcomp = $vcalendar->getBaseComponent();
-        $this->assertInstanceOf(\Sabre\VObject\Component\VEvent::class, $vcomp);
+        $this->assertInstanceOf(VEvent::class, $vcomp);
         $this->validateCommonVComponentProperties($vcomp, $event->fields);
 
         // Validate PUT method for update of an existing event
@@ -909,7 +922,7 @@ VCALENDAR
 
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
 
-        $response = new \Sabre\HTTP\Response();
+        $response = new Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
         $this->assertEquals(204, $response->getStatus()); // 204 'No Content'
@@ -925,7 +938,7 @@ VCALENDAR
         $server = $this->getServerInstance('DELETE', $event_path);
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
 
-        $response = new \Sabre\HTTP\Response();
+        $response = new Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
         $this->assertEquals(204, $response->getStatus()); // 204 'No Content'
@@ -933,7 +946,7 @@ VCALENDAR
         $this->assertFalse($event->getFromDB($event_id)); // Cannot read it anymore
 
         // Validate PUT method for creation of a new event
-        $event_uuid = \Ramsey\Uuid\Uuid::uuid4()->toString();
+        $event_uuid = Uuid::uuid4()->toString();
         $event_path = 'calendars/users/' . $user->fields['name'] . '/calendar/' . $event_uuid . '.ics';
 
         $server = $this->getServerInstance('PUT', $event_path);
@@ -957,7 +970,7 @@ VCALENDAR
 
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
 
-        $response = new \Sabre\HTTP\Response();
+        $response = new Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
         $this->assertEquals(201, $response->getStatus()); // 201 'Created'
@@ -1006,14 +1019,14 @@ VCALENDAR
         $server = $this->getServerInstance('GET', $event_path);
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
 
-        $response = new \Sabre\HTTP\Response();
+        $response = new Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
         $this->validateResponseIsOk($response, 200, 'text/calendar'); // 200 'OK'
 
-        $vcalendar = \Sabre\VObject\Reader::read($response->getBodyAsString());
+        $vcalendar = Reader::read($response->getBodyAsString());
         $vcomp = $vcalendar->getBaseComponent();
-        $this->assertInstanceOf(\Sabre\VObject\Component\VEvent::class, $vcomp);
+        $this->assertInstanceOf(VEvent::class, $vcomp);
 
         $this->validateCommonVComponentProperties($vcomp, $event->fields);
 
@@ -1036,7 +1049,7 @@ VCALENDAR
 
         $this->login($login, $pass);
 
-        $event_uuid = \Ramsey\Uuid\Uuid::uuid4()->toString();
+        $event_uuid = Uuid::uuid4()->toString();
         $event_path = 'calendars/users/' . $user->fields['name'] . '/calendar/' . $event_uuid . '.ics';
 
         $server = $this->getServerInstance('PUT', $event_path);
@@ -1061,7 +1074,7 @@ END:VCALENDAR
 VCALENDAR
         );
 
-        $response = new \Sabre\HTTP\Response();
+        $response = new Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
         $this->assertEquals(201, $response->getStatus()); // 201 'Created'
@@ -1114,14 +1127,14 @@ VCALENDAR
         $server = $this->getServerInstance('GET', $event_path);
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
 
-        $response = new \Sabre\HTTP\Response();
+        $response = new Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
         $this->validateResponseIsOk($response, 200, 'text/calendar'); // 200 'OK'
 
-        $vcalendar = \Sabre\VObject\Reader::read($response->getBodyAsString());
+        $vcalendar = Reader::read($response->getBodyAsString());
         $vcomp = $vcalendar->getBaseComponent();
-        $this->assertInstanceOf(\Sabre\VObject\Component\VTodo::class, $vcomp);
+        $this->assertInstanceOf(VTodo::class, $vcomp);
 
         $this->validateCommonVComponentProperties($vcomp, $event->fields);
 
@@ -1150,14 +1163,14 @@ VCALENDAR
         $server = $this->getServerInstance('GET', $event_path);
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
 
-        $response = new \Sabre\HTTP\Response();
+        $response = new Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
         $this->validateResponseIsOk($response, 200, 'text/calendar'); // 200 'OK'
 
-        $vcalendar = \Sabre\VObject\Reader::read($response->getBodyAsString());
+        $vcalendar = Reader::read($response->getBodyAsString());
         $vcomp = $vcalendar->getBaseComponent();
-        $this->assertInstanceOf(\Sabre\VObject\Component\VTodo::class, $vcomp);
+        $this->assertInstanceOf(VTodo::class, $vcomp);
         $this->assertNull($vcomp->DTEND); // Be sure that VTODO does not contains a DTEND
 
         $rrule_specs = current($vcomp->RRULE->getJsonValue()); // Get first array element which actually correspond to rrule specs
@@ -1178,7 +1191,7 @@ VCALENDAR
         $this->login($login, $pass);
 
         // Create planned task with TO DO state
-        $event_uuid = \Ramsey\Uuid\Uuid::uuid4()->toString();
+        $event_uuid = Uuid::uuid4()->toString();
         $event_path = 'calendars/users/' . $user->fields['name'] . '/calendar/' . $event_uuid . '.ics';
 
         $server = $this->getServerInstance('PUT', $event_path);
@@ -1203,7 +1216,7 @@ END:VCALENDAR
 VCALENDAR
         );
 
-        $response = new \Sabre\HTTP\Response();
+        $response = new Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
         $this->assertEquals(201, $response->getStatus()); // 201 'Created'
@@ -1221,7 +1234,7 @@ VCALENDAR
         $this->assertNull($event->fields['rrule']);
 
         // Create done and not planned task
-        $event_uuid = \Ramsey\Uuid\Uuid::uuid4()->toString();
+        $event_uuid = Uuid::uuid4()->toString();
         $event_path = 'calendars/users/' . $user->fields['name'] . '/calendar/' . $event_uuid . '.ics';
 
         $server = $this->getServerInstance('PUT', $event_path);
@@ -1244,7 +1257,7 @@ END:VCALENDAR
 VCALENDAR
         );
 
-        $response = new \Sabre\HTTP\Response();
+        $response = new Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
         $this->assertEquals(201, $response->getStatus()); // 201 'Created'
@@ -1289,14 +1302,14 @@ VCALENDAR
         $server = $this->getServerInstance('GET', $event_path);
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
 
-        $response = new \Sabre\HTTP\Response();
+        $response = new Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
         $this->validateResponseIsOk($response, 200, 'text/calendar'); // 200 'OK'
 
-        $vcalendar = \Sabre\VObject\Reader::read($response->getBodyAsString());
+        $vcalendar = Reader::read($response->getBodyAsString());
         $vcomp = $vcalendar->getBaseComponent();
-        $this->assertInstanceOf(\Sabre\VObject\Component\VJournal::class, $vcomp);
+        $this->assertInstanceOf(VJournal::class, $vcomp);
 
         $this->validateCommonVComponentProperties($vcomp, $event->fields);
 
@@ -1318,7 +1331,7 @@ VCALENDAR
 
         $this->login($login, $pass);
 
-        $event_uuid = \Ramsey\Uuid\Uuid::uuid4()->toString();
+        $event_uuid = Uuid::uuid4()->toString();
         $event_path = 'calendars/users/' . $user->fields['name'] . '/calendar/' . $event_uuid . '.ics';
 
         $server = $this->getServerInstance('PUT', $event_path);
@@ -1340,7 +1353,7 @@ END:VCALENDAR
 VCALENDAR
         );
 
-        $response = new \Sabre\HTTP\Response();
+        $response = new Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
         $this->assertEquals(201, $response->getStatus()); // 201 'Created'
@@ -1387,14 +1400,14 @@ VCALENDAR
         $server = $this->getServerInstance('GET', $reminder_path);
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
 
-        $response = new \Sabre\HTTP\Response();
+        $response = new Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
         $this->validateResponseIsOk($response, 200, 'text/calendar'); // 200 'OK'
 
-        $vcalendar = \Sabre\VObject\Reader::read($response->getBodyAsString());
+        $vcalendar = Reader::read($response->getBodyAsString());
         $vcomp = $vcalendar->getBaseComponent();
-        $this->assertInstanceOf(\Sabre\VObject\Component\VJournal::class, $vcomp);
+        $this->assertInstanceOf(VJournal::class, $vcomp);
 
         $this->validateCommonVComponentProperties($vcomp, $reminder->fields);
 
@@ -1418,7 +1431,7 @@ END:VCALENDAR
 VCALENDAR
         );
 
-        $response = new \Sabre\HTTP\Response();
+        $response = new Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
         $this->assertEquals(204, $response->getStatus()); // 204 'No Content'
@@ -1466,14 +1479,14 @@ VCALENDAR
         $server = $this->getServerInstance('GET', $reminder_path);
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
 
-        $response = new \Sabre\HTTP\Response();
+        $response = new Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
         $this->validateResponseIsOk($response, 200, 'text/calendar'); // 200 'OK'
 
-        $vcalendar = \Sabre\VObject\Reader::read($response->getBodyAsString());
+        $vcalendar = Reader::read($response->getBodyAsString());
         $vcomp = $vcalendar->getBaseComponent();
-        $this->assertInstanceOf(\Sabre\VObject\Component\VTodo::class, $vcomp);
+        $this->assertInstanceOf(VTodo::class, $vcomp);
 
         $this->validateCommonVComponentProperties($vcomp, $reminder->fields);
 
@@ -1500,7 +1513,7 @@ END:VCALENDAR
 VCALENDAR
         );
 
-        $response = new \Sabre\HTTP\Response();
+        $response = new Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
         $this->assertEquals(204, $response->getStatus()); // 204 'No Content'
@@ -1554,14 +1567,14 @@ VCALENDAR
         $server = $this->getServerInstance('GET', $ticket_task_path);
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
 
-        $response = new \Sabre\HTTP\Response();
+        $response = new Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
         $this->validateResponseIsOk($response, 200, 'text/calendar'); // 200 'OK'
 
-        $vcalendar = \Sabre\VObject\Reader::read($response->getBodyAsString());
+        $vcalendar = Reader::read($response->getBodyAsString());
         $vcomp = $vcalendar->getBaseComponent();
-        $this->assertInstanceOf(\Sabre\VObject\Component\VTodo::class, $vcomp);
+        $this->assertInstanceOf(VTodo::class, $vcomp);
 
         $this->validateCommonVComponentProperties($vcomp, $ticket_task->fields);
 
@@ -1586,7 +1599,7 @@ END:VCALENDAR
 VCALENDAR
         );
 
-        $response = new \Sabre\HTTP\Response();
+        $response = new Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
         $this->assertEquals(204, $response->getStatus()); // 204 'No Content'
@@ -1621,7 +1634,7 @@ END:VCALENDAR
 VCALENDAR
         );
 
-        $response = new \Sabre\HTTP\Response();
+        $response = new Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
         $this->assertEquals(204, $response->getStatus()); // 204 'No Content'
@@ -1682,17 +1695,17 @@ VCALENDAR
         $server = $this->getServerInstance('GET', $project_task_path);
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
 
-        $response = new \Sabre\HTTP\Response();
+        $response = new Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
         $this->validateResponseIsOk($response, 200, 'text/calendar'); // 200 'OK'
 
-        $vcalendar = \Sabre\VObject\Reader::read($response->getBodyAsString());
+        $vcalendar = Reader::read($response->getBodyAsString());
         $vcomp = $vcalendar->getBaseComponent();
-        $this->assertInstanceOf(\Sabre\VObject\Component\VTodo::class, $vcomp);
+        $this->assertInstanceOf(VTodo::class, $vcomp);
 
         $this->validateCommonVComponentProperties($vcomp, $project_task->fields);
-        $this->assertInstanceOf(\Sabre\VObject\Property\IntegerValue::class, $vcomp->{'PERCENT-COMPLETE'});
+        $this->assertInstanceOf(IntegerValue::class, $vcomp->{'PERCENT-COMPLETE'});
         $this->assertEquals((int) $project_task->fields['percent_done'], $vcomp->{'PERCENT-COMPLETE'}->getValue());
 
         // Test updating VTODO object (without plan information)
@@ -1717,7 +1730,7 @@ END:VCALENDAR
 VCALENDAR
         );
 
-        $response = new \Sabre\HTTP\Response();
+        $response = new Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
         $this->assertEquals(204, $response->getStatus()); // 204 'No Content'
@@ -1752,7 +1765,7 @@ END:VCALENDAR
 VCALENDAR
         );
 
-        $response = new \Sabre\HTTP\Response();
+        $response = new Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
         $this->assertEquals(204, $response->getStatus()); // 204 'No Content'
@@ -1778,7 +1791,7 @@ VCALENDAR
 
         $this->login($login, $pass);
 
-        $event_uuid = \Ramsey\Uuid\Uuid::uuid4()->toString();
+        $event_uuid = Uuid::uuid4()->toString();
         $event_path = 'calendars/users/' . $user->fields['name'] . '/calendar/' . $event_uuid . '.ics';
 
         // Store a new object
@@ -1807,7 +1820,7 @@ END:VCALENDAR
 VCALENDAR
         );
 
-        $response = new \Sabre\HTTP\Response();
+        $response = new Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
         $this->assertEquals(201, $response->getStatus()); // 201 'Created'
@@ -1816,22 +1829,22 @@ VCALENDAR
         $server = $this->getServerInstance('GET', $event_path);
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
 
-        $response = new \Sabre\HTTP\Response();
+        $response = new Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
         $this->validateResponseIsOk($response, 200, 'text/calendar'); // 200 'OK'
 
-        $vcalendar = \Sabre\VObject\Reader::read($response->getBodyAsString());
+        $vcalendar = Reader::read($response->getBodyAsString());
         $vcomp = $vcalendar->getBaseComponent();
-        $this->assertInstanceOf(\Sabre\VObject\Component\VEvent::class, $vcomp);
+        $this->assertInstanceOf(VEvent::class, $vcomp);
 
         $categories = $vcomp->select('CATEGORIES');
         $this->assertCount(2, $categories);
-        $this->assertInstanceOf(\Sabre\VObject\Property\Text::class, $categories[0]);
+        $this->assertInstanceOf(Text::class, $categories[0]);
         $this->assertEquals('First category', $categories[0]->getValue());
-        $this->assertInstanceOf(\Sabre\VObject\Property\Text::class, $categories[1]);
+        $this->assertInstanceOf(Text::class, $categories[1]);
         $this->assertEquals('Another cat', $categories[1]->getValue());
-        $this->assertInstanceOf(\Sabre\VObject\Property\FlatText::class, $vcomp->LOCATION);
+        $this->assertInstanceOf(FlatText::class, $vcomp->LOCATION);
         $this->assertEquals('Here', $vcomp->LOCATION->getValue());
     }
 
@@ -1839,23 +1852,23 @@ VCALENDAR
      * Validate that method invocation on server will result in a
      * NotAuthenticated exception.
      *
-     * @param \Glpi\CalDAV\Server $server
+     * @param Server $server
      */
-    private function validateThatAuthenticationIsRequired(\Glpi\CalDAV\Server $server)
+    private function validateThatAuthenticationIsRequired(Server $server)
     {
-        $this->expectException(\Sabre\DAV\Exception\NotAuthenticated::class);
-        $response = new \Sabre\HTTP\Response();
+        $this->expectException(NotAuthenticated::class);
+        $response = new Response();
         $server->invokeMethod($server->httpRequest, $response, false);
     }
 
     /**
      * Validate that response is OK.
      *
-     * @param \Sabre\HTTP\Response $response
+     * @param Response $response
      * @param integer              $status
      * @param string|null          $content_type
      */
-    private function validateResponseIsOk(\Sabre\HTTP\Response $response, int $status, string $content_type)
+    private function validateResponseIsOk(Response $response, int $status, string $content_type)
     {
         $this->assertEquals($status, $response->getStatus());
         $this->assertEquals(
@@ -1875,13 +1888,13 @@ VCALENDAR
      * @param string $http_method
      * @param string $path
      *
-     * @return \Glpi\CalDAV\Server
+     * @return Server
      */
-    private function getServerInstance(string $http_method, string $path): \Glpi\CalDAV\Server
+    private function getServerInstance(string $http_method, string $path): Server
     {
         $base_url = '/caldav.php';
 
-        $server = new \Glpi\CalDAV\Server();
+        $server = new Server();
         $server->httpRequest->setBaseUrl($base_url);
         $server->httpRequest->setMethod($http_method);
         $server->httpRequest->setUrl($base_url . $path);
@@ -1892,11 +1905,11 @@ VCALENDAR
     /**
      * Get a XPath object from response.
      *
-     * @param \Sabre\HTTP\Response $response
+     * @param Response $response
      *
      * @return \DOMXPath
      */
-    private function getXpathFromResponse(\Sabre\HTTP\Response $response): \DOMXPath
+    private function getXpathFromResponse(Response $response): \DOMXPath
     {
         $xml = new \DOMDocument();
         $this->assertTrue($xml->loadXML($response->getBodyAsString()));
@@ -1906,21 +1919,21 @@ VCALENDAR
     /**
      * Validate common VComponent properies based on object fields.
      *
-     * @param \Sabre\VObject\Component $vcomp
+     * @param Component $vcomp
      * @param array $fields
      */
-    private function validateCommonVComponentProperties(\Sabre\VObject\Component $vcomp, array $fields)
+    private function validateCommonVComponentProperties(Component $vcomp, array $fields)
     {
-        $this->assertInstanceOf(\Sabre\VObject\Property\FlatText::class, $vcomp->UID);
+        $this->assertInstanceOf(FlatText::class, $vcomp->UID);
         $this->assertEquals($fields['uuid'], $vcomp->UID->getValue());
 
         if (array_key_exists('name', $fields)) {
-            $this->assertInstanceOf(\Sabre\VObject\Property\FlatText::class, $vcomp->SUMMARY);
+            $this->assertInstanceOf(FlatText::class, $vcomp->SUMMARY);
             $this->assertEquals($fields['name'], $vcomp->SUMMARY->getValue());
         }
 
         $content = array_key_exists('text', $fields) ? $fields['text'] : $fields['content'];
-        $this->assertInstanceOf(\Sabre\VObject\Property\FlatText::class, $vcomp->DESCRIPTION);
+        $this->assertInstanceOf(FlatText::class, $vcomp->DESCRIPTION);
         $this->assertEquals($content, $vcomp->DESCRIPTION->getValue());
 
         $creation_date = array_key_exists('date_creation', $fields) ? $fields['date_creation'] : $fields['date'];
@@ -1938,7 +1951,7 @@ VCALENDAR
         } else {
             $this->assertNull($vcomp->DTSTART);
         }
-        $end_field = $vcomp instanceof \Sabre\VObject\Component\VEvent ? 'DTEND' : 'DUE';
+        $end_field = $vcomp instanceof VEvent ? 'DTEND' : 'DUE';
         if (!empty($fields['end'])) {
             $this->assertInstanceOf(\Sabre\VObject\Property\ICalendar\DateTime::class, $vcomp->$end_field);
             $this->assertEquals($fields['end'], $vcomp->$end_field->getDateTime()->format('Y-m-d H:i:s'));
@@ -1947,7 +1960,7 @@ VCALENDAR
         }
 
         if (!empty($fields['rrule'])) {
-            $this->assertInstanceOf(\Sabre\VObject\Property\ICalendar\Recur::class, $vcomp->RRULE);
+            $this->assertInstanceOf(Recur::class, $vcomp->RRULE);
             $this->assertCount(1, $vcomp->RRULE->getJsonValue());
         } else {
             $this->assertNull($vcomp->RRULE);

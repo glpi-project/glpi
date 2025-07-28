@@ -199,7 +199,7 @@ class NotificationMailingTest extends DbTestCase
         //setup
         $this->login();
 
-        $user = new \User();
+        $user = new User();
         $this->assertTrue((bool) $user->getFromDB(\Session::getLoginUserID()));
         $this->assertNull($user->fields['is_notif_enable_default']); //default value from user table
         $this->assertTrue((bool) $user->isUserNotificationEnable()); //like default configuration

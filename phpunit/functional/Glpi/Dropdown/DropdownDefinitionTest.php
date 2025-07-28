@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Dropdown;
 
 use DbTestCase;
+use Gettext\Languages\Category;
 use Glpi\Dropdown\DropdownDefinition;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;
@@ -551,7 +552,7 @@ class DropdownDefinitionTest extends DbTestCase
     public function testSystemNameUpdate(): void
     {
         $definition = $this->createItem(
-            \Glpi\Dropdown\DropdownDefinition::class,
+            DropdownDefinition::class,
             [
                 'system_name' => 'testSystemNameUpdate',
             ]
@@ -706,7 +707,7 @@ class DropdownDefinitionTest extends DbTestCase
     public function testUpdateTranslations()
     {
         $definition = $this->createItem(
-            \Glpi\Dropdown\DropdownDefinition::class,
+            DropdownDefinition::class,
             [
                 'system_name' => 'test',
             ]
@@ -768,9 +769,9 @@ class DropdownDefinitionTest extends DbTestCase
 
     public function testGetTranslatedName()
     {
-        /** @var \Glpi\Dropdown\DropdownDefinition $definition */
+        /** @var DropdownDefinition $definition */
         $definition = $this->createItem(
-            \Glpi\Dropdown\DropdownDefinition::class,
+            DropdownDefinition::class,
             [
                 'system_name' => 'test',
                 'translations' => [
@@ -830,10 +831,10 @@ class DropdownDefinitionTest extends DbTestCase
     #[DataProvider('pluralFormProvider')]
     public function testGetPluralFormsForLanguage(string $language, array $expected)
     {
-        $result = \Glpi\Dropdown\DropdownDefinition::getPluralFormsForLanguage($language);
+        $result = DropdownDefinition::getPluralFormsForLanguage($language);
         $this->assertCount(count($expected), $result);
         foreach ($result as $index => $category) {
-            $this->assertInstanceOf(\Gettext\Languages\Category::class, $category);
+            $this->assertInstanceOf(Category::class, $category);
             $this->assertEquals($expected[$index]['id'], $category->id);
             $this->assertEquals($expected[$index]['formula'], $category->formula);
             $this->assertEquals($expected[$index]['examples'], $category->examples);

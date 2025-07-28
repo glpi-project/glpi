@@ -35,6 +35,9 @@
 namespace tests\units\Glpi\Inventory\Asset;
 
 use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\Inventory\Conf;
+use Glpi\Inventory\Converter;
+use Glpi\Inventory\Inventory;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
@@ -80,13 +83,13 @@ class PrinterTest extends AbstractInventoryAsset
         $_SESSION['glpi_currenttime'] = $date_now;
         $expected = str_replace('DATE_NOW', $_SESSION['glpi_currenttime'], $expected);
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Printer($computer, $json->content->printers);
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue($asset->checkConf($conf));
         $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
@@ -104,7 +107,7 @@ class PrinterTest extends AbstractInventoryAsset
         $printer = new \Printer();
 
         $data = (array) $json->content;
-        $inventory = new \Glpi\Inventory\Inventory();
+        $inventory = new Inventory();
         $this->assertTrue($inventory->setData($json));
 
         $agent = new \Agent();
@@ -112,7 +115,7 @@ class PrinterTest extends AbstractInventoryAsset
 
         $main = new \Glpi\Inventory\MainAsset\Printer($printer, $json);
         $main->setAgent($agent)->setExtraData($data);
-        $main->checkConf(new \Glpi\Inventory\Conf());
+        $main->checkConf(new Conf());
         $result = $main->prepare();
         $this->assertCount(1, $result);
         $this->assertEquals(
@@ -212,7 +215,7 @@ class PrinterTest extends AbstractInventoryAsset
         $printer = new \Printer();
 
         $data = (array) $json->content;
-        $inventory = new \Glpi\Inventory\Inventory();
+        $inventory = new Inventory();
         $this->assertTrue($inventory->setData($json));
 
         $agent = new \Agent();
@@ -220,7 +223,7 @@ class PrinterTest extends AbstractInventoryAsset
 
         $main = new \Glpi\Inventory\MainAsset\Printer($printer, $json);
         $main->setAgent($agent)->setExtraData($data);
-        $main->checkConf(new \Glpi\Inventory\Conf());
+        $main->checkConf(new Conf());
         $result = $main->prepare();
         $this->assertCount(1, $result);
         $this->assertEquals(
@@ -298,7 +301,7 @@ class PrinterTest extends AbstractInventoryAsset
         $printer = new \Printer();
 
         $data = (array) $json->content;
-        $inventory = new \Glpi\Inventory\Inventory();
+        $inventory = new Inventory();
         $this->assertTrue($inventory->setData($json));
 
         $agent = new \Agent();
@@ -306,7 +309,7 @@ class PrinterTest extends AbstractInventoryAsset
 
         $main = new \Glpi\Inventory\MainAsset\Printer($printer, $json);
         $main->setAgent($agent)->setExtraData($data);
-        $main->checkConf(new \Glpi\Inventory\Conf());
+        $main->checkConf(new Conf());
         $result = $main->prepare();
         $this->assertCount(1, $result);
         $this->assertSame(
@@ -1401,7 +1404,7 @@ class PrinterTest extends AbstractInventoryAsset
 
         //per default, configuration allows printer import. change that.
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $conf->saveConf([
                 'import_printer' => 0,
@@ -1489,7 +1492,7 @@ class PrinterTest extends AbstractInventoryAsset
         $printer = new \Printer();
 
         $data = (array) $json->content;
-        $inventory = new \Glpi\Inventory\Inventory();
+        $inventory = new Inventory();
         $this->assertTrue($inventory->setData($json));
 
         $agent = new \Agent();
@@ -1497,7 +1500,7 @@ class PrinterTest extends AbstractInventoryAsset
 
         $main = new \Glpi\Inventory\MainAsset\Printer($printer, $json);
         $main->setAgent($agent)->setExtraData($data);
-        $main->checkConf(new \Glpi\Inventory\Conf());
+        $main->checkConf(new Conf());
         $main->setDiscovery(true);
         $result = $main->prepare();
         $this->assertCount(1, $result);
@@ -1557,7 +1560,7 @@ class PrinterTest extends AbstractInventoryAsset
         $printer = new \Printer();
         $data = (array) $json->content;
 
-        $inventory = new \Glpi\Inventory\Inventory();
+        $inventory = new Inventory();
         $this->assertTrue($inventory->setData($json));
 
         $agent = new \Agent();
@@ -1565,7 +1568,7 @@ class PrinterTest extends AbstractInventoryAsset
 
         $main = new \Glpi\Inventory\MainAsset\Printer($printer, $json);
         $main->setAgent($agent)->setExtraData($data);
-        $main->checkConf(new \Glpi\Inventory\Conf());
+        $main->checkConf(new Conf());
         $main->setDiscovery(true);
         $result = $main->prepare();
         $this->assertCount(1, $result);
@@ -1700,7 +1703,7 @@ class PrinterTest extends AbstractInventoryAsset
         $printer = new \Printer();
 
         $data = (array) $json->content;
-        $inventory = new \Glpi\Inventory\Inventory();
+        $inventory = new Inventory();
         $this->assertTrue($inventory->setData($json));
 
         $agent = new \Agent();
@@ -1708,7 +1711,7 @@ class PrinterTest extends AbstractInventoryAsset
 
         $main = new \Glpi\Inventory\MainAsset\Printer($printer, $json);
         $main->setAgent($agent)->setExtraData($data);
-        $main->checkConf(new \Glpi\Inventory\Conf());
+        $main->checkConf(new Conf());
         $result = $main->prepare();
         $this->assertCount(1, $result);
         $this->assertSame(
@@ -1813,9 +1816,9 @@ class PrinterTest extends AbstractInventoryAsset
 
 
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $source = json_decode($converter->convert($xml_source));
-        $inventory = new \Glpi\Inventory\Inventory($source);
+        $inventory = new Inventory($source);
 
         if ($inventory->inError()) {
             $this->dump($inventory->getErrors());
@@ -2050,9 +2053,9 @@ class PrinterTest extends AbstractInventoryAsset
         </REQUEST>
         ';
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $source = json_decode($converter->convert($xml_source));
-        $inventory = new \Glpi\Inventory\Inventory($source);
+        $inventory = new Inventory($source);
 
         if ($inventory->inError()) {
             $this->dump($inventory->getErrors());
@@ -2161,9 +2164,9 @@ class PrinterTest extends AbstractInventoryAsset
         </REQUEST>
         ';
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $source = json_decode($converter->convert($xml_source));
-        $inventory = new \Glpi\Inventory\Inventory($source);
+        $inventory = new Inventory($source);
 
         if ($inventory->inError()) {
             $this->dump($inventory->getErrors());

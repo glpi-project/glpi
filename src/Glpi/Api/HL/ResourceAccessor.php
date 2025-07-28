@@ -37,7 +37,7 @@ namespace Glpi\Api\HL;
 use CommonDBTM;
 use DBmysql;
 use Glpi\Api\HL\Controller\AbstractController;
-use Glpi\Api\HL\Doc\Schema;
+use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\RSQL\RSQLException;
 use Glpi\Api\HL\Search\SearchContext;
 use Glpi\Http\JSONResponse;
@@ -113,8 +113,8 @@ final class ResourceAccessor
     public static function getInputParamsBySchema(array $schema, array $request_params): array
     {
         $params = [];
-        $flattened_properties = Schema::flattenProperties($schema['properties']);
-        $joins = Schema::getJoins($schema['properties']);
+        $flattened_properties = Doc\Schema::flattenProperties($schema['properties']);
+        $joins = Doc\Schema::getJoins($schema['properties']);
         $writable_props = array_filter($flattened_properties, static function ($v, $k) use ($joins) {
             $base_k = strstr($k, '.', true) ?: $k;
             $is_join = isset($joins[$base_k]);

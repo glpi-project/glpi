@@ -34,6 +34,8 @@
 
 namespace tests\units;
 
+use Glpi\DBAL\QuerySubQuery;
+
 /* Test for inc/migration.class.php */
 class Migration extends \GLPITestCase
 {
@@ -1327,7 +1329,7 @@ class Migration extends \GLPITestCase
             ],
         ]);
 
-        $sub_query = new \Glpi\DBAL\QuerySubQuery([
+        $sub_query = new QuerySubQuery([
             'SELECT' => [
                 'profiles_id',
             ],

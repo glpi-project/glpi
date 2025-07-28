@@ -48,7 +48,12 @@ use Glpi\Form\Destination\FormDestinationProblem;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
+use Glpi\Form\QuestionType\QuestionTypeCheckbox;
+use Glpi\Form\QuestionType\QuestionTypeDropdown;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
+use Glpi\Form\QuestionType\QuestionTypeItem;
+use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
+use Glpi\Form\QuestionType\QuestionTypeRadio;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\Section;
@@ -95,25 +100,25 @@ class FormTest extends DbTestCase
 
         // Extra data for some question types
         $extra_datas = [
-            \Glpi\Form\QuestionType\QuestionTypeRadio::class => [
+            QuestionTypeRadio::class => [
                 'options' => [
                     123 => 'Radio 1',
                 ],
             ],
-            \Glpi\Form\QuestionType\QuestionTypeCheckbox::class => [
+            QuestionTypeCheckbox::class => [
                 'options' => [
                     123 => 'Checkbox 1',
                 ],
             ],
-            \Glpi\Form\QuestionType\QuestionTypeDropdown::class => [
+            QuestionTypeDropdown::class => [
                 'options' => [
                     123 => 'Dropdown 1',
                 ],
             ],
-            \Glpi\Form\QuestionType\QuestionTypeItem::class => [
+            QuestionTypeItem::class => [
                 'itemtype' => 'Computer',
             ],
-            \Glpi\Form\QuestionType\QuestionTypeItemDropdown::class => [
+            QuestionTypeItemDropdown::class => [
                 'itemtype'          => 'Location',
                 'categories_filter' => [],
                 'root_items_id'     => 0,

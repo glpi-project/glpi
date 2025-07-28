@@ -738,7 +738,7 @@ abstract class CommonDBConnexity extends CommonDBTM
         array $ids
     ) {
 
-        if (!$item instanceof \CommonDBConnexity) {
+        if (!$item instanceof CommonDBConnexity) {
             parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
             return;
         }

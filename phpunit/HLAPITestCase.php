@@ -32,6 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Controller\CoreController;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
@@ -45,7 +46,7 @@ use Glpi\Http\Response;
 /**
  * @property HLAPIHelper $api
  */
-class HLAPITestCase extends \DbTestCase
+class HLAPITestCase extends DbTestCase
 {
     private $bearer_token = null;
 
@@ -63,12 +64,12 @@ class HLAPITestCase extends \DbTestCase
         parent::resetSession();
     }
 
-    public function loginWeb(string $user_name = TU_USER, string $user_pass = TU_PASS, bool $noauto = true, bool $expected = true): \Auth
+    public function loginWeb(string $user_name = TU_USER, string $user_pass = TU_PASS, bool $noauto = true, bool $expected = true): Auth
     {
         return parent::login($user_name, $user_pass, $noauto, $expected);
     }
 
-    public function login(string $user_name = TU_USER, string $user_pass = TU_PASS, bool $noauto = true, bool $expected = true): \Auth
+    public function login(string $user_name = TU_USER, string $user_pass = TU_PASS, bool $noauto = true, bool $expected = true): Auth
     {
         $request = new Request('POST', '/token', [
             'Content-Type' => 'application/json',
@@ -81,7 +82,7 @@ class HLAPITestCase extends \DbTestCase
             'scope' => 'api',
         ]));
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
+            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -92,7 +93,7 @@ class HLAPITestCase extends \DbTestCase
                     $this->bearer_token = $content['access_token'];
                 });
         });
-        return new \Auth();
+        return new Auth();
     }
 
     public function getCurrentBearerToken(): ?string
@@ -356,13 +357,13 @@ final class HLAPIHelper
         }
 
         $this->call(new Request('POST', $endpoint), function ($call) {
-            /** @var \HLAPICallAsserter $call */
+            /** @var HLAPICallAsserter $call */
             $call->response->isUnauthorizedError();
         }, false);
 
         $new_item_location = null;
         $this->call($request, function ($call) use (&$new_item_location, $endpoint) {
-            /** @var \HLAPICallAsserter $call */
+            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($endpoint) {
@@ -378,21 +379,21 @@ final class HLAPIHelper
         });
 
         $this->call(new Request('PATCH', $new_item_location), function ($call) {
-            /** @var \HLAPICallAsserter $call */
+            /** @var HLAPICallAsserter $call */
             $call->response->isUnauthorizedError();
         }, false);
         $this->call(new Request('GET', $new_item_location), function ($call) {
-            /** @var \HLAPICallAsserter $call */
+            /** @var HLAPICallAsserter $call */
             $call->response->isUnauthorizedError();
         }, false);
         $this->call(new Request('DELETE', $new_item_location), function ($call) {
-            /** @var \HLAPICallAsserter $call */
+            /** @var HLAPICallAsserter $call */
             $call->response->isUnauthorizedError();
         }, false);
 
         // Get the new item
         $this->call(new Request('GET', $new_item_location), function ($call) use ($schema, $endpoint, $create_params) {
-            /** @var \HLAPICallAsserter $call */
+            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->matchesSchema($schema, 'The response for the GET route path of endpoint "' . $endpoint . '" does not match the schema', 'read')
@@ -413,7 +414,7 @@ final class HLAPIHelper
             $request->setParameter($key, $value);
         }
         $this->call($request, function ($call) use ($schema, $endpoint) {
-            /** @var \HLAPICallAsserter $call */
+            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->matchesSchema($schema, 'The response for the PATCH route path of endpoint "' . $endpoint . '" does not match the schema', 'read');
@@ -421,7 +422,7 @@ final class HLAPIHelper
 
         // Get the new item again and verify that the name has been updated
         $this->call(new Request('GET', $new_item_location), function ($call) use ($update_params) {
-            /** @var \HLAPICallAsserter $call */
+            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($update_params) {
@@ -437,19 +438,19 @@ final class HLAPIHelper
 
         // Delete the new item
         $this->call(new Request('DELETE', $new_item_location), function ($call) {
-            /** @var \HLAPICallAsserter $call */
+            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(fn($content) => $this->test->assertNull($content));
         });
 
         $itemtype = $schema['x-itemtype'];
-        if (is_subclass_of($itemtype, \CommonDBTM::class)) {
+        if (is_subclass_of($itemtype, CommonDBTM::class)) {
             $item = new $itemtype();
             if ($item->maybeDeleted()) {
                 // Try getting the new item again. It should still exist.
                 $this->call(new Request('GET', $new_item_location), function ($call) use ($update_params) {
-                    /** @var \HLAPICallAsserter $call */
+                    /** @var HLAPICallAsserter $call */
                     $call->response
                         ->isOK()
                         ->jsonContent(function ($content) use ($update_params) {
@@ -467,7 +468,7 @@ final class HLAPIHelper
                 $request = new Request('DELETE', $new_item_location);
                 $request->setParameter('force', 1);
                 $this->call($request, function ($call) {
-                    /** @var \HLAPICallAsserter $call */
+                    /** @var HLAPICallAsserter $call */
                     $call->response
                         ->isOK()
                         ->jsonContent(fn($content) => $this->test->assertNull($content));
@@ -477,7 +478,7 @@ final class HLAPIHelper
 
         // Try getting the new item again (should be a 404)
         $this->call(new Request('GET', $new_item_location), function ($call) {
-            /** @var \HLAPICallAsserter $call */
+            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isNotFoundError();
         });
@@ -610,7 +611,7 @@ final class HLAPIHelper
 
         // Search without authorization should return an error
         $this->call(new Request('GET', $endpoint), function ($call) {
-            /** @var \HLAPICallAsserter $call */
+            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isUnauthorizedError();
         }, false);
@@ -651,7 +652,7 @@ final class HLAPIHelper
                 $request->setParameter($key, $value);
             }
             $this->call($request, function ($call) {
-                /** @var \HLAPICallAsserter $call */
+                /** @var HLAPICallAsserter $call */
                 $call->response
                     ->isOK();
             });
@@ -659,7 +660,7 @@ final class HLAPIHelper
 
         // Test default pagination
         $this->call(new Request('GET', $endpoint), function ($call) use ($endpoint, $dataset) {
-            /** @var \HLAPICallAsserter $call */
+            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->headers(function ($headers) use ($endpoint, $dataset) {
@@ -678,7 +679,7 @@ final class HLAPIHelper
         $request->setParameter('start', 1);
         $request->setParameter('limit', 2);
         $this->call($request, function ($call) use ($endpoint, $dataset) {
-            /** @var \HLAPICallAsserter $call */
+            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->headers(function ($headers) use ($endpoint, $dataset) {
@@ -698,7 +699,7 @@ final class HLAPIHelper
         $request->setParameter('filter', $unique_field . '=like=' . $unique_prefix . '*');
 
         $this->call($request, function ($call) use ($unique_prefix, $unique_field, $endpoint, $dataset) {
-            /** @var \HLAPICallAsserter $call */
+            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($unique_prefix, $unique_field, $endpoint, $dataset) {
@@ -712,7 +713,7 @@ final class HLAPIHelper
         $request = new Request('GET', $endpoint);
         $request->setParameter('filter', $unique_field . '==' . $dataset[0][$unique_field]);
         $this->call($request, function ($call) use ($unique_field, $endpoint) {
-            /** @var \HLAPICallAsserter $call */
+            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($unique_field, $endpoint) {
@@ -735,7 +736,7 @@ final class HLAPIHelper
         $sort = $unique_field . ':desc';
         $request->setParameter('sort', $sort);
         $this->call($request, function ($call) use ($sorted_dataset, $endpoint, $sort, $unique_field) {
-            /** @var \HLAPICallAsserter $call */
+            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($sorted_dataset, $endpoint, $sort, $unique_field) {
@@ -756,7 +757,7 @@ final class HLAPIHelper
             return $a[$unique_field] <=> $b[$unique_field];
         });
         $this->call($request, function ($call) use ($sorted_dataset, $endpoint, $sort, $unique_field) {
-            /** @var \HLAPICallAsserter $call */
+            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($sorted_dataset, $endpoint, $sort, $unique_field) {
@@ -956,7 +957,7 @@ final class HLAPIResponseAsserter
                 $schema = substr($schema, 0, -2);
             }
             $matched_route = $this->call_asserter->route->get();
-            /** @var class-string<\Glpi\Api\HL\Controller\AbstractController> $controller */
+            /** @var class-string<AbstractController> $controller */
             $controller = $matched_route->getController();
             $schema = $controller::getKnownSchemas($this->api_version)[$schema];
         } else {

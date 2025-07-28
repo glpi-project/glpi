@@ -275,7 +275,7 @@ class RuleAssetTest extends DbTestCase
         $this->createRuleComment(\RuleAsset::ONADD);
 
         // test create ticket (trigger on title)
-        $computer = new \Computer();
+        $computer = new Computer();
         $computers_id = $computer->add([
             'name'        => "computer",
             '_auto'       => 1,
@@ -455,8 +455,8 @@ class RuleAssetTest extends DbTestCase
     private function createRuleComment($condition)
     {
         $ruleasset  = new \RuleAsset();
-        $rulecrit   = new \RuleCriteria();
-        $ruleaction = new \RuleAction();
+        $rulecrit   = new RuleCriteria();
+        $ruleaction = new RuleAction();
 
         $ruleid = $ruleasset->add($ruleinput = [
             'name'         => "rule comment",
@@ -470,14 +470,14 @@ class RuleAssetTest extends DbTestCase
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruleid,
             'criteria'  => '_itemtype',
-            'condition' => \Rule::PATTERN_IS,
+            'condition' => Rule::PATTERN_IS,
             'pattern'   => "Computer",
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruleid,
             'criteria'  => '_auto',
-            'condition' => \Rule::PATTERN_IS,
+            'condition' => Rule::PATTERN_IS,
             'pattern'   => 1,
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
@@ -493,8 +493,8 @@ class RuleAssetTest extends DbTestCase
     private function createRuleCommentRegex($condition)
     {
         $ruleasset  = new \RuleAsset();
-        $rulecrit   = new \RuleCriteria();
-        $ruleaction = new \RuleAction();
+        $rulecrit   = new RuleCriteria();
+        $ruleaction = new RuleAction();
 
         $ruleid = $ruleasset->add($ruleinput = [
             'name'         => "rule comment regex",
@@ -508,14 +508,14 @@ class RuleAssetTest extends DbTestCase
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruleid,
             'criteria'  => '_itemtype',
-            'condition' => \Rule::REGEX_MATCH,
+            'condition' => Rule::REGEX_MATCH,
             'pattern'   => "/(.*)/s",
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruleid,
             'criteria'  => '_auto',
-            'condition' => \Rule::PATTERN_IS,
+            'condition' => Rule::PATTERN_IS,
             'pattern'   => 1,
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
@@ -531,8 +531,8 @@ class RuleAssetTest extends DbTestCase
     private function createRuleLocation($condition)
     {
         $ruleasset  = new \RuleAsset();
-        $rulecrit   = new \RuleCriteria();
-        $ruleaction = new \RuleAction();
+        $rulecrit   = new RuleCriteria();
+        $ruleaction = new RuleAction();
 
         $ruleid = $ruleasset->add($ruleinput = [
             'name'         => "rule location",
@@ -546,7 +546,7 @@ class RuleAssetTest extends DbTestCase
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruleid,
             'criteria'  => '_itemtype',
-            'condition' => \Rule::PATTERN_IS,
+            'condition' => Rule::PATTERN_IS,
             'pattern'   => "*",
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
@@ -589,17 +589,17 @@ class RuleAssetTest extends DbTestCase
         $this->assertGreaterThan(0, $rule_asset_id);
 
         // Add condition (priority = 5) to rule
-        $rule_criteria_em = new \RuleCriteria();
+        $rule_criteria_em = new RuleCriteria();
         $rule_criteria_id = $rule_criteria_em->add($crit_input = [
             'rules_id'  => $rule_asset_id,
             'criteria'  => 'users_id',
-            'condition' => \Rule::PATTERN_EXISTS,
+            'condition' => Rule::PATTERN_EXISTS,
             'pattern'   => '',
         ]);
         $this->assertGreaterThan(0, $rule_criteria_id);
 
         // Add action to rule
-        $rule_action_em = new \RuleAction();
+        $rule_action_em = new RuleAction();
         $rule_action_id = $rule_action_em->add([
             'rules_id'    => $rule_asset_id,
             'action_type' => 'fromuser',
@@ -609,7 +609,7 @@ class RuleAssetTest extends DbTestCase
         $this->assertGreaterThan(0, $rule_action_id);
 
         // Test on creation
-        $computer_em = new \Computer();
+        $computer_em = new Computer();
         $computer_id = $computer_em->add([
             'name'        => 'test',
             'entities_id' => 0,
@@ -620,7 +620,7 @@ class RuleAssetTest extends DbTestCase
         $this->assertEquals($locations_id, $computer_em->getField('locations_id'));
 
         // Test on update
-        $computer_em = new \Computer();
+        $computer_em = new Computer();
         $computer_id = $computer_em->add([
             'name'        => 'test2',
             'entities_id' => 0,
@@ -644,8 +644,8 @@ class RuleAssetTest extends DbTestCase
 
         // Create rule
         $ruleasset  = new \RuleAsset();
-        $rulecrit   = new \RuleCriteria();
-        $ruleaction = new \RuleAction();
+        $rulecrit   = new RuleCriteria();
+        $ruleaction = new RuleAction();
 
         $ruletid = $ruleasset->add($ruletinput = [
             'name'         => 'test default group from user criterion',
@@ -661,7 +661,7 @@ class RuleAssetTest extends DbTestCase
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruletid,
             'criteria'  => 'groups_id',
-            'condition' => \Rule::PATTERN_DOES_NOT_EXISTS,
+            'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
             'pattern'   => 1,
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
@@ -699,7 +699,7 @@ class RuleAssetTest extends DbTestCase
         $this->assertTrue($user->update($user->fields));
 
         // Check ticket that trigger rule on creation
-        $computer     = new \Computer();
+        $computer     = new Computer();
         $computers_id = $computer->add($computer_input = [
             'name'        => 'test',
             'entities_id' => 0,
@@ -719,8 +719,8 @@ class RuleAssetTest extends DbTestCase
 
         // Create rule
         $ruleasset  = new \RuleAsset();
-        $rulecrit   = new \RuleCriteria();
-        $ruleaction = new \RuleAction();
+        $rulecrit   = new RuleCriteria();
+        $ruleaction = new RuleAction();
 
         $ruletid = $ruleasset->add($ruletinput = [
             'name'         => 'test first group from user criterion',
@@ -736,7 +736,7 @@ class RuleAssetTest extends DbTestCase
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruletid,
             'criteria'  => 'groups_id',
-            'condition' => \Rule::PATTERN_DOES_NOT_EXISTS,
+            'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
             'pattern'   => 1,
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
@@ -795,7 +795,7 @@ class RuleAssetTest extends DbTestCase
         $this->checkInput($group_user, $group_user_id, $group_user_input);
 
         // Check ticket that trigger rule on creation
-        $computer     = new \Computer();
+        $computer     = new Computer();
         $computers_id = $computer->add($computer_input = [
             'name'        => 'test',
             'entities_id' => 0,
@@ -819,8 +819,8 @@ class RuleAssetTest extends DbTestCase
         );
 
         $ruleasset  = new \RuleAsset();
-        $rulecrit   = new \RuleCriteria();
-        $ruleaction = new \RuleAction();
+        $rulecrit   = new RuleCriteria();
+        $ruleaction = new RuleAction();
 
         $ruletid = $ruleasset->add($ruletinput = [
             'name'         => 'Change computer name',
@@ -837,7 +837,7 @@ class RuleAssetTest extends DbTestCase
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruletid,
             'criteria'  => 'name',
-            'condition' => \Rule::PATTERN_IS,
+            'condition' => Rule::PATTERN_IS,
             'pattern'   => 'ComputerSubEntity',
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
@@ -851,7 +851,7 @@ class RuleAssetTest extends DbTestCase
         ]);
         $this->checkInput($ruleaction, $action_id, $action_input);
 
-        $computer = new \Computer();
+        $computer = new Computer();
         $computers_id = (int) $computer->add([
             'name'        => 'ComputerSubEntity',
             'entities_id' => $sub_entity->getID(),
@@ -875,8 +875,8 @@ class RuleAssetTest extends DbTestCase
         );
 
         $ruleasset  = new \RuleAsset();
-        $rulecrit   = new \RuleCriteria();
-        $ruleaction = new \RuleAction();
+        $rulecrit   = new RuleCriteria();
+        $ruleaction = new RuleAction();
 
         $ruleid = $ruleasset->add($ruleinput = [
             'name'         => "rule asset",
@@ -890,7 +890,7 @@ class RuleAssetTest extends DbTestCase
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruleid,
             'criteria'  => 'name',
-            'condition' => \Rule::REGEX_MATCH,
+            'condition' => Rule::REGEX_MATCH,
             'pattern'   => "/(.*)/s",
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
@@ -902,7 +902,7 @@ class RuleAssetTest extends DbTestCase
         ]);
         $this->checkInput($ruleaction, $act_id, $act_input);
 
-        $computer = new \Computer();
+        $computer = new Computer();
         $computers_id = (int) $computer->add([
             'name'        => 'ComputerSubEntity',
             'entities_id' => $sub_entity->getID(),

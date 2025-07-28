@@ -40,6 +40,7 @@ use DbTestCase;
 use DisplayPreference;
 use Glpi\Asset\Asset;
 use Glpi\Asset\Capacity;
+use Glpi\Asset\Capacity\HasContractsCapacity;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
 use Glpi\PHPUnit\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use Log;
@@ -50,7 +51,7 @@ class HasContractsCapacityTest extends DbTestCase
 
     protected function getTargetCapacity(): string
     {
-        return \Glpi\Asset\Capacity\HasContractsCapacity::class;
+        return HasContractsCapacity::class;
     }
 
     /**
@@ -329,7 +330,7 @@ class HasContractsCapacityTest extends DbTestCase
     public function testCloneAsset()
     {
         $definition = $this->initAssetDefinition(
-            capacities: [new Capacity(name: \Glpi\Asset\Capacity\HasContractsCapacity::class)]
+            capacities: [new Capacity(name: HasContractsCapacity::class)]
         );
         $class = $definition->getAssetClassName();
         $entity = $this->getTestRootEntity(true);

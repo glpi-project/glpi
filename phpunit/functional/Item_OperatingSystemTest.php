@@ -82,10 +82,10 @@ class Item_OperatingSystemTest extends DbTestCase
 
     public function testGetTypeName()
     {
-        $this->assertSame('Item operating systems', \Item_OperatingSystem::getTypeName());
-        $this->assertSame('Item operating systems', \Item_OperatingSystem::getTypeName(0));
-        $this->assertSame('Item operating systems', \Item_OperatingSystem::getTypeName(10));
-        $this->assertSame('Item operating system', \Item_OperatingSystem::getTypeName(1));
+        $this->assertSame('Item operating systems', Item_OperatingSystem::getTypeName());
+        $this->assertSame('Item operating systems', Item_OperatingSystem::getTypeName(0));
+        $this->assertSame('Item operating systems', Item_OperatingSystem::getTypeName(10));
+        $this->assertSame('Item operating system', Item_OperatingSystem::getTypeName(1));
     }
 
     /**
@@ -116,7 +116,7 @@ class Item_OperatingSystemTest extends DbTestCase
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
         $objects = $this->createDdObjects();
-        $ios = new \Item_OperatingSystem();
+        $ios = new Item_OperatingSystem();
         $input = [
             'itemtype'                          => $computer->getType(),
             'items_id'                          => $computer->getID(),
@@ -139,7 +139,7 @@ class Item_OperatingSystemTest extends DbTestCase
         );
         $this->assertSame(
             1,
-            \Item_OperatingSystem::countForItem($computer)
+            Item_OperatingSystem::countForItem($computer)
         );
 
         $expected_error = "/Duplicate entry '{$computer->getID()}-Computer-{$objects['']->getID()}-{$objects['Architecture']->getID()}' for key '(glpi_items_operatingsystems\.)?unicity'/";
@@ -148,11 +148,11 @@ class Item_OperatingSystemTest extends DbTestCase
 
         $this->assertSame(
             1,
-            \Item_OperatingSystem::countForItem($computer)
+            Item_OperatingSystem::countForItem($computer)
         );
 
         $objects = $this->createDdObjects();
-        $ios = new \Item_OperatingSystem();
+        $ios = new Item_OperatingSystem();
         $input = [
             'itemtype'                          => $computer->getType(),
             'items_id'                          => $computer->getID(),
@@ -175,7 +175,7 @@ class Item_OperatingSystemTest extends DbTestCase
         );
         $this->assertSame(
             2,
-            \Item_OperatingSystem::countForItem($computer)
+            Item_OperatingSystem::countForItem($computer)
         );
     }
 
@@ -186,13 +186,13 @@ class Item_OperatingSystemTest extends DbTestCase
 
         foreach (['showForItem', 'displayTabContentForItem'] as $method) {
             ob_start();
-            \Item_OperatingSystem::$method($computer);
+            Item_OperatingSystem::$method($computer);
             $output = ob_get_clean();
             $this->assertStringContainsString('operatingsystems_id', $output);
         }
 
         $objects = $this->createDdObjects();
-        $ios = new \Item_OperatingSystem();
+        $ios = new Item_OperatingSystem();
         $input = [
             'itemtype'                          => $computer->getType(),
             'items_id'                          => $computer->getID(),
@@ -211,13 +211,13 @@ class Item_OperatingSystemTest extends DbTestCase
 
         foreach (['showForItem', 'displayTabContentForItem'] as $method) {
             ob_start();
-            \Item_OperatingSystem::$method($computer);
+            Item_OperatingSystem::$method($computer);
             $output = ob_get_clean();
             $this->assertStringContainsString('operatingsystems_id', $output);
         }
 
         $objects = $this->createDdObjects();
-        $ios = new \Item_OperatingSystem();
+        $ios = new Item_OperatingSystem();
         $input = [
             'itemtype'                          => $computer->getType(),
             'items_id'                          => $computer->getID(),
@@ -237,7 +237,7 @@ class Item_OperatingSystemTest extends DbTestCase
         //there are now 2 OS linked, we will no longer show a form, but a list.
         foreach (['showForItem', 'displayTabContentForItem'] as $method) {
             ob_start();
-            \Item_OperatingSystem::$method($computer);
+            Item_OperatingSystem::$method($computer);
             $output = ob_get_clean();
             $this->assertStringNotContainsString('operatingsystems_id', $output);
         }
@@ -267,7 +267,7 @@ class Item_OperatingSystemTest extends DbTestCase
             ])
         );
 
-        $ios = new \Item_OperatingSystem();
+        $ios = new Item_OperatingSystem();
         $this->assertGreaterThan(
             0,
             $ios->add([

@@ -42,6 +42,7 @@ use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Form\Tag\CommentDescriptionTagProvider;
 use Glpi\Form\Tag\CommentTitleTagProvider;
 use Glpi\Form\Tag\FormTagProvider;
+use Glpi\Form\Tag\FormTagsManager;
 use Glpi\Form\Tag\QuestionTagProvider;
 use Glpi\Form\Tag\SectionTagProvider;
 use Glpi\Form\Tag\Tag;
@@ -186,14 +187,14 @@ final class FormTagsManagerTest extends DbTestCase
         string $filter,
         array $expected_tags
     ): void {
-        $tag_manager = new \Glpi\Form\Tag\FormTagsManager();
+        $tag_manager = new FormTagsManager();
         $tags = $tag_manager->getTags($form, $filter);
         $this->assertEquals($expected_tags, $tags);
     }
 
     public function testInsertTagsContent()
     {
-        $tag_manager = new \Glpi\Form\Tag\FormTagsManager();
+        $tag_manager = new FormTagsManager();
         $answers_handler = AnswersHandler::getInstance();
 
         $form = $this->createAndGetFormWithFirstAndLastNameQuestions();
@@ -254,7 +255,7 @@ final class FormTagsManagerTest extends DbTestCase
 
     public function testGetTagProviders(): void
     {
-        $tag_manager = new \Glpi\Form\Tag\FormTagsManager();
+        $tag_manager = new FormTagsManager();
         $providers = $tag_manager->getTagProviders();
         $this->assertNotEmpty($providers);
     }

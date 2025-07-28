@@ -34,6 +34,8 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use Glpi\Inventory\Asset\Processor;
+use Glpi\Inventory\Converter;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
@@ -102,12 +104,12 @@ class ProcessorTest extends AbstractInventoryAsset
     #[DataProvider('assetProvider')]
     public function testPrepare($xml, $expected)
     {
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\Processor($computer, $json->content->cpus);
+        $asset = new Processor($computer, $json->content->cpus);
         $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected), $result[0]);
@@ -127,12 +129,12 @@ class ProcessorTest extends AbstractInventoryAsset
         //convert data
         $expected = $this->assetProvider()[0];
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($expected['xml']);
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\Processor($computer, $json->content->cpus);
+        $asset = new Processor($computer, $json->content->cpus);
         $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected['expected']), $result[0]);

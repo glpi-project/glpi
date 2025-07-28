@@ -1107,13 +1107,13 @@ class Toolbox
 
         try {
             mkdir($sdir);
-        } catch (FileSystemException $e) {
+        } catch (FilesystemException $e) {
             return 4;
         }
 
         try {
             rmdir($sdir);
-        } catch (FileSystemException $e) {
+        } catch (FilesystemException $e) {
             return 3;
         }
 
@@ -1131,7 +1131,7 @@ class Toolbox
         try {
             unlink($path);
             return 0;
-        } catch (FileSystemException $e) {
+        } catch (FilesystemException $e) {
             return 1;
         }
     }
@@ -1889,13 +1889,13 @@ class Toolbox
                 //TRANS: IMAP mail server protocol
                 'label'    => __('IMAP'),
                 'protocol' => Imap::class,
-                'storage'  => \Laminas\Mail\Storage\Imap::class,
+                'storage'  => Laminas\Mail\Storage\Imap::class,
             ],
             'pop'  => [
                 //TRANS: POP3 mail server protocol
                 'label'    => __('POP'),
                 'protocol' => Pop3::class,
-                'storage'  => \Laminas\Mail\Storage\Pop3::class,
+                'storage'  => Laminas\Mail\Storage\Pop3::class,
             ],
         ];
 

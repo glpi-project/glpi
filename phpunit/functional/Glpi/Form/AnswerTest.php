@@ -34,6 +34,7 @@
 
 namespace tests\unit\Glpi\Form;
 
+use Glpi\Form\Answer;
 use Glpi\Form\Question;
 use GLPITestCase;
 
@@ -46,7 +47,7 @@ final class AnswerTest extends GLPITestCase
     public function testGetQuestionId(): void
     {
         $question = $this->getFakeQuestion();
-        $answer = new \Glpi\Form\Answer($question, "");
+        $answer = new Answer($question, "");
 
         $this->assertEquals(self::FAKE_QUESTION_ID, $answer->getQuestionId());
     }
@@ -55,7 +56,7 @@ final class AnswerTest extends GLPITestCase
     {
         $fake_answer = "My raw answer";
         $question = $this->getFakeQuestion();
-        $answer = new \Glpi\Form\Answer($question, $fake_answer);
+        $answer = new Answer($question, $fake_answer);
 
         $this->assertEquals($fake_answer, $answer->getRawAnswer());
     }
@@ -63,7 +64,7 @@ final class AnswerTest extends GLPITestCase
     public function testGetQuestionLabel(): void
     {
         $question = $this->getFakeQuestion();
-        $answer = new \Glpi\Form\Answer($question, "");
+        $answer = new Answer($question, "");
 
         $this->assertEquals(
             self::FAKE_QUESTION_LABEL,
@@ -74,7 +75,7 @@ final class AnswerTest extends GLPITestCase
     public function testGetRawQuestionType(): void
     {
         $question = $this->getFakeQuestion();
-        $answer = new \Glpi\Form\Answer($question, "");
+        $answer = new Answer($question, "");
 
         $this->assertEquals(self::FAKE_QUESTION_TYPE, $answer->getRawType());
     }
@@ -83,7 +84,7 @@ final class AnswerTest extends GLPITestCase
     {
         $fake_answer = "My raw answer";
         $question = $this->getFakeQuestion();
-        $answer = new \Glpi\Form\Answer($question, $fake_answer);
+        $answer = new Answer($question, $fake_answer);
 
         $expected_decoded_json = [
             'question_id'       => self::FAKE_QUESTION_ID,
@@ -105,7 +106,7 @@ final class AnswerTest extends GLPITestCase
             'raw_answer'        => $fake_answer,
         ];
 
-        $answer = \Glpi\Form\Answer::fromDecodedJsonData($data);
+        $answer = Answer::fromDecodedJsonData($data);
 
         $this->assertEquals(self::FAKE_QUESTION_ID, $answer->getQuestionId());
         $this->assertEquals(self::FAKE_QUESTION_LABEL, $answer->getQuestionLabel());
@@ -118,10 +119,10 @@ final class AnswerTest extends GLPITestCase
         // Encoded item must be the same when decoded
         $fake_answer = "My raw answer";
         $question = $this->getFakeQuestion();
-        $answer = new \Glpi\Form\Answer($question, $fake_answer);
+        $answer = new Answer($question, $fake_answer);
 
         $json = json_encode($answer);
-        $answer_copy = \Glpi\Form\Answer::fromDecodedJsonData(
+        $answer_copy = Answer::fromDecodedJsonData(
             json_decode($json, true)
         );
 

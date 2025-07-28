@@ -35,6 +35,8 @@
 namespace tests\units\Glpi\Toolbox;
 
 use Glpi\Form\Form;
+use Glpi\Toolbox\URL;
+use GlpiPlugin\Foo\A\B\C\D\E\F\G\Bar;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Ticket;
 
@@ -153,14 +155,14 @@ class URLTest extends \GLPITestCase
     #[DataProvider('urlProvider')]
     public function testSanitizeURL(?string $url, string $sanitized, bool $relative): void
     {
-        $instance = new \Glpi\Toolbox\URL();
+        $instance = new URL();
         $this->assertEquals($sanitized, $instance->sanitizeURL($url));
     }
 
     #[DataProvider('urlProvider')]
     public function testIsGLPIRelativeUrl(?string $url, string $sanitized, bool $relative): void
     {
-        $instance = new \Glpi\Toolbox\URL();
+        $instance = new URL();
         $this->assertEquals($relative, $instance->isGLPIRelativeUrl((string) $url));
     }
 
@@ -195,11 +197,11 @@ class URLTest extends \GLPITestCase
         ];
         yield 'Namespaced plugin class (/plugins)' => [
             'path' => '/plugins/foo/front/a/b/c/d/e/f/g/bar.php',
-            'expected' => \GlpiPlugin\Foo\A\B\C\D\E\F\G\Bar::class,
+            'expected' => Bar::class,
         ];
         yield 'Namespaced plugin class ".form" page (/plugins)' => [
             'path' => '/plugins/foo/front/a/b/c/d/e/f/g/bar.form.php',
-            'expected' => \GlpiPlugin\Foo\A\B\C\D\E\F\G\Bar::class,
+            'expected' => Bar::class,
         ];
 
         // Plugins (/marketplace)
@@ -213,11 +215,11 @@ class URLTest extends \GLPITestCase
         ];
         yield 'Namespaced plugin class (/marketplace)' => [
             'path' => '/marketplace/foo/front/a/b/c/d/e/f/g/bar.php',
-            'expected' => \GlpiPlugin\Foo\A\B\C\D\E\F\G\Bar::class,
+            'expected' => Bar::class,
         ];
         yield 'Namespaced plugin class ".form" page (/marketplace)' => [
             'path' => '/marketplace/foo/front/a/b/c/d/e/f/g/bar.form.php',
-            'expected' => \GlpiPlugin\Foo\A\B\C\D\E\F\G\Bar::class,
+            'expected' => Bar::class,
         ];
     }
 
@@ -230,7 +232,7 @@ class URLTest extends \GLPITestCase
         // of the itemtype, thus we must expect the lowercase version here.
         $expected = strtolower($expected);
 
-        $instance = new \Glpi\Toolbox\URL();
+        $instance = new URL();
         $itemtype = $instance->extractItemtypeFromUrlPath($path);
         $this->assertEquals($expected, $itemtype);
     }

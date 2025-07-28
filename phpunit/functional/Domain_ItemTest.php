@@ -38,6 +38,7 @@ use Computer;
 use DbTestCase;
 use Domain;
 use Domain_Item;
+use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDomainsCapacity;
 use Glpi\Features\Clonable;
 use Group;
@@ -50,7 +51,7 @@ class Domain_ItemTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasDomainsCapacity::class)]);
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasDomainsCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
@@ -70,7 +71,7 @@ class Domain_ItemTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasDomainsCapacity::class)]);
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasDomainsCapacity::class)]);
 
         foreach ($CFG_GLPI['domain_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {

@@ -37,6 +37,8 @@ namespace tests\units;
 use Config;
 use DbTestCase;
 use ITILFollowup;
+use Laminas\Mail\Protocol\Imap;
+use Laminas\Mail\Protocol\Pop3;
 use Laminas\Mail\Storage\Message;
 use NotificationTarget;
 use NotificationTargetSoftwareLicense;
@@ -991,7 +993,7 @@ PLAINTEXT,
         foreach ($actors_specs as $actor_specs) {
             $iterator = $DB->request([
                 'SELECT' => ['t.id', 't.name', 't.content', 'tu.users_id'],
-                'FROM'   => \Ticket::getTable() . " AS t",
+                'FROM'   => Ticket::getTable() . " AS t",
                 'INNER JOIN'   => [
                     \Ticket_User::getTable() . " AS tu"  => [
                         'ON'  => [
@@ -1171,25 +1173,25 @@ PLAINTEXT,
             [
                 'cnx_string'        => '{mail.domain.org/imap}',
                 'expected_type'     => 'imap',
-                'expected_protocol' => \Laminas\Mail\Protocol\Imap::class,
+                'expected_protocol' => Imap::class,
                 'expected_storage'  => \Laminas\Mail\Storage\Imap::class,
             ],
             [
                 'cnx_string'        => '{mail.domain.org/imap/ssl/debug}INBOX',
                 'expected_type'     => 'imap',
-                'expected_protocol' => \Laminas\Mail\Protocol\Imap::class,
+                'expected_protocol' => Imap::class,
                 'expected_storage'  => \Laminas\Mail\Storage\Imap::class,
             ],
             [
                 'cnx_string'        => '{mail.domain.org/pop}',
                 'expected_type'     => 'pop',
-                'expected_protocol' => \Laminas\Mail\Protocol\Pop3::class,
+                'expected_protocol' => Pop3::class,
                 'expected_storage'  => \Laminas\Mail\Storage\Pop3::class,
             ],
             [
                 'cnx_string'        => '{mail.domain.org/pop/ssl/tls}',
                 'expected_type'     => 'pop',
-                'expected_protocol' => \Laminas\Mail\Protocol\Pop3::class,
+                'expected_protocol' => Pop3::class,
                 'expected_storage'  => \Laminas\Mail\Storage\Pop3::class,
             ],
             [
@@ -1239,7 +1241,7 @@ PLAINTEXT,
             'hook_result'               => 'invalid result',
             'type'                      => 'imap',
             'expected_warning'          => 'Invalid value returned by "mail_server_protocols" hook.',
-            'expected_protocol'         => \Laminas\Mail\Protocol\Imap::class,
+            'expected_protocol'         => Imap::class,
             'expected_storage'          => \Laminas\Mail\Storage\Imap::class,
         ];
 
@@ -1255,7 +1257,7 @@ PLAINTEXT,
             ],
             'type'                      => 'imap',
             'expected_warning'          => 'Protocol "imap" is already defined and cannot be overwritten.',
-            'expected_protocol'         => \Laminas\Mail\Protocol\Imap::class,
+            'expected_protocol'         => Imap::class,
             'expected_storage'          => \Laminas\Mail\Storage\Imap::class,
         ];
 
@@ -1271,7 +1273,7 @@ PLAINTEXT,
             ],
             'type'                      => 'pop',
             'expected_warning'          => 'Protocol "pop" is already defined and cannot be overwritten.',
-            'expected_protocol'         => \Laminas\Mail\Protocol\Pop3::class,
+            'expected_protocol'         => Pop3::class,
             'expected_storage'          => \Laminas\Mail\Storage\Pop3::class,
         ];
 

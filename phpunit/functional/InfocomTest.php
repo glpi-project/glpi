@@ -238,7 +238,7 @@ class InfocomTest extends DbTestCase
     #[DataProvider('dataLinearAmortise')]
     public function testLinearAmortise($value, $duration, $fiscaldate, $buydate, $usedate, $expected, $oldmft)
     {
-        $amortise = \Infocom::linearAmortise(
+        $amortise = Infocom::linearAmortise(
             $value,
             $duration,
             $fiscaldate,
@@ -249,7 +249,7 @@ class InfocomTest extends DbTestCase
             $this->assertSame($values, $amortise[$year]);
         }
         if (count($oldmft)) {
-            $this->assertSame($oldmft, \Infocom::mapOldAmortiseFormat($amortise, false));
+            $this->assertSame($oldmft, Infocom::mapOldAmortiseFormat($amortise, false));
         }
     }
 
@@ -264,8 +264,8 @@ class InfocomTest extends DbTestCase
 
         $this->login();
         $root_entity = $this->getTestRootEntity();
-        $computer = new \Computer();
-        $infocom = new \Infocom();
+        $computer = new Computer();
+        $infocom = new Infocom();
 
         $this->assertTrue($root_entity->update([
             'id' => $root_entity->getID(),
@@ -309,7 +309,7 @@ class InfocomTest extends DbTestCase
         ]);
 
         $CFG_GLPI["use_notifications"] = true;
-        \Infocom::cronInfocom();
+        Infocom::cronInfocom();
         $alerts = array_values(getAllDataFromTable(\Alert::getTable(), [
             'WHERE' => [
                 'itemtype' => 'Infocom',

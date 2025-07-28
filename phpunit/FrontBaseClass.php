@@ -34,7 +34,7 @@
 
 use Symfony\Component\BrowserKit\HttpBrowser;
 
-class FrontBaseClass extends \GLPITestCase
+class FrontBaseClass extends GLPITestCase
 {
     protected HttpBrowser $http_client;
     protected string $base_uri;

@@ -878,7 +878,7 @@ class RuleTest extends DbTestCase
             'sub_type' => 'RuleTicket',
             'name'     => __FUNCTION__,
         ]);
-        $collection = new \RuleTicketCollection();
+        $collection = new RuleTicketCollection();
 
         // Move to specific position
         $collection->moveRule($rules_id_1, 0, $ranking_start + 2);
@@ -1023,4 +1023,4 @@ class MyRuleTest extends \Rule {}
 
 // @codingStandardsIgnoreStart
 /** @used-by MyRuleTest */
-class MyRuleTestCollection extends \RuleCollection {}
+class MyRuleTestCollection extends RuleCollection {}

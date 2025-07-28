@@ -39,6 +39,7 @@ use DisplayPreference;
 use Glpi\Asset\Asset;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
+use Glpi\Asset\Capacity\HasOperatingSystemCapacity;
 use Glpi\PHPUnit\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use Item_OperatingSystem;
 use Log;
@@ -49,7 +50,7 @@ class HasOperatingSystemCapacityTest extends DbTestCase
 
     protected function getTargetCapacity(): string
     {
-        return \Glpi\Asset\Capacity\HasOperatingSystemCapacity::class;
+        return HasOperatingSystemCapacity::class;
     }
 
     /**
@@ -343,7 +344,7 @@ class HasOperatingSystemCapacityTest extends DbTestCase
     public function testCloneAsset()
     {
         $definition = $this->initAssetDefinition(
-            capacities: [new Capacity(name: \Glpi\Asset\Capacity\HasOperatingSystemCapacity::class)]
+            capacities: [new Capacity(name: HasOperatingSystemCapacity::class)]
         );
         $class = $definition->getAssetClassName();
         $entity = $this->getTestRootEntity(true);

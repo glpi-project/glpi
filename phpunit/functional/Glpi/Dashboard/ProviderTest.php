@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Dashboard;
 
 use DbTestCase;
+use Glpi\Dashboard\Provider;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Reminder;
 use Reminder_User;
@@ -114,7 +115,7 @@ class ProviderTest extends DbTestCase
         ]);
         $this->assertFalse($ticket3->isNewItem());
 
-        $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnician();
+        $output = Provider::nbTicketsByAgreementStatusAndTechnician();
         $expected = [
             'label' => "Tickets by SLA status and by technician",
             'data' => [
@@ -171,7 +172,7 @@ class ProviderTest extends DbTestCase
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
         $this->assertTrue($ticket2->getFromDB($ticket2->getID()));
 
-        $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnician();
+        $output = Provider::nbTicketsByAgreementStatusAndTechnician();
         $expected = [
             'label' => "Tickets by SLA status and by technician",
             'data' => [
@@ -231,7 +232,7 @@ class ProviderTest extends DbTestCase
         );
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
         $this->assertTrue($ticket2->getFromDB($ticket2->getID()));
-        $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnician();
+        $output = Provider::nbTicketsByAgreementStatusAndTechnician();
         $expected = [
             'label' => "Tickets by SLA status and by technician",
             'data' => [
@@ -307,7 +308,7 @@ class ProviderTest extends DbTestCase
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
         $this->assertTrue($ticket2->getFromDB($ticket2->getID()));
         $this->assertTrue($ticket3->getFromDB($ticket3->getID()));
-        $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnician();
+        $output = Provider::nbTicketsByAgreementStatusAndTechnician();
         $expected = [
             'label' => "Tickets by SLA status and by technician",
             'data' => [
@@ -425,7 +426,7 @@ class ProviderTest extends DbTestCase
         ]);
         $this->assertFalse($ticket3->isNewItem());
 
-        $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnicianGroup();
+        $output = Provider::nbTicketsByAgreementStatusAndTechnicianGroup();
         $expected = [
             'label' => "Tickets by SLA status and by technician group",
             'data' => [
@@ -482,7 +483,7 @@ class ProviderTest extends DbTestCase
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
         $this->assertTrue($ticket2->getFromDB($ticket2->getID()));
 
-        $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnicianGroup();
+        $output = Provider::nbTicketsByAgreementStatusAndTechnicianGroup();
         $expected = [
             'label' => "Tickets by SLA status and by technician group",
             'data' => [
@@ -542,7 +543,7 @@ class ProviderTest extends DbTestCase
         );
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
         $this->assertTrue($ticket2->getFromDB($ticket2->getID()));
-        $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnicianGroup();
+        $output = Provider::nbTicketsByAgreementStatusAndTechnicianGroup();
         $expected = [
             'label' => "Tickets by SLA status and by technician group",
             'data' => [
@@ -618,7 +619,7 @@ class ProviderTest extends DbTestCase
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
         $this->assertTrue($ticket2->getFromDB($ticket2->getID()));
         $this->assertTrue($ticket3->getFromDB($ticket3->getID()));
-        $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnicianGroup();
+        $output = Provider::nbTicketsByAgreementStatusAndTechnicianGroup();
         $expected = [
             'label' => "Tickets by SLA status and by technician group",
             'data' => [
@@ -662,7 +663,7 @@ class ProviderTest extends DbTestCase
 
         $itemtype = $item->getType();
         $data = [
-            \Glpi\Dashboard\Provider::bigNumberItem($item),
+            Provider::bigNumberItem($item),
             call_user_func(['\\Glpi\\Dashboard\\Provider', "bigNumber$itemtype"]),
         ];
 
@@ -707,7 +708,7 @@ class ProviderTest extends DbTestCase
     #[DataProvider('ticketsCaseProvider')]
     public function testNbTicketsGeneric(string $case)
     {
-        $result = \Glpi\Dashboard\Provider::nbTicketsGeneric($case);
+        $result = Provider::nbTicketsGeneric($case);
 
         $this->assertArrayHasKey('number', $result);
         $this->assertArrayHasKey('url', $result);
@@ -738,7 +739,7 @@ class ProviderTest extends DbTestCase
     {
         $this->login();
 
-        $result = \Glpi\Dashboard\Provider::nbItemByFk($item, $fk_item);
+        $result = Provider::nbItemByFk($item, $fk_item);
         $this->assertArrayHasKey('data', $result);
         $this->assertArrayHasKey('label', $result);
         $this->assertArrayHasKey('icon', $result);
@@ -757,7 +758,7 @@ class ProviderTest extends DbTestCase
 
     public function testTicketsOpened()
     {
-        $result = \Glpi\Dashboard\Provider::ticketsOpened();
+        $result = Provider::ticketsOpened();
         $this->assertArrayHasKey('data', $result);
         $this->assertArrayHasKey('distributed', $result);
         $this->assertArrayHasKey('label', $result);
@@ -781,7 +782,7 @@ class ProviderTest extends DbTestCase
 
     public function testGetTicketsEvolution()
     {
-        $result = \Glpi\Dashboard\Provider::getTicketsEvolution();
+        $result = Provider::getTicketsEvolution();
         $this->assertArrayHasKey('data', $result);
         $this->assertArrayHasKey('label', $result);
         $this->assertArrayHasKey('icon', $result);
@@ -810,7 +811,7 @@ class ProviderTest extends DbTestCase
     {
         $this->login();
 
-        $result = \Glpi\Dashboard\Provider::getTicketsStatus();
+        $result = Provider::getTicketsStatus();
         $this->assertArrayHasKey('data', $result);
         $this->assertArrayHasKey('label', $result);
         $this->assertArrayHasKey('icon', $result);
@@ -839,7 +840,7 @@ class ProviderTest extends DbTestCase
     {
         $this->login();
 
-        $result = \Glpi\Dashboard\Provider::multipleNumberTicketByITILCategory();
+        $result = Provider::multipleNumberTicketByITILCategory();
         $this->assertArrayHasKey('data', $result);
         $this->assertArrayHasKey('label', $result);
         $this->assertArrayHasKey('icon', $result);
@@ -883,7 +884,7 @@ class ProviderTest extends DbTestCase
     {
         $this->assertEquals(
             $expected,
-            \Glpi\Dashboard\Provider::formatMonthyearDates($monthyear)
+            Provider::formatMonthyearDates($monthyear)
         );
     }
 
@@ -916,7 +917,7 @@ class ProviderTest extends DbTestCase
         foreach ($this->testGetArticleListReminderProvider() as $row) {
             $expected = $row['expected'];
 
-            $results = \Glpi\Dashboard\Provider::getArticleListReminder();
+            $results = Provider::getArticleListReminder();
             $this->assertEquals($expected, $results['number']);
         }
     }

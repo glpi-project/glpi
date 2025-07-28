@@ -176,7 +176,7 @@ class PendingReasonTest extends DbTestCase
         $pending_reason = $this->createItem('PendingReason', $fields['pendingreason']);
         $fields['pendingreason_item']['pendingreasons_id'] = $pending_reason->getID();
 
-        $pending_reason_item = new \PendingReason_Item();
+        $pending_reason_item = new PendingReason_Item();
         $pending_reason_item->fields = $fields['pendingreason_item'];
 
         $this->assertEquals($expected, $pending_reason_item->getNextFollowupDate());
@@ -363,7 +363,7 @@ class PendingReasonTest extends DbTestCase
         $pending_reason = $this->createItem('PendingReason', $fields['pendingreason']);
         $fields['pendingreason_item']['pendingreasons_id'] = $pending_reason->getID();
 
-        $pending_reason_item = new \PendingReason_Item();
+        $pending_reason_item = new PendingReason_Item();
         $pending_reason_item->fields = $fields['pendingreason_item'];
 
         $this->assertEquals($expected, $pending_reason_item->getAutoResolvedate());
@@ -645,7 +645,7 @@ class PendingReasonTest extends DbTestCase
         [
             $pending_reason1,
             $pending_reason2
-        ] = $this->createItems(\PendingReason::class, [
+        ] = $this->createItems(PendingReason::class, [
             ['entities_id' => $entity, 'is_recursive' => true, 'name' => 'Pending 1'],
             ['entities_id' => $entity, 'is_recursive' => true, 'name' => 'Pending 2'],
         ]);
@@ -1077,7 +1077,7 @@ class PendingReasonTest extends DbTestCase
         // Create a set of pending reasons that will be reused in our test cases
         [
             $pending_reason1,
-        ] = $this->createItems(\PendingReason::class, [
+        ] = $this->createItems(PendingReason::class, [
             ['entities_id' => $entity, 'is_recursive' => true, 'name' => 'Pending 1', 'itilfollowuptemplates_id' => $itilfollowuptemplate->getID(), 'solutiontemplates_id' => $itilsolutiontemplate->getID()],
         ]);
 

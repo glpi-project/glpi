@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Inventory\Inventory;
 
 /* Test for inc/ruleimportlocation.class.php */
 
@@ -322,7 +323,7 @@ class RuleLocationTest extends DbTestCase
 
         //proceed a real inventory
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
-        $inventory = new \Glpi\Inventory\Inventory($json);
+        $inventory = new Inventory($json);
 
         if ($inventory->inError()) {
             $this->dump($inventory->getErrors());

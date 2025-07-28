@@ -34,6 +34,9 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use Glpi\Inventory\Asset\Volume;
+use Glpi\Inventory\Conf;
+use Glpi\Inventory\Converter;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
@@ -183,15 +186,15 @@ class VolumeTest extends AbstractInventoryAsset
     #[DataProvider('assetProvider')]
     public function testPrepare($xml, $expected)
     {
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\Volume($computer, $json->content->drives);
+        $asset = new Volume($computer, $json->content->drives);
         $asset->setExtraData((array) $json->content);
 
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue($asset->checkConf($conf));
 
         $result = $asset->prepare();
@@ -212,15 +215,15 @@ class VolumeTest extends AbstractInventoryAsset
         //convert data
         $expected = $this->assetProvider()[0];
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($expected['xml']);
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\Volume($computer, $json->content->drives);
+        $asset = new Volume($computer, $json->content->drives);
         $asset->setExtraData((array) $json->content);
 
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue($asset->checkConf($conf));
 
         $result = $asset->prepare();
@@ -428,7 +431,7 @@ class VolumeTest extends AbstractInventoryAsset
 
         //per default, configuration allows all volumes import. change that.
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $conf->saveConf([
                 'import_volume' => 0,

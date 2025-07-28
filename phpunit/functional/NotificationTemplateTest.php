@@ -58,12 +58,12 @@ class NotificationTemplateTest extends DbTestCase
         ]);
 
         $data = $iterator->current();
-        $template = new \NotificationTemplate();
+        $template = new NotificationTemplate();
         $template->getFromDB($data['notificationtemplates_id']);
         $added = $template->clone();
         $this->assertGreaterThan(0, (int) $added);
 
-        $clonedTemplate = new \NotificationTemplate();
+        $clonedTemplate = new NotificationTemplate();
         $this->assertTrue($clonedTemplate->getFromDB($added));
 
         unset($template->fields['id']);
@@ -137,7 +137,7 @@ HTML,
         string $content,
         string $expected
     ): void {
-        $instance = new \NotificationTemplate();
+        $instance = new NotificationTemplate();
         $result = $this->callPrivateMethod($instance, 'convertRelativeGlpiLinksToAbsolute', $content);
         $this->assertEquals($expected, $result);
     }

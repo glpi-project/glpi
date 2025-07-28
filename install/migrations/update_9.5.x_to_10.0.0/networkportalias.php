@@ -33,8 +33,8 @@
  */
 
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
 
 /** Replace -1 values for glpi_networkportaliases.networkports_id_alias field */

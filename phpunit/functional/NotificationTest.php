@@ -41,6 +41,10 @@ use Group_User;
 use NotificationEvent;
 use NotificationTarget;
 use QueuedNotification;
+use Symfony\Component\Mailer\DelayedEnvelope;
+use Symfony\Component\Mailer\SentMessage;
+use Symfony\Component\Mailer\Transport\AbstractTransport;
+use Symfony\Component\Mime\Part\DataPart;
 use User;
 
 /* Test for inc/notification.class.php */
@@ -430,13 +434,13 @@ HTML,
         $this->login();
 
         // Mock mailer transport
-        $transport = new class extends \Symfony\Component\Mailer\Transport\AbstractTransport {
+        $transport = new class extends AbstractTransport {
             public $sent_email;
 
-            protected function doSend(\Symfony\Component\Mailer\SentMessage $message): void
+            protected function doSend(SentMessage $message): void
             {
                 // Extract message from envelope
-                $envelope_reflection = new \ReflectionClass(\Symfony\Component\Mailer\DelayedEnvelope::class);
+                $envelope_reflection = new \ReflectionClass(DelayedEnvelope::class);
                 /* @var \Symfony\Component\Mime\Email $email */
                 $this->sent_email = $envelope_reflection->getProperty('message')->getValue($message->getEnvelope());
             }
@@ -515,7 +519,7 @@ HTML,
 
             $attachement_filenames = [];
             foreach ($attachments as $attachment) {
-                $this->assertInstanceOf(\Symfony\Component\Mime\Part\DataPart::class, $attachment);
+                $this->assertInstanceOf(DataPart::class, $attachment);
                 $attachement_filenames[] = $attachment->getFilename();
             }
             sort($attachement_filenames);

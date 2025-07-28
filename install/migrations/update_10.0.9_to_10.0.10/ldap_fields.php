@@ -35,8 +35,8 @@
 use function Safe\preg_match;
 
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
 
 /** Fix non encoded LDAP fields in groups */

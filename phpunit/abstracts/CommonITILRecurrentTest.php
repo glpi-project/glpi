@@ -561,10 +561,10 @@ abstract class CommonITILRecurrentTest extends DbTestCase
         $tech_id = getItemByTypeName(\User::class, 'tech', true);
 
         // Create a 7d/7 24h/24 calendar
-        $calendar = $this->createItem(\Calendar::class, ['name' => 'testCreateItem calendar']);
+        $calendar = $this->createItem(Calendar::class, ['name' => 'testCreateItem calendar']);
         for ($day = 0; $day <= 6; $day++) {
             $this->createItem(
-                \CalendarSegment::class,
+                CalendarSegment::class,
                 [
                     'calendars_id' => $calendar->getID(),
                     'day'          => $day,
@@ -620,7 +620,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
             $template_class = $child_class::getTemplateClass();
             $predefined_fields_class = $child_class::getPredefinedFieldsClass();
 
-            $calendar = getItemByTypeName(\Calendar::class, 'testCreateItem calendar');
+            $calendar = getItemByTypeName(Calendar::class, 'testCreateItem calendar');
 
             // Create template and its predefined fields
             $template = $this->createItem(

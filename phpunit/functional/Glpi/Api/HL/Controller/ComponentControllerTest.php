@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
+use Glpi\Api\HL\Controller\ComponentController;
 use Glpi\Api\HL\Router;
 use Glpi\Http\Request;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -125,7 +126,7 @@ class ComponentControllerTest extends \HLAPITestCase
         });
 
         // Find the itemtype of the component
-        $schema = \Glpi\Api\HL\Controller\ComponentController::getKnownSchemas(Router::API_VERSION)[$type];
+        $schema = ComponentController::getKnownSchemas(Router::API_VERSION)[$type];
         $device_fk = $schema['x-itemtype']::getForeignKeyField();
         $itemtype = 'Item_' . $schema['x-itemtype'];
         $item = new $itemtype();

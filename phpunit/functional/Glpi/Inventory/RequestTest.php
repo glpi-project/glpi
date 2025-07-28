@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Inventory;
 
+use Glpi\Inventory\Request;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
@@ -44,7 +45,7 @@ class RequestTest extends \GLPITestCase
     public function testConstructor()
     {
         //no mode without content
-        $request = new \Glpi\Inventory\Request();
+        $request = new Request();
         $this->assertNull($request->getMode());
         $this->assertSame("", $request->getResponse());
 
@@ -59,16 +60,16 @@ class RequestTest extends \GLPITestCase
         $this->assertNull($request->getContentType());
 
         //XML mode
-        $request = new \Glpi\Inventory\Request();
+        $request = new Request();
         $request->handleContentType('application/xml');
-        $this->assertSame(\Glpi\Inventory\Request::XML_MODE, $request->getMode());
+        $this->assertSame(Request::XML_MODE, $request->getMode());
         $this->assertSame("<?xml version=\"1.0\"?>\n<REPLY/>", $request->getResponse());
         $this->assertSame('application/xml', $request->getContentType());
 
         //JSON mode
-        $request = new \Glpi\Inventory\Request();
+        $request = new Request();
         $request->handleContentType('application/json');
-        $this->assertSame(\Glpi\Inventory\Request::JSON_MODE, $request->getMode());
+        $this->assertSame(Request::JSON_MODE, $request->getMode());
         $response = [];
         $this->assertSame(json_encode($response), $request->getResponse());
         $this->assertSame('application/json', $request->getContentType());
@@ -77,7 +78,7 @@ class RequestTest extends \GLPITestCase
     public function testProlog()
     {
         $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><QUERY>PROLOG</QUERY></REQUEST>";
-        $request = new \Glpi\Inventory\Request();
+        $request = new Request();
         $request->handleContentType('application/xml');
         $request->handleRequest($data);
         $this->assertSame("<?xml version=\"1.0\"?>\n<REPLY><PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE></REPLY>", $request->getResponse());
@@ -105,7 +106,7 @@ class RequestTest extends \GLPITestCase
     {
         $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><CONTENT><DEVICE></DEVICE></CONTENT><QUERY>$query</QUERY></REQUEST>";
 
-        $request = $this->getMockBuilder(\Glpi\Inventory\Request::class)
+        $request = $this->getMockBuilder(Request::class)
             ->onlyMethods(['inventory', 'prolog'])
             ->getMock();
         $request->method('inventory')->willReturnCallback(function () {
@@ -140,7 +141,7 @@ class RequestTest extends \GLPITestCase
     public function testWrongQuery($query)
     {
         $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><QUERY>$query</QUERY></REQUEST>";
-        $request = new \Glpi\Inventory\Request();
+        $request = new Request();
         $request->handleContentType('application/xml');
         $request->handleRequest($data);
         $this->assertSame(501, $request->getHttpResponseCode());
@@ -149,7 +150,7 @@ class RequestTest extends \GLPITestCase
 
     public function testAddError()
     {
-        $request = new \Glpi\Inventory\Request();
+        $request = new Request();
         $request->handleContentType('application/xml');
         $request->addError('Something went wrong.');
         $this->assertSame("<?xml version=\"1.0\"?>\n<REPLY><ERROR><![CDATA[Something went wrong.]]></ERROR></REPLY>", $request->getResponse());
@@ -157,7 +158,7 @@ class RequestTest extends \GLPITestCase
 
     public function testAddResponse()
     {
-        $request = new \Glpi\Inventory\Request();
+        $request = new Request();
         $request->handleContentType('application/xml');
         //to test nodes with attributes
         $request->addToResponse([
@@ -257,7 +258,7 @@ class RequestTest extends \GLPITestCase
         $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><QUERY>PROLOG</QUERY></REQUEST>";
         $cdata = $function($data);
 
-        $request = new \Glpi\Inventory\Request();
+        $request = new Request();
         $request->handleContentType($mime);
         $request->handleRequest($cdata);
         $this->assertSame('atoumized-device', $request->getDeviceID());

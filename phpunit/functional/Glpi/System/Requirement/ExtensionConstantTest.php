@@ -42,7 +42,7 @@ class ExtensionConstantTest extends \GLPITestCase
     {
         $test_constant = 'TEST_CONSTANT' . mt_rand();
         define($test_constant, 'TEST');
-        $instance = new \Glpi\System\Requirement\ExtensionConstant('Test constant', $test_constant, false, '');
+        $instance = new ExtensionConstant('Test constant', $test_constant, false, '');
         $this->assertTrue($instance->isValidated());
         $this->assertEquals(
             ['The constant ' . $test_constant . ' is present.'],
@@ -53,7 +53,7 @@ class ExtensionConstantTest extends \GLPITestCase
     public function testCheckOnMissingMandatoryConstant()
     {
         $test_constant = 'TEST_CONSTANT' . mt_rand();
-        $instance = new \Glpi\System\Requirement\ExtensionConstant('Test constant', $test_constant, false, '');
+        $instance = new ExtensionConstant('Test constant', $test_constant, false, '');
         $this->assertFalse($instance->isValidated());
         $this->assertEquals(
             ['The constant ' . $test_constant . ' is missing.'],

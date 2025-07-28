@@ -548,7 +548,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                         'strategies' => [AssociatedItemsFieldStrategy::SPECIFIC_VALUES],
                         'specific_associated_items' => [
                             'itemtype' => [
-                                \Computer::getType(),
+                                Computer::getType(),
                                 '0',
                             ],
                             'items_id' => [

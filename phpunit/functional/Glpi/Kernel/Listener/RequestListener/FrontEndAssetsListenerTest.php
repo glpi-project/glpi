@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Kernel\Listener\RequestListener;
 
+use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Kernel\Listener\RequestListener\FrontEndAssetsListener;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -670,7 +671,7 @@ class FrontEndAssetsListenerTest extends \GLPITestCase
         $request->server->set('REQUEST_URI', '/plugins/notloadedplugin/resources.json');
 
         $this->expectExceptionObject(
-            new \Glpi\Exception\Http\NotFoundHttpException('Plugin `notloadedplugin` is not loaded.')
+            new NotFoundHttpException('Plugin `notloadedplugin` is not loaded.')
         );
 
         $event = new RequestEvent($this->createMock(KernelInterface::class), $request, HttpKernelInterface::MAIN_REQUEST);
