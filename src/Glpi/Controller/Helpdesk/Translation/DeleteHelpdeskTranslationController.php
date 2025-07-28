@@ -32,31 +32,22 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller\Form\Translation;
+namespace Glpi\Controller\Helpdesk\Translation;
 
+use Config;
 use Glpi\Controller\Translation\AbstractTranslationController;
-use Glpi\Exception\Http\NotFoundHttpException;
-use Glpi\Form\Form;
-use Glpi\Form\FormTranslation;
+use Glpi\Helpdesk\HelpdeskTranslation;
 use Glpi\Http\RedirectResponse;
 use Glpi\ItemTranslation\ItemTranslation;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class DeleteFormTranslationController extends AbstractTranslationController
+final class DeleteHelpdeskTranslationController extends AbstractTranslationController
 {
-    private Form $form;
-
-    #[Route("/Form/Translation/{form_id}/{language}/Delete", name: "glpi_delete_form_translation", methods: "POST")]
-    public function __invoke(Request $request, int $form_id, string $language): Response
+    #[Route("/Helpdesk/Translation/{language}/Delete", name: "glpi_delete_helpdesk_translation", methods: "POST")]
+    public function __invoke(Request $request, string $language): Response
     {
-        // Retrieve the form from the database
-        $this->form = new Form();
-        if (!$this->form->getFromDB($form_id)) {
-            throw new NotFoundHttpException('Form not found');
-        }
-
         // Validate the language code
         $this->validateLanguage($language);
 
@@ -67,21 +58,21 @@ final class DeleteFormTranslationController extends AbstractTranslationControlle
 
     protected function getTranslationClass(): ItemTranslation
     {
-        return new FormTranslation();
+        return new HelpdeskTranslation();
     }
 
     protected function getRedirectUrl(?string $language = null): string
     {
-        return $this->form->getLinkURL();
+        return Config::getFormURL();
     }
 
     protected function getTranslationHandlers(): array
     {
-        return $this->form->listTranslationsHandlers();
+        return (new HelpdeskTranslation())->listTranslationsHandlers();
     }
 
     protected function getContextTranslations(?string $language = null): array
     {
-        return FormTranslation::getTranslationsForItem($this->form);
+        return HelpdeskTranslation::getTranslationsForHelpdesk();
     }
 }

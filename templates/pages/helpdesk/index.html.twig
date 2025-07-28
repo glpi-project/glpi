@@ -120,10 +120,10 @@
                                         </div>
                                         <div class="ms-4">
                                             <h2 class="card-title mb-2">
-                                                {{ tile.getTitle() }}
+                                                {{ translate_item_key(tile, constant('TRANSLATION_KEY_TITLE', tile)) }}
                                             </h2>
                                             <div class="text-secondary remove-last-tinymce-margin">
-                                                {{ tile.getDescription()|safe_html }}
+                                                {{ translate_item_key(tile, constant('TRANSLATION_KEY_DESCRIPTION', tile))|safe_html }}
                                             </div>
                                         </div>
                                     </div>

@@ -198,16 +198,22 @@ class ItemTranslation extends CommonDBChild
         return null;
     }
 
-    public function getTranslatedPercentage(): int
+    protected function getTranslationsHandlersForStats(): array
     {
         $item = $this->getItem();
         if (!($item instanceof ProvideTranslationsInterface)) {
             throw new LogicException('Item does not provide translations');
         }
 
+        return $item->listTranslationsHandlers();
+    }
+
+    public function getTranslatedPercentage(): int
+    {
+        $translations_handlers = $this->getTranslationsHandlersForStats();
         $translated_handlers = 0;
         $total_handlers = 0;
-        $translations_handlers = $item->listTranslationsHandlers();
+
         array_walk_recursive(
             $translations_handlers,
             function ($handler) use (&$translated_handlers, &$total_handlers) {
@@ -226,14 +232,10 @@ class ItemTranslation extends CommonDBChild
 
     public function getTranslationsToDo(): int
     {
-        $item = $this->getItem();
-        if (!($item instanceof ProvideTranslationsInterface)) {
-            throw new LogicException('Item does not provide translations');
-        }
-
+        $translations_handlers = $this->getTranslationsHandlersForStats();
         $translated_handlers = 0;
         $total_handlers = 0;
-        $translations_handlers = $item->listTranslationsHandlers();
+
         array_walk_recursive(
             $translations_handlers,
             function ($handler) use (&$translated_handlers, &$total_handlers) {
@@ -252,13 +254,10 @@ class ItemTranslation extends CommonDBChild
 
     public function getTranslationsToReview(): int
     {
-        $item = $this->getItem();
-        if (!($item instanceof ProvideTranslationsInterface)) {
-            throw new LogicException('Item does not provide translations');
-        }
 
+        $translations_handlers = $this->getTranslationsHandlersForStats();
         $translations_to_review = 0;
-        $translations_handlers = $item->listTranslationsHandlers();
+
         array_walk_recursive(
             $translations_handlers,
             function ($handler) use (&$translations_to_review) {
