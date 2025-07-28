@@ -2526,7 +2526,7 @@ TWIG,
             $out .= "<a role=\"button\" title='" . __s('Massive actions') . "'
                      data-bs-toggle='tooltip' data-bs-placement='" . ($p['ontop'] ? "bottom" : "top") . "'
                      class='{$p['action_button_classes']}' ";
-            if (is_array($p['confirm'] || strlen($p['confirm']))) {
+            if (is_array($p['confirm']) || strlen($p['confirm'])) {
                 $out .= self::addConfirmationOnAction($p['confirm'], "modal_massiveaction_window$identifier.show();");
             } else {
                 $out .= "onclick='modal_massiveaction_window$identifier.show();'";

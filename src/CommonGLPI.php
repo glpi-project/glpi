@@ -673,7 +673,7 @@ class CommonGLPI implements CommonGLPIInterface
                 }
 
                 if (
-                    !is_integer($itemtype) && ($itemtype != 'empty')
+                    !is_numeric($itemtype) && ($itemtype != 'empty')
                     && ($obj = getItemForItemtype($itemtype))
                 ) {
                     $options['tabnum'] = $tabnum;
