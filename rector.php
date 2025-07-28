@@ -61,7 +61,7 @@ return RectorConfig::configure()
         cacheDirectory: sys_get_temp_dir() . '/rector'
     )
     ->withParallel(timeoutSeconds: 300)
-    ->withImportNames()
+    // handled by PHP-CS-Fixer with `fully_qualified_strict_types` rule ->withImportNames()
     ->withRules([
         CodeQuality\Assign\CombinedAssignRector::class,
         CodeQuality\BooleanAnd\RemoveUselessIsObjectCheckRector::class,
