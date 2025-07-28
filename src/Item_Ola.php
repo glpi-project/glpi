@@ -124,9 +124,16 @@ class Item_Ola extends CommonDBRelation
         // nothing to do for TTO : done at creation of item_ola
 
         // update waiting_time (to do before due_time)
-        // update waiting_time for TTR only, TTO is not impacted by waiting time
+        // update waiting_time for TTR & TTO
+        // TTO waiting_time is added only if the OLA group is not assigned to the ticket
         if (
-            $item_ola_data['ola_type'] === SLM::TTR
+            (
+                $item_ola_data['ola_type'] === SLM::TTR
+                || (
+                    $item_ola_data['ola_type'] === SLM::TTO
+                    && !$ticket->haveAGroup(CommonITILActor::ASSIGN, [$ola->fields['groups_id']])
+                )
+            )
             && !is_null($ticket->fields['begin_waiting_date'])
             && in_array('status', $ticket->updates)
             && (
