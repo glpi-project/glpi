@@ -41,6 +41,7 @@ use Glpi\PHPUnit\Tests\Glpi\ITILTrait;
 use Glpi\PHPUnit\Tests\Glpi\SLMTrait;
 use ITILFollowup;
 use ITILFollowupTemplate;
+use Location;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rule;
 use RuleAction;
@@ -233,7 +234,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => $ruleticket::getType(),
-            'condition'    => \RuleCommonITILObject::ONADD,
+            'condition'    => RuleCommonITILObject::ONADD,
             'is_recursive' => 1,
         ]);
         $this->checkInput($ruleticket, $ruletid, $ruletinput);
@@ -308,7 +309,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => 'RuleTicket',
-            'condition'    => \RuleCommonITILObject::ONADD | \RuleCommonITILObject::ONUPDATE,
+            'condition'    => RuleCommonITILObject::ONADD | RuleCommonITILObject::ONUPDATE,
             'is_recursive' => 1,
         ]);
         $this->checkInput($ruleticket, $ruletid, $ruletinput);
@@ -424,7 +425,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => $this->getTestedClass(),
-            'condition'    => \RuleCommonITILObject::ONUPDATE,
+            'condition'    => RuleCommonITILObject::ONUPDATE,
             'is_recursive' => 1,
         ]);
         $this->checkInput($rule_itil, $ruletid, $ruletinput);
@@ -1620,7 +1621,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
 
             $builder = new \RuleBuilder('Assign SLA rule', \RuleTicket::class);
             $builder->setCondtion(RuleCommonITILObject::ONADD);
-            $builder->addCriteria('priority', \Rule::PATTERN_IS, 4);
+            $builder->addCriteria('priority', Rule::PATTERN_IS, 4);
             $builder->addAction('assign', $field_name, $sla->getID());
             $builder->setEntity(0);
             $this->createRule($builder);
@@ -1643,7 +1644,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
 
         $builder = new \RuleBuilder('Assign OLA rule', \RuleTicket::class);
         $builder->setCondtion(RuleCommonITILObject::ONUPDATE);
-        $builder->addCriteria('priority', \Rule::PATTERN_IS, 4);
+        $builder->addCriteria('priority', Rule::PATTERN_IS, 4);
         $builder->addAction('append', 'olas_id', $ola->getID());
         $builder->setEntity(0);
         $this->createRule($builder);
@@ -1672,7 +1673,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
 
         $builder = new \RuleBuilder('Assign SLA rule', \RuleTicket::class);
         $builder->setCondtion(RuleCommonITILObject::ONUPDATE);
-        $builder->addCriteria('priority', \Rule::PATTERN_IS, 4);
+        $builder->addCriteria('priority', Rule::PATTERN_IS, 4);
         $builder->addAction('assign', 'slas_id_ttr', $sla->getID());
         $builder->setEntity(0);
         $this->createRule($builder);

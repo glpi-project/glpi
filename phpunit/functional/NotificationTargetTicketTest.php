@@ -56,7 +56,7 @@ class NotificationTargetTicketTest extends DbTestCase
         global $CFG_GLPI;
 
         $tkt = getItemByTypeName('Ticket', '_ticket01');
-        $notiftargetticket = new \NotificationTargetTicket(getItemByTypeName('Entity', '_test_root_entity', true), 'new', $tkt);
+        $notiftargetticket = new NotificationTargetTicket(getItemByTypeName('Entity', '_test_root_entity', true), 'new', $tkt);
         $notiftargetticket->getTags();
 
         // basic test for ##ticket.externalid## tag
@@ -183,7 +183,7 @@ class NotificationTargetTicketTest extends DbTestCase
         );
 
         // test of the getDataForObject for default language fr_FR
-        $_SESSION["glpilanguage"] = \Session::loadLanguage('fr_FR');
+        $_SESSION["glpilanguage"] = Session::loadLanguage('fr_FR');
         $_SESSION['glpi_dropdowntranslations'] = \DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
 
         $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
@@ -210,7 +210,7 @@ class NotificationTargetTicketTest extends DbTestCase
         $this->assertSame($expected, $ret['tasks']);
 
         // switch back to default language
-        $_SESSION["glpilanguage"] = \Session::loadLanguage('en_GB');
+        $_SESSION["glpilanguage"] = Session::loadLanguage('en_GB');
     }
 
     #[TestWith(['ola_tto'])]
@@ -280,7 +280,7 @@ class NotificationTargetTicketTest extends DbTestCase
         global $DB;
         // Build test ticket
         $this->login('tech', 'tech');
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $tickets_id = $ticket->add($input = [
             'name'             => 'test',
             'content'          => 'test',
@@ -392,7 +392,7 @@ class NotificationTargetTicketTest extends DbTestCase
             ],
         ];
 
-        $notiftargetticket = new \NotificationTargetTicket(getItemByTypeName('Entity', '_test_root_entity', true), 'new', $ticket);
+        $notiftargetticket = new NotificationTargetTicket(getItemByTypeName('Entity', '_test_root_entity', true), 'new', $ticket);
         $ret = $notiftargetticket->getDataForObject($ticket, $basic_options);
 
         //get all task / solution / followup (because is tech)
@@ -553,7 +553,7 @@ class NotificationTargetTicketTest extends DbTestCase
         $parent  = getItemByTypeName('Entity', '_test_root_entity', true);
 
         // test entity url (with default url)
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $root_tickets_id = $ticket->add([
             'name'        => 'test',
             'content'     => 'test',
@@ -569,7 +569,7 @@ class NotificationTargetTicketTest extends DbTestCase
                 'show_private'    => true,
             ],
         ];
-        $notiftargetticket = new \NotificationTargetTicket($root, 'new', $ticket);
+        $notiftargetticket = new NotificationTargetTicket($root, 'new', $ticket);
         $ret = $notiftargetticket->getDataForObject($ticket, $basic_options);
 
 
@@ -583,7 +583,7 @@ class NotificationTargetTicketTest extends DbTestCase
         $this->assertEquals($root_expected_url, $ret['##ticket.url##']);
 
         // test sub entity with changed url
-        $entity  = new \Entity();
+        $entity  = new Entity();
         $this->assertTrue($entity->update([
             'id'       => $parent,
             'url_base' => "parent.tld",
@@ -597,7 +597,7 @@ class NotificationTargetTicketTest extends DbTestCase
             'entities_id' => $parent,
         ]);
 
-        $notiftargetticket = new \NotificationTargetTicket($parent, 'new', $ticket);
+        $notiftargetticket = new NotificationTargetTicket($parent, 'new', $ticket);
         $ret = $notiftargetticket->getDataForObject($ticket, $basic_options);
 
         $parent_expected_url = str_replace([
