@@ -3196,11 +3196,11 @@ TWIG, $twig_params);
      * @param string    $password    user password
      * @param array     $ldap_method ldap_method array to use
      * @param string    $user_dn     user LDAP DN if present
-     * @param bool|null $error       Boolean flag that will be set to `true` if a LDAP error occurs during connection
+     * @param bool      $error       Boolean flag that will be set to `true` if a LDAP error occurs during connection
      *
      * @return object identification object
      */
-    public static function ldapAuth($auth, $login, $password, $ldap_method, $user_dn, ?bool &$error = null)
+    public static function ldapAuth($auth, $login, $password, $ldap_method, $user_dn, bool &$error = false)
     {
         $auth->auth_succeded = false;
         $auth->extauth       = 1;
