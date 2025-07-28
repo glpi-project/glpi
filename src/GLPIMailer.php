@@ -343,7 +343,7 @@ class GLPIMailer
                 break;
             case 'FromName':
                 $froms = $this->email->getFrom();
-                if (empty($froms)) {
+                if ($froms === []) {
                     trigger_error(
                         'Unable to define "FromName" property when "From" property is not defined.',
                         E_USER_WARNING
