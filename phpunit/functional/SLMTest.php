@@ -1052,17 +1052,17 @@ class SLMTest extends DbTestCase
                             'to'   => '2034-06-09 11:29:17',
                         ],
                     ],
-                    'target_date'       => $la_type == SLM::TTR
+                    'target_date'       => ($la_type == SLM::TTR && $la_class == SLA::class) || $la_class == OLA::class
                         // 2034-06-09 08:46:12 + 30 m (LA time) + 2 h 29 m 13 s (waiting time)
                         ? '2034-06-09 11:45:25'
                         // TTO does is not impacted by waiting times
                         : '2034-06-09 09:16:12',
-                    'waiting_duration'  => $la_type == SLM::TTR
+                    'waiting_duration'  => ($la_type == SLM::TTR && $la_class == SLA::class) || $la_class == OLA::class
                         ? 8953 // 4692 + 1525 + 2736
                         : 0,
                     // Negative 5 minutes escalation level
                     'escalation_time'        => - 5 * MINUTE_TIMESTAMP,
-                    'target_escalation_date' => $la_type == SLM::TTR
+                    'target_escalation_date' => ($la_type == SLM::TTR && $la_class == SLA::class) || $la_class == OLA::class
                         // 5 minutes before each target date
                         ? '2034-06-09 11:40:25'
                         : '2034-06-09 09:11:12',
@@ -1101,15 +1101,15 @@ class SLMTest extends DbTestCase
                             'to'   => '2034-06-09 11:23:49',
                         ],
                     ],
-                    'target_date'       => $la_type == SLM::TTR
+                    'target_date'       => ($la_type == SLM::TTR && $la_class == SLA::class) || $la_class == OLA::class
                         // 2034-06-09 08:46:12 + 4 h (LA time) + 2h 8 m 22 s (waiting time)
                         ? '2034-06-09 14:54:34'
                         // TTO does is not impacted by waiting times
                         : '2034-06-09 12:46:12',
-                    'waiting_duration'  => $la_type == SLM::TTR ? 7702 : 0,
+                    'waiting_duration'  => ($la_type == SLM::TTR && $la_class == SLA::class) || $la_class == OLA::class ? 7702 : 0,
                     // Positive 10 hour escalation level
                     'escalation_time'   => 10 * HOUR_TIMESTAMP,
-                    'target_escalation_date' => $la_type == SLM::TTR
+                    'target_escalation_date' => ($la_type == SLM::TTR && $la_class == SLA::class) || $la_class == OLA::class
                         // Start on 2034-06-09 14:54:34 (target TTR date) - 10 hours to add
                         // 4h06 to reach end of day (19h)
                         // There is still 5h54 remaining hours to add
@@ -1156,15 +1156,15 @@ class SLMTest extends DbTestCase
                             'to'   => '2034-06-08 09:00:00',
                         ],
                     ],
-                    'target_date'       => $la_type == SLM::TTR
+                    'target_date'       => ($la_type == SLM::TTR && $la_class == SLA::class) || $la_class == OLA::class
                         // 2034-06-05 10:30:00 + 4 h (LA time) + 29 h (waiting time) + non-working hours
                         ? '2034-06-08 12:00:00'
                         // TTO is not impacted by waiting times
                         : '2034-06-05 14:30:00',
-                    'waiting_duration'  => $la_type == SLM::TTR ? 104400 : 0,
+                    'waiting_duration'  => ($la_type == SLM::TTR && $la_class == SLA::class) || $la_class == OLA::class ? 104400 : 0,
                     // Positive 3 days escalation level
                     'escalation_time'   => 3 * DAY_TIMESTAMP,
-                    'target_escalation_date' => $la_type == SLM::TTR
+                    'target_escalation_date' => ($la_type == SLM::TTR && $la_class == SLA::class) || $la_class == OLA::class
                          // 3 days after TTR
                          // Skip saturday and sunday (2034-06-10 and 2034-06-11)
                          // The fact that monday start later (+ 2 hours) SHOULD NOT
@@ -1246,16 +1246,16 @@ class SLMTest extends DbTestCase
                             'to'   => '2034-06-14 18:00:00',
                         ],
                     ],
-                    'target_date'       => $la_type == SLM::TTR
+                    'target_date'       => ($la_type == SLM::TTR && $la_class == SLA::class) || $la_class == OLA::class
                         // 2034-06-07 10:00:00 + 5 days (LA time)
                         // -> 2034-06-14 10:00:00 + 49 h 30 m (waiting time) + non-working hours
                         ? '2034-06-21 09:00:00'
                         : '2034-06-14 10:00:00' // TTO does is not impacted by waiting times
                     ,
-                    'waiting_duration'  => $la_type == SLM::TTR ? 178200 : 0,
+                    'waiting_duration'  => ($la_type == SLM::TTR && $la_class == SLA::class) || $la_class == OLA::class ? 178200 : 0,
                     // Positive 3 week escalation level
                     'escalation_time'   => 15 * DAY_TIMESTAMP,
-                    'target_escalation_date' => $la_type == SLM::TTR
+                    'target_escalation_date' => ($la_type == SLM::TTR && $la_class == SLA::class) || $la_class == OLA::class
                         ? '2034-07-12 09:00:00'
                         : '2034-07-05 10:00:00',
                 ];
@@ -1292,16 +1292,16 @@ class SLMTest extends DbTestCase
                             'to'   => '2034-06-14 18:00:00',
                         ],
                     ],
-                    'target_date'       => $la_type == SLM::TTR
+                    'target_date'       => ($la_type == SLM::TTR && $la_class == SLA::class) || $la_class == OLA::class
                         // 2034-06-07 10:00:00 + 5 days/end of working day(LA time)
                         // -> 2034-06-14 19:00:00 + 49 h 30 m (waiting time) + non-working hours
                         ? '2034-06-21 18:00:00'
                         // TTO does is not impacted by waiting times
                         : '2034-06-14 19:00:00',
-                    'waiting_duration'  => $la_type == SLM::TTR ? 178200 : 0,
+                    'waiting_duration'  => ($la_type == SLM::TTR && $la_class == SLA::class) || $la_class == OLA::class ? 178200 : 0,
                     // Positive 2 hours escalation level
                     'escalation_time'   => 2 * HOUR_TIMESTAMP,
-                    'target_escalation_date' => $la_type == SLM::TTR
+                    'target_escalation_date' => ($la_type == SLM::TTR && $la_class == SLA::class) || $la_class == OLA::class
                         // Must be two hours after their respective target date
                         ? '2034-06-22 09:30:00'
                         : '2034-06-15 10:30:00',
@@ -2320,8 +2320,6 @@ class SLMTest extends DbTestCase
         // -- assert : levels should be in olalevels_tickets
         $levels_todo = (new OlaLevel_Ticket())->find(['tickets_id' => $ticket->getID()]);
         $map_level_to_olalevels_id = fn(array $levels) => array_map(fn($l) => $l['olalevels_id'], $levels);
-        //        dump(  $levels );
-        //        dump( $map_level_to_olalevels_id($levels_todo) );last
         $this->assertEqualsCanonicalizing(
             $levels,
             $map_level_to_olalevels_id($levels_todo)
