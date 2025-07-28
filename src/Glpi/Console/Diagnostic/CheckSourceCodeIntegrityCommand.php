@@ -39,6 +39,7 @@ use Exception;
 use Glpi\Console\AbstractCommand;
 use Glpi\System\Diagnostic\SourceCodeIntegrityChecker;
 use Glpi\Toolbox\VersionParser;
+use LogicException;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Helper\Table;
@@ -126,6 +127,7 @@ class CheckSourceCodeIntegrityCommand extends AbstractCommand
                 SourceCodeIntegrityChecker::STATUS_ALTERED => 'Altered',
                 SourceCodeIntegrityChecker::STATUS_MISSING => 'Missing',
                 SourceCodeIntegrityChecker::STATUS_ADDED => 'Added',
+                default => throw new LogicException("Unexpected status: $status"),
             };
             $table->addRow([
                 $file,
