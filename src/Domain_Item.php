@@ -62,7 +62,11 @@ class Domain_Item extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        if ($item::class === Domain::class && count(Domain::getTypes(false))) {
+        if (!$item instanceof CommonDBTM) {
+            return '';
+        }
+
+        if ($item instanceof Domain && count(Domain::getTypes(false))) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::countForDomain($item);
@@ -71,7 +75,7 @@ class Domain_Item extends CommonDBRelation
         }
 
         if (
-            $item::class === DomainRelation::class || (in_array($item::class, Domain::getTypes(true), true)
+            $item instanceof DomainRelation || (in_array($item::class, Domain::getTypes(true), true)
                 && Session::haveRight('domain', READ))
         ) {
             $nb = 0;
@@ -85,10 +89,14 @@ class Domain_Item extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item::class === Domain::class) {
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
+
+        if ($item instanceof Domain) {
             self::showForDomain($item);
         } elseif (
-            $item::class === DomainRelation::class
+            $item instanceof DomainRelation
             || in_array($item::class, Domain::getTypes(true), true)
         ) {
             self::showForItem($item);

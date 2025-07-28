@@ -63,7 +63,7 @@ class Appliance_Item extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        if (!Appliance::canView()) {
+        if (!Appliance::canView() || !$item instanceof CommonDBTM) {
             return '';
         }
 
@@ -87,9 +87,12 @@ class Appliance_Item extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
 
-        switch ($item->getType()) {
-            case Appliance::class:
+        switch (true) {
+            case $item instanceof Appliance:
                 self::showItems($item);
                 break;
             default:

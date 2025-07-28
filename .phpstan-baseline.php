@@ -50,36 +50,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/install/migrations/update_9.5.x_to_10.0.0/native_inventory.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$checkitem of static method KnowbaseItem_Item\\:\\:getMassiveActionsForItemtype\\(\\) expects CommonDBTM\\|null, CommonGLPI\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Appliance.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$appliance of static method Appliance_Item\\:\\:showItems\\(\\) expects Appliance, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Appliance_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Appliance_Item\\:\\:countForMainItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Appliance_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Appliance_Item\\:\\:showForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Appliance_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method CommonDBRelation\\:\\:countForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Appliance_Item.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Auth\\:\\:connection_ldap\\(\\) never assigns null to &\\$error so it can be removed from the by\\-ref type\\.$#',
 	'identifier' => 'parameterByRef.unusedType',
 	'count' => 1,
@@ -132,42 +102,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CartridgeItem_PrinterModel.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method CommonDBRelation\\:\\:countForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CartridgeItem_PrinterModel.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$certificate of static method Certificate_Item\\:\\:showForCertificate\\(\\) expects Certificate, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Certificate_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Certificate_Item\\:\\:showForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Certificate_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method CommonDBRelation\\:\\:countForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Certificate_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method CommonDBRelation\\:\\:countForMainItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Certificate_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter &\\$item by\\-ref type of method CommonDBConnexity\\:\\:canConnexityItem\\(\\) expects CommonDBTM\\|null, CommonDBTM\\|false given\\.$#',
-	'identifier' => 'parameterByRef.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBConnexity.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
@@ -254,58 +188,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILValidationCron.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method CommonItilObject_Item\\:\\:showListForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$obj of static method CommonItilObject_Item\\:\\:showForObject\\(\\) expects CommonITILObject\\|TicketRecurrent, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$checkitem of static method KnowbaseItem_Item\\:\\:getMassiveActionsForItemtype\\(\\) expects CommonDBTM\\|null, CommonGLPI\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Computer.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$contact of static method Contact_Supplier\\:\\:showForContact\\(\\) expects Contact, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Contact_Supplier.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method CommonDBRelation\\:\\:countForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Contact_Supplier.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$supplier of static method Contact_Supplier\\:\\:showForSupplier\\(\\) expects Supplier, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Contact_Supplier.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$contract of static method ContractCost\\:\\:showForContract\\(\\) expects Contract, CommonGLPI given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/ContractCost.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method CommonDBRelation\\:\\:countForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Contract_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Contract_Item\\:\\:showForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Contract_Item.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$first_connection on null\\.$#',
@@ -326,12 +212,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Database.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method DatabaseInstance\\:\\:showInstances\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DatabaseInstance.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$input of static method Toolbox\\:\\:str_pad\\(\\) expects string, \\(float\\|int\\) given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -342,24 +222,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Document.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method CommonDBRelation\\:\\:countForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Document_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Domain_Item\\:\\:countForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Domain_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Domain_Item\\:\\:showForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Domain_Item.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#7 \\$confirm of static method Html\\:\\:showSimpleForm\\(\\) expects string, array\\<int, string\\> given\\.$#',
@@ -388,12 +250,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Dead catch \\- Glpi\\\\Exception\\\\PasswordTooWeakException is never thrown in the try block\\.$#',
 	'identifier' => 'catch.neverThrown',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/API.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$itemtype of method Glpi\\\\Api\\\\API\\:\\:getSearchOptionUniqID\\(\\) expects CommonDBTM, string given\\.$#',
-	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/API.php',
 ];
@@ -486,12 +342,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Search/SearchContext.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Glpi\\\\ItemTranslation\\\\ItemTranslation\\:\\:translate\\(\\) expects CommonDBTM&Glpi\\\\ItemTranslation\\\\Context\\\\ProvideTranslationsInterface, CommonDBTM given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Application/View/Extension/I18nExtension.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of static method NetworkPort\\:\\:rawSearchOptionsToAdd\\(\\) expects null, class\\-string\\<Glpi\\\\Asset\\\\Asset\\> given\\.$#',
@@ -710,36 +560,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Impact.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Infocom\\:\\:showForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Infocom.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$asset of static method ItemAntivirus\\:\\:showForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ItemAntivirus.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$asset of static method ItemVirtualMachine\\:\\:showForAsset\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ItemVirtualMachine.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$asset of static method ItemVirtualMachine\\:\\:showForVirtualMachine\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ItemVirtualMachine.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method CommonDBRelation\\:\\:countForMainItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Cluster.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$camera of static method Item_DeviceCamera_ImageResolution\\:\\:showItems\\(\\) expects DeviceCamera, Item_DeviceCamera given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -770,78 +590,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_Devices.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method CommonDBRelation\\:\\:countForMainItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Enclosure.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Item_Environment\\:\\:showForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Environment.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method CommonDBRelation\\:\\:countForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Line.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Item_Line\\:\\:countSimcardLinesForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Line.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Item_Line\\:\\:showLinesForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Line.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method CommonDBRelation\\:\\:countForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_OperatingSystem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Item_OperatingSystem\\:\\:showForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_OperatingSystem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Item_Process\\:\\:showForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Process.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method CommonDBRelation\\:\\:countForMainItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Project.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Item_RemoteManagement\\:\\:showForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_RemoteManagement.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Item_SoftwareVersion\\:\\:countForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_SoftwareVersion.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Item_SoftwareVersion\\:\\:showForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_SoftwareVersion.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$odd of static method Search\\:\\:showNewLine\\(\\) expects bool, int\\<0, 1\\> given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -854,30 +602,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/KnowbaseItemTranslation.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method KnowbaseItem_Comment\\:\\:showForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItem_Comment.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method KnowbaseItem_Item\\:\\:getCountForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItem_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method KnowbaseItem_Item\\:\\:showForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItem_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method KnowbaseItem_Revision\\:\\:showForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItem_Revision.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$slm of static method LevelAgreement\\:\\:showForSLM\\(\\) expects SLM, CommonGLPI given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -888,18 +612,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/LevelAgreement.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Link\\:\\:showAllLinksForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Link.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Log\\:\\:showForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Log.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getAddressList\\(\\) on array\\|ArrayIterator\\|Laminas\\\\Mail\\\\Header\\\\HeaderInterface\\|string\\.$#',
@@ -920,40 +632,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/MailCollector.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Link\\:\\:showAllLinksForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ManualLink.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#4 \\$onlyone of method DBmysql\\:\\:updateOrInsert\\(\\) expects bool, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Migration.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$checkitem of static method Glpi\\\\Asset\\\\Asset_PeripheralAsset\\:\\:getMassiveActionsForItemtype\\(\\) expects CommonDBTM\\|null, CommonGLPI\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Monitor.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$checkitem of static method KnowbaseItem_Item\\:\\:getMassiveActionsForItemtype\\(\\) expects CommonDBTM\\|null, CommonGLPI\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Monitor.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$checkitem of static method KnowbaseItem_Item\\:\\:getMassiveActionsForItemtype\\(\\) expects CommonDBTM\\|null, CommonGLPI\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkEquipment.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Stencil\\:\\:getStencilFromItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkEquipmentModelStencil.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#3 \\$super of static method NetworkName\\:\\:getHTMLTableHeader\\(\\) expects HTMLTableSuperHeader\\|null, HTMLTableHeader given\\.$#',
@@ -962,64 +644,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NetworkName.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method NetworkPort\\:\\:countForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method NetworkPort\\:\\:showForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Notepad\\:\\:countForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Notepad.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Notepad\\:\\:showForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Notepad.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of method Notification\\:\\:itemMatchFilter\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationEvent.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset 2 on array\\{list\\<string\\>, list\\<\'"\'\\|\'\\\\\'\'\\>, list\\<numeric\\-string\\>, list\\<\'"\'\\|\'\\\\\'\'\\>\\} in isset\\(\\) always exists and is not nullable\\.$#',
 	'identifier' => 'isset.offset',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NotificationEventMailing.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$checkitem of static method Glpi\\\\Asset\\\\Asset_PeripheralAsset\\:\\:getMassiveActionsForItemtype\\(\\) expects CommonDBTM\\|null, CommonGLPI\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Peripheral.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$checkitem of static method KnowbaseItem_Item\\:\\:getMassiveActionsForItemtype\\(\\) expects CommonDBTM\\|null, CommonGLPI\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Peripheral.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$checkitem of static method Glpi\\\\Asset\\\\Asset_PeripheralAsset\\:\\:getMassiveActionsForItemtype\\(\\) expects CommonDBTM\\|null, CommonGLPI\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Phone.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$checkitem of static method KnowbaseItem_Item\\:\\:getMassiveActionsForItemtype\\(\\) expects CommonDBTM\\|null, CommonGLPI\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Phone.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Offset \'plan\' on non\\-empty\\-array in isset\\(\\) always exists and is not nullable\\.$#',
@@ -1044,18 +672,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 7,
 	'path' => __DIR__ . '/src/Plugin.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$checkitem of static method Glpi\\\\Asset\\\\Asset_PeripheralAsset\\:\\:getMassiveActionsForItemtype\\(\\) expects CommonDBTM\\|null, CommonGLPI\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Printer.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$checkitem of static method KnowbaseItem_Item\\:\\:getMassiveActionsForItemtype\\(\\) expects CommonDBTM\\|null, CommonGLPI\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Printer.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#4 \\$is_recursive of function getEntitiesRestrictCriteria expects \'auto\'\\|bool, 1 given\\.$#',
@@ -1094,12 +710,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Report.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Reservation\\:\\:showForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Reservation.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Binary operation "\\*" between string and 3600 results in an error\\.$#',
 	'identifier' => 'binaryOp.invalid',
 	'count' => 1,
@@ -1118,12 +728,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleImportAsset.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method RuleMatchedLog\\:\\:countForItem\\(\\) expects CommonDBTM, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleMatchedLog.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$search of static method SavedSearch_Alert\\:\\:showForSavedSearch\\(\\) expects SavedSearch, CommonGLPI given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -1134,12 +738,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/SlaLevel_Ticket.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$checkitem of static method KnowbaseItem_Item\\:\\:getMassiveActionsForItemtype\\(\\) expects CommonDBTM\\|null, CommonGLPI\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Software.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of static method Stat\\:\\:constructEntryValues\\(\\) expects class\\-string\\<CommonITILObject\\>, class\\-string\\<CommonGLPI\\> given\\.$#',
@@ -1164,12 +762,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Stat.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$checkitem of static method KnowbaseItem_Item\\:\\:getMassiveActionsForItemtype\\(\\) expects CommonDBTM\\|null, CommonGLPI\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Ticket.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Static method Ticket\\:\\:getListForItemSearchOptionsCriteria\\(\\) is unused\\.$#',

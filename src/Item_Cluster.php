@@ -53,6 +53,9 @@ class Item_Cluster extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            return '';
+        }
         $nb = 0;
         if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = self::countForMainItem($item);

@@ -1571,9 +1571,13 @@ class Item_SoftwareVersion extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            return '';
+        }
+
         $nb = 0;
         switch ($item::class) {
-            case 'Software':
+            case Software::class:
                 /** @var Software $item */
                 if (!$withtemplate) {
                     if ($_SESSION['glpishow_count_on_tabs']) {
@@ -1613,9 +1617,13 @@ class Item_SoftwareVersion extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item::class === Software::class) {
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
+
+        if ($item instanceof Software) {
             self::showForSoftware($item);
-        } elseif ($item::class === SoftwareVersion::class) {
+        } elseif ($item instanceof SoftwareVersion) {
             switch ($tabnum) {
                 case 1:
                     self::showForVersionByEntity($item);

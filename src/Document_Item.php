@@ -263,6 +263,10 @@ class Document_Item extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            return '';
+        }
+
         $nbdoc = $nbitem = 0;
         switch ($item::class) {
             case Document::class:

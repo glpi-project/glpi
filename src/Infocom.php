@@ -185,10 +185,12 @@ class Infocom extends CommonDBChild
      **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
 
-        switch ($item->getType()) {
-            case 'Supplier':
-                /** @var Supplier $item */
+        switch (true) {
+            case $item instanceof Supplier:
                 $item->showInfocoms();
                 break;
 

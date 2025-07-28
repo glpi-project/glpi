@@ -1700,6 +1700,10 @@ class NetworkPort extends CommonDBChild
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
+        if (!$item instanceof CommonDBTM) {
+            return '';
+        }
+
         // Can exist on template
         $nb = 0;
         if (NetworkEquipment::canView()) {
@@ -1762,6 +1766,10 @@ class NetworkPort extends CommonDBChild
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
+
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
 
         if (
             $item::class === self::class

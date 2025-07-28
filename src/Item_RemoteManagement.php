@@ -75,6 +75,9 @@ class Item_RemoteManagement extends CommonDBChild
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
         self::showForItem($item, $withtemplate);
         return true;
     }

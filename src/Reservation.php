@@ -70,8 +70,10 @@ class Reservation extends CommonDBChild
     {
         if ($item::class === User::class) {
             self::showForUser($_GET["id"]);
-        } else {
+        } elseif ($item instanceof CommonDBTM) {
             self::showForItem($item);
+        } else {
+            throw new LogicException("Item must be CommonDBTM");
         }
         return true;
     }
