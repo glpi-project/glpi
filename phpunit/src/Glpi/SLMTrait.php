@@ -180,41 +180,4 @@ trait SLMTrait
         return new DateInterval(sprintf('P%d%s', $amount, strtoupper(substr($unit, 0, 1))));
     }
 
-    private function runSlaCron(): void
-    {
-        SlaLevel_Ticket::cronSlaTicket(getItemByTypeName(CronTask::class, 'slaticket'));
-    }
-
-    /**
-     * beware that DateInterval expects self::xxx to be ['minutes, etc ... doc à compléter) @todoseb
-     *
-     * @return DateInterval
-     */
-    private function getDefaultOlaTtoDelayInterval(): DateInterval
-    {
-        [$amount, $unit] = self::OLA_TTO_DELAY;
-
-        return new DateInterval(sprintf('PT%d%s', $amount, strtoupper(substr($unit, 0, 1))));
-    }
-
-    private function getDefaultOlaTtrDelayInterval(): DateInterval
-    {
-        [$amount, $unit] = self::OLA_TTR_DELAY;
-
-        return new DateInterval(sprintf('P%d%s', $amount, strtoupper(substr($unit, 0, 1))));
-    }
-
-    private function getDefaultSlaTtoDelayInterval(): DateInterval
-    {
-        [$amount, $unit] = self::SLA_TTO_DELAY;
-
-        return new DateInterval(sprintf('PT%d%s', $amount, strtoupper(substr($unit, 0, 1))));
-    }
-
-    private function getDefaultSlaTtrDelayInterval(): DateInterval
-    {
-        [$amount, $unit] = self::SLA_TTR_DELAY;
-
-        return new DateInterval(sprintf('P%d%s', $amount, strtoupper(substr($unit, 0, 1))));
-    }
 }
