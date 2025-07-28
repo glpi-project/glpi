@@ -92,6 +92,7 @@ class RuleDefineItemtype extends Rule
      * @param string $criterion
      * @return array
      */
+    #[Override]
     public static function addMoreCriteria($criterion = '')
     {
         return RuleImportAsset::addMoreCriteria($criterion);
