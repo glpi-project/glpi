@@ -4076,7 +4076,7 @@ TWIG, $twig_params);
      *
      * @since 0.84
      *
-     * @param object|false   $config_ldap        LDAP configuration. May only be false if $check_config_value is also false.
+     * @param ($check_config_value is true ? object : false)   $config_ldap        LDAP configuration. May only be false if $check_config_value is also false.
      * @param boolean  $check_config_value Whether to check config values
      *
      * @return boolean true if maxPageSize can be used, false otherwise
