@@ -84,8 +84,6 @@ use function Safe\class_implements;
 use function Safe\ob_end_clean;
 use function Safe\ob_start;
 use function Safe\preg_match;
-use function Safe\session_destroy;
-use function Safe\session_id;
 
 class Router
 {

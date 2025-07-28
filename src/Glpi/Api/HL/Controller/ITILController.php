@@ -40,7 +40,6 @@ use Change;
 use ChangeTask;
 use ChangeTemplate;
 use ChangeValidation;
-use CommonDBChild;
 use CommonDBTM;
 use CommonITILActor;
 use CommonITILObject;
