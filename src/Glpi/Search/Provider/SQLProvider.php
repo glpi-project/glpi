@@ -6766,7 +6766,7 @@ HTML;
         if (isset($tab[1]) && !is_numeric($tab[1])) {
             // Report $ to tab[0]
             if (preg_match('/^(\\$*)(.*)/', $tab[1], $matchs)) {
-                if (isset($matchs[2]) && is_numeric($matchs[2])) {
+                if (is_numeric($matchs[2])) {
                     $tab[1]  = $matchs[2];
                     $tab[0] .= $matchs[1];
                 }

@@ -429,7 +429,7 @@ class Toolbox
                 }
                 $call = ($trace["class"] ?? "") .
                     ($trace["type"] ?? "") .
-                    (isset($trace["function"]) ? $trace["function"] . "()" : "");
+                    $trace["function"];
                 if ($call == $hide) {
                     $call = '';
                 }
