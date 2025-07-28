@@ -95,8 +95,10 @@ use User;
  *              - is not done when a user not in the dedicated group is assigned to the ticket : @see self::testOlaTtoIsNotCompleteWhenTicketIsAssignedToUserNotInDedicatedGroup()
  *
  *          - delay :
- *              - ola due time is not delayed if the ticket status is WAITING : @see self::testOlaTTODueTimeIsNotDelayedWhileTicketStatusIsWaiting()
- *              - ola waiting time is not incremented while the ticket is WAITING @see self::testOlaTTOWaitingTimeIsNotIncrementedWhileTicketStatusIsWaiting()
+ *              - due time is not delayed if the ticket status is WAITING and ticket is not assigned to group: @see self::testOlaTTODueTimeIsNotDelayedWhileTicketStatusIsWaitingAndNotAssignedToOlaGroup()
+ *              - due time is delayed if the ticket status is WAITING and ticket is assigned to group: @see self::testOlaTTODueTimeIsDelayedWhileTicketStatusIsWaitingAndAssignedToOlaGroup()
+ *              - waiting time is not incremented while the ticket is WAITING and assigned to ola group @see self::testOlaTTOWaitingTimeIsNotIncrementedWhileTicketStatusIsWaitingAndAssignedToOlaGroup()
+ *              - waiting time is incremented while the ticket is WAITING and not assigned to ola group @see self::testOlaTTOWaitingTimeIsIncrementedWhileTicketStatusIsWaitingAndNotAssignedToOlaGroup()
  *
  *          - ola can be associated by rule and form at the same time @see self::testOlaCanBeAssociatedByRulesAndByForm()
  *          - due_time is not updated on ticket date update @see self::testOlaTtoDueTimeIsNotUpdatedOnTicketDateUpdate()
@@ -654,15 +656,47 @@ class OLATest extends DbTestCase
         $this->assertEquals(0, $ola_data['end_time'], 'End time should be set to the moment ticket is assigned to a user of the dedicated group.');
     }
 
-    public function testOlaTTODueTimeIsNotDelayedWhileTicketStatusIsWaiting()
+    public function testOlaTTODueTimeIsNotDelayedWhileTicketStatusIsWaitingAndNotAssignedToOlaGroup(): void
+    {
+        $this->login();
+
+        // arrange create ticket with OLA at 09:00:00, status WAITING
+        $now = $this->setCurrentTime('2025-06-26 09:00:00');
+        ['ola' => $ola, 'group' => $ola_group ] = $this->createOLA(ola_type: SLM::TTO);
+        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()]]);
+        $ticket = $this->updateItem(Ticket::class, $ticket->getID(), ['status' => CommonITILObject::WAITING]);
+        assert(false === $ticket->haveAGroup(CommonITILActor::ASSIGN, [$ola_group->getID()]), 'Ticket should not be assigned to the OLA group.');
+
+        // act : wait one hour and change status to trigger due_time recomputing
+        $this->setCurrentTime('2025-06-26 10:00:00');
+        $this->updateItem($ticket::class, $ticket->getID(), ['status' => CommonITILObject::ASSIGNED]);
+        $new_due_time = $ticket->getOlasData()[0]['due_time'];
+        $expected_due_time = $now
+            ->add($this->getDefaultOlaTtoDelayInterval())
+            ->modify('+1 hour') // 1 hour waiting time;
+            ->format('Y-m-d H:i:s');
+
+        $this->assertEquals(
+            $expected_due_time,
+            $new_due_time,
+            'Waiting time should not be incremented while ticket status is WAITING for an OLA TTO.'
+        );
+    }
+
+    public function testOlaTTODueTimeIsDelayedWhileTicketStatusIsWaitingAndAssignedToOlaGroup(): void
     {
         $this->login();
 
         // arrange create ticket with OLA at 09:00:00, status WAITING
         $this->setCurrentTime('2025-06-26 09:00:00');
-        ['ola' => $ola ] = $this->createOLA(ola_type: SLM::TTO);
-        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()], 'status' => CommonITILObject::WAITING]);
-        assert(CommonITILObject::WAITING === (int) $ticket->fields['status']);
+        ['ola' => $ola, 'group' => $ola_group ] = $this->createOLA(ola_type: SLM::TTO);
+        $ticket = $this->createTicket(
+            [   '_la_update' => true,
+                '_olas_id' => [$ola->getID()],
+                '_groups_id_assign' => getItemByTypeName(Group::class, '_test_group_1', true)]
+        );
+        $ticket = $this->updateItem(Ticket::class, $ticket->getID(), ['status' => CommonITILObject::WAITING]);
+        assert(true === $ticket->haveAGroup(CommonITILActor::ASSIGN, [$ola_group->getID()]), 'Ticket should be assigned to the OLA group.');
         $initial_due_time = $ticket->getOlasData()[0]['due_time'];
 
         // act : wait one hour and change status to trigger due_time recomputing
@@ -677,21 +711,41 @@ class OLATest extends DbTestCase
         );
     }
 
-    public function testOlaTTOWaitingTimeIsNotIncrementedWhileTicketStatusIsWaiting()
+
+    public function testOlaTTOWaitingTimeIsNotIncrementedWhileTicketStatusIsWaitingAndAssignedToOlaGroup(): void
     {
         // arrange
         $this->login();
         $this->setCurrentTime('2025-06-26 10:04:00');
-        ['ola' => $ola ] = $this->createOLA(ola_type: SLM::TTO);
+        ['ola' => $ola, 'group' => $ola_group ] = $this->createOLA(ola_type: SLM::TTO);
+        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()]]);
+        $ticket = $this->updateItem(Ticket::class, $ticket->getID(), ['status' => CommonITILObject::WAITING, '_groups_id_assign' => $ola_group->getID()]);
+        assert(true === $ticket->haveAGroup(CommonITILActor::ASSIGN, [$ola_group->getID()]), 'Ticket should be assigned to the OLA group.');
 
-        // act - create ticket, set status to waiting, wait 20 minutes, switch ticket to assigned
-        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()], 'status' => CommonITILObject::WAITING]);
-        assert($ticket->fields['status'] === CommonITILObject::WAITING);
+        // act - wait 20 minutes and switch ticket to assigned
         $this->setCurrentTime('2025-06-26 10:24:00');
         $this->updateItem(Ticket::class, $ticket->getID(), ['status' => CommonITILObject::ASSIGNED]);
 
         $ola_data = $ticket->getOlasData()[0];
         $this->assertEquals(0, $ola_data['waiting_time'], 'Waiting time should be 0 minute after 20 min in WAITING status for an OLA TTO');
+    }
+
+    public function testOlaTTOWaitingTimeIsIncrementedWhileTicketStatusIsWaitingAndNotAssignedToOlaGroup(): void
+    {
+        // arrange
+        $this->login();
+        $this->setCurrentTime('2025-06-26 10:04:00');
+        ['ola' => $ola, 'group' => $ola_group ] = $this->createOLA(ola_type: SLM::TTO);
+        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()]]);
+        $ticket = $this->updateItem(Ticket::class, $ticket->getID(), ['status' => CommonITILObject::WAITING, '_groups_id_assign' => getItemByTypeName(Group::class, '_test_group_2', true)]);
+        assert(false === $ticket->haveAGroup(CommonITILActor::ASSIGN, [$ola_group->getID()]), 'Ticket should not be assigned to the OLA group.');
+
+        // act - wait 20 minutes and switch ticket to assigned
+        $this->setCurrentTime('2025-06-26 10:24:00');
+        $this->updateItem(Ticket::class, $ticket->getID(), ['status' => CommonITILObject::ASSIGNED]);
+
+        $ola_data = $ticket->getOlasData()[0];
+        $this->assertEquals(20 * MINUTE_TIMESTAMP, $ola_data['waiting_time'], 'Waiting time should be 0 minute after 20 min in WAITING status for an OLA TTO');
     }
 
     public function testOlaCanBeAssociatedByRulesAndByForm(): void
