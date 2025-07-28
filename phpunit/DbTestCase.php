@@ -346,10 +346,10 @@ class DbTestCase extends GLPITestCase
 
     /**
      * @template T
-     * @param \CommonDBTM<T> $item
+     * @param CommonDBTM<T> $item
      * @return T
      */
-    protected function reloadItem(CommonDBTM $item): \CommonDBTM
+    protected function reloadItem(CommonDBTM $item): CommonDBTM
     {
         $new = new ($item::class);
         $new->getFromDB($item->getID());
