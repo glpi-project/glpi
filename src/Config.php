@@ -37,6 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\Dashboard\Grid;
 use Glpi\Event;
+use Glpi\Helpdesk\HelpdeskTranslation;
 use Glpi\Plugin\Hooks;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\ArrayNormalizer;
@@ -154,6 +155,7 @@ class Config extends CommonDBTM
         $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab(DisplayPreference::class, $ong, $options);
         $this->addStandardTab(GLPINetwork::class, $ong, $options);
+        $this->addStandardTab(HelpdeskTranslation::class, $ong, $options);
         $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;

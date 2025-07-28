@@ -34,63 +34,57 @@
 
 namespace Glpi\Controller\Form\Translation;
 
-use Dropdown;
-use Glpi\Controller\AbstractController;
-use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Controller\Translation\AbstractTranslationController;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
 use Glpi\Http\RedirectResponse;
+use Glpi\ItemTranslation\ItemTranslation;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class AddNewFormTranslationController extends AbstractController
+final class AddNewFormTranslationController extends AbstractTranslationController
 {
+    private Form $form;
+
     #[Route("/Form/Translation/{form_id}/Add", name: "glpi_add_form_translation", methods: "POST")]
     public function __invoke(Request $request, int $form_id): Response
     {
         // Retrieve the form from the database
-        $form = new Form();
-        if (!$form->getFromDB($form_id)) {
+        $this->form = new Form();
+        if (!$this->form->getFromDB($form_id)) {
             throw new NotFoundHttpException('Form not found');
         }
 
-        // Retrieve the language code from the request
+        // Retrieve and validate the language code from the request
         $language = $request->request->get('language');
+        $this->validateLanguage($language);
 
-        // Validate the language code
-        if (!\array_key_exists($language, Dropdown::getLanguages())) {
-            throw new BadRequestHttpException('Invalid language code');
-        }
-
-        $this->createTranslation($form, $language);
+        $this->createInitialTranslation($language);
 
         // Redirect with a URL parameter to indicate the modal should be opened
-        $redirect_url = $form->getFormURLWithID($form_id) . "&open_translation=$language";
-        return new RedirectResponse($redirect_url);
+        return new RedirectResponse($this->getRedirectUrl($language));
     }
 
-    private function createTranslation(Form $form, string $language): void
+    protected function getTranslationClass(): ItemTranslation
     {
-        $form_translation = new FormTranslation();
-        $handlers_with_sections = $form->listTranslationsHandlers();
-        $first_handler = current(current($handlers_with_sections));
+        return new FormTranslation();
+    }
 
-        $input = [
-            FormTranslation::$itemtype => Form::class,
-            FormTranslation::$items_id => $form->getID(),
-            'language'                 => $language,
-            'key'                      => $first_handler->getKey(),
-            'translations'             => '{}',
-        ];
+    protected function getRedirectUrl(?string $language = null): string
+    {
+        $url = $this->form->getFormURLWithID($this->form->getID());
+        return $language ? $url . "&open_translation=$language" : $url;
+    }
 
-        // Right check
-        if (!$form_translation->can(-1, CREATE, $input)) {
-            throw new AccessDeniedHttpException();
-        }
+    protected function getTranslationHandlers(): array
+    {
+        return $this->form->listTranslationsHandlers();
+    }
 
-        $form_translation->add($input);
+    protected function getContextTranslations(?string $language = null): array
+    {
+        return FormTranslation::getTranslationsForItem($this->form);
     }
 }
