@@ -6180,7 +6180,7 @@ JAVASCRIPT;
                 ];
                 break;
 
-            case OLA::class:
+            case $item instanceof OLA:
                 $restrict['glpi_items_olas.olas_id'] = $item->getID();
                 break;
 
