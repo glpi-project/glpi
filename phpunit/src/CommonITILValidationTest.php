@@ -57,7 +57,7 @@ abstract class CommonITILValidationTest extends DbTestCase
 
     /**
      * Tested classname (eg. TicketValidation, ChangeValidation, ...)
-     * @return class-string<\CommonITILValidation>
+     * @return class-string<CommonITILValidation>
      */
     protected function getValidationClassname(): string
     {
@@ -68,7 +68,7 @@ abstract class CommonITILValidationTest extends DbTestCase
     /**
      * ITIL object classname (eg. Ticket, Change, ...)
      *
-     * @return class-string<\CommonITILObject>
+     * @return class-string<CommonITILObject>
      */
     protected function getITILClassname(): string
     {
@@ -76,7 +76,7 @@ abstract class CommonITILValidationTest extends DbTestCase
         return str_replace('Validation', '', $tested_class);
     }
 
-    protected function getITILRuleInstance(): \RuleCommonITILObject
+    protected function getITILRuleInstance(): RuleCommonITILObject
     {
         return match ($this->getITILClassname()) {
             Ticket::class => new \RuleTicket(),
@@ -94,7 +94,7 @@ abstract class CommonITILValidationTest extends DbTestCase
     }
 
     /**
-     * @return class-string<\CommonITILValidation>
+     * @return class-string<CommonITILValidation>
      */
     protected function getITILValidationClassname(): string
     {
@@ -186,7 +186,7 @@ abstract class CommonITILValidationTest extends DbTestCase
 
         // Test the current user, as a substitute of the validator, can approve
         // without substitution period
-        $validator_substitute = new \ValidatorSubstitute();
+        $validator_substitute = new ValidatorSubstitute();
         $validator_substitute->add([
             'users_id' => User::getIdByName('normal'),
             'users_id_substitute' => $_SESSION['glpiID'],
@@ -356,7 +356,7 @@ abstract class CommonITILValidationTest extends DbTestCase
         );
 
         // Add current user as a substitute of normal (member of other group)
-        $validator_substitute = new \ValidatorSubstitute();
+        $validator_substitute = new ValidatorSubstitute();
         $validator_substitute->add([
             'users_id' => User::getIdByName('normal'),
             'users_id_substitute' => $_SESSION['glpiID'],
@@ -514,7 +514,7 @@ abstract class CommonITILValidationTest extends DbTestCase
         }
 
         $validation_class = $this->getValidationClassname();
-        /** @var \CommonITILValidation $validation */
+        /** @var CommonITILValidation $validation */
         $validation = new $validation_class();
         //$validation::$mustBeAttached = false;
 
@@ -626,7 +626,7 @@ abstract class CommonITILValidationTest extends DbTestCase
     {
         $this->login();
 
-        /** @var class-string<\CommonITILValidation> $validation_class */
+        /** @var class-string<CommonITILValidation> $validation_class */
         $validation_class = $this->getValidationClassname();
         $itilobject = $validation_class::getItilObjectItemInstance();
         $itil_id = $itilobject->add([
@@ -638,12 +638,12 @@ abstract class CommonITILValidationTest extends DbTestCase
         $notmine_validation = $validation->add([
             $itilobject::getForeignKeyField() => $itil_id,
             'itemtype_target' => 'User',
-            'items_id_target' => \User::getIdByName('normal'),
+            'items_id_target' => User::getIdByName('normal'),
             'status' => CommonITILValidation::WAITING,
         ]);
         $validation->getFromDB($notmine_validation);
         $input = $validation->prepareInputForUpdate([
-            'status' => \CommonITILValidation::ACCEPTED,
+            'status' => CommonITILValidation::ACCEPTED,
             'comment_validation' => 'test',
         ]);
         $this->assertEmpty($input);
@@ -767,7 +767,7 @@ abstract class CommonITILValidationTest extends DbTestCase
 
         $itil_class = $this->getITILClassname();
 
-        /** @var \CommonITILObject $itil_item */
+        /** @var CommonITILObject $itil_item */
         $itil_item = $this->createItem($itil_class, [
             'name' => __FUNCTION__,
             'content' => __FUNCTION__,

@@ -862,7 +862,7 @@ class SearchTest extends DbTestCase
         $classes = $this->getClasses(
             false,
             [
-                \CommonDBTM::class, // should be abstract
+                CommonDBTM::class, // should be abstract
                 \CommonImplicitTreeDropdown::class, // should be abstract
                 \CommonITILRecurrentCron::class, // not searchable
                 \CommonITILValidationCron::class, // not searchable
@@ -874,7 +874,7 @@ class SearchTest extends DbTestCase
             ]
         );
         foreach ($classes as $class) {
-            if (!is_a($class, \CommonDBTM::class, true)) {
+            if (!is_a($class, CommonDBTM::class, true)) {
                 continue;
             }
 
@@ -1216,7 +1216,7 @@ class SearchTest extends DbTestCase
         $fname = __FUNCTION__;
 
         // Create 1 computer with data not empty
-        $computer = new \Computer();
+        $computer = new Computer();
         $computer_id = $computer->add([
             'name' => $fname,
             'entities_id' => 0,
@@ -1593,7 +1593,7 @@ class SearchTest extends DbTestCase
             ],
             'special_fk' => [[
                 'itemtype'           => 'Computer',
-                'table'              => \User::getTable(),
+                'table'              => User::getTable(),
                 'field'              => 'name',
                 'linkfield'          => 'users_id_tech',
                 'meta'               => false,
@@ -1604,7 +1604,7 @@ class SearchTest extends DbTestCase
             ],
             'regular_fk' => [[
                 'itemtype'           => 'Computer',
-                'table'              => \User::getTable(),
+                'table'              => User::getTable(),
                 'field'              => 'name',
                 'linkfield'          => 'users_id',
                 'meta'               => false,
@@ -1627,7 +1627,7 @@ class SearchTest extends DbTestCase
                         'joinparams'         => [
                             'jointype'           => 'child',
                             'beforejoin'         => [
-                                'table'              => \User::getTable(),
+                                'table'              => User::getTable(),
                                 'linkfield'          => 'users_id_validate',
                                 'joinparams'             => [
                                     'beforejoin'             => [
@@ -1794,7 +1794,7 @@ class SearchTest extends DbTestCase
         $table_addtable = 'glpi_users_af1042e23ce6565cfe58c6db91f84692';
         $table_ticket_user = 'glpi_tickets_users_019878060c6d5f06cbe3c4d7c31dec24';
 
-        $_SESSION['glpinames_format'] = \User::FIRSTNAME_BEFORE;
+        $_SESSION['glpinames_format'] = User::FIRSTNAME_BEFORE;
         $user_order_1 = \Search::addOrderBy('Ticket', [
             [
                 'searchopt_id' => 4,
@@ -1836,7 +1836,7 @@ class SearchTest extends DbTestCase
             $user_order_2
         );
 
-        $_SESSION['glpinames_format'] = \User::REALNAME_BEFORE;
+        $_SESSION['glpinames_format'] = User::REALNAME_BEFORE;
         $user_order_3 = \Search::addOrderBy('Ticket', [
             [
                 'searchopt_id' => 4,
@@ -2255,7 +2255,7 @@ class SearchTest extends DbTestCase
         // reduce the right of tech profile
         // to have only the right of display their own tickets
         \ProfileRight::updateProfileRights(getItemByTypeName('Profile', "Technician", true), [
-            'Ticket' => (\Ticket::READMY),
+            'Ticket' => (Ticket::READMY),
         ]);
 
         // add a group for tech user
@@ -2264,7 +2264,7 @@ class SearchTest extends DbTestCase
             'name' => "test group for tech user",
         ]);
         $this->assertGreaterThan(0, (int) $groups_id);
-        $group_user = new \Group_User();
+        $group_user = new Group_User();
         $this->assertGreaterThan(
             0,
             (int) $group_user->add([
@@ -2274,7 +2274,7 @@ class SearchTest extends DbTestCase
         );
 
         // create a ticket
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $this->assertGreaterThan(
             0,
             (int) $ticket->add([
@@ -2296,7 +2296,7 @@ class SearchTest extends DbTestCase
         // update the right of tech profile
         // to have only the right of display their own tickets and tickets with incoming status
         \ProfileRight::updateProfileRights(getItemByTypeName('Profile', "Technician", true), [
-            'Ticket' => (\Ticket::READMY + \Ticket::READNEWTICKET),
+            'Ticket' => (Ticket::READMY + Ticket::READNEWTICKET),
         ]);
 
         // reload current profile to take into account the new rights
@@ -2313,7 +2313,7 @@ class SearchTest extends DbTestCase
                 $this->assertIsArray($data['data']);
                 $this->assertIsArray($data['data']['rows']);
                 $this->assertIsArray($data['data']['rows'][0]['raw']);
-                $this->assertEquals(\Ticket::INCOMING, $data['data']['rows'][0]['raw'][$key]);
+                $this->assertEquals(Ticket::INCOMING, $data['data']['rows'][0]['raw'][$key]);
             }
         }
     }
@@ -2334,7 +2334,7 @@ class SearchTest extends DbTestCase
             'name' => "test group for tech user",
         ]);
         $this->assertGreaterThan(0, $groups_id);
-        $group_user = new \Group_User();
+        $group_user = new Group_User();
         $this->assertGreaterThan(
             0,
             $group_user->add([
@@ -2381,7 +2381,7 @@ class SearchTest extends DbTestCase
         // reduce the right of tech profile
         // to have only the right of display their own changes (created, assign)
         \ProfileRight::updateProfileRights(getItemByTypeName('Profile', "Technician", true), [
-            'Change' => (\Change::READMY + READNOTE + UPDATENOTE),
+            'Change' => (Change::READMY + READNOTE + UPDATENOTE),
         ]);
 
         // add a group for tech user
@@ -2391,7 +2391,7 @@ class SearchTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $groups_id);
 
-        $group_user = new \Group_User();
+        $group_user = new Group_User();
         $this->assertGreaterThan(
             0,
             $group_user->add([
@@ -2401,7 +2401,7 @@ class SearchTest extends DbTestCase
         );
 
         // create a Change and assign group with tech user
-        $change = new \Change();
+        $change = new Change();
         $this->assertGreaterThan(
             0,
             $change->add([
@@ -2561,7 +2561,7 @@ class SearchTest extends DbTestCase
             [
                 'link' => ' ',
                 'nott' => 0,
-                'itemtype' => \User::class,
+                'itemtype' => User::class,
                 'ID' => 99,
                 'searchtype' => 'equals',
                 'val' => '5',
@@ -2601,7 +2601,7 @@ class SearchTest extends DbTestCase
             [
                 'link' => ' AND ',
                 'nott' => 0,
-                'itemtype' => \Computer::class,
+                'itemtype' => Computer::class,
                 'ID' => 121, // Search ID 121 (date_creation field)
                 'searchtype' => 'contains',
                 'val' => '>2022-10-25',
@@ -2611,7 +2611,7 @@ class SearchTest extends DbTestCase
             [
                 'link' => ' AND ',
                 'nott' => 0,
-                'itemtype' => \Computer::class,
+                'itemtype' => Computer::class,
                 'ID' => 121, // Search ID 121 (date_creation field)
                 'searchtype' => 'contains',
                 'val' => '<2022-10-25',
@@ -2621,7 +2621,7 @@ class SearchTest extends DbTestCase
             [
                 'link' => ' AND ',
                 'nott' => 0,
-                'itemtype' => \Computer::class,
+                'itemtype' => Computer::class,
                 'ID' => 151, // Search ID 151 (Item_Disk freesize field)
                 'searchtype' => 'contains',
                 'val' => '>100',
@@ -2631,7 +2631,7 @@ class SearchTest extends DbTestCase
             [
                 'link' => ' AND ',
                 'nott' => 0,
-                'itemtype' => \Computer::class,
+                'itemtype' => Computer::class,
                 'ID' => 151, // Search ID 151 (Item_Disk freesize field)
                 'searchtype' => 'contains',
                 'val' => '<10000',
@@ -2661,7 +2661,7 @@ class SearchTest extends DbTestCase
             [
                 'link' => ' ',
                 'nott' => 0,
-                'itemtype' => \Computer::class,
+                'itemtype' => Computer::class,
                 'ID' => 1,
                 'searchtype' => 'empty',
                 'val' => 'null',
@@ -2816,7 +2816,7 @@ class SearchTest extends DbTestCase
         );
 
         $types = [
-            \Computer::getTable(),
+            Computer::getTable(),
             \Monitor::getTable(),
             \NetworkEquipment::getTable(),
             \Peripheral::getTable(),
@@ -3203,7 +3203,7 @@ class SearchTest extends DbTestCase
 
         // datatype=dropdown
         yield [
-            'itemtype'          => \Computer::class,
+            'itemtype'          => Computer::class,
             'search_option'     => 4, // type
             'value'             => 'test',
             'expected_and'      => "(`glpi_computertypes`.`name` LIKE '%test%')",
@@ -3212,7 +3212,7 @@ class SearchTest extends DbTestCase
 
         // datatype=dropdown (usehaving=true)
         yield [
-            'itemtype'          => \Ticket::class,
+            'itemtype'          => Ticket::class,
             'search_option'     => 142, // document name
             'value'             => 'test',
             'expected_and'      => "(`ITEM_Ticket_142` LIKE '%test%')",
@@ -3221,7 +3221,7 @@ class SearchTest extends DbTestCase
 
         // datatype=itemlink
         yield [
-            'itemtype'          => \Computer::class,
+            'itemtype'          => Computer::class,
             'search_option'     => 1, // name
             'value'             => 'test',
             'expected_and'      => "(`glpi_computers`.`name` LIKE '%test%')",
@@ -3230,7 +3230,7 @@ class SearchTest extends DbTestCase
 
         // datatype=itemlink (usehaving=true)
         yield [
-            'itemtype'          => \Ticket::class,
+            'itemtype'          => Ticket::class,
             'search_option'     => 50, // parent tickets
             'value'             => 'test',
             'expected_and'      => "(`ITEM_Ticket_50` LIKE '%test%')",
@@ -3239,7 +3239,7 @@ class SearchTest extends DbTestCase
 
         // datatype=string
         yield [
-            'itemtype'          => \Computer::class,
+            'itemtype'          => Computer::class,
             'search_option'     => 47, // uuid
             'value'             => 'test',
             'expected_and'      => "(`glpi_computers`.`uuid` LIKE '%test%')",
@@ -3248,7 +3248,7 @@ class SearchTest extends DbTestCase
 
         // datatype=text
         yield [
-            'itemtype'          => \Computer::class,
+            'itemtype'          => Computer::class,
             'search_option'     => 16, // comment
             'value'             => 'test',
             'expected_and'      => "(`glpi_computers`.`comment` LIKE '%test%')",
@@ -3289,14 +3289,14 @@ class SearchTest extends DbTestCase
 
         // datatype=number (usehaving=true)
         yield [
-            'itemtype'          => \Computer::class,
+            'itemtype'          => Computer::class,
             'search_option'     => 115, // harddrive capacity
             'value'             => 'test',
             'expected_and'      => "(`ITEM_Computer_115` LIKE '%test%')",
             'expected_and_not'  => "(`ITEM_Computer_115` NOT LIKE '%test%' OR `ITEM_Computer_115` IS NULL)",
         ];
         yield [
-            'itemtype'          => \Computer::class,
+            'itemtype'          => Computer::class,
             'search_option'     => 115, // harddrive capacity
             'value'             => '512',
             'expected_and'      => "(`ITEM_Computer_115` < '1512') AND (`ITEM_Computer_115` > '-488')",
@@ -3344,14 +3344,14 @@ class SearchTest extends DbTestCase
 
         // datatype=count (usehaving=true)
         yield [
-            'itemtype'          => \Ticket::class,
+            'itemtype'          => Ticket::class,
             'search_option'     => 27, // number of followups
             'value'             => 'test',
             'expected_and'      => "(`ITEM_Ticket_27` LIKE '%test%')",
             'expected_and_not'  => "(`ITEM_Ticket_27` NOT LIKE '%test%' OR `ITEM_Ticket_27` IS NULL)",
         ];
         yield [
-            'itemtype'          => \Ticket::class,
+            'itemtype'          => Ticket::class,
             'search_option'     => 27, // number of followups
             'value'             => '10',
             'expected_and'      => "`ITEM_Ticket_27` = '10'",
@@ -3360,14 +3360,14 @@ class SearchTest extends DbTestCase
 
         // datatype=mio (usehaving=true)
         yield [
-            'itemtype'          => \Computer::class,
+            'itemtype'          => Computer::class,
             'search_option'     => 111, // memory size
             'value'             => 'test',
             'expected_and'      => "(`ITEM_Computer_111` LIKE '%test%')",
             'expected_and_not'  => "(`ITEM_Computer_111` NOT LIKE '%test%' OR `ITEM_Computer_111` IS NULL)",
         ];
         yield [
-            'itemtype'          => \Computer::class,
+            'itemtype'          => Computer::class,
             'search_option'     => 111, // memory size
             'value'             => '512',
             'expected_and'      => "(`ITEM_Computer_111` < '612') AND (`ITEM_Computer_111` > '412')",
@@ -3376,14 +3376,14 @@ class SearchTest extends DbTestCase
 
         // datatype=progressbar (with computation)
         yield [
-            'itemtype'          => \Computer::class,
+            'itemtype'          => Computer::class,
             'search_option'     => 152, // harddrive freepercent
             'value'             => 'test',
             'expected_and'      => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') LIKE '%test%')",
             'expected_and_not'  => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') NOT LIKE '%test%' OR LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') IS NULL)",
         ];
         yield [
-            'itemtype'          => \Computer::class,
+            'itemtype'          => Computer::class,
             'search_option'     => 152, // harddrive freepercent
             'value'             => '50',
             'expected_and'      => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') >= 48 AND LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') <= 52)",
@@ -3408,14 +3408,14 @@ class SearchTest extends DbTestCase
 
         // datatype=timestamp (usehaving=true)
         yield [
-            'itemtype'          => \Ticket::class,
+            'itemtype'          => Ticket::class,
             'search_option'     => 49, // actiontime
             'value'             => 'test',
             'expected_and'      => "(`ITEM_Ticket_49` LIKE '%test%')",
             'expected_and_not'  => "(`ITEM_Ticket_49` NOT LIKE '%test%' OR `ITEM_Ticket_49` IS NULL)",
         ];
         yield [
-            'itemtype'          => \Ticket::class,
+            'itemtype'          => Ticket::class,
             'search_option'     => 49, // actiontime
             'value'             => '3600',
             'expected_and'      => "`ITEM_Ticket_49` = '3600'",
@@ -3424,14 +3424,14 @@ class SearchTest extends DbTestCase
 
         // datatype=datetime
         yield [
-            'itemtype'          => \Computer::class,
+            'itemtype'          => Computer::class,
             'search_option'     => 9, // last_inventory_update
             'value'             => 'test',
             'expected_and'      => "(1=0)",
             'expected_and_not'  => "(1=0)",
         ];
         yield [
-            'itemtype'          => \Computer::class,
+            'itemtype'          => Computer::class,
             'search_option'     => 9, // last_inventory_update
             'value'             => '2023-06',
             'expected_and'      => "(CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) LIKE '%2023-06%')",
@@ -3440,14 +3440,14 @@ class SearchTest extends DbTestCase
 
         // datatype=datetime (usehaving=true)
         yield [
-            'itemtype'          => \Ticket::class,
+            'itemtype'          => Ticket::class,
             'search_option'     => 188, // next_escalation_level
             'value'             => 'test',
             'expected_and'      => "(`ITEM_Ticket_188` LIKE '%test%')",
             'expected_and_not'  => "(`ITEM_Ticket_188` NOT LIKE '%test%' OR `ITEM_Ticket_188` IS NULL)",
         ];
         yield [
-            'itemtype'          => \Ticket::class,
+            'itemtype'          => Ticket::class,
             'search_option'     => 188, // next_escalation_level
             'value'             => '2023-06',
             'expected_and'      => "(`ITEM_Ticket_188` LIKE '%2023-06%')",
@@ -3497,7 +3497,7 @@ class SearchTest extends DbTestCase
 
         // datatype=weblink
         yield [
-            'itemtype'          => \Document::class,
+            'itemtype'          => Document::class,
             'search_option'     => 4, // link
             'value'             => 'test',
             'expected_and'      => "(`glpi_documents`.`link` LIKE '%test%')",
@@ -3538,14 +3538,14 @@ class SearchTest extends DbTestCase
 
         // datatype=language
         yield [
-            'itemtype'          => \User::class,
+            'itemtype'          => User::class,
             'search_option'     => 17, // language
             'value'             => 'test',
             'expected_and'      => "(`glpi_users`.`language` LIKE '%test%')",
             'expected_and_not'  => "(`glpi_users`.`language` NOT LIKE '%test%' OR `glpi_users`.`language` IS NULL)",
         ];
         yield [
-            'itemtype'          => \User::class,
+            'itemtype'          => User::class,
             'search_option'     => 17, // language
             'value'             => 'en_',
             'expected_and'      => "(`glpi_users`.`language` LIKE '%en\\\\_%')",
@@ -3556,7 +3556,7 @@ class SearchTest extends DbTestCase
         foreach (['NULL', 'null'] as $null_value) {
             // datatype=dropdown
             yield [
-                'itemtype'          => \Computer::class,
+                'itemtype'          => Computer::class,
                 'search_option'     => 4, // type
                 'value'             => $null_value,
                 'expected_and'      => "(`glpi_computertypes`.`name` IS NULL OR `glpi_computertypes`.`name` = '')",
@@ -3565,7 +3565,7 @@ class SearchTest extends DbTestCase
 
             // datatype=dropdown (usehaving=true)
             yield [
-                'itemtype'          => \Ticket::class,
+                'itemtype'          => Ticket::class,
                 'search_option'     => 142, // document name
                 'value'             => $null_value,
                 'expected_and'      => "(`ITEM_Ticket_142` IS NULL OR `ITEM_Ticket_142` = '')",
@@ -3574,7 +3574,7 @@ class SearchTest extends DbTestCase
 
             // datatype=itemlink
             yield [
-                'itemtype'          => \Computer::class,
+                'itemtype'          => Computer::class,
                 'search_option'     => 1, // name
                 'value'             => $null_value,
                 'expected_and'      => "(`glpi_computers`.`name` IS NULL OR `glpi_computers`.`name` = '')",
@@ -3583,7 +3583,7 @@ class SearchTest extends DbTestCase
 
             // datatype=itemlink (usehaving=true)
             yield [
-                'itemtype'          => \Ticket::class,
+                'itemtype'          => Ticket::class,
                 'search_option'     => 50, // parent tickets
                 'value'             => $null_value,
                 'expected_and'      => "(`ITEM_Ticket_50` IS NULL OR `ITEM_Ticket_50` = '')",
@@ -3592,7 +3592,7 @@ class SearchTest extends DbTestCase
 
             // datatype=string
             yield [
-                'itemtype'          => \Computer::class,
+                'itemtype'          => Computer::class,
                 'search_option'     => 47, // uuid
                 'value'             => $null_value,
                 'expected_and'      => "(`glpi_computers`.`uuid` IS NULL OR `glpi_computers`.`uuid` = '')",
@@ -3601,7 +3601,7 @@ class SearchTest extends DbTestCase
 
             // datatype=text
             yield [
-                'itemtype'          => \Computer::class,
+                'itemtype'          => Computer::class,
                 'search_option'     => 16, // comment
                 'value'             => $null_value,
                 'expected_and'      => "(`glpi_computers`.`comment` IS NULL OR `glpi_computers`.`comment` = '')",
@@ -3638,7 +3638,7 @@ class SearchTest extends DbTestCase
 
             // datatype=number (usehaving=true)
             yield [
-                'itemtype'          => \Computer::class,
+                'itemtype'          => Computer::class,
                 'search_option'     => 115, // harddrive capacity
                 'value'             => $null_value,
                 'expected_and'      => "(`ITEM_Computer_115` IS NULL OR `ITEM_Computer_115` = '')",
@@ -3668,7 +3668,7 @@ class SearchTest extends DbTestCase
 
             // datatype=count (usehaving=true)
             yield [
-                'itemtype'          => \Ticket::class,
+                'itemtype'          => Ticket::class,
                 'search_option'     => 27, // number of followups
                 'value'             => $null_value,
                 'expected_and'      => "(`ITEM_Ticket_27` IS NULL OR `ITEM_Ticket_27` = '')",
@@ -3682,7 +3682,7 @@ class SearchTest extends DbTestCase
 
             // datatype=mio (usehaving=true)
             yield [
-                'itemtype'          => \Computer::class,
+                'itemtype'          => Computer::class,
                 'search_option'     => 111, // memory size
                 'value'             => $null_value,
                 'expected_and'      => "(`ITEM_Computer_111` IS NULL OR `ITEM_Computer_111` = '')",
@@ -3691,7 +3691,7 @@ class SearchTest extends DbTestCase
 
             // datatype=progressbar (with computation)
             yield [
-                'itemtype'          => \Computer::class,
+                'itemtype'          => Computer::class,
                 'search_option'     => 152, // harddrive freepercent
                 'value'             => $null_value,
                 'expected_and'      => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') IS NULL OR LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') = '')",
@@ -3714,7 +3714,7 @@ class SearchTest extends DbTestCase
 
             // datatype=timestamp (usehaving=true)
             yield [
-                'itemtype'          => \Ticket::class,
+                'itemtype'          => Ticket::class,
                 'search_option'     => 49, // actiontime
                 'value'             => $null_value,
                 'expected_and'      => "(`ITEM_Ticket_49` IS NULL OR `ITEM_Ticket_49` = '')",
@@ -3723,7 +3723,7 @@ class SearchTest extends DbTestCase
 
             // datatype=datetime
             yield [
-                'itemtype'          => \Computer::class,
+                'itemtype'          => Computer::class,
                 'search_option'     => 9, // last_inventory_update
                 'value'             => $null_value,
                 'expected_and'      => "(CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) IS NULL OR CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) = '')",
@@ -3732,7 +3732,7 @@ class SearchTest extends DbTestCase
 
             // datatype=datetime computed field
             yield [
-                'itemtype'          => \Ticket::class,
+                'itemtype'          => Ticket::class,
                 'search_option'     => 188, // next_escalation_level
                 'value'             => $null_value,
                 'expected_and'      => "(`ITEM_Ticket_188` IS NULL OR `ITEM_Ticket_188` = '')",
@@ -3771,7 +3771,7 @@ class SearchTest extends DbTestCase
 
             // datatype=weblink
             yield [
-                'itemtype'          => \Document::class,
+                'itemtype'          => Document::class,
                 'search_option'     => 4, // link
                 'value'             => $null_value,
                 'expected_and'      => "(`glpi_documents`.`link` IS NULL OR `glpi_documents`.`link` = '')",
@@ -3798,7 +3798,7 @@ class SearchTest extends DbTestCase
 
             // datatype=language
             yield [
-                'itemtype'          => \User::class,
+                'itemtype'          => User::class,
                 'search_option'     => 17, // language
                 'value'             => $null_value,
                 'expected_and'      => "(`glpi_users`.`language` IS NULL OR `glpi_users`.`language` = '')",
@@ -3811,21 +3811,21 @@ class SearchTest extends DbTestCase
 
         // datatype=dropdown
         yield [
-            'itemtype'          => \Computer::class,
+            'itemtype'          => Computer::class,
             'search_option'     => 4, // type
             'value'             => '^test',
             'expected_and'      => "(`glpi_computertypes`.`name` LIKE 'test%')",
             'expected_and_not'  => "(`glpi_computertypes`.`name` NOT LIKE 'test%' OR `glpi_computertypes`.`name` IS NULL)",
         ];
         yield [
-            'itemtype'          => \Computer::class,
+            'itemtype'          => Computer::class,
             'search_option'     => 4, // type
             'value'             => 'test$',
             'expected_and'      => "(`glpi_computertypes`.`name` LIKE '%test')",
             'expected_and_not'  => "(`glpi_computertypes`.`name` NOT LIKE '%test' OR `glpi_computertypes`.`name` IS NULL)",
         ];
         yield [
-            'itemtype'          => \Computer::class,
+            'itemtype'          => Computer::class,
             'search_option'     => 4, // type
             'value'             => '^test$',
             'expected_and'      => "(`glpi_computertypes`.`name` LIKE 'test')",
@@ -3834,21 +3834,21 @@ class SearchTest extends DbTestCase
 
         // datatype=dropdown (usehaving=true)
         yield [
-            'itemtype'          => \Ticket::class,
+            'itemtype'          => Ticket::class,
             'search_option'     => 142, // document name
             'value'             => '^test',
             'expected_and'      => "(`ITEM_Ticket_142` LIKE 'test%')",
             'expected_and_not'  => "(`ITEM_Ticket_142` NOT LIKE 'test%' OR `ITEM_Ticket_142` IS NULL)",
         ];
         yield [
-            'itemtype'          => \Ticket::class,
+            'itemtype'          => Ticket::class,
             'search_option'     => 142, // document name
             'value'             => 'test$',
             'expected_and'      => "(`ITEM_Ticket_142` LIKE '%test')",
             'expected_and_not'  => "(`ITEM_Ticket_142` NOT LIKE '%test' OR `ITEM_Ticket_142` IS NULL)",
         ];
         yield [
-            'itemtype'          => \Ticket::class,
+            'itemtype'          => Ticket::class,
             'search_option'     => 142, // document name
             'value'             => '^test$',
             'expected_and'      => "(`ITEM_Ticket_142` LIKE 'test')",
@@ -3857,21 +3857,21 @@ class SearchTest extends DbTestCase
 
         // datatype=itemlink
         yield [
-            'itemtype'          => \Computer::class,
+            'itemtype'          => Computer::class,
             'search_option'     => 1, // name
             'value'             => '^test',
             'expected_and'      => "(`glpi_computers`.`name` LIKE 'test%')",
             'expected_and_not'  => "(`glpi_computers`.`name` NOT LIKE 'test%' OR `glpi_computers`.`name` IS NULL)",
         ];
         yield [
-            'itemtype'          => \Computer::class,
+            'itemtype'          => Computer::class,
             'search_option'     => 1, // name
             'value'             => 'test$',
             'expected_and'      => "(`glpi_computers`.`name` LIKE '%test')",
             'expected_and_not'  => "(`glpi_computers`.`name` NOT LIKE '%test' OR `glpi_computers`.`name` IS NULL)",
         ];
         yield [
-            'itemtype'          => \Computer::class,
+            'itemtype'          => Computer::class,
             'search_option'     => 1, // name
             'value'             => '^test$',
             'expected_and'      => "(`glpi_computers`.`name` LIKE 'test')",
@@ -3880,21 +3880,21 @@ class SearchTest extends DbTestCase
 
         // datatype=itemlink (usehaving=true)
         yield [
-            'itemtype'          => \Ticket::class,
+            'itemtype'          => Ticket::class,
             'search_option'     => 50, // parent tickets
             'value'             => '^test',
             'expected_and'      => "(`ITEM_Ticket_50` LIKE 'test%')",
             'expected_and_not'  => "(`ITEM_Ticket_50` NOT LIKE 'test%' OR `ITEM_Ticket_50` IS NULL)",
         ];
         yield [
-            'itemtype'          => \Ticket::class,
+            'itemtype'          => Ticket::class,
             'search_option'     => 50, // parent tickets
             'value'             => 'test$',
             'expected_and'      => "(`ITEM_Ticket_50` LIKE '%test')",
             'expected_and_not'  => "(`ITEM_Ticket_50` NOT LIKE '%test' OR `ITEM_Ticket_50` IS NULL)",
         ];
         yield [
-            'itemtype'          => \Ticket::class,
+            'itemtype'          => Ticket::class,
             'search_option'     => 50, // parent tickets
             'value'             => '^test$',
             'expected_and'      => "(`ITEM_Ticket_50` LIKE 'test')",
@@ -3903,21 +3903,21 @@ class SearchTest extends DbTestCase
 
         // datatype=string
         yield [
-            'itemtype'          => \Computer::class,
+            'itemtype'          => Computer::class,
             'search_option'     => 47, // uuid
             'value'             => '^test',
             'expected_and'      => "(`glpi_computers`.`uuid` LIKE 'test%')",
             'expected_and_not'  => "(`glpi_computers`.`uuid` NOT LIKE 'test%' OR `glpi_computers`.`uuid` IS NULL)",
         ];
         yield [
-            'itemtype'          => \Computer::class,
+            'itemtype'          => Computer::class,
             'search_option'     => 47, // uuid
             'value'             => 'test$',
             'expected_and'      => "(`glpi_computers`.`uuid` LIKE '%test')",
             'expected_and_not'  => "(`glpi_computers`.`uuid` NOT LIKE '%test' OR `glpi_computers`.`uuid` IS NULL)",
         ];
         yield [
-            'itemtype'          => \Computer::class,
+            'itemtype'          => Computer::class,
             'search_option'     => 47, // uuid
             'value'             => '^test$',
             'expected_and'      => "(`glpi_computers`.`uuid` LIKE 'test')",
@@ -3926,21 +3926,21 @@ class SearchTest extends DbTestCase
 
         // datatype=text
         yield [
-            'itemtype'          => \Computer::class,
+            'itemtype'          => Computer::class,
             'search_option'     => 16, // comment
             'value'             => '^test',
             'expected_and'      => "(`glpi_computers`.`comment` LIKE 'test%')",
             'expected_and_not'  => "(`glpi_computers`.`comment` NOT LIKE 'test%' OR `glpi_computers`.`comment` IS NULL)",
         ];
         yield [
-            'itemtype'          => \Computer::class,
+            'itemtype'          => Computer::class,
             'search_option'     => 16, // comment
             'value'             => 'test$',
             'expected_and'      => "(`glpi_computers`.`comment` LIKE '%test')",
             'expected_and_not'  => "(`glpi_computers`.`comment` NOT LIKE '%test' OR `glpi_computers`.`comment` IS NULL)",
         ];
         yield [
-            'itemtype'          => \Computer::class,
+            'itemtype'          => Computer::class,
             'search_option'     => 16, // comment
             'value'             => '^test$',
             'expected_and'      => "(`glpi_computers`.`comment` LIKE 'test')",
@@ -3972,21 +3972,21 @@ class SearchTest extends DbTestCase
 
         // datatype=weblink
         yield [
-            'itemtype'          => \Document::class,
+            'itemtype'          => Document::class,
             'search_option'     => 4, // link
             'value'             => '^ftp://',
             'expected_and'      => "(`glpi_documents`.`link` LIKE 'ftp://%')",
             'expected_and_not'  => "(`glpi_documents`.`link` NOT LIKE 'ftp://%' OR `glpi_documents`.`link` IS NULL)",
         ];
         yield [
-            'itemtype'          => \Document::class,
+            'itemtype'          => Document::class,
             'search_option'     => 4, // link
             'value'             => '.pdf$',
             'expected_and'      => "(`glpi_documents`.`link` LIKE '%.pdf')",
             'expected_and_not'  => "(`glpi_documents`.`link` NOT LIKE '%.pdf' OR `glpi_documents`.`link` IS NULL)",
         ];
         yield [
-            'itemtype'          => \Document::class,
+            'itemtype'          => Document::class,
             'search_option'     => 4, // link
             'value'             => '^ftp://domain.tld/document.pdf$',
             'expected_and'      => "(`glpi_documents`.`link` LIKE 'ftp://domain.tld/document.pdf')",
@@ -4041,21 +4041,21 @@ class SearchTest extends DbTestCase
 
         // datatype=language
         yield [
-            'itemtype'          => \User::class,
+            'itemtype'          => User::class,
             'search_option'     => 17, // language
             'value'             => '^en_',
             'expected_and'      => "(`glpi_users`.`language` LIKE 'en\\\\_%')",
             'expected_and_not'  => "(`glpi_users`.`language` NOT LIKE 'en\\\\_%' OR `glpi_users`.`language` IS NULL)",
         ];
         yield [
-            'itemtype'          => \User::class,
+            'itemtype'          => User::class,
             'search_option'     => 17, // language
             'value'             => '_GB$',
             'expected_and'      => "(`glpi_users`.`language` LIKE '%\\\\_GB')",
             'expected_and_not'  => "(`glpi_users`.`language` NOT LIKE '%\\\\_GB' OR `glpi_users`.`language` IS NULL)",
         ];
         yield [
-            'itemtype'          => \User::class,
+            'itemtype'          => User::class,
             'search_option'     => 17, // language
             'value'             => '^en_GB$',
             'expected_and'      => "(`glpi_users`.`language` LIKE 'en\\\\_GB')",
@@ -4070,7 +4070,7 @@ class SearchTest extends DbTestCase
 
                 // datatype=dropdown
                 yield [
-                    'itemtype'          => \Computer::class,
+                    'itemtype'          => Computer::class,
                     'search_option'     => 4, // type
                     'value'             => $searched_value,
                     'expected_and'      => "(`glpi_computertypes`.`name` LIKE '%{$searched_value}%')",
@@ -4079,7 +4079,7 @@ class SearchTest extends DbTestCase
 
                 // datatype=dropdown (usehaving=true)
                 yield [
-                    'itemtype'          => \Ticket::class,
+                    'itemtype'          => Ticket::class,
                     'search_option'     => 142, // document name
                     'value'             => $searched_value,
                     'expected_and'      => "(`ITEM_Ticket_142` LIKE '%{$searched_value}%')",
@@ -4088,7 +4088,7 @@ class SearchTest extends DbTestCase
 
                 // datatype=itemlink
                 yield [
-                    'itemtype'          => \Computer::class,
+                    'itemtype'          => Computer::class,
                     'search_option'     => 1, // name
                     'value'             => $searched_value,
                     'expected_and'      => "(`glpi_computers`.`name` LIKE '%{$searched_value}%')",
@@ -4097,7 +4097,7 @@ class SearchTest extends DbTestCase
 
                 // datatype=itemlink (usehaving=true)
                 yield [
-                    'itemtype'          => \Ticket::class,
+                    'itemtype'          => Ticket::class,
                     'search_option'     => 50, // parent tickets
                     'value'             => $searched_value,
                     'expected_and'      => "(`ITEM_Ticket_50` LIKE '%{$searched_value}%')",
@@ -4106,7 +4106,7 @@ class SearchTest extends DbTestCase
 
                 // datatype=string
                 yield [
-                    'itemtype'          => \Computer::class,
+                    'itemtype'          => Computer::class,
                     'search_option'     => 47, // uuid
                     'value'             => $searched_value,
                     'expected_and'      => "(`glpi_computers`.`uuid` LIKE '%{$searched_value}%')",
@@ -4115,7 +4115,7 @@ class SearchTest extends DbTestCase
 
                 // datatype=text
                 yield [
-                    'itemtype'          => \Computer::class,
+                    'itemtype'          => Computer::class,
                     'search_option'     => 16, // comment
                     'value'             => $searched_value,
                     'expected_and'      => "(`glpi_computers`.`comment` LIKE '%{$searched_value}%')",
@@ -4133,7 +4133,7 @@ class SearchTest extends DbTestCase
 
                 // datatype=weblink
                 yield [
-                    'itemtype'          => \Document::class,
+                    'itemtype'          => Document::class,
                     'search_option'     => 4, // link
                     'value'             => $searched_value,
                     'expected_and'      => "(`glpi_documents`.`link` LIKE '%{$searched_value}%')",
@@ -4160,7 +4160,7 @@ class SearchTest extends DbTestCase
 
                 // datatype=language
                 yield [
-                    'itemtype'          => \User::class,
+                    'itemtype'          => User::class,
                     'search_option'     => 17, // language
                     'value'             => $searched_value,
                     'expected_and'      => "(`glpi_users`.`language` LIKE '%{$searched_value}%')",
@@ -4207,7 +4207,7 @@ class SearchTest extends DbTestCase
 
                     // datatype=number (usehaving=true)
                     yield [
-                        'itemtype'          => \Computer::class,
+                        'itemtype'          => Computer::class,
                         'search_option'     => 115, // harddrive capacity
                         'value'             => $searched_value,
                         'expected_and'      => "`ITEM_Computer_115` {$operator} '{$signed_value}'",
@@ -4234,7 +4234,7 @@ class SearchTest extends DbTestCase
 
                     // datatype=count (usehaving=true)
                     yield [
-                        'itemtype'          => \Ticket::class,
+                        'itemtype'          => Ticket::class,
                         'search_option'     => 27, // number of followups
                         'value'             => $searched_value,
                         'expected_and'      => "`ITEM_Ticket_27` {$operator} '{$signed_value}'",
@@ -4243,7 +4243,7 @@ class SearchTest extends DbTestCase
 
                     // datatype=mio (usehaving=true)
                     yield [
-                        'itemtype'          => \Computer::class,
+                        'itemtype'          => Computer::class,
                         'search_option'     => 111, // memory size
                         'value'             => $searched_value,
                         'expected_and'      => "`ITEM_Computer_111` {$operator} '{$signed_value}'",
@@ -4252,7 +4252,7 @@ class SearchTest extends DbTestCase
 
                     // datatype=progressbar (with computation)
                     yield [
-                        'itemtype'          => \Computer::class,
+                        'itemtype'          => Computer::class,
                         'search_option'     => 152, // harddrive freepercent
                         'value'             => $searched_value,
                         'expected_and'      => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') {$operator} {$signed_value})",
@@ -4270,7 +4270,7 @@ class SearchTest extends DbTestCase
 
                     // datatype=timestamp (usehaving=true)
                     yield [
-                        'itemtype'          => \Ticket::class,
+                        'itemtype'          => Ticket::class,
                         'search_option'     => 49, // actiontime
                         'value'             => $searched_value,
                         'expected_and'      => "`ITEM_Ticket_49` {$operator} '{$signed_value}'",
@@ -4300,7 +4300,7 @@ class SearchTest extends DbTestCase
                 foreach ($searched_values as $searched_value => $signed_value) {
                     // datatype=datetime
                     yield [
-                        'itemtype'          => \Computer::class,
+                        'itemtype'          => Computer::class,
                         'search_option'     => 9, // last_inventory_update
                         'value'             => $searched_value,
                         'expected_and'      => "(CONVERT(`glpi_computers`.`last_inventory_update` USING utf8mb4) {$operator} DATE_ADD(NOW(), INTERVAL {$signed_value} MONTH))",
@@ -4310,7 +4310,7 @@ class SearchTest extends DbTestCase
                     // datatype=datetime computed field
                     $like_value = trim(str_replace('  ', ' ', $searched_value));
                     yield [
-                        'itemtype'          => \Ticket::class,
+                        'itemtype'          => Ticket::class,
                         'search_option'     => 188, // next_escalation_level
                         'value'             => $searched_value,
                         'expected_and'      => "(`ITEM_Ticket_188` LIKE '%{$like_value}%')",
@@ -4834,7 +4834,7 @@ class SearchTest extends DbTestCase
             $search_params = $row['search_params'];
             $expected = $row['expected'];
 
-            $data = $this->doSearch(\Ticket::class, $search_params);
+            $data = $this->doSearch(Ticket::class, $search_params);
 
             // Extract items names
             $items = [];
@@ -4911,31 +4911,31 @@ class SearchTest extends DbTestCase
         $entity_child_2_id = getItemByTypeName('Entity', '_test_child_2', true);
         $user_id = $_SESSION['glpiID'];
 
-        $this->updateItem(\Entity::class, $entity_root_id, [
+        $this->updateItem(Entity::class, $entity_root_id, [
             'inquest_config'   => 1,
             'inquest_duration' => 0,
         ]);
-        $this->updateItem(\Entity::class, $entity_child_1_id, [
+        $this->updateItem(Entity::class, $entity_child_1_id, [
             'inquest_config'   => 1,
             'inquest_duration' => 2,
         ]);
-        $this->updateItem(\Entity::class, $entity_child_2_id, [
+        $this->updateItem(Entity::class, $entity_child_2_id, [
             'inquest_config'   => 1,
             'inquest_duration' => 4,
         ]);
         // Create sub entity for child 2
-        $entity_child_2_1_id = $this->createItem(\Entity::class, [
+        $entity_child_2_1_id = $this->createItem(Entity::class, [
             'name'         => '_test_child_2_1',
             'entities_id'  => $entity_child_2_id,
         ])->getID();
         // Create sub sub entity for child 2
-        $entity_child_2_1_1_id = $this->createItem(\Entity::class, [
+        $entity_child_2_1_1_id = $this->createItem(Entity::class, [
             'name'         => '_test_child_2_1_1',
             'entities_id'  => $entity_child_2_1_id,
         ])->getID();
 
         // Create closed tickets
-        $tickets = $this->createItems(\Ticket::class, [
+        $tickets = $this->createItems(Ticket::class, [
             [
                 'entities_id' => $entity_root_id,
                 'name' => __FUNCTION__ . ' 1',
@@ -5025,7 +5025,7 @@ class SearchTest extends DbTestCase
             'order' => 1,
         ];
 
-        $data = $this->doSearch(\Ticket::class, $search_params);
+        $data = $this->doSearch(Ticket::class, $search_params);
 
         $items = [];
         foreach ($data['data']['rows'] as $row) {
@@ -6110,7 +6110,7 @@ class SearchTest extends DbTestCase
 }
 
 // @codingStandardsIgnoreStart
-class DupSearchOpt extends \CommonDBTM
+class DupSearchOpt extends CommonDBTM
 {
     // @codingStandardsIgnoreEnd
     public function rawSearchOptions()

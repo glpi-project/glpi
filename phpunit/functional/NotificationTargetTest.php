@@ -54,15 +54,15 @@ class NotificationTargetTest extends DbTestCase
         $child_1 = getItemByTypeName('Entity', '_test_child_1', true);
         $child_2 = getItemByTypeName('Entity', '_test_child_2', true);
 
-        $ntarget_parent  = new \NotificationTarget($parent);
-        $ntarget_child_1 = new \NotificationTarget($child_1);
-        $ntarget_child_2 = new \NotificationTarget($child_2);
+        $ntarget_parent  = new NotificationTarget($parent);
+        $ntarget_child_1 = new NotificationTarget($child_1);
+        $ntarget_child_2 = new NotificationTarget($child_2);
 
         $this->assertEquals("[GLPI] ", $ntarget_parent->getSubjectPrefix());
         $this->assertEquals("[GLPI] ", $ntarget_child_1->getSubjectPrefix());
         $this->assertEquals("[GLPI] ", $ntarget_child_2->getSubjectPrefix());
 
-        $entity  = new \Entity();
+        $entity  = new Entity();
         $this->assertTrue($entity->update([
             'id'                       => $root,
             'notification_subject_tag' => "prefix_root",
@@ -236,7 +236,7 @@ class NotificationTargetTest extends DbTestCase
         }
 
         foreach ($expected_results as $entity_id => $expected_result) {
-            $target = new \NotificationTarget($entity_id);
+            $target = new NotificationTarget($entity_id);
             $target->setAllowResponse($allow_response);
             $this->assertEquals($expected_result, $target->getReplyTo());
         }
@@ -254,9 +254,9 @@ class NotificationTargetTest extends DbTestCase
         $child_1 = getItemByTypeName('Entity', '_test_child_1', true);
         $child_2 = getItemByTypeName('Entity', '_test_child_2', true);
 
-        $ntarget_parent  = new \NotificationTarget($parent);
-        $ntarget_child_1 = new \NotificationTarget($child_1);
-        $ntarget_child_2 = new \NotificationTarget($child_2);
+        $ntarget_parent  = new NotificationTarget($parent);
+        $ntarget_child_1 = new NotificationTarget($child_1);
+        $ntarget_child_2 = new NotificationTarget($child_2);
 
         // test global settings
         $CFG_GLPI['url_base'] = 'global.tld';
@@ -266,7 +266,7 @@ class NotificationTargetTest extends DbTestCase
         $this->assertEquals('global.tld', $ntarget_child_2->getUrlBase());
 
         // test root entity settings
-        $entity  = new \Entity();
+        $entity  = new Entity();
         $this->assertTrue($entity->update([
             'id'       => $root,
             'url_base' => "root.tld",
@@ -397,7 +397,7 @@ class NotificationTargetTest extends DbTestCase
             $name = $row['name'] ?? null;
             $warning = $row['warning'] ?? null;
 
-            $target = $this->getMockBuilder(\NotificationTarget::class)
+            $target = $this->getMockBuilder(NotificationTarget::class)
                 ->onlyMethods(['allowResponse'])
                 ->getMock();
             $target->method('allowResponse')->willReturn($allow_response);
@@ -443,7 +443,7 @@ class NotificationTargetTest extends DbTestCase
     #[DataProvider('testGetInstanceClassProvider')]
     public function testGetInstanceClass(string $itemtype, string $class): void
     {
-        $output = \NotificationTarget::getInstanceClass($itemtype);
+        $output = NotificationTarget::getInstanceClass($itemtype);
         $this->assertEquals($class, $output);
     }
 
@@ -453,31 +453,31 @@ class NotificationTargetTest extends DbTestCase
 
         // No URL returned for anonymous user
         yield [
-            'usertype' => \NotificationTarget::ANONYMOUS_USER,
+            'usertype' => NotificationTarget::ANONYMOUS_USER,
             'redirect' => 'Ticket_24',
             'expected' => '',
         ];
 
         // GLPI user, no `noAUTO=1` parameter
         yield [
-            'usertype' => \NotificationTarget::GLPI_USER,
+            'usertype' => NotificationTarget::GLPI_USER,
             'redirect' => 'Ticket_24',
             'expected' => $CFG_GLPI['url_base'] . '/index.php?redirect=Ticket_24',
         ];
         yield [
-            'usertype' => \NotificationTarget::GLPI_USER,
+            'usertype' => NotificationTarget::GLPI_USER,
             'redirect' => '/front/test.php?param=test&value=foo bar',
             'expected' => $CFG_GLPI['url_base'] . '/index.php?redirect=%2Ffront%2Ftest.php%3Fparam%3Dtest%26value%3Dfoo%20bar',
         ];
 
         // External user, no `noAUTO` parameter
         yield [
-            'usertype' => \NotificationTarget::EXTERNAL_USER,
+            'usertype' => NotificationTarget::EXTERNAL_USER,
             'redirect' => 'Ticket_24',
             'expected' => $CFG_GLPI['url_base'] . '/index.php?redirect=Ticket_24',
         ];
         yield [
-            'usertype' => \NotificationTarget::EXTERNAL_USER,
+            'usertype' => NotificationTarget::EXTERNAL_USER,
             'redirect' => '/front/test.php?param=test&value=foo bar',
             'expected' => $CFG_GLPI['url_base'] . '/index.php?redirect=%2Ffront%2Ftest.php%3Fparam%3Dtest%26value%3Dfoo%20bar',
         ];
@@ -486,7 +486,7 @@ class NotificationTargetTest extends DbTestCase
     #[DataProvider('testFormatUrlProvider')]
     public function testFormatUrl(int $usertype, string $redirect, string $expected): void
     {
-        $instance = new \NotificationTarget();
+        $instance = new NotificationTarget();
         $this->assertEquals($expected, $instance->formatUrl($usertype, $redirect));
     }
 
@@ -569,7 +569,7 @@ class NotificationTargetTest extends DbTestCase
             $expected
         );
 
-        $instance = new \NotificationTarget();
+        $instance = new NotificationTarget();
         $messageid = $instance->getMessageIdForEvent($itemtype, $items_id, $event);
         $this->assertMatchesRegularExpression($expected, $messageid);
     }
@@ -579,7 +579,7 @@ class NotificationTargetTest extends DbTestCase
         /** @var \DBmysql $DB */
         global $DB;
 
-        $notification_target = new \NotificationTarget();
+        $notification_target = new NotificationTarget();
         $group = new \Group();
         $user = new \User();
 
@@ -603,7 +603,7 @@ class NotificationTargetTest extends DbTestCase
             'users_id'  => $users_id,
         ]));
 
-        $notification = new \Notification();
+        $notification = new Notification();
         $this->assertGreaterThan(0, $fake_notification_id = $notification->add([
             'itemtype' => 'Ticket',
             'event'    => 'new',
@@ -616,17 +616,17 @@ class NotificationTargetTest extends DbTestCase
 
         $notification_target->addToRecipientsList([
             'users_id' => getItemByTypeName('User', TU_USER, true),
-            'usertype' => \NotificationTarget::GLPI_USER,
+            'usertype' => NotificationTarget::GLPI_USER,
         ]);
         $notification_target->addToRecipientsList([
             'users_id' => $users_id,
-            'usertype' => \NotificationTarget::GLPI_USER,
+            'usertype' => NotificationTarget::GLPI_USER,
         ]);
         $this->assertCount(2, $notification_target->getTargets());
 
         $this->assertGreaterThan(0, $notification_target->add([
             'notifications_id' => $fake_notification_id,
-            'type' => \Notification::GROUP_TYPE,
+            'type' => Notification::GROUP_TYPE,
             'items_id' => $groups_id,
             'is_exclusion' => 1,
         ]));

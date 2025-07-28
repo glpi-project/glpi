@@ -84,7 +84,7 @@ class SocketTest extends DbTestCase
 
     public function testCreateNoItem()
     {
-        $socket = new \Glpi\Socket();
+        $socket = new Socket();
         $sockets_id = $socket->add([
             'name' => __FUNCTION__,
             'items_id' => '',
@@ -99,7 +99,7 @@ class SocketTest extends DbTestCase
     public function testSocketDisconnect()
     {
         // Create socket
-        $socket = new \Glpi\Socket();
+        $socket = new Socket();
         $socketId = $socket->add([
             'name'      => __FUNCTION__,
             'items_id'  => '',

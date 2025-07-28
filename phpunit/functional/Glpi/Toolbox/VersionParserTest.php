@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Toolbox;
 
+use Glpi\Toolbox\VersionParser;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
@@ -185,21 +186,21 @@ class VersionParserTest extends \GLPITestCase
     #[DataProvider('versionsProvider')]
     public function testGetNormalizeVersion(string $version, bool $keep_stability_flag, string $normalized, string $major, string $intermediate, bool $stable, bool $dev): void
     {
-        $version_parser = new \Glpi\Toolbox\VersionParser();
+        $version_parser = new VersionParser();
         $this->assertEquals($normalized, $version_parser->getNormalizedVersion($version, $keep_stability_flag));
     }
 
     #[DataProvider('versionsProvider')]
     public function testGetMajorVersion(string $version, bool $keep_stability_flag, string $normalized, string $major, string $intermediate, bool $stable, bool $dev): void
     {
-        $version_parser = new \Glpi\Toolbox\VersionParser();
+        $version_parser = new VersionParser();
         $this->assertEquals($major, $version_parser->getMajorVersion($version));
     }
 
     #[DataProvider('versionsProvider')]
     public function testGetIntermediateVersion(string $version, bool $keep_stability_flag, string $normalized, string $major, string $intermediate, bool $stable, bool $dev): void
     {
-        $version_parser = new \Glpi\Toolbox\VersionParser();
+        $version_parser = new VersionParser();
         $this->assertEquals($intermediate, $version_parser->getIntermediateVersion($version));
     }
 
@@ -207,14 +208,14 @@ class VersionParserTest extends \GLPITestCase
     #[DataProvider('versionsProvider')]
     public function testIsStableRelease(string $version, bool $keep_stability_flag, string $normalized, string $major, string $intermediate, bool $stable, bool $dev): void
     {
-        $version_parser = new \Glpi\Toolbox\VersionParser();
+        $version_parser = new VersionParser();
         $this->assertSame($stable, $version_parser->isStableRelease($version));
     }
 
     #[DataProvider('versionsProvider')]
     public function testIsDevVersion(string $version, bool $keep_stability_flag, string $normalized, string $major, string $intermediate, bool $stable, bool $dev): void
     {
-        $version_parser = new \Glpi\Toolbox\VersionParser();
+        $version_parser = new VersionParser();
         $this->assertSame($dev, $version_parser->isDevVersion($version));
     }
 }

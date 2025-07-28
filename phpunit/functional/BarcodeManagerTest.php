@@ -35,13 +35,14 @@
 namespace tests\units;
 
 use BarcodeManager;
+use Com\Tecnick\Barcode\Type\Square\QrCode;
 use Computer;
 use DbTestCase;
 use Software;
 
 class BarcodeManagerTest extends DbTestCase
 {
-    private function getNewComputer(): \Computer
+    private function getNewComputer(): Computer
     {
         return $this->createItem(Computer::class, [
             'name' => 'my computer name',
@@ -55,7 +56,7 @@ class BarcodeManagerTest extends DbTestCase
         $computer = $this->getNewComputer();
         $barcode_manager = new BarcodeManager();
         $qrcode = $barcode_manager->generateQRCode($computer);
-        $this->assertInstanceOf(\Com\Tecnick\Barcode\Type\Square\QrCode::class, $qrcode);
+        $this->assertInstanceOf(QrCode::class, $qrcode);
         $qrcodeInfos = $qrcode->getArray();
         $this->assertEquals($qrcodeInfos["code"], $CFG_GLPI["url_base"] . $computer->getLinkURL());
     }

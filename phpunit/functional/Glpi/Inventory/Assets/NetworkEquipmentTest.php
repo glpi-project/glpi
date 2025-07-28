@@ -34,6 +34,9 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use Glpi\Inventory\Conf;
+use Glpi\Inventory\Converter;
+use Glpi\Inventory\Inventory;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
@@ -166,7 +169,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $date_now = date('Y-m-d H:i:s');
         $_SESSION['glpi_currenttime'] = $date_now;
         $asset = str_replace('DATE_NOW', $date_now, $asset);
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
@@ -186,7 +189,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $netequ = new \NetworkEquipment();
 
         $data = (array) $json->content;
-        $inventory = new \Glpi\Inventory\Inventory();
+        $inventory = new Inventory();
         $this->assertTrue($inventory->setData($json));
 
         $agent = new \Agent();
@@ -206,7 +209,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $netequ = new \NetworkEquipment();
 
         $data = (array) $json->content;
-        $inventory = new \Glpi\Inventory\Inventory();
+        $inventory = new Inventory();
         $this->assertTrue($inventory->setData($json));
 
         $agent = new \Agent();
@@ -371,7 +374,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 </REQUEST>';
 
         // Import the switch(es) into GLPI
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
         $entity = new \Entity();
         $entity->getFromDB(0);
@@ -379,7 +382,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             "id" => $entity->fields['id'],
             "is_contact_autoupdate" => 0,
         ]));
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -419,7 +422,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $netequ = new \NetworkEquipment();
 
         $data = (array) $json->content;
-        $inventory = new \Glpi\Inventory\Inventory();
+        $inventory = new Inventory();
         $this->assertTrue($inventory->setData($json));
 
         $agent = new \Agent();
@@ -427,7 +430,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         $main = new \Glpi\Inventory\MainAsset\NetworkEquipment($netequ, $json);
         $main->setAgent($agent)->setExtraData($data);
-        $main->checkConf(new \Glpi\Inventory\Conf());
+        $main->checkConf(new Conf());
         $result = $main->prepare();
         $this->assertCount(5, $result);
 
@@ -497,7 +500,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->assertGreaterThan(0, $networkports_other_id);
 
         // Import the switch into GLPI
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
         $entity = new \Entity();
         $entity->getFromDB(0);
@@ -505,7 +508,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             "id" => $entity->fields['id'],
             "is_contact_autoupdate" => 0,
         ]));
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -584,7 +587,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->assertGreaterThan(0, $unmanaged_networkports_id);
 
         // Import the switch into GLPI
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
         $entity = new \Entity();
         $entity->getFromDB(0);
@@ -592,7 +595,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             "id" => $entity->fields['id'],
             "is_contact_autoupdate" => 0,
         ]));
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -652,7 +655,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 </REQUEST>';
 
         // Import the switch into GLPI
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
         $entity = new \Entity();
         $entity->getFromDB(0);
@@ -660,7 +663,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             "id" => $entity->fields['id'],
             "is_contact_autoupdate" => 0,
         ]));
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -769,7 +772,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->assertGreaterThan(0, $networkports_other_id);
 
         // Import the switch into GLPI
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
         $entity = new \Entity();
         $entity->getFromDB(0);
@@ -777,7 +780,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             "id" => $entity->fields['id'],
             "is_contact_autoupdate" => 0,
         ]));
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -874,7 +877,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->assertGreaterThan(0, $ipaddress_id);
 
         // Import the switch into GLPI
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
         $entity = new \Entity();
         $entity->getFromDB(0);
@@ -882,7 +885,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             "id" => $entity->fields['id'],
             "is_contact_autoupdate" => 0,
         ]));
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -983,7 +986,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 </REQUEST>';
 
         // Import the switch into GLPI
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
         $entity = new \Entity();
         $entity->getFromDB(0);
@@ -991,7 +994,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             "id" => $entity->fields['id'],
             "is_contact_autoupdate" => 0,
         ]));
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -1079,7 +1082,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->assertGreaterThan(0, $networkports_other_id);
 
         // Import the switch into GLPI
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
         $entity = new \Entity();
         $entity->getFromDB(0);
@@ -1087,7 +1090,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             "id" => $entity->fields['id'],
             "is_contact_autoupdate" => 0,
         ]));
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -1202,7 +1205,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->assertGreaterThan(0, $ports_id);
 
         // Import the switch into GLPI
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
         $entity = new \Entity();
         $entity->getFromDB(0);
@@ -1210,7 +1213,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             "id" => $entity->fields['id'],
             "is_contact_autoupdate" => 0,
         ]));
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -1349,7 +1352,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->assertGreaterThan(0, $ports_id);
 
         // Import the switch into GLPI
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
         $entity = new \Entity();
         $entity->getFromDB(0);
@@ -1357,7 +1360,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             "id" => $entity->fields['id'],
             "is_contact_autoupdate" => 0,
         ]));
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -1498,7 +1501,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->assertGreaterThan(0, $ports_id);
 
         // Import the switch into GLPI
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
         $entity = new \Entity();
         $entity->getFromDB(0);
@@ -1506,7 +1509,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             "id" => $entity->fields['id'],
             "is_contact_autoupdate" => 0,
         ]));
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -1639,7 +1642,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->assertGreaterThan(0, $ports_id);
 
         // Import the switch into GLPI
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
         $entity = new \Entity();
         $entity->getFromDB(0);
@@ -1647,7 +1650,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             "id" => $entity->fields['id'],
             "is_contact_autoupdate" => 0,
         ]));
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -1771,7 +1774,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->assertGreaterThan(0, $ports_id);
 
         // Import the switch into GLPI
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
         $entity = new \Entity();
         $entity->getFromDB(0);
@@ -1779,7 +1782,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             "id" => $entity->fields['id'],
             "is_contact_autoupdate" => 0,
         ]));
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -1903,7 +1906,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->assertGreaterThan(0, $ports_id);
 
         // Import the switch into GLPI
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
         $entity = new \Entity();
         $entity->getFromDB(0);
@@ -1911,7 +1914,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             "id" => $entity->fields['id'],
             "is_contact_autoupdate" => 0,
         ]));
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
 
         $this->assertFalse($inventory->inError());
         $this->assertSame([], $inventory->getErrors());
@@ -2041,7 +2044,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->assertGreaterThan(0, $ports_id);
 
         // Import the switch into GLPI
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
         //$json = json_decode($data);
         $entity = new \Entity();
@@ -2050,7 +2053,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             "id" => $entity->fields['id'],
             "is_contact_autoupdate" => 0,
         ]));
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
 
         $this->assertFalse($inventory->inError());
         $this->assertSame([], $inventory->getErrors());
@@ -2102,9 +2105,9 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         </REQUEST>";
 
         // Import the switch into GLPI
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
 
         $this->assertFalse($inventory->inError());
         $this->assertSame([], $inventory->getErrors());
@@ -2156,9 +2159,9 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
           </REQUEST>";
 
         // Import the switch into GLPI
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
 
         $this->assertFalse($inventory->inError());
         $this->assertSame([], $inventory->getErrors());
@@ -2261,7 +2264,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->assertGreaterThan(0, $ports_id);
 
         // Import the switch into GLPI
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
 
         $entity = new \Entity();
@@ -2270,7 +2273,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             "id" => $entity->fields['id'],
             "is_contact_autoupdate" => 0,
         ]));
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
 
         $this->assertFalse($inventory->inError());
         $this->assertSame([], $inventory->getErrors());
@@ -2385,7 +2388,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->assertSame(0, countElementsInTable($unmanaged->getTable()));
 
         // Import the switch into GLPI
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
 
         $entity = new \Entity();
@@ -2394,7 +2397,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             "id" => $entity->fields['id'],
             "is_contact_autoupdate" => 0,
         ]));
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
 
         $this->assertFalse($inventory->inError());
         $this->assertSame([], $inventory->getErrors());
@@ -2505,7 +2508,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->assertGreaterThan(0, $ports_id);
 
         // Import the switch into GLPI
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
 
         $entity = new \Entity();
@@ -2514,7 +2517,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             "id" => $entity->fields['id'],
             "is_contact_autoupdate" => 0,
         ]));
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
 
         $this->assertFalse($inventory->inError());
         $this->assertSame([], $inventory->getErrors());
@@ -2661,7 +2664,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->assertGreaterThan(0, $ports_id);
 
         // Import the switch into GLPI
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
 
         $entity = new \Entity();
@@ -2670,7 +2673,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             "id" => $entity->fields['id'],
             "is_contact_autoupdate" => 0,
         ]));
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
 
         $this->assertFalse($inventory->inError());
         $this->assertSame([], $inventory->getErrors());
@@ -3001,10 +3004,10 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
     {
         $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/dell_n3048p.xml');
         // Import the switch(es) into GLPI
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
         $CFG_GLPI["is_contact_autoupdate"] = 0;
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
         $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
@@ -3167,10 +3170,10 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
     {
         $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/cisco-C9300.xml');
         // Import the switch(es) into GLPI
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
         $CFG_GLPI["is_contact_autoupdate"] = 0;
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
         $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
@@ -3210,10 +3213,10 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
 
         $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/extreme_3650GTS.xml');
         // Import the switch(es) into GLPI
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
         $CFG_GLPI["is_contact_autoupdate"] = 0;
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
         $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
@@ -3254,10 +3257,10 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
 
         $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/extreme_5420F.xml');
         // Import the switch(es) into GLPI
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
         $CFG_GLPI["is_contact_autoupdate"] = 0;
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
         $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
@@ -3299,10 +3302,10 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
         //run again, same results
         $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/extreme_5420F.xml');
         // Import the switch(es) into GLPI
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
         $CFG_GLPI["is_contact_autoupdate"] = 0;
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
         $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
@@ -3360,10 +3363,10 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
         // do inventory
         $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/cisco-C9300.xml');
         // Import the switch(es) into GLPI
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
         $CFG_GLPI["is_contact_autoupdate"] = 0;
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
         $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
@@ -3411,9 +3414,9 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
         // do inventory
         $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/cisco-C9300.xml');
         // Import the switch(es) into GLPI
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {

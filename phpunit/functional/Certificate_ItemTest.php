@@ -86,7 +86,7 @@ class Certificate_ItemTest extends DbTestCase
 
         $root_entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
 
-        $cert_item = new \Certificate_Item();
+        $cert_item = new Certificate_Item();
         $cert = new \Certificate();
 
         $input = [
@@ -180,7 +180,7 @@ class Certificate_ItemTest extends DbTestCase
     public function testgetListForItemParamsForCertificate()
     {
         $cert = new \Certificate();
-        $cert_item = new \Certificate_Item();
+        $cert_item = new Certificate_Item();
         $this->expectExceptionMessage('Cannot use getListForItemParams() for a Certificate');
         $cert_item->countForItem($cert);
     }

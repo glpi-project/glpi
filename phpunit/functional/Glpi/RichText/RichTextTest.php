@@ -36,6 +36,7 @@ namespace tests\units\Glpi\RichText;
 
 use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Form\Tag\Tag;
+use Glpi\RichText\RichText;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
@@ -391,7 +392,7 @@ HTML,
         bool $encode_output_entities,
         string $expected_result
     ) {
-        $richtext = new \Glpi\RichText\RichText();
+        $richtext = new RichText();
 
         $this->assertEquals(
             $expected_result,
@@ -407,7 +408,7 @@ HTML,
         // Images path should be corrected when root doc changed
         // see #15113
 
-        $richtext = new \Glpi\RichText\RichText();
+        $richtext = new RichText();
 
         foreach (['', '/glpi', '/path/to/glpi'] as $expected_prefix) {
             $CFG_GLPI['root_doc'] = $expected_prefix;
@@ -597,7 +598,7 @@ PLAINTEXT,
         bool $preserve_line_breaks,
         string $expected_result
     ) {
-        $richtext = new \Glpi\RichText\RichText();
+        $richtext = new RichText();
 
         $this->assertEquals(
             $expected_result,
@@ -647,7 +648,7 @@ HTML,
     #[DataProvider('isRichTextHtmlContentProvider')]
     public function testIsRichTextHtmlContent(string $content, bool $expected_result)
     {
-        $richtext = new \Glpi\RichText\RichText();
+        $richtext = new RichText();
 
         $this->assertSame($expected_result, $richtext->isRichTextHtmlContent($content));
     }

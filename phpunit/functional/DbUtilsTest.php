@@ -35,10 +35,13 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Dashboard\Dashboard;
+use GlpiPlugin\Tester\Asset\Foo;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Psr\Log\LogLevel;
+use Psr\SimpleCache\CacheInterface;
 
 /* Test for inc/dbutils.class.php */
 
@@ -352,11 +355,11 @@ class DbUtilsTest extends DbTestCase
         ];
         yield [
             'key'       => 'dashboards_dashboards_id',
-            'itemtype'  => \Glpi\Dashboard\Dashboard::class,
+            'itemtype'  => Dashboard::class,
         ];
         yield [
             'key'       => 'plugin_tester_assets_foos_id',
-            'itemtype'  => \GlpiPlugin\Tester\Asset\Foo::class,
+            'itemtype'  => Foo::class,
         ];
         yield [
             'key'       => 'plugin_tester_mypseudopsr4classes_id',
@@ -1057,7 +1060,7 @@ class DbUtilsTest extends DbTestCase
     {
         $this->login();
 
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
+        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
         $GLPI_CACHE->clear(); // login produce cache, must be cleared
 
@@ -1079,7 +1082,7 @@ class DbUtilsTest extends DbTestCase
      */
     private function runGetSonsOf($cache = false, $hit = false)
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
+        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
@@ -1249,7 +1252,7 @@ class DbUtilsTest extends DbTestCase
     {
         $this->login();
 
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
+        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
         $GLPI_CACHE->clear(); // login produce cache, must be cleared
 

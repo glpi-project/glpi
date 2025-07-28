@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Dropdown;
 
 use DbTestCase;
+use Glpi\Dropdown\Dropdown;
 
 class DropdownTest extends DbTestCase
 {
@@ -77,7 +78,7 @@ class DropdownTest extends DbTestCase
             $expected_class = $row['expected_class'];
             $expected_fields = $row['expected_fields'];
 
-            $dropdown = \Glpi\Dropdown\Dropdown::getById($id);
+            $dropdown = Dropdown::getById($id);
 
             $this->assertInstanceOf($expected_class, $dropdown);
 

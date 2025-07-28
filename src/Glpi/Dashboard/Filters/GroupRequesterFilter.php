@@ -50,7 +50,7 @@ class GroupRequesterFilter extends AbstractGroupFilter
 
     protected static function getGroupType(): int
     {
-        return Group_item::GROUP_TYPE_NORMAL;
+        return Group_Item::GROUP_TYPE_NORMAL;
     }
 
     protected static function getGroupFieldName(): string

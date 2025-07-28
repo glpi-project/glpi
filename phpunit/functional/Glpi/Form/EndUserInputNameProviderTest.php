@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Form;
 
 use DbTestCase;
+use Glpi\Form\EndUserInputNameProvider;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
@@ -59,7 +60,7 @@ class EndUserInputNameProviderTest extends DbTestCase
                 $question->getEndUserInputName()
             );
             $this->assertMatchesRegularExpression(
-                \Glpi\Form\EndUserInputNameProvider::END_USER_INPUT_NAME_REGEX,
+                EndUserInputNameProvider::END_USER_INPUT_NAME_REGEX,
                 $question->getEndUserInputName()
             );
         }
@@ -82,7 +83,7 @@ class EndUserInputNameProviderTest extends DbTestCase
         ];
 
         // Check that the answers are correctly indexed by question ID
-        $answers = (new \Glpi\Form\EndUserInputNameProvider())->getAnswers($inputs);
+        $answers = (new EndUserInputNameProvider())->getAnswers($inputs);
         $this->assertEquals([
             $form->getQuestions()[array_keys($form->getQuestions())[0]]->getID() => 'John Doe',
             $form->getQuestions()[array_keys($form->getQuestions())[1]]->getID() => 'john.doe@mail.mail',

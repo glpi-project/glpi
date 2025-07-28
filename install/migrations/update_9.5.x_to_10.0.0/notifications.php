@@ -35,8 +35,8 @@
 use Glpi\DBAL\QueryExpression;
 
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
 
 /** User mention notification */

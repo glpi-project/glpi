@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use Glpi\Inventory\Converter;
 use PHPUnit\Framework\Attributes\DataProvider;
 use SoftwareVersion;
 
@@ -106,7 +107,7 @@ class SoftwareTest extends AbstractInventoryAsset
     #[DataProvider('assetProvider')]
     public function testPrepare($xml, $expected)
     {
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
@@ -136,7 +137,7 @@ class SoftwareTest extends AbstractInventoryAsset
         //convert data
         $expected = $this::assetProvider()[0];
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($expected['xml']);
         $json = json_decode($data);
 
@@ -159,14 +160,14 @@ class SoftwareTest extends AbstractInventoryAsset
             'A software version has not been linked to computer!'
         );
 
-        $version = new \SoftwareVersion();
+        $version = new SoftwareVersion();
         $this->assertTrue($version->getFromDB($sov->fields['softwareversions_id']));
         $this->assertSame(0, $version->fields['operatingsystems_id']); // no OS from $this::assetProvider()[0];
 
         //convert data
         $expected = $this::assetProvider()[1];
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($expected['xml']);
         $json = json_decode($data);
 
@@ -202,7 +203,7 @@ class SoftwareTest extends AbstractInventoryAsset
             "items_id" => $computer->fields['id'],
         ]));
 
-        $version = new \SoftwareVersion();
+        $version = new SoftwareVersion();
         $this->assertTrue($version->getFromDB($sov->fields['softwareversions_id']));
         $this->assertSame($ios->fields['operatingsystems_id'], $version->fields['operatingsystems_id']); //check linked OS from SoftwareVersion
 
@@ -247,7 +248,7 @@ class SoftwareTest extends AbstractInventoryAsset
         global $DB;
         $computer = new \Computer();
         $soft = new \Software();
-        $version = new \SoftwareVersion();
+        $version = new SoftwareVersion();
         $item_version = new \Item_SoftwareVersion();
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
@@ -806,7 +807,7 @@ class SoftwareTest extends AbstractInventoryAsset
 
         //get Software / ItemSoftware
         $software = new \Software();
-        $software_version = new \SoftwareVersion();
+        $software_version = new SoftwareVersion();
         $software_item = new \Item_SoftwareVersion();
 
         $software_items = $software_item->find(['itemtype' => "Computer", "items_id" => $first_computer['id']]);
@@ -858,7 +859,7 @@ class SoftwareTest extends AbstractInventoryAsset
 
         $computer = new \Computer();
         $soft = new \Software();
-        $version = new \SoftwareVersion();
+        $version = new SoftwareVersion();
         $item_version = new \Item_SoftwareVersion();
 
         //inventory with a software name containing an unbreakable space
@@ -966,7 +967,7 @@ class SoftwareTest extends AbstractInventoryAsset
 
         $computer = new \Computer();
         $soft = new \Software();
-        $version = new \SoftwareVersion();
+        $version = new SoftwareVersion();
         $item_version = new \Item_SoftwareVersion();
 
         //inventory with a software name containing an unbreakable space
@@ -1107,7 +1108,7 @@ class SoftwareTest extends AbstractInventoryAsset
 
         $computer = new \Computer();
         $soft = new \Software();
-        $version = new \SoftwareVersion();
+        $version = new SoftwareVersion();
         $item_version = new \Item_SoftwareVersion();
 
         //inventory with a software manufacturer name containing an unbreakable space
@@ -1188,7 +1189,7 @@ class SoftwareTest extends AbstractInventoryAsset
 
         $computer = new \Computer();
         $soft = new \Software();
-        $version = new \SoftwareVersion();
+        $version = new SoftwareVersion();
         $item_version = new \Item_SoftwareVersion();
 
         //inventory with a software manufacturer name containing an unbreakable space
@@ -1266,7 +1267,7 @@ class SoftwareTest extends AbstractInventoryAsset
     {
         $computer = new \Computer();
         $soft = new \Software();
-        $version = new \SoftwareVersion();
+        $version = new SoftwareVersion();
         $item_version = new \Item_SoftwareVersion();
 
         //inventory with a software manufacturer name with different cases
@@ -1354,7 +1355,7 @@ class SoftwareTest extends AbstractInventoryAsset
     {
         $computer = new \Computer();
         $soft = new \Software();
-        $version = new \SoftwareVersion();
+        $version = new SoftwareVersion();
         $item_version = new \Item_SoftwareVersion();
 
         //inventory with a software manufacturer name with different cases
@@ -1440,7 +1441,7 @@ class SoftwareTest extends AbstractInventoryAsset
     {
         $computer = new \Computer();
         $soft = new \Software();
-        $version = new \SoftwareVersion();
+        $version = new SoftwareVersion();
         $item_version = new \Item_SoftwareVersion();
 
         //inventory with a software manufacturer with a special character
@@ -1528,7 +1529,7 @@ class SoftwareTest extends AbstractInventoryAsset
     {
         $computer = new \Computer();
         $soft = new \Software();
-        $version = new \SoftwareVersion();
+        $version = new SoftwareVersion();
         $item_version = new \Item_SoftwareVersion();
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
@@ -1933,7 +1934,7 @@ JSON;
 
         $computer         = new \Computer();
         $software         = new \Software();
-        $softwareVersion  = new \SoftwareVersion();
+        $softwareVersion  = new SoftwareVersion();
         $itemSoftware     = new \Item_SoftwareVersion();
 
         // Step 1: Full inventory (software + OS) on computer ARN2032

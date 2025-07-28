@@ -354,7 +354,7 @@ class QueryBuilderTest extends \GLPITestCase
     ) {
         $instance = new QueryBuilder();
 
-        $result = \Glpi\Search\Input\QueryBuilder::getInputValidationPattern($datatype);
+        $result = QueryBuilder::getInputValidationPattern($datatype);
 
         $this->assertArrayHasKey('pattern', $result);
         $this->assertArrayHasKey('validation_message', $result);

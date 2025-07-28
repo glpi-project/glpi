@@ -36,6 +36,8 @@ namespace tests\units;
 
 use DbTestCase;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryParam;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
@@ -156,7 +158,7 @@ class DBmysqlIteratorTest extends DbTestCase
         $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => ['MAX' => 'bar AS cpt']]);
         $this->assertSame('SELECT MAX(`bar`) AS `cpt` FROM `foo`', $it->getSql());
 
-        $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => new \Glpi\DBAL\QueryExpression('IF(bar IS NOT NULL, 1, 0) AS baz')]);
+        $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => new QueryExpression('IF(bar IS NOT NULL, 1, 0) AS baz')]);
         $this->assertSame('SELECT IF(bar IS NOT NULL, 1, 0) AS baz FROM `foo`', $it->getSql());
     }
 
@@ -171,7 +173,7 @@ class DBmysqlIteratorTest extends DbTestCase
         $this->it->buildQuery(['FIELDS' => 'bar', 'FROM' => ['foo', 'baz']]);
         $this->assertSame('SELECT `bar` FROM `foo`, `baz`', $this->it->getSql());
 
-        $this->it->buildQuery(['FIELDS' => 'c', 'FROM' => new \Glpi\DBAL\QueryExpression("(SELECT CONCAT('foo', 'baz') as c) as t")]);
+        $this->it->buildQuery(['FIELDS' => 'c', 'FROM' => new QueryExpression("(SELECT CONCAT('foo', 'baz') as c) as t")]);
         $this->assertSame("SELECT `c` FROM (SELECT CONCAT('foo', 'baz') as c) as t", $this->it->getSql());
     }
 
@@ -220,16 +222,16 @@ class DBmysqlIteratorTest extends DbTestCase
         $it = $this->it->execute(['FROM' => 'foo', 'ORDER' => 'bar DESC, baz ASC']);
         $this->assertSame('SELECT * FROM `foo` ORDER BY `bar` DESC, `baz` ASC', $it->getSql());
 
-        $it = $this->it->execute(['FROM' => 'foo', 'ORDER' => new \Glpi\DBAL\QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END")]);
+        $it = $this->it->execute(['FROM' => 'foo', 'ORDER' => new QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END")]);
         $this->assertSame("SELECT * FROM `foo` ORDER BY CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END", $it->getSql());
 
-        $it = $this->it->execute(['FROM' => 'foo', 'ORDER' => [new \Glpi\DBAL\QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC']]);
+        $it = $this->it->execute(['FROM' => 'foo', 'ORDER' => [new QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC']]);
         $this->assertSame("SELECT * FROM `foo` ORDER BY CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END, `bar` ASC", $it->getSql());
 
-        $it = $this->it->execute(['FROM' => 'foo', 'ORDER' => [new \Glpi\DBAL\QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC, baz DESC']]);
+        $it = $this->it->execute(['FROM' => 'foo', 'ORDER' => [new QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC, baz DESC']]);
         $this->assertSame("SELECT * FROM `foo` ORDER BY CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END, `bar` ASC, `baz` DESC", $it->getSql());
 
-        $it = $this->it->execute(['FROM' => 'foo', 'ORDER' => [new \Glpi\DBAL\QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC', 'baz DESC']]);
+        $it = $this->it->execute(['FROM' => 'foo', 'ORDER' => [new QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC', 'baz DESC']]);
         $this->assertSame("SELECT * FROM `foo` ORDER BY CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END, `bar` ASC, `baz` DESC", $it->getSql());
 
         $this->expectExceptionObject(new \LogicException('Invalid order clause.'));
@@ -436,7 +438,7 @@ class DBmysqlIteratorTest extends DbTestCase
                 'FROM' => 'foo',
                 'LEFT JOIN' => [
                     [
-                        'TABLE'  => new \Glpi\DBAL\QuerySubQuery(['FROM' => 'bar'], 't2'),
+                        'TABLE'  => new QuerySubQuery(['FROM' => 'bar'], 't2'),
                         'FKEY'   => [
                             't2'  => 'id',
                             'foo' => 'fk',
@@ -476,7 +478,7 @@ class DBmysqlIteratorTest extends DbTestCase
 
         // QueryExpression
         $expression = "LEFT JOIN xxxx";
-        $join = $this->it->analyseJoins(['LEFT JOIN' => [new \Glpi\DBAL\QueryExpression($expression)]]);
+        $join = $this->it->analyseJoins(['LEFT JOIN' => [new QueryExpression($expression)]]);
         $this->assertSame($expression, $join);
 
         $this->expectExceptionObject(new \LogicException('Invalid JOIN type `LEFT OUTER JOIN`.'));
@@ -549,13 +551,13 @@ class DBmysqlIteratorTest extends DbTestCase
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => 'val']]);
         $this->assertSame("SELECT * FROM `foo` WHERE `bar` = 'val'", $it->getSql());
 
-        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => new \Glpi\DBAL\QueryExpression('`field`')]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => new QueryExpression('`field`')]]);
         $this->assertSame('SELECT * FROM `foo` WHERE `bar` = `field`', $it->getSql());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => '?']]);
         $this->assertSame('SELECT * FROM `foo` WHERE `bar` = \'?\'', $it->getSql());
 
-        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => new \Glpi\DBAL\QueryParam()]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => new QueryParam()]]);
         $this->assertSame('SELECT * FROM `foo` WHERE `bar` = ?', $it->getSql());
 
         /*$it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => new \QueryParam('myparam')]]);
@@ -788,10 +790,10 @@ class DBmysqlIteratorTest extends DbTestCase
 
     public function testExpression()
     {
-        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => [new \Glpi\DBAL\QueryExpression('a LIKE b')]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => [new QueryExpression('a LIKE b')]]);
         $this->assertSame('SELECT * FROM `foo` WHERE a LIKE b', $it->getSql());
 
-        $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => ['b' => 'bar', '`c`' => '`baz`', new \Glpi\DBAL\QueryExpression('1 AS `myfield`')]]);
+        $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => ['b' => 'bar', '`c`' => '`baz`', new QueryExpression('1 AS `myfield`')]]);
         $this->assertSame('SELECT `b`.`bar`, `c`.`baz`, 1 AS `myfield` FROM `foo`', $it->getSql());
     }
 
@@ -800,7 +802,7 @@ class DBmysqlIteratorTest extends DbTestCase
         $crit = ['SELECT' => 'id', 'FROM' => 'baz', 'WHERE' => ['z' => 'f']];
         $raw_subq = "(SELECT `id` FROM `baz` WHERE `z` = 'f')";
 
-        $sub_query = new \Glpi\DBAL\QuerySubQuery($crit);
+        $sub_query = new QuerySubQuery($crit);
         $this->assertSame($raw_subq, $sub_query->getQuery());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => $sub_query]]);
@@ -821,7 +823,7 @@ class DBmysqlIteratorTest extends DbTestCase
             $it->getSql()
         );
 
-        $sub_query = new \Glpi\DBAL\QuerySubQuery($crit, 'thesubquery');
+        $sub_query = new QuerySubQuery($crit, 'thesubquery');
         $this->assertSame("$raw_subq AS `thesubquery`", $sub_query->getQuery());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => $sub_query]]);
@@ -846,24 +848,24 @@ class DBmysqlIteratorTest extends DbTestCase
             ['FROM' => 'table1'],
             ['FROM' => 'table2'],
         ];
-        $union = new \Glpi\DBAL\QueryUnion($union_crit);
+        $union = new QueryUnion($union_crit);
         $union_raw_query = '((SELECT * FROM `table1`) UNION ALL (SELECT * FROM `table2`))';
         $raw_query = 'SELECT * FROM ' . $union_raw_query . ' AS `union_' . md5($union_raw_query) . '`';
         $it = $this->it->execute(['FROM' => $union]);
         $this->assertSame($raw_query, $it->getSql());
 
-        $union = new \Glpi\DBAL\QueryUnion($union_crit, true);
+        $union = new QueryUnion($union_crit, true);
         $union_raw_query = '((SELECT * FROM `table1`) UNION (SELECT * FROM `table2`))';
         $raw_query = 'SELECT * FROM ' . $union_raw_query . ' AS `union_' . md5($union_raw_query) . '`';
         $it = $this->it->execute(['FROM' => $union]);
         $this->assertSame($raw_query, $it->getSql());
 
-        $union = new \Glpi\DBAL\QueryUnion($union_crit, false, 'theunion');
+        $union = new QueryUnion($union_crit, false, 'theunion');
         $raw_query = 'SELECT * FROM ((SELECT * FROM `table1`) UNION ALL (SELECT * FROM `table2`)) AS `theunion`';
         $it = $this->it->execute(['FROM' => $union]);
         $this->assertSame($raw_query, $it->getSql());
 
-        $union = new \Glpi\DBAL\QueryUnion($union_crit, false, 'theunion');
+        $union = new QueryUnion($union_crit, false, 'theunion');
         $raw_query = 'SELECT DISTINCT `theunion`.`field` FROM ((SELECT * FROM `table1`) UNION ALL (SELECT * FROM `table2`)) AS `theunion`';
         $crit = [
             'SELECT'    => 'theunion.field',
@@ -873,7 +875,7 @@ class DBmysqlIteratorTest extends DbTestCase
         $it = $this->it->execute($crit);
         $this->assertSame($raw_query, $it->getSql());
 
-        $union = new \Glpi\DBAL\QueryUnion($union_crit, true);
+        $union = new QueryUnion($union_crit, true);
         $union_raw_query = '((SELECT * FROM `table1`) UNION (SELECT * FROM `table2`))';
         $raw_query = 'SELECT DISTINCT `theunion`.`field` FROM ' . $union_raw_query . ' AS `union_' . md5($union_raw_query) . '`';
         $crit = [
@@ -893,7 +895,7 @@ class DBmysqlIteratorTest extends DbTestCase
         $users_table = 'glpi_ticket_users';
         $groups_table = 'glpi_groups_tickets';
 
-        $subquery1 = new \Glpi\DBAL\QuerySubQuery([
+        $subquery1 = new QuerySubQuery([
             'SELECT'    => [
                 'usr.id AS users_id',
                 'tu.type AS type',
@@ -911,7 +913,7 @@ class DBmysqlIteratorTest extends DbTestCase
                 "tu.$fk" => 42,
             ],
         ]);
-        $subquery2 = new \Glpi\DBAL\QuerySubQuery([
+        $subquery2 = new QuerySubQuery([
             'SELECT'    => [
                 'usr.id AS users_id',
                 'gt.type AS type',
@@ -949,7 +951,7 @@ class DBmysqlIteratorTest extends DbTestCase
                      . " WHERE `gt`.`$fk` = '42')"
                      . ") AS `allactors`";
 
-        $union = new \Glpi\DBAL\QueryUnion([$subquery1, $subquery2], false, 'allactors');
+        $union = new QueryUnion([$subquery1, $subquery2], false, 'allactors');
         $it = $this->it->execute([
             'FIELDS'          => [
                 'users_id',
@@ -1115,7 +1117,7 @@ class DBmysqlIteratorTest extends DbTestCase
                 'NAME.id AS name_id',
                 'PORT.id AS port_id',
                 'ITEM.id AS item_id',
-                new \Glpi\DBAL\QueryExpression("'$itemtype' AS " . $DB->quoteName('item_type')),
+                new QueryExpression("'$itemtype' AS " . $DB->quoteName('item_type')),
             ]);
             $criteria['INNER JOIN'] = $criteria['INNER JOIN'] + [
                 'glpi_networknames AS NAME'   => [
@@ -1152,8 +1154,8 @@ class DBmysqlIteratorTest extends DbTestCase
         $criteria['SELECT'] = array_merge($criteria['SELECT'], [
             'NAME.id AS name_id',
             'PORT.id AS port_id',
-            new \Glpi\DBAL\QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
-            new \Glpi\DBAL\QueryExpression("NULL AS " . $DB->quoteName('item_type')),
+            new QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
+            new QueryExpression("NULL AS " . $DB->quoteName('item_type')),
         ]);
         $criteria['INNER JOIN'] = $criteria['INNER JOIN'] + [
             'glpi_networknames AS NAME'   => [
@@ -1184,9 +1186,9 @@ class DBmysqlIteratorTest extends DbTestCase
         $criteria = $main_criteria;
         $criteria['SELECT'] = array_merge($criteria['SELECT'], [
             'NAME.id AS name_id',
-            new \Glpi\DBAL\QueryExpression("NULL AS " . $DB->quoteName('port_id')),
-            new \Glpi\DBAL\QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
-            new \Glpi\DBAL\QueryExpression("NULL AS " . $DB->quoteName('item_type')),
+            new QueryExpression("NULL AS " . $DB->quoteName('port_id')),
+            new QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
+            new QueryExpression("NULL AS " . $DB->quoteName('item_type')),
         ]);
         $criteria['INNER JOIN'] = $criteria['INNER JOIN'] + [
             'glpi_networknames AS NAME'   => [
@@ -1204,15 +1206,15 @@ class DBmysqlIteratorTest extends DbTestCase
 
         $criteria = $main_criteria;
         $criteria['SELECT'] = array_merge($criteria['SELECT'], [
-            new \Glpi\DBAL\QueryExpression("NULL AS " . $DB->quoteName('name_id')),
-            new \Glpi\DBAL\QueryExpression("NULL AS " . $DB->quoteName('port_id')),
-            new \Glpi\DBAL\QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
-            new \Glpi\DBAL\QueryExpression("NULL AS " . $DB->quoteName('item_type')),
+            new QueryExpression("NULL AS " . $DB->quoteName('name_id')),
+            new QueryExpression("NULL AS " . $DB->quoteName('port_id')),
+            new QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
+            new QueryExpression("NULL AS " . $DB->quoteName('item_type')),
         ]);
         $criteria['INNER JOIN']['glpi_ipaddresses AS ADDR']['ON'][0]['AND']['ADDR.itemtype'] = ['!=', 'NetworkName'];
         $queries[] = $criteria;
 
-        $union = new \Glpi\DBAL\QueryUnion($queries);
+        $union = new QueryUnion($queries);
         $criteria = [
             'FROM'   => $union,
         ];
@@ -1223,10 +1225,10 @@ class DBmysqlIteratorTest extends DbTestCase
 
     public function testAnalyseCrit()
     {
-        $crit = [new \Glpi\DBAL\QuerySubQuery([
+        $crit = [new QuerySubQuery([
             'SELECT' => ['COUNT' => ['users_id']],
             'FROM'   => 'glpi_groups_users',
-            'WHERE'  => ['groups_id' => new \Glpi\DBAL\QueryExpression('glpi_groups.id')],
+            'WHERE'  => ['groups_id' => new QueryExpression('glpi_groups.id')],
         ]),
         ];
         $this->assertSame(
@@ -1383,9 +1385,9 @@ class DBmysqlIteratorTest extends DbTestCase
     /**
      * Returns a fake users table that can be used to test iterator.
      *
-     * @return \Glpi\DBAL\QueryExpression
+     * @return QueryExpression
      */
-    private function getUsersFakeTable(): \Glpi\DBAL\QueryExpression
+    private function getUsersFakeTable(): QueryExpression
     {
         global $DB;
 
@@ -1396,7 +1398,7 @@ class DBmysqlIteratorTest extends DbTestCase
             sprintf($user_pattern, 6, $DB->quoteName('id'), $DB->quoteValue('acain'), $DB->quoteName('name')),
         ];
 
-        return new \Glpi\DBAL\QueryExpression('(' . implode(' UNION ALL ', $users_table) . ') AS users');
+        return new QueryExpression('(' . implode(' UNION ALL ', $users_table) . ') AS users');
     }
 
     public function testInCriteria()
@@ -1503,7 +1505,7 @@ class DBmysqlIteratorTest extends DbTestCase
         $this->assertEquals(
             "glpi_tickets.id=(CASE WHEN glpi_tickets_tickets.tickets_id_1=103 THEN glpi_tickets_tickets.tickets_id_2 ELSE glpi_tickets_tickets.tickets_id_1 END)",
             $this->it->analyseCrit([
-                'ON' => new \Glpi\DBAL\QueryExpression("glpi_tickets.id=(CASE WHEN glpi_tickets_tickets.tickets_id_1=103 THEN glpi_tickets_tickets.tickets_id_2 ELSE glpi_tickets_tickets.tickets_id_1 END)"),
+                'ON' => new QueryExpression("glpi_tickets.id=(CASE WHEN glpi_tickets_tickets.tickets_id_1=103 THEN glpi_tickets_tickets.tickets_id_2 ELSE glpi_tickets_tickets.tickets_id_1 END)"),
             ])
         );
     }

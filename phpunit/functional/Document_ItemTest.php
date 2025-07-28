@@ -36,6 +36,7 @@ namespace tests\units;
 
 use DbTestCase;
 use Document_Item;
+use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDocumentsCapacity;
 use Glpi\Features\Clonable;
 use Psr\Log\LogLevel;
@@ -48,7 +49,7 @@ class Document_ItemTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasDocumentsCapacity::class)]);
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasDocumentsCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
@@ -68,7 +69,7 @@ class Document_ItemTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasDocumentsCapacity::class)]);
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasDocumentsCapacity::class)]);
 
         foreach ($CFG_GLPI['itemdevices_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
@@ -82,7 +83,7 @@ class Document_ItemTest extends DbTestCase
 
     public function testGetForbiddenStandardMassiveAction()
     {
-        $ditem = new \Document_Item();
+        $ditem = new Document_Item();
         $this->assertSame(
             ['clone', 'update'],
             $ditem->getForbiddenStandardMassiveAction()
@@ -92,7 +93,7 @@ class Document_ItemTest extends DbTestCase
     public function testPrepareInputForAdd()
     {
         $input = [];
-        $ditem = new \Document_Item();
+        $ditem = new Document_Item();
 
         $res = $ditem->add($input);
         $this->assertFalse($res);
@@ -193,7 +194,7 @@ class Document_ItemTest extends DbTestCase
             ],
             'ORDER'           => 'itemtype',
         ];
-        $this->assertSame($expected, \Document_Item::getDistinctTypesParams(1));
+        $this->assertSame($expected, Document_Item::getDistinctTypesParams(1));
 
         $extra_where = ['date_mod' => ['>', '2000-01-01']];
         $expected = [
@@ -217,7 +218,7 @@ class Document_ItemTest extends DbTestCase
             ],
             'ORDER'           => 'itemtype',
         ];
-        $this->assertSame($expected, \Document_Item::getDistinctTypesParams(1, $extra_where));
+        $this->assertSame($expected, Document_Item::getDistinctTypesParams(1, $extra_where));
     }
 
 
@@ -246,7 +247,7 @@ class Document_ItemTest extends DbTestCase
         );
 
         //do not change ticket modification date
-        $doc_item = new \Document_Item();
+        $doc_item = new Document_Item();
         $this->assertGreaterThan(
             0,
             $doc_item->add([
@@ -273,7 +274,7 @@ class Document_ItemTest extends DbTestCase
             ])
         );
 
-        $doc_item = new \Document_Item();
+        $doc_item = new Document_Item();
         $this->assertGreaterThan(
             0,
             $doc_item->add([

@@ -333,7 +333,7 @@ class ImpactTest extends \DbTestCase
 
         // Test queries to evaluate before and after clean
         $relations_to_computer2_query = [
-            'FROM'   => \ImpactRelation::getTable(),
+            'FROM'   => ImpactRelation::getTable(),
             'WHERE' => [
                 'OR' => [
                     [
@@ -348,14 +348,14 @@ class ImpactTest extends \DbTestCase
             ],
         ];
         $impact_item_computer2_query = [
-            'FROM'   => \ImpactItem::getTable(),
+            'FROM'   => ImpactItem::getTable(),
             'WHERE'  => [
                 'itemtype' => get_class($computer2),
                 'items_id' => $computer2->fields['id'],
             ],
         ];
         $compound01_members_query = [
-            'FROM' => \ImpactItem::getTable(),
+            'FROM' => ImpactItem::getTable(),
             'WHERE' => ["parent_id" => $compound01_id],
         ];
 

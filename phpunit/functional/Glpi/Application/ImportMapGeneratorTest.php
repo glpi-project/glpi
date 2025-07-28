@@ -37,7 +37,9 @@ namespace tests\units\Glpi\Application;
 use Glpi\Application\ImportMapGenerator;
 use GLPITestCase;
 use org\bovigo\vfs\vfsStream;
+use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\MockObject\MockObject;
+use Psr\SimpleCache\CacheInterface;
 
 /**
  * Tests for the ImportMapGenerator class
@@ -52,9 +54,9 @@ class ImportMapGeneratorTest extends GLPITestCase
     /**
      * Setup a basic virtual filesystem for testing
      *
-     * @return \org\bovigo\vfs\vfsStreamDirectory The configured virtual filesystem
+     * @return vfsStreamDirectory The configured virtual filesystem
      */
-    private function setupBasicVirtualFilesystem(): \org\bovigo\vfs\vfsStreamDirectory
+    private function setupBasicVirtualFilesystem(): vfsStreamDirectory
     {
         return vfsStream::setup('glpi', null, [
             'js' => [
@@ -152,17 +154,17 @@ class ImportMapGeneratorTest extends GLPITestCase
     /**
      * Create a mock cache for testing
      *
-     * @return \Psr\SimpleCache\CacheInterface Mocked cache
+     * @return CacheInterface Mocked cache
      */
-    private function createCacheMock(): \Psr\SimpleCache\CacheInterface
+    private function createCacheMock(): CacheInterface
     {
-        $cache = $this->createMock(\Psr\SimpleCache\CacheInterface::class);
+        $cache = $this->createMock(CacheInterface::class);
         $cache->method('get')
             ->willReturn(null); // Simulate cache miss
         $cache->method('set')
             ->willReturn(true); // Do nothing but return success
 
-        /** @var \Psr\SimpleCache\CacheInterface $cache */
+        /** @var CacheInterface $cache */
         return $cache;
     }
 

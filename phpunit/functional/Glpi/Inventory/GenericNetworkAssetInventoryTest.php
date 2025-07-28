@@ -34,6 +34,14 @@
 
 namespace tests\units\Glpi\Inventory;
 
+use Glpi\Asset\Asset;
+use Glpi\Asset\Capacity;
+use Glpi\Asset\Capacity\HasDevicesCapacity;
+use Glpi\Asset\Capacity\HasNetworkPortCapacity;
+use Glpi\Asset\Capacity\IsInventoriableCapacity;
+use Glpi\Asset\CapacityConfig;
+use Glpi\Inventory\MainAsset\GenericNetworkAsset;
+use Glpi\Inventory\Request;
 use InventoryTestCase;
 
 class GenericNetworkAssetInventoryTest extends InventoryTestCase
@@ -41,11 +49,11 @@ class GenericNetworkAssetInventoryTest extends InventoryTestCase
     /**
      * Inventory a generic network equipment asset
      *
-     * @param \Glpi\Asset\Capacity[] $capacities Capacities to activate
+     * @param Capacity[] $capacities Capacities to activate
      *
-     * @return \Glpi\Asset\Asset
+     * @return Asset
      */
-    private function inventoryNetworkEquipment(array $capacities = []): \Glpi\Asset\Asset
+    private function inventoryNetworkEquipment(array $capacities = []): Asset
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -56,10 +64,10 @@ class GenericNetworkAssetInventoryTest extends InventoryTestCase
             capacities: array_merge(
                 $capacities,
                 [
-                    new \Glpi\Asset\Capacity(
-                        name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class,
-                        config: new \Glpi\Asset\CapacityConfig([
-                            'inventory_mainasset' => \Glpi\Inventory\MainAsset\GenericNetworkAsset::class,
+                    new Capacity(
+                        name: IsInventoriableCapacity::class,
+                        config: new CapacityConfig([
+                            'inventory_mainasset' => GenericNetworkAsset::class,
                         ])
                     ),
                 ]
@@ -192,7 +200,7 @@ class GenericNetworkAssetInventoryTest extends InventoryTestCase
         foreach ($iterator as $neteq) {
             $this->assertSame($classname . ' import (by serial)', $neteq['name']);
             $this->assertSame($equipments_id, $neteq['items_id']);
-            $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $neteq['method']);
+            $this->assertSame(Request::INVENT_QUERY, $neteq['method']);
         }
 
         //check created asset
@@ -290,8 +298,8 @@ class GenericNetworkAssetInventoryTest extends InventoryTestCase
 
         //create Network Equipment generic asset
         $asset = $this->inventoryNetworkEquipment([
-            new \Glpi\Asset\Capacity(
-                name: \Glpi\Asset\Capacity\HasNetworkPortCapacity::class
+            new Capacity(
+                name: HasNetworkPortCapacity::class
             ),
         ]);
 
@@ -457,7 +465,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertCount(5, $iterator);
         foreach ($iterator as $unmanaged) {
             $this->assertSame('Global import (by ip+ifdescr)', $unmanaged['name']);
-            $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $unmanaged['method']);
+            $this->assertSame(Request::INVENT_QUERY, $unmanaged['method']);
         }
     }
 
@@ -472,8 +480,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         //create Network Equipment generic asset
         $asset = $this->inventoryNetworkEquipment([
-            new \Glpi\Asset\Capacity(
-                name: \Glpi\Asset\Capacity\HasDevicesCapacity::class
+            new Capacity(
+                name: HasDevicesCapacity::class
             ),
         ]);
 
@@ -595,9 +603,9 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             capacities: array_merge(
                 [],
                 [
-                    new \Glpi\Asset\Capacity(
-                        name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class,
-                        config: new \Glpi\Asset\CapacityConfig(['inventory_mainasset' => \Glpi\Inventory\MainAsset\GenericNetworkAsset::class])
+                    new Capacity(
+                        name: IsInventoriableCapacity::class,
+                        config: new CapacityConfig(['inventory_mainasset' => GenericNetworkAsset::class])
                     ),
                 ]
             )

@@ -33,6 +33,7 @@
  */
 
 use Glpi\Application\Environment;
+use Glpi\Application\ResourcesChecker;
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\SimpleCache;
 use Glpi\Kernel\Kernel;
@@ -47,7 +48,7 @@ define('FIXTURE_DIR', __DIR__ . "/../tests/fixtures");
 
 // Check the resources state before trying to be sure that the tests are executed with up-to-date dependencies.
 require_once dirname(__DIR__) . '/src/Glpi/Application/ResourcesChecker.php';
-(new \Glpi\Application\ResourcesChecker(dirname(__DIR__)))->checkResources();
+(new ResourcesChecker(dirname(__DIR__)))->checkResources();
 
 // Make sure cached content like twig template is cleared before running the tests.
 // It seems calling $cache_manager->resetAllCaches(); mess up with the kernel

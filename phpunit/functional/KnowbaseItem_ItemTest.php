@@ -83,19 +83,19 @@ class KnowbaseItem_ItemTest extends DbTestCase
     public function testGetTypeName()
     {
         $expected = 'Knowledge base item';
-        $this->assertSame($expected, \KnowbaseItem_Item::getTypeName(1));
+        $this->assertSame($expected, KnowbaseItem_Item::getTypeName(1));
 
         $expected = 'Knowledge base items';
-        $this->assertSame($expected, \KnowbaseItem_Item::getTypeName(0));
-        $this->assertSame($expected, \KnowbaseItem_Item::getTypeName(2));
-        $this->assertSame($expected, \KnowbaseItem_Item::getTypeName(10));
+        $this->assertSame($expected, KnowbaseItem_Item::getTypeName(0));
+        $this->assertSame($expected, KnowbaseItem_Item::getTypeName(2));
+        $this->assertSame($expected, KnowbaseItem_Item::getTypeName(10));
     }
 
     public function testGetItemsFromKB()
     {
         $this->login();
         $kb1 = getItemByTypeName('KnowbaseItem', '_knowbaseitem01');
-        $items = \KnowbaseItem_Item::getItems($kb1);
+        $items = KnowbaseItem_Item::getItems($kb1);
         $this->assertCount(3, $items);
 
         $expecteds = [
@@ -120,7 +120,7 @@ class KnowbaseItem_ItemTest extends DbTestCase
 
         //add start & limit
         $kb1 = getItemByTypeName('KnowbaseItem', '_knowbaseitem01');
-        $items = \KnowbaseItem_Item::getItems($kb1, 1, 1);
+        $items = KnowbaseItem_Item::getItems($kb1, 1, 1);
         $this->assertCount(1, $items);
 
         $expecteds = [
@@ -136,7 +136,7 @@ class KnowbaseItem_ItemTest extends DbTestCase
         }
 
         $kb2 = getItemByTypeName('KnowbaseItem', '_knowbaseitem02');
-        $items = \KnowbaseItem_Item::getItems($kb2);
+        $items = KnowbaseItem_Item::getItems($kb2);
         $this->assertCount(2, $items);
 
         $expecteds = [
@@ -160,7 +160,7 @@ class KnowbaseItem_ItemTest extends DbTestCase
     {
         $this->login();
         $ticket3 = getItemByTypeName(\Ticket::getType(), '_ticket03');
-        $kbs = \KnowbaseItem_Item::getItems($ticket3);
+        $kbs = KnowbaseItem_Item::getItems($ticket3);
         $this->assertCount(2, $kbs);
 
         $kb_ids = [];
@@ -171,7 +171,7 @@ class KnowbaseItem_ItemTest extends DbTestCase
         }
 
         //test get "used"
-        $kbs = \KnowbaseItem_Item::getItems($ticket3, 0, 0, '', true);
+        $kbs = KnowbaseItem_Item::getItems($ticket3, 0, 0, '', true);
         $this->assertCount(2, $kbs);
 
         foreach ($kbs as $key => $kb) {
@@ -180,7 +180,7 @@ class KnowbaseItem_ItemTest extends DbTestCase
         }
 
         $ticket1 = getItemByTypeName(\Ticket::getType(), '_ticket01');
-        $kbs = \KnowbaseItem_Item::getItems($ticket1);
+        $kbs = KnowbaseItem_Item::getItems($ticket1);
         $this->assertCount(1, $kbs);
 
         foreach ($kbs as $kb) {
@@ -189,7 +189,7 @@ class KnowbaseItem_ItemTest extends DbTestCase
         }
 
         $computer21 = getItemByTypeName(\Computer::getType(), '_test_pc21');
-        $kbs = \KnowbaseItem_Item::getItems($computer21);
+        $kbs = KnowbaseItem_Item::getItems($computer21);
         $this->assertCount(1, $kbs);
 
         foreach ($kbs as $kb) {
@@ -204,21 +204,21 @@ class KnowbaseItem_ItemTest extends DbTestCase
         $_SESSION['glpiactiveentities'] = [$entity->getID()];
 
         $ticket3 = getItemByTypeName(\Ticket::getType(), '_ticket03');
-        $kbs = \KnowbaseItem_Item::getItems($ticket3);
+        $kbs = KnowbaseItem_Item::getItems($ticket3);
         $this->assertCount(0, $kbs);
 
         $entity = getItemByTypeName(\Entity::getType(), '_test_child_1');
         $_SESSION['glpiactiveentities'] = [$entity->getID()];
 
         $ticket3 = getItemByTypeName(\Ticket::getType(), '_ticket03');
-        $kbs = \KnowbaseItem_Item::getItems($ticket3);
+        $kbs = KnowbaseItem_Item::getItems($ticket3);
         $this->assertCount(2, $kbs);
 
         $entity = getItemByTypeName(\Entity::getType(), '_test_child_2');
         $_SESSION['glpiactiveentities'] = [$entity->getID()];
 
         $ticket3 = getItemByTypeName(\Ticket::getType(), '_ticket03');
-        $kbs = \KnowbaseItem_Item::getItems($ticket3);
+        $kbs = KnowbaseItem_Item::getItems($ticket3);
         $this->assertCount(0, $kbs);
 
         $_SESSION['glpishowallentities'] = 1;
@@ -228,7 +228,7 @@ class KnowbaseItem_ItemTest extends DbTestCase
     public function testGetTabNameForItem()
     {
         $this->login();
-        $kb_item = new \KnowbaseItem_Item();
+        $kb_item = new KnowbaseItem_Item();
         $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
 
         $_SESSION['glpishow_count_on_tabs'] = 1;

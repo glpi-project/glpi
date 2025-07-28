@@ -35,9 +35,11 @@
 namespace tests\units\Glpi\Asset;
 
 use DbTestCase;
+use Glpi\Asset\Asset;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\CapacityInterface;
+use Glpi\Asset\CustomFieldDefinition;
 use Glpi\Asset\CustomFieldType\DropdownType;
 use Glpi\Asset\CustomFieldType\StringType;
 
@@ -84,7 +86,7 @@ class AssetTest extends DbTestCase
             $expected_class = $row['expected_class'];
             $expected_fields = $row['expected_fields'];
 
-            $asset = \Glpi\Asset\Asset::getById($id);
+            $asset = Asset::getById($id);
 
             $this->assertInstanceOf($expected_class, $asset);
 
@@ -162,7 +164,7 @@ class AssetTest extends DbTestCase
     public function testPrepareInputForAdd()
     {
         $asset_definition = $this->initAssetDefinition();
-        $string_field = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
+        $string_field = $this->createItem(CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
             'system_name' => 'test_string',
             'label' => 'Test string',
@@ -185,7 +187,7 @@ class AssetTest extends DbTestCase
     public function testPrepareInputForUpdate()
     {
         $asset_definition = $this->initAssetDefinition();
-        $string_field = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
+        $string_field = $this->createItem(CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
             'system_name' => 'test_string',
             'label' => 'Test string',
@@ -208,7 +210,7 @@ class AssetTest extends DbTestCase
     public function testGetEmpty()
     {
         $asset_definition = $this->initAssetDefinition();
-        $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
+        $this->createItem(CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
             'system_name' => 'test_string',
             'label' => 'Test string',
@@ -224,21 +226,21 @@ class AssetTest extends DbTestCase
     public function testPostGetFromDB()
     {
         $asset_definition = $this->initAssetDefinition();
-        $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
+        $this->createItem(CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
             'system_name' => 'test_string',
             'label' => 'Test string',
             'type' => StringType::class,
             'default_value' => 'default',
         ]);
-        $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
+        $this->createItem(CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
             'system_name' => 'test_string_two',
             'label' => 'Test string 2',
             'type' => StringType::class,
             'default_value' => 'default2',
         ]);
-        $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
+        $this->createItem(CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
             'system_name' => 'test_dropdown',
             'label' => 'Test dropdown',

@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Toolbox;
 
+use Glpi\Toolbox\Filesystem;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -43,7 +44,7 @@ class FilesystemTest extends \GLPITestCase
     {
         $config_dir = vfsStream::setup('config');
 
-        $instance = new \Glpi\Toolbox\Filesystem();
+        $instance = new Filesystem();
 
         // Files can be written when they not exists and directory is writable
         $config_dir->chmod(0o700);
@@ -175,7 +176,7 @@ class FilesystemTest extends \GLPITestCase
     #[DataProvider('isFilepathSafeProvider')]
     public function testIsFilepathSafe(string $path, ?string $restricted_directory, bool $is_safe): void
     {
-        $instance = new \Glpi\Toolbox\Filesystem();
+        $instance = new Filesystem();
         $this->assertSame($is_safe, $instance->isFilepathSafe($path, $restricted_directory));
     }
 }

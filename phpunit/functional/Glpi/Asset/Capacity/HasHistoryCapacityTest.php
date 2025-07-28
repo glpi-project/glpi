@@ -37,6 +37,9 @@ namespace tests\units\Glpi\Asset\Capacity;
 use DbTestCase;
 use Entity;
 use Glpi\Asset\Capacity;
+use Glpi\Asset\Capacity\HasDocumentsCapacity;
+use Glpi\Asset\Capacity\HasHistoryCapacity;
+use Glpi\Asset\Capacity\HasNotepadCapacity;
 use Log;
 
 class HasHistoryCapacityTest extends DbTestCase
@@ -47,21 +50,21 @@ class HasHistoryCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
+                new Capacity(name: HasNotepadCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
+                new Capacity(name: HasNotepadCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasDocumentsCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasDocumentsCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_3  = $definition_3->getAssetClassName();
@@ -91,13 +94,13 @@ class HasHistoryCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
@@ -145,7 +148,7 @@ class HasHistoryCapacityTest extends DbTestCase
 
         $definition = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname  = $definition->getAssetClassName();
@@ -170,12 +173,12 @@ class HasHistoryCapacityTest extends DbTestCase
 
     public function testGetCapacityUsageDescription(): void
     {
-        $capacity = new \Glpi\Asset\Capacity\HasHistoryCapacity();
+        $capacity = new HasHistoryCapacity();
 
         $entity_id = $this->getTestRootEntity(true);
 
         $definition = $this->initAssetDefinition(
-            capacities: [new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class)]
+            capacities: [new Capacity(name: HasHistoryCapacity::class)]
         );
 
         $asset_1 = $this->createItem($definition->getAssetClassName(), [
@@ -213,11 +216,11 @@ class HasHistoryCapacityTest extends DbTestCase
     {
         // Create custom asset definition with the target capacity enabled
         $definition = $this->initAssetDefinition(
-            capacities: [new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class)]
+            capacities: [new Capacity(name: HasHistoryCapacity::class)]
         );
 
         // Check that the capacity can be disabled
-        $capacity = new \Glpi\Asset\Capacity\HasHistoryCapacity();
+        $capacity = new HasHistoryCapacity();
         $this->assertFalse($capacity->isUsed($definition->getAssetClassName()));
 
         // Create our test subject

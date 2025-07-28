@@ -35,6 +35,7 @@
 namespace Glpi\PHPUnit\Tests\Glpi\Asset;
 
 use Glpi\Asset\Capacity;
+use Glpi\Asset\Capacity\CapacityInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 trait CapacityUsageTestTrait
@@ -42,7 +43,7 @@ trait CapacityUsageTestTrait
     /**
      * Get the tested capacity class.
      *
-     * @return class-string<\Glpi\Asset\Capacity\CapacityInterface>
+     * @return class-string<CapacityInterface>
      */
     abstract protected function getTargetCapacity(): string;
 

@@ -45,11 +45,14 @@ use Glpi\Tests\Api\Deprecated\ComputerAntivirus;
 use Glpi\Tests\Api\Deprecated\ComputerVirtualMachine;
 use Glpi\Tests\Api\Deprecated\TicketFollowup;
 use GuzzleHttp;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\RequestException;
 use Item_DeviceSimcard;
 use NetworkPort_NetworkPort;
 use Notepad;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
 use QueuedNotification;
 use TicketTemplate;
 use TicketTemplateMandatoryField;
@@ -1120,7 +1123,7 @@ class APIRestTest extends TestCase
     {
         $eid = getItemByTypeName('Entity', '_test_root_entity', true);
         $_SESSION['glpiactive_entity'] = $eid;
-        $computer = new \Computer();
+        $computer = new Computer();
         $this->assertGreaterThan(
             0,
             $computer->add([
@@ -1149,7 +1152,7 @@ class APIRestTest extends TestCase
         $this->assertArrayHasKey($computers_id, $computer);
         $this->assertArrayHasKey('message', $computer);
 
-        $computer = new \Computer();
+        $computer = new Computer();
         $this->assertFalse((bool) $computer->getFromDB($computers_id));
     }
 
@@ -1347,7 +1350,7 @@ class APIRestTest extends TestCase
 
         // Add
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $this->assertInstanceOf(\Computer::class, $computer);
+        $this->assertInstanceOf(Computer::class, $computer);
         $deviceSimcard = getItemByTypeName('DeviceSimcard', '_test_simcard_1');
         $this->assertGreaterThan(0, (int) $deviceSimcard->getID());
         $this->assertInstanceOf(\DeviceSimcard::class, $deviceSimcard);
@@ -1649,7 +1652,7 @@ class APIRestTest extends TestCase
         $this->assertNotFalse($updateSuccess, 'password update failed');
 
         // Test the new password was saved
-        $this->assertNotFalse(\Auth::checkPassword('NewPassword', $newHash));
+        $this->assertNotFalse(Auth::checkPassword('NewPassword', $newHash));
 
         // Validates that password reset token has been removed
         $user = getItemByTypeName('User', TU_USER);
@@ -1778,7 +1781,7 @@ class APIRestTest extends TestCase
         // launch query
         try {
             $res = $this->doHttpRequest($verb, $relative_uri, $params);
-        } catch (\GuzzleHttp\Exception\ClientException $e) {
+        } catch (ClientException $e) {
             $response = $e->getResponse();
             if (!in_array($response->getStatusCode(), $expected_codes)) {
                 //throw exceptions not expected
@@ -1970,7 +1973,7 @@ class APIRestTest extends TestCase
         $this->assertArrayHasKey('message', $computer);
         $this->assertTrue((bool) $computer[$computers_id]);
 
-        $computer = new \Computer();
+        $computer = new Computer();
         $this->assertTrue((bool) $computer->getFromDB($computers_id));
         $this->assertSame('abcdefg', $computer->fields['serial']);
     }
@@ -3163,12 +3166,12 @@ class APIRestTest extends TestCase
                     ),
                 ]
             );
-        } catch (\GuzzleHttp\Exception\RequestException $e) {
+        } catch (RequestException $e) {
             $response = $e->getResponse();
         }
 
         // Check response
-        $this->assertInstanceOf(\Psr\Http\Message\ResponseInterface::class, $response);
+        $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertEquals(200, $response->getStatusCode());
         $body = $response->getBody()->getContents();
         $this->assertEquals(
@@ -3182,7 +3185,7 @@ class APIRestTest extends TestCase
         );
 
         // Check computer is updated
-        $computer = new \Computer();
+        $computer = new Computer();
         $this->assertTrue((bool) $computer->getFromDB($computers_id));
         $this->assertSame('abcdefg', $computer->fields['serial']);
         $this->assertSame('This computer has been updated.', $computer->fields['comment']);
@@ -3216,12 +3219,12 @@ class APIRestTest extends TestCase
                     ),
                 ]
             );
-        } catch (\GuzzleHttp\Exception\RequestException $e) {
+        } catch (RequestException $e) {
             $response = $e->getResponse();
         }
 
         // Check response
-        $this->assertInstanceOf(\Psr\Http\Message\ResponseInterface::class, $response);
+        $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertEquals(200, $response->getStatusCode());
         $body = $response->getBody()->getContents();
         $this->assertEquals(
@@ -3235,7 +3238,7 @@ class APIRestTest extends TestCase
         );
 
         // Check computer is updated
-        $computer = new \Computer();
+        $computer = new Computer();
         $this->assertTrue((bool) $computer->getFromDB($computers_id));
         $this->assertTrue((bool) $computer->getField('is_deleted'));
     }
@@ -3356,7 +3359,7 @@ class APIRestTest extends TestCase
 
     public function testGetItemIDZero()
     {
-        $this->expectException(GuzzleHttp\Exception\ClientException::class);
+        $this->expectException(ClientException::class);
         $this->doHttpRequest(
             'GET',
             '/Entity/0',
@@ -3367,7 +3370,7 @@ class APIRestTest extends TestCase
         // We are connected to a child entity, so we expect a 403 error
         $this->expectExceptionMessage('403 Forbidden');
 
-        $this->expectException(GuzzleHttp\Exception\ClientException::class);
+        $this->expectException(ClientException::class);
         $this->doHttpRequest(
             'GET',
             '/User/0',

@@ -34,11 +34,13 @@
 
 namespace tests\units\Glpi\Session;
 
+use Glpi\Session\SessionInfo;
+
 final class SessionInfoTest extends \GLPITestCase
 {
     public function testGetUserId(): void
     {
-        $session_info = new \Glpi\Session\SessionInfo(
+        $session_info = new SessionInfo(
             user_id: 500,
         );
         $this->assertEquals(500, $session_info->getUserId());
@@ -46,7 +48,7 @@ final class SessionInfoTest extends \GLPITestCase
 
     public function testGetGroupIds(): void
     {
-        $session_info = new \Glpi\Session\SessionInfo(
+        $session_info = new SessionInfo(
             group_ids: [1, 2, 3],
         );
         $this->assertEquals([1, 2, 3], $session_info->getGroupIds());
@@ -54,7 +56,7 @@ final class SessionInfoTest extends \GLPITestCase
 
     public function testGetProfileId(): void
     {
-        $session_info = new \Glpi\Session\SessionInfo(
+        $session_info = new SessionInfo(
             profile_id: 13,
         );
         $this->assertEquals(13, $session_info->getProfileId());

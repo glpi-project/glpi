@@ -40,6 +40,9 @@ use DbTestCase;
 use DisplayPreference;
 use Entity;
 use Glpi\Asset\Capacity;
+use Glpi\Asset\Capacity\HasAppliancesCapacity;
+use Glpi\Asset\Capacity\HasHistoryCapacity;
+use Glpi\Asset\Capacity\HasNotepadCapacity;
 use Glpi\PHPUnit\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use Log;
 
@@ -49,7 +52,7 @@ class HasAppliancesCapacityTest extends DbTestCase
 
     protected function getTargetCapacity(): string
     {
-        return \Glpi\Asset\Capacity\HasAppliancesCapacity::class;
+        return HasAppliancesCapacity::class;
     }
 
     public function testCapacityActivation(): void
@@ -60,21 +63,21 @@ class HasAppliancesCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasAppliancesCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
+                new Capacity(name: HasAppliancesCapacity::class),
+                new Capacity(name: HasNotepadCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasAppliancesCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasAppliancesCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_3  = $definition_3->getAssetClassName();
@@ -132,15 +135,15 @@ class HasAppliancesCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasAppliancesCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasAppliancesCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasAppliancesCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasAppliancesCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
@@ -209,10 +212,10 @@ class HasAppliancesCapacityTest extends DbTestCase
         ];
 
         // Ensure relation, display preferences and logs exists, and class is registered to global config
-        $this->assertInstanceOf(\Appliance_Item::class, \Appliance_Item::getById($appliance_item_1->getID()));
+        $this->assertInstanceOf(Appliance_Item::class, Appliance_Item::getById($appliance_item_1->getID()));
         $this->assertInstanceOf(DisplayPreference::class, DisplayPreference::getById($displaypref_1->getID()));
         $this->assertEquals(2, countElementsInTable(Log::getTable(), $item_1_logs_criteria)); //create + add appliance
-        $this->assertInstanceOf(\Appliance_Item::class, \Appliance_Item::getById($appliance_item_2->getID()));
+        $this->assertInstanceOf(Appliance_Item::class, Appliance_Item::getById($appliance_item_2->getID()));
         $this->assertInstanceOf(DisplayPreference::class, DisplayPreference::getById($displaypref_2->getID()));
         $this->assertEquals(2, countElementsInTable(Log::getTable(), $item_2_logs_criteria)); //create + add appliance
         $this->assertContains($classname_1, $CFG_GLPI['appliance_types']);
@@ -220,13 +223,13 @@ class HasAppliancesCapacityTest extends DbTestCase
 
         // Disable capacity and check that relations have been cleaned, and class is unregistered from global config
         $this->assertTrue($definition_1->update(['id' => $definition_1->getID(), 'capacities' => []]));
-        $this->assertFalse(\Appliance_Item::getById($appliance_item_1->getID()));
+        $this->assertFalse(Appliance_Item::getById($appliance_item_1->getID()));
         $this->assertFalse(DisplayPreference::getById($displaypref_1->getID()));
         $this->assertEquals(0, countElementsInTable(Log::getTable(), $item_1_logs_criteria));
         $this->assertNotContains($classname_1, $CFG_GLPI['appliance_types']);
 
         // Ensure relations, logs and global registration are preserved for other definition
-        $this->assertInstanceOf(\Appliance_Item::class, \Appliance_Item::getById($appliance_item_2->getID()));
+        $this->assertInstanceOf(Appliance_Item::class, Appliance_Item::getById($appliance_item_2->getID()));
         $this->assertInstanceOf(DisplayPreference::class, DisplayPreference::getById($displaypref_2->getID()));
         $this->assertEquals(2, countElementsInTable(Log::getTable(), $item_2_logs_criteria));
         $this->assertContains($classname_2, $CFG_GLPI['appliance_types']);

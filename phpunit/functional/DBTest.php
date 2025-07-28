@@ -34,6 +34,9 @@
 
 namespace tests\units;
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryParam;
+use Glpi\DBAL\QuerySubQuery;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 
@@ -106,7 +109,7 @@ class DBTest extends \GLPITestCase
             [null, 'NULL'],
             ['null', 'NULL'],
             ['NULL', 'NULL'],
-            [new \Glpi\DBAL\QueryExpression('`field`'), '`field`'],
+            [new QueryExpression('`field`'), '`field`'],
             ['`field', "'`field'"],
             [false, "'0'"],
             [true, "'1'"],
@@ -138,12 +141,12 @@ class DBTest extends \GLPITestCase
                 'INSERT INTO `table` (`field`, `other`) VALUES (\'value\', \'doe\')',
             ], [
                 'table', [
-                    'field'  => new \Glpi\DBAL\QueryParam(),
-                    'other'  => new \Glpi\DBAL\QueryParam(),
+                    'field'  => new QueryParam(),
+                    'other'  => new QueryParam(),
                 ],
                 'INSERT INTO `table` (`field`, `other`) VALUES (?, ?)',
             ], [
-                'table', new \Glpi\DBAL\QuerySubQuery([
+                'table', new QuerySubQuery([
                     'SELECT' => ['id', 'name'],
                     'FROM' => 'other',
                     'WHERE' => ['NOT' => ['name' => null]],
@@ -196,9 +199,9 @@ class DBTest extends \GLPITestCase
                 'UPDATE `table` SET `field` = \'value\' WHERE  NOT (`id` IN (\'1\', \'2\'))',
             ], [
                 'table', [
-                    'field'  => new \Glpi\DBAL\QueryParam(),
+                    'field'  => new QueryParam(),
                 ], [
-                    'NOT' => ['id' => [new \Glpi\DBAL\QueryParam(), new \Glpi\DBAL\QueryParam()]],
+                    'NOT' => ['id' => [new QueryParam(), new QueryParam()]],
                 ],
                 [],
                 'UPDATE `table` SET `field` = ? WHERE  NOT (`id` IN (?, ?))',
@@ -212,7 +215,7 @@ class DBTest extends \GLPITestCase
                 'UPDATE `table` SET `field` = :field WHERE  NOT (`id` IN (:idone, :idtwo))'
             ], [*/
                 'table', [
-                    'field'  => new \Glpi\DBAL\QueryExpression(\DBmysql::quoteName('field') . ' + 1'),
+                    'field'  => new QueryExpression(\DBmysql::quoteName('field') . ' + 1'),
                 ], [
                     'id'  => [1, 2],
                 ],
@@ -220,7 +223,7 @@ class DBTest extends \GLPITestCase
                 'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (\'1\', \'2\')',
             ], [
                 'table', [
-                    'field'  => new \Glpi\DBAL\QueryExpression(\DBmysql::quoteName('field') . ' + 1'),
+                    'field'  => new QueryExpression(\DBmysql::quoteName('field') . ' + 1'),
                 ], [
                     'id'  => [1, 2],
                 ],
@@ -293,7 +296,7 @@ class DBTest extends \GLPITestCase
                 'DELETE `table` FROM `table` WHERE  NOT (`id` IN (\'1\', \'2\'))',
             ], [
                 'table', [
-                    'NOT'  => ['id' => [new \Glpi\DBAL\QueryParam(), new \Glpi\DBAL\QueryParam()]],
+                    'NOT'  => ['id' => [new QueryParam(), new QueryParam()]],
                 ],
                 [],
                 'DELETE `table` FROM `table` WHERE  NOT (`id` IN (?, ?))',

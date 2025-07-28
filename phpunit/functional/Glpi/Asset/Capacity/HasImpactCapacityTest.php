@@ -38,6 +38,9 @@ use Config;
 use DbTestCase;
 use Entity;
 use Glpi\Asset\Capacity;
+use Glpi\Asset\Capacity\HasHistoryCapacity;
+use Glpi\Asset\Capacity\HasImpactCapacity;
+use Glpi\Asset\Capacity\HasNotepadCapacity;
 use Impact;
 use ImpactRelation;
 
@@ -51,21 +54,21 @@ class HasImpactCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasImpactCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
+                new Capacity(name: HasImpactCapacity::class),
+                new Capacity(name: HasNotepadCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasImpactCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasImpactCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_3  = $definition_3->getAssetClassName();
@@ -106,15 +109,15 @@ class HasImpactCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasImpactCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasImpactCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasImpactCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasImpactCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
@@ -171,9 +174,9 @@ class HasImpactCapacityTest extends DbTestCase
         $entity_id = $this->getTestRootEntity(true);
 
         $definition = $this->initAssetDefinition(
-            capacities: [new Capacity(name: \Glpi\Asset\Capacity\HasImpactCapacity::class)]
+            capacities: [new Capacity(name: HasImpactCapacity::class)]
         );
-        $capacity = new \Glpi\Asset\Capacity\HasImpactCapacity();
+        $capacity = new HasImpactCapacity();
 
         $asset = $this->createItem($definition->getAssetClassName(), [
             'name' => 'Test asset',
@@ -218,9 +221,9 @@ class HasImpactCapacityTest extends DbTestCase
         $entity_id = $this->getTestRootEntity(true);
 
         $definition = $this->initAssetDefinition(
-            capacities: [new Capacity(name: \Glpi\Asset\Capacity\HasImpactCapacity::class)]
+            capacities: [new Capacity(name: HasImpactCapacity::class)]
         );
-        $capacity = new \Glpi\Asset\Capacity\HasImpactCapacity();
+        $capacity = new HasImpactCapacity();
 
         $asset_1 = $this->createItem($definition->getAssetClassName(), [
             'name' => 'Test asset',

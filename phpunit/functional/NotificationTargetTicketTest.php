@@ -94,7 +94,7 @@ class NotificationTargetTicketTest extends DbTestCase
         // advanced test for ##ticket.externalid## tag
         $basic_options = [
             'additionnaloption' => [
-                'usertype' => \NotificationTarget::GLPI_USER,
+                'usertype' => NotificationTarget::GLPI_USER,
             ],
         ];
         $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);

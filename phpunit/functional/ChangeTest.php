@@ -46,7 +46,7 @@ class ChangeTest extends DbTestCase
     {
         // add change from a computer
         $computer   = getItemByTypeName('Computer', '_test_pc01');
-        $change     = new \Change();
+        $change     = new Change();
         $changes_id = $change->add([
             'name'           => "test add from computer \'_test_pc01\'",
             'content'        => "test add from computer \'_test_pc01\'",
@@ -100,7 +100,7 @@ class ChangeTest extends DbTestCase
         ]);
         $this->assertFalse($itilCategory->isNewItem());
 
-        $change = new \Change();
+        $change = new Change();
         $change->add([
             'name' => 'A change to check if it is not automatically assigned user and group',
             'content' => 'foo',
@@ -126,7 +126,7 @@ class ChangeTest extends DbTestCase
             'auto_assign_mode' => \Entity::AUTO_ASSIGN_HARDWARE_CATEGORY,
         ]);
 
-        $change = new \Change();
+        $change = new Change();
         $change->add([
             'name' => 'A change to check if it is automatically assigned user and group (1)',
             'content' => 'foo',
@@ -154,7 +154,7 @@ class ChangeTest extends DbTestCase
             'auto_assign_mode' => \Entity::AUTO_ASSIGN_CATEGORY_HARDWARE,
         ]);
 
-        $change = new \Change();
+        $change = new Change();
         $change->add([
             'name' => 'A change to check if it is automatically assigned user and group (2)',
             'content' => 'foo',
@@ -180,7 +180,7 @@ class ChangeTest extends DbTestCase
 
     public function testGetTeamRoles(): void
     {
-        $roles = \Change::getTeamRoles();
+        $roles = Change::getTeamRoles();
         $this->assertContains(\CommonITILActor::ASSIGN, $roles);
         $this->assertContains(\CommonITILActor::OBSERVER, $roles);
         $this->assertContains(\CommonITILActor::REQUESTER, $roles);
@@ -188,9 +188,9 @@ class ChangeTest extends DbTestCase
 
     public function testGetTeamRoleName(): void
     {
-        $roles = \Change::getTeamRoles();
+        $roles = Change::getTeamRoles();
         foreach ($roles as $role) {
-            $this->assertNotEmpty(\Change::getTeamRoleName($role));
+            $this->assertNotEmpty(Change::getTeamRoleName($role));
         }
     }
 
@@ -198,7 +198,7 @@ class ChangeTest extends DbTestCase
     {
         $this->login();
         // Create a change
-        $change = new \Change();
+        $change = new Change();
         $changes_id = $change->add([
             'name' => "test automatic status change",
             'content' => "test automatic status change",
@@ -243,7 +243,7 @@ class ChangeTest extends DbTestCase
     public function testAddAdditionalActorsDuplicated()
     {
         $this->login();
-        $change = new \Change();
+        $change = new Change();
         $changes_id = $change->add([
             'name'           => "test add additional actors duplicated",
             'content'        => "test add additional actors duplicated",
@@ -278,7 +278,7 @@ class ChangeTest extends DbTestCase
     public function testInitialStatus()
     {
         $this->login();
-        $change = new \Change();
+        $change = new Change();
         $changes_id = $change->add([
             'name' => "test initial status",
             'content' => "test initial status",
@@ -293,7 +293,7 @@ class ChangeTest extends DbTestCase
     public function testStatusWhenSolutionIsRefused()
     {
         $this->login();
-        $change = new \Change();
+        $change = new Change();
         $changes_id = $change->add([
             'name' => "test initial status",
             'content' => "test initial status",
@@ -328,7 +328,7 @@ class ChangeTest extends DbTestCase
         $last_task_date = '2017-01-01 00:00:00';
         $last_solution_date = '2018-01-01 00:00:00';
 
-        $change = new \Change();
+        $change = new Change();
         $change_id = $change->add(
             [
                 'name'        => 'ticket title',
@@ -453,7 +453,7 @@ class ChangeTest extends DbTestCase
         ]);
 
         ob_start();
-        \Change::showCentralList(0, 'tovalidate', false);
+        Change::showCentralList(0, 'tovalidate', false);
         $output = ob_get_clean();
         $this->assertStringContainsString("Your changes to approve <span class='primary-bg primary-fg count'>1</span>", $output);
         $this->assertMatchesRegularExpression("/href='\/front\/change.form.php\?id=" . $change->getID() . "[^']+'>/", $output);
@@ -462,7 +462,7 @@ class ChangeTest extends DbTestCase
         $this->login('tech', 'tech');
 
         ob_start();
-        \Change::showCentralList(0, 'tovalidate', false);
+        Change::showCentralList(0, 'tovalidate', false);
         $output = ob_get_clean();
         $this->assertStringNotContainsString("Your changes to approve", $output);
     }
@@ -567,7 +567,7 @@ class ChangeTest extends DbTestCase
 
         $this->login();
 
-        $change = $this->createItem(\Change::class, [
+        $change = $this->createItem(Change::class, [
             'name' => 'Change Test',
             'content' => 'Change content',
             '_actors' => [
@@ -580,7 +580,7 @@ class ChangeTest extends DbTestCase
             ],
         ]);
 
-        $input = ['itemtype' => \Change::class, 'items_id' => $change->getID()];
+        $input = ['itemtype' => Change::class, 'items_id' => $change->getID()];
         $doc = new \Document();
         $this->assertEquals($expected, $doc->can(-1, CREATE, $input));
     }

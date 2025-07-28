@@ -34,6 +34,8 @@
 
 namespace tests\units\Glpi\Api\HL;
 
+use Glpi\Api\HL\OpenAPIGenerator;
+use Glpi\Api\HL\Router;
 use HLAPITestCase;
 
 class OpenAPIGeneratorTest extends HLAPITestCase
@@ -51,7 +53,7 @@ class OpenAPIGeneratorTest extends HLAPITestCase
             '/Assets/Computer/{id}',
             '/Assets/Monitor/{id}',
         ];
-        $generator = new \Glpi\Api\HL\OpenAPIGenerator(\Glpi\Api\HL\Router::getInstance(), \Glpi\Api\HL\Router::API_VERSION);
+        $generator = new OpenAPIGenerator(Router::getInstance(), Router::API_VERSION);
         $openapi = $generator->getSchema();
 
         foreach ($to_check as $path) {
@@ -86,7 +88,7 @@ class OpenAPIGeneratorTest extends HLAPITestCase
             ['path' => '/Assistance/Problem/{id}', 'placeholder' => 'itemtype'],
         ];
 
-        $generator = new \Glpi\Api\HL\OpenAPIGenerator(\Glpi\Api\HL\Router::getInstance(), \Glpi\Api\HL\Router::API_VERSION);
+        $generator = new OpenAPIGenerator(Router::getInstance(), Router::API_VERSION);
         $openapi = $generator->getSchema();
 
         foreach ($to_check as $endpoint) {

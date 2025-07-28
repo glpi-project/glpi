@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Toolbox;
 
+use Glpi\Toolbox\DatabaseSchema;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class DatabaseSchemaTest extends \GLPITestCase
@@ -69,7 +70,7 @@ class DatabaseSchemaTest extends \GLPITestCase
     #[DataProvider('versionsProvider')]
     public function testGetEmptySchemaPath(string $version, ?string $expected): void
     {
-        $instance = new \Glpi\Toolbox\DatabaseSchema();
+        $instance = new DatabaseSchema();
         if ($expected !== null) {
             $expected = realpath(GLPI_ROOT) . '/install/mysql/' . $expected;
         }

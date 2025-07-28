@@ -35,6 +35,9 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Inventory\Conf;
+use Glpi\Inventory\Converter;
+use Glpi\Inventory\Inventory;
 
 class AgentTest extends DbTestCase
 {
@@ -164,7 +167,7 @@ class AgentTest extends DbTestCase
     {
         //run an inventory
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
-        $inventory = new \Glpi\Inventory\Inventory($json);
+        $inventory = new Inventory($json);
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -269,7 +272,7 @@ class AgentTest extends DbTestCase
     {
         //run an inventory
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
-        $inventory = new \Glpi\Inventory\Inventory($json);
+        $inventory = new Inventory($json);
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -319,7 +322,7 @@ class AgentTest extends DbTestCase
         $json->deviceid = 'glpixps-2022-01-17-11-36-53';
 
         $CFG_GLPI["is_contact_autoupdate"] = 0;
-        $inventory = new \Glpi\Inventory\Inventory($json);
+        $inventory = new Inventory($json);
         $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
@@ -370,11 +373,11 @@ class AgentTest extends DbTestCase
   <QUERY>INVENTORY</QUERY>
   </REQUEST>";
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
-        $inventory = new \Glpi\Inventory\Inventory($json);
+        $inventory = new Inventory($json);
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -408,7 +411,7 @@ class AgentTest extends DbTestCase
     {
         //run an inventory
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
-        $inventory = new \Glpi\Inventory\Inventory($json);
+        $inventory = new Inventory($json);
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -471,8 +474,8 @@ class AgentTest extends DbTestCase
             [
                 'stale_agents_delay' => 1,
                 'stale_agents_action' => exportArrayToDB([
-                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_STATUS,
-                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_TRASHBIN,
+                    Conf::STALE_AGENT_ACTION_STATUS,
+                    Conf::STALE_AGENT_ACTION_TRASHBIN,
                 ]),
                 'stale_agents_status' => $states_id,
             ]
@@ -504,8 +507,8 @@ class AgentTest extends DbTestCase
             [
                 'stale_agents_delay' => 1,
                 'stale_agents_action' => exportArrayToDB([
-                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_STATUS,
-                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_TRASHBIN,
+                    Conf::STALE_AGENT_ACTION_STATUS,
+                    Conf::STALE_AGENT_ACTION_TRASHBIN,
                 ]),
                 'stale_agents_status_condition' => json_encode([
                     $states_id,
@@ -533,8 +536,8 @@ class AgentTest extends DbTestCase
             [
                 'stale_agents_delay' => 1,
                 'stale_agents_action' => exportArrayToDB([
-                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_STATUS,
-                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_TRASHBIN,
+                    Conf::STALE_AGENT_ACTION_STATUS,
+                    Conf::STALE_AGENT_ACTION_TRASHBIN,
                 ]),
                 'stale_agents_status_condition' => json_encode(['all']), //all status
                 'stale_agents_status' => $states_id3,
@@ -560,8 +563,8 @@ class AgentTest extends DbTestCase
             [
                 'stale_agents_delay' => 1,
                 'stale_agents_action' => exportArrayToDB([
-                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_STATUS,
-                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_TRASHBIN,
+                    Conf::STALE_AGENT_ACTION_STATUS,
+                    Conf::STALE_AGENT_ACTION_TRASHBIN,
                 ]),
                 'stale_agents_status_condition' => json_encode([
                     $states_id,
@@ -586,8 +589,8 @@ class AgentTest extends DbTestCase
             [
                 'stale_agents_delay' => 1,
                 'stale_agents_action' => exportArrayToDB([
-                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_STATUS,
-                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_TRASHBIN,
+                    Conf::STALE_AGENT_ACTION_STATUS,
+                    Conf::STALE_AGENT_ACTION_TRASHBIN,
                 ]),
                 'stale_agents_status_condition' => json_encode([
                     "aaaaaaa",

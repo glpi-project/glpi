@@ -40,6 +40,9 @@ use DbTestCase;
 use DisplayPreference;
 use Entity;
 use Glpi\Asset\Capacity;
+use Glpi\Asset\Capacity\HasCertificatesCapacity;
+use Glpi\Asset\Capacity\HasHistoryCapacity;
+use Glpi\Asset\Capacity\HasNotepadCapacity;
 use Glpi\PHPUnit\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use Log;
 
@@ -49,7 +52,7 @@ class HasCertificatesCapacityTest extends DbTestCase
 
     protected function getTargetCapacity(): string
     {
-        return \Glpi\Asset\Capacity\HasCertificatesCapacity::class;
+        return HasCertificatesCapacity::class;
     }
 
     public function testCapacityActivation(): void
@@ -60,21 +63,21 @@ class HasCertificatesCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasCertificatesCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
+                new Capacity(name: HasCertificatesCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasCertificatesCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
+                new Capacity(name: HasCertificatesCapacity::class),
+                new Capacity(name: HasNotepadCapacity::class),
             ]
         );
         $classname_3  = $definition_3->getAssetClassName();
@@ -134,15 +137,15 @@ class HasCertificatesCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasCertificatesCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasCertificatesCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasCertificatesCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasCertificatesCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();

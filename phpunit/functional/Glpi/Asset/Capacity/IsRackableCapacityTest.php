@@ -38,6 +38,9 @@ use DbTestCase;
 use DisplayPreference;
 use Entity;
 use Glpi\Asset\Capacity;
+use Glpi\Asset\Capacity\HasHistoryCapacity;
+use Glpi\Asset\Capacity\HasNotepadCapacity;
+use Glpi\Asset\Capacity\IsRackableCapacity;
 use Item_Rack;
 use Log;
 use Rack;
@@ -52,21 +55,21 @@ class IsRackableCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\IsRackableCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
+                new Capacity(name: IsRackableCapacity::class),
+                new Capacity(name: HasNotepadCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\IsRackableCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: IsRackableCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_3  = $definition_3->getAssetClassName();
@@ -110,15 +113,15 @@ class IsRackableCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\IsRackableCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: IsRackableCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\IsRackableCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: IsRackableCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
@@ -138,7 +141,7 @@ class IsRackableCapacityTest extends DbTestCase
             ]
         );
 
-        $rack = $this->createItem(\Rack::class, [
+        $rack = $this->createItem(Rack::class, [
             'name' => 'rack 1',
             'entities_id' => $root_entity_id,
             'number_units' => 40,
@@ -242,7 +245,7 @@ class IsRackableCapacityTest extends DbTestCase
         $entity_id = $this->getTestRootEntity(true);
 
         $definition = $this->initAssetDefinition(
-            capacities: [new Capacity(name: \Glpi\Asset\Capacity\IsRackableCapacity::class)]
+            capacities: [new Capacity(name: IsRackableCapacity::class)]
         );
 
         $asset = $this->createItem($definition->getAssetClassName(), [
@@ -251,7 +254,7 @@ class IsRackableCapacityTest extends DbTestCase
         ]);
 
         // Check that the capacity can be disabled
-        $capacity = new \Glpi\Asset\Capacity\IsRackableCapacity();
+        $capacity = new IsRackableCapacity();
         $this->assertFalse($capacity->isUsed($definition->getAssetClassName()));
 
         // Create a relation with a rack
@@ -280,9 +283,9 @@ class IsRackableCapacityTest extends DbTestCase
 
         $definition = $this->initAssetDefinition(
             system_name: 'TestAsset',
-            capacities: [new Capacity(name: \Glpi\Asset\Capacity\IsRackableCapacity::class)]
+            capacities: [new Capacity(name: IsRackableCapacity::class)]
         );
-        $capacity = new \Glpi\Asset\Capacity\IsRackableCapacity();
+        $capacity = new IsRackableCapacity();
 
         // Check that the capacity usage description is correct
         $this->assertEquals(

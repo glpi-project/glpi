@@ -591,7 +591,7 @@ function loadDataset()
                 'title_field'     => 'title',
                 'category_field'  => 'businesscategory',
                 'language_field'  => 'preferredlanguage',
-                'group_search_type'  => \AuthLDAP::GROUP_SEARCH_GROUP,
+                'group_search_type'  => AuthLDAP::GROUP_SEARCH_GROUP,
                 'group_condition' => '(objectclass=groupOfNames)',
                 'group_member_field' => 'member',
             ],
@@ -843,7 +843,7 @@ function getItemByTypeName(string $type, string $name, bool $onlyid = false): Co
     $item = getItemForItemtype($type);
     $nameField = $type::getNameField();
     if (!$item->getFromDBByCrit([$nameField => $name])) {
-        throw new \RuntimeException(sprintf('Unable to load a single `%s` item with the name `%s` (none or many exist may exist).', $type, $name));
+        throw new RuntimeException(sprintf('Unable to load a single `%s` item with the name `%s` (none or many exist may exist).', $type, $name));
     }
     return ($onlyid ? $item->getID() : $item);
 }

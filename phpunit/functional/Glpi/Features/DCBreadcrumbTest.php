@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Features;
 
 use DbTestCase;
 use DCRoom;
+use Glpi\Features\DCBreadcrumb;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rack;
 
@@ -68,6 +69,6 @@ class DCBreadcrumbTest extends DbTestCase
     #[DataProvider('itemtypeProvider')]
     public function testClassUsesTrait($class)
     {
-        $this->assertTrue(in_array(\Glpi\Features\DCBreadcrumb::class, class_uses($class, true)));
+        $this->assertTrue(in_array(DCBreadcrumb::class, class_uses($class, true)));
     }
 }

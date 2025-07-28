@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-abstract class AbstractPlanningEvent extends \DbTestCase
+abstract class AbstractPlanningEvent extends DbTestCase
 {
     protected $myclass = "";
     protected $input   = [];
@@ -69,7 +69,7 @@ abstract class AbstractPlanningEvent extends \DbTestCase
                 'bymonth'   => 1,
                 'exceptions' => "$this->exdate1, $this->exdate2",
             ],
-            'state'      => \Planning::TODO,
+            'state'      => Planning::TODO,
             'background' => 1,
         ];
     }
@@ -124,7 +124,7 @@ abstract class AbstractPlanningEvent extends \DbTestCase
                 'byweekday' => 'TU',
                 'bymonth'   => 2,
             ],
-            'state'      => \Planning::INFO,
+            'state'      => Planning::INFO,
             'background' => 0,
         ]);
         $this->assertTrue($event->update($update));
@@ -174,7 +174,7 @@ abstract class AbstractPlanningEvent extends \DbTestCase
                     'interval'  => 1,
                     'bymonth'   => '',
                 ],
-                'state'      => \Planning::TODO,
+                'state'      => Planning::TODO,
                 'background' => 1,
             ]
         );

@@ -39,16 +39,16 @@ class NotificationSettingInstance extends NotificationSetting
 
     public static function getMode()
     {
-        throw new \BadMethodCallException();
+        throw new BadMethodCallException();
     }
 
     public function getEnableLabel()
     {
-        throw new \BadMethodCallException();
+        throw new BadMethodCallException();
     }
 
     protected function showFormConfig()
     {
-        throw new \BadMethodCallException();
+        throw new BadMethodCallException();
     }
 }

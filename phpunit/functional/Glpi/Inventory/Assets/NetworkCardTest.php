@@ -34,6 +34,9 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use Glpi\Inventory\Asset\NetworkCard;
+use Glpi\Inventory\Conf;
+use Glpi\Inventory\Converter;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
@@ -231,14 +234,14 @@ class NetworkCardTest extends AbstractInventoryAsset
     #[DataProvider('assetProvider')]
     public function testPrepare($xml, $expected, $virtual)
     {
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\NetworkCard($computer, $json->content->networks);
+        $asset = new NetworkCard($computer, $json->content->networks);
         $asset->setExtraData((array) $json->content);
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $asset->checkConf($conf);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected), $result[0]);
@@ -247,15 +250,15 @@ class NetworkCardTest extends AbstractInventoryAsset
     #[DataProvider('assetProvider')]
     public function testNoVirtuals($xml, $expected, $virtual)
     {
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\NetworkCard($computer, $json->content->networks);
+        $asset = new NetworkCard($computer, $json->content->networks);
         $asset->setExtraData((array) $json->content);
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue($conf->saveConf(['component_networkcardvirtual' => 0]));
         $this->logOut();
         $asset->checkConf($conf);
@@ -285,14 +288,14 @@ class NetworkCardTest extends AbstractInventoryAsset
         //convert data
         $expected = $this->assetProvider()[0];
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($expected['xml']);
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\NetworkCard($computer, $json->content->networks);
+        $asset = new NetworkCard($computer, $json->content->networks);
         $asset->setExtraData((array) $json->content);
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $asset->checkConf($conf);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected['expected']), $result[0]);
@@ -716,13 +719,13 @@ class NetworkCardTest extends AbstractInventoryAsset
         );
 
         //convert data
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
-        $asset = new \Glpi\Inventory\Asset\NetworkCard($computer, $json->content->networks);
+        $asset = new NetworkCard($computer, $json->content->networks);
         $asset->setExtraData((array) $json->content);
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $asset->checkConf($conf);
         $result = $asset->prepare();
 

@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Agent\Communication\Headers;
 
+use Glpi\Agent\Communication\Headers\Common;
 use GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -66,7 +67,7 @@ class CommonTest extends GLPITestCase
     #[DataProvider('namesProvider')]
     public function testHeaders($propname, $headername)
     {
-        $instance = new \Glpi\Agent\Communication\Headers\Common();
+        $instance = new Common();
         $this->assertSame(
             $headername,
             $instance->getHeaderName($propname)
@@ -88,7 +89,7 @@ class CommonTest extends GLPITestCase
 
     public function testGetHeaders()
     {
-        $instance = new \Glpi\Agent\Communication\Headers\Common();
+        $instance = new Common();
         $instance->setHeader('Content-Type', 'application/xml');
         $instance->setHeader('GLPI-Agent-ID', 'anything');
 
@@ -97,7 +98,7 @@ class CommonTest extends GLPITestCase
         $this->assertArrayHasKey('Pragma', $headers);
         $this->assertArrayHasKey('GLPI-Agent-ID', $headers);
 
-        $instance = new \Glpi\Agent\Communication\Headers\Common();
+        $instance = new Common();
         $instance->setHeaders([
             'Content-Type' => 'application/xml',
             'GLPI-Agent-ID' => 'anything',
@@ -111,13 +112,13 @@ class CommonTest extends GLPITestCase
 
     public function testGetRequireds()
     {
-        $instance = new \Glpi\Agent\Communication\Headers\Common();
+        $instance = new Common();
         $this->assertCount(5, $instance->getRequireds());
     }
 
     public function testGetHeadersNames()
     {
-        $instance = new \Glpi\Agent\Communication\Headers\Common();
+        $instance = new Common();
         $this->assertCount(1, $instance->getHeadersNames());
     }
 }

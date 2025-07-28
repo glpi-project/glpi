@@ -36,6 +36,9 @@ namespace tests\units\Glpi\Inventory\Asset;
 
 use DateInterval;
 use DateTime;
+use Glpi\Inventory\Conf;
+use Glpi\Inventory\Converter;
+use Glpi\Inventory\Inventory;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
@@ -327,7 +330,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
     #[DataProvider('assetProvider')]
     public function testPrepare($xml, $ports, $connections, $vlans, $aggregates)
     {
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
@@ -1426,10 +1429,10 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         // Import the linked network equipment into GLPI
         $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/connected_switch.xml');
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
         $CFG_GLPI["is_contact_autoupdate"] = 0;
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
         $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
@@ -1455,7 +1458,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->login();
 
         //unset import of unmanaged equipments
-        $config = new \Glpi\Inventory\Conf();
+        $config = new Conf();
         $config->saveConf(['import_unmanaged' => false]);
 
         /** @var array $CFG_GLPI */
@@ -1467,10 +1470,10 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         // Import the network equipment
         $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/connected_switch.xml');
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
         $CFG_GLPI["is_contact_autoupdate"] = 0;
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
         $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
@@ -1501,10 +1504,10 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         // Import the network equipment
         $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/connected_switch.xml');
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
         $CFG_GLPI["is_contact_autoupdate"] = 0;
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
         $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
@@ -1550,10 +1553,10 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         // Import the network equipment again
         $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/connected_switch.xml');
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = json_decode($converter->convert($xml_source));
         $CFG_GLPI["is_contact_autoupdate"] = 0;
-        $inventory = new \Glpi\Inventory\Inventory($data);
+        $inventory = new Inventory($data);
         $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {

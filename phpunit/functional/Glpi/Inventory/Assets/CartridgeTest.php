@@ -34,6 +34,8 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use Glpi\Inventory\Asset\Cartridge;
+use Glpi\Inventory\Converter;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
@@ -88,12 +90,12 @@ class CartridgeTest extends AbstractInventoryAsset
     #[DataProvider('assetProvider')]
     public function testPrepare($xml, $expected)
     {
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
         $printer = getItemByTypeName('Printer', '_test_printer_all');
-        $asset = new \Glpi\Inventory\Asset\Cartridge($printer, $json->content->cartridges);
+        $asset = new Cartridge($printer, $json->content->cartridges);
         $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected), $result[0]);
@@ -101,7 +103,7 @@ class CartridgeTest extends AbstractInventoryAsset
 
     public function testKnownTags()
     {
-        $cart = new \Glpi\Inventory\Asset\Cartridge(getItemByTypeName('Printer', '_test_printer_all'));
+        $cart = new Cartridge(getItemByTypeName('Printer', '_test_printer_all'));
 
         $tags = $cart->knownTags();
         $this->assertCount(194, $tags);
@@ -115,12 +117,12 @@ class CartridgeTest extends AbstractInventoryAsset
         //convert data
         $expected = $this->assetProvider()[0];
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($expected['xml']);
         $json = json_decode($data);
 
         $printer = getItemByTypeName('Printer', '_test_printer_all');
-        $asset = new \Glpi\Inventory\Asset\Cartridge($printer, $json->content->cartridges);
+        $asset = new Cartridge($printer, $json->content->cartridges);
         $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode('{"tonerblack":"71"}'), $result[0]);
@@ -151,7 +153,7 @@ class CartridgeTest extends AbstractInventoryAsset
         $json = json_decode($data);
         $json->content->cartridges[0]->tonerblack = 60;
 
-        $asset = new \Glpi\Inventory\Asset\Cartridge($printer, $json->content->cartridges);
+        $asset = new Cartridge($printer, $json->content->cartridges);
         $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode('{"tonerblack":"60"}'), $result[0]);

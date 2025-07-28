@@ -67,7 +67,7 @@ class ProjectTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, (int) $project_id_3);
 
-        $projecttask = new \ProjectTask();
+        $projecttask = new ProjectTask();
         $projecttask_id_1 = $projecttask->add([
             'name' => 'Project Task 1',
             'auto_percent_done' => 1,
@@ -101,9 +101,9 @@ class ProjectTest extends DbTestCase
         $this->assertEquals(3, $project_2->fields['percent_done']);
         $this->assertEquals(3, $project_1->fields['percent_done']);
 
-        $projecttask_1 = new \ProjectTask();
+        $projecttask_1 = new ProjectTask();
         $this->assertTrue($projecttask_1->getFromDB($projecttask_id_1));
-        $projecttask_2 = new \ProjectTask();
+        $projecttask_2 = new ProjectTask();
         $this->assertTrue($projecttask_2->getFromDB($projecttask_id_2));
 
         $this->assertTrue($projecttask_2->update([
@@ -142,7 +142,7 @@ class ProjectTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, (int) $project_id_1);
 
-        $projecttask = new \ProjectTask();
+        $projecttask = new ProjectTask();
         $projecttask_id_1 = $projecttask->add([
             'name' => 'Project Task 1',
             'projects_id' => $project_id_1,
@@ -570,7 +570,7 @@ PLAINTEXT;
         $this->assertEmpty(\Project::getActiveProjectIDsForUser([$user->getID()], false));
 
         // Create a user team
-        $user_team = $this->createItem(\ProjectTeam::getType(), [
+        $user_team = $this->createItem(ProjectTeam::getType(), [
             'projects_id' => $project->getID(),
             'itemtype'    => \User::class,
             'items_id'    => $user->getID(),
@@ -583,14 +583,14 @@ PLAINTEXT;
         $this->assertEmpty(\Project::getActiveProjectIDsForUser([$user->getID()], false, false));
 
         // Create a group team
-        $group_team = $this->createItem(\ProjectTeam::getType(), [
+        $group_team = $this->createItem(ProjectTeam::getType(), [
             'projects_id' => $project->getID(),
             'itemtype'    => \Group::class,
             'items_id'    => $group->getID(),
         ]);
 
         // Delete user team
-        $this->deleteItem(\ProjectTeam::getType(), $user_team->getID());
+        $this->deleteItem(ProjectTeam::getType(), $user_team->getID());
 
         // Check if a user with a project, assigned to a group project team, returns the project id when $search_in_team and $search_in_groups are true
         $this->assertEquals([['id' => $project->getID()]], \Project::getActiveProjectIDsForUser([$user->getID()]));
@@ -624,7 +624,7 @@ PLAINTEXT;
         );
 
         // Create a group team
-        $group_team = $this->createItem(\ProjectTeam::getType(), [
+        $group_team = $this->createItem(ProjectTeam::getType(), [
             'projects_id' => $project->getID(),
             'itemtype'    => \Group::class,
             'items_id'    => $group->getID(),
@@ -654,17 +654,17 @@ PLAINTEXT;
         // Only allowed to read own tasks -> specific additional menu content
         $this->login();
         $_SESSION['glpiactiveprofile']['project'] = 0;
-        $_SESSION['glpiactiveprofile']['projecttask'] = \ProjectTask::READMY;
+        $_SESSION['glpiactiveprofile']['projecttask'] = ProjectTask::READMY;
 
-        $this->assertEquals(\ProjectTask::getMyTasksURL(false), \Project::getAdditionalMenuContent()['project']['page']);
+        $this->assertEquals(ProjectTask::getMyTasksURL(false), \Project::getAdditionalMenuContent()['project']['page']);
 
         $menu_options = \Project::getAdditionalMenuOptions();
 
-        $this->assertEquals(\ProjectTask::getMyTasksURL(false), $menu_options['ProjectTask']['page']);
-        $this->assertEquals(\ProjectTask::getMyTasksURL(false), $menu_options['ProjectTask']['links']['search']);
+        $this->assertEquals(ProjectTask::getMyTasksURL(false), $menu_options['ProjectTask']['page']);
+        $this->assertEquals(ProjectTask::getMyTasksURL(false), $menu_options['ProjectTask']['links']['search']);
 
         $menu_links = \Project::getAdditionalMenuLinks();
-        $has_my_tasks_link = in_array(\ProjectTask::getMyTasksURL(false), $menu_links, true);
+        $has_my_tasks_link = in_array(ProjectTask::getMyTasksURL(false), $menu_links, true);
         $this->assertTrue($has_my_tasks_link);
     }
 }

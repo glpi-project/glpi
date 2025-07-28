@@ -434,7 +434,7 @@ class ValidatorSubstituteTest extends DbTestCase
 
             // Check the expected date range
             $user = User::getById($input['users_id']);
-            $this->assertInstanceOf(\User::class, $user);
+            $this->assertInstanceOf(User::class, $user);
 
             $this->assertEquals($expected['range']['start'], $user->fields['substitution_start_date']);
             $this->assertEquals($expected['range']['end'], $user->fields['substitution_end_date']);

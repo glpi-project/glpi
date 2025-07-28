@@ -50,10 +50,10 @@ class SavedSearchTest extends DbTestCase
         // No restrictions when having the config UPDATE right
         $this->assertEquals(
             ['WHERE' => []],
-            \SavedSearch::getVisibilityCriteria()
+            SavedSearch::getVisibilityCriteria()
         );
         $_SESSION["glpiactiveprofile"]['config'] = $_SESSION["glpiactiveprofile"]['config'] & ~UPDATE;
-        $this->assertNotEmpty(\SavedSearch::getVisibilityCriteria()['WHERE']);
+        $this->assertNotEmpty(SavedSearch::getVisibilityCriteria()['WHERE']);
     }
 
     public function testAddVisibilityRestrict()
@@ -64,12 +64,12 @@ class SavedSearchTest extends DbTestCase
 
         //first, as a super-admin
         $this->login();
-        $this->assertSame('', \SavedSearch::addVisibilityRestrict());
+        $this->assertSame('', SavedSearch::addVisibilityRestrict());
 
         $this->login('normal', 'normal');
         $this->assertSame(
             "`glpi_savedsearches`.`is_private` = '1' AND `glpi_savedsearches`.`users_id` = '5' AND (true)",
-            \SavedSearch::addVisibilityRestrict()
+            SavedSearch::addVisibilityRestrict()
         );
 
         //add public saved searches read right for normal profile
@@ -88,14 +88,14 @@ class SavedSearchTest extends DbTestCase
 
         $this->assertSame(
             "((`glpi_savedsearches`.`is_private` = '1' AND `glpi_savedsearches`.`users_id` = '5') OR (`glpi_savedsearches`.`is_private` = '0')) AND (true)",
-            \SavedSearch::addVisibilityRestrict()
+            SavedSearch::addVisibilityRestrict()
         );
 
         // Check entity restriction
         $this->setEntity('_test_root_entity', true);
         $this->assertSame(
             "((`glpi_savedsearches`.`is_private` = '1' AND `glpi_savedsearches`.`users_id` = '5') OR (`glpi_savedsearches`.`is_private` = '0')) AND ((`glpi_savedsearches`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2') OR (`glpi_savedsearches`.`is_recursive` = '1' AND `glpi_savedsearches`.`entities_id` IN ('0'))))",
-            \SavedSearch::addVisibilityRestrict()
+            SavedSearch::addVisibilityRestrict()
         );
     }
 
@@ -113,7 +113,7 @@ class SavedSearchTest extends DbTestCase
         $normal_id =  getItemByTypeName(\User::class, 'normal', true);
 
         // now add a bookmark on Ticket view
-        $bk = new \SavedSearch();
+        $bk = new SavedSearch();
         $this->assertTrue(
             (bool) $bk->add([
                 'name'         => 'public root recursive',

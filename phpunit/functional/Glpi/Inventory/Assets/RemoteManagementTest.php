@@ -34,6 +34,8 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use Glpi\Inventory\Asset\RemoteManagement;
+use Glpi\Inventory\Converter;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
@@ -94,12 +96,12 @@ class RemoteManagementTest extends AbstractInventoryAsset
     #[DataProvider('assetProvider')]
     public function testPrepare($xml, $expected)
     {
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\RemoteManagement($computer, $json->content->remote_mgmt);
+        $asset = new RemoteManagement($computer, $json->content->remote_mgmt);
         $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected), $result[0]);
@@ -108,7 +110,7 @@ class RemoteManagementTest extends AbstractInventoryAsset
     public function testWrongMainItem()
     {
         $mainasset = getItemByTypeName('Printer', '_test_printer_all');
-        $asset = new \Glpi\Inventory\Asset\RemoteManagement($mainasset);
+        $asset = new RemoteManagement($mainasset);
 
         $this->expectExceptionMessage('Remote Management are handled for following types only:');
         $asset->prepare();
@@ -132,11 +134,11 @@ class RemoteManagementTest extends AbstractInventoryAsset
         //convert data
         $expected = $this::assetProvider()[0];
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($expected['xml']);
         $json = json_decode($data);
 
-        $asset = new \Glpi\Inventory\Asset\RemoteManagement($computer, $json->content->remote_mgmt);
+        $asset = new RemoteManagement($computer, $json->content->remote_mgmt);
         $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected['expected']), $result[0]);
@@ -177,11 +179,11 @@ class RemoteManagementTest extends AbstractInventoryAsset
         $xml = str_replace('<ID>123456789</ID>', '<ID>987654321</ID>', $xml);
         $json_expected->remoteid = '987654321';
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
-        $asset = new \Glpi\Inventory\Asset\RemoteManagement($computer, $json->content->remote_mgmt);
+        $asset = new RemoteManagement($computer, $json->content->remote_mgmt);
         $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals($json_expected, $result[0]);

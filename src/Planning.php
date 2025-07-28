@@ -1933,8 +1933,8 @@ TWIG, $twig_params);
 
                 $end_date_prop = $vcomp instanceof VTodo ? 'DUE' : 'DTEND';
                 if (
-                    !$vcomp->DTSTART instanceof \Sabre\VObject\Property\ICalendar\DateTime
-                    || !$vcomp->$end_date_prop instanceof \Sabre\VObject\Property\ICalendar\DateTime
+                    !$vcomp->DTSTART instanceof Sabre\VObject\Property\ICalendar\DateTime
+                    || !$vcomp->$end_date_prop instanceof Sabre\VObject\Property\ICalendar\DateTime
                 ) {
                     continue;
                 }

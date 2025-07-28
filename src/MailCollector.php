@@ -1948,7 +1948,7 @@ class MailCollector extends CommonDBTM
         $mmail = new GLPIMailer();
         $mail = $mmail->getEmail();
         $mail->getHeaders()->addTextHeader('Auto-Submitted', 'auto-replied');
-        $mail->from(new \Symfony\Component\Mime\Address($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"]));
+        $mail->from(new Symfony\Component\Mime\Address($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"]));
         $mail->to($to);
         // Normalized header, no translation
         $mail->subject('Re: ' . $subject);

@@ -35,6 +35,8 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Inventory\Converter;
+use Glpi\Inventory\Inventory;
 use Location;
 
 /* Test for inc/savedsearch.class.php */
@@ -254,14 +256,14 @@ class LockedfieldTest extends DbTestCase
     </DEVICE>
   </CONTENT><QUERY>SNMP</QUERY><DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID></REQUEST>
 ";
-        $existing_locations = countElementsInTable(\Location::getTable());
+        $existing_locations = countElementsInTable(Location::getTable());
         $lockedfield = new \Lockedfield();
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
-        $inventory = new \Glpi\Inventory\Inventory($json);
+        $inventory = new Inventory($json);
 
         if ($inventory->inError()) {
             $this->dump($inventory->getErrors());
@@ -293,7 +295,7 @@ class LockedfieldTest extends DbTestCase
         $this->assertEquals(0, $printer->fields['locations_id']);
 
         //ensure no new location has been added
-        $this->assertSame($existing_locations, countElementsInTable(\Location::getTable()));
+        $this->assertSame($existing_locations, countElementsInTable(Location::getTable()));
 
         //manually update to lock locations_id field
         $locations_id = getItemByTypeName('Location', '_location02', true);
@@ -329,11 +331,11 @@ class LockedfieldTest extends DbTestCase
   </CONTENT><QUERY>SNMP</QUERY><DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID></REQUEST>
 ";
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
-        $inventory = new \Glpi\Inventory\Inventory($json);
+        $inventory = new Inventory($json);
 
         if ($inventory->inError()) {
             $this->dump($inventory->getErrors());
@@ -345,7 +347,7 @@ class LockedfieldTest extends DbTestCase
         $this->assertEquals($locations_id, $printer->fields['locations_id']);
 
         //ensure no new location has been added
-        $this->assertSame($existing_locations, countElementsInTable(\Location::getTable()));
+        $this->assertSame($existing_locations, countElementsInTable(Location::getTable()));
 
         $this->assertSame(['locations_id' => 'Greffe Charron'], $lockedfield->getLockedValues($printer->getType(), $printers_id));
     }
@@ -379,14 +381,14 @@ class LockedfieldTest extends DbTestCase
   </CONTENT><QUERY>SNMP</QUERY><DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID></REQUEST>
 ";
 
-        $existing_locations = countElementsInTable(\Location::getTable());
+        $existing_locations = countElementsInTable(Location::getTable());
         $lockedfield = new \Lockedfield();
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
-        $inventory = new \Glpi\Inventory\Inventory($json);
+        $inventory = new Inventory($json);
 
         if ($inventory->inError()) {
             $this->dump($inventory->getErrors());
@@ -419,7 +421,7 @@ class LockedfieldTest extends DbTestCase
 
         //ensure new location has been added
         ++$existing_locations;
-        $this->assertSame($existing_locations, countElementsInTable(\Location::getTable()));
+        $this->assertSame($existing_locations, countElementsInTable(Location::getTable()));
 
         //manually update to lock locations_id field
         $locations_id = getItemByTypeName('Location', '_location02', true);
@@ -435,7 +437,7 @@ class LockedfieldTest extends DbTestCase
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
-        $inventory = new \Glpi\Inventory\Inventory($json);
+        $inventory = new Inventory($json);
 
         if ($inventory->inError()) {
             $this->dump($inventory->getErrors());
@@ -447,7 +449,7 @@ class LockedfieldTest extends DbTestCase
         $this->assertEquals($locations_id, $printer->fields['locations_id']);
 
         //ensure no new location has been added
-        $this->assertSame($existing_locations, countElementsInTable(\Location::getTable()));
+        $this->assertSame($existing_locations, countElementsInTable(Location::getTable()));
 
         $this->assertSame(['locations_id' => 'Greffe Charron'], $lockedfield->getLockedValues($printer->getType(), $printers_id));
     }
@@ -501,11 +503,11 @@ class LockedfieldTest extends DbTestCase
 
         $lockedfield = new \Lockedfield();
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
-        $inventory = new \Glpi\Inventory\Inventory($json);
+        $inventory = new Inventory($json);
 
         if ($inventory->inError()) {
             $this->dump($inventory->getErrors());
@@ -558,7 +560,7 @@ class LockedfieldTest extends DbTestCase
         //replay
         $data = $converter->convert($xml);
         $json = json_decode($data);
-        $inventory = new \Glpi\Inventory\Inventory($json);
+        $inventory = new Inventory($json);
 
         if ($inventory->inError()) {
             $this->dump($inventory->getErrors());
@@ -706,7 +708,7 @@ class LockedfieldTest extends DbTestCase
         $services = [$pgsql];
         $json->content->databases_services = $services;
 
-        $inventory = new \Glpi\Inventory\Inventory($json);
+        $inventory = new Inventory($json);
         if ($inventory->inError()) {
             $this->dump($inventory->getErrors());
         }
@@ -743,7 +745,7 @@ class LockedfieldTest extends DbTestCase
         $services = [$pgsql];
         $json->content->databases_services = $services;
 
-        $inventory = new \Glpi\Inventory\Inventory($json);
+        $inventory = new Inventory($json);
         if ($inventory->inError()) {
             $this->dump($inventory->getErrors());
         }
@@ -1010,12 +1012,12 @@ class LockedfieldTest extends DbTestCase
         $this->assertGreaterThan(0, $globalLockedFieldId, 'Failed to create the global locked field.');
 
         // Convert the inventory XML to JSON using the converter
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $jsonData = $converter->convert($xmlSource);
         $decodedJson = json_decode($jsonData);
 
         // Create the Inventory object based on the JSON data
-        $inventory = new \Glpi\Inventory\Inventory($decodedJson);
+        $inventory = new Inventory($decodedJson);
 
         // Output inventory errors if any are present (for debugging purposes)
         if ($inventory->inError()) {

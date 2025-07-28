@@ -131,7 +131,7 @@ class EntityTest extends DbTestCase
     public function testPrepareInputForAdd()
     {
         $this->login();
-        $entity = new \Entity();
+        $entity = new Entity();
 
         $this->assertFalse(
             $entity->prepareInputForAdd([
@@ -176,7 +176,7 @@ class EntityTest extends DbTestCase
         $sckey_ent1 = 'sons_cache_glpi_entities_' . $ent1;
         $sckey_ent2 = 'sons_cache_glpi_entities_' . $ent2;
 
-        $entity = new \Entity();
+        $entity = new Entity();
         $new_id = (int) $entity->add([
             'name'         => 'Sub child entity',
             'entities_id'  => $ent1,
@@ -320,7 +320,7 @@ class EntityTest extends DbTestCase
         $parent_id = 0;
         for ($i = 0; $i < 5; $i++) {
             $entity = $this->createItem(
-                \Entity::class,
+                Entity::class,
                 [
                     'name'         => sprintf('Level %s entity', $i + 1),
                     'entities_id'  => $parent_id,
@@ -354,7 +354,7 @@ class EntityTest extends DbTestCase
 
         foreach ($entities as $key => $entity) {
             $expected_sons_ids = \array_map(
-                static fn(\Entity $ent) => $ent->getID(),
+                static fn(Entity $ent) => $ent->getID(),
                 \array_slice($entities, $key)
             );
             $expected_sons = \array_combine($expected_sons_ids, $expected_sons_ids);
@@ -362,7 +362,7 @@ class EntityTest extends DbTestCase
             $expected_ancestors_ids = array_merge(
                 [0], // root entity
                 \array_map(
-                    static fn(\Entity $ent) => $ent->getID(),
+                    static fn(Entity $ent) => $ent->getID(),
                     \array_slice($entities, 0, $key)
                 )
             );
@@ -384,7 +384,7 @@ class EntityTest extends DbTestCase
     {
         $this->login();
         $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
-        $ent1 = new \Entity();
+        $ent1 = new Entity();
         $ent1_id = $ent1->add([
             'entities_id'  => $ent0,
             'name'         => 'inherit_geo_test_parent',
@@ -393,7 +393,7 @@ class EntityTest extends DbTestCase
             'altitude'     => '115',
         ]);
         $this->assertGreaterThan(0, (int) $ent1_id);
-        $ent2 = new \Entity();
+        $ent2 = new Entity();
         $ent2_id = $ent2->add([
             'entities_id'  => $ent1_id,
             'name'         => 'inherit_geo_test_child',
@@ -404,7 +404,7 @@ class EntityTest extends DbTestCase
         $this->assertEquals($ent1->fields['altitude'], $ent2->fields['altitude']);
 
         // Make sure we don't overwrite data a user sets
-        $ent3 = new \Entity();
+        $ent3 = new Entity();
         $ent3_id = $ent3->add([
             'entities_id'  => $ent1_id,
             'name'         => 'inherit_geo_test_child2',
@@ -423,7 +423,7 @@ class EntityTest extends DbTestCase
         $this->login();
         $root_id = getItemByTypeName('Entity', '_test_root_entity', true);
 
-        $entity = new \Entity();
+        $entity = new Entity();
         $entity_id = (int) $entity->add(
             [
                 'name'         => 'Test entity',
@@ -653,12 +653,12 @@ class EntityTest extends DbTestCase
         $child_id      = getItemByTypeName('Entity', '_test_root_entity', true);
         $grandchild_id = getItemByTypeName('Entity', '_test_child_1', true);
 
-        $entity = new \Entity();
+        $entity = new Entity();
         $this->assertTrue($entity->update(['id' => $root_id] + $root_values));
         $this->assertTrue($entity->update(['id' => $child_id] + $child_values));
         $this->assertTrue($entity->update(['id' => $grandchild_id] + $grandchild_values));
 
-        $this->assertEquals($expected_result, call_user_func_array([\Entity::class, 'getUsedConfig'], $params));
+        $this->assertEquals($expected_result, call_user_func_array([Entity::class, 'getUsedConfig'], $params));
     }
 
 
@@ -701,7 +701,7 @@ class EntityTest extends DbTestCase
                 'entity_id'               => $child_id,
                 'root_enable_custom_css'  => 0,
                 'root_custom_css_code'    => 'body { color:blue; }',
-                'child_enable_custom_css' => \Entity::CONFIG_PARENT,
+                'child_enable_custom_css' => Entity::CONFIG_PARENT,
                 'child_custom_css_code'   => '',
                 'expected'                => '',
             ],
@@ -710,7 +710,7 @@ class EntityTest extends DbTestCase
                 'entity_id'               => $child_id,
                 'root_enable_custom_css'  => 1,
                 'root_custom_css_code'    => '',
-                'child_enable_custom_css' => \Entity::CONFIG_PARENT,
+                'child_enable_custom_css' => Entity::CONFIG_PARENT,
                 'child_custom_css_code'   => '',
                 'expected'                => '',
             ],
@@ -719,7 +719,7 @@ class EntityTest extends DbTestCase
                 'entity_id'               => $child_id,
                 'root_enable_custom_css'  => 1,
                 'root_custom_css_code'    => '.link::before { content: "test"; }',
-                'child_enable_custom_css' => \Entity::CONFIG_PARENT,
+                'child_enable_custom_css' => Entity::CONFIG_PARENT,
                 'child_custom_css_code'   => '',
                 'expected'                => '<style>.link::before { content: "test"; }</style>',
             ],
@@ -773,7 +773,7 @@ class EntityTest extends DbTestCase
     ): void {
         $this->login();
 
-        $entity = new \Entity();
+        $entity = new Entity();
 
         // Define configuration values
         $update = $entity->update(
@@ -803,66 +803,66 @@ class EntityTest extends DbTestCase
         return [
             [
                 'interface' => 'central',
-                'setting'   => \Entity::ANONYMIZE_DISABLED,
+                'setting'   => Entity::ANONYMIZE_DISABLED,
                 'expected'  => 'test_anon_user',
             ],
             [
                 'interface' => 'helpdesk',
-                'setting'   => \Entity::ANONYMIZE_DISABLED,
+                'setting'   => Entity::ANONYMIZE_DISABLED,
                 'expected'  => 'test_anon_user',
             ],
             [
                 'interface' => 'central',
-                'setting'   => \Entity::ANONYMIZE_USE_GENERIC,
+                'setting'   => Entity::ANONYMIZE_USE_GENERIC,
                 'expected'  => 'test_anon_user',
             ],
             [
                 'interface' => 'helpdesk',
-                'setting'   => \Entity::ANONYMIZE_USE_GENERIC,
+                'setting'   => Entity::ANONYMIZE_USE_GENERIC,
                 'expected'  => "Helpdesk user",
             ],
             [
                 'interface' => 'central',
-                'setting'   => \Entity::ANONYMIZE_USE_NICKNAME,
+                'setting'   => Entity::ANONYMIZE_USE_NICKNAME,
                 'expected'  => 'test_anon_user',
                 'user_nick' => 'user_nick_6436345654',
             ],
             [
                 'interface' => 'helpdesk',
-                'setting'   => \Entity::ANONYMIZE_USE_NICKNAME,
+                'setting'   => Entity::ANONYMIZE_USE_NICKNAME,
                 'expected'  => 'user_nick_6436345654',
                 'user_nick' => 'user_nick_6436345654',
             ],
             [
                 'interface' => 'central',
-                'setting'   => \Entity::ANONYMIZE_USE_GENERIC_USER,
+                'setting'   => Entity::ANONYMIZE_USE_GENERIC_USER,
                 'expected'  => 'test_anon_user',
             ],
             [
                 'interface' => 'helpdesk',
-                'setting'   => \Entity::ANONYMIZE_USE_GENERIC_USER,
+                'setting'   => Entity::ANONYMIZE_USE_GENERIC_USER,
                 'expected'  => "Helpdesk user",
             ],
             [
                 'interface' => 'central',
-                'setting'   => \Entity::ANONYMIZE_USE_NICKNAME_USER,
+                'setting'   => Entity::ANONYMIZE_USE_NICKNAME_USER,
                 'expected'  => 'test_anon_user',
                 'user_nick' => 'user_nick_6436345654',
             ],
             [
                 'interface' => 'helpdesk',
-                'setting'   => \Entity::ANONYMIZE_USE_NICKNAME_USER,
+                'setting'   => Entity::ANONYMIZE_USE_NICKNAME_USER,
                 'expected'  => 'user_nick_6436345654',
                 'user_nick' => 'user_nick_6436345654',
             ],
             [
                 'interface' => 'central',
-                'setting'   => \Entity::ANONYMIZE_USE_GENERIC_GROUP,
+                'setting'   => Entity::ANONYMIZE_USE_GENERIC_GROUP,
                 'expected'  => 'test_anon_user',
             ],
             [
                 'interface' => 'helpdesk',
-                'setting'   => \Entity::ANONYMIZE_USE_GENERIC_GROUP,
+                'setting'   => Entity::ANONYMIZE_USE_GENERIC_GROUP,
                 'expected'  => 'test_anon_user',
             ],
         ];
@@ -1092,7 +1092,7 @@ class EntityTest extends DbTestCase
     {
         $this->login();
 
-        $entity = new \Entity();
+        $entity = new Entity();
         $ticket = new Ticket();
         $ticket_contract = new Ticket_Contract();
         $contract = new Contract();
@@ -1231,7 +1231,7 @@ class EntityTest extends DbTestCase
         ]);
 
         // Check that no clones exists
-        $entity = new \Entity();
+        $entity = new Entity();
         $res = $entity->find(['name' => ['LIKE', 'test clone entity %']]);
         $this->assertCount(0, $res);
 
@@ -1240,7 +1240,7 @@ class EntityTest extends DbTestCase
         $this->assertTrue($entity->cloneMultiple(4));
 
         // Check that 4 clones were created
-        $entity = new \Entity();
+        $entity = new Entity();
         $res = $entity->find(['name' => ['LIKE', 'test clone entity %']]);
         $this->assertCount(4, $res);
 
@@ -1399,7 +1399,7 @@ class EntityTest extends DbTestCase
     {
         $this->login();
 
-        $entity = new \Entity();
+        $entity = new Entity();
         $this->assertEquals($result, $this->callPrivateMethod($entity, 'getEntityTree', $entity_id));
     }
 
@@ -1437,13 +1437,13 @@ class EntityTest extends DbTestCase
 
         $entities = $fn_get_current_entities();
         $this->assertGreaterThan(0, count($entities));
-        $selector = \Entity::getEntitySelectorTree();
+        $selector = Entity::getEntitySelectorTree();
         $found = [];
         $fn_find_entities_in_selector($selector, $entities, null, $found);
         $this->assertCount(count($entities), $found);
 
         // Create a new entity
-        $entity = new \Entity();
+        $entity = new Entity();
         $this->assertGreaterThan(
             0,
             $entities_id = $entity_id = $entity->add([
@@ -1453,14 +1453,14 @@ class EntityTest extends DbTestCase
         );
         $found = [];
         $entities = $fn_get_current_entities();
-        $fn_find_entities_in_selector(\Entity::getEntitySelectorTree(), $entities, null, $found);
+        $fn_find_entities_in_selector(Entity::getEntitySelectorTree(), $entities, null, $found);
         $this->assertCount(count($entities), $found);
 
         // Delete the entity
         $this->assertTrue($entity->delete(['id' => $entity_id]));
         $found = [];
         $entities = $fn_get_current_entities();
-        $fn_find_entities_in_selector(\Entity::getEntitySelectorTree(), $entities, null, $found);
+        $fn_find_entities_in_selector(Entity::getEntitySelectorTree(), $entities, null, $found);
         $this->assertCount(count($entities), $found);
     }
 

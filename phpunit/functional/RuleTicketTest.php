@@ -95,7 +95,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->login();
 
         // Create contract1 "zabbix"
-        $contractTest1 = new \Contract();
+        $contractTest1 = new Contract();
         $contracttest1_id = $contractTest1->add($contractTest1_input = [
             "name"                  => "zabbix",
             "entities_id"           => 0,
@@ -105,7 +105,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         // Create rule for create regex action
         $ruleticket = new \RuleTicket();
         $rulecrit   = new \RuleCriteria();
-        $ruleaction = new \RuleAction();
+        $ruleaction = new RuleAction();
 
         $ruletid = $ruleticket->add($ruletinput = [
             'name'         => 'test associate contract with  : glpi',
@@ -121,7 +121,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruletid,
             'criteria'  => 'itilcategories_id',
-            'condition' => \Rule::REGEX_MATCH,
+            'condition' => Rule::REGEX_MATCH,
             'pattern'   => '/(zabbix)/',
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
@@ -157,7 +157,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->assertEquals(
             1,
             countElementsInTable(
-                \Ticket_Contract::getTable(),
+                Ticket_Contract::getTable(),
                 ['contracts_id'  => $contracttest1_id,
                     'tickets_id' => $ticketsCreate_id,
                 ]
@@ -208,7 +208,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
 
         $ruleticket = $this->getRuleInstance();
         $rulecrit   = new \RuleCriteria();
-        $ruleaction = new \RuleAction();
+        $ruleaction = new RuleAction();
 
         $ruletid = $ruleticket->add($ruletinput = [
             'name'         => 'test ' . $header,
@@ -223,7 +223,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruletid,
             'criteria'  => "_" . $header,
-            'condition' => \Rule::PATTERN_IS,
+            'condition' => Rule::PATTERN_IS,
             'pattern'   => $pattern,
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
@@ -283,7 +283,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         // Create rule
         $ruleticket = new \RuleTicket();
         $rulecrit   = new \RuleCriteria();
-        $ruleaction = new \RuleAction();
+        $ruleaction = new RuleAction();
 
         $ruletid = $ruleticket->add($ruletinput = [
             'name'         => 'test contract type',
@@ -299,7 +299,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruletid,
             'criteria'  => '_contract_types',
-            'condition' => \Rule::PATTERN_IS,
+            'condition' => Rule::PATTERN_IS,
             'pattern'   => $contract_type_id,
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
@@ -399,7 +399,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         // Create rule
         $rule_itil = $this->getRuleInstance();
         $rulecrit   = new \RuleCriteria();
-        $ruleaction = new \RuleAction();
+        $ruleaction = new RuleAction();
 
         $ruletid = $rule_itil->add($ruletinput = [
             'name'         => 'test group requester from user on update',
@@ -415,7 +415,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruletid,
             'criteria'  => 'content',
-            'condition' => \Rule::PATTERN_EXISTS,
+            'condition' => Rule::PATTERN_EXISTS,
             'pattern'   => 1,
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
@@ -463,7 +463,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->assertTrue($user->update($user->fields));
 
         //create new location
-        $location = new \Location();
+        $location = new Location();
         $location_id = $location->add($location_input = [
             "name" => "location1",
         ]);
@@ -533,7 +533,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         ]);
         $this->assertGreaterThan(0, $suppliers_id);
 
-        $location = new \Location();
+        $location = new Location();
         $locations_id = $location->add([
             'name' => 'Location 1',
         ]);
@@ -542,7 +542,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         // Create rule
         $ruleticket = new \RuleTicket();
         $rulecrit   = new \RuleCriteria();
-        $ruleaction = new \RuleAction();
+        $ruleaction = new RuleAction();
 
         $ruletid = $ruleticket->add($ruletinput = [
             'name'         => 'testNewActors',
@@ -558,49 +558,49 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruletid,
             'criteria'  => '_users_id_requester',
-            'condition' => \Rule::PATTERN_IS,
+            'condition' => Rule::PATTERN_IS,
             'pattern'   => $tech_id,
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruletid,
             'criteria'  => '_users_id_observer',
-            'condition' => \Rule::PATTERN_IS,
+            'condition' => Rule::PATTERN_IS,
             'pattern'   => $tech_id,
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruletid,
             'criteria'  => '_users_id_assign',
-            'condition' => \Rule::PATTERN_IS,
+            'condition' => Rule::PATTERN_IS,
             'pattern'   => $tech_id,
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruletid,
             'criteria'  => '_groups_id_requester',
-            'condition' => \Rule::PATTERN_IS,
+            'condition' => Rule::PATTERN_IS,
             'pattern'   => $groups_id,
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruletid,
             'criteria'  => '_groups_id_observer',
-            'condition' => \Rule::PATTERN_IS,
+            'condition' => Rule::PATTERN_IS,
             'pattern'   => $groups_id,
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruletid,
             'criteria'  => '_groups_id_assign',
-            'condition' => \Rule::PATTERN_IS,
+            'condition' => Rule::PATTERN_IS,
             'pattern'   => $groups_id,
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruletid,
             'criteria'  => '_suppliers_id_assign',
-            'condition' => \Rule::PATTERN_IS,
+            'condition' => Rule::PATTERN_IS,
             'pattern'   => $suppliers_id,
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
@@ -677,7 +677,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         // create rule
         $ruleticket = new \RuleTicket();
         $rulecrit   = new \RuleCriteria();
-        $ruleaction = new \RuleAction();
+        $ruleaction = new RuleAction();
 
         $ruletid = $ruleticket->add($ruletinput = [
             'name'         => 'testManager',
@@ -693,7 +693,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruletid,
             'criteria'  => 'itilcategories_id',
-            'condition' => \Rule::PATTERN_IS,
+            'condition' => Rule::PATTERN_IS,
             'pattern'   => 0,
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
@@ -741,7 +741,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         // Add rule for create / update trigger (and assign action)
         $ruleticket = new \RuleTicket();
         $rulecrit   = new \RuleCriteria();
-        $ruleaction = new \RuleAction();
+        $ruleaction = new RuleAction();
 
         $ruletid = $ruleticket->add($ruletinput = [
             'name'         => 'test associated element : project',
@@ -757,7 +757,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruletid,
             'criteria'  => 'content',
-            'condition' => \Rule::PATTERN_CONTAIN,
+            'condition' => Rule::PATTERN_CONTAIN,
             'pattern'   => 'project',
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
@@ -869,7 +869,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $rule_criteria_id = $rule_criteria->add([
             'rules_id'  => $rule_ticket_id,
             'criteria'  => '_groups_id_requester',
-            'condition' => \Rule::PATTERN_IS,
+            'condition' => Rule::PATTERN_IS,
             'pattern'   => $group_id1,
         ]);
         $this->assertGreaterThan(0, $rule_criteria_id);
@@ -981,7 +981,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
 
         $ruleticket = new \RuleTicket();
         $rulecrit   = new \RuleCriteria();
-        $ruleaction = new \RuleAction();
+        $ruleaction = new RuleAction();
 
         $ruletid = $ruleticket->add($ruletinput = [
             'name'         => "test rule SLA",
@@ -1020,7 +1020,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruletid,
             'criteria'  => 'slas_id_ttr',
-            'condition' => \Rule::PATTERN_IS,
+            'condition' => Rule::PATTERN_IS,
             'pattern'   => $slas_id_ttr,
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
@@ -1028,13 +1028,13 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruletid,
             'criteria'  => 'urgency',
-            'condition' => \Rule::PATTERN_IS,
+            'condition' => Rule::PATTERN_IS,
             'pattern'   => 5,
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
 
         //create new location
-        $location = new \Location();
+        $location = new Location();
         $location_id = $location->add($location_input = [
             "name" => "location1",
         ]);
@@ -1106,13 +1106,13 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->createItem("RuleCriteria", [
             'rules_id'  => $rule->getID(),
             'criteria'  => 'locations_id',
-            'condition' => \Rule::PATTERN_DOES_NOT_EXISTS,
+            'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
             'pattern'   => 1,
         ]);
         $this->createItem("RuleCriteria", [
             'rules_id'  => $rule->getID(),
             'criteria'  => '_locations_id_of_requester',
-            'condition' => \Rule::PATTERN_EXISTS,
+            'condition' => Rule::PATTERN_EXISTS,
             'pattern'   => 1,
         ]);
         $this->createItem("RuleAction", [
@@ -1209,7 +1209,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         // Create rule
         $ruleticket = new \RuleTicket();
         $rulecrit   = new \RuleCriteria();
-        $ruleaction = new \RuleAction();
+        $ruleaction = new RuleAction();
 
         $ruletid = $ruleticket->add($ruletinput = [
             'name'         => 'test writer criterion',
@@ -1224,7 +1224,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruletid,
             'criteria'  => 'users_id_recipient',
-            'condition' => \Rule::PATTERN_IS,
+            'condition' => Rule::PATTERN_IS,
             'pattern'   => $user_id,
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
@@ -1252,7 +1252,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
     {
         $this->login('glpi', 'glpi');
 
-        $followuptemplate = new \ITILFollowupTemplate();
+        $followuptemplate = new ITILFollowupTemplate();
         $templateid = $followuptemplate->add($templateinput = [
             'name' => 'followuptemplate_' . __FUNCTION__,
             'content' => 'Test',
@@ -1262,7 +1262,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         // Create the rule to change status and add a followup template
         $ruleticket = new \RuleTicket();
         $rulecrit   = new \RuleCriteria();
-        $ruleaction = new \RuleAction();
+        $ruleaction = new RuleAction();
 
         $ruletid = $ruleticket->add($ruletinput = [
             'name'         => 'test do not compute status followup',
@@ -1277,7 +1277,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruletid,
             'criteria'  => 'name',
-            'condition' => \Rule::PATTERN_CONTAIN,
+            'condition' => Rule::PATTERN_CONTAIN,
             'pattern'   => 'test',
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
@@ -1331,7 +1331,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $ticket = new \Ticket();
         $ticket->getFromDB($tickets_id);
 
-        $this->assertEquals(\CommonITILObject::WAITING, $ticket->fields['status']);
+        $this->assertEquals(CommonITILObject::WAITING, $ticket->fields['status']);
 
         // Create followup without _do_not_compute_status
         $this->createItem('ITILFollowup', [
@@ -1344,7 +1344,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $ticket = new \Ticket();
         $ticket->getFromDB($tickets_id);
 
-        $this->assertEquals(\CommonITILObject::ASSIGNED, $ticket->fields['status']);
+        $this->assertEquals(CommonITILObject::ASSIGNED, $ticket->fields['status']);
     }
 
 
@@ -1357,7 +1357,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->login('glpi', 'glpi');
 
         // Create followup template
-        $followuptemplate = new \ITILFollowupTemplate();
+        $followuptemplate = new ITILFollowupTemplate();
         $templateid = $followuptemplate->add($templateinput = [
             'name' => 'followuptemplate_' . __FUNCTION__,
             'content' => 'Test',
@@ -1367,7 +1367,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         // Create the rule to add a followup template and to not compute takeintoaccount delay
         $ruleticket = new \RuleTicket();
         $rulecrit   = new \RuleCriteria();
-        $ruleaction = new \RuleAction();
+        $ruleaction = new RuleAction();
 
         // create rule
         $ruletid = $ruleticket->add($ruletinput = [
@@ -1384,7 +1384,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruletid,
             'criteria'  => 'name',
-            'condition' => \Rule::PATTERN_CONTAIN,
+            'condition' => Rule::PATTERN_CONTAIN,
             'pattern'   => 'test',
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
@@ -1433,14 +1433,14 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $ticket->getFromDB($tickets_id);
 
         // check that ticket status is always new
-        $this->assertEquals(\CommonITILObject::INCOMING, $ticket->fields['status']);
+        $this->assertEquals(CommonITILObject::INCOMING, $ticket->fields['status']);
         // check that ticket takeintoaccount delay is not computed
         $this->assertEquals(0, $ticket->fields['takeintoaccount_delay_stat']);
         // followup well added
         $this->assertEquals(
             1,
             countElementsInTable(
-                \ITILFollowup::getTable(),
+                ITILFollowup::getTable(),
                 ['itemtype' => \Ticket::getType(), 'items_id' => $tickets_id]
             )
         );

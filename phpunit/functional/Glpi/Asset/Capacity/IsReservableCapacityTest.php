@@ -38,6 +38,9 @@ use DbTestCase;
 use DisplayPreference;
 use Entity;
 use Glpi\Asset\Capacity;
+use Glpi\Asset\Capacity\HasHistoryCapacity;
+use Glpi\Asset\Capacity\HasNotepadCapacity;
+use Glpi\Asset\Capacity\IsReservableCapacity;
 use Glpi\PHPUnit\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use Log;
 use ReservationItem;
@@ -48,32 +51,32 @@ class IsReservableCapacityTest extends DbTestCase
 
     protected function getTargetCapacity(): string
     {
-        return \Glpi\Asset\Capacity\IsReservableCapacity::class;
+        return IsReservableCapacity::class;
     }
 
     public function testCapacityActivation(): void
     {
         global $CFG_GLPI;
 
-        $root_entity_id = getItemByTypeName(\Entity::class, '_test_root_entity', true);
+        $root_entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\IsReservableCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
+                new Capacity(name: IsReservableCapacity::class),
+                new Capacity(name: HasNotepadCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\IsReservableCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: IsReservableCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_3  = $definition_3->getAssetClassName();
@@ -123,15 +126,15 @@ class IsReservableCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\IsReservableCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: IsReservableCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\IsReservableCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: IsReservableCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
@@ -152,14 +155,14 @@ class IsReservableCapacityTest extends DbTestCase
         );
 
         $reservation_item_1 = $this->createItem(
-            \ReservationItem::class,
+            ReservationItem::class,
             [
                 'itemtype'     => $item_1::class,
                 'items_id'     => $item_1->getID(),
             ]
         );
         $reservation_item_2 = $this->createItem(
-            \ReservationItem::class,
+            ReservationItem::class,
             [
                 'itemtype'     => $item_2::class,
                 'items_id'     => $item_2->getID(),
@@ -190,10 +193,10 @@ class IsReservableCapacityTest extends DbTestCase
         ];
 
         // Ensure relation, display preferences and logs exists, and class is registered to global config
-        $this->assertInstanceOf(\ReservationItem::class, \ReservationItem::getById($reservation_item_1->getID()));
+        $this->assertInstanceOf(ReservationItem::class, ReservationItem::getById($reservation_item_1->getID()));
         $this->assertInstanceOf(DisplayPreference::class, DisplayPreference::getById($displaypref_1->getID()));
         $this->assertEquals(2, countElementsInTable(Log::getTable(), $item_1_logs_criteria)); //create + add volume
-        $this->assertInstanceOf(\ReservationItem::class, \ReservationItem::getById($reservation_item_2->getID()));
+        $this->assertInstanceOf(ReservationItem::class, ReservationItem::getById($reservation_item_2->getID()));
         $this->assertInstanceOf(DisplayPreference::class, DisplayPreference::getById($displaypref_2->getID()));
         $this->assertEquals(2, countElementsInTable(Log::getTable(), $item_2_logs_criteria)); //create + add volume
         $this->assertContains($classname_1, $CFG_GLPI['reservation_types']);
@@ -201,13 +204,13 @@ class IsReservableCapacityTest extends DbTestCase
 
         // Disable capacity and check that relations have been cleaned, and class is unregistered from global config
         $this->assertTrue($definition_1->update(['id' => $definition_1->getID(), 'capacities' => []]));
-        $this->assertFalse(\ReservationItem::getById($reservation_item_1->getID()));
+        $this->assertFalse(ReservationItem::getById($reservation_item_1->getID()));
         $this->assertFalse(DisplayPreference::getById($displaypref_1->getID()));
         $this->assertEquals(0, countElementsInTable(Log::getTable(), $item_1_logs_criteria));
         $this->assertNotContains($classname_1, $CFG_GLPI['reservation_types']);
 
         // Ensure relations, logs and global registration are preserved for other definition
-        $this->assertInstanceOf(\ReservationItem::class, \ReservationItem::getById($reservation_item_2->getID()));
+        $this->assertInstanceOf(ReservationItem::class, ReservationItem::getById($reservation_item_2->getID()));
         $this->assertInstanceOf(DisplayPreference::class, DisplayPreference::getById($displaypref_2->getID()));
         $this->assertEquals(2, countElementsInTable(Log::getTable(), $item_2_logs_criteria));
         $this->assertContains($classname_2, $CFG_GLPI['reservation_types']);

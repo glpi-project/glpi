@@ -46,13 +46,13 @@ class ValidationStepTest extends \DbTestCase
 
     public function testDefaultValidationStepExistAtInstallation()
     {
-        $this->assertGreaterThan(0, countElementsInTable(\ValidationStep::getTable()), 'At least one validation step should be created at installation');
+        $this->assertGreaterThan(0, countElementsInTable(ValidationStep::getTable()), 'At least one validation step should be created at installation');
         $this->assertEquals(1, $this->getInitialDefault()->fields['is_default'], 'A default validation step should be created at installation');
     }
 
     public function testTheDefaultValidationCannotBeDeleted()
     {
-        assert(1 === countElementsInTable(\ValidationStep::getTable()), 'Test expects only one validation step at start');
+        assert(1 === countElementsInTable(ValidationStep::getTable()), 'Test expects only one validation step at start');
 
         $default = $this->getInitialDefault();
         $this->assertFalse($default->delete(['id' => $default->getID()]), 'The last remaining validation step must not be deleted');
@@ -76,7 +76,7 @@ class ValidationStepTest extends \DbTestCase
 
     public function testDefaultAttributeCannotBeRemoved()
     {
-        assert(1 === countElementsInTable(\ValidationStep::getTable()), 'Test expects only one validation step at start');
+        assert(1 === countElementsInTable(ValidationStep::getTable()), 'Test expects only one validation step at start');
 
         $default = $this->getInitialDefault();
         $this->assertTrue($default->update(['id' => $default->getID(), 'is_default' => 0, 'name' => 'new name']));
@@ -89,7 +89,7 @@ class ValidationStepTest extends \DbTestCase
     {
         // initial default is the default (@see testDefaultValidationStepExistAtInstallation() )
         // act : create a new validation step and set it as default
-        $this->createItem(\ValidationStep::class, ['is_default' => 1] + $this->getValidValidationStepData());
+        $this->createItem(ValidationStep::class, ['is_default' => 1] + $this->getValidValidationStepData());
 
         // assert
         $this->assertEquals(0, $this->getInitialDefault()->fields['is_default'], 'Previous default validation step should not be the default anymore.');
@@ -98,7 +98,7 @@ class ValidationStepTest extends \DbTestCase
     public function testNameAttributeIsMandatory()
     {
         // assert on add
-        $vs = new \ValidationStep();
+        $vs = new ValidationStep();
         $data = $this->getValidValidationStepData();
         unset($data['name']);
 
@@ -106,7 +106,7 @@ class ValidationStepTest extends \DbTestCase
         $this->hasSessionMessages(ERROR, ['The name field is mandatory']);
 
         // assert on update
-        $vs = new \ValidationStep();
+        $vs = new ValidationStep();
         $data = $this->getValidValidationStepData();
         $data['id'] = $this->getInitialDefault()->getID();
         $data['name'] = '';
@@ -118,7 +118,7 @@ class ValidationStepTest extends \DbTestCase
     public function testMinimalRequiredValidationPercentAttributeIsMandatory()
     {
         // assert on add
-        $vs = new \ValidationStep();
+        $vs = new ValidationStep();
         $data = $this->getValidValidationStepData();
         unset($data['minimal_required_validation_percent']);
         $validation_error_message = sprintf(__s('The %s field is mandatory and must be beetween 0 and 100.'), $vs->getAdditionalField('minimal_required_validation_percent')['label'] ?? 'minimal_required_validation_percent');
@@ -126,7 +126,7 @@ class ValidationStepTest extends \DbTestCase
         $this->hasSessionMessages(ERROR, [$validation_error_message]);
 
         // assert on update
-        $vs = new \ValidationStep();
+        $vs = new ValidationStep();
         $data = $this->getValidValidationStepData();
         $data['id'] = $this->getInitialDefault()->getID();
         $data['minimal_required_validation_percent'] = '';
@@ -137,7 +137,7 @@ class ValidationStepTest extends \DbTestCase
 
     public function testMinimalRequiredValidationPercentAttributeIsAPercentage()
     {
-        $vs = new \ValidationStep();
+        $vs = new ValidationStep();
         $data = $this->getValidValidationStepData();
         $expected_validation_error_message = sprintf(__s('The %s field is mandatory and must be beetween 0 and 100.'), $vs->getAdditionalField('minimal_required_validation_percent')['label'] ?? 'minimal_required_validation_percent');
 
@@ -152,7 +152,7 @@ class ValidationStepTest extends \DbTestCase
         $this->hasSessionMessages(ERROR, [$expected_validation_error_message]);
 
         // act update - set a value higher than 100
-        $vs = new \ValidationStep();
+        $vs = new ValidationStep();
         $data = $this->getValidValidationStepData();
         $data['id'] = $this->getInitialDefault()->getID();
         $data['minimal_required_validation_percent'] = 101;
@@ -160,7 +160,7 @@ class ValidationStepTest extends \DbTestCase
         $this->hasSessionMessages(ERROR, [$expected_validation_error_message]);
 
         // act update - set a value lower than 0
-        $vs = new \ValidationStep();
+        $vs = new ValidationStep();
         $data = $this->getValidValidationStepData();
         $data['id'] = $this->getInitialDefault()->getID();
         $data['minimal_required_validation_percent'] = -1;
@@ -365,8 +365,8 @@ class ValidationStepTest extends \DbTestCase
     }
 
     // --- helpers
-    private function getInitialDefault(): \ValidationStep
+    private function getInitialDefault(): ValidationStep
     {
-        return getItemByTypeName(\ValidationStep::class, 'Approval');
+        return getItemByTypeName(ValidationStep::class, 'Approval');
     }
 }

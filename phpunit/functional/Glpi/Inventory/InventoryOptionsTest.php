@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Inventory;
 
 use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\Inventory\Conf;
 use InventoryTestCase;
 
 class InventoryOptionsTest extends InventoryTestCase
@@ -215,7 +216,7 @@ JSON;
 
             //disable device import
             $this->login();
-            $conf = new \Glpi\Inventory\Conf();
+            $conf = new Conf();
             $this->assertTrue(
                 $conf->saveConf([
                     $config_name => 0,
@@ -239,7 +240,7 @@ JSON;
 
             //enable device import
             $this->login();
-            $conf = new \Glpi\Inventory\Conf();
+            $conf = new Conf();
             $this->assertTrue(
                 $conf->saveConf([
                     $config_name => 1,
@@ -298,7 +299,7 @@ JSON;
 
         //disable volume import
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $conf->saveConf([
                 'import_volume' => 0,
@@ -322,7 +323,7 @@ JSON;
 
         //enable volume import, but not network or removable
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $conf->saveConf([
                 'import_volume' => 1,
@@ -347,7 +348,7 @@ JSON;
 
         //enable all volume import
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $conf->saveConf([
                 'component_networkdrive' => 1,
@@ -394,7 +395,7 @@ JSON;
 
         //disable network cards import
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $conf->saveConf([
                 'component_networkcard' => 0,
@@ -418,7 +419,7 @@ JSON;
 
         //enable network card import, but not virtuals
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $conf->saveConf([
                 'component_networkcard' => 1,
@@ -442,7 +443,7 @@ JSON;
 
         //enable virtual network cards import
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $conf->saveConf([
                 'component_networkcardvirtual' => 1,
@@ -481,7 +482,7 @@ JSON;
 
         //disable peripherals import
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $conf->saveConf([
                 'import_peripheral' => 0,
@@ -513,7 +514,7 @@ JSON;
 
         //enable peripherals import
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $conf->saveConf([
                 'import_peripheral' => 1,
@@ -557,7 +558,7 @@ JSON;
 
         //disable monitors import
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $conf->saveConf([
                 'import_monitor' => 0,
@@ -589,7 +590,7 @@ JSON;
 
         //enable monitor import
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $conf->saveConf([
                 'import_monitor' => 1,
@@ -633,7 +634,7 @@ JSON;
 
         //disable printers import
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $conf->saveConf([
                 'import_printer' => 0,
@@ -665,7 +666,7 @@ JSON;
 
         //enable printer import
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $conf->saveConf([
                 'import_printer' => 1,
@@ -710,7 +711,7 @@ JSON;
 
         //disable software import
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $conf->saveConf([
                 'import_software' => 0,
@@ -741,7 +742,7 @@ JSON;
 
         //enable software import
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $conf->saveConf([
                 'import_software' => 1,
@@ -786,7 +787,7 @@ JSON;
 
         //disable antivirus import
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $conf->saveConf([
                 'import_antivirus' => 0,
@@ -810,7 +811,7 @@ JSON;
 
         //enable antivirus import
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $conf->saveConf([
                 'import_antivirus' => 1,
@@ -891,7 +892,7 @@ JSON;
 
         //disable unmanaged import
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $conf->saveConf([
                 'import_unmanaged' => 0,
@@ -910,7 +911,7 @@ JSON;
 
         //enable unmanaged import
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $conf->saveConf([
                 'import_unmanaged' => 1,

@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Inventory;
 
+use Glpi\Inventory\Conf;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 
@@ -50,7 +51,7 @@ class ConfTest extends \GLPITestCase
             'ocs',
         ];
 
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertSame($expected, $conf->knownInventoryExtensions());
     }
 
@@ -76,7 +77,7 @@ class ConfTest extends \GLPITestCase
     #[DataProvider('inventoryfilesProvider')]
     public function testIsInventoryFile(string $file, bool $expected)
     {
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertSame($expected, $conf->isInventoryFile($file));
     }
 
@@ -84,7 +85,7 @@ class ConfTest extends \GLPITestCase
     public static function confProvider(): array
     {
         $provider = [];
-        $defaults = \Glpi\Inventory\Conf::getDefaults();
+        $defaults = Conf::getDefaults();
         foreach ($defaults as $key => $value) {
             $provider[] = [
                 'key'    => $key,
@@ -97,13 +98,13 @@ class ConfTest extends \GLPITestCase
     #[DataProvider('confProvider')]
     public function testGetter($key, $value)
     {
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertEquals($value, $conf->$key);
     }
 
     public function testErrorGetter()
     {
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertNull($conf->doesNotExists);
         $this->hasPhpLogRecordThatContains('Property doesNotExists does not exists!', LogLevel::WARNING);
         $this->hasSessionMessages(WARNING, ['Property doesNotExists does not exists!']);

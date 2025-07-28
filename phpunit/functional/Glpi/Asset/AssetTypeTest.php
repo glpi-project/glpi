@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Asset;
 
 use DbTestCase;
+use Glpi\Asset\AssetType;
 
 class AssetTypeTest extends DbTestCase
 {
@@ -77,7 +78,7 @@ class AssetTypeTest extends DbTestCase
             $expected_class = $row['expected_class'];
             $expected_fields = $row['expected_fields'];
 
-            $asset_type = \Glpi\Asset\AssetType::getById($id);
+            $asset_type = AssetType::getById($id);
 
             $this->assertInstanceOf($expected_class, $asset_type);
 

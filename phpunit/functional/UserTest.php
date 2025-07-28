@@ -37,6 +37,7 @@ namespace tests\units;
 use DateInterval;
 use DateTime;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Exception\ForgetPasswordException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Profile_User;
 use Psr\Log\LogLevel;
@@ -88,7 +89,7 @@ class UserTest extends \DbTestCase
             'password'  => TU_PASS,
             'password2' => TU_PASS,
         ];
-        $this->expectException(\Glpi\Exception\ForgetPasswordException::class);
+        $this->expectException(ForgetPasswordException::class);
         $user->updateForgottenPassword($input);
     }
 
@@ -130,7 +131,7 @@ class UserTest extends \DbTestCase
     {
         $this->login(); // must be authenticated to update emails
 
-        $user = new \User();
+        $user = new User();
 
         $this->assertSame('', $user->getDefaultEmail());
         $this->assertSame([], $user->getAllEmails());
@@ -169,7 +170,7 @@ class UserTest extends \DbTestCase
         $this->login(); // must be authenticated to update emails
 
         // Create a user with some emails
-        $user1 = new \User();
+        $user1 = new User();
         $uid1 = (int) $user1->add([
             'name'   => 'test_email 1',
             '_useremails'  => [
@@ -201,7 +202,7 @@ class UserTest extends \DbTestCase
         );
 
         // Create another user
-        $user2 = new \User();
+        $user2 = new User();
         $uid2 = $user2->add([
             'name'   => 'test_email 2',
             '_useremails'  => [
@@ -288,7 +289,7 @@ class UserTest extends \DbTestCase
 
     public function testGetFromDBbyTokenWrongField()
     {
-        $user = new \User();
+        $user = new User();
 
         $res = $user->getFromDBbyToken('1485dd60301311eda2610242ac12000249aef69a', 'my_field');
         $this->assertFalse($res);
@@ -300,7 +301,7 @@ class UserTest extends \DbTestCase
 
     public function testGetFromDBbyTokenNotString()
     {
-        $user = new \User();
+        $user = new User();
         $res = $user->getFromDBbyToken(['REGEX', '.*'], 'api_token');
         $this->assertFalse($res);
         $this->hasPhpLogRecordThatContains(
@@ -311,7 +312,7 @@ class UserTest extends \DbTestCase
 
     public function testGetFromDBbyToken()
     {
-        $user = new \User();
+        $user = new User();
         $uid = $user->add([
             'name'      => 'test_token',
             'password'  => 'test_password',
@@ -326,7 +327,7 @@ class UserTest extends \DbTestCase
         $this->assertTrue($user->getFromDB($uid));
         $this->assertEquals(40, strlen($token));
 
-        $user2 = new \User();
+        $user2 = new User();
         $this->assertTrue($user2->getFromDBbyToken($token));
         $this->assertSame($user->fields, $user2->fields);
     }
@@ -334,7 +335,7 @@ class UserTest extends \DbTestCase
     public function testPrepareInputForAdd()
     {
         $this->login();
-        $user = new \User();
+        $user = new User();
 
         $input = [
             'name'   => 'prepare_for_add',
@@ -361,7 +362,7 @@ class UserTest extends \DbTestCase
         //add same user twice
         $input = ['name' => 'new_user'];
         $this->assertGreaterThan(0, $user->add($input));
-        $user = new \User();
+        $user = new User();
         $this->assertFalse($user->add($input));
         $this->hasSessionMessages(ERROR, ['Unable to add. The user already exists.']);
 
@@ -432,7 +433,7 @@ class UserTest extends \DbTestCase
 
         $this->login();
 
-        $user = new \User();
+        $user = new User();
 
         $default_values = [
             'authtype'     => 1,
@@ -476,7 +477,7 @@ class UserTest extends \DbTestCase
 
         $this->login();
 
-        $user = \getItemByTypeName(\User::class, 'glpi');
+        $user = \getItemByTypeName(User::class, 'glpi');
 
         // Valid PDF font
         $input = [
@@ -536,7 +537,7 @@ class UserTest extends \DbTestCase
     public function testPrepareInputForUpdateTimezone(array $input, array $expected)
     {
         $this->login();
-        $user = new \User();
+        $user = new User();
         $username = 'prepare_for_update_' . mt_rand();
         $user_id = $user->add(
             [
@@ -591,7 +592,7 @@ class UserTest extends \DbTestCase
             $expected = $row['expected'];
             $messages = $row['messages'] ?? null;
 
-            $user = new \User();
+            $user = new User();
             $username = 'prepare_for_update_' . mt_rand();
             $user_id = $user->add(
                 [
@@ -739,7 +740,7 @@ class UserTest extends \DbTestCase
         $this->setEntity('_test_root_entity', true);
         $eid = getItemByTypeName('Entity', '_test_root_entity', true);
 
-        $user = new \User();
+        $user = new User();
         ;
 
         //user with a profile
@@ -754,7 +755,7 @@ class UserTest extends \DbTestCase
         $this->assertSame('create_user', $user->fields['name']);
         $this->assertSame(0, $user->fields['profiles_id']);
 
-        $puser = new \Profile_User();
+        $puser = new Profile_User();
         $this->assertTrue($puser->getFromDBByCrit(['users_id' => $uid]));
         $this->assertSame($pid, $puser->fields['profiles_id']);
         $this->assertSame($eid, $puser->fields['entities_id']);
@@ -774,7 +775,7 @@ class UserTest extends \DbTestCase
         $this->assertSame('create_user2', $user->fields['name']);
         $this->assertSame(0, $user->fields['profiles_id']);
 
-        $puser = new \Profile_User();
+        $puser = new Profile_User();
         $this->assertTrue($puser->getFromDBByCrit(['users_id' => $uid2]));
         $this->assertSame($pid, $puser->fields['profiles_id']);
         $this->assertSame($eid, $puser->fields['entities_id']);
@@ -793,7 +794,7 @@ class UserTest extends \DbTestCase
         $this->assertTrue($user->getFromDB($uid3));
         $this->assertSame('create_user3', $user->fields['name']);
 
-        $puser = new \Profile_User();
+        $puser = new Profile_User();
         $this->assertTrue($puser->getFromDBByCrit(['users_id' => $uid3]));
         $this->assertSame($pid, $puser->fields['profiles_id']);
         $this->assertSame($eid2, $puser->fields['entities_id']);
@@ -811,7 +812,7 @@ class UserTest extends \DbTestCase
         $this->assertTrue($user->getFromDB($uid4));
         $this->assertSame('create_user4', $user->fields['name']);
 
-        $puser = new \Profile_User();
+        $puser = new Profile_User();
         $this->assertTrue($puser->getFromDBByCrit(['users_id' => $uid4]));
         $this->assertSame($pid, $puser->fields['profiles_id']);
         $this->assertSame($eid2, $puser->fields['entities_id']);
@@ -823,7 +824,7 @@ class UserTest extends \DbTestCase
     {
         $this->login();
 
-        $user = new \User();
+        $user = new User();
         ;
 
         // Create user with profile
@@ -839,7 +840,7 @@ class UserTest extends \DbTestCase
         $_SESSION['glpi_currenttime'] = $date;
 
         // Add authorizations
-        $puser = new \Profile_User();
+        $puser = new Profile_User();
         $this->assertGreaterThan(
             0,
             $puser->add([
@@ -866,7 +867,7 @@ class UserTest extends \DbTestCase
         $added = $user->clone();
         $this->assertGreaterThan(0, (int) $added);
 
-        $clonedUser = new \User();
+        $clonedUser = new User();
         $this->assertTrue($clonedUser->getFromDB($added));
 
         $fields = $user->fields;
@@ -879,8 +880,8 @@ class UserTest extends \DbTestCase
                     break;
                 case 'date_mod':
                 case 'date_creation':
-                    $dateClone = new \DateTime($clonedUser->getField($k));
-                    $expectedDate = new \DateTime($date);
+                    $dateClone = new DateTime($clonedUser->getField($k));
+                    $expectedDate = new DateTime($date);
                     $this->assertEquals($expectedDate, $dateClone);
                     break;
                 case 'name':
@@ -905,7 +906,7 @@ class UserTest extends \DbTestCase
 
     public function testGetFromDBbyDn()
     {
-        $user = new \User();
+        $user = new User();
         ;
         $dn = 'user=user_with_dn,dc=test,dc=glpi-project,dc=org';
 
@@ -922,7 +923,7 @@ class UserTest extends \DbTestCase
 
     public function testGetFromDBbySyncField()
     {
-        $user = new \User();
+        $user = new User();
         ;
         $sync_field = 'abc-def-ghi';
 
@@ -940,7 +941,7 @@ class UserTest extends \DbTestCase
 
     public function testGetFromDBbyName()
     {
-        $user = new \User();
+        $user = new User();
         ;
         $name = 'user_with_name';
 
@@ -956,7 +957,7 @@ class UserTest extends \DbTestCase
 
     public function testGetFromDBbyNameAndAuth()
     {
-        $user = new \User();
+        $user = new User();
         ;
         $name = 'user_with_auth';
 
@@ -1005,7 +1006,7 @@ class UserTest extends \DbTestCase
     #[DataProvider('rawNameProvider')]
     public function testGetFriendlyName($input, $rawname)
     {
-        $user = new \User();
+        $user = new User();
         $this->assertSame('', $user->getFriendlyName());
 
         $uid = $user->add($input);
@@ -1022,7 +1023,7 @@ class UserTest extends \DbTestCase
             'password2' => 'mypass',
         ];
 
-        $user = new \User();
+        $user = new User();
         $uid = $user->add($input);
         $this->assertGreaterThan(0, $uid);
         $this->assertTrue($user->getFromDB($uid));
@@ -1039,7 +1040,7 @@ class UserTest extends \DbTestCase
     public function testPre_updateInDB()
     {
         $this->login();
-        $user = new \User();
+        $user = new User();
 
         $uid = $user->add([
             'name' => 'preupdate_user',
@@ -1082,7 +1083,7 @@ class UserTest extends \DbTestCase
 
     public function testGetIdByName()
     {
-        $user = new \User();
+        $user = new User();
 
         $uid = $user->add(['name' => 'id_by_name']);
         $this->assertGreaterThan(0, $uid);
@@ -1091,7 +1092,7 @@ class UserTest extends \DbTestCase
 
     public function testGetIdByField()
     {
-        $user = new \User();
+        $user = new User();
 
         $uid = $user->add([
             'name'   => 'id_by_field',
@@ -1115,12 +1116,12 @@ class UserTest extends \DbTestCase
     {
         $this->login();
 
-        $user = new \User();
+        $user = new User();
         $this->assertCount(1, $user->getAdditionalMenuOptions());
         $this->assertArrayHasKey('ldap', $user->getAdditionalMenuOptions());
 
         $this->login('normal', 'normal');
-        $user = new \User();
+        $user = new User();
         $this->assertFalse($user->getAdditionalMenuOptions());
     }
 
@@ -1200,7 +1201,7 @@ class UserTest extends \DbTestCase
             $expected_should_change_password = $row['expected_should_change_password'];
             $expected_has_password_expire = $row['expected_has_password_expire'];
 
-            $user = new \User();
+            $user = new User();
             $username = 'prepare_for_update_' . mt_rand();
             $user_id = $user->add(
                 [
@@ -1326,7 +1327,7 @@ class UserTest extends \DbTestCase
         // second has its password set 11 day ago
         // and so on
         // tenth has its password set 91 day ago
-        $user = new \User();
+        $user = new User();
         for ($i = 1; $i < 100; $i += 10) {
             $user_id = $user->add(
                 [
@@ -1347,7 +1348,7 @@ class UserTest extends \DbTestCase
         }
 
         $crontask = new \CronTask();
-        $this->assertTrue($crontask->getFromDBbyName(\User::getType(), 'passwordexpiration'));
+        $this->assertTrue($crontask->getFromDBbyName(User::getType(), 'passwordexpiration'));
         $crontask->fields['param'] = $cron_limit;
 
         $cfg_backup = $CFG_GLPI;
@@ -1356,29 +1357,29 @@ class UserTest extends \DbTestCase
         $CFG_GLPI['password_expiration_lock_delay'] = $lock_delay;
         $CFG_GLPI['use_notifications']  = true;
         $CFG_GLPI['notifications_ajax'] = 1;
-        $result = \User::cronPasswordExpiration($crontask);
+        $result = User::cronPasswordExpiration($crontask);
         $CFG_GLPI = $cfg_backup;
 
         $this->assertEquals($expected_result, $result);
         $this->assertEquals(
             $expected_notifications_count,
-            countElementsInTable(\Alert::getTable(), ['itemtype' => \User::getType()])
+            countElementsInTable(\Alert::getTable(), ['itemtype' => User::getType()])
         );
-        $DB->delete(\Alert::getTable(), ['itemtype' => \User::getType()]); // reset alerts
+        $DB->delete(\Alert::getTable(), ['itemtype' => User::getType()]); // reset alerts
 
         $user_crit = [
             'authtype'  => \Auth::DB_GLPI,
             'is_active' => 0,
         ];
-        $this->assertEquals($expected_lock_count, countElementsInTable(\User::getTable(), $user_crit));
-        $DB->update(\User::getTable(), ['is_active' => 1], $user_crit); // reset users
+        $this->assertEquals($expected_lock_count, countElementsInTable(User::getTable(), $user_crit));
+        $DB->update(User::getTable(), ['is_active' => 1], $user_crit); // reset users
     }
 
     protected function providerGetSubstitutes()
     {
         // remove all substitutes, if any
         $validator_substitute = new \ValidatorSubstitute();
-        $testedClass = \User::class;
+        $testedClass = User::class;
         $validator_substitute->deleteByCriteria([
             'users_id' => $testedClass::getIdByName('normal'),
         ]);
@@ -1415,7 +1416,7 @@ class UserTest extends \DbTestCase
             $input = $row['input'];
             $expected = $row['expected'];
 
-            $instance = new \User();
+            $instance = new User();
             $instance->getFromDB($input);
             $output = $instance->getSubstitutes();
             $this->assertEquals($expected, $output);
@@ -1426,7 +1427,7 @@ class UserTest extends \DbTestCase
     {
         // remove all delegators, if any
         $validator_substitute = new \ValidatorSubstitute();
-        $testedClass = \User::class;
+        $testedClass = User::class;
         $validator_substitute->deleteByCriteria([
             'users_id_substitute' => $testedClass::getIdByName('normal'),
         ]);
@@ -1463,7 +1464,7 @@ class UserTest extends \DbTestCase
             $input = $row['input'];
             $expected = $row['expected'];
 
-            $instance = new \User();
+            $instance = new User();
             $instance->getFromDB($input);
             $output = $instance->getDelegators($input);
             $this->assertEquals($expected, $output);
@@ -1473,7 +1474,7 @@ class UserTest extends \DbTestCase
     protected function providerIsSubstituteOf()
     {
         $validator_substitute = new \ValidatorSubstitute();
-        $testedClass = \User::class;
+        $testedClass = User::class;
         $validator_substitute->deleteByCriteria([
             'users_id' => $testedClass::getIdByName('normal'),
         ]);
@@ -1495,7 +1496,7 @@ class UserTest extends \DbTestCase
             'expected'           => true,
         ];
 
-        $instance = new \User();
+        $instance = new User();
         $success = $instance->update([
             'id' => $testedClass::getIdByName('normal'),
             'substitution_end_date' => '1999-01-01 12:00:00',
@@ -1594,7 +1595,7 @@ class UserTest extends \DbTestCase
             $use_date_range = $row['use_date_range'];
             $expected = $row['expected'];
 
-            $instance = new \User();
+            $instance = new User();
             $instance->getFromDB($users_id);
             $output = $instance->isSubstituteOf($users_id_delegator, $use_date_range);
             $this->assertEquals($expected, $output);
@@ -1605,7 +1606,7 @@ class UserTest extends \DbTestCase
     {
         global $DB, $CFG_GLPI;
 
-        $user = new \User();
+        $user = new User();
         // Set the password_forget_token of TU_USER to some random hex string and set the password_forget_token_date to now - 5 days
         $token = bin2hex(random_bytes(16));
         $this->assertTrue(
@@ -1624,12 +1625,12 @@ class UserTest extends \DbTestCase
         // Set password_init_token_delay config option to 1 day
         $CFG_GLPI['password_init_token_delay'] = DAY_TIMESTAMP;
 
-        $this->assertNull(\User::getUserByForgottenPasswordToken($token));
+        $this->assertNull(User::getUserByForgottenPasswordToken($token));
 
         // Set password_init_token_delay config option to 10 days
         $CFG_GLPI['password_init_token_delay'] = DAY_TIMESTAMP * 10;
 
-        $this->assertNotNull(\User::getUserByForgottenPasswordToken($token));
+        $this->assertNotNull(User::getUserByForgottenPasswordToken($token));
     }
 
     /**
@@ -1738,7 +1739,7 @@ class UserTest extends \DbTestCase
     /**
      * Tests for $user->validatePassword()
      *
-     * @param \User  $user     Test subject
+     * @param User  $user     Test subject
      * @param string $password Password to validate
      * @param array  $errors   Expected errors
      *
@@ -1771,7 +1772,7 @@ class UserTest extends \DbTestCase
         $this->assertTrue($super_admin->isLastSuperAdminProfile());
 
         // Default: 3 users with super admin account authorizations
-        $users = (new \User())->find([
+        $users = (new User())->find([
             'id' => new QuerySubQuery([
                 'SELECT' => 'users_id',
                 'FROM'   => Profile_User::getTable(),
@@ -1825,7 +1826,7 @@ class UserTest extends \DbTestCase
             return;
         }
 
-        $user = new \User();
+        $user = new User();
         $users_id = $user->add([
             'name' => 'for preferences',
             'login' => 'for preferences',
@@ -1942,7 +1943,7 @@ class UserTest extends \DbTestCase
     {
         global $DB;
 
-        $retrievedUser = new \User();
+        $retrievedUser = new User();
 
         // Get a user with a bad dn
         $this->assertFalse($retrievedUser->getFromDBbyDn(__FUNCTION__));
@@ -1961,7 +1962,7 @@ class UserTest extends \DbTestCase
 
         // Unset user_dn to check that user_dn_hash is used
         $DB->update(
-            \User::getTable(),
+            User::getTable(),
             ['user_dn' => ''],
             ['id' => $user->getID()]
         );
@@ -2021,7 +2022,7 @@ class UserTest extends \DbTestCase
     public function testToggleSavedSearchPin(string $initial_db_value, string $itemtype, bool $success, string $result_db_value): void
     {
         $user = $this->createItem(
-            \User::class,
+            User::class,
             [
                 'name'                  => __FUNCTION__ . (string) mt_rand(),
                 'savedsearches_pinned'  => $initial_db_value,
@@ -2091,7 +2092,7 @@ class UserTest extends \DbTestCase
             $this->login($login, $users_passwords[$login]);
 
             foreach ($targer_users_names as $target_user_name => $disclose) {
-                $target_user = \getItemByTypeName(\User::class, $target_user_name);
+                $target_user = \getItemByTypeName(User::class, $target_user_name);
 
                 $fields = $target_user->fields;
                 $this->assertArrayHasKey('password', $fields);
@@ -2101,7 +2102,7 @@ class UserTest extends \DbTestCase
                 $this->assertArrayHasKey('password_forget_token', $fields);
                 $this->assertArrayHasKey('password_forget_token_date', $fields);
 
-                \User::unsetUndisclosedFields($fields);
+                User::unsetUndisclosedFields($fields);
 
                 $this->assertEquals(false, \array_key_exists('password', $fields));
                 $this->assertEquals(false, \array_key_exists('personal_token', $fields));
@@ -2126,7 +2127,7 @@ class UserTest extends \DbTestCase
             'password_forget_token_date' => '2024-10-25 13:15:12',
         ];
 
-        \User::unsetUndisclosedFields($fields);
+        User::unsetUndisclosedFields($fields);
 
         $this->assertEquals(['name' => 'test'], $fields);
     }
@@ -2136,7 +2137,7 @@ class UserTest extends \DbTestCase
         $this->login();
         $entities_id = $this->getTestRootEntity(true);
 
-        $user = new \User();
+        $user = new User();
         $user->getFromDB($_SESSION['glpiID']);
 
         // Create a group that will be used to add a profile

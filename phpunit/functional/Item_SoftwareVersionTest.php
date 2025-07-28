@@ -85,9 +85,9 @@ class Item_SoftwareVersionTest extends DbTestCase
 
     public function testTypeName()
     {
-        $this->assertSame('Installation', \Item_SoftwareVersion::getTypeName(1));
-        $this->assertSame('Installations', \Item_SoftwareVersion::getTypeName(0));
-        $this->assertSame('Installations', \Item_SoftwareVersion::getTypeName(10));
+        $this->assertSame('Installation', Item_SoftwareVersion::getTypeName(1));
+        $this->assertSame('Installations', Item_SoftwareVersion::getTypeName(0));
+        $this->assertSame('Installations', Item_SoftwareVersion::getTypeName(10));
     }
 
     public function testPrepareInputForAdd()
@@ -98,7 +98,7 @@ class Item_SoftwareVersionTest extends DbTestCase
         $ver = getItemByTypeName('SoftwareVersion', '_test_softver_1', true);
 
         // Do some installations
-        $ins = new \Item_SoftwareVersion();
+        $ins = new Item_SoftwareVersion();
         $this->assertGreaterThan(
             0,
             $ins->add([
@@ -136,7 +136,7 @@ class Item_SoftwareVersionTest extends DbTestCase
         $ver = getItemByTypeName('SoftwareVersion', '_test_softver_1', true);
 
         // Do some installations
-        $ins = new \Item_SoftwareVersion();
+        $ins = new Item_SoftwareVersion();
         $this->assertGreaterThan(
             0,
             $ins->add([
@@ -174,7 +174,7 @@ class Item_SoftwareVersionTest extends DbTestCase
         $ver = getItemByTypeName('SoftwareVersion', '_test_softver_1', true);
 
         // Do some installations
-        $ins = new \Item_SoftwareVersion();
+        $ins = new Item_SoftwareVersion();
         $this->assertGreaterThan(
             0,
             $ins->add([
@@ -202,13 +202,13 @@ class Item_SoftwareVersionTest extends DbTestCase
 
         // Count installations
         $this->setEntity('_test_root_entity', true);
-        $this->assertSame(3, \Item_SoftwareVersion::countForVersion($ver), 'count in all tree');
+        $this->assertSame(3, Item_SoftwareVersion::countForVersion($ver), 'count in all tree');
 
         $this->setEntity('_test_root_entity', false);
-        $this->assertSame(1, \Item_SoftwareVersion::countForVersion($ver), 'count in root');
+        $this->assertSame(1, Item_SoftwareVersion::countForVersion($ver), 'count in root');
 
         $this->setEntity('_test_child_1', false);
-        $this->assertSame(2, \Item_SoftwareVersion::countForVersion($ver), 'count in child');
+        $this->assertSame(2, Item_SoftwareVersion::countForVersion($ver), 'count in child');
     }
 
     public function testUpdateDatasFromComputer()
@@ -219,7 +219,7 @@ class Item_SoftwareVersionTest extends DbTestCase
         $ver2 = getItemByTypeName('SoftwareVersion', '_test_softver_2', true);
 
         // Do some installations
-        $softver = new \Item_SoftwareVersion();
+        $softver = new Item_SoftwareVersion();
         $softver01 = $softver->add([
             'items_id'              => $computer1->getID(),
             'itemtype'              => 'Computer',
@@ -234,7 +234,7 @@ class Item_SoftwareVersionTest extends DbTestCase
         $this->assertGreaterThan(0, (int) $softver02);
 
         foreach ([$softver01, $softver02] as $tsoftver) {
-            $o = new \Item_SoftwareVersion();
+            $o = new Item_SoftwareVersion();
             $this->assertTrue($o->getFromDb($tsoftver));
             $this->assertEquals(0, $o->getField('is_deleted_item'));
         }
@@ -251,7 +251,7 @@ class Item_SoftwareVersionTest extends DbTestCase
 
         //check if all has been updated
         foreach ([$softver01, $softver02] as $tsoftver) {
-            $o = new \Item_SoftwareVersion();
+            $o = new Item_SoftwareVersion();
             $this->assertTrue($o->getFromDb($tsoftver));
             $this->assertEquals(1, $o->getField('is_deleted_item'));
         }
@@ -270,10 +270,10 @@ class Item_SoftwareVersionTest extends DbTestCase
 
         $this->assertSame(
             0,
-            \Item_SoftwareVersion::countForSoftware($soft1->fields['id'])
+            Item_SoftwareVersion::countForSoftware($soft1->fields['id'])
         );
 
-        $csoftver = new \Item_SoftwareVersion();
+        $csoftver = new Item_SoftwareVersion();
         $this->assertGreaterThan(
             0,
             $csoftver->add([
@@ -285,7 +285,7 @@ class Item_SoftwareVersionTest extends DbTestCase
 
         $this->assertSame(
             1,
-            \Item_SoftwareVersion::countForSoftware($soft1->fields['id'])
+            Item_SoftwareVersion::countForSoftware($soft1->fields['id'])
         );
     }
 }

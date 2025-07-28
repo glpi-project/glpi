@@ -35,6 +35,8 @@
 namespace tests\units\Glpi\Inventory\Asset;
 
 use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\Inventory\Conf;
+use Glpi\Inventory\Converter;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
@@ -71,7 +73,7 @@ class PeripheralTest extends AbstractInventoryAsset
     #[DataProvider('assetProvider')]
     public function testPrepare($xml, $expected)
     {
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
@@ -101,7 +103,7 @@ class PeripheralTest extends AbstractInventoryAsset
         //convert data
         $expected = $this->assetProvider()[0];
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($expected['xml']);
         $json = json_decode($data);
 
@@ -1240,7 +1242,7 @@ class PeripheralTest extends AbstractInventoryAsset
 
         //per default, configuration allows peripheral import. change that.
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $conf->saveConf([
                 'import_peripheral' => 0,

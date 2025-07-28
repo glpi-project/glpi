@@ -38,6 +38,7 @@ use DbTestCase;
 use GLPIKey;
 use Group;
 use Group_User;
+use LDAP\Connection;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Profile_User;
@@ -972,7 +973,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertGreaterThan(0, $import);
 
         //check group
-        $group = new \Group();
+        $group = new Group();
         $this->assertTrue($group->getFromDB($import));
 
         $this->assertSame($expected_group_name, $group->fields['name']);
@@ -992,7 +993,7 @@ class AuthLdapTest extends DbTestCase
         $ldap = $this->ldap;
 
         // Import group, unless it exists
-        $group = new \Group();
+        $group = new Group();
         if (!$group->getFromDBByCrit(['name' => $expected_group_name])) {
             $import = \AuthLDAP::ldapImportGroup(
                 $group_dn,
@@ -1025,7 +1026,7 @@ class AuthLdapTest extends DbTestCase
         $user = new \User();
         $this->assertTrue($user->getFromDB($import['id']));
 
-        $usergroups = \Group_User::getUserGroups($user->getID());
+        $usergroups = Group_User::getUserGroups($user->getID());
         $this->assertEquals($group->getID(), $usergroups[0]['id']);
         $this->assertSame($expected_group_name, $usergroups[0]['name']);
     }
@@ -1366,7 +1367,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertGreaterThan(0, $user_id);
 
         // check user has at least one profile
-        $pus = \Profile_User::getForUser($user_id);
+        $pus = Profile_User::getForUser($user_id);
         $this->assertCount(1, $pus);
         $pu = array_shift($pus);
         $this->assertEquals(1, $pu['profiles_id']);
@@ -2265,7 +2266,7 @@ class AuthLdapTest extends DbTestCase
     public function testRuleRight()
     {
         //prepare rules
-        $rules = new \RuleRight();
+        $rules = new RuleRight();
         $rules_id = $rules->add([
             'sub_type'     => 'RuleRight',
             'name'         => 'test ldap ruleright',
@@ -2318,7 +2319,7 @@ class AuthLdapTest extends DbTestCase
         $users_id = \User::getIdByName('brazil6');
         $this->assertGreaterThan(0, $users_id);
         // check the user got the entity/profiles assigned
-        $pu = \Profile_User::getForUser($users_id, true);
+        $pu = Profile_User::getForUser($users_id, true);
         $found = false;
         foreach ($pu as $right) {
             if (
@@ -2413,9 +2414,9 @@ class AuthLdapTest extends DbTestCase
         $users_id = \User::getIdByName('brazil6');
         $this->assertGreaterThan(0, $users_id);
 
-        $this->assertTrue(\Group_User::isUserInGroup($users_id, $group_id));
-        $this->assertFalse(\Group_User::isUserInGroup($users_id, $group2_id));
-        $this->assertTrue(\Group_User::isUserInGroup($users_id, $group3_id)); // from `ldap_field`/`ldap_value` group attributes
+        $this->assertTrue(Group_User::isUserInGroup($users_id, $group_id));
+        $this->assertFalse(Group_User::isUserInGroup($users_id, $group2_id));
+        $this->assertTrue(Group_User::isUserInGroup($users_id, $group3_id)); // from `ldap_field`/`ldap_value` group attributes
 
         // Check group
         $gu = new Group_User();
@@ -2445,12 +2446,12 @@ class AuthLdapTest extends DbTestCase
         $this->assertGreaterThan(0, $gu_id);
 
         // Check group
-        $this->assertTrue(\Group_User::isUserInGroup($users_id, $mgroup_id));
-        $this->assertTrue(\Group_User::isUserInGroup($users_id, $mgroup2_id));
-        $this->assertTrue(\Group_User::isUserInGroup($users_id, $group_id));
-        $this->assertFalse(\Group_User::isUserInGroup($users_id, $group2_id));
-        $this->assertTrue(\Group_User::isUserInGroup($users_id, $group3_id)); // from `ldap_field`/`ldap_value` group attributes
-        $this->assertEquals(4, \countElementsInTable(\Group_User::getTable(), ['users_id' => $users_id]));
+        $this->assertTrue(Group_User::isUserInGroup($users_id, $mgroup_id));
+        $this->assertTrue(Group_User::isUserInGroup($users_id, $mgroup2_id));
+        $this->assertTrue(Group_User::isUserInGroup($users_id, $group_id));
+        $this->assertFalse(Group_User::isUserInGroup($users_id, $group2_id));
+        $this->assertTrue(Group_User::isUserInGroup($users_id, $group3_id)); // from `ldap_field`/`ldap_value` group attributes
+        $this->assertEquals(4, \countElementsInTable(Group_User::getTable(), ['users_id' => $users_id]));
 
         // update action
         $this->updateItem(\RuleAction::class, $act_id, [
@@ -2463,12 +2464,12 @@ class AuthLdapTest extends DbTestCase
         $this->assertGreaterThan(0, $users_id);
 
         // Check the dynamic group is deleted without losing the manual groups
-        $this->assertTrue(\Group_User::isUserInGroup($users_id, $mgroup_id));
-        $this->assertTrue(\Group_User::isUserInGroup($users_id, $mgroup2_id));
-        $this->assertFalse(\Group_User::isUserInGroup($users_id, $group_id));
-        $this->assertTrue(\Group_User::isUserInGroup($users_id, $group2_id));
-        $this->assertTrue(\Group_User::isUserInGroup($users_id, $group3_id)); // from `ldap_field`/`ldap_value` group attributes
-        $this->assertEquals(4, \countElementsInTable(\Group_User::getTable(), ['users_id' => $users_id]));
+        $this->assertTrue(Group_User::isUserInGroup($users_id, $mgroup_id));
+        $this->assertTrue(Group_User::isUserInGroup($users_id, $mgroup2_id));
+        $this->assertFalse(Group_User::isUserInGroup($users_id, $group_id));
+        $this->assertTrue(Group_User::isUserInGroup($users_id, $group2_id));
+        $this->assertTrue(Group_User::isUserInGroup($users_id, $group3_id)); // from `ldap_field`/`ldap_value` group attributes
+        $this->assertEquals(4, \countElementsInTable(Group_User::getTable(), ['users_id' => $users_id]));
 
         // update criteria
         $crit_id = $this->updateItem(\RuleCriteria::class, $crit_id, [
@@ -2481,12 +2482,12 @@ class AuthLdapTest extends DbTestCase
         $this->assertGreaterThan(0, $users_id);
 
         // Check the dynamic group is deleted without losing the manual groups
-        $this->assertTrue(\Group_User::isUserInGroup($users_id, $mgroup_id));
-        $this->assertTrue(\Group_User::isUserInGroup($users_id, $mgroup2_id));
-        $this->assertFalse(\Group_User::isUserInGroup($users_id, $group_id));
-        $this->assertFalse(\Group_User::isUserInGroup($users_id, $group2_id));
-        $this->assertTrue(\Group_User::isUserInGroup($users_id, $group3_id)); // from `ldap_field`/`ldap_value` group attributes
-        $this->assertEquals(3, \countElementsInTable(\Group_User::getTable(), ['users_id' => $users_id]));
+        $this->assertTrue(Group_User::isUserInGroup($users_id, $mgroup_id));
+        $this->assertTrue(Group_User::isUserInGroup($users_id, $mgroup2_id));
+        $this->assertFalse(Group_User::isUserInGroup($users_id, $group_id));
+        $this->assertFalse(Group_User::isUserInGroup($users_id, $group2_id));
+        $this->assertTrue(Group_User::isUserInGroup($users_id, $group3_id)); // from `ldap_field`/`ldap_value` group attributes
+        $this->assertEquals(3, \countElementsInTable(Group_User::getTable(), ['users_id' => $users_id]));
     }
 
     /**
@@ -2656,13 +2657,13 @@ class AuthLdapTest extends DbTestCase
 
     private function checkLdapConnection($ldap_connection)
     {
-        $this->assertInstanceOf(\LDAP\Connection::class, $ldap_connection);
+        $this->assertInstanceOf(Connection::class, $ldap_connection);
     }
 
     public function testIgnoreImport()
     {
         //prepare rules
-        $rules = new \RuleRight();
+        $rules = new RuleRight();
         $rules_id = $rules->add([
             'sub_type'     => 'RuleRight',
             'name'         => 'test ldap ignore import',
@@ -2812,7 +2813,7 @@ class AuthLdapTest extends DbTestCase
 
         $ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
         $connection = $ldap->connect();
-        $this->assertInstanceOf(\LDAP\Connection::class, $connection);
+        $this->assertInstanceOf(Connection::class, $connection);
 
         $error = implode(
             "\n",

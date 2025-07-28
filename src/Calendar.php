@@ -208,7 +208,7 @@ class Calendar extends CommonDropdown
     }
 
     /**
-     * @see Glpi\Features\Clonable::post_clone
+     * @see Clonable::post_clone
      */
     public function post_clone($source, $history)
     {

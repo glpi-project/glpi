@@ -35,6 +35,10 @@
 namespace tests\units\Glpi\Inventory\Asset;
 
 use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\Inventory\Conf;
+use Glpi\Inventory\Converter;
+use Glpi\Inventory\Inventory;
+use Glpi\Inventory\Request;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
@@ -181,7 +185,7 @@ class ComputerTest extends AbstractInventoryAsset
         $date_now = date('Y-m-d H:i:s');
         $_SESSION['glpi_currenttime'] = $date_now;
         $asset = str_replace('DATE_NOW', $date_now, $asset);
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
@@ -247,7 +251,7 @@ class ComputerTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
@@ -398,7 +402,7 @@ class ComputerTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
@@ -504,7 +508,7 @@ class ComputerTest extends AbstractInventoryAsset
           <QUERY>INVENTORY</QUERY>
         </REQUEST>";
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
@@ -580,10 +584,10 @@ class ComputerTest extends AbstractInventoryAsset
         $json = json_decode($json_str);
 
         $computer = new \Computer();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
 
         $data = (array) $json->content;
-        $inventory = new \Glpi\Inventory\Inventory();
+        $inventory = new Inventory();
         $this->assertTrue($inventory->setData($json));
 
         $agent = new \Agent();
@@ -619,7 +623,7 @@ class ComputerTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
   </REQUEST>";
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
@@ -701,7 +705,7 @@ class ComputerTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
   </REQUEST>";
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
@@ -844,7 +848,7 @@ class ComputerTest extends AbstractInventoryAsset
 
         //per default, do not change states_id
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $conf->saveConf([
                 'states_id_default' => '-1',
@@ -916,7 +920,7 @@ class ComputerTest extends AbstractInventoryAsset
 
         //per default, do not change states_id
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $conf->saveConf([
                 'states_id_default' => '-1',
@@ -985,7 +989,7 @@ class ComputerTest extends AbstractInventoryAsset
         //per default, use entities_id 0
         //so change entities_id to 1
         $this->login();
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->assertTrue(
             $conf->saveConf([
                 'entities_id_default' => 1,
@@ -1242,7 +1246,7 @@ class ComputerTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
   </REQUEST>";
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
@@ -1305,7 +1309,7 @@ class ComputerTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
   </REQUEST>";
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
@@ -1687,7 +1691,7 @@ class ComputerTest extends AbstractInventoryAsset
 
         $this->createItem(\Computer::class, ['name' => $computer_name, 'entities_id' => $root_entity_id]);
 
-        $inventory_request = new \Glpi\Inventory\Request();
+        $inventory_request = new Request();
         $this->expectExceptionMessage('Unable to create item.');
         $inventory_request->handleRequest(
             "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>

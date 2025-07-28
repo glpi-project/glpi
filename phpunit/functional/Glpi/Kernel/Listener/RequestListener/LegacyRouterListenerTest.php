@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Kernel\Listener\RequestListener;
 
 use Glpi\Controller\LegacyFileLoadController;
+use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Kernel\Listener\RequestListener\LegacyRouterListener;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -659,7 +660,7 @@ class LegacyRouterListenerTest extends \GLPITestCase
         $event = $this->getRequestEvent('/plugins/notloadedplugin/front/test.php');
 
         $this->expectExceptionObject(
-            new \Glpi\Exception\Http\NotFoundHttpException('Plugin `notloadedplugin` is not loaded.')
+            new NotFoundHttpException('Plugin `notloadedplugin` is not loaded.')
         );
 
         $instance->onKernelRequest($event);

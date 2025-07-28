@@ -41,6 +41,7 @@ use Glpi\ContentTemplates\TemplateManager;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
 use Ticket;
+use Twig\Sandbox\SecurityPolicy;
 
 class TemplateManagerTest extends DbTestCase
 {
@@ -152,7 +153,7 @@ class TemplateManagerTest extends DbTestCase
     {
         // Not much to test here, maybe keepk this for code coverage ?
         $manager = new TemplateManager();
-        $this->assertInstanceOf(\Twig\Sandbox\SecurityPolicy::class, $manager->getSecurityPolicy());
+        $this->assertInstanceOf(SecurityPolicy::class, $manager->getSecurityPolicy());
     }
 
     /**

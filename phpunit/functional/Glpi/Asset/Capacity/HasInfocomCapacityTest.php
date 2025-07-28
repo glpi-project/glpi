@@ -39,6 +39,10 @@ use DisplayPreference;
 use Entity;
 use Glpi\Asset\Asset;
 use Glpi\Asset\Capacity;
+use Glpi\Asset\Capacity\HasDocumentsCapacity;
+use Glpi\Asset\Capacity\HasHistoryCapacity;
+use Glpi\Asset\Capacity\HasInfocomCapacity;
+use Glpi\Asset\Capacity\HasNotepadCapacity;
 use Glpi\PHPUnit\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use Infocom;
 use Log;
@@ -49,7 +53,7 @@ class HasInfocomCapacityTest extends DbTestCase
 
     protected function getTargetCapacity(): string
     {
-        return \Glpi\Asset\Capacity\HasInfocomCapacity::class;
+        return HasInfocomCapacity::class;
     }
 
     public function testCapacityActivation(): void
@@ -60,21 +64,21 @@ class HasInfocomCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasInfocomCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
+                new Capacity(name: HasInfocomCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
+                new Capacity(name: HasNotepadCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasDocumentsCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasInfocomCapacity::class),
+                new Capacity(name: HasDocumentsCapacity::class),
+                new Capacity(name: HasInfocomCapacity::class),
             ]
         );
         $classname_3  = $definition_3->getAssetClassName();
@@ -153,15 +157,15 @@ class HasInfocomCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasInfocomCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
+                new Capacity(name: HasInfocomCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasInfocomCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
+                new Capacity(name: HasInfocomCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
@@ -263,7 +267,7 @@ class HasInfocomCapacityTest extends DbTestCase
     public function testCloneAsset()
     {
         $definition = $this->initAssetDefinition(
-            capacities: [new Capacity(name: \Glpi\Asset\Capacity\HasInfocomCapacity::class)]
+            capacities: [new Capacity(name: HasInfocomCapacity::class)]
         );
         $class = $definition->getAssetClassName();
         $entity = $this->getTestRootEntity(true);

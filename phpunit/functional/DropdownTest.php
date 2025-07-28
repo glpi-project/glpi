@@ -165,7 +165,7 @@ HTML;
         $this->assertSame($expected_comments, $ret);
 
         // test of return with translations
-        $_SESSION["glpilanguage"] = \Session::loadLanguage('fr_FR');
+        $_SESSION["glpilanguage"] = Session::loadLanguage('fr_FR');
         $_SESSION['glpi_dropdowntranslations'] = \DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
         $expected_name = 'FR - _cat_1 > FR - _subcat_1';
         $expected_comments = 'FR - Commentaire pour sous-catégorie _subcat_1';
@@ -180,7 +180,7 @@ HTML;
         $this->assertSame($expected_comments, $ret);
 
         // switch back to default language
-        $_SESSION["glpilanguage"] = \Session::loadLanguage('en_GB');
+        $_SESSION["glpilanguage"] = Session::loadLanguage('en_GB');
 
         ////////////////////////////////
         // test for other dropdown types
@@ -1630,7 +1630,7 @@ HTML;
     {
         $this->login();
 
-        $params['_idor_token'] = \Session::getNewIDORToken('User');
+        $params['_idor_token'] = Session::getNewIDORToken('User');
         $result = \Dropdown::getDropdownUsers($params, false);
         $this->assertSame($expected, $result);
     }
@@ -1660,7 +1660,7 @@ HTML;
             'entity_restrict'       => 0,
             'page'                  => 1,
             'page_limit'            => 10,
-            '_idor_token'           => \Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0]),
+            '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0]),
         ];
         $values = \Dropdown::getDropdownValue($post);
         $values = (array) json_decode($values);
@@ -1721,7 +1721,7 @@ HTML;
             'entity_restrict'       => 0,
             'page'                  => 1,
             'page_limit'            => 10,
-            '_idor_token'           => \Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => ['name' => ['LIKE', "%3%"]]]),
+            '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => ['name' => ['LIKE', "%3%"]]]),
         ];
         $values = \Dropdown::getDropdownValue($post);
         $values = (array) json_decode($values);
@@ -1734,7 +1734,7 @@ HTML;
         $condition_key = sha1(serialize($post['condition']));
         $_SESSION['glpicondition'][$condition_key] = $post['condition'];
         $post['condition']   = $condition_key;
-        $post['_idor_token'] = \Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => $condition_key]);
+        $post['_idor_token'] = Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => $condition_key]);
         $values = \Dropdown::getDropdownValue($post);
         $values = (array) json_decode($values);
 
@@ -1749,7 +1749,7 @@ HTML;
             'entity_restrict'       => 0,
             'page'                  => 1,
             'page_limit'            => 10,
-            '_idor_token'           => \Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => '`name` LIKE "%4%"']),
+            '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => '`name` LIKE "%4%"']),
         ];
         $values = \Dropdown::getDropdownValue($post);
         $values = (array) json_decode($values);
@@ -1764,7 +1764,7 @@ HTML;
         if (isset($params['entity_restrict'])) {
             $idor_add_params['entity_restrict'] = $params['entity_restrict'];
         }
-        return \Session::getNewIDORToken(($params['itemtype'] ?? ''), $idor_add_params);
+        return Session::getNewIDORToken(($params['itemtype'] ?? ''), $idor_add_params);
     }
 
     public function testDropdownParent()
@@ -2072,7 +2072,7 @@ HTML;
         $dropdowns = \Dropdown::getStandardDropdownItemTypes();
         foreach ($dropdowns as $items) {
             foreach ($items as $itemclass => $n) {
-                if (is_subclass_of($itemclass, \CommonDropdown::class) && \Toolbox::hasTrait($itemclass, \Glpi\Features\Clonable::class)) {
+                if (is_subclass_of($itemclass, \CommonDropdown::class) && \Toolbox::hasTrait($itemclass, Clonable::class)) {
                     /** @var \CommonDropdown&Clonable $item */
                     $item = new $itemclass();
 
@@ -2122,7 +2122,7 @@ HTML;
     public static function assignableAssetsProvider()
     {
         return [
-            [\CartridgeItem::class], [\Computer::class], [\ConsumableItem::class], [\Monitor::class], [\NetworkEquipment::class],
+            [\CartridgeItem::class], [Computer::class], [\ConsumableItem::class], [\Monitor::class], [\NetworkEquipment::class],
             [\Peripheral::class], [\Phone::class], [\Printer::class], [\Software::class],
         ];
     }
@@ -2182,7 +2182,7 @@ HTML;
         $results = \Dropdown::getDropdownValue([
             'itemtype' => $itemtype,
             'display_emptychoice' => 0,
-            '_idor_token' => \Session::getNewIDORToken($itemtype),
+            '_idor_token' => Session::getNewIDORToken($itemtype),
         ], false)['results'];
         // get optgroup id (key in the results array) for the test root entity "_test_root_entity"
         $optgroup_id = array_search("Root _test_root_entity", array_column($results, 'text'));
@@ -2196,7 +2196,7 @@ HTML;
         $results = \Dropdown::getDropdownValue([
             'itemtype' => $itemtype,
             'display_emptychoice' => 0,
-            '_idor_token' => \Session::getNewIDORToken($itemtype),
+            '_idor_token' => Session::getNewIDORToken($itemtype),
         ], false)['results'];
         $this->assertNotContains(__FUNCTION__ . '1', array_column($results[$optgroup_id]['children'], 'text'));
         $this->assertContains(__FUNCTION__ . '2', array_column($results[$optgroup_id]['children'], 'text'));
@@ -2207,7 +2207,7 @@ HTML;
         $results = \Dropdown::getDropdownValue([
             'itemtype' => $itemtype,
             'display_emptychoice' => 0,
-            '_idor_token' => \Session::getNewIDORToken($itemtype),
+            '_idor_token' => Session::getNewIDORToken($itemtype),
         ], false)['results'];
         $children = $results[$optgroup_id]['children'] ?? null;
         if ($children === null) {
@@ -2290,7 +2290,7 @@ HTML;
         $results = \Dropdown::getDropdownFindNum([
             'itemtype' => $itemtype,
             'table' => $itemtype::getTable(),
-            '_idor_token' => \Session::getNewIDORToken($itemtype, [
+            '_idor_token' => Session::getNewIDORToken($itemtype, [
                 'table' => $itemtype::getTable(),
             ]),
         ], false)['results'];
@@ -2306,7 +2306,7 @@ HTML;
         $results = \Dropdown::getDropdownFindNum([
             'itemtype' => $itemtype,
             'table' => $itemtype::getTable(),
-            '_idor_token' => \Session::getNewIDORToken($itemtype, [
+            '_idor_token' => Session::getNewIDORToken($itemtype, [
                 'table' => $itemtype::getTable(),
             ]),
         ], false)['results'];
@@ -2321,7 +2321,7 @@ HTML;
         $results = \Dropdown::getDropdownFindNum([
             'itemtype' => $itemtype,
             'table' => $itemtype::getTable(),
-            '_idor_token' => \Session::getNewIDORToken($itemtype, [
+            '_idor_token' => Session::getNewIDORToken($itemtype, [
                 'table' => $itemtype::getTable(),
             ]),
         ], false)['results'];
@@ -2337,7 +2337,7 @@ HTML;
         $results = \Dropdown::getDropdownFindNum([
             'itemtype' => $itemtype,
             'table' => $itemtype::getTable(),
-            '_idor_token' => \Session::getNewIDORToken($itemtype, [
+            '_idor_token' => Session::getNewIDORToken($itemtype, [
                 'table' => $itemtype::getTable(),
             ]),
         ], false)['results'];
@@ -2394,7 +2394,7 @@ HTML;
             $this->callPrivateMethod(
                 $dd,
                 'filterDisplayWith',
-                new \Item_DeviceSimcard(),
+                new Item_DeviceSimcard(),
                 ['serial', 'pin', 'puk']
             )
         );
@@ -2406,7 +2406,7 @@ HTML;
             $this->callPrivateMethod(
                 $dd,
                 'filterDisplayWith',
-                new \Item_DeviceSimcard(),
+                new Item_DeviceSimcard(),
                 ['serial', 'pin', 'puk']
             )
         );
@@ -2418,7 +2418,7 @@ HTML;
             $this->callPrivateMethod(
                 $dd,
                 'filterDisplayWith',
-                new \User(),
+                new User(),
                 ['id', 'firstname', 'password', 'personal_token', 'api_token', 'cookie_token', 'password_forget_token']
             )
         );
@@ -2430,7 +2430,7 @@ HTML;
             $this->callPrivateMethod(
                 $dd,
                 'filterDisplayWith',
-                new \User(),
+                new User(),
                 ['id', 'firstname', 'password', 'personal_token', 'api_token', 'cookie_token', 'password_forget_token']
             )
         );
@@ -2442,7 +2442,7 @@ HTML;
             $this->callPrivateMethod(
                 $dd,
                 'filterDisplayWith',
-                new \User(),
+                new User(),
                 ['id', 'firstname', 'password', 'personal_token', 'api_token', 'cookie_token', 'password_forget_token']
             )
         );
@@ -2473,7 +2473,7 @@ HTML;
             'returned_itemtypes' => [\Supplier::class],
             'searchText' => '',
         ];
-        $results = \Dropdown::getDropdownActors($params + ['_idor_token' => \Session::getNewIDORToken(\Ticket::class, $params)], false);
+        $results = \Dropdown::getDropdownActors($params + ['_idor_token' => Session::getNewIDORToken(\Ticket::class, $params)], false);
         $this->assertNotEmpty($results['results'][0]['children']);
         $this->assertCount(0, array_filter($results['results'][0]['children'], function ($result) use ($inactive_supplier) {
             return $result['id'] === \Supplier::class . '_' . $inactive_supplier->getID();
@@ -2481,7 +2481,7 @@ HTML;
 
         // If asking for inactive_deleted, it should return the inactive supplier
         $params['inactive_deleted'] = 1;
-        $results = \Dropdown::getDropdownActors($params + ['_idor_token' => \Session::getNewIDORToken(\Ticket::class, $params)], false);
+        $results = \Dropdown::getDropdownActors($params + ['_idor_token' => Session::getNewIDORToken(\Ticket::class, $params)], false);
         $this->assertNotEmpty($results['results'][0]['children']);
         $this->assertCount(1, array_filter($results['results'][0]['children'], function ($result) use ($inactive_supplier) {
             return $result['id'] === \Supplier::class . '_' . $inactive_supplier->getID();

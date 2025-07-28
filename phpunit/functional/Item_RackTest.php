@@ -189,7 +189,7 @@ class Item_RackTest extends DbTestCase
         $this->createModels();
         $this->createComputers();
 
-        $rack = new \Rack();
+        $rack = new Rack();
         //create a 10u rack
         $this->assertGreaterThan(
             0,

@@ -35,6 +35,9 @@
 namespace tests\units\Glpi\Dashboard;
 
 use DbTestCase;
+use Glpi\Dashboard\Dashboard;
+use Glpi\Dashboard\Item;
+use Glpi\Dashboard\Right;
 
 /* Test for inc/dashboard/dashboard.class.php */
 
@@ -44,7 +47,7 @@ class DashboardTest extends DbTestCase
 
     public function setUp(): void
     {
-        $this->dashboard = new \Glpi\Dashboard\Dashboard('test_dashboard');
+        $this->dashboard = new Dashboard('test_dashboard');
         parent::setUp();
     }
 
@@ -160,7 +163,7 @@ class DashboardTest extends DbTestCase
     {
         $num_clones = 5;
         $original_key = 'test_dashboard';
-        $this->dashboard = new \Glpi\Dashboard\Dashboard($original_key);
+        $this->dashboard = new Dashboard($original_key);
 
         $keys = [];
 
@@ -216,14 +219,14 @@ class DashboardTest extends DbTestCase
         ]));
 
         $items = iterator_to_array($DB->request([
-            'FROM' => \Glpi\Dashboard\Item::getTable(),
+            'FROM' => Item::getTable(),
             'WHERE' => [
                 'dashboards_dashboards_id' => $dashboards_id,
             ],
         ]));
         $this->assertEmpty($items);
         $rights     = iterator_to_array($DB->request([
-            'FROM' => \Glpi\Dashboard\Right::getTable(),
+            'FROM' => Right::getTable(),
             'WHERE' => [
                 'dashboards_dashboards_id' => $dashboards_id,
             ],
@@ -275,7 +278,7 @@ class DashboardTest extends DbTestCase
             ],
         ];
 
-        $this->assertTrue(\Glpi\Dashboard\Dashboard::importFromJson($import));
+        $this->assertTrue(Dashboard::importFromJson($import));
         $this->assertTrue($this->dashboard->getFromDB($key));
         $this->assertEquals($title, $this->dashboard->getTitle());
         $this->assertEquals($key, $this->getPrivateProperty('key'));
@@ -308,7 +311,7 @@ class DashboardTest extends DbTestCase
                 'users_id'    => [2],
                 'groups_id'   => [],
             ],
-            \Glpi\Dashboard\Dashboard::convertRights($raw)
+            Dashboard::convertRights($raw)
         );
     }
 
@@ -327,24 +330,24 @@ class DashboardTest extends DbTestCase
         $_SESSION['glpigroups'] = [];
         $_SESSION['glpiID'] = 1;
 
-        $this->assertFalse(\Glpi\Dashboard\Dashboard::checkRights($rights));
+        $this->assertFalse(Dashboard::checkRights($rights));
 
         $_SESSION['glpiactiveentities'] = [0];
-        $this->assertTrue(\Glpi\Dashboard\Dashboard::checkRights($rights));
+        $this->assertTrue(Dashboard::checkRights($rights));
 
         $_SESSION['glpiactiveentities'] = [];
         $_SESSION['glpiactiveprofile'] = ['id' => 3];
-        $this->assertTrue(\Glpi\Dashboard\Dashboard::checkRights($rights));
+        $this->assertTrue(Dashboard::checkRights($rights));
 
         $_SESSION['glpiactiveprofile'] = ['id' => 1];
         $_SESSION['glpiID'] = 2;
-        $this->assertTrue(\Glpi\Dashboard\Dashboard::checkRights($rights));
+        $this->assertTrue(Dashboard::checkRights($rights));
 
         $_SESSION['glpiID'] = 1;
         $_SESSION['glpigroups'] = [3];
-        $this->assertTrue(\Glpi\Dashboard\Dashboard::checkRights($rights));
+        $this->assertTrue(Dashboard::checkRights($rights));
 
         $_SESSION['glpigroups'] = [];
-        $this->assertFalse(\Glpi\Dashboard\Dashboard::checkRights($rights));
+        $this->assertFalse(Dashboard::checkRights($rights));
     }
 }

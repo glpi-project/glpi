@@ -38,6 +38,7 @@ use DbTestCase;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Form\Tag\QuestionTagProvider;
 use Glpi\Form\Tag\Tag;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
@@ -59,19 +60,19 @@ final class QuestionTagProviderTest extends DbTestCase
             new Tag(
                 label: 'Question: First name',
                 value: $this->getQuestionId($form, 'First name'),
-                provider: new \Glpi\Form\Tag\QuestionTagProvider(),
+                provider: new QuestionTagProvider(),
             ),
             new Tag(
                 label: 'Question: Last name',
                 value: $this->getQuestionId($form, 'Last name'),
-                provider: new \Glpi\Form\Tag\QuestionTagProvider(),
+                provider: new QuestionTagProvider(),
             ),
         ]);
     }
 
     private function checkTestGetTags(Form $form, array $expected): void
     {
-        $tagProvider = new \Glpi\Form\Tag\QuestionTagProvider();
+        $tagProvider = new QuestionTagProvider();
         $tags = $tagProvider->getTags($form);
         $this->assertEquals($expected, $tags);
     }
@@ -98,7 +99,7 @@ final class QuestionTagProviderTest extends DbTestCase
         string $value,
         string $expected_content
     ): void {
-        $tag_provider = new \Glpi\Form\Tag\QuestionTagProvider();
+        $tag_provider = new QuestionTagProvider();
 
         $computed_content = $tag_provider->getTagContentForValue(
             $value,

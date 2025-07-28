@@ -37,6 +37,9 @@ namespace tests\units\Glpi\Asset\Capacity;
 use DbTestCase;
 use Entity;
 use Glpi\Asset\Capacity;
+use Glpi\Asset\Capacity\AllowedInGlobalSearchCapacity;
+use Glpi\Asset\Capacity\HasHistoryCapacity;
+use Glpi\Asset\Capacity\HasNotepadCapacity;
 use Log;
 
 class AllowedInGlobalSearchCapacityTest extends DbTestCase
@@ -47,21 +50,21 @@ class AllowedInGlobalSearchCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\AllowedInGlobalSearchCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
+                new Capacity(name: AllowedInGlobalSearchCapacity::class),
+                new Capacity(name: HasNotepadCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\AllowedInGlobalSearchCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: AllowedInGlobalSearchCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_3  = $definition_3->getAssetClassName();
@@ -91,15 +94,15 @@ class AllowedInGlobalSearchCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\AllowedInGlobalSearchCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: AllowedInGlobalSearchCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new Capacity(name: \Glpi\Asset\Capacity\AllowedInGlobalSearchCapacity::class),
-                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: AllowedInGlobalSearchCapacity::class),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
@@ -133,7 +136,7 @@ class AllowedInGlobalSearchCapacityTest extends DbTestCase
         $this->assertContains($classname_2, $CFG_GLPI['globalsearch_types']);
 
         // Disable capacity and check that class is unregistered from global config
-        $this->disableCapacity($definition_1, \Glpi\Asset\Capacity\AllowedInGlobalSearchCapacity::class);
+        $this->disableCapacity($definition_1, AllowedInGlobalSearchCapacity::class);
         $this->assertEquals(1, countElementsInTable(Log::getTable(), $item_1_logs_criteria)); // create
         $this->assertNotContains($classname_1, $CFG_GLPI['globalsearch_types']);
 

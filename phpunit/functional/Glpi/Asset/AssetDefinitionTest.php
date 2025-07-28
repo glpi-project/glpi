@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Asset;
 
 use Computer;
 use DbTestCase;
+use Gettext\Languages\Category;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDocumentsCapacity;
@@ -525,7 +526,7 @@ class AssetDefinitionTest extends DbTestCase
     public function testSystemNameUpdate(): void
     {
         $definition = $this->createItem(
-            \Glpi\Asset\AssetDefinition::class,
+            AssetDefinition::class,
             [
                 'system_name' => 'test',
             ]
@@ -691,7 +692,7 @@ class AssetDefinitionTest extends DbTestCase
     public function testUpdateTranslations()
     {
         $definition = $this->createItem(
-            \Glpi\Asset\AssetDefinition::class,
+            AssetDefinition::class,
             [
                 'system_name' => 'test',
             ]
@@ -753,9 +754,9 @@ class AssetDefinitionTest extends DbTestCase
 
     public function testGetTranslatedName()
     {
-        /** @var \Glpi\Asset\AssetDefinition $definition */
+        /** @var AssetDefinition $definition */
         $definition = $this->createItem(
-            \Glpi\Asset\AssetDefinition::class,
+            AssetDefinition::class,
             [
                 'system_name' => 'test',
                 'label' => 'Test',
@@ -816,10 +817,10 @@ class AssetDefinitionTest extends DbTestCase
     #[DataProvider('pluralFormProvider')]
     public function testGetPluralFormsForLanguage(string $language, array $expected): void
     {
-        $result = \Glpi\Asset\AssetDefinition::getPluralFormsForLanguage($language);
+        $result = AssetDefinition::getPluralFormsForLanguage($language);
         $this->assertCount(count($expected), $result);
         foreach ($result as $index => $category) {
-            $this->assertInstanceOf(\Gettext\Languages\Category::class, $category);
+            $this->assertInstanceOf(Category::class, $category);
             $this->assertEquals($expected[$index]['id'], $category->id);
             $this->assertEquals($expected[$index]['formula'], $category->formula);
             $this->assertEquals($expected[$index]['examples'], $category->examples);
@@ -834,7 +835,7 @@ class AssetDefinitionTest extends DbTestCase
         $this->login();
 
         $definition = $this->createItem(
-            \Glpi\Asset\AssetDefinition::class,
+            AssetDefinition::class,
             ['system_name' => 'test', 'is_active' => 1]
         );
 

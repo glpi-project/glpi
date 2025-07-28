@@ -34,6 +34,8 @@
 
 namespace tests\units\Glpi\Cache;
 
+use Glpi\Cache\CacheManager;
+use Glpi\Cache\SimpleCache;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
@@ -73,7 +75,7 @@ class CacheManagerTest extends \GLPITestCase
     {
         vfsStream::setup('glpi', null, ['config' => [], 'files' => ['_cache' => []]]);
 
-        $instance = new \Glpi\Cache\CacheManager(
+        $instance = new CacheManager(
             vfsStream::url('glpi/config'),
             vfsStream::url('glpi/files/_cache')
         );
@@ -107,7 +109,7 @@ class CacheManagerTest extends \GLPITestCase
     {
         vfsStream::setup('glpi', null, ['config' => [], 'files' => ['_cache' => []]]);
 
-        $instance = new \Glpi\Cache\CacheManager(
+        $instance = new CacheManager(
             vfsStream::url('glpi/config'),
             vfsStream::url('glpi/files/_cache')
         );
@@ -218,7 +220,7 @@ class CacheManagerTest extends \GLPITestCase
 
         vfsStream::setup('glpi', null, ['config' => [], 'files' => ['_cache' => []]]);
 
-        $instance = new \Glpi\Cache\CacheManager(
+        $instance = new CacheManager(
             vfsStream::url('glpi/config'),
             vfsStream::url('glpi/files/_cache')
         );
@@ -231,7 +233,7 @@ class CacheManagerTest extends \GLPITestCase
 
         $this->assertTrue($instance->setConfiguration($context, $dsn, $options));
 
-        $config_file = vfsStream::url('glpi/config/' . \Glpi\Cache\CacheManager::CONFIG_FILENAME);
+        $config_file = vfsStream::url('glpi/config/' . CacheManager::CONFIG_FILENAME);
         $expected_config = [
             'contexts' => [
                 $context => [
@@ -247,7 +249,7 @@ class CacheManagerTest extends \GLPITestCase
 
     public function testUnsetConfiguration(): void
     {
-        $config_filename = \Glpi\Cache\CacheManager::CONFIG_FILENAME;
+        $config_filename = CacheManager::CONFIG_FILENAME;
 
         $expected_config = [
             'contexts' => [
@@ -278,7 +280,7 @@ class CacheManagerTest extends \GLPITestCase
 
         $config_file = vfsStream::url('glpi/config/' . $config_filename);
 
-        $instance = new \Glpi\Cache\CacheManager(
+        $instance = new CacheManager(
             vfsStream::url('glpi/config'),
             vfsStream::url('glpi/files/_cache')
         );
@@ -327,19 +329,19 @@ class CacheManagerTest extends \GLPITestCase
             null,
             [
                 'config' => [
-                    \Glpi\Cache\CacheManager::CONFIG_FILENAME => '<?php' . "\n" . 'return ' . var_export($config, true) . ';',
+                    CacheManager::CONFIG_FILENAME => '<?php' . "\n" . 'return ' . var_export($config, true) . ';',
                 ],
                 'files' => ['_cache' => []],
             ]
         );
 
-        $instance = new \Glpi\Cache\CacheManager(
+        $instance = new CacheManager(
             vfsStream::url('glpi/config'),
             vfsStream::url('glpi/files/_cache')
         );
 
         if ($expected_get_error !== null) {
-            $this->assertInstanceOf(\Glpi\Cache\SimpleCache::class, $instance->getCacheInstance($context));
+            $this->assertInstanceOf(SimpleCache::class, $instance->getCacheInstance($context));
             $this->hasPhpLogRecordThatContains($expected_get_error['message'], $expected_get_error['level']);
             return;
         }
@@ -364,7 +366,7 @@ class CacheManagerTest extends \GLPITestCase
 
         vfsStream::setup('glpi', null, ['config' => [], 'files' => ['_cache' => []]]);
 
-        $instance = new \Glpi\Cache\CacheManager(
+        $instance = new CacheManager(
             vfsStream::url('glpi/config'),
             vfsStream::url('glpi/files/_cache')
         );
@@ -426,7 +428,7 @@ class CacheManagerTest extends \GLPITestCase
 
         vfsStream::setup('glpi', null, ['config' => [], 'files' => ['_cache' => []]]);
 
-        $instance = new \Glpi\Cache\CacheManager(
+        $instance = new CacheManager(
             vfsStream::url('glpi/config'),
             vfsStream::url('glpi/files/_cache')
         );
@@ -440,7 +442,7 @@ class CacheManagerTest extends \GLPITestCase
 
         vfsStream::setup('glpi', null, ['config' => [], 'files' => ['_cache' => []]]);
 
-        $instance = new \Glpi\Cache\CacheManager(
+        $instance = new CacheManager(
             vfsStream::url('glpi/config'),
             vfsStream::url('glpi/files/_cache')
         );
@@ -453,7 +455,7 @@ class CacheManagerTest extends \GLPITestCase
 
         $vfs_structure = vfsStream::setup('glpi', null, ['config' => [], 'files' => ['_cache' => []]]);
 
-        $instance = new \Glpi\Cache\CacheManager(
+        $instance = new CacheManager(
             vfsStream::url('glpi/config'),
             vfsStream::url('glpi/files/_cache')
         );
@@ -496,12 +498,12 @@ class CacheManagerTest extends \GLPITestCase
 
         vfsStream::setup('glpi', null, ['config' => [], 'files' => ['_cache' => []]]);
 
-        $instance = new \Glpi\Cache\CacheManager(
+        $instance = new CacheManager(
             vfsStream::url('glpi/config'),
             vfsStream::url('glpi/files/_cache')
         );
 
-        $config_file = vfsStream::url('glpi/config/' . \Glpi\Cache\CacheManager::CONFIG_FILENAME);
+        $config_file = vfsStream::url('glpi/config/' . CacheManager::CONFIG_FILENAME);
 
         // Defines a non empty namespace
         $this->assertTrue($instance->setNamespacePrefix('my-instance'));
