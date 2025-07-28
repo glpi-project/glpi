@@ -9,6 +9,7 @@
  *
  * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2025 Kyndryl Inc.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -498,6 +499,19 @@ class CommonDBTM extends CommonGLPI
             return (int) $this->fields[static::getIndexName()];
         }
         return -1;
+    }
+
+    /**
+     * Get the request type ID for this ITIL object
+     *
+     * @return integer Request type ID, or 0 if not set
+     **/
+    public function getRequestTypesId(): int
+    {
+        if (isset($this->fields['requesttypes_id']) && is_numeric($this->fields['requesttypes_id'])) {
+            return (int) $this->fields['requesttypes_id'];
+        }
+        return 0;
     }
 
     /**
