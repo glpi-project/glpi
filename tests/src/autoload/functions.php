@@ -889,7 +889,7 @@ function loadDataset()
  * @param string $name
  * @param bool $onlyid
  * @phpstan-return ($onlyid is true ? int : T) Item of $type class, or its id
- * @return \CommonDBTM|int
+ * @return CommonDBTM|int
  */
 function getItemByTypeName(string $type, string $name, bool $onlyid = false): CommonDBTM|int
 {
@@ -897,7 +897,7 @@ function getItemByTypeName(string $type, string $name, bool $onlyid = false): Co
     $nameField = $type::getNameField();
     if (!$item->getFromDBByCrit([$nameField => $name])) {
         $availables =  implode(', ', array_column($item->find([]), $nameField));
-        throw new \RuntimeException(sprintf('Unable to load the `%s` item with the name `%s`. Available items are : %s', $type, $name, $availables));
+        throw new RuntimeException(sprintf('Unable to load the `%s` item with the name `%s`. Available items are : %s', $type, $name, $availables));
     }
     return ($onlyid ? $item->getID() : $item);
 }

@@ -609,7 +609,7 @@ class OLATest extends DbTestCase
         $ola_tto = $this->createOLA(ola_type: SLM::TTO)['ola'];
         $this->setCurrentTime('2025-06-10 09:00:00');
         $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola_tto->getID()]]);
-        $non_dedicated_group = getItemByTypeName(\GROUP::class, '_test_group_2');
+        $non_dedicated_group = getItemByTypeName(Group::class, '_test_group_2');
         assert($non_dedicated_group->getID() !== $ola_tto->fields['groups_id'], 'Non dedicated group should not be the same as the OLA group');
 
         $ola_data = $ticket->getOlasData()[0];
@@ -635,7 +635,7 @@ class OLATest extends DbTestCase
 
         $user = $this->createItem(User::class, ['name' => 'my user seb' ]);
         $user_group = new Group_User();
-        $group = getItemByTypeName(\GROUP::class, '_test_group_2');
+        $group = getItemByTypeName(Group::class, '_test_group_2');
         $user_group->add(['users_id' => $user->getID(), 'groups_id' => $group->getID()]);
         assert($group->fields['is_assign'] == 1, 'Group should be assignable to tickets.');
         assert(!Group_User::isUserInGroup($user->getID(), $ola_tto->fields['groups_id']), 'User not should be in the group of the OLA.'); // ok
