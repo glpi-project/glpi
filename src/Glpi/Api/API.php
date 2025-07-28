@@ -2257,7 +2257,6 @@ abstract class API
             } catch (ForgetPasswordException $e) {
                 $this->returnError($e->getMessage());
             } catch (PasswordTooWeakException $e) {
-                implode('\n', $e->getMessages());
                 $this->returnError(implode('\n', $e->getMessages()));
             }
             return [__("Reset password successful.")];
