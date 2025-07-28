@@ -35,46 +35,34 @@
 namespace tests\units;
 
 use Glpi\PHPUnit\Tests\Glpi\SLMTrait;
-use Glpi\Tests\AbstractITILTemplatePredefinedFieldTest;
-use ITILTemplatePredefinedField;
-use TicketTemplatePredefinedField;
 
-final class TicketTemplatePredefinedFieldTest extends AbstractITILTemplatePredefinedFieldTest
+final class TicketTemplateMandatoryFieldTest extends \DbTestCase
 {
     use SLMTrait;
 
-    public function getConcreteClass(): ITILTemplatePredefinedField
-    {
-        return new TicketTemplatePredefinedField();
-    }
-
-    public function testPredefinedOLA(): void
+    public function testMandatoryOLA(): void
     {
         // arrange
         $ola = $this->createOLA()['ola'];
 
         $template = $this->createItem(\TicketTemplate::class, ['name' => 'Test Template']);
         $this->createItem(
-            TicketTemplatePredefinedField::class,
+            \TicketTemplateMandatoryField::class,
             [
                 'tickettemplates_id' => $template->getID(),
                 'num' => 190,
-                'value' => $ola->getID(),
             ]
         );
-        $template->getFromDBWithData($template->getID());
-        //        $this->reloadItem($template);
 
-        $ticket = new \Ticket();
-        $default_values = $ticket->getDefaultValues();
-        $options = ['_olas_id_tto' => []];
+        $invalid_valid_data = $this->getMinimalCreationInput(\Ticket::class);
+        $invalid_valid_data['_tickettemplate'] = $template->getID();
+        // add _tickettemplate to input fields, to allow template compliance check
+        $valid_data = $invalid_valid_data + ['_olas_id' => [$ola->getID()]];
 
-        $reflectionMethod = new \ReflectionMethod(\Ticket::class, 'setPredefinedFields');
-        $r = new \ReflectionClass($ticket);
-        $m = $r->getMethod('setPredefinedFields');//->setAccessible(true);
-        $m->invokeArgs($ticket, [$template, &$options, $default_values]);
+        // act & assert
+        $this->assertFalse((bool) (new \Ticket())->add($invalid_valid_data), 'Add should fail without OLA');
+        $this->hasSessionMessages(ERROR, array_fill(0, 1, 'Mandatory fields are not filled. Please correct: OLA time to own'));
 
-        $this->assertArrayHasKey('_olas_id', $ticket->fields);
-        $this->assertEqualsCanonicalizing([$ola->getID()], $ticket->fields['_olas_id']);
+        $this->assertTrue((bool) (new \Ticket())->add($valid_data), 'Add should succeed with OLA');
     }
 }
