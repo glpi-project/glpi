@@ -860,4 +860,53 @@ class ReservationTest extends DbTestCase
             $this->fail("check() method should not throw exceptions for owner: " . $e->getMessage());
         }
     }
+
+    /**
+     * Test that users without any rights cannot access reservations
+     */
+    public function testNoRightsCannotAccessReservations(): void
+    {
+        // Create a computer and reservation item
+        $computer = $this->createItem("Computer", [
+            "name" => "test computer no rights",
+            "entities_id" => 0,
+        ]);
+        $res_item = $this->createItem("ReservationItem", [
+            "itemtype" => "Computer",
+            "items_id" => $computer->getID(),
+            "is_active" => true,
+            "entities_id" => 0,
+        ]);
+
+        // Create a reservation
+        $reservation = new \Reservation();
+        $reservation_id = $reservation->add([
+            'begin' => '2024-01-01 10:00:00',
+            'end' => '2024-01-01 12:00:00',
+            'reservationitems_id' => $res_item->getID(),
+            'users_id' => $_SESSION['glpiID'],
+            'comment' => 'No rights test',
+        ]);
+        $this->assertGreaterThan(0, $reservation_id);
+        $this->assertTrue($reservation->getFromDB($reservation_id));
+
+        // Remove all rights
+        $_SESSION['glpiactiveprofile']['reservation'] = 0;
+
+        // Test static methods return false
+        $this->assertFalse((bool)\Reservation::canCreate());
+        $this->assertFalse((bool)\Reservation::canUpdate());
+        $this->assertFalse((bool)\Reservation::canPurge());
+
+        // Test instance methods also return false without global rights (expected behavior)
+        $this->assertFalse($reservation->can($reservation_id, UPDATE), "Without global rights, even owner cannot update");
+        $this->assertFalse($reservation->can($reservation_id, PURGE), "Without global rights, even owner cannot purge");
+
+        // Test non-owner cannot access
+        $original_user_id = $reservation->fields['users_id'];
+        $reservation->fields['users_id'] = $original_user_id + 1;
+
+        $this->assertFalse($reservation->can($reservation_id, UPDATE), "Non-owner should not have rights without permissions");
+        $this->assertFalse($reservation->can($reservation_id, PURGE), "Non-owner should not have rights without permissions");
+    }
 }

@@ -422,7 +422,7 @@ class Reservation extends CommonDBChild
      **/
     public static function canCreate()
     {
-        return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
+        return (Session::haveRightsOr(self::$rightname, [CREATE, ReservationItem::RESERVEANITEM]));
     }
 
 
@@ -486,22 +486,16 @@ class Reservation extends CommonDBChild
     /**
      * Have I the right to "purge" the Object
      *
-     * Allow users to purge their own reservations even without entity access
+     * Follow the same pattern as canUpdateItem and canDeleteItem by delegating to canChildItem
      * @since 10.0.21
      *
      * @return boolean
      **/
     public function canPurgeItem()
     {
-        // Original user always have right to purge their own reservation
-        if (isset($this->fields['users_id']) && $this->fields['users_id'] === Session::getLoginUserID()) {
-            return true;
-        }
-
-        // Otherwise use the standard entity check
-        return parent::canPurgeItem();
+        return $this->canChildItem('canUpdateItem', 'canUpdate');
     }
-
+    
     public function post_purgeItem()
     {
         /** @var \DBmysql $DB */
@@ -833,7 +827,6 @@ JAVASCRIPT;
 
         // Add Hardware name
         $r = new ReservationItem();
-
         echo "<tr class='tab_bg_1'><td>" . _n('Item', 'Items', 1) . "</td>";
         echo "<td>";
 

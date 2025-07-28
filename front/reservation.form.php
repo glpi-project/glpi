@@ -45,8 +45,6 @@ if (isset($_GET['ajax']) && $_GET['ajax']) {
 
 include('../inc/includes.php');
 
-Session::checkRightsOr("reservation", [CREATE, UPDATE, DELETE, PURGE, ReservationItem::RESERVEANITEM]);
-
 $rr = new Reservation();
 
 if (isset($_REQUEST['ajax'])) {
