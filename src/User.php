@@ -5112,6 +5112,7 @@ HTML;
      * @param array $input
      *
      * @throws ForgetPasswordException when requirements are not met
+     * @throws PasswordTooWeakException
      *
      * @return boolean true if password successfully changed, false otherwise
      */

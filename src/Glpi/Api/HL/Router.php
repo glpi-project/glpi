@@ -759,28 +759,6 @@ EOT;
     }
 
     /**
-     * Resume a session from a session token.
-     * @param string $session_token
-     * @return void
-     */
-    private function resumeSession(string $session_token): void
-    {
-        $current = session_id();
-        $session = trim($session_token);
-
-        if (file_exists(GLPI_ROOT . '/inc/downstream.php')) {
-            include_once(GLPI_ROOT . '/inc/downstream.php');
-        }
-
-        if ($session != $current && !empty($current)) {
-            session_destroy();
-        }
-        if ($session != $current && !empty($session)) {
-            session_id($session);
-        }
-    }
-
-    /**
      * Get all registered controllers
      * @return AbstractController[]
      */

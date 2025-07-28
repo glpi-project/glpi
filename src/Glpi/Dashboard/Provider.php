@@ -1718,18 +1718,6 @@ class Provider
         return [$start_day, $end_day];
     }
 
-    private static function getSearchOptionID(string $table, string $name, string $tableToSearch): int
-    {
-        $data = SearchOption::getOptionsForItemtype(getItemTypeForTable($table), true);
-        $sort = [];
-        foreach ($data as $ref => $opt) {
-            if (isset($opt['field'])) {
-                $sort[$ref] = $opt['linkfield'] . "-" . $opt['table'];
-            }
-        }
-        return array_search($name . "-" . $tableToSearch, $sort);
-    }
-
     /**
      * Get search criteria based on given filters.
      *

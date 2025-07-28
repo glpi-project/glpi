@@ -39,8 +39,6 @@
  **/
 class HTMLTableSuperHeader extends HTMLTableHeader implements HTMLCompositeTableInterface
 {
-    /// The headers of each column
-    private $headerSets = [];
     /// The table that owns the current super header
     private $table;
 

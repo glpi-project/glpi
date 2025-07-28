@@ -844,26 +844,6 @@ final class ITILController extends AbstractController
         };
     }
 
-    /**
-     * @param string $subitem_schema_name
-     * @param class-string<CommonITILObject> $itemtype
-     * @return array
-     */
-    private function getSubitemSchemaFor(string $subitem_schema_name, string $itemtype, string $api_version): array
-    {
-        $subitem_schema = $this->getKnownSchema($subitem_schema_name, $api_version);
-        $subitem_schema['x-itemtype'] = match ($subitem_schema_name) {
-            'Task' => $itemtype::getTaskClass(),
-            'Followup' => 'ITILFollowup',
-            'Document' => 'Document_Item',
-            'Solution' => 'ITILSolution',
-            'Validation' => $itemtype::getValidationClassInstance()::class,
-            'Log' => 'Log',
-            default => $subitem_schema_name,
-        };
-        return $subitem_schema;
-    }
-
     #[Route(path: '/{itemtype}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\SearchRoute(
@@ -1117,25 +1097,6 @@ final class ITILController extends AbstractController
             'Log'    => 'Log',
             default => $itemtype,
         };
-    }
-
-    /**
-     * @param CommonITILObject $parent_item
-     * @param string $subitem_type
-     * @return array<string, int>|array{itemtype: string, items_id: int}
-     */
-    private function getSubitemLinkFields(CommonITILObject $parent_item, string $subitem_type): array
-    {
-        if (is_subclass_of($subitem_type, CommonDBChild::class)) {
-            return [
-                $subitem_type::$itemtype => $parent_item::getType(),
-                $subitem_type::$items_id => (int) $parent_item->fields['id'],
-            ];
-        }
-
-        return [
-            $parent_item::getForeignKeyField() => (int) $parent_item->fields['id'],
-        ];
     }
 
     #[Route(path: '/{itemtype}/{id}/Timeline/{subitem_type}/{subitem_id}', methods: ['GET'], requirements: [

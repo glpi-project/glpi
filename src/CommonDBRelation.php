@@ -1442,72 +1442,67 @@ abstract class CommonDBRelation extends CommonDBConnexity
             return parent::showMassiveActionsSubForm($ma);
         }
 
-        switch ($normalized_action) {
-            case 'add':
-            case 'remove':
-                // Get the peer number. For Document_Item, it depends on the action's name
-                $peer_number = static::getRelationMassiveActionsPeerForSubForm($ma);
-                switch ($peer_number) {
-                    case 1:
-                        $peertype = static::$itemtype_1;
-                        $peers_id = static::$items_id_1;
-                        break;
-                    case 2:
-                        $peertype = static::$itemtype_2;
-                        $peers_id = static::$items_id_2;
-                        break;
-                    default:
-                        throw new LogicException();
-                }
-                if (
-                    ($normalized_action == 'remove')
-                    && ($specificities['only_remove_all_at_once'])
-                ) {
-                    // If we just want to remove all the items, then just set hidden fields
-                    echo Html::hidden('peer_' . $peertype, ['value' => '']);
-                    echo Html::hidden('peer_' . $peers_id, ['value' => -1]);
-                } else {
-                    // Else, it depends if the peer is an itemtype or not
-                    $options = $specificities['select_items_options_' . $peer_number];
-                    // Do we allow to remove all the items at once ? Then, rename the default value !
-                    if (
-                        ($normalized_action == 'remove')
-                        && $specificities['can_remove_all_at_once']
-                    ) {
-                        $options['emptylabel'] = __('Remove all at once');
-                    }
-                    if (preg_match('/^itemtype/', $peertype)) {
-                        if (count($specificities['itemtypes']) > 0) {
-                            $options['itemtype_name'] = 'peer_' . $peertype;
-                            $options['items_id_name'] = 'peer_' . $peers_id;
-                            $options['itemtypes']     = $specificities['itemtypes'];
-                            // At least, if not forced by user, 'checkright' == true
-                            if (!isset($options['checkright'])) {
-                                $options['checkright']    = true;
-                            }
-                            Dropdown::showSelectItemFromItemtypes($options);
-                        }
-                    } else {
-                        $options['name'] = 'peer_' . $peers_id;
-                        if (isset($_POST['entity_restrict'])) {
-                            $options['entity'] = Session::getMatchingActiveEntities($_POST['entity_restrict']);
-                        }
-                        if ($normalized_action == 'remove') {
-                            $options['nochecklimit'] = true;
-                        }
-                        $dropdown_method = $specificities['dropdown_method_' . $peer_number];
-                        $peertype::$dropdown_method($options);
-                    }
-                }
-                // Allow any relation to display its own fields (NetworkPort_Vlan for tagged ...)
-                static::showRelationMassiveActionsSubForm($ma, $peer_number);
-                echo "<br><br>" . Html::submit(
-                    $specificities['button_labels'][$action],
-                    ['name' => 'massiveaction']
-                );
-                return true;
+        // Get the peer number. For Document_Item, it depends on the action's name
+        $peer_number = static::getRelationMassiveActionsPeerForSubForm($ma);
+        switch ($peer_number) {
+            case 1:
+                $peertype = static::$itemtype_1;
+                $peers_id = static::$items_id_1;
+                break;
+            case 2:
+                $peertype = static::$itemtype_2;
+                $peers_id = static::$items_id_2;
+                break;
+            default:
+                throw new LogicException();
         }
-        return parent::showMassiveActionsSubForm($ma);
+        if (
+            ($normalized_action == 'remove')
+            && ($specificities['only_remove_all_at_once'])
+        ) {
+            // If we just want to remove all the items, then just set hidden fields
+            echo Html::hidden('peer_' . $peertype, ['value' => '']);
+            echo Html::hidden('peer_' . $peers_id, ['value' => -1]);
+        } else {
+            // Else, it depends if the peer is an itemtype or not
+            $options = $specificities['select_items_options_' . $peer_number];
+            // Do we allow to remove all the items at once ? Then, rename the default value !
+            if (
+                ($normalized_action == 'remove')
+                && $specificities['can_remove_all_at_once']
+            ) {
+                $options['emptylabel'] = __('Remove all at once');
+            }
+            if (preg_match('/^itemtype/', $peertype)) {
+                if (count($specificities['itemtypes']) > 0) {
+                    $options['itemtype_name'] = 'peer_' . $peertype;
+                    $options['items_id_name'] = 'peer_' . $peers_id;
+                    $options['itemtypes']     = $specificities['itemtypes'];
+                    // At least, if not forced by user, 'checkright' == true
+                    if (!isset($options['checkright'])) {
+                        $options['checkright']    = true;
+                    }
+                    Dropdown::showSelectItemFromItemtypes($options);
+                }
+            } else {
+                $options['name'] = 'peer_' . $peers_id;
+                if (isset($_POST['entity_restrict'])) {
+                    $options['entity'] = Session::getMatchingActiveEntities($_POST['entity_restrict']);
+                }
+                if ($normalized_action == 'remove') {
+                    $options['nochecklimit'] = true;
+                }
+                $dropdown_method = $specificities['dropdown_method_' . $peer_number];
+                $peertype::$dropdown_method($options);
+            }
+        }
+        // Allow any relation to display its own fields (NetworkPort_Vlan for tagged ...)
+        static::showRelationMassiveActionsSubForm($ma, $peer_number);
+        echo "<br><br>" . Html::submit(
+            $specificities['button_labels'][$action],
+            ['name' => 'massiveaction']
+        );
+        return true;
     }
 
 
