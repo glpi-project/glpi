@@ -366,7 +366,6 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
      **/
     public static function getAllLinkedTo(string $itemtype, int $items_id): array
     {
-        /** @var CommonDBRelation[] $link_classes */
         $link_classes = self::getAllLinkClasses();
         $links = [];
 
@@ -480,7 +479,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
 
     /**
      * Get array of all ITIL Object link classes
-     * @return string[]
+     * @return class-string<CommonITILObject_CommonITILObject>[]
      */
     public static function getAllLinkClasses(): array
     {
