@@ -93,7 +93,11 @@ final class OauthConfig
 
         $provider_class = $config['smtp_oauth_provider'];
 
-        if (!is_string($provider_class) || !is_a($provider_class, ProviderInterface::class, true)) {
+        if (
+            !is_string($provider_class)
+            || !is_a($provider_class, ProviderInterface::class, true)
+            || !is_a($provider_class, AbstractProvider::class, true)
+        ) {
             return null;
         }
 

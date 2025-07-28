@@ -137,6 +137,8 @@ class Impact extends CommonGLPI
                     ],
                 ],
             ]));
+        } else {
+            $total = 0;
         }
 
         return self::createTabEntry(__("Impact analysis"), $total, $item::getType());

@@ -284,7 +284,7 @@ class Auth extends CommonGLPI
      *
      * @return false|array
      */
-    public function connection_ldap($ldap_method, $login, $password, ?bool &$error = null)
+    public function connection_ldap($ldap_method, $login, $password, ?bool &$error = null) // @phpstan-ignore parameterByRef.unusedType (phpstan doens't see that this value can be null - unsure why)
     {
         $error = false;
 
