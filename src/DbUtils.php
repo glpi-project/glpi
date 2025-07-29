@@ -1998,7 +1998,7 @@ final class DbUtils
                 '\\%',
             ],
             [
-                Toolbox::str_pad($newNo, $len, '0', STR_PAD_LEFT),
+                Toolbox::str_pad((string) $newNo, $len, '0', STR_PAD_LEFT),
                 '_',
                 '%',
             ],

@@ -47,6 +47,7 @@ use InvalidArgumentException;
 use LogicException;
 use Override;
 use ReflectionClass;
+use RuntimeException;
 
 use function Safe\json_decode;
 use function Safe\json_encode;
@@ -353,5 +354,15 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
         }
 
         return (bool) $this->fields['is_mandatory'];
+    }
+
+    public function getForm(): Form
+    {
+        $form = $this->getItem();
+        if (!($form instanceof Form)) {
+            throw new RuntimeException("Can't load parent form");
+        }
+
+        return $form;
     }
 }

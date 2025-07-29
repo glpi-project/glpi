@@ -323,6 +323,10 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!$item instanceof Datacenter) {
+            return false;
+        }
+
         self::showForDatacenter($item);
         return true;
     }

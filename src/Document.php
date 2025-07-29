@@ -1526,7 +1526,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
                 "show_" . $p['name'] . $rand,
                 $CFG_GLPI["root_doc"] . "/ajax/dropdownRubDocument.php",
                 $params,
-                false
             );
         }
         if ($p['display']) {

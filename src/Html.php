@@ -4223,15 +4223,15 @@ JAVASCRIPT
     /**
      * create a minimal form for simple action
      *
-     * @param string $action   URL to call on submit
-     * @param string $btname   Button name (maybe if name <> value)
-     * @param string $btlabel  Button label
-     * @param array $fields    Field name => field  value
-     * @param string $btimage  Button image uri (optional)   (default '')
+     * @param string       $action   URL to call on submit
+     * @param string|array $btname   Button name (maybe if name <> value)
+     * @param string       $btlabel  Button label
+     * @param array        $fields   Field name => field  value
+     * @param string       $btimage  Button image uri (optional)   (default '')
      *                           If image name starts with "fa-" or "ti-", it will be turned into
      *                           a FontAwesone/Tabler icon rather than an image.
-     * @param string $btoption Optional button option        (default '')
-     * @param string $confirm  Optional confirm message      (default '')
+     * @param string       $btoption Optional button option        (default '')
+     * @param string|array $confirm  Optional confirm message      (default '')
      *
      * @since 0.84
      **/
@@ -4298,13 +4298,13 @@ JAVASCRIPT
     /**
      * create a minimal form for simple action
      *
-     * @param string $action   URL to call on submit
-     * @param string $btname   Button name
-     * @param string $btlabel  Button label
-     * @param array $fields    Field name => field  value
-     * @param string $btimage  Button image uri (optional) (default '')
-     * @param string $btoption Optional button option (default '')
-     * @param string $confirm  Optional confirm message (default '')
+     * @param string       $action   URL to call on submit
+     * @param string       $btname   Button name
+     * @param string       $btlabel  Button label
+     * @param array        $fields   Field name => field  value
+     * @param string       $btimage  Button image uri (optional) (default '')
+     * @param string       $btoption Optional button option (default '')
+     * @param string|array $confirm  Optional confirm message (default '')
      *
      * @since 0.83.3
      **/
@@ -6294,9 +6294,9 @@ JS);
 
         // pad each with zeros and return
         return "#"
-         . str_pad($r, 2, '0', STR_PAD_LEFT)
-         . str_pad($g, 2, '0', STR_PAD_LEFT)
-         . str_pad($b, 2, '0', STR_PAD_LEFT);
+         . str_pad((string) $r, 2, '0', STR_PAD_LEFT)
+         . str_pad((string) $g, 2, '0', STR_PAD_LEFT)
+         . str_pad((string) $b, 2, '0', STR_PAD_LEFT);
     }
 
     /**

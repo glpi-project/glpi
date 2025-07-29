@@ -1308,15 +1308,15 @@ final class Transfer extends CommonDBTM
     /**
      * Add an item to already transfer array
      *
-     * @param class-string<CommonDBTM> $itemtype Itemtype of the item
-     * @param int $ID          ID of the item
-     * @param int $newID       ID of the new item
+     * @param string $key         Key (usually fkey or itemtype)
+     * @param int    $ID          ID of the item
+     * @param int    $newID       ID of the new item
      *
      * @return void
      **/
-    private function addToAlreadyTransfer(string $itemtype, int $ID, int $newID): void
+    private function addToAlreadyTransfer(string $key, int $ID, int $newID): void
     {
-        $this->already_transfer[$itemtype][$ID] = $newID;
+        $this->already_transfer[$key][$ID] = $newID;
     }
 
     /**

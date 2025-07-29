@@ -603,7 +603,7 @@ class Supplier extends CommonDBTM
      *
      * @since 9.5
      *
-     * @param boolean $email Also display name ? (false by default)
+     * @param string $email Also display name ? (false by default)
      **/
     public static function getSuppliersByEmail($email)
     {

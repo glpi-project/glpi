@@ -69,7 +69,7 @@ class NetworkPort_Vlan extends CommonDBRelation
     /**
      * @param integer $port
      * @param integer $vlan
-     * @param bool|int $tagged
+     * @param int $tagged
      * @return bool|int
      **/
     public function assignVlan($port, $vlan, $tagged)

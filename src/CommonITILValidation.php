@@ -301,6 +301,9 @@ abstract class CommonITILValidation extends CommonDBChild
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!$item instanceof CommonITILObject) {
+            return false;
+        }
 
         $validation = new static();
         $validation->showSummary($item);

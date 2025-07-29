@@ -118,6 +118,9 @@ if (isset($_GET["display_type"])) {
                 }
             }
             $params = Search::manageParams($itemtype, $_GET);
-            Search::showList($itemtype, $params);
+            $item = getItemForItemtype($itemtype);
+            if ($item instanceof CommonDBTM) {
+                Search::showList($item::class, $params);
+            }
     }
 }

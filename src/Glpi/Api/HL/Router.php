@@ -80,7 +80,6 @@ use Throwable;
 use Toolbox;
 use User;
 
-use function Safe\class_implements;
 use function Safe\ob_end_clean;
 use function Safe\ob_start;
 use function Safe\preg_match;
@@ -274,10 +273,10 @@ EOT;
                             continue;
                         }
                         $middleware = new $middleware_info['middleware']();
-                        if (class_implements($middleware, RequestMiddlewareInterface::class)) {
+                        if ($middleware instanceof RequestMiddlewareInterface) {
                             self::$instance->registerRequestMiddleware(new $middleware(), $middleware_info['priority'] ?? 0, $middleware_info['condition'] ?? null);
                         }
-                        if (class_implements($middleware, ResponseMiddlewareInterface::class)) {
+                        if ($middleware instanceof ResponseMiddlewareInterface) {
                             self::$instance->registerResponseMiddleware(new $middleware(), $middleware_info['priority'] ?? 0, $middleware_info['condition'] ?? null);
                         }
                     }
@@ -330,7 +329,7 @@ EOT;
      * @param AuthMiddlewareInterface $middleware
      * @param int $priority
      * @param callable|null $condition
-     * @phpstan-param null|callable(AbstractController): bool $condition
+     * @phpstan-param null|callable(RoutePath): bool $condition
      * @return void
      */
     public function registerAuthMiddleware(AuthMiddlewareInterface $middleware, int $priority = 0, ?callable $condition = null): void
@@ -350,7 +349,7 @@ EOT;
      * @param RequestMiddlewareInterface $middleware
      * @param int $priority
      * @param callable|null $condition
-     * @phpstan-param null|callable(AbstractController): bool $condition
+     * @phpstan-param null|callable(RoutePath): bool $condition
      * @return void
      */
     public function registerRequestMiddleware(RequestMiddlewareInterface $middleware, int $priority = 0, ?callable $condition = null): void
@@ -370,7 +369,7 @@ EOT;
      * @param ResponseMiddlewareInterface $middleware
      * @param int $priority
      * @param callable|null $condition
-     * @phpstan-param null|callable(AbstractController): bool $condition
+     * @phpstan-param null|callable(RoutePath): bool $condition
      * @return void
      */
     public function registerResponseMiddleware(ResponseMiddlewareInterface $middleware, int $priority = 0, ?callable $condition = null): void

@@ -44,6 +44,7 @@ use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
 use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
+use Glpi\Search\DefaultSearchRequestInterface;
 use Safe\DateTime;
 
 use function Safe\preg_match;
@@ -54,7 +55,7 @@ use function Safe\strtotime;
 /**
  * Ticket Class
  **/
-class Ticket extends CommonITILObject
+class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 {
     // From CommonDBTM
     public $dohistory                   = true;
@@ -2102,10 +2103,8 @@ class Ticket extends CommonITILObject
     }
 
 
-    /**
-     * Get default values to search engine to override
-     **/
-    public static function getDefaultSearchRequest()
+    #[Override]
+    public static function getDefaultSearchRequest(): array
     {
         // Technician don't want to be bothered by already solved items.
         // On the other hand, it make sense for helpdesk users to see their

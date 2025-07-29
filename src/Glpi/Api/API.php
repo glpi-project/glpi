@@ -2826,14 +2826,14 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
     /**
      * Generic function to send a error message and an error code to client
      *
-     * @param string  $message         message to send (human readable)(default 'Bad Request')
-     * @param integer $httpcode        http code (see : https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
+     * @param string|array $message         message(s) to send (human readable)(default 'Bad Request')
+     * @param integer      $httpcode        http code (see : https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
      *                                      (default 400)
-     * @param string  $statuscode      API status (to represent more precisely the current error)
+     * @param string       $statuscode      API status (to represent more precisely the current error)
      *                                      (default ERROR)
-     * @param boolean $docmessage      if true, add a link to inline document in message
+     * @param boolean      $docmessage      if true, add a link to inline document in message
      *                                      (default true)
-     * @param boolean $return_response if true, the error will be send to returnResponse function
+     * @param boolean      $return_response if true, the error will be send to returnResponse function
      *                                      (who may exit after sending data), otherwise,
      *                                      we will return an array with the error
      *                                      (default true)

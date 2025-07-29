@@ -276,7 +276,7 @@ class APIRest extends API
                 $params['input'] ?? []
             );
         } elseif (preg_match('%user/(\d+)/picture%i', $path_info, $matches)) {
-            $this->userPicture($matches[1]);
+            $this->userPicture((int) $matches[1]);
         } else {
             // commonDBTM manipulation
             $itemtype          = $this->getItemtype(0);

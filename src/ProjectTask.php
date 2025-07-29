@@ -1882,7 +1882,7 @@ TWIG, $twig_params);
                     ],
                     'WHERE'           => [
                         'glpi_profiles.interface'  => 'central',
-                    ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $_SESSION['glpiactive_entity'], 1),
+                    ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $_SESSION['glpiactive_entity'], true),
                 ]),
             ];
         }

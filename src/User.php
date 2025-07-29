@@ -3089,8 +3089,11 @@ HTML;
                 foreach ($ids as $id) {
                     if ($item->can($id, UPDATE)) {
                         if (
-                            ($item->fields["authtype"] == Auth::LDAP)
-                            || ($item->fields["authtype"] == Auth::EXTERNAL)
+                            $item instanceof User
+                            && (
+                                $item->fields["authtype"] == Auth::LDAP
+                                || $item->fields["authtype"] == Auth::EXTERNAL
+                            )
                         ) {
                             if (AuthLDAP::forceOneUserSynchronization($item, ($ma->getAction() == 'clean_ldap_fields'), false)) {
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
@@ -3712,7 +3715,7 @@ HTML;
             'WHERE'           => [
                 'glpi_groups_users.users_id'        => Session::getLoginUserID(),
                 'glpi_groups_users.is_userdelegate' => 1,
-            ] + getEntitiesRestrictCriteria('glpi_groups', '', $entities_id, 1),
+            ] + getEntitiesRestrictCriteria('glpi_groups', '', $entities_id, true),
         ]);
 
         $groups = [];
@@ -3802,7 +3805,7 @@ HTML;
                 $joinprofile = true;
                 $WHERE = [
                     'glpi_profiles.interface' => 'central',
-                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1);
+                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, true);
                 break;
 
             case "id":
@@ -3888,7 +3891,7 @@ HTML;
             case "all":
                 $WHERE = [
                     'glpi_users.id' => ['>', 0],
-                    'OR' => getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1),
+                    'OR' => getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, true),
                 ];
 
                 if ($with_no_right) {
@@ -3915,7 +3918,7 @@ HTML;
                                 [
                                     'glpi_profilerights.name'     => 'ticket',
                                     'glpi_profilerights.rights'   => ['&', Ticket::OWN],
-                                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1),
+                                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, true),
                             ];
                             break;
 
@@ -3927,7 +3930,7 @@ HTML;
                                         ['glpi_profilerights.rights'   => ['&', TicketValidation::CREATEREQUEST]],
                                         ['glpi_profilerights.rights'   => ['&', TicketValidation::CREATEINCIDENT]],
                                     ],
-                                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1),
+                                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, true),
                             ];
                             $forcecentral = false;
                             break;
@@ -3937,7 +3940,7 @@ HTML;
                                 [
                                     'glpi_profilerights.name'     => 'ticketvalidation',
                                     'glpi_profilerights.rights'   => ['&', TicketValidation::VALIDATEREQUEST],
-                                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1),
+                                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, true),
                             ];
                             $forcecentral = false;
                             break;
@@ -3947,7 +3950,7 @@ HTML;
                                 [
                                     'glpi_profilerights.name'     => 'ticketvalidation',
                                     'glpi_profilerights.rights'   => ['&', TicketValidation::VALIDATEINCIDENT],
-                                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1),
+                                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, true),
                             ];
                             $forcecentral = false;
                             break;
@@ -3957,7 +3960,7 @@ HTML;
                                 [
                                     'glpi_profilerights.name'     => 'changevalidation',
                                     'glpi_profilerights.rights'   => ['&', ChangeValidation::VALIDATE],
-                                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1),
+                                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, true),
                             ];
                             break;
 
@@ -3966,7 +3969,7 @@ HTML;
                                 [
                                     'glpi_profilerights.name'     => 'changevalidation',
                                     'glpi_profilerights.rights'   => ['&', CREATE],
-                                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1),
+                                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, true),
                             ];
                             break;
 
@@ -3975,7 +3978,7 @@ HTML;
                                 [
                                     'glpi_profilerights.name'     => 'project',
                                     'glpi_profilerights.rights'   => ['&', Project::READMY],
-                                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1),
+                                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, true),
                             ];
                             break;
 
@@ -3984,7 +3987,7 @@ HTML;
                                 [
                                     'glpi_profilerights.name'     => 'knowbase',
                                     'glpi_profilerights.rights'   => ['&', KnowbaseItem::READFAQ],
-                                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1),
+                                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, true),
                             ];
                             break;
 
@@ -3997,7 +4000,7 @@ HTML;
                                         '&',
                                         READ | CREATE | UPDATE | DELETE | PURGE,
                                     ],
-                                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, 1),
+                                ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, true),
                             ];
                     }
                     if (in_array($r, Profile::$helpdesk_rights)) {

@@ -301,7 +301,7 @@ abstract class LevelAgreement extends CommonDBChild
      * since 10.0
      *
      * @param Ticket $ticket
-     * @param int $type
+     * @param SLM::TTO|SLM::TTR $type
      *
      * @return false|OlaLevel_Ticket|SlaLevel_Ticket
      * @used-by templates/components/itilobject/service_levels.html.twig
@@ -504,8 +504,8 @@ TWIG, $twig_params);
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        switch ($item->getType()) {
-            case 'SLM':
+        switch (true) {
+            case $item instanceof SLM:
                 self::showForSLM($item);
                 break;
         }

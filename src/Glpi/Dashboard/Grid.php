@@ -909,7 +909,7 @@ HTML;
             'groups_id'   => self::$all_dashboards[$this->current]['rights']['groups_id'] ?? [],
         ];
 
-        echo ShareDashboardDropdown::show($rand, $values);
+        echo ShareDashboardDropdown::show((string) $rand, $values);
         echo "<br>";
 
         echo "<div class='d-flex align-items-center my-3'>";

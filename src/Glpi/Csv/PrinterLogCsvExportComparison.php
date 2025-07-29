@@ -35,8 +35,8 @@
 
 namespace Glpi\Csv;
 
-use DateTime;
 use PrinterLog;
+use Safe\DateTime;
 
 class PrinterLogCsvExportComparison implements ExportToCsvInterface
 {

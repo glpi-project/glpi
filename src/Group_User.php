@@ -353,7 +353,7 @@ class Group_User extends CommonDBRelation
         if ($check_entities) {
             $query['WHERE']['OR'] = [
                 "$pu_table.entities_id" => null,
-            ] + getEntitiesRestrictCriteria($pu_table, '', $entityrestrict, 1);
+            ] + getEntitiesRestrictCriteria($pu_table, '', $entityrestrict, true);
         }
 
         $iterator = $DB->request($query);

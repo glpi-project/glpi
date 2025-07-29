@@ -42,6 +42,7 @@ use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
 use Glpi\Http\RedirectResponse;
+use Glpi\ItemTranslation\ItemTranslation;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -98,7 +99,7 @@ final class UpdateFormTranslationController extends AbstractController
         return $success;
     }
 
-    private function updateTranslation(FormTranslation $form_translation, array $translation_input): bool
+    private function updateTranslation(ItemTranslation $form_translation, array $translation_input): bool
     {
         $translation_input['id'] = $form_translation->getID();
 

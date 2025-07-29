@@ -60,9 +60,8 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
-        switch ($item->getType()) {
-            case 'CartridgeItem':
+        switch (true) {
+            case $item instanceof CartridgeItem:
                 self::showForCartridgeItem($item);
                 break;
         }
