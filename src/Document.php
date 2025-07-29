@@ -1523,9 +1523,10 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             $out .= '</div>';
         } else {
             $out .= Ajax::updateItem(
-                "show_" . $p['name'] . $rand,
-                $CFG_GLPI["root_doc"] . "/ajax/dropdownRubDocument.php",
-                $params,
+                toupdate  : "show_" . $p['name'] . $rand,
+                url       : $CFG_GLPI["root_doc"] . "/ajax/dropdownRubDocument.php",
+                parameters: $params,
+                display   : false,
             );
         }
         if ($p['display']) {
