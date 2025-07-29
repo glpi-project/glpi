@@ -88,7 +88,6 @@ abstract class ExportSearchOutput extends AbstractSearchOutput
 
         switch ($table . "." . $field) {
             case "glpi_tickets.time_to_resolve":
-            case "glpi_tickets.internal_time_to_resolve":
             case "glpi_problems.time_to_resolve":
             case "glpi_changes.time_to_resolve":
                 if (in_array($ID, [151, 181])) {
@@ -111,7 +110,6 @@ abstract class ExportSearchOutput extends AbstractSearchOutput
                 }
                 break;
             case "glpi_tickets.time_to_own":
-            case "glpi_tickets.internal_time_to_own":
                 if (in_array($ID, [158, 186])) {
                     break; // Skip "TTO + progress" search options
                 }
