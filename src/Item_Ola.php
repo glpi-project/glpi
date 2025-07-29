@@ -165,8 +165,16 @@ class Item_Ola extends CommonDBRelation
 
         // - update end_time
         // for TTO, endtime is when the ticket is assigned to the dedicated group.
+        // - except if update is triggered by a rule
+        // - except if end_time is already set
+        // @todoseb refacto en mettant end_time, sur l'ensemble.
+        // @todoseb traitement de la suppression du groupe de l'OLA (à été présent, ne l'ai plus -> ola tto terminée (idem ttr probablement))
+        $ola_group_removed = $ticket->haveAGroup(CommonITILActor::ASSIGN, [$ola->fields['groups_id']]);
+
         if ($item_ola_data['ola_type'] === SLM::TTO) {
-            if ($item_ola_data['end_time'] == null
+            if (
+                (!isset($ticket->input['_rule_process']) || !$ticket->input['_rule_process'])
+                && $item_ola_data['end_time'] == null
                 &&
                 (
                     $ticket->haveAGroup(CommonITILActor::ASSIGN, [$ola->fields['groups_id']])

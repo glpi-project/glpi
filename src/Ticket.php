@@ -2760,7 +2760,7 @@ JAVASCRIPT;
             'name'               => __('OLA') . ' ' . __('time to resolve') . ' - ' . __('due time'),
             'massiveaction'      => false,
             'datatype'           => 'datetime',
-            'additionalfields' => ['TABLE.status', 'TABLE.takeintoaccount_delay_stat', 'TABLE.date', 'olas_id', 'waiting_time', 'end_time'],
+            'additionalfields' => ['TABLE.status', 'TABLE.takeintoaccount_delay_stat', 'TABLE.date', 'olas_id', 'waiting_time', 'end_time'], // @todoseb champs takeintoaccount_delay_stat surement inutile maintenant
             'joinparams' => [
                 'jointype'  => 'itemtype_item',
                 'condition' => ['NEWTABLE.ola_type' => SLM::TTR,],
@@ -2777,7 +2777,7 @@ JAVASCRIPT;
             'name' => __('OLA') . ' ' . __('time to resolve') . ' - ' . __('due time + progress'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'additionalfields' => ['TABLE.status', 'TABLE.takeintoaccount_delay_stat', 'TABLE.date', 'olas_id', 'waiting_time', 'end_time'],
+            'additionalfields' => ['TABLE.status', 'TABLE.takeintoaccount_delay_stat', 'TABLE.date', 'olas_id', 'waiting_time', 'end_time'], // @todoseb champs takeintoaccount_delay_stat surement inutile maintenant
             'joinparams' => [
                 'jointype'  => 'itemtype_item',
                 'condition' => ['NEWTABLE.ola_type' => SLM::TTR,],
