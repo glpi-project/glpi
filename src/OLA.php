@@ -131,8 +131,6 @@ class OLA extends LevelAgreement
      **/
     public function addLevelToDo(Ticket $ticket, $levels_id, $olas_id)
     {
-        $pre = static::$prefix;
-
         $items_ola = new Item_Ola();
         if (!$items_ola->getFromDBByCrit(['olas_id' => $olas_id, 'items_id' => $ticket->fields['id'], 'itemtype' => Ticket::class])) {
             throw new LogicException('Item_ola not found');
@@ -154,12 +152,12 @@ class OLA extends LevelAgreement
         $_ticket = new Ticket();
         if (
             $_ticket->getFromDB($ticket->getID()) &&
-            $this->levelCanBeAddedInLevelsTodo($ticket, $ola->fields['type']) &&
+            $this->levelCanBeAddedInLevelsTodo($ticket, $items_ola) &&
             $date !== null
         ) {
             $toadd = [];
             $toadd['date'] = $date;
-            $toadd[$pre . 'levels_id'] = $levels_id;
+            $toadd['olalevels_id'] = $levels_id;
             $toadd['tickets_id'] = $ticket->fields["id"];
             $levelticket = getItemForItemtype(static::$levelticketclass);
             $levelticket->add($toadd);
@@ -246,19 +244,18 @@ class OLA extends LevelAgreement
      *
      * It means that the ola is not completed
      */
-    private function levelCanBeAddedInLevelsTodo(Ticket $ticket, int $olaType): bool
+    private function levelCanBeAddedInLevelsTodo(Ticket $ticket, Item_Ola $items_ola): bool
     {
         if (
             $ticket->isDeleted() ||
             $ticket->fields['status'] == CommonITILObject::CLOSED ||
             $ticket->fields['status'] == CommonITILObject::SOLVED ||
-//            (!is_null($this->fields['end_time'])) // td ne plus s'appuyer sur takeintoaccount_delay_stat, s'appuyer sur end_time
-            ($olaType == SLM::TTO && $ticket->fields['takeintoaccount_delay_stat'] > 0) // @todo ne plus s'appuyer sur takeintoaccount_delay_stat, s'appuyer sur end_time
+            !is_null($items_ola->fields['end_time'])
         ) {
             return false;
         }
-        return true;
 
+        return true;
     }
 
     /**

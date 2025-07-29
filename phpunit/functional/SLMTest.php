@@ -1499,6 +1499,11 @@ class SLMTest extends DbTestCase
 
         // Reload ticket
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        if ($la_class == OLA::class) {
+            $this->runOlaCron();
+        } else {
+            $this->runSlaCron();
+        }
 
         $ola_data = $ticket->getOlasData()[0];
         $this->assertEquals($waiting_duration, $ola_data['waiting_time']);
@@ -1510,16 +1515,9 @@ class SLMTest extends DbTestCase
             'tickets_id' => $ticket->getID(),
         ]);
 
-        // no level to execute in case of TTO if there were pauses
-        // because pauses makes takeintoaccount_delay_stat be > 0 so levels are not executed
-        // @see \OlaLevel_Ticket::doLevelForTicket
-        // @todoseb this should not be true anymore : only the fact a user/group dedicated to OLA should stop levels to be processed
-        $expected_count = (count($pauses) > 0 && $la_params['type'] === SLM::TTO) ? 0 : 1;
-        $this->assertCount($expected_count, $la_level_ticket);
-        if ($expected_count > 0) {
-            $escalation_data = array_pop($la_level_ticket)["date"];
-            $this->assertEquals($target_escalation_date, $escalation_data);
-        }
+        $this->assertCount(1, $la_level_ticket);
+        $escalation_data = array_pop($la_level_ticket)["date"];
+        $this->assertEquals($target_escalation_date, $escalation_data);
     }
 
     /**
@@ -2720,26 +2718,28 @@ class SLMTest extends DbTestCase
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
 
         // Check that TTO and TTR have been modified as expected
-        // since ticket has been put on waiting, TTO is completed, no more TTO levels to check
-        // @todoseb comportement va changer si tto n'est pas accompli par la mise en pause
-        $la_type = SLM::TTR;
+        $expected_la_levels = [];
+        foreach ([SLM::TTR, SLM::TTO] as $la_type) {
+            // Check that the correct LA is assigned to the ticket
+            $expected_la = getItemByTypeName(OLA::class, "\OLA $la_type", true);
+            $expected_la_levels[] = getItemByTypeName($level_class, "\OLA $la_type level", true);
+            $fetched_ola_id = match ($la_type) {
+                SLM::TTR => $ticket->getOlasTTRData()[0] ?? throw new \Exception("Expected associated OLA not found on ticket"),
+                SLM::TTO => $ticket->getOlasTTOData()[0] ?? throw new \Exception("Expected associated OLA not found on ticket"),
+            };
+            $this->assertEquals($expected_la, $fetched_ola_id['olas_id']);
 
-        // Check that the correct LA is assigned to the ticket
-        $expected_la = getItemByTypeName(OLA::class, "\OLA $la_type", true);
-        $expected_la_levels = [getItemByTypeName($level_class, "\OLA $la_type level", true)];
-        $fetched_ola_ttr_id = $ticket->getOlasTTRData()[0] ?? throw new \Exception("Expected associated OLA TTR not found on ticket");
-        $this->assertEquals($expected_la, $fetched_ola_ttr_id['olas_id']);
-
-        // Check that the target date is correct (+ 4 hours)
-        $this->assertEquals('2034-08-16 17:10:00', $fetched_ola_ttr_id['due_time']);
+            // Check that the target date is correct (+ 4 hours)
+            $this->assertEquals('2034-08-16 17:10:00', $fetched_ola_id['due_time']);
+        }
 
         // Check that all escalations levels are sets
         $level_ticket_class = $ola->getLevelTicketClass();
         $sa_levels_ticket = (new $level_ticket_class())->find(['tickets_id' => $ticket->getID()], [$level_class::getForeignKeyField()]);
-        $this->assertCount(1, $sa_levels_ticket);
+        $this->assertCount(2, $sa_levels_ticket);
 
         // Check that they match the expected la levels
-        $this->assertEquals(
+        $this->assertEqualsCanonicalizing(
             $expected_la_levels,
             array_column($sa_levels_ticket, $level_class::getForeignKeyField())
         );
@@ -2843,13 +2843,12 @@ class SLMTest extends DbTestCase
         // Check that all escalations levels are sets
         $level_ticket_class = $ola->getLevelTicketClass();
         $sa_levels_ticket = (new $level_ticket_class())->find(['tickets_id' => $ticket->getID()], [$level_class::getForeignKeyField()]);
-        $this->assertCount(1, $sa_levels_ticket); // @todo atm \OLA::levelCanBeAddedInLevelsTodo() se base sur ticket.takeintoaccount_delay_stat>0 -> pas de level pour ola tto, ça va changer, on aura 2 levels
+        $this->assertCount(2, $sa_levels_ticket);
 
-        $this->markTestIncomplete('implémenter que ola tto est accomplie que si end_time est pas null, cf commentaire au dessus.');
         // Check that they match the expected la levels
         $expected_la_levels = [
             getItemByTypeName($level_class, "\OLA 0 2 level", true),
-            // getItemByTypeName($level_class, "\OLA 1 2 level", true) // cf commentaire au dessus
+            getItemByTypeName($level_class, "\OLA 1 2 level", true),
         ];
         $this->assertEqualsCanonicalizing(
             $expected_la_levels,
@@ -2862,7 +2861,6 @@ class SLMTest extends DbTestCase
             array_unique(array_column($sa_levels_ticket, 'date'))
         );
     }
-
 
     public function testSlaTtoDueTimeIsNotUpdatedOnTicketDateUpdate(): void
     {
