@@ -549,11 +549,12 @@ final class Search
 
     private function getJoinNameForProperty(string $prop_name): string
     {
-        if (array_key_exists(str_replace(chr(0x1F), '.', $prop_name), $this->context->getJoins())) {
-            $join_name = str_replace(chr(0x1F), '.', $prop_name);
+        $joins = $this->context->getJoins();
+        $prop_name = str_replace(chr(0x1F), '.', $prop_name);
+        if (array_key_exists($prop_name, $joins)) {
+            $join_name = $prop_name;
         } else {
-            $join_name = substr($prop_name, 0, strrpos($prop_name, chr(0x1F)));
-            $join_name = str_replace(chr(0x1F), '.', $join_name);
+            $join_name = substr($prop_name, 0, strrpos($prop_name, '.'));
         }
         return $join_name;
     }
