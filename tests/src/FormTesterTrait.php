@@ -401,8 +401,10 @@ trait FormTesterTrait
             ], ['conditions']);
         }
 
-        // Reload form
-        $form->getFromDB($form->getID());
+        // Reload form to clear cached data
+        $id = $form->getID();
+        $form = new Form();
+        $form->getFromDB($id);
 
         return $form;
     }

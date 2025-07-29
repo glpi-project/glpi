@@ -143,13 +143,15 @@
                                 {% set number_of_sections = item.getSections()|length %}
                                 {% for section in item.getSections() %}
                                     {{ include('pages/admin/form/form_section.html.twig', {
-                                        'form'                  : item,
-                                        'section'               : section,
-                                        'question_types_manager': question_types_manager,
-                                        'section_index'         : loop.index,
-                                        'can_update'            : item.canUpdate(),
-                                        'show_section_form'     : number_of_sections > 1,
-                                        'number_of_sections'    : number_of_sections,
+                                        'form'                        : item,
+                                        'section'                     : section,
+                                        'question_types_manager'      : question_types_manager,
+                                        'section_index'               : loop.index,
+                                        'can_update'                  : can_update,
+                                        'show_section_form'           : number_of_sections > 1,
+                                        'number_of_sections'          : number_of_sections,
+                                        'allow_unauthenticated_access': allow_unauthenticated_access
+
                                     }, with_context = false) }}
                                 {% endfor %}
                             </div>
@@ -157,7 +159,7 @@
 
                         <div class="mb-3" data-glpi-form-editor-form-extra-details>
                             {{ include('pages/admin/form/form_toolbar.html.twig', {
-                                'can_update'     : item.canUpdate(),
+                                'can_update'     : can_update,
                                 'form'           : item,
                                 'vertical_layout': true,
                             }, with_context = false) }}
@@ -342,7 +344,7 @@
                 <i class="ti ti-plus me-1"></i>
                 <span class="d-block add-label">{{ __("Add") }}</span>
             </button>
-        {% elseif item.canUpdate() %}
+        {% elseif can_update %}
             {# Update action #}
             <button
                 class="btn btn-primary"
@@ -385,7 +387,7 @@
     {{ include('pages/admin/form/item_has_conditions_modal.html.twig') }}
 </form>
 
-{% if item.canUpdate() %}
+{% if can_update %}
     {# Templates, must be outside the main form to avoid submitting their inputs #}
     <div data-glpi-form-editor-templates class="d-none">
 
@@ -417,20 +419,22 @@
         {# Load new section template #}
         <div data-glpi-form-editor-section-template>
             {{ include('pages/admin/form/form_section.html.twig', {
-                'form'               : item,
-                'section'            : null,
-                'can_update'         : true,
-                'show_section_form'  : true,
-                'number_of_sections' : 0,
+                'form'                        : item,
+                'section'                     : null,
+                'can_update'                  : true,
+                'show_section_form'           : true,
+                'number_of_sections'          : 0,
+                'allow_unauthenticated_access': allow_unauthenticated_access
             }, with_context = false) }}
         </div>
 
         {# Load new horizontal block template #}
         <div data-glpi-form-editor-horizontal-block-template>
             {{ include('pages/admin/form/form_horizontal_block.html.twig', {
-                'blocks' : null,
-                'can_update' : true,
-                'form' : item,
+                'blocks'                      : null,
+                'can_update'                  : true,
+                'form'                        : item,
+                'allow_unauthenticated_access': allow_unauthenticated_access,
             }, with_context = false) }}
         </div>
 

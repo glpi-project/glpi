@@ -67,7 +67,7 @@
                 {% endif %}
                 {% set previous_index = form_block.fields.horizontal_rank %}
 
-                {{ form_block.displayBlockForEditor() }}
+                {{ form_block.displayBlockForEditor(can_update, allow_unauthenticated_access) }}
             {% endif %}
         {% endfor %}
 

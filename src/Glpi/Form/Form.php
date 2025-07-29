@@ -110,7 +110,10 @@ final class Form extends CommonDBTM implements
      * Should always be accessed through getSections()
      * @var Section[]|null
      */
-    protected ?array $sections = null;
+    private ?array $sections = null;
+
+    /** @var ?FormAccessControl[] */
+    private ?array $access_controls = null;
 
     #[Override]
     public static function getTypeName($nb = 0)
@@ -173,10 +176,11 @@ final class Form extends CommonDBTM implements
         // Render twig template
         $twig = TemplateRenderer::getInstance();
         $twig->display('pages/admin/form/form_editor.html.twig', [
-            'item'                   => $this,
-            'params'                 => $options,
-            'question_types_manager' => $types_manager,
-            'allow_unauthenticated_access'      => FormAccessControlManager::getInstance()->allowUnauthenticatedAccess($this),
+            'item'                         => $this,
+            'can_update'                   => $this->canUpdate(),
+            'params'                       => $options,
+            'question_types_manager'       => $types_manager,
+            'allow_unauthenticated_access' => FormAccessControlManager::getInstance()->allowUnauthenticatedAccess($this),
         ]);
         return true;
     }
@@ -540,6 +544,7 @@ final class Form extends CommonDBTM implements
                 $section = new Section();
                 $section->getFromResultSet($row);
                 $section->post_getFromDB();
+                $section->setForm($this);
                 $this->sections[$row['id']] = $section;
             }
         }
@@ -606,25 +611,30 @@ final class Form extends CommonDBTM implements
      */
     public function getAccessControls(): array
     {
-        $controls = [];
-        $raw_controls = (new FormAccessControl())->find([
-            Form::getForeignKeyField() => $this->getID(),
-        ]);
+        if ($this->access_controls === null) {
+            $controls = [];
 
-        // Make sure all returned data are valid (some data might come from
-        // disabled plugins).
-        foreach ($raw_controls as $row) {
-            if (!$this->isValidAccessControlType($row['strategy'])) {
-                continue;
+            $raw_controls = (new FormAccessControl())->find([
+                Form::getForeignKeyField() => $this->getID(),
+            ]);
+
+            // Make sure all returned data are valid (some data might come from
+            // disabled plugins).
+            foreach ($raw_controls as $row) {
+                if (!$this->isValidAccessControlType($row['strategy'])) {
+                    continue;
+                }
+
+                $control = new FormAccessControl();
+                $control->getFromResultSet($row);
+                $control->post_getFromDB();
+                $controls[] = $control;
             }
 
-            $control = new FormAccessControl();
-            $control->getFromResultSet($row);
-            $control->post_getFromDB();
-            $controls[] = $control;
+            $this->access_controls = $controls;
         }
 
-        return $controls;
+        return $this->access_controls;
     }
 
     /**
@@ -706,6 +716,7 @@ final class Form extends CommonDBTM implements
     protected function clearLazyLoadedData(): void
     {
         $this->sections = null;
+        $this->access_controls = null;
     }
 
     /**
