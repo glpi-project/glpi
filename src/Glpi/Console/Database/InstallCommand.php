@@ -358,20 +358,6 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
     }
 
     /**
-     * Check if DB config should be set by current command run.
-     *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return boolean
-     */
-    private function shouldSetDBConfig(InputInterface $input, OutputInterface $output)
-    {
-
-        return $input->getOption('reconfigure') || !file_exists(GLPI_CONFIG_DIR . '/config_db.php');
-    }
-
-    /**
      * Check if input contains DB config options.
      *
      * @param InputInterface $input

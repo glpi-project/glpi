@@ -3040,7 +3040,7 @@ JS
      *
      * @return array
      **/
-    public static function addMoreCriteria()
+    public static function addMoreCriteria($criterion = '')
     {
         return [];
     }

@@ -40,7 +40,6 @@ class HTMLTableGroup extends HTMLTableBase
 {
     private $name;
     private $content;
-    private $new_headers = [];
     private $ordered_headers;
     private $table;
     /** @var array<HTMLTableRow> */

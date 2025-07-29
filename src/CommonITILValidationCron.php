@@ -80,7 +80,7 @@ class CommonITILValidationCron extends CommonDBTM
 
             foreach ($targets as $target) {
                 $validation = new $target();
-                $itemtype = $validation->getItilObjectItemType($target);
+                $itemtype = $validation->getItilObjectItemType();
                 foreach (Entity::getEntitiesToNotify('approval_reminder_repeat_interval') as $entity => $repeat) {
                     $iterator = $DB->request([
                         'SELECT' => 'validation.*',

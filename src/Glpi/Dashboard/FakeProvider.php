@@ -39,6 +39,7 @@ use CommonDBTM;
 use CommonDevice;
 use CommonITILObject;
 use Group;
+use InvalidArgumentException;
 use Session;
 use Ticket;
 use User;
@@ -188,6 +189,7 @@ final class FakeProvider extends Provider
             'planned' => 4,
             'solved' => 78,
             'closed' => 14550,
+            default => throw new InvalidArgumentException("Invalid case: $case"),
         };
 
         $label = match ($case) {
@@ -200,6 +202,7 @@ final class FakeProvider extends Provider
             'planned' => __("Planned tickets"),
             'solved' => __("Solved tickets"),
             'closed' => __("Closed tickets"),
+            default => throw new InvalidArgumentException("Invalid case: $case"),
         };
 
         $icon = Ticket::getStatusIcon($case);

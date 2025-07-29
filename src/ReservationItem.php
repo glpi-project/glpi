@@ -722,7 +722,7 @@ TWIG, $twig_params);
         $items_messages = [];
 
         foreach (Entity::getEntitiesToNotify('use_reservations_alert') as $entity => $value) {
-            $secs = $value * HOUR_TIMESTAMP;
+            $secs = (int) $value * HOUR_TIMESTAMP;
 
             // Reservation already begin and reservation ended in $value hours
             $criteria = [

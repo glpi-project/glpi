@@ -1375,20 +1375,24 @@ class MailCollector extends CommonDBTM
         $tos     = [];
         if (isset($message->to)) {
             $h_tos   = $message->getHeader('to');
-            foreach ($h_tos->getAddressList() as $address) {
-                $mailto = Toolbox::strtolower($address->getEmail());
-                if ($mailto === $this->fields['name']) {
-                    $to = $mailto;
+            if ($h_tos instanceof AbstractAddressList) {
+                foreach ($h_tos->getAddressList() as $address) {
+                    $mailto = Toolbox::strtolower($address->getEmail());
+                    if ($mailto === $this->fields['name']) {
+                        $to = $mailto;
+                    }
+                    $tos[] = $mailto;
                 }
-                $tos[] = $mailto;
             }
         }
 
         $ccs     = [];
         if (isset($message->cc)) {
             $h_ccs   = $message->getHeader('cc');
-            foreach ($h_ccs->getAddressList() as $address) {
-                $ccs[] = Toolbox::strtolower($address->getEmail());
+            if ($h_ccs instanceof AbstractAddressList) {
+                foreach ($h_ccs->getAddressList() as $address) {
+                    $ccs[] = Toolbox::strtolower($address->getEmail());
+                }
             }
         }
 

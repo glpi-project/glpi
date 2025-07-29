@@ -305,6 +305,11 @@ TWIG, $twig_params);
         $items = array_flip($val);
 
         foreach ($items as $itemtype) {
+            $item = getItemForItemtype($itemtype);
+            if (!$item instanceof CommonDBTM) {
+                throw new RuntimeException("Invalid asset type: " . $itemtype);
+            }
+
             $typeclass = $itemtype . "Type";
 
             if (!class_exists($typeclass)) {
@@ -332,7 +337,7 @@ TWIG, $twig_params);
                 ],
                 'WHERE'     => [
                     "$table_item.is_deleted"   => 0,
-                ] + getEntitiesRestrictCriteria($table_item) + $itemtype::getSystemSQLCriteria($table_item),
+                ] + getEntitiesRestrictCriteria($table_item) + $item::getSystemSQLCriteria($table_item),
                 'GROUPBY'   => "$type_table.name",
             ];
 
@@ -362,7 +367,7 @@ TWIG, $twig_params);
                 }
                 if (!array_key_exists($itemtype, $result)) {
                     $result[$itemtype] = [
-                        'label' => $itemtype::getTypeName(Session::getPluralNumber()),
+                        'label' => $item::getTypeName(Session::getPluralNumber()),
                         'items' => [],
                     ];
                 }
@@ -1624,6 +1629,11 @@ TWIG, $twig_params);
         ];
 
         foreach ($anv_graph_data_itemtype as $itemtype => $anv_graph_data) {
+            $item_object = getItemForItemtype($itemtype);
+            if (!$item_object instanceof CommonGLPI) {
+                throw new RuntimeException("Invalid itemtype: $itemtype");
+            }
+
             if (count($anv_graph_data) > 0) {
                 $graph_data = [];
                 foreach ($anv_graph_data as $year => $value) {
@@ -1636,7 +1646,7 @@ TWIG, $twig_params);
                 $twig_params['graphs'][] = Widget::simpleLine([
                     'label' => sprintf(
                         __('%1$s account net value'),
-                        $itemtype::getTypeName(1)
+                        $item_object::getTypeName(1)
                     ),
                     'data' => $graph_data,
                     'legend' => true,
@@ -1645,6 +1655,11 @@ TWIG, $twig_params);
         }
 
         foreach ($total_graph_data_itemtype as $itemtype => $total_graph_data) {
+            $item_object = getItemForItemtype($itemtype);
+            if (!$item_object instanceof CommonGLPI) {
+                throw new RuntimeException("Invalid itemtype: $itemtype");
+            }
+
             if (count($total_graph_data) > 0) {
                 $graph_data = [];
                 foreach ($total_graph_data as $year => $value) {
@@ -1657,7 +1672,7 @@ TWIG, $twig_params);
                 $twig_params['graphs'][] = Widget::simpleLine([
                     'label' => sprintf(
                         __('%1$s value'),
-                        $itemtype::getTypeName(1)
+                        $item_object::getTypeName(1)
                     ),
                     'data' => $graph_data,
                     'legend' => true,
@@ -1783,6 +1798,11 @@ TWIG, $twig_params);
         ];
 
         foreach ($anv_graph_data_itemtype as $itemtype => $anv_graph_data) {
+            $item_object = getItemForItemtype($itemtype);
+            if (!$item_object instanceof CommonGLPI) {
+                throw new RuntimeException("Invalid itemtype: $itemtype");
+            }
+
             if (count($anv_graph_data) > 0) {
                 $graph_data = [];
                 foreach ($anv_graph_data as $year => $value) {
@@ -1795,7 +1815,7 @@ TWIG, $twig_params);
                 $twig_params['graphs'][] = Widget::simpleLine([
                     'label' => sprintf(
                         __('%1$s account net value'),
-                        $itemtype::getTypeName(1)
+                        $item_object::getTypeName(1)
                     ),
                     'data' => $graph_data,
                     'legend' => true,
@@ -1804,6 +1824,11 @@ TWIG, $twig_params);
         }
 
         foreach ($total_graph_data_itemtype as $itemtype => $total_graph_data) {
+            $item_object = getItemForItemtype($itemtype);
+            if (!$item_object instanceof CommonGLPI) {
+                throw new RuntimeException("Invalid itemtype: $itemtype");
+            }
+
             if (count($total_graph_data) > 0) {
                 $graph_data = [];
                 foreach ($total_graph_data as $year => $value) {
@@ -1816,7 +1841,7 @@ TWIG, $twig_params);
                 $twig_params['graphs'][] = Widget::simpleLine([
                     'label' => sprintf(
                         __('%1$s value'),
-                        $itemtype::getTypeName(1)
+                        $item_object::getTypeName(1)
                     ),
                     'data' => $graph_data,
                     'legend' => true,

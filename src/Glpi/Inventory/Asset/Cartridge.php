@@ -160,7 +160,7 @@ class Cartridge extends InventoryAsset
                                     $elabel
                                 ),
                             ];
-                            if (isset($aliases[$type . $color . $extra])) {
+                            if (isset($aliases[$type . $color . $extra])) { // @phpstan-ignore isset.offset (phpstan think this is always false, it is safer to keep it because this code is a mess so it is hard to confirm TODO: rewrite in a more readable way)
                                 foreach ($aliases[$type . $color . $extra] as $alias) {
                                     $tags[$alias] = $tags[$type . $color . $extra];
                                 }
@@ -175,7 +175,7 @@ class Cartridge extends InventoryAsset
                                     $clabel
                                 ),
                             ];
-                            if (isset($aliases[$type . $extra . $color])) {
+                            if (isset($aliases[$type . $extra . $color])) { // @phpstan-ignore isset.offset (phpstan think this is always false, it is safer to keep it because this code is a mess so it is hard to confirm TODO: rewrite in a more readable way)
                                 foreach ($aliases[$type . $extra . $color] as $alias) {
                                     $tags[$alias] = $tags[$type . $extra . $color];
                                 }

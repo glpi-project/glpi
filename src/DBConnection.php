@@ -528,7 +528,7 @@ class DBConnection extends CommonDBTM
                         $res = self::switchToSlave();
                     }
                     if ($res) {
-                        $DB->first_connection = false;
+                        $DB->first_connection = false; // @phpstan-ignore property.nonObject (DB is a global var, phpstan doesnt see that it is an object here)
                     }
                 }
             }

@@ -54,7 +54,6 @@ class Update
 
     private $DB;
     private $version;
-    private $dbversion;
     private $language;
 
     /**
@@ -140,7 +139,6 @@ class Update
         }
 
         $this->version    = $currents['version'];
-        $this->dbversion  = $currents['dbversion'];
         $this->language   = $currents['language'];
 
         return $currents;

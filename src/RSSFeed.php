@@ -833,6 +833,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
         $output .= "</thead>";
 
         if ($nb) {
+            /** @var array $items This manual typing is needed because of a 3rd party library that has incorrect phpdoc */
             usort($items, [SimplePie::class, 'sort_items']);
             foreach ($items as $item) {
                 $output .= "<tr class='tab_bg_1'><td>";

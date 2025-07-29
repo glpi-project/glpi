@@ -74,10 +74,6 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 $filter   = $_GET["filter"]   ?? "";
                 $page     = $_GET["page"]     ?? 0;
 
-                // Check required params
-                if (empty($itemtype)) {
-                    throw new BadRequestHttpException("Missing itemtype");
-                }
 
                 // Execute search
                 $assets = Impact::searchAsset($itemtype, json_decode($used), $filter, $page);

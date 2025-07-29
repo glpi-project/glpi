@@ -318,7 +318,7 @@ TWIG, $twig_params);
      * @param object $auth        identification object
      * @param string $login       user login
      * @param string $password    user password
-     * @param string $mail_method mail_method array to use
+     * @param array  $mail_method mail_method array to use
      *
      * @return object identification object
      */

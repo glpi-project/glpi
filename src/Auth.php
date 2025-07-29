@@ -280,11 +280,11 @@ class Auth extends CommonGLPI
      * @param array    $ldap_method ldap_method array to use
      * @param string    $login       User Login
      * @param string    $password    User Password
-     * @param bool|null $error       Boolean flag that will be set to `true` if a LDAP error occurs during connection
+     * @param bool      $error       Boolean flag that will be set to `true` if a LDAP error occurs during connection
      *
      * @return false|array
      */
-    public function connection_ldap($ldap_method, $login, $password, ?bool &$error = null)
+    public function connection_ldap($ldap_method, $login, $password, bool &$error = false)
     {
         $error = false;
 

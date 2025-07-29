@@ -1454,19 +1454,6 @@ class RacksPluginToCoreCommand extends AbstractCommand
     }
 
     /**
-     * Returns verbosity level for import errors.
-     *
-     * @return int
-     */
-    private function getImportErrorsVerbosity()
-    {
-
-        return $this->input->getOption('skip-errors')
-         ? OutputInterface::VERBOSITY_NORMAL
-         : OutputInterface::VERBOSITY_QUIET;
-    }
-
-    /**
      * Output import error message.
      *
      * @param string           $message

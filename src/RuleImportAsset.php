@@ -60,8 +60,6 @@ class RuleImportAsset extends Rule
 
     public static $rightname         = 'rule_import';
 
-    /** @var bool */
-    private $restrict_entity = false;
     /** @var integer */
     private $found_criteria = 0;
     /** @var array */
@@ -273,6 +271,7 @@ class RuleImportAsset extends Rule
      * @param string $criterion
      * @return array
      */
+    #[Override]
     public static function addMoreCriteria($criterion = '')
     {
         return match ($criterion) {
@@ -398,8 +397,6 @@ class RuleImportAsset extends Rule
                         }
                     } elseif ($crit->fields["criteria"] == 'itemtype') {
                         $this->complex_criteria[] = $crit;
-                    } elseif ($crit->fields["criteria"] == 'entityrestrict') {
-                        $this->restrict_entity = true;
                     }
                 }
             }
@@ -446,7 +443,6 @@ class RuleImportAsset extends Rule
         global $CFG_GLPI, $DB, $PLUGIN_HOOKS;
 
         $this->complex_criteria = [];
-        $this->restrict_entity = false;
         $this->only_these_criteria = false;
         $this->link_criteria_port = false;
 

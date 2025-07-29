@@ -3196,11 +3196,11 @@ TWIG, $twig_params);
      * @param string    $password    user password
      * @param array     $ldap_method ldap_method array to use
      * @param string    $user_dn     user LDAP DN if present
-     * @param bool|null $error       Boolean flag that will be set to `true` if a LDAP error occurs during connection
+     * @param bool      $error       Boolean flag that will be set to `true` if a LDAP error occurs during connection
      *
      * @return object identification object
      */
-    public static function ldapAuth($auth, $login, $password, $ldap_method, $user_dn, ?bool &$error = null)
+    public static function ldapAuth($auth, $login, $password, $ldap_method, $user_dn, bool &$error = false)
     {
         $auth->auth_succeded = false;
         $auth->extauth       = 1;
@@ -4076,7 +4076,7 @@ TWIG, $twig_params);
      *
      * @since 0.84
      *
-     * @param object|false   $config_ldap        LDAP configuration. May only be false if $check_config_value is also false.
+     * @param ($check_config_value is true ? object : false)   $config_ldap        LDAP configuration. May only be false if $check_config_value is also false.
      * @param boolean  $check_config_value Whether to check config values
      *
      * @return boolean true if maxPageSize can be used, false otherwise

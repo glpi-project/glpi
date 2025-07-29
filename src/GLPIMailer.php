@@ -291,10 +291,10 @@ class GLPIMailer
                 $value = $this->email->getHeaders()->get('Message-Id')->getBodyAsString();
                 break;
             case 'From':
-                $value = $this->email->getHeaders()->get('From')->getAddresses()[0]->getAddress() ?? '';
+                $value = $this->email->getFrom()[0]->getAddress() ?? '';
                 break;
             case 'FromName':
-                $value = $this->email->getHeaders()->get('From')->getAddresses()[0]->getName() ?? '';
+                $value = $this->email->getFrom()[0]->getName() ?? '';
                 break;
             case 'Sender':
                 $value = $this->email->getHeaders()->get('Sender')->getBodyAsString();
@@ -342,14 +342,14 @@ class GLPIMailer
                 $this->email->from((string) $value);
                 break;
             case 'FromName':
-                $header = $this->email->getHeaders()->get('From');
-                if ($header === null || count($header->getAddresses()) === 0) {
+                $froms = $this->email->getFrom();
+                if ($froms === []) {
                     trigger_error(
                         'Unable to define "FromName" property when "From" property is not defined.',
                         E_USER_WARNING
                     );
                 } else {
-                    $this->email->from(new Address($header->getAddresses()[0]->getAddress(), (string) $value));
+                    $this->email->from(new Address($froms[0]->getAddress(), (string) $value));
                 }
                 break;
             case 'Sender':

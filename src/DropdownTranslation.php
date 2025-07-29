@@ -449,7 +449,7 @@ TWIG, $twig_params);
      */
     public function showForm($ID = -1, array $options = [])
     {
-        if (!isset($options['parent']) || !($options['parent'] instanceof CommonDBTM)) {
+        if (!isset($options['parent']) || !($options['parent'] instanceof CommonDropdown)) {
             // parent is mandatory
             trigger_error('Parent item must be defined in `$options["parent"]`.', E_USER_WARNING);
             return false;

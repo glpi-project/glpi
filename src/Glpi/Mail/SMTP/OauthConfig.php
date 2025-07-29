@@ -40,6 +40,7 @@ use Glpi\Mail\SMTP\OauthProvider\Azure;
 use Glpi\Mail\SMTP\OauthProvider\Google;
 use Glpi\Mail\SMTP\OauthProvider\ProviderInterface;
 use GLPIKey;
+use League\OAuth2\Client\Provider\AbstractProvider;
 use Safe\Exceptions\JsonException;
 
 use function Safe\json_decode;
@@ -72,10 +73,8 @@ final class OauthConfig
 
     /**
      * Return configured SMTP Oauth provider instance.
-     *
-     * @return ProviderInterface|null
      */
-    public function getSmtpOauthProvider(): ?ProviderInterface
+    public function getSmtpOauthProvider(): (ProviderInterface&AbstractProvider)|null
     {
         $config = Config::getConfigurationValues(
             'core',
@@ -94,7 +93,11 @@ final class OauthConfig
 
         $provider_class = $config['smtp_oauth_provider'];
 
-        if (!is_string($provider_class) || !is_a($provider_class, ProviderInterface::class, true)) {
+        if (
+            !is_string($provider_class)
+            || !is_a($provider_class, ProviderInterface::class, true)
+            || !is_a($provider_class, AbstractProvider::class, true)
+        ) {
             return null;
         }
 

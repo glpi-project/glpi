@@ -133,7 +133,9 @@ trait PlanningEvent
             $input['users_id'] = Session::getLoginUserID();
         }
 
-        Toolbox::manageBeginAndEndPlanDates($input['plan']);
+        if (isset($input['plan'])) {
+            Toolbox::manageBeginAndEndPlanDates($input['plan']);
+        }
 
         if (!isset($input['uuid'])) {
             $input['uuid'] = Uuid::uuid4();
@@ -190,7 +192,9 @@ trait PlanningEvent
             $this->fields['users_id_guests'] = exportArrayToDB($this->fields['users_id_guests']);
         }
 
-        Toolbox::manageBeginAndEndPlanDates($input['plan']);
+        if (isset($input['plan'])) {
+            Toolbox::manageBeginAndEndPlanDates($input['plan']);
+        }
 
         if (isset($input['_planningrecall'])) {
             PlanningRecall::manageDatas($input['_planningrecall']);

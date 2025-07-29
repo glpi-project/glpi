@@ -84,8 +84,6 @@ use function Safe\class_implements;
 use function Safe\ob_end_clean;
 use function Safe\ob_start;
 use function Safe\preg_match;
-use function Safe\session_destroy;
-use function Safe\session_id;
 
 class Router
 {
@@ -553,7 +551,7 @@ EOT;
             }
             $action = static fn($input) => $middleware['middleware']($input, $action);
         }
-        $action($input);
+        $action($input); // @phpstan-ignore expr.resultUnused (phpstan doens't understand this, TODO rewrite with listeners instead of callbacks)
     }
 
     private function doRequestMiddleware(MiddlewareInput $input): ?Response
@@ -585,7 +583,7 @@ EOT;
             }
             $action = static fn($input) => $middleware['middleware']($input, $action);
         }
-        $action($input);
+        $action($input); // @phpstan-ignore expr.resultUnused (phpstan doens't understand this, TODO rewrite with listeners instead of callbacks)
     }
 
     public function handleRequest(Request $request): Response
@@ -755,28 +753,6 @@ EOT;
             $_SERVER['HTTP_ACCEPT_LANGUAGE'] = $request->getHeaderLine('Accept-Language');
             $_SESSION['glpilanguage'] = Session::getPreferredLanguage();
             $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
-        }
-    }
-
-    /**
-     * Resume a session from a session token.
-     * @param string $session_token
-     * @return void
-     */
-    private function resumeSession(string $session_token): void
-    {
-        $current = session_id();
-        $session = trim($session_token);
-
-        if (file_exists(GLPI_ROOT . '/inc/downstream.php')) {
-            include_once(GLPI_ROOT . '/inc/downstream.php');
-        }
-
-        if ($session != $current && !empty($current)) {
-            session_destroy();
-        }
-        if ($session != $current && !empty($session)) {
-            session_id($session);
         }
     }
 

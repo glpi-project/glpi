@@ -308,70 +308,68 @@ class NotificationEventMailing extends NotificationEventAbstract
                             $matches
                         )
                     ) {
-                        if (isset($matches[2])) {
-                            foreach ($matches[2] as $pos => $docID) {
-                                if (in_array($docID, $inline_docs)) {
-                                    // Already in mapping
-                                    continue;
-                                }
+                        foreach ($matches[2] as $pos => $docID) {
+                            if (in_array($docID, $inline_docs)) {
+                                // Already in mapping
+                                continue;
+                            }
 
-                                $doc = new Document();
-                                if ($doc->getFromDB($docID) === false) {
-                                    $inline_docs[$docID] = 'notfound'; // Add mapping entry to ensure that src is converted to an absolute URL
-                                    trigger_error(sprintf('Unable to load document %d.', $docID), E_USER_WARNING);
-                                    continue;
-                                }
+                            $doc = new Document();
+                            if ($doc->getFromDB($docID) === false) {
+                                $inline_docs[$docID] = 'notfound'; // Add mapping entry to ensure that src is converted to an absolute URL
+                                trigger_error(sprintf('Unable to load document %d.', $docID), E_USER_WARNING);
+                                continue;
+                            }
 
-                                // Make sure file still exists
-                                if (!file_exists(GLPI_DOC_DIR . "/" . $doc->fields['filepath'])) {
-                                    trigger_error('Failed to add document ' . $doc->fields['filepath'] . ' to mail: file not found', E_USER_WARNING);
-                                    continue;
-                                }
+                            // Make sure file still exists
+                            if (!file_exists(GLPI_DOC_DIR . "/" . $doc->fields['filepath'])) {
+                                trigger_error('Failed to add document ' . $doc->fields['filepath'] . ' to mail: file not found', E_USER_WARNING);
+                                continue;
+                            }
 
-                                //find width
-                                $custom_width = null;
-                                if (preg_match("/width=[\"|'](\d+)(\.\d+)?[\"|']/", $matches[0][$pos], $wmatches)) {
-                                    $custom_width = intval($wmatches[1]);
-                                }
-                                $custom_height = null;
-                                if (preg_match("/height=[\"|'](\d+)(\.\d+)?[\"|']/", $matches[0][$pos], $hmatches)) {
-                                    $custom_height = intval($hmatches[1]);
-                                }
+                            //find width
+                            $custom_width = null;
+                            if (preg_match("/width=[\"|'](\d+)(\.\d+)?[\"|']/", $matches[0][$pos], $wmatches)) {
+                                $custom_width = intval($wmatches[1]);
+                            }
+                            $custom_height = null;
+                            if (preg_match("/height=[\"|'](\d+)(\.\d+)?[\"|']/", $matches[0][$pos], $hmatches)) {
+                                $custom_height = intval($hmatches[1]);
+                            }
 
-                                if ($custom_height === null && $custom_width === null) {
-                                    // no custom size, use original file
-                                    $image_path = GLPI_DOC_DIR . "/" . $doc->fields['filepath'];
-                                } else {
-                                    if ($custom_width === null || $custom_height === null) {
-                                        // When either width or height is null, but the other is defined,
-                                        // compute the missing dimension using a cross-multiplication.
-                                        $img_infos = getimagesize(GLPI_DOC_DIR . "/" . $doc->fields['filepath']);
+                            if ($custom_height === null && $custom_width === null) {
+                                // no custom size, use original file
+                                $image_path = GLPI_DOC_DIR . "/" . $doc->fields['filepath'];
+                            } else {
+                                if ($custom_width === null || $custom_height === null) {
+                                    // When either width or height is null, but the other is defined,
+                                    // compute the missing dimension using a cross-multiplication.
+                                    $img_infos = getimagesize(GLPI_DOC_DIR . "/" . $doc->fields['filepath']);
 
-                                        if (!$img_infos) {
-                                            // Failure to read image size, skip to avoid a divide by zero exception
-                                            continue;
-                                        }
-
-                                        $initial_width = $img_infos[0];
-                                        $initial_height = $img_infos[1];
-
-                                        if ($custom_height === null) {
-                                            $custom_height = $initial_height * $custom_width / $initial_width;
-                                        } else {
-                                            $custom_width = $initial_width * $custom_height / $initial_height;
-                                        }
+                                    if (!$img_infos) {
+                                        // Failure to read image size, skip to avoid a divide by zero exception
+                                        continue;
                                     }
 
-                                    $image_path = Document::getResizedImagePath(
-                                        GLPI_DOC_DIR . "/" . $doc->fields['filepath'],
-                                        $custom_width,
-                                        $custom_height
-                                    );
+                                    $initial_width = $img_infos[0];
+                                    $initial_height = $img_infos[1];
+
+                                    if ($custom_height === null) {
+                                        $custom_height = $initial_height * $custom_width / $initial_width;
+                                    } else {
+                                        $custom_width = $initial_width * $custom_height / $initial_height;
+                                    }
                                 }
 
-                                $mail->embedFromPath($image_path, $doc->fields['filename']);
-                                $inline_docs[$docID] = $doc->fields['filename'];
+                                $image_path = Document::getResizedImagePath(
+                                    GLPI_DOC_DIR . "/" . $doc->fields['filepath'],
+                                    $custom_width,
+                                    $custom_height
+                                );
                             }
+
+                            $mail->embedFromPath($image_path, $doc->fields['filename']);
+                            $inline_docs[$docID] = $doc->fields['filename'];
                         }
                     }
 

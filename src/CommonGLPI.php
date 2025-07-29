@@ -673,7 +673,7 @@ class CommonGLPI implements CommonGLPIInterface
                 }
 
                 if (
-                    !is_integer($itemtype) && ($itemtype != 'empty')
+                    !is_numeric($itemtype) && ($itemtype != 'empty')
                     && ($obj = getItemForItemtype($itemtype))
                 ) {
                     $options['tabnum'] = $tabnum;
@@ -735,7 +735,7 @@ class CommonGLPI implements CommonGLPIInterface
     public static function createTabEntry($text, $nb = 0, ?string $form_itemtype = null, string $icon = '', ?int $total_nb = null)
     {
         if ($icon === '') {
-            $icon = static::getTabIconClass($form_itemtype);
+            $icon = self::getTabIconClass($form_itemtype);
         }
         if (str_contains($icon, 'fa-empty-icon')) {
             $icon = '';
