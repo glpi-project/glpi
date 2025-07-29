@@ -596,7 +596,12 @@ class FormMigration extends AbstractPluginMigration
 
                 $this->result->addMessage(
                     MessageType::Error,
-                    "Unable to import question '{$raw_question['name']}' with unknown type '$fieldtype' in form '{$form->getName()}'"
+                    sprintf(
+                        __("Unable to import question '%s' with unknown type '%s' in form '%s'"),
+                        $raw_question['name'],
+                        $fieldtype,
+                        $form->getName()
+                    )
                 );
                 continue;
             }
