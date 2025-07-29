@@ -68,6 +68,8 @@ final class Comment extends CommonDBChild implements
 
     public $dohistory = true;
 
+    private ?Section $section = null;
+
     #[Override]
     public static function getTypeName($nb = 0)
     {
@@ -179,13 +181,13 @@ final class Comment extends CommonDBChild implements
     }
 
     #[Override]
-    public function displayBlockForEditor(): void
+    public function displayBlockForEditor(bool $can_update, bool $allow_unauthenticated): void
     {
         TemplateRenderer::getInstance()->display('pages/admin/form/form_comment.html.twig', [
             'form'       => $this->getForm(),
             'comment'    => $this,
-            'section'    => $this->getItem(),
-            'can_update' => $this->getForm()->canUpdate(),
+            'section'    => $this->getSection(),
+            'can_update' => $can_update,
         ]);
     }
 
@@ -202,12 +204,27 @@ final class Comment extends CommonDBChild implements
      */
     public function getForm(): Form
     {
-        $section = $this->getItem();
-        if (!($section instanceof Section)) {
-            throw new RuntimeException("Can't load parent section");
+        return $this->getSection()->getForm();
+    }
+
+    public function getSection(): Section
+    {
+        if ($this->section === null) {
+            $section = $this->getItem();
+
+            if (!($section instanceof Section)) {
+                throw new RuntimeException("Can't load parent section");
+            }
+
+            $this->section = $section;
         }
 
-        return $section->getForm();
+        return $this->section;
+    }
+
+    public function setSection(Section $section): void
+    {
+        $this->section = $section;
     }
 
     /**

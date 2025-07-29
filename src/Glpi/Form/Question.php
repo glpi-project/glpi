@@ -38,7 +38,6 @@ namespace Glpi\Form;
 use CommonDBChild;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\Condition\ConditionableValidationTrait;
 use Glpi\Form\Condition\ConditionableVisibilityInterface;
 use Glpi\Form\Condition\ConditionableVisibilityTrait;
@@ -75,6 +74,8 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     public static $items_id = 'forms_sections_id';
 
     public $dohistory = true;
+
+    private ?Section $section = null;
 
     #[Override]
     public static function getTypeName($nb = 0)
@@ -151,16 +152,16 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     }
 
     #[Override]
-    public function displayBlockForEditor(): void
+    public function displayBlockForEditor(bool $can_update, bool $allow_unauthenticated): void
     {
         TemplateRenderer::getInstance()->display('pages/admin/form/form_question.html.twig', [
             'form'                         => $this->getForm(),
             'question'                     => $this,
             'question_type'                => $this->getQuestionType(),
             'question_types_manager'       => QuestionTypesManager::getInstance(),
-            'section'                      => $this->getItem(),
-            'can_update'                   => $this->getForm()->canUpdate(),
-            'allow_unauthenticated_access' => FormAccessControlManager::getInstance()->allowUnauthenticatedAccess($this->getForm()),
+            'section'                      => $this->getSection(),
+            'can_update'                   => $can_update,
+            'allow_unauthenticated_access' => $allow_unauthenticated,
         ]);
     }
 
@@ -189,19 +190,29 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
         return new $type();
     }
 
-    /**
-     * Get the parent form of this question
-     *
-     * @return Form
-     */
     public function getForm(): Form
     {
-        $section = $this->getItem();
-        if (!($section instanceof Section)) {
-            throw new RuntimeException("Can't load parent section");
+        return $this->getSection()->getForm();
+    }
+
+    public function getSection(): Section
+    {
+        if ($this->section === null) {
+            $section = $this->getItem();
+
+            if (!($section instanceof Section)) {
+                throw new RuntimeException("Can't load parent section");
+            }
+
+            $this->section = $section;
         }
 
-        return $section->getForm();
+        return $this->section;
+    }
+
+    public function setSection(Section $section): void
+    {
+        $this->section = $section;
     }
 
     public function getEndUserInputName(): string

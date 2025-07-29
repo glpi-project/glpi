@@ -79,6 +79,9 @@ final class FormAccessControlManager
         foreach ($missing_strategies as $missing_strategy) {
             $this->createMissingStrategyForForm($form, $missing_strategy);
         }
+
+        // Clear lazy loaded data
+        $form->getFromDB($form->getID());
     }
 
     public function getActiveAccessControlsForForm(

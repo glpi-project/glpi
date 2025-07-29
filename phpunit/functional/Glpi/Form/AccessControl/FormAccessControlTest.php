@@ -283,6 +283,9 @@ class FormAccessControlTest extends DbTestCase
         string $expected,
         bool $count = true
     ): void {
+        // Reload to clear cached data
+        $form->getFromDB($form->getID());
+
         $this->login();
         $_SESSION['glpishow_count_on_tabs'] = $count;
 
