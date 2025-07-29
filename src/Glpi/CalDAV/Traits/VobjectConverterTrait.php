@@ -37,9 +37,9 @@ namespace Glpi\CalDAV\Traits;
 
 use CommonDBTM;
 use DateInterval;
+use DateTime;
 use DateTimeInterface;
 use DateTimeZone;
-use DateTime;
 use Glpi\Error\ErrorHandler;
 use Glpi\RichText\RichText;
 use InvalidArgumentException;
@@ -52,7 +52,6 @@ use Sabre\VObject\Component\VEvent;
 use Sabre\VObject\Component\VJournal;
 use Sabre\VObject\Component\VTodo;
 use Sabre\VObject\Property\FlatText;
-use Sabre\VObject\Property\ICalendar\DateTime as ICalendarDateTime;
 use Sabre\VObject\Property\ICalendar\Recur;
 use Sabre\VObject\Reader;
 use Safe\DateTime as SafeDateTime;
