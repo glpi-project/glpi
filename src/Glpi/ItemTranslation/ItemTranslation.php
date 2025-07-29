@@ -76,8 +76,11 @@ class ItemTranslation extends CommonDBChild
             && isset($input['itemtype'])
             && isset($input['items_id'])
         ) {
-            $item = getItemForItemtype($input['itemtype'])?->getById($input['items_id']);
-            if ($item instanceof ProvideTranslationsInterface) {
+            $item = getItemForItemtype($input['itemtype']);
+            if (
+                $item instanceof ProvideTranslationsInterface
+                && $item->getFromDB($input['items_id'])
+            ) {
                 foreach ($item->listTranslationsHandlers() as $handlers) {
                     foreach ($handlers as $handler) {
                         if ($handler->getKey() === $input['key']) {
@@ -121,8 +124,11 @@ class ItemTranslation extends CommonDBChild
      */
     public function isPossiblyObsolete(): bool
     {
-        $item = getItemForItemtype($this->fields[static::$itemtype])?->getById($this->fields[static::$items_id]);
-        if ($item instanceof ProvideTranslationsInterface) {
+        $item = getItemForItemtype($this->fields[static::$itemtype]);
+        if (
+            $item instanceof ProvideTranslationsInterface
+            && $item->getFromDB($this->fields[static::$items_id])
+        ) {
             foreach ($item->listTranslationsHandlers() as $handlers) {
                 foreach ($handlers as $handler) {
                     if ($handler->getKey() === $this->fields['key'] && $this->getTranslation() != null) {

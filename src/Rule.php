@@ -65,7 +65,13 @@ class Rule extends CommonDBTM
     public $restrict_matching     = false;
 
     protected $rules_id_field     = 'rules_id';
+    /**
+     * @var class-string<RuleAction>
+     */
     protected $ruleactionclass    = RuleAction::class;
+    /**
+     * @var class-string<RuleCriteria>
+     */
     protected $rulecriteriaclass  = RuleCriteria::class;
 
     public $specific_parameters   = false;
@@ -675,7 +681,10 @@ class Rule extends CommonDBTM
                 $input          = $ma->getInput();
                 $collectionname = $input['rule_class_name'] . 'Collection';
                 $rulecollection = getItemForItemtype($collectionname);
-                if ($rulecollection->canUpdate()) {
+                if (!($rulecollection instanceof RuleCollection)) {
+                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
+                } elseif ($rulecollection->canUpdate()) {
                     foreach ($ids as $id) {
                         if ($item->getFromDB($id)) {
                             if ($rulecollection->moveRule($id, $input['ranking'], $input['move_type'])) {
@@ -2895,7 +2904,7 @@ JS
     }
 
     /**
-     * @param string $sub_type
+     * @param class-string<Rule> $sub_type
      *
      * @return array
      **/

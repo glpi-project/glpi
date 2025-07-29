@@ -39,12 +39,13 @@ use Glpi\Features\Clonable;
 use Glpi\Features\DCBreadcrumb;
 use Glpi\Features\DCBreadcrumbInterface;
 use Glpi\Features\Inventoriable;
+use Glpi\Features\StateInterface;
 use Glpi\Socket;
 
 /**
  * Peripheral Class
  **/
-class Peripheral extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInterface
+class Peripheral extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInterface, StateInterface
 {
     use DCBreadcrumb;
     use Clonable;

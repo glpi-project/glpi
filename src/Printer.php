@@ -40,12 +40,13 @@ use Glpi\Features\AssignableItem;
 use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
 use Glpi\Features\Inventoriable;
+use Glpi\Features\StateInterface;
 use Glpi\Socket;
 
 /**
  * Printer Class
  **/
-class Printer extends CommonDBTM implements AssignableItemInterface
+class Printer extends CommonDBTM implements AssignableItemInterface, StateInterface
 {
     use Clonable;
     use Inventoriable;

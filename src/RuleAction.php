@@ -43,7 +43,10 @@ use function Safe\preg_replace;
 class RuleAction extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype        = "Rule";
+    /**
+     * @var class-string<Rule>
+     */
+    public static $itemtype        = Rule::class;
     public static $items_id        = 'rules_id';
     public $dohistory              = true;
     public $auto_message_on_action = false;
@@ -56,7 +59,7 @@ class RuleAction extends CommonDBChild
 
         if (isset($_POST['rule_class_name']) && is_subclass_of(Rule::class, $_POST['rule_class_name'])) {
             $rule = getItemForItemtype($_POST['rule_class_name']);
-            if ($rule->maxActionsCount() == 1) {
+            if ($rule instanceof Rule && $rule->maxActionsCount() == 1) {
                 $forbidden[] = 'clone';
             }
         }
@@ -196,8 +199,9 @@ class RuleAction extends CommonDBChild
                     && !empty($values['rules_id'])
                     && $generic_rule->getFromDB($values['rules_id'])
                 ) {
-                    if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
-                        return $rule->getAction($values[$field]);
+                    $rule = getItemForItemtype($generic_rule->fields["sub_type"]);
+                    if ($rule instanceof Rule) {
+                        return $rule->getActionName($values[$field]);
                     }
                 }
                 break;
@@ -215,7 +219,8 @@ class RuleAction extends CommonDBChild
                     && !empty($values['rules_id'])
                     && $generic_rule->getFromDB($values['rules_id'])
                 ) {
-                    if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
+                    $rule = getItemForItemtype($generic_rule->fields["sub_type"]);
+                    if ($rule instanceof Rule) {
                         return $rule->getCriteriaDisplayPattern(
                             $values["criteria"],
                             $values["condition"],
@@ -242,7 +247,8 @@ class RuleAction extends CommonDBChild
                     && !empty($values['rules_id'])
                     && $generic_rule->getFromDB($values['rules_id'])
                 ) {
-                    if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
+                    $rule = getItemForItemtype($generic_rule->fields["sub_type"]);
+                    if ($rule instanceof Rule) {
                         $options['value'] = $values[$field];
                         $options['name']  = $name;
                         return $rule->dropdownActions($options);
@@ -276,9 +282,10 @@ class RuleAction extends CommonDBChild
                     && !empty($values['rules_id'])
                     && $generic_rule->getFromDB($values['rules_id'])
                 ) {
-                    if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
+                    $rule = getItemForItemtype($generic_rule->fields["sub_type"]);
+                    if ($rule instanceof Rule) {
                         /// TODO review it : need to pass display param and others...
-                        return $rule->displayActionSelectPattern($values);
+                        return (new static())->displayActionSelectPattern($values);
                     }
                 }
                 break;
@@ -335,7 +342,7 @@ class RuleAction extends CommonDBChild
     /**
      * Display a dropdown with all the possible actions
      *
-     * @param array{subtype: string, name: string, field?: string, value?: string, alreadyused: bool, display?: bool} $options
+     * @param array{subtype: class-string<Rule>, name: string, field?: string, value?: string, alreadyused: bool, display?: bool} $options
      * <ul>
      *     <li>subtype: the itemtype of the rule</li>
      *     <li>name: the name of the dropdown</li>
@@ -445,7 +452,7 @@ class RuleAction extends CommonDBChild
 
     /**
      * @param integer $rules_id
-     * @param string $sub_type
+     * @param class-string<Rule> $sub_type
      **/
     public function getAlreadyUsedForRuleID($rules_id, $sub_type)
     {
@@ -599,7 +606,8 @@ class RuleAction extends CommonDBChild
 
                         case "dropdown_users_validate":
                             $used = [];
-                            if ($item = getItemForItemtype($options["sub_type"])) {
+                            $item = getItemForItemtype($options["sub_type"]);
+                            if ($item instanceof Rule) {
                                 $rule_data = getAllDataFromTable(
                                     self::getTable(),
                                     [
@@ -622,7 +630,8 @@ class RuleAction extends CommonDBChild
 
                         case "dropdown_groups_validate":
                             $used = [];
-                            if ($item = getItemForItemtype($options["sub_type"])) {
+                            $item = getItemForItemtype($options["sub_type"]);
+                            if ($item instanceof Rule) {
                                 $rule_data = getAllDataFromTable(
                                     self::getTable(),
                                     [
@@ -662,7 +671,8 @@ class RuleAction extends CommonDBChild
                             break;
 
                         default:
-                            if ($rule = getItemForItemtype($options["sub_type"])) {
+                            $rule = getItemForItemtype($options["sub_type"]);
+                            if ($rule instanceof Rule) {
                                 $display = $rule->displayAdditionalRuleAction($actions[$options["field"]], $param['value']);
                             }
                             break;

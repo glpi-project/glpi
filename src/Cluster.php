@@ -35,11 +35,12 @@
 use Glpi\Features\AssignableItem;
 use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
+use Glpi\Features\StateInterface;
 
 /**
  * Cluster Class
  **/
-class Cluster extends CommonDBTM implements AssignableItemInterface
+class Cluster extends CommonDBTM implements AssignableItemInterface, StateInterface
 {
     use Clonable;
     use Glpi\Features\State;

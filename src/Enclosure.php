@@ -38,11 +38,12 @@ use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
 use Glpi\Features\DCBreadcrumb;
 use Glpi\Features\DCBreadcrumbInterface;
+use Glpi\Features\StateInterface;
 
 /**
  * Enclosure Class
  **/
-class Enclosure extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInterface
+class Enclosure extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInterface, StateInterface
 {
     use DCBreadcrumb;
     use Clonable;

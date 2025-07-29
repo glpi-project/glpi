@@ -36,13 +36,20 @@
 require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
+use Glpi\Exception\Http\NotFoundHttpException;
 
 /** @var DBmysql $DB */
 global $DB;
 
 $solution = new ITILSolution();
 $track = getItemForItemtype($_POST['itemtype']);
-$track->getFromDB($_POST['items_id']);
+
+if (
+    !($track instanceof CommonITILObject)
+    || !$track->getFromDB($_POST['items_id'])
+) {
+    throw new NotFoundHttpException();
+}
 
 $redirect = null;
 $handled = false;

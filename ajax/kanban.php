@@ -37,8 +37,8 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\HttpException;
-use Glpi\Features\Kanban;
-use Glpi\Features\Teamwork;
+use Glpi\Features\KanbanInterface;
+use Glpi\Features\TeamworkInterface;
 
 use function Safe\json_encode;
 use function Safe\preg_split;
@@ -58,7 +58,7 @@ $nonkanban_actions = ['update', 'bulk_add_item', 'add_item', 'move_item', 'delet
 $itemtype = null;
 $item = null;
 if (isset($_REQUEST['itemtype'])) {
-    if (!in_array($_REQUEST['action'], $nonkanban_actions) && !Toolbox::hasTrait($_REQUEST['itemtype'], Kanban::class)) {
+    if (!in_array($_REQUEST['action'], $nonkanban_actions) && !is_a($_REQUEST['itemtype'], KanbanInterface::class, true)) {
         // Bad request
         // For all actions, except those in $nonkanban_actions, we expect to be manipulating the Kanban itself.
         throw new BadRequestHttpException("Invalid itemtype parameter");
@@ -220,6 +220,10 @@ if (($_POST['action'] ?? null) === 'update') {
     header("Content-Type: application/json; charset=UTF-8", true);
     echo json_encode($itemtype::getAllForKanban(true, (int) ($_REQUEST['items_id'] ?? -1)));
 } elseif ($_REQUEST['action'] === 'get_url') {
+    if (!($item instanceof KanbanInterface)) {
+        throw new BadRequestHttpException();
+    }
+
     $checkParams(['items_id']);
     if ($_REQUEST['items_id'] == -1) {
         echo $itemtype::getGlobalKanbanUrl(true);
@@ -303,11 +307,17 @@ if (($_POST['action'] ?? null) === 'update') {
         throw new AccessDeniedHttpException();
     }
 } elseif (($_POST['action'] ?? null) === 'add_teammember') {
+    if (!($item instanceof TeamworkInterface)) {
+        throw new BadRequestHttpException();
+    }
     $checkParams(['itemtype_teammember', 'items_id_teammember']);
     $item->addTeamMember($_POST['itemtype_teammember'], (int) $_POST['items_id_teammember'], [
         'role' => $_POST['role'],
     ]);
 } elseif (($_POST['action'] ?? null) === 'delete_teammember') {
+    if (!($item instanceof TeamworkInterface)) {
+        throw new BadRequestHttpException();
+    }
     $checkParams(['itemtype_teammember', 'items_id_teammember']);
     $item->deleteTeamMember($_POST['itemtype_teammember'], (int) $_POST['items_id_teammember'], [
         'role'   => (int) $_POST['role'],
@@ -317,14 +327,14 @@ if (($_POST['action'] ?? null) === 'update') {
         TemplateRenderer::getInstance()->display('components/kanban/item_panels/default_panel.html.twig', [
             'itemtype' => $itemtype,
             'item_fields' => $item->fields,
-            'team' => Toolbox::hasTrait($item, Teamwork::class) ? $item->getTeam() : [],
+            'team' => $item instanceof TeamworkInterface ? $item->getTeam() : [],
         ]);
     } else {
         throw new BadRequestHttpException();
     }
 } elseif (($_REQUEST['action'] ?? null) === 'load_teammember_form') {
-    if (isset($itemtype, $item) && Toolbox::hasTrait($_REQUEST['itemtype'], Teamwork::class)) {
-        echo $item::getTeamMemberForm($item, $itemtype);
+    if (isset($itemtype, $item) && $item instanceof TeamworkInterface) {
+        echo $item::getTeamMemberForm($item);
     } else {
         throw new BadRequestHttpException();
     }

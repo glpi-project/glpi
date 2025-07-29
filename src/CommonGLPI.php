@@ -50,6 +50,8 @@ class CommonGLPI implements CommonGLPIInterface
 {
     /**
      * Show the title of the item in the navigation header ?
+     *
+     * @var bool
      */
     protected static $showTitleInNavigationHeader = false;
 
@@ -342,9 +344,9 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Add standard define tab
      *
-     * @param string $itemtype itemtype link to the tab
-     * @param array  $ong      defined tabs
-     * @param array  $options  options (for withtemplate)
+     * @param class-string<CommonGLPI> $itemtype itemtype link to the tab
+     * @param array                    $ong      defined tabs
+     * @param array                    $options  options (for withtemplate)
      *
      * @return CommonGLPI
      **/
@@ -672,10 +674,7 @@ class CommonGLPI implements CommonGLPIInterface
                     return $ret;
                 }
 
-                if (
-                    !is_numeric($itemtype) && ($itemtype != 'empty')
-                    && ($obj = getItemForItemtype($itemtype))
-                ) {
+                if ($obj = getItemForItemtype($itemtype)) {
                     $options['tabnum'] = $tabnum;
                     $options['itemtype'] = $itemtype;
                     Plugin::doHook(Hooks::PRE_SHOW_TAB, [ 'item' => $item, 'options' => &$options]);
@@ -1284,7 +1283,9 @@ class CommonGLPI implements CommonGLPIInterface
 
     /**
      * Get links to Faq
-     **/
+     *
+     * @return string
+     */
     public function getKBLinks()
     {
         /**

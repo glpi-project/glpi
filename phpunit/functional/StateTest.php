@@ -38,10 +38,10 @@ use CommonDBTM;
 use Computer;
 use DbTestCase;
 use DropdownVisibility;
+use Glpi\Features\StateInterface;
 use Phone;
 use Printer;
 use ReflectionClass;
-use Toolbox;
 
 class StateTest extends DbTestCase
 {
@@ -194,8 +194,8 @@ class StateTest extends DbTestCase
 
         foreach ($CFG_GLPI['state_types'] as $itemtype) {
             $this->assertTrue(
-                Toolbox::hasTrait($itemtype, \Glpi\Features\State::class),
-                $itemtype . ' misses ' . \Glpi\Features\State::class . ' trait!'
+                is_a($itemtype, StateInterface::class, true),
+                $itemtype . ' must implement ' . StateInterface::class
             );
         }
     }

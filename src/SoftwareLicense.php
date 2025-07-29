@@ -39,11 +39,12 @@ use Glpi\Features\AssetImage;
 use Glpi\Features\AssignableItem;
 use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
+use Glpi\Features\StateInterface;
 
 /**
  * SoftwareLicense Class
  **/
-class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterface
+class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterface, StateInterface
 {
     use Clonable;
     use Glpi\Features\State;

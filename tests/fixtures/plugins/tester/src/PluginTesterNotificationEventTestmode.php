@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,28 +32,27 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Features;
-
-use CommonDBTM;
-use Glpi\Application\View\TemplateRenderer;
-use ProjectTeam;
-
-/**
- * Trait for itemtypes that can have a team
- * @since 10.0.0
- */
-trait Teamwork
+class PluginTesterNotificationEventTestmode implements NotificationEventInterface
 {
-    /**
-     * @see TeamworkInterface::getTeamMemberForm()
-     */
-    public static function getTeamMemberForm(CommonDBTM $item): string
-    {
-        $members_types = ProjectTeam::$available_types;
+    public static function getAdminData()
+    {}
 
-        return TemplateRenderer::getInstance()->render('components/kanban/teammember.html.twig', [
-            'item' => $item,
-            'members_types' => $members_types,
-        ]);
-    }
+    public static function getTargetField(&$data)
+    {}
+
+    public static function canCron()
+    {}
+
+    public static function getTargetFieldName()
+    {}
+
+    public static function getEntityAdminsData($entity)
+    {}
+
+    public static function send(array $data)
+    {}
+
+    public static function raise($event, CommonGLPI $item, array $options, $label, array $data, NotificationTarget $notificationtarget, NotificationTemplate $template, $notify_me, $emitter = null, ?CommonDBTM $trigger = null)
+    {}
+
 }

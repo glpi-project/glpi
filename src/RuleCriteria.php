@@ -46,7 +46,10 @@ use function Safe\preg_replace;
 class RuleCriteria extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype        = 'Rule';
+    /**
+     * @var class-string<Rule>
+     */
+    public static $itemtype        = Rule::class;
     public static $items_id        = 'rules_id';
     public $dohistory              = true;
     public $auto_message_on_action = false;
@@ -193,7 +196,8 @@ class RuleCriteria extends CommonDBChild
                     !empty($values['rules_id'])
                     && $generic_rule->getFromDB($values['rules_id'])
                 ) {
-                    if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
+                    $rule = getItemForItemtype($generic_rule->fields["sub_type"]);
+                    if ($rule instanceof Rule) {
                         return $rule->getCriteriaName($values[$field]);
                     }
                 }
@@ -223,7 +227,8 @@ class RuleCriteria extends CommonDBChild
                     && !empty($values['rules_id'])
                     && $generic_rule->getFromDB($values['rules_id'])
                 ) {
-                    if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
+                    $rule = getItemForItemtype($generic_rule->fields["sub_type"]);
+                    if ($rule instanceof Rule) {
                         return $rule->getCriteriaDisplayPattern(
                             $values["criteria"],
                             $values["condition"],
@@ -250,7 +255,8 @@ class RuleCriteria extends CommonDBChild
                     && !empty($values['rules_id'])
                     && $generic_rule->getFromDB($values['rules_id'])
                 ) {
-                    if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
+                    $rule = getItemForItemtype($generic_rule->fields["sub_type"]);
+                    if ($rule instanceof Rule) {
                         $options['value'] = $values[$field];
                         $options['name']  = $name;
                         return $rule->dropdownCriteria($options);
@@ -265,7 +271,8 @@ class RuleCriteria extends CommonDBChild
                     && !empty($values['rules_id'])
                     && $generic_rule->getFromDB($values['rules_id'])
                 ) {
-                    if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
+                    $rule = getItemForItemtype($generic_rule->fields["sub_type"]);
+                    if ($rule instanceof Rule) {
                         if (isset($values['criteria']) && !empty($values['criteria'])) {
                             $options['criterion'] = $values['criteria'];
                         }
@@ -286,7 +293,8 @@ class RuleCriteria extends CommonDBChild
                     && !empty($values['rules_id'])
                     && $generic_rule->getFromDB($values['rules_id'])
                 ) {
-                    if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
+                    $rule = getItemForItemtype($generic_rule->fields["sub_type"]);
+                    if ($rule instanceof Rule) {
                         /// TODO : manage display param to this function : need to send ot to all under functions
                         $rule->displayCriteriaSelectPattern(
                             $name,
