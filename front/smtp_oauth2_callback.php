@@ -1,7 +1,5 @@
 <?php
 
-use League\OAuth2\Client\Token\AccessToken;
-
 /**
  * ---------------------------------------------------------------------
  *
@@ -38,6 +36,7 @@ use League\OAuth2\Client\Token\AccessToken;
 require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Mail\SMTP\OauthConfig;
+use League\OAuth2\Client\Token\AccessToken;
 use Psr\Log\LoggerInterface;
 
 /** @var array $CFG_GLPI */
