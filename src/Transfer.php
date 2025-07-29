@@ -1308,7 +1308,7 @@ final class Transfer extends CommonDBTM
     /**
      * Add an item to already transfer array
      *
-     * @param string $key         Key (usually fkey or itemtype)
+     * @param string $key         Itemtype of the item
      * @param int    $ID          ID of the item
      * @param int    $newID       ID of the new item
      *
