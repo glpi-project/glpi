@@ -86,10 +86,6 @@ final class Search
 {
     private Parser $rsql_parser;
     private SearchContext $context;
-    /**
-     * @var array Cache of table names for foreign keys.
-     */
-    private array $fkey_tables = [];
     private DBmysql $db_read;
 
     private function __construct(array $schema, array $request_params)
@@ -670,55 +666,6 @@ final class Search
         }
 
         return new RecordSet($this, $records);
-    }
-
-    public function clearFkeyTablesCache(): void
-    {
-        $this->fkey_tables = [];
-    }
-
-    /**
-     * Resolve the DB table for the given foreign key and schema.
-     * @param string $fkey The foreign key name (In the fully qualified property name format, not the SQL field name)
-     * @param string $schema_name The schema name
-     * @return string|null The DB table name or null if the fkey parameter doesn't seem to be a foreign key.
-     */
-    public function getTableForFKey(string $fkey, string $schema_name): ?string
-    {
-        $normalized_fkey = str_replace(chr(0x1F), '.', $fkey);
-        if (isset($this->context->getJoins()[$normalized_fkey])) {
-            // Scalar property whose value exists in another table
-            return $this->context->getJoins()[$normalized_fkey]['table'];
-        }
-        if (!isset($this->fkey_tables[$fkey])) {
-            if ($fkey === 'id') {
-                // This is a primary key on a main item
-                if ($this->context->isUnionSearchMode()) {
-                    $subtype = array_filter($this->context->getSchemaSubtypes(), static fn($subtype) => $subtype['schema_name'] === $schema_name);
-                    if (count($subtype) !== 1) {
-                        throw new RuntimeException('Cannot find subtype for schema ' . $schema_name);
-                    }
-                    $subtype = reset($subtype);
-                    $this->fkey_tables[$fkey] = $subtype['itemtype']::getTable();
-                } else {
-                    $this->fkey_tables[$fkey] = $this->context->getSchemaTable();
-                }
-            } else {
-                // This is a foreign key on a joined item
-                foreach ($this->context->getJoins() as $join_alias => $join) {
-                    if ($fkey === str_replace('.', chr(0x1F), $join_alias) . chr(0x1F) . 'id') {
-                        // Found the related join definition. Use the table from that.
-                        $this->fkey_tables[$fkey] = $join['table'];
-                        break;
-                    }
-                }
-            }
-            if (empty($this->fkey_tables[$fkey])) {
-                // Probably not a fkey
-                return null;
-            }
-        }
-        return $this->fkey_tables[$fkey];
     }
 
     public function getItemRecordPath(string $join_name, mixed $id, array $hydrated_record): array

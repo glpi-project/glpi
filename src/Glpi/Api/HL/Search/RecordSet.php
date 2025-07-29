@@ -34,10 +34,12 @@
 
 namespace Glpi\Api\HL\Search;
 
+use Glpi\Api\HL\APIException;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Search;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Debug\Profiler;
 use Glpi\Toolbox\ArrayPathAccessor;
 use Session;
 use function Safe\preg_replace;
@@ -56,20 +58,119 @@ final class RecordSet
         return array_sum(array_map(static fn($records) => count($records), $this->records));
     }
 
+    public function getHydrationCriteria(string $fkey, string $table, string $itemtype, string $schema_name, array $ids_to_fetch): array
+    {
+        $criteria = [
+            'SELECT' => [],
+        ];
+        $id_field = 'id';
+        $join_name = '_';
+
+        if ($fkey === 'id') {
+            $props_to_use = array_filter($this->search->getContext()->getFlattenedProperties(), function ($prop_params, $prop_name) {
+                if (isset($this->search->getContext()->getJoins()[$prop_name])) {
+                    /** Scalar joined properties are fetched directly during {@link self::getMatchingRecords()} */
+                    return false;
+                }
+                $prop_field = $prop_params['x-field'] ?? $prop_name;
+                $mapped_from_other = isset($prop_params['x-mapped-property']) || (isset($prop_params['x-mapped-from']) && $prop_params['x-mapped-from'] !== $prop_field);
+                // We aren't handling joins or mapped fields here
+                $prop_name = str_replace(chr(0x1F), '.', $prop_name);
+                $prop_parent = substr($prop_name, 0, strrpos($prop_name, '.'));
+                $is_join = count(array_filter($this->search->getContext()->getJoins(), static fn($j_name) => str_starts_with($prop_parent, $j_name), ARRAY_FILTER_USE_KEY)) > 0;
+                return !$is_join && !$mapped_from_other;
+            }, ARRAY_FILTER_USE_BOTH);
+            $criteria['FROM'] = "$table AS " . $this->search->getDBRead()::quoteName('_');
+            if ($this->search->getContext()->isUnionSearchMode()) {
+                $criteria['SELECT'][] = new QueryExpression($this->search->getDBRead()::quoteValue($schema_name), '_itemtype');
+            }
+        } else {
+            $join_name = $this->search->getJoinNameForProperty($fkey);
+            $props_to_use = array_filter($this->search->getContext()->getFlattenedProperties(), function ($prop_name) use ($join_name) {
+                if (isset($this->search->getContext()->getJoins()[$prop_name])) {
+                    /** Scalar joined properties are fetched directly during {@link self::getMatchingRecords()} */
+                    return false;
+                }
+                $prop_parent = substr($prop_name, 0, strrpos($prop_name, '.'));
+                return $prop_parent === $join_name;
+            }, ARRAY_FILTER_USE_KEY);
+
+            $criteria['FROM'] = "$table AS " . $this->search->getDBRead()::quoteName(str_replace('.', chr(0x1F), $join_name));
+            $id_field = str_replace('.', chr(0x1F), $join_name) . '.id';
+        }
+        $criteria['WHERE'] = [$id_field => $ids_to_fetch];
+        foreach ($props_to_use as $prop_name => $prop) {
+            if ($prop['x-writeonly'] ?? false) {
+                // Property can only be written to, not read. We shouldn't be getting it here.
+                continue;
+            }
+
+            $trans_alias = null;
+            $is_computed = isset($prop['computation']);
+            $sql_field = $is_computed ? $prop['computation'] : $this->search->getSQLFieldForProperty($prop_name);
+            if (!$is_computed) {
+                $field_parts = explode('.', $sql_field);
+                $field_only = end($field_parts);
+                // Handle translatable fields
+                if (Session::haveTranslations($itemtype, $field_only)) {
+                    $trans_alias = "{$join_name}__{$field_only}__trans";
+                    $trans_alias = hash('xxh3', $trans_alias);
+                    if (!isset($criteria['LEFT JOIN'])) {
+                        $criteria['LEFT JOIN'] = [];
+                    }
+                    $criteria['LEFT JOIN']["glpi_dropdowntranslations AS {$trans_alias}"] = [
+                        'ON' => [
+                            $join_name => 'id',
+                            $trans_alias => 'items_id', [
+                                'AND' => [
+                                    "$trans_alias.language" => Session::getLanguage(),
+                                    "$trans_alias.itemtype" => $itemtype,
+                                    "$trans_alias.field" => $field_only,
+                                ],
+                            ],
+                        ],
+                    ];
+                }
+            }
+            // alias should be prop name relative to current join
+            $alias = $prop_name;
+            if ($join_name !== '_') {
+                $alias = preg_replace('/^' . preg_quote($join_name, '/') . '\./', '', $alias);
+            }
+            $alias = str_replace('.', chr(0x1F), $alias);
+            if (!$is_computed && isset($trans_alias)) {
+                // Try to use the translated value, but fall back to the default value if there is no translation
+                $criteria['SELECT'][] = QueryFunction::ifnull(
+                    expression: "{$trans_alias}.value",
+                    value: $sql_field,
+                    alias: $alias
+                );
+            } else {
+                $criteria['SELECT'][] = $sql_field instanceof QueryExpression ? new QueryExpression($sql_field, $alias) : ($sql_field . ' AS ' . $alias);
+            }
+        }
+        return $criteria;
+    }
+
+    /**
+     * @throws APIException
+     */
     public function hydrate(): array
     {
         $hydrated_records = [];
         /** All data retrieved by table */
         $fetched_records = [];
+        Profiler::getInstance()->start('RecordSet::hydrate get data for dehydrated records', Profiler::CATEGORY_HLAPI);
+        Profiler::getInstance()->pause('RecordSet::hydrate get data for dehydrated records');
 
         foreach ($this->records as $schema_name => $dehydrated_records) {
             // Clear lookup cache between schemas just in case.
-            $this->search->clearFkeyTablesCache();
+            $this->search->getContext()->clearFkeyTablesCache();
             foreach ($dehydrated_records as $row) {
                 unset($row['_itemtype']);
                 // Make sure we have all the needed data
                 foreach ($row as $fkey => $record_ids) {
-                    $table = $this->search->getTableForFKey($fkey, $schema_name);
+                    $table = $this->search->getContext()->getTableForFKey($fkey, $schema_name);
                     if ($table === null) {
                         continue;
                     }
@@ -95,98 +196,12 @@ final class RecordSet
                         continue;
                     }
 
-                    $criteria = [
-                        'SELECT' => [],
-                    ];
-                    $id_field = 'id';
-                    $join_name = '_';
-
-                    if ($fkey === 'id') {
-                        $props_to_use = array_filter($this->search->getContext()->getFlattenedProperties(), function ($prop_params, $prop_name) {
-                            if (isset($this->search->getContext()->getJoins()[$prop_name])) {
-                                /** Scalar joined properties are fetched directly during {@link self::getMatchingRecords()} */
-                                return false;
-                            }
-                            $prop_field = $prop_params['x-field'] ?? $prop_name;
-                            $mapped_from_other = isset($prop_params['x-mapped-property']) || (isset($prop_params['x-mapped-from']) && $prop_params['x-mapped-from'] !== $prop_field);
-                            // We aren't handling joins or mapped fields here
-                            $prop_name = str_replace(chr(0x1F), '.', $prop_name);
-                            $prop_parent = substr($prop_name, 0, strrpos($prop_name, '.'));
-                            $is_join = count(array_filter($this->search->getContext()->getJoins(), static fn($j_name) => str_starts_with($prop_parent, $j_name), ARRAY_FILTER_USE_KEY)) > 0;
-                            return !$is_join && !$mapped_from_other;
-                        }, ARRAY_FILTER_USE_BOTH);
-                        $criteria['FROM'] = "$table AS " . $this->search->getDBRead()::quoteName('_');
-                        if ($this->search->getContext()->isUnionSearchMode()) {
-                            $criteria['SELECT'][] = new QueryExpression($this->search->getDBRead()::quoteValue($schema_name), '_itemtype');
-                        }
-                    } else {
-                        $join_name = $this->search->getJoinNameForProperty($fkey);
-                        $props_to_use = array_filter($this->search->getContext()->getFlattenedProperties(), function ($prop_name) use ($join_name) {
-                            if (isset($this->search->getContext()->getJoins()[$prop_name])) {
-                                /** Scalar joined properties are fetched directly during {@link self::getMatchingRecords()} */
-                                return false;
-                            }
-                            $prop_parent = substr($prop_name, 0, strrpos($prop_name, '.'));
-                            return $prop_parent === $join_name;
-                        }, ARRAY_FILTER_USE_KEY);
-
-                        $criteria['FROM'] = "$table AS " . $this->search->getDBRead()::quoteName(str_replace('.', chr(0x1F), $join_name));
-                        $id_field = str_replace('.', chr(0x1F), $join_name) . '.id';
-                    }
-                    $criteria['WHERE'] = [$id_field => $ids_to_fetch];
-                    foreach ($props_to_use as $prop_name => $prop) {
-                        if ($prop['x-writeonly'] ?? false) {
-                            // Property can only be written to, not read. We shouldn't be getting it here.
-                            continue;
-                        }
-
-                        $trans_alias = null;
-                        $is_computed = isset($prop['computation']);
-                        $sql_field = $is_computed ? $prop['computation'] : $this->search->getSQLFieldForProperty($prop_name);
-                        if (!$is_computed) {
-                            $field_parts = explode('.', $sql_field);
-                            $field_only = end($field_parts);
-                            // Handle translatable fields
-                            if (Session::haveTranslations($itemtype, $field_only)) {
-                                $trans_alias = "{$join_name}__{$field_only}__trans";
-                                $trans_alias = hash('xxh3', $trans_alias);
-                                if (!isset($criteria['LEFT JOIN'])) {
-                                    $criteria['LEFT JOIN'] = [];
-                                }
-                                $criteria['LEFT JOIN']["glpi_dropdowntranslations AS {$trans_alias}"] = [
-                                    'ON' => [
-                                        $join_name => 'id',
-                                        $trans_alias => 'items_id', [
-                                            'AND' => [
-                                                "$trans_alias.language" => Session::getLanguage(),
-                                                "$trans_alias.itemtype" => $itemtype,
-                                                "$trans_alias.field" => $field_only,
-                                            ],
-                                        ],
-                                    ],
-                                ];
-                            }
-                        }
-                        // alias should be prop name relative to current join
-                        $alias = $prop_name;
-                        if ($join_name !== '_') {
-                            $alias = preg_replace('/^' . preg_quote($join_name, '/') . '\./', '', $alias);
-                        }
-                        $alias = str_replace('.', chr(0x1F), $alias);
-                        if (!$is_computed && isset($trans_alias)) {
-                            // Try to use the translated value, but fall back to the default value if there is no translation
-                            $criteria['SELECT'][] = QueryFunction::ifnull(
-                                expression: "{$trans_alias}.value",
-                                value: $sql_field,
-                                alias: $alias
-                            );
-                        } else {
-                            $criteria['SELECT'][] = $sql_field instanceof QueryExpression ? new QueryExpression($sql_field, $alias) : ($sql_field . ' AS ' . $alias);
-                        }
-                    }
+                    $criteria = $this->getHydrationCriteria($fkey, $table, $itemtype, $schema_name, $ids_to_fetch);
 
                     // Fetch the data for the current dehydrated record
+                    Profiler::getInstance()->resume('RecordSet::hydrate get data for dehydrated records');
                     $it = $this->search->getDBRead()->request($criteria);
+                    Profiler::getInstance()->pause('RecordSet::hydrate get data for dehydrated records');
                     $this->search->validateIterator($it);
                     foreach ($it as $data) {
                         $cleaned_data = [];
@@ -201,6 +216,7 @@ final class RecordSet
                 $hydrated_records[] = $this->assembleHydratedRecords($row, $schema_name, $fetched_records);
             }
         }
+        Profiler::getInstance()->stop('RecordSet::hydrate get data for dehydrated records');
         return $hydrated_records;
     }
 
@@ -213,13 +229,14 @@ final class RecordSet
      */
     private function assembleHydratedRecords(array $dehydrated_row, string $schema_name, array $fetched_records): array
     {
+        Profiler::getInstance()->start('RecordSet::assembleHydratedRecords', Profiler::CATEGORY_HLAPI);
         $dehydrated_refs = array_keys($dehydrated_row);
         $hydrated_record = [];
         foreach ($dehydrated_refs as $dehydrated_ref) {
             if (str_starts_with($dehydrated_ref, '_')) {
                 $dehydrated_ref = 'id';
             }
-            $table = $this->search->getTableForFKey($dehydrated_ref, $schema_name);
+            $table = $this->search->getContext()->getTableForFKey($dehydrated_ref, $schema_name);
             if ($table === null) {
                 continue;
             }
@@ -271,7 +288,10 @@ final class RecordSet
                 ArrayPathAccessor::setElementByArrayPath($hydrated_record, $normalized_k, $v);
             }
         }
+        Profiler::getInstance()->start('RecordSet::fixupAssembledRecord', Profiler::CATEGORY_HLAPI);
         $this->fixupAssembledRecord($hydrated_record);
+        Profiler::getInstance()->stop('RecordSet::fixupAssembledRecord');
+        Profiler::getInstance()->stop('RecordSet::assembleHydratedRecords');
         return $hydrated_record;
     }
 
