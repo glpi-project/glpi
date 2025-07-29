@@ -35,15 +35,9 @@
 
 namespace Glpi\Form\ServiceCatalog\Provider;
 
-use Glpi\Form\ServiceCatalog\ItemRequest;
-use Override;
-
 /**
- * @template T of \Glpi\Form\ServiceCatalog\ServiceCatalogCompositeInterface
+ * @extends ItemProviderInterface<\Glpi\Form\ServiceCatalog\ServiceCatalogCompositeInterface>
  */
 interface CompositeProviderInterface extends ItemProviderInterface
 {
-    /** @return T[] */
-    #[Override()] // Note: method is the same as in parent interface but phpstan doesn't notice that T is different so we need to redeclare it
-    public function getItems(ItemRequest $item_request): array;
 }
