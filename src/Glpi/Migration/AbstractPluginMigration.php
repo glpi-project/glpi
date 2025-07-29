@@ -533,7 +533,8 @@ abstract class AbstractPluginMigration
     /**
      * Map the target item with the given source item.
      *
-     * @param class-string<CommonDBTM> $source_itemtype
+     * @param string                    $source_itemtype Note: may be an itemtype from a deleted or disabled plugin so
+     *                                                   it is not safe to assume that this is a class-string<CommonDBTM>
      * @param int                       $source_items_id
      * @param class-string<CommonDBTM> $target_itemtype
      * @param int                       $target_items_id

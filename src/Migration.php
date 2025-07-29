@@ -1348,7 +1348,6 @@ class Migration
                     'profiles_id'  => $profile['id'],
                     'name'         => $name,
                 ],
-                sprintf('%1$s update right for %2$s', $this->version, $name)
             );
 
             $this->updateProfileLastRightsUpdate($profile['id']);
@@ -1417,7 +1416,6 @@ class Migration
                     'profiles_id'  => $profile['id'],
                     'name'         => $name,
                 ],
-                sprintf('%1$s update right for %2$s', $this->version, $name)
             );
 
             $this->updateProfileLastRightsUpdate($profile['id']);
@@ -1952,7 +1950,7 @@ class Migration
      *
      * @since 11.0.0
      *
-     * @param class-string<CommonDBTM> $itemtype
+     * @param string $itemtype Usually a class-string<CommonDBTM> but may be an itemtype that doesn't exist anymore for old migrations
      * @param string $name
      * @param int $frequency
      * @param int|null $param

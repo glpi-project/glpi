@@ -117,7 +117,7 @@ final class EndUserInputNameProvider
 
         return array_filter(
             $answers,
-            fn($key) => preg_match(self::END_USER_INPUT_NAME_REGEX, $key),
+            fn($key) => preg_match(self::END_USER_INPUT_NAME_REGEX, $key) === 1,
             ARRAY_FILTER_USE_KEY
         );
     }

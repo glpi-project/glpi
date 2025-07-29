@@ -119,7 +119,7 @@ abstract class HTMLTableBase
      * @exception Exception                  If there is no super header while creating a sub
      *                                       header or a super header while creating a super one
      *
-     * @return HTMLTableHeader               table header that have been created
+     * @return ($super is null ? HTMLTableSuperHeader : HTMLTableSubHeader) table header that have been created
      **/
     public function addHeader(
         $name,

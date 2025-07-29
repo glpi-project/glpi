@@ -83,7 +83,6 @@ final class FormTranslation extends ItemTranslation
                     'language',
                     ['items_id' => $item->getID(), 'itemtype' => $item->getType()]
                 ),
-                0
             );
         } elseif ($item instanceof FormTranslation) {
             return self::createTabEntry($item->getName());

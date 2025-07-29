@@ -35,6 +35,7 @@
 namespace Glpi\Controller\Config\Helpdesk;
 
 use CommonDBTM;
+use Entity;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
@@ -72,6 +73,20 @@ abstract class AbstractTileController extends AbstractController
         }
 
         return $linked_item;
+    }
+
+    protected function getAndValidateLinkedEntityFromRequest(
+        int $linked_entity_id,
+    ): Entity {
+        $linked_entity = new Entity();
+        if (!$linked_entity->getFromDB($linked_entity_id)) {
+            throw new BadRequestHttpException();
+        }
+        if (!$linked_entity::canUpdate() || !$linked_entity->canUpdateItem()) {
+            throw new AccessDeniedHttpException();
+        }
+
+        return $linked_entity;
     }
 
     protected function getAndValidateLinkedItemFromRequest(

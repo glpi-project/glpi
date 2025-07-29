@@ -367,6 +367,10 @@ class Database extends CommonDBChild
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!$item instanceof DatabaseInstance) {
+            return false;
+        }
+
         self::showForInstance($item);
         return true;
     }

@@ -150,7 +150,7 @@ class DBConnection extends CommonDBTM
      * Change a variable value in config(s) file.
      *
      * @param string $name
-     * @param string $value
+     * @param string|bool $value
      * @param bool   $update_slave
      * @param string $config_dir
      *
@@ -197,7 +197,7 @@ class DBConnection extends CommonDBTM
             }
 
             foreach ($properties as $name => $value) {
-                if ($name === 'password') {
+                if ($name === 'password' && is_string($value)) {
                     $value = rawurlencode($value);
                 }
 

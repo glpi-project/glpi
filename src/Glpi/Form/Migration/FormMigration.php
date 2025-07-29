@@ -1170,7 +1170,7 @@ class FormMigration extends AbstractPluginMigration
                     /** @var ITILActorField $configurable_field */
                     $fields_config[$configurable_field::getKey()] = $configurable_field->convertFieldConfig(
                         $this,
-                        $destination->getItem(),
+                        $destination->getForm(),
                         $actors
                     )->jsonSerialize();
                 } catch (Throwable $th) {

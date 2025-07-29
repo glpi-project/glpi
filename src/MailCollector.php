@@ -2347,7 +2347,7 @@ TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_l
     /**
      * Retrieve properly decoded content
      *
-     * @param Message $part Message Part
+     * @param Part $part Message Part
      *
      * @return string
      */

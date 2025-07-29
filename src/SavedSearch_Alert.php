@@ -88,6 +88,10 @@ class SavedSearch_Alert extends CommonDBChild
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!$item instanceof SavedSearch) {
+            return false;
+        }
+
         self::showForSavedSearch($item, $withtemplate);
         return true;
     }

@@ -1519,7 +1519,7 @@ TWIG, $twig_params);
                 Session::addToNavigateListItems('KnowbaseItem', $data["id"]);
                 // Column num
                 $item_num = 1;
-                echo Search::showNewLine($output_type, ($row_num - 1) % 2);
+                echo Search::showNewLine($output_type, ($row_num - 1) % 2 === 1);
                 $row_num++;
 
                 $item = new self();

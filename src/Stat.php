@@ -366,7 +366,7 @@ class Stat extends CommonGLPI
     }
 
     /**
-     * @param class-string<CommonGLPI> $itemtype
+     * @param class-string<CommonITILObject> $itemtype
      * @param string $type
      * @param string $date1
      * @param string $date2
@@ -426,7 +426,7 @@ class Stat extends CommonGLPI
     }
 
     /**
-     * @param class-string<CommonGLPI> $itemtype
+     * @param class-string<CommonITILObject> $itemtype
      * @param string $type
      * @param string $date1
      * @param string $date2
@@ -597,7 +597,7 @@ class Stat extends CommonGLPI
             $current_row = [];
             $item_num = 1;
             $colnum = 0;
-            $html_output .= $output::showNewLine($i % 2);
+            $html_output .= $output::showNewLine($i % 2 === 1);
             if (
                 $is_html_output
                 && str_contains($type, '_tree')
@@ -656,7 +656,7 @@ class Stat extends CommonGLPI
                 );
                 $sum = array_sum($values);
                 if ($is_html_output) {
-                    $html_output .= $output::showItem($sum, $item_num, $row_num);
+                    $html_output .= $output::showItem((string) $sum, $item_num, $row_num);
                 } else {
                     $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $sum];
                 }
@@ -1614,7 +1614,7 @@ class Stat extends CommonGLPI
      * @param string $date1
      * @param string $date2
      * @param integer $start
-     * @param class-string<CommonDBTM>|null $itemtype
+     * @param class-string<CommonITILObject>|null $itemtype
      **/
     public static function showItems($target, $date1, $date2, $start, $itemtype = null)
     {
@@ -1684,7 +1684,7 @@ class Stat extends CommonGLPI
             foreach ($assets as $data) {
                 $item_num = 1;
                 // Get data and increment loop variables
-                echo $output::showNewLine($i % 2);
+                echo $output::showNewLine($i % 2 === 1);
                 $link = $is_html_output
                     ? sprintf(__s('%1$s - %2$s'), htmlescape($data['itemtype']::getTypeName()), $data['link'])
                     : sprintf(__('%1$s - %2$s'), $data['itemtype']::getTypeName(), $data['link']);

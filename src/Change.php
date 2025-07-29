@@ -38,11 +38,12 @@ use Glpi\ContentTemplates\Parameters\ChangeParameters;
 use Glpi\ContentTemplates\Parameters\CommonITILObjectParameters;
 use Glpi\DBAL\QueryExpression;
 use Glpi\RichText\RichText;
+use Glpi\Search\DefaultSearchRequestInterface;
 
 /**
  * Change Class
  **/
-class Change extends CommonITILObject
+class Change extends CommonITILObject implements DefaultSearchRequestInterface
 {
     // From CommonDBTM
     public $dohistory                   = true;
@@ -484,11 +485,8 @@ class Change extends CommonITILObject
         }
     }
 
-
-    /**
-     * Get default values to search engine to override
-     **/
-    public static function getDefaultSearchRequest()
+    #[Override]
+    public static function getDefaultSearchRequest(): array
     {
 
         $search = ['criteria' => [ 0 => ['field'      => 12,

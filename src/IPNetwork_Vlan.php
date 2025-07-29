@@ -235,9 +235,8 @@ class IPNetwork_Vlan extends CommonDBRelation
 
         if (!$withtemplate) {
             $nb = 0;
-            switch ($item->getType()) {
-                case 'IPNetwork':
-                    /** @var IPNetwork $item */
+            switch (true) {
+                case $item instanceof IPNetwork:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb =  countElementsInTable(
                             $this->getTable(),
@@ -254,7 +253,7 @@ class IPNetwork_Vlan extends CommonDBRelation
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        if ($item->getType() == 'IPNetwork') {
+        if ($item instanceof IPNetwork) {
             self::showForIPNetwork($item);
         }
         return true;

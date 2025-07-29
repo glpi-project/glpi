@@ -2601,7 +2601,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
                     $this->fields["sla_waiting_duration"]
                 );
                 // Add current level to do
-                $sla->addLevelToDo($this);
+                if ($this instanceof Ticket) { // TODO: rewrite with polymorphism...
+                    $sla->addLevelToDo($this);
+                }
             } else {
                 // Using calendar
                 if (
@@ -2649,7 +2651,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
                     $this->fields["ola_waiting_duration"]
                 );
                 // Add current level to do
-                $ola->addLevelToDo($this, $this->fields["olalevels_id_ttr"]);
+                if ($this instanceof Ticket) { // TODO: rewrite with polymorphism...
+                    $ola->addLevelToDo($this, $this->fields["olalevels_id_ttr"]);
+                }
             } elseif (array_key_exists("internal_time_to_resolve", $this->fields)) {
                 // Change doesn't have internal_time_to_resolve
                 // Using calendar
@@ -2697,12 +2701,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
             $this->fields["begin_waiting_date"] = $_SESSION["glpi_currenttime"];
 
             // Specific for tickets
-            if (isset($this->fields['slas_id_ttr']) && ($this->fields['slas_id_ttr'] > 0)) {
-                SLA::deleteLevelsToDo($this);
-            }
+            if ($this instanceof Ticket) { // TODO: rewrite with polymorphism...
+                if (isset($this->fields['slas_id_ttr']) && ($this->fields['slas_id_ttr'] > 0)) {
+                    SLA::deleteLevelsToDo($this);
+                }
 
-            if (isset($this->fields['olas_id_ttr']) && ($this->fields['olas_id_ttr'] > 0)) {
-                OLA::deleteLevelsToDo($this);
+                if (isset($this->fields['olas_id_ttr']) && ($this->fields['olas_id_ttr'] > 0)) {
+                    OLA::deleteLevelsToDo($this);
+                }
             }
         }
 
@@ -6529,7 +6535,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
         if ($item->getFromDB($id)) {
             $item_num = 1;
             $bgcolor  = $_SESSION["glpipriority_" . $item->fields["priority"]];
-            echo Search::showNewLine($p['output_type'], $p['row_num'] % 2, $item->isDeleted());
+            echo Search::showNewLine($p['output_type'], $p['row_num'] % 2 === 1, $item->isDeleted());
 
             $check_col = '';
             if (
@@ -7019,11 +7025,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
                     __s('Solved on %s'),
                     Html::convDateTime($item->fields['solvedate'])
                 ),
-                $item->fields['begin_waiting_date'] => sprintf(
+                !empty($item->fields['begin_waiting_date']) => sprintf(
                     __s('Put on hold on %s'),
                     Html::convDateTime($item->fields['begin_waiting_date'])
                 ),
-                $item->fields['time_to_resolve'] => sprintf(
+                !empty($item->fields['time_to_resolve']) => sprintf(
                     __s('%1$s: %2$s'),
                     __s('Time to resolve'),
                     Html::convDateTime($item->fields['time_to_resolve'])
@@ -8282,7 +8288,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
     /**
      * Get template field name
      *
-     * @param string $type Type, if any
+     * @param int $type Type, if any
      *
      * @return string
      */

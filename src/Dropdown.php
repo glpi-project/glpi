@@ -2623,7 +2623,8 @@ HTML;
                     ['id' => $ID],
                     '',
                     '',
-                    [__('Do you really want to use unitary management for this item?'),
+                    [
+                        __('Do you really want to use unitary management for this item?'),
                         __('Duplicate the element as many times as there are connections'),
                     ]
                 );

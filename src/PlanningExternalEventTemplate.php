@@ -145,7 +145,12 @@ class PlanningExternalEventTemplate extends CommonDropdown
 
         switch ($field) {
             case 'state':
-                return Planning::dropdownState($name, $values[$field], $options);
+                return Planning::dropdownState(
+                    name: $name,
+                    value: $values[$field],
+                    display: false,
+                    options: $options
+                );
         }
 
         return parent::getSpecificValueToSelect($field, $name, $values, $options);

@@ -223,7 +223,7 @@ class Conf extends CommonGLPI
     /**
      * Import contents of a file
      *
-     * @param string  $path              File path
+     * @param ?string $path              File path
      * @param string  $contents          File contents
      *
      * @return array [success => bool, message => ?string, items => CommonDBTM[], request => Glpi\Inventory\Request]
@@ -251,7 +251,7 @@ class Conf extends CommonGLPI
             $inventory_request->setLocal()->handleRequest($contents);
             if ($inventory_request->inError()) {
                 $response = $inventory_request->getResponse();
-                if ($inventory_request->getMode() === Request::JSON_MODE) {
+                if ($inventory_request->getMode() === AbstractRequest::JSON_MODE) {
                     $json = json_decode($inventory_request->getResponse());
                     $response = $json->message;
                 } else {
