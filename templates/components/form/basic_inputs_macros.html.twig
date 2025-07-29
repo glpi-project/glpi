@@ -333,6 +333,7 @@
         'statusbar': true,
         'content_style': "",
         'input_addclass': '',
+        'additional_attributes': [],
     }|merge(options) %}
 
     {% if options.fields_template.isMandatoryField(name)|default(false) %}
@@ -346,6 +347,9 @@
     <textarea class="form-control {{ options.input_addclass }}"
             id="{{ options.id }}" name="{{ name }}" rows="{{ options.rows }}"
             style="width: 100%;"
+            {% for attr, value in options.additional_attributes %}
+               {{ attr }}="{{ value }}"
+            {% endfor %}
             {% if not options.aria_label is empty %}
                 aria-label="{{ options.aria_label }}"
             {% endif %}
