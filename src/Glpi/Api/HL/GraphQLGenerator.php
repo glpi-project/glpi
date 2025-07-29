@@ -36,6 +36,7 @@
 namespace Glpi\Api\HL;
 
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Debug\Profiler;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Psr\Log\LoggerInterface;
@@ -59,12 +60,17 @@ final class GraphQLGenerator
 
     public function getSchema()
     {
+        Profiler::getInstance()->start('GraphQLGenerator::loadTypes', Profiler::CATEGORY_HLAPI);
         $this->loadTypes();
+        Profiler::getInstance()->stop('GraphQLGenerator::loadTypes');
         $schema_str = '';
+        Profiler::getInstance()->start('GraphQLGenerator::writeTypes', Profiler::CATEGORY_HLAPI);
         foreach ($this->types as $type_name => $type) {
             $schema_str .= $this->writeType($type_name, $type);
         }
+        Profiler::getInstance()->stop('GraphQLGenerator::writeTypes');
 
+        Profiler::getInstance()->start('GraphQLGenerator::normalizeTypeNames', Profiler::CATEGORY_HLAPI);
         // Write Query
         $schema_str .= "type Query {\n";
         foreach (array_keys($this->types) as $type_name) {
@@ -77,6 +83,7 @@ final class GraphQLGenerator
             $schema_str .= "  {$type_name}{$args_str}: [$type_name]\n";
         }
         $schema_str .= "}\n";
+        Profiler::getInstance()->stop('GraphQLGenerator::normalizeTypeNames');
 
         return $schema_str;
     }

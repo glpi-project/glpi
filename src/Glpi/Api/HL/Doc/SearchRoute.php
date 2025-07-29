@@ -56,9 +56,9 @@ class SearchRoute extends Route
                     schema: new Schema(
                         type: Schema::TYPE_INTEGER,
                         format: Schema::FORMAT_INTEGER_INT64,
+                        default: 0,
                         extra_data: [
                             'minimum' => 0,
-                            'default' => 0,
                         ]
                     ),
                     description: 'The first item to return'
@@ -68,9 +68,9 @@ class SearchRoute extends Route
                     schema: new Schema(
                         type: Schema::TYPE_INTEGER,
                         format: Schema::FORMAT_INTEGER_INT64,
+                        default: 100,
                         extra_data: [
                             'minimum' => 0,
-                            'default' => 100,
                         ]
                     ),
                     description: 'The maximum number of items to return'
