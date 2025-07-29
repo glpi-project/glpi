@@ -1313,6 +1313,8 @@ final class Transfer extends CommonDBTM
      * @param int    $newID       ID of the new item
      *
      * @return void
+     *
+     * @FIXME Parameter $key should be class-string<CommonDBTM> (and `$already_transfer` array shape should be specified).
      **/
     private function addToAlreadyTransfer(string $key, int $ID, int $newID): void
     {
