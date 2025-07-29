@@ -919,6 +919,15 @@ export class GlpiFormEditorController
                 .removeAttr(`data-glpi-form-editor-active-${type}`);
         });
 
+        // Lazy load descriptions
+        item_container.find('textarea[data-glpi-loaded=false]').each(function() {
+            // Get editor config for this field
+            const id = $(this).attr("id");
+            const config = window.tinymce_editor_configs[id];
+            tinyMCE.init(config);
+            $(this).attr('data-glpi-loaded', "true");
+        });
+
         /**
          * Delay the activation of the new item to avoid a rendering bug.
          * I can't explain it, but without this delay,
