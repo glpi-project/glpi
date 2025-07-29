@@ -967,8 +967,30 @@ TWIG, $twig_params);
      **/
     public static function exportRulesToXML($items = [])
     {
-        if (!count($items)) {
+        // get rules XML file
+        $xml = self::getRulesXMLFile($items);
+
+        if (!$xml) {
             return;
+        }
+
+        // send attachment to browser
+        header('Content-type: application/xml');
+        header('Content-Disposition: attachment; filename="rules.xml"');
+        echo $xml;
+    }
+
+    /**
+     * Export rules in a xml format
+     *
+     * @param array $items array the input data to transform to xml
+     *
+     * @return ?string
+     */
+    public static function getRulesXMLFile($items = [])
+    {
+        if (!count($items)) {
+            return null;
         }
 
         $rulecollection = new self();
@@ -1043,7 +1065,14 @@ TWIG, $twig_params);
                     if ($action['field'][0] === "_") {
                         $field = substr($action['field'], 1);
                     }
+
                     $table = getTableNameForForeignKeyField($field);
+                    $available_actions = $rule->getActions();
+                    if (isset($available_actions[$field]['table'])
+                        && !empty($available_actions[$field]['table'])
+                    ) {
+                        $table = $available_actions[$field]['table'];
+                    }
 
                     $action['value'] = Dropdown::getDropdownName(
                         $table,
@@ -1063,13 +1092,8 @@ TWIG, $twig_params);
             }
         }
 
-        // convert SimpleXMLElement to XML string
-        $xml = $xmlE->asXML();
-
-        // send attachment to browser
-        header('Content-type: application/xml');
-        header('Content-Disposition: attachment; filename="rules.xml"');
-        echo $xml;
+        // convert SimpleXMLElement to xml string
+        return $xmlE->asXML();
     }
 
     /**

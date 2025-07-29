@@ -48,7 +48,7 @@ $kernel->boot();
 $registeredid = new RegisteredID();
 $manufacturer = new Manufacturer();
 foreach (
-    ['PCI' => 'http://pciids.sourceforge.net/v2.2/pci.ids',
+    ['PCI' => 'https://pci-ids.ucw.cz/v2.2/pci.ids',
         'USB' => 'http://www.linux-usb.org/usb.ids',
     ] as $type => $URL
 ) {
