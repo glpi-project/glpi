@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b51b67512d6d9a33ccb7fb095504e20b",
+    "content-hash": "a592960ef335205e1683c734150e804d",
     "packages": [
         {
             "name": "apereo/phpcas",
@@ -8959,21 +8959,21 @@
         },
         {
             "name": "wapmorgan/unified-archive",
-            "version": "1.2.1",
+            "version": "1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wapmorgan/UnifiedArchive.git",
-                "reference": "a6e709e0e14bfa26c47871ea204464d5a0c730ff"
+                "reference": "34d342f9735f00e0d6b58f1028965b6e66e018b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wapmorgan/UnifiedArchive/zipball/a6e709e0e14bfa26c47871ea204464d5a0c730ff",
-                "reference": "a6e709e0e14bfa26c47871ea204464d5a0c730ff",
+                "url": "https://api.github.com/repos/wapmorgan/UnifiedArchive/zipball/34d342f9735f00e0d6b58f1028965b6e66e018b7",
+                "reference": "34d342f9735f00e0d6b58f1028965b6e66e018b7",
                 "shasum": ""
             },
             "require": {
                 "ext-fileinfo": "*",
-                "php": ">=5.5.0 <8.4.0"
+                "php": ">=7.1"
             },
             "replace": {
                 "pclzip/pclzip": "2.8.2",
@@ -9054,9 +9054,9 @@
             ],
             "support": {
                 "issues": "https://github.com/wapmorgan/UnifiedArchive/issues",
-                "source": "https://github.com/wapmorgan/UnifiedArchive/tree/1.2.1"
+                "source": "https://github.com/wapmorgan/UnifiedArchive/tree/1.3.0"
             },
-            "time": "2025-06-27T21:54:50+00:00"
+            "time": "2025-07-29T09:41:58+00:00"
         },
         {
             "name": "webmozart/assert",
