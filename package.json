@@ -98,7 +98,7 @@
         "copy-webpack-plugin": "^13.0.0",
         "css-loader": "^7.1.2",
         "csso-cli": "^4.0.2",
-        "cypress": "^14.5.2",
+        "cypress": "^14.5.3",
         "cypress-axe": "^1.6.0",
         "cypress-network-idle": "^1.15.0",
         "cypress-otp": "^1.0.3",
