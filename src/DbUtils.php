@@ -541,12 +541,9 @@ final class DbUtils
     /**
      * Get new item objet for an itemtype
      *
-     * @param string $itemtype itemtype
-     *
-     * @return CommonDBTM|false itemtype instance or false if class does not exists
-     * @template T
-     * @phpstan-param class-string<T> $itemtype
-     * @phpstan-return T|false
+     * @template T of CommonDBTM
+     * @param class-string<T>|string $itemtype
+     * @return ($itemtype is class-string<T> ? T : false)
      */
     public function getItemForItemtype($itemtype)
     {
@@ -568,6 +565,7 @@ final class DbUtils
             return false;
         }
 
+        // @phpstan-ignore return.type (Template should be `of CommonGLPI`, but it result in about 1000 errors due to usage of `CommonDBTM` properties and methods on the result without checking it is a `CommonDBTM`)
         return new $classname();
     }
 
