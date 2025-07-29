@@ -151,16 +151,15 @@ class OlaLevel_Ticket extends CommonDBTM
     }
 
     /**
-     * Do a specific OLAlevel for a ticket
+     * Execute a specific OLAlevel for a ticket and add next level to todo
      *
      * @param array{id: int, tickets_id: int, olalevels_id:int, olas_id: int} $data data of an entry of olalevels_tickets
-     * @param SLM::TTR|SLM::TTO $olaType Type of OLA
-     *
      * @since 9.1   2 parameters mandatory
+     * @since 11.?  $olaType parameter removed
      *
      * @return void
      **/
-    public static function doLevelForTicket(array $data, $olaType)
+    public static function doLevelForTicket(array $data)
     {
         $ticket = new Ticket();
         $olalevelticket = new self();
@@ -183,16 +182,7 @@ class OlaLevel_Ticket extends CommonDBTM
         }
 
         if ($ticket->fields['status'] == CommonITILObject::SOLVED) {
-            // $olalevelticket was not deleted in original code.
             // If status = solved : keep the line in case of solution not validated
-
-            return;
-        }
-
-        // No execution for tto if ticket has been taken into account
-        // @todoseb changer ce comportement
-        if ($olaType == SLM::TTO && $ticket->fields['takeintoaccount_delay_stat'] > 0) {
-            $olalevelticket->delete(['id' => $data['id']]);
 
             return;
         }
@@ -203,6 +193,13 @@ class OlaLevel_Ticket extends CommonDBTM
             'items_id' => (int) $ticket->fields['id'],
             'itemtype' => Ticket::class,
         ])) {
+            $olalevelticket->delete(['id' => $data['id']]);
+
+            return;
+        }
+
+        // No execution for tto if ticket has been taken into account
+        if ($items_ola->fields['end_time']) {
             $olalevelticket->delete(['id' => $data['id']]);
 
             return;
@@ -320,7 +317,7 @@ class OlaLevel_Ticket extends CommonDBTM
                     // Possible infinite loop. Trying to apply exact same SLA assignment.
                     break;
                 }
-                self::doLevelForTicket($data, $olaType);
+                self::doLevelForTicket($data);
                 $last_escalation = $data['id'];
             }
         } while ($number === 1);
