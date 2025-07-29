@@ -1,5 +1,7 @@
 <?php
 
+use League\OAuth2\Client\Token\AccessToken;
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -90,6 +92,10 @@ if (
         try {
             $token         = $provider->getAccessToken('authorization_code', ['code'  => $code]);
             $refresh_token = $token->getRefreshToken();
+
+            if (!$token instanceof AccessToken) {
+                throw new RuntimeException("Unexpected token");
+            }
             $email         = $provider->getResourceOwner($token)->toArray()['email'] ?? null;
 
             $is_email_valid = !empty($email);

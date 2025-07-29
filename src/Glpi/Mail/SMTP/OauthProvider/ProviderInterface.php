@@ -36,6 +36,7 @@
 namespace Glpi\Mail\SMTP\OauthProvider;
 
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
+use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 
 interface ProviderInterface
@@ -57,11 +58,11 @@ interface ProviderInterface
     /**
      * Requests and returns the resource owner of given access token.
      *
-     * @param  AccessTokenInterface $token
+     * @param  AccessToken $token
      * @return ResourceOwnerInterface
      * @see \League\OAuth2\Client\Provider\AbstractProvider::getResourceOwner()
      */
-    public function getResourceOwner(AccessTokenInterface $token);
+    public function getResourceOwner(AccessToken $token);
 
     /**
      * Returns provider name.
