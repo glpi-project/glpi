@@ -2634,4 +2634,75 @@ final class FormMigrationTest extends DbTestCase
         $DB->delete('glpi_plugin_formcreator_forms', [1]);
         $this->assertFalse($migration->hasPluginData());
     }
+
+    public function testSubmitButtonVisibilityConditionsAreMigrated(): void
+    {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        // Arrange: insert a form with visibility conditions
+        $DB->insert('glpi_plugin_formcreator_forms', [
+            'name'      => 'Form with visibility conditions',
+            'show_rule' => 3, // Show if condition is met
+        ]);
+        $formId = $DB->insertId();
+
+        $DB->insert('glpi_plugin_formcreator_sections', [
+            'name' => 'Section with visibility conditions',
+            'plugin_formcreator_forms_id' => $formId,
+        ]);
+        $sectionId = $DB->insertId();
+
+        $DB->insert('glpi_plugin_formcreator_questions', [
+            'name' => 'Question with visibility conditions',
+            'fieldtype' => 'text',
+            'plugin_formcreator_sections_id' => $sectionId,
+        ]);
+        $questionId = $DB->insertId();
+
+        $DB->insert('glpi_plugin_formcreator_conditions', [
+            'itemtype' => 'PluginFormcreatorForm',
+            'items_id' => $formId,
+            'plugin_formcreator_questions_id' => $questionId,
+            'show_condition' => 1,
+            'show_value' => 'Test',
+            'show_logic' => 1, // AND logic
+        ]);
+
+        // Act: execute migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $result = $migration->execute();
+
+        // Assert: make sure the migration was completed
+        $this->assertTrue($result->isFullyProcessed());
+
+        // Assert: verify that the form has been migrated correctly
+        /** @var Form $form */
+        $form = getItemByTypeName(Form::class, 'Form with visibility conditions');
+        $this->assertNotFalse($form);
+        $this->assertCount(1, $form->getSections());
+        $this->assertCount(1, $form->getQuestions());
+
+        // Assert: verify that the submit button visibility conditions are set correctly
+        $this->assertEquals(VisibilityStrategy::HIDDEN_IF, $form->getConfiguredVisibilityStrategy());
+        $this->assertEquals(
+            [
+                [
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => 'Test',
+                    'logic_operator' => LogicOperator::AND,
+                ],
+            ],
+            array_map(
+                fn(ConditionData $condition) => [
+                    'value_operator' => $condition->getValueOperator(),
+                    'value'          => $condition->getValue(),
+                    'logic_operator' => $condition->getLogicOperator(),
+                ],
+                $form->getConfiguredConditionsData()
+            )
+        );
+    }
 }

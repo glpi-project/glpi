@@ -1271,12 +1271,19 @@ class FormMigration extends AbstractPluginMigration
                 'glpi_plugin_formcreator_conditions.show_logic',
                 'glpi_plugin_formcreator_conditions.order',
                 new QueryExpression(
-                    'COALESCE(glpi_plugin_formcreator_questions.show_rule, glpi_plugin_formcreator_sections.show_rule, glpi_plugin_formcreator_targettickets.show_rule, glpi_plugin_formcreator_targetchanges.show_rule, glpi_plugin_formcreator_targetproblems.show_rule)',
+                    'COALESCE(glpi_plugin_formcreator_forms.show_rule, glpi_plugin_formcreator_questions.show_rule, glpi_plugin_formcreator_sections.show_rule, glpi_plugin_formcreator_targettickets.show_rule, glpi_plugin_formcreator_targetchanges.show_rule, glpi_plugin_formcreator_targetproblems.show_rule)',
                     'show_rule'
                 ),
             ],
             'FROM'   => 'glpi_plugin_formcreator_conditions',
             'JOIN' => [
+                'glpi_plugin_formcreator_forms' => [
+                    'ON' => [
+                        'glpi_plugin_formcreator_conditions' => 'items_id',
+                        'glpi_plugin_formcreator_forms'      => 'id',
+                        ['AND' => ['glpi_plugin_formcreator_conditions.itemtype' => 'PluginFormcreatorForm']],
+                    ],
+                ],
                 'glpi_plugin_formcreator_questions' => [
                     'ON' => [
                         'glpi_plugin_formcreator_conditions' => 'items_id',
@@ -1424,11 +1431,19 @@ class FormMigration extends AbstractPluginMigration
                 $input = [];
 
                 if (isset($data['visibility_strategy'])) {
-                    $input = [
-                        'id'                  => $item_id,
-                        'visibility_strategy' => $data['visibility_strategy'],
-                        '_conditions'         => $data['conditions'],
-                    ];
+                    if ($itemtype === Form::class) {
+                        $input = [
+                            'id'                                => $item_id,
+                            'submit_button_visibility_strategy' => $data['visibility_strategy'],
+                            '_conditions'                       => $data['conditions'],
+                        ];
+                    } else {
+                        $input = [
+                            'id'                  => $item_id,
+                            'visibility_strategy' => $data['visibility_strategy'],
+                            '_conditions'         => $data['conditions'],
+                        ];
+                    }
                 } elseif (isset($data['creation_strategy'])) {
                     $input = [
                         'id'                => $item_id,
