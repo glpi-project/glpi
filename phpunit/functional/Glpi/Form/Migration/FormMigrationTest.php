@@ -2534,10 +2534,16 @@ final class FormMigrationTest extends DbTestCase
         global $DB;
 
         // Arrange: insert an unexpected question type
+        $DB->insert('glpi_plugin_formcreator_forms', [
+            'name' => 'Form with unknown question type',
+        ]);
+        $DB->insert('glpi_plugin_formcreator_sections', [
+            'plugin_formcreator_forms_id' => $DB->insertId(),
+        ]);
         $DB->insert('glpi_plugin_formcreator_questions', [
             'name' => 'question from unknown plugin',
             'fieldtype' => 'my_unknown_type',
-            'plugin_formcreator_sections_id' => 26,
+            'plugin_formcreator_sections_id' => $DB->insertId(),
         ]);
         // Need to also have some regex to trigger potential failures
         $DB->insert('glpi_plugin_formcreator_questionregexes', [
@@ -2559,7 +2565,7 @@ final class FormMigrationTest extends DbTestCase
         );
         $errors = array_column($errors, "message");
         $this->assertContains(
-            "Unable to import question 'question from unknown plugin' with unknown type 'my_unknown_type'",
+            "Unable to import question 'question from unknown plugin' with unknown type 'my_unknown_type' in form 'Form with unknown question type'",
             $errors,
         );
     }
