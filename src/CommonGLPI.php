@@ -701,7 +701,7 @@ class CommonGLPI implements CommonGLPIInterface
         $icon = $default_icon;
         $tab_itemtype = static::class;
         $itemtype = $tab_itemtype;
-        $form_item = getItemForItemtype($form_itemtype);
+        $form_item = $form_itemtype === null ? null : getItemForItemtype($form_itemtype);
 
         if (is_subclass_of($tab_itemtype, CommonDBRelation::class) && $form_item instanceof CommonDBTM) {
             // Get opposite itemtype than this
