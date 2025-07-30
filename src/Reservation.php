@@ -188,6 +188,26 @@ class Reservation extends CommonDBChild
             $input['users_id'] = Session::getLoginUserID();
         }
 
+        // Check if user has permission to create reservations
+        if (!self::canCreate()) {
+            Session::addMessageAfterRedirect(
+                __('You do not have permission to create reservations'),
+                false,
+                ERROR
+            );
+            return;
+        }
+
+        // Additional check: if creating for another user, ensure user has CREATE right (not just RESERVEANITEM)
+        if ($input['users_id'] != Session::getLoginUserID() && !Session::haveRight(self::$rightname, CREATE)) {
+            Session::addMessageAfterRedirect(
+                __('You do not have permission to create reservations for other users'),
+                false,
+                ERROR
+            );
+            return;
+        }
+
         Toolbox::manageBeginAndEndPlanDates($input['resa']);
         if (!isset($input['resa']["begin"]) || !isset($input['resa']["end"])) {
             return;
@@ -420,6 +440,25 @@ class Reservation extends CommonDBChild
     /**
      * @since 0.84
      **/
+    public static function canView()
+    {
+        // Users with READ right can see all reservations
+        if (Session::haveRight(self::$rightname, READ)) {
+            return true;
+        }
+
+        // Users with RESERVEANITEM right can see their own reservations (checked in canViewItem)
+        if (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM)) {
+            return true;
+        }
+
+        // Delegate to parent to check parent item permissions
+        return parent::canView();
+    }
+
+    /**
+     * @since 0.84
+     **/
     public static function canCreate()
     {
         return (Session::haveRightsOr(self::$rightname, [CREATE, ReservationItem::RESERVEANITEM]));
@@ -459,16 +498,64 @@ class Reservation extends CommonDBChild
      **/
     public function canChildItem($methodItem, $methodNotItem)
     {
-
-        // Original user always have right
+        // All users can manage their own reservations (read, create, update, purge)
         if ($this->fields['users_id'] === Session::getLoginUserID()) {
             return true;
         }
 
+        // If user only has RESERVEANITEM right (no other reservation rights),
+        // they can only manage their own reservations (already handled above)
+        $reservation_rights = $_SESSION['glpiactiveprofile'][self::$rightname] ?? 0;
+        if ($reservation_rights == ReservationItem::RESERVEANITEM) {
+            return false; // Only own reservations allowed with RESERVEANITEM only
+        }
+
+        // Check if user has rights on the parent item (asset)
+        /** @var ReservationItem $ri */
+        $ri = $this->getItem();
+        if ($ri !== false) {
+            $item = $ri->getItem();
+            if ($item !== false) {
+                // Users with permission to update the specific asset can CRUD all reservations for that asset
+                if ($item->canUpdateItem() && Session::haveRight($item::$rightname, UPDATE)) {
+                    return true;
+                }
+            }
+        }
+
+        // Check if user has global rights for this operation
         if (!parent::canChildItem($methodItem, $methodNotItem)) {
             return false;
         }
 
+        // At minimum, check entity access for the asset
+        if ($ri !== false) {
+            $item = $ri->getItem();
+            if ($item !== false) {
+                return Session::haveAccessToEntity($item->getEntityID(), $item->isRecursive());
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if user can view this specific reservation item
+     * @since 10.0.21
+     **/
+    public function canViewItem()
+    {
+        // Users with READ right can see all reservations they have entity access to
+        if (Session::haveRight(self::$rightname, READ)) {
+            return $this->canChildItem('canViewItem', 'canView');
+        }
+
+        // All users can see their own reservations
+        if ($this->fields['users_id'] === Session::getLoginUserID()) {
+            return true;
+        }
+
+        // Check if user has rights on the parent item (asset)
         /** @var ReservationItem $ri */
         $ri = $this->getItem();
         if ($ri === false) {
@@ -480,7 +567,18 @@ class Reservation extends CommonDBChild
             return false;
         }
 
-        return Session::haveAccessToEntity($item->getEntityID(), $item->isRecursive());
+        // If user only has RESERVEANITEM right, they can only see their own reservations
+        $reservation_rights = $_SESSION['glpiactiveprofile'][self::$rightname] ?? 0;
+        if ($reservation_rights == ReservationItem::RESERVEANITEM) {
+            return false; // Only own reservations allowed with RESERVEANITEM only
+        }
+
+        // Users with permission to update the specific asset can see all reservations for that asset
+        if ($item->canUpdateItem() && Session::haveRight($item::$rightname, UPDATE)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -495,7 +593,7 @@ class Reservation extends CommonDBChild
     {
         return $this->canChildItem('canUpdateItem', 'canUpdate');
     }
-    
+
     public function post_purgeItem()
     {
         /** @var \DBmysql $DB */

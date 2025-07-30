@@ -77,14 +77,12 @@ class ReservationTest extends DbTestCase
         $this->assertCount(0, \Reservation::getReservableItemtypes());
 
         //Make computer recursive and check again
-        $this->assertTrue($computer->update([
-            'id' => $computer->getID(),
+        $this->updateItem('Computer', $computer->getID(), [
             "is_recursive" => true,
-        ]));
-        $this->assertTrue($reservation_item->update([
-            'id' => $reservation_item->getID(),
+        ]);
+        $this->updateItem('ReservationItem', $reservation_item->getID(), [
             "is_recursive" => true,
-        ]));
+        ]);
         $this->assertEquals(["Computer"], \Reservation::getReservableItemtypes());
     }
 
@@ -170,7 +168,7 @@ class ReservationTest extends DbTestCase
         $reservation = new \Reservation();
         $this->assertCount(0, $reservation->find($data));
 
-        $reservation->add($data);
+        $this->createItem('Reservation', $data);
         $this->assertCount(1, $reservation->find($data));
     }
 
@@ -281,15 +279,12 @@ class ReservationTest extends DbTestCase
         ]);
 
         // Create a reservation owned by current user
-        $reservation = new \Reservation();
-        $reservation_id = $reservation->add([
+        $reservation = $this->createItem('Reservation', [
             'begin' => '2024-01-01 10:00:00',
             'end' => '2024-01-01 12:00:00',
             'reservationitems_id' => $res_item->getID(),
             'users_id' => $_SESSION['glpiID'],
         ]);
-        $this->assertGreaterThan(0, $reservation_id);
-        $this->assertTrue($reservation->getFromDB($reservation_id));
 
         // Test that owner has rights even with minimal permissions
         $_SESSION['glpiactiveprofile']['reservation'] = 0; // No rights at all
@@ -322,15 +317,12 @@ class ReservationTest extends DbTestCase
         ]);
 
         // Create reservation in child entity
-        $reservation = new \Reservation();
-        $reservation_id = $reservation->add([
+        $reservation = $this->createItem('Reservation', [
             'begin' => '2024-01-01 10:00:00',
             'end' => '2024-01-01 12:00:00',
             'reservationitems_id' => $res_item->getID(),
             'users_id' => $_SESSION['glpiID'],
         ]);
-        $this->assertGreaterThan(0, $reservation_id);
-        $this->assertTrue($reservation->getFromDB($reservation_id));
 
         // Test access from root entity (should work due to hierarchy)
         \Session::changeActiveEntities(0);
@@ -373,35 +365,30 @@ class ReservationTest extends DbTestCase
         ]);
 
         // 1. Test creation
-        $reservation = new \Reservation();
-        $reservation_id = $reservation->add([
+        $reservation = $this->createItem('Reservation', [
             'begin' => '2024-01-01 10:00:00',
             'end' => '2024-01-01 12:00:00',
             'reservationitems_id' => $res_item->getID(),
             'users_id' => $_SESSION['glpiID'],
             'comment' => 'Test reservation',
         ]);
-        $this->assertGreaterThan(0, $reservation_id, "Should be able to create reservation with RESERVEANITEM right");
-        $this->assertTrue($reservation->getFromDB($reservation_id));
 
         // 2. Test reading - use canViewItem instead of can($id, READ)
         $this->assertTrue($reservation->canViewItem(), "Should be able to read own reservation");
 
         // 3. Test updating
-        $this->assertTrue($reservation->can($reservation_id, UPDATE), "Should be able to update own reservation");
-        $update_result = $reservation->update([
-            'id' => $reservation_id,
+        $this->assertTrue($reservation->can($reservation->getID(), UPDATE), "Should be able to update own reservation");
+        $this->updateItem('Reservation', $reservation->getID(), [
             'comment' => 'Updated test reservation',
         ]);
-        $this->assertTrue($update_result, "Update should succeed");
-        $this->assertTrue($reservation->getFromDB($reservation_id));
+        $this->assertTrue($reservation->getFromDB($reservation->getID()));
         $this->assertEquals('Updated test reservation', $reservation->fields['comment']);
 
         // 4. Test deletion
-        $this->assertTrue($reservation->can($reservation_id, PURGE), "Should be able to delete own reservation");
-        $delete_result = $reservation->delete(['id' => $reservation_id], true);
+        $this->assertTrue($reservation->can($reservation->getID(), PURGE), "Should be able to delete own reservation");
+        $delete_result = $reservation->delete(['id' => $reservation->getID()], true);
         $this->assertTrue($delete_result, "Delete should succeed");
-        $this->assertFalse($reservation->getFromDB($reservation_id));
+        $this->assertFalse($reservation->getFromDB($reservation->getID()));
     }
 
     /**
@@ -424,16 +411,13 @@ class ReservationTest extends DbTestCase
         ]);
 
         // Create a reservation owned by current user
-        $reservation = new \Reservation();
-        $reservation_id = $reservation->add([
+        $reservation = $this->createItem('Reservation', [
             'begin' => '2024-01-01 10:00:00',
             'end' => '2024-01-01 12:00:00',
             'reservationitems_id' => $res_item->getID(),
             'users_id' => $_SESSION['glpiID'],
             'comment' => 'User1 reservation',
         ]);
-        $this->assertGreaterThan(0, $reservation_id);
-        $this->assertTrue($reservation->getFromDB($reservation_id));
 
         // Test that current user (owner) can access the reservation
         $this->assertTrue(
@@ -522,22 +506,20 @@ class ReservationTest extends DbTestCase
         $this->assertTrue((bool) \Reservation::canPurge(), "User with RESERVEANITEM should be able to purge reservations");
 
         // Test creating a reservation
-        $reservation = new \Reservation();
-        $reservation_id = $reservation->add([
+        $reservation = $this->createItem('Reservation', [
             'begin' => '2024-01-01 10:00:00',
             'end' => '2024-01-01 12:00:00',
             'reservationitems_id' => $res_item->getID(),
             'users_id' => $_SESSION['glpiID'],
             'comment' => 'Simplified interface test',
         ]);
-        $this->assertGreaterThan(0, $reservation_id, "Should be able to create reservation in simplified interface");
 
         // Test that the user can update their own reservation
-        $this->assertTrue($reservation->getFromDB($reservation_id));
-        $this->assertTrue($reservation->can($reservation_id, UPDATE), "User should be able to update their own reservation");
+        $this->assertTrue($reservation->getFromDB($reservation->getID()));
+        $this->assertTrue($reservation->can($reservation->getID(), UPDATE), "User should be able to update their own reservation");
 
         // Test that the user can delete their own reservation
-        $this->assertTrue($reservation->can($reservation_id, PURGE), "User should be able to delete their own reservation");
+        $this->assertTrue($reservation->can($reservation->getID(), PURGE), "User should be able to delete their own reservation");
     }
 
     /**
@@ -558,30 +540,27 @@ class ReservationTest extends DbTestCase
         ]);
 
         // Create a reservation
-        $reservation = new \Reservation();
-        $reservation_id = $reservation->add([
+        $reservation = $this->createItem('Reservation', [
             'begin' => '2024-01-01 10:00:00',
             'end' => '2024-01-01 12:00:00',
             'reservationitems_id' => $res_item->getID(),
             'users_id' => $_SESSION['glpiID'],
             'comment' => 'Front delegation test',
         ]);
-        $this->assertGreaterThan(0, $reservation_id);
-        $this->assertTrue($reservation->getFromDB($reservation_id));
 
         // Test that check() method properly handles RESERVEANITEM right
         $_SESSION['glpiactiveprofile']['reservation'] = \ReservationItem::RESERVEANITEM;
 
         // These should not throw exceptions - delegation should work
         try {
-            $reservation->check($reservation_id, UPDATE);
+            $reservation->check($reservation->getID(), UPDATE);
             $this->assertTrue(true, "check() method should work with RESERVEANITEM right for owner");
         } catch (\Exception $e) {
             $this->fail("check() method failed for owner with RESERVEANITEM right: " . $e->getMessage());
         }
 
         try {
-            $reservation->check($reservation_id, PURGE);
+            $reservation->check($reservation->getID(), PURGE);
             $this->assertTrue(true, "check() method should work with RESERVEANITEM right for owner");
         } catch (\Exception $e) {
             $this->fail("check() method failed for owner with RESERVEANITEM right: " . $e->getMessage());
@@ -650,22 +629,20 @@ class ReservationTest extends DbTestCase
         ]);
 
         // Create a reservation
-        $reservation = new \Reservation();
-        $reservation_id = $reservation->add([
+        $reservation = $this->createItem('Reservation', [
             'begin' => '2024-01-01 10:00:00',
             'end' => '2024-01-01 12:00:00',
             'reservationitems_id' => $res_item->getID(),
             'users_id' => $_SESSION['glpiID'],
             'comment' => 'showForm test',
         ]);
-        $this->assertGreaterThan(0, $reservation_id);
 
         // Set only RESERVEANITEM right
         $_SESSION['glpiactiveprofile']['reservation'] = \ReservationItem::RESERVEANITEM;
 
         // Test that showForm doesn't fail with explicit permission checks
         ob_start();
-        $result = $reservation->showForm($reservation_id, ['item' => [$res_item->getID() => $res_item->getID()]]);
+        $result = $reservation->showForm($reservation->getID(), ['item' => [$res_item->getID() => $res_item->getID()]]);
         ob_end_clean();
 
         $this->assertTrue($result, "showForm should work without explicit permission checks for owner");
@@ -700,16 +677,13 @@ class ReservationTest extends DbTestCase
         ]);
 
         // Create a reservation
-        $reservation = new \Reservation();
-        $reservation_id = $reservation->add([
+        $reservation = $this->createItem('Reservation', [
             'begin' => '2024-01-01 10:00:00',
             'end' => '2024-01-01 12:00:00',
             'reservationitems_id' => $res_item->getID(),
             'users_id' => $_SESSION['glpiID'],
             'comment' => 'Permission escalation test',
         ]);
-        $this->assertGreaterThan(0, $reservation_id);
-        $this->assertTrue($reservation->getFromDB($reservation_id));
 
         // Remove all reservation rights
         $_SESSION['glpiactiveprofile']['reservation'] = 0;
@@ -829,11 +803,11 @@ class ReservationTest extends DbTestCase
 
         // Test 3: Can update own reservation (POST update simulation)
         $this->assertTrue($reservation->can($reservation_id, UPDATE), "Should be able to update own reservation");
-        $update_result = $reservation->update([
-            'id' => $reservation_id,
+        $this->updateItem('Reservation', $reservation_id, [
             'comment' => 'Updated via simplified interface',
         ]);
-        $this->assertTrue($update_result, "Should be able to update own reservation");
+        $this->assertTrue($reservation->getFromDB($reservation_id));
+        $this->assertEquals('Updated via simplified interface', $reservation->fields['comment']);
 
         // Test 4: Can delete own reservation (POST purge simulation)
         $this->assertTrue($reservation->can($reservation_id, PURGE), "Should be able to delete own reservation");
@@ -842,14 +816,13 @@ class ReservationTest extends DbTestCase
 
         // Test 5: Verify all operations work through check() method (used by front files)
         // Create another reservation for testing check() method
-        $reservation_id2 = $reservation->add([
+        $reservation_id2 = $this->createItem('Reservation', [
             'begin' => '2024-01-02 10:00:00',
             'end' => '2024-01-02 12:00:00',
             'reservationitems_id' => $res_item->getID(),
             'users_id' => $_SESSION['glpiID'],
             'comment' => 'Check method test',
-        ]);
-        $this->assertGreaterThan(0, $reservation_id2);
+        ])->getID();
 
         // These should not throw exceptions
         try {
@@ -879,16 +852,13 @@ class ReservationTest extends DbTestCase
         ]);
 
         // Create a reservation
-        $reservation = new \Reservation();
-        $reservation_id = $reservation->add([
+        $reservation = $this->createItem('Reservation', [
             'begin' => '2024-01-01 10:00:00',
             'end' => '2024-01-01 12:00:00',
             'reservationitems_id' => $res_item->getID(),
             'users_id' => $_SESSION['glpiID'],
             'comment' => 'No rights test',
         ]);
-        $this->assertGreaterThan(0, $reservation_id);
-        $this->assertTrue($reservation->getFromDB($reservation_id));
 
         // Remove all rights
         $_SESSION['glpiactiveprofile']['reservation'] = 0;
@@ -899,14 +869,220 @@ class ReservationTest extends DbTestCase
         $this->assertFalse((bool) \Reservation::canPurge());
 
         // Test instance methods also return false without global rights (expected behavior)
-        $this->assertFalse($reservation->can($reservation_id, UPDATE), "Without global rights, even owner cannot update");
-        $this->assertFalse($reservation->can($reservation_id, PURGE), "Without global rights, even owner cannot purge");
+        $this->assertFalse($reservation->can($reservation->getID(), UPDATE), "Without global rights, even owner cannot update");
+        $this->assertFalse($reservation->can($reservation->getID(), PURGE), "Without global rights, even owner cannot purge");
 
         // Test non-owner cannot access
         $original_user_id = $reservation->fields['users_id'];
         $reservation->fields['users_id'] = $original_user_id + 1;
 
-        $this->assertFalse($reservation->can($reservation_id, UPDATE), "Non-owner should not have rights without permissions");
-        $this->assertFalse($reservation->can($reservation_id, PURGE), "Non-owner should not have rights without permissions");
+        $this->assertFalse($reservation->can($reservation->getID(), UPDATE), "Non-owner should not have rights without permissions");
+        $this->assertFalse($reservation->can($reservation->getID(), PURGE), "Non-owner should not have rights without permissions");
+    }
+
+    /**
+     * Test canView permissions according to Curtis's recommendations
+     */
+    public function testCanViewPermissions(): void
+    {
+        // Create a computer and reservation item
+        $computer = $this->createItem("Computer", [
+            "name" => "test computer view permissions",
+            "entities_id" => 0,
+        ]);
+        $res_item = $this->createItem("ReservationItem", [
+            "itemtype" => "Computer",
+            "items_id" => $computer->getID(),
+            "is_active" => true,
+            "entities_id" => 0,
+        ]);
+
+        // Create a reservation owned by current user
+        $reservation = $this->createItem('Reservation', [
+            'begin' => '2024-01-01 10:00:00',
+            'end' => '2024-01-01 12:00:00',
+            'reservationitems_id' => $res_item->getID(),
+            'users_id' => $_SESSION['glpiID'],
+            'comment' => 'View permissions test',
+        ]);
+
+        // Test 1: Users with READ right can see all reservations
+        $_SESSION['glpiactiveprofile']['reservation'] = READ;
+        $this->assertTrue((bool) \Reservation::canView(), "Users with READ should be able to view all reservations");
+        $this->assertTrue($reservation->canViewItem(), "Users with READ should be able to view specific reservations");
+
+        // Test 2: Users with RESERVEANITEM right can see their own reservations
+        $_SESSION['glpiactiveprofile']['reservation'] = \ReservationItem::RESERVEANITEM;
+        $this->assertTrue((bool) \Reservation::canView(), "Users with RESERVEANITEM should be able to view reservations");
+        $this->assertTrue($reservation->canViewItem(), "Users with RESERVEANITEM should be able to view their own reservations");
+
+        // Test 3: Users without any rights cannot see others' reservations
+        $_SESSION['glpiactiveprofile']['reservation'] = 0;
+        $this->assertFalse((bool) \Reservation::canView(), "Users without rights should not be able to view reservations");
+
+        // But they can still see their own reservations through canViewItem
+        $this->assertTrue($reservation->canViewItem(), "Users should always be able to view their own reservations");
+
+        // Test 4: Change to different user - should not be able to see
+        $original_user_id = $reservation->fields['users_id'];
+        $reservation->fields['users_id'] = $original_user_id + 1;
+
+        // Also remove all possible rights to ensure no asset-based permissions
+        $original_computer_rights = $_SESSION['glpiactiveprofile']['computer'] ?? 0;
+        $original_reservationitem_rights = $_SESSION['glpiactiveprofile']['reservationitem'] ?? 0;
+        $_SESSION['glpiactiveprofile']['computer'] = 0;
+        $_SESSION['glpiactiveprofile']['reservationitem'] = 0;
+
+        $this->assertFalse($reservation->canViewItem(), "Different user should not be able to view others' reservations without rights");
+
+        // Restore original user and rights
+        $reservation->fields['users_id'] = $original_user_id;
+        $_SESSION['glpiactiveprofile']['computer'] = $original_computer_rights;
+        $_SESSION['glpiactiveprofile']['reservationitem'] = $original_reservationitem_rights;
+        $this->assertTrue($reservation->canViewItem(), "Original user should still be able to view their own reservation");
+    }
+
+    /**
+     * Test permissions for users with asset update rights
+     */
+    public function testAssetUpdateRightsPermissions(): void
+    {
+        // Create a computer and reservation item
+        $computer = $this->createItem("Computer", [
+            "name" => "test computer asset rights",
+            "entities_id" => 0,
+        ]);
+        $res_item = $this->createItem("ReservationItem", [
+            "itemtype" => "Computer",
+            "items_id" => $computer->getID(),
+            "is_active" => true,
+            "entities_id" => 0,
+        ]);
+
+        // Create a reservation owned by another user
+        $reservation = $this->createItem('Reservation', [
+            'begin' => '2024-01-01 10:00:00',
+            'end' => '2024-01-01 12:00:00',
+            'reservationitems_id' => $res_item->getID(),
+            'users_id' => $_SESSION['glpiID'] + 1, // Different user
+            'comment' => 'Asset rights test',
+        ]);
+
+        // Test case 1: User with computer UPDATE rights but no reservation rights should be able to manage reservations for that asset
+        $_SESSION['glpiactiveprofile']['reservation'] = 0; // No reservation rights
+        $_SESSION['glpiactiveprofile']['computer'] = UPDATE; // User can update computers
+
+        // Users with permission to update the asset should be able to CRUD all reservations for that asset
+        $this->assertTrue($reservation->canViewItem(), "User with asset update rights should be able to view reservations for that asset");
+        $this->assertTrue($reservation->canUpdateItem(), "User with asset update rights should be able to update reservations for that asset");
+        $this->assertTrue($reservation->canDeleteItem(), "User with asset update rights should be able to delete reservations for that asset");
+        $this->assertTrue($reservation->canPurgeItem(), "User with asset update rights should be able to purge reservations for that asset");
+
+        // Test case 2: User with only RESERVEANITEM + computer rights should NOT work for others' reservations
+        $_SESSION['glpiactiveprofile']['reservation'] = \ReservationItem::RESERVEANITEM;
+        $_SESSION['glpiactiveprofile']['computer'] = UPDATE; // User can update computers
+
+        $this->assertFalse($reservation->canViewItem(), "User with only RESERVEANITEM should not view others' reservations even with asset rights");
+        $this->assertFalse($reservation->canUpdateItem(), "User with only RESERVEANITEM should not update others' reservations even with asset rights");
+    }
+
+    /**
+     * Test creating reservations for other users with CREATE right
+     */
+    public function testCreateForOtherUsers(): void
+    {
+        // Create a computer and reservation item
+        $computer = $this->createItem("Computer", [
+            "name" => "test computer create for others",
+            "entities_id" => 0,
+        ]);
+        $res_item = $this->createItem("ReservationItem", [
+            "itemtype" => "Computer",
+            "items_id" => $computer->getID(),
+            "is_active" => true,
+            "entities_id" => 0,
+        ]);
+
+        // Test with CREATE right - should be able to create for other users
+        $_SESSION['glpiactiveprofile']['reservation'] = CREATE;
+        $this->assertTrue((bool) \Reservation::canCreate(), "Users with CREATE should be able to create reservations");
+
+        $reservation = $this->createItem('Reservation', [
+            'begin' => '2024-01-01 10:00:00',
+            'end' => '2024-01-01 12:00:00',
+            'reservationitems_id' => $res_item->getID(),
+            'users_id' => $_SESSION['glpiID'] + 1, // Different user
+            'comment' => 'Created for another user',
+        ]);
+        $this->assertGreaterThan(0, $reservation->getID(), "Users with CREATE right should be able to create reservations for other users");
+
+        // Test with only RESERVEANITEM right - traditionally only for self
+        $_SESSION['glpiactiveprofile']['reservation'] = \ReservationItem::RESERVEANITEM;
+        $this->assertTrue((bool) \Reservation::canCreate(), "Users with RESERVEANITEM should be able to create reservations");
+
+        $reservation2 = $this->createItem('Reservation', [
+            'begin' => '2024-01-02 10:00:00',
+            'end' => '2024-01-02 12:00:00',
+            'reservationitems_id' => $res_item->getID(),
+            'users_id' => $_SESSION['glpiID'], // Own reservation
+            'comment' => 'Self reservation',
+        ]);
+        $this->assertGreaterThan(0, $reservation2->getID(), "Users with RESERVEANITEM right should be able to create their own reservations");
+    }
+
+    /**
+     * Test UPDATE and PURGE permissions work correctly
+     */
+    public function testUpdateAndPurgePermissions(): void
+    {
+        // Create a computer and reservation item
+        $computer = $this->createItem("Computer", [
+            "name" => "test computer update purge",
+            "entities_id" => 0,
+        ]);
+        $res_item = $this->createItem("ReservationItem", [
+            "itemtype" => "Computer",
+            "items_id" => $computer->getID(),
+            "is_active" => true,
+            "entities_id" => 0,
+        ]);
+
+        // Create reservations for testing
+        $reservation1 = $this->createItem('Reservation', [
+            'begin' => '2024-01-01 10:00:00',
+            'end' => '2024-01-01 12:00:00',
+            'reservationitems_id' => $res_item->getID(),
+            'users_id' => $_SESSION['glpiID'],
+            'comment' => 'Own reservation',
+        ]);
+
+        $reservation2 = $this->createItem('Reservation', [
+            'begin' => '2024-01-02 10:00:00',
+            'end' => '2024-01-02 12:00:00',
+            'reservationitems_id' => $res_item->getID(),
+            'users_id' => $_SESSION['glpiID'] + 1, // Different user
+            'comment' => 'Others reservation',
+        ]);
+
+        // Test with UPDATE right - should be able to update any reservation they can read
+        $_SESSION['glpiactiveprofile']['reservation'] = UPDATE | READ;
+        $this->assertTrue((bool) \Reservation::canUpdate(), "Users with UPDATE should be able to update reservations");
+        $this->assertTrue($reservation1->canUpdateItem(), "Users with UPDATE should be able to update own reservations");
+        $this->assertTrue($reservation2->canUpdateItem(), "Users with UPDATE should be able to update others' reservations they can read");
+
+        // Test with PURGE right - should be able to purge any reservation they can read
+        $_SESSION['glpiactiveprofile']['reservation'] = PURGE | READ;
+        $this->assertTrue((bool) \Reservation::canPurge(), "Users with PURGE should be able to purge reservations");
+        $this->assertTrue($reservation1->canPurgeItem(), "Users with PURGE should be able to purge own reservations");
+        $this->assertTrue($reservation2->canPurgeItem(), "Users with PURGE should be able to purge others' reservations they can read");
+
+        // Test with only RESERVEANITEM - should only work on own reservations
+        $_SESSION['glpiactiveprofile']['reservation'] = \ReservationItem::RESERVEANITEM;
+        $this->assertTrue((bool) \Reservation::canUpdate(), "Users with RESERVEANITEM should be able to update reservations");
+        $this->assertTrue((bool) \Reservation::canPurge(), "Users with RESERVEANITEM should be able to purge reservations");
+        $this->assertTrue($reservation1->canUpdateItem(), "Users with RESERVEANITEM should be able to update own reservations");
+        $this->assertTrue($reservation1->canPurgeItem(), "Users with RESERVEANITEM should be able to purge own reservations");
+        $this->assertFalse($reservation2->canUpdateItem(), "Users with only RESERVEANITEM should not be able to update others' reservations");
+        $this->assertFalse($reservation2->canPurgeItem(), "Users with only RESERVEANITEM should not be able to purge others' reservations");
     }
 }
