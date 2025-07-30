@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "796f0750a54111b1d34d1aa318954287",
+    "content-hash": "9db8ee947a6466c5d35fccab5fe96442",
     "packages": [
         {
             "name": "apereo/phpcas",
@@ -9118,16 +9118,16 @@
         },
         {
             "name": "webonyx/graphql-php",
-            "version": "v15.21.3",
+            "version": "v15.22.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webonyx/graphql-php.git",
-                "reference": "8404965d3834d284efb4e46f9df64b44963f2aaa"
+                "reference": "d160c99334edd34adbc38fbe80b6df455d1923f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/8404965d3834d284efb4e46f9df64b44963f2aaa",
-                "reference": "8404965d3834d284efb4e46f9df64b44963f2aaa",
+                "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/d160c99334edd34adbc38fbe80b6df455d1923f8",
+                "reference": "d160c99334edd34adbc38fbe80b6df455d1923f8",
                 "shasum": ""
             },
             "require": {
@@ -9145,7 +9145,7 @@
                 "nyholm/psr7": "^1.5",
                 "phpbench/phpbench": "^1.2",
                 "phpstan/extension-installer": "^1.1",
-                "phpstan/phpstan": "2.1.19",
+                "phpstan/phpstan": "2.1.20",
                 "phpstan/phpstan-phpunit": "2.0.7",
                 "phpstan/phpstan-strict-rules": "2.0.6",
                 "phpunit/phpunit": "^9.5 || ^10.5.21 || ^11",
@@ -9180,7 +9180,7 @@
             ],
             "support": {
                 "issues": "https://github.com/webonyx/graphql-php/issues",
-                "source": "https://github.com/webonyx/graphql-php/tree/v15.21.3"
+                "source": "https://github.com/webonyx/graphql-php/tree/v15.22.0"
             },
             "funding": [
                 {
@@ -9188,7 +9188,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2025-07-24T08:17:01+00:00"
+            "time": "2025-07-28T12:28:41+00:00"
         }
     ],
     "packages-dev": [
