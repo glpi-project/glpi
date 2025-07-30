@@ -155,12 +155,10 @@ function getTableForItemType($itemtype)
  *
  * @since 0.83
  *
- * @param string $itemtype itemtype
- * @return CommonDBTM|false itemtype object or false if class does not exists
- * @template T
- * @phpstan-param class-string<T> $itemtype
- * @phpstan-return T|false
- **/
+ * @template T of CommonDBTM
+ * @param class-string<T>|string $itemtype
+ * @return ($itemtype is class-string<T> ? T : false)
+ */
 function getItemForItemtype($itemtype)
 {
     $dbu = new DbUtils();

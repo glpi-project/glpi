@@ -43,6 +43,7 @@ use Glpi\Features\Clonable;
 use Glpi\Features\Kanban;
 use Glpi\Features\KanbanInterface;
 use Glpi\Features\Teamwork;
+use Glpi\Features\TeamworkInterface;
 use Glpi\Features\Timeline;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
@@ -66,7 +67,7 @@ use function Safe\strtotime;
  * @property-read array $groups
  * @property-read array $suppliers
  **/
-abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
+abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, TeamworkInterface
 {
     use Clonable;
     use Timeline;
@@ -9421,7 +9422,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
         };
 
         $actor = getItemForItemtype($actor_class);
-        if (!is_a($actor, CommonITILActor::class)) {
+        if (!($actor instanceof CommonITILActor)) {
             throw new RuntimeException(
                 'The actor class for item type ' . $itemtype . ' must extend CommonITILActor.'
             );
@@ -10366,6 +10367,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
         return $validation_class_name ? getItemForItemtype($validation_class_name) : null;
     }
 
+    /**
+     * @return class-string<CommonITILValidation>|null
+     */
     public static function getValidationClassName(): ?string
     {
         $validation_class = static::class . 'Validation';
@@ -11208,8 +11212,12 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
         return false;
     }
 
-    public static function getTeamMemberForm(CommonITILObject $item): string
+    public static function getTeamMemberForm(CommonDBTM $item): string
     {
+        if (!($item instanceof CommonITILObject)) {
+            throw new RuntimeException();
+        }
+
         $itiltemplate = $item->getITILTemplateToUse(
             0,
             $item instanceof Ticket ? $item->fields['type'] : null,

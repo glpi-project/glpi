@@ -2553,7 +2553,8 @@ final class Transfer extends CommonDBTM
                 break;
         }
 
-        if (!($link_item = getItemForItemtype($link_type))) {
+        $link_item = getItemForItemtype($link_type);
+        if (!($link_item instanceof CommonDBTM)) {
             return;
         }
 
@@ -2641,7 +2642,8 @@ final class Transfer extends CommonDBTM
                                     unset($link_item->fields['id']);
                                     $input                = $link_item->fields;
                                     $input['entities_id'] = $this->to;
-                                    unset($link_item->fields);
+
+                                    $link_item = new $link_item();
                                     $newID = $link_item->add($input);
                                     // 2 - transfer as copy
                                     $this->transferItem($link_type, $item_ID, $newID);
@@ -3539,6 +3541,11 @@ final class Transfer extends CommonDBTM
                     $fk              = getForeignKeyFieldForTable($devicetable);
 
                     $device          = getItemForItemtype($devicetype);
+
+                    if (!($device instanceof CommonDevice)) {
+                        continue;
+                    }
+
                     // Get contracts for the item
                     $criteria = [
                         'FROM'   => $itemdevicetable,
@@ -3643,7 +3650,8 @@ final class Transfer extends CommonDBTM
                                             }
                                         }
                                         $input['entities_id'] = $this->to;
-                                        unset($device->fields);
+
+                                        $device = new $device();
                                         $newdeviceID = $device->add($input);
                                         // 2 - transfer as copy
                                         $this->transferItem($devicetype, $item_ID, $newdeviceID);

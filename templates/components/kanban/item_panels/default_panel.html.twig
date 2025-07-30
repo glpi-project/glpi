@@ -72,7 +72,7 @@
          </h5>
          {% if team is not empty %}
             {% set item = itemtype|itemtype_class %}
-            {% if item is usingtrait('Glpi\\Features\\Teamwork') %}
+            {% if item is instanceof('Glpi\\Features\\TeamworkInterface') %}
                {% for team_role in item.getTeamRoles() %}
                   {% set role_members = team|filter(m => m.role == team_role) %}
                   {% if role_members|length > 0 %}

@@ -352,7 +352,14 @@ class ITILFollowup extends CommonDBChild
         }
 
         $job = getItemForItemtype($this->fields['itemtype']);
-        $job->getFromDB($this->fields[self::$items_id]);
+
+        if (
+            !($job instanceof CommonITILObject)
+            || !$job->getFromDB($this->fields[self::$items_id])
+        ) {
+            return;
+        }
+
         $job->updateDateMod($this->fields[self::$items_id]);
 
         // Add log entry in the ITIL Object
@@ -383,7 +390,7 @@ class ITILFollowup extends CommonDBChild
     {
         $parent_item = isset($input['itemtype']) ? getItemForItemtype($input['itemtype']) : null;
         if (
-            $parent_item === null
+            !($parent_item instanceof CommonITILObject)
             || !array_key_exists('items_id', $input)
             || $parent_item->getFromDB((int) $input['items_id']) === false
         ) {
@@ -526,7 +533,10 @@ class ITILFollowup extends CommonDBChild
 
         $job      = getItemForItemtype($this->fields['itemtype']);
 
-        if (!$job->getFromDB($this->fields['items_id'])) {
+        if (
+            !($job instanceof CommonITILObject)
+            || !$job->getFromDB($this->fields['items_id'])
+        ) {
             return;
         }
 
@@ -1119,7 +1129,13 @@ class ITILFollowup extends CommonDBChild
 
         // Get parent item
         $commonITILObject = getItemForItemtype($this->fields['itemtype']);
-        $commonITILObject->getFromDB($this->fields['items_id']);
+
+        if (
+            !($commonITILObject instanceof CommonITILObject)
+            || !$commonITILObject->getFromDB($this->fields['items_id'])
+        ) {
+            return false;
+        }
 
         $actors = $commonITILObject->getITILActors();
         $user_id = $this->fields['users_id'];

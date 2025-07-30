@@ -227,17 +227,14 @@ class NotificationEventMailing extends NotificationEventAbstract
                         ];
 
                         if (is_a($current->fields['itemtype'], CommonITILObject::class, true)) {
-                            // Main item is a `CommonITILObject`.
-                            // Adapt documents filtering to attach child items documents (if needed)
-                            // and exclude inline images.
-                            $main_item = new $current->fields['itemtype']();
+                            // Attach documents from child, unless only documents from trigger should be attached
                             if (
-                                $current->fields['attach_documents'] !== NotificationSetting::ATTACH_FROM_TRIGGER_ONLY
-                                && $main_item->getFromDB($current->fields['items_id'])
+                                $item_for_docs instanceof CommonITILObject
+                                && $current->fields['attach_documents'] !== NotificationSetting::ATTACH_FROM_TRIGGER_ONLY
                             ) {
-                                // Attach documents from child, unless only documents from trigger should be attached
                                 $doc_crit = $item_for_docs->getAssociatedDocumentsCriteria(true);
                             }
+
                             if ($is_html) {
                                 // Remove documents having "NO_TIMELINE" position if mail is HTML, as
                                 // these documents corresponds to inlined images.

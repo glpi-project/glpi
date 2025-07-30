@@ -87,8 +87,14 @@ abstract class ITILTemplate extends CommonDropdown
             $itiltype = static::getITILObjectClass();
             $itil_object  = getItemForItemtype($itiltype);
             $itemstable = $itil_object->getItemsTable();
+
             $tth_class = $itiltype . 'TemplateHiddenField';
-            $tth          = getItemForItemtype($tth_class);
+            $tth = getItemForItemtype($tth_class);
+            if (!($tth instanceof ITILTemplateHiddenField)) {
+                throw new RuntimeException(
+                    sprintf('`%s` is not an instance of `%s`.', $tth_class, ITILTemplateHiddenField::class)
+                );
+            }
             $this->hidden = $tth->getHiddenFields($ID, $withtypeandcategory);
 
             // Force items_id if itemtype is defined
@@ -104,7 +110,12 @@ abstract class ITILTemplate extends CommonDropdown
             }
             // Always get all mandatory fields
             $ttm_class = $itiltype . 'TemplateMandatoryField';
-            $ttm             = getItemForItemtype($ttm_class);
+            $ttm = getItemForItemtype($ttm_class);
+            if (!($ttm instanceof ITILTemplateMandatoryField)) {
+                throw new RuntimeException(
+                    sprintf('`%s` is not an instance of `%s`.', $ttm_class, ITILTemplateMandatoryField::class)
+                );
+            }
             $this->mandatory = $ttm->getMandatoryFields($ID);
 
             // Force items_id if itemtype is defined
@@ -121,7 +132,12 @@ abstract class ITILTemplate extends CommonDropdown
 
             // Always get all read only fields
             $ttr_class = $itiltype . 'TemplateReadonlyField';
-            $ttr             = getItemForItemtype($ttr_class);
+            $ttr = getItemForItemtype($ttr_class);
+            if (!($ttr instanceof ITILTemplateReadonlyField)) {
+                throw new RuntimeException(
+                    sprintf('`%s` is not an instance of `%s`.', $ttr_class, ITILTemplateReadonlyField::class)
+                );
+            }
             $this->readonly = $ttr->getReadonlyFields($ID);
 
             // Force items_id if itemtype is defined
@@ -137,8 +153,14 @@ abstract class ITILTemplate extends CommonDropdown
             }
 
             $ttp_class = $itiltype . 'TemplatePredefinedField';
-            $ttp              = getItemForItemtype($ttp_class);
+            $ttp = getItemForItemtype($ttp_class);
+            if (!($ttp instanceof ITILTemplatePredefinedField)) {
+                throw new RuntimeException(
+                    sprintf('`%s` is not an instance of `%s`.', $ttp_class, ITILTemplatePredefinedField::class)
+                );
+            }
             $this->predefined = $ttp->getPredefinedFields($ID, $withtypeandcategory);
+
             // Compute time_to_resolve
             if (isset($this->predefined['time_to_resolve'])) {
                 $this->predefined['time_to_resolve']

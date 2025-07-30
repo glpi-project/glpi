@@ -35,8 +35,7 @@
 
 namespace Glpi\Application\View\Extension;
 
-use Glpi\Features\Teamwork;
-use Toolbox;
+use Glpi\Features\TeamworkInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
@@ -54,7 +53,7 @@ class TeamExtension extends AbstractExtension
 
     public function getTeamRoleName($itemtype, int $role, int $nb = 1): string
     {
-        if (Toolbox::hasTrait($itemtype, Teamwork::class)) {
+        if (is_a($itemtype, TeamworkInterface::class, true)) {
             return $itemtype::getTeamRoleName($role, $nb);
         }
         return '';

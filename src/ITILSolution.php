@@ -111,6 +111,11 @@ class ITILSolution extends CommonDBChild
     public function canCreateItem(): bool
     {
         $item = getItemForItemtype($this->fields['itemtype']);
+
+        if (!($item instanceof CommonITILObject)) {
+            return false;
+        }
+
         $item->getFromDB($this->fields['items_id']);
         return $item->canSolve();
     }
@@ -188,7 +193,7 @@ class ITILSolution extends CommonDBChild
 
         $parent_item = isset($input['itemtype']) ? getItemForItemtype($input['itemtype']) : null;
         if (
-            $parent_item === null
+            !($parent_item instanceof CommonITILObject)
             || !array_key_exists('items_id', $input)
             || $parent_item->getFromDB((int) $input['items_id']) === false
         ) {

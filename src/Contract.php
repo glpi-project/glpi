@@ -36,13 +36,14 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Features\Clonable;
+use Glpi\Features\StateInterface;
 
 use function Safe\strtotime;
 
 /**
  *  Contract class
  */
-class Contract extends CommonDBTM
+class Contract extends CommonDBTM implements StateInterface
 {
     use Clonable;
     use Glpi\Features\State;

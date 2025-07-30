@@ -61,11 +61,7 @@ trait State
     }
 
     /**
-     * Get the visibility of the state field for the item
-     *
-     * @param int $id State ID
-     *
-     * @return bool
+     * @see StateInterface::isStateVisible()
      */
     public function isStateVisible(int $id): bool
     {
@@ -80,9 +76,7 @@ trait State
     }
 
     /**
-     * Get the visibility criteria of the state field to use a filter condition
-     *
-     * @return array
+     * @see StateInterface::getStateVisibilityCriteria()
      */
     public function getStateVisibilityCriteria(): array
     {

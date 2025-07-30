@@ -1899,7 +1899,8 @@ TWIG, $twig_params);
             ($check_dictionnary_type && in_array($itemtype, $CFG_GLPI["dictionnary_types"], true))
             || !$check_dictionnary_type
         ) {
-            if ($item = getItemForItemtype($typeclass)) {
+            $item = getItemForItemtype($typeclass);
+            if ($item instanceof RuleCollection) {
                 return $item;
             }
         }

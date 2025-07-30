@@ -444,22 +444,21 @@ JAVASCRIPT;
                 $users[$item->getID()] = $item->getName();
                 break;
 
-            default:
-                if (is_a($item, 'CommonITILObject', true)) {
-                    foreach ($item->getUsers(CommonITILActor::ASSIGN) as $data) {
-                        $users[$data['users_id']] = getUserName($data['users_id']);
-                    }
-                    foreach ($item->getGroups(CommonITILActor::ASSIGN) as $data) {
-                        foreach (Group_User::getGroupUsers($data['groups_id']) as $data2) {
-                            $users[$data2['id']] = formatUserName(
-                                $data2["id"],
-                                $data2["name"],
-                                $data2["realname"],
-                                $data2["firstname"]
-                            );
-                        }
+            case CommonITILObject::class:
+                foreach ($item->getUsers(CommonITILActor::ASSIGN) as $data) {
+                    $users[$data['users_id']] = getUserName($data['users_id']);
+                }
+                foreach ($item->getGroups(CommonITILActor::ASSIGN) as $data) {
+                    foreach (Group_User::getGroupUsers($data['groups_id']) as $data2) {
+                        $users[$data2['id']] = formatUserName(
+                            $data2["id"],
+                            $data2["name"],
+                            $data2["realname"],
+                            $data2["firstname"]
+                        );
                     }
                 }
+
                 $task = getItemForItemtype($item::getTaskClass());
                 if ($task->getFromDBByCrit(['tickets_id' => $item->fields['id']])) {
                     $users[$task->fields['users_id_tech']] = getUserName($task->fields['users_id_tech']);
@@ -1271,7 +1270,7 @@ TWIG, $twig_params);
         $params['res_itemtype'] ??= '';
         $params['res_items_id'] ??= 0;
         if ($item = getItemForItemtype($params['itemtype'])) {
-            $item->showForm('', [
+            $item->showForm(-1, [
                 'from_planning_ajax' => true,
                 'begin'              => $params['begin'],
                 'end'                => $params['end'],

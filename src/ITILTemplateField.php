@@ -45,8 +45,16 @@ use Glpi\Search\SearchOption;
  **/
 abstract class ITILTemplateField extends CommonDBChild
 {
+    /**
+     * @var class-string<ITILTemplate>
+     */
     public static $itemtype; //to be filled in subclass
+
     public static $items_id; //to be filled in subclass
+
+    /**
+     * @var class-string<CommonITILObject>
+     */
     public static $itiltype; //to be filled in subclass
 
     private $all_fields;

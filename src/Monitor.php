@@ -40,11 +40,12 @@ use Glpi\Features\Clonable;
 use Glpi\Features\DCBreadcrumb;
 use Glpi\Features\DCBreadcrumbInterface;
 use Glpi\Features\Inventoriable;
+use Glpi\Features\StateInterface;
 
 /**
  * Monitor Class
  **/
-class Monitor extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInterface
+class Monitor extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInterface, StateInterface
 {
     use DCBreadcrumb;
     use Clonable;

@@ -46,7 +46,6 @@ global $CFG_GLPI;
 
 if (isset($_POST['itemtype'])) {
     $source_item = getItemForItemtype($_POST['itemtype']);
-    $itemtype = $source_item::class;
     if ($source_item->can($_POST['id'], UPDATE)) {
         $devices = Item_Devices::getDeviceTypes();
         $actions = array_merge($CFG_GLPI['inventory_lockable_objects'], array_values($devices));
@@ -94,7 +93,7 @@ if (isset($_POST['itemtype'])) {
                         }
 
                         //Force unlock
-                        $item->delete(['id' => $key], 1);
+                        $item->delete(['id' => $key], true);
                     }
                 }
             }

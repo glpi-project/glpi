@@ -37,8 +37,9 @@ use Glpi\Features\AssignableItem;
 use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
 use Glpi\Features\Inventoriable;
+use Glpi\Features\StateInterface;
 
-class DatabaseInstance extends CommonDBTM implements AssignableItemInterface
+class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, StateInterface
 {
     use Clonable;
     use Inventoriable;
