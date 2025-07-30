@@ -174,6 +174,8 @@ final class SearchOption implements ArrayAccess
             $search[$itemtype] += $new_options;
         };
 
+        $search[$itemtype] = [];
+
         // standard type first
         switch ($itemtype) {
             case 'Internet':

@@ -40,6 +40,7 @@ use DBmysql;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Exception\EarlyExitException;
 use ITILFollowup;
+use ReflectionClass;
 use Safe\Exceptions\FilesystemException;
 use Search;
 use Session;
@@ -367,6 +368,13 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
             $itemtype = getItemTypeForTable($table);
 
             if (!is_a($itemtype, CommonDBTM::class, true)) {
+                continue;
+            }
+
+            if ((new ReflectionClass($itemtype))->isAbstract()) {
+                // Cannot retrieve search options of an abstract class.
+                // Anyway, corresponding classes were introduced in GLPI 11.0 and corresponding tables
+                // are not even supposed to contain encoded data. They can be ignored safely.
                 continue;
             }
 
