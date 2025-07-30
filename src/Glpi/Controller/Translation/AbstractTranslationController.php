@@ -190,7 +190,7 @@ abstract class AbstractTranslationController extends AbstractController
     protected function addSuccessMessage(string $language): void
     {
         $context_translations = $this->getContextTranslations($language);
-        if (!empty($context_translations)) {
+        if ($context_translations !== []) {
             $translation = current(array_filter(
                 $context_translations,
                 fn($translation) => $translation->fields['language'] === $language
