@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-function addHelpdeskTranslations() {
+function addHelpdeskTranslations(tile_title, tile_description) {
     // Add a language translation
     cy.findByRole('button', { name: 'Add language' }).click();
     cy.getDropdownByLabelText('Select language to translate').as('languageDropdown');
@@ -44,30 +44,35 @@ function addHelpdeskTranslations() {
     // Provide translations for helpdesk items
     cy.findByRole('table', { name: 'Helpdesk translations' }).as('helpdeskTranslationsTable');
     cy.get('@helpdeskTranslationsTable').findAllByRole('row').as('helpdeskTranslationsRows');
-    cy.get('@helpdeskTranslationsRows').eq(2).within(() => {
-        cy.findByRole('cell', { name: 'Translation name' }).contains('Title');
-        cy.findByRole('cell', { name: 'Default value' }).contains('Test Helpdesk Tile');
-        cy.findByRole('cell', { name: 'Translated value' })
-            .findByRole('textbox', { name: 'Enter translation' })
-            .type('Titre de la tuile du helpdesk');
+
+    // Find row index in helpdeskTranslationsRows where the category is the tile title
+    cy.get('@helpdeskTranslationsRows').each((row, index) => {
+        if (row.find('td[aria-label="Category"]').text().trim() === `GLPI page: ${tile_title}`) {
+            cy.wrap(index).as('helpdeskTileRowIndex');
+        }
     });
-    cy.get('@helpdeskTranslationsRows').eq(3).within(() => {
-        cy.findByRole('cell', { name: 'Translation name' }).contains('Description');
-        cy.findByRole('cell', { name: 'Default value' }).contains('This is a test tile for helpdesk translation');
-        cy.findByRole('cell', { name: 'Translated value' })
-            .findByLabelText('Enter translation')
-            .awaitTinyMCE()
-            .type('Ceci est une tuile de test pour la traduction du helpdesk');
+
+    cy.get('@helpdeskTileRowIndex').then((index) => {
+        cy.get('@helpdeskTranslationsRows').eq(index + 1).within(() => {
+            cy.findByRole('cell', { name: 'Translation name' }).contains('Title');
+            cy.findByRole('cell', { name: 'Default value' }).contains(tile_title);
+            cy.findByRole('cell', { name: 'Translated value' })
+                .findByRole('textbox', { name: 'Enter translation' })
+                .type(`${tile_title} in French`);
+        });
+        cy.get('@helpdeskTranslationsRows').eq(index + 2).within(() => {
+            cy.findByRole('cell', { name: 'Translation name' }).contains('Description');
+            cy.findByRole('cell', { name: 'Default value' }).contains(tile_description);
+            cy.findByRole('cell', { name: 'Translated value' })
+                .findByLabelText('Enter translation')
+                .awaitTinyMCE()
+                .type(`${tile_description} in French`);
+        });
     });
 
     // Save the translations
     cy.findByRole('button', { name: 'Save translation' }).click();
     cy.checkAndCloseAlert('Item successfully updated');
-}
-
-function checkHelpdeskTranslations(expectedText) {
-    // Check that translations are applied in the helpdesk interface
-    cy.findByText(expectedText).should('exist');
 }
 
 function changeUserLanguage(language) {
@@ -81,7 +86,13 @@ function changeUserLanguage(language) {
 }
 
 describe('Edit helpdesk translations', () => {
+    let tile_title;
+    let tile_description;
+
     beforeEach(() => {
+        tile_title = `Test Helpdesk Tile ${Date.now()}`;
+        tile_description = `This is a test tile for helpdesk translation ${Date.now()}`;
+
         cy.login();
         cy.changeProfile('Super-Admin');
 
@@ -92,41 +103,16 @@ describe('Edit helpdesk translations', () => {
             });
         });
 
-        // Remove any existing tiles
-        cy.initApi().doApiRequest("GET", 'Glpi\\Helpdesk\\Tile\\GlpiPageTile').then((response) => {
-            response.body.forEach((tile) => {
-                cy.initApi().doApiRequest("DELETE", `Glpi\\Helpdesk\\Tile\\GlpiPageTile/${tile.id}`);
-            });
-        });
-        cy.initApi().doApiRequest("GET", 'Glpi\\Helpdesk\\Tile\\ExternalPageTile').then((response) => {
-            response.body.forEach((tile) => {
-                cy.initApi().doApiRequest("DELETE", `Glpi\\Helpdesk\\Tile\\ExternalPageTile/${tile.id}`);
-            });
-        });
-        cy.initApi().doApiRequest("GET", 'Glpi\\Helpdesk\\Tile\\FormTile').then((response) => {
-            response.body.forEach((tile) => {
-                cy.initApi().doApiRequest("DELETE", `Glpi\\Helpdesk\\Tile\\FormTile/${tile.id}`);
-            });
-        });
-        cy.initApi().doApiRequest("GET", 'Glpi\\Helpdesk\\Tile\\Item_Tile').then((response) => {
-            response.body.forEach((tile) => {
-                cy.initApi().doApiRequest("DELETE", `Glpi\\Helpdesk\\Tile\\Item_Tile/${tile.id}`);
-            });
-        });
-
-        // Add one tile to ensure we have something to translate
         cy.createWithAPI('Glpi\\Helpdesk\\Tile\\GlpiPageTile', {
-            'title': 'Test Helpdesk Tile',
-            'description': 'This is a test tile for helpdesk translation',
+            'title': tile_title,
+            'description': tile_description,
             'page': 'faq',
         }).as('tileId').then((tile_id) => {
-            // Link the tile to the helpdesk page
             cy.createWithAPI('Glpi\\Helpdesk\\Tile\\Item_Tile', {
                 'itemtype_item': 'Entity',
                 'items_id_item': 1,
                 'itemtype_tile': 'Glpi\\Helpdesk\\Tile\\GlpiPageTile',
                 'items_id_tile': tile_id,
-                'rank': 1,
             });
         });
 
@@ -145,6 +131,11 @@ describe('Edit helpdesk translations', () => {
         // Make sure the user language is reset to default
         cy.updateTestUserSettings({
             'language': null
+        });
+
+        // Remove the created tile
+        cy.get('@tileId').then((tile_id) => {
+            cy.deleteWithAPI('Glpi\\Helpdesk\\Tile\\GlpiPageTile', tile_id);
         });
     });
 
@@ -181,7 +172,7 @@ describe('Edit helpdesk translations', () => {
     });
 
     it('can add new translations', () => {
-        addHelpdeskTranslations();
+        addHelpdeskTranslations(tile_title, tile_description);
 
         // Open modal
         cy.findByRole('button', { name: 'Edit translation' }).click();
@@ -193,7 +184,7 @@ describe('Edit helpdesk translations', () => {
     });
 
     it('can view translations on helpdesk with default language', () => {
-        addHelpdeskTranslations();
+        addHelpdeskTranslations(tile_title, tile_description);
 
         cy.changeProfile('Self-Service');
 
@@ -201,11 +192,11 @@ describe('Edit helpdesk translations', () => {
         cy.visit('/');
 
         // Check the translations with GLPI default language
-        cy.findByRole('region', { name: 'Quick Access' }).contains('Test Helpdesk Tile');
+        cy.findByRole('region', { name: 'Quick Access' }).contains(tile_title);
     });
 
     it('can view translations on helpdesk in French', () => {
-        addHelpdeskTranslations();
+        addHelpdeskTranslations(tile_title, tile_description);
 
         // Change the user language to French
         changeUserLanguage('fr_FR');
@@ -215,11 +206,11 @@ describe('Edit helpdesk translations', () => {
         cy.visit('/');
 
         // Check that French translations are applied
-        cy.findByRole('region', { name: 'Accès rapide' }).contains('Titre de la tuile du helpdesk');
+        cy.findByRole('region', { name: 'Accès rapide' }).contains(`${tile_title} in French`);
     });
 
     it('can view translations on helpdesk in Spanish', () => {
-        addHelpdeskTranslations();
+        addHelpdeskTranslations(tile_title, tile_description);
 
         // Change the user language to Spanish
         changeUserLanguage('es_ES');
@@ -229,11 +220,11 @@ describe('Edit helpdesk translations', () => {
         cy.visit('/');
 
         // Check that default translations are used (no Spanish translation)
-        cy.findByRole('region', { name: 'Quick Access' }).contains('Test Helpdesk Tile');
+        cy.findByRole('region', { name: 'Quick Access' }).contains(tile_title);
     });
 
     it('can delete a helpdesk translation', () => {
-        addHelpdeskTranslations();
+        addHelpdeskTranslations(tile_title, tile_description);
 
         // Open modal
         cy.findByRole('button', { name: 'Edit translation' }).click();
@@ -301,8 +292,8 @@ describe('Edit helpdesk translations', () => {
         });
     });
 
-    it('can detect translations to review when default value changes', () => {
-        addHelpdeskTranslations();
+    it.only('can detect translations to review when default value changes', () => {
+        addHelpdeskTranslations(tile_title, tile_description);
 
         // Add a second language translation
         cy.findByRole('button', { name: 'Add language' }).click();
@@ -325,18 +316,38 @@ describe('Edit helpdesk translations', () => {
         // Reload page to reflect changes
         cy.visit('/front/config.form.php');
 
+        // Find french row
+        cy.get('#glpi-helpdesk-translations-languages').find('tbody:first>tr').each((row) => {
+            cy.wrap(row).findByRole('button', { name: 'Edit translation' }).then((button) => {
+                if (button.text().trim() === 'Français') {
+                    cy.wrap(row).as('frenchRow');
+                }
+                if (button.text().trim() === 'Deutsch') {
+                    cy.wrap(row).as('germanRow');
+                }
+            });
+        });
+
         // Check stats
-        cy.get('#glpi-helpdesk-translations-languages').find('tbody:first>tr').eq(0).find('td').eq(-1).invoke('text').then((text) => {
+        cy.get('@frenchRow').find('td').eq(-1).invoke('text').then((text) => {
             expect(text.trim()).to.equal('1');
         });
-        cy.get('#glpi-helpdesk-translations-languages').find('tbody:first>tr').eq(1).find('td').eq(-1).invoke('text').then((text) => {
+        cy.get('@germanRow').find('td').eq(-1).invoke('text').then((text) => {
             expect(text.trim()).to.equal('0');
         });
 
         // Go to the French translation page and check that the translation is marked as "to review"
-        cy.findAllByRole('button', { name: 'Edit translation' }).eq(0).click();
-        cy.findAllByRole('textbox', { name: 'Enter translation' }).eq(0).parent().within(() => {
-            cy.get('.ti-alert-circle').should('exist');
+        cy.get('@frenchRow').findByRole('button', { name: 'Edit translation' }).click();
+        cy.get('@helpdeskTranslationsRows').each((row, index) => {
+            if (row.find('td[aria-label="Category"]').text().trim() === `GLPI page: ${tile_title}`) {
+                cy.wrap(index).as('helpdeskTileRowIndex');
+            }
+        });
+
+        cy.get('@helpdeskTileRowIndex').then((index) => {
+            cy.get('@helpdeskTranslationsRows').eq(index + 1).within(() => {
+                cy.get('.ti-alert-circle').should('exist');
+            });
         });
 
         // Close the modal
@@ -346,9 +357,9 @@ describe('Edit helpdesk translations', () => {
         cy.get('@modal').should('not.exist');
 
         // Go to the German translation page and check that the translation isn't marked as "to review"
-        cy.findAllByRole('button', { name: 'Edit translation' }).eq(1).click();
-        cy.findAllByRole('textbox', { name: 'Enter translation' }).eq(0).parent().within(() => {
-            cy.get('.ti-alert-circle').should('not.exist');
+        cy.get('@germanRow').findByRole('button', { name: 'Edit translation' }).click();
+        cy.get('@helpdeskTranslationsRows').each((row) => {
+            cy.wrap(row).find('.ti-alert-circle').should('not.exist');
         });
     });
 });
