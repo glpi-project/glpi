@@ -63,7 +63,7 @@ class APIRestTest extends APIBaseClass
         $this->assertNotSame(false, $file_updated);
 
         $this->http_client = new GuzzleHttp\Client();
-        $this->base_uri    = 'http://localhost/glpi-10bf/apirest.php/'; //trim($CFG_GLPI['url_base_api'], "/") . "/";
+        $this->base_uri    = trim($CFG_GLPI['url_base_api'], "/") . "/";
 
         parent::setUp();
     }
