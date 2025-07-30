@@ -537,13 +537,6 @@ class Central extends CommonGLPI
                 );
             }
 
-            if (file_exists(GLPI_ROOT . "/install/install.php")) {
-                $messages['warnings'][] = sprintf(
-                    __('For security reasons, please remove file: %s'),
-                    "install/install.php"
-                );
-            }
-
             if (($myisam_count = $DB->getMyIsamTables()->count()) > 0) {
                 $messages['warnings'][] = sprintf(__('%d tables are using the deprecated MyISAM storage engine.'), $myisam_count)
                 . ' '
