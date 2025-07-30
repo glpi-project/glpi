@@ -1070,7 +1070,7 @@ JAVASCRIPT;
 
             if (!$is_old) {
                 [$annee, $mois] = explode("-", $data["start_date"]);
-                $href = htmlescape($CFG_GLPI["root_doc"]) . "/front/reservation.php?reservationitems_id={$data['id']}&mois_courant=$mois&annee_courante=$annee";
+                $href = htmlescape($CFG_GLPI["root_doc"]) . "/front/reservation.php?reservationitems_id={$data['id']}";
                 $entry['planning'] = "<a href='$href' title='" . __s('See planning') . "'>";
                 $entry['planning'] .= "<i class='" . Planning::getIcon() . "'></i>";
                 $entry['planning'] .= "<span class='sr-only'>" . __s('See planning') . "</span>";
