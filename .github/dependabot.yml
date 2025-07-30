@@ -14,7 +14,8 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "monthly"
+      interval: "cron"
+      cronjob: "0 9 1 * *"
     open-pull-requests-limit: 100
     rebase-strategy: "disabled"
     target-branch: "10.0/bugfixes"
@@ -35,7 +36,8 @@ updates:
   - package-ecosystem: "composer"
     directory: "/"
     schedule:
-      interval: "monthly"
+      interval: "cron"
+      cronjob: "0 9 1 * *"
     open-pull-requests-limit: 100
     rebase-strategy: "disabled"
     target-branch: "10.0/bugfixes"
@@ -59,7 +61,8 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "monthly"
+      interval: "cron"
+      cronjob: "0 11 1 * *"
     open-pull-requests-limit: 100
     rebase-strategy: "disabled"
     target-branch: "11.0/bugfixes"
@@ -94,7 +97,8 @@ updates:
   - package-ecosystem: "composer"
     directory: "/"
     schedule:
-      interval: "monthly"
+      interval: "cron"
+      cronjob: "0 11 1 * *"
     open-pull-requests-limit: 100
     rebase-strategy: "disabled"
     target-branch: "11.0/bugfixes"
@@ -133,7 +137,8 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "monthly"
+      interval: "cron"
+      cronjob: "0 13 1 * *"
     open-pull-requests-limit: 100
     rebase-strategy: "disabled"
     target-branch: "main"
@@ -167,7 +172,8 @@ updates:
   - package-ecosystem: "composer"
     directory: "/"
     schedule:
-      interval: "monthly"
+      interval: "cron"
+      cronjob: "0 13 1 * *"
     open-pull-requests-limit: 100
     rebase-strategy: "disabled"
     target-branch: "main"
