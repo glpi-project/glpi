@@ -292,7 +292,7 @@ describe('Edit helpdesk translations', () => {
         });
     });
 
-    it.only('can detect translations to review when default value changes', () => {
+    it('can detect translations to review when default value changes', () => {
         addHelpdeskTranslations(tile_title, tile_description);
 
         // Add a second language translation
