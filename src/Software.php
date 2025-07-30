@@ -39,10 +39,11 @@ use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
 use Glpi\Features\TreeBrowse;
 use Glpi\Features\TreeBrowseInterface;
+use Glpi\Search\DefaultSearchRequestInterface;
 
 /** Software Class
  **/
-class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItemInterface
+class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItemInterface, DefaultSearchRequestInterface
 {
     use Clonable;
     use TreeBrowse;
@@ -1120,7 +1121,8 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         return $i === ($nb + 1);
     }
 
-    public static function getDefaultSearchRequest()
+    #[Override]
+    public static function getDefaultSearchRequest(): array
     {
         return [
             'sort' => 0,

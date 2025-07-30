@@ -318,8 +318,8 @@ class SlaLevel_Ticket extends CommonDBTM
      *
      * Replay level stored in slalevels_tickets | olalevels_tickets
      *
-     * @param integer $tickets_id
-     * @param integer $slaType SLM::TTR|SLM::TTO
+     * @param int $tickets_id
+     * @param SLM::TTR|SLM::TTO $slaType
      *
      * @since 9.1    2 parameters mandatory
      */

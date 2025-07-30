@@ -145,7 +145,7 @@ final class CriteriaFilter extends CommonDBChild
         // Decode filter
         $this->fields['search_criteria'] = json_decode(
             $this->fields['search_criteria'],
-            JSON_OBJECT_AS_ARRAY
+            true
         );
     }
 
@@ -186,8 +186,9 @@ final class CriteriaFilter extends CommonDBChild
     public static function getDefaultSearch(string $itemtype): array
     {
         // Some item may define a getDefaultSearchRequest method
-        if (method_exists($itemtype, 'getDefaultSearchRequest')) {
-            $default_search_request = $itemtype::getDefaultSearchRequest();
+        $item = getItemForItemtype($itemtype);
+        if ($item instanceof DefaultSearchRequestInterface) {
+            $default_search_request = $item::getDefaultSearchRequest();
 
             // Not all search request define search criteria
             if (isset($default_search_request['criteria'])) {

@@ -154,6 +154,9 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!$item instanceof ITILTemplate) {
+            return false;
+        }
 
         self::showForITILTemplate($item, $withtemplate);
         return true;

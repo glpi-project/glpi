@@ -8,17 +8,25 @@ updates:
       interval: "weekly"
 
 
-  # Update development dependencies on current release branch (10.0/bugfixes).
+  # 10.0/bugfixes branch
+  # -> no update for production dependencies (old policy applied until now)
+  # -> patch (bugfixes) updates for development dependencies (plugins may use the GLPI toolchain, we want them to be stable)
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "monthly"
-    allow:
-      - dependency-type: "development"
     open-pull-requests-limit: 100
+    rebase-strategy: "disabled"
     target-branch: "10.0/bugfixes"
     versioning-strategy: "increase"
-    rebase-strategy: "disabled"
+    allow:
+      - dependency-type: "development"
+    ignore:
+      # ignore minor/major versions for all dependencies
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-major"
     groups:
       dev-dependencies:
         patterns:
@@ -28,27 +36,40 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
-    allow:
-      - dependency-type: "development"
     open-pull-requests-limit: 100
+    rebase-strategy: "disabled"
     target-branch: "10.0/bugfixes"
     versioning-strategy: "increase"
-    rebase-strategy: "disabled"
+    allow:
+      - dependency-type: "development"
+    ignore:
+      # ignore minor/major versions for all dependencies
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-major"
     groups:
       dev-dependencies:
         patterns:
           - "*"
 
 
-  # Update production and development dependencies on future release branch (main).
+  # 11.0/bugfixes branch
+  # -> patch (bugfixes) updates for both production and developement dependencies (new policy applied since GLPI 11.0)
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "monthly"
     open-pull-requests-limit: 100
-    target-branch: "main"
-    versioning-strategy: "increase"
     rebase-strategy: "disabled"
+    target-branch: "11.0/bugfixes"
+    versioning-strategy: "increase"
+    ignore:
+      # ignore minor/major versions for all dependencies
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-major"
     groups:
       # dev-dependencies group first, to be sure that they will not be included in the following groups
       dev-dependencies:
@@ -75,9 +96,15 @@ updates:
     schedule:
       interval: "monthly"
     open-pull-requests-limit: 100
-    target-branch: "main"
-    versioning-strategy: "increase"
     rebase-strategy: "disabled"
+    target-branch: "11.0/bugfixes"
+    versioning-strategy: "increase"
+    ignore:
+      # ignore minor/major versions for all dependencies
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-major"
     groups:
       # dev-dependencies group first, to be sure that they will not be included in the following groups
       dev-dependencies:
@@ -99,6 +126,75 @@ updates:
       twig:
         patterns:
           - "twig/*"
+
+
+  # main branch (next version is a minor version, i.e. 11.x)
+  # -> minor updates for both production and developement dependencies (prevent BC breaks)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 100
+    rebase-strategy: "disabled"
+    target-branch: "main"
+    versioning-strategy: "increase"
     ignore:
-      - dependency-name: "symfony/*"
-        versions: [">= 7"]
+      # ignore major versions for all dependencies
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-major"
+    groups:
+      # dev-dependencies group first, to be sure that they will not be included in the following groups
+      dev-dependencies:
+        dependency-type: "development"
+      cytoscape:
+        patterns:
+          - "cytoscape"
+          - "cytoscape-*"
+      leaflet:
+        patterns:
+          - "leaflet"
+          - "leaflet-*"
+          - "leaflet.*"
+      fullcalendar:
+        patterns:
+          - "@fullcalendar/*"
+      tabler:
+        patterns:
+          - "@tabler/*"
+          - "bootstrap"
+
+  - package-ecosystem: "composer"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 100
+    rebase-strategy: "disabled"
+    target-branch: "main"
+    versioning-strategy: "increase"
+    ignore:
+      # ignore major versions for all dependencies
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-major"
+    groups:
+      # dev-dependencies group first, to be sure that they will not be included in the following groups
+      dev-dependencies:
+        dependency-type: "development"
+      guzzlehttp:
+        patterns:
+          - "guzzlehttp/*"
+      sabre:
+        patterns:
+          - "sabre/*"
+      symfony:
+        patterns:
+          - "symfony/*"
+        exclude-patterns:
+          - "symfony/polyfill-*"
+      symfony-polyfills:
+        patterns:
+          - "symfony/polyfill-*"
+      twig:
+        patterns:
+          - "twig/*"

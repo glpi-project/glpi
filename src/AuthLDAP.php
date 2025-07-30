@@ -36,6 +36,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Error\ErrorHandler;
 use Glpi\Toolbox\Filesystem;
 use LDAP\Connection;
+use LDAP\Result;
 use Safe\Exceptions\DatetimeException;
 use Safe\Exceptions\LdapException;
 use Safe\Exceptions\NetworkException;
@@ -3195,7 +3196,7 @@ TWIG, $twig_params);
      * @param string    $login       user login
      * @param string    $password    user password
      * @param array     $ldap_method ldap_method array to use
-     * @param string    $user_dn     user LDAP DN if present
+     * @param bool      $user_dn     user LDAP DN if present (note: value is always ignored, TODO: investigate and cleanup)
      * @param bool      $error       Boolean flag that will be set to `true` if a LDAP error occurs during connection
      *
      * @return object identification object
@@ -4019,7 +4020,7 @@ TWIG, $twig_params);
      * Get ldap query results and clean them at the same time
      *
      * @param Connection $link link to the directory connection
-     * @param array     $result the query results
+     * @param Result     $result the query results
      * @param bool|null $error  Boolean flag that will be set to `true` if a LDAP error occurs during operation
      *
      * @return array which contains ldap query results

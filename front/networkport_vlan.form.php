@@ -47,7 +47,7 @@ if (isset($_POST["add"])) {
         $npv->assignVlan(
             $_POST["networkports_id"],
             $_POST["vlans_id"],
-            (isset($_POST['tagged']) ? '1' : '0')
+            (isset($_POST['tagged']) ? 1 : 0)
         );
         Event::log(
             0,

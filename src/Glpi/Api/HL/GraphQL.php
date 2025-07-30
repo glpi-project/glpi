@@ -83,13 +83,13 @@ final class GraphQL
 
                         if (isset($args['id'])) {
                             $result = ResourceAccessor::getOneBySchema($completed_schema, ['id' => $args['id']], []);
-                            if ($result->getStatusCode() !== 200) {
+                            if ($result->getStatusCode() >= 300) {
                                 throw new Error($result->getBody());
                             }
                             return [json_decode($result->getBody(), true)];
                         }
                         $result = ResourceAccessor::searchBySchema($completed_schema, $args);
-                        if ($result->getStatusCode() !== 200) {
+                        if ($result->getStatusCode() >= 300) {
                             throw new Error($result->getBody());
                         }
                         return json_decode($result->getBody(), true);

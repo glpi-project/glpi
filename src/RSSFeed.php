@@ -834,7 +834,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
 
         if ($nb) {
             /** @var array $items This manual typing is needed because of a 3rd party library that has incorrect phpdoc */
-            usort($items, [SimplePie::class, 'sort_items']);
+            usort($items, fn($a, $b) => (int) SimplePie::sort_items($a, $b)); // Note: cast to int is needed because of incorrect phpdoc return type in SimplePie. The lib already fixed it 2 years ago but it has but not been released.
             foreach ($items as $item) {
                 $output .= "<tr class='tab_bg_1'><td>";
                 $output .= htmlescape(Html::convDateTime($item->get_date('Y-m-d H:i:s')));

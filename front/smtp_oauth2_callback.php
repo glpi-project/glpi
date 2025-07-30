@@ -36,6 +36,7 @@
 require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Mail\SMTP\OauthConfig;
+use League\OAuth2\Client\Token\AccessToken;
 use Psr\Log\LoggerInterface;
 
 /** @var array $CFG_GLPI */
@@ -90,6 +91,10 @@ if (
         try {
             $token         = $provider->getAccessToken('authorization_code', ['code'  => $code]);
             $refresh_token = $token->getRefreshToken();
+
+            if (!$token instanceof AccessToken) {
+                throw new RuntimeException("Unexpected token");
+            }
             $email         = $provider->getResourceOwner($token)->toArray()['email'] ?? null;
 
             $is_email_valid = !empty($email);

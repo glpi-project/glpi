@@ -449,7 +449,7 @@ class CalendarSegment extends CommonDBChild
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item::class === 'Calendar') {
+        if ($item instanceof Calendar) {
             self::showForCalendar($item);
         }
         return true;

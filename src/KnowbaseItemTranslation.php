@@ -375,7 +375,7 @@ TWIG, $twig_params);
                 5,
                 "tools",
                 //TRANS: %1$s is the user login, %2$s the revision number
-                sprintf(__('%1$s reverts item translation to revision %2$s'), $_SESSION["glpiname"], $revision)
+                sprintf(__('%1$s reverts item translation to revision %2$s'), $_SESSION["glpiname"], $revision->fields['revision'])
             );
             return true;
         }

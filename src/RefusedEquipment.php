@@ -35,11 +35,12 @@
 use Glpi\Features\Inventoriable;
 use Glpi\Inventory\Inventory;
 use Glpi\Inventory\Request;
+use Glpi\Search\DefaultSearchRequestInterface;
 
 /**
  * Equipments refused from inventory
  */
-class RefusedEquipment extends CommonDBTM
+class RefusedEquipment extends CommonDBTM implements DefaultSearchRequestInterface
 {
     use Inventoriable;
 
@@ -156,12 +157,8 @@ class RefusedEquipment extends CommonDBTM
         return $tab;
     }
 
-    /**
-     * Get search parameters for default search / display list
-     *
-     * @return array
-     */
-    public static function getDefaultSearchRequest()
+    #[Override]
+    public static function getDefaultSearchRequest(): array
     {
         return [
             'sort'  => 3, //date SO

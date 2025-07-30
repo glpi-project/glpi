@@ -1350,7 +1350,7 @@ class NetworkPort extends CommonDBChild
     }
 
     /**
-     * @param null $itemtype
+     * @param ?string $itemtype
      * @return array
      */
     public static function rawSearchOptionsToAdd($itemtype = null)

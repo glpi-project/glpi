@@ -218,7 +218,7 @@ final class SearchContext
             $this->getFlattenedProperties(),
             static fn($prop_name) =>
                 // Filter matches for the primary key
-                preg_match('/^' . preg_quote($join, '/') . '\.' . preg_quote($primary_key, '/') . '$/', $prop_name),
+                preg_match('/^' . preg_quote($join, '/') . '\.' . preg_quote($primary_key, '/') . '$/', $prop_name) === 1,
             ARRAY_FILTER_USE_KEY
         );
 

@@ -289,7 +289,7 @@ abstract class ExportSearchOutput extends AbstractSearchOutput
             $row_num++;
             // New line
             echo static::showNewLine(
-                ($row_num % 2),
+                $row_num % 2 === 1,
                 $data['search']['is_deleted']
             );
 

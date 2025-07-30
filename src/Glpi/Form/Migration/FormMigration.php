@@ -590,9 +590,18 @@ class FormMigration extends AbstractPluginMigration
             $type_class = $this->getTypesConvertMap()[$fieldtype] ?? null;
 
             if ($type_class === null) {
+                // Retrieve the form to provide context in the error message
+                $section = Section::getById($section_id);
+                $form = $section->getForm();
+
                 $this->result->addMessage(
                     MessageType::Error,
-                    "Unable to import question '{$raw_question['name']}' with unknown type '$fieldtype'"
+                    sprintf(
+                        __("Unable to import question '%s' with unknown type '%s' in form '%s'"),
+                        $raw_question['name'],
+                        $fieldtype,
+                        $form->getName()
+                    )
                 );
                 continue;
             }
@@ -1161,7 +1170,7 @@ class FormMigration extends AbstractPluginMigration
                     /** @var ITILActorField $configurable_field */
                     $fields_config[$configurable_field::getKey()] = $configurable_field->convertFieldConfig(
                         $this,
-                        $destination->getItem(),
+                        $destination->getForm(),
                         $actors
                     )->jsonSerialize();
                 } catch (Throwable $th) {

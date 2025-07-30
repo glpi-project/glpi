@@ -64,7 +64,7 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if (!$item instanceof Item_DeviceCamera) {
+        if (!$item instanceof DeviceCamera) {
             return false;
         }
         return self::showItems($item);

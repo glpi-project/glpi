@@ -517,9 +517,16 @@ abstract class AbstractRequest
     private function addNode(DOMElement $parent, mixed $name, array|string|null $content): void
     {
         if (is_array($content) && !isset($content['content']) && !isset($content['attributes'])) {
-            $node = is_string($name)
-            ? $parent->appendChild($this->response->createElement($name))
-            : $parent;
+            if (is_string($name)) {
+                $node = $parent->appendChild($this->response->createElement($name));
+                if (!$node instanceof DOMElement) {
+                    // Should never actually happen but help with static analysis
+                    throw new RuntimeException("Node is not a DOMElement");
+                }
+            } else {
+                $node = $parent;
+            }
+
             foreach ($content as $sname => $scontent) {
                 $this->addNode($node, $sname, $scontent);
             }

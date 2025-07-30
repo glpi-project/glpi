@@ -42,6 +42,7 @@ use DisplayPreference;
 use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
+use Glpi\Search\DefaultSearchRequestInterface;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\URL;
@@ -714,8 +715,9 @@ final class QueryBuilder implements SearchInputInterface
         if ($itemtype != AllAssets::getType() && class_exists($itemtype)) {
             // retrieve default values for current itemtype
             $itemtype_default_values = [];
-            if (method_exists($itemtype, 'getDefaultSearchRequest')) {
-                $itemtype_default_values = call_user_func([$itemtype, 'getDefaultSearchRequest']);
+            $item = getItemForItemtype($itemtype);
+            if ($item instanceof DefaultSearchRequestInterface) {
+                $itemtype_default_values = $item::getDefaultSearchRequest();
             }
 
             // retrieve default values for the current user
