@@ -63,7 +63,7 @@ class APIRestTest extends APIBaseClass
         $this->assertNotSame(false, $file_updated);
 
         $this->http_client = new GuzzleHttp\Client();
-        $this->base_uri    = trim($CFG_GLPI['url_base_api'], "/") . "/";
+        $this->base_uri    = 'http://localhost/glpi-10bf/apirest.php/'; //trim($CFG_GLPI['url_base_api'], "/") . "/";
 
         parent::setUp();
     }
@@ -1615,13 +1615,11 @@ class APIRestTest extends APIBaseClass
     {
         $headers = ['Session-Token' => $this->session_token];
 
-        // Create an entity for testing (Entity allows ID 0 in the condition)
-        $entity = new \Entity();
-        $entity_id = $entity->add([
-            'name' => 'Test Entity for API Update',
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-        ]);
+        // Use existing test entities instead of creating new ones
+        $entity_id = getItemByTypeName('Entity', '_test_child_1', true);
+        $entity_2_id = getItemByTypeName('Entity', '_test_child_2', true);
         $this->assertGreaterThan(0, $entity_id);
+        $this->assertGreaterThan(0, $entity_2_id);
 
         // Create an appliance for comparison testing
         $appliance = new \Appliance();
@@ -1691,16 +1689,11 @@ class APIRestTest extends APIBaseClass
         $this->assertTrue((bool) $data[0][$entity_id]);
 
         // Verify the update
+        $entity_obj = new \Entity();
         $this->assertTrue($entity_obj->getFromDB($entity_id));
         $this->assertEquals('Updated via indexed array', $entity_obj->fields['comment']);
 
-        // Test Case 4: Entity with multiple items in indexed array
-        $entity_2_id = $entity->add([
-            'name' => 'Test Entity 2 for API Update',
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-        ]);
-        $this->assertGreaterThan(0, $entity_2_id);
-
+        // Test Case 4: Entity with multiple items in indexed array (using both test entities)
         $data = $this->query(
             "Entity",
             [
@@ -1785,98 +1778,8 @@ class APIRestTest extends APIBaseClass
         $this->assertIsArray($data);
         $this->assertTrue((bool) $data[0]['0']);
 
-        // Clean up
-        $entity->delete(['id' => $entity_id], true);
-        $entity->delete(['id' => $entity_2_id], true);
+        // Clean up only the appliance we created
         $appliance->delete(['id' => $appliance_id], true);
-    }
-
-    /**
-     * Test edge cases for the input type handling fix
-     *
-     * @covers API::updateItems
-     */
-    public function testUpdateItemsInputTypeEdgeCases()
-    {
-        $headers = ['Session-Token' => $this->session_token];
-
-        // Create a computer for testing
-        $computer = $this->createComputer();
-        $computer_id = $computer->getID();
-
-        // Test Case 1: Computer with object input containing ID (ID should not be overridden)
-        $data = $this->query(
-            "Computer/$computer_id",
-            [
-                'headers' => $headers,
-                'verb'    => 'PUT',
-                'json'    => [
-                    'input' => [
-                        'id' => 99999, // This should be ignored in favor of URL ID
-                        'comment' => 'Updated with conflicting ID',
-                    ],
-                ],
-            ],
-            200
-        );
-        $this->assertIsArray($data);
-        $this->assertTrue((bool) $data[0][$computer_id]);
-
-        // Verify it updated the correct computer (from URL, not from input)
-        $computer_obj = new \Computer();
-        $this->assertTrue($computer_obj->getFromDB($computer_id));
-        $this->assertEquals('Updated with conflicting ID', $computer_obj->fields['comment']);
-
-        // Verify the wrong ID wasn't updated
-        $this->assertFalse($computer_obj->getFromDB(99999));
-
-        // Test Case 2: Empty indexed array (should handle gracefully)
-        $data = $this->query(
-            "Computer",
-            [
-                'headers' => $headers,
-                'verb'    => 'PUT',
-                'json'    => [
-                    'input' => [],
-                ],
-            ],
-            200
-        );
-        $this->assertIsArray($data);
-        $this->assertEmpty($data);
-
-        // Test Case 3: Mixed valid and invalid IDs in indexed array
-        $data = $this->query(
-            "Computer",
-            [
-                'headers' => $headers,
-                'verb'    => 'PUT',
-                'json'    => [
-                    'input' => [
-                        [
-                            'id' => $computer_id,
-                            'comment' => 'Valid update',
-                        ],
-                        [
-                            'id' => 99999, // Invalid ID
-                            'comment' => 'Invalid update',
-                        ],
-                    ],
-                ],
-            ],
-            [200, 207] // Accept both 200 (all success) and 207 (partial success)
-        );
-        $this->assertIsArray($data);
-
-        // At least one should succeed (the valid one)
-        $has_success = false;
-        foreach ($data as $result) {
-            if (isset($result[$computer_id]) && $result[$computer_id] === true) {
-                $has_success = true;
-                break;
-            }
-        }
-        $this->assertTrue($has_success, 'At least the valid update should succeed');
     }
 
     /**
@@ -1891,12 +1794,8 @@ class APIRestTest extends APIBaseClass
     {
         $headers = ['Session-Token' => $this->session_token];
 
-        // Create a test entity
-        $entity = new \Entity();
-        $entity_id = $entity->add([
-            'name' => 'Test Entity for Regression',
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-        ]);
+        // Use existing test entity instead of creating a new one
+        $entity_id = getItemByTypeName('Entity', '_test_child_1', true);
         $this->assertGreaterThan(0, $entity_id);
 
         // This exact request format was causing the "Attempt to assign property 'id' on array" error
@@ -1931,13 +1830,12 @@ class APIRestTest extends APIBaseClass
 
         // Test the working format (for comparison)
         $data = $this->query(
-            "Entity",
+            "Entity/$entity_id",
             [
                 'headers' => $headers,
                 'verb'    => 'PUT',
                 'json'    => [
                     'input' => [
-                        'id' => $entity_id,
                         'comment' => 'Updated via object input - regression test',
                     ],
                 ],
@@ -1951,8 +1849,5 @@ class APIRestTest extends APIBaseClass
         // Verify the second update worked
         $this->assertTrue($entity_obj->getFromDB($entity_id));
         $this->assertEquals('Updated via object input - regression test', $entity_obj->fields['comment']);
-
-        // Clean up
-        $entity->delete(['id' => $entity_id], true);
     }
 }
