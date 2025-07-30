@@ -194,23 +194,23 @@ class ReservationTest extends DbTestCase
     {
         // Test with UPDATE right
         $_SESSION['glpiactiveprofile']['reservation'] = UPDATE;
-        $this->assertTrue((bool)\Reservation::canUpdate());
+        $this->assertTrue((bool) \Reservation::canUpdate());
 
         // Test with RESERVEANITEM right (simplified interface case)
         $_SESSION['glpiactiveprofile']['reservation'] = \ReservationItem::RESERVEANITEM;
-        $this->assertTrue((bool)\Reservation::canUpdate());
+        $this->assertTrue((bool) \Reservation::canUpdate());
 
         // Test with both rights
         $_SESSION['glpiactiveprofile']['reservation'] = UPDATE | \ReservationItem::RESERVEANITEM;
-        $this->assertTrue((bool)\Reservation::canUpdate());
+        $this->assertTrue((bool) \Reservation::canUpdate());
 
         // Test with unrelated right
         $_SESSION['glpiactiveprofile']['reservation'] = READ;
-        $this->assertFalse((bool)\Reservation::canUpdate());
+        $this->assertFalse((bool) \Reservation::canUpdate());
 
         // Test with no rights
         $_SESSION['glpiactiveprofile']['reservation'] = 0;
-        $this->assertFalse((bool)\Reservation::canUpdate());
+        $this->assertFalse((bool) \Reservation::canUpdate());
     }
 
     /**
@@ -222,23 +222,23 @@ class ReservationTest extends DbTestCase
 
         // Test with PURGE right
         $_SESSION['glpiactiveprofile']['reservation'] = PURGE;
-        $this->assertTrue((bool)\Reservation::canPurge());
+        $this->assertTrue((bool) \Reservation::canPurge());
 
         // Test with RESERVEANITEM right (simplified interface case)
         $_SESSION['glpiactiveprofile']['reservation'] = \ReservationItem::RESERVEANITEM;
-        $this->assertTrue((bool)\Reservation::canPurge());
+        $this->assertTrue((bool) \Reservation::canPurge());
 
         // Test with both rights
         $_SESSION['glpiactiveprofile']['reservation'] = PURGE | \ReservationItem::RESERVEANITEM;
-        $this->assertTrue((bool)\Reservation::canPurge());
+        $this->assertTrue((bool) \Reservation::canPurge());
 
         // Test with unrelated right
         $_SESSION['glpiactiveprofile']['reservation'] = READ;
-        $this->assertFalse((bool)\Reservation::canPurge());
+        $this->assertFalse((bool) \Reservation::canPurge());
 
         // Test with no rights
         $_SESSION['glpiactiveprofile']['reservation'] = 0;
-        $this->assertFalse((bool)\Reservation::canPurge());
+        $this->assertFalse((bool) \Reservation::canPurge());
     }
 
     /**
@@ -250,15 +250,15 @@ class ReservationTest extends DbTestCase
 
         // Test canCreate with RESERVEANITEM right
         $_SESSION['glpiactiveprofile']['reservation'] = \ReservationItem::RESERVEANITEM;
-        $this->assertTrue((bool)\Reservation::canCreate(), "canCreate should return truthy value with RESERVEANITEM right");
+        $this->assertTrue((bool) \Reservation::canCreate(), "canCreate should return truthy value with RESERVEANITEM right");
 
         // Test canDelete with RESERVEANITEM right - canDelete only checks RESERVEANITEM
-        $this->assertTrue((bool)\Reservation::canDelete(), "canDelete should return truthy value with RESERVEANITEM right");
+        $this->assertTrue((bool) \Reservation::canDelete(), "canDelete should return truthy value with RESERVEANITEM right");
 
         // Test with no rights
         $_SESSION['glpiactiveprofile']['reservation'] = 0;
-        $this->assertFalse((bool)\Reservation::canCreate());
-        $this->assertFalse((bool)\Reservation::canDelete());
+        $this->assertFalse((bool) \Reservation::canCreate());
+        $this->assertFalse((bool) \Reservation::canDelete());
     }
 
     /**
@@ -517,9 +517,9 @@ class ReservationTest extends DbTestCase
         $this->login('test_simplified_user', 'test123');
 
         // Test that static permission methods work correctly
-        $this->assertTrue((bool)\Reservation::canCreate(), "User with RESERVEANITEM should be able to create reservations");
-        $this->assertTrue((bool)\Reservation::canUpdate(), "User with RESERVEANITEM should be able to update reservations");
-        $this->assertTrue((bool)\Reservation::canPurge(), "User with RESERVEANITEM should be able to purge reservations");
+        $this->assertTrue((bool) \Reservation::canCreate(), "User with RESERVEANITEM should be able to create reservations");
+        $this->assertTrue((bool) \Reservation::canUpdate(), "User with RESERVEANITEM should be able to update reservations");
+        $this->assertTrue((bool) \Reservation::canPurge(), "User with RESERVEANITEM should be able to purge reservations");
 
         // Test creating a reservation
         $reservation = new \Reservation();
@@ -675,7 +675,7 @@ class ReservationTest extends DbTestCase
         $result = $reservation->showForm(0, [
             'item' => [$res_item->getID() => $res_item->getID()],
             'begin' => '2024-01-02 10:00:00',
-            'end' => '2024-01-02 12:00:00'
+            'end' => '2024-01-02 12:00:00',
         ]);
         ob_end_clean();
 
@@ -799,7 +799,7 @@ class ReservationTest extends DbTestCase
         ob_start();
         $result = $reservation->showForm(0, [
             'item' => [$res_item->getID() => $res_item->getID()],
-            'begin' => '2024-01-01 10:00:00'
+            'begin' => '2024-01-01 10:00:00',
         ]);
         ob_end_clean();
         $this->assertTrue($result, "Should be able to display reservation form with RESERVEANITEM right");
@@ -894,9 +894,9 @@ class ReservationTest extends DbTestCase
         $_SESSION['glpiactiveprofile']['reservation'] = 0;
 
         // Test static methods return false
-        $this->assertFalse((bool)\Reservation::canCreate());
-        $this->assertFalse((bool)\Reservation::canUpdate());
-        $this->assertFalse((bool)\Reservation::canPurge());
+        $this->assertFalse((bool) \Reservation::canCreate());
+        $this->assertFalse((bool) \Reservation::canUpdate());
+        $this->assertFalse((bool) \Reservation::canPurge());
 
         // Test instance methods also return false without global rights (expected behavior)
         $this->assertFalse($reservation->can($reservation_id, UPDATE), "Without global rights, even owner cannot update");
