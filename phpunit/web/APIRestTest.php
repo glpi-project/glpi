@@ -1621,15 +1621,7 @@ class APIRestTest extends APIBaseClass
         $this->assertGreaterThan(0, $entity_id);
         $this->assertGreaterThan(0, $entity_2_id);
 
-        // Create an appliance for comparison testing
-        $appliance = new \Appliance();
-        $appliance_id = $appliance->add([
-            'name' => 'Test Appliance for API Update',
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-        ]);
-        $this->assertGreaterThan(0, $appliance_id);
-
-        // Test Case 1: Entity with object input (should work)
+        // Test Case 1: Entity with object input and ID in URL (should work)
         $data = $this->query(
             "Entity/$entity_id",
             [
@@ -1637,7 +1629,7 @@ class APIRestTest extends APIBaseClass
                 'verb'    => 'PUT',
                 'json'    => [
                     'input' => [
-                        'comment' => 'Updated via object input',
+                        'comment' => 'Updated via object input with ID in URL',
                     ],
                 ],
             ],
@@ -1649,26 +1641,9 @@ class APIRestTest extends APIBaseClass
         // Verify the update
         $entity_obj = new \Entity();
         $this->assertTrue($entity_obj->getFromDB($entity_id));
-        $this->assertEquals('Updated via object input', $entity_obj->fields['comment']);
+        $this->assertEquals('Updated via object input with ID in URL', $entity_obj->fields['comment']);
 
-        // Test Case 2: Entity with associative array input (single item - should work)
-        $data = $this->query(
-            "Entity/$entity_id",
-            [
-                'headers' => $headers,
-                'verb'    => 'PUT',
-                'json'    => [
-                    'input' => [
-                        'comment' => 'Updated via associative array',
-                    ],
-                ],
-            ],
-            200
-        );
-        $this->assertIsArray($data);
-        $this->assertTrue((bool) $data[0][$entity_id]);
-
-        // Test Case 3: Entity with indexed array input (should work without crashing)
+        // Test Case 2: Entity with indexed array input (should work without crashing)
         $data = $this->query(
             "Entity",
             [
@@ -1693,7 +1668,7 @@ class APIRestTest extends APIBaseClass
         $this->assertTrue($entity_obj->getFromDB($entity_id));
         $this->assertEquals('Updated via indexed array', $entity_obj->fields['comment']);
 
-        // Test Case 4: Entity with multiple items in indexed array (using both test entities)
+        // Test Case 3: Entity with multiple items in indexed array (using both test entities)
         $data = $this->query(
             "Entity",
             [
@@ -1723,118 +1698,12 @@ class APIRestTest extends APIBaseClass
         $this->assertTrue((bool) $data[0][$entity_id]);
         $this->assertTrue((bool) $data[1][$entity_2_id]);
 
-        // Test Case 5: Appliance with indexed array (should work - regression test)
-        $data = $this->query(
-            "Appliance",
-            [
-                'headers' => $headers,
-                'verb'    => 'PUT',
-                'json'    => [
-                    'input' => [
-                        [
-                            'id' => $appliance_id,
-                            'comment' => 'Updated appliance via indexed array',
-                        ],
-                    ],
-                ],
-            ],
-            200
-        );
-        $this->assertIsArray($data);
-        $this->assertTrue((bool) $data[0][$appliance_id]);
-
-        // Verify the appliance update
-        $appliance_obj = new \Appliance();
-        $this->assertTrue($appliance_obj->getFromDB($appliance_id));
-        $this->assertEquals('Updated appliance via indexed array', $appliance_obj->fields['comment']);
-
-        // Test Case 6: Entity with object input and ID in query string
-        $data = $this->query(
-            "Entity/$entity_id",
-            [
-                'headers' => $headers,
-                'verb'    => 'PUT',
-                'json'    => [
-                    'input' => [
-                        'comment' => 'Updated with ID in URL',
-                    ],
-                ],
-            ],
-            200
-        );
-        $this->assertIsArray($data);
-        $this->assertTrue((bool) $data[0][$entity_id]);
-
-        // Clean up only the appliance we created
-        $appliance->delete(['id' => $appliance_id], true);
-    }
-
-    /**
-     * Regression test for the specific bug reported in the ticket:
-     * "Attempt to assign property 'id' on array" error when updating entities with array input
-     *
-     * This test reproduces the exact scenario that was failing before the fix.
-     *
-     * @covers API::updateItems
-     */
-    public function testEntityUpdateArrayInputRegression()
-    {
-        $headers = ['Session-Token' => $this->session_token];
-
-        // Use existing test entity instead of creating a new one
-        $entity_id = getItemByTypeName('Entity', '_test_child_1', true);
-        $this->assertGreaterThan(0, $entity_id);
-
-        // This exact request format was causing the "Attempt to assign property 'id' on array" error
-        // before the fix was applied
-        $data = $this->query(
-            "Entity",
-            [
-                'headers' => $headers,
-                'verb'    => 'PUT',
-                'json'    => [
-                    'input' => [
-                        [
-                            'id' => $entity_id,
-                            'comment' => 'Updated via array input - regression test',
-                        ],
-                    ],
-                ],
-            ],
-            200
-        );
-
-        // Verify the request succeeded
-        $this->assertIsArray($data);
-        $this->assertArrayHasKey(0, $data);
-        $this->assertArrayHasKey($entity_id, $data[0]);
-        $this->assertTrue((bool) $data[0][$entity_id]);
-
-        // Verify the entity was actually updated
+        // Verify the updates
         $entity_obj = new \Entity();
         $this->assertTrue($entity_obj->getFromDB($entity_id));
-        $this->assertEquals('Updated via array input - regression test', $entity_obj->fields['comment']);
+        $this->assertEquals('Multi-update entity 1', $entity_obj->fields['comment']);
 
-        // Test the working format (for comparison)
-        $data = $this->query(
-            "Entity/$entity_id",
-            [
-                'headers' => $headers,
-                'verb'    => 'PUT',
-                'json'    => [
-                    'input' => [
-                        'comment' => 'Updated via object input - regression test',
-                    ],
-                ],
-            ],
-            200
-        );
-
-        $this->assertIsArray($data);
-        $this->assertTrue((bool) $data[0][$entity_id]);
-
-        // Verify the second update worked
-        $this->assertTrue($entity_obj->getFromDB($entity_id));
-        $this->assertEquals('Updated via object input - regression test', $entity_obj->fields['comment']);
+        $this->assertTrue($entity_obj->getFromDB($entity_2_id));
+        $this->assertEquals('Multi-update entity 2', $entity_obj->fields['comment']);
     }
 }

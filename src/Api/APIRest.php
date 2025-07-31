@@ -336,17 +336,13 @@ class APIRest extends API
                         $this->messageBadArrayError();
                     }
 
-                    // Add id to input parameter if provided via query string and not already present
-                    if ($id > 0 || ($id == 0 && $itemtype == "Entity")) {
-                        $input = &$this->parameters['input'];
-
-                        if (is_array($input) && !array_is_list($input) && !isset($input['id'])) {
-                            // Associative array (single item) - add id if missing and not an indexed array
-                            $input['id'] = $id;
-                        } elseif (is_object($input) && !isset($input->id)) {
-                            // Single item object - add id if missing
-                            $input->id = $id;
-                        }
+                    // if id is passed by query string, add it into input parameter
+                    if (
+                        is_object($this->parameters['input'])
+                        && ($id > 0 || $id == 0 && $itemtype == "Entity")
+                        && !property_exists($this->parameters['input'], 'id')
+                    ) {
+                        $this->parameters['input']->id = $id;
                     }
                     $response = $this->updateItems($itemtype, $this->parameters);
                     break;
