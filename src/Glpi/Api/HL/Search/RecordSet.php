@@ -50,8 +50,7 @@ final class RecordSet
         private Search $search,
         /** @var array<string, array> */
         private array $records
-    ) {
-    }
+    ) {}
 
     public function getTotalCount(): int
     {
