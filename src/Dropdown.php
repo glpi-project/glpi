@@ -322,7 +322,7 @@ class Dropdown
             && $params['addicon']
         ) {
             $add_item_icon .= '<div class="btn btn-outline-secondary"
-                           title="' . __s('Add') . '" data-bs-toggle="modal" data-bs-target="#add_' . $field_id . '">';
+                           title="' . __s('Add') . '" data-bs-toggle="modal" data-bs-target="#add_' . htmlescape($field_id) . '">';
             $add_item_icon .= Ajax::createIframeModalWindow('add_' . $field_id, $item->getFormURL(), ['display' => false]);
             $add_item_icon .= "<span data-bs-toggle='tooltip'>
               <i class='ti ti-plus'></i>
@@ -358,10 +358,12 @@ class Dropdown
             }
 
             if (empty($comment)) {
-                $comment = Toolbox::ucfirst(
-                    sprintf(
-                        __('Show %1$s'),
-                        $item::getTypeName(Session::getPluralNumber())
+                $comment = htmlescape(
+                    Toolbox::ucfirst(
+                        sprintf(
+                            __('Show %1$s'),
+                            $item::getTypeName(Session::getPluralNumber())
+                        )
                     )
                 );
             }
@@ -407,7 +409,7 @@ class Dropdown
             // Location icon
             if ($itemtype == 'Location') {
                 $location_icon = "<div role='button' class='btn btn-outline-secondary' onclick='showMapForLocation(this)'
-                                       data-fid='$field_id' title='" . __s('Display on map') . "' data-bs-toggle='tooltip'>";
+                                       data-fid='" . htmlescape($field_id) . "' title='" . __s('Display on map') . "' data-bs-toggle='tooltip'>";
                 $location_icon .= "<i class='ti ti-map'></i></div>";
                 $icon_array[] = $location_icon;
             }
@@ -417,8 +419,8 @@ class Dropdown
                     method_exists($item, 'getParentRack')
                     && ($rack = $item->getParentRack())
                 ) {
-                    $dc_icon = "<span id='" . $breadcrumb_id . "' title='" . __s('Display on datacenter') . "'>";
-                    $dc_icon .= "&nbsp;<a class='ti ti-current-location' href='" . $rack->getLinkURL() . "'></a>";
+                    $dc_icon = "<span id='" . htmlescape($breadcrumb_id) . "' title='" . __s('Display on datacenter') . "'>";
+                    $dc_icon .= "&nbsp;<a class='ti ti-current-location' href='" . htmlescape($rack->getLinkURL()) . "'></a>";
                     $dc_icon .= "</span>";
                     $paramscomment['with_dc_position'] = $breadcrumb_id;
                     $icon_array[] = $dc_icon;
@@ -451,7 +453,7 @@ class Dropdown
                         $paramskblinks,
                         false
                     );
-                    $kb_link_icon .= "<span id='$kblink_id'>";
+                    $kb_link_icon .= "<span id='" . htmlescape($kblink_id) . "'>";
                     $kb_link_icon .= $itemlinks;
                     $kb_link_icon .= "</span>";
                     $kb_link_icon .= '</div>';
@@ -480,7 +482,7 @@ class Dropdown
             );
             $icons = implode('', $icon_array);
             $output = "<div class='btn-group btn-group-sm' role='group'
-                style='width: {$original_width}'>{$output} {$icons}</div>";
+                style='width: " . htmlescape($original_width) . "'>{$output} {$icons}</div>";
         } else {
             $output .= Html::jsAjaxDropdown(
                 $params['name'],

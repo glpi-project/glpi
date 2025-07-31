@@ -1499,7 +1499,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             $params,
             false
         );
-        $out .= "<span id='show_" . $p['name'] . "$rand'>";
+        $out .= "<span id='show_" . htmlescape($p['name']) . "$rand'>";
         $out .= "</span>\n";
 
         $params['rubdoc'] = $p['rubdoc'] ?? 0;

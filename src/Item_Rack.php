@@ -277,7 +277,7 @@ class Item_Rack extends CommonDBRelation
 
         if (count($outbound)) {
             echo "<table class='outbound'><thead><th>";
-            echo __('Following elements are out of rack bounds');
+            echo __s('Following elements are out of rack bounds');
             echo "</th></thead><tbody>";
             foreach ($outbound as $out) {
                 echo "<tr><td>" . self::getCell($out, !$canedit) . "</td></tr>";
@@ -831,38 +831,38 @@ JAVASCRIPT;
             $tip .= "<span>
                   <label>" .
                   ($rear
-                     ? __("asset rear side")
-                     : __("asset front side")) . "
+                     ? __s("asset rear side")
+                     : __s("asset front side")) . "
                   </label>
                </span>";
             if (!empty($typename)) {
                 $tip .= "<span>
-                     <label>" . _n('Type', 'Types', 1) . ":</label>
-                     $typename
+                     <label>" . _sn('Type', 'Types', 1) . ":</label>
+                     " . htmlescape($typename) . "
                   </span>";
             }
             if (!empty($name)) {
                 $tip .= "<span>
-                     <label>" . __('name') . ":</label>
-                     $name
+                     <label>" . __s('name') . ":</label>
+                     " . htmlescape($name) . "
                   </span>";
             }
             if (!empty($serial)) {
                 $tip .= "<span>
-                     <label>" . __('serial') . ":</label>
-                     $serial
+                     <label>" . __s('serial') . ":</label>
+                     " . htmlescape($serial) . "
                   </span>";
             }
             if (!empty($otherserial)) {
                 $tip .= "<span>
-                     <label>" . __('Inventory number') . ":</label>
-                     $otherserial
+                     <label>" . __s('Inventory number') . ":</label>
+                     " . htmlescape($otherserial) . "
                   </span>";
             }
             if (!empty($model)) {
                 $tip .= "<span>
-                     <label>" . __('model') . ":</label>
-                     $model
+                     <label>" . __s('model') . ":</label>
+                     " . htmlescape($model) . "
                   </span>";
             }
 
@@ -871,19 +871,19 @@ JAVASCRIPT;
             $readonly_attr = $readonly ? 'gs-no-move="true"' : '';
             return "
          <div class='grid-stack-item {$back_class} {$half_class} {$reserved_cl} {$img_class}'
-               gs-w='{$gs_item['width']}' gs-h='{$gs_item['height']}'
-               gs-x='{$gs_item['x']}'     gs-y='{$gs_item['y']}'
-               gs-id='{$gs_item['id']}'   gs-locked='true' {$readonly_attr}
-               style='background-color: $bg_color; color: $fg_color;'>
-            <div class='grid-stack-item-content' style='$fg_color_s $img_s'>
+               gs-w='" . htmlescape($gs_item['width']) . "' gs-h='" . htmlescape($gs_item['height']) . "'
+               gs-x='" . htmlescape($gs_item['x']) . "'     gs-y='" . htmlescape($gs_item['y']) . "'
+               gs-id='" . htmlescape($gs_item['id']) . "'   gs-locked='true' {$readonly_attr}
+               style='background-color: " . htmlescape($bg_color) . "; color: " . htmlescape($fg_color) . ";'>
+            <div class='grid-stack-item-content' style='" . htmlescape($fg_color_s) . " " . htmlescape($img_s) . "'>
                $icon" .
                (!empty($gs_item['url'])
-                  ? "<a href='{$gs_item['url']}' class='itemrack_name' style='$fg_color_s'>{$gs_item['name']}</a>"
-                  : "<span class='itemrack_name'>" . $gs_item['name'] . "</span>") . "
-               <a href='{$gs_item['rel_url']}' class='edit_rack_item'>
+                  ? "<a href='" . htmlescape($gs_item['url']) . "' class='itemrack_name' style='" . htmlescape($fg_color_s) . "'>" . htmlescape($gs_item['name']) . "</a>"
+                  : "<span class='itemrack_name'>" . htmlescape($gs_item['name']) . "</span>") . "
+               <a href='" . htmlescape($gs_item['rel_url']) . "' class='edit_rack_item'>
                   <i class='fa fa-pencil-alt rel-link'
-                     style='$fg_color_s'
-                     title='" . __("Edit rack relation") . "'></i>
+                     style='" . htmlescape($fg_color_s) . "'
+                     title='" . __s("Edit rack relation") . "'></i>
                </a>
                $tip
             </div>

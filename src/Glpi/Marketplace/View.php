@@ -626,7 +626,7 @@ JS;
             ob_start();
             $do_activate = $plugin_inst->checkVersions($plugin_key);
             if (!$do_activate) {
-                $error .= "<span class='error'>" . ob_get_contents() . "</span>";
+                $error .= "<span class='error'>" . htmlescape(ob_get_contents()) . "</span>";
             }
             ob_end_clean();
 
@@ -634,7 +634,7 @@ JS;
             if ($do_activate && function_exists($function)) {
                 ob_start();
                 if (!$function()) {
-                    $error .= '<span class="error">' . ob_get_contents() . '</span>';
+                    $error .= '<span class="error">' . htmlescape(ob_get_contents()) . '</span>';
                 }
                 ob_end_clean();
             }
@@ -671,7 +671,7 @@ JS;
                 $rand = mt_rand();
                 $buttons .= "<i class='ti ti-alert-triangle plugin-unavailable' id='plugin-tooltip-$rand'></i>";
                 Html::showToolTip(
-                    __('This plugin is not available for your GLPI version.'),
+                    __s('This plugin is not available for your GLPI version.'),
                     [
                         'applyto' => "plugin-tooltip-$rand",
                     ]
@@ -692,7 +692,7 @@ JS;
 
                     $warning .= sprintf(
                         __s("Download archive manually, you must uncompress it in plugins directory (%s)"),
-                        GLPI_ROOT . '/plugins'
+                        \htmlescape(GLPI_ROOT . '/plugins')
                     );
 
                     // Use "marketplace.download.php" proxy if archive is downloadable from GLPI marketplace plugins API
@@ -701,7 +701,7 @@ JS;
                         ? $CFG_GLPI['root_doc'] . '/front/marketplace.download.php?key=' . $plugin_key
                         : $plugin_data['installation_url'];
 
-                    $buttons .= "<a href='{$download_url}' target='_blank'>
+                    $buttons .= "<a href='" . \htmlescape($download_url) . "' target='_blank'>
                             <button title='$warning' class='add_tooltip download_manually'><i class='ti ti-archive'></i></button>
                         </a>";
                 } else {
@@ -731,14 +731,14 @@ JS;
                     'to_version' => $web_update_version,
                     'modal_id' => 'updateModal' . $plugin_inst->getField('directory'),
                     'open_btn' => '<button data-bs-toggle="modal"
-                                           data-bs-target="#updateModal' . $plugin_inst->getField('directory') . '"
+                                           data-bs-target="#updateModal' . htmlescape($plugin_inst->getField('directory')) . '"
                                            title="' . $update_title . '">
                                        <i class="ti ti-cloud-download"></i>
                                    </button>',
                     'update_btn' => '<a href="#" class="btn btn-danger w-100 modify_plugin"
                                            data-action="update_plugin"
                                            data-bs-dismiss="modal">
-                                           ' . _x("button", "Update") . '
+                                           ' . _sx("button", "Update") . '
                                        </a>',
                 ]);
             }
@@ -747,7 +747,7 @@ JS;
         if (!static::$offline_mode && $mk_controller->requiresHigherOffer()) {
             $warning = sprintf(
                 __s("You need a superior GLPI-Network offer to access to this plugin (%s)"),
-                implode(', ', $required_offers)
+                htmlescape(implode(', ', $required_offers))
             );
 
             $buttons .= "<a href='" . GLPI_NETWORK_SERVICES . "' target='_blank'>
@@ -758,19 +758,15 @@ JS;
         }
 
         if ($can_run_local_install) {
-            $title = __s("Install");
-            $icon = "ti ti-folder-plus";
             if ($has_local_update) {
-                $title = __s("Update");
-                $icon = "ti ti-caret-up";
                 $buttons .= TemplateRenderer::getInstance()->render('components/plugin_update_modal.html.twig', [
                     'plugin_name' => $plugin_inst->getField('name'),
                     'to_version' => $plugin_inst->getField('version'),
                     'modal_id' => 'updateModal' . $plugin_inst->getField('directory'),
                     'open_btn' => '<button data-bs-toggle="modal"
-                                           data-bs-target="#updateModal' . $plugin_inst->getField('directory') . '"
-                                           title="' . $title . '">
-                                       <i class="' . $icon . '"></i>
+                                           data-bs-target="#updateModal' . \htmlescape($plugin_inst->getField('directory')) . '"
+                                           title="' . __s("Update") . '">
+                                       <i class="ti ti-caret-up"></i>
                                    </button>',
                     'update_btn' => '<a href="#" class="btn btn-info w-100 modify_plugin"
                                            data-action="install_plugin"
@@ -781,8 +777,8 @@ JS;
             } else {
                 $buttons .= "<button class='modify_plugin'
                                      data-action='install_plugin'
-                                     title='" . $title . "'>
-                        <i class='$icon'></i>
+                                     title='" . __s("Install") . "'>
+                        <i class='ti ti-folder-plus'></i>
                     </button>";
             }
         }
@@ -804,20 +800,20 @@ JS;
                 }
             }
 
-            $uninstall_label = __s("Uninstall");
-            $buttons .= <<<HTML
+            $buttons .= '
                 <button data-bs-toggle="modal"
-                        data-bs-target="#uninstallModal{$plugin_inst->getField('directory')}"
-                        title="{$uninstall_label}">
+                        data-bs-target="#uninstallModal' . htmlescape($plugin_inst->getField('directory')) . '"
+                        title="' . __s("Uninstall") . '">
                     <i class="ti ti-folder-x"></i>
                 </button>
-HTML;
+            ';
+
             $buttons .= TemplateRenderer::getInstance()->render('components/danger_modal.html.twig', [
                 'modal_id' => 'uninstallModal' . $plugin_inst->getField('directory'),
                 'confirm_btn' => '<a href="#" class="btn btn-danger w-100 modify_plugin"
                                        data-action="uninstall_plugin"
                                        data-bs-dismiss="modal">
-                                       ' . _x("button", "Uninstall") . '
+                                       ' . _sx("button", "Uninstall") . '
                                    </a>',
                 'content' => sprintf(
                     __('By uninstalling the "%s" plugin you will lose all the data of the plugin.'),
@@ -827,7 +823,7 @@ HTML;
 
             if (!strlen($error) && $is_actived && $config_page) {
                 $config_url = "{$CFG_GLPI['root_doc']}/plugins/{$plugin_key}/{$config_page}";
-                $buttons .= "<a href='$config_url'>
+                $buttons .= "<a href='" . htmlescape($config_url) . "'>
                         <button class='add_tooltip' title='" . __s("Configure") . "'>
                             <i class='ti ti-tool'></i>
                         </button>

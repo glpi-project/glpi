@@ -289,7 +289,7 @@ class Alert extends CommonDBTM
             ]);
             if ($row = $iter->current()) {
                 //TRANS: %s is the date
-                echo sprintf(__('Alert sent on %s'), Html::convDateTime($row['date']));
+                echo htmlescape(sprintf(__('Alert sent on %s'), Html::convDateTime($row['date'])));
             }
         }
     }

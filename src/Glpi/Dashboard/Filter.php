@@ -170,7 +170,7 @@ class Filter extends CommonDBChild
 
         $settings = $dr_iterator->count() === 1 ? $dr_iterator->current()['filter'] : null;
 
-        return is_string($settings) ? $settings : '{}';
+        return \is_string($settings) && \json_validate($settings) ? $settings : '{}';
     }
 
     /**

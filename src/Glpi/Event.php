@@ -232,13 +232,15 @@ class Event extends CommonDBTM
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
+        $items_id = (int) $items_id;
+
         // If ID less than or equal to 0 (or Entity with ID less than 0 since Root Entity is 0)
         if ($items_id < 0 || ($type !== Entity::class && $items_id == 0)) {
             echo "&nbsp;";//$item;
         } else {
             switch ($type) {
                 case "rules":
-                    echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/rule.generic.form.php?id=" .
+                    echo "<a href=\"" . \htmlescape($CFG_GLPI["root_doc"]) . "/front/rule.generic.form.php?id=" .
                      $items_id . "\">" . $items_id . "</a>";
                     break;
 
@@ -257,7 +259,7 @@ class Event extends CommonDBTM
                     break;
 
                 case "reservationitem":
-                    echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/reservation.php?reservationitems_id=" .
+                    echo "<a href=\"" . \htmlescape($CFG_GLPI["root_doc"]) . "/front/reservation.php?reservationitems_id=" .
                      $items_id . "\">" . $items_id . "</a>";
                     break;
 
@@ -270,7 +272,7 @@ class Event extends CommonDBTM
                         $url  =  $item->getFormURLWithID($items_id);
                     }
                     if (!empty($url)) {
-                        echo "<a href=\"" . $url . "\">" . $items_id . "</a>";
+                        echo "<a href=\"" . \htmlescape($url) . "\">" . $items_id . "</a>";
                     } else {
                         echo $items_id;
                     }

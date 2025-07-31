@@ -149,6 +149,11 @@ phpstan-generate-baseline: c=--generate-baseline=.phpstan-baseline.php analyze  
 phpstan-generate-baseline: phpstan
 .PHONY: phpstan-generate-baseline
 
+psalm: ## Run psalm analysis
+	@$(eval c ?=)
+	@$(PHP) php vendor/bin/psalm $(c)
+.PHONY: psalm
+
 ## —— Coding standards —————————————————————————————————————————————————————————
 phpcsfixer-check: ## Check for php coding standards issues
 	@$(PHP) vendor/bin/php-cs-fixer check --diff -vvv

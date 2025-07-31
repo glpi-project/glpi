@@ -437,7 +437,6 @@ class Reservation extends CommonDBChild
 
         $rand = mt_rand();
 
-        $is_all = $ID === 0 ? "true" : "false";
         if ($ID > 0) {
             $m = new ReservationItem();
             $m->getFromDB($ID);
@@ -466,14 +465,14 @@ class Reservation extends CommonDBChild
             "</a>";
         } else {
             $type = "";
-            $name = __s('All reservable devices');
+            $name = __('All reservable devices');
             $all  = "";
         }
         echo "<div class='card'>";
         echo "<div class='text-center card-header'>";
-        echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/reservation.png' alt='' class='reservation-icon'>";
-        echo "<h2 class='item-name'>" . $name . "</h2>";
-        echo "$all";
+        echo "<img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/reservation.png' alt='' class='reservation-icon'>";
+        echo "<h2 class='item-name'>" . htmlescape($name) . "</h2>";
+        echo $all;
         echo "</div>"; // .center
         echo "<div id='reservations_planning_$rand' class='card-body reservations-planning'></div>";
         echo "</div>"; // .reservation_panel
@@ -481,21 +480,21 @@ class Reservation extends CommonDBChild
         $can_reserve = (
             Session::haveRight("reservation", ReservationItem::RESERVEANITEM)
             && count(self::getReservableItemtypes()) > 0
-        ) ? "true" : "false";
-        $now = date("Y-m-d H:i:s");
-        $js = <<<JAVASCRIPT
-      $(function() {
-         var reservation = new Reservations();
-         reservation.init({
-            id: $ID,
-            is_all: $is_all,
-            rand: $rand,
-            can_reserve: $can_reserve,
-            now: '$now',
-         });
-         reservation.displayPlanning();
-      });
-JAVASCRIPT;
+        );
+
+        $js = "
+            $(function() {
+                var reservation = new Reservations();
+                reservation.init({
+                    id: $ID,
+                    is_all: " . ($ID === 0 ? "true" : "false") . ",
+                    rand: $rand,
+                    can_reserve: " . ($can_reserve ? "true" : "false") . ",
+                    now: '" . jsescape($_SESSION["glpi_currenttime"]) . "',
+                });
+                reservation.displayPlanning();
+          });
+        ";
         echo Html::scriptBlock($js);
     }
 

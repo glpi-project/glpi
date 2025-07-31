@@ -247,9 +247,15 @@ if ($id > 0) {
         }
     }
 
+    $menus = [
+        'central'  => ['helpdesk', 'ticket'],
+        'helpdesk' => ["tickets", "ticket"],
+    ];
+    Ticket::displayFullPageForItem($_GET["id"], $menus, $options);
+
     $url = KnowbaseItem::getFormURLWithParam($_GET) . '&_in_modal=1&item_itemtype=Ticket&item_items_id=' . $id;
     if (str_contains($url, '_to_kb=')) {
-        $options['after_display'] = Ajax::createIframeModalWindow(
+        echo Ajax::createIframeModalWindow(
             'savetokb',
             $url,
             [
@@ -260,12 +266,6 @@ if ($id > 0) {
             ]
         );
     }
-
-    $menus = [
-        'central'  => ['helpdesk', 'ticket'],
-        'helpdesk' => ["tickets", "ticket"],
-    ];
-    Ticket::displayFullPageForItem($_GET["id"], $menus, $options);
 } else {
     if (Session::getCurrentInterface() != 'central') {
         Html::redirect($CFG_GLPI["root_doc"] . "/ServiceCatalog");

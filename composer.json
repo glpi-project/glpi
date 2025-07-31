@@ -124,7 +124,8 @@
         "symfony/twig-bundle": "^6.4",
         "symfony/var-dumper": "^6.4",
         "symfony/web-profiler-bundle": "^6.4",
-        "thecodingmachine/phpstan-safe-rule": "^1.4"
+        "thecodingmachine/phpstan-safe-rule": "^1.4",
+        "vimeo/psalm": "^6.13"
     },
     "provide": {
         "ext-sodium": "*"
