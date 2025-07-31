@@ -340,11 +340,9 @@ class APIRest extends API
                     if ($id > 0 || ($id == 0 && $itemtype == "Entity")) {
                         $input = &$this->parameters['input'];
 
-                        if (is_array($input)) {
+                        if (is_array($input) && !array_is_list($input) && !isset($input['id'])) {
                             // Associative array (single item) - add id if missing and not an indexed array
-                            if (!isset($input[0]) && !isset($input['id'])) {
-                                $input['id'] = $id;
-                            }
+                            $input['id'] = $id;
                         } elseif (is_object($input) && !isset($input->id)) {
                             // Single item object - add id if missing
                             $input->id = $id;
