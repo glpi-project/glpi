@@ -227,6 +227,9 @@
                 data-glpi-form-editor-question-extra-details
                 data-fix-dropdown-flex
             >
+                {# Setup "glpi-loaded" attribute for questions, not for the template #}
+                {% set base_attributes = question is null ? {} : {'glpi-loaded' : "false"} %}
+
                 <div class="question-type-dropdown-group">
                     {{ fields.dropdownArrayField(
                         '_type_category',
@@ -234,7 +237,7 @@
                         question_types_manager.getCategoriesDropdownValues(),
                         '',
                         {
-                            'init'                 : question is not null,
+                            'init'                 : false,
                             'no_label'             : true,
                             'mb'                   : '',
                             'field_class'          : '',
@@ -243,8 +246,8 @@
                             'dropdownCssClass'     : 'question-type-dropdown-group-dropdown-select',
                             'aria_label'           : __('Question type'),
                             'add_data_attributes'  : {
-                                'glpi-form-editor-on-change': 'change-question-type-category'
-                            },
+                                'glpi-form-editor-on-change': 'change-question-type-category',
+                            }|merge(base_attributes),
                             'templateSelection'    : question_types_manager.getTemplateSelectionForCategories(),
                             'templateResult'       : question_types_manager.getTemplateResultForCategories(),
                         }
@@ -258,7 +261,7 @@
                         types,
                         question_type.getName(),
                         {
-                            'init'                 : question is not null,
+                            'init'                 : false,
                             'no_label'             : true,
                             'mb'                   : '',
                             'field_class'          : types|length == 1 ? ' d-none' : '',
@@ -267,8 +270,9 @@
                             'aria_label'           : __('Question sub type'),
                             'add_data_attributes'  : {
                                 'glpi-form-editor-on-change'             : 'change-question-type',
-                                'glpi-form-editor-question-type-selector': ''
-                            },
+                                'glpi-form-editor-question-type-selector': '',
+
+                            }|merge(base_attributes),
                             'templateSelection'    : question_types_manager.getTemplateSelectionForQuestionTypes(),
                             'templateResult'       : question_types_manager.getTemplateResultForQuestionTypes(),
                         }
@@ -281,7 +285,7 @@
                         question_type.getSubTypes(),
                         '',
                         {
-                            'init'                 : question is not null,
+                            'init'                 : false,
                             'no_label'             : true,
                             'mb'                   : '',
                             'field_class'          : sub_types is empty ? ' d-none' : '',
@@ -292,8 +296,8 @@
                             'add_data_attributes'  : {
                                 'glpi-form-editor-on-change'                   : 'change-question-sub-type',
                                 'glpi-form-editor-question-sub-type-selector'  : '',
-                                'glpi-form-editor-specific-question-extra-data': ''
-                            }
+                                'glpi-form-editor-specific-question-extra-data': '',
+                            }|merge(base_attributes),
                         }
                     ) }}
                 </div>
