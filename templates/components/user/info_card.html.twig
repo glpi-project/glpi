@@ -34,7 +34,7 @@
 
 <div class="p-0 user-info-card">
    <div class="row">
-      <div class="col pt-1">
+      <div class="col-auto pt-1">
          {% if user['id'] %}
             {{ include('components/user/picture.html.twig', {
                'users_id': user['id'],
@@ -43,7 +43,7 @@
             }) }}
          {% endif %}
       </div>
-      <div class="col-auto ms-2">
+      <div class="col ms-2">
          <h4 class="card-title mb-1">
             {% if user['id'] %}
                <a href="{{ 'User'|itemtype_form_path(user['id']) }}">{{ user['user_name'] }}</a>
