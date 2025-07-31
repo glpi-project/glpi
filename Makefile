@@ -150,7 +150,8 @@ phpstan-generate-baseline: phpstan
 .PHONY: phpstan-generate-baseline
 
 psalm: ## Run psalm analysis
-	@$(PHP) php vendor/bin/psalm --long-progress --output-format=github
+	@$(eval c ?=)
+	@$(PHP) php vendor/bin/psalm $(c)
 .PHONY: psalm
 
 ## —— Coding standards —————————————————————————————————————————————————————————
