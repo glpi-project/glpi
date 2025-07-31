@@ -938,7 +938,6 @@ export class GlpiFormEditorController
             } else if (config.type === "adapt") {
                 setupAdaptDropdown(config);
             }
-            tinyMCE.init(config);
             $(this).attr('data-glpi-loaded', "true");
         });
 
