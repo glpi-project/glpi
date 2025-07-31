@@ -187,7 +187,24 @@ class Reservation extends CommonDBChild
         if (empty($input['users_id'])) {
             $input['users_id'] = Session::getLoginUserID();
         }
-        if (!Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
+
+        // Check if user has permission to create reservations
+        if (!self::canCreate()) {
+            Session::addMessageAfterRedirect(
+                __('You do not have permission to create reservations'),
+                false,
+                ERROR
+            );
+            return;
+        }
+
+        // Additional check: if creating for another user, ensure user has CREATE right (not just RESERVEANITEM)
+        if ($input['users_id'] != Session::getLoginUserID() && !Session::haveRight(self::$rightname, CREATE)) {
+            Session::addMessageAfterRedirect(
+                __('You do not have permission to create reservations for other users'),
+                false,
+                ERROR
+            );
             return;
         }
 
@@ -419,50 +436,99 @@ class Reservation extends CommonDBChild
         echo "</div>";
     }
 
+    public static function canView()
+    {
+        // Users with READ right can see all reservations
+        if (Session::haveRight(self::$rightname, READ)) {
+            return true;
+        }
 
-    /**
-     * @since 0.84
-     **/
+        // Users with RESERVEANITEM right can see their own reservations (checked in canViewItem)
+        if (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM)) {
+            return true;
+        }
+
+        // Delegate to parent to check parent item permissions
+        return parent::canView();
+    }
+
     public static function canCreate()
     {
-        return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
+        return (Session::haveRightsOr(self::$rightname, [CREATE, ReservationItem::RESERVEANITEM]));
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public static function canUpdate()
     {
-        return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
+        return (Session::haveRightsOr(self::$rightname, [UPDATE, ReservationItem::RESERVEANITEM]));
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public static function canDelete()
     {
         return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
     }
 
+    public static function canPurge()
+    {
+        return (Session::haveRightsOr(self::$rightname, [PURGE, ReservationItem::RESERVEANITEM]));
+    }
 
-    /**
-     * Overload canChildItem to make specific checks
-     * @since 0.84
-     **/
     public function canChildItem($methodItem, $methodNotItem)
     {
-
-        // Original user always have right
+        // All users can manage their own reservations (read, create, update, purge)
         if ($this->fields['users_id'] === Session::getLoginUserID()) {
             return true;
         }
 
+        // If user only has RESERVEANITEM right (no other reservation rights),
+        // they can only manage their own reservations (already handled above)
+        $reservation_rights = $_SESSION['glpiactiveprofile'][self::$rightname] ?? 0;
+        if ($reservation_rights == ReservationItem::RESERVEANITEM) {
+            return false; // Only own reservations allowed with RESERVEANITEM only
+        }
+
+        // Check if user has rights on the parent item (asset)
+        /** @var ReservationItem $ri */
+        $ri = $this->getItem();
+        $item = $ri !== false ? $ri->getItem() : false;
+        if ($item !== false) {
+            // Users with permission to update the specific asset can CRUD all reservations for that asset
+            if ($item->canUpdateItem() && Session::haveRight($item::$rightname, UPDATE)) {
+                return true;
+            }
+        }
+
+        // Check if user has global rights for this operation
         if (!parent::canChildItem($methodItem, $methodNotItem)) {
             return false;
         }
 
+        // At minimum, check entity access for the asset
+        if ($item !== false) {
+            return Session::haveAccessToEntity($item->getEntityID(), $item->isRecursive());
+        }
+
+        return false;
+    }
+
+    public function canViewItem()
+    {
+        // Users with READ right can see all reservations they have entity access to
+        if (Session::haveRight(self::$rightname, READ)) {
+            return $this->canChildItem('canViewItem', 'canView');
+        }
+
+        // All users can see their own reservations
+        if ($this->fields['users_id'] === Session::getLoginUserID()) {
+            return true;
+        }
+
+        // If user only has RESERVEANITEM right, they can only see their own reservations
+        $reservation_rights = $_SESSION['glpiactiveprofile'][self::$rightname] ?? 0;
+        if ($reservation_rights == ReservationItem::RESERVEANITEM) {
+            return false; // Only own reservations allowed with RESERVEANITEM only
+        }
+
+        // Check if user has rights on the parent item (asset)
         /** @var ReservationItem $ri */
         $ri = $this->getItem();
         if ($ri === false) {
@@ -474,9 +540,19 @@ class Reservation extends CommonDBChild
             return false;
         }
 
-        return Session::haveAccessToEntity($item->getEntityID(), $item->isRecursive());
+        // Users with permission to update the specific asset can see all reservations for that asset
+        if ($item->canUpdateItem() && Session::haveRight($item::$rightname, UPDATE)) {
+            return true;
+        }
+
+        return false;
     }
 
+    public function canPurgeItem()
+    {
+        // Follow the same pattern as canUpdateItem and canDeleteItem by delegating to canChildItem
+        return $this->canChildItem('canUpdateItem', 'canUpdate');
+    }
 
     public function post_purgeItem()
     {
@@ -770,10 +846,6 @@ JAVASCRIPT;
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        if (!Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
-            return false;
-        }
-
         $resa = new self();
 
         if (!empty($ID) && $ID > 0) {
@@ -792,6 +864,10 @@ JAVASCRIPT;
                 $options['item'][$itemid] = $itemid;
             }
         } else {
+            if (!self::canCreate()) {
+                return false;
+            }
+
             $resa->getEmpty();
             $options = Planning::cleanDates($options);
             $resa->fields["begin"] = date("Y-m-d H:i:s", strtotime($options['begin']));
@@ -813,7 +889,6 @@ JAVASCRIPT;
 
         // Add Hardware name
         $r = new ReservationItem();
-
         echo "<tr class='tab_bg_1'><td>" . _n('Item', 'Items', 1) . "</td>";
         echo "<td>";
 
