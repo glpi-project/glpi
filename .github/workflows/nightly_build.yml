@@ -44,7 +44,7 @@ jobs:
           fi
           REF_NAME=$(echo ${{ matrix.version-name }})
           SHA=$(git rev-parse --short HEAD)
-          echo "release_name=$REF_NAME-$SHA" >> GITHUB_OUTPUT
+          echo "release_name=$REF_NAME-$SHA" >> $GITHUB_OUTPUT
       - name: "Deploy source into app container"
         if: ${{ steps.vars.outputs.build == 'yes' }}
         run: |
