@@ -94,6 +94,7 @@ dev_nodes=(
     "phpstan.neon.dist"
     "phpunit"
     "phpunit.xml.dist"
+    "psalm.xml"
     "rector.php"
     "stubs"
     "tests"
