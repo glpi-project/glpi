@@ -436,10 +436,6 @@ class Reservation extends CommonDBChild
         echo "</div>";
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public static function canView()
     {
         // Users with READ right can see all reservations
@@ -456,46 +452,26 @@ class Reservation extends CommonDBChild
         return parent::canView();
     }
 
-    /**
-     * @since 0.84
-     **/
     public static function canCreate()
     {
         return (Session::haveRightsOr(self::$rightname, [CREATE, ReservationItem::RESERVEANITEM]));
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public static function canUpdate()
     {
         return (Session::haveRightsOr(self::$rightname, [UPDATE, ReservationItem::RESERVEANITEM]));
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public static function canDelete()
     {
         return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public static function canPurge()
     {
         return (Session::haveRightsOr(self::$rightname, [PURGE, ReservationItem::RESERVEANITEM]));
     }
 
-
-    /**
-     * Overload canChildItem to make specific checks
-     * @since 0.84
-     **/
     public function canChildItem($methodItem, $methodNotItem)
     {
         // All users can manage their own reservations (read, create, update, purge)
@@ -513,13 +489,11 @@ class Reservation extends CommonDBChild
         // Check if user has rights on the parent item (asset)
         /** @var ReservationItem $ri */
         $ri = $this->getItem();
-        if ($ri !== false) {
-            $item = $ri->getItem();
-            if ($item !== false) {
-                // Users with permission to update the specific asset can CRUD all reservations for that asset
-                if ($item->canUpdateItem() && Session::haveRight($item::$rightname, UPDATE)) {
-                    return true;
-                }
+        $item = $ri !== false ? $ri->getItem() : false;
+        if ($item !== false) {
+            // Users with permission to update the specific asset can CRUD all reservations for that asset
+            if ($item->canUpdateItem() && Session::haveRight($item::$rightname, UPDATE)) {
+                return true;
             }
         }
 
@@ -529,20 +503,13 @@ class Reservation extends CommonDBChild
         }
 
         // At minimum, check entity access for the asset
-        if ($ri !== false) {
-            $item = $ri->getItem();
-            if ($item !== false) {
-                return Session::haveAccessToEntity($item->getEntityID(), $item->isRecursive());
-            }
+        if ($item !== false) {
+            return Session::haveAccessToEntity($item->getEntityID(), $item->isRecursive());
         }
 
         return false;
     }
 
-    /**
-     * Check if user can view this specific reservation item
-     * @since 10.0.21
-     **/
     public function canViewItem()
     {
         // Users with READ right can see all reservations they have entity access to
@@ -553,6 +520,12 @@ class Reservation extends CommonDBChild
         // All users can see their own reservations
         if ($this->fields['users_id'] === Session::getLoginUserID()) {
             return true;
+        }
+
+        // If user only has RESERVEANITEM right, they can only see their own reservations
+        $reservation_rights = $_SESSION['glpiactiveprofile'][self::$rightname] ?? 0;
+        if ($reservation_rights == ReservationItem::RESERVEANITEM) {
+            return false; // Only own reservations allowed with RESERVEANITEM only
         }
 
         // Check if user has rights on the parent item (asset)
@@ -567,12 +540,6 @@ class Reservation extends CommonDBChild
             return false;
         }
 
-        // If user only has RESERVEANITEM right, they can only see their own reservations
-        $reservation_rights = $_SESSION['glpiactiveprofile'][self::$rightname] ?? 0;
-        if ($reservation_rights == ReservationItem::RESERVEANITEM) {
-            return false; // Only own reservations allowed with RESERVEANITEM only
-        }
-
         // Users with permission to update the specific asset can see all reservations for that asset
         if ($item->canUpdateItem() && Session::haveRight($item::$rightname, UPDATE)) {
             return true;
@@ -581,16 +548,9 @@ class Reservation extends CommonDBChild
         return false;
     }
 
-    /**
-     * Have I the right to "purge" the Object
-     *
-     * Follow the same pattern as canUpdateItem and canDeleteItem by delegating to canChildItem
-     * @since 10.0.21
-     *
-     * @return boolean
-     **/
     public function canPurgeItem()
     {
+        // Follow the same pattern as canUpdateItem and canDeleteItem by delegating to canChildItem
         return $this->canChildItem('canUpdateItem', 'canUpdate');
     }
 
@@ -904,6 +864,10 @@ JAVASCRIPT;
                 $options['item'][$itemid] = $itemid;
             }
         } else {
+            if (!self::canCreate()) {
+                return false;
+            }
+
             $resa->getEmpty();
             $options = Planning::cleanDates($options);
             $resa->fields["begin"] = date("Y-m-d H:i:s", strtotime($options['begin']));

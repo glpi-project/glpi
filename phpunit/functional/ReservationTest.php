@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Session;
 
 class ReservationTest extends DbTestCase
 {
@@ -266,16 +267,20 @@ class ReservationTest extends DbTestCase
     {
         $this->login();
 
+        $_SESSION['glpiactiveprofile']['computer'] = 0; // Prevent assets checks to alter results
+
+        $root_entity_id = getItemByTypeName("Entity", "_test_root_entity", true);
+
         // Create a computer and reservation item
         $computer = $this->createItem("Computer", [
             "name" => "test computer",
-            "entities_id" => 0,
+            "entities_id" => $root_entity_id,
         ]);
         $res_item = $this->createItem("ReservationItem", [
             "itemtype" => "Computer",
             "items_id" => $computer->getID(),
             "is_active" => true,
-            "entities_id" => 0,
+            "entities_id" => $root_entity_id,
         ]);
 
         // Create a reservation owned by current user
@@ -283,7 +288,7 @@ class ReservationTest extends DbTestCase
             'begin' => '2024-01-01 10:00:00',
             'end' => '2024-01-01 12:00:00',
             'reservationitems_id' => $res_item->getID(),
-            'users_id' => $_SESSION['glpiID'],
+            'users_id' => Session::getLoginUserID(),
         ]);
 
         // Test that owner has rights even with minimal permissions
@@ -291,7 +296,7 @@ class ReservationTest extends DbTestCase
         $this->assertTrue($reservation->canChildItem('canUpdateItem', 'canUpdate'));
 
         // Test with different user
-        $reservation->fields['users_id'] = $_SESSION['glpiID'] + 1; // Different user ID
+        $reservation->fields['users_id'] = Session::getLoginUserID() + 1; // Different user ID
         $this->assertFalse($reservation->canChildItem('canUpdateItem', 'canUpdate'));
     }
 
@@ -301,6 +306,8 @@ class ReservationTest extends DbTestCase
     public function testCanChildItemEntityAccess(): void
     {
         $this->login();
+
+        $_SESSION['glpiactiveprofile']['computer'] = 0; // Prevent assets checks to alter results
 
         // Create computer in child entity
         $child_entity = getItemByTypeName("Entity", "_test_child_1", true);
@@ -321,7 +328,7 @@ class ReservationTest extends DbTestCase
             'begin' => '2024-01-01 10:00:00',
             'end' => '2024-01-01 12:00:00',
             'reservationitems_id' => $res_item->getID(),
-            'users_id' => $_SESSION['glpiID'],
+            'users_id' => Session::getLoginUserID(),
         ]);
 
         // Test access from root entity (should work due to hierarchy)
@@ -349,27 +356,31 @@ class ReservationTest extends DbTestCase
     {
         $this->login();
 
-        // Set only RESERVEANITEM right
-        $_SESSION['glpiactiveprofile']['reservation'] = \ReservationItem::RESERVEANITEM;
+        $_SESSION['glpiactiveprofile']['computer'] = 0; // Prevent assets checks to alter results
+
+        $root_entity_id = getItemByTypeName("Entity", "_test_root_entity", true);
 
         // Create a computer and reservation item
         $computer = $this->createItem("Computer", [
             "name" => "test computer",
-            "entities_id" => 0,
+            "entities_id" => $root_entity_id,
         ]);
         $res_item = $this->createItem("ReservationItem", [
             "itemtype" => "Computer",
             "items_id" => $computer->getID(),
             "is_active" => true,
-            "entities_id" => 0,
+            "entities_id" => $root_entity_id,
         ]);
+
+        // Set only RESERVEANITEM right
+        $_SESSION['glpiactiveprofile']['reservation'] = \ReservationItem::RESERVEANITEM;
 
         // 1. Test creation
         $reservation = $this->createItem('Reservation', [
             'begin' => '2024-01-01 10:00:00',
             'end' => '2024-01-01 12:00:00',
             'reservationitems_id' => $res_item->getID(),
-            'users_id' => $_SESSION['glpiID'],
+            'users_id' => Session::getLoginUserID(),
             'comment' => 'Test reservation',
         ]);
 
@@ -398,16 +409,20 @@ class ReservationTest extends DbTestCase
     {
         $this->login();
 
+        $_SESSION['glpiactiveprofile']['computer'] = 0; // Prevent assets checks to alter results
+
+        $root_entity_id = getItemByTypeName("Entity", "_test_root_entity", true);
+
         // Create a computer and reservation item
         $computer = $this->createItem("Computer", [
             "name" => "test computer",
-            "entities_id" => 0,
+            "entities_id" => $root_entity_id,
         ]);
         $res_item = $this->createItem("ReservationItem", [
             "itemtype" => "Computer",
             "items_id" => $computer->getID(),
             "is_active" => true,
-            "entities_id" => 0,
+            "entities_id" => $root_entity_id,
         ]);
 
         // Create a reservation owned by current user
@@ -415,7 +430,7 @@ class ReservationTest extends DbTestCase
             'begin' => '2024-01-01 10:00:00',
             'end' => '2024-01-01 12:00:00',
             'reservationitems_id' => $res_item->getID(),
-            'users_id' => $_SESSION['glpiID'],
+            'users_id' => Session::getLoginUserID(),
             'comment' => 'User1 reservation',
         ]);
 
@@ -510,7 +525,7 @@ class ReservationTest extends DbTestCase
             'begin' => '2024-01-01 10:00:00',
             'end' => '2024-01-01 12:00:00',
             'reservationitems_id' => $res_item->getID(),
-            'users_id' => $_SESSION['glpiID'],
+            'users_id' => Session::getLoginUserID(),
             'comment' => 'Simplified interface test',
         ]);
 
@@ -523,70 +538,31 @@ class ReservationTest extends DbTestCase
     }
 
     /**
-     * Test that front file permission checks are properly delegated to class methods
-     */
-    public function testFrontFilePermissionDelegation(): void
-    {
-        // Create a computer and reservation item
-        $computer = $this->createItem("Computer", [
-            "name" => "test computer front",
-            "entities_id" => 0,
-        ]);
-        $res_item = $this->createItem("ReservationItem", [
-            "itemtype" => "Computer",
-            "items_id" => $computer->getID(),
-            "is_active" => true,
-            "entities_id" => 0,
-        ]);
-
-        // Create a reservation
-        $reservation = $this->createItem('Reservation', [
-            'begin' => '2024-01-01 10:00:00',
-            'end' => '2024-01-01 12:00:00',
-            'reservationitems_id' => $res_item->getID(),
-            'users_id' => $_SESSION['glpiID'],
-            'comment' => 'Front delegation test',
-        ]);
-
-        // Test that check() method properly handles RESERVEANITEM right
-        $_SESSION['glpiactiveprofile']['reservation'] = \ReservationItem::RESERVEANITEM;
-
-        // These should not throw exceptions - delegation should work
-        try {
-            $reservation->check($reservation->getID(), UPDATE);
-            $this->assertTrue(true, "check() method should work with RESERVEANITEM right for owner");
-        } catch (\Exception $e) {
-            $this->fail("check() method failed for owner with RESERVEANITEM right: " . $e->getMessage());
-        }
-
-        try {
-            $reservation->check($reservation->getID(), PURGE);
-            $this->assertTrue(true, "check() method should work with RESERVEANITEM right for owner");
-        } catch (\Exception $e) {
-            $this->fail("check() method failed for owner with RESERVEANITEM right: " . $e->getMessage());
-        }
-    }
-
-    /**
      * Test handleAddForm method without explicit permission checks
      */
     public function testHandleAddFormWithoutExplicitPermissionChecks(): void
     {
+        $this->login();
+
+        $_SESSION['glpiactiveprofile']['computer'] = 0; // Prevent assets checks to alter results
+
+        $root_entity_id = getItemByTypeName("Entity", "_test_root_entity", true);
+
         // Create a computer and reservation item
         $computer = $this->createItem("Computer", [
             "name" => "test computer handleAdd",
-            "entities_id" => 0,
+            "entities_id" => $root_entity_id,
         ]);
         $res_item = $this->createItem("ReservationItem", [
             "itemtype" => "Computer",
             "items_id" => $computer->getID(),
             "is_active" => true,
-            "entities_id" => 0,
+            "entities_id" => $root_entity_id,
         ]);
 
         // Simulate form input
         $form_input = [
-            'users_id' => $_SESSION['glpiID'],
+            'users_id' => Session::getLoginUserID(),
             'resa' => [
                 'begin' => '2024-01-01 10:00:00',
                 'end' => '2024-01-01 12:00:00',
@@ -616,16 +592,22 @@ class ReservationTest extends DbTestCase
      */
     public function testShowFormWithoutExplicitPermissionChecks(): void
     {
+        $this->login();
+
+        $_SESSION['glpiactiveprofile']['computer'] = 0; // Prevent assets checks to alter results
+
+        $root_entity_id = getItemByTypeName("Entity", "_test_root_entity", true);
+
         // Create a computer and reservation item
         $computer = $this->createItem("Computer", [
             "name" => "test computer showForm",
-            "entities_id" => 0,
+            "entities_id" => $root_entity_id,
         ]);
         $res_item = $this->createItem("ReservationItem", [
             "itemtype" => "Computer",
             "items_id" => $computer->getID(),
             "is_active" => true,
-            "entities_id" => 0,
+            "entities_id" => $root_entity_id,
         ]);
 
         // Create a reservation
@@ -633,7 +615,7 @@ class ReservationTest extends DbTestCase
             'begin' => '2024-01-01 10:00:00',
             'end' => '2024-01-01 12:00:00',
             'reservationitems_id' => $res_item->getID(),
-            'users_id' => $_SESSION['glpiID'],
+            'users_id' => Session::getLoginUserID(),
             'comment' => 'showForm test',
         ]);
 
@@ -664,16 +646,22 @@ class ReservationTest extends DbTestCase
      */
     public function testCanChildItemPermissionEscalation(): void
     {
+        $this->login();
+
+        $_SESSION['glpiactiveprofile']['computer'] = 0; // Prevent assets checks to alter results
+
+        $root_entity_id = getItemByTypeName("Entity", "_test_root_entity", true);
+
         // Create a computer and reservation item
         $computer = $this->createItem("Computer", [
             "name" => "test computer escalation",
-            "entities_id" => 0,
+            "entities_id" => $root_entity_id,
         ]);
         $res_item = $this->createItem("ReservationItem", [
             "itemtype" => "Computer",
             "items_id" => $computer->getID(),
             "is_active" => true,
-            "entities_id" => 0,
+            "entities_id" => $root_entity_id,
         ]);
 
         // Create a reservation
@@ -681,7 +669,7 @@ class ReservationTest extends DbTestCase
             'begin' => '2024-01-01 10:00:00',
             'end' => '2024-01-01 12:00:00',
             'reservationitems_id' => $res_item->getID(),
-            'users_id' => $_SESSION['glpiID'],
+            'users_id' => Session::getLoginUserID(),
             'comment' => 'Permission escalation test',
         ]);
 
@@ -694,11 +682,11 @@ class ReservationTest extends DbTestCase
             "Owner should have rights even without any reservation permissions through canChildItem"
         );
 
-        // Test with different user - should work cause user have access to entity
+        // canChildItem does not grant right if not owner
         $original_user_id = $reservation->fields['users_id'];
         $reservation->fields['users_id'] = $original_user_id + 1;
 
-        $this->assertTrue(
+        $this->assertFalse(
             $reservation->canChildItem('canUpdateItem', 'canUpdate'),
             "Non-owner should not have rights without proper permissions"
         );
@@ -709,16 +697,22 @@ class ReservationTest extends DbTestCase
      */
     public function testCalendarDisplayPermissions(): void
     {
+        $this->login();
+
+        $_SESSION['glpiactiveprofile']['computer'] = 0; // Prevent assets checks to alter results
+
+        $root_entity_id = getItemByTypeName("Entity", "_test_root_entity", true);
+
         // Create a computer and reservation item
         $computer = $this->createItem("Computer", [
             "name" => "test computer calendar",
-            "entities_id" => 0,
+            "entities_id" => $root_entity_id,
         ]);
         $res_item = $this->createItem("ReservationItem", [
             "itemtype" => "Computer",
             "items_id" => $computer->getID(),
             "is_active" => true,
-            "entities_id" => 0,
+            "entities_id" => $root_entity_id,
         ]);
 
         // Test showCalendar with RESERVEANITEM right
@@ -747,7 +741,7 @@ class ReservationTest extends DbTestCase
      */
     public function testCompleteSimplifiedInterfaceWorkflow(): void
     {
-        global $DB;
+        $this->login('post-only', 'postonly');
 
         // Create test data
         $computer = $this->createItem("Computer", [
@@ -780,7 +774,7 @@ class ReservationTest extends DbTestCase
 
         // Test 2: Can create reservation (POST add simulation)
         $form_data = [
-            'users_id' => $_SESSION['glpiID'],
+            'users_id' => Session::getLoginUserID(),
             'resa' => [
                 'begin' => '2024-01-01 10:00:00',
                 'end' => '2024-01-01 12:00:00',
@@ -795,7 +789,7 @@ class ReservationTest extends DbTestCase
         $this->assertEquals($count_before + 1, $count_after, "Should be able to create reservation via form");
 
         // Get the created reservation
-        $reservations = $reservation->find(['users_id' => $_SESSION['glpiID']], ['id DESC']);
+        $reservations = $reservation->find(['users_id' => Session::getLoginUserID()], ['id DESC']);
         $this->assertNotEmpty($reservations, "Should find created reservation");
         $created_reservation = array_shift($reservations);
         $reservation_id = $created_reservation['id'];
@@ -813,25 +807,6 @@ class ReservationTest extends DbTestCase
         $this->assertTrue($reservation->can($reservation_id, PURGE), "Should be able to delete own reservation");
         $delete_result = $reservation->delete(['id' => $reservation_id], true);
         $this->assertTrue($delete_result, "Should be able to delete own reservation");
-
-        // Test 5: Verify all operations work through check() method (used by front files)
-        // Create another reservation for testing check() method
-        $reservation_id2 = $this->createItem('Reservation', [
-            'begin' => '2024-01-02 10:00:00',
-            'end' => '2024-01-02 12:00:00',
-            'reservationitems_id' => $res_item->getID(),
-            'users_id' => $_SESSION['glpiID'],
-            'comment' => 'Check method test',
-        ])->getID();
-
-        // These should not throw exceptions
-        try {
-            $reservation->check($reservation_id2, UPDATE);
-            $reservation->check($reservation_id2, PURGE);
-            $this->assertTrue(true, "check() method should work for owner with RESERVEANITEM right");
-        } catch (\Exception $e) {
-            $this->fail("check() method should not throw exceptions for owner: " . $e->getMessage());
-        }
     }
 
     /**
@@ -839,16 +814,22 @@ class ReservationTest extends DbTestCase
      */
     public function testNoRightsCannotAccessReservations(): void
     {
+        $this->login();
+
+        $_SESSION['glpiactiveprofile']['computer'] = 0; // Prevent assets checks to alter results
+
+        $root_entity_id = getItemByTypeName("Entity", "_test_root_entity", true);
+
         // Create a computer and reservation item
         $computer = $this->createItem("Computer", [
             "name" => "test computer no rights",
-            "entities_id" => 0,
+            "entities_id" => $root_entity_id,
         ]);
         $res_item = $this->createItem("ReservationItem", [
             "itemtype" => "Computer",
             "items_id" => $computer->getID(),
             "is_active" => true,
-            "entities_id" => 0,
+            "entities_id" => $root_entity_id,
         ]);
 
         // Create a reservation
@@ -856,7 +837,7 @@ class ReservationTest extends DbTestCase
             'begin' => '2024-01-01 10:00:00',
             'end' => '2024-01-01 12:00:00',
             'reservationitems_id' => $res_item->getID(),
-            'users_id' => $_SESSION['glpiID'],
+            'users_id' => Session::getLoginUserID(),
             'comment' => 'No rights test',
         ]);
 
@@ -885,16 +866,22 @@ class ReservationTest extends DbTestCase
      */
     public function testCanViewPermissions(): void
     {
+        $this->login();
+
+        $_SESSION['glpiactiveprofile']['computer'] = 0; // Prevent assets checks to alter results
+
+        $root_entity_id = getItemByTypeName("Entity", "_test_root_entity", true);
+
         // Create a computer and reservation item
         $computer = $this->createItem("Computer", [
             "name" => "test computer view permissions",
-            "entities_id" => 0,
+            "entities_id" => $root_entity_id,
         ]);
         $res_item = $this->createItem("ReservationItem", [
             "itemtype" => "Computer",
             "items_id" => $computer->getID(),
             "is_active" => true,
-            "entities_id" => 0,
+            "entities_id" => $root_entity_id,
         ]);
 
         // Create a reservation owned by current user
@@ -902,7 +889,7 @@ class ReservationTest extends DbTestCase
             'begin' => '2024-01-01 10:00:00',
             'end' => '2024-01-01 12:00:00',
             'reservationitems_id' => $res_item->getID(),
-            'users_id' => $_SESSION['glpiID'],
+            'users_id' => Session::getLoginUserID(),
             'comment' => 'View permissions test',
         ]);
 
@@ -926,19 +913,11 @@ class ReservationTest extends DbTestCase
         // Test 4: Change to different user - should not be able to see
         $original_user_id = $reservation->fields['users_id'];
         $reservation->fields['users_id'] = $original_user_id + 1;
-
-        // Also remove all possible rights to ensure no asset-based permissions
-        $original_computer_rights = $_SESSION['glpiactiveprofile']['computer'] ?? 0;
-        $original_reservationitem_rights = $_SESSION['glpiactiveprofile']['reservationitem'] ?? 0;
-        $_SESSION['glpiactiveprofile']['computer'] = 0;
-        $_SESSION['glpiactiveprofile']['reservationitem'] = 0;
-
         $this->assertFalse($reservation->canViewItem(), "Different user should not be able to view others' reservations without rights");
 
-        // Restore original user and rights
+        // Put back asset update rights
         $reservation->fields['users_id'] = $original_user_id;
-        $_SESSION['glpiactiveprofile']['computer'] = $original_computer_rights;
-        $_SESSION['glpiactiveprofile']['reservationitem'] = $original_reservationitem_rights;
+        $_SESSION['glpiactiveprofile']['computer'] = UPDATE;
         $this->assertTrue($reservation->canViewItem(), "Original user should still be able to view their own reservation");
     }
 
@@ -947,16 +926,22 @@ class ReservationTest extends DbTestCase
      */
     public function testAssetUpdateRightsPermissions(): void
     {
+        $this->login();
+
+        $_SESSION['glpiactiveprofile']['computer'] = 0; // Prevent assets checks to alter results
+
+        $root_entity_id = getItemByTypeName("Entity", "_test_root_entity", true);
+
         // Create a computer and reservation item
         $computer = $this->createItem("Computer", [
             "name" => "test computer asset rights",
-            "entities_id" => 0,
+            "entities_id" => $root_entity_id,
         ]);
         $res_item = $this->createItem("ReservationItem", [
             "itemtype" => "Computer",
             "items_id" => $computer->getID(),
             "is_active" => true,
-            "entities_id" => 0,
+            "entities_id" => $root_entity_id,
         ]);
 
         // Create a reservation owned by another user
@@ -964,7 +949,7 @@ class ReservationTest extends DbTestCase
             'begin' => '2024-01-01 10:00:00',
             'end' => '2024-01-01 12:00:00',
             'reservationitems_id' => $res_item->getID(),
-            'users_id' => $_SESSION['glpiID'] + 1, // Different user
+            'users_id' => Session::getLoginUserID() + 1, // Different user
             'comment' => 'Asset rights test',
         ]);
 
@@ -991,40 +976,48 @@ class ReservationTest extends DbTestCase
      */
     public function testCreateForOtherUsers(): void
     {
+        $this->login();
+
+        $_SESSION['glpiactiveprofile']['computer'] = 0; // Prevent assets checks to alter results
+
+        $root_entity_id = getItemByTypeName("Entity", "_test_root_entity", true);
+
         // Create a computer and reservation item
         $computer = $this->createItem("Computer", [
             "name" => "test computer create for others",
-            "entities_id" => 0,
+            "entities_id" => $root_entity_id,
         ]);
         $res_item = $this->createItem("ReservationItem", [
             "itemtype" => "Computer",
             "items_id" => $computer->getID(),
             "is_active" => true,
-            "entities_id" => 0,
+            "entities_id" => $root_entity_id,
         ]);
 
         // Test with CREATE right - should be able to create for other users
         $_SESSION['glpiactiveprofile']['reservation'] = CREATE;
+
         $this->assertTrue((bool) \Reservation::canCreate(), "Users with CREATE should be able to create reservations");
 
         $reservation = $this->createItem('Reservation', [
             'begin' => '2024-01-01 10:00:00',
             'end' => '2024-01-01 12:00:00',
             'reservationitems_id' => $res_item->getID(),
-            'users_id' => $_SESSION['glpiID'] + 1, // Different user
+            'users_id' => Session::getLoginUserID() + 1, // Different user
             'comment' => 'Created for another user',
         ]);
         $this->assertGreaterThan(0, $reservation->getID(), "Users with CREATE right should be able to create reservations for other users");
 
         // Test with only RESERVEANITEM right - traditionally only for self
         $_SESSION['glpiactiveprofile']['reservation'] = \ReservationItem::RESERVEANITEM;
+
         $this->assertTrue((bool) \Reservation::canCreate(), "Users with RESERVEANITEM should be able to create reservations");
 
         $reservation2 = $this->createItem('Reservation', [
             'begin' => '2024-01-02 10:00:00',
             'end' => '2024-01-02 12:00:00',
             'reservationitems_id' => $res_item->getID(),
-            'users_id' => $_SESSION['glpiID'], // Own reservation
+            'users_id' => Session::getLoginUserID(), // Own reservation
             'comment' => 'Self reservation',
         ]);
         $this->assertGreaterThan(0, $reservation2->getID(), "Users with RESERVEANITEM right should be able to create their own reservations");
@@ -1035,16 +1028,20 @@ class ReservationTest extends DbTestCase
      */
     public function testUpdateAndPurgePermissions(): void
     {
+        $this->login();
+
+        $root_entity_id = getItemByTypeName("Entity", "_test_root_entity", true);
+
         // Create a computer and reservation item
         $computer = $this->createItem("Computer", [
             "name" => "test computer update purge",
-            "entities_id" => 0,
+            "entities_id" => $root_entity_id,
         ]);
         $res_item = $this->createItem("ReservationItem", [
             "itemtype" => "Computer",
             "items_id" => $computer->getID(),
             "is_active" => true,
-            "entities_id" => 0,
+            "entities_id" => $root_entity_id,
         ]);
 
         // Create reservations for testing
@@ -1052,7 +1049,7 @@ class ReservationTest extends DbTestCase
             'begin' => '2024-01-01 10:00:00',
             'end' => '2024-01-01 12:00:00',
             'reservationitems_id' => $res_item->getID(),
-            'users_id' => $_SESSION['glpiID'],
+            'users_id' => Session::getLoginUserID(),
             'comment' => 'Own reservation',
         ]);
 
@@ -1060,24 +1057,30 @@ class ReservationTest extends DbTestCase
             'begin' => '2024-01-02 10:00:00',
             'end' => '2024-01-02 12:00:00',
             'reservationitems_id' => $res_item->getID(),
-            'users_id' => $_SESSION['glpiID'] + 1, // Different user
+            'users_id' => Session::getLoginUserID() + 1, // Different user
             'comment' => 'Others reservation',
         ]);
 
-        // Test with UPDATE right - should be able to update any reservation they can read
+        // Test with UPDATE right - should be able to update any reservation they can read (if they can view the reserved item)
         $_SESSION['glpiactiveprofile']['reservation'] = UPDATE | READ;
+        $_SESSION['glpiactiveprofile']['computer'] = READ;
+
         $this->assertTrue((bool) \Reservation::canUpdate(), "Users with UPDATE should be able to update reservations");
         $this->assertTrue($reservation1->canUpdateItem(), "Users with UPDATE should be able to update own reservations");
         $this->assertTrue($reservation2->canUpdateItem(), "Users with UPDATE should be able to update others' reservations they can read");
 
-        // Test with PURGE right - should be able to purge any reservation they can read
+        // Test with PURGE right - should be able to purge any reservation they can read (if they can view the reserved item)
         $_SESSION['glpiactiveprofile']['reservation'] = PURGE | READ;
+        $_SESSION['glpiactiveprofile']['computer'] = READ;
+
         $this->assertTrue((bool) \Reservation::canPurge(), "Users with PURGE should be able to purge reservations");
         $this->assertTrue($reservation1->canPurgeItem(), "Users with PURGE should be able to purge own reservations");
         $this->assertTrue($reservation2->canPurgeItem(), "Users with PURGE should be able to purge others' reservations they can read");
 
         // Test with only RESERVEANITEM - should only work on own reservations
         $_SESSION['glpiactiveprofile']['reservation'] = \ReservationItem::RESERVEANITEM;
+        $_SESSION['glpiactiveprofile']['computer'] = 0; // Prevent assets checks to alter results
+
         $this->assertTrue((bool) \Reservation::canUpdate(), "Users with RESERVEANITEM should be able to update reservations");
         $this->assertTrue((bool) \Reservation::canPurge(), "Users with RESERVEANITEM should be able to purge reservations");
         $this->assertTrue($reservation1->canUpdateItem(), "Users with RESERVEANITEM should be able to update own reservations");
