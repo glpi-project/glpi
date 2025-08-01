@@ -36,6 +36,7 @@
 namespace Glpi\Api\HL;
 
 use CommonDBTM;
+use Glpi\Debug\Profiler;
 use Glpi\Http\Request;
 use GraphQL\Error\Error;
 use GraphQL\Type\Definition\ResolveInfo;
@@ -60,11 +61,14 @@ final class GraphQL
         $api_version = $request->getHeaderLine('GLPI-API-Version') ?: Router::API_VERSION;
         $query = (string) $request->getBody();
         $generator = new GraphQLGenerator($api_version);
+        Profiler::getInstance()->start('GraphQL::processRequest', Profiler::CATEGORY_HLAPI);
+        Profiler::getInstance()->start('Build GraphQLSchema', Profiler::CATEGORY_HLAPI);
         $schema_str = $generator->getSchema();
-
+        $built_schema = BuildSchema::build($schema_str);
+        Profiler::getInstance()->stop('Build GraphQLSchema');
         try {
             $result = \GraphQL\GraphQL::executeQuery(
-                schema: BuildSchema::build($schema_str),
+                schema: $built_schema,
                 source: $query,
                 fieldResolver: static function ($source, $args, $context, ResolveInfo $info) use ($api_version) {
                     $resolve_obj = true;
@@ -107,6 +111,8 @@ final class GraphQL
             );
 
             return [];
+        } finally {
+            Profiler::getInstance()->stop('GraphQL::processRequest');
         }
         return $result->toArray();
     }
