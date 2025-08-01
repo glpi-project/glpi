@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\OAuth\Server;
+use Random\RandomException;
 
 use function Safe\json_decode;
 use function Safe\json_encode;
@@ -108,7 +109,7 @@ final class OAuthClient extends CommonDBTM
     }
 
     /**
-     * @throws Exception
+     * @throws RandomException
      */
     public static function getNewIDOrSecret()
     {

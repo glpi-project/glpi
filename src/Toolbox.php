@@ -35,6 +35,7 @@
 use Glpi\Api\Deprecated\DeprecatedInterface;
 use Glpi\Console\Application;
 use Glpi\DBAL\QueryParam;
+use Glpi\Error\ErrorHandler;
 use Glpi\Error\ErrorUtils;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
@@ -55,6 +56,7 @@ use Laminas\Mail\Storage\AbstractStorage;
 use Mexitek\PHPColors\Color;
 use Monolog\Logger;
 use Psr\Log\LogLevel;
+use Safe\Exceptions\CurlException;
 use Safe\Exceptions\ErrorfuncException;
 use Safe\Exceptions\FilesystemException;
 use Safe\Exceptions\ImageException;
@@ -1317,20 +1319,26 @@ class Toolbox
      * @param string  $msgerr set if problem encountered (default NULL)
      * @param integer $rec    internal use only Must be 0 (default 0)
      *
-     * @return string content of the page (or empty)
+     * @return string content of the page (or empty on failure)
      **/
     public static function getURLContent($url, &$msgerr = null, $rec = 0)
     {
         $curl_error = null;
-        $content = self::callCurl($url, [], $msgerr, $curl_error, true);
-        return $content;
+        try {
+            $content = self::callCurl($url, [], $msgerr, $curl_error, true);
+            return $content;
+        } catch (CurlException $e) {
+            ErrorHandler::logCaughtException($e);
+            // Current code rely on an empty string to detect errors.
+            // Maybe we could rework it with an exception in the future.
+            return "";
+        }
     }
 
     /**
      * Get a new Guzzle client with proxy if configured and the specified other options.
      * @param array $extra_options Extra options to pass to the Guzzle client constructor
      * @return Client Guzzle client
-     * @throws SodiumException
      */
     public static function getGuzzleClient(array $extra_options): Client
     {
@@ -1359,6 +1367,13 @@ class Toolbox
      * @param array  $curl_info   will contains contents provided by `curl_getinfo`
      *
      * @return string
+     *
+     * @throws CurlException
+     *
+     * TODO: rewrite to use proper exceptions instead of relying on $msgerr,
+     * $curl_error and $curl_info parameters.
+     * As this will lead to BC, do not do this change until we reach another major
+     * version.
      */
     public static function callCurl(
         $url,
