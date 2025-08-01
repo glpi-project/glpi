@@ -150,7 +150,7 @@ abstract class AbstractRequest
      *
      * @return void
      *
-     * @throw RuntimeException
+     * @throws RuntimeException
      */
     protected function setMode(int $mode): void
     {
