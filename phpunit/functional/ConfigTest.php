@@ -98,6 +98,7 @@ class ConfigTest extends DbTestCase
             'Config$12'     => "Management",
             'DisplayPreference$1' => "Search result display",
             'GLPINetwork$1' => "GLPI Network",
+            'Glpi\Helpdesk\HelpdeskTranslation$1' => 'Helpdesk translations',
         ];
 
         $instance = new Config();
@@ -128,6 +129,7 @@ class ConfigTest extends DbTestCase
             'Config$11'      => "Impact analysis",
             'DisplayPreference$1' => "Search result display",
             'GLPINetwork$1' => "GLPI Network",
+            'Glpi\Helpdesk\HelpdeskTranslation$1' => 'Helpdesk translations',
             'Log$1'         => "Historical",
         ];
 

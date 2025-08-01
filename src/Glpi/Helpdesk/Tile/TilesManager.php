@@ -136,6 +136,48 @@ final class TilesManager
         return $tiles;
     }
 
+    /**
+     * Get all tiles from the database.
+     *
+     * @return array<TileInterface&CommonDBTM>
+     */
+    public function getAllTiles(): array
+    {
+        // Load all tiles from the database
+        $tiles = [];
+        $item_tile = new Item_Tile();
+        $item_tiles = $item_tile->find([], ['itemtype_item', 'items_id_item', 'rank']);
+
+        foreach ($item_tiles as $row) {
+            // Validate tile itemtype
+            $itemtype = $row['itemtype_tile'];
+            /** @var CommonDBTM $tile */
+            $tile = getItemForItemtype($itemtype);
+            if (!($tile instanceof TileInterface)) {
+                continue;
+            }
+
+            // Try to load tile from database
+            try {
+                if (!$tile->getFromDb($row['items_id_tile'])) {
+                    continue;
+                }
+            } catch (InvalidTileException $e) {
+                // Should not happen unless the database is manually edited
+                // Log the error but do not block the exectuion.
+                /** @var LoggerInterface $PHPLOGGER */
+                global $PHPLOGGER;
+                $PHPLOGGER->error("Unable to load linked tile", ['exception' => $e]);
+                continue;
+            }
+
+            // Add the tile to the list
+            $tiles[] = $tile;
+        }
+
+        return $tiles;
+    }
+
     public function addTile(
         CommonDBTM&LinkableToTilesInterface $item,
         string $tile_class,

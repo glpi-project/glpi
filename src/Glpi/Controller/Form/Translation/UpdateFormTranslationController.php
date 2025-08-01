@@ -34,90 +34,57 @@
 
 namespace Glpi\Controller\Form\Translation;
 
-use Dropdown;
-use Glpi\Controller\AbstractController;
-use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Controller\Translation\AbstractTranslationController;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
 use Glpi\Http\RedirectResponse;
 use Glpi\ItemTranslation\ItemTranslation;
-use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class UpdateFormTranslationController extends AbstractController
+final class UpdateFormTranslationController extends AbstractTranslationController
 {
+    private Form $form;
+
     #[Route("/Form/Translation/{form_id}/{language}", name: "glpi_update_form_translation", methods: "POST")]
     public function __invoke(Request $request, int $form_id, string $language): Response
     {
         // Retrieve the form from the database
-        $form = new Form();
-        if (!$form->getFromDB($form_id)) {
+        $this->form = new Form();
+        if (!$this->form->getFromDB($form_id)) {
             throw new NotFoundHttpException('Form not found');
         }
 
         // Validate the language code
-        if (!\array_key_exists($language, Dropdown::getLanguages())) {
-            throw new BadRequestHttpException('Invalid language code');
-        }
+        $this->validateLanguage($language);
 
         $input = $request->request->all();
         if ($this->processTranslations($input['translations'] ?? [], $language)) {
-            $form_translation = current(array_filter(
-                FormTranslation::getTranslationsForItem($form),
-                fn($translation) => $translation->fields['language'] === $language
-            ));
-            Session::addMessageAfterRedirect(
-                $form_translation->formatSessionMessageAfterAction(__('Item successfully updated'))
-            );
+            $this->addSuccessMessage($language);
         }
 
-        return new RedirectResponse($form->getFormURLWithID($form_id));
+        return new RedirectResponse($this->getRedirectUrl());
     }
 
-    private function processTranslations(array $translations, string $language): bool
+    protected function getTranslationClass(): ItemTranslation
     {
-        $success = false;
-        foreach ($translations as $translation) {
-            $itemtype = $translation['itemtype'];
-            $items_id = $translation['items_id'];
-            $item = $itemtype::getById($items_id);
-
-            $translation_input = ['language' => $language] + $translation;
-
-            $form_translation = FormTranslation::getForItemKeyAndLanguage($item, $translation['key'], $language);
-            if ($form_translation !== null) {
-                $success = $this->updateTranslation($form_translation, $translation_input);
-            } else {
-                $success = $this->createTranslation($translation_input) !== false;
-            }
-        }
-
-        return $success;
+        return new FormTranslation();
     }
 
-    private function updateTranslation(ItemTranslation $form_translation, array $translation_input): bool
+    protected function getRedirectUrl(?string $language = null): string
     {
-        $translation_input['id'] = $form_translation->getID();
-
-        if (!$form_translation->can($form_translation->getID(), UPDATE, $translation_input)) {
-            throw new AccessDeniedHttpException();
-        }
-
-        return $form_translation->update($translation_input);
+        return $this->form->getFormURLWithID($this->form->getID());
     }
 
-    private function createTranslation(array $translation_input): false|int
+    protected function getTranslationHandlers(): array
     {
-        $form_translation = new FormTranslation();
+        return $this->form->listTranslationsHandlers();
+    }
 
-        if (!$form_translation->can(-1, CREATE, $translation_input)) {
-            throw new AccessDeniedHttpException();
-        }
-
-        return $form_translation->add($translation_input);
+    protected function getContextTranslations(?string $language = null): array
+    {
+        return FormTranslation::getTranslationsForItem($this->form);
     }
 }

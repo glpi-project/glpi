@@ -40,6 +40,8 @@ use Glpi\Event;
 use Glpi\Features\Clonable;
 use Glpi\Helpdesk\Tile\LinkableToTilesInterface;
 use Glpi\Helpdesk\Tile\TilesManager;
+use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
+use Glpi\ItemTranslation\Context\TranslationHandler;
 use Glpi\UI\IllustrationManager;
 use Psr\SimpleCache\CacheInterface;
 use Ramsey\Uuid\Uuid;
@@ -50,7 +52,7 @@ use function Safe\realpath;
 /**
  * Entity class
  */
-class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
+class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, ProvideTranslationsInterface
 {
     use Clonable;
     use MapGeolocation;
@@ -100,6 +102,9 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
     // Default scenes
     public const DEFAULT_LEFT_SCENE = "shelves";
     public const DEFAULT_RIGHT_SCENE = "desk";
+
+    // Translation keys
+    public const TRANSLATION_KEY_CUSTOM_HELPDESK_HOME_TITLE = 'custom_helpdesk_home_title';
 
     // Const values used for the titles configuration dropdown
     public const HELPDESK_TITLE_INHERIT = "inherit";
@@ -3372,5 +3377,25 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
     public function getTilesConfigInformationText(): ?string
     {
         return __("Tiles may be overriden by profile.");
+    }
+
+    #[Override]
+    public function listTranslationsHandlers(): array
+    {
+        $handlers = [];
+        $key = sprintf('%s: %s', self::getTypeName(), $this->getName());
+        if (
+            !empty($this->fields['custom_helpdesk_home_title'])
+            && $this->fields['custom_helpdesk_home_title'] != self::CONFIG_PARENT
+        ) {
+            $handlers[$key][] = new TranslationHandler(
+                item: $this,
+                key: self::TRANSLATION_KEY_CUSTOM_HELPDESK_HOME_TITLE,
+                name: __('Custom main title'),
+                value: $this->fields['custom_helpdesk_home_title'],
+            );
+        }
+
+        return $handlers;
     }
 }
