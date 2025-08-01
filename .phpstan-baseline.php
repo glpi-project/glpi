@@ -2444,15 +2444,33 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Agent\\\\Communication\\\\AbstractRequest\\:\\:guessMode\\(\\) throws checked exception RuntimeException but it\'s missing from the PHPDoc @throws tag\\.$#',
+	'identifier' => 'missingType.checkedException',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Agent\\\\Communication\\\\AbstractRequest\\:\\:handleContentType\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\HttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Agent\\\\Communication\\\\AbstractRequest\\:\\:handleContentType\\(\\) throws checked exception RuntimeException but it\'s missing from the PHPDoc @throws tag\\.$#',
+	'identifier' => 'missingType.checkedException',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Agent\\\\Communication\\\\AbstractRequest\\:\\:handleJSONRequest\\(\\) throws checked exception Safe\\\\Exceptions\\\\JsonException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Agent\\\\Communication\\\\AbstractRequest\\:\\:handleRequest\\(\\) throws checked exception RuntimeException but it\'s missing from the PHPDoc @throws tag\\.$#',
+	'identifier' => 'missingType.checkedException',
+	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
 ];
 $ignoreErrors[] = [
@@ -2499,12 +2517,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Agent\\\\Communication\\\\AbstractRequest\\:\\:setMode\\(\\) throws checked exception DOMException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Agent\\\\Communication\\\\AbstractRequest\\:\\:setMode\\(\\) throws checked exception RuntimeException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
@@ -8172,6 +8184,12 @@ $ignoreErrors[] = [
 	'identifier' => 'missingType.checkedException',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/Printer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Inventory\\\\Request\\:\\:prolog\\(\\) throws checked exception RuntimeException but it\'s missing from the PHPDoc @throws tag\\.$#',
+	'identifier' => 'missingType.checkedException',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Request.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\ItemTranslation\\\\ItemTranslation\\:\\:getTranslatedPercentage\\(\\) throws checked exception LogicException but it\'s missing from the PHPDoc @throws tag\\.$#',
