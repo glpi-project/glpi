@@ -1065,7 +1065,7 @@ class CommonGLPI implements CommonGLPIInterface
             echo "<div id='navigationheader' class='navigationheader justify-content-sm-between " . ($is_deleted ? 'asset-deleted' : '') . "'>";
 
             // First set of header pagination actions, displayed on the left side of the page
-            echo "<div class='left-icons'>";
+            echo "<div class='pagination-left'>";
 
             if (!$glpilisttitle) {
                 $glpilisttitle = __('List');
@@ -1118,7 +1118,7 @@ class CommonGLPI implements CommonGLPIInterface
             echo "</div>";
 
             if (static::$showTitleInNavigationHeader && $this instanceof CommonDBTM) {
-                echo "<h3 class='navigationheader-title strong d-flex align-items-center'>";
+                echo "<h3 class='navigationheader-title strong d-flex align-items-center order-2'>";
                 if (method_exists($this, 'getStatusIcon') && $this->isField('status')) {
                     echo "<span class='me-1'>" . $this->getStatusIcon($this->fields['status']) . '</span>';
                 }
@@ -1146,7 +1146,7 @@ class CommonGLPI implements CommonGLPIInterface
             }
 
             // Second set of header pagination actions, displayed on the right side of the page
-            echo "<div class='right-icons>";
+            echo "<div class='pagination-right'>";
 
             echo "<span class='py-1 px-3 " . ($current !== false ? '' : 'bs-invisible') . "'>" . ($current + 1) . "/" . count($glpilistitems ?? []) . "</span>";
 
