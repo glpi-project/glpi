@@ -6584,7 +6584,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/AnswersSet.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Form\\\\Comment\\:\\:getForm\\(\\) throws checked exception RuntimeException but it\'s missing from the PHPDoc @throws tag\\.$#',
+	'message' => '#^Method Glpi\\\\Form\\\\Comment\\:\\:getSection\\(\\) throws checked exception RuntimeException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/Comment.php',
@@ -7334,7 +7334,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Migration/FormMigration.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Form\\\\Question\\:\\:getForm\\(\\) throws checked exception RuntimeException but it\'s missing from the PHPDoc @throws tag\\.$#',
+	'message' => '#^Method Glpi\\\\Form\\\\Question\\:\\:getSection\\(\\) throws checked exception RuntimeException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/Question.php',
