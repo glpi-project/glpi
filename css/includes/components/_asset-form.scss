@@ -33,10 +33,6 @@
 
 .asset,
 .navigationheader {
-    .left-icons {
-        width: 190px;
-    }
-
     .card-header {
         background-color: var(--glpi-form-header-bg);
         color: var(--glpi-form-header-fg);
@@ -107,9 +103,22 @@
         }
     }
 
+    .pagination-left {
+        order: 1;
+        text-align: left;
+        display: flex;
+    }
+
+    .pagination-right {
+        order: 3;
+        text-align: right;
+        display: flex;
+    }
+
     .main-header {
         padding-top: 0;
         padding-bottom: 0;
+        order: 2;
 
         .ribbon {
             position: relative;
@@ -120,5 +129,31 @@
     .card-header {
         background-color: transparent !important;
         border-color: transparent !important;
+    }
+}
+
+@media (max-width: 1200px) {
+    .navigationheader {
+        flex-wrap: wrap;
+
+        .pagination-left {
+            order: 1;
+            width: 50%;
+            place-content: start;
+        }
+
+        .pagination-right {
+            order: 2;
+            width: 50%;
+            place-content: end;
+        }
+
+        .main-header {
+            width: 100%;
+            order: 3;
+            margin-top: 0 !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
     }
 }
