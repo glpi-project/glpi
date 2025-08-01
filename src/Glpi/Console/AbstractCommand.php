@@ -41,7 +41,6 @@ use Glpi\Console\Exception\EarlyExitException;
 use Glpi\System\RequirementsManager;
 use Override;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
@@ -106,7 +105,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
     /**
      * Check database connection.
      *
-     * @throws RuntimeException
+     * @throws EarlyExitException
      *
      * @return void
      */

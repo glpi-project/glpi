@@ -404,7 +404,6 @@ class GLPIKey
      * @param string|null $key Key to use, fallback to default key if null.
      *
      * @return string|null
-     * @throws SodiumException
      */
     public function decrypt(?string $string, $key = null): ?string
     {
