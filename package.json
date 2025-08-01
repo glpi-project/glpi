@@ -105,7 +105,7 @@
         "eslint": "^9.32.0",
         "eslint-plugin-cypress": "^5.1.0",
         "eslint-plugin-mocha": "^11.1.0",
-        "eslint-plugin-vue": "^10.3.0",
+        "eslint-plugin-vue": "^10.4.0",
         "exports-loader": "^5.0.0",
         "glob": "^11.0.3",
         "globals": "^16.3.0",
