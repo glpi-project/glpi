@@ -1355,7 +1355,6 @@ TWIG, ['authldaps_id' => $ID]);
      * @param integer $replicate_id use a replicate if > 0 (default -1)
      *
      * @return boolean connection succeeded?
-     * @throws SodiumException
      */
     public static function testLDAPConnection($auths_id, $replicate_id = -1)
     {
@@ -2619,7 +2618,6 @@ TWIG, $twig_params);
      * @param boolean $display display message information on redirect (false by default)
      *
      * @return array|boolean  with state, else false
-     * @throws SodiumException
      */
     public static function ldapImportUserByServerId(
         array $params,
@@ -2781,7 +2779,6 @@ TWIG, $twig_params);
      *             - is_recursive
      *
      * @return integer|false
-     * @throws SodiumException
      */
     public static function ldapImportGroup($group_dn, $options = [])
     {
@@ -2819,7 +2816,6 @@ TWIG, $twig_params);
      * Open LDAP connection to current server
      *
      * @return boolean|Connection
-     * @throws SodiumException
      */
     public function connect()
     {
@@ -3025,7 +3021,6 @@ TWIG, $twig_params);
      * @param string $password User Password
      *
      * @return Connection|boolean link to the LDAP server : false if connection failed
-     * @throws SodiumException
      */
     public static function tryToConnectToServer($ldap_method, $login, $password)
     {
@@ -3146,7 +3141,6 @@ TWIG, $twig_params);
      *                 array('name'=>'glpi') or array('email' => 'test at test.com')
      *
      * @return array|boolean false if fail
-     * @throws SodiumException
      */
     public static function importUserFromServers($options = [])
     {
@@ -3362,7 +3356,6 @@ TWIG, $twig_params);
      * @param bool|null $error  Boolean flag that will be set to `true` if a LDAP error occurs during operation
      *
      * @return array|boolean dn of the user, else false
-     * @throws RuntimeException
      */
     public static function searchUserDn($ds, $options = [], ?bool &$error = null)
     {
@@ -3809,7 +3802,6 @@ TWIG, $twig_params);
      * @param AuthLDAP $authldap AuthLDAP object
      *
      * @return void
-     * @throws SodiumException
      */
     public static function searchUser(AuthLDAP $authldap)
     {

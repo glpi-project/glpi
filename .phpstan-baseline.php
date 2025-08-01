@@ -326,12 +326,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Agent.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Agent\\:\\:requestAgent\\(\\) throws checked exception SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Agent.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Ajax\\:\\:createModalWindow\\(\\) throws checked exception InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
@@ -387,12 +381,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Auth\\:\\:checkAlternateAuthSystems\\(\\) throws checked exception Safe\\\\Exceptions\\\\SessionException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Auth.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Auth\\:\\:connection_ldap\\(\\) throws checked exception SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Auth.php',
@@ -470,22 +458,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Auth.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Auth\\:\\:validateLogin\\(\\) throws checked exception Safe\\\\Exceptions\\\\SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Auth.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Auth\\:\\:validateLogin\\(\\) throws checked exception TypeError but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Auth.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method AuthLDAP\\:\\:connect\\(\\) throws checked exception Safe\\\\Exceptions\\\\SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/AuthLDAP.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method AuthLDAP\\:\\:connectToServer\\(\\) throws checked exception Safe\\\\Exceptions\\\\PcreException but it\'s missing from the PHPDoc @throws tag\\.$#',
@@ -500,25 +476,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/AuthLDAP.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method AuthLDAP\\:\\:forceOneUserSynchronization\\(\\) throws checked exception SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/AuthLDAP.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method AuthLDAP\\:\\:getAllGroups\\(\\) throws checked exception SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/AuthLDAP.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method AuthLDAP\\:\\:getAllUsers\\(\\) throws checked exception Safe\\\\Exceptions\\\\DatetimeException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/AuthLDAP.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method AuthLDAP\\:\\:getAllUsers\\(\\) throws checked exception SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/AuthLDAP.php',
@@ -542,12 +500,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/AuthLDAP.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method AuthLDAP\\:\\:ldapAuth\\(\\) throws checked exception SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/AuthLDAP.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method AuthLDAP\\:\\:ldapStamp2UnixStamp\\(\\) throws checked exception Safe\\\\Exceptions\\\\DatetimeException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
@@ -560,37 +512,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/AuthLDAP.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method AuthLDAP\\:\\:processMassiveActionsForOneItemtype\\(\\) throws checked exception SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 2,
-	'path' => __DIR__ . '/src/AuthLDAP.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method AuthLDAP\\:\\:searchUser\\(\\) throws checked exception Safe\\\\Exceptions\\\\SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/AuthLDAP.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method AuthLDAP\\:\\:testLDAPBind\\(\\) throws checked exception Safe\\\\Exceptions\\\\SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/AuthLDAP.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method AuthLDAP\\:\\:testLDAPConnection\\(\\) throws checked exception Safe\\\\Exceptions\\\\SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/AuthLDAP.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method AuthLDAP\\:\\:testLDAPSearch\\(\\) throws checked exception Safe\\\\Exceptions\\\\LdapException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/AuthLDAP.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method AuthLDAP\\:\\:testLDAPSearch\\(\\) throws checked exception Safe\\\\Exceptions\\\\SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/AuthLDAP.php',
@@ -599,12 +521,6 @@ $ignoreErrors[] = [
 	'message' => '#^Method AuthLDAP\\:\\:testLDAPSockopen\\(\\) throws checked exception Safe\\\\Exceptions\\\\PcreException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
-	'path' => __DIR__ . '/src/AuthLDAP.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method AuthLDAP\\:\\:tryToConnectToServer\\(\\) throws checked exception Safe\\\\Exceptions\\\\SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 2,
 	'path' => __DIR__ . '/src/AuthLDAP.php',
 ];
 $ignoreErrors[] = [
@@ -2270,18 +2186,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/GLPIKey.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method GLPIKey\\:\\:migrateConfigsInDb\\(\\) throws checked exception Safe\\\\Exceptions\\\\SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/GLPIKey.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method GLPIKey\\:\\:migrateFieldsInDb\\(\\) throws checked exception Safe\\\\Exceptions\\\\SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/GLPIKey.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method GLPIMailer\\:\\:__call\\(\\) throws checked exception RuntimeException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
@@ -2315,12 +2219,6 @@ $ignoreErrors[] = [
 	'message' => '#^Method GLPIMailer\\:\\:buildDsn\\(\\) throws checked exception League\\\\OAuth2\\\\Client\\\\Provider\\\\Exception\\\\IdentityProviderException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
-	'path' => __DIR__ . '/src/GLPIMailer.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method GLPIMailer\\:\\:buildDsn\\(\\) throws checked exception Safe\\\\Exceptions\\\\SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 2,
 	'path' => __DIR__ . '/src/GLPIMailer.php',
 ];
 $ignoreErrors[] = [
@@ -2373,12 +2271,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method GLPINetwork\\:\\:getRegistrationInformations\\(\\) throws checked exception Safe\\\\Exceptions\\\\PcreException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/GLPINetwork.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method GLPINetwork\\:\\:getRegistrationKey\\(\\) throws checked exception Safe\\\\Exceptions\\\\SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/GLPINetwork.php',
@@ -2481,12 +2373,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Agent\\\\Communication\\\\AbstractRequest\\:\\:handleRequest\\(\\) throws checked exception Safe\\\\Exceptions\\\\PcreException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Agent\\\\Communication\\\\AbstractRequest\\:\\:handleRequest\\(\\) throws checked exception Safe\\\\Exceptions\\\\SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
@@ -3866,13 +3752,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/AbstractCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Console\\\\AbstractCommand\\:\\:initDbConnection\\(\\) throws checked exception Glpi\\\\Console\\\\Exception\\\\EarlyExitException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/AbstractCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Console\\\\AbstractCommand\\:\\:initialize\\(\\) throws checked exception Symfony\\\\Component\\\\Console\\\\Exception\\\\RuntimeException but it\'s missing from the PHPDoc @throws tag\\.$#',
+	'message' => '#^Method Glpi\\\\Console\\\\AbstractCommand\\:\\:initialize\\(\\) throws checked exception Glpi\\\\Console\\\\Exception\\\\EarlyExitException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/AbstractCommand.php',
@@ -4529,12 +4409,6 @@ $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Console\\\\Ldap\\\\SynchronizeUsersCommand\\:\\:configure\\(\\) throws checked exception Symfony\\\\Component\\\\Console\\\\Exception\\\\InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 10,
-	'path' => __DIR__ . '/src/Glpi/Console/Ldap/SynchronizeUsersCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Console\\\\Ldap\\\\SynchronizeUsersCommand\\:\\:execute\\(\\) throws checked exception SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Ldap/SynchronizeUsersCommand.php',
 ];
 $ignoreErrors[] = [
@@ -8060,12 +7934,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Conf.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Inventory\\\\Conf\\:\\:showConfigForm\\(\\) throws checked exception Safe\\\\Exceptions\\\\SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Conf.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Inventory\\\\Inventory\\:\\:cronCleanorphans\\(\\) throws checked exception Safe\\\\Exceptions\\\\FilesystemException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
@@ -8466,18 +8334,6 @@ $ignoreErrors[] = [
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/SessionVariables.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Mail\\\\SMTP\\\\OauthConfig\\:\\:getSmtpOauthProvider\\(\\) throws checked exception Safe\\\\Exceptions\\\\SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Mail/SMTP/OauthConfig.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Marketplace\\\\Api\\\\Plugins\\:\\:__construct\\(\\) throws checked exception SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Marketplace/Api/Plugins.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Marketplace\\\\Api\\\\Plugins\\:\\:downloadArchive\\(\\) throws checked exception Safe\\\\Exceptions\\\\SessionException but it\'s missing from the PHPDoc @throws tag\\.$#',
@@ -9080,12 +8936,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Security/PermissionManager.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Security\\\\TOTPManager\\:\\:get2FAConfigForUser\\(\\) throws checked exception Safe\\\\Exceptions\\\\SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Security/TOTPManager.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Security\\\\TOTPManager\\:\\:getTwoFactorAuth\\(\\) throws checked exception TypeError but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
@@ -9254,12 +9104,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/SourceCodeIntegrityChecker.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\System\\\\Diagnostic\\\\SourceCodeIntegrityChecker\\:\\:getGLPIRelease\\(\\) throws checked exception SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/SourceCodeIntegrityChecker.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\System\\\\Diagnostic\\\\SourceCodeIntegrityChecker\\:\\:getSummary\\(\\) throws checked exception JsonException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
@@ -9381,18 +9225,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\System\\\\Status\\\\StatusChecker\\:\\:getIMAPStatus\\(\\) throws checked exception Safe\\\\Exceptions\\\\FilesystemException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/System/Status/StatusChecker.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\System\\\\Status\\\\StatusChecker\\:\\:getLDAPStatus\\(\\) throws checked exception Safe\\\\Exceptions\\\\SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/System/Status/StatusChecker.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\System\\\\Status\\\\StatusChecker\\:\\:getLDAPStatus\\(\\) throws checked exception SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/System/Status/StatusChecker.php',
@@ -10382,12 +10214,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/MailCollector.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method MailCollector\\:\\:connect\\(\\) throws checked exception Safe\\\\Exceptions\\\\SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/MailCollector.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method MailCollector\\:\\:deleteMails\\(\\) throws checked exception Laminas\\\\Mail\\\\Storage\\\\Exception\\\\ExceptionInterface but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
@@ -10814,13 +10640,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/OAuthClient.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method OAuthClient\\:\\:post_getFromDB\\(\\) throws checked exception Safe\\\\Exceptions\\\\SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/OAuthClient.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method OAuthClient\\:\\:prepareInputForAdd\\(\\) throws checked exception Exception but it\'s missing from the PHPDoc @throws tag\\.$#',
+	'message' => '#^Method OAuthClient\\:\\:prepareInputForAdd\\(\\) throws checked exception Random\\\\RandomException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 2,
 	'path' => __DIR__ . '/src/OAuthClient.php',
@@ -11570,12 +11390,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/QueuedWebhook.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method QueuedWebhook\\:\\:sendById\\(\\) throws checked exception SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 2,
-	'path' => __DIR__ . '/src/QueuedWebhook.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method QueuedWebhook\\:\\:showForm\\(\\) throws checked exception Safe\\\\Exceptions\\\\JsonException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
@@ -12230,12 +12044,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Toolbox\\:\\:callCurl\\(\\) throws checked exception Safe\\\\Exceptions\\\\SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Toolbox\\:\\:callCurl\\(\\) throws checked exception Safe\\\\Exceptions\\\\UrlException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
@@ -12447,12 +12255,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Toolbox\\:\\:getFileAsResponse\\(\\) throws checked exception Safe\\\\Exceptions\\\\StringsException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Toolbox\\:\\:getGuzzleClient\\(\\) throws checked exception Safe\\\\Exceptions\\\\SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Toolbox.php',
@@ -12902,12 +12704,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/User.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method User\\:\\:getOrImportByEmail\\(\\) throws checked exception SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/User.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method User\\:\\:getPasswordExpirationTime\\(\\) throws checked exception Safe\\\\Exceptions\\\\DatetimeException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 4,
@@ -12962,12 +12758,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/User.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method User\\:\\:showLdapInformation\\(\\) throws checked exception SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/User.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method User\\:\\:syncLdapPhoto\\(\\) throws checked exception Safe\\\\Exceptions\\\\FilesystemException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 4,
@@ -12975,12 +12765,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method User\\:\\:syncLdapPhoto\\(\\) throws checked exception Safe\\\\Exceptions\\\\StringsException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/User.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method User\\:\\:syncLdapPhoto\\(\\) throws checked exception SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/User.php',
@@ -13022,12 +12806,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Webhook.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Webhook\\:\\:post_getFromDB\\(\\) throws checked exception Safe\\\\Exceptions\\\\SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Webhook.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Webhook\\:\\:raise\\(\\) throws checked exception Safe\\\\Exceptions\\\\JsonException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
@@ -13041,12 +12819,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Webhook\\:\\:validateCRAChallenge\\(\\) throws checked exception RuntimeException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Webhook.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Webhook\\:\\:validateCRAChallenge\\(\\) throws checked exception SodiumException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Webhook.php',
