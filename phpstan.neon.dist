@@ -13,6 +13,10 @@ parameters:
         - install
         - src
     treatPhpDocTypesAsCertain: false
+    exceptions:
+        check:
+            missingCheckedExceptionInThrows: true
+            tooWideThrowType: true
     universalObjectCratesClasses:
         - Sabre\VObject\Node
     dynamicConstantNames:

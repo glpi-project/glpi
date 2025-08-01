@@ -1330,7 +1330,6 @@ class Toolbox
      * Get a new Guzzle client with proxy if configured and the specified other options.
      * @param array $extra_options Extra options to pass to the Guzzle client constructor
      * @return Client Guzzle client
-     * @throws SodiumException
      */
     public static function getGuzzleClient(array $extra_options): Client
     {
