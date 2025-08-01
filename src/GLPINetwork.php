@@ -33,8 +33,11 @@
  * ---------------------------------------------------------------------
  */
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Error\ErrorHandler;
 use Glpi\Toolbox\VersionParser;
 use Psr\SimpleCache\CacheInterface;
+use Safe\Exceptions\CurlException;
+use Safe\Exceptions\JsonException;
 
 use function Safe\json_decode;
 use function Safe\preg_replace;
@@ -163,43 +166,35 @@ class GLPINetwork extends CommonGLPI
 
         // Verify registration from registration API
         $error_message = null;
-        $registration_response = Toolbox::callCurl(
-            rtrim(GLPI_NETWORK_REGISTRATION_API_URL, '/') . '/info',
-            [
-                CURLOPT_HTTPHEADER => [
-                    'Accept:application/json',
-                    'Accept-Language: ' . $lang,
-                    'Content-Type:application/json',
-                    'User-Agent:' . self::getGlpiUserAgent(),
-                    'X-Registration-Key:' . $registration_key,
-                    'X-Glpi-Network-Uid:' . self::getGlpiNetworkUid(),
+        try {
+            $registration_response = Toolbox::callCurl(
+                rtrim(GLPI_NETWORK_REGISTRATION_API_URL, '/') . '/info',
+                [
+                    CURLOPT_HTTPHEADER => [
+                        'Accept:application/json',
+                        'Accept-Language: ' . $lang,
+                        'Content-Type:application/json',
+                        'User-Agent:' . self::getGlpiUserAgent(),
+                        'X-Registration-Key:' . $registration_key,
+                        'X-Glpi-Network-Uid:' . self::getGlpiNetworkUid(),
+                    ],
                 ],
-            ],
-            $error_message
-        );
-
-        $valid_json = false;
-        $registration_data = null;
-        if ($error_message === null) {
-            if (Toolbox::isJSON($registration_response)) {
-                $valid_json = true;
-                $registration_data = json_decode($registration_response, true);
-            }
-        }
-
-        if (
-            $error_message !== null || !$valid_json
-            || !is_array($registration_data) || !array_key_exists('is_valid', $registration_data)
-        ) {
-            $informations['validation_message'] = __('Unable to fetch registration information.');
-            trigger_error(
-                sprintf(
-                    "Unable to fetch registration information.\nError message:%s\nResponse:\n%s",
-                    $error_message,
-                    $registration_response
-                ),
-                E_USER_WARNING
+                $error_message
             );
+            if ($error_message !== null) {
+                throw new RunTimeException("Error: $error_message");
+            }
+
+            $registration_data = json_decode($registration_response, true);
+            if (
+                !is_array($registration_data)
+                || !array_key_exists('is_valid', $registration_data)
+            ) {
+                throw new RuntimeException("Response: $registration_response");
+            }
+        } catch (CurlException|RuntimeException|JsonException $e) {
+            ErrorHandler::logCaughtException($e);
+            $informations['validation_message'] = __('Unable to fetch registration information.');
             return $informations;
         }
 
@@ -270,7 +265,17 @@ class GLPINetwork extends CommonGLPI
     public static function isServicesAvailable(&$curl_error = null): bool
     {
         $error_msg = null;
-        $content = Toolbox::callCurl(GLPI_NETWORK_REGISTRATION_API_URL, [], $error_msg, $curl_error);
+        try {
+            $content = Toolbox::callCurl(
+                GLPI_NETWORK_REGISTRATION_API_URL,
+                [],
+                $error_msg,
+                $curl_error
+            );
+        } catch (CurlException $e) {
+            return false;
+        }
+
         return $content !== '';
     }
 
@@ -286,36 +291,29 @@ class GLPINetwork extends CommonGLPI
             return $offers;
         }
 
+        // Verify registration from registration API
         $error_message = null;
-        $response = Toolbox::callCurl(
-            rtrim(GLPI_NETWORK_REGISTRATION_API_URL, '/') . '/offers',
-            [
-                CURLOPT_HTTPHEADER => [
-                    'Accept:application/json',
-                    'Accept-Language: ' . $lang,
+        try {
+            $response = Toolbox::callCurl(
+                rtrim(GLPI_NETWORK_REGISTRATION_API_URL, '/') . '/offers',
+                [
+                    CURLOPT_HTTPHEADER => [
+                        'Accept:application/json',
+                        'Accept-Language: ' . $lang,
+                    ],
                 ],
-            ],
-            $error_message
-        );
-
-        $valid_json = false;
-        $offers = null;
-        if ($error_message === null) {
-            if (Toolbox::isJSON($response)) {
-                $valid_json = true;
-                $offers = json_decode($response);
-            }
-        }
-
-        if ($error_message !== null || !$valid_json || !is_array($offers)) {
-            trigger_error(
-                sprintf(
-                    "Unable to fetch offers information.\nError message:%s\nResponse:\n%s",
-                    $error_message,
-                    $response
-                ),
-                E_USER_WARNING
+                $error_message
             );
+            if ($error_message !== null) {
+                throw new RunTimeException("Error: $error_message");
+            }
+
+            $offers = json_decode($response, true);
+            if (!is_array($offers)) {
+                throw new RuntimeException("Response: $response");
+            }
+        } catch (CurlException|RuntimeException|JsonException $e) {
+            ErrorHandler::logCaughtException($e);
             return [];
         }
 

@@ -36,6 +36,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\RichText\RichText;
 use Glpi\Toolbox\URL;
 use Psr\SimpleCache\CacheInterface;
+use Safe\Exceptions\CurlException;
 use Safe\Exceptions\UrlException;
 use SimplePie\SimplePie;
 
@@ -689,8 +690,18 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
 
             $error_msg  = null;
             $curl_error = null;
-            $raw_data = Toolbox::callCurl($url, [], $error_msg, $curl_error, true);
-            if (empty($raw_data)) {
+            try {
+                $raw_data = Toolbox::callCurl(
+                    $url,
+                    [],
+                    $error_msg,
+                    $curl_error,
+                    true
+                );
+                if (empty($raw_data)) {
+                    return false;
+                }
+            } catch (CurlException $e) {
                 return false;
             }
 

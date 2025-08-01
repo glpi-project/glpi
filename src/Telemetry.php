@@ -35,6 +35,8 @@
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Error\ErrorHandler;
+use Safe\Exceptions\CurlException;
 
 use function Safe\curl_exec;
 use function Safe\curl_getinfo;
@@ -312,17 +314,19 @@ class Telemetry extends CommonGLPI
         ];
 
         $errstr = null;
-        $content = json_decode(Toolbox::callCurl($url, $opts, $errstr));
-
-        if ($content && property_exists($content, 'message')) {
-            //all is OK!
-            return 1;
-        } else {
-            $message = 'Something went wrong sending telemetry information';
-            if ($errstr != '') {
-                $message .= ": $errstr";
+        try {
+            $content = json_decode(Toolbox::callCurl($url, $opts, $errstr));
+            if ($content && property_exists($content, 'message')) {
+                return 1; // all is OK!
+            } else {
+                $message = 'Something went wrong sending telemetry information';
+                if ($errstr != '') {
+                    $message .= ": $errstr";
+                }
+                throw new RuntimeException($message);
             }
-            trigger_error($message, E_USER_WARNING);
+        } catch (CurlException|RuntimeException $e) {
+            ErrorHandler::logCaughtException($e);
             return null; // null = Action aborted
         }
     }

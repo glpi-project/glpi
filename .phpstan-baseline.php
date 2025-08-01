@@ -2246,12 +2246,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/GLPINetwork.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method GLPINetwork\\:\\:getOffers\\(\\) throws checked exception Safe\\\\Exceptions\\\\JsonException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/GLPINetwork.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method GLPINetwork\\:\\:getOffers\\(\\) throws checked exception Safe\\\\Exceptions\\\\PcreException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
@@ -2261,12 +2255,6 @@ $ignoreErrors[] = [
 	'message' => '#^Method GLPINetwork\\:\\:getRegistrationInformations\\(\\) throws checked exception Psr\\\\SimpleCache\\\\InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 2,
-	'path' => __DIR__ . '/src/GLPINetwork.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method GLPINetwork\\:\\:getRegistrationInformations\\(\\) throws checked exception Safe\\\\Exceptions\\\\JsonException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
 	'path' => __DIR__ . '/src/GLPINetwork.php',
 ];
 $ignoreErrors[] = [
@@ -12036,12 +12024,6 @@ $ignoreErrors[] = [
 	'identifier' => 'missingType.checkedException',
 	'count' => 8,
 	'path' => __DIR__ . '/src/Ticket.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Toolbox\\:\\:callCurl\\(\\) throws checked exception Safe\\\\Exceptions\\\\CurlException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Toolbox\\:\\:callCurl\\(\\) throws checked exception Safe\\\\Exceptions\\\\UrlException but it\'s missing from the PHPDoc @throws tag\\.$#',
