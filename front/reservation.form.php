@@ -79,8 +79,7 @@ if (isset($_POST["update"])) {
     }
 
     [$begin_year, $begin_month] = explode("-", $rr->fields["begin"]);
-    Html::redirect($CFG_GLPI["root_doc"] . "/front/reservation.php?reservationitems_id=" .
-                  "$reservationitems_id&mois_courant=$begin_month&annee_courante=$begin_year");
+    Html::redirect($CFG_GLPI["root_doc"] . "/front/reservation.php?reservationitems_id={$reservationitems_id}");
 } elseif (isset($_POST["add"])) {
     Session::checkRight('reservation', CREATE);
     Reservation::handleAddForm($_POST);
