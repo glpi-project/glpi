@@ -379,46 +379,42 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     public static function getSpecificities($specif = '')
     {
 
-        switch ($specif) {
-            case 'serial':
-                return ['long name'  => __('Serial number'),
-                    'short name' => __('Serial number'),
-                    'size'       => 20,
-                    'id'         => 10,
-                ];
-
-            case 'busID':
-                return ['long name'  => __('Position of the device on its bus'),
-                    'short name' => __('bus ID'),
-                    'size'       => 10,
-                    'id'         => 11,
-                ];
-
-            case 'otherserial':
-                return ['long name'  => __('Inventory number'),
-                    'short name' => __('Inventory number'),
-                    'size'       => 20,
-                    'id'         => 12,
-                ];
-
-            case 'locations_id':
-                return ['long name'  => Location::getTypeName(1),
-                    'short name' => Location::getTypeName(1),
-                    'field'      => 'completename',
-                    'size'       => 20,
-                    'id'         => 13,
-                    'datatype'   => 'dropdown',
-                ];
-
-            case 'states_id':
-                return ['long name'  => __('Status'),
-                    'short name' => __('Status'),
-                    'size'       => 20,
-                    'id'         => 14,
-                    'datatype'   => 'dropdown',
-                ];
-        }
-        return [];
+        return match ($specif) {
+            'serial' => [
+                'long name' => __('Serial number'),
+                'short name' => __('Serial number'),
+                'size' => 20,
+                'id' => 10,
+            ],
+            'busID' => [
+                'long name' => __('Position of the device on its bus'),
+                'short name' => __('bus ID'),
+                'size' => 10,
+                'id' => 11,
+            ],
+            'otherserial' => [
+                'long name' => __('Inventory number'),
+                'short name' => __('Inventory number'),
+                'size' => 20,
+                'id' => 12,
+            ],
+            'locations_id' => [
+                'long name' => Location::getTypeName(1),
+                'short name' => Location::getTypeName(1),
+                'field' => 'completename',
+                'size' => 20,
+                'id' => 13,
+                'datatype' => 'dropdown',
+            ],
+            'states_id' => [
+                'long name' => __('Status'),
+                'short name' => __('Status'),
+                'size' => 20,
+                'id' => 14,
+                'datatype' => 'dropdown',
+            ],
+            default => [],
+        };
     }
 
 
@@ -1254,8 +1250,9 @@ class Item_Devices extends CommonDBRelation implements StateInterface
                 }
 
                 if (
-                    (isset($input[$linktype::getForeignKeyField()]))
-                    && (count($input[$linktype::getForeignKeyField()]))
+                    isset($input[$linktype::getForeignKeyField()])
+                    && is_array($input[$linktype::getForeignKeyField()])
+                    && count($input[$linktype::getForeignKeyField()])
                 ) {
                     $update_input = ['itemtype' => $input['itemtype'],
                         'items_id' => $input['items_id'],
