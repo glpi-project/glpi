@@ -897,6 +897,54 @@ class Session
     }
 
     /**
+     * Loads all locales from the core for the translation system.
+     * Should only be used during the install or update process to allow initialization of text in multiple languages.
+     * @return void
+     */
+    public static function loadAllCoreLocales(): void
+    {
+        /**
+         * @var array $CFG_GLPI
+         * @var Translator $TRANSLATE
+         */
+        global $CFG_GLPI, $TRANSLATE;
+
+        $core_folders = is_dir(GLPI_LOCAL_I18N_DIR) ? scandir(GLPI_LOCAL_I18N_DIR) : [];
+        $core_folders = array_filter($core_folders, static function ($dir) {
+            if (!is_dir(GLPI_LOCAL_I18N_DIR . "/$dir")) {
+                return false;
+            }
+
+            if ($dir === 'core') {
+                return true;
+            }
+
+            return str_starts_with($dir, 'core_');
+        });
+        $core_folders = array_map(static function ($dir) {
+            return GLPI_LOCAL_I18N_DIR . "/$dir";
+        }, $core_folders);
+        $core_folders = [GLPI_I18N_DIR, ...$core_folders];
+
+        foreach ($core_folders as $core_folder) {
+            foreach ($CFG_GLPI['languages'] as $lang => $data) {
+                $mofile = "$core_folder/" . $data['1'];
+                $phpfile = str_replace('.mo', '.php', $mofile);
+
+                // Load local PHP file if it exists
+                if (file_exists($phpfile)) {
+                    $TRANSLATE->addTranslationFile('phparray', $phpfile, 'glpi', $lang);
+                }
+
+                // Load local MO file if it exists -- keep last so it gets precedence
+                if (file_exists($mofile)) {
+                    $TRANSLATE->addTranslationFile('gettext', $mofile, 'glpi', $lang);
+                }
+            }
+        }
+    }
+
+    /**
      * Return preffered language (from HTTP headers, fallback to default GLPI lang).
      *
      * @return string

@@ -36,6 +36,7 @@
 namespace Glpi\Helpdesk;
 
 use Entity;
+use Glpi\DBAL\QueryParam;
 use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ObserverField;
@@ -58,7 +59,11 @@ use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Helpdesk\Tile\FormTile;
 use Glpi\Helpdesk\Tile\GlpiPageTile;
 use Glpi\Helpdesk\Tile\TilesManager;
+use Glpi\ItemTranslation\Context\TranslationHandler;
+use Glpi\ItemTranslation\ItemTranslation;
 use ITILCategory;
+use Laminas\I18n\Translator\Translator;
+use Laminas\I18n\Translator\TranslatorInterface;
 use Location;
 use RuntimeException;
 use Session;
@@ -135,6 +140,35 @@ final class DefaultDataManager
         return countElementsInTable(Form::getTable()) > 0;
     }
 
+    private function addFormTranslations(int $forms_id, string $name, string $description): void
+    {
+        /**
+         * @var array $CFG_GLPI
+         * @var TranslatorInterface $TRANSLATE
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $TRANSLATE, $DB;
+
+        $query = $DB->buildInsert(ItemTranslation::getTable(), [
+            'itemtype' => Form::class,
+            'items_id' => $forms_id,
+            'key'      => new QueryParam(),
+            'language' => new QueryParam(),
+            'translations' => new QueryParam(),
+        ]);
+        $stmt = $DB->prepare($query);
+        foreach (array_keys($CFG_GLPI['languages']) as $lang) {
+            $translated_name = $TRANSLATE->translate($name, 'glpi', $lang);
+            $translated_description = $TRANSLATE->translate($description, 'glpi', $lang);
+            if ($translated_name !== $name) {
+                $stmt->execute([Form::TRANSLATION_KEY_NAME, $lang, json_encode(['one' => $translated_name])]);
+            }
+            if ($translated_description !== $description) {
+                $stmt->execute([Form::TRANSLATION_KEY_DESCRIPTION, $lang, json_encode(['one' => $translated_description])]);
+            }
+        }
+    }
+
     private function createIncidentForm(): Form
     {
         // Create form
@@ -143,6 +177,7 @@ final class DefaultDataManager
             description: __("Ask for support from our helpdesk team."),
             illustration: 'report-issue',
         );
+        $this->addFormTranslations($form->getID(), 'Report an issue', 'Ask for support from our helpdesk team.');
 
         // Get first section
         $sections = $form->getSections();
@@ -285,6 +320,12 @@ final class DefaultDataManager
         Section $section,
         array $question_data,
     ): Question {
+        /**
+         * @var array $CFG_GLPI
+         * @var TranslatorInterface $TRANSLATE
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $TRANSLATE, $DB;
         // Refresh data
         $section->getFromDB($section->getID());
 
@@ -300,6 +341,28 @@ final class DefaultDataManager
             );
         }
 
+        if (isset($question_data['translation'])) {
+            $query = $DB->buildInsert(ItemTranslation::getTable(), [
+                'itemtype' => Question::class,
+                'items_id' => $question->getID(),
+                'key'      => new QueryParam(),
+                'language' => new QueryParam(),
+                'translations' => new QueryParam(),
+            ]);
+            $stmt = $DB->prepare($query);
+            foreach (array_keys($CFG_GLPI['languages']) as $lang) {
+                $translated_name = $question_data['translation'](
+                    $TRANSLATE,
+                    $lang,
+                    'question_name'
+                );
+                if ($translated_name === null || $translated_name === $question_data['name']) {
+                    continue;
+                }
+                $stmt->execute(['question_name', $lang, json_encode(['one' => $translated_name])]);
+            }
+        }
+
         return $question;
     }
 
@@ -308,6 +371,9 @@ final class DefaultDataManager
         return [
             'type' => QuestionTypeShortText::class,
             'name' => __("Title"),
+            'translation' => static function (Translator $trans, string $lang, string $key) {
+                return $key === 'question_name' ? $trans->translate('Title', 'glpi', $lang) : null;
+            },
         ];
     }
 
@@ -316,6 +382,9 @@ final class DefaultDataManager
         return [
             'type' => QuestionTypeLongText::class,
             'name' => __("Description"),
+            'translation' => static function (Translator $trans, string $lang, string $key) {
+                return $key === 'question_name' ? $trans->translate('Description', 'glpi', $lang) : null;
+            },
             'is_mandatory' => true,
         ];
     }
@@ -325,6 +394,9 @@ final class DefaultDataManager
         return [
             'type' => QuestionTypeItemDropdown::class,
             'name' => _n('Category', 'Categories', 1),
+            'translation' => static function (Translator $trans, string $lang, string $key) {
+                return $key === 'question_name' ? $trans->translatePlural('Category', 'Categories', 1, 'glpi', $lang) : null;
+            },
             'default_value' => null,
             'extra_data' => json_encode([
                 'itemtype'          => ITILCategory::class,
@@ -340,6 +412,9 @@ final class DefaultDataManager
         return [
             'type' => QuestionTypeUserDevice::class,
             'name' => __("User devices"),
+            'translation' => static function (Translator $trans, string $lang, string $key) {
+                return $key === 'question_name' ? $trans->translate('User devices', 'glpi', $lang) : null;
+            },
             'default_value' => 0,
             'extra_data' => json_encode(['is_multiple_devices' => false]),
         ];
@@ -350,6 +425,9 @@ final class DefaultDataManager
         return [
             'type' => QuestionTypeItemDropdown::class,
             'name' => _n('Location', 'Locations', 1),
+            'translation' => static function (Translator $trans, string $lang, string $key) {
+                return $key === 'question_name' ? $trans->translatePlural('Location', 'Locations', 1, 'glpi', $lang) : null;
+            },
             'default_value' => null,
             'extra_data' => json_encode([
                 'itemtype'          => Location::class,
@@ -365,6 +443,9 @@ final class DefaultDataManager
         return [
             'type' => QuestionTypeUrgency::class,
             'name' => __("Urgency"),
+            'translation' => static function (Translator $trans, string $lang, string $key) {
+                return $key === 'question_name' ? $trans->translate('Urgency', 'glpi', $lang) : null;
+            },
         ];
     }
 
@@ -373,6 +454,9 @@ final class DefaultDataManager
         return [
             'type' => QuestionTypeObserver::class,
             'name' => _n('Observer', 'Observers', Session::getPluralNumber()),
+            'translation' => static function (Translator $trans, string $lang, string $key) {
+                return $key === 'question_name' ? $trans->translatePlural('Observer', 'Observers', Session::getPluralNumber(), 'glpi', $lang) : null;
+            },
             'extra_data' => json_encode(['is_multiple_actors' => true]),
         ];
     }
