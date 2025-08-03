@@ -6320,7 +6320,7 @@ DROP TABLE IF EXISTS `glpi_remindertranslations`;
 CREATE TABLE `glpi_remindertranslations` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `reminders_id` int unsigned NOT NULL DEFAULT '0',
-  `language` varchar(5) DEFAULT NULL,
+  `language` varchar(10) DEFAULT NULL,
   `name` text,
   `text` longtext,
   `users_id` int unsigned NOT NULL DEFAULT '0',
@@ -10198,7 +10198,7 @@ CREATE TABLE `glpi_itemtranslations_itemtranslations` (
   `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
   `key` varchar(255) NOT NULL,
-  `language` varchar(5) NOT NULL,
+  `language` varchar(10) NOT NULL,
   `translations` JSON NOT NULL,
   `hash` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`id`),
