@@ -40,12 +40,12 @@
          <div class="accordion accordion-flush">
             <div class="accordion-item">
                <div class="accordion-header">
-                  <button class="accordion-button {{ nb_opt > 1 ? "collapsed" : "" }}" type="button"
+                  <button class="accordion-button {{ nb_opt > 3 ? "collapsed" : "" }}" type="button"
                      data-bs-toggle="collapse" data-bs-target="#{{ card_id }}" aria-expanded="true" aria-controls="collapseOne">
                      {{ label }}
                   </button>
                </div>
-               <div id="{{ card_id }}" class="accordion-collapse {{ nb_opt > 1 ? "collapse" : "" }}" style="transition: none">
+               <div id="{{ card_id }}" class="accordion-collapse {{ nb_opt > 3 ? "collapse" : "" }}" style="transition: none">
                   <div class="list-group list-group-flush list-group-hoverable">
                      {% for itemtype, dropdown_label in dropdown %}
                         {% set is_entity_assign = itemtype|itemtype_class.isEntityAssign() %}
@@ -62,7 +62,7 @@
                                  {% if is_entity_assign %}
                                     <i class="{{ 'Entity'|itemtype_icon }} fs-4"
                                        data-bs-toggle="tooltip"
-                                       title="{{ __('Dropdown with entity management') }}"></i>
+                                       title="{{ __('Entity management') }}"></i>
                                  {% endif %}
                               </div>
                            </div>
@@ -83,7 +83,7 @@
 
 <div class="container-fluid text-start mb-4 dropdowns-list">
    <div class="input-icon mb-3">
-      <input class="form-control" placeholder="{{ __('Filter dropdowns') }}" id="filter-dropdown" />
+      <input class="form-control" placeholder="{{ __('Search') }}" id="filter-dropdown" />
       <span class="input-icon-addon">
          <i class="ti ti-search"></i>
       </span>

@@ -85,6 +85,7 @@ The present file will list all changes made to the project; according to the
 - User passwords are no longer wiped when the authentication source/server doesn't actually change during "Change of the authentication method" action.
 - Single item actions (Actions menu in item form) are now filtered by certain attributes of the item. For example, a Computer which has reservations enabled will not show the `Authorize reservations` action.
 - Improved labels in component link dropdown to only include textual information and hide normally hidden data.
+- Component types list is now categorized similar to the dropdown types list.
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
