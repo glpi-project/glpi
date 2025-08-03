@@ -132,6 +132,6 @@ class Item_DevicesTest extends DbTestCase
     #[DataProvider('itemAffinitiesProvider')]
     public function testGetItemAffinities(string $itemtype, array $expected)
     {
-        $this->assertEquals($expected, Item_Devices::getItemAffinities($itemtype));
+        $this->assertEqualsCanonicalizing($expected, Item_Devices::getItemAffinities($itemtype));
     }
 }

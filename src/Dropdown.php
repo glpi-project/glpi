@@ -67,6 +67,12 @@ class Dropdown
     private static $devices_itemtypes_options = null;
 
     /**
+     * List of devices itemtypes options grouped by category
+     * @var array|null
+     */
+    private static $devices_itemtypes_options_grouped = null;
+
+    /**
      * Print out an HTML "<select>" for a dropdown with preselected value
      *
      * @param string $itemtype  itemtype used for create dropdown
@@ -1183,23 +1189,36 @@ HTML;
     /**
      * Get the Device list name the user is allowed to edit
      *
+     * @param bool $grouped if true, group by category
      * @return array (group of dropdown) of array (itemtype => localized name)
      **/
-    public static function getDeviceItemTypes()
+    public static function getDeviceItemTypes(bool $grouped = false)
     {
+        //TODO After GLPI 11.0, make this always return grouped values
         if (!Session::haveRight('device', READ)) {
             return [];
         }
 
-        if (self::$devices_itemtypes_options === null) {
+        $cache_prop = $grouped ? 'devices_itemtypes_options_grouped' : 'devices_itemtypes_options';
+        if (self::$$cache_prop === null) {
             $devices = [];
-            foreach (CommonDevice::getDeviceTypes() as $device_type) {
-                $devices[$device_type] = $device_type::getTypeName(Session::getPluralNumber());
+            foreach (CommonDevice::getDeviceTypes($grouped) as $category => $device_type) {
+                if (is_array($device_type)) {
+                    foreach ($device_type as $type) {
+                        $devices[$category][$type] = $type::getTypeName(Session::getPluralNumber());
+                    }
+                    asort($devices[$category]);
+                } else {
+                    $devices[$device_type] = $device_type::getTypeName(Session::getPluralNumber());
+                }
             }
-            asort($devices);
-            self::$devices_itemtypes_options = [_n('Component', 'Components', Session::getPluralNumber()) => $devices];
+            if (!$grouped) {
+                asort($devices);
+                $devices = [_n('Component', 'Components', Session::getPluralNumber()) => $devices];
+            }
+            self::$$cache_prop = $devices;
         }
-        return self::$devices_itemtypes_options;
+        return self::$$cache_prop;
     }
 
 
@@ -1451,6 +1470,7 @@ HTML;
      **/
     public static function showItemTypeMenu(string $title, array $optgroup, string $value = '', array $options = []): void
     {
+        Toolbox::deprecated(version: '11.1.0');
         $params = [
             'on_change'             => "var _value = this.options[this.selectedIndex].value; if (_value != 0) {window.location.href=_value;}",
             'width'                 => '300px',
@@ -1490,9 +1510,10 @@ HTML;
 
 
     /**
-     * Display a list to select a itemtype with link to search form
+     * Display a list to select an itemtype with link to search form
      *
-     * @param $optgroup array (group of dropdown) of array (itemtype => localized name)
+     * @param array $optgroup (group of dropdown) of array (itemtype => localized name)
+     * @return void
      */
     public static function showItemTypeList($optgroup)
     {
@@ -4541,6 +4562,7 @@ HTML;
     public static function resetItemtypesStaticCache(): void
     {
         self::$devices_itemtypes_options  = null;
+        self::$devices_itemtypes_options_grouped = null;
         self::$standard_itemtypes_options = null;
     }
 }

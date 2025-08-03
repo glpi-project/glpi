@@ -63,17 +63,57 @@ abstract class CommonDevice extends CommonDropdown
      *
      * @since 0.85
      *
-     * @return array
-     * @phpstan-return class-string<CommonDevice>[]
+     * @param bool $grouped If true, returns an array grouped by category, otherwise returns a flat array
+     * @return ($grouped is true ? array<string, class-string<CommonDevice>[]> : class-string<CommonDevice>[])
      **/
-    public static function getDeviceTypes()
+    public static function getDeviceTypes(bool $grouped = false)
     {
+        //TODO After GLPI 11.0, make this always return grouped values
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $valid_types = [];
-
-        foreach ($CFG_GLPI['device_types'] as $device_class) {
+        $valid_types = [
+            __('Input/Output') => [
+                // Components that transfer data to/from the computer
+                DeviceNetworkCard::class,
+                DeviceDrive::class,
+                DeviceGraphicCard::class,
+                DeviceSoundCard::class,
+                DevicePci::class,
+                DeviceCamera::class,
+            ],
+            __('Power management') => [
+                DeviceBattery::class,
+                DevicePowerSupply::class,
+            ],
+            __('Others') => [
+                DeviceMotherboard::class,
+                DeviceFirmware::class,
+                DeviceProcessor::class,
+                DeviceControl::class,
+                DeviceCase::class,
+                DeviceGeneric::class,
+                DeviceSimcard::class,
+                DeviceSensor::class,
+            ],
+        ];
+        $added = array_merge(
+            $valid_types[__('Input/Output')],
+            $valid_types[__('Power management')],
+            $valid_types[__('Others')]
+        );
+        $all_device_types = $CFG_GLPI['device_types'] ?? [];
+        // Remove the default device types which are not in $all_device_types (may have been removed by plugins)
+        // Add any devices not already in the list to 'Others'
+        foreach ($valid_types as &$device_classes) {
+            foreach ($device_classes as $k => $device_class) {
+                if (!in_array($device_class, $all_device_types, true)) {
+                    unset($device_classes[$k]);
+                }
+            }
+        }
+        unset($device_classes);
+        foreach ($all_device_types as $device_class) {
             if (!is_a($device_class, self::class, true)) {
                 // Invalid type registered by a plugin.
                 trigger_error(
@@ -82,8 +122,13 @@ abstract class CommonDevice extends CommonDropdown
                 );
                 continue;
             }
+            if (!in_array($device_class, $added, true)) {
+                $valid_types[__('Others')][] = $device_class;
+            }
+        }
 
-            $valid_types[] = $device_class;
+        if (!$grouped) {
+            $valid_types = array_merge(...array_values($valid_types));
         }
 
         return $valid_types;

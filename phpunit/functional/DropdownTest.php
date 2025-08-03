@@ -2487,4 +2487,32 @@ HTML;
             return $result['id'] === \Supplier::class . '_' . $inactive_supplier->getID();
         }));
     }
+
+    public function testGetDeviceItemTypes()
+    {
+        $this->login();
+        \Dropdown::resetItemtypesStaticCache();
+        $types = \Dropdown::getDeviceItemTypes();
+        // Not grouped by default (BC reasons)
+        $this->assertCount(1, $types);
+        $types = reset($types);
+        $this->assertGreaterThanOrEqual(2, $types);
+        foreach ($types as $type => $label) {
+            $this->assertTrue(is_subclass_of($type, \CommonDevice::class));
+            $this->assertIsString($label);
+        }
+
+        \Dropdown::resetItemtypesStaticCache();
+        $types = \Dropdown::getDeviceItemTypes(true);
+        $this->assertGreaterThanOrEqual(3, $types);
+        foreach ($types as $category => $types_list) {
+            $this->assertIsString($category);
+            $this->assertIsArray($types_list);
+            $this->assertGreaterThanOrEqual(1, $types_list);
+            foreach ($types_list as $type => $label) {
+                $this->assertTrue(is_subclass_of($type, \CommonDevice::class));
+                $this->assertIsString($label);
+            }
+        }
+    }
 }
