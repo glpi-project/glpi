@@ -163,7 +163,7 @@ class ItemVirtualMachine extends CommonDBChild
             }
         }
 
-        $options['canedit'] = Session::haveRight($asset::$rightname, UPDATE);
+        $options['canedit'] = $asset->can($asset->getID(), UPDATE);
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('components/form/itemvirtualmachine.html.twig', [
             'item'                      => $this,
