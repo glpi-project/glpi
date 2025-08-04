@@ -271,7 +271,8 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
         TemplateRenderer::getInstance()->display('pages/management/softwarelicense.html.twig', [
             'item'   => $this,
             'params' => $options,
-            'licences_assigned' => Item_SoftwareLicense::countForLicense($this->getID()),
+            'licences_assigned' => Item_SoftwareLicense::countForLicense($this->getID())
+                + SoftwareLicense_User::countForLicense($this->getID()),
         ]);
 
         return true;
