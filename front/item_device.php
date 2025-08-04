@@ -1,5 +1,7 @@
 <?php
 
+use Glpi\Exception\Http\BadRequestHttpException;
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -42,7 +44,7 @@ global $CFG_GLPI;
 
 $itemDevice = getItemForItemtype($_GET['itemtype']);
 if (!$itemDevice) {
-    throw new RuntimeException(
+    throw new BadRequestHttpException(
         'Missing or incorrect item device type called!'
     );
 }

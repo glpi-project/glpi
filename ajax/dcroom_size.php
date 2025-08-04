@@ -33,10 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\BadRequestHttpException;
+
 Html::header_nocache();
 
 if (!isset($_REQUEST['id'])) {
-    throw new RuntimeException('Required argument missing!');
+    throw new BadRequestHttpException('Required argument missing!');
 }
 
 $id = $_REQUEST['id'];

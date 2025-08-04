@@ -1,5 +1,7 @@
 <?php
 
+use Glpi\Exception\Http\BadRequestHttpException;
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -39,7 +41,7 @@ Html::header_nocache();
 Session::checkCentralAccess();
 
 if (!isset($_POST['kbitem_id'])) {
-    throw new RuntimeException('Required argument missing!');
+    throw new BadRequestHttpException('Required argument missing!');
 }
 
 $item = new KnowbaseItem();

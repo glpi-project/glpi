@@ -34,6 +34,7 @@
  */
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
 
 use function Safe\preg_match;
 
@@ -45,7 +46,7 @@ if (
     || (isset($_POST['allow_email']) && $_POST['allow_email'])
 ) {
     if (preg_match('/[^a-z_\-0-9]/i', $_POST['field'])) {
-        throw new RuntimeException('Invalid field provided!');
+        throw new BadRequestHttpException('Invalid field provided!');
     }
 
     $default_email = "";
@@ -80,7 +81,7 @@ if (
         if (NotificationMailing::isUserAddressValid($_POST['alternative_email'][$user_index])) {
             $default_email = $_POST['alternative_email'][$user_index];
         } else {
-            throw new RuntimeException('Invalid email provided!');
+            throw new BadRequestHttpException('Invalid email provided!');
         }
     }
 

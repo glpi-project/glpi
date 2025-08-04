@@ -37,6 +37,7 @@
  * @since 9.1
  */
 
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\RichText\RichText;
 
 use function Safe\json_encode;
@@ -47,7 +48,7 @@ Html::header_nocache();
 Session::checkCentralAccess();
 
 if (!isset($_POST['revid'])) {
-    throw new RuntimeException('Required argument missing!');
+    throw new BadRequestHttpException('Required argument missing!');
 }
 
 $revid = $_POST['revid'];
