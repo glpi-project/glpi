@@ -64,4 +64,16 @@ describe("Computer asset form", () => {
             cy.findAllByRole('cell').contains('Test VM').should('be.visible');
         });
     });
+
+    it('Antivirus tab loads', () => {
+        cy.visit(`/front/computer.form.php?id=${computers_id}`);
+        cy.findByRole('tab', { name: /Antiviruses/ }).click();
+        cy.findByRole('tabpanel').within(() => {
+            cy.findByRole('cell').should('contain.text', 'No results found');
+            cy.findByRole('button', {name: 'Add an antivirus'}).click();
+            cy.findByRole('textbox', { name: 'Name' }).type('Test AV');
+            cy.findByRole('button', {name: 'Add'}).click();
+            cy.findAllByRole('cell').contains('Test AV').should('be.visible');
+        });
+    });
 });
