@@ -25,7 +25,7 @@
         <!-- <TaintedInclude errorLevel="suppress" /> -->
         <TaintedLdap errorLevel="suppress" />
         <TaintedSSRF errorLevel="suppress" />
-        <TaintedSql errorLevel="suppress" />
+        <!-- <TaintedSql errorLevel="suppress" /> -->
         <!-- <TaintedTextWithQuotes errorLevel="suppress" /> -->
     </issueHandlers>
 </psalm>

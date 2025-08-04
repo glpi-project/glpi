@@ -90,6 +90,8 @@ class DBTest extends \GLPITestCase
             ['field AS f', '`field` AS `f`'],
             ['field as f', '`field` AS `f`'],
             ['table.field as f', '`table`.`field` AS `f`'],
+            ['ta`ble', '`ta``ble`'],
+            ['ta`ble.f`i`e`l`d', '`ta``ble`.`f``i``e``l``d`'],
         ];
     }
 
@@ -152,13 +154,7 @@ class DBTest extends \GLPITestCase
                     'WHERE' => ['NOT' => ['name' => null]],
                 ]),
                 'INSERT INTO `table` (SELECT `id`, `name` FROM `other` WHERE NOT (`name` IS NULL))',
-            ],/*, [
-                'table', [
-                    'field'  => new \QueryParam('field'),
-                    'other'  => new \QueryParam('other')
-                ],
-                'INSERT INTO `table` (`field`, `other`) VALUES (:field, :other)'
-            ]*/ //mysqli does not support named parameters
+            ],
         ];
     }
 
@@ -206,14 +202,6 @@ class DBTest extends \GLPITestCase
                 [],
                 'UPDATE `table` SET `field` = ? WHERE  NOT (`id` IN (?, ?))',
             ], [
-                /*'table', [
-                    'field'  => new \QueryParam('field')
-                ], [
-                    'NOT' => ['id' => [new \QueryParam('idone'), new \QueryParam('idtwo')]]
-                ],
-                [],
-                'UPDATE `table` SET `field` = :field WHERE  NOT (`id` IN (:idone, :idtwo))'
-            ], [*/
                 'table', [
                     'field'  => new QueryExpression(\DBmysql::quoteName('field') . ' + 1'),
                 ], [
@@ -301,12 +289,6 @@ class DBTest extends \GLPITestCase
                 [],
                 'DELETE `table` FROM `table` WHERE  NOT (`id` IN (?, ?))',
             ], [
-                /*'table', [
-                    'NOT'  => ['id' => [new \QueryParam('idone'), new \QueryParam('idtwo')]]
-                ],
-                [],
-                'DELETE `table` FROM `table` WHERE  NOT (`id` IN (:idone, :idtwo))'
-            ], [*/
                 'table', [
                     'id'  => 1,
                 ],

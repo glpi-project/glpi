@@ -151,11 +151,11 @@ class DBmysqlIterator implements SeekableIterator, Countable
         $orderby  = null;
         $limit    = 0;
         $start    = 0;
-        $where    = '';
+        $where    = [];
         $count    = '';
         $join     = [];
         $groupby  = '';
-        $having   = '';
+        $having   = [];
         if (count($criteria)) {
             foreach ($criteria as $key => $val) {
                 switch ((string) $key) {
@@ -500,19 +500,24 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Generate the SQL statement for a array of criteria
      *
-     * @param array|string $crit Criteria
-     * @param string   $bool Boolean operator (default AND)
+     * @param array  $crit Criteria
+     * @param string $bool Boolean operator (default AND)
      *
      * @return string
      */
     public function analyseCrit($crit, $bool = "AND")
     {
-
         if (!is_array($crit)) {
-            //if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-            //  trigger_error("Deprecated usage of SQL in DB/request (criteria)", E_USER_DEPRECATED);
-            //}
-            return $crit;
+            Toolbox::deprecated('Passing SQL request criteria as strings is deprecated for security reasons.');
+
+            /**
+             * Delegate the safeness check to the caller.
+             * There is no such usage in GLPI, it is the plugin developer responsibility to switch to safer criteria specs.
+             * @psalm-taint-escape sql
+             */
+            $safe_crit = $crit;
+
+            return $safe_crit;
         }
         $ret = "";
         foreach ($crit as $name => $value) {
@@ -568,7 +573,12 @@ class DBmysqlIterator implements SeekableIterator, Countable
         } else {
             if (is_array($value)) {
                 if (count($value) == 2 && isset($value[0]) && $this->isOperator($value[0])) {
+                    /**
+                     * Is a safe operator.
+                     * @psalm-taint-escape sql
+                     */
                     $comparison = $value[0];
+
                     $criterion_value = $value[1];
                 } else {
                     if (!count($value)) {
@@ -615,10 +625,11 @@ class DBmysqlIterator implements SeekableIterator, Countable
     {
         $crit_value = null;
         if (is_array($value)) {
-            foreach ($value as $k => $v) {
-                $value[$k] = DBmysql::quoteValue($v);
+            $values = [];
+            foreach ($value as $v) {
+                $values[] = DBmysql::quoteValue($v);
             }
-            $crit_value = '(' . implode(', ', $value) . ')';
+            $crit_value = '(' . implode(', ', $values) . ')';
         } else {
             $crit_value = DBmysql::quoteValue($value);
         }
@@ -695,11 +706,13 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 $t2 = $keys[1];
                 $f2 = $values[$t2];
                 if ($f2 instanceof QuerySubQuery || $f2 instanceof QueryExpression) {
-                    return (is_numeric($t1) ? DBmysql::quoteName($f1) : DBmysql::quoteName($t1) . '.' . DBmysql::quoteName($f1)) . ' = ' .
-                    $f2;
+                    return (is_numeric($t1) ? DBmysql::quoteName($f1) : DBmysql::quoteName($t1) . '.' . DBmysql::quoteName($f1))
+                        . ' = '
+                        . $f2->getValue();
                 } else {
-                    return (is_numeric($t1) ? DBmysql::quoteName($f1) : DBmysql::quoteName($t1) . '.' . DBmysql::quoteName($f1)) . ' = ' .
-                    (is_numeric($t2) ? DBmysql::quoteName($f2) : DBmysql::quoteName($t2) . '.' . DBmysql::quoteName($f2));
+                    return (is_numeric($t1) ? DBmysql::quoteName($f1) : DBmysql::quoteName($t1) . '.' . DBmysql::quoteName($f1))
+                        . ' = '
+                        . (is_numeric($t2) ? DBmysql::quoteName($f2) : DBmysql::quoteName($t2) . '.' . DBmysql::quoteName($f2));
                 }
             } elseif (count($values) == 3) {
                 $real_values = [];

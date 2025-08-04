@@ -66,6 +66,8 @@ class QueryExpression
      * Query expression value
      *
      * @return string
+     *
+     * @psalm-taint-escape sql
      */
     public function getValue()
     {
