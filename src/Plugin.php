@@ -1954,6 +1954,10 @@ class Plugin extends CommonDBTM
             if (!is_dir($base_dir)) {
                 continue;
             }
+            /**
+             * Plugin setup file is safe for inclusion.
+             * @psalm-taint-escape include
+             */
             $file_path = sprintf('%s/%s/setup.php', $base_dir, $plugin_key);
 
             if (file_exists($file_path)) {
@@ -2033,9 +2037,20 @@ class Plugin extends CommonDBTM
             throw new RuntimeException('Including plugin hook files is forbidden when plugins execution is suspended.');
         }
 
+        if (preg_match(self::PLUGIN_KEY_PATTERN, $plugin_key) !== 1) {
+            // Prevent issues with illegal chars
+            return;
+        }
+
         foreach (GLPI_PLUGINS_DIRECTORIES as $base_dir) {
-            if (file_exists("$base_dir/$plugin_key/hook.php")) {
-                include_once("$base_dir/$plugin_key/hook.php");
+            /**
+             * Plugin hook file is safe for inclusion.
+             * @psalm-taint-escape include
+             */
+            $path = "$base_dir/$plugin_key/hook.php";
+
+            if (file_exists($path)) {
+                include_once($path);
                 break;
             }
         }
