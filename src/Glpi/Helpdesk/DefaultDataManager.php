@@ -238,6 +238,7 @@ final class DefaultDataManager
             description: __("Ask for a service to be provided by our team."),
             illustration: 'request-service',
         );
+        $this->addFormTranslations($form->getID(), 'Request a service', 'Ask for a service to be provided by our team.');
 
         // Get first section
         $sections = $form->getSections();
