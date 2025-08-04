@@ -3380,4 +3380,107 @@ class APIRestTest extends TestCase
         );
         $this->expectExceptionMessage('404 Not Found');
     }
+
+
+    /**
+     * Test different input types for PUT/PATCH requests to ensure the fix for
+     * "Attempt to assign property 'id' on array" error works correctly
+     *
+     * @covers API::updateItems
+     */
+    public function testUpdateItemsWithDifferentInputTypes()
+    {
+        $headers = ['Session-Token' => $this->session_token];
+
+        // Use existing test entities instead of creating new ones
+        $entity_id = getItemByTypeName('Entity', '_test_child_1', true);
+        $entity_2_id = getItemByTypeName('Entity', '_test_child_2', true);
+        $this->assertGreaterThan(0, $entity_id);
+        $this->assertGreaterThan(0, $entity_2_id);
+
+        // Test Case 1: Entity with object input and ID in URL (should work)
+        $data = $this->query(
+            "Entity/$entity_id",
+            [
+                'headers' => $headers,
+                'verb'    => 'PUT',
+                'json'    => [
+                    'input' => [
+                        'comment' => 'Updated via object input with ID in URL',
+                    ],
+                ],
+            ],
+            200
+        );
+        $this->assertIsArray($data);
+        $this->assertTrue((bool) $data[0][$entity_id]);
+
+        // Verify the update
+        $entity_obj = new \Entity();
+        $this->assertTrue($entity_obj->getFromDB($entity_id));
+        $this->assertEquals('Updated via object input with ID in URL', $entity_obj->fields['comment']);
+
+        // Test Case 2: Entity with indexed array input (should work without crashing)
+        $data = $this->query(
+            "Entity",
+            [
+                'headers' => $headers,
+                'verb'    => 'PUT',
+                'json'    => [
+                    'input' => [
+                        [
+                            'id' => $entity_id,
+                            'comment' => 'Updated via indexed array',
+                        ],
+                    ],
+                ],
+            ],
+            200
+        );
+        $this->assertIsArray($data);
+        $this->assertTrue((bool) $data[0][$entity_id]);
+
+        // Verify the update
+        $entity_obj = new \Entity();
+        $this->assertTrue($entity_obj->getFromDB($entity_id));
+        $this->assertEquals('Updated via indexed array', $entity_obj->fields['comment']);
+
+        // Test Case 3: Entity with multiple items in indexed array (using both test entities)
+        $data = $this->query(
+            "Entity",
+            [
+                'headers' => $headers,
+                'verb'    => 'PUT',
+                'json'    => [
+                    'input' => [
+                        [
+                            'id' => $entity_id,
+                            'comment' => 'Multi-update entity 1',
+                        ],
+                        [
+                            'id' => $entity_2_id,
+                            'comment' => 'Multi-update entity 2',
+                        ],
+                    ],
+                ],
+            ],
+            200
+        );
+
+        // Remove headers from response for easier assertions
+        unset($data['headers']);
+
+        $this->assertIsArray($data);
+        $this->assertCount(2, $data);
+        $this->assertTrue((bool) $data[0][$entity_id]);
+        $this->assertTrue((bool) $data[1][$entity_2_id]);
+
+        // Verify the updates
+        $entity_obj = new \Entity();
+        $this->assertTrue($entity_obj->getFromDB($entity_id));
+        $this->assertEquals('Multi-update entity 1', $entity_obj->fields['comment']);
+
+        $this->assertTrue($entity_obj->getFromDB($entity_2_id));
+        $this->assertEquals('Multi-update entity 2', $entity_obj->fields['comment']);
+    }
 }
