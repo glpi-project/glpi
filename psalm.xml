@@ -22,7 +22,7 @@
         <TaintedFile errorLevel="suppress" />
         <TaintedHeader errorLevel="suppress" />
         <!-- <TaintedHtml errorLevel="suppress" /> -->
-        <TaintedInclude errorLevel="suppress" />
+        <!-- <TaintedInclude errorLevel="suppress" /> -->
         <TaintedLdap errorLevel="suppress" />
         <TaintedSSRF errorLevel="suppress" />
         <TaintedSql errorLevel="suppress" />
