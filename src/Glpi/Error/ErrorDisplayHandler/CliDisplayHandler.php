@@ -51,6 +51,8 @@ final class CliDisplayHandler implements ErrorDisplayHandler
     {
         /**
          * CLI context, no XSS possible.
+         *
+         * @psalm-taint-escape html
          * @psalm-taint-escape has_quotes
          */
         $output = \sprintf('%s: %s', $error_label, $message) . PHP_EOL;

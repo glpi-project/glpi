@@ -155,6 +155,7 @@ switch ($_GET['action'] ?? null) {
          * `Dashboard::getFilter()` already returns a JSON encoded string.
          *
          * @psalm-taint-escape has_quotes
+         * @psalm-taint-escape html
          */
         $filter = $dashboard->getFilter();
 

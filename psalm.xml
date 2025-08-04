@@ -21,7 +21,7 @@
         <TaintedCookie errorLevel="suppress" />
         <TaintedFile errorLevel="suppress" />
         <TaintedHeader errorLevel="suppress" />
-        <TaintedHtml errorLevel="suppress" />
+        <!-- <TaintedHtml errorLevel="suppress" /> -->
         <TaintedInclude errorLevel="suppress" />
         <TaintedLdap errorLevel="suppress" />
         <TaintedSSRF errorLevel="suppress" />
