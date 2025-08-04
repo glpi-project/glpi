@@ -105,6 +105,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
             [
                 Question::class,
                 Comment::class,
+                FormTranslation::class,
             ]
         );
     }

@@ -117,6 +117,16 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     }
 
     #[Override]
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb(
+            [
+                FormTranslation::class,
+            ]
+        );
+    }
+
+    #[Override]
     public function listTranslationsHandlers(): array
     {
         $key = sprintf('%s: %s', self::getTypeName(), $this->getName());
