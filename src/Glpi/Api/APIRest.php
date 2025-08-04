@@ -654,22 +654,16 @@ class APIRest extends API
         $this->header($this->debug);
 
         if ($response !== null) {
-            $json = json_encode($response, JSON_UNESCAPED_UNICODE
-                                      | JSON_UNESCAPED_SLASHES
-                                      | ($this->debug
-                                          ? JSON_PRETTY_PRINT
-                                          : 0));
+            $json = json_encode(
+                $response,
+                JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | ($this->debug ? JSON_PRETTY_PRINT : 0)
+            );
         } else {
             $json = '';
         }
 
-        if ($this->debug) {
-            echo "<pre>";
-            var_dump($response);
-            echo "</pre>";
-        } else {
-            echo $json;
-        }
+        echo $json;
+
         exit(); // @phpstan-ignore glpi.forbidExit (API response is streamed)
     }
 

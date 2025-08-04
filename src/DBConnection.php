@@ -138,7 +138,15 @@ class DBConnection extends CommonDBTM
 
         $config_str = '<?php' . "\n" . 'class DB extends DBmysql {' . "\n";
         foreach ($properties as $name => $value) {
-            $config_str .= sprintf('   public $%s = %s;', $name, var_export($value, true)) . "\n";
+
+            /**
+             * Result will be printed in a file, no risk of XSS.
+             *
+             * @psalm-taint-escape html
+             */
+            $exported_value = call_user_func_array('var_export', [$value, true]);
+
+            $config_str .= sprintf('   public $%s = %s;', $name, $exported_value) . "\n";
         }
         $config_str .= '}' . "\n";
 

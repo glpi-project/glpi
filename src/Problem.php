@@ -1270,7 +1270,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
         $problem   = new self();
         $rand      = mt_rand();
         if ($problem->getFromDBwithData($ID)) {
-            $bgcolor = $_SESSION["glpipriority_" . $problem->fields["priority"]];
+            $bgcolor = htmlescape($_SESSION["glpipriority_" . $problem->fields["priority"]]);
             $name    = htmlescape(sprintf(__('%1$s: %2$s'), __('ID'), $problem->fields["id"]));
             echo "<tr class='tab_bg_2'>";
             echo "<td>
@@ -1303,7 +1303,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                         }
                         echo $name;
                     } else {
-                        echo $d['alternative_email'] . "&nbsp;";
+                        echo htmlescape($d['alternative_email']) . "&nbsp;";
                     }
                     echo "<br>";
                 }
@@ -1322,15 +1322,15 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
             echo "</td>";
 
             echo "<td>";
-            $link = "<a id='problem" . $problem->fields["id"] . $rand . "' href='" .
-                  Problem::getFormURLWithID($problem->fields["id"]);
+            $link = "<a id='problem" . $problem->getID() . $rand . "' href='" .
+                  htmlescape(Problem::getFormURLWithID($problem->getID()));
             if ($forcetab != '') {
-                $link .= "&amp;forcetab=" . $forcetab;
+                $link .= "&amp;forcetab=" . htmlescape($forcetab);
             }
             $link .= "'>";
             $link .= "<span class='b'>" . htmlescape($problem->fields["name"]) . "</span></a>";
             $link = printf(
-                __('%1$s %2$s'),
+                __s('%1$s %2$s'),
                 $link,
                 Html::showToolTip(
                     RichText::getEnhancedHtml($problem->fields['content']),
