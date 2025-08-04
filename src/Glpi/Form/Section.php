@@ -77,6 +77,8 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
      */
     protected ?array $comments = null;
 
+    private ?Form $form = null;
+
     #[Override]
     public static function getTypeName($nb = 0)
     {
@@ -251,6 +253,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
                 $question = new Question();
                 $question->getFromResultSet($row);
                 $question->post_getFromDB();
+                $question->setSection($this);
 
                 if ($question->getQuestionType() === null) {
                     // The question might belong to a disabled plugin
@@ -284,6 +287,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
                 $comment = new Comment();
                 $comment->getFromResultSet($row);
                 $comment->post_getFromDB();
+                $comment->setSection($this);
 
                 $this->comments[$row['id']] = $comment;
             }
@@ -299,12 +303,21 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
      */
     public function getForm(): Form
     {
-        $form = $this->getItem();
-        if (!($form instanceof Form)) {
-            throw new RuntimeException("Can't load parent form");
+        if ($this->form === null) {
+            $form = $this->getItem();
+            if (!($form instanceof Form)) {
+                throw new RuntimeException("Can't load parent form");
+            }
+
+            $this->form = $form;
         }
 
-        return $form;
+        return $this->form;
+    }
+
+    public function setForm(Form $form): void
+    {
+        $this->form = $form;
     }
 
     /**

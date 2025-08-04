@@ -1452,7 +1452,7 @@ class CommonDBTM extends CommonGLPI
                     if (isset($this->input['_add'])) {
                         $this->clearSavedInput();
                     }
-                    return $this->fields['id'];
+                    return $this->getID();
                 }
             }
         }
@@ -1983,7 +1983,7 @@ class CommonDBTM extends CommonGLPI
                 foreach ($iterator as $data) {
                     $input['id'] = $data['id'];
                     // No history for such update
-                    $item->update($input, 0);
+                    $item->update($input, false);
                 }
             }
         }
@@ -6589,11 +6589,6 @@ class CommonDBTM extends CommonGLPI
         Profiler::getInstance()->start(static::class . '::display');
         $item->display($options);
         Profiler::getInstance()->stop(static::class . '::display');
-
-        // Display extra html if needed
-        if (!empty($options['after_display'] ?? "")) {
-            echo $options['after_display'];
-        }
 
         // Show footer
         if ($interface == 'central') {

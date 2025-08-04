@@ -35,6 +35,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Features\State;
+use Glpi\Features\StateInterface;
 
 /**
  * @since 0.84
@@ -45,7 +46,7 @@ use Glpi\Features\State;
  * Relation between item and devices
  * We completely relies on CommonDBConnexity to manage the can* and the history and the deletion ...
  **/
-class Item_Devices extends CommonDBRelation
+class Item_Devices extends CommonDBRelation implements StateInterface
 {
     use State;
 
@@ -471,7 +472,7 @@ class Item_Devices extends CommonDBRelation
      *
      * @since 0.85
      *
-     * @return array of Item_Device*
+     * @return class-string<Item_Devices>[]
      **/
     public static function getItemAffinities($itemtype)
     {
@@ -529,16 +530,25 @@ class Item_Devices extends CommonDBRelation
      *
      * @since 0.85
      *
-     * @return string containing the device
+     * @return class-string<CommonDevice>
      **/
     public static function getDeviceType()
     {
-
         $devicetype = static::class;
+
         if ($plug = isPluginItemType($devicetype)) {
             return 'Plugin' . $plug['plugin'] . str_replace('Item_', '', $plug['class']);
         }
-        return str_replace('Item_', '', $devicetype);
+
+        $class = str_replace('Item_', '', $devicetype);
+
+        if (!is_a($class, CommonDevice::class, true)) {
+            throw new RuntimeException(
+                sprintf('`%s` is not a valid `%s` class.', $class, CommonDevice::class)
+            );
+        }
+
+        return $class;
     }
 
     /**
@@ -1038,7 +1048,7 @@ class Item_Devices extends CommonDBRelation
                     if (is_null($peer)) {
                         $cell->setHTMLClass('center');
                     }
-                } else {
+                } elseif ($peer instanceof CommonDevice) {
                     $peer->getHTMLTableCellForItem($current_row, $item, null, $options);
                 }
             }
@@ -1229,7 +1239,8 @@ class Item_Devices extends CommonDBRelation
         if (isset($input['devicetype'])) {
             $devicetype = $input['devicetype'];
             $linktype   = $devicetype::getItem_DeviceType();
-            if ($link = getItemForItemtype($linktype)) {
+            $link = getItemForItemtype($linktype);
+            if ($link instanceof Item_Devices) {
                 if (
                     !isset($input[$linktype::getForeignKeyField()])
                     && (!isset($input['new_devices']) || !$input['new_devices'])
@@ -1268,7 +1279,8 @@ class Item_Devices extends CommonDBRelation
                 throw new NotFoundHttpException();
             }
             if ($item instanceof CommonDevice) {
-                if ($link = getItemForItemtype($item->getItem_DeviceType())) {
+                $link = getItemForItemtype($item->getItem_DeviceType());
+                if ($link instanceof Item_Devices) {
                     $link->addDevices($input['number_devices_to_add'], '', 0, $input['items_id']);
                 }
             }
@@ -1350,7 +1362,8 @@ class Item_Devices extends CommonDBRelation
         }
 
         foreach ($links as $type => $commands) {
-            if ($link = getItemForItemtype($type)) {
+            $link = getItemForItemtype($type);
+            if ($link instanceof Item_Devices) {
                 foreach ($commands['add'] as $link_to_add => $number) {
                     $link->addDevices($number, $itemtype, $items_id, $link_to_add);
                 }

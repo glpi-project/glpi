@@ -42,6 +42,7 @@ class DocumentType extends CommonDropdown
 {
     public static $rightname      = 'typedoc';
 
+    private static ?string $uploadable_patterns = null;
 
     public function getAdditionalFields()
     {
@@ -211,32 +212,68 @@ class DocumentType extends CommonDropdown
         /** @var DBmysql $DB */
         global $DB;
 
-        $valid_type_iterator = $DB->request([
-            'FROM'   => 'glpi_documenttypes',
-            'WHERE'  => [
-                'is_uploadable'   => 1,
-            ],
-        ]);
+        if (self::$uploadable_patterns === null) {
+            $valid_type_iterator = $DB->request([
+                'FROM'   => 'glpi_documenttypes',
+                'WHERE'  => [
+                    'is_uploadable'   => 1,
+                ],
+            ]);
 
-        $valid_ext_patterns = [];
-        foreach ($valid_type_iterator as $valid_type) {
-            $valid_ext = $valid_type['ext'];
-            if (preg_match('/\/.+\//', $valid_ext)) {
-                // Filename matches pattern
-                // Remove surrounding '/' as it will be included in a larger pattern
-                // and protect by surrounding parenthesis to prevent conflict with other patterns
-                $valid_ext_patterns[] = '(' . substr($valid_ext, 1, -1) . ')';
-            } else {
-                // Filename ends with allowed ext
-                $valid_ext_patterns[] = '\.' . preg_quote($valid_type['ext'], '/') . '$';
+            $valid_ext_patterns = [];
+            foreach ($valid_type_iterator as $valid_type) {
+                $valid_ext = $valid_type['ext'];
+                if (preg_match('/\/.+\//', $valid_ext)) {
+                    // Filename matches pattern
+                    // Remove surrounding '/' as it will be included in a larger pattern
+                    // and protect by surrounding parenthesis to prevent conflict with other patterns
+                    $valid_ext_patterns[] = '(' . substr($valid_ext, 1, -1) . ')';
+                } else {
+                    // Filename ends with allowed ext
+                    $valid_ext_patterns[] = '\.' . preg_quote($valid_type['ext'], '/') . '$';
+                }
             }
+
+            self::$uploadable_patterns = '/(' . implode('|', $valid_ext_patterns) . ')/i';
         }
 
-        return '/(' . implode('|', $valid_ext_patterns) . ')/i';
+        return self::$uploadable_patterns;
     }
 
     public static function getIcon()
     {
         return "ti ti-file";
+    }
+
+    #[Override]
+    public function post_addItem()
+    {
+        $this->clearCachedUploadablePatterns();
+        parent::post_addItem();
+    }
+
+    #[Override]
+    public function post_updateItem($history = true)
+    {
+        $this->clearCachedUploadablePatterns();
+        parent::post_updateItem($history);
+    }
+
+    #[Override]
+    public function post_deleteItem()
+    {
+        $this->clearCachedUploadablePatterns();
+        parent::post_deleteItem();
+    }
+
+    #[Override]
+    public function post_purgeItem()
+    {
+        $this->clearCachedUploadablePatterns();
+        parent::post_purgeItem();
+    }
+    private function clearCachedUploadablePatterns(): void
+    {
+        self::$uploadable_patterns = null;
     }
 }

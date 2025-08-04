@@ -41,6 +41,7 @@ use Glpi\Features\Clonable;
 use Glpi\Features\Kanban;
 use Glpi\Features\KanbanInterface;
 use Glpi\Features\Teamwork;
+use Glpi\Features\TeamworkInterface;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\Team\Team;
@@ -50,7 +51,7 @@ use Glpi\Team\Team;
  *
  * @since 0.85
  **/
-class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInterface
+class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInterface, TeamworkInterface
 {
     use Kanban;
     use Clonable;

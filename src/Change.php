@@ -1603,7 +1603,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         $change   = new self();
         $rand      = mt_rand();
         if ($change->getFromDBwithData($ID)) {
-            $bgcolor = $_SESSION["glpipriority_" . $change->fields["priority"]];
+            $bgcolor = htmlescape($_SESSION["glpipriority_" . $change->fields["priority"]]);
             $name    = htmlescape(sprintf(__('%1$s: %2$s'), __('ID'), $change->fields["id"]));
             echo "<tr class='tab_bg_2'>";
             echo "<td>
@@ -1647,7 +1647,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                 && count($change->groups[CommonITILActor::REQUESTER])
             ) {
                 foreach ($change->groups[CommonITILActor::REQUESTER] as $d) {
-                    echo Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+                    echo htmlescape(Dropdown::getDropdownName("glpi_groups", $d["groups_id"]));
                     echo "<br>";
                 }
             }
@@ -1655,8 +1655,8 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
             echo "</td>";
 
             echo "<td>";
-            $link = "<a id='change" . htmlescape($change->fields["id"] . $rand) . "' href='" .
-            Change::getFormURLWithID($change->fields["id"]);
+            $link = "<a id='change" . htmlescape($change->fields["id"] . $rand) . "' href='"
+                . htmlescape(Change::getFormURLWithID($change->fields["id"]));
             if ($forcetab != '') {
                 $link .= "&amp;forcetab=" . htmlescape($forcetab);
             }
@@ -1666,8 +1666,9 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                 __s('%1$s %2$s'),
                 $link,
                 Html::showToolTip(
-                    $change->fields['content'],
-                    ['applyto' => 'change' . $change->fields["id"] . $rand,
+                    RichText::getEnhancedHtml($change->fields['content']),
+                    [
+                        'applyto' => 'change' . $change->fields["id"] . $rand,
                         'display' => false,
                     ]
                 )

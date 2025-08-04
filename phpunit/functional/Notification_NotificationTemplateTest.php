@@ -182,17 +182,17 @@ class Notification_NotificationTemplateTest extends DbTestCase
         \Notification_NotificationTemplate::registerMode(
             'testmode',
             'A test label',
-            'anyplugin'
+            'tester'
         );
 
         $class = \Notification_NotificationTemplate::getModeClass('testmode');
-        $this->assertSame('PluginAnypluginNotificationTestmode', $class);
+        $this->assertSame('PluginTesterNotificationTestmode', $class);
 
         $class = \Notification_NotificationTemplate::getModeClass('testmode', 'event');
-        $this->assertSame('PluginAnypluginNotificationEventTestmode', $class);
+        $this->assertSame('PluginTesterNotificationEventTestmode', $class);
 
         $class = \Notification_NotificationTemplate::getModeClass('testmode', 'setting');
-        $this->assertSame('PluginAnypluginNotificationTestmodeSetting', $class);
+        $this->assertSame('PluginTesterNotificationTestmodeSetting', $class);
     }
 
     public function testHasActiveMode()

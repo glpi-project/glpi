@@ -222,7 +222,7 @@ class Appliance_Item_Relation extends CommonDBRelation
         foreach (self::getForApplianceItem($appliances_items_id) as $rel_id => $link) {
             $del = "";
             if ($canedit) {
-                $del = "<i class='delete_relation pointer ti ti-x' data-relations-id='$rel_id'></i>";
+                $del = "<i class='delete_relation pointer ti ti-x' data-relations-id='" . htmlescape($rel_id) . "'></i>";
             }
             $relations_str .= "<li>$link $del</li>";
         }

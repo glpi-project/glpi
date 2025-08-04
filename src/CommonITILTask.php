@@ -1955,7 +1955,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 throw new RuntimeException(sprintf('Unexpected `%s` itemtype.', $itemtype));
             }
 
-            $bgcolor = $_SESSION["glpipriority_" . $item_link->fields["priority"]];
+            $bgcolor = htmlescape($_SESSION["glpipriority_" . $item_link->fields["priority"]]);
             $name    = htmlescape(sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]));
             echo "<tr class='tab_bg_2'>";
             echo "<td>
@@ -1970,13 +1970,15 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
             echo "<td>";
             $link = "<a id='" . htmlescape(strtolower($item_link->getType())) . "ticket" . htmlescape($item_link->fields["id"] . $rand) . "' href='" .
-                   $item_link->getFormURLWithID($item_link->fields["id"]);
+                   htmlescape($item_link->getFormURLWithID($item_link->fields["id"]));
             $link .= "&amp;forcetab=" . htmlescape($tab_name) . "$1";
             $link   .= "'>";
-            $link = sprintf(
-                __s('%1$s %2$s'),
-                $link,
-                Html::resume_text(RichText::getTextFromHtml($job->fields['content'], false, true), 50)
+            $link = htmlescape(
+                sprintf(
+                    __('%1$s %2$s'),
+                    $link,
+                    Html::resume_text(RichText::getTextFromHtml($job->fields['content'], false, true), 50)
+                )
             );
             echo $link;
 

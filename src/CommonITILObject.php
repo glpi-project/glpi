@@ -43,6 +43,7 @@ use Glpi\Features\Clonable;
 use Glpi\Features\Kanban;
 use Glpi\Features\KanbanInterface;
 use Glpi\Features\Teamwork;
+use Glpi\Features\TeamworkInterface;
 use Glpi\Features\Timeline;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
@@ -66,7 +67,7 @@ use function Safe\strtotime;
  * @property-read array $groups
  * @property-read array $suppliers
  **/
-abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
+abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, TeamworkInterface
 {
     use Clonable;
     use Timeline;
@@ -5578,19 +5579,19 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
         echo "<tr><th colspan='2'>" . _sn('Date', 'Dates', Session::getPluralNumber()) . "</th></tr>";
 
         echo "<tr class='tab_bg_2'><td>" . __s('Opening date') . "</td>";
-        echo "<td>" . Html::convDateTime($this->fields['date']) . "</td></tr>";
+        echo "<td>" . htmlescape(Html::convDateTime($this->fields['date'])) . "</td></tr>";
 
         echo "<tr class='tab_bg_2'><td>" . __s('Time to resolve') . "</td>";
-        echo "<td>" . Html::convDateTime($this->fields['time_to_resolve']) . "</td></tr>";
+        echo "<td>" . htmlescape(Html::convDateTime($this->fields['time_to_resolve'])) . "</td></tr>";
 
         if (!$this->isNotSolved()) {
             echo "<tr class='tab_bg_2'><td>" . __s('Resolution date') . "</td>";
-            echo "<td>" . Html::convDateTime($this->fields['solvedate']) . "</td></tr>";
+            echo "<td>" . htmlescape(Html::convDateTime($this->fields['solvedate'])) . "</td></tr>";
         }
 
         if (in_array($this->fields['status'], static::getClosedStatusArray())) {
             echo "<tr class='tab_bg_2'><td>" . __s('Closing date') . "</td>";
-            echo "<td>" . Html::convDateTime($this->fields['closedate']) . "</td></tr>";
+            echo "<td>" . htmlescape(Html::convDateTime($this->fields['closedate'])) . "</td></tr>";
         }
         echo "</table>";
     }
@@ -5604,7 +5605,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
         if (isset($this->fields['takeintoaccount_delay_stat'])) {
             echo "<tr class='tab_bg_2'><td>" . __s('Take into account') . "</td><td>";
             if ($this->fields['takeintoaccount_delay_stat'] > 0) {
-                echo Html::timestampToString($this->fields['takeintoaccount_delay_stat'], false, false);
+                echo htmlescape(Html::timestampToString($this->fields['takeintoaccount_delay_stat'], false, false));
             } else {
                 echo '&nbsp;';
             }
@@ -5615,7 +5616,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
             echo "<tr class='tab_bg_2'><td>" . __s('Resolution') . "</td><td>";
 
             if ($this->fields['solve_delay_stat'] > 0) {
-                echo Html::timestampToString($this->fields['solve_delay_stat'], false, false);
+                echo htmlescape(Html::timestampToString($this->fields['solve_delay_stat'], false, false));
             } else {
                 echo '&nbsp;';
             }
@@ -5625,7 +5626,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
         if (in_array($this->fields['status'], static::getClosedStatusArray())) {
             echo "<tr class='tab_bg_2'><td>" . __s('Closure') . "</td><td>";
             if ($this->fields['close_delay_stat'] > 0) {
-                echo Html::timestampToString($this->fields['close_delay_stat'], true, false);
+                echo htmlescape(Html::timestampToString($this->fields['close_delay_stat'], true, false));
             } else {
                 echo '&nbsp;';
             }
@@ -5634,7 +5635,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
 
         echo "<tr class='tab_bg_2'><td>" . __s('Pending') . "</td><td>";
         if ($this->fields['waiting_duration'] > 0) {
-            echo Html::timestampToString($this->fields['waiting_duration'], false, false);
+            echo htmlescape(Html::timestampToString($this->fields['waiting_duration'], false, false));
         } else {
             echo '&nbsp;';
         }
@@ -9421,7 +9422,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
         };
 
         $actor = getItemForItemtype($actor_class);
-        if (!is_a($actor, CommonITILActor::class)) {
+        if (!($actor instanceof CommonITILActor)) {
             throw new RuntimeException(
                 'The actor class for item type ' . $itemtype . ' must extend CommonITILActor.'
             );
@@ -10366,6 +10367,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
         return $validation_class_name ? getItemForItemtype($validation_class_name) : null;
     }
 
+    /**
+     * @return class-string<CommonITILValidation>|null
+     */
     public static function getValidationClassName(): ?string
     {
         $validation_class = static::class . 'Validation';
@@ -11208,8 +11212,12 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
         return false;
     }
 
-    public static function getTeamMemberForm(CommonITILObject $item): string
+    public static function getTeamMemberForm(CommonDBTM $item): string
     {
+        if (!($item instanceof CommonITILObject)) {
+            throw new RuntimeException();
+        }
+
         $itiltemplate = $item->getITILTemplateToUse(
             0,
             $item instanceof Ticket ? $item->fields['type'] : null,

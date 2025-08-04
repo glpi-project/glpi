@@ -40,6 +40,7 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Features\PlanningEvent;
 use Glpi\Features\Teamwork;
+use Glpi\Features\TeamworkInterface;
 use Glpi\RichText\RichText;
 use Ramsey\Uuid\Uuid;
 use Sabre\VObject\Component\VCalendar;
@@ -54,7 +55,7 @@ use function Safe\strtotime;
  *
  * @since 0.85
  **/
-class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
+class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface, TeamworkInterface
 {
     use PlanningEvent;
     use VobjectConverterTrait;

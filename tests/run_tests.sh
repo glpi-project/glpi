@@ -44,6 +44,7 @@ TESTS_SUITES=(
   "lint_js"
   "lint_scss"
   "lint_twig"
+  "security_scan"
   "install"
   "update"
   "phpunit"
@@ -149,6 +150,7 @@ Available tests suites:
  - lint_js
  - lint_scss
  - lint_twig
+ - security_scan
  - install
  - update
  - phpunit
@@ -212,7 +214,7 @@ INSTALL_TESTS_RUN=false
 
 run_single_test () {
   local TEST_TO_RUN=$1
-  local TESTS_WITHOUT_INSTALL=("install", "lint" "lint_php" "lint_js" "lint_scss" "lint_twig" "javascript")
+  local TESTS_WITHOUT_INSTALL=("install", "lint" "lint_php" "lint_js" "lint_scss" "lint_twig" "security_scan" "javascript")
   #Need reinstall if current test is not e2e and $NEED_DB_REINSTALL is true
   #e2e tests are written to not care about extra data in the database
   local REINSTALL_NOW=false
@@ -265,6 +267,10 @@ run_single_test () {
       ;;
     "lint_twig")
          docker compose exec -T app .github/actions/lint_twig-lint.sh \
+      || LAST_EXIT_CODE=$?
+      ;;
+    "security_scan")
+         docker compose exec -T app vendor/bin/psalm \
       || LAST_EXIT_CODE=$?
       ;;
     "install")

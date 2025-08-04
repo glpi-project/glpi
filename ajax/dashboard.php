@@ -151,7 +151,14 @@ switch ($_GET['action'] ?? null) {
             throw new AccessDeniedHttpException();
         }
 
-        echo $dashboard->getFilter(); // `Dashboard::getFilter()` already returns a JSON encoded string.
+        /**
+         * `Dashboard::getFilter()` already returns a JSON encoded string.
+         *
+         * @psalm-taint-escape has_quotes
+         */
+        $filter = $dashboard->getFilter();
+
+        echo $filter;
         return;
 }
 

@@ -54,10 +54,17 @@ if ($_REQUEST['action'] === 'get_all_fields') {
         $v['id'] = $k;
         $field_results[] = $v;
     }
-    echo json_encode([
+
+    /**
+     * Safe JSON response.
+     * @psalm-taint-escape has_quotes
+     */
+    $response = json_encode([
         'results' => $field_results,
         'count' => count($all_fields),
     ], JSON_THROW_ON_ERROR);
+
+    echo $response;
     return;
 } elseif ($_REQUEST['action'] === 'get_core_field_editor') {
     header("Content-Type: text/html; charset=UTF-8");

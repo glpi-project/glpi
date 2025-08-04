@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -252,6 +253,10 @@ abstract class CommonITILActor extends CommonDBRelation
     public function post_addItem()
     {
         $item = getItemForItemtype(static::$itemtype_1);
+
+        if (!($item instanceof CommonITILObject)) {
+            throw new RuntimeException();
+        }
 
         $no_stat_computation = true;
         if ($this->input['type'] == CommonITILActor::ASSIGN) {

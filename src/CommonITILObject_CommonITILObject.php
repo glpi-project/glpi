@@ -264,7 +264,9 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
         $item_2 = getItemForItemtype(static::$itemtype_2);
 
         if (
-            $item_1->getFromDB($this->fields[static::$items_id_1])
+            $item_1 instanceof CommonITILObject
+            && $item_2 instanceof CommonITILObject
+            && $item_1->getFromDB($this->fields[static::$items_id_1])
             && $item_2->getFromDB($this->fields[static::$items_id_2])
         ) {
             $item_1->updateDateMod($this->fields[static::$items_id_1]);

@@ -34,11 +34,12 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\StateInterface;
 
 /**
  * SoftwareVersion Class
  **/
-class SoftwareVersion extends CommonDBChild
+class SoftwareVersion extends CommonDBChild implements StateInterface
 {
     use Glpi\Features\State;
 

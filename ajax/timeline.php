@@ -43,11 +43,12 @@ use function Safe\json_encode;
 if (($_POST['action'] ?? null) === 'change_task_state') {
     header("Content-Type: application/json; charset=UTF-8");
 
-    if (
-        !isset($_POST['tasks_id'], $_POST['parenttype'])
-        || ($parent = getItemForItemtype($_POST['parenttype'])) === false
-        || !is_a($parent, CommonITILObject::class, true)
-    ) {
+    if (!isset($_POST['tasks_id'], $_POST['parenttype'])) {
+        return;
+    }
+
+    $parent = getItemForItemtype($_POST['parenttype']);
+    if (!($parent instanceof CommonITILObject)) {
         return;
     }
 

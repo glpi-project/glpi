@@ -58,6 +58,7 @@ use Entity;
 use finfo;
 use Glpi\Agent\Communication\AbstractRequest;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\StateInterface;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\ArrayNormalizer;
 use GLPIKey;
@@ -1035,10 +1036,8 @@ class Conf extends CommonGLPI
             echo "<td width='20%'>";
             $condition = [];
             foreach ($CFG_GLPI['inventory_types'] as $inv_type) {
-                if (
-                    Toolbox::hasTrait($inv_type, \Glpi\Features\State::class)
-                    && $inv_item = getItemForItemtype($inv_type)
-                ) {
+                $inv_item = getItemForItemtype($inv_type);
+                if ($inv_item instanceof StateInterface) {
                     $condition[] = $inv_item->getStateVisibilityCriteria();
                 }
             }

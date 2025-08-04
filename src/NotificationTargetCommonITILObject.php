@@ -1163,7 +1163,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     public function addDataForTemplate($event, $options = [])
     {
         $events    = $this->getAllEvents();
-        $objettype = strtolower($this->obj->getType());
+        $objettype = strtolower($this->obj::class);
 
         // Get data from ITIL objects
         if ($event != 'alertnotclosed') {
@@ -1178,7 +1178,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                     $this->data["##$objettype.entity##"]      = $entity->getField('completename');
                     $this->data["##$objettype.shortentity##"] = $entity->getField('name');
                 }
-                if ($item = getItemForItemtype($objettype)) {
+                $item = getItemForItemtype($objettype);
+                if ($item instanceof CommonITILObject) {
                     $objettypes = Toolbox::strtolower(getPlural($objettype));
                     $items      = [];
                     foreach ($options['items'] as $object) {

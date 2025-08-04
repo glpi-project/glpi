@@ -213,10 +213,14 @@ if (isset($_POST["add"])) {
     } else {
         $options = $_REQUEST;
         $id = (int) $_GET['id'];
+
+        $menus = ["helpdesk", "problem"];
+        Problem::displayFullPageForItem($id, $menus, $options);
+
         if ($id > 0) {
             $url = KnowbaseItem::getFormURLWithParam($_GET) . '&_in_modal=1&item_itemtype=Problem&item_items_id=' . $id;
             if (str_contains($url, '_to_kb=')) {
-                $options['after_display'] = Ajax::createIframeModalWindow(
+                echo Ajax::createIframeModalWindow(
                     'savetokb',
                     $url,
                     [
@@ -228,9 +232,6 @@ if (isset($_POST["add"])) {
                 );
             }
         }
-
-        $menus = ["helpdesk", "problem"];
-        Problem::displayFullPageForItem($id, $menus, $options);
     }
 
     Html::footer();

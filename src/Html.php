@@ -4985,7 +4985,10 @@ HTML;
      * @param string $script  The script to wrap
      *
      * @return string
-     **/
+     *
+     * @psalm-taint-escape html
+     * @psalm-taint-escape has_quotes
+     */
     public static function scriptBlock($script)
     {
         $script = "\n" . '//<![CDATA[' . "\n\n" . $script . "\n\n" . '//]]>' . "\n";

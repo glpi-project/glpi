@@ -1667,7 +1667,7 @@ class Toolbox
                                 // force redirect to timeline when timeline is enabled
                                 $forcetab = str_replace(['TicketFollowup$1', 'TicketTask$1', 'ITILFollowup$1'], 'Ticket$1', $forcetab);
 
-                                return $item::getFormURLWithID($data[1]) . "&$forcetab";
+                                return $item::getFormURLWithID((int) $data[1]) . "&$forcetab";
                             }
                         } elseif (
                             !empty($data[0])

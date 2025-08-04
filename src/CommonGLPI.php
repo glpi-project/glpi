@@ -50,6 +50,8 @@ class CommonGLPI implements CommonGLPIInterface
 {
     /**
      * Show the title of the item in the navigation header ?
+     *
+     * @var bool
      */
     protected static $showTitleInNavigationHeader = false;
 
@@ -342,9 +344,9 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Add standard define tab
      *
-     * @param string $itemtype itemtype link to the tab
-     * @param array  $ong      defined tabs
-     * @param array  $options  options (for withtemplate)
+     * @param class-string<CommonGLPI> $itemtype itemtype link to the tab
+     * @param array                    $ong      defined tabs
+     * @param array                    $options  options (for withtemplate)
      *
      * @return CommonGLPI
      **/
@@ -672,10 +674,7 @@ class CommonGLPI implements CommonGLPIInterface
                     return $ret;
                 }
 
-                if (
-                    !is_numeric($itemtype) && ($itemtype != 'empty')
-                    && ($obj = getItemForItemtype($itemtype))
-                ) {
+                if ($obj = getItemForItemtype($itemtype)) {
                     $options['tabnum'] = $tabnum;
                     $options['itemtype'] = $itemtype;
                     Plugin::doHook(Hooks::PRE_SHOW_TAB, [ 'item' => $item, 'options' => &$options]);
@@ -1019,7 +1018,7 @@ class CommonGLPI implements CommonGLPIInterface
                     unset($cleanoptions[$key]);
                 }
             }
-            $extraparamhtml = "&amp;" . Toolbox::append_params($cleanoptions, '&amp;');
+            $extraparamhtml = "&" . Toolbox::append_params($cleanoptions, '&');
         }
 
         if (
@@ -1071,7 +1070,7 @@ class CommonGLPI implements CommonGLPIInterface
             if (!$glpilisttitle) {
                 $glpilisttitle = __('List');
             }
-            $list = "<a href='$glpilisturl' title=\"" . htmlescape($glpilisttitle) . "\"
+            $list = "<a href='" . htmlescape($glpilisturl) . "' title=\"" . htmlescape($glpilisttitle) . "\"
                   class='btn btn-sm btn-icon btn-ghost-secondary me-2'
                   data-bs-toggle='tooltip' data-bs-placement='bottom'>
                   <i class='ti ti-list-search fs-2'></i>
@@ -1083,7 +1082,7 @@ class CommonGLPI implements CommonGLPIInterface
                 echo $list;
                 $list_shown = true;
             }
-            echo "<a href='$cleantarget?id=$first$extraparamhtml'
+            echo "<a href='" . htmlescape("$cleantarget?id=$first$extraparamhtml") . "'
                  class='btn btn-sm btn-icon btn-ghost-secondary me-2 " . ($first >= 0 ? '' : 'bs-invisible') . "' title=\"" . __s('First') . "\"
                  data-bs-toggle='tooltip' data-bs-placement='bottom'>
                  <i class='fs-2 ti ti-chevrons-left'></i>
@@ -1094,7 +1093,7 @@ class CommonGLPI implements CommonGLPIInterface
                 echo $list;
                 $list_shown = true;
             }
-            echo "<a href='$cleantarget?id=$prev$extraparamhtml'
+            echo "<a href='" . htmlescape("$cleantarget?id=$prev$extraparamhtml") . "'
                  id='previouspage'
                  class='btn btn-sm btn-icon btn-ghost-secondary me-2 " . ($prev >= 0 ? '' : 'bs-invisible') . "' title=\"" . __s('Previous') . "\"
                  data-bs-toggle='tooltip' data-bs-placement='bottom'>
@@ -1151,7 +1150,7 @@ class CommonGLPI implements CommonGLPIInterface
 
             echo "<span class='py-1 px-3 " . ($current !== false ? '' : 'bs-invisible') . "'>" . ($current + 1) . "/" . count($glpilistitems ?? []) . "</span>";
 
-            echo "<a href='$cleantarget?id=$next$extraparamhtml'
+            echo "<a href='" . htmlescape("$cleantarget?id=$next$extraparamhtml") . "'
                  id='nextpage'
                  class='btn btn-sm btn-icon btn-ghost-secondary ms-2 " . ($next >= 0 ? '' : 'bs-invisible') . "'
                  title=\"" . __s('Next') . "\"
@@ -1169,7 +1168,7 @@ class CommonGLPI implements CommonGLPIInterface
                 echo Html::scriptBlock($js);
             }
 
-            echo "<a href='$cleantarget?id=$last $extraparamhtml'
+            echo "<a href='" . htmlescape("$cleantarget?id=$last$extraparamhtml") . "'
                  class='btn btn-sm btn-icon btn-ghost-secondary ms-2 " . ($last >= 0 ? '' : 'bs-invisible') . "'
                  title=\"" . __s('Last') . "\"
                  data-bs-toggle='tooltip' data-bs-placement='bottom'>" .
@@ -1284,7 +1283,9 @@ class CommonGLPI implements CommonGLPIInterface
 
     /**
      * Get links to Faq
-     **/
+     *
+     * @return string
+     */
     public function getKBLinks()
     {
         /**

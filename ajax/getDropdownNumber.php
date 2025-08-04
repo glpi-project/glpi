@@ -40,4 +40,10 @@
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
-echo Dropdown::getDropdownNumber($_POST);
+/**
+ * Safe JSON response.
+ * @psalm-taint-escape has_quotes
+ */
+$response = Dropdown::getDropdownNumber($_POST, json: true);
+
+echo $response;

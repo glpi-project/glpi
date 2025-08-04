@@ -365,11 +365,12 @@ class APIRest extends API
                     if (!isset($this->parameters['input'])) {
                         $this->messageBadArrayError();
                     }
+
                     // if id is passed by query string, add it into input parameter
-                    $input = (array) ($this->parameters['input']);
                     if (
-                        ($id > 0 || $id == 0 && $itemtype == "Entity")
-                        && !isset($input['id'])
+                        is_object($this->parameters['input'])
+                        && ($id > 0 || $id == 0 && $itemtype == "Entity")
+                        && !property_exists($this->parameters['input'], 'id')
                     ) {
                         $this->parameters['input']->id = $id;
                     }

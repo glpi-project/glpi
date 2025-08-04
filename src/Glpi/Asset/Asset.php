@@ -45,6 +45,7 @@ use Glpi\Features\AssignableItem;
 use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
 use Glpi\Features\Inventoriable;
+use Glpi\Features\StateInterface;
 use Group;
 use Group_Item;
 use InvalidArgumentException;
@@ -60,7 +61,7 @@ use User;
 use function Safe\json_decode;
 use function Safe\json_encode;
 
-abstract class Asset extends CommonDBTM implements AssignableItemInterface
+abstract class Asset extends CommonDBTM implements AssignableItemInterface, StateInterface
 {
     use CustomObjectTrait;
 

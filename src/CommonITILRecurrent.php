@@ -353,9 +353,11 @@ abstract class CommonITILRecurrent extends CommonDropdown
         if (!is_null($this->fields['next_creation_date'])) {
             echo "<div class='center'>";
             //TRANS: %s is the date of next creation
-            echo sprintf(
-                __s('Next creation on %s'),
-                Html::convDateTime($this->fields['next_creation_date'])
+            echo htmlescape(
+                sprintf(
+                    __('Next creation on %s'),
+                    Html::convDateTime($this->fields['next_creation_date'])
+                )
             );
             echo "</div>";
         }

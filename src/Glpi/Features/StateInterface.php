@@ -35,26 +35,21 @@
 
 namespace Glpi\Features;
 
-use CommonDBTM;
-use Glpi\Application\View\TemplateRenderer;
-use ProjectTeam;
-
-/**
- * Trait for itemtypes that can have a team
- * @since 10.0.0
- */
-trait Teamwork
+interface StateInterface
 {
     /**
-     * @see TeamworkInterface::getTeamMemberForm()
+     * Get the visibility of the state field for the item
+     *
+     * @param int $id State ID
+     *
+     * @return bool
      */
-    public static function getTeamMemberForm(CommonDBTM $item): string
-    {
-        $members_types = ProjectTeam::$available_types;
+    public function isStateVisible(int $id): bool;
 
-        return TemplateRenderer::getInstance()->render('components/kanban/teammember.html.twig', [
-            'item' => $item,
-            'members_types' => $members_types,
-        ]);
-    }
+    /**
+     * Get the visibility criteria of the state field to use a filter condition
+     *
+     * @return array
+     */
+    public function getStateVisibilityCriteria(): array;
 }

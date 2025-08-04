@@ -38,12 +38,13 @@ use Glpi\Features\AssignableItem;
 use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
 use Glpi\Features\Inventoriable;
+use Glpi\Features\StateInterface;
 use Glpi\Socket;
 
 /**
  * Phone Class
  **/
-class Phone extends CommonDBTM implements AssignableItemInterface
+class Phone extends CommonDBTM implements AssignableItemInterface, StateInterface
 {
     use Clonable;
     use Inventoriable;

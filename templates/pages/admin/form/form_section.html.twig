@@ -245,13 +245,14 @@
         {% for form_group_blocks in section.getBlocks() %}
             {% if form_group_blocks is iterable %}
                 {{ include('pages/admin/form/form_horizontal_block.html.twig', {
-                    'blocks'         : form_group_blocks,
-                    'can_update'     : can_update,
-                    'form'           : form,
+                    'blocks'                      : form_group_blocks,
+                    'can_update'                  : can_update,
+                    'form'                        : form,
+                    'allow_unauthenticated_access': allow_unauthenticated_access,
                 }, with_context = false) }}
             {% else %}
                 {% set form_block = form_group_blocks %}
-                {{ form_block.displayBlockForEditor() }}
+                {{ form_block.displayBlockForEditor(can_update, allow_unauthenticated_access) }}
             {% endif %}
         {% endfor %}
     {% endif %}

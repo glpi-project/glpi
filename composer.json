@@ -111,7 +111,6 @@
         "glpi-project/phpstan-glpi": "^1.0",
         "glpi-project/tools": "^0.7",
         "mikey179/vfsstream": "^1.6",
-        "nikic/php-parser": "^5.5",
         "php-parallel-lint/php-parallel-lint": "^1.4",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "^2.1",
@@ -125,7 +124,8 @@
         "symfony/twig-bundle": "^6.4",
         "symfony/var-dumper": "^6.4",
         "symfony/web-profiler-bundle": "^6.4",
-        "thecodingmachine/phpstan-safe-rule": "^1.4"
+        "thecodingmachine/phpstan-safe-rule": "^1.4",
+        "vimeo/psalm": "^6.13"
     },
     "provide": {
         "ext-sodium": "*"

@@ -190,7 +190,7 @@ final class LinkedITILObjectsField extends AbstractConfigField implements Destin
             }
 
             $target = getItemForItemtype($linked_itilobject['itemtype']);
-            if (!$target || !$target->getFromDB($linked_itilobject['items_id'])) {
+            if (!($target instanceof CommonITILObject) || !$target->getFromDB($linked_itilobject['items_id'])) {
                 continue;
             }
 

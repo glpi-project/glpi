@@ -491,7 +491,15 @@ TWIG, $twig_params);
      * @param string $mode      Requested mode
      * @param 'event'|'setting'|'' $extratype Extra type
      *
-     * @return string
+     * @return (
+     *      $extratype is 'event'
+     *          ? class-string<NotificationEventInterface>
+     *          : (
+     *              $extratype is 'setting'
+     *                  ? class-string<NotificationSetting>
+     *                  : class-string<NotificationInterface>
+     *          )
+     *      )
      */
     public static function getModeClass($mode, $extratype = '')
     {
@@ -509,6 +517,26 @@ TWIG, $twig_params);
         if ($conf['from'] !== 'core') {
             $classname = 'Plugin' . ucfirst($conf['from']) . $classname;
         }
+
+
+        switch ($extratype) {
+            case 'event':
+                $expected_class = NotificationEventInterface::class;
+                break;
+            case 'setting':
+                $expected_class = NotificationSetting::class;
+                break;
+            default:
+                $expected_class = NotificationInterface::class;
+                break;
+        }
+
+        if (!is_a($classname, $expected_class, true)) {
+            throw new RuntimeException(
+                sprintf('`%s` is not an instance of `%s`.', $classname, $expected_class)
+            );
+        }
+
         return $classname;
     }
 

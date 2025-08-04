@@ -34,10 +34,12 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
+use Computer;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Asset\Asset;
 use Glpi\Features\AssignableItemInterface;
 use Glpi\Http\Request;
+use Group_Item;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Unmanaged;
 
@@ -215,7 +217,7 @@ class AssetControllerTest extends \HLAPITestCase
             'number_units' => 20,
         ]);
         // Create computer
-        $computer = new \Computer();
+        $computer = new Computer();
         $computer_id = $computer->add([
             'name' => __FUNCTION__,
             'entities_id' => $this->getTestRootEntity(true),
@@ -395,7 +397,7 @@ class AssetControllerTest extends \HLAPITestCase
             'name' => 'Test',
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]));
-        $computer = new \Computer();
+        $computer = new Computer();
         $this->assertGreaterThan(0, $computer_id = $computer->add([
             'name' => 'Test',
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
@@ -443,7 +445,7 @@ class AssetControllerTest extends \HLAPITestCase
             'name' => 'Test',
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]));
-        $computer = new \Computer();
+        $computer = new Computer();
         $this->assertGreaterThan(0, $computer_id = $computer->add([
             'name' => 'Test',
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
@@ -595,6 +597,45 @@ class AssetControllerTest extends \HLAPITestCase
                         }
                         $this->api->autoTestAssignableItemRights($asset['href'], $asset['itemtype']);
                     }
+                });
+        });
+    }
+
+    /**
+     * Test that the array property for groups correctly returns all groups
+     */
+    public function testMultipleGroups()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $computers_id = getItemByTypeName('Computer', '_test_pc01', true);
+        $DB->delete('glpi_groups_items', [
+            'itemtype' => Computer::class,
+            'items_id' => $computers_id,
+        ]);
+        $DB->insert('glpi_groups_items', [
+            'itemtype' => Computer::class,
+            'items_id' => $computers_id,
+            'groups_id' => getItemByTypeName('Group', '_test_group_1', true),
+            'type' => Group_Item::GROUP_TYPE_NORMAL,
+        ]);
+        $DB->insert('glpi_groups_items', [
+            'itemtype' => Computer::class,
+            'items_id' => $computers_id,
+            'groups_id' => getItemByTypeName('Group', '_test_group_2', true),
+            'type' => Group_Item::GROUP_TYPE_NORMAL,
+        ]);
+
+        $this->login();
+        $this->api->call(new Request('GET', '/Assets/Computer/' . $computers_id), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertCount(2, $content['group']);
+                    $this->assertEquals('_test_group_1', $content['group'][0]['name']);
+                    $this->assertEquals('_test_group_2', $content['group'][1]['name']);
                 });
         });
     }
