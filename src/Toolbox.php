@@ -35,9 +35,9 @@
 use Glpi\Api\Deprecated\DeprecatedInterface;
 use Glpi\Console\Application;
 use Glpi\DBAL\QueryParam;
-use Glpi\Error\ErrorHandler;
 use Glpi\Error\ErrorUtils;
 use Glpi\Event;
+use Glpi\Exception\EmptyCurlContentException;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Helpdesk\DefaultDataManager;
@@ -55,6 +55,7 @@ use Laminas\Mail\Protocol\Pop3;
 use Laminas\Mail\Storage\AbstractStorage;
 use Mexitek\PHPColors\Color;
 use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Safe\Exceptions\CurlException;
 use Safe\Exceptions\ErrorfuncException;
@@ -1370,13 +1371,16 @@ class Toolbox
         bool $check_url_safeness = false,
         ?array &$curl_info = null
     ) {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var LoggerInterface $PHPLOGGER
+         */
+        global $CFG_GLPI, $PHPLOGGER;
 
         try {
             return self::doCallCurl($url, $eopts, $msgerr, $curl_error, $check_url_safeness, $curl_info);
         } catch (CurlException $e) {
-            ErrorHandler::logCaughtException($e);
+            $PHPLOGGER->error($e->getMessage(), ['exception' => $e]);
 
             $curl_error = $e->getMessage();
             if (empty($CFG_GLPI["proxy_name"])) {
@@ -1393,7 +1397,7 @@ class Toolbox
 
             return "";
         } catch (EmptyCurlContentException $e) {
-            ErrorHandler::logCaughtException($e);
+            $PHPLOGGER->error($e->getMessage(), ['exception' => $e]);
             $msgerr = __('No data available on the website');
             return "";
         }
@@ -1420,7 +1424,7 @@ class Toolbox
         &$curl_error = null,
         bool $check_url_safeness = false,
         ?array &$curl_info = null
-    ) {
+    ): string {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
