@@ -35,6 +35,7 @@
 use Glpi\Api\Deprecated\DeprecatedInterface;
 use Glpi\Console\Application;
 use Glpi\DBAL\QueryParam;
+use Glpi\Error\ErrorHandler;
 use Glpi\Error\ErrorUtils;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
@@ -55,6 +56,7 @@ use Laminas\Mail\Storage\AbstractStorage;
 use Mexitek\PHPColors\Color;
 use Monolog\Logger;
 use Psr\Log\LogLevel;
+use Safe\Exceptions\CurlException;
 use Safe\Exceptions\ErrorfuncException;
 use Safe\Exceptions\FilesystemException;
 use Safe\Exceptions\ImageException;
@@ -1371,6 +1373,57 @@ class Toolbox
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
+        try {
+            return self::doCallCurl($url, $eopts, $msgerr, $curl_error, $check_url_safeness, $curl_info);
+        } catch (CurlException $e) {
+            ErrorHandler::logCaughtException($e);
+
+            $curl_error = $e->getMessage();
+            if (empty($CFG_GLPI["proxy_name"])) {
+                $msgerr = sprintf(
+                    __('Connection failed. If you use a proxy, please configure it. (%s)'),
+                    $curl_error
+                );
+            } else {
+                $msgerr = sprintf(
+                    __('Failed to connect to the proxy server (%s)'),
+                    $curl_error
+                );
+            }
+
+            return "";
+        } catch (EmptyCurlContentException $e) {
+            ErrorHandler::logCaughtException($e);
+            $msgerr = __('No data available on the website');
+            return "";
+        }
+    }
+
+    /**
+     * Executes a curl call
+     *
+     * @param string $url
+     * @param array  $eopts
+     * @param string $msgerr
+     * @param bool   $check_url_safeness
+     * @param array  $curl_info
+     *
+     * @return string
+     *
+     * @throws CurlException
+     * @throws EmptyCurlContentException
+     */
+    private static function doCallCurl(
+        $url,
+        array $eopts = [],
+        &$msgerr = null,
+        &$curl_error = null,
+        bool $check_url_safeness = false,
+        ?array &$curl_info = null
+    ) {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         if ($check_url_safeness && !Toolbox::isUrlSafe($url)) {
             $msgerr = sprintf(
                 __('URL "%s" is not considered safe and cannot be fetched from GLPI server.'),
@@ -1429,34 +1482,16 @@ class Toolbox
 
         curl_setopt_array($ch, $opts);
         $content = curl_exec($ch);
-        $curl_error = curl_error($ch) ?: null;
         $curl_info = curl_getinfo($ch);
         $curl_redirect = $curl_info['redirect_url'] ?? null;
         curl_close($ch);
 
-        if ($curl_error !== null) {
-            if (empty($CFG_GLPI["proxy_name"])) {
-                //TRANS: %s is the error string
-                $msgerr = sprintf(
-                    __('Connection failed. If you use a proxy, please configure it. (%s)'),
-                    $curl_error
-                );
-            } else {
-                //TRANS: %s is the error string
-                $msgerr = sprintf(
-                    __('Failed to connect to the proxy server (%s)'),
-                    $curl_error
-                );
-            }
-            $content = '';
-        } elseif (!empty($curl_redirect)) {
+        if (!empty($curl_redirect)) {
             return self::callCurl($curl_redirect, $eopts, $msgerr, $curl_error, $check_url_safeness, $curl_info);
         } elseif (empty($content)) {
-            $msgerr = __('No data available on the web site');
+            throw new EmptyCurlContentException();
         }
-        if (!empty($msgerr)) {
-            trigger_error($msgerr, E_USER_WARNING);
-        }
+
         return $content;
     }
 
