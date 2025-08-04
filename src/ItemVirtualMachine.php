@@ -144,10 +144,6 @@ class ItemVirtualMachine extends CommonDBChild
      **/
     public function showForm($ID, array $options = [])
     {
-        if (!Session::haveRight("computer", UPDATE)) {
-            return false;
-        }
-
         if ($ID > 0) {
             $asset = getItemForItemtype($this->fields['itemtype']);
             $this->check($ID, READ);
