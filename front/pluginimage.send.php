@@ -91,7 +91,7 @@ if (
 header("Expires: Sun, 30 Jan 1966 06:30:00 GMT");
 header('Pragma: private'); /// IE BUG + SSL
 header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
-header('Content-disposition: filename="' . $_GET["name"] . '"');
+header('Content-disposition: filename="' . rawurlencode($_GET["name"]) . '"');
 
 if (file_exists($filepath)) {
     header("Content-type: " . Toolbox::getMime($filepath));

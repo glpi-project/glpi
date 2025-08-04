@@ -1313,7 +1313,7 @@ class UploadHandler
             $json = json_encode($content);
             $redirect = stripslashes($this->get_post_param('redirect'));
             if ($redirect && preg_match($this->options['redirect_allow_target'], $redirect)) {
-                return $this->header('Location: ' . sprintf($redirect, rawurlencode($json)));
+                return $this->header('Location: ' . rawurlencode(sprintf($redirect, $json)));
             }
             $this->head();
             if ($this->get_server_var('HTTP_CONTENT_RANGE')) {

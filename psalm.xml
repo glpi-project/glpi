@@ -20,7 +20,7 @@
         <TaintedCallable errorLevel="suppress" />
         <TaintedCookie errorLevel="suppress" />
         <TaintedFile errorLevel="suppress" />
-        <TaintedHeader errorLevel="suppress" />
+        <!-- <TaintedHeader errorLevel="suppress" /> -->
         <!-- <TaintedHtml errorLevel="suppress" /> -->
         <TaintedInclude errorLevel="suppress" />
         <TaintedLdap errorLevel="suppress" />

@@ -77,7 +77,7 @@ if (isset($_GET["lID"])) {
                     // first one (probably missing arg)
                     $data = reset($content_data);
                 }
-                header("Content-disposition: filename=\"$filename\"");
+                header("Content-disposition: filename=\"" . rawurlencode($filename) . "\"");
                 $mime = "application/scriptfile";
 
                 header("Content-type: " . $mime);
