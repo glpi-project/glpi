@@ -45,9 +45,10 @@
         </button>
     </div>
 
-    <div class="card border-bottom-0">
+    <div class="card rounded">
         {% include "components/datatable.html.twig" with {
             'datatable_id': 'glpi-helpdesk-translations-languages',
+            'container_class': 'rounded',
             'columns': {
                 'language': __('Language'),
                 'translated': __('Translated'),
