@@ -227,7 +227,7 @@ class Appliance_Item_Relation extends CommonDBRelation
             $relations_str .= "<li>$link $del</li>";
         }
 
-        return "<ul>$relations_str</ul>
+        return "<ul class='mb-0'>$relations_str</ul>
          <span class='cursor-pointer add_relation' data-appliances-items-id='{$appliances_items_id}'>
             <i class='ti ti-plus' title='" . __s('New relation') . "'></i>
             <span class='sr-only'>" . __s('New relation') . "</span>
