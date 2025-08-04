@@ -156,7 +156,8 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         // Act: get the forms from the catalog manager and extract their names
         $this->login();
         $item_request = new ItemRequest(
-            new FormAccessParameters(Session::getCurrentSessionInfo())
+            access_parameters: new FormAccessParameters(Session::getCurrentSessionInfo()),
+            category_id: 0,
         );
         $forms = self::$manager->getItems($item_request)['items'];
         $forms_names = array_map(fn(ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(), $forms);
@@ -504,7 +505,8 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         // Act: get the root items from the catalog manager and extract their names
         $this->login();
         $item_request = new ItemRequest(
-            new FormAccessParameters(Session::getCurrentSessionInfo())
+            access_parameters: new FormAccessParameters(Session::getCurrentSessionInfo()),
+            category_id: 0,
         );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(
@@ -545,7 +547,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             access_parameters: new FormAccessParameters(
                 Session::getCurrentSessionInfo()
             ),
-            category: $category_a,
+            category_id: $category_a->getID(),
         );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(
@@ -585,6 +587,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
                 Session::getCurrentSessionInfo()
             ),
             filter: 'C',
+            category_id: 0,
         );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(
@@ -630,7 +633,8 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         // Act: get the root items
         $this->login();
         $item_request = new ItemRequest(
-            new FormAccessParameters(Session::getCurrentSessionInfo()),
+            access_parameters: new FormAccessParameters(Session::getCurrentSessionInfo()),
+            category_id: 0,
         );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(
@@ -703,7 +707,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             access_parameters: new FormAccessParameters(
                 Session::getCurrentSessionInfo()
             ),
-            category: $category,
+            category_id: $category->getID(),
         );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(

@@ -128,7 +128,7 @@ final class Category extends CommonTreeDropdown implements ServiceCatalogComposi
     ): ItemRequest {
         return new ItemRequest(
             access_parameters: $item_request->getFormAccessParameters(),
-            category: $this,
+            category_id: $this->getID(),
         );
     }
 

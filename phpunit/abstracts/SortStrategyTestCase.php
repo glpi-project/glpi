@@ -90,6 +90,7 @@ abstract class SortStrategyTestCase extends \DbTestCase
             access_parameters: new FormAccessParameters(
                 Session::getCurrentSessionInfo()
             ),
+            category_id: 0,
             items_per_page: 100,
             sort_strategy: SortStrategyEnum::ALPHABETICAL,
         );

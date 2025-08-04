@@ -53,12 +53,12 @@ final class KnowbaseItemProvider implements LeafProviderInterface
     #[Override]
     public function getItems(ItemRequest $item_request): array
     {
-        $category = $item_request->getCategory();
+        $category_id = $item_request->getCategoryID();
         $filter = $item_request->getFilter();
 
         $knowbase_items = [];
         $raw_knowbase_items = (new KnowbaseItem())->find([
-            'forms_categories_id'     => $category ? $category->getID() : 0,
+            'forms_categories_id'     => $category_id ?? 0,
             'show_in_service_catalog' => true,
         ], ['name']);
 
