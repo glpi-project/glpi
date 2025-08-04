@@ -284,7 +284,7 @@ class ItemVirtualMachine extends CommonDBChild
         TemplateRenderer::getInstance()->display('components/form/viewsubitem.html.twig', [
             'type' => 'ItemVirtualMachine',
             'parenttype' => $itemtype,
-            'items_id' => 'computers_id',
+            'items_id' => $asset::getForeignKeyField(),
             'id' => $ID,
             'cancreate' => $canedit,
             'add_new_label' => __('Add a virtual machine'),
