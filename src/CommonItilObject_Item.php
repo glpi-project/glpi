@@ -1333,17 +1333,12 @@ TWIG, $twig_params);
         Dropdown::showSelectItemFromItemtypes($dropdown_params);
         switch ($ma->getAction()) {
             case 'add_item':
-                echo "<br><button type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
+                echo "<br><button type='submit' name='add' value=\"" . _sx('button', 'Add') .
+                    "\" class='btn btn-sm btn-primary'></button>";
                 break;
             case 'delete_item':
-                Dropdown::showSelectItemFromItemtypes([
-                    'items_id_name'   => 'items_id',
-                    'itemtype_name'   => 'item_itemtype',
-                    'itemtypes'       => $CFG_GLPI['ticket_types'],
-                    'checkright'      => true,
-                    'entity_restrict' => $_SESSION['glpiactive_entity'],
-                ]);
-                echo "<br><input type='submit' name='delete' value=\"" . _sx('button', 'Delete permanently') . "\" class='btn btn-primary'>";
+                echo "<br><input type='submit' name='delete' value=\"" . _sx('button', 'Delete permanently') .
+                    "\" class='btn btn-sm btn-primary'></button>";
                 break;
         }
     }
