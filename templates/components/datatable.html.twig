@@ -81,7 +81,7 @@
         }) }}
     {% endif %}
 
-    <div class="table-responsive" {% if showmassiveactions %} id="{{ massiveactionparams['container'] }}" {% endif %}>
+    <div class="table-responsive {{ container_class|default('') }}" {% if showmassiveactions %} id="{{ massiveactionparams['container'] }}" {% endif %}>
         {% if showmassiveactions %}
             <div class="mb-2">
                 {% do call('Html::showMassiveActions', [{action_button_classes: 'btn btn-sm btn-outline-secondary me-2'}|merge(massiveactionparams|default({}))]) %}

@@ -132,26 +132,24 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
             </div>
             <div class="modal-body p-0">
-                <div class="card border-bottom-0">
-                    {% include "components/datatable.html.twig" with {
-                        'datatable_id': 'glpi-form-translations-languages',
-                        'datatable_aria_label': _n('Form translation', 'Form translations', get_plural_number()),
-                        'columns': {
-                            'type': '',
-                            'default': __('Default (%s)')|format(call('Dropdown::getLanguageName', [config('language')])),
-                            'translation': call('Dropdown::getLanguageName', [form_translation.fields['language']]),
-                        },
-                        'formatters': {
-                            'type': 'raw_html',
-                            'default': 'raw_html',
-                            'translation': 'raw_html',
-                        },
-                        'entries': entries,
-                        'total_number': 1,
-                        'nofilter': true,
-                        'nosort': true,
-                    } only %}
-                </div>
+                {% include "components/datatable.html.twig" with {
+                    'datatable_id': 'glpi-form-translations-languages',
+                    'datatable_aria_label': _n('Form translation', 'Form translations', get_plural_number()),
+                    'columns': {
+                        'type': '',
+                        'default': __('Default (%s)')|format(call('Dropdown::getLanguageName', [config('language')])),
+                        'translation': call('Dropdown::getLanguageName', [form_translation.fields['language']]),
+                    },
+                    'formatters': {
+                        'type': 'raw_html',
+                        'default': 'raw_html',
+                        'translation': 'raw_html',
+                    },
+                    'entries': entries,
+                    'total_number': 1,
+                    'nofilter': true,
+                    'nosort': true,
+                } only %}
             </div>
             <div class="modal-footer border-top-0">
                 {% if can_update %}
