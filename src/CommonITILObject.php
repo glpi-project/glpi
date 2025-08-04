@@ -7172,8 +7172,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 foreach ($result as $plan) {
                     if (isset($plan['begin']) && $plan['begin']) {
                         $items[$plan['id']] = $plan['id'];
-                        $planned_info .= htmlescape(sprintf(__('From %s'), Html::convDateTime($plan['begin'])));
-                        $planned_info .= htmlescape(sprintf(__('To %s'), Html::convDateTime($plan['end'])));
+                        $planned_info .= htmlescape(sprintf(__('From %s'), Html::convDateTime($plan['begin']))) . '<br>';
+                        $planned_info .= htmlescape(sprintf(__('To %s'), Html::convDateTime($plan['end']))) . '<br>';
                         if ($plan['users_id_tech']) {
                             $user = new User();
                             if (!isset($user_cache[$plan["users_id_tech"]]) && $user->getFromDB($plan["users_id_tech"])) {
@@ -7190,7 +7190,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                                 );
                                 $user_cache[$plan['users_id']] = $user_value;
                             }
-                            $planned_info .= htmlescape(sprintf(__('By %s'), $user_cache[$plan['users_id_tech']]));
+                            $planned_info .= sprintf(__s('By %s'), $user_cache[$plan['users_id_tech']]);
                         }
                         $planned_info .= "<br>";
                     }
