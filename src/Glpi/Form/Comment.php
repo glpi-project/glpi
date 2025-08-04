@@ -104,6 +104,16 @@ final class Comment extends CommonDBChild implements
     }
 
     #[Override]
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb(
+            [
+                FormTranslation::class,
+            ]
+        );
+    }
+
+    #[Override]
     public function prepareInputForAdd($input)
     {
         if (!isset($input['uuid'])) {

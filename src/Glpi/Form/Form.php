@@ -390,6 +390,7 @@ final class Form extends CommonDBTM implements
                 FormDestination::class,
                 FormAccessControl::class,
                 FormTile::class,
+                FormTranslation::class,
             ]
         );
     }
