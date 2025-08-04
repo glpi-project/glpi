@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\QuestionType;
 
+use Config;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionHandler\RichTextConditionHandler;
@@ -157,7 +158,7 @@ TWIG;
                 "",
                 {
                     'enable_richtext': true,
-                    'enable_images'  : is_authenticated,
+                    'enable_images'  : enable_images,
                     'init'           : question is not null ? true   : false,
                     'is_horizontal'  : false,
                     'full_width'     : true,
@@ -171,7 +172,7 @@ TWIG;
         return $twig->renderFromStringTemplate($template, [
             'question'      => $question,
             'default_value' => $translated_default_value,
-            'is_authenticated' => Session::isAuthenticated(),
+            'enable_images' => Session::isAuthenticated() || Config::allowUnauthenticatedUploads(),
         ]);
     }
 

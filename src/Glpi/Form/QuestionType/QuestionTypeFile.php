@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\QuestionType;
 
+use Config;
 use Document;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Question;
@@ -135,6 +136,6 @@ TWIG;
     #[Override]
     public function isAllowedForUnauthenticatedAccess(): bool
     {
-        return false;
+        return Config::allowUnauthenticatedUploads();
     }
 }

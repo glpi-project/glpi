@@ -2036,4 +2036,12 @@ class Config extends CommonDBTM
         }
         return null;
     }
+
+    public static function allowUnauthenticatedUploads(): bool
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        return (bool) ($CFG_GLPI['allow_unauthenticated_uploads'] ?? false);
+    }
 }

@@ -211,6 +211,11 @@ final class Firewall
             '/install/' => self::STRATEGY_NO_CHECK, // No check during install/update
         ];
 
+        if (Config::allowUnauthenticatedUploads()) {
+            $paths['/ajax/fileupload.php'] = self::STRATEGY_NO_CHECK;
+            $paths['/ajax/getFileTag.php'] = self::STRATEGY_NO_CHECK;
+        }
+
         foreach ($paths as $checkPath => $strategy) {
             if (\str_starts_with($path, $checkPath)) {
                 return $strategy;
