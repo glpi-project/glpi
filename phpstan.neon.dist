@@ -17,6 +17,8 @@ parameters:
         check:
             missingCheckedExceptionInThrows: true
             tooWideThrowType: true
+        uncheckedExceptionRegexes:
+            - /^Glpi\\Exception\\Http\\/
     universalObjectCratesClasses:
         - Sabre\VObject\Node
     dynamicConstantNames:

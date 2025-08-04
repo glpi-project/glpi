@@ -782,39 +782,9 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method CommonDBTM\\:\\:check\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method CommonDBTM\\:\\:check\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\NotFoundHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method CommonDBTM\\:\\:checkGlobal\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method CommonDBTM\\:\\:cleanRelationData\\(\\) throws checked exception Safe\\\\Exceptions\\\\PcreException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 2,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method CommonDBTM\\:\\:displayFullPageForItem\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 2,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method CommonDBTM\\:\\:displayFullPageForItem\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\NotFoundHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
@@ -902,18 +872,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDropdown.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method CommonGLPI\\:\\:display\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonGLPI.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method CommonGLPI\\:\\:display\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\NotFoundHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonGLPI.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method CommonGLPI\\:\\:showTabsContent\\(\\) throws checked exception Safe\\\\Exceptions\\\\UrlException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
@@ -989,12 +947,6 @@ $ignoreErrors[] = [
 	'message' => '#^Method CommonITILObject\\:\\:getKanbanColumns\\(\\) throws checked exception LogicException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 2,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method CommonITILObject\\:\\:getKanbanUrlWithID\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
@@ -2339,12 +2291,6 @@ $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Agent\\\\Communication\\\\AbstractRequest\\:\\:guessMode\\(\\) throws checked exception RuntimeException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Agent\\\\Communication\\\\AbstractRequest\\:\\:handleContentType\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\HttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
 ];
 $ignoreErrors[] = [
@@ -5300,58 +5246,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/CentralController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Config\\\\Helpdesk\\\\AbstractTileController\\:\\:getAndValidateLinkedEntityFromRequest\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Config/Helpdesk/AbstractTileController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Config\\\\Helpdesk\\\\AbstractTileController\\:\\:getAndValidateLinkedEntityFromRequest\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Config/Helpdesk/AbstractTileController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Config\\\\Helpdesk\\\\AbstractTileController\\:\\:getAndValidateLinkedItemFromDatabase\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Config/Helpdesk/AbstractTileController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\Config\\\\Helpdesk\\\\AbstractTileController\\:\\:getAndValidateLinkedItemFromDatabase\\(\\) throws checked exception RuntimeException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/Config/Helpdesk/AbstractTileController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Config\\\\Helpdesk\\\\AbstractTileController\\:\\:getAndValidateLinkedItemFromRequest\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Config/Helpdesk/AbstractTileController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Config\\\\Helpdesk\\\\AbstractTileController\\:\\:getAndValidateLinkedItemFromRequest\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Config/Helpdesk/AbstractTileController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Config\\\\Helpdesk\\\\AbstractTileController\\:\\:getAndValidateTileFromRequest\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Config/Helpdesk/AbstractTileController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Config\\\\Helpdesk\\\\AddTileController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Config/Helpdesk/AddTileController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Config\\\\Helpdesk\\\\AddTileController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Config/Helpdesk/AddTileController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\Config\\\\Helpdesk\\\\CopyParentEntityController\\:\\:__invoke\\(\\) throws checked exception InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
@@ -5360,46 +5258,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/Config/Helpdesk/CopyParentEntityController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Config\\\\Helpdesk\\\\DeleteTileController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Config/Helpdesk/DeleteTileController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Config\\\\Helpdesk\\\\ShowAddTileFormController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Config/Helpdesk/ShowAddTileFormController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Config\\\\Helpdesk\\\\ShowEditTileFormController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Config/Helpdesk/ShowEditTileFormController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Config\\\\Helpdesk\\\\UpdateTileController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Config/Helpdesk/UpdateTileController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\Config\\\\Helpdesk\\\\UpdateTileController\\:\\:__invoke\\(\\) throws checked exception RuntimeException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/Config/Helpdesk/UpdateTileController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\DropdownFormController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/DropdownFormController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\DropdownFormController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Controller/DropdownFormController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\DropdownFormController\\:\\:__invoke\\(\\) throws checked exception InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
@@ -5420,12 +5282,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/ErrorController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\AllowListDropdown\\\\CountUsersController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/AllowListDropdown/CountUsersController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\AllowListDropdown\\\\CountUsersController\\:\\:__invoke\\(\\) throws checked exception InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
@@ -5438,46 +5294,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/Form/Condition/EditorController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Condition\\\\EngineController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\NotFoundHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/Condition/EngineController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Condition\\\\EngineController\\:\\:__invoke\\(\\) throws checked exception InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/Form/Condition/EngineController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Condition\\\\EngineController\\:\\:checkFormAccessPolicies\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/Condition/EngineController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\DelegationController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/DelegationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\DelegationController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\NotFoundHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/DelegationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Destination\\\\AddDestinationController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/Destination/AddDestinationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Destination\\\\AddDestinationController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/Destination/AddDestinationController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Destination\\\\AddDestinationController\\:\\:__invoke\\(\\) throws checked exception InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
@@ -5486,34 +5306,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/Form/Destination/AddDestinationController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Destination\\\\PurgeDestinationController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/Destination/PurgeDestinationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Destination\\\\PurgeDestinationController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/Destination/PurgeDestinationController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Destination\\\\PurgeDestinationController\\:\\:__invoke\\(\\) throws checked exception InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/Form/Destination/PurgeDestinationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Destination\\\\UpdateDestinationController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/Destination/UpdateDestinationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Destination\\\\UpdateDestinationController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/Destination/UpdateDestinationController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Destination\\\\UpdateDestinationController\\:\\:__invoke\\(\\) throws checked exception InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
@@ -5522,28 +5318,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/Form/Destination/UpdateDestinationController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\ExportController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/ExportController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\ExportController\\:\\:__invoke\\(\\) throws checked exception InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Controller/Form/ExportController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Import\\\\Step1IndexController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/Import/Step1IndexController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Import\\\\Step2PreviewController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/Import/Step2PreviewController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Import\\\\Step2PreviewController\\:\\:previewResponse\\(\\) throws checked exception InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
@@ -5558,31 +5336,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/Form/Import/Step3ResolveIssuesController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Import\\\\Step4ExecuteController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/Import/Step4ExecuteController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\QuestionActorsDropdownController\\:\\:__invoke\\(\\) throws checked exception InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/QuestionActorsDropdownController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\QuestionActorsDropdownController\\:\\:checkFormAccessPolicies\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/QuestionActorsDropdownController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\QuestionActorsDropdownController\\:\\:loadTargetForm\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/QuestionActorsDropdownController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\QuestionActorsDropdownController\\:\\:loadTargetForm\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\NotFoundHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/Form/QuestionActorsDropdownController.php',
@@ -5594,43 +5348,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/Form/RendererController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\RendererController\\:\\:checkFormAccessPolicies\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/RendererController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\RendererController\\:\\:loadTargetForm\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/RendererController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\RendererController\\:\\:loadTargetForm\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\NotFoundHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/RendererController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\SubmitAnswerController\\:\\:__invoke\\(\\) throws checked exception InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/SubmitAnswerController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\SubmitAnswerController\\:\\:checkFormAccessPolicies\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/SubmitAnswerController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\SubmitAnswerController\\:\\:loadSubmittedForm\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/SubmitAnswerController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\SubmitAnswerController\\:\\:loadSubmittedForm\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\NotFoundHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/Form/SubmitAnswerController.php',
@@ -5642,46 +5360,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/Form/SubmitAnswerController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\SubmitAnswerController\\:\\:saveSubmittedAnswers\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/SubmitAnswerController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\TagListController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/TagListController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\TagListController\\:\\:__invoke\\(\\) throws checked exception InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/Form/TagListController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\TagListController\\:\\:loadSubmittedForm\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/TagListController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\TagListController\\:\\:loadSubmittedForm\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\NotFoundHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/TagListController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Translation\\\\AddNewFormTranslationController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/Translation/AddNewFormTranslationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Translation\\\\AddNewFormTranslationController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\NotFoundHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/Translation/AddNewFormTranslationController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Translation\\\\AddNewFormTranslationController\\:\\:__invoke\\(\\) throws checked exception InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
@@ -5690,46 +5372,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/Form/Translation/AddNewFormTranslationController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Translation\\\\AddNewFormTranslationController\\:\\:createTranslation\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/Translation/AddNewFormTranslationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Translation\\\\DeleteFormTranslationController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/Translation/DeleteFormTranslationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Translation\\\\DeleteFormTranslationController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\NotFoundHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/Translation/DeleteFormTranslationController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Translation\\\\DeleteFormTranslationController\\:\\:__invoke\\(\\) throws checked exception InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/Form/Translation/DeleteFormTranslationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Translation\\\\DeleteFormTranslationController\\:\\:processDeletions\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/Translation/DeleteFormTranslationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Translation\\\\UpdateFormTranslationController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/Translation/UpdateFormTranslationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Translation\\\\UpdateFormTranslationController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\NotFoundHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/Translation/UpdateFormTranslationController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Translation\\\\UpdateFormTranslationController\\:\\:__invoke\\(\\) throws checked exception InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
@@ -5738,49 +5384,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/Form/Translation/UpdateFormTranslationController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Translation\\\\UpdateFormTranslationController\\:\\:createTranslation\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/Translation/UpdateFormTranslationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\Translation\\\\UpdateFormTranslationController\\:\\:updateTranslation\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/Translation/UpdateFormTranslationController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\ValidateAnswerController\\:\\:__invoke\\(\\) throws checked exception InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/ValidateAnswerController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\ValidateAnswerController\\:\\:checkFormAccessPolicies\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/ValidateAnswerController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\ValidateAnswerController\\:\\:checkSubmittedAnswersValidation\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/ValidateAnswerController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\ValidateAnswerController\\:\\:loadSubmittedForm\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/ValidateAnswerController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\ValidateAnswerController\\:\\:loadSubmittedForm\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\NotFoundHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/ValidateAnswerController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Form\\\\ValidateAnswerController\\:\\:loadSubmittedSection\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\NotFoundHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/Form/ValidateAnswerController.php',
@@ -5822,36 +5426,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/GenericAjaxCrudController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\GenericFormController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/GenericFormController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\GenericFormController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/GenericFormController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\GenericFormController\\:\\:checkIsValidClass\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Controller/GenericFormController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\GenericFormController\\:\\:handleFormAction\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Controller/GenericFormController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\GenericFormController\\:\\:handleFormAction\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\NotFoundHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/GenericFormController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\GenericFormController\\:\\:handleFormAction\\(\\) throws checked exception InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 6,
@@ -5862,18 +5436,6 @@ $ignoreErrors[] = [
 	'identifier' => 'missingType.checkedException',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Controller/GenericFormController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\GenericListController\\:\\:checkIsValidClass\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/GenericListController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\GenericListController\\:\\:checkIsValidClass\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Controller/GenericListController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\IndexController\\:\\:__invoke\\(\\) throws checked exception InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
@@ -5912,39 +5474,15 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/InstallController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\InstallController\\:\\:initDatabase\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/InstallController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\InstallController\\:\\:updateDatabase\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/InstallController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\InstallController\\:\\:updateDatabase\\(\\) throws checked exception RuntimeException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Controller/InstallController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\InventoryController\\:\\:index\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/InventoryController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\InventoryController\\:\\:index\\(\\) throws checked exception InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Controller/InventoryController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\InventoryController\\:\\:refusedEquipement\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/InventoryController.php',
 ];
 $ignoreErrors[] = [
@@ -5958,18 +5496,6 @@ $ignoreErrors[] = [
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/ItemType/Form/AuthMailFormController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\ItemType\\\\Form\\\\ContactFormController\\:\\:generateVCard\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/ItemType/Form/ContactFormController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\ItemType\\\\Form\\\\ContactFormController\\:\\:generateVCard\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/ItemType/Form/ContactFormController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\ItemType\\\\Form\\\\ContactFormController\\:\\:generateVCard\\(\\) throws checked exception InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
@@ -5990,31 +5516,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/ItemType/Form/SavedSearchFormController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Knowbase\\\\KnowbaseItemController\\:\\:content\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/KnowbaseItemController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Knowbase\\\\KnowbaseItemController\\:\\:content\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\NotFoundHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/KnowbaseItemController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\Knowbase\\\\KnowbaseItemController\\:\\:content\\(\\) throws checked exception InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/KnowbaseItemController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Knowbase\\\\KnowbaseItemController\\:\\:full\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/KnowbaseItemController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Knowbase\\\\KnowbaseItemController\\:\\:full\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\NotFoundHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/KnowbaseItemController.php',
@@ -6080,40 +5582,16 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/ServiceCatalog/IndexController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\ServiceCatalog\\\\IndexController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Controller/ServiceCatalog/IndexController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\ServiceCatalog\\\\IndexController\\:\\:__invoke\\(\\) throws checked exception RuntimeException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/ServiceCatalog/IndexController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\ServiceCatalog\\\\ItemsController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\NotFoundHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/ServiceCatalog/ItemsController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Session\\\\ChangeEntityController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Session/ChangeEntityController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\Session\\\\ChangeEntityController\\:\\:__invoke\\(\\) throws checked exception InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/Session/ChangeEntityController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Session\\\\ChangeProfileController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Session/ChangeProfileController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\Session\\\\ChangeProfileController\\:\\:__invoke\\(\\) throws checked exception InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
@@ -6128,34 +5606,16 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/StatusController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\UI\\\\Illustration\\\\CustomIllustrationController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/UI/Illustration/CustomIllustrationController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\UI\\\\Illustration\\\\CustomIllustrationController\\:\\:__invoke\\(\\) throws checked exception InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/UI/Illustration/CustomIllustrationController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\UI\\\\Illustration\\\\CustomSceneController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/UI/Illustration/CustomSceneController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\UI\\\\Illustration\\\\CustomSceneController\\:\\:__invoke\\(\\) throws checked exception InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/UI/Illustration/CustomSceneController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\UI\\\\Illustration\\\\UploadController\\:\\:__invoke\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/UI/Illustration/UploadController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\UI\\\\Illustration\\\\UploadController\\:\\:__invoke\\(\\) throws checked exception InvalidArgumentException but it\'s missing from the PHPDoc @throws tag\\.$#',
@@ -6357,12 +5817,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Dashboard\\\\Grid\\:\\:addGridItem\\(\\) throws checked exception Safe\\\\Exceptions\\\\JsonException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Dashboard/Grid.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Dashboard\\\\Grid\\:\\:embed\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Dashboard/Grid.php',
@@ -7706,12 +7160,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Helpdesk/Tile/TilesManager.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Http\\\\Firewall\\:\\:applyStrategy\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Http/Firewall.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Http\\\\Firewall\\:\\:applyStrategy\\(\\) throws checked exception LogicException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
@@ -8138,12 +7586,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/CatchInventoryAgentRequestListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Kernel\\\\Listener\\\\RequestListener\\\\CheckDatabaseStatusListener\\:\\:onKernelRequest\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\HttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/CheckDatabaseStatusListener.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Kernel\\\\Listener\\\\RequestListener\\\\FrontEndAssetsListener\\:\\:getTargetFile\\(\\) throws checked exception Safe\\\\Exceptions\\\\PcreException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 4,
@@ -8165,12 +7607,6 @@ $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Kernel\\\\Listener\\\\RequestListener\\\\FrontEndAssetsListener\\:\\:normalizePath\\(\\) throws checked exception Safe\\\\Exceptions\\\\PcreException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/FrontEndAssetsListener.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Kernel\\\\Listener\\\\RequestListener\\\\FrontEndAssetsListener\\:\\:onKernelRequest\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\NotFoundHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/FrontEndAssetsListener.php',
 ];
 $ignoreErrors[] = [
@@ -8246,12 +7682,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyRouterListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Kernel\\\\Listener\\\\RequestListener\\\\LegacyRouterListener\\:\\:onKernelRequest\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\NotFoundHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyRouterListener.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Kernel\\\\Listener\\\\RequestListener\\\\LegacyRouterListener\\:\\:onKernelRequest\\(\\) throws checked exception Safe\\\\Exceptions\\\\PcreException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
@@ -8318,12 +7748,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/RedirectLegacyRouteListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Kernel\\\\Listener\\\\RequestListener\\\\SessionCheckCookieListener\\:\\:onKernelRequest\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/SessionCheckCookieListener.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Kernel\\\\Listener\\\\RequestListener\\\\SessionCheckCookieListener\\:\\:onKernelRequest\\(\\) throws checked exception Safe\\\\Exceptions\\\\InfoException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
@@ -8387,12 +7811,6 @@ $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Marketplace\\\\Controller\\:\\:downloadPlugin\\(\\) throws checked exception wapmorgan\\\\UnifiedArchive\\\\Exceptions\\\\EmptyFileListException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Marketplace/Controller.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Marketplace\\\\Controller\\:\\:proxifyPluginArchive\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\HttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Marketplace/Controller.php',
 ];
 $ignoreErrors[] = [
@@ -8921,12 +8339,6 @@ $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Search\\\\SearchEngine\\:\\:getOutputForLegacyKey\\(\\) throws checked exception RuntimeException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/SearchEngine.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Search\\\\SearchEngine\\:\\:prepareDataForSearch\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Search/SearchEngine.php',
 ];
 $ignoreErrors[] = [
@@ -9578,24 +8990,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Html\\:\\:displayErrorAndDie\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Html\\:\\:displayNotFoundError\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\NotFoundHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Html\\:\\:displayRightError\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Html\\:\\:file\\(\\) throws checked exception Safe\\\\Exceptions\\\\PcreException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
@@ -9896,12 +9290,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Infocom.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Infocom\\:\\:displayFullPageForItem\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\NotFoundHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Infocom.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Infocom\\:\\:getWarrantyExpir\\(\\) throws checked exception Safe\\\\Exceptions\\\\DatetimeException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 4,
@@ -9956,12 +9344,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/ItemVirtualMachine.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Item_Devices\\:\\:addDevicesFromPOST\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\NotFoundHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Devices.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Item_Devices\\:\\:checkSetup\\(\\) throws checked exception LogicException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
@@ -9989,12 +9371,6 @@ $ignoreErrors[] = [
 	'message' => '#^Method Item_Devices\\:\\:showForm\\(\\) throws checked exception Random\\\\RandomException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Devices.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Item_Devices\\:\\:updateAll\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\NotFoundHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 2,
 	'path' => __DIR__ . '/src/Item_Devices.php',
 ];
 $ignoreErrors[] = [
@@ -11222,12 +10598,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Profile_User.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Project\\:\\:getKanbanUrlWithID\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\BadRequestHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Project.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method ProjectTask\\:\\:addInstanceException\\(\\) throws checked exception Safe\\\\Exceptions\\\\JsonException but it\'s missing from the PHPDoc @throws tag\\.$#',
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
@@ -11724,54 +11094,6 @@ $ignoreErrors[] = [
 	'identifier' => 'missingType.checkedException',
 	'count' => 1,
 	'path' => __DIR__ . '/src/SavedSearch.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Session\\:\\:checkCSRF\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Session.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Session\\:\\:checkCentralAccess\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Session.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Session\\:\\:checkFaqAccess\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Session.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Session\\:\\:checkHelpdeskAccess\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Session.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Session\\:\\:checkLoginUser\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Session.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Session\\:\\:checkRight\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Session.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Session\\:\\:checkRightsOr\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Session.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Session\\:\\:checkSeveralRightsOr\\(\\) throws checked exception Glpi\\\\Exception\\\\Http\\\\AccessDeniedHttpException but it\'s missing from the PHPDoc @throws tag\\.$#',
-	'identifier' => 'missingType.checkedException',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Session.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Session\\:\\:checkSeveralRightsOr\\(\\) throws checked exception Safe\\\\Exceptions\\\\PcreException but it\'s missing from the PHPDoc @throws tag\\.$#',
