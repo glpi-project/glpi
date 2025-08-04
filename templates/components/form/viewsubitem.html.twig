@@ -32,8 +32,10 @@
 
 {% set rand = rand|default(random()) %}
 {% set subitem_container_id = subitem_container_id|default('viewsubitem' ~ rand) %}
+{% set ajax_form_submit = ajax_form_submit|default(false) %}
 {% set as_modal = as_modal|default(false) %}
 {% set add_new_label = add_new_label|default(__('Add')) %}
+{% set add_new_inline = add_new_inline|default(false) %}
 
 {% if as_modal %}
 <div class="modal fade" id="{{ subitem_container_id ~ '_modal' }}" tabindex="-1" role="dialog" aria-hidden="true">
@@ -56,12 +58,14 @@
 <script>
     function viewAddEditSubItem{{ rand }}(id) {
         const modal_el = $('#{{ subitem_container_id ~ '_modal' }}');
-        modal_el[0].addEventListener('shown.bs.modal', (event) => {
-            event.target.setAttribute('data-cy-ready', 'true');
-        });
-        modal_el[0].addEventListener('hidden.bs.modal', (event) => {
-            event.target.removeAttribute('data-cy-ready');
-        });
+        if (modal_el.length) {
+            modal_el[0].addEventListener('shown.bs.modal', (event) => {
+                event.target.setAttribute('data-cy-ready', 'true');
+            });
+            modal_el[0].addEventListener('hidden.bs.modal', (event) => {
+                event.target.removeAttribute('data-cy-ready');
+            });
+        }
         $('#{{ subitem_container_id }}').load('{{ path('/ajax/viewsubitem.php')|e('js') }}',{
             type: "{{ type|e('js') }}",
             parenttype: "{{ parenttype|e('js') }}",
