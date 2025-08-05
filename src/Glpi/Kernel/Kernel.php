@@ -120,8 +120,8 @@ final class Kernel extends BaseKernel
         if (Environment::get()->shouldEnableExtraDevAndDebugTools()) {
             $dev_bundles_classes = [
                 WebProfilerBundle::class,
-				DebugBundle::class,
-				TwigBundle::class,
+                DebugBundle::class,
+                TwigBundle::class,
             ];
             foreach ($dev_bundles_classes as $bundle_class) {
                 if (\class_exists($bundle_class)) {
