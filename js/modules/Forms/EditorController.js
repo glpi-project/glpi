@@ -919,6 +919,11 @@ export class GlpiFormEditorController
                 .removeAttr(`data-glpi-form-editor-active-${type}`);
         });
 
+        // Nothing selected, stop here to avoid triggering lazy loading on null.
+        if (item_container === null) {
+            return;
+        }
+
         // Lazy load descriptions
         item_container.find('textarea[data-glpi-loaded=false]').each(function() {
             // Get editor config for this field
