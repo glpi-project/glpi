@@ -35,6 +35,7 @@
 namespace Glpi\Helpdesk\Tile;
 
 use CommonDBTM;
+use Glpi\Helpdesk\HelpdeskTranslation;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Glpi\ItemTranslation\Context\TranslationHandler;
 use Glpi\Session\SessionInfo;
@@ -159,6 +160,7 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface, ProvideTra
         $this->deleteChildrenAndRelationsFromDb(
             [
                 Item_Tile::class,
+                HelpdeskTranslation::class,
             ]
         );
     }

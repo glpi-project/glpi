@@ -80,7 +80,6 @@ class HelpdeskTranslationTest extends \DbTestCase
         global $CFG_GLPI;
 
         $this->initHelpdeskWithTranslations();
-        $this->login();
 
         $handlers = array_merge(...array_values((new HelpdeskTranslation())->listTranslationsHandlers()));
 
@@ -121,16 +120,74 @@ class HelpdeskTranslationTest extends \DbTestCase
         }
     }
 
+    public function testTranslationsCascadeDeleteWhenDeletingTranslatableElements()
+    {
+        $this->initHelpdeskWithTranslations();
+
+        // Get all translatable handlers before deletion
+        $handlers = (new HelpdeskTranslation())->listTranslationsHandlers();
+        $translation_items = [];
+
+        // Collect all translated items
+        array_walk_recursive(
+            $handlers,
+            function ($handler) use (&$translation_items) {
+                $translations = HelpdeskTranslation::getTranslationsForItem($handler->getItem());
+                if (!empty($translations)) {
+                    $item = $handler->getItem();
+                    $translation_items[$item->getType() . $item->getID()] = $item;
+                }
+            }
+        );
+
+        // Verify that we have translations before deletion
+        $this->assertNotEmpty($translation_items, 'No translations found to test cascade deletion');
+
+        foreach ($translation_items as $item) {
+            // Delete the item
+            $success = $item->delete(['id' => $item->getID()], true); // Force purge
+            $this->assertTrue($success, "Failed to delete item with ID " . $item->getID());
+
+            // Verify that all translations have been cascade deleted
+            $remaining_translations = HelpdeskTranslation::getTranslationsForItem($item);
+            $this->assertEmpty(
+                $remaining_translations,
+                "Translations were not cascade deleted for {$item->getType()} {$item->getID()}. Found " . count($remaining_translations) . " remaining translations."
+            );
+
+            // Also verify by direct database query
+            $translation_count = countElementsInTable(
+                HelpdeskTranslation::getTable(),
+                [
+                    HelpdeskTranslation::$itemtype => $item->getType(),
+                    HelpdeskTranslation::$items_id => $item->getID(),
+                ]
+            );
+            $this->assertEquals(
+                0,
+                $translation_count,
+                "Database still contains {$translation_count} translations for deleted {$item->getType()} {$item->getID()}"
+            );
+        }
+    }
+
     public function initHelpdeskWithTranslations(): void
     {
+        $this->login();
+
         // Remove existing tiles
         $tilesManager = new TilesManager();
         array_map(fn($tile) => $tilesManager->deleteTile($tile), $tilesManager->getAllTiles());
 
+        $entity = $this->createItem(Entity::class, [
+            'name'         => 'Test Root Entity',
+            'entities_id'  => $this->getTestRootEntity(true),
+        ]);
+
         // Use custom helpdesk title
         $this->updateItem(
             Entity::class,
-            $this->getTestRootEntity(true),
+            $entity->getID(),
             [
                 'custom_helpdesk_home_title' => Entity::HELPDESK_TITLE_CUSTOM,
                 '_custom_helpdesk_home_title' => 'Custom Helpdesk Title',
@@ -151,7 +208,7 @@ class HelpdeskTranslationTest extends \DbTestCase
             Item_Tile::class,
             [
                 'itemtype_item' => Entity::class,
-                'items_id_item' => $this->getTestRootEntity(true),
+                'items_id_item' => $entity->getID(),
                 'itemtype_tile' => GlpiPageTile::class,
                 'items_id_tile' => $glpi_tile->getID(),
             ]
@@ -162,7 +219,7 @@ class HelpdeskTranslationTest extends \DbTestCase
             HelpdeskTranslation::class,
             [
                 'itemtype'     => Entity::class,
-                'items_id'     => $this->getTestRootEntity(true),
+                'items_id'     => $entity->getID(),
                 'language'     => 'fr_FR',
                 'key'          => Entity::TRANSLATION_KEY_CUSTOM_HELPDESK_HOME_TITLE,
                 'translations' => ['one' => 'Titre personnalisé du centre d\'aide'],
@@ -173,7 +230,7 @@ class HelpdeskTranslationTest extends \DbTestCase
             HelpdeskTranslation::class,
             [
                 'itemtype'     => Entity::class,
-                'items_id'     => $this->getTestRootEntity(true),
+                'items_id'     => $entity->getID(),
                 'language'     => 'es_ES',
                 'key'          => Entity::TRANSLATION_KEY_CUSTOM_HELPDESK_HOME_TITLE,
                 'translations' => ['one' => 'Título personalizado del centro de ayuda'],

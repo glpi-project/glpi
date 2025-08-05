@@ -38,7 +38,6 @@ use CommonDBChild;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Form;
-use Glpi\ItemTranslation\Context\TranslationHandler;
 use Glpi\Session\SessionInfo;
 use Html;
 use Override;
@@ -158,27 +157,11 @@ final class FormTile extends CommonDBChild implements TileInterface
     #[Override]
     public function listTranslationsHandlers(): array
     {
-        $handlers = [];
-        $key = sprintf('%s: %s', $this->getLabel(), $this->fields['title'] ?? NOT_AVAILABLE);
-        if (!empty($this->getTitle())) {
-            $handlers[$key][] = new TranslationHandler(
-                item: $this,
-                key: self::TRANSLATION_KEY_TITLE,
-                name: __('Title'),
-                value: $this->getTitle()
-            );
-        }
-        if (!empty($this->getDescription())) {
-            $handlers[$key][] = new TranslationHandler(
-                item: $this,
-                key: self::TRANSLATION_KEY_DESCRIPTION,
-                name: __('Description'),
-                value: $this->getDescription(),
-                is_rich_text: true,
-            );
-        }
-
-        return $handlers;
+        /**
+         * Title and descriptioin are already translated in the form
+         * so we don't need to add them here.
+         */
+        return [];
     }
 
     public function getFormId(): int

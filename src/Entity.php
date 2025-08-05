@@ -38,6 +38,7 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\Debug\Profiler;
 use Glpi\Event;
 use Glpi\Features\Clonable;
+use Glpi\Helpdesk\HelpdeskTranslation;
 use Glpi\Helpdesk\Tile\LinkableToTilesInterface;
 use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
@@ -814,6 +815,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
                 Entity_KnowbaseItem::class,
                 Entity_Reminder::class,
                 Entity_RSSFeed::class,
+                HelpdeskTranslation::class,
             ]
         );
     }
