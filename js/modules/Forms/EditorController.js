@@ -2146,6 +2146,17 @@ export class GlpiFormEditorController
                 // to merge the item into itself anyway.
                 $(e.detail.item).addClass('form-editor-no-merge');
 
+                // Prevent chrome engine issue where dragend event is triggered if the
+                // dom is modified immediatly after dragstart was emitted
+                // See: https://groups.google.com/a/chromium.org/g/chromium-bugs/c/YHs3orFC8Dc/m/ryT25b7J-NwJ
+                setTimeout(() => {
+                    // Html5selectable try to applies 'display: none' to the
+                    // current item but it doesn't work because we have a "d-flex"
+                    // class that takes over. Manually adding "d-none" get us the
+                    // desired effect.
+                    $(e.detail.item).addClass('d-none');
+                }, 50);
+
                 $(this.#target).addClass("disable-focus").attr('data-glpi-form-editor-sorting', '');
 
                 // If dragged item is active, store it to restore it later
@@ -2212,8 +2223,9 @@ export class GlpiFormEditorController
                     this.#setActiveItem($(e.detail.item));
                 }
 
-                // Remove temporary class
+                // Remove temporary classes
                 $(e.detail.item).removeClass('form-editor-no-merge');
+                $(e.detail.item).removeClass('d-none');
             });
     }
 
