@@ -742,9 +742,11 @@ HTML,
                     )
                 ),
             ],
-            'WHERE' => new QueryExpression(
-                Search::addDefaultWhere(CoreITILFollowup::class)
-            ),
+            'WHERE' => [
+                new QueryExpression(
+                    Search::addDefaultWhere(CoreITILFollowup::class)
+                ),
+            ],
         ]);
 
         return (int) iterator_to_array($results)[0]['number_of_followups'];
