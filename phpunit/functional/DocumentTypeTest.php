@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\DBAL\QueryExpression;
 
 /* Test for inc/documenttype.class.php */
 
@@ -45,7 +46,7 @@ class DocumentTypeTest extends DbTestCase
         $doctype = new \DocumentType();
 
         // Clear types to prevent test to be impacted by potential default types changes
-        $this->assertTrue($doctype->deleteByCriteria(['1']));
+        $this->assertTrue($doctype->deleteByCriteria([new QueryExpression('true')]));
 
         $this->assertGreaterThan(0, (int) $doctype->add(['name' => 'JPG','ext' => '/\.jpe?g$/']));
         $this->assertGreaterThan(0, (int) $doctype->add(['name' => 'DOC','ext' => 'doc']));

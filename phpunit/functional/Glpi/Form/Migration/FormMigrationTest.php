@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Form\Migration;
 
 use Computer;
 use DbTestCase;
+use Glpi\DBAL\QueryExpression;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\AccessControl\ControlType\DirectAccess;
@@ -2637,7 +2638,7 @@ final class FormMigrationTest extends DbTestCase
 
         // Act + Assert: check plugin data before and after deleting the form table content
         $this->assertTrue($migration->hasPluginData());
-        $DB->delete('glpi_plugin_formcreator_forms', [1]);
+        $DB->delete('glpi_plugin_formcreator_forms', [new QueryExpression('true')]);
         $this->assertFalse($migration->hasPluginData());
     }
 

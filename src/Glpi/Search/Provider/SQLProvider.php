@@ -2137,7 +2137,7 @@ final class SQLProvider implements SearchProviderInterface
                 if ($val == 0) {
                     // Special case, search criteria is empty
                     $subquery_operator = $subquery_operator === "IN" ? "NOT IN" : "IN";
-                    $subquery_criteria_where = ['1' => 1];
+                    $subquery_criteria_where = [new QueryExpression('true')];
                     if (!empty($addcondition)) {
                         $subquery_criteria_where[] = $addcondition;
                     }
@@ -2156,7 +2156,7 @@ final class SQLProvider implements SearchProviderInterface
                     $sub_query_criteria = [
                         'SELECT' => $fk,
                         'FROM'   => $link_table,
-                        'WHERE'  => ['1' => 1],
+                        'WHERE'  => [new QueryExpression('true')],
                     ];
                     if (!empty($addcondition)) {
                         $sub_query_criteria['WHERE'][] = $addcondition;
@@ -2221,9 +2221,7 @@ final class SQLProvider implements SearchProviderInterface
                     $inner_subquery_criteria = [
                         'SELECT' => 'id',
                         'FROM'   => $child_table,
-                        'WHERE'  => [
-                            '1' => 1,
-                        ],
+                        'WHERE'  => [new QueryExpression('true')],
                     ];
                     if (!empty($addcondition)) {
                         $inner_subquery_criteria['WHERE'][] = $addcondition;

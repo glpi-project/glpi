@@ -46,6 +46,7 @@ use Document_Item;
 use Entity;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDocumentsCapacity;
+use Glpi\DBAL\QueryExpression;
 use Group_User;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
@@ -1890,7 +1891,7 @@ class SearchTest extends DbTestCase
         $user_2 = getItemByTypeName('User', 'glpi')->getID();
         $group_1 = getItemByTypeName('Group', '_test_group_1')->getID();
 
-        $this->assertTrue($DB->delete(Change::getTable(), [1]));
+        $this->assertTrue($DB->delete(Change::getTable(), [new QueryExpression('true')]));
 
         // Creates Changes with different requesters
         $this->createItems('Change', [

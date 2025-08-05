@@ -567,11 +567,19 @@ class DBmysqlIteratorTest extends DbTestCase
         foreach ([false, 0, '0'] as $false) {
             $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => [$false]]);
             $this->assertSame('SELECT * FROM `foo` WHERE false', $it->getSql());
+            $this->hasPhpLogRecordThatContains(
+                'Passing SQL request criteria as booleans is deprecated. Please use `new \Glpi\DBAL\QueryExpression("false");`',
+                LogLevel::INFO
+            );
         }
 
         foreach ([true, 1, '1'] as $true) {
             $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => [$true]]);
             $this->assertSame('SELECT * FROM `foo` WHERE true', $it->getSql());
+            $this->hasPhpLogRecordThatContains(
+                'Passing SQL request criteria as booleans is deprecated. Please use `new \Glpi\DBAL\QueryExpression("true");`',
+                LogLevel::INFO
+            );
         }
     }
 

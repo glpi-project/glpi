@@ -35,6 +35,7 @@
 namespace test\units;
 
 use DbTestCase;
+use Glpi\DBAL\QueryExpression;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/knowbaseitem.class.php */
@@ -904,7 +905,7 @@ HTML,
         global $DB, $CFG_GLPI;
 
         // Removing existing data
-        $DB->delete(\KnowbaseItem::getTable(), [1]);
+        $DB->delete(\KnowbaseItem::getTable(), [new QueryExpression('true')]);
         $this->assertEquals(0, countElementsInTable(\KnowbaseItem::getTable()));
 
         // Create set of test subjects
@@ -969,7 +970,7 @@ HTML,
         $this->login('glpi', 'glpi');
 
         // Removing existing data
-        $DB->delete(\KnowbaseItem::getTable(), [1]);
+        $DB->delete(\KnowbaseItem::getTable(), [new QueryExpression('true')]);
         $this->assertEquals(0, countElementsInTable(\KnowbaseItem::getTable()));
 
         // Create set of test subjects

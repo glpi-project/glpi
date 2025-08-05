@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\DBAL\QueryExpression;
 use GLPIKey;
 use Group;
 use Group_User;
@@ -368,7 +369,7 @@ class AuthLdapTest extends DbTestCase
         $this->addLdapServers();
 
         $this->assertTrue(\AuthLDAP::useAuthLdap());
-        $DB->update('glpi_authldaps', ['is_active' => 0], [true]);
+        $DB->update('glpi_authldaps', ['is_active' => 0], [new QueryExpression('true')]);
         $this->assertFalse(\AuthLDAP::useAuthLdap());
     }
 
@@ -378,7 +379,7 @@ class AuthLdapTest extends DbTestCase
         $this->addLdapServers();
 
         $this->assertSame(3, (int) \AuthLDAP::getNumberOfServers());
-        $DB->update('glpi_authldaps', ['is_active' => 0], [true]);
+        $DB->update('glpi_authldaps', ['is_active' => 0], [new QueryExpression('true')]);
         $this->assertSame(0, (int) \AuthLDAP::getNumberOfServers());
     }
 

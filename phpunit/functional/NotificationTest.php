@@ -36,6 +36,7 @@ namespace tests\units;
 
 use Contract;
 use DbTestCase;
+use Glpi\DBAL\QueryExpression;
 use Group;
 use Group_User;
 use NotificationEvent;
@@ -593,7 +594,7 @@ HTML,
         ]);
 
         // Set up notifications
-        $DB->update(\Notification::getTable(), ['is_active' => 0], [1]);
+        $DB->update(\Notification::getTable(), ['is_active' => 0], [new QueryExpression('true')]);
         $active_notification = countElementsInTable(\Notification::getTable(), ['is_active' => 1]);
         $this->assertEquals(0, $active_notification);
 
@@ -648,7 +649,7 @@ HTML,
             [$contract, $expected_queue] = $row;
 
             // Clear notification queue
-            $DB->delete(QueuedNotification::getTable(), [1]);
+            $DB->delete(QueuedNotification::getTable(), [new QueryExpression('true')]);
             $queue_size = countElementsInTable(QueuedNotification::getTable());
             $this->assertEquals(0, $queue_size);
 
