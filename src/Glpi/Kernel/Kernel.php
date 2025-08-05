@@ -38,6 +38,7 @@ use Glpi\Application\Environment;
 use Glpi\Application\SystemConfigurator;
 use Override;
 use Psr\Log\LoggerInterface;
+use Symfony\Bundle\DebugBundle\DebugBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Bundle\TwigBundle\TwigBundle;
@@ -119,6 +120,7 @@ final class Kernel extends BaseKernel
         if (Environment::get()->shouldEnableExtraDevAndDebugTools()) {
             $dev_bundles_classes = [
                 WebProfilerBundle::class,
+                DebugBundle::class,
                 TwigBundle::class,
             ];
             foreach ($dev_bundles_classes as $bundle_class) {

@@ -119,6 +119,7 @@
         "rector/rector": "^2.1",
         "shipmonk/composer-dependency-analyser": "^1.8",
         "symfony/browser-kit": "^6.4",
+        "symfony/debug-bundle": "^6.4",
         "symfony/http-client": "^6.4",
         "symfony/stopwatch": "^6.4",
         "symfony/twig-bundle": "^6.4",
