@@ -2364,19 +2364,19 @@ class UserTest extends \DbTestCase
     {
         yield [
             'user' => 'glpi',
-            'can_toggle_debug_mode' => true
+            'can_toggle_debug_mode' => true,
         ];
         yield [
             'user' => 'tech',
-            'can_toggle_debug_mode' => false
+            'can_toggle_debug_mode' => false,
         ];
         yield [
             'user' => 'normal',
-            'can_toggle_debug_mode' => false
+            'can_toggle_debug_mode' => false,
         ];
         yield [
             'user' => 'post-only',
-            'can_toggle_debug_mode' => false
+            'can_toggle_debug_mode' => false,
         ];
     }
 
