@@ -158,7 +158,7 @@ final class FormTile extends CommonDBChild implements TileInterface
     public function listTranslationsHandlers(): array
     {
         /**
-         * Title and descriptioin are already translated in the form
+         * Title and description are already translated in the form
          * so we don't need to add them here.
          */
         return [];
