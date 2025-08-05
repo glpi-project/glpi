@@ -1020,8 +1020,6 @@ final class SQLProvider implements SearchProviderInterface
                     break;
                 }
 
-
-                $in = "IN ('" . implode("','", $allowed_is_private) . "')";
                 $criteria = [
                     'glpi_itilfollowups.is_private' => $allowed_is_private,
                     'OR' => [
@@ -1044,8 +1042,7 @@ final class SQLProvider implements SearchProviderInterface
                 // Entity restrictions
                 $entity_restrictions = [];
                 foreach ($CFG_GLPI['itil_types'] as $itil_itemtype) {
-                    $entity_restrictions[] = getEntitiesRestrictRequest(
-                        '',
+                    $entity_restrictions[] = getEntitiesRestrictCriteria(
                         $itil_itemtype::getTable() . '_items_id_' . self::computeComplexJoinID([
                             'condition' => ['REFTABLE.itemtype' => $itil_itemtype],
                         ]),
@@ -1148,7 +1145,7 @@ final class SQLProvider implements SearchProviderInterface
             && !preg_match(QueryBuilder::getInputValidationPattern($opt['datatype'] ?? '')['pattern'], $val)
         ) {
             return [ // Invalid search
-                '1=0',
+                new QueryExpression('false'),
             ];
         }
 
@@ -1184,11 +1181,11 @@ final class SQLProvider implements SearchProviderInterface
         if (preg_match('/^\$\$\$\$([0-9]+)$/', $val, $regs)) {
             $criteria = [
                 'OR' => [
-                    "`table`.`id`" => [$nott ? "<>" : "=", $regs[1]],
+                    "table.id" => [$nott ? "<>" : "=", $regs[1]],
                 ],
             ];
             if ((int) $regs[1] === 0) {
-                $criteria['OR'][] = "`table`.`id` IS NULL";
+                $criteria['OR'][] = ["table.id" =>  "IS NULL"];
             }
             return $criteria;
         }
@@ -1682,18 +1679,27 @@ final class SQLProvider implements SearchProviderInterface
                     $tmplink = 'AND';
                     $compare = '<>';
                 }
-                $toadd2 = '';
+
+                $criteria = [
+                    $tmplink => [
+                        "$table.tickets_id_1" => [$compare, $val],
+                        "$table.tickets_id_2" => [$compare, $val],
+                    ],
+                ];
+
                 if (
                     $nott
                     && ($val != 'NULL') && ($val != 'null')
                 ) {
-                    $toadd2 = " OR `$table`.`$field` IS NULL";
+                    $criteria = [
+                        'OR' => [
+                            $criteria,
+                            "$table.$field" => null,
+                        ],
+                    ];
                 }
 
-                return [new QueryExpression(" (((`$table`.`tickets_id_1` $compare '$val'
-                              $tmplink `$table`.`tickets_id_2` $compare '$val')
-                             AND `glpi_tickets`.`id` <> '$val')
-                            $toadd2)")];
+                return $criteria;
 
             case "glpi_tickets.priority":
             case "glpi_tickets.impact":

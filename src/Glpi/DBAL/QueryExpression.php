@@ -55,7 +55,7 @@ class QueryExpression
      */
     public function __construct($expression, ?string $alias = null)
     {
-        if ($expression === null || $expression === '') {
+        if ($expression === null || $expression === '' || $expression === false) {
             throw new RuntimeException('Cannot build an empty expression');
         }
         $this->expression = $expression;

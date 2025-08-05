@@ -507,17 +507,13 @@ class DBmysqlIterator implements SeekableIterator, Countable
      */
     public function analyseCrit($crit, $bool = "AND")
     {
-
-        if (in_array($crit, [1, 0, '1', '0', true, false], true)) {
-            Toolbox::deprecated(
-                'Passing SQL request criteria as booleans is deprecated. Please use `new \Glpi\DBAL\QueryExpression("true");`.',
-                version: '11.1'
-            );
-            return $crit ? 'true' : 'false';
-        }
-
         if (is_string($crit)) {
-            Toolbox::deprecated('Passing SQL request criteria as strings is deprecated for security reasons.');
+            Toolbox::deprecated(
+                sprintf(
+                    'Passing SQL request criteria as strings is deprecated for security reasons. Criteria was `` %s ``.',
+                    $crit
+                )
+            );
 
             /**
              * Delegate the safeness check to the caller.
@@ -554,6 +550,12 @@ class DBmysqlIterator implements SeekableIterator, Countable
                     $ret .= $value->getValue();
                 } elseif ($value instanceof QuerySubQuery) {
                     $ret .= $value->getQuery();
+                } elseif (in_array($value, [1, 0, '1', '0', true, false], true)) {
+                    Toolbox::deprecated(
+                        'Passing SQL request criteria as booleans is deprecated. Please use `new \Glpi\DBAL\QueryExpression("true");`.',
+                        version: '11.1'
+                    );
+                    $ret .= $value ? 'true' : 'false';
                 } else {
                     // No Key case => recurse.
                     $ret .= "(" . $this->analyseCrit($value) . ")";

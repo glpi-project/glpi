@@ -563,6 +563,16 @@ class DBmysqlIteratorTest extends DbTestCase
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => new QueryParam()]]);
         $this->assertSame('SELECT * FROM `foo` WHERE `bar` = ?', $it->getSql());
+
+        foreach ([false, 0, '0'] as $false) {
+            $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => [$false]]);
+            $this->assertSame('SELECT * FROM `foo` WHERE false', $it->getSql());
+        }
+
+        foreach ([true, 1, '1'] as $true) {
+            $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => [$true]]);
+            $this->assertSame('SELECT * FROM `foo` WHERE true', $it->getSql());
+        }
     }
 
     public function testEmptyIn(): void
