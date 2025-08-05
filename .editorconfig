@@ -21,12 +21,8 @@ insert_final_newline = false
 indent_size = 2
 trim_trailing_whitespace = false
 
-[{compose,docker-compose}.*.{yaml,yml}]
-indent_size = 2
-
 # Email
 [*.eml]
-indent_style = tab
 trim_trailing_whitespace = false
 insert_final_newline = false
 
