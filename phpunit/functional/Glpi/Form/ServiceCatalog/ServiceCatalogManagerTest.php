@@ -1006,4 +1006,80 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             "Pinned form 2",
         ], $forms_names);
     }
+
+    public static function provideFormsAvailabilityFromSpecificEntities(): iterable
+    {
+        yield 'Forms from child entities are found' => [
+            'entity_name'          => '_test_root_entity',
+            'is_recursive'         => true,
+            'expected_forms_names' => [
+                "Form from child entity",
+                "Form from test root entity",
+            ],
+        ];
+
+        yield 'Forms from child entities are not found when not recursive' => [
+            'entity_name'          => '_test_root_entity',
+            'is_recursive'         => false,
+            'expected_forms_names' => [
+                "Form from test root entity",
+            ],
+        ];
+
+        yield 'Forms from parent entities are found' => [
+            'entity_name'          => 'Child Entity',
+            'is_recursive'         => true,
+            'expected_forms_names' => [
+                "Form from child entity",
+                "Form from test root entity",
+            ],
+        ];
+
+        yield 'Forms from parent entities are found when not recursive' => [
+            'entity_name'          => 'Child Entity',
+            'is_recursive'         => false,
+            'expected_forms_names' => [
+                "Form from child entity",
+                "Form from test root entity",
+            ],
+        ];
+    }
+
+    #[DataProvider('provideFormsAvailabilityFromSpecificEntities')]
+    public function testFormsAvailabilityFromSpecificEntities(
+        string $entity_name,
+        bool $is_recursive,
+        array $expected_forms_names
+    ): void {
+        $this->login();
+
+        // Arrange: create a form in the test root entity
+        $builder = new FormBuilder("Form from test root entity");
+        $builder->setEntitiesId($this->getTestRootEntity(true));
+        $builder->setIsActive(true);
+        $this->createForm($builder);
+
+        // Create a child entity and a form in it
+        $child_entity = $this->createItem(Entity::class, [
+            'name'        => 'Child Entity',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $builder = new FormBuilder("Form from child entity");
+        $builder->setEntitiesId($child_entity->getID());
+        $builder->setIsActive(true);
+        $this->createForm($builder);
+
+        // Set the current entity to the specified entity
+        $this->setEntity($entity_name, $is_recursive);
+
+        // Act: get the forms from the catalog manager
+        $item_request = new ItemRequest(
+            new FormAccessParameters(Session::getCurrentSessionInfo())
+        );
+        $forms = self::$manager->getItems($item_request)['items'];
+
+        // Assert: expected forms must be found
+        $forms_names = array_map(fn(Form $form) => $form->fields['name'], $forms);
+        $this->assertEquals($expected_forms_names, $forms_names);
+    }
 }
