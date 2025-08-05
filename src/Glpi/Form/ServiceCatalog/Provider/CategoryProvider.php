@@ -54,12 +54,12 @@ final class CategoryProvider implements CompositeProviderInterface
     #[Override]
     public function getItems(ItemRequest $item_request): array
     {
-        $category = $item_request->getCategory();
+        $category_id = $item_request->getCategoryID();
         $filter = $item_request->getFilter();
 
         $categories = [];
         $raw_categories = (new Category())->find([
-            'forms_categories_id' => $category ? $category->getID() : 0,
+            'forms_categories_id' => $category_id ?? 0,
         ], ['name']);
 
         foreach ($raw_categories as $raw_categoriy) {
