@@ -2155,7 +2155,7 @@ export class GlpiFormEditorController
                     // class that takes over. Manually adding "d-none" get us the
                     // desired effect.
                     $(e.detail.item).addClass('d-none');
-                }, 50);
+                }, 0);
 
                 $(this.#target).addClass("disable-focus").attr('data-glpi-form-editor-sorting', '');
 
