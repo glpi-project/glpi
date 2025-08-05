@@ -815,8 +815,7 @@ TWIG, $twig_params);
             'name'              => __('Father'),
             'datatype'          => 'dropdown',
             'massiveaction'     => false,
-            // Add virtual condition to relink table
-            'joinparams'        => ['condition' => [new QueryExpression("1=1")]],
+            'joinparams'        => ['condition' => [new QueryExpression('true')]], // Add virtual condition to relink table
         ];
 
         $tab[] = [

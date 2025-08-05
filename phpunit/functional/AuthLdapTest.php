@@ -37,6 +37,7 @@ namespace tests\units;
 use AuthLDAP;
 use AuthMail;
 use DbTestCase;
+use Glpi\DBAL\QueryExpression;
 use Glpi\PHPUnit\Tests\Glpi\Auth\HelpersTrait;
 
 class AuthLdapTest extends DbTestCase
@@ -180,7 +181,7 @@ class AuthLdapTest extends DbTestCase
     {
         // remove ldap present in loadDataset(), make our tests independent from initial dataset
         global $DB;
-        assert($DB->delete(AuthLDAP::getTable(), [1]), 'Failed to empty AuthLDAP table');
+        assert($DB->delete(AuthLDAP::getTable(), [new QueryExpression('true')]), 'Failed to empty AuthLDAP table');
 
         $this->createItem(
             AuthLDAP::class,

@@ -1047,7 +1047,7 @@ final class SQLProvider implements SearchProviderInterface
                     $entity_restrictions[] = getEntitiesRestrictRequest(
                         '',
                         $itil_itemtype::getTable() . '_items_id_' . self::computeComplexJoinID([
-                            'condition' => "AND REFTABLE.`itemtype` = '$itil_itemtype'",
+                            'condition' => ['REFTABLE.itemtype' => $itil_itemtype],
                         ]),
                         'entities_id',
                         ''
@@ -2618,7 +2618,7 @@ final class SQLProvider implements SearchProviderInterface
                         false,
                         '',
                         [
-                            'condition' => "AND REFTABLE.`itemtype` = '$itil_itemtype'",
+                            'condition' => ['REFTABLE.itemtype' => $itil_itemtype],
                         ]
                     ));
                 }
@@ -2753,12 +2753,12 @@ final class SQLProvider implements SearchProviderInterface
         // Multiple link possibilies case
         if (!empty($linkfield) && ($linkfield !== getForeignKeyFieldForTable($new_table))) {
             $nt .= "_" . $linkfield;
-            $AS  = " AS `$nt`";
+            $AS  = " AS " . $DB::quoteName($nt);
         }
 
         if (!empty($complexjoin)) {
             $nt .= "_" . $complexjoin;
-            $AS  = " AS `$nt`";
+            $AS  = " AS " . $DB::quoteName($nt);
         }
 
         $addmetanum = "";
@@ -2766,7 +2766,7 @@ final class SQLProvider implements SearchProviderInterface
         $cleanrt    = $rt;
         if ($meta) {
             $addmetanum = self::getMetaTableUniqueSuffix($new_table, $meta_type);
-            $AS         = " AS `$nt$addmetanum`";
+            $AS         = " AS " . $DB::quoteName($nt . $addmetanum);
             $nt .= $addmetanum;
         }
 
@@ -2839,7 +2839,7 @@ final class SQLProvider implements SearchProviderInterface
                     if (is_callable($hook_function)) {
                         return $hook_function($itemtype, $ref_table, $new_table, $linkfield, $already_link_tables);
                     }
-                    return '';
+                    return [];
                 };
                 $specific_leftjoin_criteria = self::parseJoinString(Plugin::doOneHook($plugin_name, $hook_closure));
             }
@@ -2927,10 +2927,10 @@ final class SQLProvider implements SearchProviderInterface
                 }
             };
             $placeholders = [
-                '`REFTABLE`' => "`$rt`",
-                'REFTABLE'  => "`$rt`",
-                '`NEWTABLE`' => "`$nt`",
-                'NEWTABLE'  => "`$nt`",
+                $DB::quoteName('REFTABLE')  => $DB::quoteName($rt),
+                'REFTABLE'                  => $DB::quoteName($rt),
+                $DB::quoteName('NEWTABLE')  => $DB::quoteName($nt),
+                'NEWTABLE'                  => $DB::quoteName($nt),
             ];
             // Recursively walk through add_criteria array and make the placeholder replacements in the keys and values
             $replace_placeholders = static function ($add_criteria) use (&$replace_placeholders, $placeholders) {
@@ -3764,7 +3764,7 @@ final class SQLProvider implements SearchProviderInterface
                 "glpi_dropdowntranslations AS $alias" => [
                     'ON' => [
                         $alias => 'itemtype',
-                        new QueryExpression("'$itemtype'"),
+                        new QueryExpression($DB::quoteValue($itemtype)),
                         [
                             'AND' => [
                                 "$alias.items_id" => new QueryExpression($DB::quoteName("$table.id")),

@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\DBAL\QueryExpression;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -228,7 +229,7 @@ class CronTaskTest extends DbTestCase
 
         // Deactivate all registered tasks
         $crontask = new \CronTask();
-        $this->assertTrue($DB->update(\CronTask::getTable(), ['state' => \CronTask::STATE_DISABLE], [1]));
+        $this->assertTrue($DB->update(\CronTask::getTable(), ['state' => \CronTask::STATE_DISABLE], [new QueryExpression('true')]));
         $this->assertFalse($crontask->getNeedToRun());
 
         // Register task for active plugin.

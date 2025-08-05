@@ -6263,7 +6263,7 @@ JAVASCRIPT;
                             'jointype' => 'itemtype_item',
                         ],
                     ],
-                    'condition' => getEntitiesRestrictRequest('AND', 'NEWTABLE'),
+                    'condition' => getEntitiesRestrictCriteria('NEWTABLE'),
                 ],
             ];
         }

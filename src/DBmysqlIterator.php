@@ -500,14 +500,23 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Generate the SQL statement for a array of criteria
      *
-     * @param array  $crit Criteria
+     * @param mixed  $crit Criteria
      * @param string $bool Boolean operator (default AND)
      *
      * @return string
      */
     public function analyseCrit($crit, $bool = "AND")
     {
-        if (!is_array($crit)) {
+
+        if (in_array($crit, [1, 0, '1', '0', true, false], true)) {
+            Toolbox::deprecated(
+                'Passing SQL request criteria as booleans is deprecated. Please use `new \Glpi\DBAL\QueryExpression("true");`.',
+                version: '11.1'
+            );
+            return $crit ? 'true' : 'false';
+        }
+
+        if (is_string($crit)) {
             Toolbox::deprecated('Passing SQL request criteria as strings is deprecated for security reasons.');
 
             /**
@@ -519,6 +528,21 @@ class DBmysqlIterator implements SeekableIterator, Countable
 
             return $safe_crit;
         }
+
+        if ($crit instanceof QueryExpression) {
+            return $crit->getValue();
+        }
+
+        if (!is_array($crit)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Invalid criteria type. Expected `array` or `%s`, `%s` received.',
+                    QueryExpression::class,
+                    get_debug_type($crit)
+                )
+            );
+        }
+
         $ret = "";
         foreach ($crit as $name => $value) {
             if (!empty($ret)) {

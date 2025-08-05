@@ -710,7 +710,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                             'jointype' => 'itemtype_item',
                         ],
                     ],
-                    'condition' => getEntitiesRestrictRequest('AND', 'NEWTABLE'),
+                    'condition' => getEntitiesRestrictCriteria('NEWTABLE'),
                 ],
             ];
         }
