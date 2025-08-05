@@ -895,7 +895,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         $this->createItem(Entity_KnowbaseItem::class, [
             KnowbaseItem::getForeignKeyField() => $kb1->getID(),
             Entity::getForeignKeyField()       => 0,
-            'is_recursive'                     => true,
+            'subtree'                     => true,
         ]);
 
         $kb2 = $this->createItem(KnowbaseItem::class, [
@@ -908,7 +908,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         $this->createItem(Entity_KnowbaseItem::class, [
             KnowbaseItem::getForeignKeyField() => $kb2->getID(),
             Entity::getForeignKeyField()       => 0,
-            'is_recursive'                     => false,
+            'subtree'                     => false,
         ]);
 
         $kb3 = $this->createItem(KnowbaseItem::class, [
@@ -921,7 +921,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         $this->createItem(Entity_KnowbaseItem::class, [
             KnowbaseItem::getForeignKeyField() => $kb3->getID(),
             Entity::getForeignKeyField()       => $this->getTestRootEntity(true),
-            'is_recursive'                     => true,
+            'subtree'                     => true,
         ]);
 
         // Act: get the KB from the service catalog
@@ -1011,6 +1011,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
     {
         yield 'Forms from child entities are found' => [
             'entity_name'          => '_test_root_entity',
+            'subtree'              => true,
             'is_recursive'         => true,
             'expected_forms_names' => [
                 "Form from child entity",
@@ -1018,9 +1019,10 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             ],
         ];
 
-        yield 'Forms from child entities are not found when not recursive' => [
+        yield 'Forms from child entities are not found when not subtree' => [
             'entity_name'          => '_test_root_entity',
-            'is_recursive'         => false,
+            'subtree'              => false,
+            'is_recursive'         => true,
             'expected_forms_names' => [
                 "Form from test root entity",
             ],
@@ -1028,6 +1030,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
 
         yield 'Forms from parent entities are found' => [
             'entity_name'          => 'Child Entity',
+            'subtree'              => true,
             'is_recursive'         => true,
             'expected_forms_names' => [
                 "Form from child entity",
@@ -1035,12 +1038,12 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             ],
         ];
 
-        yield 'Forms from parent entities are found when not recursive' => [
+        yield 'Forms from parent entities are not found when not recursive' => [
             'entity_name'          => 'Child Entity',
+            'subtree'              => true,
             'is_recursive'         => false,
             'expected_forms_names' => [
                 "Form from child entity",
-                "Form from test root entity",
             ],
         ];
     }
@@ -1048,6 +1051,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
     #[DataProvider('provideFormsAvailabilityFromSpecificEntities')]
     public function testFormsAvailabilityFromSpecificEntities(
         string $entity_name,
+        bool $subtree,
         bool $is_recursive,
         array $expected_forms_names
     ): void {
@@ -1057,6 +1061,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         $builder = new FormBuilder("Form from test root entity");
         $builder->setEntitiesId($this->getTestRootEntity(true));
         $builder->setIsActive(true);
+        $builder->setIsRecursive($is_recursive);
         $this->createForm($builder);
 
         // Create a child entity and a form in it
@@ -1067,10 +1072,11 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         $builder = new FormBuilder("Form from child entity");
         $builder->setEntitiesId($child_entity->getID());
         $builder->setIsActive(true);
+        $builder->setIsRecursive($is_recursive);
         $this->createForm($builder);
 
         // Set the current entity to the specified entity
-        $this->setEntity($entity_name, $is_recursive);
+        $this->setEntity($entity_name, $subtree);
 
         // Act: get the forms from the catalog manager
         $item_request = new ItemRequest(
