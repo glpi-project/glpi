@@ -1302,6 +1302,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             if (
                 isset($input['use_mode'])
                 && ($_SESSION['glpi_use_mode'] !=  $input['use_mode'])
+                && Config::canUpdate()
             ) {
                 $_SESSION['glpi_use_mode'] = $input['use_mode'];
                 unset($_SESSION['glpimenu']); // Force menu regeneration
