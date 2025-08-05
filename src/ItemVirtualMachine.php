@@ -144,10 +144,6 @@ class ItemVirtualMachine extends CommonDBChild
      **/
     public function showForm($ID, array $options = [])
     {
-        if (!Session::haveRight("computer", UPDATE)) {
-            return false;
-        }
-
         if ($ID > 0) {
             $asset = getItemForItemtype($this->fields['itemtype']);
             $this->check($ID, READ);
@@ -167,7 +163,7 @@ class ItemVirtualMachine extends CommonDBChild
             }
         }
 
-        $options['canedit'] = Session::haveRight($asset::$rightname, UPDATE);
+        $options['canedit'] = $asset->can($asset->getID(), UPDATE);
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('components/form/itemvirtualmachine.html.twig', [
             'item'                      => $this,
