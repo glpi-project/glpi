@@ -222,7 +222,7 @@ class HelpdeskTranslationTest extends \DbTestCase
                 'items_id'     => $entity->getID(),
                 'language'     => 'fr_FR',
                 'key'          => Entity::TRANSLATION_KEY_CUSTOM_HELPDESK_HOME_TITLE,
-                'translations' => ['one' => 'Titre personnalisé du centre d\'aide'],
+                'translations' => ['one' => 'custom_helpdesk_home_title in fr_FR'],
             ],
             ['translations']
         );
@@ -233,7 +233,7 @@ class HelpdeskTranslationTest extends \DbTestCase
                 'items_id'     => $entity->getID(),
                 'language'     => 'es_ES',
                 'key'          => Entity::TRANSLATION_KEY_CUSTOM_HELPDESK_HOME_TITLE,
-                'translations' => ['one' => 'Título personalizado del centro de ayuda'],
+                'translations' => ['one' => 'custom_helpdesk_home_title in es_ES'],
             ],
             ['translations']
         );
