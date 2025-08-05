@@ -44,6 +44,12 @@
         }
     }
 
+    .form-editor-no-merge {
+         [data-glpi-form-editor-question-drag-merge] {
+            position: absolute !important;
+        }
+    }
+
     &[data-glpi-form-editor-sorting] {
         [data-glpi-form-editor-section-blocks] > [data-glpi-form-editor-block] {
             display: flex;
@@ -51,6 +57,7 @@
 
             [data-glpi-form-editor-question-drag-merge] {
                 position: relative;
+                width: 15%;
             }
 
             [data-glpi-form-editor-toolbar] {
