@@ -513,7 +513,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                     'Passing SQL request criteria as strings is deprecated for security reasons. Criteria was `` %s ``.',
                     $crit
                 ),
-                //version: '11.1'
+                version: '11.1'
             );
 
             /**
@@ -552,7 +552,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                             'Passing SQL request criteria as booleans is deprecated. Please use `new \Glpi\DBAL\QueryExpression("%s");`.',
                             $value ? 'true' : 'false'
                         ),
-                        //version: '11.1'
+                        version: '11.1'
                     );
                     $ret .= $value ? 'true' : 'false';
                 } else {
