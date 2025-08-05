@@ -63,7 +63,7 @@ return $config
 
     // Only loaded in a conditional block that checks if the environment is dev
     ->ignoreErrorsOnPackages([
-		'symfony/debug-bundle',
+        'symfony/debug-bundle',
         'symfony/twig-bundle',
         'symfony/web-profiler-bundle',
     ], [ErrorType::DEV_DEPENDENCY_IN_PROD])
