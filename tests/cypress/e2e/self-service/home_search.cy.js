@@ -164,7 +164,7 @@ describe('Helpdesk Search with FormProvider', () => {
             'is_active': true,
             'is_pinned': true,
             'forms_categories_id': 0,
-        });
+        }).as('pinned_form_id');
 
         // Create a regular form
         createActiveForm(regular_form, 0, 'This is a regular form');
@@ -178,6 +178,14 @@ describe('Helpdesk Search with FormProvider', () => {
         // Pinned form should still appear, regular form should not
         cy.findByRole('link', {'name': pinned_form}).should('exist');
         cy.findByRole('link', {'name': regular_form}).should('not.exist');
+
+        // Unpin the pinned form
+        cy.changeProfile('Super-Admin');
+        cy.get('@pinned_form_id').then(form_id => {
+            cy.updateWithAPI('Glpi\\Form\\Form', form_id, {
+                'is_pinned': false,
+            });
+        });
     });
 
     it('can search both forms and FAQ items together', () => {
