@@ -2888,6 +2888,7 @@ HTML;
 
         $anonymize_config = Entity::getAnonymizeConfig();
         TemplateRenderer::getInstance()->display('pages/admin/user/user.html.twig', [
+            'is_administrator' => Config::canUpdate(),
             'item' => $this,
             'is_preference_form' => true,
             'timezones' => $DB->getTimezones(),
