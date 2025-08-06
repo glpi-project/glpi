@@ -154,16 +154,6 @@ final class FormTile extends CommonDBChild implements TileInterface
         );
     }
 
-    #[Override]
-    public function listTranslationsHandlers(): array
-    {
-        /**
-         * Title and description are already translated in the form
-         * so we don't need to add them here.
-         */
-        return [];
-    }
-
     public function getFormId(): int
     {
         return $this->fields['forms_forms_id'] ?? 0;

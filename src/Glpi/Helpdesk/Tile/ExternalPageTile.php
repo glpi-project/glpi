@@ -35,14 +35,18 @@
 namespace Glpi\Helpdesk\Tile;
 
 use CommonDBTM;
+use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Glpi\ItemTranslation\Context\TranslationHandler;
 use Glpi\Session\SessionInfo;
 use Glpi\UI\IllustrationManager;
 use Override;
 
-final class ExternalPageTile extends CommonDBTM implements TileInterface
+final class ExternalPageTile extends CommonDBTM implements TileInterface, ProvideTranslationsInterface
 {
     public static $rightname = 'config';
+
+    public const TRANSLATION_KEY_TITLE = 'title';
+    public const TRANSLATION_KEY_DESCRIPTION = 'description';
 
     #[Override]
     public function getLabel(): string
