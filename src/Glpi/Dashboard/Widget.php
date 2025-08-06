@@ -1050,7 +1050,7 @@ TWIG, $twig_params);
             $serie = [
                 'name'            => $value['name'] ?? "",
                 'type'            => 'bar',
-                'color'           => $palette[$serie_i],
+                'color'           => $palette[$serie_i] ?? Toolbox::getFgColor($p['color']),
                 'data'            => $value['data'],
                 'legendHoverLink' => true,
             ];
