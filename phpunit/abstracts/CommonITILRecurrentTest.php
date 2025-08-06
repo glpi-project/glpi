@@ -767,7 +767,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
         // Assert: template should be linked
         $this->assertEquals(
             $template->getID(),
-            $item->fields[$template->getForeignKeyField()],
+            $item->fields[$template::getForeignKeyField()],
         );
     }
 }
