@@ -207,7 +207,7 @@ class ChangeTest extends DbTestCase
         ]);
 
         // Initial status is new (incoming)
-        $this->assertSame(\CommonITILObject::INCOMING, $change->fields['status']);
+        $this->assertSame(CommonITILObject::INCOMING, $change->fields['status']);
 
         $change->update([
             'id' => $changes_id,
@@ -222,12 +222,12 @@ class ChangeTest extends DbTestCase
         // Verify user was assigned and status doesn't change
         $change->loadActors();
         $this->assertSame(1, $change->countUsers(\CommonITILActor::ASSIGN));
-        $this->assertSame(\CommonITILObject::INCOMING, $change->fields['status']);
+        $this->assertSame(CommonITILObject::INCOMING, $change->fields['status']);
 
         // Change status to accepted
         $change->update([
             'id' => $changes_id,
-            'status' => \CommonITILObject::ACCEPTED,
+            'status' => CommonITILObject::ACCEPTED,
         ]);
         // Unassign change and expect the status to stay accepted
         $change_user = new \Change_User();
@@ -238,7 +238,7 @@ class ChangeTest extends DbTestCase
         ]);
         $change->getFromDB($changes_id);
         $this->assertSame(0, $change->countUsers(\CommonITILActor::ASSIGN));
-        $this->assertSame(\CommonITILObject::ACCEPTED, $change->fields['status']);
+        $this->assertSame(CommonITILObject::ACCEPTED, $change->fields['status']);
     }
 
     public function testAddAdditionalActorsDuplicated()
@@ -288,7 +288,7 @@ class ChangeTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $changes_id);
         // Even when automatically assigning a user, the initial status should be set to New
-        $this->assertSame(\CommonITILObject::INCOMING, $change->fields['status']);
+        $this->assertSame(CommonITILObject::INCOMING, $change->fields['status']);
     }
 
     public function testStatusWhenSolutionIsRefused()
@@ -300,7 +300,7 @@ class ChangeTest extends DbTestCase
             'content' => "test initial status",
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
             '_users_id_assign' => getItemByTypeName('User', TU_USER, true),
-            'status'    => \CommonITILObject::SOLVED,
+            'status'    => CommonITILObject::SOLVED,
         ]);
         $this->assertGreaterThan(0, $changes_id);
 
@@ -312,13 +312,13 @@ class ChangeTest extends DbTestCase
             'users_id_editor' => getItemByTypeName('User', TU_USER, true),
             'content' => 'Test followup content',
             'requesttypes_id' => 1,
-            'timeline_position' => \CommonITILObject::TIMELINE_LEFT,
+            'timeline_position' => CommonITILObject::TIMELINE_LEFT,
             'add_reopen' => '',
         ]);
         $this->assertGreaterThan(0, $followup_id);
 
         $item = $change->getById($changes_id);
-        $this->assertSame(\CommonITILObject::INCOMING, $item->fields['status']);
+        $this->assertSame(CommonITILObject::INCOMING, $item->fields['status']);
     }
 
     public function testSearchOptions()
