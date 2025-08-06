@@ -389,15 +389,16 @@ class ProjectCost extends CommonDBChild
                 if ($canedit) {
                     $js = "function viewEditCost" . $project_id . "_" . $data["id"] . "_$rand() {";
                     $js .= Ajax::updateItemJsCode(
-                        "viewcost" . $ID . "_$rand",
-                        $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
-                        [
+                        toupdate: "viewcost" . $ID . "_$rand",
+                        url: $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
+                        parameters: [
                             'type'        => self::class,
                             'parenttype'  => 'Project',
                             'projects_id' => $data["projects_id"],
                             'id'          => $data["id"],
                             'display'     => false,
-                        ]
+                        ],
+                        display: false
                     );
                     $js .=  "};";
 
