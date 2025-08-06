@@ -11242,8 +11242,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     }
 
     /**
-     * Is the current user a requester of the current ticket and have the right
-     * to update it?
+     * Is the current user a requester of the current itil item and does he have
+     * the right to update it?
      *
      * @return bool
      */
