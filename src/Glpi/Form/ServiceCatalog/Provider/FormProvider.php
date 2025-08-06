@@ -70,7 +70,7 @@ final class FormProvider implements LeafProviderInterface
 
         $entity_restriction = getEntitiesRestrictCriteria(
             table: Form::getTable(),
-            value: $parameters->getSessionInfo()->getCurrentEntityId(),
+            value: $parameters->getSessionInfo()->getActiveEntitiesIds(),
             is_recursive: true,
         );
 
