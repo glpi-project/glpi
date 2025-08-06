@@ -61,7 +61,7 @@
                                         {% do call('Html::showMassiveActionCheckBox', ['DisplayPreference', pref['itemtype']]) %}
                                     </span>
                                 {% endif %}
-                                <button type="button" class="btn btn-ghost-secondary p-0 btn-itemtype-pref overflow-hidden" data-itemtype="{{ pref['itemtype'] }}">
+                                <button type="button" class="btn btn-ghost-secondary p-0 btn-itemtype-pref overflow-hidden" data-itemtype="{{ pref['itemtype'] }}" title="{{ name }}">
                                     <i class="{{ pref['itemtype']|itemtype_icon }} me-1"></i>
                                     <span class="text-truncate">
                                         {{ name }}
