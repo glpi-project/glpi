@@ -37,8 +37,11 @@ namespace tests\units;
 use DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use ReflectionClass;
+use Rule;
 use RuleCollection;
+use RuleTicket;
 use RuleTicketCollection;
+use Symfony\Component\DomCrawler\Crawler;
 
 /* Test for inc/rule.class.php */
 
@@ -1015,6 +1018,36 @@ class RuleTest extends DbTestCase
 
         $this->assertTrue($rules->getFromDBByCrit(['uuid' => 'glpi_rule_import_asset_no_creation_on_partial_import']));
         $this->assertNotSame($rules->fields['name'], 'Changed for tests');
+    }
+
+    public function testDisplayImpactCriteria(): void
+    {
+        // Arrange: create a rule object
+        $rule = new RuleTicket();
+
+        // Act: display impact criteria
+        ob_start();
+        $rule->displayCriteriaSelectPattern("pattern", "impact", Rule::PATTERN_IS);
+        $output = ob_get_clean();
+
+        // Assert: make sure some options are defined
+        $crawler = new Crawler($output);
+        $this->assertCount(5, $crawler->filter('option'));
+    }
+
+    public function testDisplayUrgencyCriteria(): void
+    {
+        // Arrange: create a rule object
+        $rule = new RuleTicket();
+
+        // Act: display impact criteria
+        ob_start();
+        $rule->displayCriteriaSelectPattern("pattern", "urgency", Rule::PATTERN_IS);
+        $output = ob_get_clean();
+
+        // Assert: make sure some options are defined
+        $crawler = new Crawler($output);
+        $this->assertCount(5, $crawler->filter('option'));
     }
 }
 

@@ -43,6 +43,12 @@ class RuleTicket extends RuleCommonITILObject
         return __('Business rules for tickets');
     }
 
+    #[Override]
+    public function getTargetItilType(): Ticket
+    {
+        return new Ticket();
+    }
+
     public function executeActions($output, $params, array $input = [])
     {
         $output = parent::executeActions($output, $params, $input);
