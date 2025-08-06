@@ -45,7 +45,7 @@ abstract class RuleCommonITILObject extends Rule
     public const ONADD    = 1;
     public const ONUPDATE = 2;
 
-    public abstract function getTargetItilType(): CommonITILObject;
+    abstract public function getTargetItilType(): CommonITILObject;
 
     /**
      * Get the ITIL Object itemtype that this rule is for

@@ -3446,7 +3446,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        if (!is_subclass_of(self::class, static::class)) {
+        if (self::class === static::class) {
             // Needed because this method depends on static variables that will
             // be defined by child classes.
             throw new RuntimeException("Do not call this method on CommonITILObject, use the target child class instead");

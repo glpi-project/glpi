@@ -49,44 +49,44 @@ class RuleTest extends DbTestCase
 {
     public function testGetTable()
     {
-        $table = \Rule::getTable('RuleDictionnarySoftware');
+        $table = Rule::getTable('RuleDictionnarySoftware');
         $this->assertSame('glpi_rules', $table);
 
-        $table = \Rule::getTable('RuleTicket');
+        $table = Rule::getTable('RuleTicket');
         $this->assertSame('glpi_rules', $table);
     }
 
     public function testGetTypeName()
     {
-        $this->assertSame('Rule', \Rule::getTypeName(1));
-        $this->assertSame('Rules', \Rule::getTypeName(\Session::getPluralNumber()));
+        $this->assertSame('Rule', Rule::getTypeName(1));
+        $this->assertSame('Rules', Rule::getTypeName(\Session::getPluralNumber()));
     }
 
     public function testGetRuleObjectByID()
     {
-        $rule = new \Rule();
+        $rule = new Rule();
         $rules_id = $rule->add([
             'name'        => 'Ignore import',
             'is_active'   => 1,
             'entities_id' => 0,
             'sub_type'    => 'RuleDictionnarySoftware',
-            'match'       => \Rule::AND_MATCHING,
+            'match'       => Rule::AND_MATCHING,
             'condition'   => 0,
             'description' => '',
         ]);
         $this->assertGreaterThan(0, (int) $rules_id);
 
-        $obj = \Rule::getRuleObjectByID($rules_id);
+        $obj = Rule::getRuleObjectByID($rules_id);
         $this->assertInstanceOf(\RuleDictionnarySoftware::class, $obj);
 
-        $this->assertNull(\Rule::getRuleObjectByID(100));
+        $this->assertNull(Rule::getRuleObjectByID(100));
     }
 
     public function testGetConditionsArray()
     {
-        $this->assertEmpty(\Rule::getConditionsArray());
+        $this->assertEmpty(Rule::getConditionsArray());
 
-        $conditions = \RuleTicket::getConditionsArray();
+        $conditions = RuleTicket::getConditionsArray();
         $this->assertEquals(
             [
                 1 => "Add",
@@ -99,43 +99,43 @@ class RuleTest extends DbTestCase
 
     public function testUseConditions()
     {
-        $rule = new \Rule();
+        $rule = new Rule();
         $this->assertFalse($rule->useConditions());
 
-        $ruleticket = new \RuleTicket();
+        $ruleticket = new RuleTicket();
         $this->assertTrue($ruleticket->useConditions());
     }
 
     public function testGetConditionName()
     {
-        $this->assertSame(NOT_AVAILABLE, \Rule::getConditionName(-1));
-        $this->assertSame(NOT_AVAILABLE, \Rule::getConditionName(110));
-        $this->assertSame('Add', \RuleTicket::getConditionName(1));
-        $this->assertSame('Update', \RuleTicket::getConditionName(2));
-        $this->assertSame('Add / Update', \RuleTicket::getConditionName(3));
+        $this->assertSame(NOT_AVAILABLE, Rule::getConditionName(-1));
+        $this->assertSame(NOT_AVAILABLE, Rule::getConditionName(110));
+        $this->assertSame('Add', RuleTicket::getConditionName(1));
+        $this->assertSame('Update', RuleTicket::getConditionName(2));
+        $this->assertSame('Add / Update', RuleTicket::getConditionName(3));
     }
 
     public function testGetRuleActionClass()
     {
-        $rule = new \Rule();
+        $rule = new Rule();
         $this->assertSame('RuleAction', $rule->getRuleActionClass());
 
-        $rule = new \RuleTicket();
+        $rule = new RuleTicket();
         $this->assertSame('RuleAction', $rule->getRuleActionClass());
     }
 
     public function testGetRuleCriteriaClass()
     {
-        $rule = new \Rule();
+        $rule = new Rule();
         $this->assertSame('RuleCriteria', $rule->getRuleCriteriaClass());
 
-        $rule = new \RuleTicket();
+        $rule = new RuleTicket();
         $this->assertSame('RuleCriteria', $rule->getRuleCriteriaClass());
     }
 
     public function testGetRuleIdField()
     {
-        $rule = new \Rule();
+        $rule = new Rule();
         $this->assertSame('rules_id', $rule->getRuleIdField());
 
         $rule = new \RuleDictionnaryPrinter();
@@ -144,41 +144,41 @@ class RuleTest extends DbTestCase
 
     public function testIsEntityAssign()
     {
-        $rule = new \Rule();
+        $rule = new Rule();
         $this->assertFalse($rule->isEntityAssign());
 
-        $rule = new \RuleTicket();
+        $rule = new RuleTicket();
         $this->assertTrue($rule->isEntityAssign());
     }
 
     public function testPost_getEmpty()
     {
-        $rule = new \Rule();
+        $rule = new Rule();
         $rule->getEmpty();
         $this->assertEquals(0, $rule->fields['is_active']);
     }
 
     public function testGetTitle()
     {
-        $rule = new \Rule();
+        $rule = new Rule();
         $this->assertSame(__('Rules management'), $rule->getTitle());
 
-        $rule = new \RuleTicket();
+        $rule = new RuleTicket();
         $this->assertSame(__('Business rules for tickets'), $rule->getTitle());
     }
 
     public function testGetCollectionClassInstance()
     {
-        $rule = new \Rule();
+        $rule = new Rule();
         $this->assertInstanceOf(RuleCollection::class, $rule->getCollectionClassInstance());
 
-        $rule = new \RuleTicket();
+        $rule = new RuleTicket();
         $this->assertInstanceOf(RuleTicketCollection::class, $rule->getCollectionClassInstance());
     }
 
     public function testGetSpecificMassiveActions()
     {
-        $rule    = new \Rule();
+        $rule    = new Rule();
         $actions = $rule->getSpecificMassiveActions();
         $this->assertSame(
             [
@@ -211,13 +211,13 @@ class RuleTest extends DbTestCase
 
     public function testGetSearchOptionsNew()
     {
-        $rule = new \Rule();
+        $rule = new Rule();
         $this->assertCount(12, $rule->rawSearchOptions());
     }
 
     public function testGetRuleWithCriteriasAndActions()
     {
-        $rule       = new \Rule();
+        $rule       = new Rule();
         $criteria   = new \RuleCriteria();
         $action     = new \RuleAction();
 
@@ -225,7 +225,7 @@ class RuleTest extends DbTestCase
             'is_active'   => 1,
             'entities_id' => 0,
             'sub_type'    => 'RuleDictionnarySoftware',
-            'match'       => \Rule::OR_MATCHING,
+            'match'       => Rule::OR_MATCHING,
             'condition'   => 0,
             'description' => '',
         ]);
@@ -236,7 +236,7 @@ class RuleTest extends DbTestCase
             (int) $criteria->add([
                 'rules_id'  => $rules_id,
                 'criteria'  => 'name',
-                'condition' => \Rule::PATTERN_IS,
+                'condition' => Rule::PATTERN_IS,
                 'pattern'   => 'Mozilla Firefox 52',
             ])
         );
@@ -246,7 +246,7 @@ class RuleTest extends DbTestCase
             (int) $criteria->add([
                 'rules_id'  => $rules_id,
                 'criteria'  => 'name',
-                'condition' => \Rule::PATTERN_IS,
+                'condition' => Rule::PATTERN_IS,
                 'pattern'   => 'Mozilla Firefox 53',
             ])
         );
@@ -277,10 +277,10 @@ class RuleTest extends DbTestCase
      */
     public function testMaxActionsCount(): void
     {
-        $rule = new \Rule();
+        $rule = new Rule();
         $this->assertSame(1, $rule->maxActionsCount());
 
-        $rule = new \RuleTicket();
+        $rule = new RuleTicket();
         $this->assertSame(45, $rule->maxActionsCount());
 
         $rule = new \RuleDictionnarySoftware();
@@ -289,16 +289,16 @@ class RuleTest extends DbTestCase
 
     public function testMaybeRecursive()
     {
-        $rule = new \Rule();
+        $rule = new Rule();
         $this->assertFalse($rule->maybeRecursive());
 
-        $rule = new \RuleTicket();
+        $rule = new RuleTicket();
         $this->assertTrue($rule->maybeRecursive());
     }
 
     public function testGetCriteria()
     {
-        $ruleTicket = new \RuleTicket();
+        $ruleTicket = new RuleTicket();
         $criteria   = $ruleTicket->getCriteria('locations_id');
         $this->assertSame('glpi_locations', $criteria['table']);
         $this->assertEmpty($ruleTicket->getCriteria('location'));
@@ -306,7 +306,7 @@ class RuleTest extends DbTestCase
 
     public function testGetAction()
     {
-        $ruleTicket = new \RuleTicket();
+        $ruleTicket = new RuleTicket();
         $action     = $ruleTicket->getAction('locations_id');
         $this->assertSame('glpi_locations', $action['table']);
         $this->assertEmpty($ruleTicket->getAction('location'));
@@ -314,7 +314,7 @@ class RuleTest extends DbTestCase
 
     public function testGetCriteriaName()
     {
-        $ruleTicket = new \RuleTicket();
+        $ruleTicket = new RuleTicket();
         $this->assertSame('Location', $ruleTicket->getCriteriaName('locations_id'));
         $this->assertSame(__('Unavailable'), $ruleTicket->getCriteriaName('location'));
     }
@@ -384,13 +384,13 @@ class RuleTest extends DbTestCase
     #[DataProvider('actionsNamesProvider')]
     public function testGetActionName($label, $field)
     {
-        $ruleTicket = new \RuleTicket();
+        $ruleTicket = new RuleTicket();
         $this->assertSame($label, $ruleTicket->getActionName($field));
     }
 
     public function testPrepareInputDataForProcess()
     {
-        $rule = new \Rule();
+        $rule = new Rule();
         $input = ['name' => 'name', 'test' => 'test'];
         $result = $rule->prepareInputDataForProcess($input, ['test2' => 'test2']);
         $this->assertSame($input, $result);
@@ -462,7 +462,7 @@ class RuleTest extends DbTestCase
 
     public function testCleanDBonPurge()
     {
-        $rule       = new \Rule();
+        $rule       = new Rule();
         $criteria   = new \RuleCriteria();
         $action     = new \RuleAction();
 
@@ -470,7 +470,7 @@ class RuleTest extends DbTestCase
             'is_active'   => 1,
             'entities_id' => 0,
             'sub_type'    => 'RuleDictionnarySoftware',
-            'match'       => \Rule::OR_MATCHING,
+            'match'       => Rule::OR_MATCHING,
             'condition'   => 0,
             'description' => '',
         ]);
@@ -478,14 +478,14 @@ class RuleTest extends DbTestCase
 
         $criterion_1 = $criteria->add(['rules_id'  => $rules_id,
             'criteria'  => 'name',
-            'condition' => \Rule::PATTERN_IS,
+            'condition' => Rule::PATTERN_IS,
             'pattern'   => 'Mozilla Firefox 52',
         ]);
         $this->assertGreaterThan(0, (int) $criterion_1);
 
         $criterion_2 = $criteria->add(['rules_id'  => $rules_id,
             'criteria'  => 'name',
-            'condition' => \Rule::PATTERN_IS,
+            'condition' => Rule::PATTERN_IS,
             'pattern'   => 'Mozilla Firefox 53',
         ]);
         $this->assertGreaterThan(0, (int) $criterion_2);
@@ -526,12 +526,12 @@ class RuleTest extends DbTestCase
 
     public function testGetMinimalCriteriaText()
     {
-        $rule     = new \RuleTicket();
+        $rule     = new RuleTicket();
         $location = getItemByTypeName('Location', "_location01");
 
         //Testing condition CONTAIN
         $input    = ['criteria'  => 'location',
-            'condition'   => \Rule::PATTERN_CONTAIN,
+            'condition'   => Rule::PATTERN_CONTAIN,
             'pattern' => '_loc',
         ];
         //The criterion doesn't exist
@@ -545,72 +545,72 @@ class RuleTest extends DbTestCase
         $this->assertSame($expected, $result);
 
         //Testing condition IS
-        $input['condition'] = \Rule::PATTERN_IS;
+        $input['condition'] = Rule::PATTERN_IS;
         $input['pattern']   = $location->getID();
         $result   = $rule->getMinimalCriteriaText($input);
         $expected = "<td >Requester location</td><td >is</td><td >_location01 (Root entity)</td>";
         $this->assertSame($expected, $result);
 
         //Testing condition IS NOT
-        $input['condition'] = \Rule::PATTERN_IS_NOT;
+        $input['condition'] = Rule::PATTERN_IS_NOT;
         $result   = $rule->getMinimalCriteriaText($input);
         $expected = "<td >Requester location</td><td >is not</td><td >_location01 (Root entity)</td>";
         $this->assertSame($expected, $result);
 
         //Testing condition REGEX MATCH
-        $input['condition'] = \Rule::REGEX_MATCH;
+        $input['condition'] = Rule::REGEX_MATCH;
         $input['pattern']   = '/(loc)/';
         $result   = $rule->getMinimalCriteriaText($input);
         $expected = "<td >Requester location</td><td >regular expression matches</td><td >/(loc)/</td>";
         $this->assertSame($expected, $result);
 
         //Testing condition REGEX DOES NOT MATCH
-        $input['condition'] = \Rule::REGEX_NOT_MATCH;
+        $input['condition'] = Rule::REGEX_NOT_MATCH;
         $result   = $rule->getMinimalCriteriaText($input);
         $expected = "<td >Requester location</td><td >regular expression does not match</td><td >/(loc)/</td>";
         $this->assertSame($expected, $result);
 
         //Testing condition EXISTS
-        $input['condition'] = \Rule::PATTERN_EXISTS;
+        $input['condition'] = Rule::PATTERN_EXISTS;
         $result   = $rule->getMinimalCriteriaText($input);
         $expected = "<td >Requester location</td><td >exists</td><td >Yes</td>";
         $this->assertSame($expected, $result);
 
         //Testing condition DOES NOT EXIST
-        $input['condition'] = \Rule::PATTERN_DOES_NOT_EXISTS;
+        $input['condition'] = Rule::PATTERN_DOES_NOT_EXISTS;
         $result   = $rule->getMinimalCriteriaText($input);
         $expected = "<td >Requester location</td><td >does not exist</td><td >Yes</td>";
         $this->assertSame($expected, $result);
 
         //Testing condition UNDER
-        $input['condition'] = \Rule::PATTERN_UNDER;
+        $input['condition'] = Rule::PATTERN_UNDER;
         $input['pattern']   = $location->getID();
         $result   = $rule->getMinimalCriteriaText($input);
         $expected = "<td >Requester location</td><td >under</td><td >_location01 (Root entity)</td>";
         $this->assertSame($expected, $result);
 
         //Testing condition UNDER
-        $input['condition'] = \Rule::PATTERN_NOT_UNDER;
+        $input['condition'] = Rule::PATTERN_NOT_UNDER;
         $result   = $rule->getMinimalCriteriaText($input);
         $expected = "<td >Requester location</td><td >not under</td><td >_location01 (Root entity)</td>";
         $this->assertSame($expected, $result);
 
         //Testing condition UNDER
-        $input['condition'] = \Rule::PATTERN_BEGIN;
+        $input['condition'] = Rule::PATTERN_BEGIN;
         $input['pattern']   = '_loc';
         $result   = $rule->getMinimalCriteriaText($input);
         $expected = "<td >Requester location</td><td >starting with</td><td >_loc</td>";
         $this->assertSame($expected, $result);
 
         //Testing condition UNDER
-        $input['condition'] = \Rule::PATTERN_END;
+        $input['condition'] = Rule::PATTERN_END;
         $input['pattern']   = '_loc';
         $result   = $rule->getMinimalCriteriaText($input);
         $expected = "<td >Requester location</td><td >finished by</td><td >_loc</td>";
         $this->assertSame($expected, $result);
 
         //Testing condition UNDER
-        $input['condition'] = \Rule::PATTERN_END;
+        $input['condition'] = Rule::PATTERN_END;
         $input['pattern']   = '_loc';
         $result   = $rule->getMinimalCriteriaText($input, 'aaaa');
         $expected = "<td aaaa>Requester location</td><td aaaa>finished by</td><td aaaa>_loc</td>";
@@ -644,10 +644,10 @@ class RuleTest extends DbTestCase
 
     public function testGetCriteriaDisplayPattern()
     {
-        $rule   = new \Rule();
-        $this->assertSame(__('Yes'), $rule->getCriteriaDisplayPattern(9, \Rule::PATTERN_EXISTS, 1));
-        $this->assertSame(__('Yes'), $rule->getCriteriaDisplayPattern(9, \Rule::PATTERN_DOES_NOT_EXISTS, 1));
-        $this->assertSame(__('Yes'), $rule->getCriteriaDisplayPattern(9, \Rule::PATTERN_FIND, 1));
+        $rule   = new Rule();
+        $this->assertSame(__('Yes'), $rule->getCriteriaDisplayPattern(9, Rule::PATTERN_EXISTS, 1));
+        $this->assertSame(__('Yes'), $rule->getCriteriaDisplayPattern(9, Rule::PATTERN_DOES_NOT_EXISTS, 1));
+        $this->assertSame(__('Yes'), $rule->getCriteriaDisplayPattern(9, Rule::PATTERN_FIND, 1));
 
         //FIXME: missing tests?
         /*$result = $rule->getCriteriaDisplayPattern(9, \Rule::PATTERN_IS, 1);
@@ -680,7 +680,7 @@ class RuleTest extends DbTestCase
 
     public function testRankingFromBaseRuleClass()
     {
-        $rule = new \Rule();
+        $rule = new Rule();
         // create a software rule
         $add = $rule->add([
             'sub_type'  => 'RuleSoftwareCategory',
@@ -757,7 +757,7 @@ class RuleTest extends DbTestCase
 
         foreach ($classes as $class) {
             $reflection_class = new ReflectionClass($class);
-            if ($reflection_class->isAbstract() || !is_subclass_of($class, \Rule::class, true)) {
+            if ($reflection_class->isAbstract() || !is_subclass_of($class, Rule::class, true)) {
                 continue;
             }
 
@@ -778,7 +778,7 @@ class RuleTest extends DbTestCase
                         'rules_id'  => 1,
                         'criteria'  => $key,
                         'condition' => $condition,
-                        'pattern'   => in_array($condition, [\Rule::REGEX_MATCH,  \Rule::REGEX_NOT_MATCH]) ? '/1/' : 1,
+                        'pattern'   => in_array($condition, [Rule::REGEX_MATCH,  Rule::REGEX_NOT_MATCH]) ? '/1/' : 1,
                     ];
 
                     $results      = [];
@@ -825,7 +825,7 @@ class RuleTest extends DbTestCase
         // Make sure this test is still valid
         $this->assertGreaterThan(1, $ticket_rule_count);
 
-        $rule = new \RuleTicket();
+        $rule = new RuleTicket();
         $rule->add([
             'sub_type' => 'RuleTicket',
             'name'     => 'test',
@@ -863,7 +863,7 @@ class RuleTest extends DbTestCase
 
     public function testMoveRule()
     {
-        $rule = new \RuleTicket();
+        $rule = new RuleTicket();
         $rules_id_1 = $rule->add([
             'sub_type' => 'RuleTicket',
             'name'     => __FUNCTION__,
@@ -961,7 +961,7 @@ class RuleTest extends DbTestCase
 
     public function testInvalidRankingOnAdd()
     {
-        $rule = new \RuleTicket();
+        $rule = new RuleTicket();
         $rule->add([
             'sub_type' => 'RuleTicket',
             'name'     => __FUNCTION__,
@@ -979,7 +979,7 @@ class RuleTest extends DbTestCase
 
     public function testValidRankingOnAdd()
     {
-        $rule = new \RuleTicket();
+        $rule = new RuleTicket();
         $rule->add([
             'sub_type' => 'RuleTicket',
             'name'     => __FUNCTION__,
@@ -1052,7 +1052,7 @@ class RuleTest extends DbTestCase
 }
 
 // @codingStandardsIgnoreStart
-class MyRuleTest extends \Rule {}
+class MyRuleTest extends Rule {}
 
 // @codingStandardsIgnoreStart
 /** @used-by MyRuleTest */
