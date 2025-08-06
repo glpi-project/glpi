@@ -34,14 +34,10 @@
 
 namespace Glpi\Helpdesk\Tile;
 
-use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Glpi\Session\SessionInfo;
 
-interface TileInterface extends ProvideTranslationsInterface
+interface TileInterface
 {
-    public const TRANSLATION_KEY_TITLE = 'title';
-    public const TRANSLATION_KEY_DESCRIPTION = 'description';
-
     public function getLabel(): string;
 
     public function getTitle(): string;

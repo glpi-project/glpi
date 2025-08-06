@@ -132,10 +132,9 @@ final class HelpdeskTranslation extends ItemTranslation implements ProvideTransl
             $entities
         );
 
-        $tiles_handlers = array_map(
-            fn($tile) => $tile->listTranslationsHandlers(),
-            $tiles_manager->getAllTiles()
-        );
+        $tiles = $tiles_manager->getAllTiles();
+        $tiles = array_filter($tiles, fn($tile) => $tile instanceof ProvideTranslationsInterface);
+        $tiles_handlers = array_map(fn(ProvideTranslationsInterface $tile) => $tile->listTranslationsHandlers(), $tiles);
 
         return array_merge(...$entities_handlers, ...$tiles_handlers);
     }

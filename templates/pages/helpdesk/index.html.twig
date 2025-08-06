@@ -108,6 +108,10 @@
 
                 <div class="row">
                     {% for tile in tiles %}
+                        {# Check if the tile provides translations #}
+                        {# Actually, only FormTile does not provide translations because its title and description are already translated in the form itself #}
+                        {% set is_tile_provide_translations = tile is instanceof('Glpi\\ItemTranslation\\Context\\ProvideTranslationsInterface') %}
+
                         <div class="col-12 col-sm-6 col-md-4 d-flex">
                             <a
                                 class="card mx-1 my-2 flex-grow-1"
@@ -120,10 +124,19 @@
                                         </div>
                                         <div class="ms-4">
                                             <h2 class="card-title mb-2">
-                                                {{ translate_item_key(tile, constant('TRANSLATION_KEY_TITLE', tile)) }}
+                                                {% if is_tile_provide_translations %}
+                                                    {{ translate_item_key(tile, constant('TRANSLATION_KEY_TITLE', tile)) }}
+                                                {% else %}
+                                                    {{ tile.getTitle() }}
+                                                {% endif %}
                                             </h2>
                                             <div class="text-secondary remove-last-tinymce-margin">
-                                                {{ translate_item_key(tile, constant('TRANSLATION_KEY_DESCRIPTION', tile))|safe_html }}
+                                                {# If the tile provides translations, use the translation handler to get the description #}
+                                                {% if is_tile_provide_translations %}
+                                                    {{ translate_item_key(tile, constant('TRANSLATION_KEY_DESCRIPTION', tile))|safe_html }}
+                                                {% else %}
+                                                    {{ tile.getDescription()|safe_html }}
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
