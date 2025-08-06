@@ -289,7 +289,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
     {
         if (($add && empty($input['domains_id'])) || (isset($input['domains_id']) && empty($input['domains_id']))) {
             Session::addMessageAfterRedirect(
-                __('A domain is required'),
+                __s('A domain is required'),
                 true,
                 ERROR
             );

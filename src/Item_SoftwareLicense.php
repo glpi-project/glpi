@@ -322,7 +322,7 @@ class Item_SoftwareLicense extends CommonDBRelation
                                 !$license->getField('allow_overquota')
                             ) {
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                                $ma->addMessage(sprintf(__('Maximum number of items reached for license "%s".'), $license->getName()));
+                                $ma->addMessage(sprintf(__s('Maximum number of items reached for license "%s".'), htmlescape($license->getName())));
                                 continue;
                             }
 

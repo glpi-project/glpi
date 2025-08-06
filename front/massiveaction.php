@@ -47,7 +47,7 @@ try {
 
     echo "<div class='center'><img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='" .
       __s('Warning') . "'><br><br>";
-    echo "<span class='b'>" . $e->getMessage() . "</span><br>";
+    echo "<span class='b'>" . htmlescape($e->getMessage()) . "</span><br>";
     Html::displayBackLink();
     echo "</div>";
 
@@ -71,7 +71,7 @@ $msg_type = INFO;
 if ($nbnoaction > 0 && $nbok === 0 && $nbko === 0 && $nbnoright === 0) {
     $message = __s('Operation was done but no action was required');
 } elseif ($nbok == 0) {
-    $message = __('Failed operation');
+    $message = __s('Failed operation');
     $msg_type = ERROR;
 } elseif ($nbnoright || $nbko) {
     $message = __s('Operation performed partially successful');

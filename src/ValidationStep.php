@@ -72,14 +72,20 @@ class ValidationStep extends CommonDropdown
         $is_input_valid = true;
         // name is mandatory
         if (!isset($input['name']) || strlen($input['name']) < 3) {
-            $message = sprintf(__s('The %s field is mandatory'), $this->getAdditionalField('name')['label'] ?? 'name');
+            $message = sprintf(
+                __s('The %s field is mandatory'),
+                htmlescape($this->getAdditionalField('name')['label'] ?? 'name')
+            );
             Session::addMessageAfterRedirect(msg: $message, message_type: ERROR);
             $is_input_valid = false;
         }
 
         // percent is mandatory and must be a percentage
         if (!isset($input['minimal_required_validation_percent']) || !is_numeric($input['minimal_required_validation_percent']) || $input['minimal_required_validation_percent'] < 0 || $input['minimal_required_validation_percent'] > 100) {
-            $message = sprintf(__s('The %s field is mandatory and must be beetween 0 and 100.'), $this->getAdditionalField('minimal_required_validation_percent')['label'] ?? 'minimal_required_validation_percent');
+            $message = sprintf(
+                __s('The %s field is mandatory and must be beetween 0 and 100.'),
+                htmlescape($this->getAdditionalField('minimal_required_validation_percent')['label'] ?? 'minimal_required_validation_percent')
+            );
             Session::addMessageAfterRedirect(msg: $message, message_type: ERROR);
             $is_input_valid = false;
         }
@@ -97,7 +103,10 @@ class ValidationStep extends CommonDropdown
 
         // name is mandatory
         if (isset($input['name']) && strlen($input['name']) < 3) {
-            $message = sprintf(__s('The %s field is mandatory'), $this->getAdditionalField('name')['label'] ?? 'name');
+            $message = sprintf(
+                __s('The %s field is mandatory'),
+                htmlescape($this->getAdditionalField('name')['label'] ?? 'name')
+            );
             Session::addMessageAfterRedirect(msg: $message, message_type: ERROR);
             $is_input_valid = false;
         }
@@ -107,7 +116,10 @@ class ValidationStep extends CommonDropdown
             isset($input['minimal_required_validation_percent'])
             && (!is_numeric($input['minimal_required_validation_percent']) || $input['minimal_required_validation_percent'] < 0 || $input['minimal_required_validation_percent'] > 100)
         ) {
-            $message = sprintf(__s('The %s field is mandatory and must be beetween 0 and 100.'), $this->getAdditionalField('minimal_required_validation_percent')['label'] ?? 'minimal_required_validation_percent');
+            $message = sprintf(
+                __s('The %s field is mandatory and must be beetween 0 and 100.'),
+                htmlescape($this->getAdditionalField('minimal_required_validation_percent')['label'] ?? 'minimal_required_validation_percent')
+            );
             Session::addMessageAfterRedirect(msg: $message, message_type: ERROR);
             $is_input_valid = false;
         }

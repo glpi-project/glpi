@@ -1503,7 +1503,10 @@ class Session
      * @param boolean $reset        Clear previous added message (false by default)
      *
      * @return void
-     **/
+     *
+     * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
+     * @psalm-taint-sink html $msg (message will be sent to output without being escaped)
+     */
     public static function addMessageAfterRedirect(
         $msg,
         $check_once = false,

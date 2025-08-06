@@ -137,7 +137,7 @@ if (isset($_POST["action"])) {
         $duration = round(microtime(true) - $start);
         Session::addMessageAfterRedirect(sprintf(
             __s('Task completed in %s'),
-            Html::timestampToString($duration)
+            htmlescape(Html::timestampToString($duration))
         ));
         Html::redirect($rule_class::getSearchURL());
     } else {

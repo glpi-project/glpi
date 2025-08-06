@@ -163,7 +163,7 @@ class Reservation extends CommonDBChild
         // Check if user has permission to create reservations
         if (!self::canCreate()) {
             Session::addMessageAfterRedirect(
-                __('You do not have permission to create reservations'),
+                __s('You do not have permission to create reservations'),
                 false,
                 ERROR
             );
@@ -173,7 +173,7 @@ class Reservation extends CommonDBChild
         // Additional check: if creating for another user, ensure user has CREATE right (not just RESERVEANITEM)
         if ($input['users_id'] != Session::getLoginUserID() && !Session::haveRight(self::$rightname, CREATE)) {
             Session::addMessageAfterRedirect(
-                __('You do not have permission to create reservations for other users'),
+                __s('You do not have permission to create reservations for other users'),
                 false,
                 ERROR
             );
@@ -243,7 +243,7 @@ class Reservation extends CommonDBChild
                         sprintf(
                             __s('Reservation added for item %s at %s'),
                             $item->getLink(),
-                            Html::convDateTime($reservation_input['begin'])
+                            htmlescape(Html::convDateTime($reservation_input['begin']))
                         )
                     );
                 }

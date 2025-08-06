@@ -2414,13 +2414,13 @@ JAVASCRIPT;
                 // Check input
                 $input = $ma->getInput();
                 if (!isset($input['problems_id'])) {
-                    $ma->addMessage(__("Missing input: no Problem selected"));
+                    $ma->addMessage(__s("Missing input: no Problem selected"));
                     return;
                 }
 
                 $problem = new Problem();
                 if (!$problem->getFromDB($input['problems_id'])) {
-                    $ma->addMessage(__("Selected Problem can't be loaded"));
+                    $ma->addMessage(__s("Selected Problem can't be loaded"));
                     return;
                 }
 
@@ -2464,7 +2464,7 @@ JAVASCRIPT;
                 ];
                 $check_mandatory = array_intersect($mandatory_fields, array_keys($input));
                 if (count($check_mandatory) != count($mandatory_fields)) {
-                    $ma->addMessage(__("Missing mandatory field in input"));
+                    $ma->addMessage(__s("Missing mandatory field in input"));
                     return;
                 }
 
@@ -2521,7 +2521,7 @@ JAVASCRIPT;
                 $input = $ma->getInput();
                 $contracts_id = $input['contracts_id'] ?? 0;
                 if (!$contracts_id) {
-                    $ma->addMessage(__("No contract specified"));
+                    $ma->addMessage(__s("No contract specified"));
                     return;
                 }
 
