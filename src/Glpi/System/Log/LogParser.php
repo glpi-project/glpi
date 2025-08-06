@@ -37,6 +37,7 @@ namespace Glpi\System\Log;
 
 use CommonGLPI;
 use RuntimeException;
+use Safe\Exceptions\FilesystemException;
 use Toolbox;
 
 use function Safe\file_get_contents;
@@ -47,7 +48,9 @@ use function Safe\preg_match;
 use function Safe\preg_replace_callback;
 use function Safe\preg_split;
 use function Safe\readfile;
+use function Safe\realpath;
 use function Safe\scandir;
+use function Safe\unlink;
 
 final class LogParser extends CommonGLPI
 {
@@ -247,7 +250,13 @@ final class LogParser extends CommonGLPI
             return false;
         }
 
-        return unlink($fullpath); //@phpstan-ignore theCodingMachineSafe.function (false is expected)
+        try {
+            unlink($fullpath);
+        } catch (FilesystemException) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -259,16 +268,22 @@ final class LogParser extends CommonGLPI
      */
     public function getFullPath(string $filepath): ?string
     {
-        $logs_dir_path = realpath($this->directory); //@phpstan-ignore theCodingMachineSafe.function (false is explicitly tested)
-        if ($logs_dir_path === false) {
+        try {
+            $logs_dir_path = realpath($this->directory);
+        } catch (FilesystemException) {
             return null;
         }
 
-        $fullpath = realpath($logs_dir_path . '/' . $filepath); //@phpstan-ignore theCodingMachineSafe.function (false is explicitly tested)
-        if ($fullpath === false || !str_starts_with($fullpath, $logs_dir_path)) {
+        try {
+            $fullpath = realpath($logs_dir_path . '/' . $filepath);
+        } catch (FilesystemException) {
+            return null;
+        }
+
+        if (!str_starts_with($fullpath, $logs_dir_path)) {
             return null; // Security check
         }
 
-        return file_exists($fullpath) && !is_dir($fullpath) ? $fullpath : null;
+        return !is_dir($fullpath) ? $fullpath : null;
     }
 }

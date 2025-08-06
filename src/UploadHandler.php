@@ -1209,12 +1209,18 @@ class UploadHandler
         return substr($this->options['param_name'], 0, -1);
     }
 
+    /**
+     * @psalm-taint-escape file (`$this->basename()` forces path safeness)
+     */
     protected function get_file_name_param()
     {
         $name = $this->get_singular_param_name();
         return $this->basename(stripslashes($this->get_query_param($name)));
     }
 
+    /**
+     * @psalm-taint-escape file (`$this->basename()` forces path safeness)
+     */
     protected function get_file_names_params()
     {
         $params = $this->get_query_param($this->options['param_name']);
