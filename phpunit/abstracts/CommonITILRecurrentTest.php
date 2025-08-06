@@ -42,6 +42,9 @@ use DbTestCase;
 
 abstract class CommonITILRecurrentTest extends DbTestCase
 {
+    /**
+     * @return class-string<\CommonITILRecurrent>
+     */
     abstract protected function getChildClass();
 
     /**
@@ -735,5 +738,36 @@ abstract class CommonITILRecurrentTest extends DbTestCase
 
         // Verify it matches what was saved in the database
         $this->assertEquals($expected_date, $recurrent->fields['next_creation_date']);
+    }
+
+    public function testTemplateIsSetOnCreatedItem(): void
+    {
+        // Arrange: create a template and a reccurent item
+        $reccurent_class = $this->getChildClass();
+        $template_class = $reccurent_class::getTemplateClass();
+        $template = $this->createItem($template_class, [
+            'name' => "My template",
+        ]);
+
+        $reccurent_itil = $this->createItem($reccurent_class, [
+            'name'                          => 'Test recurrent item',
+            $template->getForeignKeyField() => $template->getID(),
+            'begin_date'                    => '2010-10-10 10:10:10',
+            'end_date'                      => null,
+            'periodicity'                   => HOUR_TIMESTAMP,
+            'create_before'                 => 0,
+            'calendars_id'                  => 0,
+            'is_active'                     => 1,
+        ]);
+
+        // Act: trigger recurrent item creation
+        $item = null;
+        $reccurent_itil->createItem([], $item);
+
+        // Assert: template should be linked
+        $this->assertEquals(
+            $template->getID(),
+            $item->fields[$template::getForeignKeyField()],
+        );
     }
 }

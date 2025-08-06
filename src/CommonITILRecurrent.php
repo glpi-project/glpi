@@ -609,6 +609,9 @@ abstract class CommonITILRecurrent extends CommonDropdown
             // Get default values for item
             $input = $concrete_class::getDefaultValues($this->fields['entities_id']);
 
+            // Set template id
+            $input[$template::getForeignKeyField()] = $template->getID();
+
             // Apply itiltemplates predefined values
             $fields = new $fields_class();
             $predefined = $fields->getPredefinedFields($this->fields[$tmpl_fk], true);
