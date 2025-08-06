@@ -1206,8 +1206,8 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 if ($ignored_fields !== []) {
                     Session::addMessageAfterRedirect(
                         sprintf(
-                            __('You are not allowed to update the following fields: %s'),
-                            implode(', ', $ignored_fields)
+                            __s('You are not allowed to update the following fields: %s'),
+                            htmlescape(implode(', ', $ignored_fields))
                         ),
                         false,
                         ERROR
@@ -3149,7 +3149,7 @@ HTML;
                                 }
                             } catch (ForgetPasswordException $e) {
                                 $ma->itemDone(self::class, $id, MassiveAction::ACTION_KO);
-                                $ma->addMessage(sprintf(__('%1$s: %2$s'), $user->getFriendlyName(), $e->getMessage()));
+                                $ma->addMessage(htmlescape(sprintf(__('%1$s: %2$s'), $user->getFriendlyName(), $e->getMessage())));
                             }
                         } else {
                             $ma->itemDone(self::class, $id, MassiveAction::ACTION_KO);

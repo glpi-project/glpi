@@ -93,7 +93,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
     {
         if ((int) ($input['vis_rows'] ?? 0) < 1) {
             Session::addMessageAfterRedirect(
-                __('Number of rows must be >= 1'),
+                __s('Number of rows must be >= 1'),
                 true,
                 ERROR
             );
@@ -102,7 +102,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
 
         if ((int) ($input['vis_cols'] ?? 0) < 1) {
             Session::addMessageAfterRedirect(
-                __('Number of columns must be >= 1'),
+                __s('Number of columns must be >= 1'),
                 true,
                 ERROR
             );
@@ -116,7 +116,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
     {
         if (isset($input['vis_rows']) && (int) ($input['vis_rows']) < 1) {
             Session::addMessageAfterRedirect(
-                __('Number of rows must be >= 1'),
+                __s('Number of rows must be >= 1'),
                 true,
                 ERROR
             );
@@ -125,7 +125,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
 
         if (isset($input['vis_cols']) && (int) ($input['vis_cols']) < 1) {
             Session::addMessageAfterRedirect(
-                __('Number of columns must be >= 1'),
+                __s('Number of columns must be >= 1'),
                 true,
                 ERROR
             );

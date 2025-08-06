@@ -1145,7 +1145,7 @@ class Plugin extends CommonDBTM
                                 '',
                                 'class="pointer"'
                             ),
-                            __('Do you want to %activate_link it?')
+                            __s('Do you want to %activate_link it?')
                         );
                     } else {
                         $this->update(['id'    => $ID,
@@ -1352,7 +1352,7 @@ class Plugin extends CommonDBTM
             self::doHook(Hooks::POST_PLUGIN_DISABLE, $this->fields['directory']);
 
             Session::addMessageAfterRedirect(
-                sprintf(__('Plugin %1$s has been deactivated!'), $this->fields['name']),
+                sprintf(__s('Plugin %1$s has been deactivated!'), htmlescape($this->fields['name'])),
                 true,
                 INFO
             );

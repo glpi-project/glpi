@@ -1120,7 +1120,7 @@ TWIG, $twig_params);
     public static function sendAddGroupForm($params = [])
     {
         if (!isset($params['groups_id']) || (int) $params['groups_id'] <= 0) {
-            Session::addMessageAfterRedirect(__('A group selection is required'), false, ERROR);
+            Session::addMessageAfterRedirect(__s('A group selection is required'), false, ERROR);
             return;
         }
         $_SESSION['glpi_plannings']['plannings']["group_" . $params['groups_id']]
@@ -1180,7 +1180,7 @@ TWIG, $twig_params);
 
         if (!Toolbox::isUrlSafe($params['url'])) {
             Session::addMessageAfterRedirect(
-                sprintf(__s('URL "%s" is not allowed by your administrator.'), $params['url']),
+                sprintf(__s('URL "%s" is not allowed by your administrator.'), htmlescape($params['url'])),
                 false,
                 ERROR
             );

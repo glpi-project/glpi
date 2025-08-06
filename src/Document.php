@@ -1191,7 +1191,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
                 unlink(GLPI_DOC_DIR . "/" . $input['current_filepath']);
                 Session::addMessageAfterRedirect(sprintf(
                     __s('Successful deletion of the file %s'),
-                    $input['current_filename']
+                    htmlescape($input['current_filename'])
                 ));
             } catch (FilesystemException $e) {
                 // TRANS: %1$s is the curent filename, %2$s is its directory
@@ -1206,7 +1206,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
                 Session::addMessageAfterRedirect(
                     sprintf(
                         __s('Failed to delete the file %1$s'),
-                        $input['current_filename']
+                        htmlescape($input['current_filename'])
                     ),
                     false,
                     ERROR
@@ -1247,10 +1247,10 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     public static function getUploadFileValidLocationName($dir, $sha1sum)
     {
         if (empty($dir)) {
-            $message = __('Unauthorized file type');
+            $message = __s('Unauthorized file type');
 
             if (Session::haveRight('dropdown', READ)) {
-                $message .= " <a target='_blank' href='" . DocumentType::getSearchURL() . "' class='pointer'>
+                $message .= " <a target='_blank' href='" . htmlescape(DocumentType::getSearchURL()) . "' class='pointer'>
                          <i class='fa fa-info'</i><span class='sr-only'>" . __s('Manage document types') . "</span></a>";
             }
             Session::addMessageAfterRedirect($message, false, ERROR);
@@ -1297,7 +1297,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             Session::addMessageAfterRedirect(
                 sprintf(
                     __s('Failed to create the directory %s. Verify that you have the correct permission'),
-                    $subdir
+                    htmlescape($subdir)
                 ),
                 false,
                 ERROR

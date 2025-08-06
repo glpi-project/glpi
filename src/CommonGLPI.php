@@ -1303,6 +1303,9 @@ class CommonGLPI implements CommonGLPIInterface
      * @return string
      *
      * @final
+     *
+     * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
+     * @psalm-taint-sink html $object (string will be added to HTML source)
      */
     public function getErrorMessage($error, $object = '')
     {
@@ -1310,11 +1313,11 @@ class CommonGLPI implements CommonGLPIInterface
             $object = $this->getLink();
         }
         return match ($error) {
-            ERROR_NOT_FOUND => sprintf(__('%1$s: %2$s'), $object, __('Unable to get item')),
-            ERROR_RIGHT => sprintf(__('%1$s: %2$s'), $object, __('Authorization error')),
-            ERROR_COMPAT => sprintf(__('%1$s: %2$s'), $object, __('Incompatible items')),
-            ERROR_ON_ACTION => sprintf(__('%1$s: %2$s'), $object, __('Error on executing the action')),
-            ERROR_ALREADY_DEFINED => sprintf(__('%1$s: %2$s'), $object, __('Item already defined')),
+            ERROR_NOT_FOUND => sprintf(__s('%1$s: %2$s'), $object, __s('Unable to get item')),
+            ERROR_RIGHT => sprintf(__s('%1$s: %2$s'), $object, __s('Authorization error')),
+            ERROR_COMPAT => sprintf(__s('%1$s: %2$s'), $object, __s('Incompatible items')),
+            ERROR_ON_ACTION => sprintf(__s('%1$s: %2$s'), $object, __s('Error on executing the action')),
+            ERROR_ALREADY_DEFINED => sprintf(__s('%1$s: %2$s'), $object, __s('Item already defined')),
             default => '',
         };
     }

@@ -520,14 +520,14 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         $path = realpath(GLPI_TMP_DIR . "/$file");
         if (!$path || !str_starts_with($path, GLPI_TMP_DIR)) {
             // File doest not exist or is outside upload directory
-            $message = __("An unexpected error occurred");
+            $message = __s("An unexpected error occurred");
             Session::addMessageAfterRedirect($message);
             return null;
         }
 
         // Validate that the file is an image
         if (!Document::isImage($path)) {
-            $message = __("The uploaded file must be a valid image.");
+            $message = __s("The uploaded file must be a valid image.");
             Session::addMessageAfterRedirect($message);
             return null;
         }
