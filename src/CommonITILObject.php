@@ -668,6 +668,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'canupdate'               => $canupdate,
             'canpriority'             => $canupdate,
             'canassign'               => $canupdate,
+            'can_requester'           => $this->canRequesterUpdateItem(),
             'has_pending_reason'      => PendingReason_Item::getForItem($this) !== false,
         ]);
 
@@ -7914,10 +7915,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
     public static function showEditDescriptionForm(CommonITILObject $item)
     {
-        $can_requester = true;
-        if (method_exists($item, "canRequesterUpdateItem")) {
-            $can_requester = $item->canRequesterUpdateItem();
-        }
+        $can_requester = $item->canRequesterUpdateItem();
         TemplateRenderer::getInstance()->display('components/itilobject/timeline/simple_form.html.twig', [
             'item'          => $item,
             'canupdate'     => (Session::getCurrentInterface() == "central" && $item->canUpdateItem()),
@@ -11241,5 +11239,16 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'allow_auto_submit' => false,
             'main_rand' => mt_rand(),
         ]);
+    }
+
+    /**
+     * Is the current user a requester of the current itil item and does he have
+     * the right to update it?
+     *
+     * @return bool
+     */
+    public function canRequesterUpdateItem()
+    {
+        return true;
     }
 }
