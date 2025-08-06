@@ -329,8 +329,8 @@ class ProblemTest extends DbTestCase
     public function testShowFormClosedItem(): void
     {
         // Arrange: prepare an empty change
-        $change = $this->createItem(Problem::class, [
-            'name'        => "My change",
+        $problem = $this->createItem(Problem::class, [
+            'name'        => "My problem",
             'content'     => "My description",
             'entities_id' => $this->getTestRootEntity(only_id: true),
             'status'      => CommonITILObject::CLOSED,
@@ -339,7 +339,7 @@ class ProblemTest extends DbTestCase
         // Act: render form for a new change
         $this->login();
         ob_start();
-        $change->showForm($change->getID());
+        $problem->showForm($problem->getID());
         $html = ob_get_clean();
 
         // Assert: make sure some html was generated and no errors were thrown
