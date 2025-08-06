@@ -41,7 +41,6 @@ use Glpi\Form\Category;
 use Glpi\Form\Form;
 use Glpi\Form\ServiceCatalog\ItemRequest;
 use Glpi\Form\ServiceCatalog\Provider\FormProvider;
-use Glpi\Session\SessionInfo;
 use Session;
 
 class FormProviderTest extends DbTestCase
