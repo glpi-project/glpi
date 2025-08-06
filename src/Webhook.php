@@ -796,27 +796,27 @@ class Webhook extends CommonDBTM implements FilterableInterface
             return false;
         }
 
-        if ((int) $tabnum === 1) {
+        if ($tabnum === 1) {
             $item->showSecurityForm();
             return true;
         }
 
-        if ((int) $tabnum === 2) {
+        if ($tabnum === 2) {
             $item->showPayloadEditor();
             return true;
         }
 
-        if ((int) $tabnum === 3) {
+        if ($tabnum === 3) {
             $item->showCustomHeaders();
             return true;
         }
 
-        if ((int) $tabnum === 4) {
+        if ($tabnum === 4) {
             $item->showSentQueries();
             return true;
         }
 
-        if ((int) $tabnum === 5) {
+        if ($tabnum === 5) {
             $item->showPreviewForm();
             return true;
         }
