@@ -1400,7 +1400,7 @@ JS;
 
         if (in_array($item->getType(), self::getExcludedTypes())) {
             echo "<div class='firstbloc center'>" .
-                __('For this type of item, the financial and administrative information are only a model for the items which you should add.') .
+                __s('For this type of item, the financial and administrative information are only a model for the items which you should add.') .
                 "</div>";
         }
 

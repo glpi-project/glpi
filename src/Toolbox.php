@@ -2233,14 +2233,14 @@ class Toolbox
                 $res = $stmt->bind_param($types, ...array_values($row));
                 if (false === $res) {
                     $msg = "Error binding params in table $table\n";
-                    $msg .= print_r($row, true);
+                    $msg .= json_encode($row);
                     throw new RuntimeException($msg);
                 }
                 $res = $stmt->execute();
                 if (false === $res) {
                     $msg = $stmt->error;
                     $msg .= "\nError execution statement in table $table\n";
-                    $msg .= print_r($row, true);
+                    $msg .= json_encode($row);
                     throw new RuntimeException($msg);
                 }
 

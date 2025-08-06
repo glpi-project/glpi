@@ -116,9 +116,9 @@ class DeviceBattery extends CommonDevice
         }
 
         Manufacturer::getHTMLTableHeader(self::class, $base, $super, $father, $options);
-        $base->addHeader('devicebattery_type', _n('Type', 'Types', 1), $super, $father);
-        $base->addHeader('voltage', sprintf('%1$s (%2$s)', __('Voltage'), __('mV')), $super, $father);
-        $base->addHeader('capacity', sprintf('%1$s (%2$s)', __('Capacity'), __('mWh')), $super, $father);
+        $base->addHeader('devicebattery_type', _sn('Type', 'Types', 1), $super, $father);
+        $base->addHeader('voltage', sprintf(__s('%1$s (%2$s)'), __s('Voltage'), __s('mV')), $super, $father);
+        $base->addHeader('capacity', sprintf(__s('%1$s (%2$s)'), __s('Capacity'), __s('mWh')), $super, $father);
     }
 
     public function getHTMLTableCellForItem(

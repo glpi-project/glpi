@@ -446,7 +446,7 @@ TWIG, $twig_params);
 
         $lastItem = $recursiveItems[count($recursiveItems) - 1];
 
-        echo "<td>" . __('Origin port') . "</td><td>\n";
+        echo "<td>" . __s('Origin port') . "</td><td>\n";
         $links_id      = [];
         $netport_types = ['NetworkPortEthernet', 'NetworkPortWifi'];
         $selectOptions = [];
@@ -520,17 +520,19 @@ TWIG, $twig_params);
         }
 
         if (!$selectOptions['multiple']) {
-            echo "<script type=\"text/javascript\">
-        var device_mac_addresses = [];";
+            $js = 'var device_mac_addresses = [];';
             foreach ($macAddresses as $port_id => $macAddress) {
-                echo "  device_mac_addresses[$port_id] = '$macAddress'\n";
+                $js .= sprintf('device_mac_addresses[%d] = "%s";', (int) $port_id, jsescape($macAddress));
             }
-            echo "   function updateForm(devID) {
-      var field=document.getElementsByName('mac')[0];
-      if ((field != undefined) && (device_mac_addresses[devID] != undefined))
-         field.value = device_mac_addresses[devID];
-   }
-</script>";
+            $js .= "
+                function updateForm(devID) {
+                    var field = document.getElementsByName('mac')[0];
+                    if ((field != undefined) && (device_mac_addresses[devID] != undefined)) {
+                        field.value = device_mac_addresses[devID];
+                    }
+                }
+            ";
+            echo Html::scriptBlock($js);
         }
 
         Dropdown::showFromArray($field_name, $possible_ports, $selectOptions);
@@ -631,12 +633,12 @@ TWIG, $twig_params);
                 printf(
                     __s('%1$s on %2$s'),
                     "<span class='b'>" . htmlescape($netname) . "</span>",
-                    "<span class='b'>" . $device2->getName() . "</span>"
+                    "<span class='b'>" . htmlescape($device2->getName()) . "</span>"
                 );
-                echo "<br>(" . Dropdown::getDropdownName(
+                echo "<br>(" . htmlescape(Dropdown::getDropdownName(
                     "glpi_entities",
                     $device2->getEntityID()
-                ) . ")";
+                )) . ")";
             }
         } else {
             if ($canedit) {

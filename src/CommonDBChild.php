@@ -280,17 +280,18 @@ abstract class CommonDBChild extends CommonDBConnexity
     {
 
         if ($recursiveItems === []) {
-            echo __('Item not linked to an object');
+            echo __s('Item not linked to an object');
             return false;
         }
 
         switch ($elementToDisplay) {
             case 'Type':
                 $masterItem = $recursiveItems[count($recursiveItems) - 1];
+                $out = htmlescape($masterItem->getTypeName(1));
                 if ($display) {
-                    echo $masterItem->getTypeName(1);
+                    echo $out;
                 } else {
-                    return $masterItem->getTypeName(1);
+                    return $out;
                 }
                 break;
 
@@ -299,15 +300,18 @@ abstract class CommonDBChild extends CommonDBConnexity
                 $items_elements  = [];
                 foreach ($recursiveItems as $item) {
                     if ($elementToDisplay == 'Name') {
-                        $items_elements[] = $item->getName();
+                        $items_elements[] = htmlescape($item->getName());
                     } else {
                         $items_elements[] = $item->getLink();
                     }
                 }
+
+                $out = implode(' &lt; ', $items_elements);
+
                 if ($display) {
-                    echo implode(' &lt; ', $items_elements);
+                    echo $out;
                 } else {
-                    return implode(' &lt; ', $items_elements);
+                    return $out;
                 }
                 break;
         }
@@ -1025,7 +1029,7 @@ abstract class CommonDBChild extends CommonDBConnexity
 
     protected function autoinventoryInformation()
     {
-        echo "<td>" . __('Automatic inventory') . "</td>";
+        echo "<td>" . __s('Automatic inventory') . "</td>";
         echo "<td>";
         if ($this->fields['id'] && $this->fields['is_dynamic']) {
             ob_start();

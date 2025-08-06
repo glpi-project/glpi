@@ -167,11 +167,11 @@ class View extends CommonGLPI
         $valid = false;
 
         if (!GLPINetwork::isServicesAvailable()) {
-            $messages[] = sprintf(__('%1$s services website seems not available from your network or offline'), 'GLPI Network');
-            $messages[] = "<a href='" . $CFG_GLPI['root_doc'] . "/front/config.form.php?forcetab=Config$5'>"
-                . __("Maybe you could setup a proxy")
+            $messages[] = sprintf(__s('%1$s services website seems not available from your network or offline'), 'GLPI Network');
+            $messages[] = "<a href='" . htmlescape($CFG_GLPI['root_doc']) . "/front/config.form.php?forcetab=Config$5'>"
+                . __s("Maybe you could setup a proxy")
                 . "</a> "
-                . __("or please check later");
+                . __s("or please check later");
         } else {
             $registration_info = GLPINetwork::getRegistrationInformations();
             if (!$registration_info['is_valid']) {
@@ -179,15 +179,15 @@ class View extends CommonGLPI
 
                 $config_url = $CFG_GLPI['root_doc'] . "/front/config.form.php?forcetab=" .
                         urlencode('GLPINetwork$1');
-                $messages[] = sprintf(__('Your %1$s registration is not valid.'), 'GLPI Network');
-                $messages[] = __('A registration, at least a free one, is required to use marketplace!');
-                $messages[] = "<a href='" . GLPI_NETWORK_SERVICES . "'>" . sprintf(__('Register on %1$s'), 'GLPI Network') . "</a> "
-                    . __('and') . " "
-                    . "<a href='$config_url'>" . __("fill your registration key in setup.") . "</a>";
+                $messages[] = sprintf(__s('Your %1$s registration is not valid.'), 'GLPI Network');
+                $messages[] = __s('A registration, at least a free one, is required to use marketplace!');
+                $messages[] = "<a href='" . htmlescape(GLPI_NETWORK_SERVICES) . "'>" . sprintf(__s('Register on %1$s'), 'GLPI Network') . "</a> "
+                    . __s('and') . " "
+                    . "<a href='" . htmlescape($config_url) . "'>" . __s("fill your registration key in setup.") . "</a>";
             } elseif (!$registration_info['subscription']['is_running']) {
                 $valid = false;
-                $messages[] = sprintf(__('Your %1$s subscription has been terminated.'), 'GLPI Network');
-                $messages[] = "<a href='" . GLPI_NETWORK_SERVICES . "'>" . sprintf(__('Renew it on %1$s.'), 'GLPI Network') . "</a> ";
+                $messages[] = sprintf(__s('Your %1$s subscription has been terminated.'), 'GLPI Network');
+                $messages[] = "<a href='" . htmlescape(GLPI_NETWORK_SERVICES) . "'>" . sprintf(__s('Renew it on %1$s.'), 'GLPI Network') . "</a> ";
             } else {
                 $valid = true;
             }
@@ -380,11 +380,11 @@ class View extends CommonGLPI
             // check writable state
             if (!Controller::hasWriteAccess()) {
                 echo "<div class='alert alert-warning'><i class='ti ti-alert-triangle fs-5x'></i>"
-                      . sprintf(__("We can't write on the markeplace directory (%s)."), GLPI_MARKETPLACE_DIR)
+                      . htmlescape(sprintf(__("We can't write on the markeplace directory (%s)."), GLPI_MARKETPLACE_DIR))
                       . "<br>"
-                      . __("If you want to ease the plugins download, please check permissions and ownership of this directory.")
+                      . __s("If you want to ease the plugins download, please check permissions and ownership of this directory.")
                       . "<br>"
-                      . __("Otherwise, you will need to download and unzip the plugins archives manually.")
+                      . __s("Otherwise, you will need to download and unzip the plugins archives manually.")
                       . "<br>"
                       . "<br>"
                       . "</div>";
@@ -424,32 +424,32 @@ HTML;
                         <option value='sort-alpha-asc'
                                 " . ($sort == "sort-alpha-asc" ? "selected" : "") . "
                                 data-icon='fs-2 ti ti-sort-ascending-letters'>
-                            " . __("Alpha ASC") . "
+                            " . __s("Alpha ASC") . "
                         </option>
                         <option value='sort-alpha-desc'
                                 " . ($sort == "sort-alpha-desc" ? "selected" : "") . "
                                 data-icon='fs-2 ti ti-sort-descending-letters'>
-                            " . __("Alpha DESC") . "
+                            " . __s("Alpha DESC") . "
                         </option>
                         <option value='sort-dl'
                                 " . ($sort == "sort-dl'" ? "selected" : "") . "
                                 data-icon='fs-2 ti ti-cloud-download'>
-                            " . __("Most popular") . "
+                            " . __s("Most popular") . "
                         </option>
                         <option value='sort-update'
                                 " . ($sort == "sort-update'" ? "selected" : "") . "
                                 data-icon='fs-2 ti ti-history'>
-                            " . __("Last updated") . "
+                            " . __s("Last updated") . "
                         </option>
                         <option value='sort-added'
                                 " . ($sort == "sort-added'" ? "selected" : "") . "
                                 data-icon='fs-2 ti ti-calendar-time'>
-                            " . __("Most recent") . "
+                            " . __s("Most recent") . "
                         </option>
                         <option value='sort-note'
                                 " . ($sort == "sort-note'" ? "selected" : "") . "
                                 data-icon='fs-2 ti ti-star'>
-                            " . __("Best notes") . "
+                            " . __s("Best notes") . "
                         </option>
                     </select>";
             }
@@ -1000,7 +1000,7 @@ JS;
             $html .= "<li data-page='$i' $current>$i</li>";
         }
         $html .= "<li data-page='$next' $n_cls><i class='ti ti-chevron-right'></i></li>";
-        $html .= "<li class='nb_plugin'>" . sprintf(_n("%s plugin", "%s plugins", $total), $total) . "</li>";
+        $html .= "<li class='nb_plugin'>" . sprintf(_sn("%s plugin", "%s plugins", $total), $total) . "</li>";
         if (!$only_li) {
             $html .= "</ul>";
         }
@@ -1045,16 +1045,16 @@ JS;
             && GLPI_INSTALL_MODE !== 'CLOUD'
         ) {
             echo "<div class='card mb-4'>";
-            echo "<div class='card-header card-title'>" . __("Switch to marketplace") . "</div>";
+            echo "<div class='card-header card-title'>" . __s("Switch to marketplace") . "</div>";
             echo "<div class='card-body'>";
             echo "<form id='marketplace_dialog' method='POST'>";
             echo Html::image($CFG_GLPI['root_doc'] . "/pics/screenshots/marketplace.png", [
                 'style' => 'width: 600px',
             ]);
             echo "<br><br>";
-            echo __("GLPI provides a new marketplace to download and install plugins.");
+            echo __s("GLPI provides a new marketplace to download and install plugins.");
             echo "<br><br>";
-            echo "<b>" . __("Do you want to replace the plugins setup page by the new marketplace?") . "</b>";
+            echo "<b>" . __s("Do you want to replace the plugins setup page by the new marketplace?") . "</b>";
             echo "</div>";
             echo "<div class='card-footer'>";
             echo Html::submit(__('Yes'), [

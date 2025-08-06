@@ -295,7 +295,7 @@ TWIG, $twig_params);
         self::dropdownMode(['name' => 'mode']);
         echo "<br><br>";
 
-        echo NotificationTemplate::getTypeName(1) . "<br>";
+        echo htmlescape(NotificationTemplate::getTypeName(1)) . "<br>";
         NotificationTemplate::dropdown([
             'name'       => 'notificationtemplates_id',
             'value'     => 0,

@@ -57,7 +57,9 @@ abstract class HTMLTableEntity
      *    of direct display function (for instance: Dropdown::showNumber). A function
      *    call is an array containing two elements : 'function', the name the function
      *    and 'parameters', an array of the parameters given to the function.
-     **/
+     *
+     * @psalm-taint-sink html $content (content will be sent to output without being escaped)
+     */
     public function __construct($content)
     {
         $this->content = $content;

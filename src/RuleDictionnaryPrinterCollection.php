@@ -76,7 +76,13 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
         global $DB;
 
         if (isCommandLine()) {
-            printf(__('Replay rules on existing database started on %s') . "\n", date("r"));
+            /**
+             * Safe CLI context.
+             * @psalm-taint-escape html
+             * @psalm-taint-escape has_quotes
+             */
+            $out = sprintf(__('Replay rules on existing database started on %s') . "\n", date("r"));
+            echo $out;
         }
         $nb = 0;
         $i  = $offset;

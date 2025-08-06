@@ -957,7 +957,8 @@ HTML;
             }
         }
 
-        $title = $param['title'];
+        $title   = htmlescape($param['title']);
+        $percent = htmlescape($percent);
         $label = "";
         if ($param['simple']) {
             $label = "$percent%";
@@ -3324,7 +3325,9 @@ JS;
      * @return void|string
      *    void if option display=true
      *    string if option display=false (HTML code)
-     **/
+     *
+     * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
+     */
     public static function showToolTip($content, $options = [])
     {
         /** @var array $CFG_GLPI */

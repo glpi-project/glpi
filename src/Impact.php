@@ -1015,7 +1015,7 @@ JS);
         echo '<div class="impact-side-panel">';
 
         echo '<div class="impact-side-add-node">';
-        echo '<h3>' . __('Add assets') . '</h3>';
+        echo '<h3>' . __s('Add assets') . '</h3>';
         echo '<div class="impact-side-select-itemtype">';
 
         echo Html::input("impact-side-filter-itemtypes", [
@@ -1084,7 +1084,7 @@ JS);
         echo '<div class="impact-side-settings">';
         echo '<h3>' . __s('Settings') . '</h3>';
 
-        echo '<h4>' . __('Visibility') . '</h4>';
+        echo '<h4>' . __s('Visibility') . '</h4>';
         echo '<div class="impact-side-settings-item">';
         echo Html::getCheckbox([
             'id'      => "toggle_impact",
@@ -1103,7 +1103,7 @@ JS);
         echo '<span class="impact-checkbox-label">' . __s("Show depends") . '</span>';
         echo '</div>';
 
-        echo '<h4>' . __('Colors') . '</h4>';
+        echo '<h4>' . __s('Colors') . '</h4>';
         echo '<div class="impact-side-settings-item">';
         Html::showColorField("depends_color", []);
         echo '<span class="impact-checkbox-label">' . __s("Depends") . '</span>';
@@ -1119,7 +1119,7 @@ JS);
         echo '<span class="impact-checkbox-label">' . __s("Impact and depends") . '</span>';
         echo '</div>';
 
-        echo '<h4>' . __('Max depth') . '</h4>';
+        echo '<h4>' . __s('Max depth') . '</h4>';
         echo '<div class="impact-side-settings-item">';
         echo '<input id="max_depth" type="range" class="impact-range" min="1" max ="10" step="1" value="5"><span id="max_depth_view" class="impact-checkbox-label"></span>';
         echo '</div>';

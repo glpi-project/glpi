@@ -184,9 +184,9 @@ class DeviceHardDrive extends CommonDevice
         switch ($itemtype) {
             case 'Computer':
                 Manufacturer::getHTMLTableHeader(self::class, $base, $super, $father, $options);
-                $base->addHeader('deviceharddriver_rpm', __('Rpm'), $super, $father);
-                $base->addHeader('deviceharddriver_cache', __('Cache'), $super, $father);
-                $base->addHeader('deviceharddriver_type', _n('Type', 'Types', 1), $super, $father);
+                $base->addHeader('deviceharddriver_rpm', __s('Rpm'), $super, $father);
+                $base->addHeader('deviceharddriver_cache', __s('Cache'), $super, $father);
+                $base->addHeader('deviceharddriver_type', _sn('Type', 'Types', 1), $super, $father);
                 InterfaceType::getHTMLTableHeader(self::class, $base, $super, $father, $options);
                 break;
         }

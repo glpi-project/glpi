@@ -416,9 +416,9 @@ abstract class CommonDevice extends CommonDropdown
         }
 
         if (static::canView()) {
-            $content = "<a href='" . static::getSearchURL() . "'>" . static::getTypeName(1) . "</a>";
+            $content = "<a href='" . htmlescape(static::getSearchURL()) . "'>" . htmlescape(static::getTypeName(1)) . "</a>";
         } else {
-            $content = static::getTypeName(1);
+            $content = htmlescape(static::getTypeName(1));
         }
 
         $linktype = static::getItem_DeviceType();

@@ -437,7 +437,7 @@ class Supplier extends CommonDBTM
         }
         echo "</th></tr>";
         echo "<tr><th>" . _sn('Type', 'Types', 1) . "</th>";
-        echo "<th>" . Entity::getTypeName(1) . "</th>";
+        echo "<th>" . htmlescape(Entity::getTypeName(1)) . "</th>";
         echo "<th>" . __s('Name') . "</th>";
         echo "<th>" . __s('Serial number') . "</th>";
         echo "<th>" . __s('Inventory number') . "</th>";
@@ -574,10 +574,10 @@ class Supplier extends CommonDBTM
                             $title = sprintf(__('%1$s: %2$s'), $title, $nb);
                             echo "<td class='center top' rowspan='$nb'>" . htmlescape($title) . "</td>";
                         }
-                        echo "<td class='center'>" . Dropdown::getDropdownName(
+                        echo "<td class='center'>" . htmlescape(Dropdown::getDropdownName(
                             "glpi_entities",
                             $data["entities_id"]
-                        ) . "</td>";
+                        )) . "</td>";
                         echo "<td class='center";
                         echo ((isset($data['is_deleted']) && $data['is_deleted']) ? " tab_bg_2_2'" : "'") . ">";
                         echo $name . "</td>";

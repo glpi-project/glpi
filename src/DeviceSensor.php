@@ -90,7 +90,7 @@ class DeviceSensor extends CommonDevice
             case 'Computer':
             case 'Peripheral':
                 Manufacturer::getHTMLTableHeader(self::class, $base, $super, $father, $options);
-                $base->addHeader('devicesensor_type', _n('Type', 'Types', 1), $super, $father);
+                $base->addHeader('devicesensor_type', _sn('Type', 'Types', 1), $super, $father);
                 break;
         }
     }

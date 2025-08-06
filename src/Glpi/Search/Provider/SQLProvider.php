@@ -6123,10 +6123,10 @@ final class SQLProvider implements SearchProviderInterface
                         $itemtype = $opt_itemtype;
 
                         $out     = sprintf(
-                            __('%1$s %2$s'),
+                            __s('%1$s %2$s'),
                             $out,
                             Html::showToolTip(
-                                __('Loading...'),
+                                __s('Loading...'),
                                 [
                                     'applyto' => $itemtype . $data[$ID][0]['id'],
                                     'display' => false,

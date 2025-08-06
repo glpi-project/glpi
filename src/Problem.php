@@ -1290,7 +1290,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                         $name = "<span class='b'>" . htmlescape($user->getName()) . "</span>";
                         if ($viewusers) {
                             $name = sprintf(
-                                __('%1$s %2$s'),
+                                __s('%1$s %2$s'),
                                 $name,
                                 Html::showToolTip(
                                     $user->getInfoCard(),
@@ -1314,7 +1314,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                 && count($problem->groups[CommonITILActor::REQUESTER])
             ) {
                 foreach ($problem->groups[CommonITILActor::REQUESTER] as $d) {
-                    echo Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+                    echo htmlescape(Dropdown::getDropdownName("glpi_groups", $d["groups_id"]));
                     echo "<br>";
                 }
             }

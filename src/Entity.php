@@ -2586,7 +2586,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
                 };
 
             case 'auto_assign_mode':
-                return self::getAutoAssignMode((int) $values[$field]);
+                return htmlescape(self::getAutoAssignMode((int) $values[$field]));
 
             case 'tickettype':
                 if ($values[$field] === self::CONFIG_PARENT) {
@@ -2754,7 +2754,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
                 return match ($values[$field]) {
                     self::CONFIG_NEVER => __s('Never'),
                     0 => __s('Immediately'),
-                    default => sprintf(_sn('%d day', '%d days', $values[$field]), $values[$field]),
+                    default => sprintf(_sn('%d day', '%d days', $values[$field]), (int) $values[$field]),
                 };
             default:
                 return htmlescape($values[$field] ?? '');

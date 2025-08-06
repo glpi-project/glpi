@@ -120,7 +120,9 @@ abstract class HTMLTableBase
      *                                       header or a super header while creating a super one
      *
      * @return ($super is null ? HTMLTableSuperHeader : HTMLTableSubHeader) table header that have been created
-     **/
+     *
+     * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
+     */
     public function addHeader(
         $name,
         $content,

@@ -2259,11 +2259,20 @@ class Plugin extends CommonDBTM
         }
 
         if (!$compat) {
-            echo Plugin::messageIncompatible(
+            /**
+             * This output is caught inside a buffer and then escaped properly.
+             * @FIXME Refactor the code to give the responsability of the message outputting to the caller.
+             *
+             * @psalm-taint-escape html
+             * @psalm-taint-escape has_quotes
+             */
+            $out = Plugin::messageIncompatible(
                 'core',
                 ($infos['min'] ?? null),
                 ($infos['max'] ?? null)
             );
+
+            echo $out;
         }
 
         return $compat;
@@ -2296,11 +2305,20 @@ class Plugin extends CommonDBTM
         }
 
         if (!$compat) {
-            echo Plugin::messageIncompatible(
+            /**
+             * This output is caught inside a buffer and then escaped properly.
+             * @FIXME Refactor the code to give the responsability of the message outputting to the caller.
+             *
+             * @psalm-taint-escape html
+             * @psalm-taint-escape has_quotes
+             */
+            $out = Plugin::messageIncompatible(
                 'php',
                 ($infos['min'] ?? null),
                 ($infos['max'] ?? null)
             );
+
+            echo $out;
         }
 
         return $compat;
@@ -2324,7 +2342,16 @@ class Plugin extends CommonDBTM
             foreach (array_keys($report['missing']) as $ext) {
                 $messages[] = self::messageMissingRequirement('ext', $ext);
             }
-            echo implode(' ', $messages);
+            /**
+             * This output is caught inside a buffer and then escaped properly.
+             * @FIXME Refactor the code to give the responsability of the message outputting to the caller.
+             *
+             * @psalm-taint-escape html
+             * @psalm-taint-escape has_quotes
+             */
+            $out = implode(' ', $messages);
+
+            echo $out;
 
             return false;
         }
@@ -2356,7 +2383,16 @@ class Plugin extends CommonDBTM
         }
 
         if (!$compat) {
-            echo implode(' ', $messages);
+            /**
+             * This output is caught inside a buffer and then escaped properly.
+             * @FIXME Refactor the code to give the responsability of the message outputting to the caller.
+             *
+             * @psalm-taint-escape html
+             * @psalm-taint-escape has_quotes
+             */
+            $out = implode(' ', $messages);
+
+            echo $out;
         }
 
         return $compat;
@@ -2384,7 +2420,16 @@ class Plugin extends CommonDBTM
         }
 
         if (!$compat) {
-            echo implode(' ', $messages);
+            /**
+             * This output is caught inside a buffer and then escaped properly.
+             * @FIXME Refactor the code to give the responsability of the message outputting to the caller.
+             *
+             * @psalm-taint-escape html
+             * @psalm-taint-escape has_quotes
+             */
+            $out = implode(' ', $messages);
+
+            echo $out;
         }
 
         return $compat;
@@ -2412,7 +2457,16 @@ class Plugin extends CommonDBTM
         }
 
         if (!$compat) {
-            echo implode(' ', $messages);
+            /**
+             * This output is caught inside a buffer and then escaped properly.
+             * @FIXME Refactor the code to give the responsability of the message outputting to the caller.
+             *
+             * @psalm-taint-escape html
+             * @psalm-taint-escape has_quotes
+             */
+            $out = implode(' ', $messages);
+
+            echo $out;
         }
 
         return $compat;
@@ -2716,7 +2770,7 @@ class Plugin extends CommonDBTM
                     ob_start();
                     $do_activate = $plugin->checkVersions($directory);
                     if (!$do_activate) {
-                        $output .= "<span class='error'>" . ob_get_contents() . "</span>";
+                        $output .= "<span class='error'>" . htmlescape(ob_get_contents()) . "</span>";
                     }
                     ob_end_clean();
                     $function = 'plugin_' . $directory . '_check_prerequisites';
@@ -2724,7 +2778,7 @@ class Plugin extends CommonDBTM
                         ob_start();
                         $do_activate = $function();
                         if (!$do_activate) {
-                            $output .= '<span class="error">' . ob_get_contents() . '</span>';
+                            $output .= '<span class="error">' . htmlescape(ob_get_contents()) . '</span>';
                         }
                         ob_end_clean();
                     }
@@ -2747,7 +2801,7 @@ class Plugin extends CommonDBTM
                         ob_start();
                         $do_install = $plugin->checkVersions($directory);
                         if (!$do_install) {
-                            $output .= "<span class='error'>" . ob_get_contents() . "</span>";
+                            $output .= "<span class='error'>" . htmlescape(ob_get_contents()) . "</span>";
                         }
                         ob_end_clean();
 
@@ -2756,7 +2810,7 @@ class Plugin extends CommonDBTM
                             $do_install = $function();
                             $msg = '';
                             if (!$do_install) {
-                                $msg = '<span class="error">' . ob_get_contents() . '</span>';
+                                $msg = '<span class="error">' . htmlescape(ob_get_contents()) . '</span>';
                             }
                             ob_end_clean();
                             $output .= $msg;
