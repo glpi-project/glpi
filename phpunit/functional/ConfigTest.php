@@ -36,6 +36,7 @@ namespace tests\units;
 
 use Config;
 use DbTestCase;
+use Glpi\DBAL\QueryExpression;
 use Glpi\Plugin\Hooks;
 use Log;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -599,7 +600,7 @@ class ConfigTest extends DbTestCase
             ['NOT' => ['authtype' => \Auth::DB_GLPI]]
         );
         // reset 'password_last_update' to null for the test
-        $DB->update(\User::getTable(), ['password_last_update' => null], [true]);
+        $DB->update(\User::getTable(), ['password_last_update' => null], [new QueryExpression('true')]);
 
         // initial data:
         //  - password expiration is not active

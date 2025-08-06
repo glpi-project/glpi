@@ -529,6 +529,11 @@ class DBmysqlIteratorTest extends DbTestCase
     {
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => 'id=1']);
         $this->assertSame('SELECT * FROM `foo` WHERE id=1', $it->getSql());
+        // Uncomment in GLPI 11.1
+        // $this->hasPhpLogRecordThatContains(
+        //    'Passing SQL request criteria as strings is deprecated for security reasons.',
+        //    LogLevel::INFO
+        // );
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => null]]);
         $this->assertSame('SELECT * FROM `foo` WHERE `bar` IS NULL', $it->getSql());
@@ -560,8 +565,25 @@ class DBmysqlIteratorTest extends DbTestCase
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => new QueryParam()]]);
         $this->assertSame('SELECT * FROM `foo` WHERE `bar` = ?', $it->getSql());
 
-        /*$it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => new \QueryParam('myparam')]]);
-        $this->assertSame('SELECT * FROM `foo` WHERE `bar` = :myparam', $it->getSql());*/
+        foreach ([false, 0, '0'] as $false) {
+            $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => [$false]]);
+            $this->assertSame('SELECT * FROM `foo` WHERE false', $it->getSql());
+            // Uncomment in GLPI 11.1
+            // $this->hasPhpLogRecordThatContains(
+            //     'Passing SQL request criteria as booleans is deprecated. Please use `new \Glpi\DBAL\QueryExpression("false");`',
+            //     LogLevel::INFO
+            // );
+        }
+
+        foreach ([true, 1, '1'] as $true) {
+            $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => [$true]]);
+            $this->assertSame('SELECT * FROM `foo` WHERE true', $it->getSql());
+            // Uncomment in GLPI 11.1
+            // $this->hasPhpLogRecordThatContains(
+            //     'Passing SQL request criteria as booleans is deprecated. Please use `new \Glpi\DBAL\QueryExpression("true");`',
+            //     LogLevel::INFO
+            // );
+        }
     }
 
     public function testEmptyIn(): void

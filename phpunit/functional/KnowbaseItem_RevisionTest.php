@@ -44,7 +44,7 @@ class KnowbaseItem_RevisionTest extends DbTestCase
     public function tearDown(): void
     {
         global $DB;
-        $DB->delete('glpi_knowbaseitems_revisions', [true]);
+        $DB->delete('glpi_knowbaseitems_revisions', [new QueryExpression('true')]);
         parent::tearDown();
     }
 

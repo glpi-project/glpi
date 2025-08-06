@@ -899,7 +899,7 @@ class DBmysql
         if (!$this->cache_disabled && $usecache && isset($this->field_cache[$table])) {
             return $this->field_cache[$table];
         }
-        $result = $this->doQuery("SHOW COLUMNS FROM `$table`");
+        $result = $this->doQuery(sprintf("SHOW COLUMNS FROM %s", self::quoteName($table)));
         if ($result) {
             if ($this->numrows($result) > 0) {
                 $this->field_cache[$table] = [];
@@ -1209,6 +1209,8 @@ class DBmysql
      * @param string $name of field to quote (or table.field)
      *
      * @return string
+     *
+     * @psalm-taint-escape sql
      */
     public static function quoteName($name)
     {
@@ -1216,6 +1218,7 @@ class DBmysql
         if ($name instanceof QueryExpression) {
             return $name->getValue();
         }
+
         //handle aliases
         $names = preg_split('/\s+AS\s+/i', $name);
         if (count($names) > 2) {
@@ -1223,19 +1226,31 @@ class DBmysql
                 'Invalid field name ' . $name
             );
         }
+
         if (count($names) == 2) {
             $name = self::quoteName($names[0]);
             $name .= ' AS ' . self::quoteName($names[1]);
             return $name;
-        } else {
-            if (strpos($name, '.')) {
-                $n = explode('.', $name, 2);
-                $table = self::quoteName($n[0]);
-                $field = ($n[1] === '*') ? $n[1] : self::quoteName($n[1]);
-                return "$table.$field";
-            }
-            return ($name[0] == '`' ? $name : ($name === '*' ? $name : "`$name`"));
         }
+
+        if (strpos($name, '.')) {
+            $n = explode('.', $name, 2);
+            $table = self::quoteName($n[0]);
+            $field = ($n[1] === '*') ? $n[1] : self::quoteName($n[1]);
+            return "$table.$field";
+        }
+
+        if (
+            $name === '*'
+            || preg_match('/^`[^`]+`$/', $name) === 1
+        ) {
+            return $name;
+        }
+
+        return sprintf(
+            '`%s`',
+            str_replace('`', '``', $name) // escape backticks by doubling them
+        );
     }
 
     /**
@@ -1244,6 +1259,8 @@ class DBmysql
      * @param mixed $value Value
      *
      * @return mixed
+     *
+     * @psalm-taint-escape sql
      */
     public static function quoteValue($value)
     {

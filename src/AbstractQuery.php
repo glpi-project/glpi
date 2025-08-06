@@ -65,6 +65,8 @@ abstract class AbstractQuery
      * Get SQL query
      *
      * @return string
+     *
+     * @psalm-taint-escape sql
      */
     abstract public function getQuery();
 

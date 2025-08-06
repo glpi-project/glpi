@@ -658,12 +658,12 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         // Not logged -> no profile to see
         if (!isset($_SESSION['glpiactiveprofile'])) {
-            return [0];
+            return [new QueryExpression('false')];
         }
 
         // Profile right : may modify profile so can attach all profile
         if (self::canCreate()) {
-            return [1];
+            return [new QueryExpression('true')];
         }
 
         $criteria = ['glpi_profiles.interface' => Session::getCurrentInterface()];

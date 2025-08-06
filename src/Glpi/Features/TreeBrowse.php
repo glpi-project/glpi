@@ -208,7 +208,7 @@ JAVASCRIPT;
         $cat_join = $itemtype . '_' . $cat_item::class;
 
         if (class_exists($cat_join)) {
-            $cat_criteria = [1];
+            $cat_criteria = [new QueryExpression('true')];
             // If there is a category filter, apply this filter to the tree too
             if (preg_match("/$cat_table/", $data['sql']['raw']['WHERE'])) {
                 // This query is used to get the IDs of all results matching the search criteria

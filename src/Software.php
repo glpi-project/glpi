@@ -201,7 +201,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
                 countElementsInTable(
                     'glpi_softwarelicenses',
                     ['softwares_id' => $ID,
-                        'NOT' => [ 'is_valid'],
+                        'NOT' => ['is_valid' => 1],
                     ]
                 ) > 0
             ) {
@@ -520,8 +520,9 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
                     'table'      => SoftwareVersion::getTable(),
                     'joinparams' => ['jointype' => 'child'],
                 ],
-                'condition'  => ['NEWTABLE.is_deleted_item' => 0,
-                    'NEWTABLE.is_deleted'          => 0,
+                'condition'  => [
+                    'NEWTABLE.is_deleted_item'  => 0,
+                    'NEWTABLE.is_deleted'       => 0,
                     'NEWTABLE.is_template_item' => 0,
                 ],
             ],
@@ -548,9 +549,11 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
                     'table'      => 'glpi_softwareversions',
                     'joinparams' => ['jointype' => 'child'],
                 ],
-                'condition'  => "AND NEWTABLE.`is_deleted_item` = 0
-                             AND NEWTABLE.`is_deleted` = 0
-                             AND NEWTABLE.`is_template_item` = 0",
+                'condition'  => [
+                    'NEWTABLE.is_deleted_item'  => 0,
+                    'NEWTABLE.is_deleted'       => 0,
+                    'NEWTABLE.is_template_item' => 0,
+                ],
             ],
         ];
 

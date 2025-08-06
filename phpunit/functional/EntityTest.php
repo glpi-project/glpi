@@ -39,6 +39,7 @@ use Contract;
 use DbTestCase;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
 use Glpi\Helpdesk\HomePageTabs;
 use ITILFollowup;
 use ITILSolution;
@@ -279,7 +280,7 @@ class EntityTest extends DbTestCase
                 'ancestors_cache' => null,
                 'sons_cache'      => null,
             ],
-            [true]
+            [new QueryExpression('true')]
         );
         $this->runChangeEntityParent();
         //reset cache (checking for expected defaults) then run a second time: db cache must be set

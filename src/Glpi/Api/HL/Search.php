@@ -377,7 +377,7 @@ final class Search
                 );
             }
             $criteria['WHERE'] = [$filter_result->getSQLWhereCriteria()];
-            $criteria['HAVING'] = $filter_result->getSQLHavingCriteria();
+            $criteria['HAVING'] = [$filter_result->getSQLHavingCriteria()];
         }
 
         // Handle entity and other visibility restrictions

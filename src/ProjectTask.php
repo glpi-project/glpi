@@ -955,7 +955,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'massiveaction'      => true,
             // Add virtual condition to relink table
             'joinparams'         => [
-                'condition'          => 'AND 1=1',
+                'condition'          => [new QueryExpression('true')],
             ],
         ];
 
