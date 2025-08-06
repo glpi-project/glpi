@@ -76,5 +76,5 @@ if (isset($_REQUEST['id'])) {
     ];
 }
 
-$menus = ["management", "enclosure"];
+$menus = ["assets", Enclosure::class];
 Item_Enclosure::displayFullPageForItem($_REQUEST['id'] ?? 0, $menus, $params);
