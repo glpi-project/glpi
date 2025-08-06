@@ -34,6 +34,7 @@
 
 namespace tests\units;
 
+use CommonITILObject;
 use DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
@@ -322,6 +323,26 @@ class ProblemTest extends DbTestCase
         $html = ob_get_clean();
 
         // Assert: make sure some html was generated
+        $this->assertNotEmpty($html);
+    }
+
+    public function testShowFormClosedItem(): void
+    {
+        // Arrange: prepare an empty change
+        $change = $this->createItem(Problem::class, [
+            'name'        => "My change",
+            'content'     => "My description",
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'status'      => CommonITILObject::CLOSED,
+        ]);
+
+        // Act: render form for a new change
+        $this->login();
+        ob_start();
+        $change->showForm($change->getID());
+        $html = ob_get_clean();
+
+        // Assert: make sure some html was generated and no errors were thrown
         $this->assertNotEmpty($html);
     }
 

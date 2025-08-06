@@ -589,12 +589,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         return self::canupdate();
     }
 
-
-    /**
-     * Is the current user is a requester of the current ticket and have the right to update it ?
-     *
-     * @return boolean
-     */
+    #[Override]
     public function canRequesterUpdateItem()
     {
         return ($this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
