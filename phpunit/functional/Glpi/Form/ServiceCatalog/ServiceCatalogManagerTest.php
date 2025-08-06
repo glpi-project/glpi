@@ -895,7 +895,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         $this->createItem(Entity_KnowbaseItem::class, [
             KnowbaseItem::getForeignKeyField() => $kb1->getID(),
             Entity::getForeignKeyField()       => 0,
-            'subtree'                     => true,
+            'is_recursive'                     => true,
         ]);
 
         $kb2 = $this->createItem(KnowbaseItem::class, [
@@ -908,7 +908,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         $this->createItem(Entity_KnowbaseItem::class, [
             KnowbaseItem::getForeignKeyField() => $kb2->getID(),
             Entity::getForeignKeyField()       => 0,
-            'subtree'                     => false,
+            'is_recursive'                     => false,
         ]);
 
         $kb3 = $this->createItem(KnowbaseItem::class, [
@@ -921,7 +921,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         $this->createItem(Entity_KnowbaseItem::class, [
             KnowbaseItem::getForeignKeyField() => $kb3->getID(),
             Entity::getForeignKeyField()       => $this->getTestRootEntity(true),
-            'subtree'                     => true,
+            'is_recursive'                     => true,
         ]);
 
         // Act: get the KB from the service catalog

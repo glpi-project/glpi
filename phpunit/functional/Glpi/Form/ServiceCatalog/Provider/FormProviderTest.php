@@ -35,12 +35,14 @@
 namespace tests\units\Glpi\Form\ServiceCatalog\Provider;
 
 use DbTestCase;
+use Entity;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Category;
 use Glpi\Form\Form;
 use Glpi\Form\ServiceCatalog\ItemRequest;
 use Glpi\Form\ServiceCatalog\Provider\FormProvider;
 use Glpi\Session\SessionInfo;
+use Session;
 
 class FormProviderTest extends DbTestCase
 {
@@ -57,11 +59,14 @@ class FormProviderTest extends DbTestCase
      */
     public function testGetItemsWithoutCategoryFilter()
     {
+        $this->login();
+
         // Create a form without category
         $form_without_category = $this->createForm([
-            'name' => 'Form without category',
-            'is_active' => 1,
-            'forms_categories_id' => 0,
+            Entity::getForeignKeyField() => $this->getTestRootEntity(true),
+            'name'                       => 'Form without category',
+            'is_active'                  => 1,
+            'forms_categories_id'        => 0,
         ]);
 
         // Create a form with category
@@ -69,15 +74,16 @@ class FormProviderTest extends DbTestCase
             'name' => 'Test Category',
         ]);
         $form_with_category = $this->createForm([
-            'name' => 'Form with category',
-            'is_active' => 1,
-            'forms_categories_id' => $category->getID(),
+            Entity::getForeignKeyField() => $this->getTestRootEntity(true),
+            'name'                       => 'Form with category',
+            'is_active'                  => 1,
+            'forms_categories_id'        => $category->getID(),
         ]);
 
         // Create request without category filter
         $request = new ItemRequest(
             access_parameters: new FormAccessParameters(
-                session_info: new SessionInfo(1, [1], 1)
+                session_info: Session::getCurrentSessionInfo()
             ),
             filter: ''
         );
@@ -95,6 +101,8 @@ class FormProviderTest extends DbTestCase
      */
     public function testGetItemsWithCategoryFilter()
     {
+        $this->login();
+
         // Create categories
         $category1 = $this->createItem(Category::class, [
             'name' => 'Category 1',
@@ -105,27 +113,30 @@ class FormProviderTest extends DbTestCase
 
         // Create forms
         $form_without_category = $this->createForm([
-            'name' => 'Form without category',
-            'is_active' => 1,
-            'forms_categories_id' => 0,
+            Entity::getForeignKeyField() => $this->getTestRootEntity(true),
+            'name'                       => 'Form without category',
+            'is_active'                  => 1,
+            'forms_categories_id'        => 0,
         ]);
 
         $form_category1 = $this->createForm([
-            'name' => 'Form in category 1',
-            'is_active' => 1,
-            'forms_categories_id' => $category1->getID(),
+            Entity::getForeignKeyField() => $this->getTestRootEntity(true),
+            'name'                       => 'Form in category 1',
+            'is_active'                  => 1,
+            'forms_categories_id'        => $category1->getID(),
         ]);
 
         $form_category2 = $this->createForm([
-            'name' => 'Form in category 2',
-            'is_active' => 1,
-            'forms_categories_id' => $category2->getID(),
+            Entity::getForeignKeyField() => $this->getTestRootEntity(true),
+            'name'                       => 'Form in category 2',
+            'is_active'                  => 1,
+            'forms_categories_id'        => $category2->getID(),
         ]);
 
         // Create request with category 1 filter
         $request = new ItemRequest(
             access_parameters: new FormAccessParameters(
-                session_info: new SessionInfo(1, [1], 1)
+                session_info: Session::getCurrentSessionInfo()
             ),
             filter: '',
             category_id: $category1->getID()
@@ -145,26 +156,30 @@ class FormProviderTest extends DbTestCase
      */
     public function testPinnedFormsIgnoreFilter()
     {
+        $this->login();
+
         // Create a pinned form
         $pinned_form = $this->createForm([
-            'name' => 'Pinned form with unmatching name',
-            'is_active' => 1,
-            'is_pinned' => 1,
-            'forms_categories_id' => 0,
+            Entity::getForeignKeyField() => $this->getTestRootEntity(true),
+            'name'                       => 'Pinned form with unmatching name',
+            'is_active'                  => 1,
+            'is_pinned'                  => 1,
+            'forms_categories_id'        => 0,
         ]);
 
         // Create a non-pinned form
         $regular_form = $this->createForm([
-            'name' => 'Regular form with unmatching name',
-            'is_active' => 1,
-            'is_pinned' => 0,
-            'forms_categories_id' => 0,
+            Entity::getForeignKeyField() => $this->getTestRootEntity(true),
+            'name'                       => 'Regular form with unmatching name',
+            'is_active'                  => 1,
+            'is_pinned'                  => 0,
+            'forms_categories_id'        => 0,
         ]);
 
         // Create request with filter that doesn't match either form name
         $request = new ItemRequest(
             access_parameters: new FormAccessParameters(
-                session_info: new SessionInfo(1, [1], 1)
+                session_info: Session::getCurrentSessionInfo()
             ),
             filter: 'nonexistent'
         );
@@ -182,32 +197,37 @@ class FormProviderTest extends DbTestCase
      */
     public function testFormsFilteredByNameAndDescription()
     {
+        $this->login();
+
         // Create forms with different names and descriptions
         $form1 = $this->createForm([
-            'name' => 'Technical Support Request',
-            'description' => 'Submit a technical issue',
-            'is_active' => 1,
-            'forms_categories_id' => 0,
+            Entity::getForeignKeyField() => $this->getTestRootEntity(true),
+            'name'                       => 'Technical Support Request',
+            'description'                => 'Submit a technical issue',
+            'is_active'                  => 1,
+            'forms_categories_id'        => 0,
         ]);
 
         $form2 = $this->createForm([
-            'name' => 'Equipment Request',
-            'description' => 'Request new technical equipment',
-            'is_active' => 1,
-            'forms_categories_id' => 0,
+            Entity::getForeignKeyField() => $this->getTestRootEntity(true),
+            'name'                       => 'Equipment Request',
+            'description'                => 'Request new technical equipment',
+            'is_active'                  => 1,
+            'forms_categories_id'        => 0,
         ]);
 
         $form3 = $this->createForm([
-            'name' => 'Access Request',
-            'description' => 'Request access to systems',
-            'is_active' => 1,
-            'forms_categories_id' => 0,
+            Entity::getForeignKeyField() => $this->getTestRootEntity(true),
+            'name'                       => 'Access Request',
+            'description'                => 'Request access to systems',
+            'is_active'                  => 1,
+            'forms_categories_id'        => 0,
         ]);
 
         // Test filter by name
         $request = new ItemRequest(
             access_parameters: new FormAccessParameters(
-                session_info: new SessionInfo(1, [1], 1)
+                session_info: Session::getCurrentSessionInfo()
             ),
             filter: 'technical'
         );
@@ -226,23 +246,27 @@ class FormProviderTest extends DbTestCase
      */
     public function testOnlyActiveFormsReturned()
     {
+        $this->login();
+
         // Create active and inactive forms
         $active_form = $this->createForm([
-            'name' => 'Active form',
-            'is_active' => 1,
-            'forms_categories_id' => 0,
+            Entity::getForeignKeyField() => $this->getTestRootEntity(true),
+            'name'                       => 'Active form',
+            'is_active'                  => 1,
+            'forms_categories_id'        => 0,
         ]);
 
         $inactive_form = $this->createForm([
-            'name' => 'Inactive form',
-            'is_active' => 0,
-            'forms_categories_id' => 0,
+            Entity::getForeignKeyField() => $this->getTestRootEntity(true),
+            'name'                       => 'Inactive form',
+            'is_active'                  => 0,
+            'forms_categories_id'        => 0,
         ]);
 
         // Create request
         $request = new ItemRequest(
             access_parameters: new FormAccessParameters(
-                session_info: new SessionInfo(1, [1], 1)
+                session_info: Session::getCurrentSessionInfo()
             ),
             filter: ''
         );
