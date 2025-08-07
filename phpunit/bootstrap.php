@@ -96,6 +96,7 @@ include_once __DIR__ . '/AbstractRightsDropdown.php';
 include_once __DIR__ . '/CommonDropdown.php';
 include_once __DIR__ . '/HLAPITestCase.php';
 require_once __DIR__ . '/functional/Glpi/Form/Condition/ConditionHandler/AbstractConditionHandler.php';
+include_once __DIR__ . '/functional/CommonITILTaskTest.php';
 
 loadDataset();
 

@@ -34,19 +34,24 @@
 
 namespace tests\units;
 
-use DbTestCase;
 use Glpi\Search\SearchEngine;
+use Override;
+use TicketTask;
 
-/* Test for inc/tickettask.class.php */
-
-class TicketTaskTest extends DbTestCase
+final class TicketTaskTest extends CommonITILTaskTest
 {
+    #[Override]
+    protected static function getTaskClass(): string
+    {
+        return TicketTask::class;
+    }
+
     /**
      * Create a new ticket
      *
      * @param boolean $as_object Return Ticket object or its id
      *
-     * @return integer|Ticket
+     * @return integer|\Ticket
      */
     private function getNewTicket($as_object = false)
     {
@@ -83,7 +88,7 @@ class TicketTaskTest extends DbTestCase
         $date_end_string = $date_end->format('Y-m-d H:i:s');
 
         //create one task with schedule and recall
-        $task = new \TicketTask();
+        $task = new TicketTask();
         $task_id = $task->add([
             'state'              => \Planning::TODO,
             'tickets_id'         => $ticketId,
@@ -96,7 +101,7 @@ class TicketTaskTest extends DbTestCase
                 'end'          => $date_end_string,
             ],
             '_planningrecall'    => ['before_time' => '14400', //recall 4 hours
-                'itemtype'    => 'TicketTask',
+                'itemtype'    => TicketTask::class,
                 'users_id'    => $uid,
                 'field'       => 'begin', //default
             ],
@@ -111,7 +116,7 @@ class TicketTaskTest extends DbTestCase
         $this->assertTrue(
             $recall->getFromDBByCrit([
                 'before_time'   => '14400', //recall 4 hours
-                'itemtype'     => 'TicketTask',
+                'itemtype'     => TicketTask::class,
                 'items_id'     => $task_id,
                 'users_id'     => $uid,
                 'when'         => $when,
@@ -127,7 +132,7 @@ class TicketTaskTest extends DbTestCase
         $date_end->add(new \DateInterval('P1M2D'));
         $date_end_string = $date_end->format('Y-m-d H:i:s');
 
-        $task = new \TicketTask();
+        $task = new TicketTask();
         $task_id = $task->add([
             'state'              => \Planning::TODO,
             'tickets_id'         => $ticketId,
@@ -140,7 +145,7 @@ class TicketTaskTest extends DbTestCase
                 'end'         => $date_end_string,
             ],
             '_planningrecall' => ['before_time' => '-10', //recall to none
-                'itemtype'    => 'TicketTask',
+                'itemtype'    => TicketTask::class,
                 'users_id'    => $uid,
                 'field'       => 'begin', //default
             ],
@@ -151,7 +156,7 @@ class TicketTaskTest extends DbTestCase
         $recall = new \PlanningRecall();
         $this->assertFalse(
             $recall->getFromDBByCrit([
-                'itemtype'   => 'TicketTask',
+                'itemtype'   => TicketTask::class,
                 'items_id'  => $task_id,
                 'users_id'  => $uid,
             ])
@@ -173,7 +178,7 @@ class TicketTaskTest extends DbTestCase
                     'end'         => $date_end_string,
                 ],
                 '_planningrecall' => ['before_time' => '900',
-                    'itemtype'    => 'TicketTask',
+                    'itemtype'    => TicketTask::class,
                     'users_id'    => $uid,
                     'field'       => 'begin', //default
                 ],
@@ -187,7 +192,7 @@ class TicketTaskTest extends DbTestCase
         $when = date("Y-m-d H:i:s", strtotime($task->fields['begin']) - 900);
         $this->assertTrue(
             $recall->getFromDBByCrit(['before_time'  => '900',
-                'itemtype'    => 'TicketTask',
+                'itemtype'    => TicketTask::class,
                 'items_id'    => $task_id,
                 'users_id'    => $uid,
                 'when'        => $when,
@@ -208,7 +213,7 @@ class TicketTaskTest extends DbTestCase
             \Planning::INFO,
         ];
         //create few tasks
-        $task = new \TicketTask();
+        $task = new TicketTask();
         foreach ($tasksstates as $taskstate) {
             $this->assertGreaterThan(
                 0,
@@ -248,7 +253,7 @@ class TicketTaskTest extends DbTestCase
             \Planning::INFO,
         ];
         //create few tasks
-        $task = new \TicketTask();
+        $task = new TicketTask();
         foreach ($tasksstates as $taskstate) {
             $this->assertGreaterThan(
                 0,
@@ -262,7 +267,7 @@ class TicketTaskTest extends DbTestCase
         }
 
         ob_start();
-        \TicketTask::showCentralList(0, 'todo', false);
+        TicketTask::showCentralList(0, 'todo', false);
         $output = ob_get_clean();
         $this->assertStringContainsString("Ticket tasks to do <span class='primary-bg primary-fg count'>4</span>", $output);
         $this->assertMatchesRegularExpression("/a href='\/front\/ticket.form.php\?id=\d+[^']+'>/", $output);
@@ -276,7 +281,7 @@ class TicketTaskTest extends DbTestCase
 
         ob_start();
         $_SESSION['glpidisplay_count_on_home'] = 2;
-        \TicketTask::showCentralList(0, 'todo', false);
+        TicketTask::showCentralList(0, 'todo', false);
         unset($_SESSION['glpidisplay_count_on_home']);
         $output = ob_get_clean();
 
@@ -303,7 +308,7 @@ class TicketTaskTest extends DbTestCase
         $ticket = $this->getNewTicket(true);
         $tid = $ticket->fields['id'];
 
-        $ttask = new \TicketTask();
+        $ttask = new TicketTask();
         $this->assertGreaterThan(
             0,
             (int) $ttask->add([
@@ -399,7 +404,7 @@ class TicketTaskTest extends DbTestCase
             'is_private'         => 1,
         ]);
         $this->assertGreaterThan(0, $templates_id);
-        $task = new \TicketTask();
+        $task = new TicketTask();
         $tasks_id = $task->add([
             '_tasktemplates_id'  => $templates_id,
             'itemtype'           => 'Ticket',
@@ -436,7 +441,7 @@ class TicketTaskTest extends DbTestCase
     {
         $this->login();
         $ticket_id = $this->getNewTicket();
-        $task = new \TicketTask();
+        $task = new TicketTask();
 
         $uid = getItemByTypeName('User', TU_USER, true);
         $date_begin = new \DateTime(); // ==> now
@@ -553,7 +558,7 @@ class TicketTaskTest extends DbTestCase
     {
         $this->login();
         $ticket_id = $this->getNewTicket();
-        $task = new \TicketTask();
+        $task = new TicketTask();
 
         $uid = getItemByTypeName('User', TU_USER, true);
         $date_begin = new \DateTime(); // ==> now
@@ -648,7 +653,7 @@ class TicketTaskTest extends DbTestCase
         $date_end->add(new \DateInterval('P2D'));
         $date_end_string = $date_end->format('Y-m-d H:i:s');
 
-        $task1 = new \TicketTask();
+        $task1 = new TicketTask();
         $task1_id = $task1->add([
             'tickets_id'         => $ticket_id,
             'content'            => "Task with schedule",
@@ -674,7 +679,7 @@ class TicketTaskTest extends DbTestCase
         $date_end->add(new \DateInterval('P4D'));
         $date_end_string = $date_end->format('Y-m-d H:i:s');
 
-        $task2 = new \TicketTask();
+        $task2 = new TicketTask();
         $task2_id = $task2->add([
             'tickets_id'         => $ticket_id,
             'content'            => "Task with schedule",
@@ -774,7 +779,7 @@ class TicketTaskTest extends DbTestCase
         $date_end_string = $date_end->format('Y-m-d H:i:s');
 
         // Create task with actiontime and without schedule
-        $task = new \TicketTask();
+        $task = new TicketTask();
         $task_id = $task->add([
             'state'              => \Planning::TODO,
             'tickets_id'         => $ticketId,
