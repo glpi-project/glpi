@@ -85,10 +85,6 @@ class NotificationTemplate extends CommonDBTM
         return static::canUpdate();
     }
 
-
-    /**
-     * @since 0.85
-     **/
     public static function canPurge(): bool
     {
         return static::canUpdate();

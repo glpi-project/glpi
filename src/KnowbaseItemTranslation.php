@@ -104,11 +104,6 @@ class KnowbaseItemTranslation extends CommonDBChild
         return '';
     }
 
-    /**
-     * @param CommonGLPI $item
-     * @param integer $tabnum (default 1)
-     * @param integer $withtemplate (default 0)
-     */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item::class === self::class) {

@@ -101,12 +101,6 @@ class SNMPCredential extends CommonDBTM
         return $tab;
     }
 
-    /**
-     * Define tabs to display on form page
-     *
-     * @param array $options
-     * @return array containing the tabs name
-     */
     public function defineTabs($options = [])
     {
 

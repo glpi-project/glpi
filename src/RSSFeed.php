@@ -99,19 +99,11 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
                   && $this->haveVisibilityAccess()));
     }
 
-    /**
-     * @since 0.85
-     * for personal rss feed
-     **/
     public static function canUpdate(): bool
     {
         return (Session::haveRightsOr(self::$rightname, [UPDATE, self::PERSONAL]));
     }
 
-    /**
-     * @since 0.85
-     * for personal rss feed
-     **/
     public static function canPurge(): bool
     {
         return (Session::haveRightsOr(self::$rightname, [PURGE, self::PERSONAL]));

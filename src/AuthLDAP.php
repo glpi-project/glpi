@@ -3984,15 +3984,6 @@ TWIG, $twig_params);
         return '';
     }
 
-    /**
-     * Choose which form to show
-     *
-     * @param CommonGLPI $item         Item instance
-     * @param integer    $tabnum       Tab number
-     * @param integer    $withtemplate Unused
-     *
-     * @return boolean (TRUE)
-     */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         /** @var AuthLDAP $item */

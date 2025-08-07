@@ -594,10 +594,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
         return true;
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public static function canCreate(): bool
     {
 
@@ -607,10 +603,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
         return static::canRelation('canUpdate', static::$checkAlwaysBothItems);
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public static function canView(): bool
     {
         if ((static::$rightname) && (!Session::haveRight(static::$rightname, READ))) {
@@ -620,10 +612,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
         return static::canRelation('canView', true);
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public static function canUpdate(): bool
     {
         if ((static::$rightname) && (!Session::haveRight(static::$rightname, UPDATE))) {
@@ -632,10 +620,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
         return static::canRelation('canUpdate', static::$checkAlwaysBothItems);
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public static function canDelete(): bool
     {
         if ((static::$rightname) && (!Session::haveRight(static::$rightname, DELETE))) {
@@ -644,10 +628,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
         return static::canRelation('canUpdate', static::$checkAlwaysBothItems);
     }
 
-
-    /**
-     * @since 0.85
-     **/
     public static function canPurge(): bool
     {
         if ((static::$rightname) && (!Session::haveRight(static::$rightname, PURGE))) {
@@ -656,10 +636,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
         return static::canRelation('canUpdate', static::$checkAlwaysBothItems);
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public function canCreateItem(): bool
     {
         return $this->canRelationItem(
@@ -670,19 +646,11 @@ abstract class CommonDBRelation extends CommonDBConnexity
         );
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public function canViewItem(): bool
     {
         return $this->canRelationItem('canViewItem', 'canView', false, true);
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public function canUpdateItem(): bool
     {
 
@@ -694,10 +662,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
         );
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public function canDeleteItem(): bool
     {
 
@@ -709,10 +673,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
         );
     }
 
-
-    /**
-     * @since 9.3.2
-     */
     public function canPurgeItem(): bool
     {
 

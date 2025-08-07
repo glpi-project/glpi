@@ -665,13 +665,9 @@ class DisplayPreference extends CommonDBTM
         ]);
     }
 
-    /**
-     * For tab management : force isNewItem
-     *
-     * @since 0.83
-     **/
     public function isNewItem()
     {
+        // For tab management : force isNewItem
         return false;
     }
 

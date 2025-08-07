@@ -63,11 +63,6 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
     public const IMPACT_MASK_FIELD    = 'impact_mask';
     public const STATUS_MATRIX_FIELD  = 'problem_status';
 
-    /**
-     * Name of the type
-     *
-     * @param $nb : number of item in the type
-     **/
     public static function getTypeName($nb = 0)
     {
         return _n('Problem', 'Problems', $nb);

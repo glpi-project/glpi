@@ -1667,17 +1667,6 @@ class Auth extends CommonGLPI
         return '';
     }
 
-    /**
-     * Show Tab content
-     *
-     * @since 0.83
-     *
-     * @param CommonGLPI $item         Item instance
-     * @param integer    $tabnum       Unused (default 0)
-     * @param integer    $withtemplate Unused (default 0)
-     *
-     * @return boolean
-     */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item::class === User::class) {

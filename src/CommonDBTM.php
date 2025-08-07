@@ -2937,28 +2937,12 @@ class CommonDBTM extends CommonGLPI
         echo "<td class='center' colspan='" . ($params['colspan'] * 2) . "'>";
     }
 
-
-    /**
-     * is the parameter ID must be considered as new one ?
-     * Default is empty of <0 may be overriden (for entity for example)
-     *
-     * @param integer $ID ID of the item (-1 if new item)
-     *
-     * @return boolean
-     **/
     public static function isNewID($ID)
     {
+        // Default is empty of <0 may be overriden (for entity for example)
         return (empty($ID) || ($ID <= 0));
     }
 
-
-    /**
-     * is the current object a new  one
-     *
-     * @since 0.83
-     *
-     * @return boolean
-     **/
     public function isNewItem()
     {
 
@@ -2968,16 +2952,6 @@ class CommonDBTM extends CommonGLPI
         return true;
     }
 
-
-    /**
-     * Check right on an item
-     *
-     * @param int $ID    ID of the item (-1 if new item)
-     * @param int $right Right to check : r / w / recursive / READ / UPDATE / DELETE
-     * @param ?array   $input array of input data (used for adding item) (default NULL)
-     *
-     * @return boolean
-     **/
     public function can($ID, int $right, ?array &$input = null): bool
     {
         if (Session::isInventory()) {

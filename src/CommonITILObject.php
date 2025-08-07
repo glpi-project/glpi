@@ -8143,12 +8143,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         return false;
     }
 
-
-    /**
-     * @see CommonGLPI::getAdditionalMenuLinks()
-     *
-     * @since 9.5.0
-     **/
     public static function getAdditionalMenuLinks()
     {
         $links = [];

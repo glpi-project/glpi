@@ -51,11 +51,6 @@ class Supplier extends CommonDBTM
     public static $rightname           = 'contact_enterprise';
     protected $usenotepad       = true;
 
-    /**
-     * Name of the type
-     *
-     * @param $nb : number of item in the type
-     **/
     public static function getTypeName($nb = 0)
     {
         return _n('Supplier', 'Suppliers', $nb);

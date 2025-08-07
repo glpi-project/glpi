@@ -611,10 +611,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
              && $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID());
     }
 
-
-    /**
-     * @since 0.85
-     **/
     public static function canDelete(): bool
     {
 

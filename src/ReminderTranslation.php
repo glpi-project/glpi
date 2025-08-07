@@ -68,13 +68,6 @@ class ReminderTranslation extends CommonDBChild
         return $forbidden;
     }
 
-    /**
-     * @param CommonGLPI $item
-     * @param int         $withtemplate
-     *
-     * @return array|string
-     * @see CommonGLPI::getTabNameForItem()
-     */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (
@@ -91,14 +84,6 @@ class ReminderTranslation extends CommonDBChild
         return '';
     }
 
-    /**
-     * @param CommonGLPI $item object
-     * @param $tabnum (default 1)
-     * @param $withtemplate (default 0)
-     **
-     *
-     * @return bool
-     */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item instanceof Reminder) {

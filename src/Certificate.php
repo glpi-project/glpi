@@ -486,10 +486,6 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
         return $tab;
     }
 
-    /**
-     * @param array $options
-     * @return array
-     */
     public function defineTabs($options = [])
     {
         $ong = [];

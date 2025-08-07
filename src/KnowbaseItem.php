@@ -165,13 +165,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         return $this->canViewItem() && Session::haveRight(self::$rightname, self::COMMENTS);
     }
 
-    /**
-     * Get the search page URL for the current classe
-     *
-     * @since 0.84
-     *
-     * @param boolean $full  path or relative one
-     **/
     public static function getSearchURL($full = true)
     {
         /** @var array $CFG_GLPI */
@@ -185,11 +178,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         return "$dir/front/helpdesk.faq.php";
     }
 
-    /**
-     * Get the form page URL for the current classe
-     *
-     * @param boolean $full  path or relative one
-     **/
     public static function getFormURL($full = true)
     {
         /** @var array $CFG_GLPI */

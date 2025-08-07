@@ -81,23 +81,11 @@ abstract class CommonDropdown extends CommonDBTM
         return $this->can_be_translated;
     }
 
-
-    /**
-     * @see CommonGLPI::getMenuShorcut()
-     *
-     * @since 0.85
-     **/
     public static function getMenuShorcut()
     {
         return 'n';
     }
 
-
-    /**
-     *  @see CommonGLPI::getMenuContent()
-     *
-     *  @since 0.85
-     **/
     public static function getMenuContent()
     {
 

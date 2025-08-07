@@ -47,26 +47,11 @@ class NetworkPortConnectionLog extends CommonDBChild
     public static $items_id        = 'networkports_id';
     public $dohistory              = false;
 
-
-    /**
-     * Get name of this type by language of the user connected
-     *
-     * @param integer $nb number of elements
-     *
-     * @return string name of this type
-     */
     public static function getTypeName($nb = 0)
     {
         return __('Port connection history');
     }
 
-    /**
-     * Get the tab name used for item
-     *
-     * @param CommonGLPI $item the item object
-     * @param integer $withtemplate 1 if is a template form
-     * @return array name of the tab
-     */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         $array_ret = [];
@@ -88,14 +73,6 @@ class NetworkPortConnectionLog extends CommonDBChild
         ];
     }
 
-    /**
-     * Display the content of the tab
-     *
-     * @param CommonGLPI $item
-     * @param integer $tabnum number of the tab to display
-     * @param integer $withtemplate 1 if is a template form
-     * @return boolean
-     */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item::class === NetworkPort::class && $item->getID() > 0) {

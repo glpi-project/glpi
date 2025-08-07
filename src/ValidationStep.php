@@ -35,10 +35,6 @@
 
 class ValidationStep extends CommonDropdown
 {
-    /**
-     * @param int $nb
-     * @return string
-     */
     public static function getTypeName($nb = 0)
     {
         return _n('Approval step', 'Approval steps', $nb);
