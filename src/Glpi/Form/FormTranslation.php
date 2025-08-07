@@ -156,4 +156,12 @@ final class FormTranslation extends ItemTranslation
             )
         );
     }
+
+    public static function getSystemSQLCriteria(?string $tablename = null): array
+    {
+        $criteria = [
+            'itemtype' => [Form::class, Section::class, Question::class, Comment::class],
+        ];
+        return [crc32(serialize($criteria)) => $criteria];
+    }
 }

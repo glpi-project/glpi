@@ -46,7 +46,7 @@ use Session;
 use function Safe\json_decode;
 use function Safe\json_encode;
 
-class ItemTranslation extends CommonDBChild
+abstract class ItemTranslation extends CommonDBChild
 {
     public static $rightname = 'config';
 
@@ -285,5 +285,10 @@ class ItemTranslation extends CommonDBChild
         );
 
         return $translations_to_review;
+    }
+
+    public static function getSystemSQLCriteria(?string $tablename = null): array
+    {
+        throw new LogicException('getSystemSQLCriteria must be implemented in subclasses of ItemTranslation');
     }
 }
