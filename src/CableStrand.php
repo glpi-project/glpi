@@ -160,8 +160,8 @@ class CableStrand extends CommonDropdown
                     continue;
                 }
 
-                echo "<tr class='tab_bg_1'><td>" . $cable->getTypeName() . "</td>";
-                echo "<td>" . Dropdown::getDropdownName("glpi_entities", $cable->getEntityID()) . "</td>";
+                echo "<tr class='tab_bg_1'><td>" . htmlescape($cable->getTypeName()) . "</td>";
+                echo "<td>" . htmlescape(Dropdown::getDropdownName("glpi_entities", $cable->getEntityID())) . "</td>";
                 echo "<td>" . $cable->getLink() . "</td>";
                 echo "<td>" . (isset($cable->fields["otherserial"]) ? htmlescape($cable->fields["otherserial"]) : "-") . "</td>";
                 echo "<td>";

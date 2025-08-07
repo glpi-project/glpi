@@ -625,7 +625,7 @@ TWIG, $twig_params);
                         break;
 
                     case 'bool':
-                        echo Dropdown::getYesNo($data[$field['name']]);
+                        $entry[$field['name']] = Dropdown::getYesNo($data[$field['name']]);
                         break;
 
                     case 'dropdownValue':
@@ -702,7 +702,7 @@ TWIG, $twig_params);
         switch ($ma->getAction()) {
             case 'move_under':
                 $itemtype = $ma->getItemType(true);
-                echo __('As child of');
+                echo __s('As child of');
                 Dropdown::show($itemtype, ['name'     => 'parent',
                     'comments' => 0,
                     'entity'   => $_SESSION['glpiactive_entity'],

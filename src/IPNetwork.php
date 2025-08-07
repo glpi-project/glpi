@@ -1016,7 +1016,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
             return;
         }
 
-        $content     = self::getTypeName();
+        $content     = htmlescape(self::getTypeName());
         $this_header = $base->addHeader($column_name, $content, $super, $father);
         $this_header->setItemType(self::class);
     }

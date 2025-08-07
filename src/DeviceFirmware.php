@@ -253,9 +253,9 @@ class DeviceFirmware extends CommonDevice
 
         if (in_array($itemtype, $CFG_GLPI['itemdevicefirmware_types'])) {
             Manufacturer::getHTMLTableHeader(self::class, $base, $super, $father, $options);
-            $base->addHeader('devicefirmware_type', _n('Type', 'Types', 1), $super, $father);
-            $base->addHeader('version', _n('Version', 'Versions', 1), $super, $father);
-            $base->addHeader('date', __('Release date'), $super, $father);
+            $base->addHeader('devicefirmware_type', _sn('Type', 'Types', 1), $super, $father);
+            $base->addHeader('version', _sn('Version', 'Versions', 1), $super, $father);
+            $base->addHeader('date', __s('Release date'), $super, $father);
         }
     }
 

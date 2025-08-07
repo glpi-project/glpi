@@ -132,9 +132,9 @@ class IPNetwork_Vlan extends CommonDBRelation
         }
 
         if ($canedit) {
-            echo "<div class='firstbloc'>\n";
-            echo "<form method='post' action='" . static::getFormURL() . "'>\n";
-            echo "<table class='tab_cadre_fixe'>\n";
+            echo "<div class='firstbloc'>";
+            echo "<form method='post' action='" . htmlescape(static::getFormURL()) . "'>";
+            echo "<table class='tab_cadre_fixe'>";
             echo "<tr><th>" . __s('Associate a VLAN') . "</th></tr>";
 
             echo "<tr class='tab_bg_1'><td class='center'>";
@@ -142,11 +142,11 @@ class IPNetwork_Vlan extends CommonDBRelation
             Vlan::dropdown(['used' => $used]);
             echo "&nbsp;<input type='submit' name='add' value='" . _sx('button', 'Associate') .
                       "' class='btn btn-primary'>";
-            echo "</td></tr>\n";
+            echo "</td></tr>";
 
-            echo "</table>\n";
+            echo "</table>";
             Html::closeForm();
-            echo "</div>\n";
+            echo "</div>";
         }
 
         echo "<div class='spaced'>";
@@ -185,13 +185,13 @@ class IPNetwork_Vlan extends CommonDBRelation
             }
             $name = htmlescape($data["name"]);
             if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
-                $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
+                $name = sprintf(__s('%1$s (%2$s)'), $name, (int) $data["id"]);
             }
             echo "<td class='center b'>
-               <a href='" . htmlescape($CFG_GLPI["root_doc"]) . "/front/vlan.form.php?id=" . $data["id"] . "'>" . $name .
+               <a href='" . htmlescape(Vlan::getFormURLWithID($data["id"])) . "'>" . $name .
               "</a>";
             echo "</td>";
-            echo "<td class='center'>" . Dropdown::getDropdownName("glpi_entities", $data["entities_id"]);
+            echo "<td class='center'>" . htmlescape(Dropdown::getDropdownName("glpi_entities", $data["entities_id"])) . '</td>';
             echo "<td class='numeric'>" . htmlescape($data["tag"]) . "</td>";
             echo "</tr>";
         }

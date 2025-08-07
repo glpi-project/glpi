@@ -1021,26 +1021,26 @@ class Dropdown
             global $CFG_GLPI;
 
             // templates for select2 dropdown
-            $js = <<<JAVASCRIPT
-            $(function() {
-                const formatFormIcon = function(icon) {
-                    if (!icon.id || icon.id == '0') {
-                        return icon.text;
-                    }
-                    var img = '<span><img alt="" src="{$CFG_GLPI['typedoc_icon_dir']}/'+icon.id+'" />';
-                    var label = '<span>'+icon.text+'</span>';
-                    return $(img+'&nbsp;'+label);
-                };
-                $("#dropdown_{$myname}{$rand}").select2({
-                    width: '60%',
-                    templateSelection: formatFormIcon,
-                    templateResult: formatFormIcon
+            $js = '
+                $(function() {
+                    const formatFormIcon = function(icon) {
+                        if (!icon.id || icon.id == "0") {
+                            return icon.text;
+                        }
+                        var img = \'<span><img alt="" src="' . jsescape(htmlescape($CFG_GLPI['typedoc_icon_dir'])) . '/\'+icon.id+\'" />\';
+                        var label = \'<span>\'+icon.text+\'</span>\';
+                        return $(img+\'&nbsp;\'+label);
+                    };
+                    $("#dropdown_' . jsescape($myname . $rand) . '").select2({
+                        width: "60%",
+                        templateSelection: formatFormIcon,
+                        templateResult: formatFormIcon
+                    });
                 });
-            });
-JAVASCRIPT;
+            ';
             echo Html::scriptBlock($js);
         } else {
-            $error_msg = __('Error reading icon directory');
+            $error_msg = __s('Error reading icon directory');
             echo <<<HTML
             <div class="alert alert-danger">
                 <span class="fs-4 alert-title">
@@ -2635,7 +2635,7 @@ HTML;
             $params['value']
             && empty($params['withtemplate'])
         ) {
-            echo __('Global management');
+            echo __s('Global management');
 
             if ($params['management_restrict'] == 2) {
                 echo "&nbsp;";

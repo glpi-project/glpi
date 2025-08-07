@@ -68,7 +68,7 @@ class InterfaceType extends CommonDropdown
             return;
         }
 
-        $base->addHeader($column_name, __('Interface'), $super, $father);
+        $base->addHeader($column_name, __s('Interface'), $super, $father);
     }
 
 

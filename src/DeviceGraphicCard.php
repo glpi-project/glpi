@@ -161,7 +161,7 @@ class DeviceGraphicCard extends CommonDevice
             case Computer::class:
                 Manufacturer::getHTMLTableHeader(self::class, $base, $super, $father, $options);
                 InterfaceType::getHTMLTableHeader(self::class, $base, $super, $father, $options);
-                $base->addHeader('devicegraphiccard_chipset', __('Chipset'), $super, $father);
+                $base->addHeader('devicegraphiccard_chipset', __s('Chipset'), $super, $father);
                 break;
         }
     }

@@ -1492,8 +1492,7 @@ class Item_SoftwareVersion extends CommonDBRelation
 
         $ID = $data['linkid'];
 
-        $link_item = Toolbox::getItemTypeFormURL('SoftwareLicense');
-        $link      = $link_item . "?id=" . $data['id'];
+        $link = SoftwareLicense::getFormURLWithID($data['id']);
 
         echo "<tr class='tab_bg_1'>";
         if ($canedit) {
@@ -1505,13 +1504,12 @@ class Item_SoftwareVersion extends CommonDBRelation
         }
 
         echo "<td>";
-        echo "<a href='" . Software::getFormURLWithID($data['softwares_id']) . "'>";
-        echo($_SESSION["glpiis_ids_visible"] ? sprintf(
-            __('%1$s (%2$s)'),
-            $data["softname"],
-            $data['softwares_id']
-        )
-                                            : $data["softname"]);
+        echo "<a href='" . htmlescape(Software::getFormURLWithID($data['softwares_id'])) . "'>";
+        echo htmlescape(
+            $_SESSION["glpiis_ids_visible"]
+            ? sprintf(__('%1$s (%2$s)'), $data["softname"], $data['softwares_id'])
+            : $data["softname"]
+        );
         echo "</a></td>";
         echo "<td>" . htmlescape($data["state"]) . "</td>";
 
@@ -1529,9 +1527,9 @@ class Item_SoftwareVersion extends CommonDBRelation
                 )
             );
         }
-        echo "</td><td>" . $data["name"];
+        echo "</td><td>" . htmlescape($data["name"]);
         if (!empty($serial)) {
-            echo " - " . $serial;
+            echo " - " . htmlescape($serial);
         }
 
         $comment = "<table><tr><td>" . __s('Name') . "</td>" . "<td>" . htmlescape($data['name']) . "</td></tr>" .

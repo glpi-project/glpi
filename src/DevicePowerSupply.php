@@ -111,7 +111,7 @@ class DevicePowerSupply extends CommonDevice
         switch ($itemtype) {
             case 'Computer':
                 Manufacturer::getHTMLTableHeader(self::class, $base, $super, $father, $options);
-                $base->addHeader('power', __('Power'), $super, $father);
+                $base->addHeader('power', __s('Power'), $super, $father);
                 break;
         }
     }

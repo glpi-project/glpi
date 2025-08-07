@@ -156,7 +156,7 @@ class FieldUnicity extends CommonDropdown
         //Criteria already added : only display the selected itemtype
         if ($ID > 0) {
             if ($item = getItemForItemtype($this->fields['itemtype'])) {
-                echo $item::getTypeName();
+                echo htmlescape($item::getTypeName());
             }
             echo "<input type='hidden' name='itemtype' value='" . htmlescape($this->fields['itemtype']) . "'>";
         } else {

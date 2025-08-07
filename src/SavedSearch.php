@@ -127,12 +127,12 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                     'name'   => 'entities_id',
                 ]);
                 echo '<br/>';
-                echo __('Child entities');
+                echo __s('Child entities');
                 Dropdown::showYesNo('is_recursive');
                 echo '<br/>';
                 break;
             case 'change_visibility':
-                echo __('Visibility');
+                echo __s('Visibility');
                 Dropdown::showFromArray(
                     'is_private',
                     [

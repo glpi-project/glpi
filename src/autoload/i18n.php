@@ -50,6 +50,9 @@ $DEFAULT_PLURAL_NUMBER = 2;
  * @param string $domain domain used (default is glpi, may be plugin name)
  *
  * @return string translated string
+ *
+ * @psalm-taint-source html (translated message can contain unexpected HTML special chars)
+ * @psalm-taint-source has_quotes (translated message can contain quotes not present in the translation key)
  */
 function __($str, $domain = 'glpi')
 {
@@ -120,6 +123,9 @@ function _sx($ctx, $str, $domain = 'glpi')
  * @param string  $domain domain used (default is glpi, may be plugin name)
  *
  * @return string translated string
+ *
+ * @psalm-taint-source html (translated message can contain unexpected HTML special chars)
+ * @psalm-taint-source has_quotes (translated message can contain quotes not present in the translation key)
  */
 function _n($sing, $plural, $nb, $domain = 'glpi')
 {

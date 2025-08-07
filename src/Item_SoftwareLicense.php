@@ -533,8 +533,8 @@ class Item_SoftwareLicense extends CommonDBRelation
 
         echo "<div class='center'>";
         echo "<table class='tab_cadre'><tr>";
-        echo "<th>" . Entity::getTypeName(1) . "</th>";
-        echo "<th>" . __('Number of affected items') . "</th>";
+        echo "<th>" . htmlescape(Entity::getTypeName(1)) . "</th>";
+        echo "<th>" . __s('Number of affected items') . "</th>";
         echo "</tr>\n";
 
         $tot = 0;

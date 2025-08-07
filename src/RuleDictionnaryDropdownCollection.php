@@ -116,12 +116,26 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
         global $DB;
 
         if (isCommandLine()) {
-            printf(__('Replay rules on existing database started on %s') . "\n", date("r"));
+            /**
+             * Safe CLI context.
+             * @psalm-taint-escape html
+             * @psalm-taint-escape has_quotes
+             */
+            $out = sprintf(__('Replay rules on existing database started on %s') . "\n", date("r"));
+            echo $out;
         }
 
         // Model check: need to check using manufacturer extra data
         if (!str_contains($this->item_table, 'models')) {
-            echo __('Error replaying rules');
+            if (isCommandLine()) {
+                /**
+                 * Safe CLI context.
+                 * @psalm-taint-escape html
+                 * @psalm-taint-escape has_quotes
+                 */
+                $out = __('Error replaying rules');
+                echo $out;
+            }
             return false;
         }
 

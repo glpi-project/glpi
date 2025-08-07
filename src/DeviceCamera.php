@@ -178,13 +178,13 @@ class DeviceCamera extends CommonDevice
         }
 
         Manufacturer::getHTMLTableHeader(self::class, $base, $super, $father, $options);
-        $base->addHeader('devicecamera_model', _n('Model', 'Models', 1), $super, $father);
-        $base->addHeader('flashunit', __('Flashunit'), $super, $father);
-        $base->addHeader('lensfacing', __('lensfacing'), $super, $father);
-        $base->addHeader('orientation', __('orientation'), $super, $father);
-        $base->addHeader('focallength', __('focal length'), $super, $father);
-        $base->addHeader('sensorsize', __('sensorsize'), $super, $father);
-        $base->addHeader('support', __('support'), $super, $father);
+        $base->addHeader('devicecamera_model', _sn('Model', 'Models', 1), $super, $father);
+        $base->addHeader('flashunit', __s('Flashunit'), $super, $father);
+        $base->addHeader('lensfacing', __s('lensfacing'), $super, $father);
+        $base->addHeader('orientation', __s('orientation'), $super, $father);
+        $base->addHeader('focallength', __s('focal length'), $super, $father);
+        $base->addHeader('sensorsize', __s('sensorsize'), $super, $father);
+        $base->addHeader('support', __s('support'), $super, $father);
     }
 
     public function getHTMLTableCellForItem(

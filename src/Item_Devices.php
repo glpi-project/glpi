@@ -676,14 +676,14 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             $delete_all_column = null;
         }
 
-        $column_label    = ($is_device ? _n('Item', 'Items', Session::getPluralNumber()) : __('Type of component'));
+        $column_label    = ($is_device ? _sn('Item', 'Items', Session::getPluralNumber()) : __s('Type of component'));
         $common_column   = $table->addHeader('common', $column_label);
-        $specific_column = $table->addHeader('specificities', __('Specificities'));
+        $specific_column = $table->addHeader('specificities', __s('Specificities'));
         $specific_column->setHTMLClass('center');
 
         $dynamic_column = '';
         if ($item->isDynamic()) {
-            $dynamic_column = $table->addHeader('is_dynamic', __('Automatic inventory'));
+            $dynamic_column = $table->addHeader('is_dynamic', __s('Automatic inventory'));
             $dynamic_column->setHTMLClass('center');
         }
 
@@ -900,10 +900,10 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             $peer_type = $options['itemtype'];
 
             if (empty($peer_type)) {
-                $column_label = __('Dissociated devices');
+                $column_label = __s('Dissociated devices');
                 $group_name   = 'None';
             } else {
-                $column_label = $peer_type::getTypeName(Session::getPluralNumber());
+                $column_label = htmlescape($peer_type::getTypeName(Session::getPluralNumber()));
                 $group_name   = $peer_type;
             }
 
@@ -954,7 +954,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
         foreach (static::getSpecificities() as $field => $attributs) {
             $spec_column                 = $table_group->addHeader(
                 'spec_' . $field,
-                $attributs['long name'],
+                htmlescape($attributs['long name']),
                 $specific_column,
                 $spec_column
             );
@@ -963,14 +963,14 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 
         $infocom_column  = $table_group->addHeader(
             'infocom',
-            Infocom::getTypeName(Session::getPluralNumber()),
+            htmlescape(Infocom::getTypeName(Session::getPluralNumber())),
             $specific_column,
             $spec_column
         );
 
         $document_column = $table_group->addHeader(
             'document',
-            Document::getTypeName(Session::getPluralNumber()),
+            htmlescape(Document::getTypeName(Session::getPluralNumber())),
             $specific_column,
             $spec_column
         );

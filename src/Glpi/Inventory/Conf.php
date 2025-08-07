@@ -381,7 +381,7 @@ class Conf extends CommonGLPI
         $rand = mt_rand();
 
         if ($canedit) {
-            echo "<form name='form' action='" . $CFG_GLPI['root_doc'] . "/front/inventory.conf.php' method='post'>";
+            echo "<form name='form' action='" . htmlescape($CFG_GLPI['root_doc']) . "/front/inventory.conf.php' method='post'>";
         }
 
         echo "<div class='center spaced' id='tabsbody'>";
@@ -721,7 +721,7 @@ class Conf extends CommonGLPI
             echo "<td colspan='2'>";
             echo sprintf(
                 '<a href="%s">%s</a>',
-                Rule::getSearchURL(),
+                htmlescape(Rule::getSearchURL()),
                 Rule::createTabEntry(Rule::getTypeName(Session::getPluralNumber()), 0, Rule::getType())
             );
             echo "</td>";
@@ -729,7 +729,7 @@ class Conf extends CommonGLPI
 
             echo sprintf(
                 '<a href="%s">%s</a>',
-                NetworkPortType::getSearchURL(),
+                htmlescape(NetworkPortType::getSearchURL()),
                 NetworkPort::createTabEntry(NetworkPortType::getTypeName(), 0, NetworkPort::getType())
             );
             echo "</td>";
@@ -737,7 +737,7 @@ class Conf extends CommonGLPI
 
             echo "<tr class='tab_bg_1'>";
             echo "<th colspan='4'>";
-            echo ItemVirtualMachine::getTypeName(Session::getPluralNumber());
+            echo htmlescape(ItemVirtualMachine::getTypeName(Session::getPluralNumber()));
             echo "</th>";
             echo "</tr>";
 
@@ -1007,7 +1007,7 @@ class Conf extends CommonGLPI
             if (isset($config['stale_agents_action'])) {
                 $action = $config['stale_agents_action'];
             }
-            $rand = Dropdown::showFromArray(
+            Dropdown::showFromArray(
                 'stale_agents_action',
                 self::getStaleAgentActions(),
                 [
@@ -1095,7 +1095,7 @@ class Conf extends CommonGLPI
                         $field = $action['render_callback']($config);
                         if (!empty($field)) {
                             echo "<td>";
-                            echo $action['label'] ?? '';
+                            echo htmlescape($action['label'] ?? '');
                             echo "</td>";
                             echo "<td width='20%'>";
                             echo $field;

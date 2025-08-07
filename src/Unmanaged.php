@@ -303,7 +303,7 @@ class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInte
         global $CFG_GLPI;
         switch ($ma->getAction()) {
             case 'convert':
-                echo __('Select an itemtype: ') . ' ';
+                echo __s('Select an itemtype: ') . ' ';
                 Dropdown::showItemType($CFG_GLPI['inventory_types'], [
                     'display_emptychoice' => false,
                 ]);

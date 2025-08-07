@@ -4909,7 +4909,7 @@ JAVASCRIPT;
                     if ($d["users_id"] > 0 && $user->getFromDB($d["users_id"])) {
                         $name     = "<span class='b'>" . htmlescape($user->getName()) . "</span>";
                         $name     = sprintf(
-                            __('%1$s %2$s'),
+                            __s('%1$s %2$s'),
                             $name,
                             Html::showToolTip(
                                 $user->getInfoCard(),
@@ -4932,7 +4932,7 @@ JAVASCRIPT;
                 && count($job->groups[CommonITILActor::REQUESTER])
             ) {
                 foreach ($job->groups[CommonITILActor::REQUESTER] as $d) {
-                    echo Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+                    echo htmlescape(Dropdown::getDropdownName("glpi_groups", $d["groups_id"]));
                     echo "<br>";
                 }
             }
@@ -5029,7 +5029,7 @@ JAVASCRIPT;
             if ($item = getItemForItemtype($output["itemtype"])) {
                 if ($item->getFromDB($output["items_id"])) {
                     echo "<tr class='tab_bg_2'>";
-                    echo "<td>" . __('Assign equipment') . "</td>";
+                    echo "<td>" . __s('Assign equipment') . "</td>";
 
                     echo "<td>" . $item->getLink(['comments' => true]) . "</td>";
                     echo "</tr>";

@@ -658,23 +658,23 @@ HTML;
         // let grid-stack to autoposition item
         $autoposition = 'gs-auto-position="true"';
         $coordinates  = '';
-        if ((int) $x >= 0 && (int) $y >= 0) {
+        if ($x >= 0 && $y >= 0) {
             $autoposition = "";
             $coordinates  = "gs-x='$x' gs-y='$y'";
         }
 
         $color    = $data_option['color'] ?? "#FFFFFF";
-        $fg_color = Toolbox::getFgColor($color, 100, true);
+        $fg_color = htmlescape(Toolbox::getFgColor($color, 100, true));
 
         // add card options in data attribute
         $data_option_attr = "";
         if (count($data_option)) {
-            $data_option_attr = "data-card-options='" . json_encode($data_option, JSON_HEX_APOS) . "'";
+            $data_option_attr = "data-card-options='" . htmlescape(json_encode($data_option)) . "'";
         }
 
-        $refresh_label = __("Refresh this card");
-        $edit_label    = __("Edit this card");
-        $delete_label  = __("Delete this card");
+        $refresh_label = __s("Refresh this card");
+        $edit_label    = __s("Edit this card");
+        $delete_label  = __s("Delete this card");
 
         $gridstack_id = htmlescape($gridstack_id);
 
@@ -710,7 +710,7 @@ HTML;
         echo "<form class='no-shadow display-add-dashboard-form'>";
 
         echo "<div class='mb-3'>";
-        echo "<label for='title_$rand'>" . __("Title") . "</label>";
+        echo "<label for='title_$rand'>" . __s("Title") . "</label>";
         echo "<div>";
         echo Html::input('title', ['id' => "title_$rand"]);
         echo "</div>";
@@ -825,7 +825,7 @@ HTML;
         echo "<form class='display-filter-form'>";
 
         echo "<div class='field'>";
-        echo "<label for='dropdown_card_id$rand'>" . __("Filters") . "</label>";
+        echo "<label for='dropdown_card_id$rand'>" . __s("Filters") . "</label>";
         echo "<div>";
         Dropdown::showFromArray('filter_id', $list_filters, [
             'display_emptychoice' => true,
@@ -863,17 +863,17 @@ HTML;
          "&is_recursive=$is_recursive" .
          "&token=$token";
 
-        echo "<label>" . __("Embed in another application") . "</label><br>";
+        echo "<label>" . __s("Embed in another application") . "</label><br>";
         echo "<fieldset class='embed_block'>";
-        echo __("Direct link");
+        echo __s("Direct link");
         echo "<div class='copy_to_clipboard_wrapper'>";
         echo Html::input('direct_link', [
             'value' => $embed_url,
         ]);
         echo "</div><br>";
 
-        $iframe = "<iframe src='$embed_url' frameborder='0' width='800' height='600' allowtransparency></iframe>";
-        echo __("Iframe");
+        $iframe = "<iframe src='" . htmlescape($embed_url) . "' frameborder='0' width='800' height='600' allowtransparency></iframe>";
+        echo __s("Iframe");
         echo "<div class='copy_to_clipboard_wrapper'>";
         echo Html::input('iframe_code', [
             'value' => $iframe,
@@ -899,7 +899,7 @@ HTML;
         echo "<form class='no-shadow display-rights-form'>";
 
         echo "<label for='dropdown_rights_id$rand'>" .
-           __("Or share the dashboard to these target objects:") .
+           __s("Or share the dashboard to these target objects:") .
            "</label><br>";
 
         $values = [
@@ -913,8 +913,8 @@ HTML;
         echo "<br>";
 
         echo "<div class='d-flex align-items-center my-3'>";
-        echo __('Personal') . "&nbsp;";
-        echo Html::showToolTip(__("A personal dashboard is not visible by other administrators unless you explicitly share the dashboard")) . "&nbsp";
+        echo __s('Personal') . "&nbsp;";
+        echo Html::showToolTip(__s("A personal dashboard is not visible by other administrators unless you explicitly share the dashboard")) . "&nbsp";
         echo Dropdown::showYesNo(
             'is_private',
             (self::$all_dashboards[$this->current]['users_id'] == '0' ? '0' : '1'),
@@ -927,7 +927,7 @@ HTML;
 
         echo "<a href='#' class='btn btn-primary save_rights'>
          <i class='ti ti-device-floppy'></i>
-         <span>" . __("Save") . "</span>
+         <span>" . __s("Save") . "</span>
       </a>";
 
         Html::closeForm(true);

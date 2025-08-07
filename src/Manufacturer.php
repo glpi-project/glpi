@@ -187,7 +187,7 @@ class Manufacturer extends CommonDropdown
             return;
         }
 
-        $base->addHeader($column_name, Manufacturer::getTypeName(1), $super, $father);
+        $base->addHeader($column_name, htmlescape(Manufacturer::getTypeName(1)), $super, $father);
     }
 
 
