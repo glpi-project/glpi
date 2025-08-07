@@ -1700,12 +1700,27 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     public function showMassiveActionAddTaskForm()
     {
         $twig = TemplateRenderer::getInstance();
+
         $item = static::getItilObjectItemInstance();
         $item->getEmpty();
+        $this->getEmpty();
+
+        // TODO: it would be better to get options from RichText::getMentionOptions()
+        // here but the only uses of this method are for the massive actions
+        // where we actually have multiples parent objets and thus can't pick a
+        // single one to send to RichText::getMentionOptions().
+        // This mean user mentions won't be available in the massive actions form
+        // until a solution can be found for this.
+        $mentions_options = [
+            'enabled' => false,
+        ];
+
         $twig->display('components/massive_action/add_task.html.twig', [
             'item'                    => $item,
             'subitem'                 => $this,
+            'mention_options'         => $mentions_options,
         ]);
+
     }
 
     /**

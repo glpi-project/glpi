@@ -434,4 +434,21 @@ abstract class CommonITILTaskTest extends DbTestCase
         $this->assertTrue($my_task->canUpdateItem());
         $this->assertFalse($tech_task->canUpdateItem());
     }
+
+    public function testShowMassiveActionAddTaskForm(): void
+    {
+        // Arrange: create a task
+
+        // Act: render twig template using the showMassiveActionAddTaskForm method
+        $this->login();
+        $task_class = static::getTaskClass();
+        $task = new $task_class();
+        ob_start();
+        $task->showMassiveActionAddTaskForm();
+        $output = ob_end_clean();
+
+        // Assert: make sure the template was renderer without fatal errors
+        $this->assertNotEmpty($output);
+
+    }
 }
