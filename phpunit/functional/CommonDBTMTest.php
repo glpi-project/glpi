@@ -206,7 +206,6 @@ class CommonDBTMTest extends DbTestCase
     public static function getTableProvider()
     {
         return [
-            [\DBConnection::class, ''], // "static protected $notable = true;" case
             [\Item_Devices::class, ''], // "static protected $notable = true;" case
             [\Config::class, 'glpi_configs'],
             [Computer::class, 'glpi_computers'],
