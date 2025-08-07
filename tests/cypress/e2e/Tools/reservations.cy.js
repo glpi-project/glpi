@@ -32,14 +32,13 @@
 
 describe('Reservations', () => {
     let computer_reservationitem_id;
-    let monitor_reservationitem_id;
 
     before(() => {
         cy.createWithAPI('Computer', { name: 'Reservable computer', entities_id: 1 }).then((computers_id) => {
             cy.createWithAPI('ReservationItem', { itemtype: 'Computer', items_id: computers_id }).then(id => computer_reservationitem_id = id);
         });
         cy.createWithAPI('Monitor', { name: 'Reservable monitor', entities_id: 1 }).then((monitors_id) => {
-            cy.createWithAPI('ReservationItem', { itemtype: 'Monitor', items_id: monitors_id }).then(id => monitor_reservationitem_id = id);
+            cy.createWithAPI('ReservationItem', { itemtype: 'Monitor', items_id: monitors_id });
         });
     });
 
