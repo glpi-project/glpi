@@ -33,6 +33,7 @@
 {% set rand = rand|default(random()) %}
 {% set subitem_container_id = subitem_container_id|default('viewsubitem' ~ rand) %}
 {% set ajax_form_submit = ajax_form_submit|default(false) %}
+{% set reload_tab = reload_tab|default(false) %}
 {% set as_modal = as_modal|default(false) %}
 {% set add_new_label = add_new_label|default(__('Add')) %}
 {% set add_new_inline = add_new_inline|default(false) %}
@@ -115,6 +116,9 @@
                         submitter: submit_btn,
                     });
                     on_finish();
+                    {% if reload_tab %}
+                        window.reloadTab();
+                    {% endif %}
                 };
                 const on_error = () => {
                     $(e.target).trigger('glpi:submit:error', {

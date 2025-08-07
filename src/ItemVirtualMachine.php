@@ -288,6 +288,8 @@ class ItemVirtualMachine extends CommonDBChild
             'id' => $ID,
             'cancreate' => $canedit,
             'add_new_label' => __('Add a virtual machine'),
+            'ajax_form_submit' => true,
+            'reload_tab' => true,
         ]);
 
         $entries = [];

@@ -61,10 +61,6 @@ describe("Computer asset form", () => {
             cy.findByRole('button', {name: 'Add a virtual machine'}).click();
             cy.findByRole('textbox', { name: 'Name' }).type('Test VM');
             cy.findByRole('button', {name: 'Add'}).click();
-        });
-        cy.visit(`/front/computer.form.php?id=${computers_id}`);
-        cy.findByRole('tab', { name: /Virtualization/ }).click();
-        cy.findByRole('tabpanel').within(() => {
             cy.findAllByRole('cell').contains('Test VM').should('be.visible');
         });
     });
