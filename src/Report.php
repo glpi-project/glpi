@@ -480,7 +480,6 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
             'pages/tools/report/network_criteria.html.twig',
             [
                 'embeded' => $embeded,
-                'session' => $_SESSION,
             ]
         );
     }
