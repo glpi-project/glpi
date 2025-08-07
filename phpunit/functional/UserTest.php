@@ -2359,4 +2359,43 @@ class UserTest extends \DbTestCase
         $this->assertEquals(\Auth::LDAP, $it['authtype']);
         $this->assertEquals(2, $it['auths_id']);
     }
+
+    public static function onlyAdministatorsCanEnableDebugModeInPreferencesProvider(): iterable
+    {
+        yield [
+            'user' => 'glpi',
+            'can_toggle_debug_mode' => true,
+        ];
+        yield [
+            'user' => 'tech',
+            'can_toggle_debug_mode' => false,
+        ];
+        yield [
+            'user' => 'normal',
+            'can_toggle_debug_mode' => false,
+        ];
+        yield [
+            'user' => 'post-only',
+            'can_toggle_debug_mode' => false,
+        ];
+    }
+
+    #[DataProvider('onlyAdministatorsCanEnableDebugModeInPreferencesProvider')]
+    public function testOnlyAdministatorsCanEnableDebugModeInPreferences(
+        string $user,
+        bool $can_toggle_debug_mode
+    ): void {
+        // Act: login as user and edit user preferences
+        $this->login($user);
+        (new User())->update([
+            'id' => \Session::getLoginUserID(),
+            'use_mode' => \Session::DEBUG_MODE,
+        ]);
+
+        // Assert: check if debug mode was enabled
+        $this->assertEquals(
+            $can_toggle_debug_mode,
+            $_SESSION['glpi_use_mode'] === \Session::DEBUG_MODE
+        );
+    }
 }

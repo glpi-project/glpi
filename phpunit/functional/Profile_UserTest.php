@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\DBAL\QueryExpression;
 
 /**
  * Tests for Profile_User class
@@ -99,7 +100,7 @@ class Profile_UserTest extends DbTestCase
         $entity2  = getItemByTypeName(\Entity::class, '_test_child_1');
 
         // Create items
-        $DB->delete(\Log::getTable(), [1]);
+        $DB->delete(\Log::getTable(), [new QueryExpression('true')]);
 
         $input1 = [
             'users_id'     => $user->getId(),
@@ -264,7 +265,7 @@ class Profile_UserTest extends DbTestCase
         }
 
         // Delete items
-        $DB->delete(\Log::getTable(), [1]);
+        $DB->delete(\Log::getTable(), [new QueryExpression('true')]);
 
         $profile_user = new \Profile_User();
         $this->assertTrue($profile_user->deleteByCriteria($input1));

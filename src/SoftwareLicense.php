@@ -272,7 +272,8 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
         TemplateRenderer::getInstance()->display('pages/management/softwarelicense.html.twig', [
             'item'   => $this,
             'params' => $options,
-            'licences_assigned' => Item_SoftwareLicense::countForLicense($this->getID()),
+            'licences_assigned' => Item_SoftwareLicense::countForLicense($this->getID())
+                + SoftwareLicense_User::countForLicense($this->getID()),
         ]);
 
         return true;
@@ -437,7 +438,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
             'name'               => __('Father'),
             'datatype'           => 'itemlink',
             'forcegroupby'       => true,
-            'joinparams'        => ['condition' => [new QueryExpression("1=1")]],
+            'joinparams'        => ['condition' => [new QueryExpression('true')]], // Add virtual condition to relink table
         ];
 
         $tab[] = [
@@ -1163,7 +1164,7 @@ TWIG, $twig_params);
                 'extraparams' => [
                     'options' => [
                         'glpi_softwareversions.name' => [
-                            'condition' => $DB::quoteName("glpi_softwareversions.softwares_id") . " = $softwares_id",
+                            'condition' => ["glpi_softwareversions.softwares_id" => $softwares_id],
                         ],
                         'glpi_softwarelicenses.name' => ['itemlink_as_string' => true],
                     ],

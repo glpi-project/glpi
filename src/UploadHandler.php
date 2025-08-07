@@ -1209,12 +1209,18 @@ class UploadHandler
         return substr($this->options['param_name'], 0, -1);
     }
 
+    /**
+     * @psalm-taint-escape file (`$this->basename()` forces path safeness)
+     */
     protected function get_file_name_param()
     {
         $name = $this->get_singular_param_name();
         return $this->basename(stripslashes($this->get_query_param($name)));
     }
 
+    /**
+     * @psalm-taint-escape file (`$this->basename()` forces path safeness)
+     */
     protected function get_file_names_params()
     {
         $params = $this->get_query_param($this->options['param_name']);
@@ -1313,7 +1319,7 @@ class UploadHandler
             $json = json_encode($content);
             $redirect = stripslashes($this->get_post_param('redirect'));
             if ($redirect && preg_match($this->options['redirect_allow_target'], $redirect)) {
-                return $this->header('Location: ' . sprintf($redirect, rawurlencode($json)));
+                return $this->header('Location: ' . rawurlencode(sprintf($redirect, $json)));
             }
             $this->head();
             if ($this->get_server_var('HTTP_CONTENT_RANGE')) {

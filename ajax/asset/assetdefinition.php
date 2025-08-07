@@ -58,6 +58,7 @@ if ($_REQUEST['action'] === 'get_all_fields') {
     /**
      * Safe JSON response.
      * @psalm-taint-escape has_quotes
+     * @psalm-taint-escape html
      */
     $response = json_encode([
         'results' => $field_results,

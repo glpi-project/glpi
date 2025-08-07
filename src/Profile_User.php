@@ -1115,9 +1115,9 @@ TWIG, $avatar_params) . $username;
             ($ma->getAction() == 'add')
             && ($peer_number == 2)
         ) {
-            echo "<br><br>" . sprintf(__s('%1$s: %2$s'), Entity::getTypeName(1), '');
+            echo "<br><br>" . htmlescape(sprintf(__('%1$s: %2$s'), Entity::getTypeName(1), ''));
             Entity::dropdown(['entity' => $_SESSION['glpiactiveentities']]);
-            echo "<br><br>" . sprintf(__s('%1$s: %2$s'), __('Recursive'), '');
+            echo "<br><br>" . htmlescape(sprintf(__('%1$s: %2$s'), __('Recursive'), ''));
             Html::showCheckbox(['name' => 'is_recursive']);
         }
     }

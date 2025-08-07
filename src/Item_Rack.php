@@ -129,7 +129,7 @@ class Item_Rack extends CommonDBRelation
         $rand = mt_rand();
         $canedit = $rack->canEdit($rack->getID());
 
-        echo "<h2>" . __("Racked items") . "</h2>";
+        echo "<h2>" . __s("Racked items") . "</h2>";
 
         $entries = [];
         foreach ($items as $row) {
@@ -329,7 +329,7 @@ class Item_Rack extends CommonDBRelation
         echo '</div>
          </div>
          <div class="racks_col">
-            <h2>' . __('Rear') . '</h2>';
+            <h2>' . __s('Rear') . '</h2>';
         echo '<div class="rack_side rack_rear">';
         PDU_Rack::showVizForRack($rack, PDU_Rack::SIDE_TOP);
         PDU_Rack::showVizForRack($rack, PDU_Rack::SIDE_LEFT);
@@ -564,7 +564,7 @@ JAVASCRIPT;
                     'value' => 'PDU',
                 ]
             );
-            echo PDU::getTypeName(1);
+            echo htmlescape(PDU::getTypeName(1));
         } else {
             $types = array_combine($CFG_GLPI['rackable_types'], $CFG_GLPI['rackable_types']);
             foreach ($types as $type => &$text) {

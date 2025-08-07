@@ -151,11 +151,11 @@ class DBmysqlIterator implements SeekableIterator, Countable
         $orderby  = null;
         $limit    = 0;
         $start    = 0;
-        $where    = '';
+        $where    = [];
         $count    = '';
         $join     = [];
         $groupby  = '';
-        $having   = '';
+        $having   = [];
         if (count($criteria)) {
             foreach ($criteria as $key => $val) {
                 switch ((string) $key) {
@@ -507,13 +507,34 @@ class DBmysqlIterator implements SeekableIterator, Countable
      */
     public function analyseCrit($crit, $bool = "AND")
     {
+        if (is_string($crit)) {
+            Toolbox::deprecated(
+                sprintf(
+                    'Passing SQL request criteria as strings is deprecated for security reasons. Criteria was `` %s ``.',
+                    $crit
+                ),
+                version: '11.1'
+            );
+
+            /**
+             * Delegate the safeness check to the caller.
+             * There is no such usage in GLPI, it is the plugin developer responsibility to switch to safer criteria specs.
+             * @psalm-taint-escape sql
+             */
+            $safe_crit = $crit;
+
+            return $safe_crit;
+        }
 
         if (!is_array($crit)) {
-            //if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-            //  trigger_error("Deprecated usage of SQL in DB/request (criteria)", E_USER_DEPRECATED);
-            //}
-            return $crit;
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Invalid criteria type. Expected `array`, `%s` received.',
+                    get_debug_type($crit)
+                )
+            );
         }
+
         $ret = "";
         foreach ($crit as $name => $value) {
             if (!empty($ret)) {
@@ -525,6 +546,15 @@ class DBmysqlIterator implements SeekableIterator, Countable
                     $ret .= $value->getValue();
                 } elseif ($value instanceof QuerySubQuery) {
                     $ret .= $value->getQuery();
+                } elseif (in_array($value, [1, 0, '1', '0', true, false], true)) {
+                    Toolbox::deprecated(
+                        sprintf(
+                            'Passing SQL request criteria as booleans is deprecated. Please use `new \Glpi\DBAL\QueryExpression("%s");`.',
+                            $value ? 'true' : 'false'
+                        ),
+                        version: '11.1'
+                    );
+                    $ret .= $value ? 'true' : 'false';
                 } else {
                     // No Key case => recurse.
                     $ret .= "(" . $this->analyseCrit($value) . ")";
@@ -568,7 +598,12 @@ class DBmysqlIterator implements SeekableIterator, Countable
         } else {
             if (is_array($value)) {
                 if (count($value) == 2 && isset($value[0]) && $this->isOperator($value[0])) {
+                    /**
+                     * Is a safe operator.
+                     * @psalm-taint-escape sql
+                     */
                     $comparison = $value[0];
+
                     $criterion_value = $value[1];
                 } else {
                     if (!count($value)) {
@@ -615,10 +650,11 @@ class DBmysqlIterator implements SeekableIterator, Countable
     {
         $crit_value = null;
         if (is_array($value)) {
-            foreach ($value as $k => $v) {
-                $value[$k] = DBmysql::quoteValue($v);
+            $values = [];
+            foreach ($value as $v) {
+                $values[] = DBmysql::quoteValue($v);
             }
-            $crit_value = '(' . implode(', ', $value) . ')';
+            $crit_value = '(' . implode(', ', $values) . ')';
         } else {
             $crit_value = DBmysql::quoteValue($value);
         }
@@ -695,11 +731,13 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 $t2 = $keys[1];
                 $f2 = $values[$t2];
                 if ($f2 instanceof QuerySubQuery || $f2 instanceof QueryExpression) {
-                    return (is_numeric($t1) ? DBmysql::quoteName($f1) : DBmysql::quoteName($t1) . '.' . DBmysql::quoteName($f1)) . ' = ' .
-                    $f2;
+                    return (is_numeric($t1) ? DBmysql::quoteName($f1) : DBmysql::quoteName($t1) . '.' . DBmysql::quoteName($f1))
+                        . ' = '
+                        . $f2->getValue();
                 } else {
-                    return (is_numeric($t1) ? DBmysql::quoteName($f1) : DBmysql::quoteName($t1) . '.' . DBmysql::quoteName($f1)) . ' = ' .
-                    (is_numeric($t2) ? DBmysql::quoteName($f2) : DBmysql::quoteName($t2) . '.' . DBmysql::quoteName($f2));
+                    return (is_numeric($t1) ? DBmysql::quoteName($f1) : DBmysql::quoteName($t1) . '.' . DBmysql::quoteName($f1))
+                        . ' = '
+                        . (is_numeric($t2) ? DBmysql::quoteName($f2) : DBmysql::quoteName($t2) . '.' . DBmysql::quoteName($f2));
                 }
             } elseif (count($values) == 3) {
                 $real_values = [];

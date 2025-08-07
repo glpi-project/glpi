@@ -1,4 +1,6 @@
-/*!
+<?php
+
+/**
  * ---------------------------------------------------------------------
  *
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -6,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -31,33 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
-#glpi-form-translations-languages {
-    tr {
-        &:has(input.form-control:focus) {
-            box-shadow: inset 2px 0 0 var(--tblr-primary);
-        }
+namespace Glpi\Exception;
 
-        td {
-            vertical-align: middle;
-            padding: 0.5rem 0.75rem;
-        }
+use Exception;
 
-        td:not(:first-child) {
-            width: 35%;
-        }
-    }
-
-    // Apply table header styles to rows containing a span with the data-glpi-form-translations-subtitle-row attribute
-    td:has(> span[data-glpi-form-translations-subtitle-row]) {
-        color: var(--tblr-secondary);
-        background: var(--tblr-bg-surface-tertiary);
-        font-size: 0.625rem;
-        font-weight: var(--tblr-font-weight-bold);
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        line-height: 1rem;
-        padding-top: 0.5rem;
-        padding-bottom: 0.5rem;
-        white-space: nowrap;
-    }
-}
+final class EmptyCurlContentException extends Exception {}

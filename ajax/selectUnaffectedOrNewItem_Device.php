@@ -37,8 +37,10 @@
  * @since 0.85
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Exception\Http\BadRequestHttpException;
 
 /** @var DBmysql $DB */
 global $DB;
@@ -54,17 +56,30 @@ if (
     && $_POST['itemtype'] && class_exists($_POST['itemtype'])
 ) {
     $devicetype = $_POST['itemtype'];
+    if (!is_subclass_of($devicetype, CommonDevice::class)) {
+        throw new BadRequestHttpException();
+    }
     $linktype   = $devicetype::getItem_DeviceType();
+    $specificities = $linktype::getSpecificities();
+    $specificities = array_filter(
+        $specificities,
+        static fn($spec) => ($spec['datatype'] ?? '') !== 'dropdown' && (!isset($spec['nodisplay']) || !$spec['nodisplay'])
+    );
 
-    if (count($linktype::getSpecificities())) {
-        $keys = array_keys($linktype::getSpecificities());
+    if (count($specificities)) {
+        $keys = array_keys($specificities);
         $name_field = QueryFunction::concat_ws(
             separator: new QueryExpression($DB::quoteValue(' - ')),
-            params: $keys,
+            params: array_map(static fn($k) => QueryFunction::ifnull($k, new QueryExpression($DB::quoteValue(''))), $keys),
             alias: 'name'
         );
+        $label_pattern = implode(' - ', array_map(
+            static fn($key) => $specificities[$key]['short name'] ?? $key,
+            $keys
+        ));
     } else {
         $name_field = 'id AS name';
+        $label_pattern = __('ID');
     }
     $result = $DB->request(
         [
@@ -76,23 +91,13 @@ if (
             ],
         ]
     );
-    echo "<table class='w-100'><tr><td>" . __s('Choose an existing device') . "</td><td rowspan='2'>" .
-        __s('and/or') . "</td><td>" . __s('Add new devices') . '</td></tr>';
-    echo "<tr><td>";
-    if (count($result) === 0) {
-        echo __s('No unaffected device!');
-    } else {
-        $devices = [];
-        foreach ($result as $row) {
-            $name = $row['name'];
-            if (empty($name)) {
-                $name = $row['id'];
-            }
-            $devices[$row['id']] = $name;
-        }
-        Dropdown::showFromArray($linktype::getForeignKeyField(), $devices, ['multiple' => true]);
+    $devices = [];
+    foreach ($result as $row) {
+        $devices[$row['id']] = $row['name'] ?: $row['id'];
     }
-    echo "</td><td>";
-    Dropdown::showNumber('new_devices', ['min'   => 0, 'max'   => 10]);
-    echo "</td></tr></table>";
+    TemplateRenderer::getInstance()->display('components/assets/link_existing_or_new_item_device.html.twig', [
+        'devices' => $devices,
+        'linktype' => $linktype,
+        'label_pattern' => $label_pattern,
+    ]);
 }

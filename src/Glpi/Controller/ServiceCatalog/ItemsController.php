@@ -67,11 +67,9 @@ final class ItemsController extends AbstractController
     public function __invoke(Request $request): Response
     {
         // Read category
-        $category = null;
         $category_id = $request->query->getInt('category', 0);
         if ($category_id > 0) {
-            $category = Category::getById($category_id);
-            if (!$category) {
+            if (Category::getById($category_id) === false) {
                 throw new NotFoundHttpException();
             }
         }
@@ -100,7 +98,7 @@ final class ItemsController extends AbstractController
         $item_request = new ItemRequest(
             access_parameters: $parameters,
             filter: $filter,
-            category: $category,
+            category_id: $category_id,
             page: $page,
             items_per_page: $items_per_page,
             sort_strategy: $sort_strategy

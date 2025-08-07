@@ -158,6 +158,14 @@ class SNMPCredential extends CommonDBTM
                 return 'MD5';
             case 2:
                 return 'SHA';
+            case 3:
+                return 'SHA224';
+            case 4:
+                return 'SHA256';
+            case 5:
+                return 'SHA384';
+            case 6:
+                return 'SHA512';
             default:
                 return '';
         }
@@ -175,8 +183,12 @@ class SNMPCredential extends CommonDBTM
                 return 'DES';
             case 2:
                 return 'AES';
-            case 5:
+            case 3:
                 return '3DES';
+            case 4:
+                return 'AES192C';
+            case 5:
+                return 'AES256C';
             default:
                 return '';
         }

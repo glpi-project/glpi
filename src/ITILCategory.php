@@ -476,8 +476,8 @@ class ITILCategory extends CommonTreeDropdown
         echo "<table class='tab_cadre_fixe'>";
         echo "<tr><th colspan='5'>";
         $itilcategory_type = $itilcategory->getType();
-        echo "<a href='" . $itilcategory_type::getSearchURL() . "'>";
-        echo self::getTypeName(count($iterator));
+        echo "<a href='" . htmlescape($itilcategory_type::getSearchURL()) . "'>";
+        echo htmlescape(self::getTypeName(count($iterator)));
         echo "</a>";
         echo "</th></tr>";
         if (count($iterator)) {

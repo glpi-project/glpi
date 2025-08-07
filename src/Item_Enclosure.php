@@ -47,7 +47,7 @@ class Item_Enclosure extends CommonDBRelation
 
     public static function getTypeName($nb = 0)
     {
-        return _n('Item', 'Item', $nb);
+        return _n('Enclosure item', 'Enclosure items', $nb);
     }
 
 

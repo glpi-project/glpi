@@ -195,4 +195,58 @@ class FormTranslationTest extends \DbTestCase
 
         return $form;
     }
+
+    public function testTranslationsCascadeDeleteWhenDeletingTranslatableElements()
+    {
+        $form = $this->createFormWithTranslations();
+
+        // Get all translatable handlers before deletion
+        $handlers = $form->listTranslationsHandlers();
+        $translation_items = [];
+
+        // Collect all translated items and their translations
+        array_walk_recursive(
+            $handlers,
+            function ($handler) use (&$translation_items) {
+                $translations = FormTranslation::getTranslationsForItem($handler->getItem());
+                if (!empty($translations)) {
+                    $translation_items[] = $handler->getItem();
+                }
+            }
+        );
+
+        // Verify that we have translations before deletion
+        $this->assertNotEmpty($translation_items, 'No translations found to test cascade deletion');
+
+        // Delete the form
+        $success = $form->delete(['id' => $form->getID()], true); // Force purge
+        $this->assertTrue($success, "Failed to delete form with ID " . $form->getID());
+
+        // Verify that all translations have been cascade deleted
+        foreach ($translation_items as $item) {
+            $item_type = $item->getType();
+            $item_id = $item->getID();
+
+            // Verify that all translations for this item have been cascade deleted
+            $remaining_translations = FormTranslation::getTranslationsForItem($item);
+            $this->assertEmpty(
+                $remaining_translations,
+                "Translations were not cascade deleted for {$item_type} {$item_id}. Found " . count($remaining_translations) . " remaining translations."
+            );
+
+            // Also verify by direct database query
+            $translation_count = countElementsInTable(
+                FormTranslation::getTable(),
+                [
+                    FormTranslation::$itemtype => $item_type,
+                    FormTranslation::$items_id => $item_id,
+                ]
+            );
+            $this->assertEquals(
+                0,
+                $translation_count,
+                "Database still contains {$translation_count} translations for deleted {$item_type} {$item_id}"
+            );
+        }
+    }
 }

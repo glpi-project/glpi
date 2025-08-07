@@ -385,7 +385,7 @@ class Database extends CommonDBChild
     public static function showForInstance(DatabaseInstance $instance)
     {
 
-        $ID = $instance->fields['id'];
+        $ID = $instance->getID();
 
         if (!$instance->getFromDB($ID) || !$instance->can($ID, READ)) {
             return false;
@@ -428,7 +428,7 @@ class Database extends CommonDBChild
             echo "<tr class='noHover'><th colspan='10'>" . htmlescape(self::getTypeName(Session::getPluralNumber())) . "</th></tr>";
 
             $header = "<tr><th>" . __s('Name') . "</th>";
-            $header .= "<th>" . sprintf(__('%1$s (%2$s)'), __s('Size'), __s('Mio')) . "</th>";
+            $header .= "<th>" . sprintf(__s('%1$s (%2$s)'), __s('Size'), __s('Mio')) . "</th>";
             $header .= "<th>" . __s('Is active') . "</th>";
             $header .= "<th>" . __s('Has backup') . "</th>";
             $header .= "<th>" . __s('Is dynamic') . "</th>";
@@ -440,10 +440,10 @@ class Database extends CommonDBChild
                 $db->getFromDB($row['id']);
                 echo "<tr class='" . ((isset($row['is_deleted']) && $row['is_deleted']) ? "tab_bg_2_2'" : "tab_bg_2") . "'>";
                 echo "<td>" . $db->getLink() . "</td>";
-                echo "<td>" . $row['size'] . "</td>";
-                echo "<td>" . Dropdown::getYesNo($db->fields['is_active']) . "</td>";
-                echo "<td>" . Dropdown::getYesNo($db->fields['is_onbackup']) . "</td>";
-                echo "<td>" . Dropdown::getYesNo($db->fields['is_dynamic']) . "</td>";
+                echo "<td>" . htmlescape($row['size']) . "</td>";
+                echo "<td>" . htmlescape(Dropdown::getYesNo($db->fields['is_active'])) . "</td>";
+                echo "<td>" . htmlescape(Dropdown::getYesNo($db->fields['is_onbackup'])) . "</td>";
+                echo "<td>" . htmlescape(Dropdown::getYesNo($db->fields['is_dynamic'])) . "</td>";
                 echo "</tr>";
                 Session::addToNavigateListItems('DatabaseInstance', $row['id']);
             }

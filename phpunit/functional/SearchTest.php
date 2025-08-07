@@ -46,6 +46,7 @@ use Document_Item;
 use Entity;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDocumentsCapacity;
+use Glpi\DBAL\QueryExpression;
 use Group_User;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
@@ -1890,7 +1891,7 @@ class SearchTest extends DbTestCase
         $user_2 = getItemByTypeName('User', 'glpi')->getID();
         $group_1 = getItemByTypeName('Group', '_test_group_1')->getID();
 
-        $this->assertTrue($DB->delete(Change::getTable(), [1]));
+        $this->assertTrue($DB->delete(Change::getTable(), [new QueryExpression('true')]));
 
         // Creates Changes with different requesters
         $this->createItems('Change', [
@@ -3260,8 +3261,8 @@ class SearchTest extends DbTestCase
             'itemtype'          => \AuthLDAP::class,
             'search_option'     => 4, // port
             'value'             => 'test',
-            'expected_and'      => "(1=0)",
-            'expected_and_not'  => "(1=0)",
+            'expected_and'      => "false",
+            'expected_and_not'  => "false",
         ];
         yield [
             'itemtype'          => \AuthLDAP::class,
@@ -3276,8 +3277,8 @@ class SearchTest extends DbTestCase
             'itemtype'          => \AuthLDAP::class,
             'search_option'     => 32, // timeout
             'value'             => 'test',
-            'expected_and'      => "(1=0)",
-            'expected_and_not'  => "(1=0)",
+            'expected_and'      => "false",
+            'expected_and_not'  => "false",
         ];
         yield [
             'itemtype'          => \AuthLDAP::class,
@@ -3308,8 +3309,8 @@ class SearchTest extends DbTestCase
             'itemtype'          => \Budget::class,
             'search_option'     => 7, // value
             'value'             => 'test',
-            'expected_and'      => "(1=0)",
-            'expected_and_not'  => "(1=0)",
+            'expected_and'      => "false",
+            'expected_and_not'  => "false",
         ];
         yield [
             'itemtype'          => \Budget::class,
@@ -3395,8 +3396,8 @@ class SearchTest extends DbTestCase
             'itemtype'          => \CronTask::class,
             'search_option'     => 6, // frequency
             'value'             => 'test',
-            'expected_and'      => "(1=0)",
-            'expected_and_not'  => "(1=0)",
+            'expected_and'      => "false",
+            'expected_and_not'  => "false",
         ];
         yield [
             'itemtype'          => \CronTask::class,
@@ -3427,8 +3428,8 @@ class SearchTest extends DbTestCase
             'itemtype'          => Computer::class,
             'search_option'     => 9, // last_inventory_update
             'value'             => 'test',
-            'expected_and'      => "(1=0)",
-            'expected_and_not'  => "(1=0)",
+            'expected_and'      => "false",
+            'expected_and_not'  => "false",
         ];
         yield [
             'itemtype'          => Computer::class,
@@ -3459,8 +3460,8 @@ class SearchTest extends DbTestCase
             'itemtype'          => \Budget::class,
             'search_option'     => 5, // begin_date
             'value'             => 'test',
-            'expected_and'      => "(1=0)",
-            'expected_and_not'  => "(1=0)",
+            'expected_and'      => "false",
+            'expected_and_not'  => "false",
         ];
         yield [
             'itemtype'          => \Budget::class,
@@ -3475,8 +3476,8 @@ class SearchTest extends DbTestCase
             'itemtype'          => \Contract::class,
             'search_option'     => 20, // end_date
             'value'             => 'test',
-            'expected_and'      => "(1=0)",
-            'expected_and_not'  => "(1=0)",
+            'expected_and'      => "false",
+            'expected_and_not'  => "false",
         ];
         yield [
             'itemtype'          => \Contract::class,
@@ -3525,8 +3526,8 @@ class SearchTest extends DbTestCase
             'itemtype'          => \Cable::class,
             'search_option'     => 15, // color
             'value'             => 'test',
-            'expected_and'      => "(1=0)",
-            'expected_and_not'  => "(1=0)",
+            'expected_and'      => "false",
+            'expected_and_not'  => "false",
         ];
         yield [
             'itemtype'          => \Cable::class,
@@ -4154,8 +4155,8 @@ class SearchTest extends DbTestCase
                     'itemtype'          => \Cable::class,
                     'search_option'     => 15, // color
                     'value'             => $searched_value,
-                    'expected_and'      => "(1=0)", // invalid pattern
-                    'expected_and_not'  => "(1=0)", // invalid pattern
+                    'expected_and'      => "false", // invalid pattern
+                    'expected_and_not'  => "false", // invalid pattern
                 ];
 
                 // datatype=language

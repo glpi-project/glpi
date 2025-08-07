@@ -486,7 +486,7 @@ class CronTask extends CommonDBTM
             $WHERE[] = [
                 'OR' => [
                     'lastrun'   => null,
-                    QueryFunction::unixTimestamp('lastrun') . ' + ' . $DB::quoteName('frequency') . ' <= ' . QueryFunction::unixTimestamp(),
+                    new QueryExpression(QueryFunction::unixTimestamp('lastrun') . ' + ' . $DB::quoteName('frequency') . ' <= ' . QueryFunction::unixTimestamp()),
                 ],
             ];
         }

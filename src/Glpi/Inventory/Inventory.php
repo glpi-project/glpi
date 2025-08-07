@@ -924,7 +924,14 @@ class Inventory
         }
 
         if (isCommandLine() && !defined('TU_USER')) {
-            echo $output . "\n";
+            /**
+             * Safe CLI context.
+             * @psalm-taint-escape html
+             * @psalm-taint-escape has_quotes
+             */
+            $out = $output . PHP_EOL;
+
+            echo $out;
         } else {
             Toolbox::logInFile(
                 "bench_inventory",

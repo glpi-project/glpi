@@ -34,64 +34,54 @@
 
 namespace Glpi\Controller\Form\Translation;
 
-use Dropdown;
-use Glpi\Controller\AbstractController;
-use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Controller\Translation\AbstractTranslationController;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
 use Glpi\Http\RedirectResponse;
+use Glpi\ItemTranslation\ItemTranslation;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class DeleteFormTranslationController extends AbstractController
+final class DeleteFormTranslationController extends AbstractTranslationController
 {
+    private Form $form;
+
     #[Route("/Form/Translation/{form_id}/{language}/Delete", name: "glpi_delete_form_translation", methods: "POST")]
     public function __invoke(Request $request, int $form_id, string $language): Response
     {
         // Retrieve the form from the database
-        $form = new Form();
-        if (!$form->getFromDB($form_id)) {
+        $this->form = new Form();
+        if (!$this->form->getFromDB($form_id)) {
             throw new NotFoundHttpException('Form not found');
         }
 
         // Validate the language code
-        if (!\array_key_exists($language, Dropdown::getLanguages())) {
-            throw new BadRequestHttpException('Invalid language code');
-        }
+        $this->validateLanguage($language);
 
-        $this->processDeletions($form, $language);
+        $this->processDeletions($language);
 
-        return new RedirectResponse($form->getLinkURL());
+        return new RedirectResponse($this->getRedirectUrl());
     }
 
-    private function processDeletions(Form $form, string $language): void
+    protected function getTranslationClass(): ItemTranslation
     {
-        $form_translation = new FormTranslation();
-        $handlers_with_sections = $form->listTranslationsHandlers();
-        foreach ($handlers_with_sections as $handlers) {
-            foreach ($handlers as $handler) {
-                $input = [
-                    'itemtype' => $handler->getItem()->getType(),
-                    'items_id' => $handler->getItem()->getID(),
-                    'key'      => $handler->getKey(),
-                    'language' => $language,
-                ];
+        return new FormTranslation();
+    }
 
-                if ($form_translation->getFromDBByCrit($input)) {
-                    $input['id'] = $form_translation->getID();
+    protected function getRedirectUrl(?string $language = null): string
+    {
+        return $this->form->getLinkURL();
+    }
 
-                    // Right check
-                    if (!$form_translation->can($form_translation->getID(), PURGE, $input)) {
-                        throw new AccessDeniedHttpException();
-                    }
+    protected function getTranslationHandlers(): array
+    {
+        return $this->form->listTranslationsHandlers();
+    }
 
-                    // Delete the form translation
-                    $form_translation->delete($input + ['purge' => true]);
-                }
-            }
-        }
+    protected function getContextTranslations(?string $language = null): array
+    {
+        return FormTranslation::getTranslationsForItem($this->form);
     }
 }

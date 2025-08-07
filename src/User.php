@@ -1144,7 +1144,13 @@ class User extends CommonDBTM implements TreeBrowseInterface
                             $password_errors = [__('An error occurred during password update')];
                         }
                         if (PHP_SAPI == 'cli') {
-                            echo implode("\n", $password_errors) . "\n";
+                            /**
+                             * Safe CLI context.
+                             * @psalm-taint-escape html
+                             * @psalm-taint-escape has_quotes
+                             */
+                            $output = implode(PHP_EOL, $password_errors) . PHP_EOL;
+                            echo $output;
                         } else {
                             Session::addMessagesAfterRedirect(
                                 array_map('htmlescape', $password_errors),
@@ -1302,6 +1308,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             if (
                 isset($input['use_mode'])
                 && ($_SESSION['glpi_use_mode'] !=  $input['use_mode'])
+                && Config::canUpdate()
             ) {
                 $_SESSION['glpi_use_mode'] = $input['use_mode'];
                 unset($_SESSION['glpimenu']); // Force menu regeneration
@@ -2887,6 +2894,7 @@ HTML;
 
         $anonymize_config = Entity::getAnonymizeConfig();
         TemplateRenderer::getInstance()->display('pages/admin/user/user.html.twig', [
+            'is_administrator' => Config::canUpdate(),
             'item' => $this,
             'is_preference_form' => true,
             'timezones' => $DB->getTimezones(),
@@ -3068,7 +3076,7 @@ HTML;
                 return true;
             case 'disable_2fa':
                 echo "<span id='show_massiveaction_field'>";
-                echo __('If 2FA is mandatory for this user, they will be required to set it back up the next time they log in.');
+                echo __s('If 2FA is mandatory for this user, they will be required to set it back up the next time they log in.');
                 echo "<br><br>";
                 echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                 echo "</span>";
@@ -4234,6 +4242,8 @@ HTML;
             }
         }
 
+        $rand = (int) $p['rand'];
+
         if ($p['multiple']) {
             $p['display_emptychoice'] = false;
             $p['values'] = $p['value'] ?? [];
@@ -4317,7 +4327,7 @@ HTML;
         }
 
 
-        $field_id = Html::cleanId("dropdown_" . $p['name'] . $p['rand']);
+        $field_id = Html::cleanId("dropdown_" . $p['name'] . $rand);
         $param    = [
             'init'                => $p['init'],
             'multiple'            => $p['multiple'],
@@ -4369,8 +4379,8 @@ HTML;
         // Display comment
         $icons = "";
         if ($p['comments']) {
-            $comment_id = Html::cleanId("comment_" . $p['name'] . $p['rand']);
-            $link_id = Html::cleanId("comment_link_" . $p["name"] . $p['rand']);
+            $comment_id = Html::cleanId("comment_" . $p['name'] . $rand);
+            $link_id = Html::cleanId("comment_link_" . $p["name"] . $rand);
             if (!$view_users) {
                 $tooltip_url = '';
             } elseif ($tooltip_url === '') {
@@ -4419,7 +4429,7 @@ HTML;
         ) {
             $icons .= '<div class="btn btn-outline-secondary">';
             $icons .= Ajax::createIframeModalWindow(
-                'userimport' . $p['rand'],
+                'userimport' . $rand,
                 $CFG_GLPI["root_doc"] .
                                                       "/front/ldap.import.php?entity=" .
                                                       $_SESSION['glpiactive_entity'],
@@ -4428,7 +4438,7 @@ HTML;
                 ]
             );
             $icons .= "<span title=\"" . __s('Import a user') . "\"" .
-            " data-bs-toggle='modal' data-bs-target='#userimport{$p['rand']}'>
+            " data-bs-toggle='modal' data-bs-target='#userimport{$rand}'>
             <i class='ti ti-plus'></i>
             <span class='sr-only'>" . __s('Import a user') . "</span>
          </span>";
@@ -6298,7 +6308,7 @@ HTML;
         echo self::getPictureForUser($ID);
 
         echo Html::file(['name' => 'picture', 'display' => false, 'onlyimages' => true]);
-        echo "<input type='checkbox' name='_blank_picture'>&nbsp;" . __('Clear');
+        echo "<input type='checkbox' name='_blank_picture'>&nbsp;" . __s('Clear');
         echo "</td>";
         echo "</tr>";
 

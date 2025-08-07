@@ -87,7 +87,7 @@ class DeviceGeneric extends CommonDevice
         switch ($itemtype) {
             case 'Computer':
                 Manufacturer::getHTMLTableHeader(self::class, $base, $super, $father, $options);
-                $base->addHeader('devicegenerictypes_id', _n('Type', 'Types', 1), $super, $father);
+                $base->addHeader('devicegenerictypes_id', _sn('Type', 'Types', 1), $super, $father);
                 break;
         }
     }

@@ -2495,14 +2495,20 @@ JS
                     break;
 
                 case "dropdown_urgency":
-                    CommonITILObject::dropdownUrgency(['name'  => $name,
+                    if (!$this instanceof RuleCommonITILObject) {
+                        throw new RuntimeException();
+                    }
+                    $this->getTargetItilType()::dropdownUrgency(['name'  => $name,
                         'value' => $value,
                     ]);
                     $display = true;
                     break;
 
                 case "dropdown_impact":
-                    CommonITILObject::dropdownImpact(['name'  => $name,
+                    if (!$this instanceof RuleCommonITILObject) {
+                        throw new RuntimeException();
+                    }
+                    $this->getTargetItilType()::dropdownImpact(['name'  => $name,
                         'value' => $value,
                     ]);
                     $display = true;

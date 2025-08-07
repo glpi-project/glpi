@@ -757,7 +757,7 @@ class FormMigration extends AbstractPluginMigration
                     ],
                 ]),
                 'GROUPBY' => ['forms_sections_id', 'vertical_rank'],
-                'HAVING'  => ['COUNT(*) = 1'],
+                'HAVING'  => [new QueryExpression('COUNT(*) = 1')],
             ]);
 
             // If no unique blocks are found, move to the next table

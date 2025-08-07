@@ -1,0 +1,133 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<section aria-label="{{ _n('Helpdesk translation', 'Helpdesk translations', get_plural_number()) }}">
+    <div class="mb-2">
+        <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#addLanguageModal"
+        >
+            <i class="ti ti-plus me-1"></i>
+            {{ __('Add language') }}
+        </button>
+    </div>
+
+    <div class="card rounded">
+        {% include "components/datatable.html.twig" with {
+            'datatable_id': 'glpi-helpdesk-translations-languages',
+            'container_class': 'rounded',
+            'columns': {
+                'language': __('Language'),
+                'translated': __('Translated'),
+                'translations_to_do': __('Translations to do'),
+                'translations_to_review': __('Obsolete translations')
+            },
+            'formatters': {
+                'language': 'raw_html',
+                'translated': 'progress'
+            },
+            'entries': translations|map(translation => {
+                'language': include('pages/admin/helpdesk_home_translation.html.twig', {
+                    'item'                : item,
+                    'can_update'          : true,
+                    'helpdesk_translation': translation,
+                }),
+                'translated': translation.getTranslatedPercentage(),
+                'translations_to_do': translation.getTranslationsToDo(),
+                'translations_to_review': translation.getTranslationsToReview()
+            }),
+            'total_number': 1,
+            'nofilter': true,
+        } only %}
+    </div>
+
+    {# Modal for adding languages #}
+    <div class="modal fade" id="addLanguageModal" tabindex="-1" aria-labelledby="addLanguageModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form
+                    action="{{ path('/Helpdesk/Translation/Add') }}"
+                    method="POST"
+                    data-glpi-helpdesk-translations-add-language-container=""
+                >
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addLanguageModalLabel">{{ __('Add language') }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                        {{ fields.dropdownArrayField(
+                            'language',
+                            __('Select language to translate'),
+                            available_languages,
+                            '',
+                            {
+                                'display_emptychoice': true,
+                                'emptylabel'         : __('Select language to translate'),
+                                'aria_label'         : __('Select language to translate'),
+                                'no_label'           : true,
+                                'full_width'         : true,
+                                'mb'                 : '',
+                            }
+                        ) }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                            {{ __('Cancel') }}
+                        </button>
+                        <button type="submit" class="btn btn-primary" data-glpi-helpdesk-translations-add-language-button="">
+                            {{ __('Add') }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $(function() {
+        // Check if we need to open a translation modal on page load
+        // First check URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const openTranslation = urlParams.get('open_translation');
+
+        if (openTranslation) {
+            // Open the modal for the specified language
+            $(`#helpdesk-translation-modal-${openTranslation}`).modal('show');
+        }
+    });
+</script>

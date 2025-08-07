@@ -160,8 +160,8 @@ class DeviceMemory extends CommonDevice
         switch ($itemtype) {
             case 'Computer':
                 Manufacturer::getHTMLTableHeader(self::class, $base, $super, $father, $options);
-                $base->addHeader('devicememory_type', _n('Type', 'Types', 1), $super, $father);
-                $base->addHeader('devicememory_frequency', sprintf(__('%1$s (%2$s)'), __('Frequency'), __('MHz')), $super, $father);
+                $base->addHeader('devicememory_type', _sn('Type', 'Types', 1), $super, $father);
+                $base->addHeader('devicememory_frequency', sprintf(__s('%1$s (%2$s)'), __s('Frequency'), __s('MHz')), $super, $father);
                 break;
         }
     }

@@ -123,8 +123,8 @@ class DeviceDrive extends CommonDevice
         switch ($itemtype) {
             case 'Computer':
                 Manufacturer::getHTMLTableHeader(self::class, $base, $super, $father, $options);
-                $base->addHeader('devicedrive_writer', __('Writing ability'), $super, $father);
-                $base->addHeader('devicedrive_speed', __('Speed'), $super, $father);
+                $base->addHeader('devicedrive_writer', __s('Writing ability'), $super, $father);
+                $base->addHeader('devicedrive_speed', __s('Speed'), $super, $father);
                 InterfaceType::getHTMLTableHeader(self::class, $base, $super, $father, $options);
                 break;
         }

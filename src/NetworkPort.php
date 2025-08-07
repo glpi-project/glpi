@@ -669,9 +669,9 @@ class NetworkPort extends CommonDBChild
             $canedit
             && (empty($withtemplate) || ($withtemplate != 2))
         ) {
-            echo "<form method='get' action='" . $netport::getFormURL() . "'>";
+            echo "<form method='get' action='" . htmlescape($netport::getFormURL()) . "'>";
             echo "<input type='hidden' name='items_id' value='" . $item->getID() . "'>";
-            echo "<input type='hidden' name='itemtype' value='" . $itemtype . "'>";
+            echo "<input type='hidden' name='itemtype' value='" . htmlescape($itemtype) . "'>";
             echo "<div class='firstbloc'><table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_2'><td class='center'>";
             echo __s('Network port type to be added');
@@ -723,7 +723,7 @@ class NetworkPort extends CommonDBChild
                 'search_config_top',
                 $pref_url,
                 [
-                    'title'         => __s('Select default items to show'),
+                    'title'         => __('Select default items to show'),
                     'reloadonclose' => true,
                     'display'       => false,
                 ]
@@ -786,7 +786,7 @@ class NetworkPort extends CommonDBChild
             echo "<th>";
             foreach ($so as $option) {
                 if ($option['id'] == $dpref) {
-                    echo $option['name'];
+                    echo htmlescape($option['name']);
                     continue;
                 }
             }
@@ -914,7 +914,7 @@ class NetworkPort extends CommonDBChild
         }
 
         $port_number = $port['logical_number'] ?? "";
-        $whole_output = "<tr class='$css_class' id='port_number_{$port_number}'>";
+        $whole_output = "<tr class='$css_class' id='port_number_" . htmlescape($port_number) . "'>";
         if ($canedit && $with_ma) {
             $whole_output .= "<td>" . Html::getMassiveActionCheckBox(self::class, $port['id']) . "</td>";
         }
@@ -925,7 +925,7 @@ class NetworkPort extends CommonDBChild
                 if ((int) $option['id'] === (int) $dpref) {
                     switch ($dpref) {
                         case 6:
-                            $output .= Dropdown::getYesNo($port['is_deleted']);
+                            $output .= htmlescape(Dropdown::getYesNo($port['is_deleted']));
                             break;
                         case 1:
                             if ($agg === true) {
@@ -998,7 +998,7 @@ class NetworkPort extends CommonDBChild
                                 $out = ' - ';
                             }
 
-                            $output .= sprintf('%s / %s', $in, $out);
+                            $output .= htmlescape(sprintf('%s / %s', $in, $out));
                             break;
                         case 35:
                             $in = $port[$option['field']];
@@ -1012,7 +1012,7 @@ class NetworkPort extends CommonDBChild
                                 $td_class = 'orange';
                             }
 
-                            $output .= sprintf('%s / %s', $in, $out);
+                            $output .= htmlescape(sprintf('%s / %s', $in, $out));
                             break;
                         case 36:
                             switch ($port[$option['field']]) {
@@ -1047,14 +1047,14 @@ class NetworkPort extends CommonDBChild
 
                             if (count($vlans) > 10) {
                                 $output .= sprintf(
-                                    __('%s linked VLANs'),
+                                    __s('%s linked VLANs'),
                                     count($vlans)
                                 );
                             } else {
                                 foreach ($vlans as $row) {
                                     $output .= $row['name'];
                                     if (!empty($row['tag'])) {
-                                        $output .= ' [' . $row['tag'] . ']';
+                                        $output .= ' [' . htmlescape($row['tag']) . ']';
                                     }
                                     $output .= ($row['tagged'] == 1 ? 'T' : 'U');
                                     $output .= '<br/>';
@@ -1194,14 +1194,14 @@ class NetworkPort extends CommonDBChild
                                 $output .= sprintf("<i class='ti ti-circle-filled text-green' title='%s'></i>", __s('Connected'));
                             } elseif (!empty($port['lastup'])) {
                                 $time = strtotime(date('Y-m-d H:i:s')) - strtotime($port['lastup']);
-                                $output .= Html::timestampToString($time, false);
+                                $output .= htmlescape(Html::timestampToString($time, false));
                             }
                             break;
                         case 126: //IP address
                             $ips_iterator = $this->getIpsForPort('NetworkPort', $port['id']);
                             $ip_names = [];
                             foreach ($ips_iterator as $iprow) {
-                                $ip_names[] = $iprow['name'];
+                                $ip_names[] = htmlescape($iprow['name']);
                             }
                             $output .= implode('<br />', $ip_names);
                             break;
@@ -1247,10 +1247,10 @@ class NetworkPort extends CommonDBChild
                                     ],
                                 ]);
                                 foreach ($iterator as $row) {
-                                    $output .= $row[$option['field']];
+                                    $output .= htmlescape($row[$option['field']]);
                                 }
                             } else {
-                                $output .= $port[$option['field']];
+                                $output .= htmlescape($port[$option['field']]);
                             }
                             break;
                     }

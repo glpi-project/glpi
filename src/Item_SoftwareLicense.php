@@ -124,7 +124,7 @@ class Item_SoftwareLicense extends CommonDBRelation
             case '164':
                 $softlicense = new SoftwareLicense();
                 $softlicense->getFromDB($options['raw_data']['id']);
-                $assign_item = self::countForLicense($options['raw_data']['id']);
+                $assign_item = self::countForLicense($options['raw_data']['id']) + SoftwareLicense_User::countForLicense($options['raw_data']['id']);
                 return TemplateRenderer::getInstance()->render(
                     'pages/management/license_progressbar.html.twig',
                     [
@@ -533,8 +533,8 @@ class Item_SoftwareLicense extends CommonDBRelation
 
         echo "<div class='center'>";
         echo "<table class='tab_cadre'><tr>";
-        echo "<th>" . Entity::getTypeName(1) . "</th>";
-        echo "<th>" . __('Number of affected items') . "</th>";
+        echo "<th>" . htmlescape(Entity::getTypeName(1)) . "</th>";
+        echo "<th>" . __s('Number of affected items') . "</th>";
         echo "</tr>\n";
 
         $tot = 0;

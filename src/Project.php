@@ -545,7 +545,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             'datatype'           => 'itemlink',
             'massiveaction'      => false,
             'joinparams'         => [
-                'condition'       => [new QueryExpression('1=1')],
+                'condition'       => [new QueryExpression('true')], // Add virtual condition to relink table
             ],
         ];
 
@@ -786,7 +786,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
                 'massiveaction'      => false,
                 'joinparams'         => [
                     'jointype'           => 'child',
-                    'condition'          => "AND NEWTABLE.`itemtype` = '$itil_type'",
+                    'condition'          => ['NEWTABLE.itemtype' => $itil_type],
                 ],
             ];
             $index++;

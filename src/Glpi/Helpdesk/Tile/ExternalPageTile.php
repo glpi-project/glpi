@@ -35,13 +35,18 @@
 namespace Glpi\Helpdesk\Tile;
 
 use CommonDBTM;
+use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
+use Glpi\ItemTranslation\Context\TranslationHandler;
 use Glpi\Session\SessionInfo;
 use Glpi\UI\IllustrationManager;
 use Override;
 
-final class ExternalPageTile extends CommonDBTM implements TileInterface
+final class ExternalPageTile extends CommonDBTM implements TileInterface, ProvideTranslationsInterface
 {
     public static $rightname = 'config';
+
+    public const TRANSLATION_KEY_TITLE = 'title';
+    public const TRANSLATION_KEY_DESCRIPTION = 'description';
 
     #[Override]
     public function getLabel(): string
@@ -111,5 +116,31 @@ final class ExternalPageTile extends CommonDBTM implements TileInterface
                 Item_Tile::class,
             ]
         );
+    }
+
+    #[Override]
+    public function listTranslationsHandlers(): array
+    {
+        $handlers = [];
+        $key = sprintf('%s: %s', $this->getLabel(), $this->fields['title'] ?? NOT_AVAILABLE);
+        if (!empty($this->getTitle())) {
+            $handlers[$key][] = new TranslationHandler(
+                item: $this,
+                key: self::TRANSLATION_KEY_TITLE,
+                name: __('Title'),
+                value: $this->getTitle(),
+            );
+        }
+        if (!empty($this->getDescription())) {
+            $handlers[$key][] = new TranslationHandler(
+                item: $this,
+                key: self::TRANSLATION_KEY_DESCRIPTION,
+                name: __('Description'),
+                value: $this->getDescription(),
+                is_rich_text: true,
+            );
+        }
+
+        return $handlers;
     }
 }

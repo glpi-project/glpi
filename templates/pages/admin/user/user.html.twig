@@ -237,10 +237,13 @@
                                     }]) %}
                                 {% endset %}
                                 {{ fields.htmlField('lang_dropdown', lang_dropdown, __('Language')) }}
-                                {{ fields.dropdownArrayField('use_mode', item.fields['use_mode'], {
-                                    (constant('Session::NORMAL_MODE')): __('Normal'),
-                                    (constant('Session::DEBUG_MODE')): __('Debug'),
-                                }, __('Use GLPI in mode')) }}
+
+                                {% if is_administrator %}
+                                    {{ fields.dropdownArrayField('use_mode', item.fields['use_mode'], {
+                                        (constant('Session::NORMAL_MODE')): __('Normal'),
+                                        (constant('Session::DEBUG_MODE')): __('Debug'),
+                                    }, __('Use GLPI in mode')) }}
+                                {% endif %}
                             {% endif %}
 
                             {{ fields.smallTitle(__('Contact information')) }}

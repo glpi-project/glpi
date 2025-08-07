@@ -112,7 +112,7 @@ class Vlan extends CommonDropdown
         }
 
         if ($itemtype == 'NetworkPort_Vlan') {
-            $base->addHeader($column_name, self::getTypeName(), $super, $father);
+            $base->addHeader($column_name, htmlescape(self::getTypeName()), $super, $father);
         }
     }
 

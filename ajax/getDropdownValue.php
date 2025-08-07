@@ -43,6 +43,7 @@ Html::header_nocache();
 /**
  * Safe JSON response.
  * @psalm-taint-escape has_quotes
+ * @psalm-taint-escape html
  */
 $response = Dropdown::getDropdownValue($_POST, json: true);
 

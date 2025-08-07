@@ -1074,20 +1074,19 @@ class IPAddress extends CommonDBChild
 
         $column_name = self::class;
 
-        $content = self::getTypeName();
-
         if ($itemtype == 'IPNetwork') {
-            $base->addHeader('Item', _n('Item', 'Items', 1), $super, $father);
-            $base->addHeader('NetworkPort', NetworkPort::getTypeName(0), $super, $father);
-            $base->addHeader('NetworkName', NetworkName::getTypeName(1), $super, $father);
-            $base->addHeader('Entity', Entity::getTypeName(1), $super, $father);
+            $base->addHeader('Item', _sn('Item', 'Items', 1), $super, $father);
+            $base->addHeader('NetworkPort', htmlescape(NetworkPort::getTypeName(0)), $super, $father);
+            $base->addHeader('NetworkName', htmlescape(NetworkName::getTypeName(1)), $super, $father);
+            $base->addHeader('Entity', htmlescape(Entity::getTypeName(1)), $super, $father);
         } else {
             if (isset($options['dont_display'][$column_name])) {
                 return;
             }
 
+            $content = htmlescape(self::getTypeName());
             if (isset($options['column_links'][$column_name])) {
-                $content = "<a href='" . $options['column_links'][$column_name] . "'>$content</a>";
+                $content = "<a href='" . htmlescape($options['column_links'][$column_name]) . "'>$content</a>";
             }
 
             $father = $base->addHeader($column_name, $content, $super, $father);
@@ -1095,7 +1094,7 @@ class IPAddress extends CommonDBChild
             if (isset($options['display_isDynamic']) && ($options['display_isDynamic'])) {
                 $father = $base->addHeader(
                     $column_name . '_dynamic',
-                    __('Automatic inventory'),
+                    __s('Automatic inventory'),
                     $super,
                     $father
                 );

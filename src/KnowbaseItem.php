@@ -492,7 +492,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         // Handle anonymous users
         if (!Session::getLoginUserID()) {
             // Public FAQ is enabled; show FAQ, otherwise show nothing
-            $criteria['WHERE'] = $CFG_GLPI["use_public_faq"] ? self::getVisibilityCriteriaFAQ() : [0];
+            $criteria['WHERE'] = $CFG_GLPI["use_public_faq"] ? self::getVisibilityCriteriaFAQ() : [new QueryExpression('false')];
             return $criteria;
         }
 

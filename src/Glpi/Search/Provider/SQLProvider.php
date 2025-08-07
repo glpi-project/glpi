@@ -1020,8 +1020,6 @@ final class SQLProvider implements SearchProviderInterface
                     break;
                 }
 
-
-                $in = "IN ('" . implode("','", $allowed_is_private) . "')";
                 $criteria = [
                     'glpi_itilfollowups.is_private' => $allowed_is_private,
                     'OR' => [
@@ -1044,10 +1042,9 @@ final class SQLProvider implements SearchProviderInterface
                 // Entity restrictions
                 $entity_restrictions = [];
                 foreach ($CFG_GLPI['itil_types'] as $itil_itemtype) {
-                    $entity_restrictions[] = getEntitiesRestrictRequest(
-                        '',
+                    $entity_restrictions[] = getEntitiesRestrictCriteria(
                         $itil_itemtype::getTable() . '_items_id_' . self::computeComplexJoinID([
-                            'condition' => "AND REFTABLE.`itemtype` = '$itil_itemtype'",
+                            'condition' => ['REFTABLE.itemtype' => $itil_itemtype],
                         ]),
                         'entities_id',
                         ''
@@ -1148,7 +1145,7 @@ final class SQLProvider implements SearchProviderInterface
             && !preg_match(QueryBuilder::getInputValidationPattern($opt['datatype'] ?? '')['pattern'], $val)
         ) {
             return [ // Invalid search
-                '1=0',
+                new QueryExpression('false'),
             ];
         }
 
@@ -1184,11 +1181,11 @@ final class SQLProvider implements SearchProviderInterface
         if (preg_match('/^\$\$\$\$([0-9]+)$/', $val, $regs)) {
             $criteria = [
                 'OR' => [
-                    "`table`.`id`" => [$nott ? "<>" : "=", $regs[1]],
+                    "table.id" => [$nott ? "<>" : "=", $regs[1]],
                 ],
             ];
             if ((int) $regs[1] === 0) {
-                $criteria['OR'][] = "`table`.`id` IS NULL";
+                $criteria['OR'][] = ["table.id" =>  "IS NULL"];
             }
             return $criteria;
         }
@@ -1682,18 +1679,27 @@ final class SQLProvider implements SearchProviderInterface
                     $tmplink = 'AND';
                     $compare = '<>';
                 }
-                $toadd2 = '';
+
+                $criteria = [
+                    $tmplink => [
+                        "$table.tickets_id_1" => [$compare, $val],
+                        "$table.tickets_id_2" => [$compare, $val],
+                    ],
+                ];
+
                 if (
                     $nott
                     && ($val != 'NULL') && ($val != 'null')
                 ) {
-                    $toadd2 = " OR `$table`.`$field` IS NULL";
+                    $criteria = [
+                        'OR' => [
+                            $criteria,
+                            "$table.$field" => null,
+                        ],
+                    ];
                 }
 
-                return [new QueryExpression(" (((`$table`.`tickets_id_1` $compare '$val'
-                              $tmplink `$table`.`tickets_id_2` $compare '$val')
-                             AND `glpi_tickets`.`id` <> '$val')
-                            $toadd2)")];
+                return $criteria;
 
             case "glpi_tickets.priority":
             case "glpi_tickets.impact":
@@ -2131,7 +2137,7 @@ final class SQLProvider implements SearchProviderInterface
                 if ($val == 0) {
                     // Special case, search criteria is empty
                     $subquery_operator = $subquery_operator === "IN" ? "NOT IN" : "IN";
-                    $subquery_criteria_where = ['1' => 1];
+                    $subquery_criteria_where = [new QueryExpression('true')];
                     if (!empty($addcondition)) {
                         $subquery_criteria_where[] = $addcondition;
                     }
@@ -2150,7 +2156,7 @@ final class SQLProvider implements SearchProviderInterface
                     $sub_query_criteria = [
                         'SELECT' => $fk,
                         'FROM'   => $link_table,
-                        'WHERE'  => ['1' => 1],
+                        'WHERE'  => [new QueryExpression('true')],
                     ];
                     if (!empty($addcondition)) {
                         $sub_query_criteria['WHERE'][] = $addcondition;
@@ -2215,9 +2221,7 @@ final class SQLProvider implements SearchProviderInterface
                     $inner_subquery_criteria = [
                         'SELECT' => 'id',
                         'FROM'   => $child_table,
-                        'WHERE'  => [
-                            '1' => 1,
-                        ],
+                        'WHERE'  => [new QueryExpression('true')],
                     ];
                     if (!empty($addcondition)) {
                         $inner_subquery_criteria['WHERE'][] = $addcondition;
@@ -2618,7 +2622,7 @@ final class SQLProvider implements SearchProviderInterface
                         false,
                         '',
                         [
-                            'condition' => "AND REFTABLE.`itemtype` = '$itil_itemtype'",
+                            'condition' => ['REFTABLE.itemtype' => $itil_itemtype],
                         ]
                     ));
                 }
@@ -2753,12 +2757,12 @@ final class SQLProvider implements SearchProviderInterface
         // Multiple link possibilies case
         if (!empty($linkfield) && ($linkfield !== getForeignKeyFieldForTable($new_table))) {
             $nt .= "_" . $linkfield;
-            $AS  = " AS `$nt`";
+            $AS  = " AS " . $DB::quoteName($nt);
         }
 
         if (!empty($complexjoin)) {
             $nt .= "_" . $complexjoin;
-            $AS  = " AS `$nt`";
+            $AS  = " AS " . $DB::quoteName($nt);
         }
 
         $addmetanum = "";
@@ -2766,7 +2770,7 @@ final class SQLProvider implements SearchProviderInterface
         $cleanrt    = $rt;
         if ($meta) {
             $addmetanum = self::getMetaTableUniqueSuffix($new_table, $meta_type);
-            $AS         = " AS `$nt$addmetanum`";
+            $AS         = " AS " . $DB::quoteName($nt . $addmetanum);
             $nt .= $addmetanum;
         }
 
@@ -2839,7 +2843,7 @@ final class SQLProvider implements SearchProviderInterface
                     if (is_callable($hook_function)) {
                         return $hook_function($itemtype, $ref_table, $new_table, $linkfield, $already_link_tables);
                     }
-                    return '';
+                    return [];
                 };
                 $specific_leftjoin_criteria = self::parseJoinString(Plugin::doOneHook($plugin_name, $hook_closure));
             }
@@ -2927,10 +2931,10 @@ final class SQLProvider implements SearchProviderInterface
                 }
             };
             $placeholders = [
-                '`REFTABLE`' => "`$rt`",
-                'REFTABLE'  => "`$rt`",
-                '`NEWTABLE`' => "`$nt`",
-                'NEWTABLE'  => "`$nt`",
+                $DB::quoteName('REFTABLE')  => $DB::quoteName($rt),
+                'REFTABLE'                  => $DB::quoteName($rt),
+                $DB::quoteName('NEWTABLE')  => $DB::quoteName($nt),
+                'NEWTABLE'                  => $DB::quoteName($nt),
             ];
             // Recursively walk through add_criteria array and make the placeholder replacements in the keys and values
             $replace_placeholders = static function ($add_criteria) use (&$replace_placeholders, $placeholders) {
@@ -3764,7 +3768,7 @@ final class SQLProvider implements SearchProviderInterface
                 "glpi_dropdowntranslations AS $alias" => [
                     'ON' => [
                         $alias => 'itemtype',
-                        new QueryExpression("'$itemtype'"),
+                        new QueryExpression($DB::quoteValue($itemtype)),
                         [
                             'AND' => [
                                 "$alias.items_id" => new QueryExpression($DB::quoteName("$table.id")),
@@ -6119,10 +6123,10 @@ final class SQLProvider implements SearchProviderInterface
                         $itemtype = $opt_itemtype;
 
                         $out     = sprintf(
-                            __('%1$s %2$s'),
+                            __s('%1$s %2$s'),
                             $out,
                             Html::showToolTip(
-                                __('Loading...'),
+                                __s('Loading...'),
                                 [
                                     'applyto' => $itemtype . $data[$ID][0]['id'],
                                     'display' => false,

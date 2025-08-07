@@ -36,6 +36,7 @@ namespace tests\units;
 
 use DbTestCase;
 use Glpi\Dashboard\Dashboard;
+use Glpi\DBAL\QueryExpression;
 use GlpiPlugin\Tester\Asset\Foo;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -1039,7 +1040,7 @@ class DbUtilsTest extends DbTestCase
         global $DB;
         $this->login();
         //ensure db cache is unset
-        $DB->update('glpi_entities', ['ancestors_cache' => null], [true]);
+        $DB->update('glpi_entities', ['ancestors_cache' => null], [new QueryExpression('true')]);
         $this->runGetAncestorsOf();
 
         $this->assertGreaterThan(
@@ -1231,7 +1232,7 @@ class DbUtilsTest extends DbTestCase
         $instance = new \DbUtils();
         $this->login();
         //ensure db cache is unset
-        $DB->update('glpi_entities', ['sons_cache' => null], [true]);
+        $DB->update('glpi_entities', ['sons_cache' => null], [new QueryExpression('true')]);
         $this->runGetSonsOf();
 
         $this->assertGreaterThan(

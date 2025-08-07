@@ -54,16 +54,18 @@
                 <div class="display-prefs-list row g-2 mt-1">
                     {% for pref in preferences %}
                         {% set name = pref['itemtype']|itemtype_name(1)|default(pref['itemtype']) %}
-                        <div class="col-3 displayed-itemtype">
-                            <div class="bg-gray-300 border border-gray-200 p-3 rounded-2">
+                        <div class="col-12 col-sm-6 col-xl-4 col-xxl-3 displayed-itemtype">
+                            <div class="bg-gray-300 border border-gray-200 p-3 rounded-2 d-flex">
                                 {% if massiveactionparams['specific_actions']|length > 0 %}
                                     <span class="me-2">
                                         {% do call('Html::showMassiveActionCheckBox', ['DisplayPreference', pref['itemtype']]) %}
                                     </span>
                                 {% endif %}
-                                <button type="button" class="btn btn-ghost-secondary p-0 btn-itemtype-pref" data-itemtype="{{ pref['itemtype'] }}">
+                                <button type="button" class="btn btn-ghost-secondary p-0 btn-itemtype-pref overflow-hidden" data-itemtype="{{ pref['itemtype'] }}" title="{{ name }}">
                                     <i class="{{ pref['itemtype']|itemtype_icon }} me-1"></i>
-                                    {{ name }}
+                                    <span class="text-truncate">
+                                        {{ name }}
+                                    </span>
                                 </button>
                             </div>
                         </div>

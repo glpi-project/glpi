@@ -72,49 +72,6 @@ abstract class AbstractController
     public const CRUD_ACTION_PURGE = 'purge';
     public const CRUD_ACTION_RESTORE = 'restore';
 
-    protected const PARAMETER_RSQL_FILTER = [
-        'name' => 'filter',
-        'description' => 'RSQL query string',
-        'location' => 'query',
-        'schema' => [
-            'type' => Doc\Schema::TYPE_STRING,
-        ],
-    ];
-
-    protected const PARAMETER_START = [
-        'name' => 'start',
-        'description' => 'The first item to return',
-        'location' => 'query',
-        'schema' => [
-            'type' => Doc\Schema::TYPE_INTEGER,
-            'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-            'minimum' => 0,
-            'default' => 0,
-        ],
-    ];
-
-    protected const PARAMETER_LIMIT = [
-        'name' => 'limit',
-        'description' => 'The maximum number of items to return',
-        'location' => 'query',
-        'schema' => [
-            'type' => Doc\Schema::TYPE_INTEGER,
-            'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-            'minimum' => 0,
-            'default' => 100,
-        ],
-    ];
-
-    protected const PARAMETER_SORT = [
-        'name' => 'sort',
-        'description' => 'One or more properties to sort by in the form of property:direction where property is the full property name in dot notation and direction is either asc or desc.
-                          If no direction is provided, asc is assumed. Multiple sorts can be provided by separating them with a comma.',
-        'location' => 'query',
-        'schema' => [
-            'type' => Doc\Schema::TYPE_STRING,
-        ],
-    ];
-
     /**
      * Get the requested API version from the request
      * @param Request $request

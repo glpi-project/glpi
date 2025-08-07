@@ -38,7 +38,7 @@ use DBmysql;
 use Glpi\Controller\AbstractController;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\ServiceCatalog\ItemRequest;
-use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
+use Glpi\Form\ServiceCatalog\Provider\FormProvider;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
 use KnowbaseItem;
@@ -49,11 +49,11 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class SearchController extends AbstractController
 {
-    private ServiceCatalogManager $service_catalog_manager;
+    private FormProvider $form_provider;
 
     public function __construct()
     {
-        $this->service_catalog_manager = new ServiceCatalogManager();
+        $this->form_provider = new FormProvider();
     }
 
     #[SecurityStrategy(Firewall::STRATEGY_HELPDESK_ACCESS)]
@@ -77,7 +77,7 @@ final class SearchController extends AbstractController
             ),
             filter: $filter
         );
-        $forms = $this->service_catalog_manager->getItems($items_request)['items'];
+        $forms = $this->form_provider->getItems($items_request);
 
         // Get FAQ entries
         $query = KnowbaseItem::getListRequest([

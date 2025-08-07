@@ -133,14 +133,14 @@ class DeviceNetworkCard extends CommonDevice
         }
 
         if (in_array($itemtype, NetworkPort::getNetworkPortInstantiations(), true)) {
-            $base->addHeader($column_name, __('Interface'), $super, $father);
+            $base->addHeader($column_name, __s('Interface'), $super, $father);
         } else {
             $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
             if ($column == $father) {
                 return $father;
             }
             Manufacturer::getHTMLTableHeader(self::class, $base, $super, $father, $options);
-            $base->addHeader('devicenetworkcard_bandwidth', __('Flow'), $super, $father);
+            $base->addHeader('devicenetworkcard_bandwidth', __s('Flow'), $super, $father);
         }
     }
 

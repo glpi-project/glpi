@@ -1,0 +1,48 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<div class="d-flex col-12">
+    {% if devices|length == 0 %}
+        {{ fields.htmlField(linktype|itemtype_foreign_key, __('No unaffected device!'), __('Choose an existing device')) }}
+    {% else %}
+        {{ fields.dropdownArrayField(linktype|itemtype_foreign_key, '', devices, __('Choose an existing device'), {
+            helper: label_pattern,
+            multiple: true,
+        }) }}
+    {% endif %}
+    {{ fields.dropdownNumberField('new_devices', 0, __('Add new devices'), {
+        min: 0,
+        max: 10
+    }) }}
+</div>

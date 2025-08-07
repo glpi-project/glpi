@@ -138,7 +138,15 @@ class DBConnection extends CommonDBTM
 
         $config_str = '<?php' . "\n" . 'class DB extends DBmysql {' . "\n";
         foreach ($properties as $name => $value) {
-            $config_str .= sprintf('   public $%s = %s;', $name, var_export($value, true)) . "\n";
+
+            /**
+             * Result will be printed in a file, no risk of XSS.
+             *
+             * @psalm-taint-escape html
+             */
+            $exported_value = call_user_func_array('var_export', [$value, true]);
+
+            $config_str .= sprintf('   public $%s = %s;', $name, $exported_value) . "\n";
         }
         $config_str .= '}' . "\n";
 
@@ -726,18 +734,20 @@ class DBConnection extends CommonDBTM
         foreach ($hosts as $num => $name) {
             $diff = self::getReplicateDelay($num);
             //TRANS: %s is namez of server Mysql
-            $output .= sprintf(__('%1$s: %2$s'), __('SQL server'), $name);
+            $output .= htmlescape(sprintf(__('%1$s: %2$s'), __('SQL server'), $name));
             $output .= " - ";
             if ($diff > 1000000000) {
-                $output .= __("can't connect to the database") . "<br>";
+                $output .= __s("can't connect to the database") . "<br>";
             } elseif ($diff) {
-                $output .= sprintf(
-                    __('%1$s: %2$s') . "<br>",
-                    __('Difference between main and replica'),
-                    Html::timestampToString($diff, true)
-                );
+                $output .= htmlescape(
+                    sprintf(
+                        __('%1$s: %2$s'),
+                        __('Difference between main and replica'),
+                        Html::timestampToString($diff, true)
+                    )
+                ) . "<br>";
             } else {
-                $output .= sprintf(__('%1$s: %2$s') . "<br>", __('Difference between main and replica'), __('None'));
+                $output .= htmlescape(sprintf(__('%1$s: %2$s'), __('Difference between main and replica'), __('None'))) . "<br>";
             }
         }
         if ($no_display) {

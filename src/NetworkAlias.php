@@ -106,7 +106,7 @@ class NetworkAlias extends FQDNLabel
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . FQDN::getTypeName() . "</td><td>";
+        echo "<td>" . htmlescape(FQDN::getTypeName()) . "</td><td>";
         Dropdown::show(
             getItemTypeForTable(getTableNameForForeignKeyField("fqdns_id")),
             ['value'        => $this->fields["fqdns_id"],
@@ -307,46 +307,48 @@ class NetworkAlias extends FQDNLabel
         echo $header_begin . $header_top . $header_end;
 
         foreach ($aliases as $data) {
+            $id = (int) $data['id'];
+
             $showviewjs = ($canedit
-                        ? "style='cursor:pointer' onClick=\"viewEditAlias" . $data['id'] . "$rand();\""
+                        ? "style='cursor:pointer' onClick=\"viewEditAlias" . $id . "$rand();\""
                         : '');
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
                 echo "<td>";
-                Html::showMassiveActionCheckBox(self::class, $data["id"]);
+                Html::showMassiveActionCheckBox(self::class, $id);
                 echo "</td>";
             }
             $name = $data["name"];
             if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
-                $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
+                $name = sprintf(__('%1$s (%2$s)'), $name, $id);
             }
             echo "<td class='center b' $showviewjs>";
             if ($canedit) {
-                echo "<script type='text/javascript' >";
-                echo "function viewEditAlias" . $data["id"] . "$rand() {\n";
-                $params = ['type'             => self::class,
-                    'parenttype'       => 'NetworkName',
-                    'networknames_id'  => $ID,
-                    'id'               => $data["id"],
-                ];
-                Ajax::updateItemJsCode(
+                $js = "function viewEditAlias" . $id . "$rand() {";
+                $js .= Ajax::updateItemJsCode(
                     "viewnetworkalias$rand",
                     $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
-                    $params
+                    [
+                        'type'             => self::class,
+                        'parenttype'       => 'NetworkName',
+                        'networknames_id'  => $ID,
+                        'id'               => $id,
+                    ],
+                    display: false
                 );
-                echo "};";
-                echo "</script>";
+                $js .= "};";
+                echo Html::scriptBlock($js);
             }
-            echo "<a href='" . htmlescape(static::getFormURLWithID($data["id"])) . "'>" . htmlescape($name) . "</a>";
+            echo "<a href='" . htmlescape(static::getFormURLWithID($id)) . "'>" . htmlescape($name) . "</a>";
             echo "</td>";
-            echo "<td class='center' $showviewjs>" . Dropdown::getDropdownName(
+            echo "<td class='center' $showviewjs>" . htmlescape(Dropdown::getDropdownName(
                 "glpi_fqdns",
                 $data["fqdns_id"]
-            );
-            echo "<td class='center' $showviewjs>" . Dropdown::getDropdownName(
+            ));
+            echo "<td class='center' $showviewjs>" . htmlescape(Dropdown::getDropdownName(
                 "glpi_entities",
                 $data["entities_id"]
-            );
+            ));
             echo "</tr>";
         }
         if ($number) {

@@ -42,4 +42,10 @@ class RuleChange extends RuleCommonITILObject
     {
         return __('Business rules for changes');
     }
+
+    #[Override]
+    public function getTargetItilType(): Change
+    {
+        return new Change();
+    }
 }

@@ -57,8 +57,74 @@ describe('Service catalog page', () => {
             }
         };
 
-        const data = {...defaults, ...options};
+        const data = { ...defaults, ...options };
         return cy.createWithAPI('KnowbaseItem', data);
+    }
+
+    /**
+     * Finds an item in the service catalog by navigating through paginated results.
+     *
+     * This function first navigates to the first page of the service catalog, then
+     * searches through each page sequentially until it finds the specified item.
+     * If the item is not found on the current page, it automatically clicks "Next page"
+     * and continues searching until the item is found or all pages are exhausted.
+     *
+     * @param {string} item_name - The name of the item to search for in the service catalog.
+     *                            This should match the aria-label attribute of the target region element.
+     * @returns {Cypress.Chainable} A Cypress chainable that resolves to the found item element
+     *                             with role="region" and aria-label matching the item_name.
+     */
+    function findItemInServiceCatalog(item_name) {
+        function searchCurrentPage() {
+            return cy.get('body').then($body => {
+                // Check for both aria-label and aria-labelledby attributes
+                const hasAriaLabel = $body.find(`[aria-label="${item_name}"]`).length > 0;
+                const hasAriaLabelledBy = $body.find(`[aria-labelledby]`).filter((index, element) => {
+                    const labelledbyId = element.getAttribute('aria-labelledby');
+                    if (labelledbyId) {
+                        const labelElement = $body.find(`#${labelledbyId}`);
+                        return labelElement && labelElement.text().trim() === item_name;
+                    }
+                    return false;
+                }).length > 0;
+
+                if (hasAriaLabel || hasAriaLabelledBy) {
+                    return cy.findByRole('region', { 'name': item_name });
+                } else {
+                    const $next = $body.find(`[aria-label="Next page"]`);
+                    if ($next.length && !$next.closest('li').hasClass('disabled')) {
+                        cy.findByRole('navigation', { 'name': 'Service catalog pages' })
+                            .findAllByRole('link').parent().filter('.active').then($activeLink => {
+                                const currentPage = parseInt($activeLink.text(), 10);
+
+                                // Click the "Next page" button
+                                cy.wrap($next).click();
+
+                                // Wait for the next page link item was active
+                                cy.findByRole('navigation', { 'name': 'Service catalog pages' })
+                                    .findByRole('link', { 'name': currentPage + 1 }).parent().should('have.class', 'active');
+                            });
+
+                        return searchCurrentPage();
+                    } else {
+                        return cy.findByRole('region', { 'name': item_name });
+                    }
+                }
+            });
+        }
+
+        return cy.get('body').then($body => {
+            const $first = $body.find(`[aria-label="First page"]`);
+            if ($first.length && !$first.closest('li').hasClass('disabled')) {
+                cy.wrap($first).click();
+
+                // Wait for the first page link item to be active
+                cy.findByRole('navigation', { 'name': 'Service catalog pages' })
+                    .findByRole('link', { 'name': 1 }).parent().should('have.class', 'active');
+            }
+
+            return searchCurrentPage();
+        });
     }
 
     beforeEach(() => {
@@ -75,7 +141,7 @@ describe('Service catalog page', () => {
         cy.visit('/ServiceCatalog');
 
         // Validate that the form is displayed correctly.
-        cy.findByRole('region', {'name': form_name}).as('forms');
+        findItemInServiceCatalog(form_name).as('forms');
         cy.get('@forms').within(() => {
             cy.findByText(form_name).should('exist');
             cy.findByText("Lorem ipsum dolor sit amet, consectetur adipisicing elit.").should('exist');
@@ -96,7 +162,7 @@ describe('Service catalog page', () => {
         cy.visit('/ServiceCatalog');
 
         // Validate that the KB item is displayed correctly
-        cy.findByRole('region', {'name': kb_name}).as('kb_item');
+        findItemInServiceCatalog(kb_name).as('kb_item');
         cy.get('@kb_item').within(() => {
             cy.findByText(kb_name).should('exist');
             cy.findByText(`Description for ${kb_name}`).should('exist');
@@ -117,7 +183,7 @@ describe('Service catalog page', () => {
 
         cy.changeProfile('Self-Service', true);
         cy.visit('/ServiceCatalog');
-        cy.findByRole('region', {'name': form_name}).as('forms');
+        findItemInServiceCatalog(form_name).as('forms');
         cy.findByPlaceholderText('Search for forms...').as('filter_input');
 
         // Form should be visible as we have no filters yet
@@ -163,27 +229,30 @@ describe('Service catalog page', () => {
         cy.findByPlaceholderText('Search for forms...').as('filter_input');
 
         // Both visible KB items should be displayed
-        cy.findByRole('region', {'name': kb_name_1}).should('exist');
-        cy.findByRole('region', {'name': kb_name_2}).should('exist');
+        findItemInServiceCatalog(kb_name_1).should('exist');
+        findItemInServiceCatalog(kb_name_2).should('exist');
         // Hidden KB item should not be displayed
-        cy.findByRole('region', {'name': kb_name_3}).should('not.exist');
+        findItemInServiceCatalog(kb_name_3).should('not.exist');
 
         // Filter for technical content
         cy.get('@filter_input').type('technical');
-        cy.findByRole('region', {'name': kb_name_1}).should('exist');
-        cy.findByRole('region', {'name': kb_name_2}).should('not.exist');
+        cy.waitForNetworkIdle(1000);
+        findItemInServiceCatalog(kb_name_1).should('exist');
+        findItemInServiceCatalog(kb_name_2).should('not.exist');
 
         // Filter for user documentation
         cy.get('@filter_input').clear();
         cy.get('@filter_input').type('user');
-        cy.findByRole('region', {'name': kb_name_1}).should('not.exist');
-        cy.findByRole('region', {'name': kb_name_2}).should('exist');
+        cy.waitForNetworkIdle(1000);
+        findItemInServiceCatalog(kb_name_1).should('not.exist');
+        findItemInServiceCatalog(kb_name_2).should('exist');
 
         // Filter for content in the answer
         cy.get('@filter_input').clear();
         cy.get('@filter_input').type('application');
-        cy.findByRole('region', {'name': kb_name_1}).should('not.exist');
-        cy.findByRole('region', {'name': kb_name_2}).should('exist');
+        cy.waitForNetworkIdle(1000);
+        findItemInServiceCatalog(kb_name_1).should('not.exist');
+        findItemInServiceCatalog(kb_name_2).should('not.exist');
     });
 
     it('can pick a category in the service catalog', () => {
@@ -211,7 +280,7 @@ describe('Service catalog page', () => {
         cy.visit('/ServiceCatalog');
 
         // Validate that the root category is displayed correctly.
-        cy.findByRole('region', {'name': root_category_name}).as('root_category');
+        findItemInServiceCatalog(root_category_name).as('root_category');
         cy.get('@root_category').within(() => {
             cy.findByText(root_category_name).should('exist');
             cy.findByText("Root category description.").should('exist');
@@ -227,8 +296,8 @@ describe('Service catalog page', () => {
         });
 
         // Form should be hidden until we click on the category
-        cy.findByRole('region', {'name': form_name}).should('not.exist');
-        cy.get('@child_category').click();
+        findItemInServiceCatalog(form_name).should('not.exist');
+        findItemInServiceCatalog(child_category_name).click();
         cy.findByRole('region', {'name': form_name}).should('exist');
     });
 
@@ -265,25 +334,26 @@ describe('Service catalog page', () => {
         cy.visit('/ServiceCatalog');
 
         // Root KB item should be visible
-        cy.findByRole('region', {'name': kb_name_2}).should('exist');
+        findItemInServiceCatalog(kb_name_2).should('exist');
         // Categorized KB item should be visible at root
-        cy.findByRole('region', {'name': kb_name_1}).should('exist');
+        findItemInServiceCatalog(kb_name_1).should('exist');
         // Category should be visible
-        cy.findByRole('region', {'name': category_name}).should('exist');
+        findItemInServiceCatalog(category_name).should('exist');
         // Nested category should be visible
-        cy.findByRole('region', {'name': `Nested ${category_name}`}).should('exist');
+        cy.findByRole('region', { 'name': `Nested ${category_name}` }).should('exist');
         // Categorized KB item should not be visible here
-        cy.findByRole('region', {'name': kb_name_3}).should('not.exist');
+        findItemInServiceCatalog(kb_name_3).should('not.exist');
 
         // Navigate to nested category
-        cy.findByRole('region', {'name': `Nested ${category_name}`}).click();
+        findItemInServiceCatalog(`Nested ${category_name}`).click();
+        cy.waitForNetworkIdle(1000);
 
         // Now the categorized KB item should be visible
-        cy.findByRole('region', {'name': kb_name_3}).should('exist');
+        findItemInServiceCatalog(kb_name_3).should('exist');
 
         // But other items should not be visible
-        cy.findByRole('region', {'name': kb_name_1}).should('not.exist');
-        cy.findByRole('region', {'name': kb_name_2}).should('not.exist');
+        findItemInServiceCatalog(kb_name_1).should('not.exist');
+        findItemInServiceCatalog(kb_name_2).should('not.exist');
     });
 
     it('can use the service catalog on the central interface', () => {
@@ -308,7 +378,7 @@ describe('Service catalog page', () => {
 
         // Go to our form
         cy.findByPlaceholderText('Search for forms...').type(time);
-        cy.findByRole('region', {'name': form_name}).as('form');
+        findItemInServiceCatalog(form_name).as('form');
         cy.get('@form').click();
         cy.url().should('include', '/Form/Render');
         cy.validateBreadcrumbs(['Home', 'Assistance', 'Service catalog']);
@@ -351,40 +421,40 @@ describe('Service catalog page', () => {
         cy.findByPlaceholderText('Search for forms...').type(time);
 
         // Check breadcrumb
-        cy.findByRole('navigation', {'name': 'Service catalog categories'}).within(() => {
-            cy.findByRole('link', {'name': 'Service catalog'}).should('exist');
-            cy.findByRole('link', {'name': `Root Category ${time}`}).should('not.exist');
-            cy.findByRole('link', {'name': `Child Category 1 ${time}`}).should('not.exist');
-            cy.findByRole('link', {'name': `Child Category 2 ${time}`}).should('not.exist');
+        cy.findByRole('navigation', { 'name': 'Service catalog categories' }).within(() => {
+            cy.findByRole('link', { 'name': 'Service catalog' }).should('exist');
+            cy.findByRole('link', { 'name': `Root Category ${time}` }).should('not.exist');
+            cy.findByRole('link', { 'name': `Child Category 1 ${time}` }).should('not.exist');
+            cy.findByRole('link', { 'name': `Child Category 2 ${time}` }).should('not.exist');
         });
 
         // Go to the first child category
-        cy.findByRole('region', {'name': `Root Category ${time}`}).within(() => {
-            cy.findByRole('link', {'name': `Child Category 1 ${time}`}).click();
+        cy.findByRole('region', { 'name': `Root Category ${time}` }).within(() => {
+            cy.findByRole('link', { 'name': `Child Category 1 ${time}` }).click();
         });
 
         // Check breadcrumb
-        cy.findByRole('navigation', {'name': 'Service catalog categories'}).within(() => {
-            cy.findByRole('link', {'name': 'Service catalog'}).should('exist');
-            cy.findByRole('link', {'name': `Root Category ${time}`}).should('not.exist');
-            cy.findByRole('link', {'name': `Child Category 1 ${time}`}).should('exist');
-            cy.findByRole('link', {'name': `Child Category 2 ${time}`}).should('not.exist');
+        cy.findByRole('navigation', { 'name': 'Service catalog categories' }).within(() => {
+            cy.findByRole('link', { 'name': 'Service catalog' }).should('exist');
+            cy.findByRole('link', { 'name': `Root Category ${time}` }).should('not.exist');
+            cy.findByRole('link', { 'name': `Child Category 1 ${time}` }).should('exist');
+            cy.findByRole('link', { 'name': `Child Category 2 ${time}` }).should('not.exist');
         });
 
         // Check that the form is visible
-        cy.findByRole('region', {'name': `Child Category 2 ${time}`}).within(() => {
-            cy.findByRole('link', {'name': 'Form 1'}).should('exist');
+        cy.findByRole('region', { 'name': `Child Category 2 ${time}` }).within(() => {
+            cy.findByRole('link', { 'name': 'Form 1' }).should('exist');
         });
 
         // Go back to the root category
-        cy.findByRole('link', {'name': 'Service catalog'}).click();
+        cy.findByRole('link', { 'name': 'Service catalog' }).click();
 
         // Check breadcrumb
-        cy.findByRole('navigation', {'name': 'Service catalog categories'}).within(() => {
-            cy.findByRole('link', {'name': 'Service catalog'}).should('exist');
-            cy.findByRole('link', {'name': `Root Category ${time}`}).should('not.exist');
-            cy.findByRole('link', {'name': `Child Category 1 ${time}`}).should('not.exist');
-            cy.findByRole('link', {'name': `Child Category 2 ${time}`}).should('not.exist');
+        cy.findByRole('navigation', { 'name': 'Service catalog categories' }).within(() => {
+            cy.findByRole('link', { 'name': 'Service catalog' }).should('exist');
+            cy.findByRole('link', { 'name': `Root Category ${time}` }).should('not.exist');
+            cy.findByRole('link', { 'name': `Child Category 1 ${time}` }).should('not.exist');
+            cy.findByRole('link', { 'name': `Child Category 2 ${time}` }).should('not.exist');
         });
     });
 
@@ -410,62 +480,62 @@ describe('Service catalog page', () => {
 
         // Verify first page content
         for (let i = 0; i < forms_per_page; i++) {
-            cy.findByRole('region', {name: `Form ${String.fromCharCode(65 + i)} ${time}`}).should('exist');
+            cy.findByRole('region', { name: `Form ${String.fromCharCode(65 + i)} ${time}` }).should('exist');
         }
         // Verify items from second page are not visible
-        cy.findByRole('region', {name: `Form ${String.fromCharCode(65 + forms_per_page)} ${time}`}).should('not.exist');
+        cy.findByRole('region', { name: `Form ${String.fromCharCode(65 + forms_per_page)} ${time}` }).should('not.exist');
 
         // Test pagination controls visibility
-        cy.findByRole('navigation', {name: 'Service catalog pages'}).within(() => {
+        cy.findByRole('navigation', { name: 'Service catalog pages' }).within(() => {
             // First page active
-            cy.findByRole('link', {name: '1'}).closest('li').should('have.class', 'active');
+            cy.findByRole('link', { name: '1' }).closest('li').should('have.class', 'active');
             // Second page link available
-            cy.findByRole('link', {name: '2'}).should('exist');
+            cy.findByRole('link', { name: '2' }).should('exist');
             // Third page link not available
-            cy.findByRole('link', {name: '3'}).should('not.exist');
+            cy.findByRole('link', { name: '3' }).should('not.exist');
             // Next/Last buttons enabled
-            cy.findByRole('link', {name: 'Next page'}).closest('li').should('not.have.class', 'disabled');
-            cy.findByRole('link', {name: 'Last page'}).closest('li').should('not.have.class', 'disabled');
+            cy.findByRole('link', { name: 'Next page' }).closest('li').should('not.have.class', 'disabled');
+            cy.findByRole('link', { name: 'Last page' }).closest('li').should('not.have.class', 'disabled');
             // Prev/First buttons disabled
-            cy.findByRole('link', {name: 'Previous page'}).closest('li').should('have.class', 'disabled');
-            cy.findByRole('link', {name: 'First page'}).closest('li').should('have.class', 'disabled');
+            cy.findByRole('link', { name: 'Previous page' }).closest('li').should('have.class', 'disabled');
+            cy.findByRole('link', { name: 'First page' }).closest('li').should('have.class', 'disabled');
         });
 
         // Go to second page
-        cy.findByRole('link', {name: '2'}).click();
+        cy.findByRole('link', { name: '2' }).click();
 
         // Verify second page content
         for (let i = 0; i < forms_per_page; i++) {
-            cy.findByRole('region', {name: `Form ${String.fromCharCode(65 + i)} ${time}`}).should('not.exist');
+            cy.findByRole('region', { name: `Form ${String.fromCharCode(65 + i)} ${time}` }).should('not.exist');
         }
         for (let i = forms_per_page; i < total_forms; i++) {
-            cy.findByRole('region', {name: `Form ${String.fromCharCode(65 + i)} ${time}`}).should('exist');
+            cy.findByRole('region', { name: `Form ${String.fromCharCode(65 + i)} ${time}` }).should('exist');
         }
 
         // Test pagination controls after page change
-        cy.findByRole('navigation', {name: 'Service catalog pages'}).within(() => {
+        cy.findByRole('navigation', { name: 'Service catalog pages' }).within(() => {
             // Second page active
-            cy.findByRole('link', {name: '2'}).closest('li').should('have.class', 'active');
+            cy.findByRole('link', { name: '2' }).closest('li').should('have.class', 'active');
             // First page link available
-            cy.findByRole('link', {name: '1'}).should('exist');
+            cy.findByRole('link', { name: '1' }).should('exist');
             // Third page link available
-            cy.findByRole('link', {name: '3'}).should('not.exist');
+            cy.findByRole('link', { name: '3' }).should('not.exist');
             // Next/Last buttons disabled (on last page)
-            cy.findByRole('link', {name: 'Next page'}).closest('li').should('have.class', 'disabled');
-            cy.findByRole('link', {name: 'Last page'}).closest('li').should('have.class', 'disabled');
+            cy.findByRole('link', { name: 'Next page' }).closest('li').should('have.class', 'disabled');
+            cy.findByRole('link', { name: 'Last page' }).closest('li').should('have.class', 'disabled');
             // Prev/First buttons enabled
-            cy.findByRole('link', {name: 'Previous page'}).closest('li').should('not.have.class', 'disabled');
-            cy.findByRole('link', {name: 'First page'}).closest('li').should('not.have.class', 'disabled');
+            cy.findByRole('link', { name: 'Previous page' }).closest('li').should('not.have.class', 'disabled');
+            cy.findByRole('link', { name: 'First page' }).closest('li').should('not.have.class', 'disabled');
         });
 
         // Go back to first page using prev button
-        cy.findByRole('link', {name: 'Previous page'}).click();
+        cy.findByRole('link', { name: 'Previous page' }).click();
 
         // Verify first page content again
         for (let i = 0; i < forms_per_page; i++) {
-            cy.findByRole('region', {name: `Form ${String.fromCharCode(65 + i)} ${time}`}).should('exist');
+            cy.findByRole('region', { name: `Form ${String.fromCharCode(65 + i)} ${time}` }).should('exist');
         }
-        cy.findByRole('region', {name: `Form ${String.fromCharCode(65 + forms_per_page)} ${time}`}).should('not.exist');
+        cy.findByRole('region', { name: `Form ${String.fromCharCode(65 + forms_per_page)} ${time}` }).should('not.exist');
     });
 
     it('can display service catalog with form that has no description', () => {
@@ -482,10 +552,10 @@ describe('Service catalog page', () => {
         cy.get('@filter_input').type(form_name);
 
         // Validate that the form is displayed correctly.
-        cy.findByRole('region', {'name': form_name}).as('forms');
+        cy.findByRole('region', { 'name': form_name }).as('forms');
         cy.get('@forms').within(() => {
-            cy.findByRole('heading', {'name': form_name}).should('exist');
-            cy.findByRole('heading', {'name': form_name})
+            cy.findByRole('heading', { 'name': form_name }).should('exist');
+            cy.findByRole('heading', { 'name': form_name })
                 .closest('section')
                 .findByTestId('service-catalog-description')
                 .invoke('text')
@@ -507,9 +577,9 @@ describe('Service catalog page', () => {
 
         // Add a question to B form
         cy.get('@form_id').visitFormTab('Form');
-        cy.findByRole('button', {'name': 'Add a question'}).click();
+        cy.findByRole('button', { 'name': 'Add a question' }).click();
         cy.focused().type('Question 1');
-        cy.findByRole('button', {'name': 'Save'}).click();
+        cy.findByRole('button', { 'name': 'Save' }).click();
 
         cy.changeProfile('Self-Service', true);
 
@@ -517,8 +587,8 @@ describe('Service catalog page', () => {
         cy.visit('/ServiceCatalog');
         cy.findByPlaceholderText('Search for forms...').as('filter_input');
         cy.get('@filter_input').type(time);
-        cy.findByRole('region', {'name': `B form ${time}`}).click();
-        cy.findByRole('button', {'name': 'Submit'}).click();
+        cy.findByRole('region', { 'name': `B form ${time}` }).click();
+        cy.findByRole('button', { 'name': 'Submit' }).click();
         cy.findByRole('alert')
             .should('contain.text', 'Item successfully created');
 
@@ -530,8 +600,8 @@ describe('Service catalog page', () => {
         cy.get('@filter_input').type(time);
 
         // Check the default sort order
-        cy.getDropdownByLabelText('Sort by').findByRole('textbox', {'name': 'Most popular'}).should('exist');
-        cy.findByRole('region', {'name': `Forms`}).within(() => {
+        cy.getDropdownByLabelText('Sort by').findByRole('textbox', { 'name': 'Most popular' }).should('exist');
+        cy.findByRole('region', { 'name': `Forms` }).within(() => {
             cy.findAllByRole('link').should('have.length', 3);
             cy.findAllByRole('link').eq(0).findByRole('heading').contains(`B form ${time}`).should('exist');
             cy.findAllByRole('link').eq(1).findByRole('heading').contains(`A form ${time}`).should('exist');
@@ -542,8 +612,8 @@ describe('Service catalog page', () => {
         cy.getDropdownByLabelText('Sort by').selectDropdownValue('Alphabetical');
 
         // Check the new sort order
-        cy.getDropdownByLabelText('Sort by').findByRole('textbox', {'name': 'Alphabetical'}).should('exist');
-        cy.findByRole('region', {'name': `Forms`}).within(() => {
+        cy.getDropdownByLabelText('Sort by').findByRole('textbox', { 'name': 'Alphabetical' }).should('exist');
+        cy.findByRole('region', { 'name': `Forms` }).within(() => {
             cy.findAllByRole('link').should('have.length', 3);
             cy.findAllByRole('link').eq(0).findByRole('heading').contains(`A form ${time}`).should('exist');
             cy.findAllByRole('link').eq(1).findByRole('heading').contains(`B form ${time}`).should('exist');
@@ -554,8 +624,8 @@ describe('Service catalog page', () => {
         cy.getDropdownByLabelText('Sort by').selectDropdownValue('Reverse alphabetical');
 
         // Check the new sort order
-        cy.getDropdownByLabelText('Sort by').findByRole('textbox', {'name': 'Reverse alphabetical'}).should('exist');
-        cy.findByRole('region', {'name': `Forms`}).within(() => {
+        cy.getDropdownByLabelText('Sort by').findByRole('textbox', { 'name': 'Reverse alphabetical' }).should('exist');
+        cy.findByRole('region', { 'name': `Forms` }).within(() => {
             cy.findAllByRole('link').should('have.length', 3);
             cy.findAllByRole('link').eq(0).findByRole('heading').contains(`C form ${time}`).should('exist');
             cy.findAllByRole('link').eq(1).findByRole('heading').contains(`B form ${time}`).should('exist');
@@ -579,7 +649,7 @@ describe('Service catalog page', () => {
         cy.get('@filter_input').type(form_name);
 
         // Validate that the form is displayed.
-        cy.findByRole('region', {'name': form_name}).as('forms');
+        cy.findByRole('region', { 'name': form_name }).as('forms');
 
         cy.changeProfile('Super-Admin');
         cy.get('@form_id').then(form_id => {
@@ -588,7 +658,7 @@ describe('Service catalog page', () => {
         });
 
         // Delete the form
-        cy.findByRole('button', {'name': 'Put in trashbin'}).click();
+        cy.findByRole('button', { 'name': 'Put in trashbin' }).click();
         cy.findByRole('alert').should('contain.text', 'Item successfully deleted');
 
         // Go back to the service catalog
@@ -598,8 +668,8 @@ describe('Service catalog page', () => {
         cy.get('@filter_input').type(form_name);
 
         // Validate that the form is not displayed
-        cy.findByRole('region', {'name': form_name}).should('not.exist');
-        cy.findByRole('region', {'name': 'Forms'}).contains('No forms found').should('exist');
+        cy.findByRole('region', { 'name': form_name }).should('not.exist');
+        cy.findByRole('region', { 'name': 'Forms' }).contains('No forms found').should('exist');
 
         // Purge the form
         cy.changeProfile('Super-Admin');
@@ -607,7 +677,7 @@ describe('Service catalog page', () => {
             // Visit the form to ensure it exists
             cy.visit(`front/form/form.form.php?id=${form_id}`);
         });
-        cy.findByRole('button', {'name': 'Delete permanently'}).click();
+        cy.findByRole('button', { 'name': 'Delete permanently' }).click();
         cy.findByRole('alert').should('contain.text', 'Item successfully purged');
 
         // Go back to the self-service page
@@ -617,7 +687,7 @@ describe('Service catalog page', () => {
         cy.get('@filter_input').type(form_name);
 
         // Validate that the form is still not displayed
-        cy.findByRole('region', {'name': form_name}).should('not.exist');
-        cy.findByRole('region', {'name': 'Forms'}).contains('No forms found').should('exist');
+        cy.findByRole('region', { 'name': form_name }).should('not.exist');
+        cy.findByRole('region', { 'name': 'Forms' }).contains('No forms found').should('exist');
     });
 });

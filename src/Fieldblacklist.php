@@ -142,7 +142,7 @@ class Fieldblacklist extends CommonDropdown
                 if (isset($values['itemtype']) && !empty($values['itemtype'])) {
                     $target       = getItemForItemtype($values['itemtype']);
                     $searchOption = $target->getSearchOptionByField('field', $values[$field]);
-                    return $searchOption['name'];
+                    return htmlescape($searchOption['name']);
                 }
                 break;
 
@@ -251,7 +251,7 @@ class Fieldblacklist extends CommonDropdown
 
         if ($this->fields['id'] > 0) {
             if ($item = getItemForItemtype($this->fields['itemtype'])) {
-                echo $item->getTypeName(1);
+                echo htmlescape($item->getTypeName(1));
             }
             echo "<input type='hidden' name='itemtype' value='" . htmlescape($this->fields['itemtype']) . "'>";
         } else {

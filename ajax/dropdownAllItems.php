@@ -127,6 +127,6 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
             $params
         );
 
-        echo "<br><span id='" . htmlescape($id) . "'>&nbsp;</span>";
+        echo "<br><div id='" . htmlescape($id) . "'>&nbsp;</div>";
     }
 }

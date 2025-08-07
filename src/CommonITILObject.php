@@ -668,6 +668,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'canupdate'               => $canupdate,
             'canpriority'             => $canupdate,
             'canassign'               => $canupdate,
+            'can_requester'           => $this->canRequesterUpdateItem(),
             'has_pending_reason'      => PendingReason_Item::getForItem($this) !== false,
         ]);
 
@@ -3445,6 +3446,12 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
+
+        if (self::class === static::class) {
+            // Needed because this method depends on static variables that will
+            // be defined by child classes.
+            throw new RuntimeException("Do not call this method on CommonITILObject, use the target child class instead");
+        }
 
         $p = [
             'name'     => 'urgency',
@@ -7172,8 +7179,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 foreach ($result as $plan) {
                     if (isset($plan['begin']) && $plan['begin']) {
                         $items[$plan['id']] = $plan['id'];
-                        $planned_info .= htmlescape(sprintf(__('From %s'), Html::convDateTime($plan['begin'])));
-                        $planned_info .= htmlescape(sprintf(__('To %s'), Html::convDateTime($plan['end'])));
+                        $planned_info .= htmlescape(sprintf(__('From %s'), Html::convDateTime($plan['begin']))) . '<br>';
+                        $planned_info .= htmlescape(sprintf(__('To %s'), Html::convDateTime($plan['end']))) . '<br>';
                         if ($plan['users_id_tech']) {
                             $user = new User();
                             if (!isset($user_cache[$plan["users_id_tech"]]) && $user->getFromDB($plan["users_id_tech"])) {
@@ -7190,7 +7197,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                                 );
                                 $user_cache[$plan['users_id']] = $user_value;
                             }
-                            $planned_info .= htmlescape(sprintf(__('By %s'), $user_cache[$plan['users_id_tech']]));
+                            $planned_info .= sprintf(__s('By %s'), $user_cache[$plan['users_id_tech']]);
                         }
                         $planned_info .= "<br>";
                     }
@@ -7914,10 +7921,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
     public static function showEditDescriptionForm(CommonITILObject $item)
     {
-        $can_requester = true;
-        if (method_exists($item, "canRequesterUpdateItem")) {
-            $can_requester = $item->canRequesterUpdateItem();
-        }
+        $can_requester = $item->canRequesterUpdateItem();
         TemplateRenderer::getInstance()->display('components/itilobject/timeline/simple_form.html.twig', [
             'item'          => $item,
             'canupdate'     => (Session::getCurrentInterface() == "central" && $item->canUpdateItem()),
@@ -11241,5 +11245,16 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'allow_auto_submit' => false,
             'main_rand' => mt_rand(),
         ]);
+    }
+
+    /**
+     * Is the current user a requester of the current itil item and does he have
+     * the right to update it?
+     *
+     * @return bool
+     */
+    public function canRequesterUpdateItem()
+    {
+        return true;
     }
 }

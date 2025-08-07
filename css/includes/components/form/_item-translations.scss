@@ -1,0 +1,66 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+// Common styles for ItemTranslation-based components (FormTranslation and HelpdeskTranslation)
+#glpi-form-translations-languages,
+#glpi-helpdesk-translations-languages {
+    tr {
+        &:has(input.form-control:focus) {
+            box-shadow: inset 2px 0 0 var(--tblr-primary);
+        }
+
+        td {
+            vertical-align: middle;
+            padding: 0.5rem 0.75rem;
+        }
+
+        td:not(:first-child) {
+            width: 35%;
+        }
+    }
+
+    // Apply table header styles to rows containing a span with subtitle row attributes
+    td:has(> span[data-glpi-form-translations-subtitle-row]),
+    td:has(> span[data-glpi-helpdesk-translations-subtitle-row]) {
+        color: var(--tblr-secondary);
+        background: var(--tblr-bg-surface-tertiary);
+        font-size: 0.625rem;
+        font-weight: var(--tblr-font-weight-bold);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        line-height: 1rem;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        white-space: nowrap;
+    }
+}
