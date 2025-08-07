@@ -88,10 +88,6 @@ class ProjectTeam extends CommonDBRelation
         return $forbidden;
     }
 
-
-    /**
-     * @see CommonGLPI::getTabNameForItem()
-     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 

@@ -89,11 +89,6 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
         ];
     }
 
-    /**
-     * Name of the type
-     *
-     * @param $nb : number of item in the type
-     **/
     public static function getTypeName($nb = 0)
     {
         return _n('Printer', 'Printers', $nb);

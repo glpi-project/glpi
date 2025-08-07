@@ -82,11 +82,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
         ];
     }
 
-    /**
-     * Name of the type
-     *
-     * @param $nb : number of item in the type (default 0)
-     **/
     public static function getTypeName($nb = 0)
     {
         return _n('Project', 'Projects', $nb);

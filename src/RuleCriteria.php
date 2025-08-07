@@ -86,13 +86,6 @@ class RuleCriteria extends CommonDBChild
         }
     }
 
-    /**
-     * Get title used in rule
-     *
-     * @param integer $nb for singular or plural (default 0)
-     *
-     * @return string Title of the rule
-     **/
     public static function getTypeName($nb = 0)
     {
         return _n('Criterion', 'Criteria', $nb);

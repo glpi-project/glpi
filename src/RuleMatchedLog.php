@@ -51,14 +51,6 @@ class RuleMatchedLog extends CommonDBTM
      */
     public static $rightname = 'inventory';
 
-
-    /**
-     * Get name of this type by language of the user connected
-     *
-     * @param integer $nb number of elements
-     *
-     * @return string name of this type
-     */
     public static function getTypeName($nb = 0)
     {
         return __('Matched rules');

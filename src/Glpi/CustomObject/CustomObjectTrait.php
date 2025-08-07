@@ -40,9 +40,6 @@ use Toolbox;
 
 trait CustomObjectTrait
 {
-    /**
-     * @see \CommonGLPI::getTypeName()
-     */
     public static function getTypeName($nb = 0)
     {
         return static::getDefinition()->getTranslatedName($nb);

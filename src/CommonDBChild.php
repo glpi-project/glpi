@@ -108,10 +108,6 @@ abstract class CommonDBChild extends CommonDBConnexity
         return null;
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public static function canCreate(): bool
     {
 
@@ -121,10 +117,6 @@ abstract class CommonDBChild extends CommonDBConnexity
         return static::canChild('canUpdate');
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public static function canView(): bool
     {
         if ((static::$rightname) && (!Session::haveRight(static::$rightname, READ))) {
@@ -133,10 +125,6 @@ abstract class CommonDBChild extends CommonDBConnexity
         return static::canChild('canView');
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public static function canUpdate(): bool
     {
         if ((static::$rightname) && (!Session::haveRight(static::$rightname, UPDATE))) {
@@ -145,10 +133,6 @@ abstract class CommonDBChild extends CommonDBConnexity
         return static::canChild('canUpdate');
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public static function canDelete(): bool
     {
         if ((static::$rightname) && (!Session::haveRight(static::$rightname, DELETE))) {
@@ -157,10 +141,6 @@ abstract class CommonDBChild extends CommonDBConnexity
         return static::canChild('canUpdate');
     }
 
-
-    /**
-     * @since 0.85
-     **/
     public static function canPurge(): bool
     {
         if ((static::$rightname) && (!Session::haveRight(static::$rightname, PURGE))) {
@@ -169,37 +149,21 @@ abstract class CommonDBChild extends CommonDBConnexity
         return static::canChild('canUpdate');
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public function canCreateItem(): bool
     {
         return $this->canChildItem('canUpdateItem', 'canUpdate');
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public function canViewItem(): bool
     {
         return $this->canChildItem('canViewItem', 'canView');
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public function canUpdateItem(): bool
     {
         return $this->canChildItem('canUpdateItem', 'canUpdate');
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public function canDeleteItem(): bool
     {
         return $this->canChildItem('canUpdateItem', 'canUpdate');

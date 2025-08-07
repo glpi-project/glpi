@@ -190,14 +190,6 @@ class PendingReasonCron extends CommonDBTM
         return 1;
     }
 
-    /**
-     * Return the localized name of the current Type
-     * Should be overloaded in each new class
-     *
-     * @param integer $nb Number of items
-     *
-     * @return string
-     **/
     public static function getTypeName($nb = 0)
     {
         return __('Automatic followups / resolution');

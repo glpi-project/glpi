@@ -1953,15 +1953,9 @@ TWIG, $twig_params);
         return $params;
     }
 
-    /**
-     * For tabs management : force isNewItem
-     *
-     * @since 0.83
-     *
-     * @return boolean
-     **/
     public function isNewItem()
     {
+        // For tabs management : force isNewItem
         return false;
     }
 

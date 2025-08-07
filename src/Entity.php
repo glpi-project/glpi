@@ -631,9 +631,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         return $ong;
     }
 
-    /**
-     * @since 0.84 (before in entitydata.class)
-     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
@@ -667,9 +664,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         return '';
     }
 
-    /**
-     * @since 0.84 (before in entitydata.class)
-     **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof self) {

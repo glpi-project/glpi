@@ -179,11 +179,6 @@ class Notification extends CommonDBTM implements FilterableInterface
         return ['config', self::class, self::class];
     }
 
-    /**
-     *  @see CommonGLPI::getMenuContent()
-     *
-     *  @since 0.85
-     **/
     public static function getMenuContent()
     {
         $menu = [];

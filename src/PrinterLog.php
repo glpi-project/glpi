@@ -48,14 +48,6 @@ class PrinterLog extends CommonDBChild
     public static $items_id = 'items_id';
     public $dohistory       = false;
 
-
-    /**
-     * Get name of this type by language of the user connected
-     *
-     * @param integer $nb number of elements
-     *
-     * @return string name of this type
-     */
     public static function getTypeName($nb = 0)
     {
         return __('Page counters');
@@ -66,13 +58,6 @@ class PrinterLog extends CommonDBChild
         return 'ti ti-chart-line';
     }
 
-    /**
-     * Get the tab name used for item
-     *
-     * @param CommonGLPI $item the item object
-     * @param integer $withtemplate 1 if is a template form
-     * @return string|array name of the tab
-     */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         /** @var array $CFG_GLPI */
@@ -88,15 +73,6 @@ class PrinterLog extends CommonDBChild
         return $array_ret;
     }
 
-
-    /**
-     * Display the content of the tab
-     *
-     * @param CommonGLPI $item
-     * @param integer $tabnum number of the tab to display
-     * @param integer $withtemplate 1 if is a template form
-     * @return boolean
-     */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         /** @var array $CFG_GLPI */

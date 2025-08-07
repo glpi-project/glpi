@@ -294,11 +294,6 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         return $parent::canView();
     }
 
-    /**
-     * Name of the type
-     *
-     * @param $nb : number of item in the type (default 0)
-     **/
     public static function getTypeName($nb = 0)
     {
         return _n('Task', 'Tasks', $nb);
