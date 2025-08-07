@@ -2877,13 +2877,6 @@ HTML;
             return false;
         }
 
-        $authtype = $this->getAuthMethodsByID();
-
-        $extauth  = !(($this->fields["authtype"] == Auth::DB_GLPI)
-                   || (($this->fields["authtype"] == Auth::NOT_YET_AUTHENTIFIED)
-                       && !empty($this->fields["password"])));
-
-
         $profiles = [];
         if (count($_SESSION['glpiprofiles']) > 1) {
             $profiles = Dropdown::getDropdownArrayNames(
@@ -6288,7 +6281,6 @@ HTML;
         $options['candel'] = false;
         $options['canedit'] = self::canUpdate();
         $this->showFormHeader($options);
-        $rand = mt_rand();
 
         echo "<tr class='tab_bg_1'>";
         $surnamerand = mt_rand();

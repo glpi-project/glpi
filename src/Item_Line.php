@@ -304,7 +304,6 @@ class Item_Line extends CommonDBRelation
 
         $itemtype = $item::getType();
         $ID = $item->fields['id'];
-        $rand = mt_rand();
 
         if (
             !$item->getFromDB($ID)

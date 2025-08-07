@@ -447,7 +447,6 @@ TWIG, $twig_params);
         $lastItem = $recursiveItems[count($recursiveItems) - 1];
 
         echo "<td>" . __s('Origin port') . "</td><td>\n";
-        $links_id      = [];
         $netport_types = ['NetworkPortEthernet', 'NetworkPortWifi'];
         $selectOptions = [];
         $possible_ports = [];

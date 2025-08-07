@@ -951,9 +951,6 @@ HTML;
         /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
-        $gridstack_id = $card_options['args']['gridstack_id'] ?? $card_id;
-        $dashboard    = $card_options['dashboard'] ?? "";
-
         $force = ($card_options['args']['force'] ?? $card_options['force'] ?? false);
 
         // retrieve card
@@ -968,7 +965,6 @@ HTML;
             \htmlescape($card_id) .
             "</div>";
 
-        $start = microtime(true);
         Profiler::getInstance()->start(__METHOD__ . ' get card data');
         try {
             $cards = $this->getAllDasboardCards();

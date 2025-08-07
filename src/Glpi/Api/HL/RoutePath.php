@@ -212,7 +212,6 @@ final class RoutePath
         $attributes = [];
         $placeholders = [];
         preg_match_all('/\{([^}]+)\}/', $this->getRoutePath(), $placeholders);
-        $placeholders = $placeholders[1];
         $path_parts = explode('/', $path);
         $route_parts = explode('/', $this->getRoutePath());
         foreach ($route_parts as $i => $part) {
@@ -317,7 +316,6 @@ final class RoutePath
         );
         /** @var Doc\Route $controller_doc_attr */
         $controller_doc_attr = count($controller_doc_attrs) ? reset($controller_doc_attrs)->newInstance() : null;
-        $t = $this->getMethod()->getAttributes();
         $doc_attrs = array_filter(
             $this->getMethod()->getAttributes(),
             static fn($attr) => is_a($attr->getName(), Doc\Route::class, true)

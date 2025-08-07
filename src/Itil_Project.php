@@ -264,7 +264,6 @@ TWIG, $twig_params);
         }
 
         $canedit = $itil->canEdit($ID);
-        $rand    = mt_rand();
 
         $selfTable = self::getTable();
         $projectTable = Project::getTable();

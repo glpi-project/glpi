@@ -174,8 +174,6 @@ class IPNetwork_Vlan extends CommonDBRelation
         $header_end .= "<th>" . __s('ID TAG') . "</th>";
         $header_end .= "</tr>";
         echo $header_begin . $header_top . $header_end;
-
-        $used = [];
         foreach ($vlans as $data) {
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {

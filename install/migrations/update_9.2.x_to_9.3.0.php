@@ -44,7 +44,6 @@ function update92xto930()
      * @var Migration $migration
      */
     global $DB, $migration;
-    $dbutils = new DbUtils();
 
     $current_config   = Config::getConfigurationValues('core');
     $updateresult     = true;

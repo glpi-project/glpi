@@ -489,7 +489,6 @@ class NotificationTarget extends CommonDBChild
     {
 
         $type   = "";
-        $action = "";
         $target = self::getInstanceByType($input['itemtype']);
 
         if (!isset($input['notifications_id'])) {
@@ -582,8 +581,6 @@ class NotificationTarget extends CommonDBChild
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
-
-        $new_target = null;
         $new_lang = '';
 
         // Default USER TYPE is ANONYMOUS

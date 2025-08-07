@@ -74,8 +74,6 @@ class NotificationTargetSavedSearch_Alert extends NotificationTarget
         global $CFG_GLPI;
 
         $events = $this->getEvents();
-
-        $savedsearch_alert = $options['item'];
         /** @var SavedSearch $savedsearch */
         $savedsearch = $options['savedsearch'];
 

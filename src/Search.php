@@ -948,7 +948,6 @@ class Search
     public static function showItem($type, $value, &$num, $row, $extraparam = '')
     {
 
-        $out = "";
         // Handle null values
         if ($value === null) {
             $value = '';

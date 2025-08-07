@@ -49,9 +49,7 @@ function update921to922()
      */
     global $DB, $migration;
 
-    $current_config   = Config::getConfigurationValues('core');
     $updateresult     = true;
-    $ADDTODISPLAYPREF = [];
 
     $migration->setVersion('9.2.2');
 

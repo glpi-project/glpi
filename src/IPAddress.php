@@ -241,7 +241,6 @@ class IPAddress extends CommonDBChild
             return;
         }
 
-        $rand = mt_rand();
         $start       = (int) ($_GET["start"] ?? 0);
         $sort        = $_GET["sort"] ?? "";
         $order       = strtoupper($_GET["order"] ?? "");

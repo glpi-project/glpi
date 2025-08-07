@@ -78,7 +78,6 @@ final class ApiController extends AbstractController
             });
         }
 
-        $supported_versions = Router::getAPIVersions();
         // Extract the requested API version (if any) and then remove it from the URI
         $version = Router::API_VERSION;
         if (preg_match('/^\/v(\d+(?:\.\d+)*)\//', $relative_uri, $matches)) {

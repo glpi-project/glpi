@@ -392,7 +392,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         $rand    = mt_rand();
 
         $types_iterator = static::getDistinctTypes($instID);
-        $number = count($types_iterator);
         $is_closed = $obj instanceof CommonITILObject
             && in_array(
                 $obj->fields['status'],
@@ -803,7 +802,6 @@ TWIG, $twig_params);
         $entity_restrict = Session::getMatchingActiveEntities($entity_restrict);
 
         $rand        = (int) $params['rand'];
-        $already_add = $params['used'];
 
         if (
             $_SESSION["glpiactiveprofile"]["helpdesk_hardware"]

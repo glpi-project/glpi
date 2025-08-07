@@ -4539,7 +4539,6 @@ HTML;
         ]);
 
         $results = $hook_results['actors'] ?? [];
-        $total_results = count($results);
 
         $start = ($post['page'] - 1) * $post['page_limit'];
         $results = array_slice($results, $start, $post['page_limit']);

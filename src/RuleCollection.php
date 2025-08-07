@@ -1153,7 +1153,6 @@ TWIG, $twig_params);
         if (!$xmlE = simplexml_load_string($xml)) {
             Session::addMessageAfterRedirect(__s('Unauthorized file type'), false, ERROR);
         }
-        $errors = libxml_get_errors();
         // convert SimpleXml object into an array and store it in session
         $rules         = json_decode(json_encode((array) $xmlE), true);
         // check rules (check if entities, criteria and actions is always good in this glpi)

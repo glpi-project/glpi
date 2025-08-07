@@ -1119,10 +1119,6 @@ class Webhook extends CommonDBTM implements FilterableInterface
             return;
         }
 
-        $entity_criteria = [
-            'entities_id' => 0,
-        ];
-
         $it = $DB->request([
             'SELECT' => ['id', 'entities_id', 'is_recursive'],
             'FROM' => self::getTable(),

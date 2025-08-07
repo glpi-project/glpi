@@ -35,6 +35,7 @@
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\CodeQuality\Rector as CodeQuality;
 use Rector\Config\RectorConfig;
+use Rector\DeadCode\Rector as DeadCode;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\ValueObject\PhpVersion;
 
@@ -104,6 +105,7 @@ return RectorConfig::configure()
         CodeQuality\LogicalAnd\LogicalToBooleanRector::class,
         CodeQuality\NotEqual\CommonNotEqualRector::class,
         CodeQuality\Ternary\UnnecessaryTernaryExpressionRector::class,
+        DeadCode\Assign\RemoveUnusedVariableAssignRector::class,
     ])
     ->withPhpSets(php74: true) // apply PHP sets up to PHP 7.4
 ;

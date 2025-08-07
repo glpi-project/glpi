@@ -1985,9 +1985,6 @@ class DBmysql
     {
         $lines = explode("\n", $sql);
 
-        // try to keep mem. use down
-        $sql = "";
-
         $linecount = count($lines);
         $output = "";
 

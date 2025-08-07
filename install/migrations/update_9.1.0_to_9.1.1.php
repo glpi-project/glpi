@@ -45,9 +45,7 @@ function update910to911()
      */
     global $DB, $migration;
 
-    $current_config   = Config::getConfigurationValues('core');
     $updateresult     = true;
-    $ADDTODISPLAYPREF = [];
 
     $migration->setVersion('9.1.1');
 
