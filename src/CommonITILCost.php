@@ -84,7 +84,7 @@ abstract class CommonITILCost extends CommonDBChild
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if (!$item instanceof CommonITILCost && !$item instanceof Project) {
+        if (!$item instanceof CommonITILObject && !$item instanceof Project) {
             return false;
         }
 
