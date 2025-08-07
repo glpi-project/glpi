@@ -553,10 +553,10 @@ final class SQLProvider implements SearchProviderInterface
             switch ($opt["datatype"]) {
                 case "count":
                     return array_merge([
-                        QueryFunction::count(
-                            expression: "$table$addtable.$field",
-                            distinct: true,
-                            alias: $NAME
+                        QueryFunction::ifnull(
+                            expression: new QueryExpression($DB::quoteName("{$table}{$addtable}.counter")),
+                            value: new QueryExpression($DB::quoteValue('0')),
+                            alias: $NAME,
                         ),
                     ], $ADDITONALFIELDS);
 
@@ -2736,6 +2736,7 @@ final class SQLProvider implements SearchProviderInterface
      * @param class-string<CommonDBTM>|'' $meta_type Meta type table (default 0)
      * @param array   $joinparams           Array join parameters (condition / joinbefore...)
      * @param string  $field                Field to display (needed for translation join) (default '')
+     * @param boolean $is_counter           Is it a counter field? (default false)
      *
      * @return array Left join string
      **/
@@ -2748,7 +2749,8 @@ final class SQLProvider implements SearchProviderInterface
         bool $meta = false,
         string $meta_type = '',
         array $joinparams = [],
-        string $field = ''
+        string $field = '',
+        bool $is_counter = false
     ): array {
         global $DB;
         // Rename table for meta left join
@@ -3002,18 +3004,44 @@ final class SQLProvider implements SearchProviderInterface
                     case 'child':
                         $linkfield = $joinparams['linkfield'] ?? getForeignKeyFieldForTable($cleanrt);
 
-                        // Child join
-                        $child_join = [
-                            'LEFT JOIN' => [
-                                "$new_table$AS" => [
-                                    'ON' => [
-                                        $rt => 'id',
-                                        $nt => $linkfield,
+                        if ($is_counter) {
+                            $subquery = new QuerySubQuery(
+                                [
+                                    'SELECT' => [
+                                        $linkfield,
+                                        new QueryExpression("COUNT(*)", "counter"),
+                                    ],
+                                    'FROM' => $new_table,
+                                    'GROUPBY' => $linkfield,
+                                ],
+                                $nt
+                            );
+
+                            $child_join = [
+                                'LEFT JOIN' => [
+                                    [
+                                        'TABLE'  => $subquery,
+                                        'FKEY'   => [
+                                            $rt => 'id',
+                                            $nt => $linkfield,
+                                        ],
                                     ],
                                 ],
-                            ],
-                        ];
-                        $append_join_criteria($child_join['LEFT JOIN']["$new_table$AS"]['ON'], $add_criteria);
+                            ];
+                        } else {
+                            // Child join
+                            $child_join = [
+                                'LEFT JOIN' => [
+                                    "$new_table$AS" => [
+                                        'ON' => [
+                                            $rt => 'id',
+                                            $nt => $linkfield,
+                                        ],
+                                    ],
+                                ],
+                            ];
+                            $append_join_criteria($child_join['LEFT JOIN']["$new_table$AS"]['ON'], $add_criteria);
+                        }
                         $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, $child_join);
                         break;
 
@@ -3178,18 +3206,55 @@ final class SQLProvider implements SearchProviderInterface
                         break;
 
                     default:
-                        // Standard join
-                        $standard_join = [
-                            'LEFT JOIN' => [
-                                "$new_table$AS" => [
-                                    'ON' => [
-                                        $rt => $linkfield,
-                                        $nt => 'id',
+                        if ($is_counter) {
+                            $leftjoin = $before_criteria ?? [];
+                            $leftjoin['LEFT JOIN']["$new_table$AS"] = [
+                                'ON' => [
+                                    $rt => $linkfield,
+                                    $nt => 'id',
+                                ],
+                            ];
+                            $leftjoin['INNER JOIN'] = $leftjoin['LEFT JOIN'];
+                            unset($leftjoin['LEFT JOIN']);
+                            $subquery = [
+                                'SELECT' => [
+                                    "$ref_table.id",
+                                    new QueryExpression("COUNT(DISTINCT $nt.id)", "counter"),
+                                ],
+                                'FROM' => $ref_table,
+                                'GROUPBY' => "$ref_table.id",
+                            ] + $leftjoin;
+                            $subtable = new QuerySubQuery(
+                                $subquery,
+                                $nt
+                            );
+
+                            $standard_join = [
+                                'LEFT JOIN' => [
+                                    [
+                                        'TABLE'  => $subtable,
+                                        'FKEY'   => [
+                                            $ref_table => 'id',
+                                            $nt => 'id',
+                                        ],
                                     ],
                                 ],
-                            ],
-                        ];
-                        $append_join_criteria($standard_join['LEFT JOIN']["$new_table$AS"]['ON'], $add_criteria);
+                            ];
+                            $before_criteria = [];
+                        } else {
+                            // Standard join
+                            $standard_join = [
+                                'LEFT JOIN' => [
+                                    "$new_table$AS" => [
+                                        'ON' => [
+                                            $rt => $linkfield,
+                                            $nt => 'id',
+                                        ],
+                                    ],
+                                ],
+                            ];
+                            $append_join_criteria($standard_join['LEFT JOIN']["$new_table$AS"]['ON'], $add_criteria);
+                        }
                         $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, $standard_join);
                         $transitemtype = getItemTypeForTable($new_table);
                         if (Session::haveTranslations($transitemtype, $field)) {
@@ -4213,7 +4278,8 @@ final class SQLProvider implements SearchProviderInterface
                     false,
                     '',
                     $searchopt[$val]["joinparams"],
-                    $searchopt[$val]["field"]
+                    $searchopt[$val]["field"],
+                    (($searchopt[$val]['datatype'] ?? '') == 'count')
                 );
             }
         }
