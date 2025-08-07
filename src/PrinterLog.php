@@ -353,7 +353,7 @@ class PrinterLog extends CommonDBChild
         ]);
 
         // display graph
-        echo "<div class='dashboard printer_barchart pt-2'>";
+        echo "<div class='dashboard printer_barchart pt-2' data-testid='pages_barchart'>";
         echo Widget::multipleAreas($bar_conf);
         echo "</div>";
     }
