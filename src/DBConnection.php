@@ -42,7 +42,7 @@ use function Safe\unlink;
 /**
  *  Database class for Mysql
  **/
-class DBConnection extends CommonDBTM
+class DBConnection extends CommonGLPI
 {
     /**
      * "Use timezones" property name.
