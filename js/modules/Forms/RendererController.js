@@ -124,7 +124,7 @@ export class GlpiFormRendererController
             () => this.#computeItemsVisibilities(),
             400,
         );
-        $(document).on('input tinyMCEInput', this.#target, () => {
+        $(document).on('input tinyMCEInput glpi_fileupload_remove', this.#target, () => {
             // Disable actions immediately to avoid someone clicking on the actions
             // while the conditions have not been computed yet.
             this.#disableActions();

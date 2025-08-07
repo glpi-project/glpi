@@ -153,6 +153,13 @@ var displayUploadedFile = function(file, tag, editor, input_name, filecontainer)
     var elementsIdToRemove = {0:file.id, 1:`${file.id}2`};
     $('<span class="ti ti-circle-x pointer remove_file_upload"></span>').on('click', () => {
         deleteImagePasted(elementsIdToRemove, tag.tag, editor);
+
+        // Trigger an event to notify that an image has been removed
+        $(document).trigger('glpi_fileupload_remove', {
+            elementsIdToRemove: elementsIdToRemove,
+            tagToRemove: tag.tag,
+            editor: editor
+        });
     }).appendTo(p);
 };
 
