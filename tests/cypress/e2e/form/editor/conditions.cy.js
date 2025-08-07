@@ -2888,4 +2888,48 @@ describe ('Conditions', () => {
         closeConditionEditor();
         checkConditionsCount('0');
     });
+
+    it('check whether uploading a file in a “File” question updates the visibility of a target question', () => {
+        createForm();
+
+        // Add a target question
+        addQuestion('My target question');
+
+        // Add a file upload question
+        addQuestion('My file question');
+        setQuestionTypeCategory('File');
+
+        // Add a condition to show the target question if the file question is not empty
+        getAndFocusQuestion('My target question').within(() => {
+            initVisibilityConfiguration();
+            setConditionStrategy('Visible if...');
+            fillCondition(0, null, 'My file question', 'Is not empty', null, null);
+            closeVisibilityConfiguration();
+        });
+
+        // Save and reload to ensure conditions are applied
+        saveAndReload();
+
+        // Preview the form
+        preview();
+
+        // Check that the target question is not visible initially
+        validateThatQuestionIsNotVisible('My target question');
+
+        // Upload a file to the file question
+        cy.findByRole('region', {'name': 'My file question'}).within(() => {
+            cy.get('input[type="file"]').selectFile('fixtures/uploads/bar.png');
+        });
+
+        // Check that the target question is now visible
+        validateThatQuestionIsVisible('My target question');
+
+        // Remove the uploaded file
+        cy.findByRole('region', {'name': 'My file question'}).within(() => {
+            cy.get('.fileupload .remove_file_upload').click();
+        });
+
+        // Check that the target question is not visible anymore
+        validateThatQuestionIsNotVisible('My target question');
+    });
 });
