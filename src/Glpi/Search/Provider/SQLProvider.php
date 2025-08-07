@@ -4328,7 +4328,6 @@ final class SQLProvider implements SearchProviderInterface
         }
 
         $LIMIT   = "";
-        $numrows = 0;
         //No search: count number of items using a simple count(ID) request and LIMIT search
         if ($data['search']['no_search']) {
             $LIMIT = " LIMIT " . (int) $data['search']['start'] . ", " . (int) $data['search']['list_limit'];

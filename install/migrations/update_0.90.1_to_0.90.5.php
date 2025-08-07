@@ -47,7 +47,6 @@ function update0901to0905()
     global $DB, $migration;
 
     $updateresult     = true;
-    $ADDTODISPLAYPREF = [];
 
     $migration->setVersion('0.90.5');
 

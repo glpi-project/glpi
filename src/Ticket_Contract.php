@@ -110,7 +110,6 @@ class Ticket_Contract extends CommonDBRelation
             return $entry;
         }, iterator_to_array(self::getListForItem($item), false));
         $twig_params['used'] = [];
-        $numrows = count($linked_items);
         foreach ($linked_items as $linked_item) {
             $twig_params['used'][$linked_item['id']] = $linked_item['id'];
         }

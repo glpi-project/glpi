@@ -246,7 +246,7 @@ class CronTask extends CommonDBTM
             pcntl_signal(SIGTERM, [$this, 'signal']);
         }
 
-        $result = $DB->update(
+        $DB->update(
             self::getTable(),
             [
                 'state'  => self::STATE_RUNNING,
@@ -1150,15 +1150,6 @@ class CronTask extends CommonDBTM
         }
 
         $start = (int) ($_GET["start"] ?? 0);
-
-        // Total Number of events
-        $number = countElementsInTable(
-            'glpi_crontasklogs',
-            [
-                'crontasks_id' => $this->fields['id'],
-                'state'        => [CronTaskLog::STATE_STOP, CronTaskLog::STATE_ERROR],
-            ]
-        );
 
         $criteria = [
             'FROM'   => 'glpi_crontasklogs',

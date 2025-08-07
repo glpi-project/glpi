@@ -66,7 +66,6 @@ trait TreeBrowse
 
         $ajax_url    = $CFG_GLPI["root_doc"] . "/ajax/treebrowse.php";
 
-        $loading_txt = __s('Loading...');
         $start       = isset($params['start'])
                             ? (int) $params['start']
                             : 0;

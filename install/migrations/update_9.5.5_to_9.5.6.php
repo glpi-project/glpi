@@ -49,9 +49,7 @@ function update955to956()
      */
     global $DB, $migration, $CFG_GLPI;
 
-    $current_config   = Config::getConfigurationValues('core');
     $updateresult     = true;
-    $ADDTODISPLAYPREF = [];
 
     $migration->setVersion('9.5.6');
 

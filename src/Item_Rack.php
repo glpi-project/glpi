@@ -539,8 +539,6 @@ JAVASCRIPT;
          */
         global $CFG_GLPI, $DB;
 
-        $colspan = 4;
-
         echo "<div class='center'>";
 
         $this->initForm($ID, $options);

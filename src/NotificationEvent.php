@@ -229,7 +229,6 @@ class NotificationEvent extends CommonDBTM
                 }
             }
         }
-        $template = null;
         return true;
     }
 }

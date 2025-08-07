@@ -1876,9 +1876,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             );
         }
 
-        // Notification right applied
-        $canedit = (Notification::canUpdate()
-                  && Session::haveAccessToEntity($ID));
         TemplateRenderer::getInstance()->display('pages/admin/entity/notifications.html.twig', [
             'item' => $entity,
             'params' => [

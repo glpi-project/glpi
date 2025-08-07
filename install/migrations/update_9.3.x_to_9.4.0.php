@@ -44,9 +44,7 @@ function update93xto940()
      * @var Migration $migration
      */
     global $DB, $migration;
-    $dbutils = new DbUtils();
 
-    $current_config   = Config::getConfigurationValues('core');
     $updateresult     = true;
     $ADDTODISPLAYPREF = [];
     $config_to_drop = [];

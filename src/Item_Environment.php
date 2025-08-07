@@ -142,9 +142,6 @@ final class Item_Environment extends CommonDBChild
             $envs[$env['id']] = $env;
         }
 
-        $users = array_unique(array_column($all_data, 'user'));
-        $users = array_combine($users, $users);
-
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'start' => $start,
             'sort' => $sort,

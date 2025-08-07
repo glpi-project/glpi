@@ -226,7 +226,6 @@ class VirtualMachine extends InventoryAsset
     {
         $value = $this->data;
         $itemVirtualmachine = new ItemVirtualMachine();
-        $computer = new Computer();
 
         $db_vms = $this->getExisting();
 

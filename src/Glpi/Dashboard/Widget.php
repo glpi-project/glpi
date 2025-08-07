@@ -48,7 +48,6 @@ use Search;
 use Symfony\Component\DomCrawler\Crawler;
 use Toolbox;
 
-use function Safe\json_encode;
 use function Safe\ob_get_clean;
 use function Safe\ob_start;
 
@@ -627,22 +626,18 @@ HTML;
             return $html;
         }
 
-        $labels = [];
         $series = [];
         $total = 0;
         foreach ($p['data'] as $entry) {
             $entry = array_merge($default_entry, $entry);
             $total += $entry['number'];
 
-            $labels[] = $entry['label'];
             $series[] = [
                 'name'  => $entry['label'],
                 'value' => $entry['number'],
                 'url'   => $entry['url'],
             ];
         }
-
-        $labels = json_encode($labels);
 
         $colors = self::getPalette($p['palette'], $nb_series);
         if ($p['use_gradient']) {

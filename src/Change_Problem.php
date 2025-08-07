@@ -230,7 +230,6 @@ class Change_Problem extends CommonITILObject_CommonITILObject
 
         $problems = [];
         $used     = [];
-        $numrows = count($iterator);
         foreach ($iterator as $data) {
             $problems[$data['id']] = $data;
             $used[$data['id']]     = $data['id'];

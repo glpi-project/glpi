@@ -964,7 +964,6 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
             ),
             'ORDERBY'   => 'entity',
         ]);
-        $nb = count($iterator);
 
         $entries = [];
         $software = new self();

@@ -4509,7 +4509,6 @@ JS;
         $multiple = $params['multiple'];
         $templateResult = $params['templateResult'];
         $templateSelection = $params['templateSelection'];
-        $container_css_class = $params['container_css_class'];
         $aria_label = $params['aria_label'];
         unset($params["on_change"], $params["width"]);
 

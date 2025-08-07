@@ -365,8 +365,6 @@ class PDU_Rack extends CommonDBRelation
 
         $pdu   = new PDU();
         $pdu_m = new PDUModel();
-        $pra   = new self();
-        $sides = self::getSides();
 
         $found_pdus = [];
         // find pdus from this relation

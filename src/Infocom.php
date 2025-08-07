@@ -1265,7 +1265,6 @@ JS;
             $date_i2,
             $date_s2
         );
-        $date_Y2 = date("Y");
 
         switch ($type_amort) {
             case "1":

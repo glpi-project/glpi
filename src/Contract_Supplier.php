@@ -251,7 +251,6 @@ TWIG, $twig_params);
         $rand    = mt_rand();
 
         $iterator = self::getListForItem($contract);
-        $number = count($iterator);
 
         $suppliers = [];
         $used      = [];

@@ -3022,7 +3022,6 @@ final class Transfer extends CommonDBTM
     {
 
         $input               = [];
-        $suppliers_id_assign = 0;
 
         //TODO Is there a replacement needed for this commented code or is it obsolete?
         // if ($data['suppliers_id_assign'] > 0) {

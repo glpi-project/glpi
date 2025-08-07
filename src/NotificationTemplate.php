@@ -347,10 +347,6 @@ class NotificationTemplate extends CommonDBTM
     public static function process($string, $data)
     {
 
-        $offset = $new_offset = 0;
-        //Template processed
-        $output = "";
-
         $cleandata = [];
         // clean data for strtr
         foreach ($data as $field => $value) {
@@ -605,7 +601,6 @@ class NotificationTemplate extends CommonDBTM
     public function getDataToSend(NotificationTarget $target, $tid, $to, array $user_infos, array $options)
     {
 
-        $language   = $user_infos['language'];
         $user_name  = $user_infos['username'];
 
         $sender     = $target->getSender();
