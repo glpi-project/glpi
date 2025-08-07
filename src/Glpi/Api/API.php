@@ -1159,6 +1159,7 @@ abstract class API
         $already_linked_table = [];
         $criteria = SQLProvider::getDefaultJoinCriteria($itemtype, $table, $already_linked_table);
         $criteria['WHERE'] = SQLProvider::getDefaultWhereCriteria($itemtype);
+        $criteria['WHERE'] += $itemtype::getSystemSQLCriteria();
         if (!isset($criteria['LEFT JOIN'])) {
             $criteria['LEFT JOIN'] = [];
         }
