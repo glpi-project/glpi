@@ -677,11 +677,13 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
         $criterias['date_mod']['field']                       = 'date_mod';
         $criterias['date_mod']['name']                        = __('Last update');
         $criterias['date_mod']['linkfield']                   = 'date_mod';
+        $criterias['date_mod']['type']                        = 'datetime';
 
         $criterias['date']['table']                           = $itil_table;
         $criterias['date']['field']                           = 'date';
         $criterias['date']['name']                            = __('Opening date');
         $criterias['date']['linkfield']                       = 'date';
+        $criterias['date']['type']                            = 'datetime';
 
         $criterias['itilcategories_id']['table']              = 'glpi_itilcategories';
         $criterias['itilcategories_id']['field']              = 'completename';
