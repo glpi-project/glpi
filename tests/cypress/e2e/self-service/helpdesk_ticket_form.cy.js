@@ -64,7 +64,7 @@ describe('Helpdesk Ticket Form', () => {
                 return false;
             }
         });
-        cy.visit('/front/ticket.form.php?id=' + ticket_missing_field_id);
+        cy.visit(`/front/ticket.form.php?id=${ticket_missing_field_id}`);
         cy.get('#itil-footer').within(() => {
             cy.get('.ti-alert-triangle').should('not.exist');
         });
