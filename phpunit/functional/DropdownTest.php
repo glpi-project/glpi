@@ -45,6 +45,7 @@ use Item_DeviceSimcard;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Session;
 use State;
+use Symfony\Component\DomCrawler\Crawler;
 use User;
 
 /* Test for inc/dropdown.class.php */
@@ -147,7 +148,7 @@ class DropdownTest extends DbTestCase
         $expected_comments = <<<HTML
 <span class="b">Complete name: </span>_cat_1 &gt; _subcat_1<br />
                 <span class="b">Comments: </span>
-    
+
 Comment for sub-category _subcat_1
 HTML;
         $ret = @\Dropdown::getDropdownName('glpi_taskcategories', $subcat_id, withcomment: true);
@@ -217,7 +218,7 @@ HTML;
             <span class="b">Fax: </span>0123456787<br />
             <span class="b">Email: </span>_contact01_firstname._contact01_name@glpi.com<br />
                 <span class="b">Comments: </span>
-    
+
 Comment for contact _contact01_name
 HTML;
         $ret = @\Dropdown::getDropdownName('glpi_contacts', $contact_id, withcomment: true);
@@ -248,7 +249,7 @@ HTML;
             <span class="b">Fax: </span>0123456787<br />
             <span class="b">Email: </span>info@_supplier01_name.com<br />
                 <span class="b">Comments: </span>
-    
+
 Comment for supplier _suplier01_name
 HTML;
         $ret = @\Dropdown::getDropdownName('glpi_suppliers', $supplier_id, withcomment: true);
@@ -280,7 +281,7 @@ HTML;
             <span class="b">Start date: </span>2016-10-18 <br />
             <span class="b">End date: </span>2016-12-31 <br />
                 <span class="b">Comments: </span>
-    
+
 Comment for budget _budget01
 HTML;
         $ret = @\Dropdown::getDropdownName('glpi_budgets', $budget_id, withcomment: true);
@@ -309,7 +310,7 @@ HTML;
         $expected_comments = <<<HTML
 <span class="b">Complete name: </span>_location01<br />
                 <span class="b">Comments: </span>
-    
+
 Comment for location _location01
 HTML;
         $ret = @\Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true);
@@ -338,7 +339,7 @@ HTML;
 <span class="b">Complete name: </span>_location02 &gt; _sublocation02<br />
             <span class="b">Code: </span>code_sublocation02<br />
                 <span class="b">Comments: </span>
-    
+
 Comment for location _sublocation02
 HTML;
         $ret = @\Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true);
@@ -367,7 +368,7 @@ HTML;
 <span class="b">Complete name: </span>_location02 &gt; _sublocation03<br />
             <span class="b">Alias: </span>alias_sublocation03<br />
                 <span class="b">Comments: </span>
-    
+
 Comment for location _sublocation03
 HTML;
         $ret = @\Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true);
@@ -397,7 +398,7 @@ HTML;
             <span class="b">Alias: </span>alias_sublocation04<br />
             <span class="b">Code: </span>code_sublocation04<br />
                 <span class="b">Comments: </span>
-    
+
 Comment for location _sublocation04
 HTML;
         $ret = @\Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true);
@@ -2512,6 +2513,28 @@ HTML;
             foreach ($types_list as $type => $label) {
                 $this->assertTrue(is_subclass_of($type, \CommonDevice::class));
                 $this->assertIsString($label);
+            }
+        }
+    }
+
+    public function testShowTimeStamp()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+        $CFG_GLPI["time_step"] = 30;
+        $out = \Dropdown::showTimeStamp('timestamp', [
+            'display' => false,
+            'min' => 30,
+            'max' => 2 * DAY_TIMESTAMP,
+        ]);
+        $crawler = new Crawler($out);
+        $options = $crawler->filter('option');
+        $this->assertCount(97, $options); // 48 hours * 2 (30 min steps) + empty choice
+        // Check the minutes are padded correctly if they are present
+        foreach ($options as $option) {
+            $text = $option->textContent;
+            if (preg_match('/\d+h\d+/', $text)) {
+                $this->assertMatchesRegularExpression('/h\d{2}$/', $text);
             }
         }
     }
