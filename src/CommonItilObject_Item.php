@@ -638,7 +638,7 @@ TWIG, $twig_params);
 
         if ($item::class === static::$itemtype_1) {
             if (
-                !$item instanceof CommonItilObject
+                !$item instanceof CommonITILObject
                 && !$item instanceof TicketRecurrent
             ) {
                 throw new LogicException("Item must be CommonItilObject or TicketRecurrent");

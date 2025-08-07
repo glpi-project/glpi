@@ -282,4 +282,14 @@ describe("Ticket Form", () => {
             cy.findByRole('cell').should('contain.text', 'No results found');
         });
     });
+
+    it('Items tab loads', () => {
+        cy.visit(`/front/ticket.form.php?id=${test_tickets_id}`);
+        cy.findByRole('tab', { name: 'Items' }).click();
+        cy.findByRole('tabpanel').within(() => {
+            cy.findByRole('combobox').should('be.visible');
+            cy.findByRole('button', { name: 'Add' }).should('be.visible');
+            cy.findByRole('cell').should('contain.text', 'No results found');
+        });
+    });
 });
