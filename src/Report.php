@@ -476,7 +476,12 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
 
     public static function showNetworkReportCriteria(bool $embeded): void
     {
-        TemplateRenderer::getInstance()->display('pages/tools/report/network_criteria.html.twig', ['embeded' => $embeded]);
+        TemplateRenderer::getInstance()->display(
+            'pages/tools/report/network_criteria.html.twig',
+            [
+                'embeded' => $embeded,
+            ]
+        );
     }
 
     private static function getNetworkCommonCriteria(): array
