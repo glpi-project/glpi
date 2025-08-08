@@ -274,7 +274,7 @@ body.horizontal-layout {
     border-radius: 2px;
     display: flex;
 
-    span {
+    > span:first-child {
         width: 20px;
     }
 }

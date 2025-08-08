@@ -1303,14 +1303,14 @@ class Hooks
     public const AUTO_GIVE_ITEM = 'giveItem';
 
     /**
-     * Automatic hook function to show an export (CSV,  PDF, etc) search result column value for an item of one of the itemtypes added by the plugin.
+     * Automatic hook function to change the display of a search result cell.
+     * It is recommended to not use this hook and instead use the {@link self::AUTO_GIVE_ITEM} hook to customize the content.
      * This function is called with the following parameters:
      * - 'itemtype' => The type of the items being searched.
      * - 'search_option_id' => The ID of the search option.
      * - 'data' => The data retrieved from the database.
      * - 'num' => A string in the form of "${itemtype}_{$search_option_id}". The alias of the related field in the SELECT clause will be "ITEM_{$num}".
-     * The function is expected to return content to display or an empty string if the default display should be used.
-     * @todo This hook seems to not be used anymore as it is only called from ExportSearchOutput::displayData which is overriden in the Spreadsheet class which all export types use.
+     * The function is expected to return a string with HTML attributes.
      */
     public const AUTO_DISPLAY_CONFIG_ITEM = 'displayConfigItem';
 

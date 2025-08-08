@@ -5983,6 +5983,48 @@ final class SQLProvider implements SearchProviderInterface
                             'percent_text' => $percentage_text,
                             'color'        => $color,
                         ];
+                    } else {
+                        $is_late = false;
+                        switch ($table . "." . $field) {
+                            case "glpi_tickets.time_to_resolve":
+                            case "glpi_tickets.internal_time_to_resolve":
+                            case "glpi_problems.time_to_resolve":
+                            case "glpi_changes.time_to_resolve":
+                                $value = $data[$ID][0]['name'];
+                                $status = $data[$ID][0]['status'];
+                                $solve_date = $data[$ID][0]['solvedate'];
+
+                                $is_late = !empty($value)
+                                    && $status != CommonITILObject::WAITING
+                                    && (
+                                        $solve_date > $value
+                                        || ($solve_date == null && $value < $_SESSION['glpi_currenttime'])
+                                    );
+                                break;
+                            case "glpi_tickets.time_to_own":
+                            case "glpi_tickets.internal_time_to_own":
+                                $value = $data[$ID][0]['name'];
+                                $status = $data[$ID][0]['status'];
+                                $opening_date = $data[$ID][0]['date'];
+                                $tia_delay = $data[$ID][0]['takeintoaccount_delay_stat'];
+                                $tia_date = $data[$ID][0]['takeintoaccountdate'];
+                                // Fallback to old and incorrect computation for tickets saved before introducing takeintoaccountdate field
+                                if ($tia_delay > 0 && $tia_date == null) {
+                                    $tia_date = strtotime($opening_date) + $tia_delay;
+                                }
+
+                                $is_late = !empty($value)
+                                    && $status != CommonITILObject::WAITING
+                                    && (
+                                        $tia_date > $value
+                                        || ($tia_date == null && $value < $_SESSION['glpi_currenttime'])
+                                    );
+                        }
+                        if ($is_late) {
+                            return "<div class='badge_block' style='border-color: #cf9b9b'>
+                        <span style='background: #cf9b9b'></span>&nbsp;" . \htmlescape($value) . "
+                       </div>";
+                        }
                     }
                     break;
 
@@ -6030,15 +6072,22 @@ final class SQLProvider implements SearchProviderInterface
                         "</span>";
 
                 case 'glpi_projectstates.name':
-                    $out = '';
                     $name = $data[$ID][0]['name'];
                     if (isset($data[$ID][0]['trans'])) {
                         $name = $data[$ID][0]['trans'];
                     }
+                    $name = \htmlescape($name);
                     if ($itemtype == 'ProjectState') {
-                        $out =   "<a href='" . ProjectState::getFormURLWithID($data[$ID][0]["id"]) . "'>" . \htmlescape($name) . "</a></div>";
+                        $out =   "<a href='" . ProjectState::getFormURLWithID($data[$ID][0]["id"]) . "'>" . $name . "</a></div>";
                     } else {
-                        $out = $name;
+                        if (isset($data[$ID][0]['color'])) {
+                            $color = \htmlescape($data[$ID][0]['color']);
+                            $out = "<div class='badge_block' style='border-color: $color'>
+                        <span style='background: $color'></span>&nbsp;" . $name . "
+                       </div>";
+                        } else {
+                            $out = $name;
+                        }
                     }
                     return $out;
 
@@ -6136,48 +6185,6 @@ final class SQLProvider implements SearchProviderInterface
                         return $out;
                     }
                     break;
-
-                case 'glpi_ticketvalidations.status':
-                    $out   = '';
-                    for ($k = 0; $k < $data[$ID]['count']; $k++) {
-                        if ($data[$ID][$k]['name']) {
-                            $status  = TicketValidation::getStatus($data[$ID][$k]['name']);
-                            $bgcolor = TicketValidation::getStatusColor($data[$ID][$k]['name']);
-                            $content = "<div style=\"background-color:" . $bgcolor . ";\">" . $status . '</div>';
-                            if (isset($data[$ID][$k]['itemtype_target']) && isset($data[$ID][$k]['items_id_target'])) {
-                                $user = '';
-                                if (is_a($data[$ID][$k]['itemtype_target'], CommonDBTM::class, true) && ($approver = $data[$ID][$k]['itemtype_target']::getById((int) $data[$ID][$k]['items_id_target'])) !== null) {
-                                    $user = $approver->getLink();
-                                }
-                                $content = "<span class='badge bg-secondary-subtle mb-1'><i class='" . $data[$ID][$k]['itemtype_target']::getIcon() . "'></i> " . $user . "<br><span style=\"background-color:" . $bgcolor . ";\" class='badge text-dark fs-5 fw-normal mt-1'>" . $status . "</span></span>";
-                            }
-                            $out    .= (empty($out) ? '' : Search::LBBR) . $content;
-                        }
-                    }
-                    return $out;
-
-                case 'glpi_changevalidations.status':
-                    $out   = '';
-                    for ($k = 0; $k < $data[$ID]['count']; $k++) {
-                        if ($data[$ID][$k]['name']) {
-                            $status  = ChangeValidation::getStatus($data[$ID][$k]['name']);
-                            $bgcolor = ChangeValidation::getStatusColor($data[$ID][$k]['name']);
-                            $content = "<div style=\"background-color:" . $bgcolor . ";\">" . $status . '</div>';
-                            if (isset($data[$ID][$k]['itemtype_target']) && isset($data[$ID][$k]['items_id_target'])) {
-                                $user = '';
-                                if (is_a($data[$ID][$k]['itemtype_target'], CommonDBTM::class, true) && ($approver = $data[$ID][$k]['itemtype_target']::getById((int) $data[$ID][$k]['items_id_target'])) !== null) {
-                                    $user = $approver->getLink();
-                                }
-                                $content = "<span class='badge bg-secondary-subtle mb-1'><i class='" . $data[$ID][$k]['itemtype_target']::getIcon() . "'></i> " . $user . "<br><span style=\"background-color:" . $bgcolor . ";\" class='badge text-dark fs-5 fw-normal mt-1'>" . $status . "</span></span>";
-                            }
-                            $out    .= (empty($out) ? '' : Search::LBBR) . $content;
-                        }
-                    }
-                    return $out;
-
-                case 'glpi_cables.color':
-                    //do not display 'real' value (#.....)
-                    return "";
 
                 case 'glpi_ticketsatisfactions.satisfaction':
                     if ($html_output) {
@@ -6332,6 +6339,39 @@ final class SQLProvider implements SearchProviderInterface
                         $icon_title = __s("This item is not published yet");
                     }
                     return "<div class='kb'> <i class='$icon_class' title='$icon_title'></i> <a href='$href'>" . \htmlescape($name) . "</a></div>";
+                case "glpi_certificates.date_expiration":
+                    if (
+                        !in_array($orig_id, [151, 158, 181, 186])
+                        && !empty($data[$ID][0]['name'])
+                    ) {
+                        $date = $data[$ID][0]['name'];
+                        $before = Entity::getUsedConfig('send_certificates_alert_before_delay', $_SESSION['glpiactive_entity']);
+                        $color = ($date < $_SESSION['glpi_currenttime']) ? '#cf9b9b' : null;
+                        if ($before) {
+                            $before = date('Y-m-d', strtotime($_SESSION['glpi_currenttime'] . " + $before days"));
+                            $color = match(true) {
+                                $date < $_SESSION['glpi_currenttime'] => '#d63939',
+                                $date < $before => '#de5d06',
+                                $date >= $before => '#a1cf66',
+                                default => null
+                            };
+                        }
+                        if ($color === null) {
+                            break;
+                        }
+                        return "<div class='badge_block' style='border-color: $color'>
+                        <span style='background: $color'></span>&nbsp;" . \htmlescape($date) . "
+                       </div>";
+                    }
+                case "glpi_domains.date_expiration":
+                    if (!empty($data[$ID][0]['name'])
+                        && ($data[$ID][0]['name'] < $_SESSION['glpi_currenttime'])
+                    ) {
+                        return "<div class='badge_block' style='border-color: #cf9b9b'>
+                        <span style='background: #cf9b9b'></span>&nbsp;" . \htmlescape($data[$ID][0]['name']) . "
+                       </div>";
+                    }
+
             }
         }
 
@@ -6662,6 +6702,11 @@ final class SQLProvider implements SearchProviderInterface
 HTML;
 
                     return $out;
+                case 'color':
+                    $color = \htmlescape($data[$ID][0]['name']);
+                    return "<div class='badge_block' style='border-color: $color'>
+                        <span style='background: $color'></span>&nbsp;" . $color . "
+                       </div>";
             }
         }
         // Manage items with need group by / group_concat
