@@ -354,7 +354,7 @@ HTML;
             $content = preg_replace(
                 $pattern,
                 sprintf(' $1="%s/front/document.send.php$2" ', $CFG_GLPI["root_doc"]),
-                $content
+                $content ?? ''
             );
         }
 
