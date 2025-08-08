@@ -357,10 +357,13 @@ HTML;
                 $content
             );
             if ($result === null) {
-                trigger_error(
-                    "preg_replace failed in " . __METHOD__ . " with pattern: $pattern, error: " . preg_last_error_msg(),
-                    E_USER_WARNING
-                );
+                $log_msg =
+                    "preg_replace failed in " . __METHOD__ .
+                    " with pattern: $pattern\n" .
+                    "error: " . preg_last_error_msg() . "\n" .
+                    "content length: " . strlen($content) . "\n" .
+                    "content start: " . substr($content, 0, 200);
+                trigger_error($log_msg, E_USER_WARNING);
                 return $content;
             }
             $content = $result;
