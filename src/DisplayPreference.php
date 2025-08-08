@@ -313,7 +313,7 @@ class DisplayPreference extends CommonDBTM
         global $DB;
 
         // Fixed columns are not kept in the DB, so we should remove them from the order
-        $fixed_cols = $this->getFixedColumns($itemtype);
+        $fixed_cols = SearchOption::getDefaultToView($itemtype);
         $official_order = array_diff($order, $fixed_cols);
 
         // Remove duplicates (in case of UI bug not preventing them)
@@ -432,49 +432,6 @@ class DisplayPreference extends CommonDBTM
     }
 
     /**
-     * Get the fixed columns for a given itemtype
-     * A fixed columns is :
-     * - Always displayed before the normal columns
-     * - Can't be moved
-     * - Must not be shown in the search option dropdown (can't be added to the list)
-     */
-    protected function getFixedColumns(string $itemtype): array
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $fixed_columns = [];
-
-        // Get item for itemtype
-        $item = null;
-        if ($itemtype != AllAssets::getType()) {
-            $item = getItemForItemtype($itemtype);
-        }
-
-        // ID is fixed for CommonITILObjects
-        if ($item instanceof CommonITILObject) {
-            $fixed_columns[] = 2;
-        }
-
-        // Name is always fixed
-        $fixed_columns[] = 1;
-
-        // Entity may be fixed
-        if (
-            Session::isMultiEntitiesMode()
-            && (
-                isset($CFG_GLPI["union_search_type"][$itemtype])
-                || ($item && $item->maybeRecursive())
-                || count($_SESSION["glpiactiveentities"]) > 1
-            )
-        ) {
-            $fixed_columns[] = 80;
-        }
-
-        return $fixed_columns;
-    }
-
-    /**
      * @param string $itemtype The itemtype
      * @param bool $global True if global config, false if personal config
      * @return void|false
@@ -512,7 +469,7 @@ class DisplayPreference extends CommonDBTM
         }
 
         // Get fixed columns
-        $fixed_columns = $this->getFixedColumns($itemtype);
+        $fixed_columns = SearchOption::getDefaultToView($itemtype);
         $group  = '';
         $already_added = self::getForTypeUser($itemtype, $IDuser, $interface);
         $available_to_add = [];
