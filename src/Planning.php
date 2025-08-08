@@ -1297,7 +1297,7 @@ TWIG, $twig_params);
      *   - begin (string) : start date of event
      *   - _display_dates (bool) : display dates fields (default true)
      *   - end (optionnal) (string) : end date of event. Ifg missing, it will computerd from begin+1hour
-     *   - rand_user (integer) : users_id to check planning avaibility
+     *   - rand_user (integer) : a random number for planning user avaibility or not specified if no user availability check should be done
      *   - rand : specific rand if needed (default is generated one)
      */
     public static function showAddEventClassicForm($params = [])
