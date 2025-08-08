@@ -351,11 +351,19 @@ HTML;
         ];
 
         foreach ($patterns as $pattern) {
-            $content = preg_replace(
+            $result = preg_replace(
                 $pattern,
                 sprintf(' $1="%s/front/document.send.php$2" ', $CFG_GLPI["root_doc"]),
-                $content ?? ''
+                $content
             );
+            if ($result === null) {
+                trigger_error(
+                    "preg_replace failed in " . __METHOD__ . " with pattern: $pattern, error: " . preg_last_error_msg(),
+                    E_USER_WARNING
+                );
+                return $content;
+            }
+            $content = $result;
         }
 
         return $content;
