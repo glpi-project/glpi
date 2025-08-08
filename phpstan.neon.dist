@@ -13,6 +13,66 @@ parameters:
         - install
         - src
     treatPhpDocTypesAsCertain: false
+    exceptions:
+        check:
+            # TODO: set these two parameters to true once we are ready to
+            # analyze our exceptions.
+            missingCheckedExceptionInThrows: false
+            tooWideThrowType: false
+        uncheckedExceptionRegexes:
+            # These represent HTTP errors, they must be uncheckeded as the top
+            # layer of the kernel will handle them appropriately.
+            - /^Glpi\\Exception\\Http\\/
+
+            # These represent unrecoverable errors in the CLI application, they
+            # must be uncheckeded as the top layer of the symfony console will
+            # handle them appropriately.
+            - /^Symfony\\Component\\Console\\Exception\\/
+            - /^Glpi\\Console\\Exception\\/
+        uncheckedExceptionClasses:
+            # These exceptions are always non recoverable by definition.
+            - RuntimeException
+            - LogicException
+
+            # This error happen when a regex is invalid.
+            # We consider this by default to be a non recoverable state but it can
+            # be handled in specific cases if needed (e.g. user supplied regex
+            # in the rule engine).
+            - Safe\Exceptions\PcreException
+
+            # This error happen when a json operation fails.
+            # We consider this by default to be a non recoverable state but it can
+            # be handled in specific cases if needed (e.g. user supplied JSON).
+            - Safe\Exceptions\JsonException
+
+            # This exception happen when operations like ini_get or init_set fails.
+            # We consider this to always be a non recoverable state as it shouldn't
+            # happen under normal conditions.
+            - Safe\Exceptions\InfoException
+
+            # These errors happen when a file or directory is missing.
+            # We consider this as non recoverable when it concerns GLPI's internal
+            # file structure that should always be present.
+            # It may be manually handled when dealing with non mandatory files
+            # and directories.
+            - Safe\Exceptions\FilesystemException
+            - Safe\Exceptions\DirException
+
+            # These errors happens when session operations fails.
+            # We consider this as always non recoverable.
+            - Safe\Exceptions\SessionException
+
+            # These errors happens when ob_* operations fails.
+            # We consider this as always non recoverable.
+            - Safe\Exceptions\OutcontrolException
+
+            # These errors happens when operations like sha1 or md5 fails.
+            # We consider this as always non recoverable.
+            - Safe\Exceptions\StringsException
+
+            # These errors happens when mb_* operations fails.
+            # We consider this as always non recoverable.
+            - Safe\Exceptions\MbstringException
     universalObjectCratesClasses:
         - Sabre\VObject\Node
     dynamicConstantNames:

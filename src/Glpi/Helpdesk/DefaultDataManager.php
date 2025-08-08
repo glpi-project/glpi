@@ -294,11 +294,7 @@ final class DefaultDataManager
 
         // Create question
         $question = new Question();
-        if (!$question->add($question_data)) {
-            throw new RuntimeException(
-                "Failed to create question: " . json_encode($question_data)
-            );
-        }
+        $question->safeAdd($question_data);
 
         return $question;
     }
@@ -380,13 +376,9 @@ final class DefaultDataManager
     private function setDefaultDestinationConfig(Form $form, array $config): void
     {
         $destination = current($form->getDestinations());
-        $success = $destination->update([
+        $destination->safeUpdate([
             'id' => $destination->getID(),
             'config'   => $config,
         ]);
-
-        if (!$success) {
-            throw new RuntimeException("Failed configure destination");
-        }
     }
 }

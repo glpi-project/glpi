@@ -192,22 +192,16 @@ final class TilesManager
         }
 
         $tile = new $tile_class();
-        $id = $tile->add($params);
-        if (!$id) {
-            throw new RuntimeException("Failed to create tile");
-        }
+        $id = $tile->safeAdd($params);
 
         $item_tile = new Item_Tile();
-        $id = $item_tile->add([
+        $id = $item_tile->safeAdd([
             'items_id_item' => $item->getID(),
             'itemtype_item' => $item::class,
             'items_id_tile' => $id,
             'itemtype_tile' => $tile_class,
             'rank'          => $this->getMaxUsedRankForItem($item) + 1,
         ]);
-        if (!$id) {
-            throw new RuntimeException("Failed to link tile to item");
-        }
 
         return $id;
     }
@@ -273,15 +267,11 @@ final class TilesManager
             throw new RuntimeException("Failed to delete, missing Item_Tile data");
         }
         $id = $item_tile->getID();
-        if (!$item_tile->delete(['id' => $id])) {
-            throw new RuntimeException("Failed to delete item tile ($id)");
-        }
+        $item_tile->safeDelete(['id' => $id]);
 
         // Then delete the tile itself
         $items_id_tile = $tile->getDatabaseId();
-        if (!$tile->delete(['id' => $items_id_tile])) {
-            throw new RuntimeException("Failed to delete tile ($items_id_tile)");
-        }
+        $tile->safeDelete(['id' => $items_id_tile]);
     }
 
     public function showConfigFormForItem(

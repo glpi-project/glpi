@@ -146,10 +146,7 @@ if (($_POST['action'] ?? null) === 'update') {
         throw new AccessDeniedHttpException();
     }
 
-    $result = $item->add($inputs);
-    if (!$result) {
-        throw new BadRequestHttpException();
-    }
+    $item->safeAdd($inputs);
 } elseif (($_POST['action'] ?? null) === 'bulk_add_item') {
     $checkParams(['inputs']);
 

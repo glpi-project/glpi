@@ -388,13 +388,21 @@ class GLPIKey
         }
 
         $nonce = random_bytes(SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES); // NONCE = Number to be used ONCE, for each message
-        $encrypted = sodium_crypto_aead_xchacha20poly1305_ietf_encrypt(
-            $string,
-            $nonce,
-            $nonce,
-            $key
-        );
-        return base64_encode($nonce . $encrypted);
+        try {
+            $encrypted = sodium_crypto_aead_xchacha20poly1305_ietf_encrypt(
+                $string,
+                $nonce,
+                $nonce,
+                $key
+            );
+            return base64_encode($nonce . $encrypted);
+        } catch (SodiumException $e) {
+            throw new RuntimeException(
+                message: "Failed to encrypt GLPI key.",
+                code : $e->getCode(),
+                previous: $e,
+            );
+        }
     }
 
     /**
@@ -404,7 +412,6 @@ class GLPIKey
      * @param string|null $key Key to use, fallback to default key if null.
      *
      * @return string|null
-     * @throws SodiumException
      */
     public function decrypt(?string $string, $key = null): ?string
     {

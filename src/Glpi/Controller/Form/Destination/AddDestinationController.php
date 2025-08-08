@@ -36,7 +36,6 @@ namespace Glpi\Controller\Form\Destination;
 
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Form;
 use Glpi\Http\RedirectResponse;
@@ -58,10 +57,7 @@ final class AddDestinationController extends AbstractController
         }
 
         // Create destination item
-        $id = $destination->add($input);
-        if (!$id) {
-            throw new BadRequestHttpException();
-        }
+        $id = $destination->safeAdd($input);
 
         // Save the ID to reopen the correct accordion item
         $_SESSION['active_destination'] = $id;

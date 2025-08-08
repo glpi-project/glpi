@@ -57,12 +57,7 @@ try {
             $access_control->check($id, UPDATE, $input);
             $access_control->getFromDB($id);
             $input['_config'] = $access_control->createConfigFromUserInput($input);
-
-            if (!$access_control->update($input, true)) {
-                throw new RuntimeException(
-                    "Failed to update access control item"
-                );
-            }
+            $access_control->safeUpdate($input, true);
         }
     } else {
         // Unknown request

@@ -321,15 +321,7 @@ final class AnswersHandler
             'users_id'       => $users_id,
             'index'          => $next_index,
         ];
-        $id = $answers_set->add($input);
-
-        // If we can't save the answers, throw an exception as it make no sense
-        // to keep going
-        if (!$id) {
-            throw new Exception(
-                "Failed to save answers: " . json_encode($input)
-            );
-        }
+        $answers_set->safeAdd($input);
 
         return $answers_set;
     }
@@ -385,12 +377,7 @@ final class AnswersHandler
                     'itemtype'                       => $item::getType(),
                     'items_id'                       => $item->getID(),
                 ];
-                if (!$form_item->add($input)) {
-                    throw new Exception(
-                        "Failed to create destination item: "
-                        . json_encode($input)
-                    );
-                }
+                $form_item->safeAdd($input);
             }
 
             // Store created items for post-creation processing

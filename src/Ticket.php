@@ -5775,10 +5775,7 @@ JAVASCRIPT;
                         'date'            => $ticket->fields['date_creation'],
                         'sourceitems_id'  => $ticket->getID(),
                     ];
-                    if (!$fup->add($input)) {
-                        //Cannot add followup. Abort/fail the merge
-                        throw new RuntimeException(sprintf(__('Failed to add followup to ticket %d'), $merge_target_id), 1);
-                    }
+                    $fup->safeAdd($input);
                     if (in_array('ITILFollowup', $p['linktypes'])) {
                         // Copy any followups to the ticket
                         $tomerge = $fup->find([
@@ -5790,10 +5787,7 @@ JAVASCRIPT;
                             $fup2['sourceitems_id'] = $id;
                             $fup2['content'] = $fup2['content'];
                             unset($fup2['id']);
-                            if (!$fup->add($fup2)) {
-                                // Cannot add followup. Abort/fail the merge
-                                throw new RuntimeException(sprintf(__('Failed to add followup to ticket %d'), $merge_target_id), 1);
-                            }
+                            $fup->safeAdd($fup2);
                         }
                     }
                     if (in_array('TicketTask', $p['linktypes'])) {
@@ -5811,10 +5805,7 @@ JAVASCRIPT;
                             $task2['content'] = $task2['content'];
                             unset($task2['id']);
                             unset($task2['uuid']);
-                            if (!$task->add($task2)) {
-                                //Cannot add followup. Abort/fail the merge
-                                throw new RuntimeException(sprintf(__('Failed to add task to ticket %d'), $merge_target_id), 1);
-                            }
+                            $task->safeAdd($task2);
                         }
                     }
                     if (in_array('Document', $p['linktypes'])) {
@@ -5839,10 +5830,7 @@ JAVASCRIPT;
                         foreach ($tomerge as $document_item2) {
                             $document_item2['items_id'] = $merge_target_id;
                             unset($document_item2['id']);
-                            if (!$document_item->add($document_item2)) {
-                                //Cannot add document. Abort/fail the merge
-                                throw new RuntimeException(sprintf(__('Failed to add document to ticket %d'), $merge_target_id), 1);
-                            }
+                            $document_item->safeAdd($document_item2);
                         }
                     }
                     if ($p['link_type'] > 0 && $p['link_type'] < 5) {
@@ -5869,10 +5857,7 @@ JAVASCRIPT;
                                 ],
                             ],
                         ]);
-                        if (!$tt->add($linkparams)) {
-                            //Cannot link tickets. Abort/fail the merge
-                            throw new RuntimeException(sprintf(__('Failed to link tickets %d and %d'), $merge_target_id, $id), 1);
-                        }
+                        $tt->safeAdd($linkparams);
                     }
                     if (isset($p['append_actors'])) {
                         $tu = new Ticket_User();
@@ -5964,9 +5949,7 @@ JAVASCRIPT;
                         }
                     }
                     //Delete this ticket
-                    if (!$ticket->delete(['id' => $id, '_disablenotif' => true])) {
-                        throw new RuntimeException(sprintf(__('Failed to delete ticket %d'), $id), 1);
-                    }
+                    $ticket->safeDelete(['id' => $id, '_disablenotif' => true]);
                     if (!$p['full_transaction']) {
                         $DB->commit();
                     }

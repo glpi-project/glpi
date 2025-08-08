@@ -35,7 +35,6 @@
 namespace Glpi\Form\Destination;
 
 use CommonITILObject;
-use Exception;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\CommonITILField\AssigneeField;
@@ -60,8 +59,6 @@ use Glpi\Form\Form;
 use Override;
 use Session;
 use Ticket;
-
-use function Safe\json_encode;
 
 abstract class AbstractCommonITILFormDestination implements FormDestinationInterface
 {
@@ -112,7 +109,6 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
         AnswersSet $answers_set,
         array $config,
     ): array {
-        $typename               = $this->getLabel();
         $itil_object            = $this->getTarget();
         $fields_to_apply        = $this->getConfigurableFields();
         $already_applied_fields = [];
@@ -178,12 +174,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
         // We use 'callAsSystem' here because Ticket::prepareInputForAdd() has
         // rights checks for some features (SLA, ...) and will yield different
         // results depending on the current user rights
-        $id = Session::callAsSystem(fn() => $itil_object->add($input));
-        if (!$id) {
-            throw new Exception(
-                "Failed to create $typename: " . json_encode($input)
-            );
-        }
+        Session::callAsSystem(fn() => $itil_object->safeAdd($input));
 
         // If requested, link the form directly to the commonitil object
         // This allow users to see it an an associated item and known where the
@@ -194,11 +185,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
             'itemtype'                         => $form::class,
             'items_id'                         => $form->getID(),
         ];
-        if (!$link->add($input)) {
-            throw new Exception(
-                "Failed to create item link for $typename: " . json_encode($input)
-            );
-        }
+        $link->safeAdd($input);
 
         return [$itil_object];
     }

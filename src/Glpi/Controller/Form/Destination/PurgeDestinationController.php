@@ -36,7 +36,6 @@ namespace Glpi\Controller\Form\Destination;
 
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Form;
 use Glpi\Http\RedirectResponse;
@@ -58,9 +57,7 @@ final class PurgeDestinationController extends AbstractController
         }
 
         // Delete destination item
-        if (!$destination->delete($input)) {
-            throw new BadRequestHttpException('Failed to delete destination item');
-        }
+        $destination->safeDelete($input);
 
         return new RedirectResponse(Form::getFormURLWithID($form_id));
     }

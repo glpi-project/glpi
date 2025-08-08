@@ -552,9 +552,7 @@ abstract class CommonITILValidation extends CommonDBChild
                 '_from_itilvalidation'  => true,
             ];
 
-            if (!$item->update($input)) {
-                throw new RuntimeException(sprintf('Failed to update related `%s` approval status.', $item::class));
-            }
+            $item->safeUpdate($input);
         }
     }
 
@@ -2071,9 +2069,7 @@ HTML;
                 'minimal_required_validation_percent' => $validationstep->fields['minimal_required_validation_percent'],
             ];
 
-            if (!$itil_validationstep->add($step_input)) {
-                throw new RuntimeException();
-            }
+            $itil_validationstep->safeAdd($step_input);
         }
 
         $input['itils_validationsteps_id'] = $itil_validationstep->getID();
@@ -2099,9 +2095,7 @@ HTML;
         }
 
         $itil_validationstep = static::getItilObjectItemType()::getValidationStepInstance();
-        if (!$itil_validationstep->delete(['id' => $itils_validationsteps_id])) {
-            throw new RuntimeException('Failed to delete unused approval step.');
-        };
+        $itil_validationstep->safeDelete(['id' => $itils_validationsteps_id]);
     }
 
     public function recomputeItilStatus(): void
@@ -2111,13 +2105,10 @@ HTML;
             throw new RuntimeException();
         }
 
-        $update = $itil_object->update([
+        $itil_object->safeUpdate([
             'id' => $itil_object->getID(),
             'global_validation' => self::computeValidationStatus($itil_object),
             '_from_itilvalidation' => true,
         ]);
-        if (!$update) {
-            throw new RuntimeException('Failed to update Itil global approval status.');
-        }
     }
 }

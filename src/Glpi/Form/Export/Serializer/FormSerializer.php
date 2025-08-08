@@ -308,7 +308,7 @@ final class FormSerializer extends AbstractFormSerializer
         }
 
         $form = new Form();
-        $id = $form->add([
+        $id = $form->safeAdd([
             '_from_import'                      => true,
             'name'                              => $spec->name,
             'header'                            => $spec->header ?? null,
@@ -321,9 +321,6 @@ final class FormSerializer extends AbstractFormSerializer
             'submit_button_visibility_strategy' => $spec->submit_button_visibility_strategy,
             '_init_sections'                    => false,
         ]);
-        if (!$form->getFromDB($id)) {
-            throw new RuntimeException("Failed to create form");
-        }
 
         // The translations system will have a reference to the current form,
         // add it to the mapper for convenience.
@@ -368,17 +365,13 @@ final class FormSerializer extends AbstractFormSerializer
         /** @var SectionContentSpecification $section_spec */
         foreach ($form_spec->sections as $section_spec) {
             $section = new Section();
-            $id = $section->add([
+            $id = $section->safeAdd([
                 'name'                     => $section_spec->name,
                 'description'              => $section_spec->description,
                 'rank'                     => $section_spec->rank,
                 'visibility_strategy'      => $section_spec->visibility_strategy,
                 Form::getForeignKeyField() => $form->fields['id'],
             ]);
-
-            if (!$id) {
-                throw new RuntimeException("Failed to create section");
-            }
 
             // Sections can be required for other items, so we need to map them.
             // Some items use the ID while others the UUID (conditions).
@@ -428,7 +421,7 @@ final class FormSerializer extends AbstractFormSerializer
         /** @var CommentContentSpecification $comment_spec */
         foreach ($form_spec->comments as $comment_spec) {
             $comment = new Comment();
-            $id = $comment->add([
+            $id = $comment->safeAdd([
                 'name'                => $comment_spec->name,
                 'description'         => $comment_spec->description,
                 'vertical_rank'       => $comment_spec->vertical_rank,
@@ -439,10 +432,6 @@ final class FormSerializer extends AbstractFormSerializer
                     $comment_spec->section_id,
                 ),
             ]);
-
-            if (!$id) {
-                throw new RuntimeException("Failed to create comment");
-            }
 
             // Comments can be required for other items, so we need to map them.
             // Some items use the ID while others the UUID (conditions).
@@ -536,11 +525,7 @@ final class FormSerializer extends AbstractFormSerializer
 
             // Add question
             $question = new Question();
-            $id = $question->add($input);
-            if (!$id) {
-                $message = "Failed to create question: " . json_encode($input);
-                throw new RuntimeException($message);
-            }
+            $id = $question->safeAdd($input);
 
             // Questions can be required for other items, so we need to map them.
             // Some items use the ID while others the UUID (conditions).
@@ -681,10 +666,7 @@ final class FormSerializer extends AbstractFormSerializer
             '_conditions'  => $conditions,
         ];
 
-        if (!$itemtype->update($update_input)) {
-            $message = "Failed to import condition: " . json_encode($update_input);
-            throw new RuntimeException($message);
-        }
+        $itemtype->safeUpdate($update_input);
     }
 
     private function exportAccesControlPolicies(
@@ -739,10 +721,7 @@ final class FormSerializer extends AbstractFormSerializer
             );
 
             // Insert data
-            if (!$policy->add($input)) {
-                $message = "Failed to create access control: " . json_encode($input);
-                throw new RuntimeException($message);
-            }
+            $policy->safeAdd($input);
         }
 
         // Reload form to clear lazy loaded data
@@ -811,12 +790,7 @@ final class FormSerializer extends AbstractFormSerializer
                 $input,
                 $mapper
             );
-            $id = $destination->add($input);
-
-            if (!$id) {
-                $message = "Failed to create destination: " . json_encode($input);
-                throw new RuntimeException($message);
-            }
+            $id = $destination->safeAdd($input);
 
             // Destinations can be required for other items, so we need to map them.
             $mapper->addMappedItem(
@@ -869,10 +843,7 @@ final class FormSerializer extends AbstractFormSerializer
                 'language'     => $translation_spec->language,
                 'translations' => $translation_spec->translations,
             ];
-            if (!$translation->add($input)) {
-                $message = "Failed to create translation: " . json_encode($input);
-                throw new RuntimeException($message);
-            }
+            $translation->safeAdd($input);
         }
 
         // Reload form to clear lazy loaded data

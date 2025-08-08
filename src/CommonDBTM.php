@@ -1285,6 +1285,21 @@ class CommonDBTM extends CommonGLPI
         }
     }
 
+    /**
+     * Should be used instead of the add() method when you don't expect the
+     * add operation to possibly fail.
+     */
+    public function safeAdd(array $input, array $options = [], bool $history = true): int
+    {
+        $id = $this->add($input, $options, $history);
+        if ($id === false) {
+            $class = $this::class;
+            throw new RuntimeException("Failed to create item of class '$class'");
+        }
+
+        return $id;
+    }
+
     // Common functions
     /**
      * Add an item in the database with all it's items.
@@ -1643,6 +1658,23 @@ class CommonDBTM extends CommonGLPI
         UserMention::handleUserMentions($this);
     }
 
+    /**
+     * Should be used instead of the update() method when you don't expect the
+     * update operation to possibly fail.
+     */
+    public function safeUpdate(array $input, bool $history = true, array $options = []): void
+    {
+        $result = $this->update($input, $history, $options);
+        if (!$result) {
+            $message = sprintf(
+                "Failed to update item of class '%s' with id '%s'",
+                $this::class,
+                $input[$this::getForeignKeyField()] ?? "unknown",
+            );
+
+            throw new RuntimeException($message);
+        }
+    }
 
     /**
      * Update some elements of an item in the database.
@@ -2100,6 +2132,23 @@ class CommonDBTM extends CommonGLPI
     **/
     public function pre_updateInDB() {}
 
+    /**
+     * Should be used instead of the delete() method when you don't expect the
+     * delete operation to possibly fail.
+     */
+    public function safeDelete(array $input, bool $force = false, bool $history = true): void
+    {
+        $result = $this->delete($input, $force, $history);
+        if (!$result) {
+            $message = sprintf(
+                "Failed to delete item of class '%s' with id '%s'",
+                $this::class,
+                $input[$this::getForeignKeyField()] ?? "unknown",
+            );
+
+            throw new RuntimeException($message);
+        }
+    }
 
     /**
      * Delete an item in the database.

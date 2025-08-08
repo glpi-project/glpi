@@ -271,9 +271,7 @@ class Calendar extends AbstractBackend
             throw new Forbidden();
         }
 
-        if (!$item->delete(['id' => $item->fields['id']], true)) {
-            throw new Exception('Error during object deletion');
-        }
+        $item->safeDelete(['id' => $item->fields['id']], true);
     }
 
     /**

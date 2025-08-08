@@ -1185,14 +1185,10 @@ class FormMigration extends AbstractPluginMigration
                 }
             }
 
-            if (
-                !$destination->update([
-                    'id'     => $destination->getID(),
-                    'config' => $fields_config,
-                ])
-            ) {
-                throw new LogicException("Failed to update destination with id {$destination->getID()}");
-            }
+            $destination->safeUpdate([
+                'id'     => $destination->getID(),
+                'config' => $fields_config,
+            ]);
         }
     }
 

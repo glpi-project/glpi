@@ -762,19 +762,13 @@ final class Form extends CommonDBTM implements
             if ($section === null) {
                 // Add new section
                 $section = new Section();
-                $id = $section->add($form_data);
-
-                if (!$id) {
-                    throw new RuntimeException("Failed to add section");
-                }
+                $id = $section->safeAdd($form_data);
             } else {
                 // Update existing section
                 $form_data['id'] = $section->getID();
 
-                $success = $section->update($form_data);
-                if (!$success) {
-                    throw new RuntimeException("Failed to update section");
-                }
+                $section->safeUpdate($form_data);
+
                 $id = $section->getID();
             }
 
@@ -823,10 +817,7 @@ final class Form extends CommonDBTM implements
 
             foreach ($missing_sections as $row) {
                 $section = new Section();
-                $success = $section->delete($row);
-                if (!$success) {
-                    throw new RuntimeException("Failed to delete section");
-                }
+                $section->safeDelete($row);
             }
         }
 
@@ -875,19 +866,12 @@ final class Form extends CommonDBTM implements
             if ($question === null) {
                 // Add new question
                 $question = new Question();
-                $id = $question->add($question_data);
-
-                if (!$id) {
-                    throw new RuntimeException("Failed to add question");
-                }
+                $id = $question->safeAdd($question_data);
             } else {
                 // Update existing question
                 $question_data['id'] = $question->getID();
 
-                $success = $question->update($question_data);
-                if (!$success) {
-                    throw new RuntimeException("Failed to update question");
-                }
+                $question->safeUpdate($question_data);
                 $id = $question->getID();
             }
 
@@ -941,10 +925,7 @@ final class Form extends CommonDBTM implements
 
             foreach ($missing_questions as $row) {
                 $question = new Question();
-                $success = $question->delete($row);
-                if (!$success) {
-                    throw new RuntimeException("Failed to delete question");
-                }
+                $question->safeDelete($row);
             }
         }
 
@@ -994,19 +975,12 @@ final class Form extends CommonDBTM implements
             if ($comment === null) {
                 // Add new question
                 $comment = new Comment();
-                $id = $comment->add($comment_data);
-
-                if (!$id) {
-                    throw new RuntimeException("Failed to add comment");
-                }
+                $id = $comment->safeAdd($comment_data);
             } else {
                 // Update existing comment
                 $comment_data['id'] = $comment->getID();
 
-                $success = $comment->update($comment_data);
-                if (!$success) {
-                    throw new RuntimeException("Failed to update comment");
-                }
+                $comment->safeUpdate($comment_data);
                 $id = $comment->getID();
             }
             // Keep track of its id
@@ -1059,10 +1033,7 @@ final class Form extends CommonDBTM implements
 
             foreach ($missing_comments as $row) {
                 $comment = new Comment();
-                $success = $comment->delete($row);
-                if (!$success) {
-                    throw new RuntimeException("Failed to delete comment");
-                }
+                $comment->safeDelete($row);
             }
         }
 
@@ -1141,14 +1112,11 @@ final class Form extends CommonDBTM implements
     private function addDefaultDestinations(): void
     {
         $destination = new FormDestination();
-        $id = $destination->add([
+        $destination->safeAdd([
             self::getForeignKeyField() => $this->getId(),
             'itemtype'                 => FormDestinationTicket::class,
             'name'                     => Ticket::getTypeName(1),
         ]);
-        if (!$id) {
-            throw new RuntimeException("Failed to initialize destinations");
-        }
     }
 
     private function addDefaultAccessPolicies(): void

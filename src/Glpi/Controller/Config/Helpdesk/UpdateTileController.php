@@ -35,7 +35,6 @@
 namespace Glpi\Controller\Config\Helpdesk;
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
-use RuntimeException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -66,9 +65,7 @@ final class UpdateTileController extends AbstractTileController
         unset($input['_itemtype']);
 
         // Update the tile
-        if (!$tile->update($input)) {
-            throw new RuntimeException();
-        }
+        $tile->safeUpdate($input);
 
         // Re-render the tile list
         $tiles = $this->tiles_manager->getTilesForItem($linked_item);

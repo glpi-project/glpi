@@ -44,13 +44,11 @@ use GLPIKey;
 use Group_User;
 use JsonException;
 use Profile_User;
-use Psr\Log\LoggerInterface;
 use RobThree\Auth\Algorithm;
 use RobThree\Auth\Providers\Qr\BaconQrCodeProvider;
 use RobThree\Auth\TwoFactorAuth;
 use RobThree\Auth\TwoFactorAuthException;
 use Safe\DateTimeImmutable;
-use SodiumException;
 
 use function Safe\json_encode;
 
@@ -209,27 +207,16 @@ final class TOTPManager
         if (count($it) === 0) {
             return null;
         }
-        try {
-            $config = $it->current()['2fa'];
-            if (empty($config)) {
-                return null;
-            }
-            $config = json_decode($config, true, 512, JSON_THROW_ON_ERROR);
-            if (!isset($config['secret'])) {
-                return null;
-            } else {
-                $config['secret'] = (new GLPIKey())->decrypt($config['secret']);
-                return $config;
-            }
-        } catch (SodiumException $e) {
-            /** @var LoggerInterface $PHPLOGGER */
-            global $PHPLOGGER;
-            $PHPLOGGER->error(
-                "Unreadable TOTP secret for user ID {$users_id}: " . $e->getMessage(),
-                ['exception' => $e]
-            );
-
+        $config = $it->current()['2fa'];
+        if (empty($config)) {
             return null;
+        }
+        $config = json_decode($config, true, 512, JSON_THROW_ON_ERROR);
+        if (!isset($config['secret'])) {
+            return null;
+        } else {
+            $config['secret'] = (new GLPIKey())->decrypt($config['secret']);
+            return $config;
         }
     }
 
