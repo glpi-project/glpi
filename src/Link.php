@@ -545,15 +545,17 @@ class Link extends CommonDBTM
             return;
         }
 
-        $buttons_params = [
-            'item' => $item,
-            'add_msg' => _x('button', 'Add'),
-            'configure_msg' => sprintf(__('Configure %s links'), $item::getTypeName(1)),
-            'show_add' => ManualLink::canCreate() && ($restrict_type === null || $restrict_type === ManualLink::class),
-            'show_configure' => self::canUpdate() && ($restrict_type === null || $restrict_type === self::class),
-        ];
-        // language=Twig
-        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+        if ($item->can($item->getID(), UPDATE)) {
+            $buttons_params = [
+                'item' => $item,
+                'add_msg' => _x('button', 'Add'),
+                'configure_msg' => sprintf(__('Configure %s links'), $item::getTypeName(1)),
+                'show_add' => ManualLink::canCreate() && ($restrict_type === null || $restrict_type === ManualLink::class),
+                'show_configure' => self::canUpdate() && ($restrict_type === null || $restrict_type === self::class),
+            ];
+
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div class="text-center my-3">
                     {% if show_add %}
                         <a class="btn btn-primary" href="{{ 'ManualLink'|itemtype_form_path ~ '?itemtype=' ~ item.getType() ~ '&items_id=' ~ item.fields[item.getIndexName()] }}">
@@ -569,6 +571,7 @@ class Link extends CommonDBTM
                     {% endif %}
                 </div>
 TWIG, $buttons_params);
+        }
 
         $entries = [];
 

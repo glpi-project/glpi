@@ -36,6 +36,7 @@ namespace tests\units;
 
 use DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Symfony\Component\DomCrawler\Crawler;
 
 class LinkTest extends DbTestCase
 {
@@ -293,5 +294,23 @@ TEXT,
         $this->hasSessionMessages(ERROR, [
             __('Invalid twig template syntax'),
         ]);
+    }
+
+    public function testShowAllLinksForItem()
+    {
+        $this->login();
+
+        // Buttons to add links should only show if the user can update the item
+        ob_start();
+        \Link::showAllLinksForItem(getItemByTypeName(\Computer::class, '_test_pc01'));
+        $output = ob_get_clean();
+        $crawler = new Crawler($output);
+        $this->assertEquals(2, $crawler->filter('a.btn')->count());
+        $_SESSION['glpiactiveprofile']['computer'] = READ;
+        ob_start();
+        \Link::showAllLinksForItem(getItemByTypeName(\Computer::class, '_test_pc01'));
+        $output = ob_get_clean();
+        $crawler = new Crawler($output);
+        $this->assertEquals(0, $crawler->filter('a.btn')->count());
     }
 }
