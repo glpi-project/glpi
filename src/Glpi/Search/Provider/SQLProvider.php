@@ -2913,8 +2913,7 @@ final class SQLProvider implements SearchProviderInterface
                             $interlinkfield,
                             (bool) $meta,
                             $meta_type,
-                            $interjoinparams,
-                            $use_join_subquery
+                            $interjoinparams
                         ));
 
                         // No direct link with the previous joins
