@@ -37,7 +37,7 @@ namespace tests\units;
 use Override;
 use ProblemTask;
 
-final class ProblemTaskTest extends CommonITILTaskTest
+final class ProblemTaskTest extends CommonITILTaskTestCase
 {
     #[Override]
     protected static function getTaskClass(): string

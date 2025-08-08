@@ -37,7 +37,7 @@ namespace tests\units;
 use DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-abstract class CommonITILTaskTest extends DbTestCase
+abstract class CommonITILTaskTestCase extends DbTestCase
 {
     /** @return class-string<\CommonITILTask> */
     abstract protected static function getTaskClass(): string;

@@ -38,7 +38,7 @@ use Glpi\Search\SearchEngine;
 use Override;
 use TicketTask;
 
-final class TicketTaskTest extends CommonITILTaskTest
+final class TicketTaskTest extends CommonITILTaskTestCase
 {
     #[Override]
     protected static function getTaskClass(): string
