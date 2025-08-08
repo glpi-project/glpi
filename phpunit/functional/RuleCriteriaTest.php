@@ -813,31 +813,31 @@ class RuleCriteriaTest extends DbTestCase
         $common_conditions = [
             \Rule::PATTERN_IS, \Rule::PATTERN_IS_NOT, \Rule::PATTERN_CONTAIN, \Rule::PATTERN_NOT_CONTAIN,
             \Rule::PATTERN_BEGIN, \Rule::PATTERN_END, \Rule::REGEX_MATCH, \Rule::REGEX_NOT_MATCH,
-            \Rule::PATTERN_EXISTS, \Rule::PATTERN_DOES_NOT_EXISTS
+            \Rule::PATTERN_EXISTS, \Rule::PATTERN_DOES_NOT_EXISTS,
         ];
         $this->assertArrayIsEqualIgnoringKeysOrder(
             $common_conditions,
             array_keys(\RuleCriteria::getConditions('RuleDictionnarySoftware'))
         );
         $this->assertArrayIsEqualIgnoringKeysOrder([
-            ...$common_conditions, \Rule::PATTERN_UNDER, \Rule::PATTERN_NOT_UNDER
+            ...$common_conditions, \Rule::PATTERN_UNDER, \Rule::PATTERN_NOT_UNDER,
         ], array_keys(\RuleCriteria::getConditions('RuleTicket', 'locations_id')));
         $this->assertArrayIsEqualIgnoringKeysOrder([
             \Rule::PATTERN_CONTAIN, \Rule::PATTERN_NOT_CONTAIN,
             \Rule::PATTERN_BEGIN, \Rule::PATTERN_END, \Rule::REGEX_MATCH, \Rule::REGEX_NOT_MATCH,
             \Rule::PATTERN_EXISTS, \Rule::PATTERN_DOES_NOT_EXISTS,
             \Rule::PATTERN_DATE_IS_BEFORE, \Rule::PATTERN_DATE_IS_AFTER, \Rule::PATTERN_DATE_IS_EQUAL,
-            \Rule::PATTERN_DATE_IS_NOT_EQUAL
+            \Rule::PATTERN_DATE_IS_NOT_EQUAL,
         ], array_keys(\RuleCriteria::getConditions('RuleTicket', 'date')));
         $this->assertArrayIsEqualIgnoringKeysOrder([
             \Rule::PATTERN_CONTAIN, \Rule::PATTERN_NOT_CONTAIN,
             \Rule::PATTERN_BEGIN, \Rule::PATTERN_END, \Rule::REGEX_MATCH, \Rule::REGEX_NOT_MATCH,
             \Rule::PATTERN_EXISTS, \Rule::PATTERN_DOES_NOT_EXISTS,
             \Rule::PATTERN_DATE_IS_BEFORE, \Rule::PATTERN_DATE_IS_AFTER, \Rule::PATTERN_DATE_IS_EQUAL,
-            \Rule::PATTERN_DATE_IS_NOT_EQUAL
+            \Rule::PATTERN_DATE_IS_NOT_EQUAL,
         ], array_keys(\RuleCriteria::getConditions('RuleAsset', 'last_inventory_update')));
         $this->assertArrayIsEqualIgnoringKeysOrder([
-            ...$common_conditions, \Rule::PATTERN_CIDR, \Rule::PATTERN_NOT_CIDR
+            ...$common_conditions, \Rule::PATTERN_CIDR, \Rule::PATTERN_NOT_CIDR,
         ], array_keys(\RuleCriteria::getConditions('RuleAsset', 'ip')));
     }
 
