@@ -346,8 +346,8 @@ HTML;
             "/ (href)='[^']*\/front\/document\.send\.php([^']+)' /",
 
             // src attribute, surrounding by " or '
-            '/ (src)="[^"]*\/front\/document\.send\.php([^"]+)" /',
-            "/ (src)='[^']*\/front\/document\.send\.php([^']+)' /",
+            '/ (src)="((?!data:)[^"]*\/front\/document\.send\.php[^"]*)" /',
+            "/ (src)='((?!data:)[^']*\/front\/document\.send\.php[^']*)' /",
         ];
 
         foreach ($patterns as $pattern) {
@@ -361,8 +361,7 @@ HTML;
                     "preg_replace failed in " . __METHOD__ .
                     " with pattern: $pattern\n" .
                     "error: " . preg_last_error_msg() . "\n" .
-                    "content length: " . strlen($content) . "\n" .
-                    "content start: " . substr($content, 0, 200);
+                    "content length: " . strlen($content);
                 trigger_error($log_msg, E_USER_WARNING);
                 return $content;
             }
