@@ -2913,7 +2913,8 @@ final class SQLProvider implements SearchProviderInterface
                             $interlinkfield,
                             (bool) $meta,
                             $meta_type,
-                            $interjoinparams
+                            $interjoinparams,
+                            $use_join_subquery
                         ));
 
                         // No direct link with the previous joins
@@ -5047,7 +5048,8 @@ final class SQLProvider implements SearchProviderInterface
                 true,
                 $m_itemtype,
                 $sopt["joinparams"],
-                $sopt["field"]
+                $sopt["field"],
+                $sopt['use_join_subquery'] ?? false
             );
         }
     }
