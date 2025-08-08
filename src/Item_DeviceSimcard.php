@@ -63,7 +63,7 @@ class Item_DeviceSimcard extends Item_Devices implements AssignableItemInterface
     public static function getSpecificities($specif = '')
     {
         return [
-            'serial'         => parent::getSpecificities('serial'),
+            'serial'         => parent::getSpecificities('serial') + ['datatype' => 'itemlink'],
             'otherserial'    => parent::getSpecificities('otherserial'),
             'locations_id'   => parent::getSpecificities('locations_id'),
             'states_id'      => parent::getSpecificities('states_id'),
