@@ -701,7 +701,7 @@ class Search
      * @param string  $meta_type            Meta item type
      * @param array   $joinparams           Array join parameters (condition / joinbefore...)
      * @param string  $field                Field to display (needed for translation join) (default '')
-     * @param bool    $is_counter           Is it a counter join? (default false)
+     * @param bool    $use_join_subquery    Use a subquery for the join (default false)
      *
      * @return string Left join string
      **/
@@ -715,7 +715,7 @@ class Search
         $meta_type = '',
         $joinparams = [],
         $field = '',
-        bool $is_counter = false
+        $use_join_subquery = false
     ) {
         /** @var DBmysql $DB */
         global $DB;
@@ -729,7 +729,7 @@ class Search
             (string) $meta_type,
             $joinparams,
             $field,
-            $is_counter
+            $use_join_subquery
         );
         $iterator = new DBmysqlIterator($DB);
         $iterator->buildQuery([
