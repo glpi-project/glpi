@@ -4352,14 +4352,18 @@ JAVASCRIPT;
                 $condition  = '';
                 $teamtable  = 'glpi_projecttaskteams';
                 $condition .= "`glpi_projects`.`is_template` = 0";
-                $condition .= " AND ((`$teamtable`.`itemtype` = 'User'
-                             AND `$teamtable`.`items_id` = '" . Session::getLoginUserID() . "')";
-                if (count($_SESSION['glpigroups'])) {
-                    $condition .= " OR (`$teamtable`.`itemtype` = 'Group'
-                                    AND `$teamtable`.`items_id`
-                                       IN (" . implode(",", $_SESSION['glpigroups']) . "))";
+
+                // If user has READALL right on projects, no team restriction
+                if (!Session::haveRight('project', Project::READALL)) {
+                    $condition .= " AND ((`$teamtable`.`itemtype` = 'User'
+                                 AND `$teamtable`.`items_id` = '" . Session::getLoginUserID() . "')";
+                    if (count($_SESSION['glpigroups'])) {
+                        $condition .= " OR (`$teamtable`.`itemtype` = 'Group'
+                                        AND `$teamtable`.`items_id`
+                                           IN (" . implode(",", $_SESSION['glpigroups']) . "))";
+                    }
+                    $condition .= ") ";
                 }
-                $condition .= ") ";
                 break;
 
             case 'Project':
@@ -5628,16 +5632,19 @@ JAVASCRIPT;
                     "glpi_projects",
                     "projects_id"
                 );
-                $out .= self::addLeftJoin(
-                    $itemtype,
-                    $ref_table,
-                    $already_link_tables,
-                    "glpi_projecttaskteams",
-                    "projecttaskteams_id",
-                    0,
-                    0,
-                    ['jointype' => 'child']
-                );
+                // Only add team join if user doesn't have READALL right
+                if (!Session::haveRight('project', Project::READALL)) {
+                    $out .= self::addLeftJoin(
+                        $itemtype,
+                        $ref_table,
+                        $already_link_tables,
+                        "glpi_projecttaskteams",
+                        "projecttaskteams_id",
+                        0,
+                        0,
+                        ['jointype' => 'child']
+                    );
+                }
                 break;
 
             case 'Project':
