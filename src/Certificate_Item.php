@@ -262,8 +262,8 @@ TWIG, $twig_params);
                             'row_class' => $item->isDeleted() ? 'table-danger' : '',
                             'type' => $itemtype_name,
                             'name' => $item->getLink(),
-                            'serial' => $data['serial'],
-                            'otherserial' => $data['otherserial'],
+                            'serial' => $data['serial'] ?? '-',
+                            'otherserial' => $data['otherserial'] ?? '-',
                         ];
 
                         if (Session::isMultiEntitiesMode()) {
