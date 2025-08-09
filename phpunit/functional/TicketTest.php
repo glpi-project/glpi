@@ -7437,7 +7437,7 @@ HTML,
                 [
                     'documents_id'   => $weblink_document->getID(),
                     'items_id'       => $ticket->getID(),
-                    'itemtype'       => \Ticket::class,
+                    'itemtype'       => Ticket::class,
                 ]
             ]
         );
