@@ -35,6 +35,8 @@
 namespace tests\units\Glpi\Search;
 
 use DbTestCase;
+use Glpi\Asset\AssetDefinition;
+use Glpi\Search\SearchOption;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class SearchOptionTest extends DbTestCase
@@ -48,7 +50,7 @@ class SearchOptionTest extends DbTestCase
             [\KnowbaseItem::class, [1, 80]], // Name, Entity Target
             [\RSSFeed::class, [1]], // Name (Not Entity assignable)
             [\AllAssets::class, [1, 80]], // Name, Entity
-            [\Glpi\Asset\AssetDefinition::class, [2]], // Label (Not Entity assignable)
+            [AssetDefinition::class, [2]], // Label (Not Entity assignable)
         ];
     }
 
@@ -58,7 +60,7 @@ class SearchOptionTest extends DbTestCase
         $this->login();
         $this->assertEquals(
             $expected,
-            \Glpi\Search\SearchOption::getDefaultToView($itemtype)
+            SearchOption::getDefaultToView($itemtype)
         );
     }
 }
