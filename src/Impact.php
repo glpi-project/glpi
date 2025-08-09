@@ -1367,7 +1367,7 @@ JS);
             'label'       => $item->getFriendlyName(),
             'image'       => self::getImpactIcon($item::class, $item->getID()),
             'ITILObjects' => $item->getITILTickets(true),
-            'id_option'   => !empty($id_field) ? array_keys($id_field)[0] : null,
+            'id_option'   => $id_field !== [] ? array_keys($id_field)[0] : null,
         ];
 
         // Only set GOTO link if the user have READ rights
