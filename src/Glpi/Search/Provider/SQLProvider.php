@@ -6349,7 +6349,7 @@ final class SQLProvider implements SearchProviderInterface
                         $color = ($date < $_SESSION['glpi_currenttime']) ? '#cf9b9b' : null;
                         if ($before) {
                             $before = date('Y-m-d', strtotime($_SESSION['glpi_currenttime'] . " + $before days"));
-                            $color = match(true) {
+                            $color = match (true) {
                                 $date < $_SESSION['glpi_currenttime'] => '#d63939',
                                 $date < $before => '#de5d06',
                                 $date >= $before => '#a1cf66',
@@ -6363,6 +6363,7 @@ final class SQLProvider implements SearchProviderInterface
                         <span style='background: $color'></span>&nbsp;" . \htmlescape($date) . "
                        </div>";
                     }
+                    break;
                 case "glpi_domains.date_expiration":
                     if (!empty($data[$ID][0]['name'])
                         && ($data[$ID][0]['name'] < $_SESSION['glpi_currenttime'])
