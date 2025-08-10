@@ -49,39 +49,39 @@
 {% set pending_reason_selected_context = 'pending' %}
 
 {% if display_for_parent %}
-   {% set pending_reason = pending_reason_item_parent ? call("PendingReason::getById", [pending_reason_item_parent.fields['pendingreasons_id']]) : false %}
+    {% set pending_reason = pending_reason_item_parent ? call("PendingReason::getById", [pending_reason_item_parent.fields['pendingreasons_id']]) : false %}
 {% else %}
-   {% set pending_item = pending_item ?? call(entry['type'] ~ "::getById", [entry_i['id']]) %}
-   {% set pending_reason_item = pending_item ? call("PendingReason_Item::getForItem", [pending_item]) : false %}
-   {% set pending_reason = pending_reason_item ? call("PendingReason::getById", [pending_reason_item.fields['pendingreasons_id']]) : false %}
-   {% set is_latest_pending = call("PendingReason_Item::isLastPendingForItem", [
-      item,
-      pending_item
-   ]) %}
-   {% set pending_reason_selected_context = is_latest_pending and pending_reason_item_parent != false ? 'pending' : 'done' %}
+    {% set pending_item = pending_item ?? call(entry['type'] ~ "::getById", [entry_i['id']]) %}
+    {% set pending_reason_item = pending_item ? call("PendingReason_Item::getForItem", [pending_item]) : false %}
+    {% set pending_reason = pending_reason_item ? call("PendingReason::getById", [pending_reason_item.fields['pendingreasons_id']]) : false %}
+    {% set is_latest_pending = call("PendingReason_Item::isLastPendingForItem", [
+        item,
+        pending_item
+    ]) %}
+    {% set pending_reason_selected_context = is_latest_pending and pending_reason_item_parent != false ? 'pending' : 'done' %}
 {% endif %}
 
 {% if pending_reason %}
-   <span class="{{ pending_reason_contexts[pending_reason_selected_context].className }} {{ display_for_parent ? "mt-1 w-100 text-truncate" : "" }}">
+    <span class="{{ pending_reason_contexts[pending_reason_selected_context].className }} {{ display_for_parent ? "mt-1 w-100 text-truncate" : "" }}">
       {{ pending_reason_contexts[pending_reason_selected_context].icon|raw }}
-      {{ (pending_reason_contexts[pending_reason_selected_context].text ~ ": %s"|format(pending_reason.getLink()))|raw }}
+        {{ (pending_reason_contexts[pending_reason_selected_context].text ~ ": %s"|format(pending_reason.getLink()))|raw }}
 
-      {% if display_for_parent or call("PendingReason_Item::isLastPendingForItem", [
-         item,
-         pending_item
-      ]) %}
-         {% set next_bump = pending_reason_item_parent.getNextFollowupDate() %}
-         {% if next_bump %}
+        {% if pending_reason_item_parent and (display_for_parent or call("PendingReason_Item::isLastPendingForItem", [
+            item,
+            pending_item
+        ])) %}
+            {% set next_bump = pending_reason_item_parent.getNextFollowupDate() %}
+            {% if next_bump %}
 
-            <i class="ti ti-clock ms-2" title="{{ __("Next automatic follow-up scheduled on %s")|format(next_bump|formatted_date) }}"
-               data-bs-toggle="tooltip"></i>
-         {% endif %}
+                <i class="ti ti-clock ms-2" title="{{ __("Next automatic follow-up scheduled on %s")|format(next_bump|formatted_date) }}"
+                   data-bs-toggle="tooltip"></i>
+            {% endif %}
 
          {% set resolve = pending_reason_item_parent.getAutoResolvedate() %}
          {% if resolve %}
             <i class="ti ti-player-stop-filled ms-2" title="{{ __("Automatic resolution scheduled on %s")|format(resolve|formatted_date) }}"
                data-bs-toggle="tooltip"></i>
-         {% endif %}
-      {% endif %}
+        {% endif %}
+        {% endif %}
    </span>
 {% endif %}

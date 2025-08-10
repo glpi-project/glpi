@@ -752,6 +752,33 @@ function loadDataset()
                 'entities_id' => '_test_root_entity',
             ],
         ],
+        'ITILFollowupTemplate' => [
+            [
+                'name' => 'needupdate_followuptemplate',
+                'entities_id' => '_test_root_entity',
+                'is_recursive' => 1,
+                'content' => 'We are waiting for your response to update the ticket.',
+            ],
+        ],
+        'SolutionTemplate' => [
+            [
+                'name' => 'noupdate_solutiontemplate',
+                'entities_id' => '_test_root_entity',
+                'is_recursive' => 1,
+                'content' => 'We have not received any update from you. We are closing the ticket.',
+            ],
+        ],
+        'PendingReason' => [
+            [
+                'name' => 'needupdate_pendingreason',
+                'entities_id' => '_test_root_entity',
+                'is_recursive' => 1,
+                'itilfollowuptemplates_id' => 'needupdate_followuptemplate',
+                'followup_frequency' => DAY_TIMESTAMP,
+                'followups_before_resolution' => 3,
+                'solutiontemplates_id' => 'noupdate_solutiontemplate',
+            ],
+        ],
     ];
 
     // To bypass various right checks
