@@ -59,7 +59,6 @@ use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Helpdesk\Tile\FormTile;
 use Glpi\Helpdesk\Tile\GlpiPageTile;
 use Glpi\Helpdesk\Tile\TilesManager;
-use Glpi\ItemTranslation\Context\TranslationHandler;
 use Glpi\ItemTranslation\ItemTranslation;
 use ITILCategory;
 use Laminas\I18n\Translator\Translator;
@@ -155,16 +154,19 @@ final class DefaultDataManager
             'key'      => new QueryParam(),
             'language' => new QueryParam(),
             'translations' => new QueryParam(),
+            'hash' => new QueryParam(),
         ]);
         $stmt = $DB->prepare($query);
+        $name_hash = md5($name);
+        $description_hash = md5($description);
         foreach (array_keys($CFG_GLPI['languages']) as $lang) {
             $translated_name = $TRANSLATE->translate($name, 'glpi', $lang);
             $translated_description = $TRANSLATE->translate($description, 'glpi', $lang);
             if ($translated_name !== $name) {
-                $stmt->execute([Form::TRANSLATION_KEY_NAME, $lang, json_encode(['one' => $translated_name])]);
+                $stmt->execute([Form::TRANSLATION_KEY_NAME, $lang, json_encode(['one' => $translated_name]), $name_hash]);
             }
             if ($translated_description !== $description) {
-                $stmt->execute([Form::TRANSLATION_KEY_DESCRIPTION, $lang, json_encode(['one' => $translated_description])]);
+                $stmt->execute([Form::TRANSLATION_KEY_DESCRIPTION, $lang, json_encode(['one' => $translated_description]), $description_hash]);
             }
         }
     }
@@ -349,8 +351,10 @@ final class DefaultDataManager
                 'key'      => new QueryParam(),
                 'language' => new QueryParam(),
                 'translations' => new QueryParam(),
+                'hash' => new QueryParam(),
             ]);
             $stmt = $DB->prepare($query);
+            $hash = md5($question_data['name']);
             foreach (array_keys($CFG_GLPI['languages']) as $lang) {
                 $translated_name = $question_data['translation'](
                     $TRANSLATE,
@@ -360,7 +364,7 @@ final class DefaultDataManager
                 if ($translated_name === null || $translated_name === $question_data['name']) {
                     continue;
                 }
-                $stmt->execute(['question_name', $lang, json_encode(['one' => $translated_name])]);
+                $stmt->execute(['question_name', $lang, json_encode(['one' => $translated_name]), $hash]);
             }
         }
 
