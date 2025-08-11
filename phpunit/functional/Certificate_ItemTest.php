@@ -34,11 +34,13 @@
 
 namespace tests\units;
 
+use Certificate;
 use Certificate_Item;
 use DbTestCase;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasCertificatesCapacity;
 use Glpi\Features\Clonable;
+use Symfony\Component\DomCrawler\Crawler;
 use Toolbox;
 
 class Certificate_ItemTest extends DbTestCase
@@ -87,7 +89,7 @@ class Certificate_ItemTest extends DbTestCase
         $root_entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
 
         $cert_item = new Certificate_Item();
-        $cert = new \Certificate();
+        $cert = new Certificate();
 
         $input = [
             'name'        => 'Test certificate',
@@ -179,9 +181,64 @@ class Certificate_ItemTest extends DbTestCase
 
     public function testgetListForItemParamsForCertificate()
     {
-        $cert = new \Certificate();
+        $cert = new Certificate();
         $cert_item = new Certificate_Item();
         $this->expectExceptionMessage('Cannot use getListForItemParams() for a Certificate');
         $cert_item->countForItem($cert);
+    }
+
+    public function testShowList(): void
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $certificate = $this->createItem(Certificate::class, [
+            'name'        => $this->getUniqueString(),
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        foreach ($CFG_GLPI['certificate_types'] as $itemtype) {
+            $this->createItem(Certificate_Item::class, [
+                'certificates_id' => $certificate->getID(),
+                'itemtype'        => $itemtype,
+                'items_id'        => $this->createItem($itemtype, [
+                    'name' => __FUNCTION__,
+                    'entities_id' => $this->getTestRootEntity(true),
+                    'serial' => "{$itemtype}-serial",
+                    'otherserial' => "{$itemtype}-otherserial",
+                ], ['entities_id', 'serial', 'otherserial'])->getID(),
+            ]);
+        }
+
+        ob_start();
+        Certificate_Item::showForCertificate($certificate);
+        $out = ob_get_clean();
+
+        $crawler = new Crawler($out);
+        $rows = $crawler->filter('table tr[data-itemtype="Certificate_Item"]');
+        $this->assertCount(count($CFG_GLPI['certificate_types']), $rows);
+        $certificate_types = array_combine(
+            array_map(static fn($t) => $t::getTypeName(1), $CFG_GLPI['certificate_types']),
+            $CFG_GLPI['certificate_types'],
+        );
+        foreach ($rows as $row) {
+            $cells = (new Crawler($row))->filter('td');
+            $itemtype = $certificate_types[trim($cells->getNode(1)->textContent)];
+            $item = getItemForItemtype($itemtype);
+            $this->assertStringContainsString(__FUNCTION__, trim($cells->getNode(2)->textContent));
+            $this->assertStringContainsString($item->isEntityAssign() ? 'Root entity > _test_root_entity' : '-', trim($cells->getNode(3)->textContent));
+            $this->assertStringContainsString($item->isField('serial') ? "{$itemtype}-serial" : '-', trim($cells->getNode(4)->textContent));
+            $this->assertStringContainsString($item->isField('otherserial') ? "{$itemtype}-otherserial" : '-', trim($cells->getNode(5)->textContent));
+        }
+
+        foreach ($CFG_GLPI['certificate_types'] as $itemtype) {
+            ob_start();
+            Certificate_Item::showForItem(getItemByTypeName($itemtype, __FUNCTION__));
+            $out = ob_get_clean();
+            $crawler = new Crawler($out);
+            $this->assertCount(1, $crawler->filter('table tr[data-itemtype="Certificate_Item"]'));
+        }
     }
 }
