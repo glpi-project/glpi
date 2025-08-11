@@ -776,8 +776,8 @@ JS);
         echo '<div class="impact-header">';
         echo "<h2>" . __s("Impact analysis") . "</h2>";
         echo "<div id='switchview'>";
-        echo "<a id='sviewlist' href='#list'><i class='pointer ti ti-list' title='" . __s('View as list') . "'></i></a>";
-        echo "<a id='sviewgraph' href='#graph'><i class='pointer ti ti-hierarchy-2' title='" . __s('View graphical representation') . "'></i></a>";
+        echo "<a id='sviewlist' href='#list' title='" . __s('View as list') . "'><i class='pointer ti ti-list'></i></a>";
+        echo "<a id='sviewgraph' href='#graph' title='" . __s('View graphical representation') . "'><i class='pointer ti ti-hierarchy-2'></i></a>";
         echo "</div>";
         echo "</div>";
 
