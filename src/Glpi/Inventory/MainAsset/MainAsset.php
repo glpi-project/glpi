@@ -547,6 +547,13 @@ abstract class MainAsset extends InventoryAsset
     {
         $blacklist = new Blacklist();
 
+        $ruleEntity = new RuleImportEntityCollection();
+        $ruleEntity->getCollectionPart();
+        $ruleLocation = new RuleLocationCollection();
+        $ruleLocation->getCollectionPart();
+        $ruleImportAsset = new RuleImportAssetCollection();
+        $ruleImportAsset->getCollectionPart();
+
         foreach ($this->data as $key => $data) {
             $blacklist->processBlackList($data);
 
@@ -555,9 +562,6 @@ abstract class MainAsset extends InventoryAsset
 
             if (!$this->isAccessPoint($data)) {
                 $entity_input = $this->prepareEntitiesRulesInput($data, $input);
-
-                $ruleEntity = new RuleImportEntityCollection();
-                $ruleEntity->getCollectionPart();
                 $dataEntity = $ruleEntity->processAllRules($entity_input, []);
 
                 if (isset($dataEntity['_ignore_import'])) {
@@ -590,8 +594,6 @@ abstract class MainAsset extends InventoryAsset
                     }
                 }
 
-                $ruleLocation = new RuleLocationCollection();
-                $ruleLocation->getCollectionPart();
                 $dataLocation = $ruleLocation->processAllRules($input, []);
 
                 if (isset($dataLocation['locations_id']) && $dataLocation['locations_id'] != -1) {
@@ -604,9 +606,7 @@ abstract class MainAsset extends InventoryAsset
 
             //call rules on current collected data to find item
             //a callback on rulepassed() will be done if one is found.
-            $rule = new RuleImportAssetCollection();
-            $rule->getCollectionPart();
-            $datarules = $rule->processAllRules($input, [], ['class' => $this]);
+            $datarules = $ruleImportAsset->processAllRules($input, [], ['class' => $this]);
 
             if (isset($datarules['_no_rule_matches']) && $datarules['_no_rule_matches'] == '1') {
                 //no rule matched, this is a new one
