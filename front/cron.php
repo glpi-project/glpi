@@ -39,7 +39,6 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use function Safe\ob_end_clean;
 
 /**
- * @var DBmysql|null $DB
  * @var array $CFG_GLPI
  */
 global $DB, $CFG_GLPI;
@@ -83,7 +82,7 @@ if (PHP_SAPI === 'cli') {
         exit(1); // @phpstan-ignore glpi.forbidExit (CLI context)
     }
 
-    if (!($DB instanceof DBmysql)) {
+    if (!($DB instanceof DBmysql)) { // @phpstan-ignore instanceof.alwaysTrue (the database may be unavailable at this point)
         echo sprintf(
             'ERROR: The database configuration file "%s" is missing or is corrupted. You have to either restart the install process, or restore this file.',
             GLPI_CONFIG_DIR . '/config_db.php'

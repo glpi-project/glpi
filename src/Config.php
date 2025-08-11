@@ -1332,7 +1332,6 @@ class Config extends CommonDBTM
     {
         /**
          * @var array $CFG_GLPI
-         * @var DBmysql|null $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -1346,8 +1345,7 @@ class Config extends CommonDBTM
         $CFG_GLPI['typedoc_icon_dir'] = $root_doc . '/pics/icones';
 
         if (
-            !($DB instanceof DBmysql)
-            || !$DB->connected
+            !DBConnection::isDbAvailable()
             || !$DB->tableExists('glpi_configs')
         ) {
             return false;

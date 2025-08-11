@@ -56,23 +56,20 @@ $DEFAULT_PLURAL_NUMBER = 2;
  */
 function __($str, $domain = 'glpi')
 {
-    /** @var TranslatorInterface $TRANSLATE */
     global $TRANSLATE;
 
     $trans = null;
 
-    if ($TRANSLATE !== null) {
-        try {
-            $trans = $TRANSLATE->translate($str, $domain);
+    try {
+        $trans = $TRANSLATE->translate($str, $domain);
 
-            if (is_array($trans)) {
-                // Wrong call when plural defined
-                $trans = $trans[0];
-            }
-        } catch (Throwable $e) {
-            // Error may happen when overrided translation files does not use same plural rules as GLPI.
-            // Silently fail to not flood error log.
+        if (is_array($trans)) {
+            // Wrong call when plural defined
+            $trans = $trans[0];
         }
+    } catch (Throwable $e) {
+        // Error may happen when overrided translation files does not use same plural rules as GLPI.
+        // Silently fail to not flood error log.
     }
 
     return $trans ?? $str;
@@ -134,13 +131,11 @@ function _n($sing, $plural, $nb, $domain = 'glpi')
 
     $trans = null;
 
-    if ($TRANSLATE !== null) {
-        try {
-            $trans = $TRANSLATE->translatePlural($sing, $plural, $nb, $domain);
-        } catch (Throwable $e) {
-            // Error may happen when overrided translation files does not use same plural rules as GLPI.
-            // Silently fail to not flood error log.
-        }
+    try {
+        $trans = $TRANSLATE->translatePlural($sing, $plural, $nb, $domain);
+    } catch (Throwable $e) {
+        // Error may happen when overrided translation files does not use same plural rules as GLPI.
+        // Silently fail to not flood error log.
     }
 
     return $trans ?? (($nb == 0 || $nb > 1) ? $plural : $sing);

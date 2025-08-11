@@ -840,10 +840,9 @@ class DBConnection extends CommonGLPI
      */
     public static function getDefaultCharset(): string
     {
-        /** @var DBmysql|null $DB */
         global $DB;
 
-        if ($DB instanceof DBmysql && !$DB->use_utf8mb4) {
+        if (self::isDbAvailable() && !$DB->use_utf8mb4) {
             return 'utf8';
         }
 
@@ -859,10 +858,9 @@ class DBConnection extends CommonGLPI
      */
     public static function getDefaultCollation(): string
     {
-        /** @var DBmysql|null $DB */
         global $DB;
 
-        if ($DB instanceof DBmysql && !$DB->use_utf8mb4) {
+        if (self::isDbAvailable() && !$DB->use_utf8mb4) {
             return 'utf8_unicode_ci';
         }
 
@@ -878,10 +876,9 @@ class DBConnection extends CommonGLPI
      */
     public static function getDefaultPrimaryKeySignOption(): string
     {
-        /** @var DBmysql|null $DB */
         global $DB;
 
-        if ($DB instanceof DBmysql && $DB->allow_signed_keys) {
+        if (self::isDbAvailable() && $DB->allow_signed_keys) {
             return '';
         }
 
@@ -918,8 +915,9 @@ class DBConnection extends CommonGLPI
      */
     public static function isDbAvailable(): bool
     {
-        /** @var DBmysql|null $DB */
         global $DB;
+
+        // @phpstan-ignore instanceof.alwaysTrue ($DB can be null if the DB config file is missing or the service is not yet initialized)
         return $DB instanceof DBmysql && $DB->connected;
     }
 }
