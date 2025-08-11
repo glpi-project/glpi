@@ -5984,13 +5984,15 @@ final class SQLProvider implements SearchProviderInterface
                         ];
                     } else {
                         $is_late = false;
+
+                        $value = $data[$ID][0]['name'];
+                        $status = $data[$ID][0]['status'];
+
                         switch ($table . "." . $field) {
                             case "glpi_tickets.time_to_resolve":
                             case "glpi_tickets.internal_time_to_resolve":
                             case "glpi_problems.time_to_resolve":
                             case "glpi_changes.time_to_resolve":
-                                $value = $data[$ID][0]['name'];
-                                $status = $data[$ID][0]['status'];
                                 $solve_date = $data[$ID][0]['solvedate'];
 
                                 $is_late = !empty($value)
@@ -6002,8 +6004,6 @@ final class SQLProvider implements SearchProviderInterface
                                 break;
                             case "glpi_tickets.time_to_own":
                             case "glpi_tickets.internal_time_to_own":
-                                $value = $data[$ID][0]['name'];
-                                $status = $data[$ID][0]['status'];
                                 $opening_date = $data[$ID][0]['date'];
                                 $tia_delay = $data[$ID][0]['takeintoaccount_delay_stat'];
                                 $tia_date = $data[$ID][0]['takeintoaccountdate'];
@@ -6077,7 +6077,7 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     $name = \htmlescape($name);
                     if ($itemtype == 'ProjectState') {
-                        $out =   "<a href='" . ProjectState::getFormURLWithID($data[$ID][0]["id"]) . "'>" . $name . "</a></div>";
+                        $out =   "<a href='" . \htmlescape(ProjectState::getFormURLWithID($data[$ID][0]["id"])) . "'>" . $name . "</a></div>";
                     } else {
                         if (isset($data[$ID][0]['color'])) {
                             $color = \htmlescape($data[$ID][0]['color']);
@@ -6358,8 +6358,8 @@ final class SQLProvider implements SearchProviderInterface
                         if ($color === null) {
                             break;
                         }
-                        return "<div class='badge_block' style='border-color: $color'>
-                        <span style='background: $color'></span>&nbsp;" . \htmlescape($date) . "
+                        return "<div class='badge_block' style='border-color: " . \htmlescape($color) . "'>
+                        <span style='background: " . \htmlescape($color) . "'></span>&nbsp;" . \htmlescape($date) . "
                        </div>";
                     }
                     break;

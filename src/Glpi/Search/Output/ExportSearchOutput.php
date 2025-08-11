@@ -59,10 +59,7 @@ abstract class ExportSearchOutput extends AbstractSearchOutput
     public static function displayConfigItem($itemtype, $ID, $data = [])
     {
 
-        $searchopt  = SearchOption::getOptionsForItemtype($itemtype);
-
-        $table      = $searchopt[$ID]["table"];
-        $field      = $searchopt[$ID]["field"];
+        SearchOption::getOptionsForItemtype($itemtype);
 
         // Plugin can override core definition for its type
         if ($plug = isPluginItemType($itemtype)) {
