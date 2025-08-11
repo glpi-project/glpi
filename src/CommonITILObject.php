@@ -7783,13 +7783,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     'item' => $item,
                     '_is_image' => false,
                 ];
-                if (!empty($item['filepath'])) {
-                    $docpath = GLPI_DOC_DIR . "/" . $item['filepath'];
-                    $is_image = Document::isImage($docpath);
-                    if ($is_image) {
-                        $doc_entry['_is_image'] = true;
-                        $doc_entry['_size'] = getimagesize($docpath);
-                    }
+                $docpath = GLPI_DOC_DIR . "/" . $item['filepath'];
+                $is_image = Document::isImage($docpath);
+                if ($is_image) {
+                    $doc_entry['_is_image'] = true;
+                    $doc_entry['_size'] = getimagesize($docpath);
                 }
                 if ($document_item['itemtype'] == static::getType()) {
                     // document associated directly to itilobject

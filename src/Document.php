@@ -1582,7 +1582,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      */
     public static function isImage($file): bool
     {
-        if (!file_exists($file)) {
+        if (!file_exists($file) || !is_file($file)) {
             return false;
         }
         if (extension_loaded('exif')) {
