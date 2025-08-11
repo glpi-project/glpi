@@ -51,6 +51,7 @@ use Glpi\Tests\FormTesterTrait;
 use InvalidArgumentException;
 use Profile;
 use Session;
+use Ticket;
 use User;
 
 final class TilesManagerTest extends DbTestCase
@@ -136,6 +137,7 @@ final class TilesManagerTest extends DbTestCase
             'name' => 'Helpdesk profile',
             'interface' => 'helpdesk',
         ]);
+        $this->addRightToProfile("Helpdesk profile", Ticket::$rightname, CREATE | CREATE);
 
         $builder = new FormBuilder("Inactive form");
         $builder->setIsActive(false);
@@ -177,6 +179,7 @@ final class TilesManagerTest extends DbTestCase
             'name' => 'Helpdesk profile',
             'interface' => 'helpdesk',
         ]);
+        $this->addRightToProfile("Helpdesk profile", Ticket::$rightname, CREATE | CREATE);
 
         $builder = new FormBuilder("Form without access policies");
         $builder->setIsActive(true);
@@ -219,6 +222,7 @@ final class TilesManagerTest extends DbTestCase
             'name' => 'Helpdesk profile',
             'interface' => 'helpdesk',
         ]);
+        $this->addRightToProfile("Helpdesk profile", Ticket::$rightname, CREATE | CREATE);
 
         $builder = new FormBuilder("Form inside current entity");
         $builder->setIsActive(true);
@@ -267,6 +271,7 @@ final class TilesManagerTest extends DbTestCase
             'name' => 'Helpdesk profile',
             'interface' => 'helpdesk',
         ]);
+        $this->addRightToProfile("Helpdesk profile", Ticket::$rightname, CREATE | CREATE);
         $manager->addTile($profile, ExternalPageTile::class, [
             'title'        => "GLPI project",
             'description'  => "Link to GLPI project website",
@@ -327,6 +332,7 @@ final class TilesManagerTest extends DbTestCase
             'name' => 'Helpdesk profile',
             'interface' => 'helpdesk',
         ]);
+        $this->addRightToProfile("Helpdesk profile", Ticket::$rightname, CREATE | CREATE);
         $profile_tile_id_1 = $manager->addTile($profile, ExternalPageTile::class, [
             'title'        => "GLPI project",
             'description'  => "Link to GLPI project website",
@@ -433,6 +439,7 @@ final class TilesManagerTest extends DbTestCase
             'name' => 'Helpdesk profile',
             'interface' => 'helpdesk',
         ]);
+        $this->addRightToProfile("Helpdesk profile", Ticket::$rightname, CREATE | CREATE);
 
         // Act: get tiles
         $session = new SessionInfo(
@@ -457,6 +464,7 @@ final class TilesManagerTest extends DbTestCase
             'name' => 'Helpdesk profile',
             'interface' => 'helpdesk',
         ]);
+        $this->addRightToProfile("Helpdesk profile", Ticket::$rightname, CREATE | CREATE);
 
         // Create a tile for the current entity
         $manager->addTile($test_entity, ExternalPageTile::class, [
@@ -656,5 +664,58 @@ final class TilesManagerTest extends DbTestCase
 
         // Assert: there should be 6 tiles
         $this->assertCount(6, $tiles);
+    }
+
+    public function testFormsTilesAreHiddenIfUserCantReadTicket(): void
+    {
+        // Arrange: remove the right to read ticket from self service user.
+        $this->removeRightFromProfile("Self-Service", Ticket::$rightname, READ);
+
+        // Act: login as self service and get tiles
+        $this->login("post-only");
+        $manager = $this->getManager();
+        $tiles = $manager->getVisibleTilesForSession(
+            Session::getCurrentSessionInfo()
+        );
+
+        // Assert: tile containing the ticket list must not be found
+        $this->assertTrue($this->tilesExist("Browse help articles", $tiles));
+        $this->assertTrue($this->tilesExist("Make a reservation", $tiles));
+        $this->assertTrue($this->tilesExist("Create a ticket", $tiles));
+        $this->assertFalse($this->tilesExist("See your tickets", $tiles));
+        $this->assertTrue($this->tilesExist("Request a service", $tiles));
+        $this->assertTrue($this->tilesExist("Report an issue", $tiles));
+    }
+
+    public function testFormsTilesAreHiddenIfUserCantCreateTicket(): void
+    {
+        // Arrange: remove the right to create ticket from self service user.
+        $this->removeRightFromProfile("Self-Service", Ticket::$rightname, CREATE);
+
+        // Act: login as self service and get tiles
+        $this->login("post-only");
+        $manager = $this->getManager();
+        $tiles = $manager->getVisibleTilesForSession(
+            Session::getCurrentSessionInfo()
+        );
+
+        // Assert: tiles related to ticket creation should not be found
+        $this->assertTrue($this->tilesExist("Browse help articles", $tiles));
+        $this->assertTrue($this->tilesExist("Make a reservation", $tiles));
+        $this->assertTrue($this->tilesExist("See your tickets", $tiles));
+        $this->assertFalse($this->tilesExist("Create a ticket", $tiles));
+        $this->assertFalse($this->tilesExist("Request a service", $tiles));
+        $this->assertFalse($this->tilesExist("Report an issue", $tiles));
+    }
+
+    /** @param array<TileInterface> $tiles */
+    private function tilesExist(string $name, array $tiles): bool
+    {
+        $tiles = array_filter(
+            $tiles,
+            fn(TileInterface $tile) => $tile->getTitle() === $name
+        );
+
+        return count($tiles) > 0;
     }
 }

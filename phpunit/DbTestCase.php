@@ -696,4 +696,34 @@ class DbTestCase extends GLPITestCase
         }
         return $a === $b;
     }
+
+    protected function addRightToProfile(
+        string $profile,
+        string $right,
+        int $value
+    ): void {
+        $profile_right = new ProfileRight();
+        $profile_right->getFromDBByCrit([
+            'profiles_id' => getItemByTypeName(Profile::class, $profile, true),
+            'name' => $right,
+        ]);
+        $this->updateItem(ProfileRight::class, $profile_right->fields['id'], [
+            'rights' => $profile_right->fields['rights'] | $value,
+        ]);
+    }
+
+    protected function removeRightFromProfile(
+        string $profile,
+        string $right,
+        int $value
+    ): void {
+        $profile_right = new ProfileRight();
+        $profile_right->getFromDBByCrit([
+            'profiles_id' => getItemByTypeName(Profile::class, $profile, true),
+            'name' => $right,
+        ]);
+        $this->updateItem(ProfileRight::class, $profile_right->fields['id'], [
+            'rights' => $profile_right->fields['rights'] & ~$value,
+        ]);
+    }
 }
