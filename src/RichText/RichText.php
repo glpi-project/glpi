@@ -346,8 +346,8 @@ HTML;
             "/ (href)='[^']*\/front\/document\.send\.php([^']+)' /",
 
             // src attribute, surrounding by " or '
-            '/ (src)="((?!data:)[^"]*\/front\/document\.send\.php[^"]*)" /',
-            "/ (src)='((?!data:)[^']*\/front\/document\.send\.php[^']*)' /",
+            '/ (src)="(?!data:)[^"]*\/front\/document\.send\.php([^"]+)" /',
+            "/ (src)='(?!data:)[^']*\/front\/document\.send\.php([^']+)' /",
         ];
 
         foreach ($patterns as $pattern) {
