@@ -420,9 +420,9 @@ TWIG, $twig_params);
                     <a class="btn btn-secondary" href="{{ path('front/reservation.php?reservationitems_id=0') }}">
                         <i class="{{ 'Planning'|itemtype_icon }} me-2"></i>{{ view_calendar_label }}
                     </a>
-                    <a class="btn btn-secondary mw-100 d-inline-block text-truncate" onClick="$('#viewresasearch').toggleClass('d-none');$('#makesearch').toggleClass('d-none')">
+                    <button type="button" class="btn btn-secondary mw-100 d-inline-block text-truncate" onClick="$('#viewresasearch').toggleClass('d-none');$('#makesearch').toggleClass('d-none')">
                         <i class="ti ti-search me-2"></i>{{ find_free_item_label }}
-                    </a>
+                    </button>
                 </div>
                 <div id="viewresasearch" class="d-none text-center">
             {% endif %}

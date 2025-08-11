@@ -49,63 +49,62 @@
 } %}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
-<div class="asset">
+<div class="asset mb-3">
     <form action="{{ 'ReservationItem'|itemtype_search_path }}" method="post">
         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
         <div class="d-flex flex-wrap">
             <div class="col-12 col-xxl-12 flex-column">
-                <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
-                    <div class="row flex-row align-items-start flex-grow-1">
-                        <div class="row flex-row">
-                            {{ fields.largeTitle(__('Find a free item in a specific period')) }}
-                            {{ fields.datetimeField('reserve[begin]', _post['reserve']['begin'], __('Start date'), {
-                                maybeempty: false
-                            }) }}
+                <div class="row flex-row">
+                    {{ fields.largeTitle(__('Find a free item in a specific period')) }}
+                    {{ fields.datetimeField('reserve[begin]', _post['reserve']['begin'], __('Start date'), {
+                        maybeempty: false
+                    }) }}
 
-                            {% set duration = date(_post['reserve']['end']).getTimestamp() - date(_post['reserve']['begin']).getTimestamp() %}
-                            {% set default_delay = (duration / config('time_step') / constant('MINUTE_TIMESTAMP'))|round(0, 'floor') * (config('time_step') * constant('MINUTE_TIMESTAMP')) %}
-                            {{ fields.dropdownTimestampField('reserve[_duration]', default_delay, __('Duration'), {
-                                min: 0,
-                                max: 48 * constant('HOUR_TIMESTAMP'),
-                                emptylabel: __('Specify an end date')
-                            }) }}
-                            {% set date_end_field %}
-                            <div id="date_end"></div>
-                            {% endset %}
-                            {{ fields.htmlField('', date_end_field, __('End date'), {
-                                add_field_class: 'date_end_field d-none'
-                            }) }}
-                            <script>
-                                $(() => {
-                                    $('select[name="reserve[_duration]"]').on('change', (e) => {
-                                        const value = $(e.target).val();
+                    {% set duration = date(_post['reserve']['end']).getTimestamp() - date(_post['reserve']['begin']).getTimestamp() %}
+                    {% set default_delay = (duration / config('time_step') / constant('MINUTE_TIMESTAMP'))|round(0, 'floor') * (config('time_step') * constant('MINUTE_TIMESTAMP')) %}
+                    {{ fields.dropdownTimestampField('reserve[_duration]', default_delay, __('Duration'), {
+                        min: 0,
+                        max: 48 * constant('HOUR_TIMESTAMP'),
+                        emptylabel: __('Specify an end date')
+                    }) }}
+                    {% set date_end_field %}
+                    <div id="date_end"></div>
+                    {% endset %}
+                    {{ fields.htmlField('', date_end_field, __('End date'), {
+                        add_field_class: 'date_end_field d-none'
+                    }) }}
+                    <script>
+                        $(() => {
+                            $('select[name="reserve[_duration]"]').on('change', (e) => {
+                                const value = $(e.target).val();
 
-                                        if (parseInt(value) === 0) {
-                                            $('#date_end').load('{{ path('ajax/planningend.php') }}', {
-                                                duration: value,
-                                                end: '{{ _post['reserve']['end'] }}',
-                                                name: 'reserve[end]',
-                                            }).closest('.date_end_field').removeClass('d-none');
-                                        } else {
-                                            $('#date_end').closest('.date_end_field').addClass('d-none');
-                                        }
-                                    });
-                                });
-                            </script>
+                                if (parseInt(value) === 0) {
+                                    $('#date_end').load('{{ path('ajax/planningend.php') }}', {
+                                        duration: value,
+                                        end: '{{ _post['reserve']['end'] }}',
+                                        name: 'reserve[end]',
+                                    }).closest('.date_end_field').removeClass('d-none');
+                                } else {
+                                    $('#date_end').closest('.date_end_field').addClass('d-none');
+                                }
+                            });
+                        });
+                    </script>
 
-                            {{ fields.dropdownArrayField('reservation_types', _post['reservation_types'], reservation_types, __('Item type'), {
-                                display_emptychoice: true
-                            }) }}
+                    {{ fields.dropdownArrayField('reservation_types', _post['reservation_types'], reservation_types, __('Item type'), {
+                        display_emptychoice: true
+                    }) }}
 
-                            {{ fields.dropdownField('Location', 'locations_id', default_location, __('Item location'), {
-                                entity: session('glpiactiveentities')
-                            }) }}
-                        </div>
-                    </div>
+                    {{ fields.dropdownField('Location', 'locations_id', default_location, __('Item location'), {
+                        entity: session('glpiactiveentities')
+                    }) }}
+                </div>
+                <div class="d-flex flex-row-reverse">
+                    {{ inputs.submit('submit', _x('button', 'Search')) }}
                 </div>
             </div>
-            {{ include('components/form/buttons.html.twig') }}
         </div>
     </form>
 </div>
