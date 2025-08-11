@@ -346,16 +346,26 @@ HTML;
             "/ (href)='[^']*\/front\/document\.send\.php([^']+)' /",
 
             // src attribute, surrounding by " or '
-            '/ (src)="[^"]*\/front\/document\.send\.php([^"]+)" /',
-            "/ (src)='[^']*\/front\/document\.send\.php([^']+)' /",
+            '/ (src)="(?!data:)[^"]*\/front\/document\.send\.php([^"]+)" /',
+            "/ (src)='(?!data:)[^']*\/front\/document\.send\.php([^']+)' /",
         ];
 
         foreach ($patterns as $pattern) {
-            $content = preg_replace(
+            $result = preg_replace(
                 $pattern,
                 sprintf(' $1="%s/front/document.send.php$2" ', $CFG_GLPI["root_doc"]),
                 $content
             );
+            if ($result === null) {
+                $log_msg = sprintf(
+                    '`preg_replace()` with pattern `%s` failed: `%s`.',
+                    $pattern,
+                    preg_last_error_msg()
+                );
+                trigger_error($log_msg, E_USER_WARNING);
+                return $content;
+            }
+            $content = $result;
         }
 
         return $content;
