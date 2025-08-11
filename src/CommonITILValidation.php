@@ -709,7 +709,6 @@ abstract class CommonITILValidation extends CommonDBChild
         $label = $statuses[$value] ?? $value;
 
         if ($decorated) {
-            $color   = self::getStatusColor($value);
             $classes = null;
             switch ($value) {
                 case self::WAITING:
@@ -1715,21 +1714,35 @@ HTML;
         return $tab;
     }
 
-
-    /**
-     * @param $field
-     * @param $values
-     * @param $options   array
-     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
-
         if (!is_array($values)) {
             $values = [$field => $values];
         }
-        switch ($field) {
-            case 'status':
-                return self::getStatus($values[$field]);
+        if ($field === 'status') {
+            $out = '';
+            $targets = $values;
+            if (array_key_exists('status', $targets)) {
+                // single value
+                $targets = [$values];
+            }
+            foreach ($targets as $target) {
+                if (!empty($target['status'])) {
+                    $status  = static::getStatus($target['status']);
+                    $bgcolor = \htmlescape(static::getStatusColor($target['status']));
+                    $content = "<div class='badge_block' style='border-color: $bgcolor'><span style='background: $bgcolor'></span>&nbsp;" . $status . "</div>";
+                    if (isset($target['itemtype_target']) && is_a($target['itemtype_target'], CommonDBTM::class, true) && isset($target['items_id_target'])) {
+                        $user = '';
+                        if (($approver = $target['itemtype_target']::getById((int) $target['items_id_target'])) !== null) {
+                            $user = $approver->getLink();
+                        }
+                        $text = "<i class='" . \htmlescape($target['itemtype_target']::getIcon()) . " me-1'></i>" . $user . '<span class="mx-1">-</span>' . $status;
+                        $content = "<div class='badge_block' style='border-color: $bgcolor'><span style='background: $bgcolor'></span>&nbsp;" . $text . "</div>";
+                    }
+                    $out .= (empty($out) ? '' : Search::LBBR) . $content;
+                }
+            }
+            return $out;
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
