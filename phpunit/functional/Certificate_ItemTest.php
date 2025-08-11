@@ -89,7 +89,7 @@ class Certificate_ItemTest extends DbTestCase
         $root_entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
 
         $cert_item = new Certificate_Item();
-        $cert = new \Certificate();
+        $cert = new Certificate();
 
         $input = [
             'name'        => 'Test certificate',
@@ -181,7 +181,7 @@ class Certificate_ItemTest extends DbTestCase
 
     public function testgetListForItemParamsForCertificate()
     {
-        $cert = new \Certificate();
+        $cert = new Certificate();
         $cert_item = new Certificate_Item();
         $this->expectExceptionMessage('Cannot use getListForItemParams() for a Certificate');
         $cert_item->countForItem($cert);
@@ -220,7 +220,7 @@ class Certificate_ItemTest extends DbTestCase
         $rows = $crawler->filter('table tr[data-itemtype="Certificate_Item"]');
         $this->assertCount(count($CFG_GLPI['certificate_types']), $rows);
         $certificate_types = array_combine(
-            array_map(static fn ($t) => $t::getTypeName(1), $CFG_GLPI['certificate_types']),
+            array_map(static fn($t) => $t::getTypeName(1), $CFG_GLPI['certificate_types']),
             $CFG_GLPI['certificate_types'],
         );
         foreach ($rows as $row) {
