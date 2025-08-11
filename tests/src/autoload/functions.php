@@ -35,6 +35,12 @@
 
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Dropdown\DropdownDefinitionManager;
+use Glpi\Form\Form;
+use Glpi\Form\FormTranslation;
+use Glpi\Form\Question;
+use Glpi\Form\Section;
+use Glpi\Helpdesk\HelpdeskTranslation;
+use Glpi\Helpdesk\Tile\GlpiPageTile;
 use Glpi\Socket;
 
 function loadDataset()
@@ -807,6 +813,7 @@ function loadDataset()
                 }
             }
         }
+        initFormTranslationFixtures();
         Search::$search = [];
         Config::setConfigurationValues('phpunit', ['dataset' => $data['_version']]);
     }
@@ -842,4 +849,61 @@ function getItemByTypeName(string $type, string $name, bool $onlyid = false): Co
         throw new RuntimeException(sprintf('Unable to load a single `%s` item with the name `%s` (none or many exist may exist).', $type, $name));
     }
     return ($onlyid ? $item->getID() : $item);
+}
+
+function initFormTranslationFixtures()
+{
+    /** @var \DBmysql $DB */
+    global $DB;
+
+    $form = getItemByTypeName(Form::class, 'Request a service');
+    $section = new Section();
+    $section->getFromDBByCrit([
+        'forms_forms_id' => $form->getID(),
+        'name' => 'First Section',
+    ]);
+    $question = new Question();
+    $question->getFromDBByCrit([
+        'forms_sections_id' => $section->getID(),
+        'name' => 'Title',
+    ]);
+
+    $DB->insert(FormTranslation::getTable(), [
+        'itemtype' => Form::class,
+        'items_id' => $form->getID(),
+        'key' => 'form_name',
+        'language' => 'en_XX',
+        'translations' => '{"one": "Request a service translated"}',
+        'hash' => md5('Request a service')
+    ]);
+    $DB->insert(FormTranslation::getTable(), [
+        'itemtype' => Section::class,
+        'items_id' => $section->getID(),
+        'key' => 'section_name',
+        'language' => 'en_XX',
+        'translations' => '{"one": "First Section translated"}',
+        'hash' => md5('First Section')
+    ]);
+    $DB->insert(FormTranslation::getTable(), [
+        'itemtype' => Question::class,
+        'items_id' => $question->getID(),
+        'key' => 'question_name',
+        'language' => 'en_XX',
+        'translations' => '{"one": "Title translated"}',
+        'hash' => md5('Title')
+    ]);
+
+    $glpi_tile = new GlpiPageTile();
+    $glpi_tile->getFromDBByCrit([
+        'title' => 'Browse help articles',
+    ]);
+
+    $DB->insert(HelpdeskTranslation::getTable(), [
+        'itemtype' => GlpiPageTile::class,
+        'items_id' => $question->getID(),
+        'key' => 'title',
+        'language' => 'en_XX',
+        'translations' => '{"one": "Browse help articles translated"}',
+        'hash' => md5('Browse help articles')
+    ]);
 }

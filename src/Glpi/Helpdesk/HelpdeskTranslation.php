@@ -188,9 +188,8 @@ final class HelpdeskTranslation extends ItemTranslation implements ProvideTransl
 
     public static function getSystemSQLCriteria(?string $tablename = null): array
     {
-        $tiles = (new TilesManager())->getAllTiles();
         return [
-            'itemtype' => array_map(static fn($tile) => $tile::class, $tiles)
+            'itemtype' => array_map(static fn($tile) => $tile::class, (new TilesManager())->getTileTypes())
         ];
     }
 }
