@@ -97,7 +97,6 @@ class SavedSearch_User extends CommonDBRelation
      */
     public static function getDefault($users_id, $itemtype)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iter = $DB->request(['SELECT' => 'savedsearches_id',

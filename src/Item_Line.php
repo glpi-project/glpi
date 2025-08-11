@@ -109,7 +109,6 @@ class Item_Line extends CommonDBRelation
 
     public static function getRelationMassiveActionsSpecificities()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $specificities              = parent::getRelationMassiveActionsSpecificities();
@@ -166,7 +165,6 @@ class Item_Line extends CommonDBRelation
      **/
     public static function showItemsForLine(Line $line)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $line->fields['id'];
@@ -299,7 +297,6 @@ class Item_Line extends CommonDBRelation
      **/
     public static function showLinesForItem(CommonDBTM $item)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $itemtype = $item::getType();

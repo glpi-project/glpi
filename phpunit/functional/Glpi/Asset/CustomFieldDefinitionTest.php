@@ -441,7 +441,6 @@ class CustomFieldDefinitionTest extends DbTestCase
      */
     public function testDateTimezones()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $original_tz = date_default_timezone_get();

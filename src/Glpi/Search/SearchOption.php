@@ -149,7 +149,6 @@ final class SearchOption implements ArrayAccess
      **/
     public static function getOptionsForItemtype($itemtype, $withplugins = true): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $search = [];
@@ -643,7 +642,6 @@ final class SearchOption implements ArrayAccess
      **/
     public static function getCleanedOptions($itemtype, $action = READ, $withplugins = true): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $options = self::getOptionsForItemtype($itemtype, $withplugins);
@@ -710,7 +708,6 @@ final class SearchOption implements ArrayAccess
      */
     public static function getDefaultToView(string $itemtype, array $params = []): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $toview = [];

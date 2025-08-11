@@ -83,7 +83,6 @@ class Impact extends CommonGLPI
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ((int) $withtemplate > 0) {
@@ -263,7 +262,6 @@ JS);
      */
     public static function displayListView(CommonDBTM $item, array $graph, bool $scripts = false): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $impact_item = ImpactItem::findForItem($item);
@@ -833,7 +831,6 @@ JS);
      */
     public static function printAssetSelectionForm(array $items): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Dropdown values
@@ -896,7 +893,6 @@ JS);
      */
     public static function searchAsset(string $itemtype, array $used, string $filter, int $page = 0): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Check if this type is enabled in config
@@ -996,7 +992,6 @@ JS);
      */
     public static function printImpactNetworkContainer()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $action = htmlescape($CFG_GLPI['root_doc']) . '/ajax/impact.php';
@@ -1207,7 +1202,6 @@ JS);
         int $direction,
         array $explored_nodes = []
     ): void {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Source and target are determined by the direction in which we are
@@ -1284,9 +1278,6 @@ JS);
      */
     public static function getImpactIcon(string $itemtype, ?int $id = null): string
     {
-        /**
-         * @var array $CFG_GLPI
-         */
         global $CFG_GLPI;
 
         // First, try to get the icon from plugins
@@ -1339,7 +1330,6 @@ JS);
      */
     private static function addNode(array &$nodes, CommonDBTM $item): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Check if the node already exist
@@ -1692,7 +1682,6 @@ TWIG, $twig_params);
      */
     public static function clean(CommonDBTM $item): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Skip if not a valid impact type
@@ -1778,7 +1767,6 @@ TWIG, $twig_params);
      */
     public static function getEnabledItemtypes(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Get configured values
@@ -1790,7 +1778,6 @@ TWIG, $twig_params);
 
         // Remove any forbidden values
         return array_filter($enabled_itemtypes, static function ($itemtype) {
-            /** @var array $CFG_GLPI */
             global $CFG_GLPI;
 
             return array_key_exists($itemtype, $CFG_GLPI['impact_asset_types']);
@@ -1804,7 +1791,6 @@ TWIG, $twig_params);
      */
     public static function getDefaultItemtypes(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $values = $CFG_GLPI["default_impact_asset_types"];
@@ -1816,7 +1802,6 @@ TWIG, $twig_params);
      */
     public static function showConfigForm(): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Form head

@@ -39,7 +39,6 @@ use Glpi\Api\HL\Doc as Doc;
 use Glpi\Debug\Profiler;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use Psr\Log\LoggerInterface;
 use Throwable;
 
 final class GraphQLGenerator
@@ -108,7 +107,6 @@ final class GraphQLGenerator
             try {
                 $type_str .= "  $field_name: {$field->getType()}\n";
             } catch (Throwable $e) {
-                /** @var LoggerInterface $PHPLOGGER */
                 global $PHPLOGGER;
                 $PHPLOGGER->error(
                     "Error writing field $field_name for type $type_name: {$e->getMessage()}",

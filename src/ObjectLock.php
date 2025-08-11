@@ -68,7 +68,6 @@ class ObjectLock extends CommonDBTM
      **/
     public static function getLockableObjects()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $ret = [];
@@ -106,7 +105,6 @@ class ObjectLock extends CommonDBTM
      **/
     private function lockObject()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $ret = false;
@@ -174,7 +172,6 @@ class ObjectLock extends CommonDBTM
      **/
     private function getLockedObjectInfo(string $itemtype, int $items_id)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $ret = false;
@@ -212,7 +209,6 @@ class ObjectLock extends CommonDBTM
      **/
     public static function setReadOnlyProfile()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // to prevent double set ReadOnlyProfile
@@ -260,7 +256,6 @@ class ObjectLock extends CommonDBTM
      **/
     public static function manageObjectLock($itemtype, &$options)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (isset($options['id']) && ($options['id'] > 0)) {
@@ -301,7 +296,6 @@ class ObjectLock extends CommonDBTM
 
     public static function rawSearchOptionsToAdd($itemtype)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $tab = [];
 
@@ -397,7 +391,6 @@ TWIG;
      **/
     public static function getRightsToAdd($itemtype, $interface = 'central')
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $ret = [];

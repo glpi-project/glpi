@@ -133,7 +133,6 @@ class DisplayPreference extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -222,7 +221,6 @@ class DisplayPreference extends CommonDBTM
      **/
     public static function getForTypeUser($itemtype, $user_id, string $interface = 'central')
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -259,7 +257,6 @@ class DisplayPreference extends CommonDBTM
      **/
     public function activatePerso(array $input)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!Session::haveRight(self::$rightname, self::PERSONAL)) {
@@ -309,7 +306,6 @@ class DisplayPreference extends CommonDBTM
 
     public function updateOrder(string $itemtype, int $users_id, array $order, string $interface = 'central')
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Fixed columns are not kept in the DB, so we should remove them from the order
@@ -360,7 +356,6 @@ class DisplayPreference extends CommonDBTM
      **/
     public function orderItem(array $input, $action)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Get current item
@@ -438,7 +433,6 @@ class DisplayPreference extends CommonDBTM
      */
     private function showConfigForm(string $itemtype, bool $global, string $interface = 'central')
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (class_exists($itemtype)) {
@@ -586,7 +580,6 @@ class DisplayPreference extends CommonDBTM
      **/
     public static function showForUser($users_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -735,7 +728,6 @@ class DisplayPreference extends CommonDBTM
      */
     public static function resetToDefaultOptions(string $itemtype): bool
     {
-        /** @var DBmysql $DB */
         global $DB;
         $tables = require(GLPI_ROOT . '/install/empty_data.php');
         $prefs = array_filter($tables[self::getTable()], static fn($pref) => $pref['itemtype'] === $itemtype);

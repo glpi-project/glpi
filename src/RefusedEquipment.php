@@ -173,7 +173,6 @@ class RefusedEquipment extends CommonDBTM implements DefaultSearchRequestInterfa
 
     public function showForm($ID, array $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->initForm($ID, $options);

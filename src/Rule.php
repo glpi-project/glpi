@@ -213,7 +213,6 @@ class Rule extends CommonDBTM
 
     public static function getMenuContent()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $menu = [];
@@ -889,7 +888,6 @@ class Rule extends CommonDBTM
 
     public function showForm($ID, array $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $new_item = static::isNewID($ID);
@@ -1048,7 +1046,6 @@ class Rule extends CommonDBTM
      **/
     public function showActionsList($rules_id, $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $rand = mt_rand();
@@ -1744,7 +1741,6 @@ JS
      **/
     public function prepareAllInputDataForProcess($input, $params)
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $input = $this->prepareInputDataForProcess($input, $params);
@@ -1787,7 +1783,6 @@ JS
      */
     public function executePluginsActions($action, $output, $params, array $input = [])
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         if (isset($PLUGIN_HOOKS[Hooks::USE_RULES])) {
@@ -2072,7 +2067,6 @@ JS
      **/
     public function getNextRanking(?string $sub_type = null)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -2410,7 +2404,6 @@ JS
      **/
     public function displayCriteriaSelectPattern($name, $ID, $condition, $value = "", $test = false)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $crit    = $this->getCriteria($ID);
@@ -2773,7 +2766,6 @@ JS
      **/
     public function preProcessPreviewResults($output)
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         if (isset($PLUGIN_HOOKS[Hooks::USE_RULES])) {
@@ -2880,7 +2872,6 @@ JS
      **/
     public static function doHookAndMergeResults($hook, $params = [], $itemtype = '')
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         if (empty($itemtype)) {
@@ -2931,7 +2922,6 @@ JS
      **/
     public function getRulesForCriteria($crit)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $rules = [];
@@ -3114,7 +3104,6 @@ JS
         $valfield,
         $fieldfield
     ) {
-        /** @var DBmysql $DB */
         global $DB;
 
         $fieldid = getForeignKeyFieldForTable($ruleitem->getTable());
@@ -3423,7 +3412,6 @@ JS
      */
     final public function initRules(bool $reset = true, ?string $itemtype = null): bool
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!static::hasDefaultRules()) {
@@ -3462,7 +3450,6 @@ JS
 
         $ranking_increment = 0;
         if ($reset === false) {
-            /** @var DBmysql $DB */
             global $DB;
             $ranking_increment = $DB->request([
                 'SELECT' => ['MAX' => 'ranking AS rank'],

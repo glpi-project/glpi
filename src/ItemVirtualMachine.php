@@ -74,7 +74,6 @@ class ItemVirtualMachine extends CommonDBChild
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!$item instanceof CommonDBTM) {
@@ -190,7 +189,6 @@ class ItemVirtualMachine extends CommonDBChild
      **/
     public static function showForVirtualMachine(CommonDBTM $asset)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $ID = $asset->fields['id'];
@@ -400,7 +398,6 @@ class ItemVirtualMachine extends CommonDBChild
      **/
     public static function findVirtualMachine($fields = [])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!isset($fields['uuid']) || empty($fields['uuid'])) {

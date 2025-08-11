@@ -34,7 +34,6 @@
 
 namespace Glpi\Api\HL\Controller;
 
-use DBmysql;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
@@ -76,7 +75,6 @@ final class CustomAssetController extends AbstractController
 {
     protected static function getRawKnownSchemas(): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $custom_assets = [];

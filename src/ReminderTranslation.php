@@ -272,7 +272,6 @@ TWIG, $twig_params);
      **/
     public static function getAlreadyTranslatedForItem($item)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $tab = [];

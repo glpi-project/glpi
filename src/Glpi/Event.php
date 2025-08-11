@@ -39,7 +39,6 @@ use Ajax;
 use CommonDBTM;
 use CommonGLPI;
 use CronTask;
-use DBmysql;
 use DbUtils;
 use Document;
 use Dropdown;
@@ -117,10 +116,6 @@ class Event extends CommonDBTM
      **/
     public static function log($items_id, $type, $level, $service, $event)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if ($level >= $CFG_GLPI["event_loglevel"]) {
@@ -165,7 +160,6 @@ class Event extends CommonDBTM
      **/
     public static function cleanOld($day)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $secs = $day * DAY_TIMESTAMP;
@@ -229,7 +223,6 @@ class Event extends CommonDBTM
      **/
     public static function displayItemLogID($type, $items_id)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $items_id = (int) $items_id;
@@ -291,10 +284,6 @@ class Event extends CommonDBTM
      **/
     public static function showForUser(string $user = "", bool $display = true)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         // Show events from $result in table form
@@ -518,7 +507,6 @@ class Event extends CommonDBTM
      */
     private static function getUsedItemtypes(): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // These values are not itemtypes

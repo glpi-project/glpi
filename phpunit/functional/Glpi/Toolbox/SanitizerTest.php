@@ -413,7 +413,6 @@ class SanitizerTest extends \GLPITestCase
 
     public static function isDbEscapedValueProvider(): iterable
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         // Raw char should not be considered as escaped

@@ -38,9 +38,6 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 use function Safe\ob_end_clean;
 
-/**
- * @var array $CFG_GLPI
- */
 global $DB, $CFG_GLPI;
 
 if (PHP_SAPI === 'cli') {

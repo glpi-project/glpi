@@ -83,7 +83,6 @@ class AssetDefinitionManagerTest extends DbTestCase
      */
     public function testTicketTypeConfigRegistration(): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->login();

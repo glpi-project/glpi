@@ -108,7 +108,6 @@ class ITILFollowup extends CommonDBChild
 
     public static function canView(): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!Session::haveRightsOr(self::$rightname, [self::SEEPUBLIC, self::SEEPRIVATE])) {
@@ -277,7 +276,6 @@ class ITILFollowup extends CommonDBChild
     public function post_addItem()
     {
 
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Handle rich-text images and uploaded documents
@@ -343,7 +341,6 @@ class ITILFollowup extends CommonDBChild
 
     public function post_deleteFromDB()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $donotif = $CFG_GLPI["use_notifications"];
@@ -528,7 +525,6 @@ class ITILFollowup extends CommonDBChild
 
     public function post_updateItem($history = true)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $job      = getItemForItemtype($this->fields['itemtype']);
@@ -740,7 +736,6 @@ class ITILFollowup extends CommonDBChild
 
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $tab = [];
@@ -1124,7 +1119,6 @@ class ITILFollowup extends CommonDBChild
      */
     public function isFromSupportAgent()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Get parent item

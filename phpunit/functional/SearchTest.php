@@ -2851,7 +2851,6 @@ class SearchTest extends DbTestCase
 
     public function testSearchWithNamespacedItem()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $search_params = [

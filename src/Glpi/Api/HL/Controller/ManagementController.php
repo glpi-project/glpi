@@ -142,7 +142,6 @@ final class ManagementController extends AbstractController
 
     protected static function getRawKnownSchemas(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $schemas = [];
 

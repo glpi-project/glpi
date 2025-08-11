@@ -1726,7 +1726,6 @@ class SoftwareTest extends AbstractInventoryAsset
 
     public function testIsHelpdeskVisible()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->login();

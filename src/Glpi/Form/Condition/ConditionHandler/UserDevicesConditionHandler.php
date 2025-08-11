@@ -166,7 +166,6 @@ final class UserDevicesConditionHandler implements ConditionHandlerInterface
      */
     private function getSupportedDeviceTypes(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $device_types = [];

@@ -32,14 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
-use Psr\SimpleCache\CacheInterface;
 
 use function Safe\json_encode;
 
-/**
- * @var array $CFG_GLPI
- * @var CacheInterface $GLPI_CACHE
- */
 global $CFG_GLPI, $GLPI_CACHE;
 
 header("Content-Type: application/json; charset=UTF-8");

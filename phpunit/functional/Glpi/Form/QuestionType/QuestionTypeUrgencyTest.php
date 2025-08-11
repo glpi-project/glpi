@@ -62,7 +62,6 @@ final class QuestionTypeUrgencyTest extends DbTestCase
 
     public function testGetUrgencyLevels(): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $questionType = new QuestionTypeUrgency();

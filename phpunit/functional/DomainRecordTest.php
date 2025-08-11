@@ -43,7 +43,6 @@ class DomainRecordTest extends DbTestCase
 {
     public function testCanViewUnattached()
     {
-        /** @var \DBmysql $DB */
         global $DB;
         $this->login();
         $record = new DomainRecord();

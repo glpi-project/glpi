@@ -48,7 +48,6 @@ use Laminas\Mail\Storage\Message;
 use Laminas\Mail\Storage\Part;
 use Laminas\Mail\Storage\Writable\WritableInterface;
 use LitEmoji\LitEmoji;
-use Psr\Log\LoggerInterface;
 use Safe\Exceptions\IconvException;
 
 use function Safe\base64_decode;
@@ -178,7 +177,6 @@ class MailCollector extends CommonDBTM
 
     public function post_getEmpty()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->fields['filesize_max'] = $CFG_GLPI['default_mailcollector_filesize_max'];
@@ -450,7 +448,6 @@ class MailCollector extends CommonDBTM
      **/
     public function deleteOrImportSeveralEmails($emails_ids = [], $action = 0, $entity = 0)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $query = [
@@ -577,9 +574,6 @@ class MailCollector extends CommonDBTM
      **/
     public function collect($mailgateID, $display = false)
     {
-        /**
-         * @var array $CFG_GLPI
-         */
         global $CFG_GLPI;
 
         if ($this->getFromDB($mailgateID)) {
@@ -705,8 +699,6 @@ class MailCollector extends CommonDBTM
                         $requester = $this->getRequesterEmail($message);
 
                         if (!$tkt['_blacklisted']) {
-                            /** @var DBmysql $DB */
-                            global $DB;
                             $rejinput['from']              = $requester ?? '';
                             $rejinput['to']                = $headers['to'];
                             $rejinput['users_id']          = $tkt['_users_id_requester'];
@@ -917,10 +909,6 @@ class MailCollector extends CommonDBTM
      */
     public function buildTicket($uid, Message $message, $options = [])
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $play_rules = (isset($options['play_rules']) && $options['play_rules']);
@@ -1204,7 +1192,6 @@ class MailCollector extends CommonDBTM
      **/
     public function cleanContent($string)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $original = $string;
@@ -1754,7 +1741,6 @@ class MailCollector extends CommonDBTM
                 $this->storage->moveMessage($this->storage->getNumberByUniqueId($uid), $name);
                 return true;
             } catch (Throwable $e) {
-                /** @var LoggerInterface $PHPLOGGER */
                 global $PHPLOGGER;
                 $PHPLOGGER->error(
                     sprintf(
@@ -1780,7 +1766,6 @@ class MailCollector extends CommonDBTM
      **/
     public static function cronMailgate($task)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         NotImportedEmail::deleteLog();
@@ -1848,10 +1833,6 @@ class MailCollector extends CommonDBTM
      **/
     public static function cronMailgateError($task)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (!$CFG_GLPI["use_notifications"]) {
@@ -1891,10 +1872,6 @@ class MailCollector extends CommonDBTM
      */
     public function getSystemInformation()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         // No need to translate, this part always display in english (for copy/paste to forum)
@@ -1946,7 +1923,6 @@ class MailCollector extends CommonDBTM
      **/
     public function sendMailRefusedResponse($to = '', $subject = '')
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $mmail = new GLPIMailer();
@@ -2007,7 +1983,6 @@ TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_l
      */
     public static function countCollectors($active = false)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = [

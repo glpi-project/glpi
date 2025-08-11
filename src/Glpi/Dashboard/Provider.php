@@ -43,7 +43,6 @@ use CommonITILValidation;
 use CommonTreeDropdown;
 use Config;
 use DBConnection;
-use DBmysql;
 use ExtraVisibilityCriteria;
 use Glpi\Dashboard\Filters\{
     DatesFilter,
@@ -467,7 +466,6 @@ class Provider
 
     public static function nbTicketsByAgreementStatusAndTechnician(array $params = []): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $DBread = DBConnection::getReadConnection();

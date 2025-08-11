@@ -79,7 +79,6 @@ class PlanningCsv implements ExportToCsvInterface
 
     public function getFileContent(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $interv = [];

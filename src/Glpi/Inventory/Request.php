@@ -159,7 +159,6 @@ class Request extends AbstractRequest
      */
     public function getParams(mixed $data): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->inventory = new Inventory();
@@ -193,7 +192,6 @@ class Request extends AbstractRequest
      */
     public function prolog(mixed $data): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($this->headers->hasHeader('GLPI-Agent-ID')) {
@@ -306,7 +304,6 @@ class Request extends AbstractRequest
      */
     public function contact(mixed $data): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->inventory = new Inventory();
@@ -364,7 +361,6 @@ class Request extends AbstractRequest
      */
     public function inventory(mixed $data): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         try {

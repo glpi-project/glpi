@@ -71,9 +71,6 @@ final class SessionStart implements EventSubscriberInterface
 
     public function onPostBoot(): void
     {
-        /**
-         * @var array $CFG_GLPI
-         */
         global $CFG_GLPI;
 
         Profiler::getInstance()->start('SessionStart::execute', Profiler::CATEGORY_BOOT);

@@ -82,10 +82,6 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgeSoftware()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $month = self::getDateModRestriction($CFG_GLPI['purge_item_software_install']);
@@ -160,10 +156,6 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgeInfocom()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $month = self::getDateModRestriction($CFG_GLPI['purge_infocom_creation']);
@@ -195,10 +187,6 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgeUserinfos()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $month = self::getDateModRestriction($CFG_GLPI['purge_profile_user']);
@@ -268,10 +256,6 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgeDevices()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $actions = [
@@ -302,10 +286,6 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgeRelations()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $actions = [
@@ -334,10 +314,6 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgeItems()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $actions = [
@@ -369,10 +345,6 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgeRefusedLogs()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $month = self::getDateModRestriction($CFG_GLPI['purge_refusedequipment']);
@@ -398,10 +370,6 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgeOthers()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $actions = [
@@ -429,10 +397,6 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgePlugins()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $month = self::getDateModRestriction($CFG_GLPI['purge_plugins']);
@@ -454,10 +418,6 @@ class PurgeLogs extends CommonDBTM
      */
     public static function purgeAll()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $month = self::getDateModRestriction($CFG_GLPI['purge_all']);

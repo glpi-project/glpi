@@ -216,10 +216,6 @@ class NotificationTemplate extends CommonDBTM
         $event = '',
         $options = []
     ) {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $lang     = [];
@@ -424,7 +420,6 @@ class NotificationTemplate extends CommonDBTM
      */
     private static function convertRelativeGlpiLinksToAbsolute(string $string): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Convert domain relative links to absolute links
@@ -568,7 +563,6 @@ class NotificationTemplate extends CommonDBTM
      **/
     public function getByLanguage($language)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

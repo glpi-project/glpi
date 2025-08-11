@@ -283,7 +283,6 @@ class Ajax
         $orientation = 'vertical',
         $options = []
     ) {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (count($tabs) === 0) {

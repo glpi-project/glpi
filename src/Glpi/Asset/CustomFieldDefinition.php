@@ -35,7 +35,6 @@
 namespace Glpi\Asset;
 
 use CommonDBChild;
-use DBmysql;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CustomFieldType\DropdownType;
 use Glpi\Asset\CustomFieldType\TypeInterface;
@@ -88,7 +87,6 @@ final class CustomFieldDefinition extends CommonDBChild
 
     public function cleanDBonPurge()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $it = $DB->request([
@@ -166,7 +164,6 @@ final class CustomFieldDefinition extends CommonDBChild
 
     private function validateSystemName(array &$input): bool
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!is_string($input['system_name']) || preg_match('/^[a-z0-9_]+$/', $input['system_name']) !== 1) {
@@ -377,7 +374,6 @@ final class CustomFieldDefinition extends CommonDBChild
      */
     protected function validateTranslationsArray(mixed $translations): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!is_array($translations)) {

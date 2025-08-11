@@ -80,7 +80,6 @@ final class FakeProvider extends Provider
      */
     private static function getItemCount(?string $itemtype = null)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $values = [

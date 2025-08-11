@@ -62,7 +62,6 @@ class GenericobjectPluginMigrationTest extends DbTestCase
 {
     public static function setUpBeforeClass(): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         parent::setUpBeforeClass();
@@ -77,7 +76,6 @@ class GenericobjectPluginMigrationTest extends DbTestCase
 
     public static function tearDownAfterClass(): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $tables = $DB->listTables('glpi\_plugin\_genericobject\_%');
@@ -90,7 +88,6 @@ class GenericobjectPluginMigrationTest extends DbTestCase
 
     public function setUp(): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         parent::setUp();
@@ -107,7 +104,6 @@ class GenericobjectPluginMigrationTest extends DbTestCase
     public function testProcessMigration(): void
     {
         // Arrange
-        /** @var \DBmysql $DB */
         global $DB;
 
         $migration = new GenericobjectPluginMigration($DB);

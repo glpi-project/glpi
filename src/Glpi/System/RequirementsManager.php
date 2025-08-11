@@ -51,7 +51,6 @@ use Glpi\System\Requirement\PhpVersion;
 use Glpi\System\Requirement\SeLinux;
 use Glpi\System\Requirement\SessionsConfiguration;
 use Glpi\System\Requirement\SessionsSecurityConfiguration;
-use Psr\Log\LoggerInterface;
 
 /**
  * @since 9.5.0
@@ -143,7 +142,6 @@ class RequirementsManager
             $requirements[] = new DbEngine($db);
         }
 
-        /** @var LoggerInterface $PHPLOGGER */
         global $PHPLOGGER;
         $requirements[] = new LogsWriteAccess($PHPLOGGER);
 

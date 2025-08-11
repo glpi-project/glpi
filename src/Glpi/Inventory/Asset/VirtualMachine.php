@@ -38,7 +38,6 @@ namespace Glpi\Inventory\Asset;
 
 use AutoUpdateSystem;
 use Computer;
-use DBmysql;
 use Glpi\Inventory\Conf;
 use ItemVirtualMachine;
 use RuleImportAssetCollection;
@@ -61,7 +60,6 @@ class VirtualMachine extends InventoryAsset
 
     public function prepare(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $mapping = [
@@ -198,7 +196,6 @@ class VirtualMachine extends InventoryAsset
      */
     protected function getExisting(): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $db_existing = [];
@@ -296,7 +293,6 @@ class VirtualMachine extends InventoryAsset
      */
     protected function createVmComputer()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $computervm = new Computer();
@@ -414,7 +410,6 @@ class VirtualMachine extends InventoryAsset
 
     public function getExistingVMAsComputer(stdClass $vm): int
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $computers_vm_id = 0;
@@ -438,7 +433,6 @@ class VirtualMachine extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $this->conf = $conf;
         return $conf->import_vm == 1 && in_array($this->item::class, $CFG_GLPI['itemvirtualmachines_types']);

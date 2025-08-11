@@ -1400,7 +1400,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
     public function testNetworkEquipmentsConnections(): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         //checks there are no unmanageds
@@ -1461,7 +1460,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $config = new Conf();
         $config->saveConf(['import_unmanaged' => false]);
 
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         //checks there are no unmanageds
@@ -1495,7 +1493,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
     public function testNetworkEquipmentsConnectionsConverted(): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         //checks there are no unmanageds

@@ -36,7 +36,6 @@
 
 namespace Glpi\Inventory\Asset;
 
-use DBmysql;
 use Glpi\Inventory\Conf;
 use Item_Process;
 
@@ -78,7 +77,6 @@ class Process extends InventoryAsset
 
     protected function getExisting(): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $db_existing = [];
@@ -152,7 +150,6 @@ class Process extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $this->conf = $conf;
         return $conf->import_process == 1 && in_array($this->item::class, $CFG_GLPI['process_types']);

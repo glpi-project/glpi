@@ -95,7 +95,6 @@ final class FormMigrationTest extends DbTestCase
 
     public static function setUpBeforeClass(): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         parent::setUpBeforeClass();
@@ -108,7 +107,6 @@ final class FormMigrationTest extends DbTestCase
 
     public static function tearDownAfterClass(): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $tables = $DB->listTables('glpi\_plugin\_formcreator\_%');
@@ -156,9 +154,6 @@ final class FormMigrationTest extends DbTestCase
     #[DataProvider('provideFormMigrationFormCategories')]
     public function testFormMigrationFormCategories($data): void
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
@@ -226,9 +221,6 @@ final class FormMigrationTest extends DbTestCase
     #[DataProvider('provideFormMigrationBasicProperties')]
     public function testFormMigrationBasicProperties($data): void
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
@@ -269,9 +261,6 @@ final class FormMigrationTest extends DbTestCase
     #[DataProvider('provideFormMigrationSections')]
     public function testFormMigrationSections($data): void
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
@@ -564,9 +553,6 @@ final class FormMigrationTest extends DbTestCase
     #[DataProvider('provideFormMigrationQuestions')]
     public function testFormMigrationQuestions($data): void
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
@@ -585,9 +571,6 @@ final class FormMigrationTest extends DbTestCase
 
     public function testFormMigrationAllExportableQuestionsHaveBeenMigrated(): void
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
@@ -614,9 +597,6 @@ final class FormMigrationTest extends DbTestCase
 
     public function testFormMigrationQuestionOfTypeDescriptionAsBeenMigratedAsComment(): void
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
@@ -704,9 +684,6 @@ final class FormMigrationTest extends DbTestCase
     #[DataProvider('provideFormMigrationWithAccessTypes')]
     public function testFormMigrationWithAccessTypes($form_name, $active_access_control_data): void
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
@@ -864,9 +841,6 @@ final class FormMigrationTest extends DbTestCase
     #[DataProvider('provideFormMigrationTranslations')]
     public function testFormMigrationTranslations($form_name, $raw_translations, $expected_translations): void
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         // Create a partial mock of FormMigration that only mocks getTranslationsFromFile method
@@ -925,9 +899,6 @@ final class FormMigrationTest extends DbTestCase
 
     public function testFormMigrationWithOrphanSection(): void
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         // Insert a section with no form
@@ -952,9 +923,6 @@ final class FormMigrationTest extends DbTestCase
 
     public function testFormMigrationWithOrphanQuestion(): void
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         // Insert a question with no form
@@ -979,9 +947,6 @@ final class FormMigrationTest extends DbTestCase
 
     public function testFormMigrationUpdateHorizontalRanks(): void
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         // Insert a new form
@@ -1059,9 +1024,6 @@ final class FormMigrationTest extends DbTestCase
 
     public function testFormMigrationWithDeletedForm(): void
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         // Insert a new form
@@ -1094,9 +1056,6 @@ final class FormMigrationTest extends DbTestCase
 
     public function testFormMigrationFormContentField(): void
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         // Insert a new form
@@ -1178,9 +1137,6 @@ final class FormMigrationTest extends DbTestCase
     #[DataProvider('provideFormMigrationTagConversion')]
     public function testFormMigrationTagConversion(string $rawContent, string $expectedPatternForTitle, string $expectedPatternForContent): void
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         // Create a test form with simple tags in title and content
@@ -1262,9 +1218,6 @@ final class FormMigrationTest extends DbTestCase
 
     public function testFormMigrationWithRadioQuestion(): void
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         // Insert a new form
@@ -1537,9 +1490,6 @@ final class FormMigrationTest extends DbTestCase
         array $expected_conditions = [],
         ?string $values = null
     ): void {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         // Create a form
@@ -1804,9 +1754,6 @@ final class FormMigrationTest extends DbTestCase
         array $expected_conditions = [],
         ?string $values = null
     ): void {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         // Create a form
@@ -1908,9 +1855,6 @@ final class FormMigrationTest extends DbTestCase
 
     public function testFormMigrationVisibilityConditionsForSections(): void
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         // Create a form
@@ -2001,9 +1945,6 @@ final class FormMigrationTest extends DbTestCase
 
     public function testFormMigrationVisibilityConditionsForComments(): void
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         // Create a form
@@ -2141,9 +2082,6 @@ final class FormMigrationTest extends DbTestCase
         CreationStrategy $expected_creation_strategy,
         array $expected_conditions
     ): void {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         // Create a form
@@ -2231,9 +2169,6 @@ final class FormMigrationTest extends DbTestCase
 
     public function testFormMigrationQuestionDropdownItemWithAdvancedOptions(): void
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         $itilcategory = $this->createItem(
@@ -2306,9 +2241,6 @@ final class FormMigrationTest extends DbTestCase
 
     public function testFormMigrationWithEntityThatDoesNotExist(): void
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         // Create a form
@@ -2426,9 +2358,6 @@ final class FormMigrationTest extends DbTestCase
         array $conditions,
         array $expected_conditions
     ): void {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         $question_name = "Test form migration for {$fieldtype} question";
@@ -2529,9 +2458,6 @@ final class FormMigrationTest extends DbTestCase
 
     public function testUnkownQuestionTypesAreIgnored(): void
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         // Arrange: insert an unexpected question type
@@ -2573,9 +2499,6 @@ final class FormMigrationTest extends DbTestCase
 
     public function testValidationRequestCanBeImported(): void
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         // Arrange: insert validation data in target
@@ -2606,9 +2529,6 @@ final class FormMigrationTest extends DbTestCase
 
     public function testConfigurationIsUpdatedAfterMigrationIsExecuted(): void
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         // Arrange: get migration service
@@ -2625,9 +2545,6 @@ final class FormMigrationTest extends DbTestCase
 
     public function testHasPluginData(): void
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         // Arrange: get migration service
@@ -2644,9 +2561,6 @@ final class FormMigrationTest extends DbTestCase
 
     public function testSubmitButtonVisibilityConditionsAreMigrated(): void
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         // Arrange: insert a form with visibility conditions

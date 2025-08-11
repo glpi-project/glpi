@@ -46,10 +46,6 @@ use function Safe\preg_match;
 use function Safe\preg_replace;
 use function Safe\session_write_close;
 
-/**
- * @var array $CFG_GLPI
- * @var Translator $TRANSLATE
- */
 global $CFG_GLPI, $TRANSLATE;
 
 session_write_close(); // Unlocks session to permit concurrent calls

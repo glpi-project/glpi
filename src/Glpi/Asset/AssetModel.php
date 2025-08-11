@@ -36,7 +36,6 @@ namespace Glpi\Asset;
 
 use CommonDCModelDropdown;
 use CommonDropdown;
-use DBmysql;
 use Glpi\Asset\Capacity\IsRackableCapacity;
 use RuntimeException;
 use Toolbox;
@@ -257,7 +256,6 @@ abstract class AssetModel extends CommonDCModelDropdown
 
     public function getAdditionalFields()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $fields = CommonDropdown::getAdditionalFields();

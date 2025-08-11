@@ -184,7 +184,6 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
      **/
     public function canUnrecurs()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $this->fields['id'];

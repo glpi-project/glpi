@@ -80,7 +80,6 @@ class Calendar extends AbstractBackend
 
     public function getCalendarsForUser($principalPath)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $principal_item = $this->getPrincipalItemFromUri($principalPath);
@@ -179,7 +178,6 @@ class Calendar extends AbstractBackend
     public function getCalendarObjects($calendarId)
     {
 
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $principal_type = Planning::getActorTypeFromPlanningKey($calendarId);
@@ -316,7 +314,6 @@ class Calendar extends AbstractBackend
     private function storeCalendarObject($calendarId, $calendarData, (CalDAVCompatibleItemInterface&CommonDBTM)|null $item = null)
     {
 
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $vcalendar = Reader::read($calendarData);

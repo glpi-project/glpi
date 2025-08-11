@@ -35,7 +35,6 @@
 
 namespace Glpi\DBAL;
 
-use DBmysql;
 use RuntimeException;
 
 /**
@@ -71,7 +70,6 @@ class QueryExpression
      */
     public function getValue()
     {
-        /** @var DBmysql $DB */
         global $DB;
         $sql = $this->expression;
         if (!empty($this->alias)) {

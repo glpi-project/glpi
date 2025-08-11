@@ -234,7 +234,6 @@ GRAPHQL);
 
     public function testGetDirectlyWithoutRight()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $this->assertTrue($DB->insert('glpi_tickets', [
@@ -283,7 +282,6 @@ GRAPHQL);
 
     public function testGetTicketIndirectlyWithoutRight()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $this->assertTrue($DB->insert('glpi_tickets', [

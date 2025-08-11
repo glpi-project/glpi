@@ -56,7 +56,6 @@ final class Parser
 
     public function __construct(Search $search)
     {
-        /** @var DBmysql $DB */
         global $DB;
         $this->search = $search;
         $this->db = $DB;

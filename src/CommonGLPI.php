@@ -309,7 +309,6 @@ class CommonGLPI implements CommonGLPIInterface
      */
     final public function defineAllTabs($options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $onglets = [];
@@ -383,7 +382,6 @@ class CommonGLPI implements CommonGLPIInterface
      */
     public function addImpactTab(array &$ong, array $options)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Check if impact analysis is enabled for this item type
@@ -794,7 +792,6 @@ class CommonGLPI implements CommonGLPIInterface
      */
     public function getRedirectToListUrl(): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!empty($_GET['withtemplate'])) {
@@ -1023,7 +1020,6 @@ class CommonGLPI implements CommonGLPIInterface
      */
     public function showNavigationHeader($options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // for objects not in table like central
@@ -1332,10 +1328,6 @@ class CommonGLPI implements CommonGLPIInterface
      */
     public function getKBLinks()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (!($this instanceof CommonDBTM)) {

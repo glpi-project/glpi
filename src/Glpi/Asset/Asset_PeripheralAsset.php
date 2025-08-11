@@ -38,7 +38,6 @@ namespace Glpi\Asset;
 use CommonDBRelation;
 use CommonDBTM;
 use CommonGLPI;
-use DBmysql;
 use Dropdown;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
@@ -272,7 +271,6 @@ final class Asset_PeripheralAsset extends CommonDBRelation
 
     public static function getRelationMassiveActionsSpecificities()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $specificities              = parent::getRelationMassiveActionsSpecificities();
@@ -300,7 +298,6 @@ final class Asset_PeripheralAsset extends CommonDBRelation
      **/
     private static function showForAsset(CommonDBTM $asset, $withtemplate = 0): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $ID      = $asset->fields['id'];
@@ -605,10 +602,7 @@ TWIG, $twig_params);
      **/
     public static function unglobalizeItem(CommonDBTM $item): void
     {
-        /** @var DBmysql $DB */
-        global $DB;
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
+        global $DB, $CFG_GLPI;
 
         if (
             !\in_array($item::class, $CFG_GLPI['directconnect_types'], true)
@@ -675,7 +669,6 @@ TWIG, $twig_params);
         $onlyglobal = false,
         $used = []
     ): int {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $rand     = mt_rand();
@@ -704,7 +697,6 @@ TWIG, $twig_params);
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // can exists for Template
@@ -737,7 +729,6 @@ TWIG, $twig_params);
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!$item instanceof CommonDBTM || !$item->can($item->getID(), READ)) {
@@ -757,7 +748,6 @@ TWIG, $twig_params);
 
     public static function canUnrecursSpecif(CommonDBTM $item, $entities)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (in_array($item::class, self::getPeripheralHostItemtypes(), true)) {
@@ -850,7 +840,6 @@ TWIG, $twig_params);
 
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $tab = [];
@@ -868,7 +857,6 @@ TWIG, $twig_params);
     #[Override]
     public static function getRelationMassiveActionsPeerForSubForm(MassiveAction $ma)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $items = $ma->getItems();
@@ -920,7 +908,6 @@ TWIG, $twig_params);
      */
     public static function getPeripheralHostItemtypes(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         return $CFG_GLPI['peripheralhost_types'];
@@ -931,7 +918,6 @@ TWIG, $twig_params);
      */
     private static function countPeripherals(CommonDBTM $asset): int
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $count = 0;
@@ -966,7 +952,6 @@ TWIG, $twig_params);
     #[Override]
     public static function getItemField($itemtype): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (in_array($itemtype, self::getPeripheralHostItemtypes(), true)) {
@@ -988,7 +973,6 @@ TWIG, $twig_params);
      */
     private static function getPeripheralAssets(CommonDBTM $asset, string $itemtype): iterable
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $peripheral = getItemForItemtype($itemtype);
@@ -1027,7 +1011,6 @@ TWIG, $twig_params);
      */
     private static function getItemConnectionsForItemtype(CommonDBTM $peripheral, string $itemtype): iterable
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $item = getItemForItemtype($itemtype);

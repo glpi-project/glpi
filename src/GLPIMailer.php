@@ -80,7 +80,6 @@ class GLPIMailer
 
     public function __construct(?TransportInterface $transport = null)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->transport = $transport ?? Transport::fromDsn(self::buildDsn(true));
@@ -114,7 +113,6 @@ class GLPIMailer
      */
     final public static function buildDsn(bool $with_clear_password): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $dsn = 'native://default';

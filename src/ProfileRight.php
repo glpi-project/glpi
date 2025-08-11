@@ -35,7 +35,6 @@
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
-use Psr\SimpleCache\CacheInterface;
 
 /**
  * Profile class
@@ -58,7 +57,6 @@ class ProfileRight extends CommonDBChild
      */
     public function clone(array $override_input = [], bool $history = true, bool $clone_as_template = false)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($DB->isSlave()) {
@@ -93,10 +91,6 @@ class ProfileRight extends CommonDBChild
      */
     public static function getAllPossibleRights()
     {
-        /**
-         * @var DBmysql $DB
-         * @var CacheInterface $GLPI_CACHE
-         */
         global $DB, $GLPI_CACHE;
 
         $rights = $GLPI_CACHE->get('all_possible_rights', []);
@@ -120,7 +114,6 @@ class ProfileRight extends CommonDBChild
 
     public static function cleanAllPossibleRights()
     {
-        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
         $GLPI_CACHE->delete('all_possible_rights');
     }
@@ -131,7 +124,6 @@ class ProfileRight extends CommonDBChild
      **/
     public static function getProfileRights($profiles_id, array $rights = [])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $query = [
@@ -157,10 +149,6 @@ class ProfileRight extends CommonDBChild
      **/
     public static function addProfileRights(array $rights)
     {
-        /**
-         * @var DBmysql $DB
-         * @var CacheInterface $GLPI_CACHE
-         */
         global $DB, $GLPI_CACHE;
 
         $ok = true;
@@ -197,10 +185,6 @@ class ProfileRight extends CommonDBChild
      **/
     public static function deleteProfileRights(array $rights)
     {
-        /**
-         * @var DBmysql $DB
-         * @var CacheInterface $GLPI_CACHE
-         */
         global $DB, $GLPI_CACHE;
 
         $GLPI_CACHE->set('all_possible_rights', []);
@@ -224,7 +208,6 @@ class ProfileRight extends CommonDBChild
      **/
     public static function fillProfileRights($profiles_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $subq = new QuerySubQuery([

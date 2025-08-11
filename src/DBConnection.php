@@ -335,7 +335,6 @@ class DBConnection extends CommonGLPI
      **/
     public static function createDBSlaveConfig()
     {
-        /** @var DBmysql $DB */
         global $DB;
         self::createSlaveConnectionFile(
             "localhost",
@@ -361,7 +360,6 @@ class DBConnection extends CommonGLPI
      **/
     public static function saveDBSlaveConf($host, $user, $password, $DBname)
     {
-        /** @var DBmysql $DB */
         global $DB;
         self::createSlaveConnectionFile(
             $host,
@@ -391,7 +389,6 @@ class DBConnection extends CommonGLPI
      **/
     public static function switchToSlave()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (self::isDBSlaveActive()) {
@@ -408,7 +405,6 @@ class DBConnection extends CommonGLPI
      **/
     public static function switchToMaster()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $DB = new DB();
@@ -424,10 +420,6 @@ class DBConnection extends CommonGLPI
      **/
     public static function getReadConnection()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (
@@ -501,7 +493,6 @@ class DBConnection extends CommonGLPI
      */
     public static function establishDBConnection($use_slave, $required)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $DB  = null;
@@ -674,7 +665,6 @@ class DBConnection extends CommonGLPI
      **/
     public static function cronCheckDBreplicate(CronTask $task)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         //Lauch cron only is :

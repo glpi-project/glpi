@@ -116,7 +116,6 @@ class NotificationEvent extends CommonDBTM
      **/
     public static function raiseEvent($event, $item, $options = [], ?CommonDBTM $trigger = null, $label = '')
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         //If notifications are enabled in GLPI's configuration

@@ -36,7 +36,6 @@
 namespace Glpi\Form\Export\Context;
 
 use CommonDBTM;
-use DBmysql;
 use Glpi\Form\Comment;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Question;
@@ -152,7 +151,6 @@ final class DatabaseMapper
 
     private function tryTofindOneRowByName(string $itemtype, string $name): ?array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!$this->isValidItemtype($itemtype)) {

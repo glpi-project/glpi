@@ -35,7 +35,6 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\RichText\RichText;
 use Glpi\Toolbox\URL;
-use Psr\SimpleCache\CacheInterface;
 use Safe\Exceptions\UrlException;
 use SimplePie\SimplePie;
 
@@ -668,7 +667,6 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
      **/
     public static function getRSSFeed($url, $cache_duration = DAY_TIMESTAMP)
     {
-        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         // Fetch feed data, unless it is already cached
@@ -733,7 +731,6 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
 
     final public static function countPublicRssFedds(): int
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = self::getListCriteria(false);
@@ -759,10 +756,6 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
      **/
     public static function showListForCentral(bool $personal = true, bool $display = true)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if ($personal) {

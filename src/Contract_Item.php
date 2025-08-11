@@ -198,7 +198,6 @@ class Contract_Item extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!$item instanceof CommonDBTM) {
@@ -227,7 +226,6 @@ class Contract_Item extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!$item instanceof CommonDBTM) {
@@ -398,10 +396,6 @@ TWIG, $twig_params);
      **/
     public static function showForContract(Contract $contract, $withtemplate = 0)
     {
-        /**
-         * @var DBmysql $DB
-         * @var array    $CFG_GLPI
-         */
         global $DB, $CFG_GLPI;
 
         $instID = $contract->fields['id'];
@@ -641,7 +635,6 @@ TWIG, $twig_params);
 
     public static function getRelationMassiveActionsSpecificities()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $specificities              = parent::getRelationMassiveActionsSpecificities();

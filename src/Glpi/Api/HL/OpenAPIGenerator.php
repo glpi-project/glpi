@@ -232,7 +232,6 @@ EOT;
      */
     public function getSchema(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $component_schemas = self::getComponentSchemas($this->api_version);
@@ -444,7 +443,6 @@ EOT;
      */
     private function getSecuritySchemeComponents(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $scopes = Server::getAllowedScopes();

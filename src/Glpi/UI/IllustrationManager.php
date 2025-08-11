@@ -72,7 +72,6 @@ final class IllustrationManager
         ?string $icons_sprites_path = null,
         ?string $scenes_gradient_sprites_path = null,
     ) {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->icons_definition_file = $icons_definition_file ?? GLPI_ROOT

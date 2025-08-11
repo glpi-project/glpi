@@ -36,7 +36,6 @@
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Socket;
 
-/** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
 // Send UTF8 Headers

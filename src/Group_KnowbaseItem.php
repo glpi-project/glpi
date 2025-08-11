@@ -56,7 +56,6 @@ class Group_KnowbaseItem extends CommonDBRelation
      **/
     public static function getGroups($knowbaseitems_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $groups = [];

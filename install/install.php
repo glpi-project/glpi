@@ -42,9 +42,6 @@ use Glpi\Toolbox\Filesystem;
 
 use function Safe\file_get_contents;
 
-/**
- * @var array $CFG_GLPI
- */
 global $CFG_GLPI;
 
 if (isset($_POST["language"]) && isset($CFG_GLPI["languages"][$_POST["language"]])) {
@@ -97,7 +94,6 @@ function footer_html()
 // choose language
 function choose_language()
 {
-    /** @var array $CFG_GLPI */
     global $CFG_GLPI;
 
     // fix missing param for js drodpown
@@ -228,9 +224,6 @@ function step3($host, $user, $password, $update)
 //Step 4 Create and fill database.
 function step4($databasename, $newdatabasename)
 {
-    /**
-     * @var array $CFG_GLPI
-     */
     global $CFG_GLPI;
 
     $host     = $_SESSION['db_access']['host'];
@@ -362,7 +355,6 @@ function step4($databasename, $newdatabasename)
 //send telemetry information
 function step6()
 {
-    /** @var DBmysql $DB */
     global $DB;
 
     include_once(GLPI_CONFIG_DIR . "/config_db.php");
@@ -430,7 +422,6 @@ function update1($dbname)
     if (empty($dbname)) {
         $error = __('Please select a database.');
     } else {
-        /** @var DBmysql $DB */
         global $DB;
         $DB = DBConnection::getDbInstanceUsingParameters($host, $user, $password, $dbname);
         $update = new Update($DB);
@@ -468,7 +459,6 @@ function update1($dbname)
  **/
 function checkConfigFile()
 {
-    /** @var array $CFG_GLPI */
     global $CFG_GLPI;
 
     if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {

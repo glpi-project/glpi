@@ -56,7 +56,6 @@ class Group_RSSFeed extends CommonDBRelation
      **/
     public static function getGroups($rssfeeds_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $groups = [];

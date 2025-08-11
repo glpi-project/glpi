@@ -36,7 +36,6 @@ namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
 use Change;
 use CommonITILObject_CommonITILObject;
-use DBmysql;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\LinkedITILObjectsField;
@@ -465,7 +464,6 @@ final class LinkedITILObjectsFieldTest extends AbstractDestinationFieldTest
         ?callable $data = null
     ): void {
         if ($data !== null) {
-            /** @var DBmysql $DB */
             global $DB;
 
             $data($DB);

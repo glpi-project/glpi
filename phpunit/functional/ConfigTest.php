@@ -850,7 +850,6 @@ class ConfigTest extends DbTestCase
 
     public function testPrepareInputForUpdateLockProfile(): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->login();
@@ -888,7 +887,6 @@ class ConfigTest extends DbTestCase
 
     public function testPrepareInputForUpdatePdfFont(): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->login();

@@ -243,7 +243,6 @@ class Fieldblacklist extends CommonDropdown
      **/
     public function showItemtype()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($this->fields['id'] > 0) {
@@ -285,7 +284,6 @@ class Fieldblacklist extends CommonDropdown
 
     public function selectCriterias()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         echo "<span id='span_fields' name='span_fields'>";
@@ -329,7 +327,6 @@ class Fieldblacklist extends CommonDropdown
      **/
     public static function dropdownField($itemtype, $options = [])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $p['name']    = 'field';
@@ -404,7 +401,6 @@ class Fieldblacklist extends CommonDropdown
      **/
     public static function isFieldBlacklisted($itemtype, $entities_id, $field, $value)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([

@@ -87,9 +87,6 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
      */
     public static function showItems(DeviceCamera $camera): bool
     {
-        /**
-         * @var DBmysql $DB
-         */
         global $DB;
 
         $ID = $camera->getID();

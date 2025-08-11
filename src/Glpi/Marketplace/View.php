@@ -93,7 +93,6 @@ class View extends CommonGLPI
 
     public static function getSearchURL($full = true)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $dir = ($full ? $CFG_GLPI['root_doc'] : '');
@@ -160,7 +159,6 @@ class View extends CommonGLPI
             return false;
         }
 
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $messages   = [];
@@ -219,9 +217,6 @@ class View extends CommonGLPI
         bool $only_lis = false,
         string $string_filter = ""
     ) {
-        /**
-         * @var array $CFG_GLPI
-         */
         global $CFG_GLPI;
 
         $plugin_inst = new Plugin();
@@ -588,10 +583,6 @@ JS;
      */
     public static function getButtons(string $plugin_key = ""): string
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var array $PLUGIN_HOOKS
-         */
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
         if ((new Plugin())->isPluginsExecutionSuspended()) {
@@ -916,7 +907,6 @@ JS;
      */
     public static function getLocalizedDescription(array $plugin = [], string $version = 'short_description'): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $userlang = $CFG_GLPI['languages'][$_SESSION['glpilanguage']][3] ?? "en";
@@ -1016,7 +1006,6 @@ JS;
      */
     public static function showFeatureSwitchDialog()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (isset($_POST['marketplace_replace'])) {

@@ -46,8 +46,6 @@ use Glpi\Marketplace\View as MarketplaceView;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\VersionParser;
 use Laminas\I18n\Translator\Translator;
-use Psr\Log\LoggerInterface;
-use Psr\SimpleCache\CacheInterface;
 
 use function Safe\ini_get;
 use function Safe\ob_end_clean;
@@ -342,7 +340,6 @@ class Plugin extends CommonDBTM
                         $boot_function();
                     } catch (Throwable $e) {
                         // Log error
-                        /** @var LoggerInterface $PHPLOGGER */
                         global $PHPLOGGER;
                         $PHPLOGGER->error(
                             sprintf('An error occurred during the `%s` plugin boot: %s', $plugin_key, $e->getMessage()),
@@ -447,7 +444,6 @@ class Plugin extends CommonDBTM
                         try {
                             $init_function();
                         } catch (Throwable $e) {
-                            /** @var LoggerInterface $PHPLOGGER */
                             global $PHPLOGGER;
                             $PHPLOGGER->error(
                                 sprintf(
@@ -518,10 +514,6 @@ class Plugin extends CommonDBTM
      **/
     public static function loadLang($plugin_key, $forcelang = '', $coretrytoload = '')
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var Translator $TRANSLATE
-         */
         global $CFG_GLPI, $TRANSLATE;
 
         if ((new Plugin())->isPluginsExecutionSuspended()) {
@@ -621,10 +613,6 @@ class Plugin extends CommonDBTM
      */
     public function checkStates($scan_inactive_and_new_plugins = false)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if ($this->isPluginsExecutionSuspended()) {
@@ -734,7 +722,6 @@ class Plugin extends CommonDBTM
      */
     public function checkPluginState($plugin_key, bool $check_for_replacement = false)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($this->isPluginsExecutionSuspended()) {
@@ -1025,7 +1012,6 @@ class Plugin extends CommonDBTM
      */
     public function getList(array $fields = [], array $order = ['name', 'directory'])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $query = [
@@ -1123,7 +1109,6 @@ class Plugin extends CommonDBTM
      **/
     public function install($ID, array $params = [])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($this->isPluginsExecutionSuspended()) {
@@ -1211,7 +1196,6 @@ class Plugin extends CommonDBTM
      **/
     public function activate($ID)
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         if ($this->isPluginsExecutionSuspended()) {
@@ -1574,7 +1558,6 @@ class Plugin extends CommonDBTM
      **/
     public static function registerClass($itemtype, $attrib = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $plug = isPluginItemType($itemtype);
@@ -1674,7 +1657,6 @@ class Plugin extends CommonDBTM
      **/
     public static function doHook($name, $param = null)
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         if ($param == null) {
@@ -1742,7 +1724,6 @@ class Plugin extends CommonDBTM
      **/
     public static function doHookFunction($name, $parm = null)
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         if ((new Plugin())->isPluginsExecutionSuspended()) {
@@ -2370,7 +2351,6 @@ class Plugin extends CommonDBTM
      */
     public function checkGlpiParameters($params)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $compat = true;
@@ -2705,10 +2685,6 @@ class Plugin extends CommonDBTM
 
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var array $PLUGIN_HOOKS
-         */
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
         if (!is_array($values)) {
@@ -3034,7 +3010,6 @@ TWIG;
      */
     public static function getWebDir(string $plugin_key = "", $full = true, $use_url_base = false)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         Toolbox::deprecated('All plugins resources should be accessed from the `/plugins/` path.');
@@ -3226,10 +3201,6 @@ TWIG;
      */
     private function resetHookableCacheEntries(string $plugin_key): bool
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var CacheInterface $GLPI_CACHE
-         */
         global $CFG_GLPI, $GLPI_CACHE;
 
         $to_clear = [
@@ -3265,9 +3236,6 @@ TWIG;
      */
     public function isPluginsExecutionSuspended(): bool
     {
-        /**
-         * @var array $CFG_GLPI
-         */
         global $CFG_GLPI;
 
         return in_array(

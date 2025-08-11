@@ -540,9 +540,6 @@ class ImpactTest extends \DbTestCase
 
     public function testGetImpactIconFromConfig(): void
     {
-        /**
-         * @var array $CFG_GLPI
-         */
         global $CFG_GLPI;
 
         foreach (['', '/glpi'] as $root_doc) {
@@ -562,10 +559,6 @@ class ImpactTest extends \DbTestCase
 
     public function testGetImpactIconFromPluginHook(): void
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var array $PLUGIN_HOOKS
-         */
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
         $PLUGIN_HOOKS[Hooks::SET_ITEM_IMPACT_ICON]['tester'] = function (array $params) {

@@ -50,7 +50,6 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use function Safe\readfile;
 use function Safe\realpath;
 
-/** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
 if (!isset($_GET["name"]) || !isset($_GET["plugin"]) || !Plugin::isPluginActive($_GET["plugin"])) {

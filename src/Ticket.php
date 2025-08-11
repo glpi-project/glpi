@@ -682,7 +682,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
     public function pre_deleteItem()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI['use_notifications']) {
@@ -1351,7 +1350,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
     public function post_updateItem($history = true)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         parent::post_updateItem($history);
@@ -1814,7 +1812,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      **/
     public function countActiveTicketsForItem($itemtype, $items_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -1855,7 +1852,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      */
     public function getActiveTicketsForItem($itemtype, $items_id, $type)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         return $DB->request([
@@ -1901,7 +1897,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      **/
     public function countSolvedTicketsForItemLastDays($itemtype, $items_id, $days)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -2192,7 +2187,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         switch ($ma->getAction()) {
@@ -2566,7 +2560,6 @@ JAVASCRIPT;
 
     public function rawSearchOptions()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $tab = [];
@@ -3392,7 +3385,6 @@ JAVASCRIPT;
      **/
     public static function computeTco(CommonDBTM $item)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $totalcost = 0;
@@ -3432,7 +3424,6 @@ JAVASCRIPT;
 
     public static function getDefaultValues($entity = 0)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (is_numeric(Session::getLoginUserID(false))) {
@@ -3806,7 +3797,6 @@ JAVASCRIPT;
      */
     public static function showCentralList($start, $status = "process", bool $showgrouptickets = true, bool $display = true)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (
@@ -4637,10 +4627,6 @@ JAVASCRIPT;
      **/
     public static function showCentralCount(bool $foruser = false, bool $display = true)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         // show a tab with count of jobs in the central and give link
@@ -4770,7 +4756,6 @@ JAVASCRIPT;
 
     public static function showCentralNewList()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!Session::haveRightsOr(self::$rightname, [self::READALL, self::READNEWTICKET])) {
@@ -5075,7 +5060,6 @@ JAVASCRIPT;
      **/
     public static function cronCloseTicket($task)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ticket = new self();
@@ -5161,10 +5145,6 @@ JAVASCRIPT;
      **/
     public static function cronAlertNotClosed($task)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (!$CFG_GLPI["use_notifications"]) {
@@ -5232,7 +5212,6 @@ JAVASCRIPT;
      **/
     public static function cronPurgeTicket(CronTask $task)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ticket = new self();
@@ -5726,7 +5705,6 @@ JAVASCRIPT;
      */
     public static function merge(int $merge_target_id, array $ticket_ids, array &$status, array $params = [])
     {
-        /** @var DBmysql $DB */
         global $DB;
         $p = [
             'linktypes'          => [],
@@ -6014,9 +5992,6 @@ JAVASCRIPT;
      */
     public static function getMergedTickets(int $id): array
     {
-        /**
-         * @var DBmysql $DB
-         */
         global $DB;
 
         //look for merged tickets
@@ -6232,7 +6207,6 @@ JAVASCRIPT;
 
     public static function rawSearchOptionsToAdd($itemtype)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $options = [];

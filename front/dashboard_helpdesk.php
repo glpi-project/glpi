@@ -39,7 +39,6 @@ use Glpi\Dashboard\Dashboard;
 use Glpi\Dashboard\Grid;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 
-/** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
 Session::checkCentralAccess();

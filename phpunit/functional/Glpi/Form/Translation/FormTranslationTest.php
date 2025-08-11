@@ -81,7 +81,6 @@ class FormTranslationTest extends \DbTestCase
 
     public function testTranslate()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $form = $this->createFormWithTranslations();

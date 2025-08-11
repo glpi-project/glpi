@@ -547,7 +547,6 @@ class Reminder extends CommonDBVisible implements
 
     public static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $img      = "rdv_private.png"; // default icon for reminder
@@ -663,7 +662,6 @@ class Reminder extends CommonDBVisible implements
 
     final public static function countPublicReminders(): int
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = self::getListCriteria();
@@ -691,10 +689,6 @@ class Reminder extends CommonDBVisible implements
      **/
     public static function showListForCentral(bool $personal = true, bool $display = true)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $criteria = self::getListCriteria();
@@ -874,7 +868,6 @@ class Reminder extends CommonDBVisible implements
      */
     private static function getItemsAsVCalendars(array $query)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $reminder_iterator = $DB->request($query);

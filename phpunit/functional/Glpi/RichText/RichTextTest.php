@@ -402,7 +402,6 @@ HTML,
 
     public function testGetSafeHtmlDoChangeDocPath()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Images path should be corrected when root doc changed
@@ -440,7 +439,6 @@ HTML;
 
     public static function getTextFromHtmlProvider(): iterable
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Handling of basic content

@@ -40,10 +40,6 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 
 use function Safe\json_decode;
 
-/**
- * @var array $CFG_GLPI
- * @var DBmysql $DB
- */
 global $CFG_GLPI, $DB;
 
 $track = new Ticket();

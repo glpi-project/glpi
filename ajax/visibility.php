@@ -33,9 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @var array $CFG_GLPI
- */
 global $CFG_GLPI;
 
 header("Content-Type: text/html; charset=UTF-8");

@@ -186,7 +186,6 @@ class Monitor extends CommonDBTM implements AssignableItemInterface, DCBreadcrum
      **/
     public function getLinkedItems()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

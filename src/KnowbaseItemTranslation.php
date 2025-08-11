@@ -320,7 +320,6 @@ TWIG, $twig_params);
      **/
     public static function getAlreadyTranslatedForItem(KnowbaseItem $item): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $tab = [];

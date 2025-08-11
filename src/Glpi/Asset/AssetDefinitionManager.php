@@ -181,7 +181,6 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
 
     public function bootstrapDefinition(AbstractDefinition $definition): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $capacities = $this->getAvailableCapacities();
@@ -348,7 +347,6 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
      */
     public function getAllowedDropdownItemtypes($flatten = false): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($this->allowed_dropdown_itemtypes === null) {

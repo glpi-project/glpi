@@ -38,7 +38,6 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 use Glpi\Event;
 use Glpi\Exception\Http\BadRequestHttpException;
 
-/** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
 $link = new Ticket_User();

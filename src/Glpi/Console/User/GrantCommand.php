@@ -34,7 +34,6 @@
 
 namespace Glpi\Console\User;
 
-use DBmysql;
 use Entity;
 use Profile;
 use Profile_User;
@@ -109,7 +108,6 @@ class GrantCommand extends AbstractUserCommand
 
     private function askForProfile(InputInterface $input, OutputInterface $output): string
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $profiles = [];

@@ -45,7 +45,6 @@ class ManualLinkTest extends DbTestCase
 {
     public function testRelatedItemHasTab()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->initAssetDefinition(capacities: [new Capacity(name: HasLinksCapacity::class)]);
@@ -65,7 +64,6 @@ class ManualLinkTest extends DbTestCase
 
     public function testRelatedItemCloneRelations()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->initAssetDefinition(capacities: [new Capacity(name: HasLinksCapacity::class)]);

@@ -231,10 +231,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
     public function post_updateItem($history = true)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         // Handle rich-text images
@@ -328,7 +324,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
     public function post_addItem()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Add team members
@@ -455,7 +450,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
     public function pre_deleteItem()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI['use_notifications']) {
@@ -682,7 +676,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      **/
     public static function getAllForProject($ID)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $tasks = [];
@@ -709,7 +702,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      **/
     public static function getAllForProjectTask($ID)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $tasks = [];
@@ -736,7 +728,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      **/
     public static function getAllTicketsForProject($ID)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -830,7 +821,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      **/
     public static function getTotalEffectiveDuration($projecttasks_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $item = new static();
@@ -880,7 +870,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      **/
     public static function getTotalEffectiveDurationForProject($projects_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -904,7 +893,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      **/
     public static function getTotalPlannedDurationForProject($projects_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -1219,7 +1207,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      **/
     public static function showFor($item)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $item->getID();
@@ -1557,7 +1544,6 @@ TWIG, $twig_params);
      */
     public static function getActiveProjectTaskIDsForGroup(array $groups_id): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (count($groups_id) === 0) {
@@ -1612,7 +1598,6 @@ TWIG, $twig_params);
      */
     public static function getActiveProjectTaskIDsForUser(array $users_id, bool $search_in_groups = true): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (count($users_id) === 0) {
@@ -1816,10 +1801,6 @@ TWIG, $twig_params);
      **/
     public static function populatePlanning($options = []): array
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $interv = [];
@@ -2049,7 +2030,6 @@ TWIG, $twig_params);
      **/
     public static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $users_id = "";  // show users_id project task
@@ -2128,7 +2108,6 @@ TWIG, $twig_params);
      */
     public static function recalculatePercentDone($ID)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $projecttask = new self();
@@ -2170,7 +2149,6 @@ TWIG, $twig_params);
      */
     public function recalculateStatus(array $input): int|false
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $auto_projectstates = $input['auto_projectstates'] ?? $this->fields['auto_projectstates'] ?? false;
@@ -2223,7 +2201,6 @@ TWIG, $twig_params);
      */
     private static function getItemsAsVCalendars(array $criteria)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $query = [
@@ -2261,7 +2238,6 @@ TWIG, $twig_params);
      */
     public function getAsVCalendar(): ?VCalendar
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!$this->canViewItem()) {

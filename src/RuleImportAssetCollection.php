@@ -57,7 +57,6 @@ class RuleImportAssetCollection extends RuleCollection
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!$withtemplate) {

@@ -691,7 +691,6 @@ final class ObserverFieldTest extends AbstractActorFieldTest
         array $fields_to_set,
         callable|JsonFieldInterface $field_config
     ): void {
-        /** @var DBmysql $DB */
         global $DB;
 
         $destination_id = $DB->request([

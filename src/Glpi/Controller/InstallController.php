@@ -113,7 +113,6 @@ class InstallController extends AbstractController
         return $this->getProgressInitResponse(
             $progress_indicator,
             function () use ($logger, $progress_indicator) {
-                /** @var DBmysql $DB */
                 global $DB;
                 $DB = new DB();
                 $DB->disableTableCaching(); // Prevents issues on fieldExists upgrading from old versions
@@ -152,10 +151,6 @@ class InstallController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function updateRequired(): Response
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql|null $DB
-         */
         global $CFG_GLPI, $DB;
 
         $_SESSION['can_process_update'] = true;

@@ -37,9 +37,7 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Mail\SMTP\OauthConfig;
 use League\OAuth2\Client\Token\AccessToken;
-use Psr\Log\LoggerInterface;
 
-/** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
 if (!array_key_exists('cookie_refresh', $_GET)) {
@@ -125,7 +123,6 @@ if (
                 );
             }
         } catch (Throwable $e) {
-            /** @var LoggerInterface $PHPLOGGER */
             global $PHPLOGGER;
             $PHPLOGGER->error(
                 sprintf('Error during authorization code fetching: %s', $e->getMessage()),

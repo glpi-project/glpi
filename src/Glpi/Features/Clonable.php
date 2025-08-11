@@ -37,7 +37,6 @@ namespace Glpi\Features;
 
 use CommonDBConnexity;
 use CommonDBTM;
-use DBmysql;
 use Infocom;
 use Session;
 
@@ -232,7 +231,6 @@ trait Clonable
      */
     public function clone(array $override_input = [], bool $history = true, bool $clone_as_template = false)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($DB->isSlave()) {

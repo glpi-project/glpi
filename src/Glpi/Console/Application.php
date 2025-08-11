@@ -107,10 +107,6 @@ class Application extends BaseApplication
 
     public function __construct(private Kernel $kernel)
     {
-        /**
-         * @var DBmysql $DB
-         * @var array $CFG_GLPI
-         */
         global $DB, $CFG_GLPI;
 
         parent::__construct('GLPI CLI', GLPI_VERSION);
@@ -218,7 +214,6 @@ class Application extends BaseApplication
     protected function configureIO(InputInterface $input, OutputInterface $output)
     {
 
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->output = $output;

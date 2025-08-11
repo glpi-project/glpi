@@ -611,7 +611,6 @@ final class Search
             $this->validateIterator($iterator);
         } catch (RightConditionNotMetException) {
             // The read restrict check seems to have returned false indicating that we already know the user cannot view any of these resources
-            /** @var DBmysql $DB */
             global $DB;
             $iterator = new DBmysqlIterator($DB);
             // No validation done because we know the inner result isn't a mysqli result

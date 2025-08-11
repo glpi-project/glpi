@@ -60,7 +60,6 @@ class PrinterLog extends CommonDBChild
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $array_ret = [];
@@ -75,7 +74,6 @@ class PrinterLog extends CommonDBChild
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         /** @var Printer|Asset $item */
@@ -107,7 +105,6 @@ class PrinterLog extends CommonDBChild
         \DateTime $end_date = new DateTime(),
         string $format = 'dynamic'
     ): array {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($printers && !is_array($printers)) {

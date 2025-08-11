@@ -51,9 +51,6 @@ final readonly class LoadLegacyConfiguration implements EventSubscriberInterface
 
     public function onPostBoot(): void
     {
-        /**
-         * @var array $CFG_GLPI
-         */
         global $CFG_GLPI;
 
         Profiler::getInstance()->start('LoadLegacyConfiguration::execute', Profiler::CATEGORY_BOOT);

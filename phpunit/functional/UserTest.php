@@ -428,7 +428,6 @@ class UserTest extends \DbTestCase
 
     public function testPrepareInputForAddPdfFont(): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->login();
@@ -472,7 +471,6 @@ class UserTest extends \DbTestCase
 
     public function testPrepareInputForUpdatePdfFont(): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->login();
@@ -2272,7 +2270,6 @@ class UserTest extends \DbTestCase
         int $names_format,
         string $expected
     ) {
-        /** @var \DBmysql $DB */
         global $DB;
 
         \Config::setConfigurationValues('core', ['names_format' => $names_format]);
@@ -2296,7 +2293,6 @@ class UserTest extends \DbTestCase
 
     public function testChangeAuthMethod()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $this->login();

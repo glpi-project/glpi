@@ -250,7 +250,6 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
     #[Override]
     public static function provideConvertFieldConfigFromFormCreator(): iterable
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         yield 'Location from template or none' => [

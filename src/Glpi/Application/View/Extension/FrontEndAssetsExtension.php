@@ -229,7 +229,6 @@ class FrontEndAssetsExtension extends AbstractExtension
      */
     public function localesJs(): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!isset($_SESSION['glpilanguage'])) {
@@ -283,7 +282,6 @@ JAVASCRIPT;
      */
     public function configJs(): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $cfg_glpi = [

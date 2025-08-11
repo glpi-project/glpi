@@ -47,7 +47,6 @@ class NotificationTargetKnowbaseItemTest extends DbTestCase
 {
     public function testgetDataForNotifKnowbaseItem()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $this->login();

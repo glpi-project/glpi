@@ -36,7 +36,6 @@
 namespace Glpi\Console\Diagnostic;
 
 use CommonDBTM;
-use DBmysql;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Exception\EarlyExitException;
 use ITILFollowup;
@@ -182,7 +181,6 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
      */
     private function dumpObjects(): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $dump_content = '';
@@ -263,7 +261,6 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
      */
     private function fixOneItem(CommonDBTM $item, array $fields): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $itemtype = $item::getType();
@@ -359,7 +356,6 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
      */
     private function findTextFields(): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $table_iterator = $DB->listTables();
@@ -420,7 +416,6 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
      */
     private function scanField(string $itemtype, string $field): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $searches = [

@@ -87,7 +87,6 @@ SQL,
         string $create_table_sql,
         array $expected_missing
     ) {
-
         global $DB;
 
         $table_name = sprintf('glpitests_%s', uniqid());

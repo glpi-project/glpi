@@ -434,7 +434,6 @@ class TransferTest extends DbTestCase
 
     public function testCleanSoftware()
     {
-        /** @var \DBmysql $DB */
         global $DB;
         $test_entity = getItemByTypeName('Entity', '_test_root_entity', true);
         $dest_entity = getItemByTypeName('Entity', '_test_child_1', true);
