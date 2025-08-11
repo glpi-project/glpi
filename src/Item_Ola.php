@@ -168,8 +168,6 @@ class Item_Ola extends CommonDBRelation
         // - except if update is triggered by a rule
         // - except if end_time is already set
         // @todoseb refacto en mettant end_time, sur l'ensemble.
-        // @todoseb traitement de la suppression du groupe de l'OLA (à été présent, ne l'ai plus -> ola tto terminée (idem ttr probablement))
-        $ola_group_removed = $ticket->haveAGroup(CommonITILActor::ASSIGN, [$ola->fields['groups_id']]);
 
         if ($item_ola_data['ola_type'] === SLM::TTO) {
             if (
@@ -208,6 +206,60 @@ class Item_Ola extends CommonDBRelation
         // since dates may be changed, rebuild the levels todo
         $ticket->manageOlaLevel($item_ola->fields['olas_id']);
     }
+
+    /**
+     * When the ola dedicated group is removed from a ticket, the ola is considered completed.
+     *
+     * The $groups_id_removed is the group id that has been removed from the ticket assignees.
+     * Be sure that the group was previously assigned to the ticket.
+     */
+    public static function computeGroupAssigneeRemoval(int $tickets_id, int $groups_id_removed)
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        // find all items_olas OLA related to this group & ticket
+        $items_olas_to_update_results = $DB->request([
+            'SELECT'       => [
+                Item_Ola::getTable() . '.id',
+                Item_Ola::getTable() . '.olas_id',
+            ],
+            'FROM'         => Item_Ola::getTable(),
+            'INNER JOIN'   => [
+                OLA::getTable() => [
+                    'FKEY'   => [
+                        Item_Ola::getTable() => 'olas_id',
+                        OLA::getTable()      => 'id',
+                    ],
+                ],
+            ],
+            'WHERE'        => [
+                'items_id' => $tickets_id,
+                'itemtype' => Ticket::class,
+                'groups_id' => $groups_id_removed,
+            ],
+        ]);
+
+        foreach ($items_olas_to_update_results as $item_ola_row) {
+            $ticket = new Ticket();
+            if (!$ticket->getFromDB($tickets_id)) {
+                throw new Exception('Ticket related to Ticket_group not found');
+            }
+
+            if (!(new self())->update(
+                [
+                    'end_time' => Session::getCurrentTime(),
+                    'id' => $item_ola_row['id'],
+                ]
+            )
+            ) {
+                throw new Exception('Failed to update end_time on Item_Ola #' . $item_ola_row['id']);
+            }
+
+            Item_Ola::compute($ticket, (int) $item_ola_row['olas_id']);
+        }
+    }
+
 
     public function getOla(): OLA
     {
