@@ -95,6 +95,7 @@ use User;
  *              - is not done when a user not in the dedicated group is assigned to the ticket : @see self::testOlaTtoIsNotCompleteWhenTicketIsAssignedToUserNotInDedicatedGroup()
  *              - is not done when the group is added and the ola added by rule : @see self::testOlaTtoIsNotCompleteWhenTicketIsAssignedToDedicatedGroupAndOlaAddedByRule()
  *              - is done when a group associated to ola is removed from ticket assigned group : @see self::testOlaTtoIsCompleteWhenGroupAssociatedToOlaIsRemovedFromTicketAssignedGroup()
+ *              - @todo same for user of group
  *              - is done when ticket is "taken into account" (add task, add followup) by a user of the ola group : @todoseb - d'abord vérifier à quoi correspond taken_into_account(_delay)
  *              - is not done when ticket is updated(add task, add followup) by a user not in the ola group : @todoseb - d'abord vérifier à quoi correspond taken_into_account(_delay)
  *              @todoseb voir quels tests sont à répliquer pour les TTR
@@ -741,12 +742,12 @@ class OLATest extends DbTestCase
         // act : remove group associated to OLA TTO from ticket assigned groups, maybe there is a cleaner way to do this
         $gt = new \Group_Ticket();
         assert(true === $gt->deleteByCriteria(['tickets_id' => $ticket->getID(), 'groups_id' => $g_n1->getID()]));
-        throw new \Exception('mise à jour des olas pas lancée dans le deleteByCriteria, hors on a besoin de mettre à jour item_olas ');
 
         $ticket = $this->reloadItem($ticket);
         assert(false === $ticket->isGroup(CommonITILActor::ASSIGN, $g_n1->getID()), 'Group N1 should not be assigned to ticket anymore');
 
         // assert OLA TTO is now complete
+        $fetched_ola_data = $ticket->getOlasTTOData()[0] ?? throw new \Exception('Tested OLA TTO not fetched');
         $this->assertNotNull($fetched_ola_data['end_time']);
     }
 
