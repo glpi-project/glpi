@@ -68,6 +68,12 @@ class HtmlTest extends \DbTestCase
         $expected = date('m-d-Y');
         $this->assertSame($expected, \Html::convDate($mydate, 2));
 
+        // Check type casting when session property is not an int
+        $_SESSION['glpidate_format'] = '1';
+        $this->assertSame(date('d-m-Y'), \Html::convDate($mydate, 1));
+        $_SESSION['glpidate_format'] = '2';
+        $this->assertSame(date('m-d-Y'), \Html::convDate($mydate, 2));
+
         $expected_error = 'Failed to parse time string (not a date) at position 0 (n): The timezone could not be found in the database';
         $this->assertSame('not a date', \Html::convDate('not a date', 2));
         $this->hasPhpLogRecordThatContains($expected_error, LogLevel::ERROR);
