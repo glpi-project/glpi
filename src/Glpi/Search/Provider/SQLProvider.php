@@ -41,7 +41,6 @@ use Calendar;
 use Cartridge;
 use Change;
 use ChangeSatisfaction;
-use ChangeValidation;
 use CommonDBTM;
 use CommonITILObject;
 use CommonITILTask;

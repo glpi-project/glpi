@@ -35,13 +35,9 @@
 
 namespace Glpi\Search\Output;
 
-use CommonITILObject;
-use Entity;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\SearchOption;
 use Plugin;
-
-use function Safe\strtotime;
 
 /**
  *
