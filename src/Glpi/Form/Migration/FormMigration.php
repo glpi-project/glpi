@@ -1811,7 +1811,7 @@ class FormMigration extends AbstractPluginMigration
                 'entities_id',
                 'replace_helpdesk',
             ],
-            'FROM'   => 'glpi_plugin_formcreator_entityconfigs'
+            'FROM'   => 'glpi_plugin_formcreator_entityconfigs',
         ]);
         foreach ($entity_configs as $entity_config) {
             $this->db->update('glpi_entities', [
