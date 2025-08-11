@@ -357,11 +357,11 @@ HTML;
                 $content
             );
             if ($result === null) {
-                $log_msg =
-                    "preg_replace failed in " . __METHOD__ .
-                    " with pattern: $pattern\n" .
-                    "error: " . preg_last_error_msg() . "\n" .
-                    "content length: " . strlen($content);
+                $log_msg =sprintf(
+                    '`preg_replace()` with pattern `%s` failed: `%s`.',
+                    $pattern,
+                    preg_last_error_msg()
+                );
                 trigger_error($log_msg, E_USER_WARNING);
                 return $content;
             }
