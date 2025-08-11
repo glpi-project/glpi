@@ -45,6 +45,7 @@ use Item_DeviceSimcard;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Session;
 use State;
+use Symfony\Component\DomCrawler\Crawler;
 use User;
 
 /* Test for inc/dropdown.class.php */
@@ -2512,6 +2513,28 @@ HTML;
             foreach ($types_list as $type => $label) {
                 $this->assertTrue(is_subclass_of($type, \CommonDevice::class));
                 $this->assertIsString($label);
+            }
+        }
+    }
+
+    public function testShowTimeStamp()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+        $CFG_GLPI["time_step"] = 30;
+        $out = \Dropdown::showTimeStamp('timestamp', [
+            'display' => false,
+            'min' => 30,
+            'max' => 2 * DAY_TIMESTAMP,
+        ]);
+        $crawler = new Crawler($out);
+        $options = $crawler->filter('option');
+        $this->assertCount(97, $options); // 48 hours * 2 (30 min steps) + empty choice
+        // Check the minutes are padded correctly if they are present
+        foreach ($options as $option) {
+            $text = $option->textContent;
+            if (preg_match('/\d+h\d+/', $text)) {
+                $this->assertMatchesRegularExpression('/h\d{2}$/', $text);
             }
         }
     }

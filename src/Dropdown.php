@@ -2210,13 +2210,14 @@ HTML;
                 $hour = (int) floor(($i % DAY_TIMESTAMP) / HOUR_TIMESTAMP);
             }
             $minute     = (int) floor(($i % HOUR_TIMESTAMP) / MINUTE_TIMESTAMP);
+            $minute_display = $minute;
             if ((int) $minute === 0) {
-                $minute = '00';
+                $minute_display = '00';
             }
             if ($day > 0) {
                 if (($hour > 0) || ($minute > 0)) {
                     if ($minute < 10) {
-                        $minute = '0' . $minute;
+                        $minute_display = '0' . $minute;
                     }
 
                     //TRANS: %1$d is the number of days, %2$d the number of hours,
@@ -2225,18 +2226,18 @@ HTML;
                         _n('%1$d day %2$dh%3$s', '%1$d days %2$dh%3$s', $day),
                         $day,
                         $hour,
-                        $minute
+                        $minute_display
                     );
                 } else {
                     $values[$i] = sprintf(_n('%d day', '%d days', $day), $day);
                 }
             } elseif ($hour > 0 || $minute > 0) {
                 if ($minute < 10) {
-                    $minute = '0' . $minute;
+                    $minute_display = '0' . $minute;
                 }
 
                 //TRANS: %1$d the number of hours, %2$s the number of minutes : display 3h15
-                $values[$i] = sprintf(__('%1$dh%2$s'), $hour, $minute);
+                $values[$i] = sprintf(__('%1$dh%2$s'), $hour, $minute_display);
             }
         }
 
