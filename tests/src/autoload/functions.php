@@ -853,7 +853,7 @@ function getItemByTypeName(string $type, string $name, bool $onlyid = false): Co
 
 function initFormTranslationFixtures()
 {
-    /** @var \DBmysql $DB */
+    /** @var DBmysql $DB */
     global $DB;
 
     $form = getItemByTypeName(Form::class, 'Request a service');
@@ -874,7 +874,7 @@ function initFormTranslationFixtures()
         'key' => 'form_name',
         'language' => 'en_XX',
         'translations' => '{"one": "Request a service translated"}',
-        'hash' => md5('Request a service')
+        'hash' => md5('Request a service'),
     ]);
     $DB->insert(FormTranslation::getTable(), [
         'itemtype' => Section::class,
@@ -882,7 +882,7 @@ function initFormTranslationFixtures()
         'key' => 'section_name',
         'language' => 'en_XX',
         'translations' => '{"one": "First Section translated"}',
-        'hash' => md5('First Section')
+        'hash' => md5('First Section'),
     ]);
     $DB->insert(FormTranslation::getTable(), [
         'itemtype' => Question::class,
@@ -890,7 +890,7 @@ function initFormTranslationFixtures()
         'key' => 'question_name',
         'language' => 'en_XX',
         'translations' => '{"one": "Title translated"}',
-        'hash' => md5('Title')
+        'hash' => md5('Title'),
     ]);
 
     $glpi_tile = new GlpiPageTile();
@@ -904,6 +904,6 @@ function initFormTranslationFixtures()
         'key' => 'title',
         'language' => 'en_XX',
         'translations' => '{"one": "Browse help articles translated"}',
-        'hash' => md5('Browse help articles')
+        'hash' => md5('Browse help articles'),
     ]);
 }
