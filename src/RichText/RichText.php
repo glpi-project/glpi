@@ -357,7 +357,7 @@ HTML;
                 $content
             );
             if ($result === null) {
-                $log_msg =sprintf(
+                $log_msg = sprintf(
                     '`preg_replace()` with pattern `%s` failed: `%s`.',
                     $pattern,
                     preg_last_error_msg()
