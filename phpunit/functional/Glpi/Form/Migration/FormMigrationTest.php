@@ -2726,26 +2726,26 @@ final class FormMigrationTest extends DbTestCase
 
         $DB->insert('glpi_plugin_formcreator_entityconfigs', [
             'entities_id' => $entities_id_1,
-            'replace_helpdesk' => -2
+            'replace_helpdesk' => -2, // Inherit from parent
         ]);
         $DB->insert('glpi_plugin_formcreator_entityconfigs', [
             'entities_id' => $entities_id_2,
-            'replace_helpdesk' => 0
+            'replace_helpdesk' => 0, // Helpdesk not replaced
         ]);
         $DB->insert('glpi_plugin_formcreator_entityconfigs', [
             'entities_id' => $entities_id_3,
-            'replace_helpdesk' => 1
+            'replace_helpdesk' => 1, // Simple service desk
         ]);
         $DB->insert('glpi_plugin_formcreator_entityconfigs', [
             'entities_id' => $entities_id_4,
-            'replace_helpdesk' => 2
+            'replace_helpdesk' => 2, // Full service desk
         ]);
 
         $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
         $this->callPrivateMethod($migration, 'processMigrationOfConfigs');
 
         $configs = $DB->request([
-            'SELECT' => ['id', 'show_tickets_properties_on_helpdesk'],
+            'SELECT' => ['id', 'completename', 'show_tickets_properties_on_helpdesk'],
             'FROM' => Entity::getTable(),
             'WHERE' => [
                 'id' => [$entities_id_1, $entities_id_2, $entities_id_3, $entities_id_4],
@@ -2755,11 +2755,11 @@ final class FormMigrationTest extends DbTestCase
             $this->assertEquals(
                 match ($c['id']) {
                     $entities_id_1 => -2,
-                    $entities_id_2, $entities_id_3 => 0,
-                    $entities_id_4 => 1,
+                    $entities_id_3 => 0,
+                    $entities_id_2, $entities_id_4 => 1,
                 },
                 $c['show_tickets_properties_on_helpdesk'],
-                "Entity ID {$c['id']} has incorrect show_tickets_properties_on_helpdesk value"
+                "Entity {$c['completename']} has incorrect show_tickets_properties_on_helpdesk value"
             );
         }
     }

@@ -77,6 +77,8 @@ class EntityTest extends DbTestCase
             $ent2->getField('completename')
         );
 
+        $ent3 = getItemByTypeName('Entity', '_test_child_3');
+
         $this->assertSame(
             [0],
             array_keys(getAncestorsOf('glpi_entities', $ent0->getID()))
@@ -86,11 +88,11 @@ class EntityTest extends DbTestCase
             array_values(getAncestorsOf('glpi_entities', $ent0->getID()))
         );
         $this->assertEquals(
-            [$ent0->getID(), $ent1->getID(), $ent2->getID()],
+            [$ent0->getID(), $ent1->getID(), $ent2->getID(), $ent3->getID()],
             array_keys(getSonsOf('glpi_entities', $ent0->getID()))
         );
         $this->assertSame(
-            [$ent0->getID(), $ent1->getID(), $ent2->getID()],
+            [$ent0->getID(), $ent1->getID(), $ent2->getID(), $ent3->getID()],
             array_values(getSonsOf('glpi_entities', $ent0->getID()))
         );
 
@@ -1315,6 +1317,7 @@ class EntityTest extends DbTestCase
         $entity_test_root    = getItemByTypeName('Entity', '_test_root_entity');
         $entity_test_child_1 = getItemByTypeName('Entity', '_test_child_1');
         $entity_test_child_2 = getItemByTypeName('Entity', '_test_child_2');
+        $entity_test_child_3 = getItemByTypeName('Entity', '_test_child_3');
 
         yield [
             'entity_id' => 0,
@@ -1346,6 +1349,10 @@ class EntityTest extends DbTestCase
                                     'name' => $entity_test_child_2->fields['name'],
                                     'tree' => [],
                                 ],
+                                $entity_test_child_3->getID() => [
+                                    'name' => $entity_test_child_3->fields['name'],
+                                    'tree' => [],
+                                ],
                             ],
                         ],
                     ],
@@ -1365,6 +1372,10 @@ class EntityTest extends DbTestCase
                         ],
                         $entity_test_child_2->getID() => [
                             'name' => $entity_test_child_2->fields['name'],
+                            'tree' => [],
+                        ],
+                        $entity_test_child_3->getID() => [
+                            'name' => $entity_test_child_3->fields['name'],
                             'tree' => [],
                         ],
                     ],

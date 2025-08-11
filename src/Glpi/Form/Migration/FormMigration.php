@@ -1811,17 +1811,14 @@ class FormMigration extends AbstractPluginMigration
                 'entities_id',
                 'replace_helpdesk',
             ],
-            'FROM'   => 'glpi_plugin_formcreator_entityconfigs',
-            'WHERE'  => [
-                // Only need to update entities where it is inherited or full service catalog
-                'replace_helpdesk' => [-2, 2],
-            ],
+            'FROM'   => 'glpi_plugin_formcreator_entityconfigs'
         ]);
         foreach ($entity_configs as $entity_config) {
             $this->db->update('glpi_entities', [
                 'show_tickets_properties_on_helpdesk' => match ($entity_config['replace_helpdesk']) {
                     -2 => -2, // Inherit from parent entity
-                    2 => 1, // Full service catalog -> Show ticket properties
+                    1 => 0, // Simple service catalog -> Do not show ticket properties
+                    default => 1, // Helpdesk view was not replaced or Full service catalog -> Use GLPI default of showing ticket properties
                 },
             ], ['id' => $entity_config['entities_id']]);
 

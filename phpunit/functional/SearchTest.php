@@ -363,6 +363,7 @@ class SearchTest extends DbTestCase
         $test_root       = getItemByTypeName('Entity', '_test_root_entity', true);
         $test_child_1    = getItemByTypeName('Entity', '_test_child_1', true);
         $test_child_2    = getItemByTypeName('Entity', '_test_child_2', true);
+        $test_child_3    = getItemByTypeName('Entity', '_test_child_3', true);
 
         $search_params = [
             'reset'      => 'reset',
@@ -460,7 +461,7 @@ class SearchTest extends DbTestCase
         $contains = [
             "`glpi_computers`.`is_deleted` = 0",
             "AND `glpi_computers`.`is_template` = 0",
-            "`glpi_computers`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2')",
+            "`glpi_computers`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2', '$test_child_3')",
             "OR (`glpi_computers`.`is_recursive`='1' AND `glpi_computers`.`entities_id` IN (0))",
             "`glpi_computers`.`name` LIKE '%test%'",
             "AND `glpi_softwares`.`id` = '10784'",
@@ -483,6 +484,7 @@ class SearchTest extends DbTestCase
         $test_root       = getItemByTypeName('Entity', '_test_root_entity', true);
         $test_child_1    = getItemByTypeName('Entity', '_test_child_1', true);
         $test_child_2    = getItemByTypeName('Entity', '_test_child_2', true);
+        $test_child_3    = getItemByTypeName('Entity', '_test_child_3', true);
 
         $data = $this->doSearch('Computer', [
             'reset'      => 'reset',
@@ -504,7 +506,7 @@ class SearchTest extends DbTestCase
         $contains = [
             "`glpi_computers`.`is_deleted` = 0",
             "AND `glpi_computers`.`is_template` = 0",
-            "`glpi_computers`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2')",
+            "`glpi_computers`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2', '$test_child_3')",
             "OR (`glpi_computers`.`is_recursive`='1' AND `glpi_computers`.`entities_id` IN (0))",
         ];
 
@@ -2791,6 +2793,7 @@ class SearchTest extends DbTestCase
         $test_root       = getItemByTypeName('Entity', '_test_root_entity', true);
         $test_child_1    = getItemByTypeName('Entity', '_test_child_1', true);
         $test_child_2    = getItemByTypeName('Entity', '_test_child_2', true);
+        $test_child_3    = getItemByTypeName('Entity', '_test_child_3', true);
 
         $data = $this->doSearch('AllAssets', [
             'reset'      => 'reset',
@@ -2835,7 +2838,7 @@ class SearchTest extends DbTestCase
                 $data['sql']['search']
             );
             $this->assertStringContainsString(
-                "`$type`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2')",
+                "`$type`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2', '$test_child_3')",
                 $data['sql']['search']
             );
             $this->assertStringContainsString(
