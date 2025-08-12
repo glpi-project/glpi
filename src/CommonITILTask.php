@@ -60,6 +60,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
     public static $rightname = 'task';
 
+    /** @return class-string<CommonITILObject> */
     public static function getItilObjectItemType()
     {
         return str_replace('Task', '', static::class);
@@ -1685,12 +1686,22 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     public function showMassiveActionAddTaskForm()
     {
         $twig = TemplateRenderer::getInstance();
+
         $item = static::getItilObjectItemInstance();
         $item->getEmpty();
+        $this->getEmpty();
+
+        // No mentions for massive actions.
+        $mentions_options = [
+            'enabled' => false,
+        ];
+
         $twig->display('components/massive_action/add_task.html.twig', [
             'item'                    => $item,
             'subitem'                 => $this,
+            'mention_options'         => $mentions_options,
         ]);
+
     }
 
     /**
