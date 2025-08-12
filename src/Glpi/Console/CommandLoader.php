@@ -220,6 +220,10 @@ class CommandLoader implements CommandLoaderInterface
             $this->plugin = new Plugin();
         }
 
+        if ($this->plugin->isPluginsExecutionSuspended()) {
+            return;
+        }
+
         $plugins_directories = new AppendIterator();
         foreach (GLPI_PLUGINS_DIRECTORIES as $directory) {
             $directory = str_replace(GLPI_ROOT, $this->rootdir, $directory);
