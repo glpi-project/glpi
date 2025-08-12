@@ -41,7 +41,6 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Message;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
-use Psr\SimpleCache\CacheInterface;
 use Session;
 use Toolbox;
 
@@ -196,7 +195,6 @@ class Plugins
         string $string_filter = "",
         string $sort = 'sort-alpha-asc'
     ) {
-        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $cache_key = self::getCacheKey('marketplace_all_plugins');
@@ -373,7 +371,6 @@ class Plugins
      */
     public function getTopTags(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $response  = $this->request('tags/top', [
@@ -402,7 +399,6 @@ class Plugins
      */
     public function getPluginsForTag(string $tag = "", bool $force_refresh = false): array
     {
-        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $cache_key = self::getCacheKey("marketplace_tag_$tag");

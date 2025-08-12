@@ -803,7 +803,6 @@ final class HLAPIHelper
                 });
         }, false);
 
-        /** @var DBmysql $DB */
         global $DB;
 
         $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_OWNED;

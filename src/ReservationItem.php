@@ -379,10 +379,6 @@ TWIG, $twig_params);
 
     public static function showListSimple()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (!Session::haveRightsOr(self::$rightname, [READ, self::RESERVEANITEM])) {
@@ -707,10 +703,6 @@ TWIG, $twig_params);
      **/
     public static function cronReservation($task = null)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (!$CFG_GLPI["use_notifications"]) {
@@ -941,7 +933,6 @@ TWIG, $twig_params);
      */
     public static function getAvailableItems(string $itemtype): DBmysqlIterator
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $reservation_table = self::getTable();
@@ -965,7 +956,6 @@ TWIG, $twig_params);
      */
     public static function countAvailableItems(string $itemtype): int
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = self::getAvailableItemsCriteria($itemtype);

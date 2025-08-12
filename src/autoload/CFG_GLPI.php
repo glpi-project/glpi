@@ -37,9 +37,6 @@ use Glpi\Marketplace\Controller;
 use Glpi\Socket;
 use Glpi\SocketModel;
 
-/**
- * @var array $CFG_GLPI
- */
 global $CFG_GLPI;
 
 $CFG_GLPI = [];

@@ -133,10 +133,6 @@ abstract class ITILTemplateField extends CommonDBChild
      **/
     public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0): bool
     {
-        /**
-         * @var DBmysql $DB
-         * @var array $CFG_GLPI
-         */
         global $DB, $CFG_GLPI;
 
         $ID = $tt->fields['id'];

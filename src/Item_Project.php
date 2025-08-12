@@ -91,7 +91,6 @@ class Item_Project extends CommonDBRelation
      **/
     public static function showForProject(Project $project): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $instID = $project->getID();
@@ -225,7 +224,6 @@ class Item_Project extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!$withtemplate) {
@@ -270,7 +268,6 @@ class Item_Project extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!$item instanceof CommonDBTM) {

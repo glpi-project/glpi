@@ -43,9 +43,6 @@ use function Safe\session_destroy;
  * @since 0.85
  */
 
-/**
- * @var array $CFG_GLPI
- */
 global $CFG_GLPI;
 
 if (!isset($_SESSION["glpicookietest"]) || ($_SESSION["glpicookietest"] != 'testcookie')) {

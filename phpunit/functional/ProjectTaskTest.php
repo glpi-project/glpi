@@ -797,7 +797,6 @@ class ProjectTaskTest extends DbTestCase
 
     public function testAutoSetDateForUpdate()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $provider = $this->testAutoSetDateForUpdateProvider();

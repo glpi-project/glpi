@@ -84,7 +84,6 @@ final class UrgencyFieldTest extends AbstractDestinationFieldTest
 
     public function testSpecificUrgency(): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Allow all urgency levels

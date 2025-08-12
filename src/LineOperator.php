@@ -89,7 +89,6 @@ class LineOperator extends CommonDropdown
 
     public function prepareInputForAdd($input)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $input = parent::prepareInputForAdd($input);

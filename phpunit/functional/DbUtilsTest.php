@@ -42,7 +42,6 @@ use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Psr\Log\LogLevel;
-use Psr\SimpleCache\CacheInterface;
 
 /* Test for inc/dbutils.class.php */
 
@@ -50,7 +49,6 @@ class DbUtilsTest extends DbTestCase
 {
     public function setUp(): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Clean the cache
@@ -1061,7 +1059,6 @@ class DbUtilsTest extends DbTestCase
     {
         $this->login();
 
-        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
         $GLPI_CACHE->clear(); // login produce cache, must be cleared
 
@@ -1083,7 +1080,6 @@ class DbUtilsTest extends DbTestCase
      */
     private function runGetSonsOf($cache = false, $hit = false)
     {
-        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
@@ -1253,7 +1249,6 @@ class DbUtilsTest extends DbTestCase
     {
         $this->login();
 
-        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
         $GLPI_CACHE->clear(); // login produce cache, must be cleared
 
@@ -1269,7 +1264,6 @@ class DbUtilsTest extends DbTestCase
      */
     public function testRelationsValidity()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $instance = new \DbUtils();

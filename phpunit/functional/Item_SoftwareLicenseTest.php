@@ -45,7 +45,6 @@ class Item_SoftwareLicenseTest extends DbTestCase
 {
     public function testRelatedItemCloneRelations()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->initAssetDefinition(capacities: [new Capacity(name: HasSoftwaresCapacity::class)]);

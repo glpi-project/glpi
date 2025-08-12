@@ -41,7 +41,6 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
 
-/** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
 Session::checkRight("networking", READ);

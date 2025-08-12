@@ -209,7 +209,6 @@ class Phone extends CommonDBTM implements AssignableItemInterface, StateInterfac
      **/
     public function getLinkedItems()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

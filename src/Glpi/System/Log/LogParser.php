@@ -140,7 +140,6 @@ final class LogParser extends CommonGLPI
      */
     public function parseLogFile(string $filepath, ?int $max_nb_lines = null): ?array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $fullpath = $this->getFullPath($filepath);

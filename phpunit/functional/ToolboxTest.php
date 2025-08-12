@@ -1931,7 +1931,6 @@ HTML;
     #[DataProvider('redirectProvider')]
     public function testComputeRedirect(string $root_doc, string $interface, string $where, ?string $result): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $CFG_GLPI['root_doc'] = $root_doc;

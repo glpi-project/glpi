@@ -608,7 +608,6 @@ class MassiveAction
      **/
     public static function getAllMassiveActions($item, $is_deleted = false, ?CommonDBTM $checkitem = null, ?int $items_id = null)
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         if (is_string($item)) {
@@ -832,9 +831,6 @@ class MassiveAction
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
-        /**
-         * @var DBmysql $DB
-         */
         global $DB;
 
         switch ($ma->getAction()) {
@@ -1321,7 +1317,6 @@ class MassiveAction
         CommonDBTM $item,
         array $ids
     ) {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $action = $ma->getAction();

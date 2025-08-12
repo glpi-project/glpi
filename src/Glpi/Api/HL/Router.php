@@ -72,7 +72,6 @@ use Glpi\OAuth\Server;
 use Glpi\Plugin\Hooks;
 use GuzzleHttp\Psr7\Utils;
 use League\OAuth2\Server\Exception\OAuthServerException;
-use Psr\SimpleCache\CacheInterface;
 use ReflectionClass;
 use RuntimeException;
 use Session;
@@ -143,7 +142,6 @@ class Router
      */
     public static function getAPIVersions(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $low_level_api_description = <<<EOT
@@ -213,7 +211,6 @@ EOT;
      */
     public static function getInstance(): Router
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         if (self::$instance === null) {
@@ -389,7 +386,6 @@ EOT;
      */
     private function cacheRoutes(array $routes): void
     {
-        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $hints = [];
@@ -404,7 +400,6 @@ EOT;
      */
     private function getRoutesFromCache(): array
     {
-        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $routes = [];

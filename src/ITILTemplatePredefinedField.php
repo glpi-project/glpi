@@ -102,7 +102,6 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
 
     public function post_purgeItem()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         parent::post_purgeItem();
@@ -175,7 +174,6 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
      **/
     public function getPredefinedFields($ID, $withtypeandcategory = false)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

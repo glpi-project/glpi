@@ -41,9 +41,6 @@ class AssignableItem extends \DbTestCase
 {
     protected function itemtypeProvider(): iterable
     {
-        /**
-         * @var array $CFG_GLPI
-         */
         global $CFG_GLPI;
 
         foreach ($CFG_GLPI['assignable_types'] as $itemtype) {
@@ -117,7 +114,6 @@ class AssignableItem extends \DbTestCase
     #[DataProvider('itemtypeProvider')]
     public function testLoadGroupsFromDb(string $class): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $input = $this->getMinimalCreationInput($class);

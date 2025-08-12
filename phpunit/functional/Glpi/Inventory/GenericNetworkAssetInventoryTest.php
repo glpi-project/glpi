@@ -55,7 +55,6 @@ class GenericNetworkAssetInventoryTest extends InventoryTestCase
      */
     private function inventoryNetworkEquipment(array $capacities = []): Asset
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         //create Cisco generic asset
@@ -570,7 +569,6 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
     public function testRulesCreation(): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $rules = new \RuleImportAsset();

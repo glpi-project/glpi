@@ -41,7 +41,6 @@ use Auth;
 use AutoUpdateSystem;
 use Blacklist;
 use CommonDBTM;
-use DBmysql;
 use Domain;
 use Domain_Item;
 use DomainRelation;
@@ -258,7 +257,6 @@ abstract class MainAsset extends InventoryAsset
      */
     protected function prepareForUsers($val)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (property_exists($val, 'users_id')) {
@@ -687,10 +685,6 @@ abstract class MainAsset extends InventoryAsset
      */
     public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $key = $this->current_key;

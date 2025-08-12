@@ -37,7 +37,6 @@ class NotificationTargetSavedSearch_Alert extends NotificationTarget
 {
     public function getEvents()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $events = [];
@@ -70,7 +69,6 @@ class NotificationTargetSavedSearch_Alert extends NotificationTarget
 
     public function addDataForTemplate($event, $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $events = $this->getEvents();

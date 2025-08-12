@@ -96,7 +96,6 @@ abstract class Spreadsheet extends ExportSearchOutput
 
     public function displayData(array $data, array $params = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (

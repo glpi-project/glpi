@@ -39,10 +39,6 @@ use Glpi\Socket;
 
 function loadDataset()
 {
-    /**
-     * @var array $CFG_GLPI
-     * @var DBmysql $DB
-     */
     global $CFG_GLPI, $DB;
 
     // Unit test data definition

@@ -35,7 +35,6 @@
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
 use CommonITILActor;
-use DBmysql;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldConfig;
@@ -642,7 +641,6 @@ final class RequesterFieldTest extends AbstractActorFieldTest
         array $fields_to_set,
         callable|JsonFieldInterface $field_config
     ): void {
-        /** @var DBmysql $DB */
         global $DB;
 
         $destination_id = $DB->request([

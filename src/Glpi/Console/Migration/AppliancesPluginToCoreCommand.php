@@ -257,7 +257,6 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
      */
     private function migratePlugin(): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         //prevent infocom creation from general setup

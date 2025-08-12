@@ -36,7 +36,6 @@
 namespace Glpi\Security;
 
 use DateInterval;
-use DBmysql;
 use Entity;
 use Exception;
 use Glpi\Application\View\TemplateRenderer;
@@ -44,7 +43,6 @@ use GLPIKey;
 use Group_User;
 use JsonException;
 use Profile_User;
-use Psr\Log\LoggerInterface;
 use RobThree\Auth\Algorithm;
 use RobThree\Auth\Providers\Qr\BaconQrCodeProvider;
 use RobThree\Auth\TwoFactorAuth;
@@ -151,7 +149,6 @@ final class TOTPManager
      */
     public function setSecretForUser(int $users_id, string $secret, ?string $algorithm = null): bool
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $encrypted_secret = (new GLPIKey())->encrypt($secret);
@@ -176,7 +173,6 @@ final class TOTPManager
      */
     public function disable2FAForUser(int $users_id): bool
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         return $DB->update('glpi_users', [
@@ -194,7 +190,6 @@ final class TOTPManager
      */
     private function get2FAConfigForUser(int $users_id): ?array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $it = $DB->request([
@@ -222,7 +217,6 @@ final class TOTPManager
                 return $config;
             }
         } catch (SodiumException $e) {
-            /** @var LoggerInterface $PHPLOGGER */
             global $PHPLOGGER;
             $PHPLOGGER->error(
                 "Unreadable TOTP secret for user ID {$users_id}: " . $e->getMessage(),
@@ -284,7 +278,6 @@ final class TOTPManager
 
     public function isBackupCodesAvailable(int $users_id): bool
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $tfa = $DB->request([
@@ -313,7 +306,6 @@ final class TOTPManager
      */
     public function regenerateBackupCodes(int $users_id): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $random_codes = [];
@@ -359,7 +351,6 @@ final class TOTPManager
      */
     public function verifyBackupCodeForUser(string $code, int $users_id, bool $consume_code = true): bool
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $tfa = $DB->request([
@@ -402,10 +393,6 @@ final class TOTPManager
      */
     public function get2FAEnforcement(int $users_id): int
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $user_optional = $DB->request([
@@ -467,7 +454,6 @@ final class TOTPManager
      */
     public function getGracePeriodDaysLeft(): int
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $grace_days = $CFG_GLPI['2fa_grace_days'] ?? 0;
@@ -507,7 +493,6 @@ final class TOTPManager
      */
     public function showTOTPConfigForm(int $users_id, bool $force_setup = false, bool $regenerate_backup_codes = false): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!$force_setup && $this->is2FAEnabled($users_id)) {

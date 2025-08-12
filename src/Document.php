@@ -105,7 +105,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      **/
     public static function getItemtypesThatCanHave(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         return array_merge(
@@ -215,7 +214,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
     public function prepareInputForAdd($input)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // security (don't accept filename from $_REQUEST)
@@ -381,7 +379,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      **/
     public static function getMaxUploadSize()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         //TRANS: %s is a size
@@ -420,10 +417,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      **/
     public function getDownloadLink($linked_item = null, $len = 20): string
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $link_params = '';
@@ -509,7 +502,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     public function getFromDBbyContent($entity, $path)
     {
 
-        /** @var DBmysql $DB */
         global $DB;
 
         if (empty($path)) {
@@ -643,7 +635,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      */
     private function canViewFileFromReminder()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!Session::getLoginUserID()) {
@@ -687,10 +678,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     private function canViewFileFromKnowbaseItem()
     {
 
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         // Knowbase items can be viewed by non connected user in case of public FAQ
@@ -748,7 +735,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     private function canViewFileFromItilObject($itemtype, $items_id)
     {
 
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!Session::getLoginUserID()) {
@@ -791,7 +777,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      */
     private function canViewFileFromItem($itemtype, $items_id): bool
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!is_a($itemtype, CommonDBTM::class, true)) {
@@ -1349,7 +1334,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      **/
     public static function isValidDoc($filename)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $splitter = explode(".", $filename);
@@ -1407,10 +1391,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      **/
     public static function dropdown($options = [])
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $p['name']    = 'documents_id';
@@ -1680,7 +1660,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      **/
     public static function cronCleanOrphans(CronTask $task): int
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $dtable = static::getTable();

@@ -36,7 +36,6 @@
 
 namespace Glpi\Inventory\Asset;
 
-use DBmysql;
 use DBmysqlIterator;
 use Dropdown;
 use Entity;
@@ -254,7 +253,6 @@ class Software extends InventoryAsset
 
     public function handle()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $mainasset_entities_id = 0;
@@ -616,7 +614,6 @@ class Software extends InventoryAsset
      */
     private function populateSoftware()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = [
@@ -676,7 +673,6 @@ class Software extends InventoryAsset
      */
     private function populateVersions()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!count($this->softwares)) {
@@ -755,10 +751,8 @@ class Software extends InventoryAsset
      */
     private function storeSoftware()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $software = new GSoftware();
@@ -815,7 +809,6 @@ class Software extends InventoryAsset
      */
     private function storeVersions()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $version = new SoftwareVersion();
@@ -907,7 +900,6 @@ class Software extends InventoryAsset
      */
     private function storeAssetLink()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!count($this->data)) {
@@ -1059,7 +1051,6 @@ class Software extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         return $conf->import_software == 1 && in_array($this->item::class, $CFG_GLPI['software_types']);
     }

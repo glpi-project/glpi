@@ -168,7 +168,6 @@ class Peripheral extends CommonDBTM implements AssignableItemInterface, DCBreadc
      **/
     public function getLinkedItems()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

@@ -56,7 +56,6 @@ class KnowbaseItem_Profile extends CommonDBRelation
      **/
     public static function getProfiles($knowbaseitems_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $prof  = [];

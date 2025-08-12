@@ -79,7 +79,6 @@ class ITILSolution extends CommonDBChild
 
     public static function canView(): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $itil_types = $CFG_GLPI['itil_types'];
         /** @var class-string<CommonITILObject> $type */

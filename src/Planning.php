@@ -37,7 +37,6 @@ use Glpi\CalDAV\Backend\Calendar;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Features\PlanningEvent;
 use Glpi\RichText\RichText;
-use Psr\Log\LoggerInterface;
 use RRule\RRule;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VEvent;
@@ -337,7 +336,6 @@ JAVASCRIPT;
      **/
     public static function checkAlreadyPlanned($users_id, $begin, $end, $except = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($users_id === 0) {
@@ -417,7 +415,6 @@ JAVASCRIPT;
      **/
     public static function checkAvailability($params = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!isset($params['itemtype'])) {
@@ -646,7 +643,6 @@ JAVASCRIPT;
 
     public static function getPlanningTypes()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         return array_merge(
@@ -734,7 +730,6 @@ JAVASCRIPT;
      */
     public static function showSingleLinePlanningFilter($filter_key, $filter_data, $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Invalid data, skip
@@ -1205,7 +1200,6 @@ TWIG, $twig_params);
 
     public static function showAddEventForm($params = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (count($CFG_GLPI['planning_add_types']) === 1) {
@@ -1302,7 +1296,6 @@ TWIG, $twig_params);
      */
     public static function showAddEventClassicForm($params = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (isset($params["id"]) && ($params["id"] > 0)) {
@@ -1351,7 +1344,6 @@ TWIG, $twig_params);
      */
     public static function showPlanningCheck(array $data): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $append_params = [
@@ -1570,7 +1562,6 @@ TWIG, $twig_params);
      */
     public static function constructEventsArray($options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $param['start']               = '';
@@ -1909,7 +1900,6 @@ TWIG, $twig_params);
             try {
                 $vcalendar = Reader::read($calendar_data);
             } catch (ParseException $exception) {
-                /** @var LoggerInterface $PHPLOGGER */
                 global $PHPLOGGER;
                 $PHPLOGGER->error(
                     sprintf('Unable to parse calendar data from URL "%s"', $planning_params['url']),
@@ -2217,7 +2207,6 @@ TWIG, ['msg' => __('Your planning')]);
      **/
     public static function generateIcal($who, $whogroup, $limititemtype = '')
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (

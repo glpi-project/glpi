@@ -35,7 +35,6 @@
 
 namespace Glpi\Console\Diagnostic;
 
-use DBmysql;
 use Document;
 use Glpi\Console\AbstractCommand;
 use Symfony\Component\Console\Command\Command;
@@ -97,7 +96,6 @@ final class CheckDocumentsIntegrityCommand extends AbstractCommand
      */
     protected function getDocuments(): iterable
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $i = 0;

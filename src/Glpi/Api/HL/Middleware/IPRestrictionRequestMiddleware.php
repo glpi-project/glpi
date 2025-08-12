@@ -35,7 +35,6 @@
 
 namespace Glpi\Api\HL\Middleware;
 
-use DBmysql;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Router;
 
@@ -51,7 +50,6 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
             return;
         }
 
-        /** @var DBmysql $DB */
         global $DB;
 
         $request_ip = $_SERVER['REMOTE_ADDR'];

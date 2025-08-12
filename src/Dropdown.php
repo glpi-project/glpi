@@ -117,7 +117,6 @@ class Dropdown
      **/
     public static function show($itemtype, $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!($item = getItemForItemtype($itemtype))) {
@@ -546,7 +545,6 @@ class Dropdown
             Toolbox::deprecated('Usage of the `$withcomment` parameter is deprecated. Use `Dropdown::getDropdownComments()` instead.');
         }
 
-        /** @var DBmysql $DB */
         global $DB;
 
         $id = (int) $id; // Prevent unexpected value type to be sent in the SQL request
@@ -659,7 +657,6 @@ class Dropdown
      **/
     public static function getDropdownComments(string $table, int $id, bool $translate = true, bool $tooltip = true): string
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $itemtype = getItemTypeForTable($table);
@@ -847,7 +844,6 @@ class Dropdown
      **/
     public static function getDropdownArrayNames($table, $ids)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $tabs = [];
@@ -940,7 +936,6 @@ class Dropdown
      **/
     public static function dropdownUsedItemTypes($name, $itemtype_ref, $options = [])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $p['value'] = 0;
@@ -1017,7 +1012,6 @@ class Dropdown
                 )
             );
 
-            /** @var array $CFG_GLPI */
             global $CFG_GLPI;
 
             // templates for select2 dropdown
@@ -1560,7 +1554,6 @@ HTML;
      */
     public static function getLanguages()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $languages = [];
@@ -1581,7 +1574,6 @@ HTML;
      **/
     public static function getLanguageName($value)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         return $CFG_GLPI["languages"][$value][0] ?? $value;
     }
@@ -1608,7 +1600,6 @@ HTML;
      **/
     public static function showHours($name, $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $p['value']          = '';
@@ -1696,7 +1687,6 @@ HTML;
      **/
     public static function showItemType($types = '', $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $params['name']                = 'itemtype';
@@ -1817,7 +1807,6 @@ HTML;
      **/
     public static function showSelectItemFromItemtypes(array $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $params = [
@@ -1965,7 +1954,6 @@ HTML;
      **/
     public static function showNumber($myname, $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $p = [
@@ -2120,7 +2108,6 @@ HTML;
      **/
     public static function showTimeStamp($myname, $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $params['value']               = 0;
@@ -2774,7 +2761,6 @@ HTML;
      **/
     public static function showOutputFormat($itemtype = null)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $values[Search::PDF_OUTPUT_LANDSCAPE]     = __('Current page in landscape PDF');
@@ -2810,7 +2796,6 @@ HTML;
      **/
     public static function showListLimit($onchange = '', $display = true)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (isset($_SESSION['glpilist_limit'])) {
@@ -2866,10 +2851,6 @@ HTML;
      */
     public static function getDropdownValue($post, $json = true)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         // check if asked itemtype is the one originally requested by the form
@@ -3744,7 +3725,6 @@ HTML;
 
     private static function filterDisplayWith(CommonDBTM $item, array $fields): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Filter invalid fields
@@ -3774,10 +3754,6 @@ HTML;
      */
     public static function getDropdownConnect($post, $json = true)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         // check if asked itemtype is the one originaly requested by the form
@@ -3976,10 +3952,6 @@ HTML;
      */
     public static function getDropdownFindNum($post, $json = true)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         // Security
@@ -4140,7 +4112,6 @@ HTML;
      */
     public static function getDropdownNumber($post, $json = true)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $used = [];
@@ -4253,7 +4224,6 @@ HTML;
      */
     public static function getDropdownUsers($post, $json = true)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // check if asked itemtype is the one originaly requested by the form
@@ -4379,7 +4349,6 @@ HTML;
 
     public static function getDropdownActors($post, $json = true)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!Session::validateIDOR($post)) {

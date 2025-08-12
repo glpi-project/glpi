@@ -435,11 +435,6 @@ class RuleImportAsset extends Rule
 
     public function findWithGlobalCriteria($input)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         * @var array $PLUGIN_HOOKS
-         */
         global $CFG_GLPI, $DB, $PLUGIN_HOOKS;
 
         $this->complex_criteria = [];
@@ -1084,7 +1079,6 @@ TWIG, $twig_params);
      */
     public static function getItemTypesForRules()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $types = [];
@@ -1129,7 +1123,6 @@ TWIG, $twig_params);
      */
     public function getGlobalCriteria(): array
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $criteria = array_merge([

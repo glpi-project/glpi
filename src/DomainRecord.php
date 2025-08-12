@@ -399,7 +399,6 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
      **/
     public static function showForDomain(Domain $domain)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $instID = $domain->fields['id'];

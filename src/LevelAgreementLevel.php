@@ -348,7 +348,6 @@ abstract class LevelAgreementLevel extends RuleTicket
      **/
     public static function getAlreadyUsedExecutionTime($las_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = [];
@@ -440,7 +439,6 @@ abstract class LevelAgreementLevel extends RuleTicket
      */
     final protected function showForLA(LevelAgreement $la): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $la->getField('id');

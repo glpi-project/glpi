@@ -155,7 +155,6 @@ class Environment extends AbstractInventoryAsset
 
     public function testGenericAssetEnvironment(): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         //create generic asset

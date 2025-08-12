@@ -156,7 +156,6 @@ final class CoreController extends AbstractController
     #[Doc\Route(description: 'Displays the API documentation as a Swagger UI HTML page.')]
     public function showDocumentation(Request $request): Response
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $swagger_content = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>GLPI API Documentation</title>';
@@ -398,7 +397,6 @@ HTML;
     #[Doc\Route(description: 'Authorize the API client using the authorization code grant type.')]
     public function authorize(Request $request): Response
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         try {
             $auth_request = Server::getAuthorizationServer()->validateAuthorizationRequest($request);

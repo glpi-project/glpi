@@ -733,7 +733,6 @@ class Migration extends \GLPITestCase
 
     public function testRenameTable()
     {
-
         global $DB;
         $DB = $this->db;
 

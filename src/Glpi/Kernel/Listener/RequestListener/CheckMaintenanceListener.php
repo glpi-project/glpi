@@ -67,7 +67,6 @@ final readonly class CheckMaintenanceListener implements EventSubscriberInterfac
             return;
         }
 
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Check maintenance mode

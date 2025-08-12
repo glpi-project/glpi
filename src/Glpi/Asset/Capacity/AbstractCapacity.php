@@ -36,7 +36,6 @@ namespace Glpi\Asset\Capacity;
 
 use CommonDBRelation;
 use CommonDBTM;
-use DBmysql;
 use DisplayPreference;
 use Exception;
 use Glpi\Asset\Asset;
@@ -105,7 +104,6 @@ abstract class AbstractCapacity implements CapacityInterface
      */
     final protected function countPeerItemsUsage(string $asset_classname, string $relation_classname, array $specific_criteria = []): int
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (is_a($relation_classname, CommonDBRelation::class, true)) {
@@ -210,7 +208,6 @@ abstract class AbstractCapacity implements CapacityInterface
         string $linked_itemtype,
         bool $both_sides = true
     ): void {
-        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = [
@@ -243,7 +240,6 @@ abstract class AbstractCapacity implements CapacityInterface
      */
     protected function deleteFieldsLogs(string $itemtype, array $search_options): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ids = $this->extractOptionsIds($search_options);
@@ -320,7 +316,6 @@ abstract class AbstractCapacity implements CapacityInterface
      */
     protected function registerToTypeConfig(string $config_name, string $itemtype): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!in_array($itemtype, $CFG_GLPI[$config_name])) {
@@ -337,7 +332,6 @@ abstract class AbstractCapacity implements CapacityInterface
      */
     protected function unregisterFromTypeConfig(string $config_name, string $itemtype): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $CFG_GLPI[$config_name] = array_values(

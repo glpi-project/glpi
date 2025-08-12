@@ -1284,7 +1284,6 @@ class PendingReasonTest extends DbTestCase
 
     public function testNotificationEvents(): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $notification = new Notification();

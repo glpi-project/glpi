@@ -106,7 +106,6 @@ class HasSoftwaresCapacityTest extends DbTestCase
 
     public function testCapacityDeactivation(): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $root_entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);

@@ -37,7 +37,6 @@ namespace Glpi\Inventory\Asset;
 
 use Database;
 use DatabaseInstance as GDatabaseInstance;
-use DBmysql;
 use Glpi\Inventory\Conf;
 use RuleImportAssetCollection;
 use RuleMatchedLog;
@@ -78,7 +77,6 @@ class DatabaseInstance extends InventoryAsset
      */
     protected function getExisting(): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $db_existing = [];
@@ -227,7 +225,6 @@ class DatabaseInstance extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         return in_array($this->item::class, $CFG_GLPI['databaseinstance_types']);
     }

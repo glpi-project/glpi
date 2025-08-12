@@ -76,7 +76,6 @@ abstract class ITILTemplateHiddenField extends ITILTemplateField
 
     public function post_purgeItem()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         parent::post_purgeItem();
@@ -116,7 +115,6 @@ abstract class ITILTemplateHiddenField extends ITILTemplateField
      **/
     public function getHiddenFields($ID, $withtypeandcategory = false)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

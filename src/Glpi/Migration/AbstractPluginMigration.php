@@ -92,9 +92,6 @@ abstract class AbstractPluginMigration
 
     final public function hasBeenExecuted(): bool
     {
-        /**
-         * @var array $CFG_GLPI
-         */
         global $CFG_GLPI;
 
         return (bool) ($CFG_GLPI[$this->getHasBeenExecutedConfigurationKey()] ?? false);

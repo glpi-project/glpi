@@ -124,7 +124,6 @@ final class SQLProvider implements SearchProviderInterface
 
     private static function buildSelect(array $data, string $itemtable): string
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // request currentuser for SQL supervision, not displayed
@@ -151,7 +150,6 @@ final class SQLProvider implements SearchProviderInterface
      */
     public static function getDefaultSelectCriteria(string $itemtype): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $itemtable = SearchEngine::getOrigTableName($itemtype);
@@ -201,10 +199,6 @@ final class SQLProvider implements SearchProviderInterface
      */
     public static function getSelectCriteria(string $itemtype, int $ID, bool $meta = false, string $meta_type = '')
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $opt_arrays = SearchOption::getOptionsForItemtype($itemtype);
@@ -679,7 +673,6 @@ final class SQLProvider implements SearchProviderInterface
      **/
     public static function getDefaultWhereCriteria(string $itemtype): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $criteria = [];
@@ -1108,7 +1101,6 @@ final class SQLProvider implements SearchProviderInterface
      */
     private static function getMainItemtypeSystemSQLCriteria(string $itemtype): string
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!is_a($itemtype, CommonDBTM::class, true)) {
@@ -1127,7 +1119,6 @@ final class SQLProvider implements SearchProviderInterface
 
     public static function getWhereCriteria($nott, $itemtype, $ID, $searchtype, $val, $meta = 0): ?array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $searchopt = SearchOption::getOptionsForItemtype($itemtype);
@@ -2303,7 +2294,6 @@ final class SQLProvider implements SearchProviderInterface
      **/
     public static function getDefaultJoinCriteria(string $itemtype, string $ref_table, array &$already_link_tables): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $out = [];
@@ -2721,7 +2711,6 @@ final class SQLProvider implements SearchProviderInterface
         array $joinparams = [],
         string $field = ''
     ): array {
-        /** @var DBmysql $DB */
         global $DB;
         // Rename table for meta left join
         $AS = "";
@@ -3189,7 +3178,6 @@ final class SQLProvider implements SearchProviderInterface
      **/
     public static function getMetaLeftJoinCriteria(string $from_type, string $to_type, array &$already_link_tables2, array $joinparams = []): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $from_referencetype = SearchEngine::getMetaReferenceItemtype($from_type);
@@ -3703,7 +3691,6 @@ final class SQLProvider implements SearchProviderInterface
             if (!is_array($joinparams['condition'])) {
                 $complexjoin .= $joinparams['condition'];
             } else {
-                /** @var DBmysql $DB */
                 global $DB;
                 $dbi = new DBmysqlIterator($DB);
                 $sql_clause = $dbi->analyseCrit($joinparams['condition']);
@@ -3731,7 +3718,6 @@ final class SQLProvider implements SearchProviderInterface
                     if (!is_array($tab['joinparams']['condition'])) {
                         $complexjoin .= $tab['joinparams']['condition'];
                     } else {
-                        /** @var DBmysql $DB */
                         global $DB;
                         $dbi = new DBmysqlIterator($DB);
                         $sql_clause = $dbi->analyseCrit($tab['joinparams']['condition']);
@@ -3759,7 +3745,6 @@ final class SQLProvider implements SearchProviderInterface
      */
     public static function getDropdownTranslationJoinCriteria($alias, $table, $itemtype, $field): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         return [
@@ -3958,10 +3943,6 @@ final class SQLProvider implements SearchProviderInterface
      **/
     public static function getOrderByCriteria(string $itemtype, array $sort_fields): array
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $orderby_criteria = [];
@@ -4125,10 +4106,6 @@ final class SQLProvider implements SearchProviderInterface
     #[Override]
     public static function constructSQL(array &$data)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (!isset($data['itemtype'])) {
@@ -5369,7 +5346,6 @@ final class SQLProvider implements SearchProviderInterface
         array $addobjectparams = [],
         $orig_itemtype = null
     ) {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $searchopt = SearchOption::getOptionsForItemtype($itemtype);
@@ -6278,7 +6254,6 @@ final class SQLProvider implements SearchProviderInterface
                        </div>";
 
                 case "glpi_knowbaseitems.name":
-                    /** @var DBmysql $DB */
                     global $DB;
                     $result = $DB->request([
                         'SELECT' => [

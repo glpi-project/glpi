@@ -112,7 +112,6 @@ class TestRouter extends Router
 
     public static function getAPIVersions(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $versions = parent::getAPIVersions();

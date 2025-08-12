@@ -47,9 +47,6 @@ class DCBreadcrumbTest extends DbTestCase
 {
     public static function itemtypeProvider()
     {
-        /**
-         * @var array $CFG_GLPI
-         */
         global $CFG_GLPI;
 
         foreach ($CFG_GLPI["rackable_types"] as $itemtype) {

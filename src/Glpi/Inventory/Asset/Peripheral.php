@@ -37,7 +37,6 @@
 namespace Glpi\Inventory\Asset;
 
 use Computer;
-use DBmysql;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
 use Peripheral as GPeripheral;
@@ -141,7 +140,6 @@ class Peripheral extends InventoryAsset
 
     public function handle()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $rule = new RuleImportAssetCollection();
@@ -262,7 +260,6 @@ class Peripheral extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         return $conf->import_peripheral == 1 && in_array($this->item::class, $CFG_GLPI['peripheralhost_types']);
     }

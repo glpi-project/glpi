@@ -68,7 +68,6 @@ class Widget
      */
     public static function getAllTypes(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         Profiler::getInstance()->start(__METHOD__);

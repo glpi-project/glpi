@@ -76,7 +76,6 @@ class HelpdeskTranslationTest extends \DbTestCase
 
     public function testTranslate()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->initHelpdeskWithTranslations();

@@ -340,7 +340,6 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
      **/
     public static function showForDatacenter(Datacenter $datacenter)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $datacenter->getID();
@@ -412,7 +411,6 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
      */
     public function getFilled($current = null)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

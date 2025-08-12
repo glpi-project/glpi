@@ -36,7 +36,6 @@ namespace Glpi\Asset\Capacity;
 
 use CommonDevice;
 use CommonGLPI;
-use DBmysql;
 use Glpi\Asset\CapacityConfig;
 use Item_Devices;
 use Override;
@@ -89,9 +88,6 @@ class HasDevicesCapacity extends AbstractCapacity
 
     private function countAssetsLinkedToDevices(string $classname): int
     {
-        /**
-         * @var DBmysql $DB
-         */
         global $DB;
 
         $assets_ids = [];
@@ -131,7 +127,6 @@ class HasDevicesCapacity extends AbstractCapacity
 
     public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Supports devices
@@ -154,7 +149,6 @@ class HasDevicesCapacity extends AbstractCapacity
 
     public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         foreach (Item_Devices::getDeviceTypes() as $item_device_class) {

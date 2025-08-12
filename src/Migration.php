@@ -438,7 +438,6 @@ class Migration
      **/
     public function addField($table, $field, $type, $options = [])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $params['update']    = '';
@@ -505,7 +504,6 @@ class Migration
      **/
     public function changeField($table, $oldfield, $newfield, $type, $options = [])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $params['value']     = null;
@@ -567,7 +565,6 @@ class Migration
      **/
     public function dropField($table, $field)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($DB->fieldExists($table, $field, false)) {
@@ -584,7 +581,6 @@ class Migration
      **/
     public function dropTable($table)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($DB->tableExists($table)) {
@@ -649,7 +645,6 @@ class Migration
      **/
     public function dropKey($table, $indexname)
     {
-        /** @var DBmysql $DB */
         global $DB;
         if (isIndex($table, $indexname)) {
             $this->change[$table][] = $DB->buildDrop($indexname, 'INDEX');
@@ -666,7 +661,6 @@ class Migration
      **/
     public function dropForeignKeyContraint($table, $keyname)
     {
-        /** @var DBmysql $DB */
         global $DB;
         if (isForeignKeyContraint($table, $keyname)) {
             $this->change[$table][] = $DB->buildDrop($keyname, 'FOREIGN KEY');
@@ -683,7 +677,6 @@ class Migration
      **/
     public function renameTable($oldtable, $newtable)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!$DB->tableExists("$newtable") && $DB->tableExists("$oldtable")) {
@@ -741,7 +734,6 @@ class Migration
      **/
     public function copyTable($oldtable, $newtable, bool $insert = true)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (
@@ -775,7 +767,6 @@ class Migration
      **/
     public function insertInTable($table, array $input)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (
@@ -806,7 +797,6 @@ class Migration
      **/
     public function migrationOneTable($table)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (isset($this->change[$table])) {
@@ -842,7 +832,6 @@ class Migration
      **/
     public function executeMigration()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         foreach ($this->queries[self::PRE_QUERY] as $query) {
@@ -884,7 +873,6 @@ class Migration
      **/
     public function createRule(array $rule, array $criteria, array $actions)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Avoid duplicate - Need to be improved using a rule uuid of other
@@ -946,7 +934,6 @@ class Migration
      **/
     public function updateDisplayPrefs($toadd = [], $todel = [], bool $only_default = false)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         //TRANS: %s is the table or item to migrate
@@ -1089,7 +1076,6 @@ class Migration
      */
     public function backupTables($tables)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $backup_tables = false;
@@ -1144,7 +1130,6 @@ class Migration
      */
     public function removeConfig(array $values, ?string $context = null)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($values === []) {
@@ -1171,7 +1156,6 @@ class Migration
      */
     private function storeConfig()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         foreach ($this->configs as $context => $config) {
@@ -1223,7 +1207,6 @@ class Migration
      */
     public function addRight($name, $rights = ALLSTANDARDRIGHT, $requiredrights = ['config' => READ | UPDATE])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Get all profiles where new rights has not been added yet
@@ -1308,7 +1291,6 @@ class Migration
      */
     public function addRightByInterface($name, $right, $interface = 'central')
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $prof_iterator = $DB->request([
@@ -1376,7 +1358,6 @@ class Migration
      */
     public function replaceRight($name, $rights, $requiredrights = ['config' => READ | UPDATE])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Get all profiles with required rights
@@ -1444,7 +1425,6 @@ class Migration
      */
     public function giveRight($name, $rights, $requiredrights = ['config' => READ | UPDATE])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Build JOIN clause to get all profiles with required rights
@@ -1536,7 +1516,6 @@ class Migration
      */
     private function updateProfileLastRightsUpdate(int $profile_id): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Check if the 'last_rights_update' field exists before trying to update it.
@@ -1583,7 +1562,6 @@ class Migration
      */
     public function renameItemtype($old_itemtype, $new_itemtype, $update_structure = true)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($old_itemtype == $new_itemtype) {
@@ -1760,7 +1738,6 @@ class Migration
      */
     private function migrateSearchOptions()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (empty($this->search_opts)) {
@@ -1920,7 +1897,6 @@ class Migration
         string $class_1,
         string $class_2
     ) {
-        /** @var DBmysql $DB */
         global $DB;
         if ($DB->tableExists($table)) {
             return;
@@ -1958,7 +1934,6 @@ class Migration
      */
     public function addCrontask(string $itemtype, string $name, int $frequency, ?int $param = null, array $options = []): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $existing_task = $DB->request([

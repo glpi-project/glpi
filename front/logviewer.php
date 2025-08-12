@@ -39,7 +39,6 @@ use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\System\Log\LogParser;
 use Glpi\System\Log\LogViewer;
 
-/** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
 Session::checkRight("logs", READ);

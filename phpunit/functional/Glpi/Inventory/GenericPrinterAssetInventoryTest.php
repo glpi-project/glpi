@@ -54,7 +54,6 @@ class GenericPrinterAssetInventoryTest extends InventoryTestCase
      */
     private function inventoryPrinter(array $capacities = []): Asset
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         //create HPLaser generic asset

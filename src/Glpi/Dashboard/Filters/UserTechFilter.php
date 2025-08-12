@@ -37,7 +37,6 @@ namespace Glpi\Dashboard\Filters;
 
 use Change;
 use CommonITILActor;
-use DBmysql;
 use Problem;
 use Session;
 use Ticket;
@@ -58,7 +57,6 @@ class UserTechFilter extends AbstractFilter
 
     public static function canBeApplied(string $table): bool
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         return $DB->fieldExists($table, 'users_id_tech')
@@ -67,7 +65,6 @@ class UserTechFilter extends AbstractFilter
 
     public static function getCriteria(string $table, $value): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = [];
@@ -115,7 +112,6 @@ class UserTechFilter extends AbstractFilter
 
     public static function getSearchCriteria(string $table, $value): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = [];

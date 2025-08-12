@@ -46,7 +46,6 @@ use Glpi\Stat\Data\Location\StatDataSolved;
 use function Safe\mktime;
 use function Safe\preg_match;
 
-/** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
 Html::header(__('Statistics'), '', "helpdesk", "stat");

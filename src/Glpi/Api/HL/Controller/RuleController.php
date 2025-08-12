@@ -277,7 +277,6 @@ final class RuleController extends AbstractController
 
     public static function getRuleCollections(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         /** @var class-string<RuleCollection>[] $collections */
@@ -349,7 +348,6 @@ final class RuleController extends AbstractController
     )]
     public function getCollections(Request $request): Response
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         /** @var class-string<RuleCollection>[] $collections */

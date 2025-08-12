@@ -111,7 +111,6 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
 
     public function getDatabases(): array
     {
-        /** @var DBmysql $DB */
         global $DB;
         $dbs = [];
 
@@ -373,7 +372,6 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
      */
     public static function getTypes($all = false): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $types = $CFG_GLPI['databaseinstance_types'];
@@ -437,7 +435,6 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
 
     public static function showInstances(CommonDBTM $item, $withtemplate)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $instances = $DB->request([

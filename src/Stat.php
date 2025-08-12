@@ -76,7 +76,6 @@ class Stat extends CommonGLPI
      */
     public static function getItems($itemtype, $date1, $date2, $type, $parent = 0)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!$item = getItemForItemtype($itemtype)) {
@@ -956,7 +955,6 @@ class Stat extends CommonGLPI
         $value2 = "",
         array $add_criteria = []
     ) {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $DB = DBConnection::getReadConnection();
 
@@ -1547,7 +1545,6 @@ class Stat extends CommonGLPI
      */
     public static function getAssetsWithITIL($start_date, $end_date, $itil_type = 'Ticket'): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $itil_table = $itil_type::getTable();
@@ -1724,10 +1721,6 @@ class Stat extends CommonGLPI
 
     public static function getAvailableStatistics()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var array $PLUGIN_HOOKS
-         */
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
         $opt_list["Ticket"]                             = __('Tickets');

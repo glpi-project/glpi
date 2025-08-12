@@ -216,7 +216,6 @@ class SourceCodeIntegrityChecker
      */
     private function getGLPIRelease(array &$errors = []): string|null
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $version_to_get = VersionParser::getNormalizedVersion(GLPI_VERSION);

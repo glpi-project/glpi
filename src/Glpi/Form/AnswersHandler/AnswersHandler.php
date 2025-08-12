@@ -35,7 +35,6 @@
 
 namespace Glpi\Form\AnswersHandler;
 
-use DBmysql;
 use Exception;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Form\Answer;
@@ -171,7 +170,6 @@ final class AnswersHandler
         array $files = [],
         DelegationData $delegation = new DelegationData(),
     ): AnswersSet {
-        /** @var DBmysql $DB */
         global $DB;
 
         // We do not want to commit the answers unless everything was processed
@@ -242,7 +240,6 @@ final class AnswersHandler
      */
     protected function incrementFormUsageCount(Form $form): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Note: Using direct DB update prevents race conditions
@@ -273,7 +270,6 @@ final class AnswersHandler
         array $answers,
         int $users_id
     ): AnswersSet {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Find next answer index for this form

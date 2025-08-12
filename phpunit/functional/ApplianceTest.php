@@ -53,7 +53,6 @@ class ApplianceTest extends DbTestCase
 
     public function testGetTypes()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $appliance = new \Appliance();

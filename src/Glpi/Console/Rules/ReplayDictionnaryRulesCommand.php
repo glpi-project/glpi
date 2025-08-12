@@ -126,7 +126,6 @@ class ReplayDictionnaryRulesCommand extends AbstractCommand
      */
     private function getDictionnaryTypes(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $types = $CFG_GLPI['dictionnary_types'];
         sort($types);

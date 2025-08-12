@@ -189,10 +189,6 @@ class Computer extends CommonDBTM implements AssignableItemInterface, DCBreadcru
 
     public function post_updateItem($history = true)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $this->post_updateItemAssignableItem($history);
@@ -371,7 +367,6 @@ class Computer extends CommonDBTM implements AssignableItemInterface, DCBreadcru
 
     public function getLinkedItems()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

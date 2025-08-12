@@ -369,7 +369,6 @@ class Agent extends CommonDBTM
      */
     public function showForm($id, array $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!empty($id)) {
@@ -401,7 +400,6 @@ class Agent extends CommonDBTM
      */
     public function handleAgent($metadata)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $deviceid = $metadata['deviceid'];
@@ -517,7 +515,6 @@ class Agent extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (isset($CFG_GLPI['threads_networkdiscovery']) && !isset($input['threads_networkdiscovery'])) {
@@ -561,7 +558,6 @@ class Agent extends CommonDBTM
      */
     public function guessAddresses(): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $addresses = [];
@@ -822,10 +818,6 @@ class Agent extends CommonDBTM
      */
     public static function cronCleanoldagents($task = null)
     {
-        /**
-         * @var DBmysql $DB
-         * @var array $PLUGIN_HOOKS
-         */
         global $DB, $PLUGIN_HOOKS;
 
         $config = Config::getConfigurationValues('inventory');

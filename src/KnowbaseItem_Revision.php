@@ -104,9 +104,6 @@ class KnowbaseItem_Revision extends CommonDBTM
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
-        /**
-         * @var DBmysql $DB
-         */
         global $DB;
 
         if (isset($_GET["start"])) {
@@ -268,7 +265,6 @@ HTML;
      */
     private function getNewRevision()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([

@@ -35,7 +35,6 @@
 namespace Glpi\Api\HL;
 
 use CommonDBTM;
-use DBmysql;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\RSQL\RSQLException;
@@ -79,7 +78,6 @@ final class ResourceAccessor
      */
     public static function getIDForOtherUniqueFieldBySchema(array $schema, string $field, mixed $value): ?int
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!isset($schema['properties'][$field])) {

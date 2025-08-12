@@ -45,9 +45,6 @@ use Glpi\Stat\Data\Graph\StatDataTicketNumber;
 use function Safe\preg_match;
 use function Safe\preg_replace;
 
-/**
- * @var DBmysql $DB
- */
 global $DB;
 
 Html::header(__('Statistics'), '', "helpdesk", "stat");

@@ -39,7 +39,6 @@ use CommonDBTM;
 use CommonDropdown;
 use CommonITILObject;
 use CommonTreeDropdown;
-use DBmysql;
 use DropdownTranslation;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
@@ -61,7 +60,6 @@ trait TreeBrowse
     /** @see TreeBrowseInterface::showBrowseView() */
     public static function showBrowseView(string $itemtype, array $params, $update = false)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $ajax_url    = $CFG_GLPI["root_doc"] . "/ajax/treebrowse.php";
@@ -182,7 +180,6 @@ JAVASCRIPT;
     /** @see TreeBrowseInterface::getTreeCategoryList() */
     public static function getTreeCategoryList(string $itemtype, array $params): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $cat_item = static::getCategoryItem($itemtype);

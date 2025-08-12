@@ -295,7 +295,6 @@ class RuleAction extends CommonDBChild
      **/
     public function getRuleActions($ID)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -449,7 +448,6 @@ class RuleAction extends CommonDBChild
      **/
     public function getAlreadyUsedForRuleID($rules_id, $sub_type)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($rule = getItemForItemtype($sub_type)) {

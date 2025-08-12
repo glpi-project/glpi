@@ -50,7 +50,6 @@ abstract class AbstractDestinationFieldTest extends DbTestCase
 
     public static function setUpBeforeClass(): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         parent::setUpBeforeClass();
@@ -63,7 +62,6 @@ abstract class AbstractDestinationFieldTest extends DbTestCase
 
     public static function tearDownAfterClass(): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $tables = $DB->listTables('glpi\_plugin\_formcreator\_%');
@@ -82,9 +80,6 @@ abstract class AbstractDestinationFieldTest extends DbTestCase
         array $fields_to_set,
         callable|JsonFieldInterface $field_config
     ): void {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         if (!empty($fields_to_set)) {

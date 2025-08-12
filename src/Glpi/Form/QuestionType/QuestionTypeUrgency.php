@@ -75,7 +75,6 @@ final class QuestionTypeUrgency extends AbstractQuestionType implements UsedAsCr
      */
     private function getUrgencyLevels(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Get the urgency levels

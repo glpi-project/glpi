@@ -565,7 +565,6 @@ TWIG, $twig_params);
      */
     public function showFormReplicatesConfig()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ID     = $this->getField('id');
@@ -1256,7 +1255,6 @@ TWIG, ['authldaps_id' => $ID]);
      */
     public static function ldapStamp2UnixStamp($ldapstamp, $ldap_time_offset = 0)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Check if timestamp is well format, otherwise return ''
@@ -1893,7 +1891,6 @@ TWIG, $twig_params);
      */
     public static function getAllUsers(array $options, &$results, &$limitexceeded)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $config_ldap = new self();
@@ -2262,7 +2259,6 @@ TWIG, $twig_params);
         $entity,
         &$limitexceeded
     ) {
-        /** @var DBmysql $DB */
         global $DB;
 
         $config_ldap = new self();
@@ -2412,7 +2408,6 @@ TWIG, $twig_params);
         $search_in_groups = true,
         $groups = []
     ) {
-        /** @var DBmysql $DB */
         global $DB;
 
         //First look for groups in group objects
@@ -2627,7 +2622,6 @@ TWIG, $twig_params);
         $ldap_server,
         $display = false
     ) {
-        /** @var DBmysql $DB */
         global $DB;
 
         $config_ldap = new self();
@@ -3275,7 +3269,6 @@ TWIG, $twig_params);
      */
     public static function tryLdapAuth($auth, $login, $password, $auths_id = 0, $user_dn = false, $break = true)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         //If no specific source is given, test all ldap directories
@@ -3934,7 +3927,6 @@ TWIG, $twig_params);
      */
     public static function getServersWithImportByEmailActive()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ldaps = [];
@@ -4043,7 +4035,6 @@ TWIG, $twig_params);
      */
     public static function getAllReplicateForAMaster($master_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $replicates = [];
@@ -4095,7 +4086,6 @@ TWIG, $twig_params);
      */
     public function getLdapExistingUser($name, $authldaps_id, $sync = null)
     {
-        /** @var DBmysql $DB */
         global $DB;
         $user = new User();
 

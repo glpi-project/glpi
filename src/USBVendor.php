@@ -34,7 +34,6 @@
  */
 use Glpi\Features\CacheableListInterface;
 use Glpi\Inventory\FilesToJSON;
-use Psr\SimpleCache\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 
 use function Safe\file_get_contents;
@@ -98,7 +97,6 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
      */
     public static function getList(): array
     {
-        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $vendors = new USBVendor();
@@ -123,7 +121,6 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
      */
     private function getDbList(): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $list = [];
@@ -152,7 +149,6 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
      */
     public function invalidateListCache(): void
     {
-        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $GLPI_CACHE->delete($this->cache_key);

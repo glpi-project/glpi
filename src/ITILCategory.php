@@ -350,7 +350,6 @@ class ITILCategory extends CommonTreeDropdown
      **/
     private static function getITILCategoryIDByField($field, $value)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -442,10 +441,6 @@ class ITILCategory extends CommonTreeDropdown
      */
     public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $itilcategory = new self();

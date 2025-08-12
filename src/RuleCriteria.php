@@ -311,7 +311,6 @@ class RuleCriteria extends CommonDBChild
      **/
     public function getRuleCriterias($rules_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $rules_list = [];
