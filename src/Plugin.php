@@ -45,7 +45,6 @@ use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\VersionParser;
-use Laminas\I18n\Translator\Translator;
 
 use function Safe\ini_get;
 use function Safe\ob_end_clean;

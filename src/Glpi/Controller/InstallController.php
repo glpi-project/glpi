@@ -35,7 +35,6 @@
 namespace Glpi\Controller;
 
 use DB;
-use DBmysql;
 use Glpi\Cache\CacheManager;
 use Glpi\Controller\Traits\AsyncOperationProgressControllerTrait;
 use Glpi\Exception\Http\AccessDeniedHttpException;

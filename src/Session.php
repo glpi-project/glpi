@@ -41,7 +41,6 @@ use Glpi\Exception\SessionExpiredException;
 use Glpi\Plugin\Hooks;
 use Glpi\Session\SessionInfo;
 use Laminas\I18n\Translator\Translator;
-use Laminas\I18n\Translator\TranslatorInterface;
 use Safe\Exceptions\InfoException;
 use Safe\Exceptions\SessionException;
 use Symfony\Component\HttpFoundation\Request;
