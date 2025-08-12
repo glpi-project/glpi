@@ -3808,17 +3808,17 @@ TWIG, $twig_params);
     {
         if (
             self::connectToServer(
-                $authldap->getField('host'),
-                $authldap->getField('port'),
-                $authldap->getField('rootdn'),
-                (new GLPIKey())->decrypt($authldap->getField('rootdn_passwd')),
-                $authldap->getField('use_tls'),
-                $authldap->getField('deref_option'),
-                $authldap->getField('tls_certfile'),
-                $authldap->getField('tls_keyfile'),
-                $authldap->getField('use_bind'),
-                $authldap->getField('timeout'),
-                $authldap->getField('tls_version')
+                $authldap->fields['host'],
+                $authldap->fields['port'],
+                $authldap->fields['rootdn'],
+                (new GLPIKey())->decrypt($authldap->fields['rootdn_passwd']),
+                $authldap->fields['use_tls'],
+                $authldap->fields['deref_option'],
+                $authldap->fields['tls_certfile'],
+                $authldap->fields['tls_keyfile'],
+                $authldap->fields['use_bind'],
+                $authldap->fields['timeout'],
+                $authldap->fields['tls_version']
             )
         ) {
             self::showLdapUsers();
