@@ -37,6 +37,7 @@ namespace Glpi\Api\HL;
 
 use CommonDBTM;
 use Glpi\Debug\Profiler;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Http\Request;
 use GraphQL\Error\Error;
 use GraphQL\Type\Definition\ResolveInfo;
@@ -59,7 +60,11 @@ final class GraphQL
     public static function processRequest(Request $request): array
     {
         $api_version = $request->getHeaderLine('GLPI-API-Version') ?: Router::API_VERSION;
-        $query = (string) $request->getBody();
+        $bodyJson = json_decode((string) $request->getBody(), true);
+        if ($bodyJson === null || !isset($bodyJson['query'])) {
+            throw new BadRequestHttpException('Invalid GraphQL request: missing query');
+        }
+        $query = $bodyJson['query'];
         $generator = new GraphQLGenerator($api_version);
         Profiler::getInstance()->start('GraphQL::processRequest', Profiler::CATEGORY_HLAPI);
         Profiler::getInstance()->start('Build GraphQLSchema', Profiler::CATEGORY_HLAPI);
