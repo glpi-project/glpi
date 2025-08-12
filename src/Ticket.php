@@ -2701,7 +2701,7 @@ JAVASCRIPT;
             'name' => __('OLA') . ' ' . __('time to own') . ' - ' . __('due time'),
             'datatype'           => 'datetime',
             'massiveaction' => false,
-            'additionalfields' => ['TABLE.status', 'TABLE.takeintoaccount_delay_stat', 'TABLE.date', 'olas_id', 'waiting_time', 'end_time'],
+            'additionalfields' => ['TABLE.status', 'TABLE.date', 'olas_id', 'waiting_time', 'end_time'],
             'joinparams' => [
                 'jointype'  => 'itemtype_item',
                 'condition' => ['NEWTABLE.ola_type' => SLM::TTO,],
@@ -2718,7 +2718,7 @@ JAVASCRIPT;
             'name' => __('OLA') . ' ' . __('time to own') . ' - ' . __('due time + progress'),
             'massiveaction' => false,
             'nosearch'           => true,
-            'additionalfields' => ['TABLE.status', 'TABLE.takeintoaccount_delay_stat', 'TABLE.date', 'olas_id', 'waiting_time', 'end_time'],
+            'additionalfields' => ['TABLE.status', 'TABLE.date', 'olas_id', 'waiting_time', 'end_time'],
             'joinparams' => [
                 'jointype'  => 'itemtype_item',
                 'condition' => ['NEWTABLE.ola_type' => SLM::TTO,],
@@ -2769,10 +2769,10 @@ JAVASCRIPT;
             'id'                 => '180',
             'table'              => Item_Ola::getTable(),
             'field'              => 'due_time',
-            'name'               => __('OLA') . ' ' . __('time to resolve') . ' - ' . __('due time'),
+            'name'               => __('OLA') . ' ' . __('time to resolve') . ' 180 - ' . __('due time'),
             'massiveaction'      => false,
             'datatype'           => 'datetime',
-            'additionalfields' => ['TABLE.status', 'TABLE.takeintoaccount_delay_stat', 'TABLE.date', 'olas_id', 'waiting_time', 'end_time'], // @todoseb champs takeintoaccount_delay_stat surement inutile maintenant
+            'additionalfields' => ['TABLE.status', 'TABLE.date', 'olas_id', 'waiting_time', 'end_time'],
             'joinparams' => [
                 'jointype'  => 'itemtype_item',
                 'condition' => ['NEWTABLE.ola_type' => SLM::TTR,],
@@ -2786,10 +2786,10 @@ JAVASCRIPT;
             'table' => Item_Ola::getTable(),
             'field' => 'due_time',
             'datatype' => 'datetime',
-            'name' => __('OLA') . ' ' . __('time to resolve') . ' - ' . __('due time + progress'),
+            'name' => __('OLA') . ' ' . __('time to resolve') . ' - 181 ' . __('due time + progress'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'additionalfields' => ['TABLE.status', 'TABLE.takeintoaccount_delay_stat', 'TABLE.date', 'olas_id', 'waiting_time', 'end_time'], // @todoseb champs takeintoaccount_delay_stat surement inutile maintenant
+            'additionalfields' => ['TABLE.status', 'TABLE.date', 'olas_id', 'waiting_time', 'end_time'],
             'joinparams' => [
                 'jointype'  => 'itemtype_item',
                 'condition' => ['NEWTABLE.ola_type' => SLM::TTR,],
@@ -5401,7 +5401,7 @@ JAVASCRIPT;
                 return null;
             }
         };
-        $now                      = strtotime(Session::getCurrentTime()); // @todoseb règle phpstan pour interdire time()
+        $now                      = strtotime(Session::getCurrentTime());
         $date_creation            = $safe_get_strtime($this->fields['date']);
         // Tickets created before 10.0.4 do not have takeintoaccountdate field, use old and incorrect computation for those cases
         $date_takeintoaccount     = $safe_get_strtime($this->fields['takeintoaccountdate']);
