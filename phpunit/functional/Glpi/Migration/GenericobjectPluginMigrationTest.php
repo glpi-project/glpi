@@ -106,6 +106,10 @@ class GenericobjectPluginMigrationTest extends DbTestCase
         // Arrange
         global $DB;
 
+        // Forces the `auto_create_infocoms` config to validate that it is correctly supported by the migration.
+        global $CFG_GLPI;
+        $CFG_GLPI['auto_create_infocoms'] = true;
+
         $migration = new GenericobjectPluginMigration($DB);
         $result    = new PluginMigrationResult();
         $this->setPrivateProperty($migration, 'result', $result);
