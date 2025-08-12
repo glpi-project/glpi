@@ -46,6 +46,7 @@ use Group_User;
 use Item_Ola;
 use OLA;
 use PHPUnit\Framework\Attributes\TestWith;
+use Psr\Log\LogLevel;
 use Rule;
 use RuleBuilder;
 use RuleCommonITILObject;
@@ -310,6 +311,9 @@ class OLATest extends DbTestCase
         // assert
         $fetched_olas = array_column($ticket->getOlasData(), 'olas_id');
         $this->assertEqualsCanonicalizing([$ola_tto->getID(), $ola_ttr->getID()], $fetched_olas, 'Unexpected OLA associated with ticket using old form params on creation');
+
+        $this->hasPhpLogRecordThatContains('Passing `olas_id_ttr` input to ticket is deprecated.', LogLevel::INFO );
+        $this->hasPhpLogRecordThatContains('Passing `olas_id_tto` input to ticket is deprecated.', LogLevel::INFO );
     }
 
     public function testCreateTicketWithBothOldAndNewInputFields(): void
@@ -336,6 +340,9 @@ class OLATest extends DbTestCase
         // assert
         $fetched_olas = array_column($ticket->getOlasData(), 'olas_id');
         $this->assertEqualsCanonicalizing([$ola_tto_old->getID(), $ola_ttr_old->getID()], $fetched_olas, 'Ola passed with old form params should be used, not the new ones');
+
+        $this->hasPhpLogRecordThatContains('Passing `olas_id_ttr` input to ticket is deprecated.', LogLevel::INFO );
+        $this->hasPhpLogRecordThatContains('Passing `olas_id_tto` input to ticket is deprecated.', LogLevel::INFO );
     }
 
     public function testUpdateTicketWithOldFormParams(): void
@@ -357,6 +364,9 @@ class OLATest extends DbTestCase
         // assert
         $fetched_olas = array_column($ticket->getOlasData(), 'olas_id');
         $this->assertEqualsCanonicalizing([$ola_tto->getID(), $ola_ttr->getID()], $fetched_olas, 'Unexpected OLA associated with ticket using old form params on update');
+
+        $this->hasPhpLogRecordThatContains('Passing `olas_id_ttr` input to ticket is deprecated.', LogLevel::INFO );
+        $this->hasPhpLogRecordThatContains('Passing `olas_id_tto` input to ticket is deprecated.', LogLevel::INFO );
     }
 
     /**

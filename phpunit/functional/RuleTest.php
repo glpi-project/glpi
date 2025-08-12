@@ -1068,8 +1068,8 @@ class RuleTest extends DbTestCase
         $ticket = $this->createTicket();
         assert($ticket->fields['priority'] !== $new_priority);
 
-        $builder = new \RuleBuilder('Change priority on update', \RuleTicket::class);
-        $builder->addCriteria('entities_id', \Rule::PATTERN_IS, $user_entity);
+        $builder = new \RuleBuilder('Change priority on update', RuleTicket::class);
+        $builder->addCriteria('entities_id', Rule::PATTERN_IS, $user_entity);
         $builder->addAction('assign', 'priority', $new_priority);
         $this->createRule($builder);
 
@@ -1093,8 +1093,8 @@ class RuleTest extends DbTestCase
         $initial_priority = $ticket->fields['priority'];
         assert($ticket->fields['priority'] !== $new_priority);
 
-        $builder = new \RuleBuilder('Change priority on update', \RuleTicket::class);
-        $builder->addCriteria('entities_id', \Rule::PATTERN_IS, $another_entity);
+        $builder = new \RuleBuilder('Change priority on update', RuleTicket::class);
+        $builder->addCriteria('entities_id', Rule::PATTERN_IS, $another_entity);
         $builder->addAction('assign', 'priority', $new_priority);
         $this->createRule($builder);
 

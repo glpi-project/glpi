@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\DBAL\QueryExpression;
 use Glpi\PHPUnit\Tests\Glpi\ITILTrait;
 use Glpi\PHPUnit\Tests\Glpi\SLMTrait;
 use MassiveAction;
@@ -2831,7 +2832,7 @@ class SLMTest extends DbTestCase
         // to simplify test, remove the OLA associated on ticket creation (= keep only the ones created on update)
         // clean levels_todo to ensure there is no waste inside.
         global $DB;
-        $DB->delete($level_ticket_class::getTable(), ['1=1']);
+        $DB->delete($level_ticket_class::getTable(), [new QueryExpression('1=1')]);
 
         $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => $new_created_olas_ids]);
 
