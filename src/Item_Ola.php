@@ -104,9 +104,11 @@ class Item_Ola extends CommonDBRelation
      * Compute the OLA data for a ticket
      *
      * @param Ticket $ticket
-     * @param mixed $olas_id must exist in the database
+     * @param int $olas_id must exist in the database
+     * @param array<int> $new_assigned_groups
+     * @param array<int> $new_assigned_users
      */
-    public static function compute(Ticket $ticket, mixed $olas_id): void
+    public static function compute(Ticket $ticket, mixed $olas_id, array $new_assigned_groups = [], array $new_assigned_users = []): void
     {
         $item_ola = new self();
         if (!$item_ola->getFromDBByCrit(['items_id' => $ticket->getID(), 'itemtype' => $ticket::class, 'olas_id' => $olas_id])) {
@@ -173,11 +175,8 @@ class Item_Ola extends CommonDBRelation
             if (
                 (!isset($ticket->input['_rule_process']) || !$ticket->input['_rule_process'])
                 && $item_ola_data['end_time'] == null
-                &&
-                (
-                    $ticket->haveAGroup(CommonITILActor::ASSIGN, [$ola->fields['groups_id']])
-                || self::ticketHasAnAssigneeOfOlaGroup($ticket, $ola)
-                )
+                // current is in the OLA group Or ticket is just assigned to a group associated with the OLA Or
+                && (self::isCurrentUserInOlaGroup((int) $ola->fields['groups_id']) || in_array($ola->fields['groups_id'], $new_assigned_groups) || self::isCurrentUserInNewAssignedUsers($new_assigned_users))
             ) {
                 $item_ola_data['end_time'] = Session::getCurrentTime();
             }
@@ -291,18 +290,6 @@ class Item_Ola extends CommonDBRelation
 
         return  $this->sort($merged_data);
     }
-
-    private static function ticketHasAnAssigneeOfOlaGroup(Ticket $ticket, OLA $ola): bool
-    {
-        $users_ids_of_ticket = array_column($ticket->getUsers(CommonITILActor::ASSIGN), 'users_id');
-        $users_of_dedicated_group = array_column(Group_User::getGroupUsers($ola->fields['groups_id']), 'id');
-
-        return !empty(array_intersect(
-            $users_ids_of_ticket,
-            $users_of_dedicated_group
-        ));
-    }
-
 
     /**
      * @param Ticket $ticket
@@ -442,7 +429,7 @@ class Item_Ola extends CommonDBRelation
                 throw new RuntimeException('Item_Ola cron only works for Ticket at the moment. Implemetation needed.');
             }
             $itil->getFromDB($io['items_id']);
-            static::compute($itil, $io['olas_id']);
+            static::compute($itil, (int) $io['olas_id']);
             $processed++;
         }
 
@@ -469,5 +456,15 @@ class Item_Ola extends CommonDBRelation
         });
 
         return $merged_data;
+    }
+
+    private static function isCurrentUserInOlaGroup(int $groups_id): bool
+    {
+        return in_array($groups_id, $_SESSION["glpigroups"]);
+    }
+
+    private static function isCurrentUserInNewAssignedUsers(array $new_assigned_users): bool
+    {
+        return in_array($_SESSION["glpiID"], $new_assigned_users);
     }
 }
