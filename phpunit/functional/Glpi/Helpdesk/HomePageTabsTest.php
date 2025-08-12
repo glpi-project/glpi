@@ -35,6 +35,7 @@
 namespace test\units\Glpi\Helpdesk;
 
 use DbTestCase;
+use Glpi\Dashboard\Right;
 use Glpi\Helpdesk\HomePageTabs;
 use Profile;
 use Reminder;
@@ -129,6 +130,58 @@ final class HomePageTabsTest extends DbTestCase
             'Ongoing tickets',
             'Solved tickets',
             'RSS feed',
+        ], $tabs);
+    }
+
+    public function testDashboardTabIsNotAddedWhenDashboardAreUnavailable()
+    {
+        // Arrange: create a new user that don't have access to dashboards.
+        $this->createItem(User::class, [
+            'name'          => 'tmp_user',
+            'password'      => 'tmp_user',
+            'password2'     => 'tmp_user',
+            '_profiles_id'  => getItemByTypeName(Profile::class, 'Self-Service', true),
+            '_entities_id'  => $this->getTestRootEntity(true),
+            '_is_recursive' => true,
+        ], ['password', 'password2']);
+
+        // Act: get tabs
+        $this->login('tmp_user');
+        $tabs = $this->getHomeTabsNames();
+
+        // Assert: the reminder and rss tabs should not be displayed as there is no data.
+        $this->assertEquals([
+            'Ongoing tickets',
+            'Solved tickets',
+        ], $tabs);
+    }
+
+    public function testDashboardTabIsAddedWhenDashboardAreAvailable()
+    {
+        // Arrange: add the right to see one dashboard to the self service profile.
+        $this->createItem(User::class, [
+            'name'          => 'tmp_user',
+            'password'      => 'tmp_user',
+            'password2'     => 'tmp_user',
+            '_profiles_id'  => getItemByTypeName(Profile::class, 'Self-Service', true),
+            '_entities_id'  => $this->getTestRootEntity(true),
+            '_is_recursive' => true,
+        ], ['password', 'password2']);
+        $this->createItem(Right::class, [
+            'dashboards_dashboards_id' => 1, // Any dashboard will do
+            'itemtype' => Profile::class,
+            'items_id' => getItemByTypeName(Profile::class, "Self-Service", true)
+        ]);
+
+        // Act: get tabs
+        $this->login('tmp_user');
+        $tabs = $this->getHomeTabsNames();
+
+        // Assert: the reminder and rss tabs should not be displayed as there is no data.
+        $this->assertEquals([
+            'Ongoing tickets',
+            'Solved tickets',
+            'Dashboard',
         ], $tabs);
     }
 

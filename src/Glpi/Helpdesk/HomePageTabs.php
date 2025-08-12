@@ -35,6 +35,8 @@
 namespace Glpi\Helpdesk;
 
 use CommonGLPI;
+use Glpi\Dashboard\Dashboard;
+use Glpi\Dashboard\Grid;
 use Override;
 use Reminder;
 use RSSFeed;
@@ -48,6 +50,7 @@ final class HomePageTabs extends CommonGLPI
     private const SOLVED_TICKETS_TAB = 2;
     private const PUBLIC_REMINDER_TAB = 3;
     private const RSS_FEED_PUBLIC = 4;
+    private const DASHBOARD_TAB = 5;
 
     #[Override]
     public function defineTabs($options = []): array
@@ -100,6 +103,13 @@ final class HomePageTabs extends CommonGLPI
             );
         }
 
+        if (Grid::canViewOneDashboard()) {
+            $tabs[self::DASHBOARD_TAB] = self::createTabEntry(
+                text: __("Dashboard"),
+                icon: Dashboard::getIcon()
+            );
+        }
+
         return $tabs;
     }
 
@@ -142,6 +152,17 @@ final class HomePageTabs extends CommonGLPI
 
             // TODO: improve display
             echo RSSFeed::showListForCentral(false, false);
+            return true;
+        }
+
+        if ($tabnum == self::DASHBOARD_TAB) {
+            if (!Grid::canViewOneDashboard()) {
+                return false;
+            }
+
+            $default   = Grid::getDefaultDashboardForMenu('central');
+            $dashboard = new Grid($default);
+            $dashboard->show();
             return true;
         }
 
