@@ -34,7 +34,7 @@ module.exports = {
     projects: [
         {
             displayName: 'units',
-            testMatch: ['<rootDir>/modules/**/*.test.js'],
+            testMatch: ['<rootDir>/*.test.js', '<rootDir>/modules/**/*.test.js'],
             setupFilesAfterEnv: ["<rootDir>/jest-setup.mjs"],
             setupFiles: ['<rootDir>/bootstrap.mjs'],
             moduleDirectories: ['js/modules', 'tests/js/modules', 'node_modules'],

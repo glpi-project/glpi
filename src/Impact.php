@@ -35,6 +35,8 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
+use Glpi\Search\SearchEngine;
+use Glpi\Search\SearchOption;
 use Glpi\Toolbox\URL;
 
 use function Safe\json_encode;
@@ -1339,11 +1341,23 @@ JS);
         }
 
         // Define basic data of the new node
+        $id_field = [];
+        if (in_array($item::class, SearchEngine::getMetaItemtypeAvailable(Ticket::class), true)) {
+            $search_options = SearchOption::getOptionsForItemtype($item::class);
+            $id_field = array_filter(
+                $search_options,
+                static fn($option, $id) => is_numeric($id)
+                    && $option['field'] === $item::getIndexName()
+                    && $option['table'] === $item::getTable(),
+                ARRAY_FILTER_USE_BOTH
+            );
+        }
         $new_node = [
             'id'          => $key,
             'label'       => $item->getFriendlyName(),
             'image'       => self::getImpactIcon($item::class, $item->getID()),
             'ITILObjects' => $item->getITILTickets(true),
+            'id_option'   => $id_field !== [] ? array_keys($id_field)[0] : null,
         ];
 
         // Only set GOTO link if the user have READ rights
