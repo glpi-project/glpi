@@ -378,6 +378,7 @@ class DocumentTest extends DbTestCase
             [__DIR__ . "/../../public/pics/PICS-AUTHORS.txt", false],
             [__DIR__ . "/../notanimage.jpg", false],
             [__DIR__ . "/../notafile.jpg", false],
+            [__DIR__ . "/../", false],
         ];
     }
 

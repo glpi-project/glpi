@@ -7392,6 +7392,14 @@ HTML,
         );
 
         $document = $this->createTxtDocument();
+        $weblink_document = $this->createItem(
+            \Document::class,
+            [
+                'name' => 'weblink document',
+                'link' => 'https://example.com/document.txt',
+                'entities_id' => $this->getTestRootEntity(true),
+            ],
+        );
 
         $this->createItems(
             \Document_Item::class,
@@ -7425,6 +7433,11 @@ HTML,
                     'documents_id'   => $document->getID(),
                     'items_id'       => $task6->getID(),
                     'itemtype'       => \TicketTask::class,
+                ],
+                [
+                    'documents_id'   => $weblink_document->getID(),
+                    'items_id'       => $ticket->getID(),
+                    'itemtype'       => Ticket::class,
                 ],
             ]
         );
@@ -7588,6 +7601,7 @@ HTML,
             );
             $this->assertEquals($expected_tasks, $tasks_content);
 
+            $has_weblink = false;
             foreach ($timeline as $entry) {
                 if (
                     $entry['type'] === \TicketTask::class &&
@@ -7596,7 +7610,12 @@ HTML,
                 ) {
                     $this->assertArrayHasKey('documents', $entry);
                 }
+                if ($entry['type'] === \Document_Item::class && !empty($entry['item']['link'])) {
+                    $this->assertFalse($entry['_is_image']);
+                    $has_weblink = true;
+                }
             }
+            $this->assertTrue($has_weblink);
         }
     }
 
