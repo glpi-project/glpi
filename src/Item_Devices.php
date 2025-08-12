@@ -215,6 +215,16 @@ class Item_Devices extends CommonDBRelation implements StateInterface
                 $field = $attributs['field'];
             }
 
+            if (
+                !array_key_exists('datatype', $attributs)
+                && $table === static::getTable()
+                && $field === static::getNameField()
+            ) {
+                // if the specific field corresponds to the "name" field of the item,
+                // set its datatype to itemlink to ensure a link to the item is present in default search columns
+                $attributs['datatype'] = 'itemlink';
+            }
+
             $newtab = [
                 'id'                 => $attributs['id'],
                 'table'              => $table,
