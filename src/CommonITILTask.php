@@ -1705,12 +1705,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         $item->getEmpty();
         $this->getEmpty();
 
-        // TODO: it would be better to get options from RichText::getMentionOptions()
-        // here but the only uses of this method are for the massive actions
-        // where we actually have multiples parent objets and thus can't pick a
-        // single one to send to RichText::getMentionOptions().
-        // This mean user mentions won't be available in the massive actions form
-        // until a solution can be found for this.
+        // No mentions for massive actions.
         $mentions_options = [
             'enabled' => false,
         ];
