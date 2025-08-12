@@ -159,7 +159,9 @@
             }
         ) }}
 
-        {{ fields.ajaxField('resaperiodcontent' ~ rand, '') }}
+        {{ fields.ajaxField('resaperiodcontent' ~ rand, '', '', {
+            full_width: true
+        }) }}
 
         {% do call('Ajax::updateItemOnSelectEvent', [
             'dropdown_periodicity_type_' ~ rand,
