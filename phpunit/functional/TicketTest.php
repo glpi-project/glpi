@@ -7398,7 +7398,7 @@ HTML,
                 'name' => 'weblink document',
                 'link' => 'https://example.com/document.txt',
                 'entities_id' => $this->getTestRootEntity(true),
-            ]
+            ],
         );
 
         $this->createItems(
@@ -7438,7 +7438,7 @@ HTML,
                     'documents_id'   => $weblink_document->getID(),
                     'items_id'       => $ticket->getID(),
                     'itemtype'       => Ticket::class,
-                ]
+                ],
             ]
         );
 
