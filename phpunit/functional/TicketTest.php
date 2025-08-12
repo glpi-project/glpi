@@ -8275,4 +8275,18 @@ HTML,
         $this->assertArrayNotHasKey($ticket1_id, $found);
         $this->assertArrayHasKey($ticket2_id, $found);
     }
+
+    public function testSelfServiceFormRendering(): void
+    {
+        // Act: render the the helpdesk form
+        $this->login('post-only', 'postonly');
+        $ticket = new Ticket();
+        ob_start();
+        $ticket->showFormHelpdesk(0);
+        $content = ob_get_clean();
+
+        // We don't assert anything, we just want the error/warning detection to
+        // trigger in case of issues.
+        $this->assertNotEmpty($content);
+    }
 }
