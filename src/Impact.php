@@ -395,11 +395,11 @@ JS);
         echo '</div>';
 
         // Settings dialog
-        $setting_dialog = "";
+        $setting_dialog = "''";
         if ($can_update && $impact_context) {
             $rand = mt_rand();
 
-            $setting_dialog .= '<form id="list_depth_form" action="' . htmlescape($CFG_GLPI['root_doc']) . '/front/impactitem.form.php" method="POST">';
+            $setting_dialog = '<form id="list_depth_form" action="' . htmlescape($CFG_GLPI['root_doc']) . '/front/impactitem.form.php" method="POST">';
             $setting_dialog .= '<table class="tab_cadre_fixe">';
             $setting_dialog .= '<tr>';
             $setting_dialog .= '<td><label for="impact_max_depth_' . $rand . '">' . __s("Max depth") . '</label></td>';
@@ -776,8 +776,8 @@ JS);
         echo '<div class="impact-header">';
         echo "<h2>" . __s("Impact analysis") . "</h2>";
         echo "<div id='switchview'>";
-        echo "<a id='sviewlist' href='#list'><i class='pointer ti ti-list' title='" . __s('View as list') . "'></i></a>";
-        echo "<a id='sviewgraph' href='#graph'><i class='pointer ti ti-hierarchy-2' title='" . __s('View graphical representation') . "'></i></a>";
+        echo "<a id='sviewlist' href='#list' title='" . __s('View as list') . "'><i class='pointer ti ti-list'></i></a>";
+        echo "<a id='sviewgraph' href='#graph' title='" . __s('View graphical representation') . "'><i class='pointer ti ti-hierarchy-2'></i></a>";
         echo "</div>";
         echo "</div>";
 
