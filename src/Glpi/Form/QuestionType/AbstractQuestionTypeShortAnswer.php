@@ -36,6 +36,7 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\FormTranslation;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use Glpi\ItemTranslation\ItemTranslation;
@@ -137,7 +138,7 @@ TWIG;
     ): string {
         $default_value = $question->fields['default_value'] ?? '';
         if ($this instanceof TranslationAwareQuestionType) {
-            $default_value = ItemTranslation::translate(
+            $default_value = FormTranslation::translate(
                 $question,
                 Question::TRANSLATION_KEY_DEFAULT_VALUE,
                 1

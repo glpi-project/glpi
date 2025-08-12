@@ -39,6 +39,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionHandler\RichTextConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
+use Glpi\Form\FormTranslation;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use Glpi\ItemTranslation\Context\TranslationHandler;
@@ -143,7 +144,7 @@ TWIG;
     public function renderEndUserTemplate(Question $question): string
     {
         // TODO: handle required
-        $translated_default_value = ItemTranslation::translate(
+        $translated_default_value = FormTranslation::translate(
             $question,
             Question::TRANSLATION_KEY_DEFAULT_VALUE,
             1
