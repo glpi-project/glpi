@@ -106,8 +106,7 @@ class Calendar_Holiday extends CommonDBRelation
 
         if ($canedit) {
             TemplateRenderer::getInstance()->display('pages/setup/calendar_holiday.html.twig', [
-                'item' => new self(),
-                'calendars_id' => $ID,
+                'calendar' => $calendar,
                 'used' => $used,
                 'params' => [
                     'canedit' => true,
