@@ -1275,6 +1275,7 @@ class CommonDBTM extends CommonGLPI
      * @param array   $input   the _POST vars returned by the item form when press add
      * @param array   $options with the insert options
      *   - unicity_message : do not display message if item it a duplicate (default is yes)
+     *   - disable_infocom_creation: do not automatically create infocom (default is false)
      * @param boolean $history do history log ? (true by default)
      *
      * @return false|integer the new ID of the added item (or false if fail)
@@ -1399,7 +1400,8 @@ class CommonDBTM extends CommonGLPI
 
                     // Auto create infocoms
                     if (
-                        isset($CFG_GLPI["auto_create_infocoms"]) && $CFG_GLPI["auto_create_infocoms"]
+                        ($options['disable_infocom_creation'] ?? false) !== true
+                        && isset($CFG_GLPI["auto_create_infocoms"]) && $CFG_GLPI["auto_create_infocoms"]
                         && (!isset($input['clone']) || !$input['clone'])
                         && Infocom::canApplyOn($this)
                     ) {
