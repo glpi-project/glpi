@@ -170,7 +170,7 @@ final class HomePageTabsTest extends DbTestCase
         $this->createItem(Right::class, [
             'dashboards_dashboards_id' => 1, // Any dashboard will do
             'itemtype' => Profile::class,
-            'items_id' => getItemByTypeName(Profile::class, "Self-Service", true)
+            'items_id' => getItemByTypeName(Profile::class, "Self-Service", true),
         ]);
 
         // Act: get tabs
