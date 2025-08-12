@@ -144,6 +144,11 @@ class ItemVirtualMachine extends CommonDBChild
      **/
     public function showForm($ID, array $options = [])
     {
+        if (isset($options['parent'])) {
+            $options['itemtype'] = $options['parent']::class;
+            $options['items_id'] = $options['parent']->getID();
+        }
+
         if ($ID > 0) {
             $asset = getItemForItemtype($this->fields['itemtype']);
             $this->check($ID, READ);
@@ -275,70 +280,69 @@ class ItemVirtualMachine extends CommonDBChild
                 'ORDER'  => 'name',
             ]
         );
-        $has_vm = !empty($virtualmachines);
 
-        TemplateRenderer::getInstance()->display('components/form/item_virtualmachine.html.twig', [
-            'asset'                     => $asset,
-            'ID'                        => $ID,
-            'itemtype'                  => $itemtype,
-            'canedit'                   => $canedit,
-            'vmformurl'                 => ItemVirtualMachine::getFormURL() . "?itemtype=$itemtype&items_id=$ID",
-            'has_vm'                    => $has_vm,
+        TemplateRenderer::getInstance()->display('components/form/viewsubitem.html.twig', [
+            'type' => 'ItemVirtualMachine',
+            'parenttype' => $itemtype,
+            'items_id' => $asset::getForeignKeyField(),
+            'id' => $ID,
+            'cancreate' => $canedit,
+            'add_new_label' => __('Add a virtual machine'),
+            'ajax_form_submit' => true,
+            'reload_tab' => true,
         ]);
 
-        if ($has_vm) {
-            $entries = [];
-            foreach ($virtualmachines as $virtualmachine) {
-                $vm = new self();
-                if (!$vm->getFromDB($virtualmachine['id'])) {
-                    continue;
-                }
-
-                $type = VirtualMachineType::getById($virtualmachine['virtualmachinetypes_id']);
-                $system = VirtualMachineSystem::getById($virtualmachine['virtualmachinesystems_id']);
-                $state = VirtualMachineState::getById($virtualmachine['virtualmachinestates_id']);
-
-                $entries[] = [
-                    'name'                      => $vm->getLink(),
-                    'comment'                   => $virtualmachine['comment'],
-                    'dynamic'                   => $virtualmachine['is_dynamic'] ? __('Yes') : __('No'),
-                    'virtualmachinesystems_id'  => $system ? $system->getLink() : NOT_AVAILABLE,
-                    'virtualmachinestates_id'   => $state ? $state->getLink() : NOT_AVAILABLE,
-                    'uuid'                      => $virtualmachine['uuid'],
-                    'vcpu'                      => $virtualmachine['vcpu'],
-                    'ram'                       => $virtualmachine['ram'],
-                    'asset'                     => $type ? $type->getLink() : NOT_AVAILABLE,
-                ];
+        $entries = [];
+        foreach ($virtualmachines as $virtualmachine) {
+            $vm = new self();
+            if (!$vm->getFromDB($virtualmachine['id'])) {
+                continue;
             }
 
-            TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
-                'is_tab' => true,
-                'nofilter' => true,
-                'nosort' => true,
-                'columns' => [
-                    'name' => __('Name'),
-                    'comment' => _n('Comment', 'Comments', 1),
-                    'dynamic' => __('Automatic inventory'),
-                    'virtualmachinesystems_id' => VirtualMachineSystem::getTypeName(1),
-                    'virtualmachinestates_id' => _n('State', 'States', 1),
-                    'uuid' => __('UUID'),
-                    'vcpu' => __('Processors number'),
-                    'ram' => sprintf(__('%1$s (%2$s)'), _n('Memory', 'Memories', 1), __('Mio')),
-                    'asset' => __('Machine'),
-                ],
-                'formatters' => [
-                    'name' => 'raw_html',
-                    'virtualmachinesystems_id' => 'raw_html',
-                    'virtualmachinestates_id' => 'raw_html',
-                    'vcpu' => 'integer',
-                    'ram' => 'integer',
-                    'asset' => 'raw_html',
-                ],
-                'entries' => $entries,
-                'total_number' => count($entries),
-                'filtered_number' => count($entries),
-            ]);
+            $type = VirtualMachineType::getById($virtualmachine['virtualmachinetypes_id']);
+            $system = VirtualMachineSystem::getById($virtualmachine['virtualmachinesystems_id']);
+            $state = VirtualMachineState::getById($virtualmachine['virtualmachinestates_id']);
+
+            $entries[] = [
+                'name'                      => $vm->getLink(),
+                'comment'                   => $virtualmachine['comment'],
+                'dynamic'                   => $virtualmachine['is_dynamic'] ? __('Yes') : __('No'),
+                'virtualmachinesystems_id'  => $system ? $system->getLink() : NOT_AVAILABLE,
+                'virtualmachinestates_id'   => $state ? $state->getLink() : NOT_AVAILABLE,
+                'uuid'                      => $virtualmachine['uuid'],
+                'vcpu'                      => $virtualmachine['vcpu'],
+                'ram'                       => $virtualmachine['ram'],
+                'asset'                     => $type ? $type->getLink() : NOT_AVAILABLE,
+            ];
         }
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => [
+                'name' => __('Name'),
+                'comment' => _n('Comment', 'Comments', 1),
+                'dynamic' => __('Automatic inventory'),
+                'virtualmachinesystems_id' => VirtualMachineSystem::getTypeName(1),
+                'virtualmachinestates_id' => _n('State', 'States', 1),
+                'uuid' => __('UUID'),
+                'vcpu' => __('Processors number'),
+                'ram' => sprintf(__('%1$s (%2$s)'), _n('Memory', 'Memories', 1), __('Mio')),
+                'asset' => __('Machine'),
+            ],
+            'formatters' => [
+                'name' => 'raw_html',
+                'virtualmachinesystems_id' => 'raw_html',
+                'virtualmachinestates_id' => 'raw_html',
+                'vcpu' => 'integer',
+                'ram' => 'integer',
+                'asset' => 'raw_html',
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+        ]);
     }
 
 
