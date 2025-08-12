@@ -1966,29 +1966,33 @@ TWIG, $twig_params);
         if ($item instanceof self) {
             $ong = [];
             if ($item->showInheritedTab()) {
-                //TRANS: %s is the entity name
-                $ong[1] = sprintf(
-                    __('Rules applied: %s'),
-                    Dropdown::getDropdownName(
-                        'glpi_entities',
-                        $_SESSION['glpiactive_entity']
+                $ong[1] = self::createTabEntry(
+                    sprintf(
+                        // TRANS: %s is the entity name
+                        __('Rules applied: %s'),
+                        Dropdown::getDropdownName(
+                            'glpi_entities',
+                            $_SESSION['glpiactive_entity']
+                        )
                     )
                 );
             }
             $title = $item->getMainTabLabel();
             if ($item->isRuleRecursive()) {
-                //TRANS: %s is the entity name
-                $title = sprintf(
-                    __('Local rules: %s'),
-                    Dropdown::getDropdownName(
-                        'glpi_entities',
-                        $_SESSION['glpiactive_entity']
+                $title = self::createTabEntry(
+                    sprintf(
+                        // TRANS: %s is the entity name
+                        __('Local rules: %s'),
+                        Dropdown::getDropdownName(
+                            'glpi_entities',
+                            $_SESSION['glpiactive_entity']
+                        )
                     )
                 );
             }
             $ong[2] = $title;
             if ($item->showChildrensTab()) {
-                $ong[3] = __('Rules applicable in the sub-entities');
+                $ong[3] = self::createTabEntry(__('Rules applicable in the sub-entities'));
             }
             return $ong;
         }

@@ -189,7 +189,7 @@ class Planning extends CommonGLPI
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item::class === self::class) {
-            $tabs[1] = self::getTypeName();
+            $tabs[1] = self::createTabEntry(self::getTypeName());
 
             return $tabs;
         }

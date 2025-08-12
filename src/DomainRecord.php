@@ -66,10 +66,11 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item::class === Domain::class) {
+            $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
-                return self::createTabEntry(_n('Record', 'Records', Session::getPluralNumber()), self::countForDomain($item), $item::class);
+                $nb =  self::countForDomain($item);
             }
-            return _n('Record', 'Records', Session::getPluralNumber());
+            return self::createTabEntry(_n('Record', 'Records', Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }

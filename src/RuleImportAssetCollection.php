@@ -69,7 +69,7 @@ class RuleImportAssetCollection extends RuleCollection
                             $ong[$type] = $type::getTypeName();
                         }
                     }
-                    $ong['_global'] = __('Global');
+                    $ong['_global'] = self::createTabEntry(__('Global'));
                     return $ong;
             }
         }

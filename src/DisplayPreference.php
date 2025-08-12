@@ -644,9 +644,9 @@ class DisplayPreference extends CommonDBTM
                 $global_only = $forced_tab === 'DisplayPreference$1' && !$allow_tab_switch;
                 $personal_only = $forced_tab === 'DisplayPreference$2' && !$allow_tab_switch;
                 $ong = [];
-                $ong[1] = $personal_only ? null : __('Global View');
+                $ong[1] = $personal_only ? null : self::createTabEntry(__('Global View'));
                 if (Session::haveRight(self::$rightname, self::PERSONAL)) {
-                    $ong[2] = $global_only ? null : __('Personal View');
+                    $ong[2] = $global_only ? null : self::createTabEntry(__('Personal View'));
                 }
 
                 $itemtype = $_GET["itemtype"] ?? null;
@@ -654,7 +654,7 @@ class DisplayPreference extends CommonDBTM
                     is_a($itemtype, CommonDBTM::class, true)
                     && $itemtype::supportHelpdeskDisplayPreferences()
                 ) {
-                    $ong[3] = __('Helpdesk View');
+                    $ong[3] = self::createTabEntry(__('Helpdesk View'));
                 }
 
                 return $ong;
