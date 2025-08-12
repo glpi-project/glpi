@@ -40,10 +40,7 @@ Cypress.Commands.add('createFormWithAPI', (
     });
 });
 
-Cypress.Commands.add('visitFormTab', {prevSubject: true}, (
-    form_id,
-    tab_name
-) => {
+Cypress.Commands.add('visitFormTab', (form_id, tab_name) => {
     const fully_qualified_tabs = new Map([
         ['Form', 'Glpi\\Form\\Form\\Form$main'],
         ['Policies', 'Glpi\\Form\\AccessControl\\FormAccessControl$1'],

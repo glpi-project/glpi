@@ -30,17 +30,64 @@
  * ---------------------------------------------------------------------
  */
 
+let form_id = null;
+let form_id_2 = null;
+let default_section_id = null;
+let default_section_uuid = null;
 let questions = null;
+const question_map = new Map();
 let comments = null;
 let sections = null;
 
-function createForm() {
-    cy.login();
-    cy.createFormWithAPI().as('form_id').visitFormTab('Form');
-    cy.then(() => {
+function createForms() {
+    cy.createFormWithAPI().then((id) => {
+        form_id = id;
         questions = [];
         comments = [];
         sections = ["First section"];
+        cy.visitFormTab(form_id, 'Form');
+        cy.get('[data-glpi-form-editor-section-id]').first().then($section => {
+            default_section_id = $section.data('glpi-form-editor-section-id');
+            default_section_uuid = $section.data('glpi-form-editor-section-uuid');
+            ['My first question', 'My second question', 'My third question'].forEach((name) => {
+                cy.createWithAPI('Glpi\\Form\\Question', {
+                    'forms_sections_id': default_section_id,
+                    'forms_sections_uuid': default_section_uuid,
+                    'name': name,
+                    'type': 'Glpi\\Form\\QuestionType\\QuestionTypeShortText'
+                }).then((id) => {
+                    if (form_id === form_id) {
+                        // Only record the questions for the main test form
+                        question_map.set(name, id);
+                        questions.push(name);
+                    }
+                });
+            });
+        });
+    });
+    cy.createFormWithAPI().then(id => form_id_2 = id);
+}
+
+function createForm() {
+    cy.login();
+    cy.createFormWithAPI().then(id => cy.visitFormTab(id, 'Form'));
+}
+
+function resetFormConditions() {
+    cy.updateWithAPI("Glpi\\Form\\Form", form_id, {
+        submit_button_visibility_strategy: '',
+        submit_button_conditions: '[]'
+    });
+}
+
+function resetQuestionConditions() {
+    question_map.forEach((id) => {
+        cy.updateWithAPI("Glpi\\Form\\Question", id, {
+            visibility_strategy: '',
+            conditions: '[]',
+            validation_strategy: '',
+            validation_conditions: '[]',
+        });
     });
 }
 
@@ -224,11 +271,11 @@ function fillCondition(index, logic_operator, question_name, value_operator_name
     cy.waitForNetworkIdle(150);
 
     if (value_type === "string"){
-        cy.get('@condition').findByRole('textbox', {'name': 'Value'}).type(value);
+        cy.get('@condition').findByRole('textbox', {'name': 'Value'}).invoke('val', value);
     } else if (value_type === "number") {
-        cy.get('@condition').findByRole('spinbutton', {'name': 'Value'}).type(value);
+        cy.get('@condition').findByRole('spinbutton', {'name': 'Value'}).invoke('val', value);
     } else if (value_type === "date") {
-        cy.get('@condition').findByLabelText('Value').type(value);
+        cy.get('@condition').findByLabelText('Value').invoke('val', value);
     } else if (value_type === "dropdown") {
         cy.get('@condition').getDropdownByLabelText('Value').selectDropdownValue(value);
     } else if (value_type === "dropdown_multiple") {
@@ -315,14 +362,22 @@ function saveDestination() {
 }
 
 describe ('Conditions', () => {
+    before(() => {
+        cy.login();
+        createForms();
+    });
+
     beforeEach(() => {
         cy.login();
     });
 
+    afterEach(() => {
+        resetFormConditions();
+        resetQuestionConditions();
+    });
+
     it('can set the conditional visibility of a form submit button', () => {
-        createForm();
-        addQuestion('My first question');
-        saveAndReload();
+        cy.visitFormTab(form_id, 'Form');
 
         getSubmitButtonContainer().within(() => {
             openConditionEditor();
@@ -349,9 +404,7 @@ describe ('Conditions', () => {
     });
 
     it('displays the correct dynamic label for submit button visibility strategy', () => {
-        createForm();
-        addQuestion('My first question');
-        saveAndReload();
+        cy.visitFormTab(form_id, 'Form');
 
         // Test that the initial label is "Always visible"
         getSubmitButtonContainer().within(() => {
@@ -385,9 +438,7 @@ describe ('Conditions', () => {
     });
 
     it('can set the conditional visibility of a question', () => {
-        createForm();
-        addQuestion('My first question');
-        saveAndReload();
+        cy.visitFormTab(form_id, 'Form');
 
         // Select 'Visible if...' (editor should be displayed)
         getAndFocusQuestion('My first question').within(() => {
@@ -448,11 +499,7 @@ describe ('Conditions', () => {
     });
 
     it('can use the editor to add or delete conditions on a question', () => {
-        createForm();
-        addQuestion('My first question');
-        addQuestion('My second question');
-        addQuestion('My third question');
-        saveAndReload();
+        cy.visitFormTab(form_id, 'Form');
 
         getAndFocusQuestion('My third question').within(() => {
             initVisibilityConfiguration();
@@ -505,10 +552,10 @@ describe ('Conditions', () => {
     it('can use the editor to add or delete conditions (unsaved form)', () => {
         // Repeat the same process as the previous test but skip the saveAndReload
         // step to see how GLPI's handle conditions on unsaved questions.
-        createForm();
-        addQuestion('My first question');
-        addQuestion('My second question');
-        addQuestion('My third question');
+        cy.visitFormTab(form_id_2, 'Form');
+        addQuestion('My first question', form_id_2);
+        addQuestion('My second question', form_id_2);
+        addQuestion('My third question', form_id_2);
 
         getAndFocusQuestion('My third question').within(() => {
             initVisibilityConfiguration();
@@ -669,14 +716,9 @@ describe ('Conditions', () => {
     });
 
     it('can use the editor to add or delete conditions on a destination', () => {
-        // Create the test form
-        createForm();
-        addQuestion('My first question');
-        addQuestion('My second question');
-        saveAndReload();
+        cy.visitFormTab(form_id, 'Destinations');
 
         // Add a few conditions to the default destination
-        goToDestinationTab();
         openConditionEditor();
         setConditionStrategy('Created if...');
         fillCondition(0, null, 'My second question', 'Is not equal to', 'I love GLPI');

@@ -47,8 +47,6 @@ Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
 
         // Parse page
         const csrf = $html.find('input[name=_glpi_csrf_token]').val();
-        const username_input = $html.find('#login_name').prop('name');
-        const password_input = $html.find('#login_password').prop('name');
 
         // Send login request
         cy.request({
@@ -56,8 +54,8 @@ Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
             url: '/front/login.php',
             form: true,
             body: {
-                [username_input]: username,
-                [password_input]: password,
+                login_name: username,
+                login_password: password,
                 _glpi_csrf_token: csrf,
             }
         });

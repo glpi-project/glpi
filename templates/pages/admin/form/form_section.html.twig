@@ -51,6 +51,8 @@
 <section
     data-glpi-form-editor-section
     data-glpi-form-editor-condition-type="{{ enum('Glpi\\Form\\Condition\\Type').SECTION.value }}"
+    {{ section is not null ? 'data-glpi-form-editor-section-id=' ~ section.getID() : '' }}
+    {{ section is not null ? 'data-glpi-form-editor-section-uuid=' ~ section.fields['uuid'] : '' }}
     class="mt-4"
     aria-label="{{ __("Form section") }}"
 >
