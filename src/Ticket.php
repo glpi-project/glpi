@@ -1251,6 +1251,16 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     {
         global $CFG_GLPI;
 
+        // $new_assigned_groups & $new_assigned_users are used to recompute OLA
+        $new_assigned_groups = $this->input['_groups_id_assign'] ?? [];
+        if (!is_array($new_assigned_groups)) {
+            $new_assigned_groups = [$new_assigned_groups];
+        }
+        $new_assigned_users = $this->input['_users_id_assign'] ?? [];
+        if (!is_array($new_assigned_users)) {
+            $new_assigned_users = [$new_assigned_users];
+        }
+
         parent::post_updateItem($history);
 
         // Put same status on duplicated tickets when solving or closing (autoclose on solve)
@@ -1284,7 +1294,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
         $this->updateOlaAssociations(false);
         if (!isset($this->input['_auto_update'])) {
-            $this->recomputeOlas();
+            $this->recomputeOlas($new_assigned_groups, $new_assigned_users);
         }
 
         if (count($this->updates)) {
@@ -1830,7 +1840,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @since 0.83.3 new proto
      *
-     * @param $ID                           ID of the ticket
+     * @param $ID                   int ticket id
      * @param $no_stat_computation  boolean do not cumpute take into account stat (false by default)
      * @param $users_id_lastupdater integer to force last_update id (default 0 = not used)
      **/
@@ -1843,6 +1853,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 && !$this->isAlreadyTakenIntoAccount()
                 && ($this->canTakeIntoAccount() || isCommandLine())
             ) {
+                $this->recomputeOlas();
                 return $this->update(
                     [
                         'id'                         => $ID,
@@ -1854,6 +1865,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             }
 
             parent::updateDateMod($ID, $no_stat_computation, $users_id_lastupdater);
+            $this->recomputeOlas();
         }
     }
 
@@ -6395,13 +6407,13 @@ JAVASCRIPT;
     /**
      * Update Ola data + Manage OLA level
      */
-    private function recomputeOlas(): void
+    private function recomputeOlas(array $new_assigned_groups = [], array $new_assigned_users = []): void
     {
         // recompute all OLA for this ticket
         OLA::deleteLevelsToDo($this); // todo levels are rebuild in Item_Ola::compute()
         $olas = $this->getOlasData();
         foreach ($olas as $ola) {
-            Item_Ola::compute($this, $ola['olas_id']);
+            Item_Ola::compute($this, (int) $ola['olas_id'], $new_assigned_groups, $new_assigned_users);
         }
     }
 
