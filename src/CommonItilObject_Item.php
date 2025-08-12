@@ -638,10 +638,10 @@ TWIG, $twig_params);
 
         if ($item::class === static::$itemtype_1) {
             if (
-                !$item instanceof CommonItilObject_Item
+                !$item instanceof CommonITILObject
                 && !$item instanceof TicketRecurrent
             ) {
-                throw new LogicException("Item must be CommonItilObject_Item or TicketRecurrent");
+                throw new LogicException("Item must be CommonItilObject or TicketRecurrent");
             }
             static::showForObject($item);
         } else {
