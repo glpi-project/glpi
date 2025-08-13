@@ -70,6 +70,7 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
         post_getFromDB as post_getFromDBFromAssignableItem;
         post_addItem as post_addItemFromAssignableItem;
         post_updateItem as post_updateItemFromAssignableItem;
+        canView as canViewFromAssignableItem;
     }
     use Clonable;
     use \Glpi\Features\State;
@@ -89,6 +90,14 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
         foreach (static::getDefinition()->getEnabledCapacities() as $capacity) {
             $capacity->onObjectInstanciation($this, static::getDefinition()->getCapacityConfiguration($capacity::class));
         }
+    }
+
+    public static function canView(): bool
+    {
+        if (!static::canViewFromAssignableItem()) {
+            return false;
+        }
+        return (bool) static::getDefinition()->fields['is_active'];
     }
 
     /**

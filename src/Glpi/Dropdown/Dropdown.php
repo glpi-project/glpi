@@ -53,6 +53,14 @@ abstract class Dropdown extends CommonTreeDropdown
      */
     protected static string $definition_system_name;
 
+    public static function canView(): bool
+    {
+        if (!parent::canView()) {
+            return false;
+        }
+        return (bool) static::getDefinition()->fields['is_active'];
+    }
+
     /**
      * Get the dropdown definition related to concrete class.
      *
