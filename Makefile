@@ -80,6 +80,14 @@ cc: c=cache:clear ## Clear the cache
 cc: console
 .PHONY: cc
 
+licence-headers-check: ## Verify that the licence headers is present all files
+	@$(PHP) vendor/bin/licence-headers-check
+.PHONY: licence-headers-check
+
+licence-headers-fix: ## Add the missing licence headers in all files
+	@$(PHP) vendor/bin/licence-headers-check --fix
+.PHONY: licence-headers-fix
+
 ## —— Database —————————————————————————————————————————————————————————————————
 db-install: ## Install local development's database
 	@$(CONSOLE) database:install \
