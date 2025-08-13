@@ -181,7 +181,6 @@ final class UrgencyField extends AbstractConfigField implements DestinationField
      */
     private function getUrgencyLevels(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Get the urgency levels

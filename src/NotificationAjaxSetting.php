@@ -57,7 +57,6 @@ class NotificationAjaxSetting extends NotificationSetting
 
     public function showFormConfig()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($CFG_GLPI['notifications_ajax']) {

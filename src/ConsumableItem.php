@@ -156,7 +156,6 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
 
     public function rawSearchOptions()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $tab = parent::rawSearchOptions();
@@ -332,10 +331,6 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
      **/
     public static function cronConsumable(?CronTask $task = null)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $cron_status = 1;

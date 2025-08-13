@@ -48,9 +48,7 @@ function update930to931()
      */
     global $migration;
 
-    $current_config   = Config::getConfigurationValues('core');
     $updateresult     = true;
-    $ADDTODISPLAYPREF = [];
 
     $migration->setVersion('9.3.1');
 

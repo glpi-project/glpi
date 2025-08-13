@@ -110,7 +110,6 @@ final class TargetsMigrationTest extends DbTestCase
 
     public static function setUpBeforeClass(): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         parent::setUpBeforeClass();
@@ -123,7 +122,6 @@ final class TargetsMigrationTest extends DbTestCase
 
     public static function tearDownAfterClass(): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $tables = $DB->listTables('glpi\_plugin\_formcreator\_%');
@@ -349,9 +347,6 @@ final class TargetsMigrationTest extends DbTestCase
     #[DataProvider('provideFormMigrationWithTargets')]
     public function testFormMigrationWithTargets($form_name, $expected_destinations): void
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         $migration = new FormMigration($DB, FormAccessControlManager::getInstance());

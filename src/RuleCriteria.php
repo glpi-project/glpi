@@ -86,13 +86,6 @@ class RuleCriteria extends CommonDBChild
         }
     }
 
-    /**
-     * Get title used in rule
-     *
-     * @param integer $nb for singular or plural (default 0)
-     *
-     * @return string Title of the rule
-     **/
     public static function getTypeName($nb = 0)
     {
         return _n('Criterion', 'Criteria', $nb);
@@ -318,7 +311,6 @@ class RuleCriteria extends CommonDBChild
      **/
     public function getRuleCriterias($rules_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $rules_list = [];
@@ -599,10 +591,6 @@ class RuleCriteria extends CommonDBChild
             Rule::REGEX_NOT_MATCH           => __('regular expression does not match'),
             Rule::PATTERN_EXISTS            => __('exists'),
             Rule::PATTERN_DOES_NOT_EXISTS   => __('does not exist'),
-            Rule::PATTERN_DATE_IS_BEFORE    => __('before'),
-            Rule::PATTERN_DATE_IS_AFTER     => __('after'),
-            Rule::PATTERN_DATE_IS_EQUAL     => __('is'),
-            Rule::PATTERN_DATE_IS_NOT_EQUAL => __('is not'),
         ];
 
         if (in_array($criterion, ['ip', 'subnet'])) {
@@ -618,7 +606,6 @@ class RuleCriteria extends CommonDBChild
             $criteria[$key] = $value;
         }
 
-        /// Add Under criteria if tree dropdown table used
         if ($item = getItemForItemtype($itemtype)) {
             $crit = $item->getCriteria($criterion);
 
@@ -632,6 +619,12 @@ class RuleCriteria extends CommonDBChild
                     $criteria[Rule::PATTERN_UNDER]     = __('under');
                     $criteria[Rule::PATTERN_NOT_UNDER] = __('not under');
                 }
+            } elseif (isset($crit['type']) && in_array($crit['type'], ['date', 'datetime'])) {
+                $criteria[Rule::PATTERN_DATE_IS_BEFORE]    = __('before');
+                $criteria[Rule::PATTERN_DATE_IS_AFTER]     = __('after');
+                $criteria[Rule::PATTERN_DATE_IS_EQUAL]     = __('is');
+                $criteria[Rule::PATTERN_DATE_IS_NOT_EQUAL] = __('is not');
+                unset($criteria[Rule::PATTERN_IS], $criteria[Rule::PATTERN_IS_NOT]);
             }
         }
 

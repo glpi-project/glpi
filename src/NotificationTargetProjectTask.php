@@ -119,7 +119,6 @@ class NotificationTargetProjectTask extends NotificationTarget
      **/
     public function addTeamUsers()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -151,7 +150,6 @@ class NotificationTargetProjectTask extends NotificationTarget
      **/
     public function addTeamGroups($manager)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -177,7 +175,6 @@ class NotificationTargetProjectTask extends NotificationTarget
      **/
     public function addProjectTeamGroups($manager)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -202,10 +199,6 @@ class NotificationTargetProjectTask extends NotificationTarget
      **/
     public function addTeamContacts()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $iterator = $DB->request([
@@ -237,10 +230,6 @@ class NotificationTargetProjectTask extends NotificationTarget
      **/
     public function addTeamSuppliers()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $iterator = $DB->request([
@@ -267,10 +256,6 @@ class NotificationTargetProjectTask extends NotificationTarget
 
     public function addDataForTemplate($event, $options = [])
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         //----------- Reservation infos -------------- //

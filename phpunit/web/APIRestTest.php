@@ -3483,4 +3483,24 @@ class APIRestTest extends TestCase
         $this->assertTrue($entity_obj->getFromDB($entity_2_id));
         $this->assertEquals('Multi-update entity 2', $entity_obj->fields['comment']);
     }
+
+    public function testSystemSQLCriteria()
+    {
+        $headers = ['Session-Token' => $this->session_token];
+        $data = json_decode($this->query('Glpi\\CustomAsset\\Test01Asset', [
+            'headers' => $headers,
+        ], no_decode: true));
+        $this->assertCount(2, $data);
+        $names = array_column($data, 'name');
+        $this->assertContains('TestA', $names);
+        $this->assertContains('TestB', $names);
+
+        $data = json_decode($this->query('Glpi\\CustomAsset\\Test02Asset', [
+            'headers' => $headers,
+        ], no_decode: true));
+        $this->assertCount(2, $data);
+        $names = array_column($data, 'name');
+        $this->assertContains('Test02 A', $names);
+        $this->assertContains('Test02 B', $names);
+    }
 }

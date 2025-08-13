@@ -47,7 +47,6 @@ final class FormActorsDropdown extends AbstractRightsDropdown
     #[Override]
     protected static function getAjaxUrl(): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         return $CFG_GLPI['root_doc'] . "/Form/Question/ActorsDropdown";

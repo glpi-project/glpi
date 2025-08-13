@@ -88,10 +88,6 @@ class ProjectTeam extends CommonDBRelation
         return $forbidden;
     }
 
-
-    /**
-     * @see CommonGLPI::getTabNameForItem()
-     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
@@ -129,7 +125,6 @@ class ProjectTeam extends CommonDBRelation
      */
     public static function expandTeamData(array $team)
     {
-        /** @var DBmysql $DB */
         global $DB;
         $subqueries = [];
 
@@ -227,7 +222,6 @@ class ProjectTeam extends CommonDBRelation
      */
     public static function getTeamFor($projects_id, bool $expand = false)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $team = [];

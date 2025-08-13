@@ -66,10 +66,6 @@ class Report extends CommonGLPI
 
     public static function getReports(): array
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var array $PLUGIN_HOOKS
-         */
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
         // Report generation
@@ -198,10 +194,6 @@ TWIG, $twig_params);
      */
     private static function getAssetCounts(): array
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $items = $CFG_GLPI["asset_types"];
@@ -253,7 +245,6 @@ TWIG, $twig_params);
      */
     private static function getOSInstallCounts(): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = [];
@@ -291,10 +282,6 @@ TWIG, $twig_params);
 
     private static function getAssetTypeCounts(): array
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $items = $CFG_GLPI["asset_types"];
@@ -476,12 +463,16 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
 
     public static function showNetworkReportCriteria(bool $embeded): void
     {
-        TemplateRenderer::getInstance()->display('pages/tools/report/network_criteria.html.twig', ['embeded' => $embeded]);
+        TemplateRenderer::getInstance()->display(
+            'pages/tools/report/network_criteria.html.twig',
+            [
+                'embeded' => $embeded,
+            ]
+        );
     }
 
     private static function getNetworkCommonCriteria(): array
     {
-        /** @var DBmysql $DB */
         global $DB;
         // This SQL request matches the NetworkPort, then its NetworkName and IPAddreses. It also
         //      match opposite NetworkPort, then its NetworkName and IPAddresses.
@@ -679,7 +670,6 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
      */
     private static function getNetworkReport(string $by_itemtype, int $by_items_id): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $title = sprintf(match ($by_itemtype) {
@@ -903,10 +893,6 @@ TWIG, $twig_params);
      */
     private static function getYearlyAssetsReport(array $itemtypes, array $years): array
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         // Filter the itemtypes to only keep the ones that are valid
@@ -1157,10 +1143,6 @@ TWIG, $twig_params);
      */
     private static function getContractAssetsReport(array $itemtypes, array $years): array
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         // Filter the itemtypes to only keep the ones that are valid
@@ -1461,9 +1443,6 @@ TWIG, $twig_params);
      */
     private static function getInfocomReport(?string $begin, ?string $end, bool $is_assets = true): array
     {
-        /**
-         * @var array $CFG_GLPI
-         */
         global $CFG_GLPI;
 
         [$begin, $end] = self::handleInfocomDates($begin, $end);

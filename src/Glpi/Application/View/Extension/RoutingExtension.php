@@ -121,7 +121,6 @@ class RoutingExtension extends AbstractExtension
             }
         }
 
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $prefix = $CFG_GLPI['url_base'];

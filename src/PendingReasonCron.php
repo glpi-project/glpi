@@ -64,7 +64,6 @@ class PendingReasonCron extends CommonDBTM
      */
     public static function cronPendingreason_autobump_autosolve(CronTask $task)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $config = Config::getConfigurationValues('core', ['system_user']);
@@ -190,14 +189,6 @@ class PendingReasonCron extends CommonDBTM
         return 1;
     }
 
-    /**
-     * Return the localized name of the current Type
-     * Should be overloaded in each new class
-     *
-     * @param integer $nb Number of items
-     *
-     * @return string
-     **/
     public static function getTypeName($nb = 0)
     {
         return __('Automatic followups / resolution');

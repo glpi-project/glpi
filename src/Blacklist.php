@@ -78,10 +78,6 @@ class Blacklist extends CommonDropdown
         return static::canUpdate();
     }
 
-
-    /**
-     * @since 0.85
-     */
     public static function canPurge(): bool
     {
         return static::canUpdate();
@@ -266,7 +262,6 @@ class Blacklist extends CommonDropdown
 
     private function loadBlacklists()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request(['FROM' => self::getTable()]);

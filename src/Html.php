@@ -54,7 +54,6 @@ use Glpi\System\Log\LogViewer;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\Toolbox\URL;
 use Glpi\UI\ThemeManager;
-use Psr\SimpleCache\CacheInterface;
 use Safe\DateTime;
 use ScssPhp\ScssPhp\Compiler;
 use Symfony\Component\HttpFoundation\Request;
@@ -149,8 +148,8 @@ class Html
         if (!isset($_SESSION["glpidate_format"])) {
             $_SESSION["glpidate_format"] = 0;
         }
-        if (!$format) {
-            $format = $_SESSION["glpidate_format"];
+        if ($format === null) {
+            $format = (int) $_SESSION["glpidate_format"];
         }
 
         try {
@@ -274,7 +273,6 @@ class Html
      **/
     public static function formatNumber($number, $edit = false, $forcedecimal = -1)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Php 5.3 : number_format() expects parameter 1 to be double,
@@ -596,7 +594,6 @@ class Html
      */
     public static function getBackUrl()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $referer_url  = self::getRefererUrl();
@@ -1032,9 +1029,6 @@ TWIG,
         bool $allow_insecured_iframe = false,
         bool $display = true
     ) {
-        /**
-         * @var array $CFG_GLPI
-         */
         global $CFG_GLPI;
 
         // complete title with id if exist
@@ -1250,7 +1244,6 @@ TWIG,
      **/
     public static function getMenuInfos()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $can_read_dashboard      = Session::haveRight('dashboard', READ);
@@ -1359,7 +1352,6 @@ TWIG,
      */
     public static function generateMenuSession($force = false)
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
         $menu = [];
 
@@ -1473,7 +1465,6 @@ TWIG,
      */
     public static function generateHelpMenu()
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $menu = [
@@ -1626,9 +1617,7 @@ TWIG,
         bool $add_id = true
     ) {
         /**
-         * @var array $CFG_GLPI
          * @var bool $HEADER_LOADED
-         * @var DBmysql $DB
          */
         global $CFG_GLPI, $HEADER_LOADED, $DB;
 
@@ -1689,7 +1678,6 @@ TWIG,
     public static function footer()
     {
         /**
-         * @var array $CFG_GLPI
          * @var bool $FOOTER_LOADED
          */
         global $CFG_GLPI, $FOOTER_LOADED;
@@ -1835,7 +1823,6 @@ TWIG,
         bool $add_id = true
     ) {
         /**
-         * @var array $CFG_GLPI
          * @var bool $HEADER_LOADED
          */
         global $CFG_GLPI, $HEADER_LOADED;
@@ -1876,7 +1863,6 @@ TWIG,
      */
     private static function getPageHeaderTplVars(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $founded_new_version = null;
@@ -2185,7 +2171,6 @@ TWIG,
      **/
     public static function getCheckbox(array $options)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $params                    = [];
@@ -2355,7 +2340,6 @@ TWIG,
      **/
     public static function getOpenMassiveActionsForm($name = '')
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (empty($name)) {
@@ -2404,7 +2388,6 @@ TWIG,
      **/
     public static function showMassiveActions($options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         /// TODO : permit to pass several itemtypes to show possible actions of all types : need to clean visibility management after
@@ -2586,7 +2569,6 @@ TWIG,
      **/
     public static function showDateField($name, $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $p = [
@@ -2763,7 +2745,6 @@ JS;
      **/
     public static function showDateTimeField($name, $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $p = [
@@ -2902,7 +2883,6 @@ JS;
      **/
     public static function showGenericDateTimeSearch($element, $value = '', $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $p = [
@@ -3330,7 +3310,6 @@ JS;
      */
     public static function showToolTip($content, $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $param = [
@@ -3493,10 +3472,6 @@ JS;
         bool $statusbar = true,
         string $content_style = ''
     ) {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $language = $_SESSION['glpilanguage'];
@@ -3796,7 +3771,6 @@ JAVASCRIPT
         string $preset_target,
         ?string $link_id = null
     ) {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $url = "/front/contenttemplates/documentation.php?preset=$preset_target";
@@ -4026,7 +4000,6 @@ JAVASCRIPT
         $item_type_output_param = 0,
         $additional_info = ''
     ) {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $list_limit = $_SESSION['glpilist_limit'];
@@ -4420,7 +4393,6 @@ JAVASCRIPT
      **/
     public static function jsAdaptDropdown($id, $params = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $width = '';
@@ -4478,7 +4450,6 @@ JS;
      **/
     public static function jsAjaxDropdown($name, $field_id, $url, $params = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $default_options = [
@@ -4509,7 +4480,6 @@ JS;
         $multiple = $params['multiple'];
         $templateResult = $params['templateResult'];
         $templateSelection = $params['templateSelection'];
-        $container_css_class = $params['container_css_class'];
         $aria_label = $params['aria_label'];
         unset($params["on_change"], $params["width"]);
 
@@ -5160,7 +5130,6 @@ HTML;
      **/
     public static function file($options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $randupload = $options['rand'] ?? mt_rand();
@@ -5427,7 +5396,6 @@ HTML;
      */
     private static function uploadedFiles($options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         //default options
@@ -5782,7 +5750,6 @@ JS);
      **/
     public static function getImageHtmlTagForDocument($document_id, $width, $height, $addLink = true, $more_link = "")
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $document = new Document();
@@ -5857,10 +5824,6 @@ JS);
      */
     public static function requireJs($name)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var array $PLUGIN_HOOKS
-         */
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
         if (isset($_SESSION['glpi_js_toload'][$name])) {
@@ -5980,10 +5943,6 @@ JS);
      */
     private static function loadJavascript()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var array $PLUGIN_HOOKS
-         */
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
         //load on demand scripts
@@ -6082,7 +6041,6 @@ JS);
      */
     public static function getCoreVariablesForJavascript(bool $full = false)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // prevent leak of data for non logged sessions
@@ -6144,7 +6102,6 @@ JS);
      */
     final public static function getPrefixedUrl(string $url): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $prefix = $CFG_GLPI['root_doc'];
         if (!str_starts_with($url, '/')) {
@@ -6310,10 +6267,6 @@ JS);
      */
     public static function compileScss($args)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var CacheInterface $GLPI_CACHE
-         */
         global $CFG_GLPI, $GLPI_CACHE;
 
         if (empty($args['file'])) {

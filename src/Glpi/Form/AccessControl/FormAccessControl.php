@@ -45,7 +45,6 @@ use Glpi\Form\Export\Serializer\DynamicExportData;
 use Glpi\Form\Form;
 use InvalidArgumentException;
 use Override;
-use Psr\Log\LoggerInterface;
 use ReflectionClass;
 
 use function Safe\json_decode;
@@ -207,7 +206,6 @@ final class FormAccessControl extends CommonDBChild
                 $strategy = $this->createStrategy($strategy_class);
                 $input['_config'] = $strategy->getConfig();
             } catch (InvalidArgumentException $e) {
-                /** @var LoggerInterface $PHPLOGGER */
                 global $PHPLOGGER;
                 $PHPLOGGER->error(
                     "Invalid access control strategy: $strategy_class",

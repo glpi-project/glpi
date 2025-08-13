@@ -183,7 +183,6 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             $this->configureDatabase($input, $output, false);
 
             // Ensure global $DB is updated (used by GLPIKey)
-            /** @var DBmysql $DB */
             global $DB;
             $DB = $this->db;
 
@@ -195,7 +194,6 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             $db_pass     = $input->getOption('db-password');
         } else {
             // Ask to confirm installation based on existing configuration.
-            /** @var DBmysql $DB */
             global $DB;
 
             // $DB->dbhost can be array when using round robin feature

@@ -55,7 +55,6 @@ class GenericAssetInventoryTest extends InventoryTestCase
      */
     private function inventorySmartphone(array $capacities = []): Asset
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         //create Smartphone generic asset
@@ -767,7 +766,6 @@ class GenericAssetInventoryTest extends InventoryTestCase
      */
     private function inventoryServer(array $capacities = []): Asset
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         //create Server generic asset
@@ -880,7 +878,6 @@ class GenericAssetInventoryTest extends InventoryTestCase
      */
     public function testImportServer(): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         //create Server generic asset
@@ -996,7 +993,6 @@ class GenericAssetInventoryTest extends InventoryTestCase
 
     public function testImportServerAllCapacities(): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         //create Server generic asset
@@ -1996,7 +1992,6 @@ class GenericAssetInventoryTest extends InventoryTestCase
 
     public function testRulesCreation(): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $rules = new \RuleImportAsset();

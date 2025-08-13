@@ -430,7 +430,6 @@ TWIG, $twig_params);
      */
     public function showRulesList()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $fk      = static::getFieldNames($this->fields['type'])[1];
@@ -526,7 +525,6 @@ TWIG, $twig_params);
      */
     public function getDataForTicket($tickets_id, $type)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         [, $field] = static::getFieldNames($type);
@@ -977,7 +975,6 @@ TWIG, $twig_params);
      **/
     public static function deleteLevelsToDo(Ticket $ticket)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ticketfield = static::$prefix . "levels_id_ttr";
@@ -998,7 +995,6 @@ TWIG, $twig_params);
 
     public function cleanDBonPurge()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Clean levels

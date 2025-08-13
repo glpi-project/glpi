@@ -82,11 +82,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
         ];
     }
 
-    /**
-     * Name of the type
-     *
-     * @param $nb : number of item in the type (default 0)
-     **/
     public static function getTypeName($nb = 0)
     {
         return _n('Project', 'Projects', $nb);
@@ -263,7 +258,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
 
     public function post_updateItem($history = true)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->input = $this->addFiles($this->input, [
@@ -295,7 +289,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
 
     public function post_addItem()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->input = $this->addFiles($this->input, [
@@ -351,7 +344,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
 
     public function pre_deleteItem()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI['use_notifications']) {
@@ -499,7 +491,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
 
     public function rawSearchOptions()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $tab = [];
@@ -1169,7 +1160,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
      */
     public static function getDatatableEntries(array $data): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $item = new static();
@@ -1313,7 +1303,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
      **/
     public function showChildren()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ID   = $this->getID();
@@ -1505,7 +1494,6 @@ TWIG, $twig_params);
 
     public static function getAllForKanban($active = true, $current_id = -1)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $items = [
@@ -1574,7 +1562,6 @@ TWIG, $twig_params);
         $result = [];
 
         if ($column_field === null || $column_field === 'projectstates_id') {
-            /** @var DBmysql $DB */
             global $DB;
 
             $restrict = [];
@@ -1631,9 +1618,6 @@ TWIG, $twig_params);
 
     public static function getDataToDisplayOnKanban($ID, $criteria = [])
     {
-        /**
-         * @var DBmysql $DB
-         */
         global $DB;
 
         $items      = [];
@@ -2232,7 +2216,6 @@ TWIG, $twig_params);
         array $groups_id,
         bool $search_in_team = true
     ): array {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (count($groups_id) === 0) {
@@ -2294,7 +2277,6 @@ TWIG, $twig_params);
         bool $search_in_groups = true,
         bool $search_in_team = true
     ): array {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (count($users_id) === 0) {
@@ -2508,7 +2490,6 @@ TWIG, $twig_params);
      */
     public static function recalculatePercentDone($ID)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $project = new self();

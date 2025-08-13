@@ -576,7 +576,6 @@ class NotificationTargetTest extends DbTestCase
 
     public function testGetTargetsWithExclusions()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $notification_target = new NotificationTarget();
@@ -639,7 +638,6 @@ class NotificationTargetTest extends DbTestCase
 
     public function testDefaultTargets()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $this->login();

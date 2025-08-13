@@ -372,10 +372,6 @@ class Item_Rack extends CommonDBRelation
      */
     public static function showItems(Rack $rack): bool
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $ID = $rack->getID();
@@ -450,7 +446,6 @@ JAVASCRIPT;
      */
     public static function showStats(Rack $rack)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $items = $DB->request([
@@ -533,13 +528,7 @@ JAVASCRIPT;
 
     public function showForm($ID, array $options = [])
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
-
-        $colspan = 4;
 
         echo "<div class='center'>";
 

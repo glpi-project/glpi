@@ -47,10 +47,10 @@
                     <div class="col-auto">
                         {{ render_illustration("browse-kb", 60) }}
                     </div>
-                    <div class="col text-truncate">
-                        <span class="text-body d-block">{{ faq.name }}</span>
-                        <div class="d-block text-secondary text-truncate richtext-strip-margin">
-                            {{ faq.answer|safe_html }}
+                    <div class="col">
+                        <span class="text-body d-block mb-1">{{ faq.name }}</span>
+                        <div class="text-secondary text-truncate richtext-strip-margin">
+                            {{ faq.answer|striptags }}
                         </div>
                     </div>
                 </a>
@@ -81,10 +81,10 @@
                     <div class="col-auto">
                         {{ render_illustration(form.fields.illustration, 60) }}
                     </div>
-                    <div class="col text-truncate">
-                        <span class="text-body d-block"> {{ form.fields.name }} </span>
-                        <div class="d-block text-secondary text-truncate">
-                            {{ form.fields.description }}
+                    <div class="col">
+                        <span class="text-body d-block mb-1"> {{ form.fields.name }} </span>
+                        <div class="text-secondary text-truncate">
+                            {{ form.fields.description|striptags }}
                         </div>
                     </div>
                 </a>

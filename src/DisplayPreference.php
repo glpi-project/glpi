@@ -133,7 +133,6 @@ class DisplayPreference extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -222,7 +221,6 @@ class DisplayPreference extends CommonDBTM
      **/
     public static function getForTypeUser($itemtype, $user_id, string $interface = 'central')
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -259,7 +257,6 @@ class DisplayPreference extends CommonDBTM
      **/
     public function activatePerso(array $input)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!Session::haveRight(self::$rightname, self::PERSONAL)) {
@@ -309,11 +306,10 @@ class DisplayPreference extends CommonDBTM
 
     public function updateOrder(string $itemtype, int $users_id, array $order, string $interface = 'central')
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Fixed columns are not kept in the DB, so we should remove them from the order
-        $fixed_cols = $this->getFixedColumns($itemtype);
+        $fixed_cols = SearchOption::getDefaultToView($itemtype);
         $official_order = array_diff($order, $fixed_cols);
 
         // Remove duplicates (in case of UI bug not preventing them)
@@ -360,7 +356,6 @@ class DisplayPreference extends CommonDBTM
      **/
     public function orderItem(array $input, $action)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Get current item
@@ -432,56 +427,12 @@ class DisplayPreference extends CommonDBTM
     }
 
     /**
-     * Get the fixed columns for a given itemtype
-     * A fixed columns is :
-     * - Always displayed before the normal columns
-     * - Can't be moved
-     * - Must not be shown in the search option dropdown (can't be added to the list)
-     */
-    protected function getFixedColumns(string $itemtype): array
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $fixed_columns = [];
-
-        // Get item for itemtype
-        $item = null;
-        if ($itemtype != AllAssets::getType()) {
-            $item = getItemForItemtype($itemtype);
-        }
-
-        // ID is fixed for CommonITILObjects
-        if ($item instanceof CommonITILObject) {
-            $fixed_columns[] = 2;
-        }
-
-        // Name is always fixed
-        $fixed_columns[] = 1;
-
-        // Entity may be fixed
-        if (
-            Session::isMultiEntitiesMode()
-            && (
-                isset($CFG_GLPI["union_search_type"][$itemtype])
-                || ($item && $item->maybeRecursive())
-                || count($_SESSION["glpiactiveentities"]) > 1
-            )
-        ) {
-            $fixed_columns[] = 80;
-        }
-
-        return $fixed_columns;
-    }
-
-    /**
      * @param string $itemtype The itemtype
      * @param bool $global True if global config, false if personal config
      * @return void|false
      */
     private function showConfigForm(string $itemtype, bool $global, string $interface = 'central')
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (class_exists($itemtype)) {
@@ -512,7 +463,7 @@ class DisplayPreference extends CommonDBTM
         }
 
         // Get fixed columns
-        $fixed_columns = $this->getFixedColumns($itemtype);
+        $fixed_columns = SearchOption::getDefaultToView($itemtype);
         $group  = '';
         $already_added = self::getForTypeUser($itemtype, $IDuser, $interface);
         $available_to_add = [];
@@ -629,7 +580,6 @@ class DisplayPreference extends CommonDBTM
      **/
     public static function showForUser($users_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -665,13 +615,9 @@ class DisplayPreference extends CommonDBTM
         ]);
     }
 
-    /**
-     * For tab management : force isNewItem
-     *
-     * @since 0.83
-     **/
     public function isNewItem()
     {
+        // For tab management : force isNewItem
         return false;
     }
 
@@ -698,9 +644,9 @@ class DisplayPreference extends CommonDBTM
                 $global_only = $forced_tab === 'DisplayPreference$1' && !$allow_tab_switch;
                 $personal_only = $forced_tab === 'DisplayPreference$2' && !$allow_tab_switch;
                 $ong = [];
-                $ong[1] = $personal_only ? null : __('Global View');
+                $ong[1] = $personal_only ? null : self::createTabEntry(__('Global View'));
                 if (Session::haveRight(self::$rightname, self::PERSONAL)) {
-                    $ong[2] = $global_only ? null : __('Personal View');
+                    $ong[2] = $global_only ? null : self::createTabEntry(__('Personal View'));
                 }
 
                 $itemtype = $_GET["itemtype"] ?? null;
@@ -708,7 +654,7 @@ class DisplayPreference extends CommonDBTM
                     is_a($itemtype, CommonDBTM::class, true)
                     && $itemtype::supportHelpdeskDisplayPreferences()
                 ) {
-                    $ong[3] = __('Helpdesk View');
+                    $ong[3] = self::createTabEntry(__('Helpdesk View'));
                 }
 
                 return $ong;
@@ -782,7 +728,6 @@ class DisplayPreference extends CommonDBTM
      */
     public static function resetToDefaultOptions(string $itemtype): bool
     {
-        /** @var DBmysql $DB */
         global $DB;
         $tables = require(GLPI_ROOT . '/install/empty_data.php');
         $prefs = array_filter($tables[self::getTable()], static fn($pref) => $pref['itemtype'] === $itemtype);

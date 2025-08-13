@@ -81,7 +81,6 @@ class DocumentTest extends DbTestCase
 
     public function testGetItemtypesThatCanHave()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $doc = new \Document();
@@ -378,6 +377,7 @@ class DocumentTest extends DbTestCase
             [__DIR__ . "/../../public/pics/PICS-AUTHORS.txt", false],
             [__DIR__ . "/../notanimage.jpg", false],
             [__DIR__ . "/../notafile.jpg", false],
+            [__DIR__ . "/../", false],
         ];
     }
 
@@ -536,7 +536,6 @@ class DocumentTest extends DbTestCase
      */
     public function testCanViewKnowbaseItemFile()
     {
-
         global $CFG_GLPI;
 
         $basicDocument = new \Document();

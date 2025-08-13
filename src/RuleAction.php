@@ -87,13 +87,6 @@ class RuleAction extends CommonDBChild
         }
     }
 
-    /**
-     * Get title used in rule
-     *
-     * @param integer $nb (default 0)
-     *
-     * @return string Title of the rule
-     **/
     public static function getTypeName($nb = 0)
     {
         return _n('Action', 'Actions', $nb);
@@ -302,7 +295,6 @@ class RuleAction extends CommonDBChild
      **/
     public function getRuleActions($ID)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -456,7 +448,6 @@ class RuleAction extends CommonDBChild
      **/
     public function getAlreadyUsedForRuleID($rules_id, $sub_type)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($rule = getItemForItemtype($sub_type)) {

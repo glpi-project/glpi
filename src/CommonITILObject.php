@@ -1683,7 +1683,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public function getActiveOrSolvedLastDaysForItem($itemtype, $items_id, $days)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = [];
@@ -2368,7 +2367,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
     public function pre_updateInDB()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // get again object to reload actors
@@ -2802,7 +2800,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
     public function prepareInputForAdd($input)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $input = $this->handleInputDeprecations($input);
@@ -3179,7 +3176,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     public function post_clone($source, $history)
     {
-        /** @var DBmysql $DB */
         global $DB;
         $update = [];
         if (isset($source->fields['users_id_lastupdater'])) {
@@ -3227,7 +3223,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public static function computePriority($urgency, $impact)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         // Failback to trivial
         return $CFG_GLPI[static::MATRIX_FIELD][$urgency][$impact] ?? (int) round(($urgency + $impact) / 2);
@@ -3250,7 +3245,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public static function dropdownPriority(array $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $p = [
@@ -3444,7 +3438,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public static function dropdownUrgency(array $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (self::class === static::class) {
@@ -3574,7 +3567,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public static function dropdownImpact(array $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $p = [
@@ -4112,7 +4104,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         switch ($ma->getAction()) {
@@ -4591,7 +4582,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public function getSearchOptionsSolution()
     {
-        /** @var DBmysql $DB */
         global $DB;
         $tab = [];
 
@@ -5053,7 +5043,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     public static function generateSLAOLAComputation($type, $table = "TABLE")
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         switch ($type) {
@@ -5228,7 +5217,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $withsupplier = false,
         $inobject = true
     ) {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $types = ['user'  => User::getTypeName(1)];
@@ -5354,7 +5342,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public function updateDateMod($ID, $no_stat_computation = false, $users_id_lastupdater = 0)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($this->getFromDB($ID)) {
@@ -5386,7 +5373,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public function updateActionTime($ID)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $tot       = 0;
@@ -5420,10 +5406,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public static function getAllTypesForHelpdesk()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var array $PLUGIN_HOOKS
-         */
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
         /// TODO ticket_types -> itil_types
@@ -5662,7 +5644,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public function getUsedAuthorBetween($date1 = '', $date2 = '')
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $linktable = $this->userlinkclass::getTable();
@@ -5742,7 +5723,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public function getUsedRecipientBetween($date1 = '', $date2 = '')
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ctable = $this->getTable();
@@ -5809,7 +5789,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public function getUsedGroupBetween($date1 = '', $date2 = '')
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $linktable = $this->grouplinkclass::getTable();
@@ -5882,7 +5861,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public function getUsedUserTitleOrTypeBetween($date1 = '', $date2 = '', $title = true)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $linktable = $this->userlinkclass::getTable();
@@ -5961,7 +5939,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public function getUsedPriorityBetween($date1 = '', $date2 = '')
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ctable = $this->getTable();
@@ -6006,7 +5983,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public function getUsedUrgencyBetween($date1 = '', $date2 = '')
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ctable = $this->getTable();
@@ -6052,7 +6028,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public function getUsedImpactBetween($date1 = '', $date2 = '')
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ctable = $this->getTable();
@@ -6098,7 +6073,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public function getUsedRequestTypeBetween($date1 = '', $date2 = '')
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ctable = $this->getTable();
@@ -6143,7 +6117,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public function getUsedSolutionTypeBetween($date1 = '', $date2 = '')
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ctable = $this->getTable();
@@ -6196,7 +6169,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public function getUsedTechBetween($date1 = '', $date2 = '')
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $linktable = $this->userlinkclass::getTable();
@@ -6270,7 +6242,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public function getUsedTechTaskBetween($date1 = '', $date2 = '')
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $linktable = getTableForItemType(static::getTaskClass());
@@ -6362,7 +6333,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public function getUsedSupplierBetween($date1 = '', $date2 = '')
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $linktable = $this->supplierlinkclass::getTable();
@@ -6431,7 +6401,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public function getUsedAssignGroupBetween($date1 = '', $date2 = '')
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $linktable = $this->grouplinkclass::getTable();
@@ -6506,7 +6475,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     public static function showShort($id, $options = [])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         //Toolbox::deprecated('Use CommonITILObject::getDatatableEntries() instead');
@@ -7166,7 +7134,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 $plan          = $itemtype::getTaskClassInstance();
                 $items         = [];
 
-                /** @var DBmysql $DB */
                 global $DB;
                 $result = $DB->request(
                     [
@@ -7308,7 +7275,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
     public function getTimelineItemtypes(): array
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $obj_type = static::getType();
@@ -7428,7 +7394,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     public function getLegacyTimelineActionsHTML(): string
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $legacy_actions = '';
@@ -7940,7 +7905,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     public function getITILActors()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $users_table = $this->getTable() . '_users';
@@ -8029,7 +7993,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public function numberOfFollowups($with_private = true)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $RESTRICT = [];
@@ -8059,7 +8022,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public function numberOfTasks($with_private = true)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $table = 'glpi_' . strtolower($this->getType()) . 'tasks';
@@ -8143,12 +8105,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         return false;
     }
 
-
-    /**
-     * @see CommonGLPI::getAdditionalMenuLinks()
-     *
-     * @since 9.5.0
-     **/
     public static function getAdditionalMenuLinks()
     {
         $links = [];
@@ -8462,7 +8418,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     public function getAssociatedDocumentsCriteria($bypass_rights = false): array
     {
         $task_class = static::getTaskClass();
-        /** @var DBmysql $DB */
+
         global $DB; // Used to get subquery results - better performance
 
         $or_crits = [
@@ -8621,7 +8577,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
     public function getLinkedItems(): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $assets = $DB->request([
@@ -8786,7 +8741,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     public function handleNewItemNotifications(): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI['use_notifications']) {
@@ -9469,7 +9423,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     protected function setTechAndGroupFromHardware($input, $item)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($item != null) {
@@ -9624,7 +9577,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
     public static function getDataToDisplayOnKanban($ID, $criteria = [])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // List of items to return
@@ -10016,7 +9968,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         $categories = [];
         if ($category_ids !== []) {
-            /** @var DBmysql $DB */
             global $DB;
 
             $cat_table = ITILCategory::getTable();
@@ -10257,7 +10208,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
     public function getTeam(): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $team = [];
@@ -10317,7 +10267,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
     public function getTimelineStats(): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $stats = [
@@ -10484,7 +10433,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     protected function fillInputForBusinessRules(array &$input)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $entities_id = $input['entities_id']
@@ -10580,7 +10528,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public static function cronCreateInquest($task)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $inquest_class = static::getType() . 'Satisfaction';

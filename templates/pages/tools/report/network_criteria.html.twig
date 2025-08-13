@@ -53,7 +53,7 @@
 <form method="get" action="report.networking.php" class="mt-n3">
     <div class="d-flex row">
         {{ fields.dropdownField('Location', 'locations_id', _get['locations_id']|default(0), __('By location'), {
-            entity: session.glpiactive_entity,
+            entity: session('glpiactive_entity'),
             mb: '',
         }) }}
         {{ btn }}
@@ -62,7 +62,7 @@
 <form method="get" action="report.networking.php">
     <div class="d-flex row">
         {{ fields.dropdownField('NetworkEquipment', 'switch', _get['switch']|default(0), __('By hardware'), {
-            entity: session.glpiactive_entity,
+            entity: session('glpiactive_entity'),
             mb: '',
         }) }}
         {{ btn }}
@@ -71,7 +71,7 @@
 <form method="get" action="report.networking.php">
     <div class="d-flex row">
         {{ fields.dropdownField('Glpi\\Socket', 'prise', _get['prise']|default(0), __('By network socket'), {
-            entity: session.glpiactive_entity,
+            entity: session('glpiactive_entity'),
             mb: '',
         }) }}
         {{ btn }}

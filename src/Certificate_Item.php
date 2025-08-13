@@ -72,11 +72,6 @@ class Certificate_Item extends CommonDBRelation
         ]);
     }
 
-    /**
-     * @param CommonGLPI $item
-     * @param int $withtemplate
-     * @return string
-     */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
@@ -107,13 +102,6 @@ class Certificate_Item extends CommonDBRelation
         return '';
     }
 
-
-    /**
-     * @param CommonGLPI $item
-     * @param int $tabnum
-     * @param int $withtemplate
-     * @return bool
-     */
     public static function displayTabContentForItem(
         CommonGLPI $item,
         $tabnum = 1,
@@ -274,8 +262,8 @@ TWIG, $twig_params);
                             'row_class' => $item->isDeleted() ? 'table-danger' : '',
                             'type' => $itemtype_name,
                             'name' => $item->getLink(),
-                            'serial' => $data['serial'],
-                            'otherserial' => $data['otherserial'],
+                            'serial' => $data['serial'] ?? '-',
+                            'otherserial' => $data['otherserial'] ?? '-',
                         ];
 
                         if (Session::isMultiEntitiesMode()) {
@@ -380,7 +368,7 @@ TWIG, $twig_params);
                             <input type="hidden" name="tickets_id" value="{{ item.getID() }}">
                         {% endif %}
                         <input type="hidden" name="entities_id" value="{{ item.getEntityID() }}">
-                        <input type="hidden" name="is_recursive" value="{{ is_recursive }}">
+                        <input type="hidden" name="is_recursive" value="{{ is_recursive ? 1 : 0 }}">
                         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                         <div class="d-flex">
                             {{ fields.dropdownField('Certificate', 'certificates_id', null, '', dropdown_params|merge({

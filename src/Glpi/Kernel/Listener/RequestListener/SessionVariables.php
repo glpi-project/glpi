@@ -37,7 +37,6 @@ namespace Glpi\Kernel\Listener\RequestListener;
 use Glpi\Kernel\KernelListenerTrait;
 use Glpi\Kernel\ListenersPriority;
 use Glpi\Toolbox\URL;
-use Psr\SimpleCache\CacheInterface;
 use Session;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -56,7 +55,6 @@ final class SessionVariables implements EventSubscriberInterface
 
     public function onKernelRequest(RequestEvent $event): void
     {
-        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         if (!$event->isMainRequest()) {

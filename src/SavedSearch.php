@@ -574,7 +574,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      **/
     public function markDefault($ID)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (
@@ -618,7 +617,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      **/
     public function unmarkDefault($ID)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (
@@ -654,7 +652,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      **/
     public function unmarkDefaults(array $ids)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (Session::haveRight('config', UPDATE)) {
@@ -679,7 +676,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      */
     public function getMine(?string $itemtype = null, bool $inverse = false): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $searches = [];
@@ -844,7 +840,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      **/
     public static function getUsedItemtypes()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $types = [];
@@ -869,7 +864,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      **/
     public static function updateExecutionTime($id, $time)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($_SESSION['glpishow_count_on_tabs']) {
@@ -965,7 +959,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      */
     public function setDoCount(array $ids, $do_count)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->update(
@@ -991,7 +984,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      */
     public function setEntityRecur(array $ids, $eid, $recur)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->update(
@@ -1025,10 +1017,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      **/
     public static function croncountAll($task)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $cron_status = 0;
@@ -1110,7 +1098,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      **/
     public function execute($force = false)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (

@@ -87,11 +87,6 @@ class Peripheral extends CommonDBTM implements AssignableItemInterface, DCBreadc
         ];
     }
 
-    /**
-     * Name of the type
-     *
-     * @param $nb : number of item in the type
-     **/
     public static function getTypeName($nb = 0)
     {
         return _n('Peripheral', 'Peripherals', $nb);
@@ -173,7 +168,6 @@ class Peripheral extends CommonDBTM implements AssignableItemInterface, DCBreadc
      **/
     public function getLinkedItems()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

@@ -611,10 +611,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
              && $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID());
     }
 
-
-    /**
-     * @since 0.85
-     **/
     public static function canDelete(): bool
     {
 
@@ -686,7 +682,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
     public function pre_deleteItem()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI['use_notifications']) {
@@ -1355,7 +1350,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
     public function post_updateItem($history = true)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         parent::post_updateItem($history);
@@ -1818,7 +1812,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      **/
     public function countActiveTicketsForItem($itemtype, $items_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -1859,7 +1852,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      */
     public function getActiveTicketsForItem($itemtype, $items_id, $type)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         return $DB->request([
@@ -1905,7 +1897,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      **/
     public function countSolvedTicketsForItemLastDays($itemtype, $items_id, $days)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -2196,7 +2187,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         switch ($ma->getAction()) {
@@ -2424,13 +2414,13 @@ JAVASCRIPT;
                 // Check input
                 $input = $ma->getInput();
                 if (!isset($input['problems_id'])) {
-                    $ma->addMessage(__("Missing input: no Problem selected"));
+                    $ma->addMessage(__s("Missing input: no Problem selected"));
                     return;
                 }
 
                 $problem = new Problem();
                 if (!$problem->getFromDB($input['problems_id'])) {
-                    $ma->addMessage(__("Selected Problem can't be loaded"));
+                    $ma->addMessage(__s("Selected Problem can't be loaded"));
                     return;
                 }
 
@@ -2474,7 +2464,7 @@ JAVASCRIPT;
                 ];
                 $check_mandatory = array_intersect($mandatory_fields, array_keys($input));
                 if (count($check_mandatory) != count($mandatory_fields)) {
-                    $ma->addMessage(__("Missing mandatory field in input"));
+                    $ma->addMessage(__s("Missing mandatory field in input"));
                     return;
                 }
 
@@ -2531,7 +2521,7 @@ JAVASCRIPT;
                 $input = $ma->getInput();
                 $contracts_id = $input['contracts_id'] ?? 0;
                 if (!$contracts_id) {
-                    $ma->addMessage(__("No contract specified"));
+                    $ma->addMessage(__s("No contract specified"));
                     return;
                 }
 
@@ -2570,7 +2560,6 @@ JAVASCRIPT;
 
     public function rawSearchOptions()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $tab = [];
@@ -3396,7 +3385,6 @@ JAVASCRIPT;
      **/
     public static function computeTco(CommonDBTM $item)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $totalcost = 0;
@@ -3436,7 +3424,6 @@ JAVASCRIPT;
 
     public static function getDefaultValues($entity = 0)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (is_numeric(Session::getLoginUserID(false))) {
@@ -3810,7 +3797,6 @@ JAVASCRIPT;
      */
     public static function showCentralList($start, $status = "process", bool $showgrouptickets = true, bool $display = true)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (
@@ -4641,10 +4627,6 @@ JAVASCRIPT;
      **/
     public static function showCentralCount(bool $foruser = false, bool $display = true)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         // show a tab with count of jobs in the central and give link
@@ -4774,7 +4756,6 @@ JAVASCRIPT;
 
     public static function showCentralNewList()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!Session::haveRightsOr(self::$rightname, [self::READALL, self::READNEWTICKET])) {
@@ -5079,7 +5060,6 @@ JAVASCRIPT;
      **/
     public static function cronCloseTicket($task)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ticket = new self();
@@ -5165,10 +5145,6 @@ JAVASCRIPT;
      **/
     public static function cronAlertNotClosed($task)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (!$CFG_GLPI["use_notifications"]) {
@@ -5236,7 +5212,6 @@ JAVASCRIPT;
      **/
     public static function cronPurgeTicket(CronTask $task)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ticket = new self();
@@ -5730,7 +5705,6 @@ JAVASCRIPT;
      */
     public static function merge(int $merge_target_id, array $ticket_ids, array &$status, array $params = [])
     {
-        /** @var DBmysql $DB */
         global $DB;
         $p = [
             'linktypes'          => [],
@@ -6018,9 +5992,6 @@ JAVASCRIPT;
      */
     public static function getMergedTickets(int $id): array
     {
-        /**
-         * @var DBmysql $DB
-         */
         global $DB;
 
         //look for merged tickets
@@ -6236,7 +6207,6 @@ JAVASCRIPT;
 
     public static function rawSearchOptionsToAdd($itemtype)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $options = [];

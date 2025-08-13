@@ -62,7 +62,6 @@ class HasContractsCapacityTest extends DbTestCase
      */
     public function testConfigRegistration(): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Create custom asset definition

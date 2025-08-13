@@ -40,7 +40,6 @@ use Glpi\Console\Traits\PluginMigrationTrait;
 use Glpi\Migration\AbstractPluginMigration;
 use Glpi\Progress\ConsoleProgressIndicator;
 use LogicException;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -77,7 +76,6 @@ abstract class AbstractPluginMigrationCommand extends AbstractCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        /** @var LoggerInterface $PHPLOGGER */
         global $PHPLOGGER;
 
         if (!$output instanceof ConsoleOutputInterface) {

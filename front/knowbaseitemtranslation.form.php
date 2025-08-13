@@ -39,7 +39,6 @@ require_once(__DIR__ . '/_check_webserver_config.php');
  * @since 0.85
  */
 
-/** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
 $translation = new KnowbaseItemTranslation();

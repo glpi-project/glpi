@@ -36,7 +36,6 @@
 namespace Glpi\CalDAV\Traits;
 
 use CommonDBTM;
-use DBmysql;
 use Glpi\CalDAV\Backend\Principal;
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\DBAL\QueryExpression;
@@ -199,10 +198,6 @@ trait CalDAVUriUtilTrait
     protected function getCalendarItemForUid($uid)
     {
 
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $union = new QueryUnion();

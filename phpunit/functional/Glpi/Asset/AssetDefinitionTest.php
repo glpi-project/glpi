@@ -829,7 +829,6 @@ class AssetDefinitionTest extends DbTestCase
 
     public function testSyncExtraProfileFields()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $this->login();

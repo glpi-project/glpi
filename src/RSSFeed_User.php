@@ -56,7 +56,6 @@ class RSSFeed_User extends CommonDBRelation
      **/
     public static function getUsers($rssfeeds_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $users = [];

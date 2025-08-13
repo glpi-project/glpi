@@ -46,7 +46,6 @@ class ImpactRelation extends CommonDBRelation
 
     public function prepareInputForAdd($input)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Check that mandatory values are set
@@ -107,7 +106,6 @@ class ImpactRelation extends CommonDBRelation
      */
     public static function getIDFromInput(array $input)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Check that the link exist

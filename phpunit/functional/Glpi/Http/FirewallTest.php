@@ -454,7 +454,6 @@ class FirewallTest extends \DbTestCase
     #[DataProvider('provideFaqAccessStrategyResults')]
     public function testApplyStrategyFaqAccess(bool $use_public_faq, int $knowbase_rights, ?\Throwable $exception): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->login();

@@ -50,7 +50,6 @@ class Appliance_Item_RelationTest extends DbTestCase
 
     public function testCountForApplianceItem()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $entity_id = \getItemByTypeName(Entity::class, '_test_root_entity', true);

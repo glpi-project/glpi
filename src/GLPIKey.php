@@ -173,7 +173,6 @@ class GLPIKey
      */
     public function generate(bool $update_db = true): bool
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Check ability to create/update key file.
@@ -225,7 +224,6 @@ class GLPIKey
      */
     public function getFields(): array
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $fields = $this->fields;
@@ -245,7 +243,6 @@ class GLPIKey
      */
     public function getConfigs(): array
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $configs = $this->configs;
@@ -285,7 +282,6 @@ class GLPIKey
      */
     protected function migrateFieldsInDb(?string $sodium_key): bool
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $success = true;
@@ -330,7 +326,6 @@ class GLPIKey
      */
     protected function migrateConfigsInDb($sodium_key): bool
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $success = true;

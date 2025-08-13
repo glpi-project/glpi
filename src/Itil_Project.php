@@ -124,10 +124,6 @@ class Itil_Project extends CommonDBRelation
      **/
     public static function showForProject(Project $project): bool
     {
-        /**
-         * @var DBmysql $DB
-         * @var array $CFG_GLPI
-         */
         global $DB, $CFG_GLPI;
 
         $ID = $project->getField('id');
@@ -255,7 +251,6 @@ TWIG, $twig_params);
      **/
     public static function showForItil(CommonITILObject $itil): bool
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $itil->getID();
@@ -264,7 +259,6 @@ TWIG, $twig_params);
         }
 
         $canedit = $itil->canEdit($ID);
-        $rand    = mt_rand();
 
         $selfTable = self::getTable();
         $projectTable = Project::getTable();

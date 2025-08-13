@@ -84,11 +84,6 @@ class Monitor extends CommonDBTM implements AssignableItemInterface, DCBreadcrum
         ];
     }
 
-    /**
-     * Name of the type
-     *
-     * @param $nb  string   number of item in the type
-     **/
     public static function getTypeName($nb = 0)
     {
         return _n('Monitor', 'Monitors', $nb);
@@ -191,7 +186,6 @@ class Monitor extends CommonDBTM implements AssignableItemInterface, DCBreadcrum
      **/
     public function getLinkedItems()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

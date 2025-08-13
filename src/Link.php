@@ -151,7 +151,6 @@ class Link extends CommonDBTM
 
     public function getLinkedItemtypes(): array
     {
-        /** @var DBmysql $DB */
         global $DB;
         return array_column(iterator_to_array($DB->request([
             'SELECT' => ['itemtype'],
@@ -168,10 +167,6 @@ class Link extends CommonDBTM
      */
     private function getTagCompletions(): array
     {
-        /**
-         * @var DBmysql $DB
-         * @var array $CFG_GLPI
-         */
         global $DB, $CFG_GLPI;
 
         static $completions = null;
@@ -292,9 +287,6 @@ class Link extends CommonDBTM
 
     private static function getIPAndMACForItem(CommonDBTM $item, $get_ip = false, $get_mac = false): array
     {
-        /**
-         * @var DBmysql $DB
-         */
         global $DB;
 
         $ipmac = [];
@@ -430,10 +422,6 @@ class Link extends CommonDBTM
      */
     public static function generateLinkContents($link, CommonDBTM $item, bool $safe_url = true, array $custom_vars = [])
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $vars = [
@@ -557,15 +545,17 @@ class Link extends CommonDBTM
             return;
         }
 
-        $buttons_params = [
-            'item' => $item,
-            'add_msg' => _x('button', 'Add'),
-            'configure_msg' => sprintf(__('Configure %s links'), $item::getTypeName(1)),
-            'show_add' => ManualLink::canCreate() && ($restrict_type === null || $restrict_type === ManualLink::class),
-            'show_configure' => self::canUpdate() && ($restrict_type === null || $restrict_type === self::class),
-        ];
-        // language=Twig
-        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+        if ($item->can($item->getID(), UPDATE)) {
+            $buttons_params = [
+                'item' => $item,
+                'add_msg' => _x('button', 'Add'),
+                'configure_msg' => sprintf(__('Configure %s links'), $item::getTypeName(1)),
+                'show_add' => ManualLink::canCreate() && ($restrict_type === null || $restrict_type === ManualLink::class),
+                'show_configure' => self::canUpdate() && ($restrict_type === null || $restrict_type === self::class),
+            ];
+
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div class="text-center my-3">
                     {% if show_add %}
                         <a class="btn btn-primary" href="{{ 'ManualLink'|itemtype_form_path ~ '?itemtype=' ~ item.getType() ~ '&items_id=' ~ item.fields[item.getIndexName()] }}">
@@ -581,6 +571,7 @@ class Link extends CommonDBTM
                     {% endif %}
                 </div>
 TWIG, $buttons_params);
+        }
 
         $entries = [];
 
@@ -661,7 +652,6 @@ TWIG, $buttons_params);
      **/
     public static function getAllLinksFor($item, $params)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $computedlinks = [];
@@ -777,7 +767,6 @@ TWIG, $buttons_params);
 
     public static function getLinksDataForItem(CommonDBTM $item)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $restrict = self::getEntityRestrictForItem($item);
@@ -868,7 +857,6 @@ TWIG, $buttons_params);
 
     public function post_updateItem($history = true)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         parent::post_updateItem($history);

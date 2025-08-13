@@ -225,7 +225,6 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
      */
     private static function getItemsAsVCalendars(array $criteria)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $query = [

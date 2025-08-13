@@ -206,7 +206,6 @@ class CommonDBTMTest extends DbTestCase
     public static function getTableProvider()
     {
         return [
-            [\DBConnection::class, ''], // "static protected $notable = true;" case
             [\Item_Devices::class, ''], // "static protected $notable = true;" case
             [\Config::class, 'glpi_configs'],
             [Computer::class, 'glpi_computers'],
@@ -1039,7 +1038,6 @@ class CommonDBTMTest extends DbTestCase
         $config_name,
         $linked_itemtype = null
     ) {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
@@ -2187,7 +2185,6 @@ class CommonDBTMTest extends DbTestCase
 
     public static function getSpecificMassiveActionsProvider()
     {
-        /** @var \DBmysql $DB */
         global $DB;
         // Test presence of "Add transfer list" action
         foreach (static::getClasses() as $class) {

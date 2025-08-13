@@ -240,7 +240,6 @@ class Profile_User extends CommonDBRelation
      **/
     public static function showForEntity(Entity $entity)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $entity->getField('id');
@@ -432,7 +431,6 @@ TWIG, $avatar_params) . $username;
      **/
     public static function showForProfile(Profile $prof)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ID      = $prof->fields['id'];
@@ -630,7 +628,6 @@ TWIG, $avatar_params) . $username;
      **/
     public static function getUserEntities($user_ID, $is_recursive = true, $default_first = false)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -684,7 +681,6 @@ TWIG, $avatar_params) . $username;
      **/
     public static function getUserEntitiesForRight($user_ID, $rightname, $rights, $is_recursive = true)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $putable = Profile_User::getTable();
@@ -749,7 +745,6 @@ TWIG, $avatar_params) . $username;
      **/
     public static function getUserProfiles($user_ID, $sqlfilter = [])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $profiles = [];
@@ -786,7 +781,6 @@ TWIG, $avatar_params) . $username;
      **/
     public static function getEntitiesForProfileByUser($users_id, $profiles_id, $child = false)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -828,7 +822,6 @@ TWIG, $avatar_params) . $username;
      **/
     public static function getEntitiesForUser($users_id, $child = false)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -880,7 +873,6 @@ TWIG, $avatar_params) . $username;
      **/
     public static function haveUniqueRight($user_ID, $profile_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -1012,7 +1004,6 @@ TWIG, $avatar_params) . $username;
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!$withtemplate) {

@@ -8475,7 +8475,6 @@ JSON;
 
     public function testVPNDownToUpPartial()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $json_str = <<<JSON
@@ -8655,7 +8654,6 @@ JSON;
 
     public function testChangeIP()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $json_str = <<<JSON
@@ -8807,7 +8805,6 @@ JSON;
 
     public function testChangeIPPartial()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $json_str = <<<JSON
@@ -9393,7 +9390,6 @@ JSON;
 
     public function testAdditionalProperty()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $json_str = <<<JSON

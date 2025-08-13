@@ -63,11 +63,6 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
     public const IMPACT_MASK_FIELD    = 'impact_mask';
     public const STATUS_MATRIX_FIELD  = 'problem_status';
 
-    /**
-     * Name of the type
-     *
-     * @param $nb : number of item in the type
-     **/
     public static function getTypeName($nb = 0)
     {
         return _n('Problem', 'Problems', $nb);
@@ -164,7 +159,6 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
 
     public function pre_deleteItem()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI['use_notifications']) {
@@ -289,7 +283,6 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
 
     public function post_updateItem($history = true)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         parent::post_updateItem($history);
@@ -373,7 +366,6 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
 
     public function post_addItem()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         parent::post_addItem();
@@ -594,7 +586,6 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
 
     public static function rawSearchOptionsToAdd(string $itemtype)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $tab = [];
@@ -810,10 +801,6 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
      **/
     public static function showCentralList($start, $status = "process", $showgroupproblems = true)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (!static::canView()) {
@@ -1130,10 +1117,6 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
      **/
     public static function showCentralCount(bool $foruser = false, bool $display = true)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         // show a tab with count of jobs in the central and give link
@@ -1520,7 +1503,6 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
      */
     public function getActiveProblemsForItem($itemtype, $items_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         return $DB->request([

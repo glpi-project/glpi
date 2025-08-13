@@ -110,7 +110,6 @@ class HasImpactCapacity extends AbstractCapacity
 
     public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $CFG_GLPI['impact_asset_types'][$classname] = Toolbox::getPictureUrl(
@@ -132,7 +131,6 @@ class HasImpactCapacity extends AbstractCapacity
 
     public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         unset($CFG_GLPI['impact_asset_types'][$classname]);

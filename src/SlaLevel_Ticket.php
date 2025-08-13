@@ -57,7 +57,6 @@ class SlaLevel_Ticket extends CommonDBTM
      **/
     public function getFromDBForTicket($ID, $slaType)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -102,7 +101,6 @@ class SlaLevel_Ticket extends CommonDBTM
      **/
     public function deleteForTicket($tickets_id, $slaType)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -160,7 +158,6 @@ class SlaLevel_Ticket extends CommonDBTM
      **/
     public static function cronSlaTicket(CronTask $task)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $tot = 0;
@@ -325,7 +322,6 @@ class SlaLevel_Ticket extends CommonDBTM
      */
     public static function replayForTicket($tickets_id, $slaType)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $now = Session::getCurrentTime();

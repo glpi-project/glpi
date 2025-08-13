@@ -151,7 +151,6 @@ class Update
      */
     final public function isUpdatedSchemaConsistent(): bool
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $checker = new DatabaseSchemaIntegrityChecker($DB, false, true, true, true, true, true);
@@ -531,7 +530,6 @@ class Update
      */
     public static function isDbUpToDate(): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!array_key_exists('dbversion', $CFG_GLPI)) {
@@ -558,7 +556,6 @@ class Update
      */
     public static function isUpdateMandatory(): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (GLPI_SKIP_UPDATES) {

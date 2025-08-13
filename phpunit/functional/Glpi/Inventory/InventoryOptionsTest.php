@@ -60,7 +60,6 @@ JSON;
 
     public function testImportComputerNoDevices()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $devices = [
@@ -264,7 +263,6 @@ JSON;
 
     public function testImportVolumes()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $orig_json = json_decode($this->json_computer);
@@ -373,7 +371,6 @@ JSON;
 
     public function testImportNetworkCards()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $orig_json = json_decode($this->json_computer);
@@ -467,7 +464,6 @@ JSON;
 
     public function testImportPeripherals()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $json = json_decode($this->json_computer);
@@ -545,7 +541,6 @@ JSON;
 
     public function testImportMonitors()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $json = json_decode($this->json_computer);
@@ -621,7 +616,6 @@ JSON;
 
     public function testImportPrinters()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $json = json_decode($this->json_computer);
@@ -697,7 +691,6 @@ JSON;
 
     public function testImportSoftware()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $json = json_decode($this->json_computer);
@@ -772,7 +765,6 @@ JSON;
 
     public function testImportAntivirus()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $json = json_decode($this->json_computer);

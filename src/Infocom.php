@@ -77,7 +77,6 @@ class Infocom extends CommonDBChild
      **/
     public static function canApplyOn($item)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // All devices are subjects to infocom !
@@ -107,7 +106,6 @@ class Infocom extends CommonDBChild
      **/
     public static function getItemtypesThatCanHave()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $types = array_merge(
@@ -177,12 +175,6 @@ class Infocom extends CommonDBChild
         return '';
     }
 
-
-    /**
-     * @param $item            CommonGLPI object
-     * @param $tabnum          (default 1)
-     * @param $withtemplate    (default 0)
-     **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
@@ -294,7 +286,6 @@ class Infocom extends CommonDBChild
      */
     public static function getDataForAssetInfocomReport(string $itemtype, string $begin, string $end): ?array
     {
-        /** @var DBmysql $DB */
         global $DB;
         $itemtable = getTableForItemType($itemtype);
         if (!$DB->fieldExists($itemtable, "ticket_tco", false)) {
@@ -366,7 +357,6 @@ class Infocom extends CommonDBChild
      */
     public static function getDataForOtherInfocomReport(string $itemtype, string $begin, string $end): ?array
     {
-        /** @var DBmysql $DB */
         global $DB;
         $itemtable = getTableForItemType($itemtype);
         if ($DB->fieldExists($itemtable, "ticket_tco", false)) {
@@ -653,10 +643,6 @@ class Infocom extends CommonDBChild
      **/
     public static function cronInfocom($task = null)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (!$CFG_GLPI["use_notifications"]) {
@@ -997,10 +983,6 @@ class Infocom extends CommonDBChild
      **/
     public static function showDisplayLink($itemtype, $device_id, bool $display = true)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (
@@ -1271,7 +1253,6 @@ JS;
             $date_i2,
             $date_s2
         );
-        $date_Y2 = date("Y");
 
         switch ($type_amort) {
             case "1":
@@ -2129,7 +2110,6 @@ JS;
      */
     public static function getTypes($where)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $types_iterator = $DB->request([

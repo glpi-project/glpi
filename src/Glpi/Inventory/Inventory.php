@@ -38,7 +38,6 @@ namespace Glpi\Inventory;
 use Agent;
 use CommonDBTM;
 use CronTask;
-use DBmysql;
 use Glpi\Asset\Asset;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Asset\Capacity\IsInventoriableCapacity;
@@ -75,7 +74,6 @@ use Glpi\Inventory\MainAsset\Itemtype;
 use Glpi\Inventory\MainAsset\MainAsset;
 use Lockedfield;
 use Log;
-use Psr\Log\LoggerInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RefusedEquipment;
@@ -206,7 +204,6 @@ class Inventory
         try {
             $this->inventory_tmpfile = tempnam(GLPI_INVENTORY_DIR, $tempnam_ext);
         } catch (FilesystemException $e) {
-            /** @var LoggerInterface $PHPLOGGER */
             global $PHPLOGGER;
             $PHPLOGGER->error($e->getMessage(), ['exception' => $e]);
             $this->inventory_tmpfile = false;
@@ -306,7 +303,6 @@ class Inventory
      */
     public function doInventory($test_rules = false)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         //check
@@ -1020,7 +1016,6 @@ class Inventory
      **/
     public static function cronCleanorphans($task)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $conf = new Conf();
@@ -1075,7 +1070,6 @@ class Inventory
                         $dropfile->getFileName()
                     );
                 } catch (FilesystemException $e) {
-                    /** @var LoggerInterface $PHPLOGGER */
                     global $PHPLOGGER;
                     $PHPLOGGER->error(
                         sprintf('Unable to remove file %1$s', $dropfile->getRealPath()),

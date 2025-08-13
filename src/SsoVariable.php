@@ -59,10 +59,6 @@ class SsoVariable extends CommonDropdown
         return static::canUpdate();
     }
 
-
-    /**
-     * @since 0.85
-     **/
     public static function canPurge(): bool
     {
         return static::canUpdate();

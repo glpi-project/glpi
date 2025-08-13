@@ -163,7 +163,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
         );
 
         // Compute input from fields configuration
-        foreach ($this->getConfigurableFields() as $field) {
+        foreach ($fields_to_apply as $field) {
             $input = $field->applyConfiguratedValueToInputUsingAnswers(
                 $field->getConfig($form, $config),
                 $input,

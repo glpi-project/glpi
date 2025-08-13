@@ -37,7 +37,6 @@
 namespace Glpi\Inventory\Asset;
 
 use Computer;
-use DBmysql;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
 use Monitor as GMonitor;
@@ -102,7 +101,6 @@ class Monitor extends InventoryAsset
      */
     protected function getExisting(): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $db_existing = [];
@@ -236,7 +234,6 @@ class Monitor extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         return $conf->import_monitor == 1 && in_array($this->item::class, $CFG_GLPI['peripheralhost_types']);
     }

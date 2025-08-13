@@ -92,7 +92,6 @@ class TicketParameters extends CommonITILObjectParameters
 
     protected function defineValues(CommonDBTM $ticket): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $fields = $ticket->fields;

@@ -85,9 +85,9 @@ class KnowbaseItemTranslation extends CommonDBChild
         if (!$withtemplate) {
             switch ($item::class) {
                 case self::class:
-                    $ong[1] = self::getTypeName(1);
+                    $ong[1] = self::createTabEntry(self::getTypeName(1));
                     if ($item->canUpdateItem()) {
-                        $ong[3] = __('Edit');
+                        $ong[3] = self::createTabEntry(__('Edit'), icon: 'ti ti-edit');
                     }
                     return $ong;
             }
@@ -104,11 +104,6 @@ class KnowbaseItemTranslation extends CommonDBChild
         return '';
     }
 
-    /**
-     * @param CommonGLPI $item
-     * @param integer $tabnum (default 1)
-     * @param integer $withtemplate (default 0)
-     */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item::class === self::class) {
@@ -325,7 +320,6 @@ TWIG, $twig_params);
      **/
     public static function getAlreadyTranslatedForItem(KnowbaseItem $item): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $tab = [];

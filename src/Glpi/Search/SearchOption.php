@@ -40,6 +40,7 @@ use Appliance;
 use ArrayAccess;
 use Change;
 use CommonDBTM;
+use CommonITILObject;
 use CommonTreeDropdown;
 use Contract;
 use Document;
@@ -148,7 +149,6 @@ final class SearchOption implements ArrayAccess
      **/
     public static function getOptionsForItemtype($itemtype, $withplugins = true): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $search = [];
@@ -642,7 +642,6 @@ final class SearchOption implements ArrayAccess
      **/
     public static function getCleanedOptions($itemtype, $action = READ, $withplugins = true): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $options = self::getOptionsForItemtype($itemtype, $withplugins);
@@ -707,9 +706,8 @@ final class SearchOption implements ArrayAccess
      * @param array $params
      * @return array
      */
-    public static function getDefaultToView(string $itemtype, array $params): array
+    public static function getDefaultToView(string $itemtype, array $params = []): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $toview = [];
@@ -730,6 +728,11 @@ final class SearchOption implements ArrayAccess
         } else {
             $id_field = [];
             $name_field = [];
+        }
+
+        // ID is fixed for CommonITILObjects
+        if ($item instanceof CommonITILObject && count($id_field) > 0) {
+            $toview[] = array_keys($id_field)[0];
         }
 
         if (count($name_field) > 0) {
@@ -771,7 +774,7 @@ final class SearchOption implements ArrayAccess
             }
         }
 
-        return $toview;
+        return array_unique($toview);
     }
 
     /**

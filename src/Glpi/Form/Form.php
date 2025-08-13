@@ -40,7 +40,6 @@ use Change_Item;
 use CommonDBTM;
 use CommonGLPI;
 use CronTask;
-use DBmysql;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QuerySubQuery;
@@ -359,7 +358,6 @@ final class Form extends CommonDBTM implements
     #[Override]
     public function post_updateItem($history = true)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $DB->beginTransaction();
@@ -391,6 +389,7 @@ final class Form extends CommonDBTM implements
                 FormAccessControl::class,
                 FormTile::class,
                 FormTranslation::class,
+                Item_Ticket::class,
             ]
         );
     }
@@ -411,7 +410,6 @@ final class Form extends CommonDBTM implements
     #[Override]
     public static function showMassiveActionsSubForm(MassiveAction $ma): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $ids = array_values($ma->getItems()[Form::class]);

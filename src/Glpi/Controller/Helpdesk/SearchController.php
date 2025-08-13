@@ -34,7 +34,6 @@
 
 namespace Glpi\Controller\Helpdesk;
 
-use DBmysql;
 use Glpi\Controller\AbstractController;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\ServiceCatalog\ItemRequest;
@@ -64,7 +63,6 @@ final class SearchController extends AbstractController
     )]
     public function __invoke(Request $request): Response
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Read parameters

@@ -35,7 +35,6 @@
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
 use Computer;
-use DBmysql;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsField;
@@ -471,7 +470,6 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
 
     public function testConvertSpecificAssetFieldConfigFromFormCreator(): void
     {
-        /** @var DBmysql $DB */
         global $DB;
         $computer_id = (new Computer())->add([
             'name'        => 'Test Computer for associated items',

@@ -89,9 +89,6 @@ class NetworkPort_Vlan extends CommonDBRelation
      */
     public static function showForNetworkPort(NetworkPort $port)
     {
-        /**
-         * @var DBmysql $DB
-         */
         global $DB;
 
         $ID = $port->getID();
@@ -100,7 +97,6 @@ class NetworkPort_Vlan extends CommonDBRelation
         }
 
         $canedit = $port->canEdit($ID);
-        $rand    = mt_rand();
 
         $iterator = $DB->request([
             'SELECT'    => [
@@ -201,9 +197,6 @@ TWIG, $twig_params);
 
     public static function showForVlan(Vlan $vlan)
     {
-        /**
-         * @var DBmysql $DB
-         */
         global $DB;
 
         $ID = $vlan->getID();
@@ -275,7 +268,6 @@ TWIG, $twig_params);
      */
     public static function getVlansForNetworkPort($portID)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $vlans = [];

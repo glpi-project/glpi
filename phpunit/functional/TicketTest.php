@@ -7392,6 +7392,14 @@ HTML,
         );
 
         $document = $this->createTxtDocument();
+        $weblink_document = $this->createItem(
+            \Document::class,
+            [
+                'name' => 'weblink document',
+                'link' => 'https://example.com/document.txt',
+                'entities_id' => $this->getTestRootEntity(true),
+            ],
+        );
 
         $this->createItems(
             \Document_Item::class,
@@ -7425,6 +7433,11 @@ HTML,
                     'documents_id'   => $document->getID(),
                     'items_id'       => $task6->getID(),
                     'itemtype'       => \TicketTask::class,
+                ],
+                [
+                    'documents_id'   => $weblink_document->getID(),
+                    'items_id'       => $ticket->getID(),
+                    'itemtype'       => Ticket::class,
                 ],
             ]
         );
@@ -7588,6 +7601,7 @@ HTML,
             );
             $this->assertEquals($expected_tasks, $tasks_content);
 
+            $has_weblink = false;
             foreach ($timeline as $entry) {
                 if (
                     $entry['type'] === \TicketTask::class &&
@@ -7596,7 +7610,12 @@ HTML,
                 ) {
                     $this->assertArrayHasKey('documents', $entry);
                 }
+                if ($entry['type'] === \Document_Item::class && !empty($entry['item']['link'])) {
+                    $this->assertFalse($entry['_is_image']);
+                    $has_weblink = true;
+                }
             }
+            $this->assertTrue($has_weblink);
         }
     }
 
@@ -9108,5 +9127,71 @@ HTML,
         $this->assertStringContainsString(__FUNCTION__ . ' 2', $result);
         $this->assertStringContainsString(__FUNCTION__ . ' 1', $result);
         $this->assertStringNotContainsString(__FUNCTION__ . ' old', $result);
+    }
+
+    public function testShowListForItem(): void
+    {
+        $this->login('glpi', 'glpi');
+
+        $user = getItemByTypeName(User::class, 'glpi');
+        $normal = getItemByTypeName(User::class, 'normal');
+
+        // Ticket not visible for normal user
+        $ticket1_id = $this->createItem(
+            Ticket::class,
+            [
+                'name'        => 'Test Ticket 1',
+                'content'     => 'Test Ticket 1 Content',
+                'entities_id' => 0,
+                '_actors'     => [
+                    'requester' => [
+                        ['itemtype' => 'User', 'items_id' => $user->getID()],
+                    ],
+                ],
+            ],
+        )->getID();
+
+        // Ticket visible for normal user
+        $ticket2_id = $this->createItem(
+            Ticket::class,
+            [
+                'name'        => 'Test Ticket 2',
+                'content'     => 'Test Ticket 2 Content',
+                'entities_id' => 0,
+                '_actors'     => [
+                    'requester' => [
+                        ['itemtype' => 'User', 'items_id' => $user->getID()],
+                    ],
+                    'observer' => [
+                        ['itemtype' => 'User', 'items_id' => $normal->getID()],
+                    ],
+                ],
+            ],
+        )->getID();
+
+        $this->login('normal', 'normal');
+
+        // Remove permission to see all tickets
+        $_SESSION['glpiactiveprofile']['ticket'] = Ticket::READMY;
+
+        ob_start();
+        Ticket::showListForItem($user);
+        $out = ob_get_clean();
+
+        $crawler = new Crawler($out);
+        $rows = $crawler->filter('table.table.table-hover > tbody > tr');
+
+        $found = [];
+        foreach ($rows as $row) {
+            $cells = (new Crawler($row))->filter('td');
+            if (!empty($cells->getNode(0))) {
+                $ticket_id = trim($cells->getNode(0)->textContent);
+                if (!empty($ticket_id)) {
+                    $found[$ticket_id] = true;
+                }
+            }
+        }
+        $this->assertArrayNotHasKey($ticket1_id, $found);
+        $this->assertArrayHasKey($ticket2_id, $found);
     }
 }

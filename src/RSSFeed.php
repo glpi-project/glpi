@@ -35,7 +35,6 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\RichText\RichText;
 use Glpi\Toolbox\URL;
-use Psr\SimpleCache\CacheInterface;
 use Safe\Exceptions\UrlException;
 use SimplePie\SimplePie;
 
@@ -99,19 +98,11 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
                   && $this->haveVisibilityAccess()));
     }
 
-    /**
-     * @since 0.85
-     * for personal rss feed
-     **/
     public static function canUpdate(): bool
     {
         return (Session::haveRightsOr(self::$rightname, [UPDATE, self::PERSONAL]));
     }
 
-    /**
-     * @since 0.85
-     * for personal rss feed
-     **/
     public static function canPurge(): bool
     {
         return (Session::haveRightsOr(self::$rightname, [PURGE, self::PERSONAL]));
@@ -676,7 +667,6 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
      **/
     public static function getRSSFeed($url, $cache_duration = DAY_TIMESTAMP)
     {
-        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         // Fetch feed data, unless it is already cached
@@ -741,7 +731,6 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
 
     final public static function countPublicRssFedds(): int
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = self::getListCriteria(false);
@@ -767,10 +756,6 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
      **/
     public static function showListForCentral(bool $personal = true, bool $display = true)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if ($personal) {

@@ -85,10 +85,6 @@ class NotificationTemplate extends CommonDBTM
         return static::canUpdate();
     }
 
-
-    /**
-     * @since 0.85
-     **/
     public static function canPurge(): bool
     {
         return static::canUpdate();
@@ -220,10 +216,6 @@ class NotificationTemplate extends CommonDBTM
         $event = '',
         $options = []
     ) {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $lang     = [];
@@ -351,10 +343,6 @@ class NotificationTemplate extends CommonDBTM
     public static function process($string, $data)
     {
 
-        $offset = $new_offset = 0;
-        //Template processed
-        $output = "";
-
         $cleandata = [];
         // clean data for strtr
         foreach ($data as $field => $value) {
@@ -432,7 +420,6 @@ class NotificationTemplate extends CommonDBTM
      */
     private static function convertRelativeGlpiLinksToAbsolute(string $string): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Convert domain relative links to absolute links
@@ -576,7 +563,6 @@ class NotificationTemplate extends CommonDBTM
      **/
     public function getByLanguage($language)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -609,7 +595,6 @@ class NotificationTemplate extends CommonDBTM
     public function getDataToSend(NotificationTarget $target, $tid, $to, array $user_infos, array $options)
     {
 
-        $language   = $user_infos['language'];
         $user_name  = $user_infos['username'];
 
         $sender     = $target->getSender();

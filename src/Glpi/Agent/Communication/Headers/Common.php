@@ -208,8 +208,6 @@ class Common
      */
     final public function getHeaderName(string $prop): string
     {
-        $name = $prop;
-
         if (isset($this->getHeadersNames()[$prop])) {
             return $this->getHeadersNames()[$prop];
         }

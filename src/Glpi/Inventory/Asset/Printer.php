@@ -37,7 +37,6 @@ namespace Glpi\Inventory\Asset;
 
 use AutoUpdateSystem;
 use CommonDBTM;
-use DBmysql;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
 use Printer as GPrinter;
@@ -99,7 +98,6 @@ class Printer extends InventoryAsset
 
     public function handle()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $rule = new RuleImportAssetCollection();
@@ -223,7 +221,6 @@ class Printer extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         return $conf->import_printer == 1 && in_array($this->item::class, $CFG_GLPI['peripheralhost_types']);
     }

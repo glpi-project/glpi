@@ -51,7 +51,6 @@ class ProjectTaskLink extends CommonDBRelation
 
     public function getFromDBForItemIDs($projecttaskIds)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -65,7 +64,6 @@ class ProjectTaskLink extends CommonDBRelation
 
     public function checkIfExist($taskLink)
     {
-        /** @var DBmysql $DB */
         global $DB;
         $iterator = $DB->request([
             'SELECT' => 'id',

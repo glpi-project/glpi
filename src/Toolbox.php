@@ -55,7 +55,6 @@ use Laminas\Mail\Protocol\Pop3;
 use Laminas\Mail\Storage\AbstractStorage;
 use Mexitek\PHPColors\Color;
 use Monolog\Logger;
-use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Safe\Exceptions\CurlException;
 use Safe\Exceptions\ErrorfuncException;
@@ -491,7 +490,6 @@ class Toolbox
      **/
     public static function logInFile($name, $text, $force = false, bool $output = true)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $text = self::cleanPaths($text);
 
@@ -546,7 +544,6 @@ class Toolbox
      **/
     public static function setDebugMode($mode = null, $removed_param = null, $removed_param_2 = null, $log_in_files = null)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (isset($mode)) {
@@ -697,7 +694,6 @@ class Toolbox
     {
         Toolbox::deprecated();
 
-        /** @var DBmysql $DB */
         global $DB;
 
         $value = ((array) $value === $value)
@@ -1150,7 +1146,6 @@ class Toolbox
      **/
     public static function getItemTypeFormURL($itemtype, $full = true)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $dir = ($full ? $CFG_GLPI['root_doc'] : '');
@@ -1179,7 +1174,6 @@ class Toolbox
      **/
     public static function getItemTypeSearchURL($itemtype, $full = true)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $dir = ($full ? $CFG_GLPI['root_doc'] : '');
@@ -1214,7 +1208,6 @@ class Toolbox
      **/
     public static function getItemTypeTabsURL($itemtype, $full = true)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $filename = "/ajax/common.tabs.php";
@@ -1337,7 +1330,6 @@ class Toolbox
      */
     public static function getGuzzleClient(array $extra_options): Client
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $options = $extra_options;
@@ -1371,10 +1363,6 @@ class Toolbox
         bool $check_url_safeness = false,
         ?array &$curl_info = null
     ) {
-        /**
-         * @var array $CFG_GLPI
-         * @var LoggerInterface $PHPLOGGER
-         */
         global $CFG_GLPI, $PHPLOGGER;
 
         try {
@@ -1425,7 +1413,6 @@ class Toolbox
         bool $check_url_safeness = false,
         ?array &$curl_info = null
     ): string {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($check_url_safeness && !Toolbox::isUrlSafe($url)) {
@@ -1564,7 +1551,6 @@ class Toolbox
      **/
     public static function manageRedirect($where)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (empty($where) || !Session::getCurrentInterface()) {
@@ -1596,7 +1582,6 @@ class Toolbox
      */
     public static function computeRedirect(string $where): ?string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         try {
@@ -2502,7 +2487,6 @@ class Toolbox
      **/
     public static function convertTagToImage($content_text, CommonDBTM $item, $doc_data = [], bool $add_link = true)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $document = new Document();
@@ -3001,7 +2985,6 @@ class Toolbox
      */
     public static function getPictureUrl($path, $full = true)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (empty($path)) {
@@ -3321,7 +3304,6 @@ HTML;
      */
     public static function cleanTarget(string $target): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $file = preg_replace('/^' . preg_quote($CFG_GLPI['root_doc'], '/') . '/', '', $target);

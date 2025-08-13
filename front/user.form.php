@@ -39,7 +39,6 @@ use Glpi\Event;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Security\TOTPManager;
 
-/** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
 if (isset($_POST['language']) && !Session::getLoginUserID()) {

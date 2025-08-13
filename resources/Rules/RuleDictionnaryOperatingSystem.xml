@@ -26,7 +26,7 @@
         <condition>0</condition>
         <date_creation></date_creation>
         <rulecriteria>
-            <criteria>os_name</criteria>
+            <criteria>name</criteria>
             <condition>6</condition>
             <pattern>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle|Amazon Linux)(?:\D+|)([\d.]*) ?(?:\(?([\w ]+)\)?)?/</pattern>
         </rulecriteria>
@@ -59,7 +59,7 @@
         <condition>0</condition>
         <date_creation></date_creation>
         <rulecriteria>
-            <criteria>os_name</criteria>
+            <criteria>name</criteria>
             <condition>6</condition>
             <pattern>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(&#x2122;)? ?(.*)/</pattern>
         </rulecriteria>
@@ -89,7 +89,7 @@
         <condition>0</condition>
         <date_creation></date_creation>
         <rulecriteria>
-            <criteria>os_name</criteria>
+            <criteria>name</criteria>
             <condition>6</condition>
             <pattern>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? (?:(Hyper-V|Windows)(?:\(R\))?) ((?:Server|))(?:\(R\)|&#xAE;)? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/</pattern>
         </rulecriteria>

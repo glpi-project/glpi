@@ -57,7 +57,6 @@ class RuleImportAssetCollection extends RuleCollection
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!$withtemplate) {
@@ -70,7 +69,7 @@ class RuleImportAssetCollection extends RuleCollection
                             $ong[$type] = $type::getTypeName();
                         }
                     }
-                    $ong['_global'] = __('Global');
+                    $ong['_global'] = self::createTabEntry(__('Global'));
                     return $ong;
             }
         }

@@ -92,9 +92,6 @@ abstract class AbstractPluginMigration
 
     final public function hasBeenExecuted(): bool
     {
-        /**
-         * @var array $CFG_GLPI
-         */
         global $CFG_GLPI;
 
         return (bool) ($CFG_GLPI[$this->getHasBeenExecutedConfigurationKey()] ?? false);
@@ -254,13 +251,15 @@ abstract class AbstractPluginMigration
      * @param class-string<T> $itemtype             Target itemtype.
      * @param array $input                          Creation/update input.
      * @param array|null $reconciliation_criteria   Fields used to reconciliate input with a potential existing item.
+     * @param array $options                        Options to use during add/update operation.
      *
      * @return T    The created/reused item.
      */
     final protected function importItem(
         string $itemtype,
         array $input,
-        ?array $reconciliation_criteria = null
+        ?array $reconciliation_criteria = null,
+        array $options = []
     ): CommonDBTM {
         $item = \getItemForItemtype($itemtype);
         if ($item === false) {
@@ -333,7 +332,7 @@ abstract class AbstractPluginMigration
                 return $item;
             }
 
-            $updated = $item->update($input);
+            $updated = $item->update($input, options: $options);
             $this->addSessionMessagesToResult();
             if ($updated === false) {
                 throw new MigrationException(
@@ -362,7 +361,7 @@ abstract class AbstractPluginMigration
         }
 
         // Create a new item.
-        $created = $item->add($input);
+        $created = $item->add($input, options: $options);
         $this->addSessionMessagesToResult();
         if ($created === false) {
             throw new MigrationException(

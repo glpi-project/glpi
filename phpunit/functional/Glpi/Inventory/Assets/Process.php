@@ -168,7 +168,6 @@ class Process extends AbstractInventoryAsset
 
     public function testGenericAssetProcess(): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         //create generic asset

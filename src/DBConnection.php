@@ -42,7 +42,7 @@ use function Safe\unlink;
 /**
  *  Database class for Mysql
  **/
-class DBConnection extends CommonDBTM
+class DBConnection extends CommonGLPI
 {
     /**
      * "Use timezones" property name.
@@ -335,7 +335,6 @@ class DBConnection extends CommonDBTM
      **/
     public static function createDBSlaveConfig()
     {
-        /** @var DBmysql $DB */
         global $DB;
         self::createSlaveConnectionFile(
             "localhost",
@@ -361,7 +360,6 @@ class DBConnection extends CommonDBTM
      **/
     public static function saveDBSlaveConf($host, $user, $password, $DBname)
     {
-        /** @var DBmysql $DB */
         global $DB;
         self::createSlaveConnectionFile(
             $host,
@@ -391,7 +389,6 @@ class DBConnection extends CommonDBTM
      **/
     public static function switchToSlave()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (self::isDBSlaveActive()) {
@@ -408,7 +405,6 @@ class DBConnection extends CommonDBTM
      **/
     public static function switchToMaster()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $DB = new DB();
@@ -424,10 +420,6 @@ class DBConnection extends CommonDBTM
      **/
     public static function getReadConnection()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (
@@ -501,7 +493,6 @@ class DBConnection extends CommonDBTM
      */
     public static function establishDBConnection($use_slave, $required)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $DB  = null;
@@ -674,7 +665,6 @@ class DBConnection extends CommonDBTM
      **/
     public static function cronCheckDBreplicate(CronTask $task)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         //Lauch cron only is :
@@ -840,10 +830,9 @@ class DBConnection extends CommonDBTM
      */
     public static function getDefaultCharset(): string
     {
-        /** @var DBmysql|null $DB */
         global $DB;
 
-        if ($DB instanceof DBmysql && !$DB->use_utf8mb4) {
+        if (self::isDbAvailable() && !$DB->use_utf8mb4) {
             return 'utf8';
         }
 
@@ -859,10 +848,9 @@ class DBConnection extends CommonDBTM
      */
     public static function getDefaultCollation(): string
     {
-        /** @var DBmysql|null $DB */
         global $DB;
 
-        if ($DB instanceof DBmysql && !$DB->use_utf8mb4) {
+        if (self::isDbAvailable() && !$DB->use_utf8mb4) {
             return 'utf8_unicode_ci';
         }
 
@@ -878,10 +866,9 @@ class DBConnection extends CommonDBTM
      */
     public static function getDefaultPrimaryKeySignOption(): string
     {
-        /** @var DBmysql|null $DB */
         global $DB;
 
-        if ($DB instanceof DBmysql && $DB->allow_signed_keys) {
+        if (self::isDbAvailable() && $DB->allow_signed_keys) {
             return '';
         }
 
@@ -918,8 +905,9 @@ class DBConnection extends CommonDBTM
      */
     public static function isDbAvailable(): bool
     {
-        /** @var DBmysql|null $DB */
         global $DB;
+
+        // @phpstan-ignore instanceof.alwaysTrue ($DB can be null if the DB config file is missing or the service is not yet initialized)
         return $DB instanceof DBmysql && $DB->connected;
     }
 }

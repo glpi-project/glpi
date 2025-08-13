@@ -47,7 +47,6 @@ trait State
      */
     private function checkSetup(): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!in_array(static::class, $CFG_GLPI['state_types'])) {

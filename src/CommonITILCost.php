@@ -84,7 +84,7 @@ abstract class CommonITILCost extends CommonDBChild
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if (!$item instanceof CommonITILCost && !$item instanceof Project) {
+        if (!$item instanceof CommonITILObject && !$item instanceof Project) {
             return false;
         }
 
@@ -198,7 +198,6 @@ abstract class CommonITILCost extends CommonDBChild
 
     public static function rawSearchOptionsToAdd(): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $tab = [];
@@ -364,7 +363,6 @@ abstract class CommonITILCost extends CommonDBChild
      **/
     public function getTotalActionTimeForItem($items_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -383,7 +381,6 @@ abstract class CommonITILCost extends CommonDBChild
      **/
     public function getLastCostForItem($items_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -453,9 +450,6 @@ abstract class CommonITILCost extends CommonDBChild
      **/
     public static function showForObject(CommonITILObject|Project $item): false|float
     {
-        /**
-         * @var DBmysql $DB
-         */
         global $DB;
 
         $forproject = false;
@@ -686,7 +680,6 @@ JS);
      **/
     public static function getCostsSummary($type, $ID)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request(

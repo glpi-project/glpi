@@ -211,7 +211,6 @@ abstract class CommonITILSatisfaction extends CommonDBTM
 
     public function post_addItem()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
@@ -224,7 +223,6 @@ abstract class CommonITILSatisfaction extends CommonDBTM
 
     public function post_UpdateItem($history = true)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
@@ -350,7 +348,6 @@ abstract class CommonITILSatisfaction extends CommonDBTM
 
     public static function rawSearchOptionsToAdd()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $base_id = static::getSearchOptionIDOffset();

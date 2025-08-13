@@ -104,7 +104,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
         // Tabs on CommonITILRecurrent items
         if ($item instanceof self) {
             $ong = [];
-            $ong[1] = _n('Information', 'Information', Session::getPluralNumber());
+            $ong[1] = self::createTabEntry(_n('Information', 'Information', Session::getPluralNumber()), icon: 'ti ti-info-circle');
             return $ong;
         }
 
@@ -711,7 +711,6 @@ abstract class CommonITILRecurrent extends CommonDropdown
      */
     public function getRelatedElements(): array
     {
-        /** @var DBmysql $DB */
         global $DB;
         $items = [];
         if (($item_class = static::getItemLinkClass()) !== null) {

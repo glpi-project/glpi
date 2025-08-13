@@ -151,7 +151,6 @@ class ProjectControllerTest extends \HLAPITestCase
 
     public function testRestrictedProjectRead()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $this->loginWeb();
@@ -203,7 +202,6 @@ class ProjectControllerTest extends \HLAPITestCase
 
     public function testRestrictedProjectTaskRead()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $this->loginWeb();

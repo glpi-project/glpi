@@ -392,7 +392,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         $rand    = mt_rand();
 
         $types_iterator = static::getDistinctTypes($instID);
-        $number = count($types_iterator);
         $is_closed = $obj instanceof CommonITILObject
             && in_array(
                 $obj->fields['status'],
@@ -524,7 +523,6 @@ TWIG, $twig_params);
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!$withtemplate) {
@@ -609,7 +607,6 @@ TWIG, $twig_params);
      */
     protected static function countForActor(CommonDBTM $item): int
     {
-        /** @var DBmysql $DB **/
         global $DB;
 
         /** @var CommonITILObject $itil */
@@ -639,10 +636,10 @@ TWIG, $twig_params);
 
         if ($item::class === static::$itemtype_1) {
             if (
-                !$item instanceof CommonItilObject_Item
+                !$item instanceof CommonITILObject
                 && !$item instanceof TicketRecurrent
             ) {
-                throw new LogicException("Item must be CommonItilObject_Item or TicketRecurrent");
+                throw new LogicException("Item must be CommonItilObject or TicketRecurrent");
             }
             static::showForObject($item);
         } else {
@@ -663,7 +660,6 @@ TWIG, $twig_params);
      **/
     public static function showListForItem(CommonDBTM $item, $withtemplate = 0, $options = [])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!static::$itemtype_1::canView()) {
@@ -696,6 +692,11 @@ TWIG, $twig_params);
         $params['criteria'][0]['link']       = 'AND';
 
         $criteria['WHERE'] = $restrict + getEntitiesRestrictCriteria(static::$itemtype_1::getTable());
+        if (method_exists(static::$itemtype_1, 'getCriteriaFromProfile')) {
+            $profile_criteria = static::$itemtype_1::getCriteriaFromProfile();
+            $criteria['WHERE'] = array_merge($criteria['WHERE'], $profile_criteria['WHERE'] ?? []);
+            $criteria['LEFT JOIN'] = array_merge($criteria['LEFT JOIN'], $profile_criteria['LEFT JOIN'] ?? []); // @phpstan-ignore offsetAccess.notFound
+        }
         $criteria['WHERE'][static::$itemtype_1::getTable() . ".is_deleted"] = 0;
         $criteria['LIMIT'] = (int) $_SESSION['glpilist_limit'];
         $iterator = $DB->request($criteria);
@@ -779,10 +780,6 @@ TWIG, $twig_params);
      **/
     public static function dropdownMyDevices($userID = 0, $entity_restrict = -1, $itemtype = '', $items_id = 0, $options = [])
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $params = [
@@ -803,7 +800,6 @@ TWIG, $twig_params);
         $entity_restrict = Session::getMatchingActiveEntities($entity_restrict);
 
         $rand        = (int) $params['rand'];
-        $already_add = $params['used'];
 
         if (
             $_SESSION["glpiactiveprofile"]["helpdesk_hardware"]
@@ -941,10 +937,6 @@ TWIG, $twig_params);
      */
     private static function getMyAssigneeDevices(int $userID, mixed $entity_restrict = -1, array &$already_add = []): array
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $devices = [];
@@ -999,10 +991,6 @@ TWIG, $twig_params);
      */
     private static function getMyGroupsDevices(int $userID, mixed $entity_restrict = -1, array &$already_add = []): array
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $devices = [];
@@ -1101,10 +1089,6 @@ TWIG, $twig_params);
      */
     private static function getLinkedSoftware(array $devices, mixed $entity_restrict = -1, array &$already_add = []): array
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $software = [];
@@ -1172,10 +1156,6 @@ TWIG, $twig_params);
      */
     private static function getLinkedItemsToComputers(array $devices, mixed $entity_restrict = -1, array &$already_add = []): array
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $linked_items = [];
@@ -1261,7 +1241,6 @@ TWIG, $twig_params);
      **/
     public static function dropdown($options = [])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $p = array_replace([
@@ -1342,7 +1321,6 @@ TWIG, $twig_params);
      **/
     public static function showFormMassiveAction($ma)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $dropdown_params = [
@@ -1637,7 +1615,6 @@ TWIG, $twig_params);
         $entity_restrict = -1,
         $options = []
     ) {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $params = [static::$items_id_1 => 0,

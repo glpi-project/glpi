@@ -128,10 +128,6 @@ class RuleImportEntity extends Rule
 
     public function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var array $PLUGIN_HOOKS
-         */
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
         if ($criteria['field'] === '_source') {

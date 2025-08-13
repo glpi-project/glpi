@@ -35,7 +35,6 @@
 namespace Glpi\Form\Export\Serializer;
 
 use CommonDBTM;
-use DBmysql;
 use Entity;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Category;
@@ -237,7 +236,6 @@ final class FormSerializer extends AbstractFormSerializer
         FormContentSpecification $form_spec,
         DatabaseMapper $mapper,
     ): Form {
-        /** @var DBmysql $DB */
         global $DB;
 
         $DB->beginTransaction();

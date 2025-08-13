@@ -36,9 +36,7 @@
 namespace Glpi\Dashboard;
 
 use CommonDBTM;
-use DBmysql;
 use Glpi\Debug\Profiler;
-use Psr\SimpleCache\CacheInterface;
 use Ramsey\Uuid\Uuid;
 use RuntimeException;
 use Session;
@@ -119,7 +117,6 @@ class Dashboard extends CommonDBTM
 
     public function getFromDB($ID)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -264,10 +261,6 @@ class Dashboard extends CommonDBTM
      */
     public function save(bool $skip_child = false)
     {
-        /**
-         * @var DBmysql $DB
-         * @var CacheInterface $GLPI_CACHE
-         */
         global $DB, $GLPI_CACHE;
 
         $DB->updateOrInsert(
@@ -446,7 +439,6 @@ class Dashboard extends CommonDBTM
      */
     public static function getAll(bool $force = false, bool $check_rights = true, ?string $context = 'core'): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($force || count(self::$all_dashboards) == 0) {

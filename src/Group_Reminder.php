@@ -56,7 +56,6 @@ class Group_Reminder extends CommonDBRelation
      **/
     public static function getGroups($reminders_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $groups = [];

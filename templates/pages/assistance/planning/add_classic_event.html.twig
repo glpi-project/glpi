@@ -55,7 +55,7 @@
         {% endif %}
 
         {% set period_field %}
-            {% if params.rand_user %}
+            {% if params.rand_user is defined %}
                 <span id="user_available{{ params.rand_user }}">
                     {% do call('Planning::showCheckPlanning', [_post|merge({
                         parent_itemtype: params.parent_itemtype|default(''),

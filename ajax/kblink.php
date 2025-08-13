@@ -36,7 +36,7 @@
  * Retrieve the knowledgebase links associated to a category
  * @since   9.2
  */
-/** @var DBmysql $DB */
+
 global $DB;
 
 // Send UTF8 Headers

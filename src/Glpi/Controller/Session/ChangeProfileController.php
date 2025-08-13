@@ -55,7 +55,6 @@ final class ChangeProfileController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
     public function __invoke(Request $request): Response
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Validate profile

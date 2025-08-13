@@ -55,7 +55,6 @@ class DBmysqlIteratorTest extends DbTestCase
 
     public function testSqlError(): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $this->expectExceptionObject(

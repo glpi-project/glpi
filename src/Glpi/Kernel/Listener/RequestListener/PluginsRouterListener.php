@@ -78,7 +78,7 @@ final readonly class PluginsRouterListener implements EventSubscriberInterface
         }
 
         $route_matches = [];
-        if (preg_match('#^/plugins/(?<plugin_key>[^\/]+)(?<plugin_resource>/.+)$#', $request->getPathInfo(), $route_matches) !== 1) {
+        if (preg_match('#^/plugins/(?<plugin_key>[^\/]+)(?<plugin_resource>/.*)$#', $request->getPathInfo(), $route_matches) !== 1) {
             return;
         }
 

@@ -118,7 +118,6 @@ class SLM extends CommonDBTM
 
     public function post_updateItem($history = true)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (in_array('use_ticket_calendar', $this->updates, true) || in_array('calendars_id', $this->updates, true)) {

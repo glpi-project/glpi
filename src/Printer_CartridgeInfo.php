@@ -50,7 +50,6 @@ class Printer_CartridgeInfo extends CommonDBChild
 
     public function getInfoForPrinter(Printer $printer)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

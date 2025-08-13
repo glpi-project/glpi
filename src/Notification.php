@@ -179,11 +179,6 @@ class Notification extends CommonDBTM implements FilterableInterface
         return ['config', self::class, self::class];
     }
 
-    /**
-     *  @see CommonGLPI::getMenuContent()
-     *
-     *  @since 0.85
-     **/
     public static function getMenuContent()
     {
         $menu = [];
@@ -294,7 +289,6 @@ class Notification extends CommonDBTM implements FilterableInterface
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
 
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!is_array($values)) {
@@ -613,7 +607,6 @@ class Notification extends CommonDBTM implements FilterableInterface
      **/
     public static function getMailingSignature($entity)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $signature = trim(Entity::getUsedConfig('mailing_signature', $entity, '', ''));
@@ -634,10 +627,6 @@ class Notification extends CommonDBTM implements FilterableInterface
      **/
     public static function getNotificationsByEventAndType($event, $itemtype, $entity)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $criteria = [

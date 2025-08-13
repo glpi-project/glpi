@@ -111,7 +111,6 @@ class RuleCollection extends CommonDBTM
         $condition = 0,
         $children = 0
     ) {
-        /** @var DBmysql $DB */
         global $DB;
 
         $restrict = $this->getRuleListCriteria([
@@ -221,7 +220,6 @@ class RuleCollection extends CommonDBTM
      **/
     public function getCollectionPart($options = [])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $p['start']     = 0;
@@ -261,7 +259,6 @@ class RuleCollection extends CommonDBTM
      **/
     public function getCollectionDatas($retrieve_criteria = 0, $retrieve_action = 0, $condition = 0)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($this->RuleList === null) {
@@ -469,7 +466,6 @@ class RuleCollection extends CommonDBTM
      **/
     public function showListRules($target, $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $p['inherited'] = 1;
@@ -693,7 +689,6 @@ TWIG, $twig_params);
      **/
     public function changeRuleOrder($ID, $action, $condition = 0)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = [
@@ -816,7 +811,6 @@ TWIG, $twig_params);
      **/
     public function deleteRuleOrder($ranking)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->update(
@@ -843,7 +837,6 @@ TWIG, $twig_params);
      **/
     public function moveRule($ID, $ref_ID, $type = self::MOVE_AFTER, $new_rule = false)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ruleDescription = new Rule();
@@ -1136,7 +1129,6 @@ TWIG, $twig_params);
      **/
     public static function previewImportRules()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!isset($_FILES["xml_file"]) || ($_FILES["xml_file"]["size"] == 0)) {
@@ -1153,7 +1145,6 @@ TWIG, $twig_params);
         if (!$xmlE = simplexml_load_string($xml)) {
             Session::addMessageAfterRedirect(__s('Unauthorized file type'), false, ERROR);
         }
-        $errors = libxml_get_errors();
         // convert SimpleXml object into an array and store it in session
         $rules         = json_decode(json_encode((array) $xmlE), true);
         // check rules (check if entities, criteria and actions is always good in this glpi)
@@ -1344,7 +1335,6 @@ TWIG, $twig_params);
      **/
     public static function processImportRules()
     {
-        /** @var DBmysql $DB */
         global $DB;
         $ruleCriteria = new RuleCriteria();
         $ruleAction   = new RuleAction();
@@ -1662,7 +1652,6 @@ TWIG, $twig_params);
      **/
     public function prepareInputDataForProcessWithPlugins($input, $params)
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $input = $this->prepareInputDataForProcess($input, $params);
@@ -1701,7 +1690,6 @@ TWIG, $twig_params);
      **/
     public function prepareInputDataForTestProcess($condition = 0)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $limit = [];
@@ -1746,7 +1734,6 @@ TWIG, $twig_params);
      */
     public function showRulesEnginePreviewResultsForm(array $input, $condition = 0)
     {
-        /** @var DBmysql $DB */
         global $DB;
         $output = [];
 
@@ -1836,7 +1823,6 @@ TWIG, $twig_params);
      **/
     public function preProcessPreviewResults($output)
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         if (isset($PLUGIN_HOOKS[Hooks::USE_RULES])) {
@@ -1882,7 +1868,6 @@ TWIG, $twig_params);
      */
     public static function getClassByType($itemtype, $check_dictionnary_type = false)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($plug = isPluginItemType($itemtype)) {
@@ -1924,7 +1909,6 @@ TWIG, $twig_params);
      **/
     public function getFieldsToLookFor()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $params = [];
@@ -1953,15 +1937,9 @@ TWIG, $twig_params);
         return $params;
     }
 
-    /**
-     * For tabs management : force isNewItem
-     *
-     * @since 0.83
-     *
-     * @return boolean
-     **/
     public function isNewItem()
     {
+        // For tabs management : force isNewItem
         return false;
     }
 
@@ -1988,29 +1966,33 @@ TWIG, $twig_params);
         if ($item instanceof self) {
             $ong = [];
             if ($item->showInheritedTab()) {
-                //TRANS: %s is the entity name
-                $ong[1] = sprintf(
-                    __('Rules applied: %s'),
-                    Dropdown::getDropdownName(
-                        'glpi_entities',
-                        $_SESSION['glpiactive_entity']
+                $ong[1] = self::createTabEntry(
+                    sprintf(
+                        // TRANS: %s is the entity name
+                        __('Rules applied: %s'),
+                        Dropdown::getDropdownName(
+                            'glpi_entities',
+                            $_SESSION['glpiactive_entity']
+                        )
                     )
                 );
             }
             $title = $item->getMainTabLabel();
             if ($item->isRuleRecursive()) {
-                //TRANS: %s is the entity name
-                $title = sprintf(
-                    __('Local rules: %s'),
-                    Dropdown::getDropdownName(
-                        'glpi_entities',
-                        $_SESSION['glpiactive_entity']
+                $title = self::createTabEntry(
+                    sprintf(
+                        // TRANS: %s is the entity name
+                        __('Local rules: %s'),
+                        Dropdown::getDropdownName(
+                            'glpi_entities',
+                            $_SESSION['glpiactive_entity']
+                        )
                     )
                 );
             }
             $ong[2] = $title;
             if ($item->showChildrensTab()) {
-                $ong[3] = __('Rules applicable in the sub-entities');
+                $ong[3] = self::createTabEntry(__('Rules applicable in the sub-entities'));
             }
             return $ong;
         }
@@ -2053,7 +2035,6 @@ TWIG, $twig_params);
      */
     public static function getRules(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $rules = [];

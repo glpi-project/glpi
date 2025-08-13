@@ -36,7 +36,6 @@
 
 namespace Glpi\Inventory\Asset;
 
-use DBmysql;
 use Glpi\Inventory\Conf;
 use Item_Environment;
 
@@ -54,7 +53,6 @@ final class Environment extends InventoryAsset
 
     protected function getExisting(): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $db_existing = [];
@@ -128,7 +126,6 @@ final class Environment extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         return $conf->import_env == 1 && in_array($this->item::class, $CFG_GLPI['environment_types']);
     }

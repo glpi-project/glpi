@@ -35,7 +35,6 @@
 namespace Glpi\Asset\CustomFieldType;
 
 use CommonDBTM;
-use DBmysql;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CustomFieldOption\BooleanOption;
 use Glpi\DBAL\QueryExpression;
@@ -121,7 +120,6 @@ TWIG, $twig_params);
 
     public function getSearchOption(): ?array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         /** @var class-string<CommonDBTM> $itemtype */

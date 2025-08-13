@@ -82,7 +82,6 @@ class Group_User extends CommonDBRelation
      **/
     public static function getUserGroups($users_id, $condition = []): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -124,7 +123,6 @@ class Group_User extends CommonDBRelation
      **/
     public static function getGroupUsers($groups_id, $condition = [])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -285,7 +283,6 @@ class Group_User extends CommonDBRelation
         $tree = 0,
         bool $check_entities = true
     ) {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Entity restriction for this group, according to user allowed entities
@@ -768,7 +765,6 @@ class Group_User extends CommonDBRelation
 
     public function post_addItem()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         parent::post_addItem();
@@ -828,7 +824,6 @@ class Group_User extends CommonDBRelation
 
     public function post_purgeItem()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         parent::post_purgeItem();

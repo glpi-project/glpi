@@ -60,27 +60,21 @@ abstract class ITIL_ValidationStep extends CommonDBChild
         return static::$validation_classname::canCreate();
     }
 
-    /**
-     * Update right does not exist on ChangeValidation and TicketValidation, use create right
-     */
     public static function canUpdate(): bool
     {
+        // Update right does not exist on ChangeValidation and TicketValidation, use create right
         return static::$validation_classname::canCreate();
     }
 
-    /**
-     * View right does not exist on ChangeValidation and TicketValidation, use create right
-     */
     public static function canView(): bool
     {
+        // View right does not exist on ChangeValidation and TicketValidation, use create right
         return static::$validation_classname::canCreate();
     }
 
-    /**
-     * ValidationSteps cannot be deleted
-     */
     public static function canPurge(): bool
     {
+        // Cannot be deleted
         return false;
     }
 

@@ -43,9 +43,6 @@ const DELTA_ACTION_ADD    = 1;
 const DELTA_ACTION_UPDATE = 2;
 const DELTA_ACTION_DELETE = 3;
 
-/**
- * @var array $CFG_GLPI
- */
 global $CFG_GLPI;
 
 // Send UTF8 Headers

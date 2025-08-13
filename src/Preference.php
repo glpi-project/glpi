@@ -76,6 +76,10 @@ class Preference extends CommonGLPI
         return true;
     }
 
+    /**
+     * @FIXME Override the options inside the front controller.
+     * @phpstan-ignore method.parentMethodFinalByPhpDoc (temporary solution to add the final tag)
+     */
     public function showTabsContent($options = [])
     {
         if (isset($_REQUEST['reset_2fa'])) {

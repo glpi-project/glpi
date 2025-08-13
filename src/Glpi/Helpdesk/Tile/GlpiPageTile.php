@@ -127,7 +127,10 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface, ProvideTra
     public function isAvailable(SessionInfo $session_info): bool
     {
         return match ($this->fields['page']) {
-            self::PAGE_SERVICE_CATALOG => true,
+            self::PAGE_SERVICE_CATALOG => $session_info->hasRight(
+                Ticket::$rightname,
+                CREATE,
+            ),
             self::PAGE_FAQ             => true,
             self::PAGE_RESERVATION     => $session_info->hasRight(
                 'reservation',
@@ -137,7 +140,10 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface, ProvideTra
                 TicketValidation::VALIDATEINCIDENT,
                 TicketValidation::VALIDATEREQUEST,
             ]),
-            self::PAGE_ALL_TICKETS     => $session_info->hasRight('ticket', READ),
+            self::PAGE_ALL_TICKETS     => $session_info->hasRight(
+                Ticket::$rightname,
+                READ
+            ),
             default                    => false,
         };
     }

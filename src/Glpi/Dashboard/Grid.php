@@ -36,7 +36,6 @@
 namespace Glpi\Dashboard;
 
 use Config;
-use DBmysql;
 use Dropdown;
 use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
@@ -47,7 +46,6 @@ use Glpi\Plugin\Hooks;
 use Html;
 use Item_Devices;
 use Plugin;
-use Psr\SimpleCache\CacheInterface;
 use Ramsey\Uuid\Uuid;
 use ReflectionClass;
 use Reminder;
@@ -244,7 +242,6 @@ HTML;
      */
     public function show(bool $mini = false, ?string $token = null)
     {
-        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $rand = mt_rand();
@@ -377,7 +374,7 @@ HTML;
 HTML;
 
         $filters = "";
-        /** @var array $CFG_GLPI */
+
         global $CFG_GLPI;
         if (!$mini) {
             $params = [
@@ -606,7 +603,6 @@ TWIG, $twig_params);
      */
     public function getGridItemsHtml(bool $with_lock = true, bool $embed = false): string
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($embed) {
@@ -850,7 +846,6 @@ HTML;
      */
     public function displayEmbedForm()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $entities_id  = $_SESSION['glpiactive_entity'];
@@ -948,11 +943,7 @@ HTML;
      */
     public function getCardHtml(string $card_id = "", array $card_options = []): string
     {
-        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
-
-        $gridstack_id = $card_options['args']['gridstack_id'] ?? $card_id;
-        $dashboard    = $card_options['dashboard'] ?? "";
 
         $force = ($card_options['args']['force'] ?? $card_options['force'] ?? false);
 
@@ -968,7 +959,6 @@ HTML;
             \htmlescape($card_id) .
             "</div>";
 
-        $start = microtime(true);
         Profiler::getInstance()->start(__METHOD__ . ' get card data');
         try {
             $cards = $this->getAllDasboardCards();
@@ -1000,7 +990,6 @@ HTML;
                     ],
                 ];
 
-                /** @var array $CFG_GLPI */
                 global $CFG_GLPI;
                 Profiler::getInstance()->start($card['provider'] . ' (Provider function)');
                 if ($CFG_GLPI['is_demo_dashboards'] ?? 0) {
@@ -1175,10 +1164,6 @@ HTML;
      */
     public function getAllDasboardCards($force = false): array
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var CacheInterface $GLPI_CACHE
-         */
         global $CFG_GLPI, $GLPI_CACHE;
 
         Profiler::getInstance()->start(__METHOD__);
@@ -1495,7 +1480,6 @@ HTML;
      */
     public function restoreLastDashboard(): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $new_key = "";
         $target = Toolbox::cleanTarget($_REQUEST['_target'] ?? $_SERVER['REQUEST_URI'] ?? "");
@@ -1531,7 +1515,6 @@ HTML;
      */
     public static function getDefaultDashboardForMenu(string $menu = "", bool $strict = false): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $grid = new self();

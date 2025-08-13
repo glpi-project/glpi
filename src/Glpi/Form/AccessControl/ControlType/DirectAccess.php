@@ -94,7 +94,6 @@ final class DirectAccess implements ControlTypeInterface
     #[Override]
     public function renderConfigForm(FormAccessControl $access_control): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $config = $access_control->getConfig();

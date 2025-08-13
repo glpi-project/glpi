@@ -104,7 +104,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
             && $item->isRecursive()
             && $item->can($item->fields['id'], UPDATE)
         ) {
-            return __('Merging');
+            return self::createTabEntry(__('Merging'), icon: 'ti ti-arrow-merge');
         }
         return '';
     }
@@ -227,7 +227,6 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
 
     public function getEmpty()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!$this->getEmptyAssignableItem()) {
@@ -657,7 +656,6 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      **/
     public static function dropdownSoftwareToInstall($myname, $entity_restrict)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Make a select box
@@ -696,10 +694,6 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      **/
     public static function dropdownLicenseToInstall($myname, $entity_restrict)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $iterator = $DB->request([
@@ -768,7 +762,6 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         $is_recursive = false,
         $is_helpdesk_visible = null
     ) {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $input["name"]                = $name;
@@ -818,7 +811,6 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         $is_recursive = false,
         $is_helpdesk_visible = null
     ) {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Look for the software by his name in GLPI for a specific entity
@@ -876,7 +868,6 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      **/
     public function putInTrash($ID, $comment = '')
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->getFromDB($ID);
@@ -930,7 +921,6 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      **/
     public function showMergeCandidates()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ID   = $this->getField('id');
@@ -964,7 +954,6 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
             ),
             'ORDERBY'   => 'entity',
         ]);
-        $nb = count($iterator);
 
         $entries = [];
         $software = new self();
@@ -1015,7 +1004,6 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      */
     private function merge($item): bool
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $this->getField('id');

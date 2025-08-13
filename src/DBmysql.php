@@ -1220,7 +1220,12 @@ class DBmysql
         }
 
         //handle aliases
-        $names = preg_split('/\s+AS\s+/i', $name);
+        try {
+            $names = preg_split('/\s+AS\s+/i', $name);
+        } catch (Throwable $e) {
+            $names = [];
+            $name = 'nonono';
+        }
         if (count($names) > 2) {
             throw new RuntimeException(
                 'Invalid field name ' . $name
@@ -1273,9 +1278,8 @@ class DBmysql
             // transform boolean as int (prevent `false` to be transformed to empty string)
             $value = "'" . (int) $value . "'";
         } else {
-            /** @var DBmysql|null $DB */
             global $DB;
-            $value = $DB instanceof DBmysql && $DB->connected ? $DB->escape($value) : $value;
+            $value = DBConnection::isDbAvailable() ? $DB->escape($value) : $value;
             $value = "'$value'";
         }
         return $value;
@@ -1984,9 +1988,6 @@ class DBmysql
     public function removeSqlRemarks($sql)
     {
         $lines = explode("\n", $sql);
-
-        // try to keep mem. use down
-        $sql = "";
 
         $linecount = count($lines);
         $output = "";

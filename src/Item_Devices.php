@@ -215,6 +215,16 @@ class Item_Devices extends CommonDBRelation implements StateInterface
                 $field = $attributs['field'];
             }
 
+            if (
+                !array_key_exists('datatype', $attributs)
+                && $table === static::getTable()
+                && $field === static::getNameField()
+            ) {
+                // if the specific field corresponds to the "name" field of the item,
+                // set its datatype to itemlink to ensure a link to the item is present in default search columns
+                $attributs['datatype'] = 'itemlink';
+            }
+
             $newtab = [
                 'id'                 => $attributs['id'],
                 'table'              => $table,
@@ -267,7 +277,6 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 
     public static function rawSearchOptionsToAdd($itemtype)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $options = [];
@@ -433,7 +442,6 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      **/
     public static function itemAffinity()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $conf_param = str_replace('_', '', strtolower(static::class)) . '_types';
@@ -472,7 +480,6 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      **/
     public static function getItemAffinities($itemtype)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!in_array($itemtype, $CFG_GLPI['itemdevices_types'], true)) {
@@ -507,7 +514,6 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      **/
     public static function getConcernedItems()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $itemtypes = $CFG_GLPI['itemdevices_types'];
@@ -557,7 +563,6 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      **/
     public static function getItemsAssociatedTo($itemtype, $items_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $res = [];
@@ -636,7 +641,6 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 
     public static function showForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $is_device = ($item instanceof CommonDevice);
@@ -891,7 +895,6 @@ class Item_Devices extends CommonDBRelation implements StateInterface
         ?HTMLTableSuperHeader $delete_column,
         $dynamic_column
     ) {
-        /** @var DBmysql $DB */
         global $DB;
 
         $is_device = ($item instanceof CommonDevice);
@@ -1401,7 +1404,6 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      **/
     public static function cleanItemDeviceDBOnItemDelete($itemtype, $items_id, $unaffect)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         foreach (self::getItemAffinities($itemtype) as $link_type) {
@@ -1558,7 +1560,6 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 
     public function prepareInputForAdd($input)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!isset($input[static::$items_id_2]) || !$input[static::$items_id_2]) {
@@ -1636,7 +1637,6 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 
     public static function getSearchURL($full = true)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $dir = ($full ? $CFG_GLPI['root_doc'] : '');

@@ -41,6 +41,7 @@ use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\AccessControl\ControlType\DirectAccess;
 use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
 use Glpi\Form\AccessControl\FormAccessControl;
+use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Comment;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Destination\FormDestinationChange;
@@ -60,9 +61,11 @@ use Glpi\Form\Section;
 use Glpi\Helpdesk\Tile\FormTile;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Item_Ticket;
 use Log;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Ramsey\Uuid\Uuid;
+use User;
 
 class FormTest extends DbTestCase
 {
@@ -454,6 +457,7 @@ class FormTest extends DbTestCase
         $destinations = countElementsInTable(FormDestination::getTable());
         $access_controls = countElementsInTable(FormAccessControl::getTable());
         $form_tiles = countElementsInTable(FormTile::getTable());
+        $linked_items = countElementsInTable(Item_Ticket::getTable());
 
         // Test subject that we are going to delete
         $form_to_be_deleted = $this->createForm(
@@ -471,6 +475,13 @@ class FormTest extends DbTestCase
                 ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(AllowList::class, new AllowListConfig())
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig())
+        );
+        // Submit form to link to some tickets
+        $answers_handler = AnswersHandler::getInstance();
+        $answers_handler->saveAnswers(
+            $form_to_be_deleted,
+            [],
+            getItemByTypeName(User::class, TU_USER, true)
         );
 
         // Add a tile to the form, it should be deleted with the form
@@ -491,6 +502,13 @@ class FormTest extends DbTestCase
                 ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig())
         );
+        // Submit form to link to some tickets
+        $answers_handler = AnswersHandler::getInstance();
+        $answers_handler->saveAnswers(
+            $form_to_keep,
+            [],
+            getItemByTypeName(User::class, TU_USER, true)
+        );
 
         // Add a tile to the form, it should be kept with the form
         $this->createItem(
@@ -508,6 +526,7 @@ class FormTest extends DbTestCase
         $this->assertEquals(4 + $destinations, countElementsInTable(FormDestination::getTable())); // +1 mandatory for each form
         $this->assertEquals(3 + $access_controls, countElementsInTable(FormAccessControl::getTable()));
         $this->assertEquals(2 + $form_tiles, countElementsInTable(FormTile::getTable()));
+        $this->assertEquals(4 + $linked_items, countElementsInTable(Item_Ticket::getTable())); // 2 Destination per ticket (1 manual + 1 auto) so 4 linked forms in total
 
         // Delete item
         $this->deleteItem(
@@ -524,6 +543,7 @@ class FormTest extends DbTestCase
         $this->assertEquals(2 + $destinations, countElementsInTable(FormDestination::getTable()));
         $this->assertEquals(1 + $access_controls, countElementsInTable(FormAccessControl::getTable()));
         $this->assertEquals(1 + $form_tiles, countElementsInTable(FormTile::getTable()));
+        $this->assertEquals(2 + $linked_items, countElementsInTable(Item_Ticket::getTable()));
     }
 
     /**

@@ -44,7 +44,6 @@ use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Glpi\ItemTranslation\Context\TranslationHandler;
 use Glpi\UI\IllustrationManager;
-use Psr\SimpleCache\CacheInterface;
 use Ramsey\Uuid\Uuid;
 
 use function Safe\preg_match;
@@ -205,7 +204,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
 
     public function pre_updateInDB()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (($key = array_search('name', $this->updates, true)) !== false) {
@@ -234,7 +232,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
 
     public function pre_deleteItem()
     {
-        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         // Security do not delete root entity
@@ -361,7 +358,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      **/
     public function prepareInputForAdd($input)
     {
-        /** @var DBmysql $DB */
         global $DB;
         $input['name'] = isset($input['name']) ? trim($input['name']) : '';
         if (empty($input["name"])) {
@@ -524,14 +520,14 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         $path = realpath(GLPI_TMP_DIR . "/$file");
         if (!$path || !str_starts_with($path, GLPI_TMP_DIR)) {
             // File doest not exist or is outside upload directory
-            $message = __("An unexpected error occurred");
+            $message = __s("An unexpected error occurred");
             Session::addMessageAfterRedirect($message);
             return null;
         }
 
         // Validate that the file is an image
         if (!Document::isImage($path)) {
-            $message = __("The uploaded file must be a valid image.");
+            $message = __s("The uploaded file must be a valid image.");
             Session::addMessageAfterRedirect($message);
             return null;
         }
@@ -555,7 +551,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      */
     private function handleConfigStrategyFields(array $input): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         foreach ($input as $field => $value) {
@@ -631,9 +626,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         return $ong;
     }
 
-    /**
-     * @since 0.84 (before in entitydata.class)
-     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
@@ -667,9 +659,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         return '';
     }
 
-    /**
-     * @since 0.84 (before in entitydata.class)
-     **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if (!$item instanceof self) {
@@ -771,7 +760,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
 
     public function post_updateItem($history = true)
     {
-        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         parent::post_updateItem($history);
@@ -1657,7 +1645,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      **/
     public static function getEntitiesToNotify($field)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $entities = [];
@@ -1882,9 +1869,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             );
         }
 
-        // Notification right applied
-        $canedit = (Notification::canUpdate()
-                  && Session::haveAccessToEntity($ID));
         TemplateRenderer::getInstance()->display('pages/admin/entity/notifications.html.twig', [
             'item' => $entity,
             'params' => [
@@ -2011,7 +1995,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      **/
     private static function getEntityIDByField($field, $value)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -2162,10 +2145,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      **/
     public static function getUsedConfig($fieldref, $entities_id, $fieldval = '', $default_value = -2)
     {
-        /**
-         * @var DBmysql $DB
-         * @var CacheInterface $GLPI_CACHE
-         */
         global $DB, $GLPI_CACHE;
 
         $id_using_strategy = [
@@ -3110,7 +3089,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
 
     private static function getEntityTree(int $entities_id_root): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $sons = getSonsOf('glpi_entities', $entities_id_root);

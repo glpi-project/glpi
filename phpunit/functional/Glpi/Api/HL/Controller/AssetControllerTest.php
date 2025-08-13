@@ -606,7 +606,6 @@ class AssetControllerTest extends \HLAPITestCase
      */
     public function testMultipleGroups()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $computers_id = getItemByTypeName('Computer', '_test_pc01', true);

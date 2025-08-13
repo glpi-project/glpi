@@ -47,9 +47,6 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
         $emitter = null,
         ?CommonDBTM $trigger = null
     ) {
-        /**
-         * @var array $CFG_GLPI
-         */
         global $CFG_GLPI;
         if ($CFG_GLPI['notifications_' . $options['mode']]) {
             $entity = $notificationtarget->getEntity();

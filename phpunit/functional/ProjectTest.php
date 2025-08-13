@@ -518,9 +518,12 @@ PLAINTEXT;
         ob_end_clean();
 
         // Check results
-        $this->assertEquals(1, substr_count($html, "background-color: #000001;"));
-        $this->assertEquals(2, substr_count($html, "background-color: #000002;"));
-        $this->assertEquals(3, substr_count($html, "background-color: #000003;"));
+        $this->assertEquals(1, substr_count($html, "border-color: #000001"));
+        $this->assertEquals(1, substr_count($html, "background: #000001"));
+        $this->assertEquals(2, substr_count($html, "border-color: #000002"));
+        $this->assertEquals(2, substr_count($html, "background: #000002"));
+        $this->assertEquals(3, substr_count($html, "border-color: #000003"));
+        $this->assertEquals(3, substr_count($html, "background: #000003"));
     }
 
     public function testGetActiveProjectIDsForUser(): void

@@ -156,7 +156,6 @@ class NetworkPortInstantiation extends CommonDBChild
      **/
     public static function getItemsByMac($mac, $wildcard_search = false)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $mac = strtolower($mac);
@@ -260,10 +259,6 @@ class NetworkPortInstantiation extends CommonDBChild
      **/
     public function showNetworkCardField(NetworkPort $netport, $options = [], $recursiveItems = [])
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $alert = '';
@@ -437,7 +432,6 @@ TWIG, $twig_params);
      **/
     public function showNetworkPortSelector($recursiveItems, $origin)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (count($recursiveItems) === 0) {
@@ -447,7 +441,6 @@ TWIG, $twig_params);
         $lastItem = $recursiveItems[count($recursiveItems) - 1];
 
         echo "<td>" . __s('Origin port') . "</td><td>\n";
-        $links_id      = [];
         $netport_types = ['NetworkPortEthernet', 'NetworkPortWifi'];
         $selectOptions = [];
         $possible_ports = [];
@@ -680,7 +673,6 @@ TWIG, $twig_params);
      **/
     public static function dropdownConnect($ID, $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $p['name']        = 'networkports_id';

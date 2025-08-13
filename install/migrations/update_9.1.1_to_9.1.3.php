@@ -45,9 +45,7 @@ function update911to913()
      */
     global $DB, $migration;
 
-    $current_config   = Config::getConfigurationValues('core');
     $updateresult     = true;
-    $ADDTODISPLAYPREF = [];
 
     $migration->setVersion('9.1.3');
 

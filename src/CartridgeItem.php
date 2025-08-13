@@ -168,7 +168,6 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
      **/
     public static function getCount($id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -189,7 +188,6 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
      **/
     public static function addCompatibleType($cartridgeitems_id, $printermodels_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (
@@ -406,10 +404,6 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
      **/
     public static function cronCartridge($task = null)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $cron_status = 1;
@@ -539,7 +533,6 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
      **/
     public static function dropdownForPrinter(Printer $printer)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

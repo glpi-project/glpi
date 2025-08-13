@@ -38,7 +38,6 @@ namespace Glpi\Features;
 use CommonITILTask;
 use DateInterval;
 use DateTimeZone;
-use DBmysql;
 use Dropdown;
 use Entity;
 use ExtraVisibilityCriteria;
@@ -120,7 +119,6 @@ trait PlanningEvent
 
     public function prepareInputForAdd($input)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $input = $this->prepareGuestsInput($input);
@@ -407,10 +405,6 @@ trait PlanningEvent
      **/
     public static function populatePlanning($options = []): array
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $default_options = [
@@ -688,7 +682,6 @@ trait PlanningEvent
      **/
     public static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $html = "";

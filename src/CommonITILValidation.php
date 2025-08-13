@@ -229,7 +229,6 @@ abstract class CommonITILValidation extends CommonDBChild
      **/
     public static function canValidate($items_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -250,7 +249,6 @@ abstract class CommonITILValidation extends CommonDBChild
      */
     final public function canAnswer(): bool
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -367,7 +365,6 @@ abstract class CommonITILValidation extends CommonDBChild
 
     public function post_addItem()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $itilobject = $this->getItem();
@@ -506,7 +503,6 @@ abstract class CommonITILValidation extends CommonDBChild
 
     public function post_updateItem($history = true)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->recomputeItilStatus();
@@ -709,7 +705,6 @@ abstract class CommonITILValidation extends CommonDBChild
         $label = $statuses[$value] ?? $value;
 
         if ($decorated) {
-            $color   = self::getStatusColor($value);
             $classes = null;
             switch ($value) {
                 case self::WAITING:
@@ -764,7 +759,6 @@ abstract class CommonITILValidation extends CommonDBChild
      **/
     public static function getNumberToValidate($users_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $itil_class = static::getItilObjectItemType();
@@ -890,7 +884,6 @@ abstract class CommonITILValidation extends CommonDBChild
     public static function showFormMassiveAction()
     {
 
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $types = [
@@ -1010,10 +1003,6 @@ abstract class CommonITILValidation extends CommonDBChild
      */
     private function showSummary(CommonITILObject $itil): void
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (
@@ -1715,21 +1704,35 @@ HTML;
         return $tab;
     }
 
-
-    /**
-     * @param $field
-     * @param $values
-     * @param $options   array
-     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
-
         if (!is_array($values)) {
             $values = [$field => $values];
         }
-        switch ($field) {
-            case 'status':
-                return self::getStatus($values[$field]);
+        if ($field === 'status') {
+            $out = '';
+            $targets = $values;
+            if (array_key_exists('status', $targets)) {
+                // single value
+                $targets = [$values];
+            }
+            foreach ($targets as $target) {
+                if (!empty($target['status'])) {
+                    $status  = static::getStatus($target['status']);
+                    $bgcolor = \htmlescape(static::getStatusColor($target['status']));
+                    $content = "<div class='badge_block' style='border-color: $bgcolor'><span style='background: $bgcolor'></span>&nbsp;" . $status . "</div>";
+                    if (isset($target['itemtype_target']) && is_a($target['itemtype_target'], CommonDBTM::class, true) && isset($target['items_id_target'])) {
+                        $user = '';
+                        if (($approver = $target['itemtype_target']::getById((int) $target['items_id_target'])) !== null) {
+                            $user = $approver->getLink();
+                        }
+                        $text = "<i class='" . \htmlescape($target['itemtype_target']::getIcon()) . " me-1'></i>" . $user . '<span class="mx-1">-</span>' . $status;
+                        $content = "<div class='badge_block' style='border-color: $bgcolor'><span style='background: $bgcolor'></span>&nbsp;" . $text . "</div>";
+                    }
+                    $out .= (empty($out) ? '' : Search::LBBR) . $content;
+                }
+            }
+            return $out;
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
@@ -1791,7 +1794,6 @@ HTML;
      **/
     public static function dropdownValidator(array $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $params = [
@@ -1941,7 +1943,6 @@ HTML;
      */
     public static function alertValidation(CommonITILObject $item, $type)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // No alert for new item

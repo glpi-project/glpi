@@ -197,7 +197,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
      **/
     public static function getOppositeByTypeAndID($itemtype, $items_id, &$relations_id = null)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($items_id < 0) {
@@ -594,10 +593,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
         return true;
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public static function canCreate(): bool
     {
 
@@ -607,10 +602,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
         return static::canRelation('canUpdate', static::$checkAlwaysBothItems);
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public static function canView(): bool
     {
         if ((static::$rightname) && (!Session::haveRight(static::$rightname, READ))) {
@@ -620,10 +611,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
         return static::canRelation('canView', true);
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public static function canUpdate(): bool
     {
         if ((static::$rightname) && (!Session::haveRight(static::$rightname, UPDATE))) {
@@ -632,10 +619,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
         return static::canRelation('canUpdate', static::$checkAlwaysBothItems);
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public static function canDelete(): bool
     {
         if ((static::$rightname) && (!Session::haveRight(static::$rightname, DELETE))) {
@@ -644,10 +627,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
         return static::canRelation('canUpdate', static::$checkAlwaysBothItems);
     }
 
-
-    /**
-     * @since 0.85
-     **/
     public static function canPurge(): bool
     {
         if ((static::$rightname) && (!Session::haveRight(static::$rightname, PURGE))) {
@@ -656,10 +635,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
         return static::canRelation('canUpdate', static::$checkAlwaysBothItems);
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public function canCreateItem(): bool
     {
         return $this->canRelationItem(
@@ -670,19 +645,11 @@ abstract class CommonDBRelation extends CommonDBConnexity
         );
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public function canViewItem(): bool
     {
         return $this->canRelationItem('canViewItem', 'canView', false, true);
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public function canUpdateItem(): bool
     {
 
@@ -694,10 +661,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
         );
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public function canDeleteItem(): bool
     {
 
@@ -709,10 +672,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
         );
     }
 
-
-    /**
-     * @since 9.3.2
-     */
     public function canPurgeItem(): bool
     {
 
@@ -1267,7 +1226,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
         ?HTMLTableCell $father = null,
         array $options = []
     ) {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (empty($item)) {
@@ -1541,7 +1499,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
         CommonDBTM $item,
         array $ids
     ) {
-        /** @var DBmysql $DB */
         global $DB;
 
         $action        = $ma->getAction();
@@ -1819,7 +1776,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
      */
     protected static function getListForItemParams(CommonDBTM $item, $noent = false)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (Session::isCron()) {
@@ -1911,7 +1867,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
      */
     public static function getListForItem(CommonDBTM $item, int $start = 0, int $limit = 0, array $order = [])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $params = static::getListForItemParams($item);
@@ -1961,7 +1916,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
      */
     public static function getDistinctTypes($items_id, $extra_where = [])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $params = static::getDistinctTypesParams($items_id, $extra_where);
@@ -1998,7 +1952,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
      */
     protected static function getTypeItemsQueryParams($items_id, $itemtype, $noent = false, $where = [])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $item = getItemForItemtype($itemtype);
@@ -2070,7 +2023,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
      */
     public static function getTypeItems($items_id, $itemtype)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $params = static::getTypeItemsQueryParams($items_id, $itemtype);
@@ -2088,7 +2040,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
      */
     public static function countForItem(CommonDBTM $item)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $params = static::getListForItemParams($item);
@@ -2114,7 +2065,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
      **/
     public static function countForMainItem(CommonDBTM $item, $extra_types_where = [])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $nb = 0;

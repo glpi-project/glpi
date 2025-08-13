@@ -74,7 +74,6 @@ final class AllowListDropdown extends AbstractRightsDropdown
     #[Override]
     protected static function getAjaxUrl(): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         return $CFG_GLPI['root_doc'] . "/ajax/form/allowListDropdownValue.php";
@@ -95,7 +94,6 @@ final class AllowListDropdown extends AbstractRightsDropdown
         array $groups,
         array $profiles,
     ): int {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $condition = [
@@ -148,7 +146,6 @@ final class AllowListDropdown extends AbstractRightsDropdown
         array $groups,
         array $profiles,
     ): string {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $criteria = [];

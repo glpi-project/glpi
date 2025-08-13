@@ -72,7 +72,6 @@ class NotificationTemplateTranslation extends CommonDBChild
 
     protected function computeFriendlyName()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($this->getField('language') !== '') {
@@ -124,10 +123,6 @@ class NotificationTemplateTranslation extends CommonDBChild
      **/
     public function showSummary(NotificationTemplate $template, $options = [])
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $nID     = $template->getField('id');
@@ -296,9 +291,6 @@ TWIG, $twig_params);
      */
     public static function getAllUsedLanguages($language_id)
     {
-        /**
-         * @var DBmysql $DB
-         */
         global $DB;
 
         $used_languages = $DB->request([

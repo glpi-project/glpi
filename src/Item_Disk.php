@@ -96,11 +96,6 @@ class Item_Disk extends CommonDBChild
         return '';
     }
 
-    /**
-     * @param CommonGLPI $item object
-     * @param $tabnum          (default 1)
-     * @param $withtemplate    (default 0)
-     */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item instanceof CommonDBTM) {
@@ -186,7 +181,6 @@ class Item_Disk extends CommonDBChild
      */
     public static function getFromItem(CommonDBTM $item, $sort = null, $order = null): DBmysqlIterator
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -393,7 +387,6 @@ TWIG, $twig_params);
 
     public static function rawSearchOptionsToAdd($itemtype)
     {
-        /** @var DBmysql $DB */
         global $DB;
         $tab = [];
 

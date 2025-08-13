@@ -92,10 +92,6 @@ class IPNetwork_Vlan extends CommonDBRelation
      **/
     public static function showForIPNetwork(IPNetwork $port)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $ID = $port->getID();
@@ -174,8 +170,6 @@ class IPNetwork_Vlan extends CommonDBRelation
         $header_end .= "<th>" . __s('ID TAG') . "</th>";
         $header_end .= "</tr>";
         echo $header_begin . $header_top . $header_end;
-
-        $used = [];
         foreach ($vlans as $data) {
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
@@ -213,7 +207,6 @@ class IPNetwork_Vlan extends CommonDBRelation
      **/
     public static function getVlansForIPNetwork($portID)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $vlans = [];

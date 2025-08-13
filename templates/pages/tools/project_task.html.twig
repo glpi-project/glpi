@@ -63,8 +63,8 @@
     ) }}
 
     {% if item.isNewID(id) %}
-        <input type='hidden' name='projects_id' value='{{ projects_id }}'>
-        <input type='hidden' name='is_recursive' value='{{ recursive }}'>
+        <input type="hidden" name="projects_id" value="{{ projects_id }}">
+        <input type="hidden" name="is_recursive" value="{{ recursive ? 1 : 0 }}">
     {% endif %}
 
     {{ fields.dropdownField(
@@ -92,22 +92,44 @@
         _n('Type', 'Types', 1),
     ) }}
 
+    {% set auto_status %}
+        {{ fields.checkboxField(
+            'auto_projectstates',
+            item.fields.auto_projectstates,
+            __('Automatically calculate'),
+            {
+                'helper': __("When automatic computation is active, state is computed based on this task percent done. Don't forget to define them in the general config."),
+                'field_class': 'col-12 w-100',
+                'label_class': 'col-auto',
+                'input_class': 'col',
+            }
+        ) }}
+    {% endset %}
+
     {{ fields.dropdownField(
         'ProjectState',
         'projectstates_id',
         item.fields.projectstates_id,
         _x('item', 'State'),
-        item.fields.auto_projectstates ? {'disabled': true} : {}
-    ) }}
-
-    {{ fields.checkboxField(
-        'auto_projectstates',
-        item.fields.auto_projectstates,
-        __('Automatically calculate'),
         {
-            'helper': __("When automatic computation is active, state is computed based on this task percent done. Don't forget to define them in the general config.")
+            disabled: item.fields.auto_projectstates,
+            add_field_html: auto_status,
         }
     ) }}
+
+    {% set auto_percent %}
+        {{ fields.checkboxField(
+            'auto_percent_done',
+            item.fields.auto_percent_done,
+            __('Automatically calculate'),
+            {
+                'helper': __('When automatic computation is active, percentage is computed based on the average of all child task percent done.'),
+                'field_class': 'col-12 w-100',
+                'label_class': 'col-auto',
+                'input_class': 'col',
+            }
+        ) }}
+    {% endset %}
 
     {{ fields.dropdownNumberField(
         'percent_done',
@@ -119,16 +141,8 @@
             'max': 100,
             'step': 5,
             'unit': '%',
+            'add_field_html': auto_percent,
          }|merge(item.fields.auto_percent_done ? {'specific_tags': {'disabled': 'disabled'}} : {})
-    ) }}
-
-    {{ fields.checkboxField(
-        'auto_percent_done',
-        item.fields.auto_percent_done,
-        __('Automatically calculate'),
-        {
-            'helper': __('When automatic computation is active, percentage is computed based on the average of all child task percent done.')
-        }
     ) }}
 
     {{ fields.dropdownYesNo(

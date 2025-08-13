@@ -174,7 +174,6 @@ abstract class CommonDBVisible extends CommonDBTM
         $ID      = (int) $this->fields['id'];
         $canedit = $this->canEdit($ID);
         $rand    = mt_rand();
-        $nb      = $this->countVisibilities();
 
         if ($canedit) {
             TemplateRenderer::getInstance()->display('components/add_visibility_target.html.twig', [

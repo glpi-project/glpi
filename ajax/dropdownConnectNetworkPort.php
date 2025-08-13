@@ -39,9 +39,6 @@
 
 use Glpi\DBAL\QueryExpression;
 
-/**
- * @var DBmysql $DB
- */
 global $DB;
 
 header("Content-Type: text/html; charset=UTF-8");

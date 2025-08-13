@@ -231,9 +231,6 @@ class IPAddress extends CommonDBChild
 
     public static function showForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        /**
-         * @var DBmysql $DB
-         */
         global $DB;
 
         if ($item::class !== IPNetwork::class) {
@@ -241,7 +238,6 @@ class IPAddress extends CommonDBChild
             return;
         }
 
-        $rand = mt_rand();
         $start       = (int) ($_GET["start"] ?? 0);
         $sort        = $_GET["sort"] ?? "";
         $order       = strtoupper($_GET["order"] ?? "");
@@ -341,7 +337,6 @@ class IPAddress extends CommonDBChild
      **/
     public static function countForItem(CommonDBTM $item)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         switch ($item->getType()) {
@@ -577,7 +572,6 @@ class IPAddress extends CommonDBChild
      **/
     public function setAddressFromString($address, $itemtype = "", $items_id = -1)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $this->disableAddress();
@@ -761,7 +755,6 @@ class IPAddress extends CommonDBChild
      **/
     public function setAddressFromBinary($address, $itemtype = "", $items_id = -1)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $this->disableAddress();
@@ -942,7 +935,6 @@ class IPAddress extends CommonDBChild
      **/
     public static function getItemsByIPAddress($IPaddress)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // We must resolv binary address :
@@ -1112,10 +1104,6 @@ class IPAddress extends CommonDBChild
      */
     private static function getCriteriaLinkedToNetwork(IPNetwork $network): array
     {
-        /**
-         * @var DBmysql $DB
-         * @var array $CFG_GLPI
-         */
         global $CFG_GLPI, $DB;
 
         $queries = [];
@@ -1282,7 +1270,6 @@ class IPAddress extends CommonDBChild
         ?HTMLTableCell $father = null,
         array $options = []
     ) {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($item instanceof IPNetwork) {

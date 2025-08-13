@@ -250,7 +250,6 @@ class Line extends CommonDBTM implements AssignableItemInterface, StateInterface
 
     public static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = false, ?CommonDBTM $checkitem = null)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         parent::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);

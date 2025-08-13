@@ -608,7 +608,6 @@ class MassiveAction
      **/
     public static function getAllMassiveActions($item, $is_deleted = false, ?CommonDBTM $checkitem = null, ?int $items_id = null)
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         if (is_string($item)) {
@@ -832,9 +831,6 @@ class MassiveAction
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
-        /**
-         * @var DBmysql $DB
-         */
         global $DB;
 
         switch ($ma->getAction()) {
@@ -1321,7 +1317,6 @@ class MassiveAction
         CommonDBTM $item,
         array $ids
     ) {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $action = $ma->getAction();
@@ -1383,8 +1378,8 @@ class MassiveAction
                                 if ($action != 'purge_but_item_linked') {
                                     $force = false;
                                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                                    $ma->addMessage(__("You can't delete that item by massive actions, because it has sub-items"));
-                                    $ma->addMessage(__("but you can do it by the form of the item"));
+                                    $ma->addMessage(__s("You can't delete that item by massive actions, because it has sub-items"));
+                                    $ma->addMessage(__s("but you can do it by the form of the item"));
                                     continue;
                                 }
                             }
@@ -1392,8 +1387,8 @@ class MassiveAction
                                 if ($action != 'purge_but_item_linked') {
                                     $force = false;
                                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                                    $ma->addMessage(__("You can't delete that item, because it is used for one or more items"));
-                                    $ma->addMessage(__("but you can do it by the form of the item"));
+                                    $ma->addMessage(__s("You can't delete that item, because it is used for one or more items"));
+                                    $ma->addMessage(__s("but you can do it by the form of the item"));
                                     continue;
                                 }
                             }
@@ -1720,7 +1715,9 @@ class MassiveAction
      * @param string $message  the message to add
      *
      * @return void
-     **/
+     *
+     * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
+     */
     public function addMessage($message)
     {
         $this->results['messages'][] = $message;

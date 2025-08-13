@@ -56,7 +56,6 @@ final class Parser
 
     public function __construct(Search $search)
     {
-        /** @var DBmysql $DB */
         global $DB;
         $this->search = $search;
         $this->db = $DB;
@@ -97,6 +96,7 @@ final class Parser
                 [
                     'operator' => '==',
                     'description' => 'equivalent to',
+                    'value_expected' => true,
                     'sql_where_callable' => fn($a, $b) => [
                         [$this->db::quoteName($a) => $b],
                     ],
@@ -104,6 +104,7 @@ final class Parser
                 [
                     'operator' => '!=',
                     'description' => 'not equivalent to',
+                    'value_expected' => true,
                     'sql_where_callable' => fn($a, $b) => [
                         [$this->db::quoteName($a) => ['<>', $b]],
                     ],
@@ -111,6 +112,7 @@ final class Parser
                 [
                     'operator' => '=in=',
                     'description' => 'in',
+                    'value_expected' => true,
                     'sql_where_callable' => fn($a, $b) => [
                         [$this->db::quoteName($a) => $this->rsqlGroupToArray($b)],
                     ],
@@ -118,6 +120,7 @@ final class Parser
                 [
                     'operator' => '=out=',
                     'description' => 'not in',
+                    'value_expected' => true,
                     'sql_where_callable' => fn($a, $b) => [
                         ['NOT' => [$this->db::quoteName($a) => $this->rsqlGroupToArray($b)]],
                     ],
@@ -125,6 +128,7 @@ final class Parser
                 [
                     'operator' => '=lt=',
                     'description' => 'less than',
+                    'value_expected' => true,
                     'sql_where_callable' => fn($a, $b) => [
                         [$this->db::quoteName($a) => ['<', $b]],
                     ],
@@ -132,6 +136,7 @@ final class Parser
                 [
                     'operator' => '=le=',
                     'description' => 'less than or equal to',
+                    'value_expected' => true,
                     'sql_where_callable' => fn($a, $b) => [
                         [$this->db::quoteName($a) => ['<=', $b]],
                     ],
@@ -139,6 +144,7 @@ final class Parser
                 [
                     'operator' => '=gt=',
                     'description' => 'greater than',
+                    'value_expected' => true,
                     'sql_where_callable' => fn($a, $b) => [
                         [$this->db::quoteName($a) => ['>', $b]],
                     ],
@@ -146,6 +152,7 @@ final class Parser
                 [
                     'operator' => '=ge=',
                     'description' => 'greater than or equal to',
+                    'value_expected' => true,
                     'sql_where_callable' => fn($a, $b) => [
                         [$this->db::quoteName($a) => ['>=', $b]],
                     ],
@@ -153,6 +160,7 @@ final class Parser
                 [
                     'operator' => '=like=',
                     'description' => 'like',
+                    'value_expected' => true,
                     'sql_where_callable' => function ($a, $b) {
                         $b = str_replace(['%', '*'], ['_', '%'], $b);
                         return [
@@ -165,6 +173,7 @@ final class Parser
                 [
                     'operator' => '=ilike=',
                     'description' => 'case insensitive like',
+                    'value_expected' => true,
                     'sql_where_callable' => function ($a, $b) {
                         $b = str_replace(['%', '*'], ['_', '%'], $b);
                         return [
@@ -175,6 +184,7 @@ final class Parser
                 [
                     'operator' => '=isnull=',
                     'description' => 'is null',
+                    'value_expected' => false,
                     'sql_where_callable' => fn($a, $b) => [
                         [$this->db::quoteName($a) => null],
                     ],
@@ -182,6 +192,7 @@ final class Parser
                 [
                     'operator' => '=notnull=',
                     'description' => 'is not null',
+                    'value_expected' => false,
                     'sql_where_callable' => fn($a, $b) => [
                         ['NOT' => [$this->db::quoteName($a) => null]],
                     ],
@@ -190,6 +201,7 @@ final class Parser
                     // Empty string or null
                     'operator' => '=empty=',
                     'description' => 'is empty',
+                    'value_expected' => false,
                     'sql_where_callable' => fn($a, $b) => [
                         [
                             'OR' => [
@@ -202,6 +214,7 @@ final class Parser
                 [
                     'operator' => '=notempty=',
                     'description' => 'is not empty',
+                    'value_expected' => false,
                     'sql_where_callable' => fn($a, $b) => [
                         [
                             'AND' => [
@@ -219,6 +232,7 @@ final class Parser
     /**
      * @param array $tokens Tokens from the RSQL lexer.
      * @return Result RSQL query result
+     * @throws RSQLException
      */
     public function parse(array $tokens): Result
     {
@@ -271,9 +285,13 @@ final class Parser
                     $buffer['operator'] = null;
                 } else {
                     $buffer['operator'] = $operators[$value]['sql_where_callable'];
+                    $buffer['value_expected'] = $operators[$value]['value_expected'];
                 }
-            } elseif ($type === Lexer::T_VALUE) {
+            } elseif ($type === Lexer::T_VALUE || $type === Lexer::T_UNSPECIFIED_VALUE) {
                 if ($buffer['property'] !== null && $buffer['operator'] !== null && $buffer['field'] !== null) {
+                    if ($buffer['value_expected'] && $type === Lexer::T_UNSPECIFIED_VALUE) {
+                        throw new RSQLException('', sprintf(__('RSQL query is missing a value in filter for property "%1$s"'), $buffer['property']));
+                    }
                     // Unquote value if it is quoted
                     if (preg_match('/^".*"$/', $value) || preg_match("/^'.*'$/", $value)) {
                         $value = substr($value, 1, -1);

@@ -38,7 +38,6 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 use Glpi\Event;
 use Glpi\Exception\Http\NotFoundHttpException;
 
-/** @var DBmysql $DB */
 global $DB;
 
 $solution = new ITILSolution();

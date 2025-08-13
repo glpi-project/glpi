@@ -46,7 +46,6 @@ class Appliance_ItemTest extends DbTestCase
 {
     public function testRelatedItemHasTab()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->initAssetDefinition(capacities: [new Capacity(name: HasAppliancesCapacity::class)]);
@@ -66,7 +65,6 @@ class Appliance_ItemTest extends DbTestCase
 
     public function testRelatedItemCloneRelations()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->initAssetDefinition(capacities: [new Capacity(name: HasAppliancesCapacity::class)]);
@@ -92,7 +90,6 @@ class Appliance_ItemTest extends DbTestCase
 
     public function testCountForAppliance()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $entity_id = \getItemByTypeName(Entity::class, '_test_root_entity', true);

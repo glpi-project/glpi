@@ -37,7 +37,6 @@ namespace Glpi\Asset;
 use AutoUpdateSystem;
 use CommonGLPI;
 use Computer;
-use DBmysql;
 use DisplayPreference;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Capacity\CapacityInterface;
@@ -852,7 +851,6 @@ TWIG, $twig_params);
      */
     public function getCustomFieldDefinitions(): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($this->custom_field_definitions === null) {
@@ -904,7 +902,6 @@ TWIG, $twig_params);
 
     protected function syncProfilesRights(): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         parent::syncProfilesRights();

@@ -223,7 +223,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
     public function post_updateItem($history = true)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (count($this->profileRight) > 0) {
@@ -272,7 +271,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
     public function post_addItem()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         ProfileRight::fillProfileRights($this->fields['id']);
@@ -331,7 +329,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
     public function prepareInputForUpdate($input)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (isset($input["helpdesk_item_type"])) {
@@ -653,7 +650,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      **/
     public static function getUnderActiveProfileRestrictCriteria()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Not logged -> no profile to see
@@ -718,7 +714,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      **/
     public static function currentUserHaveMoreRightThan($IDs = [])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (Session::isCron()) {
@@ -3242,7 +3237,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      **/
     public static function dropdownUnder($options = [])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $p['name']  = 'profiles_id';
@@ -3285,7 +3279,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      **/
     public static function getDefault()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $profiles = $DB->request([
@@ -3355,7 +3348,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      **/
     public static function getHelpdeskItemtypes()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $values = [];
@@ -3377,7 +3369,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      */
     public function getDomainRecordTypes()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -3434,7 +3425,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      */
     public static function haveUserRight($user_id, $rightname, $rightvalue, $entity_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request(
