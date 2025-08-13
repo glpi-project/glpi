@@ -43,7 +43,7 @@ class GraphQLControllerTest extends \HLAPITestCase
     {
         $this->login();
 
-        $request = new Request('POST', '/GraphQL', ['Content-Type' => 'application/json'], json_encode(['query' => 'query { __schema { types { name } } }']));
+        $request = new Request('POST', '/GraphQL', [], 'query { __schema { types { name } } }');
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
@@ -65,7 +65,7 @@ class GraphQLControllerTest extends \HLAPITestCase
                 });
         });
 
-        $request = new Request('POST', '/GraphQL', ['Content-Type' => 'application/json'], json_encode(['query' => 'query { __schema { types { name description } } }']));
+        $request = new Request('POST', '/GraphQL', [], 'query { __schema { types { name description } } }');
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
@@ -80,7 +80,7 @@ class GraphQLControllerTest extends \HLAPITestCase
                 });
         });
 
-        $request = new Request('POST', '/GraphQL', ['Content-Type' => 'application/json'], json_encode(['query' => 'query { __schema { types { name fields { type { name } } } } }']));
+        $request = new Request('POST', '/GraphQL', [], 'query { __schema { types { name fields { type { name } } } } }');
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
@@ -100,7 +100,7 @@ class GraphQLControllerTest extends \HLAPITestCase
     {
         $this->login();
 
-        $request = new Request('POST', '/GraphQL', ['Content-Type' => 'application/json'], json_encode(['query' => 'query { Computer(id: 1) { id name } }']));
+        $request = new Request('POST', '/GraphQL', [], 'query { Computer(id: 1) { id name } }');
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
@@ -118,7 +118,7 @@ class GraphQLControllerTest extends \HLAPITestCase
     {
         $this->login();
 
-        $request = new Request('POST', '/GraphQL', ['Content-Type' => 'application/json'], json_encode(['query' => 'query { Computer { id name } }']));
+        $request = new Request('POST', '/GraphQL', [], 'query { Computer { id name } }');
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
@@ -134,7 +134,7 @@ class GraphQLControllerTest extends \HLAPITestCase
     {
         $this->login();
 
-        $request = new Request('POST', '/GraphQL', ['Content-Type' => 'application/json'], json_encode(['query' => 'query { Computer(filter: "name=like=\'*_test_pc*\'") { id name } }']));
+        $request = new Request('POST', '/GraphQL', [], 'query { Computer(filter: "name=like=\'*_test_pc*\'") { id name } }');
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
@@ -163,7 +163,7 @@ class GraphQLControllerTest extends \HLAPITestCase
         ]));
 
         // product_number is not available this way via the REST API, but should be available here as the partial schema gets replaced by the full schema
-        $request = new Request('POST', '/GraphQL', ['Content-Type' => 'application/json'], json_encode(['query' => 'query { CartridgeItem { id name printer_models { name product_number } } }']));
+        $request = new Request('POST', '/GraphQL', [], 'query { CartridgeItem { id name printer_models { name product_number } } }');
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
@@ -200,7 +200,7 @@ class GraphQLControllerTest extends \HLAPITestCase
         ]));
 
         $this->login();
-        $query = <<<GRAPHQL
+        $request = new Request('POST', '/GraphQL', [], <<<GRAPHQL
             query {
                 Computer(id: $computers_id) {
                     id
@@ -213,8 +213,7 @@ class GraphQLControllerTest extends \HLAPITestCase
                     }
                 }
             }
-GRAPHQL;
-        $request = new Request('POST', '/GraphQL', ['Content-Type' => 'application/json'], json_encode(['query' => $query]));
+GRAPHQL);
 
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
@@ -251,7 +250,7 @@ GRAPHQL;
 
         // Can see no tickets
         $_SESSION['glpiactiveprofile']['ticket'] = 0;
-        $this->api->call(new Request('POST', '/GraphQL', ['Content-Type' => 'application/json'], json_encode(['query' => 'query { Ticket { id name } }'])), function ($call) {
+        $this->api->call(new Request('POST', '/GraphQL', [], 'query { Ticket { id name } }'), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
                 ->status(fn($status) => $this->assertEquals(200, $status))
@@ -263,7 +262,7 @@ GRAPHQL;
         // Can only see my own tickets
         $_SESSION['glpiactiveprofile']['ticket'] = READ;
 
-        $this->api->call(new Request('POST', '/GraphQL', ['Content-Type' => 'application/json'], json_encode(['query' => 'query { Ticket { id name } }'])), function ($call) use ($tickets_id) {
+        $this->api->call(new Request('POST', '/GraphQL', [], 'query { Ticket { id name } }'), function ($call) use ($tickets_id) {
             /** @var \HLAPICallAsserter $call */
             $call->response
                 ->status(fn($status) => $this->assertEquals(200, $status))
@@ -271,7 +270,7 @@ GRAPHQL;
                     $this->assertNotContains($tickets_id, array_column($content['data']['Ticket'], 'id'));
                 });
         });
-        $this->api->call(new Request('POST', '/GraphQL', ['Content-Type' => 'application/json'], json_encode(['query' => 'query { Ticket(id: ' . $tickets_id . ') { id name } }'])), function ($call) {
+        $this->api->call(new Request('POST', '/GraphQL', [], 'query { Ticket(id: ' . $tickets_id . ') { id name } }'), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
                 ->status(fn($status) => $this->assertEquals(200, $status))
@@ -303,7 +302,7 @@ GRAPHQL;
 
         // Can see no entities
         $_SESSION['glpiactiveprofile']['entity'] = 0;
-        $this->api->call(new Request('POST', '/GraphQL', ['Content-Type' => 'application/json'], json_encode(['query' => 'query { Ticket { id name entity { id name comment } } }'])), function ($call) {
+        $this->api->call(new Request('POST', '/GraphQL', [], 'query { Ticket { id name entity { id name comment } } }'), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
                 ->status(fn($status) => $this->assertEquals(200, $status))
