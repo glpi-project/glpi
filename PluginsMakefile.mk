@@ -51,6 +51,14 @@ plugin-test-setup: ## Setup the plugin for tests
 	@$(CONSOLE) plugin:enable --env=testing $(PLUGIN_DIR)
 .PHONY: plugin-test-setup
 
+plugin-license-headers-check: ## Verify that the license headers is present all files
+	@$(PLUGIN) vendor/bin/licence-headers-check
+.PHONY: plugin-license-headers-check
+
+plugin-license-headers-fix: ## Add the missing license headers in all files
+	@$(PLUGIN) vendor/bin/licence-headers-check --fix
+.PHONY: plugin-license-headers-fix
+
 ##—— Dependencies ——————————————————————————————————————————————————————————————
 vendor: ## Install dependencies
 ifeq ($(USE_COMPOSER),true)
