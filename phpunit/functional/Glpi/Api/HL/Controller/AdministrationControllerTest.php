@@ -535,4 +535,57 @@ class AdministrationControllerTest extends \HLAPITestCase
             });
         }
     }
+
+    public function testUserScope()
+    {
+        $this->login(api_options: ['scope' => 'api']);
+        $this->api->call(new Request('GET', '/Administration/User/Me'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isAccessDenied();
+        });
+        $this->api->call(new Request('GET', '/Administration/User/Me/Emails/Default'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isAccessDenied();
+        });
+        $this->login(api_options: ['scope' => 'user']);
+        $this->api->call(new Request('GET', '/Administration/User/Me'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK();
+        });
+        $this->api->call(new Request('GET', '/Administration/User/Me/Emails/Default'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK();
+        });
+    }
+
+    public function testEmailScope()
+    {
+        $this->login(api_options: ['scope' => 'api']);
+        $this->api->call(new Request('GET', '/Administration/User/me'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isAccessDenied();
+        });
+        $this->api->call(new Request('GET', '/Administration/User/me/Emails/Default'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isAccessDenied();
+        });
+        $this->login(api_options: ['scope' => 'email']);
+        // Access to email scope doesn't allow broad access to current user info
+        $this->api->call(new Request('GET', '/Administration/User/me'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isAccessDenied();
+        });
+        $this->api->call(new Request('GET', '/Administration/User/me/Emails/Default'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK();
+        });
+    }
 }
