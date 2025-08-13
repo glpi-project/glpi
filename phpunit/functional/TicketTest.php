@@ -8262,17 +8262,17 @@ HTML,
         $crawler = new Crawler($out);
         $rows = $crawler->filter('table.tab_cadre_fixehov tr');
 
-        $founded = [];
+        $found = [];
         foreach ($rows as $row) {
             $cells = (new Crawler($row))->filter('td');
             if (!empty($cells->getNode(1))) {
                 $ticket_id = trim($cells->getNode(1)->textContent);
                 if (!empty($ticket_id)) {
-                    $founded[$ticket_id] = true;
+                    $found[$ticket_id] = true;
                 }
             }
         }
-        $this->assertArrayNotHasKey($ticket1_id, $founded);
-        $this->assertArrayHasKey($ticket2_id, $founded);
+        $this->assertArrayNotHasKey($ticket1_id, $found);
+        $this->assertArrayHasKey($ticket2_id, $found);
     }
 }
