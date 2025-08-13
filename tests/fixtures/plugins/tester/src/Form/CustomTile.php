@@ -108,7 +108,7 @@ final class CustomTile extends CommonDBTM implements TileInterface
     #[Override]
     public function getConfigFieldsTemplate(): string
     {
-        return "@tester/custom_tile.html.twig.html.twig";
+        return "@tester/custom_tile.html.twig";
     }
 
     #[Override]
