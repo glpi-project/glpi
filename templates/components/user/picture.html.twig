@@ -45,7 +45,7 @@
 {% endif %}
 
 <span class="avatar {{ avatar_size }} rounded"
-      style="{% if user_thumbnail is not null %}background-image: url({{ user_thumbnail }}); background-color: inherit; {% else %} background-color: {{ user.getUserInitialsBgColor() }}{% endif %}">
+      style="{% if user_thumbnail is not null %}background-image: url({{ user_thumbnail }}); background-color: inherit; {% else %} background-color: {{ user.getUserInitialsBgColor() }}{% endif %}; aspect-ratio: 1;">
    {% if user_thumbnail is null %}
          {{ user.getUserInitials(enable_anonymization) }}
    {% endif %}
