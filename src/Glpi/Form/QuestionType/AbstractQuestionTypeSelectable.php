@@ -136,6 +136,10 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType imple
                         }
                     });
                 {% endif %}
+
+                // The module above will trigger some input changes, we need
+                // to reset the global unsaved form state after this.
+                window.setHasUnsavedChanges(false);
             });
 TWIG;
 
