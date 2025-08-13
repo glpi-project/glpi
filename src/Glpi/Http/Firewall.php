@@ -37,6 +37,7 @@ namespace Glpi\Http;
 use Config;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use LogicException;
+use Plugin;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -173,8 +174,8 @@ final class Firewall
         $path = $this->normalizePath($request);
 
         $path_matches = [];
-        $plugin_path_pattern = '#^/plugins/(?<plugin_key>[^/]+)(?<plugin_resource>/.+)$#';
-        if (preg_match($plugin_path_pattern, $path, $path_matches) === 1) {
+
+        if (preg_match(Plugin::PLUGIN_RESOURCE_PATTERN, $path, $path_matches) === 1) {
             return $this->computeFallbackStrategyForPlugin(
                 $path_matches['plugin_key'],
                 $path_matches['plugin_resource']

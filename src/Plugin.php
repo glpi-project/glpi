@@ -126,6 +126,14 @@ class Plugin extends CommonDBTM
     public const EXECUTION_MODE_SUSPENDED_MANUALLY = 'suspended_manually';
 
     /**
+     * Regex pattern that matches a plugin resource path.
+     * This pattern will capture:
+     *      `plugin_key`: the plugin key;
+     *      `plugin_resource`: the resource path relative to the plugin.
+     */
+    public const PLUGIN_RESOURCE_PATTERN = '#^/plugins/(?<plugin_key>[^/]+)(?<plugin_resource>/.*)$#';
+
+    /**
      * Plugin key validation pattern.
      */
     private const PLUGIN_KEY_PATTERN = '/^[a-z0-9]+$/i';
