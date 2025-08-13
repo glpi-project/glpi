@@ -225,14 +225,17 @@ final class Firewall
      */
     private function computeFallbackStrategyForPlugin(string $plugin_key, string $plugin_resource): string
     {
-        // Check if the file exists to apply the strategies related to legacyy scripts
+        // Check if the file exists to apply the strategies related to legacy scripts
         foreach ($this->plugin_directories as $plugin_dir) {
             $expected_filenames = [
-                $plugin_dir . '/' . $plugin_key . $plugin_resource,
-
                 // A PHP script located in the `/public` directory of a plugin will not have the `/public` prefix in its URL
                 $plugin_dir . '/' . $plugin_key . '/public' . $plugin_resource,
             ];
+            if (preg_match('#^/(ajax|front|report)/.+#', $plugin_resource) === 1) {
+                // Only `/ajax`, `/front` and `/report` can be publicly accessed outside the `/public` dir
+                $expected_filenames[] = $plugin_dir . '/' . $plugin_key . $plugin_resource;
+            }
+
             $resource_matches = [];
             if (preg_match('#^(?<filename>.+\.php)(/.*)$#', $plugin_resource, $resource_matches)) {
                 // /front/api.php/path/to/endpoint -> /front/api.php
