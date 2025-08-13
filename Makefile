@@ -119,8 +119,9 @@ test-db-update: ## Update testing's database
 		-n \
 		--allow-unstable \
 		--force \
-		--skip-db-checks
-.PHONY: db-update
+		--skip-db-checks \
+		--config-dir=./tests/config
+.PHONY: test-db-update
 
 ## —— Dependencies —————————————————————————————————————————————————————————————
 composer: ## Run a composer command, example: make composer c='require mypackage/package'
