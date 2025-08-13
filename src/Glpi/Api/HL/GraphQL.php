@@ -37,7 +37,6 @@ namespace Glpi\Api\HL;
 
 use CommonDBTM;
 use Glpi\Debug\Profiler;
-use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Http\Request;
 use GraphQL\Error\Error;
 use GraphQL\Type\Definition\ResolveInfo;
